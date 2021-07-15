@@ -28,7 +28,7 @@
 #A11_1 {
 	margin: 0px 10px;
 	font-size: large;
-	width: 80px;
+	width: 95px;
 }
 
 #A12_2 {
@@ -40,7 +40,7 @@
 }
 
 .middle-content .center {
-	width: 100px;
+	width: 115px;
 }
 
 #ruled-line {
@@ -97,7 +97,7 @@
 }
 
 .red { color: #FF0000 !important; }
-.panel { border-radius: 5px; }
+.contents-area .panel { border-radius: 5px; }
 
 .ui-state-active > div {
 	color: #30CC40;
@@ -105,4 +105,7 @@
 }
 .ui-state-hover > div {
 	color: #30CC40;
+}
+.ui-dialog .ui-dialog-content.notice-dialog > .text {
+  width: auto !important;
 }

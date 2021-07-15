@@ -794,13 +794,21 @@ module cmm015.a.viewmodel {
                 }
             });
 
-            const errFnc = () => {
+            const errFnc = (callback?: Function) => {
                 if (!_.isEmpty(errList)) {
-                    vm.$dialog.error('Msg_2203');
-                    _.forEach(errList, i => {
-                        $(`#A18 [data-id="${i}"]`).children().css({ color: ERRORSCODE });
-                        $(`#A18 [data-id="${i}"]`).children().children().css({ color: ERRORSCODE });
-                    });
+                    vm.$dialog
+                        .error('Msg_2203')
+                        .then(() => {
+                            _.forEach(errList, i => {
+                                $(`#A18 [data-id="${i}"]`).children().css({ color: ERRORSCODE });
+                                $(`#A18 [data-id="${i}"]`).children().children().css({ color: ERRORSCODE });
+                            });
+                            if (callback) {
+                                callback();
+                            }
+                        });
+                } else if (callback) {
+                    callback();
                 }
             };
             if (errList.length === vm.currentCodeListHistory().length) {
@@ -811,6 +819,7 @@ module cmm015.a.viewmodel {
             const param = { affWorkplaces, affJobTitles };
             let affWorkplaceErr: any[] = [];
             let affJobTitleErr: any[] = [];
+            vm.$blockui('grayout');
             vm
                 .$ajax('com', API.cancelExecuteTransfer, param)
                 .then((res: CancelExecuteTransferResult) => {
@@ -822,7 +831,7 @@ module cmm015.a.viewmodel {
                 })
                 .then(() => vm.getTransferOfDay(vm.baseDateRight()))
                 .then(() => {
-                    errFnc();
+                    
                     const wkpErr = _.map(affWorkplaceErr, i => `${vm.$i18n.message(i.messageId)}<br/>`);
                     const jtErr = _.map(affJobTitleErr, i => `${vm.$i18n.message(i.messageId)}<br/>`);
                     const mergeErr = _.uniq([...wkpErr, ...jtErr]);
@@ -831,14 +840,15 @@ module cmm015.a.viewmodel {
                         vm.$dialog.info({ messageId: 'Msg_16' });
                     };
                     if (!_.isEmpty(mergeErr)) {
-                        vm.$dialog
+                        errFnc(() => vm.$dialog
                             .error(mergeErr.join(''))
-                            .then(() => success());
+                            .then(() => success()));
                     } else {
-                        success();
+                        errFnc(() => success());
                     }
                     
-                })
+                });
+            vm.$blockui('clear');
         }
 
     }
