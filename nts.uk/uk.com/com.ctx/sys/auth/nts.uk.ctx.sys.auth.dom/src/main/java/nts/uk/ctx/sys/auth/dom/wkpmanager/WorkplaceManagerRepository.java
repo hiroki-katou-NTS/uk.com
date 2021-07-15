@@ -35,5 +35,33 @@ public interface WorkplaceManagerRepository {
 	List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpIds, DatePeriod datePeriod);
 
 	List<WorkplaceManager> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate);
+	
+	/**
+	 * get workplace manager by workplaceId and employeeId
+	 * 職場IDと社員IDを指定して職場管理者を取得する( 職場ID, 社員ID)
+	 * getWkpManagerByWorkplaceIdAndSid
+	 * @param workplaceId 職場ID
+	 * @param sid 社員ID
+	 * @return List<WorkplaceManager>
+	 */
+	List<WorkplaceManager> getWkpManagerByWorkplaceIdAndSid(String workplaceId, String sid);
+	
+	/**
+	 * get workplace manager by employeeID
+	 * 社員IDを指定して職場管理者を取得する(社員ID)
+	 * @param sid 社員ID
+	 * @return List<WorkplaceManager>
+	 */
+	List<WorkplaceManager> getWkpManagerListBySid(String sid);
+	
+	/**
+	 * delete workplace manager by workplaceId and employeeId
+	 * 職場IDと社員IDを指定して職場管理者を削除する(職場ID, 社員ID)
+	 * @param workplaceId 職場ID
+	 * @param sid 社員ID
+	 */
+	void deleteByWorkplaceIdAndSid(String workplaceId, String sid);
+	
+	
 
 }

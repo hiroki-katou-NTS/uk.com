@@ -67,7 +67,6 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 
 	private static final String FIND_BY_WKP_AND_BASEDATE = "SELECT wm FROM SacmtWkpManager wm "
 		+ " WHERE wm.workplaceId = :workplaceId " + " AND wm.startDate <= :baseDate AND wm.endDate >= :baseDate ";
-
 	private static final String WORKPLACE_SELECT_ALL_CID;
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -249,6 +248,24 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 				rec.getGeneralDate("END_DATE"), 
 				values);
 		return item;
+	}
+
+	@Override
+	public List<WorkplaceManager> getWkpManagerByWorkplaceIdAndSid(String workplaceId, String sid) {
+		//TODO this next time, because design add this method, please fix
+		return null;
+	}
+
+	@Override
+	public List<WorkplaceManager> getWkpManagerListBySid(String sid) {
+		//TODO this next time, because design add this method, please fix
+		return null;
+	}
+
+	@Override
+	public void deleteByWorkplaceIdAndSid(String workplaceId, String sid) {
+		//TODO this next time, because design add this method, please fix
+		
 	}
 
 }
