@@ -82,11 +82,18 @@ public class InterimBreakMng extends InterimRemain implements InterimMngCommon{
 		return new UnbalanceVacation(this.expirationDate, determineDigest() ? DigestionAtr.USED : DigestionAtr.UNUSED,
 				Optional.empty(), detail, onedayTime, haftDayTime);
 	}
-		
-		//TODO: [2] 未相殺数を更新する
-		
-		//[1] 消化済みかどうか判断する
-		private boolean determineDigest() {
-			return this.unUsedDays.v() <= 0 && this.unUsedTimes.v() <= 0;
-		}
+
+	// [2] 未相殺数を更新する
+	public InterimBreakMng updateUnoffsetNum(AccumulationAbsenceDetail detail) {
+		return new InterimBreakMng(this.getRemainManaID(), this.getSID(), this.getYmd(), this.getCreatorAtr(),
+				this.getRemainType(), this.getOnedayTime(), this.getExpirationDate(), this.getOccurrenceTimes(),
+				this.occurrenceDays, this.haftDayTime,
+				new UnUsedTime(detail.getUnbalanceNumber().getTime().map(x -> x.v()).orElse(0)),
+				new UnUsedDay(detail.getUnbalanceNumber().getDay().v()));
+	}
+
+	// [1] 消化済みかどうか判断する
+	private boolean determineDigest() {
+		return this.unUsedDays.v() <= 0 && this.unUsedTimes.v() <= 0;
+	}
 }

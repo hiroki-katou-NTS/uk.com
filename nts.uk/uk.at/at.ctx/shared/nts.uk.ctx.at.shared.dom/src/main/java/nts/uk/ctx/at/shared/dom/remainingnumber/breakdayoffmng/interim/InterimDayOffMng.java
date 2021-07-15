@@ -71,5 +71,11 @@ public class InterimDayOffMng extends InterimRemain implements InterimMngCommon{
 						.build();
 	}
 
-	//TODO:  [2] 未相殺数を更新する
+	// [2] 未相殺数を更新する
+	public InterimDayOffMng updateUnoffsetNum(AccumulationAbsenceDetail detail) {
+		return new InterimDayOffMng(this.getRemainManaID(), this.getSID(), this.getYmd(), this.getCreatorAtr(),
+				this.getRemainType(), requiredTime, requiredDay,
+				new UnOffsetTime(detail.getUnbalanceNumber().getTime().map(x -> x.v()).orElse(0)),
+				new UnOffsetDay(detail.getUnbalanceNumber().getDay().v()), appTimeType);
+	}
 }

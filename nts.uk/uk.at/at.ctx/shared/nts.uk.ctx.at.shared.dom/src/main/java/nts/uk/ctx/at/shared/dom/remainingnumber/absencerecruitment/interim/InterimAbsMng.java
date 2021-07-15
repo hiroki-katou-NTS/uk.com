@@ -55,6 +55,10 @@ public class InterimAbsMng extends InterimRemain implements InterimMngCommon {
 						.build();
 	}
 	
-	//[3] 未相殺数を更新する
+	//[2] 未相殺数を更新する
+		public InterimAbsMng updateUnoffsetNum(AccumulationAbsenceDetail detail) {
+			return new InterimAbsMng(this.getRemainManaID(), this.getSID(), this.getYmd(), this.getCreatorAtr(),
+					this.getRemainType(), requeiredDays, new UnOffsetDay(detail.getUnbalanceNumber().getDay().v()));
+		}
 	
 }

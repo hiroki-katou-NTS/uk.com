@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.vacationdetail;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 
@@ -33,7 +37,21 @@ public class RequestChangeDigestOccr {
 				.of(new ChangeRequestInPeriod(addConfirmData, overwriteConfirmData, overwriteTemporaryData, period)));
 	}
 
-	// TODO: [C-2] 年月日での変更要求を作成する
+	// 年月日での変更要求を作成する
+	public static RequestChangeDigestOccr createChangeRequestbyDate(List<GeneralDate> lstDate, VacationDetails vacationDetails) {
+		// ＄変更要求
+		val changeByListDate = new ChangeRequestByDateList(new ArrayList<>());
+
+		lstDate.forEach(date -> {
+			val detailMatch = vacationDetails.getLstAcctAbsenDetail().stream()
+					.filter(x -> x.getDateOccur().getDayoffDate().isPresent()
+							&& x.getDateOccur().getDayoffDate().get().equals(date))
+					.collect(Collectors.toList());
+			changeByListDate.getChangeRequestList()
+					.add(new ChangeRequestByDate(date, new VacationDetails(detailMatch)));
+		});
+		return new RequestChangeDigestOccr(ChangeRequestClassifi.DATE, Optional.of(changeByListDate), Optional.empty());
+	}
 
 	// [1] 変更する
 	public VacationDetails change(VacationDetails overwriteConfirmData, VacationDetails overwriteTemporaryData) {

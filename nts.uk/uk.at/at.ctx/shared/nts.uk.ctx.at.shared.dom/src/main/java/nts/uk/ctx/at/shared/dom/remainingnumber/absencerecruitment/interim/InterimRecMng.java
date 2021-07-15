@@ -66,7 +66,12 @@ public class InterimRecMng extends InterimRemain implements InterimMngCommon {
 				HolidayAtr.STATUTORY_HOLIDAYS);
 	}
 	
-	//TODO: [2] 未相殺数を更新する
+	//[2] 未相殺数を更新する
+	public InterimRecMng updateUnoffsetNum(AccumulationAbsenceDetail detail) {
+		return new InterimRecMng(this.getRemainManaID(), this.getSID(), this.getYmd(), this.getCreatorAtr(),
+				this.getRemainType(), this.expirationDate, this.occurrenceDays,
+				new UnUsedDay(detail.getUnbalanceNumber().getDay().v()));
+	}
 	
 	//[1] 消化済みかどうか判断する
 	private boolean determineDigest() {

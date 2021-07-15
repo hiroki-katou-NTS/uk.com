@@ -41,7 +41,7 @@ public class GetDigestListOverwriteChange {
 		List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period);
 
 		// [R-2] 振休管理データを取得する
-		// SubstitutionOfHDManaDataRepository
+		// SubstitutionOfHDManaDataRepository.getBySidAndDatePeriod
 		List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid, DatePeriod period);
 	}
 }

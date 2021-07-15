@@ -288,4 +288,21 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).getList().stream()
 				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
+
+	private static final String DELETE_BY_PERIOD = "DELETE FROM KrcmtLeaveDayOffMana lc"
+			+ " WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid "
+			+ " and ( lc.krcmtLeaveDayOffManaPK.digestDate between :startDate and :endDate "
+			+ "or  lc.krcmtLeaveDayOffManaPK.occDate between :startDate and :endDate)";
+
+	@Override
+	public void deleteWithPeriod(String sid, DatePeriod period) {
+		this.getEntityManager().createQuery(DELETE_BY_PERIOD, KrcmtLeaveDayOffMana.class).setParameter("sid", sid)
+				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).executeUpdate();
+	}
+
+	@Override
+	public void insertList(List<LeaveComDayOffManagement> lstDomain) {
+		this.commandProxy().insertAll(lstDomain.stream().map(x -> toEntity(x)).collect(Collectors.toList()));
+
+	}
 }
