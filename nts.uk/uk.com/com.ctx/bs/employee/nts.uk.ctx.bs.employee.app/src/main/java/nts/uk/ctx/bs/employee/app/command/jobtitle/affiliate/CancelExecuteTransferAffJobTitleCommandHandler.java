@@ -17,6 +17,11 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregCommandHandlerCollector;
 
+/**
+ * 職位.職務職位.アルゴリズム.Command.職位異動の取消を実行する.職位異動の取消を実行する
+ * @author NWS-DungDV
+ *
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CancelExecuteTransferAffJobTitleCommandHandler extends CommandHandlerWithResult<List<DeleteAffJobTitleMainCommand>, List<MyCustomizeException>> {

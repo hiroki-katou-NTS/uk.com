@@ -13,6 +13,11 @@ import nts.uk.ctx.bs.employee.app.command.jobtitle.affiliate.CancelExecuteTransf
 import nts.uk.ctx.bs.employee.app.command.workplace.affiliate.CancelExecuteTransferAffWkpCommandHandler;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 
+/**
+ * APP.Command.異動の取消を実行する.異動の取消を実行する
+ * @author NWS-DungDV
+ *
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CancelExecuteTransferCommandHandler extends CommandHandlerWithResult<CancelExecuteTransferCommand, CancelExecuteTransferResult> {
