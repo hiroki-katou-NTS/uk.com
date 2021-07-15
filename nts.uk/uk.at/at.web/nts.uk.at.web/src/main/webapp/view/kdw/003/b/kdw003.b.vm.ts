@@ -197,6 +197,7 @@ module nts.uk.at.view.kdw003.b {
                                 { key: "employeeName", width: "150px", headerText: getText('KDW003_33'), dataType: "string" },
                                 { key: "date", width: "130px", headerText: getText('KDW003_34'), dataType: "string" },
                                 { key: "errorCode", width: "50px", headerText: "コード", dataType: "string" },
+                                { key: "errorAlarmAtr", width: "130px", headerText: getText('KDW003_129'), dataType: "number" },
                                 { key: "message", width: "300px", headerText: getText('KDW003_36'), dataType: "string" },
                                 { key: "itemName", width: "170px", headerText: getText('KDW003_37'), dataType: "string" },
                                 { key: "submitedName", width: "170px", headerText: getText('KDW003_62'), dataType: "string" },

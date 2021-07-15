@@ -1198,7 +1198,7 @@ public class DailyPerformanceCorrectionProcessor {
 												.containsKey(value.getEmployeeId() + "|" + value.getProcessingDate())
 														? appMapDateSid.get(
 																value.getEmployeeId() + "|" + value.getProcessingDate())
-														: "", false));
+														: "", false , errorSetting.getTypeAtr() ));
 								rowId++;
 							}
 						} else {
