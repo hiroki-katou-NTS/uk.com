@@ -1613,7 +1613,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 			if (isDaily) {
 				minuteInt *= -1;
 			}
-			Integer hourInt = minuteInt / 60;
+			Integer hourInt = 24 - minuteInt / 60;
 			minuteInt = minuteInt % 60;
 			return isDaily ? ("前日 " + String.format(FORMAT, hourInt, minuteInt)) : String.format(FORMAT, hourInt, minuteInt);
 		} else {
