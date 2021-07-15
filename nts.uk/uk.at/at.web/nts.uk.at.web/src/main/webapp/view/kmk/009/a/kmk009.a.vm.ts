@@ -691,24 +691,36 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                         nts.uk.ui.block.invisible();
                         $.when(service.findAllDailyAttendanceItem()).done(function (dataRes: Array<DailyAttendanceItemDto>) {
                             let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function (obj) { return obj.attendanceItemId == atdSelected });
-                            if (_.isUndefined(atdSelected) || _.isEmpty(atdSelected) || _.isUndefined(dailyAttendanceItem)) {
+                            if (_.isUndefined(atdSelected) || _.isEmpty(atdSelected) || _.isUndefined(dailyAttendanceItem) || !atdSelected.length) {
                                 self.attendanceModel.update(null, null);
                                 self.isAllowShowAttendance(false);
+                                if (self.checkSelectUse()){
+                                    self.enableUse(true);
+                                    self.enableSelectUpper(false);
+                                    self.enableUnder(false);
+                                    self.enableUpper(false);
+                                    // self.enableWorkType(true);
+                                    // self.enableWorkType(true);
+                                }
                             } else {
                                 self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
                                 self.isAllowShowAttendance(dailyAttendanceItem[0].attendanceItemId < 193 || dailyAttendanceItem[0].attendanceItemId > 202);
+                                self.enableUse(self.checkSelectUse());
+                                self.enableSelectUpper(self.checkSelectUse());
                             }
-                            self.enableUse(parseInt(self.selectUse()) && !_.isNull(self.attendanceModel.attendanceItemName()));
-                            self.enableSelectUpper(self.checkSelectUse() && !_.isNil(self.attendanceModel.attendanceItemName()));
+                            // self.enableUse(self.checkSelectUse() && _.isNull(self.attendanceModel.attendanceItemName()));
+                            // self.enableSelectUpper(self.checkSelectUse() && _.isNull(self.attendanceModel.attendanceItemName()));
                             nts.uk.ui.block.clear();
                         }).fail(() => {
                             nts.uk.ui.block.clear();
                         });
                     }
-                    if ( !atdSelected.length) {
-                        self.attendanceModel.update(null, null);
-                        self.isAllowShowAttendance(false);
-                    }
+                    // if ( !atdSelected.length) {
+                    //     self.enableUse(true);
+                    //     self.enableWorkType(true);
+                    //     self.attendanceModel.update(null, null);
+                    //     self.isAllowShowAttendance(false);
+                    // }
                 });
             });
         }
