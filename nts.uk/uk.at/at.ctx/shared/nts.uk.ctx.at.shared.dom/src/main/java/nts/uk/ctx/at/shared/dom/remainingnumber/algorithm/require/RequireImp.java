@@ -742,4 +742,10 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	public List<RecordRemainCreateInfor> lstResultFromRecord(String sid, List<DailyResult> dailyResults) {
 		return remainCreateInforByRecordData.lstResultFromRecord(sid, dailyResults);
 	}
+
+	@Override
+	public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+		return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
+	}
+
 }
