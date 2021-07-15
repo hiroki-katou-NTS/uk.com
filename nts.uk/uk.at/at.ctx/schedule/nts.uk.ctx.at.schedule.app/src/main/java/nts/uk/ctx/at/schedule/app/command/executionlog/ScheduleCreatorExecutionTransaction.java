@@ -374,7 +374,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 		if (listEmploymentInfo != null) {
 			optEmploymentInfo = listEmploymentInfo.stream()
-					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
+					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
 		}
 		// if 在籍してない　OR　取得できない
 		// status employment equal RETIREMENT (退職)
