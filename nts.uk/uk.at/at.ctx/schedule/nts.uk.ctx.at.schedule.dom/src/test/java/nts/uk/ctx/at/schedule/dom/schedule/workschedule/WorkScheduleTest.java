@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import org.junit.Test;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Mocked;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
@@ -25,7 +28,9 @@ import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetailTestHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.TimeVacationHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.GettingTimeVacactionService;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
@@ -503,120 +508,131 @@ public class WorkScheduleTest {
 	}
 	
 	/**
-	 * 勤怠時間 (attendanceTime) is empty
-	 * 出退勤(timeLeaving) is mocked 
-	 */
+	 * 時間休暇を取得する GettingTimeVacactionService == empty
+	 */	
 	@Test
-	public void testGetTimeVacation_empty_case1() {
-		// Arrange
-		WorkSchedule target = WorkScheduleHelper.createWithParams(
-				Optional.of(timeLeaving), // 出退勤 mocked 
-				Optional.empty(), // 勤怠時間 empty
-				Optional.empty());
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/** 
-	 * 勤怠時間(attendanceTime) is mocked
-	 * 出退勤 (timeLeaving) is empty
-	 * 外出時間帯(outingTime) empty
-	 */
-	@Test
-	public void testGetTimeVacation_empty_case2() {
-		
-		// Arrange
-		WorkSchedule target = WorkScheduleHelper.createWithParams(
-				Optional.empty(), // 出退勤 empty 
-				Optional.of(attendanceTime), // 勤怠時間 mocked
-				Optional.empty()); // 外出時間帯 empty
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
-		
-		// Assert
-		assertThat(result).isEmpty();		
-	}
-	
-	/**
-	 * 勤怠時間 (attendanceTime) is empty
-	 * 外出時間帯(outingTime) is mocked
-	 */
-	@Test
-	public void testGetTimeVacation_empty_case3() {
-		
-		// Arrange
-		WorkSchedule target = WorkScheduleHelper.createWithParams(
-				Optional.empty(), // 出退勤 mocked 
-				Optional.empty(), // 勤怠時間 empty
-				Optional.of(outingTime)); // 外出時間帯
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
+	public void testGetTimeVacation_empty() {
 
-	/**
-	 * 勤怠時間 (attendanceTime) is empty
-	 * 出退勤 (timeLeaving) is empty
-	 * 外出時間帯(outingTime) empty
-	 */
-	@Test
-	public void testGetTimeVacation_empty_case5() {
-		
-		// Arrange
-		WorkSchedule target = WorkScheduleHelper.createWithParams(
-				Optional.empty(), // 出退勤 empty 
-				Optional.empty(), // 勤怠時間 empty
-				Optional.empty()); // 外出時間帯 empty
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
-		
-		// Assert
-		assertThat(result).isEmpty();
-	}
-	
-	/**
-	 * 遅刻時間を取得する getLateTimeOfDaily == empty List
-	 * 早退時間を取得	getLeaveEarlyTimeOfDaily == empty list
-	 * 外出時間を取得する getOutingTimeOfDaily == emptyList
-	 */
-	@Test
-	public void testGetTimeVacation_empty_case6() {
-		
 		// Arrange
 		WorkSchedule target = WorkScheduleHelper.createWithParams(
 										Optional.of(timeLeaving), 
 										Optional.of(attendanceTime),
 										Optional.of(outingTime));
 		
-		new Expectations() {{
+		new MockUp<GettingTimeVacactionService>() {
 			
-			attendanceTime.getLateTimeOfDaily();
-			// result = empty
+			@Mock
+			public Map<TimezoneToUseHourlyHoliday, TimeVacation> get(Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
+					Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,
+					Optional<OutingTimeOfDailyAttd> outingTime) {
+				
+				return Collections.emptyMap();
+			}
 			
-			attendanceTime.getLeaveEarlyTimeOfDaily();
-			// result = empty
-			
-			attendanceTime.getOutingTimeOfDaily();
-			// result = empty
-			
-		}};
+		};
 		
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
 		
 		// Assert
 		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * 時間休暇を取得する GettingTimeVacactionService == not empty
+	 */	
+	@Test
+	public void testGetTimeVacation_success(
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime1,
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime2,
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime3,
+			@Injectable TimevacationUseTimeOfDaily timePaidUseTime4) {	
+
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacations = new HashMap<TimezoneToUseHourlyHoliday, TimeVacation>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(TimezoneToUseHourlyHoliday.WORK_NO1_AFTER,
+						TimeVacationHelper.createTimeVacation(
+								new TimeWithDayAttr(100), new TimeWithDayAttr(200),// start1, end1
+								timePaidUseTime1));
+				
+				put(TimezoneToUseHourlyHoliday.WORK_NO2_AFTER,
+						TimeVacationHelper.createTimeVacation(
+								new TimeWithDayAttr(200), new TimeWithDayAttr(300),// start1, end1
+								timePaidUseTime2));
+				
+				put(TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE,
+						TimeVacationHelper.createTimeVacations(
+								new TimeWithDayAttr(400), new TimeWithDayAttr(500),// start1, end1
+								new TimeWithDayAttr(600), new TimeWithDayAttr(700),// start2, end2
+								timePaidUseTime3));
+				
+				put(TimezoneToUseHourlyHoliday.GOINGOUT_UNION,
+						TimeVacationHelper.createTimeVacation(
+								new TimeWithDayAttr(700), new TimeWithDayAttr(800),// start1, end1
+								timePaidUseTime4));
+			}
+		};
+		
+		new MockUp<GettingTimeVacactionService>() {
+			
+			@Mock
+			public Map<TimezoneToUseHourlyHoliday, TimeVacation> get(Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
+					Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,
+					Optional<OutingTimeOfDailyAttd> outingTime) {
+
+				return timeVacations;
+			}
+
+		};
+		
+		// Arrange
+		WorkSchedule target = WorkScheduleHelper.createWithParams(
+										Optional.of(timeLeaving), 
+										Optional.of(attendanceTime),
+										Optional.of(outingTime));
+		// Action
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
+		
+		// Assert
+		assertThat(result).hasSize(4);
+		
+		// value1
+		TimeVacation value1 = result.get(TimezoneToUseHourlyHoliday.WORK_NO1_AFTER);
+		assertThat(value1.getUseTime()).isEqualTo(timePaidUseTime1);
+		assertThat(value1.getTimeList())
+			.extracting(
+				e -> e.start(),
+				e -> e.end())
+			.containsExactly( tuple ( 100, 200 ));
+		
+		// value2
+		TimeVacation value2 = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_AFTER);
+		assertThat(value2.getUseTime()).isEqualTo(timePaidUseTime2);
+		assertThat(value2.getTimeList())
+			.extracting(
+				e -> e.start(),
+				e -> e.end())
+			.containsExactly( tuple ( 200, 300 ));
+		
+		// value3
+		TimeVacation value3 = result.get(TimezoneToUseHourlyHoliday.GOINGOUT_PRIVATE);
+		assertThat(value3.getUseTime()).isEqualTo(timePaidUseTime3);
+		assertThat(value3.getTimeList())
+			.extracting(
+				e -> e.start(),
+				e -> e.end())
+			.containsExactly( tuple ( 400, 500 )
+							, tuple ( 600, 700 ));
+		
+		// value4
+		TimeVacation value4 = result.get(TimezoneToUseHourlyHoliday.GOINGOUT_UNION);
+		assertThat(value4.getUseTime()).isEqualTo(timePaidUseTime4);
+		assertThat(value4.getTimeList())
+			.extracting(
+				e -> e.start(),
+				e -> e.end())
+			.containsExactly( tuple ( 700, 800 ));
 	}
 	
 	public static class TestHandCorrectBreakTimeList {

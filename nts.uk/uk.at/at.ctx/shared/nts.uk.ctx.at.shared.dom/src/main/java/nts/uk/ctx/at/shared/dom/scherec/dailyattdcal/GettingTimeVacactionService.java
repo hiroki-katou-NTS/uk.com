@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.At
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
+ * 時間休暇を取得する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.時間休暇を取得する
  * @author lan_lt
  *
