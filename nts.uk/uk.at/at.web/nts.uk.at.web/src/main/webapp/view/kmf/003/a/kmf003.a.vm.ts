@@ -413,11 +413,16 @@ module nts.uk.at.view.kmf003.a.viewmodel {
         addFunction(){
             var self = this;
             nts.uk.ui.block.invisible();
+			if (!_.isEmpty(nts.uk.ui.errors.getErrorByElement($('#monthdays .ntsComboBox')))) {
+				nts.uk.ui.dialog.alertError({ messageId: "Msg_261" });
+                nts.uk.ui.block.clear(); 
+                return;
+			}
+            
             // clear all error
             nts.uk.ui.errors.clearAll();
             
             nts.uk.ui.block.invisible();
-            
             // validate
             $(".input-code").trigger("validate");
             $(".input-name").trigger("validate");
