@@ -73,6 +73,10 @@ module nts.uk.at.view.kdp002.l {
 
         frameName: KnockoutObservable<string> = ko.observable('');
 
+        selectedCode: KnockoutObservable<string> = ko.observable('');
+
+        frameNo: KnockoutObservable<number> = ko.observable(1);
+
         created(param: IParam) {
             const vm = this;
             vm.taskButtons = ko.computed({
@@ -87,7 +91,7 @@ module nts.uk.at.view.kdp002.l {
             let taskParam: ITaskParam = {sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''};
            
             vm.getTask(taskParam);
-            vm.frameName(vm.getFrameName(1));
+            
 			vm.reload(0);
 
             if (ko.unwrap(vm.framePosition) < vm.taskArray.length - 1) {
@@ -96,8 +100,8 @@ module nts.uk.at.view.kdp002.l {
                 vm.checkNext(false);
             }
 
-            if (vm.framePosition() == 0) {
-                vm.checkReturn(true);
+            if (vm.frameNo() == 1) {
+                vm.checkReturn(false);
             }
            
         }
@@ -105,9 +109,9 @@ module nts.uk.at.view.kdp002.l {
         mounted() {
             const vm = this;
 
-            $(document).ready(function () {
-                $( "#L2_1" ).focus();
-            });
+            setTimeout(() => {
+                vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(1)]));
+            }, 300);
 
             vm.framePosition
                 .subscribe(() => {
@@ -127,7 +131,9 @@ module nts.uk.at.view.kdp002.l {
                         }
                     }
 
-                    if (vm.framePosition() == 0) {
+                    if (vm.frameNo() == 1) {
+                        vm.checkReturn(false);
+                    } else {
                         vm.checkReturn(true);
                     }
                 });
@@ -144,11 +150,12 @@ module nts.uk.at.view.kdp002.l {
             const vm = this;
 
         vm.$ajax('at', API.GET_EMPLOYEE_TASKS, param)
-            .then((result: Result) => {
+            .done((result: Result) => {
 
                 if (result) {
                     if (result.taskFrameUsageSetting) {
                         vm.workFrameSetting(result.taskFrameUsageSetting.taskFrameSetting);
+                        
                     }
                     vm.model(result.task);
                     vm.taskArray = _.chunk(result.task, 6);
@@ -228,6 +235,7 @@ module nts.uk.at.view.kdp002.l {
             let taskParam: ITaskParam = {sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''};
             if (ko.unwrap(vm.searchValue) != '') {
                 vm.getTask(taskParam);
+                vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(1)]));
                 vm.searchValue('');
                 vm.reload(0);
             }
@@ -249,13 +257,20 @@ module nts.uk.at.view.kdp002.l {
             if (vm.framePosition() != 0) {
                 vm.onClickBack();
             } else {
-
-                if (ko.unwrap(vm.model)[0].frameNo != 1) {
-                    vm.getTask({sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''});
-                    vm.reload(0);
-                } else  {
+                if (ko.unwrap(vm.model).length > 0) {
+                    if (ko.unwrap(vm.model)[0].frameNo != 1) {
+                  
+                        vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: ko.unwrap(vm.selectedCode)});
+                        console.log(vm.model());
+                        vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo() - 1)]));
+                        vm.reload(0);
+                    } else  {
+                        vm.checkBack(false);
+                    }
+                } else {
                     vm.closeDialogL();
                 }
+               
                 
             }
         }
@@ -263,9 +278,14 @@ module nts.uk.at.view.kdp002.l {
         onSelect(code: string) {
             const vm = this;
 
-            let frameNo = _.find(ko.unwrap(vm.model), ['code', code]).frameNo;
+            vm.selectedCode(code);
 
-            vm.getTask({sid: vm.empId, workFrameNo: frameNo + 1, upperFrameWorkCode: code})
+            vm.frameNo(_.find(ko.unwrap(vm.model), ['code', code]).frameNo);
+            vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo() + 1)]));
+
+            vm.frameNo(vm.frameNo() +1 );
+
+            vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: code})
           
             if (ko.unwrap(vm.model).length == 0) {
                 vm.closeDialogL();
