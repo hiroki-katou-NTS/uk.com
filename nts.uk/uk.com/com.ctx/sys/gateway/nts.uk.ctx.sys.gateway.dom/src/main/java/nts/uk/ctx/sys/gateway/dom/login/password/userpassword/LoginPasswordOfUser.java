@@ -71,6 +71,7 @@ public class LoginPasswordOfUser implements DomainAggregate {
 	 * @param changedAt
 	 */
 	public void change(String newPasswordPlainText, GeneralDateTime changedAt) {
+		this.passwordState = PasswordState.OFFICIAL;
 		details.add(new PasswordChangeLogDetail(changedAt, hash(newPasswordPlainText)));
 	}
 	
