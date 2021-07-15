@@ -131,7 +131,7 @@ public class RegisterWorkContentHandler {
 		//4: [List<日別勤怠(Work)>.isPresent]:<call>(対象者,画面モードList<日別勤怠(Work)>)
 		// 残業申請・休出時間申請の対象時間を取得する
 		//5: [List<残業休出時間>.isPresent]:<call>
-		List<OvertimeLeaveTime> lstOvertimeLeaveTime = new ArrayList<>();
+		List<OvertimeLeaveTimeDto> lstOvertimeLeaveTime = new ArrayList<>();
 		
 		if (!integrationOfDailyList.isEmpty()) {
 			lstOvertimeLeaveTime = getTargetTime.get(command.getEmployeeId(), command.getMode(), integrationOfDailyList);

@@ -591,9 +591,6 @@ module nts.uk.ui.at.kdw013.a {
                     if (response) {
     
                         const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;
-                        lstOvertimeLeaveTime = [{ date: '2021/07/14', time: 2, overtimeLeaveAtr: 0 },
-                            { date: '2021/07/15', time: 3, overtimeLeaveAtr: 1 }
-                        ];
                         if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {
                             return vm.$dialog
                                 .info({ messageId: 'Msg_15' })

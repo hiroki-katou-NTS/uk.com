@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -19,6 +18,6 @@ public class RegisterWorkContentDto {
 	private List<ErrorMessageInfoDto> lstErrorMessageInfo;
 
 	// List<残業休出時間>
-	private List<OvertimeLeaveTime> lstOvertimeLeaveTime;
+	private List<OvertimeLeaveTimeDto> lstOvertimeLeaveTime;
 	
 }

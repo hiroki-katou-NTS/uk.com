@@ -1,6 +1,8 @@
 package nts.uk.screen.at.app.kdw013.a;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -9,7 +11,9 @@ import nts.arc.time.GeneralDate;
  *
  */
 @AllArgsConstructor
-public class OvertimeLeaveTime {
+@Setter
+@Getter
+public class OvertimeLeaveTimeDto {
 	
 	//年月日
 	private GeneralDate date;
