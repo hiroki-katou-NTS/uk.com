@@ -2835,7 +2835,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         laborCostAndTimeValue = _.filter(laborCostAndTime, item => !_.isEmpty(item.laborCostAndTime));
                     if(_.isEmpty(laborCostAndTimeValue)) {
 						for(let i=1; i<=7; i++) {
-							let objectLaborCostAndTime = {};
+							let objectLaborCostAndTime = { sid: '' };
                         	_.set(objectLaborCostAndTime, 'id', 'id'+i);
 							_.forEach(keys, key => {
 								if(_.includes(['employeeId', 'sid'], key)) {
@@ -2849,7 +2849,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         break;
                     }
                     for(let i=1; i<=7; i++) {
-                        let objectLaborCostAndTime = {}, sumLaborCostAndTime = 0;
+                        let objectLaborCostAndTime = { sid: '' }, sumLaborCostAndTime = 0;
                         _.set(objectLaborCostAndTime, 'id', 'id'+i);
                         _.forEach(keys, key => {
                             if(_.includes(['employeeId', 'sid'], key)) {
@@ -2898,7 +2898,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let externalBudget: Array<any> = self.dataAggrerateWorkplace.externalBudget,
                         externalBudgetValue = _.filter(externalBudget, item => !_.isEmpty(item.externalBudget));
                     if(_.isEmpty(externalBudgetValue)) {
-						let objectExternalBudget = {};
+						let objectExternalBudget = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
 	                    _.set(objectExternalBudget, 'id', 'id1');
 	                    _.forEach(keys, key => {
@@ -2911,7 +2911,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectExternalBudget = {}, sumExternalBudget = 0;
+                    let objectExternalBudget = { sid: '' }, sumExternalBudget = 0;
                     leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(externalBudget).externalBudget[0], 'name'), subtitle: '' });
                     _.set(objectExternalBudget, 'id', 'id1');
                     _.forEach(keys, key => {
@@ -2935,7 +2935,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let timeCount: Array<any> = self.dataAggrerateWorkplace.timeCount,
                         timeCountValue = _.filter(timeCount, item => !_.isEmpty(item.timeCount));
                     if(_.isEmpty(timeCountValue)) {
-						let objectTimeCount = {};
+						let objectTimeCount = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
 	                    _.set(objectTimeCount, 'id', 'id1');
 	                    _.forEach(keys, key => {
@@ -2948,7 +2948,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectTimeCount = {}, sumTimeCount = 0;
+                    let objectTimeCount = { sid: '' }, sumTimeCount = 0;
                     leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(timeCount).timeCount[0], 'totalTimesName'), subtitle: '' });
                     _.set(objectTimeCount, 'id', 'id1');
                     _.forEach(keys, key => {
@@ -2976,7 +2976,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    leftHorzContentDs.push({ id: 'id2', title: '', subtitle: '' });
 	                    leftHorzContentDs.push({ id: 'id3', title: '', subtitle: '' });
 	                    for(let i=1; i<=3; i++) {
-	                        let objectPeopleMethod = {};
+	                        let objectPeopleMethod = { sid: '' };
 	                        _.set(objectPeopleMethod, 'id', 'id'+i);
 	                        _.forEach(keys, key => {
 	                            if(_.includes(['employeeId', 'sid'], key)) {
@@ -3001,7 +3001,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     	leftHorzContentDs.push({ id: 'id'+(index*3+2), title: '', subtitle: getText("KSU001_71") });
                     	leftHorzContentDs.push({ id: 'id'+(index*3+3), title: '', subtitle: getText("KSU001_72") });
 						for(let i=1; i<=3; i++) {
-	                        let objectPeopleMethod = {}, sumPeopleMethod = 0;
+	                        let objectPeopleMethod = { sid: '' }, sumPeopleMethod = 0;
 	                        _.set(objectPeopleMethod, 'id', 'id'+(index*3+i));
 	                        _.forEach(keys, key => {
 	                            if(_.includes(['employeeId', 'sid', 'empName'], key)) {
@@ -3035,7 +3035,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let employment: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.employment,
                         employmentValue = _.filter(employment, item => !_.isEmpty(item.numberPeople));
                     if(_.isEmpty(employmentValue)) {
-						let objectEmployment = {};
+						let objectEmployment = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
 	                    _.set(objectEmployment, 'id', 'id1');
 	                    _.forEach(keys, key => {
@@ -3048,7 +3048,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectEmployment = {}, sumEmployment = 0;
+                    let objectEmployment = { sid: '' }, sumEmployment = 0;
                     leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(employment).numberPeople[0], 'name'), subtitle: '' });
                     _.set(objectEmployment, 'id', 'id1');
                     _.forEach(keys, key => {
@@ -3072,7 +3072,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let classification: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.classification,
                         classificationValue = _.filter(classification, item => !_.isEmpty(item.numberPeople));
                     if(_.isEmpty(classificationValue)) {
-						let objectClassification = {};
+						let objectClassification = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
 	                    _.set(objectClassification, 'id', 'id1');
 	                    _.forEach(keys, key => {
@@ -3085,7 +3085,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectClassification = {}, sumClassification = 0;
+                    let objectClassification = { sid: '' }, sumClassification = 0;
                     leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(classification).numberPeople[0], 'name'), subtitle: '' });
                     _.set(objectClassification, 'id', 'id1');
                     _.forEach(keys, key => {
@@ -3109,7 +3109,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let jobTitleInfo: Array<any> = self.dataAggrerateWorkplace.aggrerateNumberPeople.jobTitleInfo,
                         jobTitleInfoValue = _.filter(jobTitleInfo, item => !_.isEmpty(item.numberPeople))
                     if(_.isEmpty(jobTitleInfoValue)) {
-						let objectJobTitle = {};
+						let objectJobTitle = { sid: '' };
 	                    leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
 	                    _.set(objectJobTitle, 'id', 'id1');
 	                    _.forEach(keys, key => {
@@ -3122,7 +3122,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectJobTitle = {}, sumJobTitleInfo = 0;
+                    let objectJobTitle = { sid: '' }, sumJobTitleInfo = 0;
                     leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(jobTitleInfo).numberPeople[0], 'name'), subtitle: '' });
                     _.set(objectJobTitle, 'id', 'id1');
                     _.forEach(keys, key => {
@@ -3203,7 +3203,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 leftHorzSumContent = {
                     columns: self.createLeftHorzColumns(),
                     dataSource: self.leftHorzContentDs,
-                    primaryKey: "itemId"
+                    primaryKey: "id"
                 };  
             return leftHorzSumContent;
         }
@@ -3227,7 +3227,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 horizontalSumContent = {
                     columns: self.horizontalDetailColumns,
                     dataSource: self.horizontalSumContentDs,
-                    primaryKey: "employeeId",
+                    primaryKey: "id",
                 };  
             return horizontalSumContent;
         }
