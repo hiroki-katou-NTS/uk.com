@@ -102,8 +102,8 @@
 							</com:ko-if>
 						</div>
 						<div class="control-group valign-center">
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS005_14')}</div>
 							<com:ko-if bind="assignAtr() == 0">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS005_14')}</div>
 								<div data-bind="attr: {
 												tabindex: 8,
 												id: 'A5_2'
@@ -112,7 +112,7 @@
 												name: '#[CAS005_10]',
 												options: $vm.webMenuList,
 												optionsValue: 'webMenuCode',
-												visibleItemsCount: 20,
+												visibleItemsCount: 5,
 												value: webMenuCd,
 												optionsText: 'webMenuName',
 												editable: false,
@@ -125,6 +125,7 @@
 								</div>
 							</com:ko-if>
 							<com:ko-if bind="assignAtr() == 1">
+								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS005_16')}</div>
 								<div id="A6_2" tabindex="9" style="display: inline-block;"
 									 data-bind="ntsSwitchButton: {
 													name: '#[CAS005_10]',
