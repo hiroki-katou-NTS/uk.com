@@ -270,6 +270,7 @@ module cmm015.a.viewmodel {
             });
             
             vm.startPage();
+            $('#A1_2').focus();
         }
 
         startPage() {
