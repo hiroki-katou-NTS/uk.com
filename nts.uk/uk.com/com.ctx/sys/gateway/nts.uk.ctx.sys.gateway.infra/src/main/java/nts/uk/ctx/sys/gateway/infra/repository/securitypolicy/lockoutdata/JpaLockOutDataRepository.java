@@ -23,9 +23,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutDataPK;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutPK;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutPK_;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout_;
 
 /**
  * The Class JpaLogoutDataRepository.
@@ -38,7 +38,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	
 	private SgwdtLockout toEntity(LockoutData domain) {
 		return new SgwdtLockout(
-				new SgwdtLockoutDataPK(
+				new SgwdtLockoutPK(
 						domain.getUserId(), 
 						domain.getContractCode().toString(), 
 						domain.getLockOutDateTime()), 
@@ -67,7 +67,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		
 		CollectionUtil.split(usersID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
-			lstpredicateWhere.add(root.get(SgwmtLockoutData_.sgwmtLockoutDataPK).get(SgwmtLockoutDataPK_.userId).in(splitData));
+			lstpredicateWhere.add(root.get(SgwdtLockout_.sgwdtLockoutDataPK).get(SgwdtLockoutPK_.userId).in(splitData));
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			em.createQuery(cq).executeUpdate();
 		});

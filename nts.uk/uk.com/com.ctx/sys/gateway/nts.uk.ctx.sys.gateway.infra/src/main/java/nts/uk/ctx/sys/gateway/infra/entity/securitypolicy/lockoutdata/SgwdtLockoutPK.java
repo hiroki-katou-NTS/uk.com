@@ -22,7 +22,7 @@ import nts.arc.time.GeneralDateTime;
 @Getter
 @Setter
 @Embeddable
-public class SgwdtLockoutDataPK implements Serializable {
+public class SgwdtLockoutPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
@@ -48,10 +48,10 @@ public class SgwdtLockoutDataPK implements Serializable {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof SgwdtLockoutDataPK)) {
+		if (!(other instanceof SgwdtLockoutPK)) {
 			return false;
 		}
-		SgwdtLockoutDataPK castOther = (SgwdtLockoutDataPK)other;
+		SgwdtLockoutPK castOther = (SgwdtLockoutPK)other;
 		return 
 			this.userId.equals(castOther.userId)
 			&& this.contractCd.equals(castOther.contractCd);

@@ -5,7 +5,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataSe
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutDataPK;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutPK;
 import nts.uk.ctx.sys.shared.dom.user.ContractCode;
 
 /**
@@ -23,7 +23,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	public JpaLockOutDataSetMemento(SgwdtLockout entity) {
 		if (entity.getSgwdtLockoutDataPK() == null) {
-			entity.setSgwdtLockoutDataPK(new SgwdtLockoutDataPK());
+			entity.setSgwdtLockoutDataPK(new SgwdtLockoutPK());
 		}
 		this.sgwmtLockoutData = entity;
 	}

@@ -12,10 +12,10 @@ import javax.persistence.metamodel.StaticMetamodel;
  * The Class SgwdtContract_.
  */
 @StaticMetamodel(SgwdtLockout.class)
-public class SgwmtLockoutData_ {
+public class SgwdtLockout_ {
     
     /** The sgwmt logout data PK. */
-    public static volatile SingularAttribute<SgwdtLockout, SgwdtLockoutDataPK> sgwmtLockoutDataPK;
+    public static volatile SingularAttribute<SgwdtLockout, SgwdtLockoutPK> sgwdtLockoutDataPK;
     
     /** The lock type. */
     public static volatile SingularAttribute<SgwdtLockout, Integer> lockType;

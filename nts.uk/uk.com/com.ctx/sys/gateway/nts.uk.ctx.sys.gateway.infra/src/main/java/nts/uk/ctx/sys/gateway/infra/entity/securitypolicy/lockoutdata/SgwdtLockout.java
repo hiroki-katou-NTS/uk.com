@@ -34,7 +34,7 @@ public class SgwdtLockout extends UkJpaEntity implements Serializable {
 
 	/** The id. */
 	@EmbeddedId
-	private SgwdtLockoutDataPK sgwdtLockoutDataPK;
+	private SgwdtLockoutPK sgwdtLockoutDataPK;
 
 	/** The lock type. */
 	@Column(name="LOCK_TYPE")
