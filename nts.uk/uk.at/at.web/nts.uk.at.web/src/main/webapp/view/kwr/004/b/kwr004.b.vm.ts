@@ -947,6 +947,8 @@ module nts.uk.at.view.kwr004.b {
     dailyAttributes: KnockoutObservableArray<any> = ko.observableArray([]);
     type: boolean = false;
     independentCalcClassicProgrammaticChange: boolean = false;
+    itemAttributeProgrammaticChange: boolean = false;
+
     constructor(
       id?: number,
       name?: string,
@@ -991,8 +993,25 @@ module nts.uk.at.view.kwr004.b {
           this.independentCalcClassicProgrammaticChange = false;
         }
       }, null, "beforeChange");
-
-
+      this.itemAttribute.subscribe((oldValue) => {
+          if (!this.itemAttributeProgrammaticChange && !_.isEmpty(this.selectionItem())) {
+              const oldSelectedTimeList = this.selectedTimeList();
+              const oldSelectionItem = this.selectionItem();
+              const oldSelectedTime = this.selectedTime;
+              nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+                  // if yes do nothing
+              }).ifNo(()=>{
+                  // if no reset value
+                  this.itemAttributeProgrammaticChange = true;
+                  this.itemAttribute(oldValue);
+                  this.selectedTimeList(oldSelectedTimeList);
+                  this.selectionItem(oldSelectionItem);
+                  this.selectedTime = oldSelectedTime;
+              });
+          } else {
+              this.itemAttributeProgrammaticChange = false;
+          }
+      }, null, "beforeChange");
     }
   }
 

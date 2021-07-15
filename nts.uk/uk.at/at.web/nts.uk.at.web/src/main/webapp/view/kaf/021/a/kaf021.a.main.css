@@ -89,3 +89,7 @@
 .ml-5 {
   margin-left: 5px;
 }
+
+.mgrid table th, .mgrid table td {
+    border-color: #9c9fa2;
+}
