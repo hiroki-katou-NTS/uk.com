@@ -6,10 +6,9 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
 
 /**
@@ -18,12 +17,6 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
 @Getter
 @AllArgsConstructor
 public class ExternalImportAssemblyMethod {
-	
-	/** 会社ID */
-	private String companyId;
-	
-	/** 受入設定コード */
-	private ExternalImportCode settingCode;
 	
 	/** CSVファイル情報 */
 	private ExternalImportCsvFileInfo csvFileInfo;
@@ -38,9 +31,9 @@ public class ExternalImportAssemblyMethod {
 	 * @param csvRecord
 	 * @return
 	 */
-	public Optional<RevisedDataRecord> assemble(Require require, ImportingGroupId groupId, CsvRecord csvRecord){
+	public Optional<RevisedDataRecord> assemble(Require require, ExecutionContext context, CsvRecord csvRecord){
 		
-		val importData = mapping.assemble(require, companyId, settingCode, groupId, csvRecord);
+		val importData = mapping.assemble(require, context, csvRecord);
 		
 		if(importData.isEmpty()) {
 			// 受け入れられるデータがない

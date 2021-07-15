@@ -57,7 +57,7 @@ public class ExternalImportSetting implements DomainAggregate {
 			ExecutionContext context,
 			CsvRecord csvRecord) {
 
-		val optRevisedData = assembly.assemble(require, context.getGroupId(), csvRecord);
+		val optRevisedData = assembly.assemble(require, context, csvRecord);
 		if(!optRevisedData.isPresent()) {
 			// データの組み立て結果が空の場合
 			return;

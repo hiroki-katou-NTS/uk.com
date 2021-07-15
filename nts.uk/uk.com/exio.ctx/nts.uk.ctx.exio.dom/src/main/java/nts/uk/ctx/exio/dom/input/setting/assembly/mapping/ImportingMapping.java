@@ -11,6 +11,7 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
@@ -29,26 +30,10 @@ public class ImportingMapping {
 	/** 固定値項目 */
 	private List<FixedItemMapping> fixedItems;
 	
-	public DataItemList assemble(
-			RequireAssemble require,
-			String companyId,
-			ExternalImportCode importCode,
-			ImportingGroupId groupId,
-			CsvRecord csvRecord) {
-
-		val requireImpl = new RequireAssembleImportingItem() {
-			@Override
-			public Optional<ReviseItem> getReviseItem(int itemNo) {
-				return require.getReviseItem(companyId, importCode, itemNo);
-			}
-			@Override
-			public ImportableItem getImportableItem(int itemNo) {
-				return require.getImportableItem(groupId, itemNo);
-			}
-		};
-
+	public DataItemList assemble(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
+		
 		val importData = new DataItemList();
-		importData.addAll(assembleImportingItems(requireImpl, csvRecord));
+		importData.addAll(assembleImportingItems(require, context, csvRecord));
 		importData.addAll(assembleFixedItems());
 		
 		return importData;
@@ -56,7 +41,7 @@ public class ImportingMapping {
 	
 	public static interface RequireAssemble {
 
-		Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode importCode, int itemNo);
+		Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode settingCode, int itemNo);
 		
 		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
 	}
@@ -68,31 +53,27 @@ public class ImportingMapping {
 	 * @param csvRecord
 	 * @return
 	 */
-	private DataItemList assembleImportingItems(RequireAssembleImportingItem require, CsvRecord csvRecord) {
+	private DataItemList assembleImportingItems(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
 		
 		return csvImportItems.stream()
-				.map(m -> assembleImportingItem(require, m.read(csvRecord)))
+				.map(m -> assembleImportingItem(require, context, m.read(csvRecord)))
 				.collect(collectingAndThen(toList(), DataItemList::new));
 	}
 
-	private DataItem assembleImportingItem(RequireAssembleImportingItem require, ImportingCsvItem csvItem) {
+	private DataItem assembleImportingItem(RequireAssemble require, ExecutionContext context, ImportingCsvItem csvItem) {
 		
-		return require.getReviseItem(csvItem.getItemNo())
+		val settingCode = new ExternalImportCode(context.getSettingCode());
+		return require.getReviseItem(context.getCompanyId(), settingCode, csvItem.getItemNo())
 				.map(r -> r.revise(csvItem.getCsvValue()))
-				.orElseGet(() -> noRevise(require, csvItem));
+				.orElseGet(() -> noRevise(require, context, csvItem));
 	}
 
-	private static DataItem noRevise(RequireAssembleImportingItem require, ImportingCsvItem csvItem) {
+	private static DataItem noRevise(RequireAssemble require, ExecutionContext context, ImportingCsvItem csvItem) {
 		
-		Object value = require.getImportableItem(csvItem.getItemNo())
+		Object value = require.getImportableItem(context.getGroupId(), csvItem.getItemNo())
 				.parse(csvItem.getCsvValue());
 		
 		return new DataItem(csvItem.getItemNo(), value);
-	}
-	
-	private static interface RequireAssembleImportingItem {
-		Optional<ReviseItem> getReviseItem(int itemNo);
-		ImportableItem getImportableItem(int itemNo);
 	}
 	
 	/**
