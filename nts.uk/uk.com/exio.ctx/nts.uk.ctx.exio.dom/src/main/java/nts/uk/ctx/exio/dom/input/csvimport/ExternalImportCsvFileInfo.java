@@ -35,18 +35,13 @@ public class ExternalImportCsvFileInfo {
 	
 	public void parse(InputStream csvFileStream, Consumer<CsvRecord> readRecords) {
 
-		new Parser(itemNameRowNumber.v(), importStartRowNumber.v()).parse(
-				csvFileStream,
-				cn -> { }, // 今のところヘッダ行を取得する必要が無い
-				readRecords);
+		val parser = new Parser(importStartRowNumber.v());
+		parser.parse(csvFileStream, readRecords);
 	}
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Parser {
 
-		/** ヘッダ行 */
-		private final int lineHeader;
-		
 		/** データ行の開始 */
 		private final int lineData;
 		
@@ -58,7 +53,6 @@ public class ExternalImportCsvFileInfo {
 		@SneakyThrows
 		public void parse(
 				InputStream inputStream,
-				Consumer<List<String>> readHeader,
 				Consumer<CsvRecord> readRecords) {
 			
 			try (val reader = new InputStreamReader(inputStream);
@@ -66,21 +60,8 @@ public class ExternalImportCsvFileInfo {
 				
 				this.iterator = parser.iterator();
 				
-				readHeader.accept(readHeader());
-				
 				readRows(readRecords);
 			}
-		}
-		
-		private List<String> readHeader() {
-			
-			advance(lineHeader);
-			
-			if (!iterator.hasNext()) {
-				return Collections.emptyList();
-			}
-			
-			return toStringList(readNextRow());
 		}
 
 		private void readRows(Consumer<CsvRecord> readRecords) {
