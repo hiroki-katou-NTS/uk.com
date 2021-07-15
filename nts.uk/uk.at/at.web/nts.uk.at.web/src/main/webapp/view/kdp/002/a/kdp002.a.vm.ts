@@ -17,6 +17,9 @@ module nts.uk.at.view.kdp002.a {
             pageComment: KnockoutObservable<string> = ko.observable('');
             commentColor: KnockoutObservable<string> = ko.observable('');
 
+            workUse:  KnockoutObservable<boolean> = ko.observable(false);
+            workGroup: KnockoutObservable<WorkGroup> = ko.observable(new WorkGroup());
+
             state!: KnockoutComputed<STATE>;
             constructor() {
                 const vm = this;
@@ -157,8 +160,13 @@ module nts.uk.at.view.kdp002.a {
                             goOutArt: btn.goOutArt,
                             setPreClockArt: btn.setPreClockArt,
                             changeClockArt: btn.changeClockArt,
-                            changeCalArt: btn.changeCalArt
+                            changeCalArt: btn.changeCalArt,
+                            workGroupCommand: ko.unwrap(vm.workGroup)
                         };
+                        service.getSettingStampCommon().done((result: any) => {
+                            vm.workUse(!!result.workUse);
+                        })
+
                         service.stampInput(data).done((res) => {
                             let param = {
                                 sid: __viewContext.user.employeeId,
@@ -166,11 +174,28 @@ module nts.uk.at.view.kdp002.a {
                             }
 
                             service.createDaily(param);
-                            if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
-                                vm.openScreenC(btn, layout);
+
+                            if (vm.workUse()) {
+                                view.$window.modal('at', '/view/kdp/002/l/index.xhtml', {employeeId: __viewContext.user.employeeId}).onClosed(function (): any {
+                  
+                                console.log('Xu ly save vao DB')
+                                //vm.workGroup();
+                                if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
+                                    vm.openScreenC(btn, layout);
+                                } else {
+                                    vm.openScreenB(btn, layout);
+                                }
+
+                            });
+
                             } else {
-                                vm.openScreenB(btn, layout);
+                                if (vm.stampResultDisplay().notUseAttr == 1 && btn.changeClockArt == 1) {
+                                    vm.openScreenC(btn, layout);
+                                } else {
+                                    vm.openScreenB(btn, layout);
+                                }
                             }
+
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                         });
@@ -267,6 +292,19 @@ module nts.uk.at.view.kdp002.a {
                         });
                     }
             }
+
+            openKDP002L() {
+                let vm = this;
+
+                vm.$window.modal('at', '/view/kdp/002/l/index.xhtml', {employeeId: __viewContext.user}).onClosed(function (): any {
+                  
+                    console.log('Xu ly save vao DB')
+                    //vm.workGroup();
+
+                });
+            }
+
+
         }
     }
     export enum Mode {

@@ -102,3 +102,16 @@ class StampTab {
     }
     
 }
+
+class WorkGroup {
+    workCode1: string;
+    workCode2: string;
+    workCode3: string;
+    workCode4: string;
+    workCode5: string;
+
+    constructor(init?: Partial<WorkGroup>) {
+        $.extend(this, init);
+    }
+
+}
