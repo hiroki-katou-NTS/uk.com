@@ -1375,7 +1375,7 @@ module nts.uk.at.view.kmk003.a {
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
                 }
 
-                if (!_self.useHalfDayBreak()) {
+                if (_self.isNewMode() && !_self.useHalfDayBreak()) {
                     let restTimes = _self.autoCreateHalfDayBreak(_self.fixedWorkSetting.getHDWtzOneday().restTimezone.timezones());
 
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = restTimes.morning;
@@ -1429,7 +1429,7 @@ module nts.uk.at.view.kmk003.a {
                     command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
                 }
 
-                if (!self.useHalfDayBreak()) {
+                if (self.isNewMode() && !self.useHalfDayBreak()) {
                     let breakTimes = self.autoCreateHalfDayBreak(self.flexWorkSetting.getHDWtzOneday().restTimezone.fixedRestTimezone.timezones());
 
                     command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = breakTimes.morning;

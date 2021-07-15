@@ -1169,16 +1169,20 @@ module cmm045.a.viewmodel {
                             date = self.appDateRangeColor(moment(item.opAppStartDate).format("M/D(ddd)"), moment(item.opAppEndDate).format("M/D(ddd)"));
                             $td.html(date);
                         } else {
-							let linkAppDate = null;
+							let linkAppDate = null, paramDate1 = null, paramDate2 = null;
 							if(item.appType==10) {
 								if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 									linkAppDate = moment(item.opComplementLeaveApp.linkAppDate).format("M/D(ddd)");
+									if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+										paramDate1 = date;
+										paramDate2 = linkAppDate;	
+									} else {
+										paramDate1 = linkAppDate;
+										paramDate2 = date;
+									}
 								}	
 							}
-                            $td.html(self.appDateColor(date, "", "", linkAppDate));
-                        }
-                        if(item.appType === 10) {
-
+                            $td.html(self.appDateColor(paramDate1 ? paramDate1 : date, "", "", paramDate2));
                         }
                     }
 					else if(column.key == 'appContent') {
@@ -2410,24 +2414,24 @@ module cmm045.a.viewmodel {
 			let item = itemLst[0];
 			if(item.appType!=AppType.OVER_TIME_APPLICATION && item.appType!=AppType.HOLIDAY_WORK_APPLICATION) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
 			if(_.isEmpty(item.opBackgroundColor)) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
 			if(notConfirmAll) {
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
 			if(confirmAll) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAll, notConfirmAll).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
@@ -2519,10 +2523,10 @@ module cmm045.a.viewmodel {
 							linkItem.application = item.opComplementLeaveApp.application;
 							listOfApplicationCmds.push(item);
 	                    	listOfApplicationCmds.push(linkItem);	
+							return;
 						}
-	                }else{
-	                    listOfApplicationCmds.push(item);
 	                }
+	            	listOfApplicationCmds.push(item);
 	            });
 				if(_.isEmpty(listOfApplicationCmds)) {
 					block.clear();

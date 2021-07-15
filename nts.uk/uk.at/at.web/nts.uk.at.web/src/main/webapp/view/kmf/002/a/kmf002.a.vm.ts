@@ -44,17 +44,39 @@ module nts.uk.com.view.cmf003.i {
     }
 
     private getAllData(): JQueryPromise<any> {
-      const vm = this;
-      return vm.$ajax(API.findAll).then(data => {
-        if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
-          vm.managePublicHoliday(data.managePublicHoliday);
-          vm.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
-          vm.publicHolidayPeriod(data.publicHolidayPeriod);
-          vm.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
-        } else {
-          vm.managePublicHoliday(ManagePubHD.MANAGE);
-        }
-      });
+        const vm = this;
+        return vm.$ajax(API.findAll).then(data => {
+            //        if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
+            //          vm.managePublicHoliday(data.managePublicHoliday);
+            //          vm.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+            //          vm.publicHolidayPeriod(data.publicHolidayPeriod);
+            //          vm.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
+            //        } else {
+            //          vm.managePublicHoliday(ManagePubHD.MANAGE);
+            //        }
+            if (data.managePublicHoliday == null) {
+                vm.managePublicHoliday(0);
+            } else {
+                vm.managePublicHoliday(data.managePublicHoliday)
+            }
+            if (data.carryOverNumberOfPublicHdIsNegative == null) {
+                vm.carryOverNumberOfPublicHdIsNegative(0);
+            }
+            else {
+                vm.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+            }
+            if (data.publicHolidayPeriod == null) {
+                vm.publicHolidayPeriod(0);
+            } else {
+                vm.publicHolidayPeriod(data.publicHolidayPeriod);
+            }
+            if (data.publicHdCarryOverDeadline == null) {
+                vm.publicHdCarryOverDeadline(0);
+            }
+            else {
+                vm.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
+            }
+        });
     }
 
     public save() {

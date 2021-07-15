@@ -3,7 +3,9 @@ package nts.uk.ctx.workflow.dom.service;
 import java.util.List;
 
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApproveResultOuput;
 
 /**
  * 承認する
@@ -20,7 +22,7 @@ public interface ApproveService {
 	 * @param memo 承認コメン
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String rootStateID, String employeeID, String memo);
+	public ApproveResultOuput doApprove(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 1.指定する承認フェーズの承認が完了したか
@@ -37,7 +39,7 @@ public interface ApproveService {
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String rootStateID);
+	public Boolean isApproveAllComplete(ApprovalRootState approvalRootState);
 	
 	/**
 	 * 3.指定する承認フェーズに未承認の承認者一覧を取得する
