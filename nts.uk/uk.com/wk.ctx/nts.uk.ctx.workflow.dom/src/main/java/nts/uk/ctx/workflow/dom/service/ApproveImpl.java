@@ -19,14 +19,15 @@ import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
-import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterOutput;
+import nts.uk.ctx.workflow.dom.service.output.ApproveResultOuput;
 import nts.uk.ctx.workflow.dom.service.output.RepresenterInforOutput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -52,7 +53,7 @@ public class ApproveImpl implements ApproveService {
 	
 	//承認する
 	@Override
-	public Integer doApprove(String rootStateID, String employeeID, String memo) {
+	public ApproveResultOuput doApprove(String rootStateID, String employeeID, String memo) {
 		String companyID = AppContexts.user().companyId();
 		Integer approvalPhaseNumber = 6;
 		//ドメインモデル「承認ルートインスタンス」を取得する
@@ -68,7 +69,7 @@ public class ApproveImpl implements ApproveService {
 		if((!flg.isPresent() || flg.get().equals(PrincipalApprovalFlg.NOT_PRINCIPAL)) &&
 				approvalRootState.getEmployeeID().equals(AppContexts.user().employeeId())){
 			//本人による承認＝false　＆　申請者＝ログイン社員IDの場合
-			return approvalPhaseNumber;
+			return new ApproveResultOuput(approvalPhaseNumber, approvalRootState);
 		}
 		// ドメインモデル「承認フェーズインスタンス」．順序を5～1の順でループする(loop domain model 「承認フェーズインスタンス」． thứ tự từ 5～1) 
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed());
@@ -151,7 +152,7 @@ public class ApproveImpl implements ApproveService {
 		}
 		// ドメインモデル「承認ルートインスタンス」の承認状態をUpdateする(update trạng thái chứng nhận của domain model 「」)
 		approvalRootStateRepository.update(approvalRootState, 0);
-		return approvalPhaseNumber;
+		return new ApproveResultOuput(approvalPhaseNumber, approvalRootState);
 	}
 	
 	@Override
@@ -208,24 +209,25 @@ public class ApproveImpl implements ApproveService {
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String rootStateID) {
+	public Boolean isApproveAllComplete(ApprovalRootState approvalRootState) {
 		String companyID = AppContexts.user().companyId();
+		// 承認完了フラグ = false（初期化）(flag hoàn thành chứng nhận = false)
 		Boolean approveAllFlag = false;
-		Optional<ApprovalRootState> opApprovalRootState = approvalRootStateRepository.findByID(rootStateID, 0);
-		if(!opApprovalRootState.isPresent()){
-			throw new RuntimeException("状態：承認ルート取得失敗"+System.getProperty("line.separator")+"error: ApprovalRootState, ID: "+rootStateID);
-		}
-		ApprovalRootState approvalRootState = opApprovalRootState.get();
+		// INPUT.「承認フェーズインスタンス」．順序を1～5の順でループする(Loop Domain[ApprovalPhaseInstance]. thứ tự theo thứ tự 1～5)
 		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
 		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+			// 「承認フェーズインスタンス」．承認区分が承認済かチェックする(check xem 「承認フェーズインスタンス」．承認区分 có phải là 承認済hay không)
 			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
 				approveAllFlag = true;
 				break;
 			}
+			// アルゴリズム「承認フェーズ毎の承認者を取得する」を実行する(thực hiện thuật toán「Lấy approver của từng ApprovalPhase」)
 			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
+			// 承認者一覧(output)に承認者がいるかチェックする(trong danh sách người xác nhận có nguoif xác nhạn hay không)
 			if(CollectionUtil.isEmpty(listApprover)){
 				continue;
 			}
+			// アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
 			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
 			if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
 				break;

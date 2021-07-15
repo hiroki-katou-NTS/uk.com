@@ -4,17 +4,16 @@ module nts.uk.at.view.kaf010.shr.header.viewmodel {
 	<div data-bind="if: true">
 		<div class="cf valign-center control-group"
 			data-bind="style: {padding: '10px 10px 10px 12px'}"
-			style="margin-left: -2px; background: #f8efd4; width: 780px;">
+			style="margin-left: -2px; background: #f8efd4;">
 			<!--A2_7 時間外労働ラベル-->
 			<div class="pull-left" data-bind="text: $i18n('KAF010_23')"></div>
-			<div class="pull-left">
+			<div>
 				<table id="kaf005_overtimeAgreement_table">
 					<colgroup>
-						<col width="85px" />
+						<col width="80px" />
 						<col width="70px" />
 						<col width="70px" />
-						<col width="70px" />
-						<col width="70px" />
+				
 					</colgroup>
 					<thead>
 						<tr>

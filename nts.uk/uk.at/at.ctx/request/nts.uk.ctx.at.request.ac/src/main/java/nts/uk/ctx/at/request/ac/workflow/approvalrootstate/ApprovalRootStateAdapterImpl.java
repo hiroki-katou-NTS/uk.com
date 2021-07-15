@@ -34,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApproveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverEmpImport;
@@ -62,6 +63,7 @@ import nts.uk.ctx.workflow.pub.service.export.ApprovalFrameExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalPhaseStateExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootContentExport;
 import nts.uk.ctx.workflow.pub.service.export.ApprovalRootStateExport;
+import nts.uk.ctx.workflow.pub.service.export.ApproveResultExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverApprovedExport;
 import nts.uk.ctx.workflow.pub.service.export.ApproverPersonExportNew;
 import nts.uk.ctx.workflow.pub.service.export.ApproverStateExport;
@@ -112,7 +114,9 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 					new ApprovalRootStateImport_New(
 							approvalRootContentExport.getApprovalRootState().getRootStateID(),
 							fromExport(approvalRootContentExport.getApprovalRootState().getListApprovalPhaseState(), Optional.of(mailDestCache)),
-							approvalRootContentExport.getApprovalRootState().getApprovalRecordDate()),
+							approvalRootContentExport.getApprovalRootState().getApprovalRecordDate(),
+							approvalRootContentExport.getApprovalRootState().getRootType(),
+							approvalRootContentExport.getApprovalRootState().getEmployeeID()),
 					EnumAdaptor.valueOf(approvalRootContentExport.getErrorFlag().value, ErrorFlagImport.class));
 	}
 
@@ -160,17 +164,72 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public Integer doApprove(String rootStateID, String employeeID, String memo) {
-
-		return approvalRootStatePub.doApprove(rootStateID, employeeID, memo);
-
+	public ApproveResultImport doApprove(String rootStateID, String employeeID, String memo) {
+		ApproveResultExport approveResultExport = approvalRootStatePub.doApprove(rootStateID, employeeID, memo);
+		ApproveResultImport approveResultImport = new ApproveResultImport(
+				approveResultExport.getApprovalPhaseNumber(), 
+				new ApprovalRootStateImport_New(
+						approveResultExport.getApprovalRootState().getRootStateID(), 
+						approveResultExport.getApprovalRootState().getListApprovalPhaseState().stream().map(x -> new ApprovalPhaseStateImport_New(
+								x.getPhaseOrder(), 
+								EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class), 
+								EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormImport.class), 
+								x.getListApprovalFrame().stream().map(y -> new ApprovalFrameImport_New(
+										y.getFrameOrder(), 
+										y.getListApprover().stream().map(z -> new ApproverStateImport_New(
+												z.getApproverID(), 
+												EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrImport_New.class), 
+												z.getAgentID(), 
+												z.getApproverName(), 
+												z.getAgentName(), 
+												z.getRepresenterID(), 
+												z.getRepresenterName(), 
+												z.getApprovalDate(), 
+												z.getApprovalReason(), 
+												"", 
+												"", 
+												"", 
+												z.getApproverInListOrder())).collect(Collectors.toList()), 
+										y.getConfirmAtr(), 
+										y.getAppDate())
+								).collect(Collectors.toList()))
+						).collect(Collectors.toList()), 
+						approveResultExport.getApprovalRootState().getApprovalRecordDate(), 
+						approveResultExport.getApprovalRootState().getRootType(), 
+						approveResultExport.getApprovalRootState().getEmployeeID()));
+		return approveResultImport;
 	}
 
 	@Override
-	public Boolean isApproveAllComplete(String rootStateID) {
-		// TODO Auto-generated method stub
+	public Boolean isApproveAllComplete(ApprovalRootStateImport_New approvalRootState) {
+		ApprovalRootStateExport approvalRootStateExport = new ApprovalRootStateExport(
+				approvalRootState.getRootStateID(), 
+				approvalRootState.getRootType(), 
+				approvalRootState.getDate(), 
+				approvalRootState.getEmployeeID(), 
+				approvalRootState.getListApprovalPhaseState().stream().map(x -> new ApprovalPhaseStateExport(
+						x.getPhaseOrder(), 
+						EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+						EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+						x.getListApprovalFrame().stream().map(y -> new ApprovalFrameExport(
+								y.getFrameOrder(), 
+								y.getListApprover().stream().map(z -> new ApproverStateExport(
+										z.getApproverID(), 
+										EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+										z.getAgentID(), 
+										z.getApproverName(), 
+										z.getAgentName(), 
+										z.getRepresenterID(), 
+										z.getRepresenterName(), 
+										z.getApprovalDate(), 
+										z.getApprovalReason(), 
+										z.getApproverInListOrder())).collect(Collectors.toList()), 
+								y.getConfirmAtr(), 
+								y.getAppDate())
+						).collect(Collectors.toList()))
+				).collect(Collectors.toList()));
 
-		return approvalRootStatePub.isApproveAllComplete(rootStateID);
+		return approvalRootStatePub.isApproveAllComplete(approvalRootStateExport);
 
 	}
 
@@ -456,7 +515,9 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 			.map(x -> new ApprovalRootStateImport_New(
 					x.getRootStateID(),
 					fromExport(x.getListApprovalPhaseState(), Optional.empty()), 
-					x.getApprovalRecordDate()))
+					x.getApprovalRecordDate(),
+					x.getRootType(),
+					x.getEmployeeID()))
 			.collect(Collectors.toList());
 	}
 
@@ -471,7 +532,9 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 		return new ApprovalRootStateImport_New(
 				approvalRootStateExport.getRootStateID(),
 				fromExport(approvalRootStateExport.getListApprovalPhaseState(), Optional.empty()), 
-				approvalRootStateExport.getApprovalRecordDate()); 
+				approvalRootStateExport.getApprovalRecordDate(),
+				approvalRootStateExport.getRootType(),
+				approvalRootStateExport.getEmployeeID()); 
 	}
 
 	@Override

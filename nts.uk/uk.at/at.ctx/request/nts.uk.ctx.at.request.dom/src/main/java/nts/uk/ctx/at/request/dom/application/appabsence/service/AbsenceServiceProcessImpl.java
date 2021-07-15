@@ -871,7 +871,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		} else if (holidayType == HolidayAppType.DIGESTION_TIME) {
 		    // 指定する勤務種類に必要な休暇時間を算出する
 		    AttendanceTime requiredTime = this.calculateTimeRequired(
-		            appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getScd(),
+		            appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 		            appDates.isEmpty() ? Optional.empty() : Optional.of(GeneralDate.fromString(appDates.get(0), FORMAT_DATE)),
 		            workTypeCD,
 		            appAbsenceStartInfoOutput.getSelectedWorkTimeCD(),

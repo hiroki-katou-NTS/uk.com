@@ -481,7 +481,8 @@ public class DailyPerformanceCorrectionProcessor {
 			
 			ApprovalStatusActualResult dataApproval = mapApprovalResults.get(Pair.of(data.getEmployeeId(), data.getDate()));
 			//set checkbox approval
-			data.setApproval(dataApproval == null ? false : mode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : dataApproval.isStatus());
+			data.setApproval(dataApproval == null ? false : mode == ScreenMode.NORMAL.value ? dataApproval.isStatusNormal() : 
+				dataApproval.isStatusNormal() && dataApproval.getPermissionCheck().value == 0 && dataApproval.getPermissionRelease().value == 0 ? true : dataApproval.isStatus());
 				
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 		//	}

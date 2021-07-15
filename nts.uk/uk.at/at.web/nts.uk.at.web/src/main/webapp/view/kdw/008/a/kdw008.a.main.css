@@ -133,3 +133,7 @@ html {
 #swap-list-gridArea1, #swap-list2-gridArea1, #swap-list3-gridArea1 {
   width: 320px !important;
 }
+
+#swap-list-gridArea2, #swap-list2-gridArea2, #swap-list3-gridArea2 {
+	width: 320px !important;
+}
