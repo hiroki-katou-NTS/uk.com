@@ -341,6 +341,19 @@ public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializab
 		}
 		return attendanceTimeWeeks;
 	}
+	
+	/** 計算必要な項目を再度計算 */
+	public void recalcSomeItem() {
+
+		// 残業合計時間を集計する
+		this.monthlyCalculation.getAggregateTime().getOverTime().recalcTotal();
+
+		// 休出合計時間を集計する
+		this.monthlyCalculation.getAggregateTime().getHolidayWorkTime().recalcTotal();
+
+		// 総労働時間と36協定時間の再計算
+		this.monthlyCalculation.recalcTotal();
+	}
 
 	public static interface RequireM3 extends AttendanceTimeOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
 		MonthlyCalculation.RequireM4, VerticalTotalOfMonthly.RequireM1, ExcessOutsideWorkMng.RequireM5, RoundingSetOfMonthly.Require {

@@ -273,7 +273,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 手修正を戻してから計算必要な項目を再度計算
 			if (this.isRetouch) {
-				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(attendanceTime)));
+				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(require, attendanceTime, this.monthlyOldDatas)));
 			}
 		}
 
@@ -686,20 +686,14 @@ public class AggregateMonthlyRecordServiceProc {
 	 * @param attendanceTime 月別実績の勤怠時間
 	 * @return 月別実績の勤怠時間
 	 */
-	private AttendanceTimeOfMonthly recalcAttendanceTime(AttendanceTimeOfMonthly attendanceTime) {
+	private AttendanceTimeOfMonthly recalcAttendanceTime(RequireM10 require,
+			AttendanceTimeOfMonthly attendanceTime, MonthlyOldDatas monthlyOldDatas) {
 
-		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
+		/** 計算必要な項目を再度計算 */
+		attendanceTime.recalcSomeItem();
 
-		// 残業合計時間を集計する
-		monthlyCalculation.getAggregateTime().getOverTime().recalcTotal();
-
-		// 休出合計時間を集計する
-		monthlyCalculation.getAggregateTime().getHolidayWorkTime().recalcTotal();
-
-		// 総労働時間と36協定時間の再計算
-		monthlyCalculation.recalcTotal();
-
-		return attendanceTime;
+		/** 手修正された項目を元に戻す */
+		return this.undoRetouchValuesForAttendanceTime(require, attendanceTime, this.monthlyOldDatas);
 	}
 
 	/**

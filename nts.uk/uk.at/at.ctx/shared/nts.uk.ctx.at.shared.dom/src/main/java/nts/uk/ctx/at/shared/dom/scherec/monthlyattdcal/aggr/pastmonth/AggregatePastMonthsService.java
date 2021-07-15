@@ -145,27 +145,12 @@ public class AggregatePastMonthsService {
 		revertAttendanceTime(monthlyOldDatas, editStates, converter, aggrAttendanceTime);
 		
 		/** 手修正を戻してから計算必要な項目を再度計算 */
-		recalcRequireAttendanceItem(aggrAttendanceTime);
+		aggrAttendanceTime.getAttendanceTime().recalcSomeItem();
 		
 		/** 手修正された項目を元に戻す */
 		revertAttendanceTime(monthlyOldDatas, editStates, converter, aggrAttendanceTime);
 		
 		return aggrAttendanceTime;
-	}
-
-	/** 手修正を戻してから計算必要な項目を再度計算 */
-	private static void recalcRequireAttendanceItem(AggregateAttendanceTimeValue aggrAttendanceTime) {
-
-		val monthlyCalculation = aggrAttendanceTime.getAttendanceTime().getMonthlyCalculation();
-
-		// 残業合計時間を集計する
-		monthlyCalculation.getAggregateTime().getOverTime().recalcTotal();
-
-		// 休出合計時間を集計する
-		monthlyCalculation.getAggregateTime().getHolidayWorkTime().recalcTotal();
-
-		// 総労働時間と36協定時間の再計算
-		monthlyCalculation.recalcTotal();
 	}
 
 	/** 手修正された項目を元に戻す */
