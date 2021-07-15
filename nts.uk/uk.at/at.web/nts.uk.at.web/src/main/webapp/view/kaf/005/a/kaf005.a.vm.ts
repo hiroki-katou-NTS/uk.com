@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		titleLabelInput2: KnockoutObservable<String>;
 
 		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
-		
+		opOvertimeAppAtr: KnockoutObservable<number>;
 		
 		setTitleLabel() {
 			const vm = this;
@@ -147,6 +147,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 			}
 			
+			vm.opOvertimeAppAtr = ko.observable(vm.getOverTimeAtrByUrl());
 			// load setting common KAF000
 			vm.loadData(empLst, dateLst, vm.appType(), null, Number(vm.getOverTimeAtrByUrl()))
 				.then((loadDataFlag: any) => {
