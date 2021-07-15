@@ -98,3 +98,11 @@
 
 .red { color: #FF0000 !important; }
 .panel { border-radius: 5px; }
+
+.ui-state-active > div {
+	color: #30CC40;
+	font-weight: 700;
+}
+.ui-state-hover > div {
+	color: #30CC40;
+}
