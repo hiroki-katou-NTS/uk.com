@@ -17,15 +17,15 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Stateless
 public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessingService {
@@ -67,9 +67,10 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         if (!optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
             return;
         } else {
-            if(optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())){
-                alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
-            } else if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
+//            if(optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())){
+//                alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
+//            } else
+            if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
                 alarmExtractResultRepo.insert(alarmResult);
             } else {
                 List<AlarmEmployeeList> lstExResultInsert = new ArrayList<>();
@@ -118,15 +119,14 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     dataProcessingInputOutput(p, lstExtractResultInput, lstExtractResultDB, lstExResultInsert, lstExResultDelete);
                 }
 
-                // Lấy các record còn sót lại sau khi đã lọc theo extractConds để xoá ra khỏi Db
-                val empIdOfDbRemains = lstExtractResultDB.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-                if (!empIdOfDbRemains.isEmpty()) {
-                    val tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
-                            !empIdOfDbRemains.contains(x.getEmployeeID())).collect(Collectors.toList());
-                    if (!tempDbRemain.isEmpty()) {
-                        lstExResultDelete.addAll(tempDbRemain);
-                    }
-                }
+//                val empIdOfDbRemains = lstExtractResultDB.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
+//                if (!empIdOfDbRemains.isEmpty()) {
+//                    val tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
+//                            !empIdOfDbRemains.contains(x.getEmployeeID())).collect(Collectors.toList());
+//                    if (!tempDbRemain.isEmpty()) {
+//                        lstExResultDelete.addAll(tempDbRemain);
+//                    }
+//                }
 
                 //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
                 if (!CollectionUtil.isEmpty(lstExResultDelete)) {
