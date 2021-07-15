@@ -214,13 +214,13 @@ public class WorkScheduleImportService {
 		val checkedWorkSchedule = interimResult.getUncheckedResults().stream()
 				.map( detail -> {
 					// 勤務予定を取得
-					val schedule = require.getWorkSchedule( detail.getEmployeeId(), detail.getYmd() );
+					val schedule = require.getScheduleConfirmAtr( detail.getEmployeeId(), detail.getYmd() );
 					// 勤務予定の状態をチェック
 					if( !schedule.isPresent() ) {
 						// 既存の勤務予定が存在しない
 						// チェック結果：取り込み可能
 						return detail.updateStatus( ImportStatus.IMPORTABLE );
-					} else if( schedule.get().getConfirmedATR() == ConfirmedATR.CONFIRMED ) {
+					} else if( schedule.get() ) {
 						// 既存の勤務予定が存在する(確定済)
 						// チェック結果：確定済み
 						return detail.updateStatus( ImportStatus.SCHEDULE_IS_COMFIRMED );
@@ -271,6 +271,8 @@ public class WorkScheduleImportService {
 		 * @return 勤務予定
 		 */
 		Optional<WorkSchedule> getWorkSchedule(EmployeeId employeeId, GeneralDate ymd);
+		
+		Optional<Boolean> getScheduleConfirmAtr(EmployeeId employeeId, GeneralDate ymd);
 	}
 
 }

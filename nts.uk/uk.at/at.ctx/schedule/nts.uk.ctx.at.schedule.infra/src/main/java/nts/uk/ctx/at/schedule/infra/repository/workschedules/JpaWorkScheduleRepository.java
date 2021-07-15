@@ -11,8 +11,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
@@ -49,6 +51,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
 
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
+	
+	private static final String SELECT_CONFIRMATR = "SELECT DECISION_STATUS FROM KSCDT_SCH_BASIC_INFO WHERE SID = @employeeID AND YMD = @ymd";
 
 //	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
 
@@ -69,6 +73,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
+	}
+	
+	@Override
+	public Optional<Boolean> getConfirmAtr(String employeeID, GeneralDate ymd) {
+	    return new NtsStatement(SELECT_CONFIRMATR, this.jdbcProxy())
+	            .paramString("employeeID", employeeID)
+	            .paramDate("ymd", ymd)
+	            .getSingle(rec -> rec.getBoolean("DECISION_STATUS"));
 	}
 
 //	@Override

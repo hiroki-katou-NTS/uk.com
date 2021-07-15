@@ -3,6 +3,7 @@ package nts.uk.file.at.app.schedule.filemanagement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +13,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
+import nts.arc.layer.app.cache.DateHistoryCache;
+import nts.arc.layer.app.cache.KeyDateHistoryCache;
+import nts.arc.layer.app.cache.MapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -24,6 +29,7 @@ import nts.uk.ctx.at.schedule.dom.importschedule.ImportResult;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportResultDetail;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportStatus;
 import nts.uk.ctx.at.schedule.dom.importschedule.WorkScheduleImportService;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
@@ -36,8 +42,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.Employee
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
@@ -133,9 +139,6 @@ public class WorkPlaceCheckFileService {
     private EmpComHisAdapter comHisAdapter;
     
     @Inject
-    private EmpLeaveHistoryAdapter empHisAdapter;
-    
-    @Inject
     private EmpLeaveWorkHistoryAdapter leaHisAdapter;
     
     @Inject
@@ -143,6 +146,9 @@ public class WorkPlaceCheckFileService {
     
     @Inject
     private GetHolidaysByPeriod getHolidaysByPeriod;
+    
+    @Inject
+    private EmpLeaveHistoryAdapter empHisAdapter;
 
     public CapturedRawDataDto processingFile(WorkPlaceScheCheckFileParam param) throws Exception {
         try {
@@ -162,8 +168,18 @@ public class WorkPlaceCheckFileService {
         // 1: 取り込む(Require, 取り込み内容)
         long startImport = System.currentTimeMillis();
         System.out.println("Start import");
+        List<GeneralDate> listDateData = data.getContents().stream()
+                .map(content -> GeneralDate.fromString(content.getYmd(), "yyyy/MM/dd"))
+                .distinct().sorted().collect(Collectors.toList());
+        DatePeriod period = listDateData.size() == 0 ? null :
+            new DatePeriod(listDateData.get(0), listDateData.get(listDateData.size() - 1));
         ImportResult importResult = WorkScheduleImportService.importFrom(
-                new RequireImp(scheAuthModifyDeadlineRepository, workplaceGroupAdapter, regulInfoEmpAdap, regulInfoEmpPub, workingConditionRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, shiftMasterRepository, workScheduleRepository, empEmployeeAdapter, comHisAdapter, empHisAdapter, leaHisAdapter, scheAdapter), 
+                new RequireImp(scheAuthModifyDeadlineRepository, workplaceGroupAdapter, regulInfoEmpAdap, regulInfoEmpPub, 
+                        workingConditionRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, 
+                        fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, 
+                        shiftMasterRepository, workScheduleRepository, empEmployeeAdapter, comHisAdapter, empHisAdapter, leaHisAdapter, 
+                        scheAdapter, data.getContents().stream().map(x -> x.getEmployeeCode()).distinct().collect(Collectors.toList()), 
+                        data.getContents().stream().map(x -> x.getImportCode()).distinct().collect(Collectors.toList()), period), 
                 data.toDomain());
         long endImport = System.currentTimeMillis();
         System.out.println("Time Import File: " + (endImport - startImport));
@@ -254,7 +270,7 @@ public class WorkPlaceCheckFileService {
         System.out.println("Time Mapping Detail Error 2: " + (endMapDetailErr2 - startMapDetailErr2));
         
         // 6: 曜日()
-        // TODO: Use List<GeneralDate> importableDates step 3
+        // Use List<GeneralDate> importableDates step 3
         
         //7: 取得する(期間)
         long startGetHolidays = System.currentTimeMillis();
@@ -268,79 +284,169 @@ public class WorkPlaceCheckFileService {
         return new CaptureDataOutput(listPersonEmp, importableDates, holidays, importResult, mappingErrorList);
     }
     
-    @AllArgsConstructor
     private static class RequireImp implements WorkScheduleImportService.Require {
+        private final MapCache<String, ScheAuthModifyDeadline> scheAuthModifyDeadlineCache;
         
-        @Inject
-        private ScheAuthModifyDeadlineRepository scheAuthModifyDeadlineRepository;
+        private final MapCache<GetEmpCanReferByWorkplaceGroupParam, List<String>> workplaceGroupCache;
         
-        @Inject
-        private WorkplaceGroupAdapter workplaceGroupAdapter;
+        private final MapCache<GetAllEmpCanReferByWorkplaceGroupParam, List<String>> workplaceGroupAllCache;
         
-        @Inject
         private RegulationInfoEmployeeAdapter regulInfoEmpAdap;
         
-        @Inject
         private RegulationInfoEmployeePub regulInfoEmpPub;
         
-        @Inject
-        private WorkingConditionRepository workingConditionRepo;
+        private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
         
-        @Inject
         private WorkTypeRepository workTypeRepo;
         
-        @Inject
         private WorkTimeSettingRepository workTimeSettingRepository;
         
-        @Inject
-        private BasicScheduleService basicScheduleService;
+        private final MapCache<String, SetupType> basicScheduleCache;
+
+        private final MapCache<WorkTimeCode, FixedWorkSetting> fixedWorkSettingCache;
         
-        @Inject
-        private FixedWorkSettingRepository fixedWorkSettingRepository;
+        private final MapCache<WorkTimeCode, FlowWorkSetting> flowWorkSettingCache;
+
+        private final MapCache<WorkTimeCode, FlexWorkSetting> flexWorkSettingCache;
         
-        @Inject
-        private FlowWorkSettingRepository flowWorkSettingRepository;
+        private final MapCache<WorkTimeCode, PredetemineTimeSetting> predetemineTimeSettingCache;
         
-        @Inject
-        private FlexWorkSettingRepository flexWorkSettingRepository;
+        private final List<ShiftMaster> shiftMasterCache;
         
-        @Inject
-        private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+//        private final NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
         
-        @Inject
-        private ShiftMasterRepository shiftMasterRepository;
+        private final Map<String, String> empEmployeeCache;
         
-        @Inject
-        private WorkScheduleRepository workScheduleRepository;
+        private final KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
         
-        @Inject
-        private EmpEmployeeAdapter empEmployeeAdapter;
-        
-        @Inject
-        private EmpComHisAdapter comHisAdapter;
-        
-        @Inject
         private EmpLeaveHistoryAdapter empHisAdapter;
         
-        @Inject
-        private EmpLeaveWorkHistoryAdapter leaHisAdapter;
+        private final KeyDateHistoryCache<String, EmploymentPeriodImported> employmentPeriodCache;
         
-        @Inject
-        private EmploymentHisScheduleAdapter scheAdapter;
+        private final KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
+        
+        private WorkScheduleRepository workScheduleRepository;
+        
+        public RequireImp(ScheAuthModifyDeadlineRepository scheAuthModifyDeadlineRepository, WorkplaceGroupAdapter workplaceGroupAdapter, 
+                RegulationInfoEmployeeAdapter regulInfoEmpAdap, RegulationInfoEmployeePub regulInfoEmpPub, WorkingConditionRepository workingConditionRepo, 
+                WorkTypeRepository workTypeRepo, WorkTimeSettingRepository workTimeSettingRepository, BasicScheduleService basicScheduleService, 
+                FixedWorkSettingRepository fixedWorkSettingRepository, FlowWorkSettingRepository flowWorkSettingRepository, 
+                FlexWorkSettingRepository flexWorkSettingRepository, PredetemineTimeSettingRepository predetemineTimeSettingRepository, 
+                ShiftMasterRepository shiftMasterRepository, WorkScheduleRepository workScheduleRepository, EmpEmployeeAdapter empEmployeeAdapter, 
+                EmpComHisAdapter comHisAdapter, EmpLeaveHistoryAdapter empHisAdapter, EmpLeaveWorkHistoryAdapter leaHisAdapter, EmploymentHisScheduleAdapter scheAdapter, 
+                List<String> employeeCodes, List<String> importCodes, DatePeriod period) {
+            this.regulInfoEmpAdap = regulInfoEmpAdap;
+            this.regulInfoEmpPub = regulInfoEmpPub;
+            this.workTypeRepo = workTypeRepo;
+            this.workTimeSettingRepository = workTimeSettingRepository;
+            this.empHisAdapter = empHisAdapter;
+            this.workScheduleRepository = workScheduleRepository;
+            
+            shiftMasterCache = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
+            
+            empEmployeeCache = empEmployeeAdapter.getEmployeeIDListByCode(AppContexts.user().companyId(), employeeCodes);
+            
+            List<String> employeeIds = employeeCodes.stream().map(x -> empEmployeeCache.get(x)).collect(Collectors.toList());
+            
+            scheAuthModifyDeadlineCache = MapCache.incremental(role -> scheAuthModifyDeadlineRepository.get(AppContexts.user().companyId(), role));
+            
+            workplaceGroupCache = MapCache.
+                    incremental(item -> Optional.ofNullable(workplaceGroupAdapter.getReferableEmp(item.getDate(), item.getEmpId(), item.getWorkplaceGroupID())));
+            
+            workplaceGroupAllCache = MapCache.
+                    incremental(item -> Optional.ofNullable(workplaceGroupAdapter.getAllReferableEmp(item.getDate(), item.getEmpId())));
+            
+            basicScheduleCache = MapCache.incremental(item -> Optional.ofNullable(basicScheduleService.checkNeededOfWorkTimeSetting(item)));
+            
+            fixedWorkSettingCache = MapCache.incremental(item -> fixedWorkSettingRepository.findByKey(AppContexts.user().companyId(), item.v()));
+            
+            flowWorkSettingCache = MapCache.incremental(item -> flowWorkSettingRepository.find(AppContexts.user().companyId(), item.v()));
+            
+            flexWorkSettingCache = MapCache.incremental(item -> flexWorkSettingRepository.find(AppContexts.user().companyId(), item.v()));
+            
+            predetemineTimeSettingCache = MapCache.incremental(item -> predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), item.v()));
+            
+//            workScheduleCache = NestedMapCache.preloadedAll(
+//                    workScheduleRepository.getList(employeeIds, period).stream(), 
+//                    schedule -> schedule.getEmployeeID(), 
+//                    schedule -> schedule.getYmd());
+            
+            List<EmpEnrollPeriodImport> affCompanyHists =  comHisAdapter.getEnrollmentPeriod(employeeIds, period);
+            Map<String, List<EmpEnrollPeriodImport>> data2 = affCompanyHists.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
+            affCompanyHistByEmployeeCache = KeyDateHistoryCache.loaded(createEntries1(data2));
+            
+            List<EmploymentPeriodImported> listEmploymentPeriodImported = scheAdapter.getEmploymentPeriod(employeeIds, period);
+            Map<String, List<EmploymentPeriodImported>> data3 = listEmploymentPeriodImported.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
+            employmentPeriodCache = KeyDateHistoryCache.loaded(createEntries2(data3));
+            
+            List<WorkingConditionItemWithPeriod> listData = workingConditionRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), employeeIds, period);
+            Map<String, List<WorkingConditionItemWithPeriod>> data6 = listData.stream().collect(Collectors.groupingBy(item ->item.getWorkingConditionItem().getEmployeeId()));
+            workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(createEntries5(data6));
+            
+            List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  leaHisAdapter.getHolidayPeriod(employeeIds, period);
+            Map<String, List<EmpLeaveWorkPeriodImport>> data5 = empLeaveWorkPeriods.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
+            empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(createEntries4(data5));
+        }
+        
+        private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
+            Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
+            data.forEach( (k,v) -> {
+                List<DateHistoryCache.Entry<EmpEnrollPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpEnrollPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+                rs.put(k, s);
+            });
+            return rs;
+        }
+        
+        private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
+            Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
+            data.forEach( (k,v) -> {
+                List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+                rs.put(k, s);
+            });
+            return rs;
+        }
+        
+        private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
+            Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
+            data.forEach( (k,v) -> {
+                List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+                rs.put(k, s);
+            });
+            return rs;
+        }
+        
+        private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
+            Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
+            data.forEach( (k,v) -> {
+                List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
+                rs.put(k, s);
+            });
+            return rs;
+        }
 
         @Override
         public Optional<ScheAuthModifyDeadline> getScheAuthModifyDeadline(String roleID) {
-            return scheAuthModifyDeadlineRepository.get(AppContexts.user().companyId(), roleID);
+            return scheAuthModifyDeadlineCache.get(roleID);
         }
 
+//        @Override
+//        public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
+//            return workplaceGroupAdapter.getReferableEmp(date, empId, workplaceGroupID);
+//        }
+        
         @Override
         public List<String> getEmpCanReferByWorkplaceGroup(GeneralDate date, String empId, String workplaceGroupID) {
-            return workplaceGroupAdapter.getReferableEmp(date, empId, workplaceGroupID);
+            return workplaceGroupCache.get(new GetEmpCanReferByWorkplaceGroupParam(date, empId, workplaceGroupID)).orElse(new ArrayList<String>());
         }
 
+//        @Override
+//        public List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId) {
+//            return workplaceGroupAdapter.getAllReferableEmp(date, empId);
+//        }
+        
         @Override
         public List<String> getAllEmpCanReferByWorkplaceGroup(GeneralDate date, String empId) {
-            return workplaceGroupAdapter.getAllReferableEmp(date, empId);
+            return workplaceGroupAllCache.get(new GetAllEmpCanReferByWorkplaceGroupParam(date, empId)).orElse(new ArrayList<String>());
         }
 
         @Override
@@ -402,20 +508,18 @@ public class WorkPlaceCheckFileService {
 
         @Override
         public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String employeeId, GeneralDate date) {
-            val result = comHisAdapter.getEnrollmentPeriod(Arrays.asList(employeeId), new DatePeriod(date, date));
-            if (result.isEmpty())
-                return Optional.empty();
-            return Optional.of(result.get(0));
+//            val result = comHisAdapter.getEnrollmentPeriod(Arrays.asList(employeeId), new DatePeriod(date, date));
+//            if (result.isEmpty())
+//                return Optional.empty();
+//            return Optional.of(result.get(0));
+            Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(employeeId, date);
+            return data;
         }
 
         @Override
         public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate date) {
-            Optional<WorkingCondition> workingCondition = workingConditionRepo.getBySidAndStandardDate(
-                    AppContexts.user().companyId(),
-                    employeeId,
-                    date);
-            
-            return workingConditionRepo.getWorkingConditionItem(workingCondition.get().getDateHistoryItem().get(0).identifier());
+            Optional<WorkingConditionItemWithPeriod> data = workCondItemWithPeriodCache.get(employeeId, date);
+            return data.isPresent() ? Optional.of(data.get().getWorkingConditionItem()) : Optional.empty();
         }
 
         @Override
@@ -429,18 +533,14 @@ public class WorkPlaceCheckFileService {
 
         @Override
         public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(String employeeId, GeneralDate date) {
-            val result = leaHisAdapter.getHolidayPeriod(Arrays.asList(employeeId), new DatePeriod(date, date));
-            if (result.isEmpty())
-                return Optional.empty();
-            return Optional.of(result.get(0));
+            Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(employeeId, date);
+            return data;
         }
 
         @Override
         public Optional<EmploymentPeriodImported> getEmploymentHistory(String employeeId, GeneralDate date) {
-            val result = scheAdapter.getEmploymentPeriod(Arrays.asList(employeeId), new DatePeriod(date, date));
-            if (result.isEmpty())
-                return Optional.empty();
-            return Optional.of(result.get(0));
+            Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(employeeId, date);
+            return data;
         }
 
         @Override
@@ -455,27 +555,27 @@ public class WorkPlaceCheckFileService {
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-            return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+            return basicScheduleCache.get(workTypeCode).orElse(null);
         }
 
         @Override
         public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-            return fixedWorkSettingRepository.findByKey(AppContexts.user().companyId(), code.v()).get();
+            return fixedWorkSettingCache.get(code).orElse(null);
         }
 
         @Override
         public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-            return flowWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+            return flowWorkSettingCache.get(code).orElse(null);
         }
 
         @Override
         public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-            return flexWorkSettingRepository.find(AppContexts.user().companyId(), code.v()).get();
+            return flexWorkSettingCache.get(code).orElse(null);
         }
 
         @Override
         public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-            return predetemineTimeSettingRepository.findByWorkTimeCode(AppContexts.user().companyId(), wktmCd.v()).get();
+            return predetemineTimeSettingCache.get(wktmCd).orElse(null);
         }
 
         @Override
@@ -490,19 +590,39 @@ public class WorkPlaceCheckFileService {
 
         @Override
         public Map<String, String> getEmployeeIds(List<String> employeeCodes) {
-            return empEmployeeAdapter.getEmployeeIDListByCode(AppContexts.user().companyId(), employeeCodes);
+            return empEmployeeCache;
         }
 
         @Override
         public List<ShiftMaster> getShiftMasters(List<ShiftMasterImportCode> importCodes) {
-            return shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), 
-                    importCodes.stream().map(x -> x.v()).collect(Collectors.toList()));
+            return shiftMasterCache;
         }
 
         @Override
         public Optional<WorkSchedule> getWorkSchedule(EmployeeId employeeId, GeneralDate ymd) {
             return workScheduleRepository.get(employeeId.v(), ymd);
+//            return workScheduleCache.get(employeeId.v(), ymd);
+        }
+
+        @Override
+        public Optional<Boolean> getScheduleConfirmAtr(EmployeeId employeeId, GeneralDate ymd) {
+            return workScheduleRepository.getConfirmAtr(employeeId.v(), ymd);
         }
         
+    }
+    
+    @AllArgsConstructor
+    @Getter
+    public static class GetEmpCanReferByWorkplaceGroupParam {
+        GeneralDate date;
+        String empId;
+        String workplaceGroupID;
+    }
+    
+    @AllArgsConstructor
+    @Getter
+    public static class GetAllEmpCanReferByWorkplaceGroupParam {
+        GeneralDate date;
+        String empId;
     }
 }

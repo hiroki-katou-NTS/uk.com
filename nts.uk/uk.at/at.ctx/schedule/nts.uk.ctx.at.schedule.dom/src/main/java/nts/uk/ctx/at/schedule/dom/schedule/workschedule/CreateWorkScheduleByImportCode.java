@@ -6,6 +6,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 
@@ -33,7 +34,7 @@ public class CreateWorkScheduleByImportCode {
 			boolean isOverwrite) {
 		
 		// 上書き可否判定
-		val oldWorkSchedule = require.getWorkSchedule(employeeId, date);
+		val oldWorkSchedule = require.getScheduleConfirmAtr(employeeId, date);
 		if ( oldWorkSchedule.isPresent() && ! isOverwrite ) {
 			
 			return ResultOfRegisteringWorkSchedule.createWithError(
@@ -90,6 +91,8 @@ public class CreateWorkScheduleByImportCode {
 		 * @return Optional<勤務予定>
 		 */
 		Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
+		
+		Optional<Boolean> getScheduleConfirmAtr(String employeeId, GeneralDate ymd);
 		
 		/**
 		 * シフトマスタを取得する

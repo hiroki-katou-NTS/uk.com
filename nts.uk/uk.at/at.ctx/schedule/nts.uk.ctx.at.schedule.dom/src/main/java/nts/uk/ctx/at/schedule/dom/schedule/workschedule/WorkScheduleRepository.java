@@ -72,6 +72,8 @@ public interface WorkScheduleRepository {
 	void deleteListDate(String sid, List<GeneralDate> ymds);
 	
 	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
+	
+	Optional<Boolean> getConfirmAtr(String employeeID, GeneralDate ymd);
 	/**
 	 * 	[7] 最も未来の勤務予定の年月日を取得する
 	 * @param listEmp
