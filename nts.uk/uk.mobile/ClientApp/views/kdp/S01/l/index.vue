@@ -16,13 +16,13 @@
             v-bind:placeholder="$i18n('KDPS01_75')"
             v-bind:columns="{ title: '', input: '' }" />
         </div>
-        <div class="col-4 pl-2 pr-0">
+        <div class="col-4 pl-1 pr-0">
             <!-- L2_2: 検索ボタン -->
             <button
             type="button"
             v-on:click="$close"
             v-bind:tabindex="2"
-            class="btn btn-secondary mt-1"
+            class="btn btn-secondary btn-sm mt-1 ml-1"
             >
             {{ "KDPS01_72" | i18n }}
             </button>
@@ -32,7 +32,7 @@
             type="button"
             v-on:click="$close"
             v-bind:tabindex="3"
-            class="btn btn-secondary mt-1 ml-2"
+            class="btn btn-secondary btn-sm mt-1 ml-1"
             >
             {{ "KDPS01_73" | i18n }}
             </button>
