@@ -2610,8 +2610,8 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // close popup if target isn't owner & poper.
                     if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
-//                        popupPosition.event(null);
-//                        popupPosition.setting(null);
+                        popupPosition.event(null);
+                        popupPosition.setting(null);
                     }
                 })
                 .registerEvent('mousemove', () => {
