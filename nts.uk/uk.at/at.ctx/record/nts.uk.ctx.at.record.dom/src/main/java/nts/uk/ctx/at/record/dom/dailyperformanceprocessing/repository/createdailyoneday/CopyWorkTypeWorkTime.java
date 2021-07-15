@@ -49,17 +49,19 @@ public class CopyWorkTypeWorkTime {
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidAndStandardDate(employeeId, ymd);
-		if (!optWorkingConditionItem.isPresent() || optWorkingConditionItem.get().getWorkCategory().getHolidayTime() == null
-				|| !optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().isPresent()) {
+		if (!optWorkingConditionItem.isPresent() || optWorkingConditionItem.get().getWorkCategory().getWorkTime().getHolidayTime() == null
+				|| optWorkingConditionItem.get().getWorkCategory().getWorkType() == null
+				|| !optWorkingConditionItem.get().getWorkCategory().getWorkType().getHolidayAttendanceTimeWTypeCode().isPresent()) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("012"), new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return listErrorMessageInfo;
 		}
+		
 		WorkInfoOfDailyAttendance workInformation = integrationOfDaily.getWorkInformation();
 		WorkInformation recordInfo = optWorkingConditionItem.map(opt -> {
-			SingleDaySchedule sched = opt.getWorkCategory().getHolidayTime();
+			SingleDaySchedule sched = opt.getWorkCategory().getWorkTime().getHolidayTime();
 			
-			return new WorkInformation(sched.getWorkTypeCode().orElse(null), sched.getWorkTimeCode().orElse(null));
+			return new WorkInformation(optWorkingConditionItem.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode(), sched.getWorkTimeCode().orElse(null));
 		}).orElse(null);
 		
 		//休日の勤務種類を勤務予定に写す

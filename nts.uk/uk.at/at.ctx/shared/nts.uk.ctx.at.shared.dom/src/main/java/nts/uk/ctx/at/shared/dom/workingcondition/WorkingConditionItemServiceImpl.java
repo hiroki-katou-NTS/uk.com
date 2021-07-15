@@ -16,6 +16,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
@@ -69,8 +70,7 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 			WorkingConditionItem domain = optWorkingCondItem.get();
 			// ドメインモデル「個人勤務日区分別勤務」を取得する (Lấy 「個人勤務日区分別勤務」)
 			PersonalWorkCategory category = domain.getWorkCategory().getWorkTime();
-			Optional<SingleDaySchedule> optpublicHoliday = domain.getWorkCategory()
-					.getPublicHolidayWork();
+			Optional<SingleDaySchedule> optpublicHoliday = Optional.empty(); //domain.getWorkCategory().getPublicHolidayWork();
 
 			// check public holiday is present
 			if (category != null) {
@@ -89,23 +89,23 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 					switch (workTypeSet.get().getHolidayAtr()) {
 					// 法定内休日
 					case STATUTORY_HOLIDAYS:
-						if(domain.getWorkCategory().getInLawBreakTime().isPresent())
-							return domain.getWorkCategory().getInLawBreakTime();
+						if(domain.getWorkCategory().getWorkTime().getHolidayWork() != null)
+							return Optional.of(domain.getWorkCategory().getWorkTime().getHolidayWork());
 					// 法定外休日			
 					case NON_STATUTORY_HOLIDAYS:
-						if(domain.getWorkCategory().getOutsideLawBreakTime().isPresent())
-							return domain.getWorkCategory().getOutsideLawBreakTime();
+						if(domain.getWorkCategory().getWorkTime().getHolidayWork() != null)
+							return Optional.of(domain.getWorkCategory().getWorkTime().getHolidayWork());
 					// 祝日			
 					case PUBLIC_HOLIDAY:
-						if(domain.getWorkCategory().getHolidayAttendanceTime().isPresent())
-							return domain.getWorkCategory().getHolidayAttendanceTime();
+						if(domain.getWorkCategory().getWorkTime().getHolidayWork() != null)
+							return Optional.of(domain.getWorkCategory().getWorkTime().getHolidayWork());
 					}
 					
 					// 取得できない場合
 					// 休日出勤時の勤務情報が存在するか確認する 
 					// (【条件】 個人勤務日区分別勤務．休日出勤時)
 					if(category.getHolidayWork() != null)
-						return Optional.of(domain.getWorkCategory().getHolidayWork());
+						return Optional.of(domain.getWorkCategory().getWorkTime().getHolidayWork());
 				}
 			}
 		}
@@ -126,14 +126,15 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 			// get Working Condition Item
 			WorkingConditionItem domain = optWorkingCondItem.get();
 			// ドメインモデル「個人勤務日区分別勤務」を取得する (Lấy 「個人勤務日区分別勤務」)
-			PersonalWorkCategory personalDayOfWeek = domain.getWorkCategory().getWorkTime();
+			PersonalWorkCategory workTime = domain.getWorkCategory().getWorkTime();
+			WorkTypeByIndividualWorkDay workType = domain.getWorkCategory().getWorkType();
 			
-			if (personalDayOfWeek == null) {
+			if (workTime == null || workType == null) {
 				return Optional.empty();
 			}
 			//個人情報の平日出勤時勤務情報を取得する
 			//終了状態：平日時出勤情報を返す
-			return Optional.of(new WorkInformation(personalDayOfWeek.getWeekdayTime().getWorkTypeCode().orElse(null), personalDayOfWeek.getWeekdayTime().getWorkTimeCode().orElse(null)));
+			return Optional.of(new WorkInformation(workType.getWeekdayTimeWTypeCode(), workTime.getWeekdayTime().getWorkTimeCode().orElse(null)));
 		}
 		// 休日出勤時の勤務情報を取得する
 		Optional<SingleDaySchedule> data = getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
@@ -142,8 +143,7 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 			return Optional.empty();
 		}
 
-		return data.map(
-				opt -> new WorkInformation(opt.getWorkTypeCode().orElse(null), opt.getWorkTimeCode().orElse(null)));
+		return data.map(opt -> new WorkInformation(new WorkTypeCode(workTypeCode), opt.getWorkTimeCode().orElse(null)));
 	}
 	@Override
 	public List<WorkingConditionItem> getEmployeesIdListByPeriod(List<String> sIds, DatePeriod datePeriod) {

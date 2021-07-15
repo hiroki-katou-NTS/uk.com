@@ -7,15 +7,13 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * The Class SingleDaySchedule.
+ * xóa workTypeCode đi
  */
 // 単一日勤務予定
 @Getter

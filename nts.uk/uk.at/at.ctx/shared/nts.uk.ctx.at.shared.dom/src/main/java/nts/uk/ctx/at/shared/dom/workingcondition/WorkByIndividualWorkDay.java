@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 
@@ -13,12 +14,11 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
  */
 /** 個人勤務日区分別勤務 **/
 @Getter
+public class WorkByIndividualWorkDay extends DomainObject{
 
-public class WorkByIndividualWorkDay {
-
-	/** 勤務時間帯 -- 個人勤務日区分別勤務時間 */
+	/** 勤務時間帯 -- 個人勤務日区分別勤務時間  - update : chuyển PersonalDayOfWeek vào trong đây*/
 	private PersonalWorkCategory workTime;
-	/** 勤務種類--- 個人勤務日区分別勤務種類 **/
+	/** 勤務種類--- 個人勤務日区分別勤務種類  -- tao moi**/
 	private WorkTypeByIndividualWorkDay workType;
 
 	public WorkByIndividualWorkDay(PersonalWorkCategory workTime, WorkTypeByIndividualWorkDay workType) {
@@ -40,11 +40,11 @@ public class WorkByIndividualWorkDay {
 		// map $。就業時間帯コード WorkTimeCode
 		Optional<SingleDaySchedule> data = this.workTime.getDayOfWeek().getSingleDaySchedule(date);
 		if (data.isPresent()) {
-			return new WorkInformation(workType.getWhenCommuting(),
+			return new WorkInformation(workType.getWeekdayTimeWTypeCode(),
 					data.get().getWorkTimeCode().isPresent() ? data.get().getWorkTimeCode().get() : null);
 
 		} else {
-			return new WorkInformation(workType.getOnHolidays(), null);
+			return new WorkInformation(workType.getHolidayTimeWTypeCode(), null);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class WorkByIndividualWorkDay {
 	public WorkInformation getHolidayWorkInformation() {
 
 		// return new 勤務情報（＠勤務種類。休日時、＠勤務時間帯。休日時。就業時間帯コード）
-		return new WorkInformation(workType.getOnHolidays(), workTime.getHolidayWork().getWorkTimeCode().get());
+		return new WorkInformation(workType.getHolidayTimeWTypeCode(), workTime.getHolidayWork().getWorkTimeCode().get());
 
 	}
 
@@ -68,7 +68,7 @@ public class WorkByIndividualWorkDay {
 	public WorkInformation getWorkInformationWorkDay() {
 
 		// return new 勤務情報（＠勤務種類。出勤時、＠勤務時間帯。平日時。就業時間帯コード）
-		return new WorkInformation(workType.getWhenCommuting(), workTime.getWeekdayTime().getWorkTimeCode().get());
+		return new WorkInformation(workType.getWeekdayTimeWTypeCode(), workTime.getWeekdayTime().getWorkTimeCode().get());
 
 	}
 }

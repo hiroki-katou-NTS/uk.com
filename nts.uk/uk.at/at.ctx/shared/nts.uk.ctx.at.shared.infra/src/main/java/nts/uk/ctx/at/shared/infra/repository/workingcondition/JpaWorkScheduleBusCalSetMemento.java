@@ -51,7 +51,7 @@ public class JpaWorkScheduleBusCalSetMemento implements WorkScheduleBusCalSetMem
 	 */
 	@Override
 	public void setReferenceBasicWork(WorkScheduleMasterReferenceAtr referenceBasicWork) {
-		this.entity.setRefBasicWork(referenceBasicWork.value);
+		//this.entity.setRefBasicWork(referenceBasicWork.value);
 	}
 
 	/*

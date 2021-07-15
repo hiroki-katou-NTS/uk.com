@@ -395,8 +395,8 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 					, Optional.empty(), Optional.empty(), Optional.empty()
 					, Optional.empty());
 			val perCate = new PersonalWorkCategory(
-					new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
-					, new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
+					new SingleDaySchedule(Collections.emptyList(), Optional.empty())
+					, new SingleDaySchedule(Collections.emptyList(), Optional.empty())
 					, perDay
 					);
 			val workTypeByIndividualWorkDay = new WorkTypeByIndividualWorkDay( new WorkTypeCode("001WC"), new WorkTypeCode("002WC"), new WorkTypeCode("003WC"), Optional.empty(), Optional.empty(), Optional.empty());

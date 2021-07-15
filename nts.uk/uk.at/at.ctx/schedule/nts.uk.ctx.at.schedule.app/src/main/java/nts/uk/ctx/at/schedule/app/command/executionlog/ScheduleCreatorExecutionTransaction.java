@@ -1176,12 +1176,14 @@ public class ScheduleCreatorExecutionTransaction {
 					Optional<SingleDaySchedule> daySchedule = this.getDaySchedule(itemDto, dayOfWeek);
 					// データある
 					if (daySchedule.isPresent()) {
-						workInformation = daySchedule.map(m -> {
-							String workTypeCode = m.getWorkTypeCode().map(t -> t.v()).orElse("");
-							String workdTimeCode = m.getWorkTimeCode().map(t -> t.v()).orElse("");
-
-							return new WorkInformation(workTypeCode, workdTimeCode);
-						}).orElse(null);
+						String workTypeCode = "" , workdTimeCode = "";
+						if(itemDto.get().getWorkCategory().getWorkType() != null && itemDto.get().getWorkCategory().getWorkType().getHolidayTimeWTypeCode() != null){
+							workTypeCode = itemDto.get().getWorkCategory().getWorkType().getHolidayTimeWTypeCode().v();
+						}
+						
+						workdTimeCode = daySchedule.map(m -> {return m.getWorkTimeCode().map(t -> t.v()).orElse("");}).orElse("");
+						
+						workInformation = new WorkInformation(workTypeCode, workdTimeCode);
 					}
 					else {
 						// データがない
@@ -1189,7 +1191,7 @@ public class ScheduleCreatorExecutionTransaction {
 						workInformation = itemDto.map(m -> {
 							//SingleDaySchedule sched = m.getWorkCategory().getHolidayTime();
 							//WorkTypeCode sched = m.getWorkCategory().getWorkType().getOnHolidays();
-							String workTypeCode =  m.getWorkCategory().getWorkType().getOnHolidays().v();
+							String workTypeCode =  m.getWorkCategory().getWorkType().getHolidayTimeWTypeCode().v();
 							//String workdTimeCode = sched.getWorkTimeCode().map(t -> t.v()).orElse("");
 
 							return new WorkInformation(workTypeCode, null);
@@ -1419,7 +1421,7 @@ public class ScheduleCreatorExecutionTransaction {
 				.get().getReferenceWorkingHours();
 
 		// if 個人勤務日別
-		if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.PERSONAL_WORK_DAILY.value) {
+		if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.WEEKDAYS.value) {
 
 			// 個人勤務日別をもとに「就業時間帯コード」を変換する - chưa tìm được thuật toán này
 			TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()

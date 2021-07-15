@@ -26,6 +26,7 @@ public interface PersonalWorkCategorySetMemento {
 	 */
 	public void setWeekdayTime(SingleDaySchedule weekdayTime);
 	
+	
 	public void setDayOfWeek(PersonalDayOfWeek dayOfWeek );
 	
 	

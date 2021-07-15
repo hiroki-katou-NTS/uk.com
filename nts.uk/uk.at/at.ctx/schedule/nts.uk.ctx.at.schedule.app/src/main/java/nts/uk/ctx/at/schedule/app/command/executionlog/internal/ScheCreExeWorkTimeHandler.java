@@ -385,8 +385,7 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	private String getWorkTypeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
-		return optionalSingleDaySchedule.get().getWorkTypeCode().isPresent()
-				? optionalSingleDaySchedule.get().getWorkTypeCode().get().v() : null;
+		return null;
 	}
 
 	/**
@@ -483,10 +482,9 @@ public class ScheCreExeWorkTimeHandler {
 				if (this.checkHolidaySetting(worktype)) {
 
 					// check exist work time
-					if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-							workingConditionItem.getWorkCategory().getPublicHolidayWork())) {
+					if (this.checkExistWorkTimeCodeBySingleDaySchedule(Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 						return this.getWorkTimeCodeBySingleDaySchedule (
-								workingConditionItem.getWorkCategory().getPublicHolidayWork());
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));
 					}
 				}
 
@@ -499,13 +497,13 @@ public class ScheCreExeWorkTimeHandler {
 					// case 法定内休日
 					case STATUTORY_HOLIDAYS:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-								workingConditionItem.getWorkCategory().getInLawBreakTime())) {
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 							/*return this.getWorkTimeCodeBySingleDaySchedule(
 									workingConditionItem.getWorkCategory().getInLawBreakTime());*/
 							if(!this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getInLawBreakTime()).isEmpty()){
+									Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork())).isEmpty()){
 								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getInLawBreakTime());
+										Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));
 							}
 							else{
 								return command.getWorkingCode();
@@ -517,13 +515,13 @@ public class ScheCreExeWorkTimeHandler {
 					// case 法定外休日
 					case NON_STATUTORY_HOLIDAYS:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-								workingConditionItem.getWorkCategory().getOutsideLawBreakTime())) {
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 						/*	return this.getWorkTimeCodeBySingleDaySchedule(
 									workingConditionItem.getWorkCategory().getOutsideLawBreakTime());*/
 							if(!this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getOutsideLawBreakTime()).isEmpty()){
+									Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork())).isEmpty()){
 								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getOutsideLawBreakTime());	
+										Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));	
 							}else{
 								return command.getWorkingCode();
 							}
@@ -533,13 +531,13 @@ public class ScheCreExeWorkTimeHandler {
 					// case 祝日
 					default:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-								workingConditionItem.getWorkCategory().getHolidayAttendanceTime())) {
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 							/*return this.getWorkTimeCodeBySingleDaySchedule(
 									workingConditionItem.getWorkCategory().getHolidayAttendanceTime());*/
 							if(!this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getHolidayAttendanceTime()).isEmpty()){
+									Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork())).isEmpty()){
 								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getHolidayAttendanceTime());
+										Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));
 							}else{
 								return command.getWorkingCode();
 							}

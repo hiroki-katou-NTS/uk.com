@@ -196,11 +196,21 @@ public class WorkingConditionItem extends AggregateRoot {
 	 * @param monthlyPattern
 	 * 			  the monthlyPattern
 	 */
-	public WorkingConditionItem(String historyId, ManageAtr scheduleManagementAtr, 
-			WorkByIndividualWorkDay workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
-			String employeeId, NotUseAtr vacationAddedTimeAtr, LaborContractTime contractTime, WorkingSystem laborSystem,
-			BreakdownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod, Integer hourlyPaymentAtr,
-			BonusPaySettingCode timeApply, MonthlyPatternCode monthlyPattern) {
+	public WorkingConditionItem(
+			String historyId, 
+			ManageAtr scheduleManagementAtr, 
+			WorkByIndividualWorkDay workCategory, 
+			NotUseAtr autoStampSetAtr, 
+			NotUseAtr autoIntervalSetAtr,
+			String employeeId, 
+			NotUseAtr vacationAddedTimeAtr, 
+			LaborContractTime contractTime, 
+			WorkingSystem laborSystem,
+			BreakdownTimeDay holidayAddTimeSet, 
+			ScheduleMethod scheduleMethod, 
+			Integer hourlyPaymentAtr,
+			BonusPaySettingCode timeApply, 
+			MonthlyPatternCode monthlyPattern) {
 		super();
 		this.historyId = historyId;
 		this.scheduleManagementAtr = scheduleManagementAtr;

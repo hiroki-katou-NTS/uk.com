@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
-import java.util.Optional;
-
 /**
  * The Interface PersonalWorkCategoryGetMemento.
  */
@@ -24,6 +22,7 @@ public interface PersonalWorkCategoryGetMemento {
 	 * @return the weekday time
 	 */
 	public SingleDaySchedule getWeekdayTime();
+	
 	/**
 	 * Get day of week
 	 * @return

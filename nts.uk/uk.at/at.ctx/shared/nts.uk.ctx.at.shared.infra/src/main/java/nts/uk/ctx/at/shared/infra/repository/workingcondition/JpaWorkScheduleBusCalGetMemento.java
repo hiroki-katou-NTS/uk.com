@@ -42,7 +42,8 @@ public class JpaWorkScheduleBusCalGetMemento implements WorkScheduleBusCalGetMem
 	@Override
 	public WorkScheduleMasterReferenceAtr getReferenceBasicWork() {
 		try {
-			return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBasicWork());
+			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
+			//return WorkScheduleMasterReferenceAtr.valueOf(this.kshmtScheduleMethod.getRefBasicWork());
 		} catch (Exception e) {
 			return WorkScheduleMasterReferenceAtr.WORK_PLACE;
 		}

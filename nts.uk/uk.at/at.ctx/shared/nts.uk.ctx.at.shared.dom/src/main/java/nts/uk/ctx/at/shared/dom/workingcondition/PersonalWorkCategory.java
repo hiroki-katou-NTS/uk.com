@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -23,7 +21,7 @@ public class PersonalWorkCategory extends DomainObject {
 	/** The holiday work. */
 	// 休日出勤時
 	private SingleDaySchedule holidayWork;
-
+	
 	//曜日別: 個人曜日別勤務時間
 	private PersonalDayOfWeek dayOfWeek;
 	/** The in law break time. */
@@ -53,18 +51,14 @@ public class PersonalWorkCategory extends DomainObject {
 		memento.setDayOfWeek(this.dayOfWeek);
 	}
 
-	public PersonalWorkCategory(SingleDaySchedule weekdayTime, SingleDaySchedule holidayWork,
-			PersonalDayOfWeek dayOfWeek) {
+	public PersonalWorkCategory(SingleDaySchedule weekdayTime, SingleDaySchedule holidayWork, PersonalDayOfWeek dayOfWeek) {
 		super();
 		this.weekdayTime = weekdayTime;
 		this.holidayWork = holidayWork;
-	this.dayOfWeek = dayOfWeek;
+		this.dayOfWeek = dayOfWeek;
 	}
 
 	public PersonalWorkCategory(SingleDaySchedule weekdayTime) {
 		this.weekdayTime = weekdayTime;
 	}
-	
-	
-
 }

@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 
 /**
