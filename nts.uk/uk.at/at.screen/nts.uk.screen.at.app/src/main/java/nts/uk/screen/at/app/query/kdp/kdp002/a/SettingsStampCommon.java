@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInput;
 import nts.uk.ctx.at.record.dom.stamp.application.CommonSettingsStampInputRepository;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskOperationSettingQuery;
+import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExit;
+import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
@@ -32,6 +34,9 @@ public class SettingsStampCommon {
 	@Inject
 	private GetTaskOperationSettingQuery gettask;
 	
+	@Inject
+	private ManageEntryExitRepository manageEntryExitRepo;
+	
 	
 	public SettingsStampCommonDto getSettingCommonStamp() {
 		
@@ -54,6 +59,10 @@ public class SettingsStampCommon {
 		Optional<TaskOperationSetting> taskOperationSetting = gettask.getTasksOperationSetting(cid);
 		
 		result.setAddWorkUse(taskOperationSetting.map(m -> m.getTaskOperationMethod().value == 1 ? true : false).orElse(false));
+		
+		Optional<ManageEntryExit> manageEntryExitOpt = manageEntryExitRepo.findByID(cid);
+		
+		result.setManageEntryExit(manageEntryExitOpt.map(m -> m.getUseClassification().value == 1 ? true : false).orElse(false));
 		
 		return result;
 	}
