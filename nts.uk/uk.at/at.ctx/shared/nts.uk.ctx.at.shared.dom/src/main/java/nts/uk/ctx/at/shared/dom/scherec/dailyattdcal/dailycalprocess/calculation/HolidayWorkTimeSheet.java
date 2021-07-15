@@ -395,7 +395,9 @@ public class HolidayWorkTimeSheet{
 			val beforeApp = holidayOfDaily.getHolidayWorkFrameTime().stream()
 					.filter(x -> x.getHolidayFrameNo().v().intValue() == holTime.getHolidayFrameNo().v().intValue()).findFirst()
 					.map(x -> x.getBeforeApplicationTime()).orElse(Finally.of(new AttendanceTime(0)));
-			holTime.addBeforeTime(beforeApp.isPresent() ? beforeApp.get() : new AttendanceTime(0));
+			if(holTime.getBeforeApplicationTime().isPresent()){
+				holTime.setBeforeApplicationTime(Finally.of(beforeApp.isPresent() ? beforeApp.get() : new AttendanceTime(0)));
+			}; 
 		});
 		
 		//補正処理を実行する為に、日別勤怠の休出時間のインスタンスを作成
@@ -509,12 +511,12 @@ public class HolidayWorkTimeSheet{
 		return this.workHolidayTime.stream()
 											.map(tc -> {
 												val mapData = tc.changeNotWorkFrameTimeSheet();
-												//B.計算休出時間←A.枠時間.休出時間.時間
+												//B.計算休出時間←A.枠時間.休出時間.計算時間
 												if(tc.getFrameTime().getHolidayWorkTime().isPresent())
-													mapData.setHdTimeCalc(tc.getFrameTime().getHolidayWorkTime().get().getTime());
-												//B.計算振替時間←A.枠時間.振替時間.時間
+													mapData.setHdTimeCalc(tc.getFrameTime().getHolidayWorkTime().get().getCalcTime());
+												//B.計算振替時間←A.枠時間.振替時間.計算時間
 												if(tc.getFrameTime().getTransferTime().isPresent())
-													mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().get().getTime());
+													mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().get().getCalcTime());
 												//休出枠時間帯を作成
 												return mapData;
 											})
