@@ -2,12 +2,12 @@ package nts.uk.screen.at.app.kha003.d;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableFormat;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableOutputContent;
+import nts.uk.screen.at.app.kha003.ManHourSummaryTableFormatDto;
+import nts.uk.screen.at.app.kha003.exportcsv.ManHourSummaryTableOutputContentDto;
 
 @Getter
 @AllArgsConstructor
 public class ManHourAggregationResultDto {
-    private ManHourSummaryTableFormat summaryTableFormat;
-    private ManHourSummaryTableOutputContent outputContent;
+    private ManHourSummaryTableFormatDto summaryTableFormat;
+    private ManHourSummaryTableOutputContentDto outputContent;
 }
