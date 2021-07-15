@@ -2989,36 +2989,45 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    }
                         break;
                     }
-                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(peopleMethod).peopleMethod[0], 'workMethod'), subtitle: getText("KSU001_70") });
-                    leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_71") });
-                    leftHorzContentDs.push({ id: 'id3', title: '', subtitle: getText("KSU001_72") });
-                    for(let i=1; i<=3; i++) {
-                        let objectPeopleMethod = {}, sumPeopleMethod = 0;
-                        _.set(objectPeopleMethod, 'id', 'id'+i);
-                        _.forEach(keys, key => {
-                            if(_.includes(['employeeId', 'sid'], key)) {
-                                return; 
-                            }
-                            let findObject: any = _.find(peopleMethod, item => key==moment(item.date).format('_YYYYMMDD'));
-                            if(!_.isEmpty(findObject) && !_.isEmpty(findObject.peopleMethod)) {
-                                switch(i) {
-                                    case 1: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'planNumber'));
-                                            break;
-                                    case 2: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'scheduleNumber'));
-                                            break;
-                                    case 3: _.set(objectPeopleMethod, key, _.get(findObject.peopleMethod[0], 'actualNumber'));
-                                            break;
-                                    default: break;
-                                }
-                                let subValue: number = _.get(objectPeopleMethod, key);
-                                sumPeopleMethod += subValue;
-                            } else {
-                                _.set(objectPeopleMethod, key, ''); 
-                            }
-                        });
-                        horizontalSumContentDs.push(objectPeopleMethod);    
-                        rightHorzContentDs.push({ id: 'id'+i, sum: sumPeopleMethod });
-                    }
+					let peopleMethodData: any = [];
+					_.forEach(peopleMethod, peopleMethodItem => {
+						_.forEach(peopleMethodItem.peopleMethod, peopleMethodSubItem => {
+							peopleMethodSubItem.date = peopleMethodItem.date;
+							peopleMethodData.push(peopleMethodSubItem);
+						});
+					});
+					_.forEach(_.values(_.groupBy(peopleMethodData, 'workMethod')), (groupItem: Array<any>, index: number) => {
+						leftHorzContentDs.push({ id: 'id'+(index*3+1), title: _.get(_.head(groupItem), 'workMethod'), subtitle: getText("KSU001_70") });
+                    	leftHorzContentDs.push({ id: 'id'+(index*3+2), title: '', subtitle: getText("KSU001_71") });
+                    	leftHorzContentDs.push({ id: 'id'+(index*3+3), title: '', subtitle: getText("KSU001_72") });
+						for(let i=1; i<=3; i++) {
+	                        let objectPeopleMethod = {}, sumPeopleMethod = 0;
+	                        _.set(objectPeopleMethod, 'id', 'id'+(index*3+i));
+	                        _.forEach(keys, key => {
+	                            if(_.includes(['employeeId', 'sid', 'empName'], key)) {
+	                                return; 
+	                            }
+	                            let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
+	                            if(!_.isEmpty(findObject)) {
+	                                switch(i) {
+	                                    case 1: _.set(objectPeopleMethod, key, _.get(findObject, 'planNumber'));
+	                                            break;
+	                                    case 2: _.set(objectPeopleMethod, key, _.get(findObject, 'scheduleNumber'));
+	                                            break;
+	                                    case 3: _.set(objectPeopleMethod, key, _.get(findObject, 'actualNumber'));
+	                                            break;
+	                                    default: break;
+	                                }
+	                                let subValue: number = _.get(objectPeopleMethod, key);
+	                                sumPeopleMethod += subValue;
+	                            } else {
+	                                _.set(objectPeopleMethod, key, ''); 
+	                            }
+	                        });
+	                        horizontalSumContentDs.push(objectPeopleMethod);    
+	                        rightHorzContentDs.push({ id: 'id'+(index*3+i), sum: sumPeopleMethod });
+	                    }
+					});
                     break;
                     
                 // 雇用人数
