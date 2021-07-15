@@ -100,7 +100,7 @@ html, body {
 
 #ba1_5_target_working_hours {
   float: left;
-  margin-left: 72px;
+  /* margin-left: 72px; */
 }
 
 .pt-6 {
