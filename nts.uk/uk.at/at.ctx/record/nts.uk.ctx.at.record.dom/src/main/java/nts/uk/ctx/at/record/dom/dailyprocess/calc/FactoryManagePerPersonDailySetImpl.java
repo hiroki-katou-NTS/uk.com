@@ -151,7 +151,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			}
 			
 			/**　勤務種類 */
-			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTypeCode().get().v())
+			val workType = require.workType(companyId, nowWorkingItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode().v())
 					.orElseThrow(() -> new RuntimeException("No WorkType"));
 		
 			/*平日時*/

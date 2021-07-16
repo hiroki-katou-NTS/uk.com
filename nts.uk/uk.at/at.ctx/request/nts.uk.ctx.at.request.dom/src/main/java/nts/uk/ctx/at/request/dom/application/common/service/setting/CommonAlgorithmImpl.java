@@ -529,7 +529,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		String processWorkTime = null; 
 		if(opWorkingConditionItem.isPresent()) {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
-			Optional<WorkTypeCode> opConditionWktypeCD = opWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTypeCode();
+			Optional<WorkTypeCode> opConditionWktypeCD = Optional.of(opWorkingConditionItem.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
 			List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 			if(opConditionWktypeCD.isPresent() && workTypeCDLst.contains(opConditionWktypeCD.get().v())) {
 				// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)

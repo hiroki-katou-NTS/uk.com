@@ -173,8 +173,7 @@ public class DataWorkServiceImpl implements IDataWorkService {
 		} else {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する
 			
-			Optional<WorkTypeCode> wkTypeOpt = personalLablorCodition.get().getWorkCategory().getWorkTime().getWeekdayTime()
-					.getWorkTypeCode();
+			Optional<WorkTypeCode> wkTypeOpt = Optional.of(personalLablorCodition.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
 			if (wkTypeOpt.isPresent()) {
 				String wkTypeCd = wkTypeOpt.get().v();
 				

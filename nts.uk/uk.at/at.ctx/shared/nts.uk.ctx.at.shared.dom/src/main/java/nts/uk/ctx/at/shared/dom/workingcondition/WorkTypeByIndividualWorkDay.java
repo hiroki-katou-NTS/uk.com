@@ -20,11 +20,11 @@ public class WorkTypeByIndividualWorkDay extends DomainObject {
 	private WorkTypeCode holidayWorkWTypeCode; // goToWorkOnHolidays
 	//休日時: 勤務種類コード
 	private WorkTypeCode holidayTimeWTypeCode; // onHolidays
-	//Optional 法内休出時: 勤務種類コード - InLawBreakTimeWorkTypeCode
+	//Optional 法内休出時: 勤務種類コード - InLawBreakTimeWorkTypeCode - duringLegalHolidays
 	private Optional<WorkTypeCode> inLawBreakTimeWTypeCode;
-	//Optional 法外休出時: 勤務種類コード- OutsideLawBreakTimeWorkTypeCode
+	//Optional 法外休出時: 勤務種類コード- OutsideLawBreakTimeWorkTypeCode - duringExorbitantHolidays
 	private Optional<WorkTypeCode> outsideLawBreakTimeWTypeCode;
-	//Optinal 祝日休出時: 勤務種類コード - HolidayAttendanceTimeWorkTypeCode
+	//Optinal 祝日休出時: 勤務種類コード - HolidayAttendanceTimeWorkTypeCode - holidays
 	private Optional<WorkTypeCode> holidayAttendanceTimeWTypeCode;
 	
 	public WorkTypeByIndividualWorkDay(

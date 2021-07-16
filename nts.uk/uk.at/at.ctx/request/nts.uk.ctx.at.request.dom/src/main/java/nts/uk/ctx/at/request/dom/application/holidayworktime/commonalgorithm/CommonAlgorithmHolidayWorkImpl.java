@@ -698,8 +698,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 				
 				switch(holidayAtr.get()) {
 				case STATUTORY_HOLIDAYS:
-					if(workingConditionItem.get().getWorkCategory().getWorkType().getDuringLegalHolidays().isPresent()) {
-						initWorkTypeCd = workingConditionItem.get().getWorkCategory().getWorkType().getDuringLegalHolidays();
+					if(workingConditionItem.get().getWorkCategory().getWorkType().getInLawBreakTimeWTypeCode().isPresent()) {
+						initWorkTypeCd = workingConditionItem.get().getWorkCategory().getWorkType().getInLawBreakTimeWTypeCode();
 						
 					//	initWorkTypeCd = workingConditionItem.get().getWorkCategory().getInLawBreakTime().get().getWorkTypeCode();
 					//	initWorkTimeCd = workingConditionItem.get().getWorkCategory().getInLawBreakTime().get().getWorkTimeCode();
@@ -707,16 +707,16 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					}	
 					break;
 				case NON_STATUTORY_HOLIDAYS:
-					if(workingConditionItem.get().getWorkCategory().getWorkType().getDuringExorbitantHolidays().isPresent()) {
-						initWorkTypeCd = workingConditionItem.get().getWorkCategory().getWorkType().getDuringExorbitantHolidays();
+					if(workingConditionItem.get().getWorkCategory().getWorkType().getOutsideLawBreakTimeWTypeCode().isPresent()) {
+						initWorkTypeCd = workingConditionItem.get().getWorkCategory().getWorkType().getOutsideLawBreakTimeWTypeCode();
 						//initWorkTypeCd = workingConditionItem.get().getWorkCategory().getOutsideLawBreakTime().get().getWorkTypeCode();
 						//initWorkTimeCd = workingConditionItem.get().getWorkCategory().getOutsideLawBreakTime().get().getWorkTimeCode();
 						hasSetting = true;
 					}	
 					break;
 				case PUBLIC_HOLIDAY:
-					if(workingConditionItem.get().getWorkCategory().getWorkType().getHolidays().isPresent()) {
-						initWorkTypeCd = workingConditionItem.get().getWorkCategory().getWorkType().getHolidays();
+					if(workingConditionItem.get().getWorkCategory().getWorkType().getHolidayAttendanceTimeWTypeCode().isPresent()) {
+						initWorkTypeCd = workingConditionItem.get().getWorkCategory().getWorkType().getHolidayAttendanceTimeWTypeCode();
 						//initWorkTypeCd = workingConditionItem.get().getWorkCategory().getHolidayAttendanceTime().get().getWorkTypeCode();
 						//initWorkTimeCd = workingConditionItem.get().getWorkCategory().getHolidayAttendanceTime().get().getWorkTimeCode();
 						hasSetting = true;
@@ -729,11 +729,11 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					initWorkTimeCd = workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode();
 					
 					Optional<HolidayAtr> noneSettingHolidayAtr = judgmentOneDayHoliday.getHolidayAtr(companyId, 
-							workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTypeCode().isPresent() ? 
-									workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTypeCode().get().v() : null);
+							workingConditionItem.get().getWorkCategory().getWorkType().getHolidayWorkWTypeCode() != null ? 
+									workingConditionItem.get().getWorkCategory().getWorkType().getHolidayWorkWTypeCode().v() : null);
 					if(noneSettingHolidayAtr.isPresent()) {
 						if(holidayAtr.equals(noneSettingHolidayAtr)) {
-							initWorkTypeCd = workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTypeCode();
+							initWorkTypeCd = Optional.of(workingConditionItem.get().getWorkCategory().getWorkType().getHolidayWorkWTypeCode());
 						} else {
 							//	指定する勤務種類リストから指定する休日区分の勤務種類を取得する
 							Optional<WorkType> specifiedHdWorkType = Optional.empty(); 
@@ -755,7 +755,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 			}
 		} else {
 			initWorkTypeCd = workingConditionItem.isPresent() ? 
-					workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTypeCode() : Optional.empty();
+					Optional.of(workingConditionItem.get().getWorkCategory().getWorkType().getHolidayWorkWTypeCode()) : Optional.empty();
 			initWorkTimeCd = workingConditionItem.isPresent() ? 
 					workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode() : Optional.empty();
 		}
