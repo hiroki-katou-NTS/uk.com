@@ -3,23 +3,6 @@
 
 module nts.uk.com.cmf001.c {
 
-    class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        deletable: boolean;
-        constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;
-            this.deletable = deletable;
-        }
-    }
-
     @bean()
     export class ViewModel extends ko.ViewModel {
 
