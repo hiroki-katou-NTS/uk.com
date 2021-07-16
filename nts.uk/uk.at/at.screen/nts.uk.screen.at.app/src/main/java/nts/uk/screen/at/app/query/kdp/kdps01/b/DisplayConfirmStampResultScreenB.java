@@ -111,7 +111,7 @@ public class DisplayConfirmStampResultScreenB {
 		String wkpId =  empDatas.stream()
 				.map(x -> x.getListStampInfoDisp())
 				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 				.findFirst()
 				.map(x -> x.getStamp()
 						.stream()
@@ -128,12 +128,17 @@ public class DisplayConfirmStampResultScreenB {
 		GeneralDate refDate = empDatas.stream()
 				.map(x -> x.getListStampInfoDisp())
 				.flatMap(Collection::stream)
-				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime))
+				.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
 				.findFirst()
 				.map(x -> x.getStampDatetime().toDate())
 				.orElse(null);
-				
-		List<WorkplaceInforExport> listWorkPlaceInfoExport = workplacePub.getWorkplaceInforByWkpIds(cid, Collections.singletonList(wkpId), refDate);
+		
+		//EA4038
+		List<WorkplaceInforExport> listWorkPlaceInfoExport = new ArrayList<>();
+		
+		if (null != wkpId) {
+			listWorkPlaceInfoExport = workplacePub.getWorkplaceInforByWkpIds(cid, Collections.singletonList(wkpId), refDate);
+		}
 		
 		String workplaceCd = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceCode();
 		String workplaceNm = listWorkPlaceInfoExport.isEmpty() ? "" : listWorkPlaceInfoExport.get(0).getWorkplaceDisplayName();

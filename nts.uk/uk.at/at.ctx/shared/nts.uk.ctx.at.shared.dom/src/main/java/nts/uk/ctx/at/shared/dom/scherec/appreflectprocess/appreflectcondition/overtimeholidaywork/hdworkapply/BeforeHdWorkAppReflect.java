@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectDirectBounceClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectStartEndWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectWorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp.WorkInfoDto;
@@ -54,11 +55,14 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 
 		// 始業終業の反映
 		lstId.addAll(
-				ReflectStartEndWork.reflect(require, cid, dailyApp, holidayApp.getWorkingTimeList(), holidayApp.getPrePostAtr()));
+				ReflectStartEndWork.reflect(require, cid, dailyApp, holidayApp.getWorkingTimeList()));
 
 		// 事前休出時間の反映
 		ReflectApplicationTime.process(holidayApp.getApplicationTime().getApplicationTime(), dailyApp,
 				Optional.of(ReflectAppDestination.SCHEDULE));
+		
+		//直行直帰区分の反映
+		lstId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, holidayApp.getBackHomeAtr(), holidayApp.getGoWorkAtr()));
 
 		// [休日出勤時間を実績項目へ反映する]をチェック
 		if (this.getReflectActualHolidayWorkAtr() == NotUseAtr.USE) {
@@ -96,6 +100,9 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 		// 出退勤の反映
 		lstId.addAll(ReflectAttendance.reflect(require, cid, holidayApp.getWorkingTimeList(), ScheduleRecordClassifi.RECORD, dailyApp,
 				Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
+		
+		//直行直帰区分の反映
+		lstId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, holidayApp.getBackHomeAtr(), holidayApp.getGoWorkAtr()));
 
 		// ドメイン「休憩の申請反映」を作成する
 		// 休憩・外出の申請反映

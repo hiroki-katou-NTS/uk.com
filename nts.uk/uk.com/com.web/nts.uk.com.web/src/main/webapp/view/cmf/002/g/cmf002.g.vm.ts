@@ -127,7 +127,7 @@ module nts.uk.com.view.cmf002.g.viewmodel {
             block.invisible();
             self.codeConvertCurrent().listCdConvertDetail.push(new CdConvertDetail('', self.codeConvertCurrent().listCdConvertDetail().length + 1, '', ''));
             self.selectedConvertDetail(self.codeConvertCurrent().listCdConvertDetail().length);
-            $("#fixed-table tr")[self.codeConvertCurrent().listCdConvertDetail().length - 1].scrollIntoView();
+            $("#fixed-table tr")[self.codeConvertCurrent().listCdConvertDetail().length - 1].scrollIntoView(false);
             block.clear();
         }
 

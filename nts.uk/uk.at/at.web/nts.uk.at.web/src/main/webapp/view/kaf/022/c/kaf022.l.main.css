@@ -1,8 +1,7 @@
 #right-content {
 	margin-left: 20px;
-	margin-right: 20px;
-	/* float: left;
-	width: 735px; */
+	overflow-y: auto;
+	padding-top: 45px;
 }
 #left-content{
 	margin-left: 30px;
@@ -74,10 +73,6 @@ td .control-group {
 	background-color: #CFF1A5;
 	white-space: normal !important;
 	padding-left: 10px !important;
-}
-
-.nts-fixed-table.cf {
-	padding-top: 20px;
 }
 
 .inline-radio {
