@@ -1,7 +1,7 @@
 module nts.uk.at.kha003.d {
 
     const API = {
-        //TODO api path
+        aggregation: 'at/screen/kha003/d/aggregation-result'
     };
 
     @bean()
@@ -17,6 +17,9 @@ module nts.uk.at.kha003.d {
         c41Text: KnockoutObservable<any>;
         c51Text: KnockoutObservable<any>;
         dateRange: KnockoutObservable<any>;
+        bScreenData: KnockoutObservable<any>;
+        cScreenData: KnockoutObservable<any>;
+        agCommand: KnockoutObservable<any>;
 
         constructor() {
             super();
@@ -31,56 +34,245 @@ module nts.uk.at.kha003.d {
             vm.c51Text = ko.observable();
             vm.dateRange = ko.observable();
             vm.dateHeaders = ko.observableArray([]);
-            vm.tableDataList =ko .observableArray([
-                1,2,3,4,5,6,7,8,9,10
+            vm.tableDataList = ko.observableArray([
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10
             ]);
+            vm.bScreenData = ko.observable();
+            vm.cScreenData = ko.observable();
+            vm.agCommand = ko.observable();
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
-            vm.$window.storage('kha003AShareData').done((data: any) => {
-                console.log('in side kha003 D:' + data)
-                vm.c21Params(data.c21);
-                vm.c31Params(data.c31);
-                vm.c41Params(data.c41);
-                vm.c51Params(data.c51);
-                vm.c21Text(data.c21.name);
-                vm.c31Text(data.c31.name);
-                vm.c41Text(data.c41.name);
-                vm.c51Text(data.c51.name);
+            vm.$window.storage('kha003AShareData').done((aData: any) => {
+                console.log('in side kha003 D:' + aData)
+                vm.c21Params(aData.c21);
+                vm.c31Params(aData.c31);
+                vm.c41Params(aData.c41);
+                vm.c51Params(aData.c51);
+                vm.c21Text(aData.c21.name);
+                vm.c31Text(aData.c31.name);
+                vm.c41Text(aData.c41.name);
+                vm.c51Text(aData.c51.name);
                 vm.arrangeTaskHeader(vm.c21Text());
                 vm.arrangeTaskHeader(vm.c31Text());
                 vm.arrangeTaskHeader(vm.c41Text());
                 vm.arrangeTaskHeader(vm.c51Text());
+                vm.$window.storage('kha003BShareData').done((bData) => {
+                    vm.bScreenData(bData);
+                    vm.$window.storage('kha003CShareData').done((cData: any) => {
+                        vm.cScreenData(cData);
+                        vm.dateRange(cData.dateRange);
+                        vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate);
+                        let command = vm.getItemData(aData, bData, cData);
+                        vm.initData(command);
+                    })
+                })
             })
-            vm.$window.storage('kha003CShareData').done((data: any) => {
-                vm.dateRange(data.dateRange);
-                vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate)
-            })
+        }
+
+        initData(command: any) {
+            const vm = this;
+            let dfd = $.Deferred<any>();
+            vm.$blockui("invisible");
+            vm.$ajax(API.aggregation, command).done((data) => {
+                vm.$dialog.info({messageId: "Msg_2171"})
+                    .then(() => {
+                        vm.agCommand(data);
+                    });
+            }).fail(function (error) {
+                vm.$dialog.error({messageId: error.messageId});
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+        }
+
+        /**
+         * function for get item data to map with UI
+         * @param aScreenData
+         * @param bScreenData
+         * @param cScreenData
+         * @author rafiqul.islam
+         */
+        getItemData(aScreenData: any, bScreenData: any, cScreenData: any) {
+            let vm = this;
+            let data = cScreenData;
+            let affWorkplaceInfoList: any = vm.mapCode(vm.mapTaskToCOde(0, aScreenData, cScreenData), 0, bScreenData);
+            let workPlaceInfoList: any = vm.mapCode(vm.mapTaskToCOde(1, aScreenData, cScreenData), 1, bScreenData);
+            let employeeInfoList: any = vm.mapCode(vm.mapTaskToCOde(2, aScreenData, cScreenData), 2, bScreenData);
+            let task1List: any = vm.mapCode(vm.mapTaskToCOde(3, aScreenData, cScreenData), 3, bScreenData);
+            let task2List: any = vm.mapCode(vm.mapTaskToCOde(4, aScreenData, cScreenData), 4, bScreenData);
+            let task3List: any = vm.mapCode(vm.mapTaskToCOde(5, aScreenData, cScreenData), 5, bScreenData);
+            let task4List: any = vm.mapCode(vm.mapTaskToCOde(6, aScreenData, cScreenData), 6, bScreenData);
+            let task5List: any = vm.mapCode(vm.mapTaskToCOde(7, aScreenData, cScreenData), 7, bScreenData);
+            let masterNameInfo = {
+                affWorkplaceInfoList: affWorkplaceInfoList,
+                workPlaceInfoList: workPlaceInfoList,
+                employeeInfoList: employeeInfoList,
+                task1List: task1List,
+                task2List: task2List,
+                task3List: task3List,
+                task4List: task4List,
+                task5List: task5List,
+            };
+
+            return {
+                code: "081",
+                masterNameInfo: masterNameInfo,
+                workDetailList: bScreenData.workDetailDataList,
+                period: {
+                    totalUnit: aScreenData.totalUnit,
+                    startDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.startDate : null,
+                    endDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.endDate : null,
+                    yearMonthStart: aScreenData.totalUnit == 1 ? bScreenData.dateRange.startDate : null,
+                    yearMonthEnd: aScreenData.totalUnit == 1 ? bScreenData.dateRange.endDate : null
+                }
+
+            }
+        }
+
+
+        /**
+         * function map selected codes from Kha003 c screen
+         * @param selectedCodes
+         * @param type
+         */
+        mapTaskToCOde(type: any, aScreenData: any, cScreenData: any) {
+            let vm = this;
+            let array: any = [];
+            switch (type) {
+                case 0:
+                    array = vm.match(aScreenData, cScreenData, 0);
+                    break;
+                case 1:
+                    array = vm.match(aScreenData, cScreenData, 1);
+                    break;
+                case 2:
+                    array = vm.match(aScreenData, cScreenData, 2);
+                    break;
+                case 3:
+                    array = vm.match(aScreenData, cScreenData, 3);
+                    break;
+                case 4:
+                    array = vm.match(aScreenData, cScreenData, 4);
+                    break;
+                case 5:
+                    array = vm.match(aScreenData, cScreenData, 5);
+                    break;
+                case 6:
+                    array = vm.match(aScreenData, cScreenData, 6);
+                    break;
+                case 7:
+                    array = vm.match(aScreenData, cScreenData, 7);
+                    break;
+            }
+            return array;
+        }
+
+        match(aScreenData: any, cScreenData: any, type: any) {
+            let params = '';
+            jQuery.each(aScreenData, function (i, val) {
+                console.log(i + ":" + val)
+                if (val.type == type) {
+                    params = i;
+                    return;
+                }
+            });
+            if (params == 'c21') {
+                return cScreenData.c24CurrentCodeList;
+            }
+            if (params == 'c31') {
+                return cScreenData.c34CurrentCodeList;
+            }
+            if (params == 'c41') {
+                return cScreenData.c44CurrentCodeList;
+            }
+            if (params == 'c51') {
+                return cScreenData.c54CurrentCodeList;
+            }
+            return [];
+        }
+
+
+        /**
+         * function map selected codes from Kha003 c screen
+         * @param selectedCodes
+         * @param type
+         */
+        mapCode(selectedCodes: any, type: any, bScreenData: any) {
+            let vm = this;
+            let masterInfo = bScreenData.masterNameInfo;
+            let array: any = [];
+            switch (type) {
+                case 0:
+                    selectedCodes.forEach((data: any) => {
+                        array.push(masterInfo.affWorkplaceInfoList.find(x => x.workplaceCode === data))
+                    });
+                    break;
+                case 1:
+                    selectedCodes.forEach((data: any) => {
+                        array.push(masterInfo.workPlaceInfoList.find(x => x.workplaceCode === data))
+                    });
+                    break;
+                case 2:
+                    selectedCodes.forEach((data: any) => {
+                        array.push(masterInfo.employeeInfoList.find(x => x.employeeCode === data))
+                    });
+                    break;
+                case 3:
+                    array = this.mapTask1To5(selectedCodes, masterInfo.task1List);
+                    break;
+                case 4:
+                    array = this.mapTask1To5(selectedCodes, masterInfo.task2List);
+                    break;
+                case 5:
+                    array = this.mapTask1To5(selectedCodes, masterInfo.task3List);
+                    break;
+                case 6:
+                    array = this.mapTask1To5(selectedCodes, masterInfo.task4List);
+                    break;
+                case 7:
+                    array = this.mapTask1To5(selectedCodes, masterInfo.task5List);
+                    break;
+            }
+            return array;
+        }
+
+        /**
+         * function map task from 1 ~5 for arrange data as request params
+         * @param selectedCodes
+         * @param taskList
+         */
+        mapTask1To5(selectedCodes: any, taskList: any) {
+            let array: any = [];
+            selectedCodes.forEach((data: any) => {
+                array.push(taskList.find(x => x.code === data))
+            });
+            return array;
         }
 
         /**
          * function for D1_4 back to kha003 A screen
          */
-        backToAScreen(){
-            let vm=this;
+        backToAScreen() {
+            let vm = this;
             vm.$jump('/view/kha/003/a/index.xhtml');
         }
 
         /**
          * function export excell data
          */
-        exportExcell(){
-            let vm=this;
+        exportExcell() {
+            let vm = this;
             alert("TODO integrate with server")
         }
 
         /**
          * function export csv data
          */
-        exportCsv(){
-            let vm=this;
+        exportCsv() {
+            let vm = this;
             alert("TODO integrate with server")
         }
 
@@ -88,8 +280,8 @@ module nts.uk.at.kha003.d {
         /**
          * function for display kha003 C screen
          */
-        displayKha003CScreen(){
-            let vm=this;
+        displayKha003CScreen() {
+            let vm = this;
             vm.$window.modal("/view/kha/003/c/index.xhtml").then(() => {
 
             });
