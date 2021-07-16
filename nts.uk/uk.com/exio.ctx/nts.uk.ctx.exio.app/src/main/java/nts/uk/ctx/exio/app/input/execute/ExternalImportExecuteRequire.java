@@ -29,8 +29,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupRepository;
-import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
-import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -64,9 +62,6 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private ConversionTableRepository conversionTableRepo;
-	
-	@Inject
-	private ImportableItemsRepository importableItemsRepo;
 	
 	@Inject
 	private TransferCanonicalDataRepository transferCanonicalDataRepo;
@@ -172,11 +167,6 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public ImportingDataMeta getImportingDataMeta(ExecutionContext context) {
 			return metaRepo.find(context);
-		}
-
-		@Override
-		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
-			return importableItemsRepo.get(groupId, itemNo).get();
 		}
 
 		@Override

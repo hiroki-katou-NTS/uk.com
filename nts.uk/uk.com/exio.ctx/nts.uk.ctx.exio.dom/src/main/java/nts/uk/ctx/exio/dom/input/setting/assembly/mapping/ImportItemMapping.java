@@ -18,6 +18,10 @@ public class ImportItemMapping {
 	private int csvColumnNo;
 	
 	public ImportingCsvItem read(CsvRecord record) {
-		return new ImportingCsvItem(itemNo, record.getItemByColumnNo(csvColumnNo));
+		
+		String value = record.getItemByColumnNo(csvColumnNo)
+				.orElseThrow(() -> new RuntimeException("列が存在しない：" + csvColumnNo));
+		
+		return new ImportingCsvItem(itemNo, value);
 	}
 }

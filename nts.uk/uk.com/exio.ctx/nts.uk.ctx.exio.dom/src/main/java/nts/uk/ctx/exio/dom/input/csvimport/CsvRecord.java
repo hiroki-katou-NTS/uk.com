@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.input.csvimport;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Value;
 
@@ -21,7 +22,14 @@ public class CsvRecord {
 	 * @param columnNo
 	 * @return
 	 */
-	public String getItemByColumnNo(int columnNo) {
-		return rawItems.get(columnNo - 1);
+	public Optional<String> getItemByColumnNo(int columnNo) {
+		
+		int index = columnNo - 1;
+		
+		if (index >= rawItems.size()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(rawItems.get(index));
 	}
 }

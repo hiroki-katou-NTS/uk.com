@@ -63,6 +63,7 @@ public class ImportingMapping {
 	private DataItem assembleImportingItem(RequireAssemble require, ExecutionContext context, ImportingCsvItem csvItem) {
 		
 		val settingCode = new ExternalImportCode(context.getSettingCode());
+		
 		return require.getReviseItem(context.getCompanyId(), settingCode, csvItem.getItemNo())
 				.map(r -> r.revise(csvItem.getCsvValue()))
 				.orElseGet(() -> noRevise(require, context, csvItem));

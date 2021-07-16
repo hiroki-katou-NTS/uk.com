@@ -25,8 +25,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.Helper;
 import nts.uk.ctx.exio.dom.input.canonicalize.Helper.Dummy;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.employee.EmployeeCodeCanonicalization;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 public class EmployementHistoryCanonicalizationTest {

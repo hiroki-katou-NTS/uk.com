@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
-import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItemType;
 
 @Entity
 @Table(name = "XIMCT_WORKSPACE_ITEM")
@@ -26,9 +27,15 @@ public class XimctWorkspaceItem extends JpaEntity {
 	@Column(name = "NAME")
 	public String name;
 	
-	/* 種別 */
-	@Column(name = "TYPE")
-	public int type;
+	/* データ型 */
+	@Column(name = "DATA_TYPE")
+	public int dataType;
+	
+	@Column(name = "LENGTH")
+	public int length;
+	
+	@Column(name = "SCALE")
+	public int scale;
 	
 	public static final JpaEntityMapper<XimctWorkspaceItem> MAPPER = new JpaEntityMapper<>(XimctWorkspaceItem.class);
 	
@@ -43,7 +50,9 @@ public class XimctWorkspaceItem extends JpaEntity {
 					domain.getGroupId().value,
 					domain.getItemNo()),
 				domain.getName(),
-				domain.getType().value);
+				domain.getDataTypeConfig().getType().value,
+				domain.getDataTypeConfig().getLength(),
+				domain.getDataTypeConfig().getScale());
 	}
 	
 	public WorkspaceItem toDomain() {
@@ -51,6 +60,6 @@ public class XimctWorkspaceItem extends JpaEntity {
 				ImportingGroupId.valueOf(pk.groupId),
 				pk.itemNo,
 				name,
-				WorkspaceItemType.valueOf(type));
+				new DataTypeConfiguration(DataType.valueOf(dataType), length, scale));
 	}
 }

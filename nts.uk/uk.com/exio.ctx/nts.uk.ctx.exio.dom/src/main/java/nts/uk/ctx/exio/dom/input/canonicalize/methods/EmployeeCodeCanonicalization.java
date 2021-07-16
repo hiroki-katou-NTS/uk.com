@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.methods.employee;
+package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -9,8 +9,6 @@ import lombok.val;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;

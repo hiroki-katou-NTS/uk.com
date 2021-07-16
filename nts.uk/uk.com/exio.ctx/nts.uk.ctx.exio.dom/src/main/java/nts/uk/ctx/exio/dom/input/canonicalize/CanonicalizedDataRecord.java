@@ -5,8 +5,6 @@ import java.util.stream.Stream;
 
 import lombok.Value;
 import nts.gul.util.OptionalUtil;
-import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
@@ -19,30 +17,30 @@ public class CanonicalizedDataRecord {
 	int rowNo;
 
 	/** 正準化したデータ */
-	DataItemList itemsAfterCanonicalize;
+	CanonicalItemList itemsAfterCanonicalize;
 	
 	/** 正準化対象の正準化前データ */
-	DataItemList itemsBeforeCanonicalize;
+	CanonicalItemList itemsBeforeCanonicalize;
 	
 	/** 正準化対象ではないデータ */
-	DataItemList itemsNotCanonicalize;
+	CanonicalItemList itemsNotCanonicalize;
 	
 	public static CanonicalizedDataRecord noChange(RevisedDataRecord revisedData) {
 		
 		return new CanonicalizedDataRecord(
 				revisedData.getRowNo(),
-				new DataItemList(),
-				new DataItemList(),
-				new DataItemList(revisedData.getItems()));
+				new CanonicalItemList(),
+				new CanonicalItemList(),
+				CanonicalItemList.of(revisedData.getItems()));
 	}
 	
 	/**
 	 * 指定された項目NoのDataItemを返す(beforeよりもafter優先)
 	 * @return
 	 */
-	public Optional<DataItem> getItemByNo(int itemNo) {
+	public Optional<CanonicalItem> getItemByNo(int itemNo) {
 		
-		Stream<DataItemList> lists = Stream.of(
+		Stream<CanonicalItemList> lists = Stream.of(
 				itemsAfterCanonicalize,  // NotにはSIDなどにNULLが入っているので、Notより前にしないとダメ
 				itemsNotCanonicalize,
 				itemsBeforeCanonicalize);
