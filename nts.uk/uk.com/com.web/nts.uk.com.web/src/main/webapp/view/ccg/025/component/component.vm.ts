@@ -79,13 +79,13 @@ module nts.uk.com.view.ccg025.a.component {
             /**
              * truyen them 2 param tu man KSP001 sang
              */
-            startPage(listRoleId?: any, selectedRoleId?: string): JQueryPromise<any> {
+            startPage(listRoleId?: any, selectedRoleId?: string, selectedRoleCode?: string): JQueryPromise<any> {
                 let self = this, roleIds = listRoleId || [];
-                return self.getListRoleByRoleType(self.setting.roleType, self.roleClassification(), roleIds, selectedRoleId);
+                return self.getListRoleByRoleType(self.setting.roleType, self.roleClassification(), roleIds, selectedRoleId, selectedRoleCode);
             }
 
             /** Get list Role by Type */
-            private getListRoleByRoleType(roleType: number, roleAtr: number, listRoleId: any, selectedRoleId: string): JQueryPromise<Array<model.Role>> {
+            private getListRoleByRoleType(roleType: number, roleAtr: number, listRoleId: any, selectedRoleId: string, selectedRoleCode?: string): JQueryPromise<Array<model.Role>> {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getListRoleByRoleType(roleType, roleAtr).done((data: Array<model.Role>) => {
@@ -123,6 +123,9 @@ module nts.uk.com.view.ccg025.a.component {
                             self.currentCode(self.setting.currentCode);
                         } else if (!!selectedRoleId) {
                             self.setting.multiple ? self.currentCode([selectedRoleId]) : self.currentCode(selectedRoleId);
+                        } else if (!!selectedRoleCode) {
+                            const role = _.find(self.listRole(), (r: any) => _.isEqual(r.roleCode, selectedRoleCode));
+                            self.setting.multiple ? self.currentCode(role ? [role.roleId] : []) : self.currentCode(role ? role.roleId : undefined);
                         } else {
                             self.selectFirstItem();
                         }
