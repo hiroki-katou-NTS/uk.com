@@ -1156,7 +1156,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 return vm.$i18n('KAF006_100', [day.toString(), timeString]);
             }
 
-            return vm.$i18n('KAF006_46', day.toString());
+            return vm.$i18n('KAF006_46', [day.toString()]);
         }
 
         checkCondition10(data: any) {

@@ -950,7 +950,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 return vm.$i18n('KAF006_100', [day.toString(), timeString]);
             }
 
-            return vm.$i18n('KAF006_46', day.toString());
+            return vm.$i18n('KAF006_46', [day.toString()]);
         }
 
 		public openKDL003() {
