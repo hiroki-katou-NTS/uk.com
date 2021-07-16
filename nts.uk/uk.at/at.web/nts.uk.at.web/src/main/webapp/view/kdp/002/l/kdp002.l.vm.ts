@@ -59,7 +59,7 @@ module nts.uk.at.view.kdp002.l {
 
         checkNext: KnockoutObservable<boolean> = ko.observable(false);
 
-        checkReturn: KnockoutObservable<boolean> = ko.observable(false);
+        checkReturn: KnockoutObservable<boolean> = ko.observable(true);
         
         searchValue: KnockoutObservable<string> = ko.observable('');
         
@@ -103,10 +103,6 @@ module nts.uk.at.view.kdp002.l {
             } else {
                 vm.checkNext(false);
             }
-
-            if (vm.frameNo() == 1) {
-                vm.checkReturn(false);
-            }
            
         }
 
@@ -115,6 +111,7 @@ module nts.uk.at.view.kdp002.l {
 
             setTimeout(() => {
                 vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(1)]));
+                $('#L2_1').focus();
             }, 300);
 
             vm.framePosition
@@ -135,11 +132,6 @@ module nts.uk.at.view.kdp002.l {
                         }
                     }
 
-                    if (vm.frameNo() == 1) {
-                        vm.checkReturn(false);
-                    } else {
-                        vm.checkReturn(true);
-                    }
                 });
 
             // Trigger button click on enter
@@ -175,7 +167,7 @@ module nts.uk.at.view.kdp002.l {
         getFrameName(frameNo: number) {
             const vm = this;
 
-            if (ko.unwrap(vm.workFrameSetting).length > 0) {
+            if (frameNo > 0 && ko.unwrap(vm.workFrameSetting).length > 0) {
                 return _.find(ko.unwrap(vm.workFrameSetting), ['taskFrameNo', frameNo]).taskFrameName;
             } else {
                 return '';
@@ -260,23 +252,25 @@ module nts.uk.at.view.kdp002.l {
 
         onClickReturn() {
             const vm = this;
-            if (vm.framePosition() != 0) {
-                vm.onClickBack();
+
+            if (vm.frameNo() - 1 == 0) {
+                vm.closeDialogL();
             } else {
-                if (ko.unwrap(vm.model).length > 0) {
-                    if (ko.unwrap(vm.model)[0].frameNo != 1) {
-                  
-                        vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: ko.unwrap(vm.selectedCode)});
-                        vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo() - 1)]));
-                        vm.reload(0);
-                    } else  {
-                        vm.checkBack(false);
-                    }
-                } else {
-                    vm.closeDialogL();
-                }
-               
-                
+
+            vm.frameNo(vm.frameNo() - 1);
+
+            vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo())]));
+
+            if (vm.frameNo() != 1) {
+                let upperFrameWorkCd = vm.wordCodeMap.get(vm.frameNo() - 1);
+                vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: upperFrameWorkCd});
+                vm.reload(0);
+            } else {
+                vm.getTask({sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''});
+            }
+
+            vm.wordCodeMap.set(vm.frameNo(), null);
+
             }
         }
 
@@ -285,20 +279,28 @@ module nts.uk.at.view.kdp002.l {
 
             vm.selectedCode(code);
 
-            vm.frameNo(_.find(ko.unwrap(vm.model), ['code', code]).frameNo);
-            vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo() + 1)]));
-            
-            vm.frameNo(vm.frameNo() + 1);
+            vm.$ajax('at', API.GET_EMPLOYEE_TASKS, {sid: vm.empId, workFrameNo: vm.frameNo() + 1, upperFrameWorkCode: code}).done((result: Result) => {
+                if (result) {
+                    
+                    vm.frameNo(_.find(ko.unwrap(vm.model), ['code', code]).frameNo);
+    
+                    vm.frameNo(vm.frameNo() + 1);
+                    vm.wordCodeMap.set(vm.frameNo() - 1, vm.selectedCode());
 
-            vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: code})
-          
-            vm.reload(0);
-            vm.framePosition(0);
+                    if (result.task.length == 0) {
+                        vm.closeDialogL();
+                    } else {
 
-            if(ko.unwrap(vm.model).length == 0) {
-                vm.closeDialogL();
-            }
-            vm.wordCodeMap.set(vm.frameNo() - 1, vm.selectedCode());
+                    vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo())]));
+                    vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: code})
+                    
+                    vm.reload(0);
+                    vm.framePosition(0);
+                    }
+                        
+                }
+
+            });
          }
 
          closeDialogL() {
@@ -345,11 +347,11 @@ interface Result {
 }
 
 class WorkGroup {
-    workCode1: string = '';
-    workCode2: string = '';
-    workCode3: string = '';
-    workCode4: string = '';
-    workCode5: string = '';
+    workCode1: string | null;
+    workCode2: string | null;
+    workCode3: string | null;
+    workCode4: string | null;
+    workCode5: string | null;
 
     constructor(init?: Partial<WorkGroup>) {
         $.extend(this, init);
