@@ -29,6 +29,7 @@ import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCEMethodAttr;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.EmployeeCodeEditSettingExport;
 import nts.uk.file.at.app.schedule.filemanagement.CheckFileService;
 import nts.uk.file.at.app.schedule.filemanagement.WorkPlaceScheCheckFileParam;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
 @Stateless
@@ -58,6 +59,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             EmployeeCodeEditSettingExport setting) {
         int rowStart = 0;
         int columnStart = 0;
+        boolean isColumnNameExist = true;
         
         List<GeneralDate> listDate = new ArrayList<GeneralDate>();
         List<CapturedRawDataOfCell> contents = new ArrayList<CapturedRawDataOfCell>();
@@ -87,11 +89,21 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             } else {
                 throw new BusinessException("Msg_2192");
             }
+            
+            if (!cellStart.getStringValue().equals(TextResource.localize("KDL055_29"))) {
+                throw new BusinessException("Msg_2208");
+            }
+        }
+        
+        // check cell empName exist
+        Cell temp = cells.get(rowStart, columnStart + 1);
+        if (!temp.getStringValue().equals(TextResource.localize("KDL055_30"))) {
+            isColumnNameExist = false;
         }
 
         // loop for header
         int countHead = 0;
-        for (int i = columnStart + 2; i < columnStart + 66; i++) {
+        for (int i = columnStart + (isColumnNameExist ? 2 : 1); i < columnStart + (isColumnNameExist ? 66 : 61); i++) {
             Cell cellDate = cells.get(rowStart, i);
 
             String cellValueDisplay = cellDate.getStringValue();
@@ -121,7 +133,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             listDate.add(date);
 
             // check number of date > 62
-            if (i == (columnStart + 64)) {
+            if (i == (columnStart + (isColumnNameExist ? 64 : 63))) {
                 throw new BusinessException("Msg_1799");
             }
 
@@ -151,7 +163,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             
             // loop for data of each row
             for (int j = 1; j <= countHead; j++) {
-                Cell rowItem = cells.get(i, columnStart + 1 + j);
+                Cell rowItem = cells.get(i, columnStart + (isColumnNameExist ? 1 : 0) + j);
                 GeneralDate ymd = listDate.get(j - 1);
                 ShiftMasterImportCode shiftCode = null;
                 String itemValue = rowItem.getStringValue();
