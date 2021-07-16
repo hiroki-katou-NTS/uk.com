@@ -134,7 +134,8 @@ module nts.uk.at.view.ksm011.e {
       vm.componentViewmodel = new ccg.component.viewmodel.ComponentModel({
         roleType: 3,
         multiple: false,
-        isAlreadySetting: false
+        isAlreadySetting: false,
+        onDialog: true
       });
 
       vm.getDataCCG025().done(() => { });
