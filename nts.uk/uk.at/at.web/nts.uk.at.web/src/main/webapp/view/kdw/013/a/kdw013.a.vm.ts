@@ -794,6 +794,8 @@ module nts.uk.ui.at.kdw013.a {
 
                     }
                 });
+    
+                
 
                 vm.departments = ko.computed({
                     read: () => {
@@ -848,6 +850,11 @@ module nts.uk.ui.at.kdw013.a {
                                 vm.params.employee(first.employeeId);
                             }
 
+                        } else {
+                            if (emps.length) {
+                                const [first] = emps;
+                                vm.params.employee(first.employeeId);
+                            }
                         }
                     });
             }
