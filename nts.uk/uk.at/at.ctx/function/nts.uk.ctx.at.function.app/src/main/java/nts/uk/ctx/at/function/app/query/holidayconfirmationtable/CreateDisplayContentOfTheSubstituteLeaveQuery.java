@@ -255,7 +255,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
             rs.add(sub);
         }
         if (rs.isEmpty()) {
-            throw new BusinessException("Msg_1894");
+            throw new BusinessException("Msg_1926");
         }
         return rs;
     }
@@ -315,6 +315,6 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 if (checkShow == 0) return false;
             }
         }
-        return true;
+        return false;
     }
 }

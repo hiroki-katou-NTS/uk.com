@@ -63,4 +63,12 @@
 .kdr-003 .panel .switchButton-wrapper button {
     width: 65px;
 }
+.kdr-003 .panel .switchbox-wrappers .radio-wrapper {
+    flex-direction: column;
+    width: 65px;
+    text-align: center;
+}
+.panel-row .form-label {
+    width: 220px;
+}
 

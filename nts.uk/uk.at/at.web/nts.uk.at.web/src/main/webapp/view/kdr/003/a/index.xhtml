@@ -51,10 +51,10 @@
                             <div class="radios-group" style="width: 300px;">
                                 <div tabindex="3"
                                      data-bind="ntsCheckBox: { checked: moreSubstituteHolidaysThanHolidays }"
-                                >#{i18n.getText('KDR003_11')}</div>
+                                >#{i18n.getText('KDR003_10')}</div>
                                 <div tabindex="4"
                                      data-bind="ntsCheckBox: { checked: moreHolidaysThanSubstituteHolidays }"
-                                >#{i18n.getText('KDR003_12')}</div>
+                                >#{i18n.getText('KDR003_11')}</div>
                             </div>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="row-right row-switch-button">
-                            <div tabindex="5"
+                            <div tabindex="5" style="display: inline-flex;"
                                  class="cf"
                                  data-bind="ntsSwitchButton: {
                                             name: '#[KDR003_12]',
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <div class="panel-row">
-                        <div class="row-left" style="width: 300px;">
+                        <div class="row-left" style="display: flex; width: 300px;">
 
                             <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KDR003_15')">
                             </div>
