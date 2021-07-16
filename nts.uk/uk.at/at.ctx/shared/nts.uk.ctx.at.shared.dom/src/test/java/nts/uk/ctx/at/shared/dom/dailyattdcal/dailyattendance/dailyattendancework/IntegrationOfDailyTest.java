@@ -45,42 +45,6 @@ public class IntegrationOfDailyTest {
 	@Injectable
 	OutingTimeOfDailyAttd outingTime;
 	
-	/**
-	 * 時間休暇を取得する GettingTimeVacactionService == empty
-	 */	
-	@Test
-	public void testGetTimeVacation_empty() {
-		
-		new MockUp<GettingTimeVacactionService>() {
-			
-			@Mock
-			public Map<TimezoneToUseHourlyHoliday, TimeVacation> get(Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
-					Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,
-					Optional<OutingTimeOfDailyAttd> outingTime) {
-				
-				return Collections.emptyMap();
-			}
-			
-		};
-		
-		// Arrange
-		IntegrationOfDaily  target = Helper.createWithParams(
-				Optional.of(timeLeaving), 
-				Optional.of(attendanceTime),
-				Optional.of(outingTime));
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
-		
-		// Assert
-		assertThat(result).isEmpty();
-		
-	}
-	
-	/**
-	 * 時間休暇を取得する GettingTimeVacactionService == not empty
-	 */	
-	
 	@Test
 	public void testGetTimeVacation_success(
 			@Injectable Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacations) {
@@ -93,6 +57,7 @@ public class IntegrationOfDailyTest {
 					Optional<OutingTimeOfDailyAttd> outingTime) {
 
 				return timeVacations;
+				
 			}
 			
 		};

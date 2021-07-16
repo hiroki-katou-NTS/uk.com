@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -506,40 +505,6 @@ public class WorkScheduleTest {
 					);
 	}
 	
-	/**
-	 * 時間休暇を取得する GettingTimeVacactionService == empty
-	 */	
-	@Test
-	public void testGetTimeVacation_empty() {
-
-		// Arrange
-		WorkSchedule target = WorkScheduleHelper.createWithParams(
-										Optional.of(timeLeaving), 
-										Optional.of(attendanceTime),
-										Optional.of(outingTime));
-		
-		new MockUp<GettingTimeVacactionService>() {
-			
-			@Mock
-			public Map<TimezoneToUseHourlyHoliday, TimeVacation> get(Optional<TimeLeavingOfDailyAttd> optTimeLeaving,
-					Optional<AttendanceTimeOfDailyAttendance> optAttendanceTime,
-					Optional<OutingTimeOfDailyAttd> outingTime) {
-				
-				return Collections.emptyMap();
-			}
-			
-		};
-		
-		// Action
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = target.getTimeVacation();
-		
-		// Assert
-		assertThat(result).isEmpty();
-	}
-	
-	/**
-	 * 時間休暇を取得する GettingTimeVacactionService == not empty
-	 */	
 	@Test
 	public void testGetTimeVacation_success(
 			@Injectable Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacations ) {	
@@ -552,6 +517,7 @@ public class WorkScheduleTest {
 					Optional<OutingTimeOfDailyAttd> outingTime) {
 
 				return timeVacations;
+				
 			}
 
 		};
