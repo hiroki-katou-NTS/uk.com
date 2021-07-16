@@ -5,12 +5,11 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
-import nts.uk.screen.at.app.kdl053.RegistrationErrorListDto;
-import nts.uk.screen.at.app.kha003.b.ManHourPeriod;
-import nts.uk.screen.at.app.kha003.d.AggregationResultQuery;
-import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
-import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.DisplayFormat;
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.TotalUnit;
+import nts.uk.screen.at.app.kha003.SummaryItemDetailDto;
+import nts.uk.screen.at.app.kha003.SummaryItemDto;
+import nts.uk.screen.at.app.kha003.VerticalValueDailyDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
@@ -23,7 +22,6 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,17 +67,17 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
 //        ManHourAggregationResultDto data = new ManHourAggregationResultDto(
 //                Dummy.SummaryTableFormat.create(),
 //                Dummy.SummaryTableOutputContent.create());
-        val detailFormatSetting = query.getSummaryTableFormat().getDetailFormatSetting();
-        val displayFormat = detailFormatSetting.getDisplayFormat();
+        val formatSetting = query.getSummaryTableFormat();
+        val displayFormat = DisplayFormat.of(formatSetting.getDisplayFormat());
         val outputContent = query.getOutputContent();
-        val totalUnit = detailFormatSetting.getTotalUnit();
-        int maxRangeDate = totalUnit == TotalUnit.DATE ? query.getPeriod().getDateList().size() : query.getPeriod().getYearMonthList().size();
+        val totalUnit = formatSetting.getTotalUnit();
+        int maxRangeDate = totalUnit == TotalUnit.DATE.value ? query.getPeriod().getDateList().size() : query.getPeriod().getYearMonthList().size();
 
-        // Flag display total
-        val isDisplayTotal = detailFormatSetting.getDisplayVerticalHorizontalTotal().value == 1;
+        // Flag display total  (USE = 1)
+        val isDisplayTotal = formatSetting.getDispHierarchy() == 1;
 
         // create Header list
-        List<String> headerList = this.createTextHeader(query, detailFormatSetting, isDisplayTotal);
+        List<String> headerList = this.createTextHeader(query, isDisplayTotal);
 
         // Add data source
         List<Map<String, Object>> dataSource = new ArrayList<>();
@@ -92,9 +90,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         generator.generate(exportServiceContext.getGeneratorContext(), fileData);
     }
 
-    private void dataOutputProcessing(ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, TotalUnit unit, List<Map<String, Object>> dataSource,
+    private void dataOutputProcessing(ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int unit, List<Map<String, Object>> dataSource,
                                       List<String> headerList, int maxRangeDate, DisplayFormat dispFormat) {
-        for (SummaryItemDetail level1 : outputContent.getItemDetails()) {
+        for (SummaryItemDetailDto level1 : outputContent.getItemDetails()) {
             if (level1.getChildHierarchyList().isEmpty()) {
                 Map<String, Object> row1 = new HashMap<>();
                 row1.put(headerList.get(0), level1.getCode());
@@ -105,11 +103,11 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                     row1.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap1.getOrDefault(headerList.get(i), 0)), dispFormat));
                 }
                 if (isDispTotal) {  // Tong chieu ngang
-                    row1.put(headerList.get(headerList.size() - 1), formatValue(level1.getTotalPeriod().isPresent() ? Double.valueOf(level1.getTotalPeriod().get()) : 0, dispFormat));
+                    row1.put(headerList.get(headerList.size() - 1), formatValue((double) level1.getTotalPeriod(), dispFormat));
                 }
                 dataSource.add(row1);
             } else {
-                for (SummaryItemDetail level2 : level1.getChildHierarchyList()) {
+                for (SummaryItemDetailDto level2 : level1.getChildHierarchyList()) {
                     if (level2.getChildHierarchyList().isEmpty()) {
                         Map<String, Object> row2 = new HashMap<>();
                         row2.put(headerList.get(0), level1.getCode());
@@ -122,11 +120,11 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                             row2.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(i), 0)), dispFormat));
                         }
                         if (isDispTotal) {  // Tong chieu ngang
-                            row2.put(headerList.get(headerList.size() - 1), formatValue(level2.getTotalPeriod().isPresent() ? Double.valueOf(level2.getTotalPeriod().get()) : 0, dispFormat));
+                            row2.put(headerList.get(headerList.size() - 1), formatValue((double) level2.getTotalPeriod(), dispFormat));
                         }
                         dataSource.add(row2);
                     } else {
-                        for (SummaryItemDetail level3 : level2.getChildHierarchyList()) {
+                        for (SummaryItemDetailDto level3 : level2.getChildHierarchyList()) {
                             if (level3.getChildHierarchyList().isEmpty()) {
                                 Map<String, Object> row3 = new HashMap<>();
                                 row3.put(headerList.get(0), level1.getCode());
@@ -141,11 +139,11 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                                     row3.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap3.getOrDefault(headerList.get(i), 0)), dispFormat));
                                 }
                                 if (isDispTotal) { // Tong chieu ngang
-                                    row3.put(headerList.get(headerList.size() - 1), formatValue(level3.getTotalPeriod().isPresent() ? Double.valueOf(level3.getTotalPeriod().get()) : 0, dispFormat));
+                                    row3.put(headerList.get(headerList.size() - 1), formatValue((double) level3.getTotalPeriod(), dispFormat));
                                 }
                                 dataSource.add(row3);
                             } else {
-                                for (SummaryItemDetail level4 : level3.getChildHierarchyList()) {
+                                for (SummaryItemDetailDto level4 : level3.getChildHierarchyList()) {
                                     Map<String, Object> row4 = new HashMap<>();
                                     row4.put(headerList.get(0), level1.getCode());
                                     row4.put(headerList.get(1), level1.getDisplayInfo().getName());
@@ -161,7 +159,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                                         row4.put(headerList.get(i), formatValue(Double.valueOf(workingTimeMap4.getOrDefault(headerList.get(i), 0)), dispFormat));
                                     }
                                     if (isDispTotal) { // Tong chieu ngang
-                                        row4.put(headerList.get(headerList.size() - 1), formatValue(level4.getTotalPeriod().isPresent() ? Double.valueOf(level4.getTotalPeriod().get()) : 0, dispFormat));
+                                        row4.put(headerList.get(headerList.size() - 1), formatValue((double) level4.getTotalPeriod(), dispFormat));
                                     }
                                     dataSource.add(row4);
                                 }
@@ -172,7 +170,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                                         val mapTotal4 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
                                         rowTotalLv4.put(headerList.get(i), formatValue(Double.valueOf(mapTotal4.getOrDefault(headerList.get(i), 0)), dispFormat));
                                     }
-                                    rowTotalLv4.put(headerList.get(headerList.size() - 1), formatValue(level3.getTotalPeriod().isPresent() ? Double.valueOf(level3.getTotalPeriod().get()) : 0, dispFormat));
+                                    rowTotalLv4.put(headerList.get(headerList.size() - 1), formatValue((double) level3.getTotalPeriod(), dispFormat));
                                     dataSource.add(rowTotalLv4);
                                 }
                             }
@@ -184,7 +182,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                                 val mapTotal2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
                                 rowTotalLv3.put(headerList.get(i), formatValue(Double.valueOf(mapTotal2.getOrDefault(headerList.get(i), 0)), dispFormat));
                             }
-                            rowTotalLv3.put(headerList.get(headerList.size() - 1), formatValue(level2.getTotalPeriod().isPresent() ? Double.valueOf(level2.getTotalPeriod().get()) : 0, dispFormat));
+                            rowTotalLv3.put(headerList.get(headerList.size() - 1), formatValue((double) level2.getTotalPeriod(), dispFormat));
                             dataSource.add(rowTotalLv3);
                         }
                     }
@@ -196,7 +194,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                         val mapTotal2 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
                         rowTotalLv2.put(headerList.get(i), formatValue(Double.valueOf(mapTotal2.getOrDefault(headerList.get(i), 0)), dispFormat));
                     }
-                    rowTotalLv2.put(headerList.get(headerList.size() - 1), formatValue(level1.getTotalPeriod().isPresent() ? Double.valueOf(level1.getTotalPeriod().get()) : 0, dispFormat));
+                    rowTotalLv2.put(headerList.get(headerList.size() - 1), formatValue((double) level1.getTotalPeriod(), dispFormat));
                     dataSource.add(rowTotalLv2);
                 }
             }
@@ -208,17 +206,17 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                 val mapTotal = this.getWorkingTimeByDate(unit, outputContent.getVerticalTotalValues());
                 rowTotal.put(headerList.get(i), formatValue(Double.valueOf(mapTotal.getOrDefault(headerList.get(i), 0)), dispFormat));
             }
-            rowTotal.put(headerList.get(headerList.size() - 1), formatValue(outputContent.getTotalPeriod().isPresent() ? Double.valueOf(outputContent.getTotalPeriod().get()) : 0, dispFormat));
+            rowTotal.put(headerList.get(headerList.size() - 1), formatValue((double) outputContent.getTotalPeriod(), dispFormat));
             dataSource.add(rowTotal);
         }
     }
 
-    private Map<String, Integer> getWorkingTimeByDate(TotalUnit unit, List<VerticalValueDaily> lstValueDaily) {
+    private Map<String, Integer> getWorkingTimeByDate(int unit, List<VerticalValueDailyDto> lstValueDaily) {
         Map<String, Integer> map = new HashMap<>();
-        if (unit == TotalUnit.DATE)
-            lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
+        if (unit == TotalUnit.DATE.value)
+            lstValueDaily.forEach(d -> map.put(d.getDate(), d.getWorkingHours()));
         else
-            lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
+            lstValueDaily.forEach(d -> map.put(d.getYearMonth(), d.getWorkingHours()));
 
         return map;
     }
@@ -227,23 +225,23 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
      * create text Header
      *
      * @param query
-     * @param detailSetting
      * @param isDispTotal
      * @return
      */
-    private List<String> createTextHeader(ManHourDataSummaryQuery query, DetailFormatSetting detailSetting, boolean isDispTotal) {
+    private List<String> createTextHeader(ManHourDataSummaryQuery query, boolean isDispTotal) {
+        val formatSetting = query.getSummaryTableFormat();
         List<String> lstHeader = new ArrayList<>();
         // Sort before adding
-        val sortedList = detailSetting.getSummaryItemList().stream().sorted(Comparator.comparing(SummaryItem::getHierarchicalOrder)).collect(Collectors.toList());
+        val sortedList = formatSetting.getSummaryItems().stream().sorted(Comparator.comparing(SummaryItemDto::getHierarchicalOrder)).collect(Collectors.toList());
         // Add code & name to header
         for (int i = 0; i < sortedList.size(); i++) {
-            SummaryItem item = sortedList.get(i);
+            SummaryItemDto item = sortedList.get(i);
             lstHeader.add(TextResource.localize(CODE_HEADER) + i);
-            lstHeader.add(item.getSummaryItemType().nameId);
+            lstHeader.add(item.getItemTypeName());
         }
 
         // Add date/yearMonth list to header
-        if (detailSetting.getTotalUnit() == TotalUnit.DATE)
+        if (formatSetting.getTotalUnit() == TotalUnit.DATE.value)
             query.getPeriod().getDateList().forEach(date -> lstHeader.add(date.toString()));
         else
             query.getPeriod().getYearMonthList().forEach(ym -> lstHeader.add(yearMonthToString(ym)));
