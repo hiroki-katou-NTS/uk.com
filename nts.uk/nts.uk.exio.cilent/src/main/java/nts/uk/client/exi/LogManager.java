@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
 
+import nts.arc.time.GeneralDateTime;
+
 public class LogManager {
 
 	private static final String logfile;
@@ -32,7 +34,7 @@ public class LogManager {
 	}
 
 	public static void out(String str) {
-		System.out.println(str);
+		system_out(str);
 		outputLog(str);
 	}
 
@@ -41,43 +43,43 @@ public class LogManager {
 	}
 
 	public static void err(String str) {
-		System.err.println(str);
+		system_error(str);
 		outputLog(str);
 	}
 
 	public static void err(Exception e) {
-		System.err.println(e.toString());
+		system_error(e.toString());
 		outputLog(e.toString());
 
 		if (e.getStackTrace() == null) return;
 
 		Arrays.stream(e.getStackTrace())
 			.forEach(st -> {
-				System.err.println(st.toString());
+				system_error(st.toString());
 				outputLog(st.toString());
 			});
 	}
+	
+	private static void system_out(String str) {
+		System.out.println("[" + GeneralDateTime.now().toString() + "]: " + str);
+	}
+	private static void system_error(String str) {
+		System.err.println("[" + GeneralDateTime.now().toString() + "]: " + str);
+	}
 
 	private static void outputLog(String str) {
-		BufferedWriter bw = null;
-		try {
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(logfile, true),"UTF-8"));
+		String outputStr = "[" +GeneralDateTime.now().toString() + "]: " + str;
+		try (FileOutputStream fos = new FileOutputStream(logfile, true);
+				OutputStreamWriter osw = new OutputStreamWriter(fos,"UTF-8");
+				BufferedWriter bw = new BufferedWriter(osw);) {
 
-			bw.write(str);
+			bw.write(outputStr);
 			bw.newLine();
+			bw.flush();
 		}
 		catch(Exception e) {
-			System.out.println(e.getMessage());
+			system_out(e.getMessage());
 			e.printStackTrace();
-		}
-		finally {
-			try {
-				if(bw != null) {
-					bw.flush();
-					bw.close();
-				}
-			} catch (IOException e) {
-			}
 		}
 	}
 }
