@@ -346,19 +346,21 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	/**
 	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
-		if(!duplicates.isPresent())
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
 			return;
-		
-		//時間帯を変更する
-		this.shiftTimeSheet(duplicates.get());
+		}
+		this.timeSheet = duplicate.get();
+		//控除時間帯の登録
+		this.registDeductionList(ActualWorkTimeSheetAtr.HolidayWork, this.getCloneDeductionTimeSheet(), commonSet);
 		//外出の相殺時間を削除する
 		this.deleteOffsetTimeOfGoOut();
-		//加給時間帯、特定加給時間帯、深夜時間帯を指定した時間帯に絞り込む
-		this.reduceRangeOfBonusPay(duplicates.get());
-		this.reduceRangeOfSpecBonusPay(duplicates.get());
-		this.reduceRangeOfMidnight(duplicates.get());
+		//加給時間帯、特定加給時間帯、深夜時間帯を変更する
+		this.bonusPayTimeSheet = this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, duplicate.get());
+		this.specBonusPayTimesheet = this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, duplicate.get());
+		this.midNightTimeSheet = this.midNightTimeSheet.getDuplicateRangeTimeSheet(duplicate.get());
 	}
 }

@@ -253,17 +253,22 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem{
 	/**
 	 * 遅刻早退時間帯を指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param actualAtr 実働時間帯区分
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
-		if(!duplicates.isPresent())
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, ActualWorkTimeSheetAtrForLate actualAtr,
+			DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
 			return;
-		
-		//時間帯を変更する
-		this.shiftTimeSheet(duplicates.get());
-		
+		}
+		this.timeSheet = duplicate.get();
+		//控除時間帯の登録
+		this.registDeductionList(actualAtr, deductionTimeSheet, commonSet);
 		//控除相殺時間を削除する
-		if(this.deductionOffSetTime.isPresent())
+		if(this.deductionOffSetTime.isPresent()) {
 			this.deductionOffSetTime = Optional.empty();
+		}
 	}
 }

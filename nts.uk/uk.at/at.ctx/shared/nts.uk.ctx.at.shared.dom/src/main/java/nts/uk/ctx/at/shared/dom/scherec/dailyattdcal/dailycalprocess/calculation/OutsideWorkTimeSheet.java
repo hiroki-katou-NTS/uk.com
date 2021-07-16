@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -303,16 +304,16 @@ public class OutsideWorkTimeSheet {
 	/**
 	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
 		if(this.overTimeWorkSheet.isPresent()) {
 			//残業時間帯を指定した時間帯に絞り込む
-			this.overTimeWorkSheet.get().reduceRange(timeSpan);
+			this.overTimeWorkSheet.get().reduceRange(timeSpan, commonSet);
 		}
-		
 		if(this.holidayWorkTimeSheet.isPresent()) {
 			//休出時間帯を指定した時間帯に絞り込む
-			this.holidayWorkTimeSheet.get().reduceRange(timeSpan);
+			this.holidayWorkTimeSheet.get().reduceRange(timeSpan, commonSet);
 		}
 	}
 }

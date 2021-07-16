@@ -1272,36 +1272,39 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	/**
 	 * 指定した時間帯に絞り込む
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
-		if(!duplicates.isPresent())
+	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
 			return;
-		
+		}
 		//時間帯を変更する
-		this.shiftTimeSheet(duplicates.get());
+		this.timeSheet = duplicate.get();
+		//遅刻早退控除前時間帯を変更する
+		this.beforeLateEarlyTimeSheet = this.beforeLateEarlyTimeSheet.getDuplicatedWith(duplicate.get()).orElse(duplicate.get());
 		
 		//外出の相殺時間を削除する
 		this.deleteOffsetTimeOfGoOut();
 		
 		//加給時間帯、特定加給時間帯、深夜時間帯を指定した時間帯に絞り込む
-		this.reduceRangeOfBonusPay(duplicates.get());
-		this.reduceRangeOfSpecBonusPay(duplicates.get());
-		this.reduceRangeOfMidnight(duplicates.get());
+		this.bonusPayTimeSheet = this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, duplicate.get());
+		this.specBonusPayTimesheet = this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, duplicate.get());
+		this.midNightTimeSheet = this.midNightTimeSheet.getDuplicateRangeTimeSheet(duplicate.get());
 		
 		//遅刻時間帯を指定した時間帯に絞り込む
-		if(this.lateTimeSheet.isPresent())
-			this.lateTimeSheet.get().reduceRange(duplicates.get());
-		
+		if(this.lateTimeSheet.isPresent()) {
+			this.lateTimeSheet.get().reduceRange(duplicate.get(), this.getCloneDeductionTimeSheet(), commonSet.get());
+		}
 		//早退時間帯を指定した時間帯に絞り込む
-		if(this.leaveEarlyTimeSheet.isPresent())
-			this.leaveEarlyTimeSheet.get().reduceRange(duplicates.get());
-		
+		if(this.leaveEarlyTimeSheet.isPresent()) {
+			this.leaveEarlyTimeSheet.get().reduceRange(duplicate.get(), this.getCloneDeductionTimeSheet(), commonSet.get());
+		}
 		//所定内時間帯を指定した時間帯に絞り込む
-		if(this.premiumTimeSheetInPredetermined.isPresent())
-			this.premiumTimeSheetInPredetermined.get().reduceRange(duplicates.get());
-		
-		//遅刻早退控除前時間帯を変更する
-		this.beforeLateEarlyTimeSheet = duplicates.get();
+		if(this.premiumTimeSheetInPredetermined.isPresent()) {
+			this.premiumTimeSheetInPredetermined.get().reduceRange(duplicate.get());
+		}
+		//控除時間帯の登録
+		this.registDeductionListForWithin(this.getCloneDeductionTimeSheet(), commonSet);
 	}
 }

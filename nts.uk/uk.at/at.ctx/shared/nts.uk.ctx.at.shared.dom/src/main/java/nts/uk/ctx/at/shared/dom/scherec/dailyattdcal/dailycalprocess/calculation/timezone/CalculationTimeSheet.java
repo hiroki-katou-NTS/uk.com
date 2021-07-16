@@ -549,13 +549,17 @@ public abstract class CalculationTimeSheet {
 	 * 外出の相殺時間を削除する
 	 */
 	public void deleteOffsetTimeOfGoOut() {
-		List<TimeSheetOfDeductionItem> rec = new ArrayList<>(this.recordedTimeSheet);
+		List<TimeSheetOfDeductionItem> rec = this.recordedTimeSheet.stream()
+				.map(t->t.clone())
+				.collect(Collectors.toList());
 		this.recordedTimeSheet.clear();
 		this.recordedTimeSheet = rec.stream()
 				.map(t->t.getAfterDeleteOffsetTime())
 				.collect(Collectors.toList());
 		
-		List<TimeSheetOfDeductionItem> ded = new ArrayList<>(this.deductionTimeSheet);
+		List<TimeSheetOfDeductionItem> ded = this.deductionTimeSheet.stream()
+				.map(t->t.clone())
+				.collect(Collectors.toList());
 		this.deductionTimeSheet.clear();
 		this.deductionTimeSheet = ded.stream()
 				.map(t->t.getAfterDeleteOffsetTime())
