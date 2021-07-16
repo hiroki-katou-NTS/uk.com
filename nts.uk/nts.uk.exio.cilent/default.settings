@@ -1,8 +1,8 @@
-## ログファイル名
-LogFilePath=D:\\uk_exio\\log\\log.txt
+## 設定ファイル名
+SettingFile=D:\\uk_exio\\importlist.csv
 
-## 取り込むCSVファイルのフォルダパス
-CsvFolderPath=D:\\uk_exio\\csv
+## ログファイル名
+LogFile=D:\\uk_exio\\log\\log.txt
 
 ## UkサーバーUrl
 UkServerUrl=http://localhost:8080
@@ -13,6 +13,3 @@ TenantCode=000000000002
 TenantLoginPassword=0
 ## 会社コード
 CompanyCode=0003
-
-## 設定コード
-SettingCode=001

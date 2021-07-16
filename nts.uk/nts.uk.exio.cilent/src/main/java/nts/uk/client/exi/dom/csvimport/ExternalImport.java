@@ -1,6 +1,8 @@
 package nts.uk.client.exi.dom.csvimport;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,14 +26,14 @@ public class ExternalImport {
     
     private String settingCode;
 
-	public ExternalImport() {
+	public ExternalImport(String settingCode) {
 		this.serverUrl = ExiClientProperty.getProperty(ExiClientProperty.UK_SERVER_URL);
 		
     	this.constractCode = ExiClientProperty.getProperty(ExiClientProperty.UK_CONTRACT_CODE);
     	this.tenantLoginPassword = ExiClientProperty.getProperty(ExiClientProperty.UK_CONTRACT_LOGIN_PASS);
 		this.companyCode = ExiClientProperty.getProperty(ExiClientProperty.UK_COMPANY_CODE);
 
-		this.settingCode = ExiClientProperty.getProperty(ExiClientProperty.SETTING_CODE);
+		this.settingCode = settingCode;
 	}
 
 	public boolean doWork(String fileId) {
@@ -97,6 +99,7 @@ public class ExternalImport {
 	private List<String> callWebService(URL url, String json, List<String> cookieList) throws IOException {
 		int status = 0;
     	HttpURLConnection httpConn = null;
+		StringBuilder responce = new StringBuilder();
     	try {
 			httpConn = (HttpURLConnection) url.openConnection();
 		    if (cookieList != null) {
@@ -117,12 +120,21 @@ public class ExternalImport {
 
 			status = httpConn.getResponseCode();
 
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()))) {
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					responce.append(line + EOL);
+				}
+			}
     	} finally {
 			httpConn.disconnect();
 		}
 
-		if(status < 200 || status >= 300) {
-			throw new RuntimeException("Server returned error code:" + status);
+		if(status != 200) {
+			String errorMessage = "ERROR" + status + "](" + url.toString() + "):"
+				+ httpConn.getResponseMessage()
+				+ (!responce.toString().isEmpty() ? "\r\n" + responce.toString() : "");
+			throw new RuntimeException(errorMessage);
 		}
 		
 		Map<String, List<String>> headerFiesds = httpConn.getHeaderFields();

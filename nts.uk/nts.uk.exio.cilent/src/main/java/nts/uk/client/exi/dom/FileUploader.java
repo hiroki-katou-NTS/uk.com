@@ -37,10 +37,10 @@ public class FileUploader {
 	private static final String STEREOTYPE = "import_csv";
 	private static final String SERVICE_URL = "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload";
 
-	public List<StoredFileInfo> doWork() {
+	public List<StoredFileInfo> doWork(String csvFolderPath) {
 		LogManager.out("ファイルのアップロード -- 開始 --");
 		
-		File csvFolder = new File(ExiClientProperty.getProperty(ExiClientProperty.CSV_FOLDER_PATH));
+		File csvFolder = new File(csvFolderPath);
 		FilenameFilter filter = new FilenameFilter() {
 			public boolean accept(File file, String str){
 				return str.endsWith("csv");	// 拡張子csvでフィルタ
@@ -163,16 +163,19 @@ public class FileUploader {
     		}
     		
 			status = httpConn.getResponseCode();
-
-			if(status < 200 || status >= 300) {
-				throw new RuntimeException("ERROR(" + status + "):" + url.toString());
-			}
 			
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()))) {
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					responce.append(line + EOL);
 				}
+			}
+			
+			if(status != 200) {
+				String errorMessage = "ERROR" + status + "](" + url.toString() + "):"
+						+ httpConn.getResponseMessage()
+						+ (!responce.toString().isEmpty() ? "\r\n" + responce.toString() : "");
+					throw new RuntimeException(errorMessage);
 			}
     	} finally {
 			httpConn.disconnect();
