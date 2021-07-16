@@ -77,6 +77,10 @@ module nts.uk.at.view.kdp002.l {
 
         frameNo: KnockoutObservable<number> = ko.observable(1);
 
+        workGroup: KnockoutObservable<WorkGroup> = ko.observable(new WorkGroup());
+
+        wordCodeMap = new Map<number, string>();
+
         created(param: IParam) {
             const vm = this;
             vm.taskButtons = ko.computed({
@@ -160,6 +164,8 @@ module nts.uk.at.view.kdp002.l {
                     vm.model(result.task);
                     vm.taskArray = _.chunk(result.task, 6);
                     vm.framePosition.valueHasMutated();
+                } else {
+                    vm.closeDialogL();
                 }
 
             });
@@ -261,7 +267,6 @@ module nts.uk.at.view.kdp002.l {
                     if (ko.unwrap(vm.model)[0].frameNo != 1) {
                   
                         vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: ko.unwrap(vm.selectedCode)});
-                        console.log(vm.model());
                         vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo() - 1)]));
                         vm.reload(0);
                     } else  {
@@ -282,21 +287,32 @@ module nts.uk.at.view.kdp002.l {
 
             vm.frameNo(_.find(ko.unwrap(vm.model), ['code', code]).frameNo);
             vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo() + 1)]));
-
-            vm.frameNo(vm.frameNo() +1 );
+            
+            vm.frameNo(vm.frameNo() + 1);
 
             vm.getTask({sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: code})
           
-            if (ko.unwrap(vm.model).length == 0) {
-                vm.closeDialogL();
-            }
             vm.reload(0);
             vm.framePosition(0);
+
+            if(ko.unwrap(vm.model).length == 0) {
+                vm.closeDialogL();
+            }
+            vm.wordCodeMap.set(vm.frameNo() - 1, vm.selectedCode());
          }
 
          closeDialogL() {
             const vm = this;
-            vm.$window.close();
+        
+            vm.workGroup(new WorkGroup({
+                workCode1: vm.wordCodeMap.get(1) ? vm.wordCodeMap.get(1): null,
+                workCode2: vm.wordCodeMap.get(2) ? vm.wordCodeMap.get(2): null,
+                workCode3: vm.wordCodeMap.get(3) ? vm.wordCodeMap.get(3): null,
+                workCode4: vm.wordCodeMap.get(4) ? vm.wordCodeMap.get(4): null,
+                workCode5: vm.wordCodeMap.get(5) ? vm.wordCodeMap.get(5): null
+            }));
+
+            vm.$window.close(ko.unwrap(vm.workGroup));
          }
 
     }
@@ -325,6 +341,19 @@ interface TaskFrameSet {
 interface Result {
     task: TaskInfo []; //List＜作業＞
     taskFrameUsageSetting: TaskFrameSet; //作業枠利用設定
+
+}
+
+class WorkGroup {
+    workCode1: string = '';
+    workCode2: string = '';
+    workCode3: string = '';
+    workCode4: string = '';
+    workCode5: string = '';
+
+    constructor(init?: Partial<WorkGroup>) {
+        $.extend(this, init);
+    }
 
 }
 
