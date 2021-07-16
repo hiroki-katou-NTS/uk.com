@@ -75,9 +75,25 @@ module nts.uk.at.view.kdp010.i {
 			isChange: KnockoutObservable<number> = ko.observable(0);
 			checkGoOut: KnockoutObservable<number> = ko.observable(0);
 
+			isUseWork: KnockoutObservable<boolean | null> = ko.observable(null);
+			supportWorkPlaceEnable: KnockoutObservable<boolean | null> = ko.observable(null);
+
 			showSelectedAudio = ko.observable(false);
 			constructor() {
 				let self = this;
+				ko.computed({
+					read: () => {
+						const type = ko.unwrap(self.selectedDay);
+						const selectedHighlightRead = ko.unwrap(self.selectedHighlight);
+
+						if (selectedHighlightRead == 1) {
+							self.checkUseWorkPlace(type);
+						} else {
+							self.supportWorkPlaceEnable(false);
+						}
+					}
+				});
+
 				self.selectedDay.subscribe((newValue) => {
 					self.getDataFromContents(newValue);
 					if (self.isChange() == 0) {
@@ -102,7 +118,7 @@ module nts.uk.at.view.kdp010.i {
 				self.selectedHighlight.subscribe((newValue) => {
 					if (self.selectedHighlight() == 1)
 						nts.uk.ui.errors.clearAll();
-				})
+				});
 				$('.ntsRadioBox').focus();
 			}
 			/**
@@ -116,15 +132,18 @@ module nts.uk.at.view.kdp010.i {
 				self.isChange(0);
 				self.getDataFromContents(self.selectedDay());
 				block.invisible();
-				let tg = __viewContext.enums.ContentsStampType;
+				var tg = __viewContext.enums.ContentsStampType;
+				
+				tg = _.remove(tg, (n: any) => { return n.value != 16; });
 				ajax(paths.getSettingCommonStamp).done(function (data: any) {
 					if (!data.supportUse) {
-						_.remove(tg, (n: any) => { return n.value == 14 || n.value == 15 || n.value == 16 || n.value == 17 || n.value == 18; });
+						_.remove(tg, (n: any) => { return n.value == 14 || n.value == 15 || n.value == 17 || n.value == 18; });
 					}
 					if (!data.temporaryUse) {
 						_.remove(tg, (n: any) => { return n.value == 12 || n.value == 13; });
 					}
 					self.contentsStampType(tg);
+					self.isUseWork(data.workUse);
 					dfd.resolve();
 				}).fail(function (res: any) {
 					error({ messageId: res.messageId });
@@ -198,6 +217,7 @@ module nts.uk.at.view.kdp010.i {
 					}),
 					usrArt: self.selectedHighlight(),
 					audioType: self.selectedAudio(),
+					taskChoiceArt: ko.unwrap(self.assignmentMethod),
 					supportWplSet: self.supportWplSetEnable() ? self.supportWplSet() : null
 				});
 
@@ -231,6 +251,53 @@ module nts.uk.at.view.kdp010.i {
 				self.selectedDayOld(typeNumber);
 			}
 
+			checkUseWorkPlace(type: number) {
+				const vm = this;
+				switch (type) {
+					case 1:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 2:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 3:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 4:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 5:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 6:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 7:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 12:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 13:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 14:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 15:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 17:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					case 18:
+						vm.supportWorkPlaceEnable(true);
+						break;
+					default:
+						vm.supportWorkPlaceEnable(false);
+						break;
+				}
+			}
 
 			public checkType(changeClockArt: number, changeCalArt: number, setPreClockArt: number, changeHalfDay: any, reservationArt: number): number {
 				if (changeCalArt == 0 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
@@ -524,6 +591,7 @@ module nts.uk.at.view.kdp010.i {
 		setPreClockArt: number;
 		changeClockArt: number;
 		changeCalArt: number;
+		taskChoiceArt: number;
 	}
 	__viewContext.ready(function () {
 		var screenModel = new viewmodel.ScreenModel();

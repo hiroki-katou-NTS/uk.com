@@ -33,8 +33,10 @@ public class ButtonSettingsCommand {
 	/** 音声使用方法 */
 	private int audioType;
 	
+	/** 応援職場設定方法 */
 	private Integer supportWplSet;
 	
+	/** 作業指定方法 */
 	private Integer taskChoiceArt;
 	
 	public ButtonSettings toDomain() {

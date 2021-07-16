@@ -58,7 +58,7 @@ public class SettingsStampCommon {
 		
 		Optional<TaskOperationSetting> taskOperationSetting = gettask.getTasksOperationSetting(cid);
 		
-		result.setWorkUse(taskOperationSetting.map(m -> m.getTaskOperationMethod().value == 1 ? true : false).orElse(false));
+		result.setWorkUse(taskOperationSetting.map(m -> m.getTaskOperationMethod().value == 2 ? false : true).orElse(false));
 		
 		Optional<ManageEntryExit> manageEntryExitOpt = manageEntryExitRepo.findByID(cid);
 		
