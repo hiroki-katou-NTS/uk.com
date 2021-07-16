@@ -265,7 +265,6 @@ module nts.uk.at.kha003.a {
             const vm = this;
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
-            vm.$blockui("invisible");
             vm.$ajax(API.INIT).then(data => {
                 vm.items(_.map(data.manHoursSummaryTables, function (item: any) {
                     return new ItemModel(item.code, item.name)
@@ -620,6 +619,7 @@ module nts.uk.at.kha003.a {
                 c51: c51,
                 totalUnit: vm.selectedId(),
                 isCsvOutPut: false,
+                code:vm.currentCode()
             }
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {

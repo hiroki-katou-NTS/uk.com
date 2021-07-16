@@ -1,7 +1,9 @@
 module nts.uk.at.kha003.d {
 
     const API = {
-        aggregation: 'at/screen/kha003/d/aggregation-result'
+        aggregation: 'at/screen/kha003/d/aggregation-result',
+        csv: 'at/screen/kha003/d/export-csv',
+        excel: 'at/function/kha/003/d/report/excel'
     };
 
     @bean()
@@ -20,6 +22,7 @@ module nts.uk.at.kha003.d {
         bScreenData: KnockoutObservable<any>;
         cScreenData: KnockoutObservable<any>;
         agCommand: KnockoutObservable<any>;
+        preriod: KnockoutObservable<any>;
 
         constructor() {
             super();
@@ -40,6 +43,7 @@ module nts.uk.at.kha003.d {
             vm.bScreenData = ko.observable();
             vm.cScreenData = ko.observable();
             vm.agCommand = ko.observable();
+            vm.preriod = ko.observable();
         }
 
         created() {
@@ -72,17 +76,20 @@ module nts.uk.at.kha003.d {
             })
         }
 
+        /**
+         * 集計結果を作成する
+         * @param command
+         */
         initData(command: any) {
             const vm = this;
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
-                vm.$dialog.info({messageId: "Msg_2171"})
-                    .then(() => {
-                        vm.agCommand(data);
-                    });
+                vm.agCommand(data);
             }).fail(function (error) {
-                vm.$dialog.error({messageId: error.messageId});
+                vm.$dialog.error({messageId: 'Msg_2171'}).then(() => {
+                    vm.displayKha003CScreen();
+                });
             }).always(() => {
                 vm.$blockui("clear");
             });
@@ -116,19 +123,19 @@ module nts.uk.at.kha003.d {
                 task4List: task4List,
                 task5List: task5List,
             };
-
+            let period = {
+                totalUnit: aScreenData.totalUnit,
+                startDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.startDate : null,
+                endDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.endDate : null,
+                yearMonthStart: aScreenData.totalUnit == 1 ? bScreenData.dateRange.startDate : null,
+                yearMonthEnd: aScreenData.totalUnit == 1 ? bScreenData.dateRange.endDate : null
+            };
+            vm.preriod(period);
             return {
-                code: "081",
+                code: aScreenData.code,
                 masterNameInfo: masterNameInfo,
                 workDetailList: bScreenData.workDetailDataList,
-                period: {
-                    totalUnit: aScreenData.totalUnit,
-                    startDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.startDate : null,
-                    endDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.endDate : null,
-                    yearMonthStart: aScreenData.totalUnit == 1 ? bScreenData.dateRange.startDate : null,
-                    yearMonthEnd: aScreenData.totalUnit == 1 ? bScreenData.dateRange.endDate : null
-                }
-
+                period: period
             }
         }
 
@@ -170,6 +177,12 @@ module nts.uk.at.kha003.d {
             return array;
         }
 
+        /**
+         * function match task selected list and type
+         * @param aScreenData
+         * @param cScreenData
+         * @param type
+         */
         match(aScreenData: any, cScreenData: any, type: any) {
             let params = '';
             jQuery.each(aScreenData, function (i, val) {
@@ -193,7 +206,6 @@ module nts.uk.at.kha003.d {
             }
             return [];
         }
-
 
         /**
          * function map selected codes from Kha003 c screen
@@ -261,24 +273,39 @@ module nts.uk.at.kha003.d {
         }
 
         /**
-         * function export excell data
+         * 帳票設計書：取得データよりExcel編集
          */
         exportExcell() {
             let vm = this;
-            alert("TODO integrate with server")
+            vm.exportFile(API.excel);
         }
 
         /**
-         * function export csv data
+         * 帳票設計書：取得データよりCSVl編集
          */
         exportCsv() {
             let vm = this;
-            alert("TODO integrate with server")
+            vm.exportFile(API.csv);
         }
 
+        /**
+         * export file
+         * @param api
+         */
+        exportFile(api:string) {
+            let vm = this;
+            let command = vm.agCommand();
+            command.period = vm.preriod();
+            vm.$blockui("invisible");
+            nts.uk.request.exportFile("at", api, command)
+                .done((successData: any) => {
+                }).fail((error: any) => {
+                vm.$dialog.error({messageId: error.messageId});
+            }).always(() => vm.$blockui("clear"));
+        }
 
         /**
-         * function for display kha003 C screen
+         * function for display kha003 C screen[C画面を表示する]
          */
         displayKha003CScreen() {
             let vm = this;
