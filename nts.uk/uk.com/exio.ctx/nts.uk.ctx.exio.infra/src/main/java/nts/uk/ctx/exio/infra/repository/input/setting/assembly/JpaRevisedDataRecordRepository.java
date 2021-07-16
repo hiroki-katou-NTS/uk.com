@@ -22,7 +22,7 @@ public class JpaRevisedDataRecordRepository extends JpaRepository implements Rev
 	@Override
 	public void save(Require require, ExecutionContext context, RevisedDataRecord record) {
 		
-		WorkspaceSql.create(require, context, jdbcProxy()).insert(require, record);
+		WorkspaceSql.create(require, context, jdbcProxy()).insert(record);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class JpaRevisedDataRecordRepository extends JpaRepository implements Rev
 	public Optional<RevisedDataRecord> findByRowNo(Require require, ExecutionContext context, int rowNo) {
 		
 		return WorkspaceSql.create(require, context, jdbcProxy())
-				.findRevisedByRowNo(require, rowNo);
+				.findRevisedByRowNo(rowNo);
 	}
 
 	@Override

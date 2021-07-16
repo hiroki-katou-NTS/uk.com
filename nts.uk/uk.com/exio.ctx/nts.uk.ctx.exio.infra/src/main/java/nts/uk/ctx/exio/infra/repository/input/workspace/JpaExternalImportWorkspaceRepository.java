@@ -19,9 +19,9 @@ public class JpaExternalImportWorkspaceRepository extends JpaRepository implemen
 		val workspace = WorkspaceSql.create(require, context, jdbcProxy());
 		
 		// 編集済み一時テーブル
-		workspace.createTableRevised(require);
+		workspace.createTableRevised();
 		
 		// 正準化済み一時テーブル
-		workspace.createTableCanonicalized(require);
+		workspace.createTableCanonicalized();
 	}
 }

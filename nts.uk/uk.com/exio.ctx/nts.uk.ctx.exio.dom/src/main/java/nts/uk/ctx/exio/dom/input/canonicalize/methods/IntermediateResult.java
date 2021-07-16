@@ -7,6 +7,7 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
@@ -114,8 +115,8 @@ public class IntermediateResult {
 	public CanonicalizedDataRecord complete() {
 		return new CanonicalizedDataRecord(
 				this.rowNo,
-				itemsAfterCanonicalize,
-				itemsBeforeCanonicalize,
-				itemsNotCanonicalize);
+				CanonicalItemList.of(itemsAfterCanonicalize),
+				CanonicalItemList.of(itemsBeforeCanonicalize),
+				CanonicalItemList.of(itemsNotCanonicalize));
 	}
 }

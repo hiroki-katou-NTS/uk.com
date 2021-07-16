@@ -17,12 +17,13 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
 import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
-import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
@@ -49,9 +50,9 @@ public class WorkspaceSql {
 	 * @param require
 	 * @return
 	 */
-	public void createTableRevised(WorkspaceItem.RequireConfigureDataType require) {
+	public void createTableRevised() {
 		TemporaryTable.dropTable(jdbcProxy, tableName().asRevised());
-		String sql = createTable(require, tableName().asRevised());
+		String sql = createTable(tableName().asRevised());
 		jdbcProxy.query(sql).execute();
 	}
 
@@ -60,13 +61,13 @@ public class WorkspaceSql {
 	 * @param require
 	 * @return
 	 */
-	public void createTableCanonicalized(WorkspaceItem.RequireConfigureDataType require) {
+	public void createTableCanonicalized() {
 		TemporaryTable.dropTable(jdbcProxy, tableName().asCanonicalized());
-		String sql = createTable(require, tableName().asCanonicalized());
+		String sql = createTable(tableName().asCanonicalized());
 		jdbcProxy.query(sql).execute();
 	}
 
-	private String createTable(WorkspaceItem.RequireConfigureDataType require, String tableName) {
+	private String createTable(String tableName) {
 		val sql = new StringBuilder();
 		val createTable = new CreateTable(sql);
 		
@@ -74,7 +75,7 @@ public class WorkspaceSql {
 		
 		createTable.columnCommonColumns();
 		workspace.getAllItemsSortedByItemNo().forEach(
-				item -> createTable.column(require, item, workspace.isPrimaryKey(item)));
+				item -> createTable.column(item, workspace.isPrimaryKey(item)));
 		
 		createTable.primaryKey(tableName, workspace);
 		
@@ -141,11 +142,11 @@ public class WorkspaceSql {
 			sql.append(CommonColumns.CID.sqlDefine() + ",");
 		}
 		
-		void column(WorkspaceItem.RequireConfigureDataType require, WorkspaceItem item, boolean isPK) {
+		void column(WorkspaceItem item, boolean isPK) {
 			
 			sql.append(item.getName()).append(" ");
 			
-			dataType(item.configureDataType(require));
+			dataType(item.getDataTypeConfig());
 			
 			if (isPK) {
 				sql.append(" not null,");
@@ -181,24 +182,28 @@ public class WorkspaceSql {
 	 * @param record
 	 * @return
 	 */
-	public void insert(WorkspaceItem.RequireConfigureDataType require, RevisedDataRecord record) {
-		insert(require, tableName().asRevised(), record.getRowNo(), itemNo -> record.getItemByNo(itemNo));
+	public void insert(RevisedDataRecord record) {
+		insert(
+				tableName().asRevised(),
+				record.getRowNo(),
+				itemNo -> record.getItemByNo(itemNo).map(DataItem::getValue).orElse(null));
 	}
 	
 	/**
 	 * 正準化済み用のINSERT文を実行する
 	 * @param require
-	 * @param record
 	 */
-	public void insert(WorkspaceItem.RequireConfigureDataType require, CanonicalizedDataRecord record) {
-		insert(require, tableName().asCanonicalized(), record.getRowNo(), itemNo -> record.getItemByNo(itemNo));
+	public void insert(CanonicalizedDataRecord record) {
+		insert(
+				tableName().asCanonicalized(),
+				record.getRowNo(),
+				itemNo -> record.getItemByNo(itemNo).map(CanonicalItem::getValue).orElse(null));
 	}
 	
 	private void insert(
-			WorkspaceItem.RequireConfigureDataType require,
 			String tableName,
 			int rowNo,
-			Function<Integer, Optional<DataItem>> itemGetter) {
+			Function<Integer, Object> itemValueGetter) {
 
 		/*
 		 * VALUES句の列順は、項目No順にテーブルが作られるという仕様を前提とする。
@@ -211,9 +216,9 @@ public class WorkspaceSql {
 		CommonColumns.setParams(statement, rowNo, context);
 		
 		for (val workspaceItem : workspace.getAllItemsSortedByItemNo()) {
-			val dataType = workspaceItem.configureDataType(require);
-			val itemOpt = itemGetter.apply(workspaceItem.getItemNo());
-			Insert.setParam(dataType, itemOpt, statement, workspaceItem);
+			val dataType = workspaceItem.getDataTypeConfig();
+			Object itemValue = itemValueGetter.apply(workspaceItem.getItemNo());
+			Insert.setParam(dataType, itemValue, statement, workspaceItem);
 		}
 		
 		statement.execute();
@@ -237,51 +242,16 @@ public class WorkspaceSql {
 
 		static void setParam(
 				DataTypeConfiguration dataType,
-				Optional<DataItem> item,
+				Object value,
 				NtsStatement statement,
 				WorkspaceItem workspaceItem) {
 			
 			String param = paramItem(workspaceItem.getItemNo());
-			
-			switch (dataType.getType()) {
-			case INT:
-				statement.paramLong(param, item.map(d -> d.getInt()).orElse(null));
-				break;
-			case REAL:
-				statement.paramDecimal(param, item.map(d -> d.getReal()).orElse(null));
-				break;
-			case STRING:
-				statement.paramString(param, item.map(d -> d.getString()).orElse(null));
-				break;
-			case DATE:
-				statement.paramDate(param, item.map(d -> d.getDate()).orElse(null));
-				break;
-			default:
-				throw new RuntimeException("unknown: " + dataType.getType());
-			}
+			dataType.getType().setParam(statement, param, value);
 		}
 		
 		static String paramItem(int itemNo) {
 			return "p" + itemNo;
-		}
-		
-		static String value(DataItem dataItem, DataTypeConfiguration dataType) {
-			
-			if (dataItem.isNull()) {
-				return "null";
-			}
-			
-			switch (dataType.getType()) {
-			case STRING:
-				return "'" + dataItem.getString() + "'";
-			case INT:
-			case REAL:
-				return dataItem.getValue().toString();
-			case DATE:
-				return dataItem.getDate().toString("yyyy-MM-dd");
-			}
-			
-			throw new RuntimeException(dataItem + ", " + dataType);
 		}
 	}
 	
@@ -295,10 +265,10 @@ public class WorkspaceSql {
 		return jdbcProxy.query(sql).getList(rec -> rec.getString(1));
 	}
 	
-	public Optional<RevisedDataRecord> findRevisedByRowNo(WorkspaceItem.RequireConfigureDataType require, int rowNo) {
+	public Optional<RevisedDataRecord> findRevisedByRowNo(int rowNo) {
 		String sql = "select * from " + tableName().asRevised()
 				+ " where " + CommonColumns.ROW_NO.name + " = " + rowNo;
-		return jdbcProxy.query(sql).getSingle(rec -> toRevised(require, rec));
+		return jdbcProxy.query(sql).getSingle(rec -> toRevised(rec));
 	}
 	
 	public List<RevisedDataRecord> findRevisedWhere(Require require, int itemNoCondition, String conditionString) {
@@ -312,23 +282,23 @@ public class WorkspaceSql {
 		
 		return jdbcProxy.query(sql)
 				.paramString("p", conditionString)
-				.getList(rec -> toRevised(require, rec));
+				.getList(rec -> toRevised(rec));
 	}
 	
-	private RevisedDataRecord toRevised(WorkspaceItem.RequireConfigureDataType require, NtsResultRecord record) {
+	private RevisedDataRecord toRevised(NtsResultRecord record) {
 		
 		int rowNo = record.getInt(CommonColumns.ROW_NO.name);
 		
 		val items = workspace.getAllItemsSortedByItemNo().stream()
-				.map(wi -> toDataItem(require, record, wi))
+				.map(wi -> toDataItem(record, wi))
 				.collect(toList());
 		
 		return new RevisedDataRecord(rowNo, new DataItemList(items));
 	}
 	
-	private static DataItem toDataItem(WorkspaceItem.RequireConfigureDataType require, NtsResultRecord record, WorkspaceItem workspaceItem) {
+	private static DataItem toDataItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
 		
-		val dataType = workspaceItem.configureDataType(require);
+		val dataType = workspaceItem.getDataTypeConfig();
 		int itemNo = workspaceItem.getItemNo();
 		String name = workspaceItem.getName();
 		
