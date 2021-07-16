@@ -179,3 +179,7 @@ button.nts-switch-button{
 .switchbox-wrappers.radio-wrappers label:first-child input+span {
 	width: 75px;
 }
+
+.setting-button {
+  width: 75px;
+}

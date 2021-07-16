@@ -98,13 +98,13 @@ module nts.uk.at.view.kaf010.a.viewmodel {
             </div>
             <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
                 <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto">
-                    <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
+                    <div data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
-                    <div
-		data-bind="component: { name: 'kaf010-share-header',
+                    <div style="padding: 15px 15px 0"
+						data-bind="component: { name: 'kaf010-share-header',
 											params: {
 												overTimeWork: overTimeWork
 											}
@@ -873,7 +873,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 					item.backgroundColor(COLOR_36.error);
 					item.textColor(COLOR_36.error_letter);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
 				}
+				
 				
 				
 				
@@ -2099,7 +2103,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		// 36協定エラー文字
 		error_letter: 'color-36contract-error',
 		// 36協定アラーム文字
-		alarm_character: 'color-36contract-alarm'
+		alarm_character: 'color-36contract-alarm',
+		// 特条上限超過背景色
+		bg_upper_limit: 'bg-exceed-special-upperlimit',
+		// 特条上限超過文字色
+		color_upper_limit: 'color-exceed-special-upperlimit'
+		
 		
 	}
 

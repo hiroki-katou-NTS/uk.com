@@ -755,9 +755,9 @@ export enum ApprovalBehaviorAtr {
 
 const API = {
     getDetailMob: 'at/request/app/smartphone/getDetailMob',
-    approve: 'at/request/app/smartphone/approveapp',
-    deny: 'at/request/app/smartphone/denyapp',
-    release: 'at/request/app/smartphone/releaseapp',
+    approve: 'at/request/application/approveapp',
+    deny: 'at/request/application/denyapp',
+    release: 'at/request/application/releaseapp',
     reflectApp: 'at/request/application/reflect-app',
     checkVersion: 'at/request/application/checkVersion'
 };
