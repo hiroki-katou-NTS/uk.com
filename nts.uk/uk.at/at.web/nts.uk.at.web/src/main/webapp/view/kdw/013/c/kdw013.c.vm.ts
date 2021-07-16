@@ -537,7 +537,7 @@ module nts.uk.ui.at.kdw013.c {
             const vm = this;
             const { $el, params, model, combobox, hasError } = vm;
             const { taskList1, taskList2, taskList3, taskList4, taskList5 } = combobox;
-            const { task1, task2, task3, task4, task5, workplace: workLocation ,timeRange ,descriptions } = model;
+            const { task1, task2, task3, task4, task5, workplace: workLocation, timeRange, descriptions } = model;
             const { view, position, data, excludeTimes } = params;
 
             const cache = {
@@ -658,37 +658,11 @@ module nts.uk.ui.at.kdw013.c {
                                 task5(null);
                                 workLocation(null);
                             }
-                            if (taskListDto1) {
-                                taskList1(getmapperList(taskListDto1, task1()));
-                            } else {
-                                taskList1([]);
-                            }
-
-                            if (taskListDto2) {
-                                taskList2(getmapperList(taskListDto2, task2()));
-                            } else {
-                                taskList2([]);
-                            }
-
-                            if (taskListDto3) {
-                                taskList3(getmapperList(taskListDto3, task3()));
-                            } else {
-                                taskList3([]);
-                            }
-
-                            if (taskListDto4) {
-                                taskList4(getmapperList(taskListDto4, task4()));
-                            } else {
-                                taskList4([]);
-                            }
-
-                            if (taskListDto5) {
-                                taskList5(getmapperList(taskListDto5, task5()));
-                            } else {
-                                taskList5([]);
-                            }
-
-                            
+                            taskList1(getmapperList(taskListDto1, task1()));
+                            taskList2(getmapperList(taskListDto2, task2()));
+                            taskList3(getmapperList(taskListDto3, task3()));
+                            taskList4(getmapperList(taskListDto4, task4()));
+                            taskList5(getmapperList(taskListDto5, task5()));
                         }
 
                         return true;
@@ -728,7 +702,6 @@ module nts.uk.ui.at.kdw013.c {
                     const { $settings } = params;
                     const settings = ko.unwrap($settings);
                     settings.isChange = vm.changed();
-                    
                     if (taskCode) {
                         const { employeeId } = vm.$user;
                         const { start } = ko.unwrap(data);
@@ -744,11 +717,7 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                if (data) {
-                                    taskList2(getmapperList(data));
-                                } else {
-                                    taskList2([]);
-                                }
+                                taskList2(getmapperList(data, vm.task2()));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
@@ -766,7 +735,7 @@ module nts.uk.ui.at.kdw013.c {
 
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
-                            sId: employeeId,
+                            employeeId,
                             taskCode,
                             taskFrameNo: 3
                         };
@@ -775,11 +744,7 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                if (data) {
-                                    taskList3(getmapperList(data));
-                                } else {
-                                    taskList3([]);
-                                }
+                                taskList3(getmapperList(data, vm.task3()));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
@@ -789,6 +754,7 @@ module nts.uk.ui.at.kdw013.c {
                 .subscribe((taskCode: string) => {
                     const { $settings } = params;
                     const settings = ko.unwrap($settings);
+                    
                     if(settings)
                     settings.isChange = vm.changed();
                     if (taskCode) {
@@ -797,7 +763,7 @@ module nts.uk.ui.at.kdw013.c {
 
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
-                            sId: employeeId,
+                            employeeId,
                             taskCode,
                             taskFrameNo: 4
                         };
@@ -806,11 +772,7 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                if (data) {
-                                    taskList4(getmapperList(data));
-                                } else {
-                                    taskList4([]);
-                                }
+                                taskList4(getmapperList(data, vm.task4()));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
@@ -828,7 +790,7 @@ module nts.uk.ui.at.kdw013.c {
 
                         const params: SelectWorkItemParam = {
                             refDate: moment(start).format(DATE_TIME_FORMAT),
-                            sId: employeeId,
+                            employeeId,
                             taskCode,
                             taskFrameNo: 5
                         };
@@ -837,15 +799,13 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                if (data) {
-                                    taskList5(getmapperList(data));
-                                } else {
-                                    taskList5([]);
-                                }
+                                taskList5(getmapperList(data, vm.task5()));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
                 });
+                
+                
         
             timeRange
                 .subscribe((data: string) => {
@@ -1087,6 +1047,51 @@ module nts.uk.ui.at.kdw013.c {
 
             return tastNames.join("\n");
         }
+    
+    
+        isTaskChanged(event){
+            const vm = this;
+            const {  model, combobox} = vm;
+            const {extendedProps} = event;
+            const {workCD1, workCD2, workCD3, workCD4, workCD5, workLocationCD} = extendedProps
+            const { task1, task2, task3, task4, task5, workplace } = model;
+            const t1 = ko.unwrap(task1);
+            const t2 = ko.unwrap(task2);
+            const t3 = ko.unwrap(task3);
+            const t4 = ko.unwrap(task4);
+            const t5 = ko.unwrap(task5);
+            const wkp = ko.unwrap(workplace);
+            if (t1) {
+                if (t1 != workCD1) {
+                    return false;
+                }
+            }
+            if (t2) {
+                if (t2 != workCD2) {
+                    return false;
+                }
+            }
+            if (t3) {
+                if (t3 != workCD3) {
+                    return false;
+                }
+            }
+            if (t4) {
+                if (t4 != workCD4) {
+                    return false;
+                }
+            }
+            if (t5) {
+                if (t5 != workCD5) {
+                    return false;
+                }
+            }
+            if (wkp) {
+                if (wkp != workLocationCD) {
+                    return false;
+                }
+            }
+        }
 
         save(result?: 'yes' | 'cancel' | null) {
             const vm = this;
@@ -1195,13 +1200,14 @@ module nts.uk.ui.at.kdw013.c {
 
                     if (displayInfo) {
                         const { color, taskName } = displayInfo;
-                        if (_.get(event, 'title') != vm.getTitles())
+                        if (vm.isTaskChanged(event))
                             return true;
-
                     }
                 }
+                
                 if (_.get(event, 'extendedProps.remarks') != descriptions())
                     return true;
+                
             }
             return false;
         }

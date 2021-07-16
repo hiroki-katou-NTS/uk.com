@@ -2599,7 +2599,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     const cpov = $tg.closest('.fc-popup-editor').length > 0;
                     const ipkr = $tg.hasClass('.datepicker-container') && $tg.not('.datepicker-inline');
                     const cpkr = $tg.closest('.datepicker-container').length > 0 && $tg.closest('.datepicker-inline').length === 0;
-
+                    const event = $tg.closest('.fc-timegrid-event.fc-v-event.fc-event').length;
+                    
                     dataEvent.mouse(true);
 
                     const targ = $tg
@@ -2607,12 +2608,17 @@ module nts.uk.ui.at.kdw013.calendar {
                         ($tg.hasClass('fc-non-business') || $tg.hasClass('fc-timegrid-slot')) ? 'date' : null;
 
                     dataEvent.target(targ);
+                    
+                    
 
                     // close popup if target isn't owner & poper.
                     if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
-                        popupPosition.event(null);
-                        popupPosition.setting(null);
+//                        popupPosition.event(null);
+//                        popupPosition.setting(null);
                     }
+                    
+
+                    
                 })
                 .registerEvent('mousemove', () => {
                     if (ko.unwrap(dataEvent.mouse)) {
