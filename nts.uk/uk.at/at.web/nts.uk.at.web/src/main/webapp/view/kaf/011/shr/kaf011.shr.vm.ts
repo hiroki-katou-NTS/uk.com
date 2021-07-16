@@ -37,6 +37,8 @@ module nts.uk.at.view.kaf011 {
 
 		isAScreen: KnockoutObservable<boolean> = ko.observable(true); //true: screen A, false: screen B
 		outputMode: KnockoutObservable<number> = ko.observable(1); //DISPLAYMODE(0),EDITMODE(1);
+		
+		appDateWithInput: KnockoutObservable<string> = ko.observable(null);
 
 		constructor(appType: number, isInit: KnockoutObservable<boolean>, isAScreen?: boolean){
 			let self = this;
@@ -129,6 +131,7 @@ module nts.uk.at.view.kaf011 {
 		bindingScreenB(param: any, workTypeList:[], displayInforWhenStarting: any){
 			let self = this;
 			self.application.update(param.application);
+			self.appDateWithInput(getText('KAF011_23', [param.application.appDate, param.application.inputDate]));
 			self.workTypeList(workTypeList);
 			if (_.filter(self.workTypeList(), {'workTypeCode': param.workInformation.workType}).length == 0) {
 				self.workTypeList().push({ workTypeCode: param.workInformation.workType, name: 'マスタ未登録' });

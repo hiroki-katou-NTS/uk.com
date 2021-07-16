@@ -93,7 +93,9 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 					new ApprovalRootStateImport_New(
 							application.getAppID(), 
 							phaseLst, 
-							application.getAppDate().getApplicationDate()), 
+							application.getAppDate().getApplicationDate(),
+							0,
+							application.getEmployeeID()), 
 					ErrorFlagImport.NO_ERROR);
 			ApprovalRootOutput approvalRoot = ApprovalRootOutput.fromApprovalRootImportToOutput(approvalRootContentImport);
 			flatApprover(approvalRoot);

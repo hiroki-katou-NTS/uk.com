@@ -96,8 +96,6 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 			//this.designatedTime = oldDomain.getDesignatedTime();
 			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
 				this.useDivision = false;
-			} else {
-				this.useDivision = true;
 			}
 			//this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			return;
