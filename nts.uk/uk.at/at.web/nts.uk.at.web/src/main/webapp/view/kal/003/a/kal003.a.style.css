@@ -171,3 +171,15 @@ button.nts-switch-button{
     display:table;
     width:100%;
 }
+
+.switchbox-wrappers.radio-wrappers label:last-child input+span {
+	width: 75px;
+}
+
+.switchbox-wrappers.radio-wrappers label:first-child input+span {
+	width: 75px;
+}
+
+.setting-button {
+  width: 75px;
+}

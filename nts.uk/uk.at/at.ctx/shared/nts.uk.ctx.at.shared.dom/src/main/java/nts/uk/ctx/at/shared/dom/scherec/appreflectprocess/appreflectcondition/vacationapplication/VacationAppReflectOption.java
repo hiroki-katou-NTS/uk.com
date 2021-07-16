@@ -75,7 +75,7 @@ public class VacationAppReflectOption extends DomainObject {
 				Optional.of(reflectWorkTime)));
 
 		// 始業終業の反映
-		lstItemId.addAll(ReflectStartEndWork.reflect(require, cid, dailyApp, workingHours, prePostAtr));
+		lstItemId.addAll(ReflectStartEndWork.reflect(require, cid, dailyApp, workingHours));
 		
 		// [1日休暇の場合は出退勤を削除]をチェック
 		if (this.getOneDayLeaveDeleteAttendance() == NotUseAtr.USE) {

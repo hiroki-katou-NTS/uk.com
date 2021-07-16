@@ -191,7 +191,7 @@ public class OverTimeSheet {
 			val beforeApp = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
 					.filter(x -> x.getOverWorkFrameNo().v().intValue() == overTime.getOverWorkFrameNo().v().intValue()).findFirst()
 					.map(x -> x.getBeforeApplicationTime()).orElse(new AttendanceTime(0));
-			overTime.addBeforeTime(beforeApp);
+			overTime.setBeforeApplicationTime(beforeApp);
 		});
 		
 		//補正処理を実行する為に、日別勤怠の残業時間のインスタンスを作成

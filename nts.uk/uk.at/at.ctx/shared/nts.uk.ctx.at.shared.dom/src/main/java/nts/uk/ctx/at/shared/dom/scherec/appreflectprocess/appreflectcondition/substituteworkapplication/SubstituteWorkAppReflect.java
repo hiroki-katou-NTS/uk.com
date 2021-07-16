@@ -92,7 +92,7 @@ public class SubstituteWorkAppReflect extends AggregateRoot {
 
 		// 始業終業の反映
 		lstItemId.addAll(
-				ReflectStartEndWork.reflect(require, cid, dailyApp, recruitApp.getWorkingHours(), recruitApp.getPrePostAtr()));
+				ReflectStartEndWork.reflect(require, cid, dailyApp, recruitApp.getWorkingHours()));
 
 		// [出退勤を反映する]をチェック
 		if (this.reflectAttendanceAtr == NotUseAtr.USE) {

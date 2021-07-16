@@ -23,3 +23,7 @@
     font-size: 16px;
     word-break: break-word;
 }
+
+#notification {
+    white-space: pre-wrap;
+}

@@ -94,8 +94,7 @@ public class ReflectWorkChangeApp implements DomainAggregate {
 				Optional.of(appWorkChange.getOpWorkTimeCD().isPresent())));
 
 		// 始業終業の反映
-		lstItemId.addAll(ReflectStartEndWork.reflect(require, companyID, dailyApp, appWorkChange.getTimeZoneWithWorkNoLst(),
-				appWorkChange.getPrePostAtr()));
+		lstItemId.addAll(ReflectStartEndWork.reflect(require, companyID, dailyApp, appWorkChange.getTimeZoneWithWorkNoLst()));
 
 		// 直行直帰区分の反映
 		lstItemId.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, appWorkChange.getStraightBack(),
