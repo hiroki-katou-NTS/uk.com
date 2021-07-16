@@ -10,23 +10,24 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class TimeVacationHelper {
 	/**
 	 * createTimeVacation
-	 * @param start1
-	 * @param end2
-	 * @param timePaidUseTime
+	 * @param start 開始時間1
+	 * @param end1  終了時間1
+	 * @param timePaidUseTime 使用時間
 	 * @return
 	 */
-	public static TimeVacation createTimeVacation(TimeWithDayAttr start1, TimeWithDayAttr end1, TimevacationUseTimeOfDaily timePaidUseTime) {
+	public static TimeVacation createTimeVacation(TimeWithDayAttr start1, TimeWithDayAttr end1,
+			TimevacationUseTimeOfDaily timePaidUseTime) {
 		return new TimeVacation(Arrays.asList(
 				new TimeSpanForCalc(start1, end1)), timePaidUseTime);
 	}
 	
 	/**
 	 * createTimeVacations
-	 * @param start1
-	 * @param end2
-	 * @param start2
-	 * @param end2
-	 * @param timePaidUseTime
+	 * @param start1 開始時間1
+	 * @param end1  終了時間1
+	 * @param start2 開始時間2
+	 * @param end2  終了時間2
+	 * @param timePaidUseTime 使用時間
 	 * @return
 	 */
 	public static TimeVacation createTimeVacations(
