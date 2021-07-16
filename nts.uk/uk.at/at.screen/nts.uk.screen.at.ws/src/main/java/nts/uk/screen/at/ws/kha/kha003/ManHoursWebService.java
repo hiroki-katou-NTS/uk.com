@@ -2,20 +2,17 @@ package nts.uk.screen.at.ws.kha.kha003;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.command.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryData;
-import nts.uk.screen.at.app.kdl053.RegistrationErrorListDto;
 import nts.uk.screen.at.app.kha003.ManHourSummaryTableFormatDto;
 import nts.uk.screen.at.app.kha003.ManHoursDto;
 import nts.uk.screen.at.app.kha003.a.ManHourSummaryLayoutScreenQuery;
 import nts.uk.screen.at.app.kha003.a.ManHoursListScreenQuery;
 import nts.uk.screen.at.app.kha003.b.CreateManHourSummaryData;
 import nts.uk.screen.at.app.kha003.b.ManHourPeriod;
-import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
-import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
 import nts.uk.screen.at.app.kha003.d.AggregationResultQuery;
+import nts.uk.screen.at.app.kha003.d.CreateAggregationManHourResult;
+import nts.uk.screen.at.app.kha003.d.ManHourAggregationResultDto;
 import nts.uk.screen.at.app.kha003.exportcsv.ManHourAggregationResultExportService;
 import nts.uk.screen.at.app.kha003.exportcsv.ManHourDataSummaryQuery;
 
@@ -24,8 +21,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import java.util.ArrayList;
-import java.util.List;
 
 @Path("at/screen/kha003/")
 @Produces("application/json")

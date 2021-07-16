@@ -8,7 +8,12 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.file.at.app.export.manhoursummarytable.ManHourSummaryExportData;
 import nts.uk.file.at.app.export.manhoursummarytable.ManHourSummaryTableGenerator;
+import nts.uk.screen.at.app.kha003.ManHourSummaryTableFormatDto;
+import nts.uk.screen.at.app.kha003.SummaryItemDetailDto;
+import nts.uk.screen.at.app.kha003.SummaryItemDto;
+import nts.uk.screen.at.app.kha003.VerticalValueDailyDto;
 import nts.uk.screen.at.app.kha003.b.ManHourPeriod;
+import nts.uk.screen.at.app.kha003.exportcsv.ManHourSummaryTableOutputContentDto;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -45,7 +50,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             WorksheetCollection worksheets = workbook.getWorksheets();
             String title = FILE_TITLE;
 
-            val isDisplayTotal = dataSource.getSummaryTableFormat().getDetailFormatSetting().getDisplayVerticalHorizontalTotal().value == 1;
+            val isDisplayTotal = dataSource.getSummaryTableFormat().getDispHierarchy() == 1;
             Worksheet worksheetTemplate = isDisplayTotal ? worksheets.get(0) : worksheets.get(1);
             Worksheet worksheet = worksheets.get(2);
             worksheet.setName(title);
@@ -90,16 +95,16 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
     }
 
     private void printContents(Worksheet worksheetTemplate, Worksheet worksheet, ManHourSummaryExportData data, String title) throws Exception {
-        val detailFormatSetting = data.getSummaryTableFormat().getDetailFormatSetting();
-        val dispFormat = detailFormatSetting.getDisplayFormat();
+        val detailFormatSetting = data.getSummaryTableFormat();
+        val dispFormat = DisplayFormat.of(detailFormatSetting.getDisplayFormat());
         val totalUnit = detailFormatSetting.getTotalUnit();
-        val isDisplayTotal = detailFormatSetting.getDisplayVerticalHorizontalTotal().value == 1;
+        val isDisplayTotal = detailFormatSetting.getDispHierarchy() == 1;
         val outputContent = data.getOutputContent();
 
-        String dateRange = totalUnit == TotalUnit.DATE
+        String dateRange = totalUnit == TotalUnit.DATE.value
                 ? data.getPeriod().getDatePeriod().start().toString(DATE_FORMAT) + "　～　" + data.getPeriod().getDatePeriod().end().toString(DATE_FORMAT)
                 : data.getPeriod().getYearMonthPeriod().start().toString() + "　～　" + data.getPeriod().getYearMonthPeriod().end().toString();
-        int maxDateRange = totalUnit == TotalUnit.DATE ? data.getPeriod().getDateList().size() : data.getPeriod().getYearMonthList().size();
+        int maxDateRange = totalUnit == TotalUnit.DATE.value ? data.getPeriod().getDateList().size() : data.getPeriod().getYearMonthList().size();
         int totalLevel = data.getTotalLevel();
         if (totalLevel == 0) return;
         val headerList = getHeaderList(data.getPeriod(), detailFormatSetting, isDisplayTotal);
@@ -161,11 +166,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void printData1Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, TotalUnit unit) throws Exception {
-        List<SummaryItemDetail> itemDetails = outputContent.getItemDetails();
+    private void printData1Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, int unit) throws Exception {
+        List<SummaryItemDetailDto> itemDetails = outputContent.getItemDetails();
         int countRow = 3;
         for (int i = 1; i <= itemDetails.size(); i++) {
-            SummaryItemDetail level1 = itemDetails.get(i - 1);
+            SummaryItemDetailDto level1 = itemDetails.get(i - 1);
             cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
             cells.get(countRow, 0).setValue(level1.getDisplayInfo().getName());
             // Border
@@ -179,7 +184,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 setHorizontalAlignment(cells.get(countRow, c));
             }
             if (isDispTotal) {  // Tong chieu ngang level
-                cells.get(countRow, headerList.size() - 1).setValue(formatValue(level1.getTotalPeriod().isPresent() ? Double.valueOf(level1.getTotalPeriod().get()) : 0, dispFormat));
+                cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level1.getTotalPeriod(), dispFormat));
                 setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
             }
             countRow++;
@@ -195,16 +200,16 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void printData2Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, TotalUnit unit) throws Exception {
-        List<SummaryItemDetail> itemDetails = outputContent.getItemDetails();
+    private void printData2Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, int unit) throws Exception {
+        List<SummaryItemDetailDto> itemDetails = outputContent.getItemDetails();
         int countRow = 3;
-        for (SummaryItemDetail level1 : itemDetails) {
+        for (SummaryItemDetailDto level1 : itemDetails) {
             boolean isPrintNameLv1 = false;
             int mergeIndexLv1 = countRow;
-            List<SummaryItemDetail> childHierarchyList = level1.getChildHierarchyList();
+            List<SummaryItemDetailDto> childHierarchyList = level1.getChildHierarchyList();
             for (int i = 1; i <= childHierarchyList.size(); i++) {
                 cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
-                SummaryItemDetail level2 = childHierarchyList.get(i - 1);
+                SummaryItemDetailDto level2 = childHierarchyList.get(i - 1);
                 cells.get(countRow, 0).setValue(!isPrintNameLv1 ? level1.getDisplayInfo().getName() : "");
                 isPrintNameLv1 = true;
                 cells.get(countRow, 1).setValue(level2.getDisplayInfo().getName());
@@ -214,7 +219,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                     setHorizontalAlignment(cells.get(countRow, c));
                 }
                 if (isDispTotal) {  // Tong chieu ngang level 3
-                    cells.get(countRow, headerList.size() - 1).setValue(formatValue(level2.getTotalPeriod().isPresent() ? Double.valueOf(level2.getTotalPeriod().get()) : 0, dispFormat));
+                    cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level2.getTotalPeriod(), dispFormat));
                     setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                 }
                 countRow++;
@@ -237,16 +242,16 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void printData3Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, TotalUnit unit) throws Exception {
-        List<SummaryItemDetail> itemDetails = outputContent.getItemDetails();
+    private void printData3Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, int unit) throws Exception {
+        List<SummaryItemDetailDto> itemDetails = outputContent.getItemDetails();
         int countRow = 3;
-        for (SummaryItemDetail level1 : itemDetails) {
+        for (SummaryItemDetailDto level1 : itemDetails) {
             boolean isPrintNameLv1 = false;
             int mergeIndexLv1 = countRow;
-            for (SummaryItemDetail level2 : level1.getChildHierarchyList()) {
+            for (SummaryItemDetailDto level2 : level1.getChildHierarchyList()) {
                 boolean isPrintNameLv2 = false;
                 int mergeIndexLv2 = countRow;
-                List<SummaryItemDetail> childHierarchyList = level2.getChildHierarchyList();
+                List<SummaryItemDetailDto> childHierarchyList = level2.getChildHierarchyList();
                 for (int i = 1; i <= childHierarchyList.size(); i++) {
                     if (isDispTotal) {
                         cells.copyRows(cellsTemplate, 6, countRow, 1);
@@ -257,7 +262,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                             cells.copyRows(cellsTemplate, 5, countRow, 1);
                         }
                     }
-                    SummaryItemDetail level3 = childHierarchyList.get(i - 1);
+                    SummaryItemDetailDto level3 = childHierarchyList.get(i - 1);
                     cells.get(countRow, 0).setValue(!isPrintNameLv1 ? level1.getDisplayInfo().getName() : "");
                     isPrintNameLv1 = true;
                     cells.get(countRow, 1).setValue(!isPrintNameLv2 ? level2.getDisplayInfo().getName() : "");
@@ -269,7 +274,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                         setHorizontalAlignment(cells.get(countRow, c));
                     }
                     if (isDispTotal) {  // Tong chieu ngang level 3
-                        cells.get(countRow, headerList.size() - 1).setValue(formatValue(level3.getTotalPeriod().isPresent() ? Double.valueOf(level3.getTotalPeriod().get()) : 0, dispFormat));
+                        cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level3.getTotalPeriod(), dispFormat));
                         setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                     }
                     countRow++;
@@ -301,19 +306,19 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         }
     }
 
-    private void printData4Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContent outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, TotalUnit unit) throws Exception {
-        List<SummaryItemDetail> itemDetails = outputContent.getItemDetails();
+    private void printData4Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, int unit) throws Exception {
+        List<SummaryItemDetailDto> itemDetails = outputContent.getItemDetails();
         int countRow = 3;
-        for (SummaryItemDetail level1 : itemDetails) {
+        for (SummaryItemDetailDto level1 : itemDetails) {
             boolean isPrintNameLv1 = false;
             int mergeIndexLv1 = countRow;
-            for (SummaryItemDetail level2 : level1.getChildHierarchyList()) {
+            for (SummaryItemDetailDto level2 : level1.getChildHierarchyList()) {
                 boolean isPrintNameLv2 = false;
                 int mergeIndexLv2 = countRow;
-                for (SummaryItemDetail level3 : level2.getChildHierarchyList()) {
+                for (SummaryItemDetailDto level3 : level2.getChildHierarchyList()) {
                     boolean isPrintNameLv3 = false;
                     int mergeIndexLv3 = countRow;
-                    List<SummaryItemDetail> childHierarchyList = level3.getChildHierarchyList();
+                    List<SummaryItemDetailDto> childHierarchyList = level3.getChildHierarchyList();
                     for (int i = 1; i <= childHierarchyList.size(); i++) {
                         if (isDispTotal) {
                             cells.copyRows(cellsTemplate, 4, countRow, 1);
@@ -325,7 +330,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                             }
                         }
 
-                        SummaryItemDetail level4 = childHierarchyList.get(i - 1);
+                        SummaryItemDetailDto level4 = childHierarchyList.get(i - 1);
                         cells.get(countRow, 0).setValue(!isPrintNameLv1 ? level1.getDisplayInfo().getName() : "");
                         isPrintNameLv1 = true;
                         cells.get(countRow, 1).setValue(!isPrintNameLv2 ? level2.getDisplayInfo().getName() : "");
@@ -339,7 +344,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                             setHorizontalAlignment(cells.get(countRow, c));
                         }
                         if (isDispTotal) {  // Tong chieu ngang level 4
-                            cells.get(countRow, headerList.size() - 1).setValue(formatValue(level4.getTotalPeriod().isPresent() ? Double.valueOf(level4.getTotalPeriod().get()) : 0, dispFormat));
+                            cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level4.getTotalPeriod(), dispFormat));
                             setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                         }
                         countRow++;
@@ -378,7 +383,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
     }
 
     // Total of each column of each level by vertical
-    private void printTotalByVerticalOfEachLevel(Cells cells, SummaryItemDetail summaryItemDetail, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, TotalUnit unit,
+    private void printTotalByVerticalOfEachLevel(Cells cells, SummaryItemDetailDto summaryItemDetail, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, int unit,
                                                  int row, int index, int columnNameIndex) {
         cells.get(row, columnNameIndex).setValue(summaryItemDetail.getDisplayInfo().getName() + TextResource.localize(TOTAL));
         for (int t = 1; t <= maxDateRange; t++) {
@@ -386,19 +391,19 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             setHorizontalAlignment(cells.get(row, t + index));
             cells.get(row, t + index).setValue(formatValue(Double.valueOf(mapTotal.getOrDefault(headerList.get(t + index), 0)), dispFormat));
         }
-        cells.get(row, headerList.size() - 1).setValue(formatValue(summaryItemDetail.getTotalPeriod().isPresent() ? Double.valueOf(summaryItemDetail.getTotalPeriod().get()) : 0, dispFormat));
+        cells.get(row, headerList.size() - 1).setValue(formatValue((double) summaryItemDetail.getTotalPeriod(), dispFormat));
     }
 
     // All total by vertical
-    private void printAllTotalByVertical(Cells cells, ManHourSummaryTableOutputContent outputContent, int maxDateRange, List<String> headerList, DisplayFormat dispFormat,
-                                         TotalUnit unit, int row, int index) {
+    private void printAllTotalByVertical(Cells cells, ManHourSummaryTableOutputContentDto outputContent, int maxDateRange, List<String> headerList, DisplayFormat dispFormat,
+                                         int unit, int row, int index) {
         cells.get(row, 0).setValue(TextResource.localize(VERTICAL_TOTAL));
         for (int t = 1; t <= maxDateRange; t++) {
             val mapTotal = this.getWorkingTimeByDate(unit, outputContent.getVerticalTotalValues());
             setHorizontalAlignment(cells.get(row, t + index));
             cells.get(row, t + index).setValue(formatValue(Double.valueOf(mapTotal.getOrDefault(headerList.get(t + index), 0)), dispFormat));
         }
-        cells.get(row, headerList.size() - 1).setValue(formatValue(outputContent.getTotalPeriod().isPresent() ? Double.valueOf(outputContent.getTotalPeriod().get()) : 0, dispFormat));
+        cells.get(row, headerList.size() - 1).setValue(formatValue((double) outputContent.getTotalPeriod(), dispFormat));
     }
 
     private int checkTotalColumn(int maxColumnTemplate, int countColumn) {
@@ -414,27 +419,27 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         return countColumnNeedHandle;
     }
 
-    private Map<String, Integer> getWorkingTimeByDate(TotalUnit unit, List<VerticalValueDaily> lstValueDaily) {
+    private Map<String, Integer> getWorkingTimeByDate(int unit, List<VerticalValueDailyDto> lstValueDaily) {
         Map<String, Integer> map = new HashMap<>();
-        if (unit == TotalUnit.DATE)
-            lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
+        if (unit == TotalUnit.DATE.value)
+            lstValueDaily.forEach(d -> map.put(d.getDate(), d.getWorkingHours()));
         else
-            lstValueDaily.forEach(d -> map.put(d.getDate().toString(), d.getWorkingHours()));
+            lstValueDaily.forEach(d -> map.put(d.getYearMonth(), d.getWorkingHours()));
 
         return map;
     }
 
-    private List<String> getHeaderList(ManHourPeriod period, DetailFormatSetting detailSetting, boolean isDispTotal) {
+    private List<String> getHeaderList(ManHourPeriod period, ManHourSummaryTableFormatDto detailSetting, boolean isDispTotal) {
         List<String> lstHeader = new ArrayList<>();
         // Sort before adding
-        val sortedList = detailSetting.getSummaryItemList().stream().sorted(Comparator.comparing(SummaryItem::getHierarchicalOrder)).collect(Collectors.toList());
+        val sortedList = detailSetting.getSummaryItems().stream().sorted(Comparator.comparing(SummaryItemDto::getHierarchicalOrder)).collect(Collectors.toList());
         // Add code & name to header
-        for (SummaryItem item : sortedList) {
-            lstHeader.add(item.getSummaryItemType().nameId);
+        for (SummaryItemDto item : sortedList) {
+            lstHeader.add(item.getItemTypeName());
         }
 
         // Add date/yearMonth list to header
-        if (detailSetting.getTotalUnit() == TotalUnit.DATE)
+        if (detailSetting.getTotalUnit() == TotalUnit.DATE.value)
             period.getDateList().forEach(date -> lstHeader.add(date.toString()));
         else
             period.getYearMonthList().forEach(ym -> lstHeader.add(toYearMonthString(ym)));
