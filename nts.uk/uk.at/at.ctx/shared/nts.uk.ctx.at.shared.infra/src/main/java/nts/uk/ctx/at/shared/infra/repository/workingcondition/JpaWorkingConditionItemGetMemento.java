@@ -21,9 +21,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWorkInfo;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWorkTs;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
 
 /**
@@ -34,9 +34,9 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	/** The entity. */
 	private KshmtWorkcondHistItem entity;
 	/** The entity. */
-	private List<KshmtWorkcondWorkInfo> workInfo;
+	private List<KshmtWorkcondCtg> perWorkCat;
 	/** The entity. */
-	private List<KshmtWorkcondWorkTs> listWorkTs;
+	private List<KshmtWorkcondWeek> perDayWeek;
 	/** The entity. */
 	private KshmtWorkcondScheMeth method;
 
@@ -49,8 +49,8 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity) {
 		super();
 		this.entity = entity;
-		this.workInfo = entity.getKshmtWorkcondWorkInfo();
-		this.listWorkTs = entity.getListKshmtWorkcondWorkTs();
+		this.perDayWeek = entity.getKshmtPersonalDayOfWeeks();
+		this.perWorkCat = entity.getKshmtPerWorkCats();
 		this.method = entity.getKshmtScheduleMethod();
 	}
 	
@@ -82,17 +82,17 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 		//カレンダーの参照先 - 予定作成方法.営業日カレンダーによる勤務予定作成.営業日カレンダーの参照先
 		enums.put("IS00124", this.entity.getKshmtScheduleMethod().getRefBusinessDayCalendar());	
 		//基本勤務の参照先 - 予定作成方法.営業日カレンダーによる勤務予定作成.基本勤務の参照先
-		//enums.put("IS00125", this.entity.getKshmtScheduleMethod().getRefBasicWork());
+		enums.put("IS00125", this.entity.getKshmtScheduleMethod().getRefBasicWork());
 		//就業時間帯の参照先 - 予定作成方法.月間パターンによる勤務予定作成.勤務種類と就業時間帯の参照先（基本作成方法＝月間パターンの場合）
 		enums.put("IS00126", this.entity.getKshmtScheduleMethod().getRefWorkingHours());
 	}
 	
-	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity, List<KshmtWorkcondWorkInfo> workInfo, 
-			List<KshmtWorkcondWorkTs> listWorkTs, KshmtWorkcondScheMeth method) {
+	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity, List<KshmtWorkcondCtg> perWorkCat, 
+			List<KshmtWorkcondWeek> perDayWeek, KshmtWorkcondScheMeth method) {
 		super();
 		this.entity = entity;
-		this.workInfo = workInfo;
-		this.listWorkTs = listWorkTs;
+		this.perWorkCat = perWorkCat;
+		this.perDayWeek = perDayWeek;
 		this.method = method;
 	}
 

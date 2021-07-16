@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeekGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
 
 /**
  * The Class JpaPersonalDayOfWeekGetMemento.
@@ -28,15 +29,15 @@ public class JpaPerDayOfWeekGetMemento implements PersonalDayOfWeekGetMemento {
 	 * @param entitys
 	 *            the entitys
 	 */
-//	public JpaPerDayOfWeekGetMemento(List<KshmtWorkcondWeek> entities) {
-//		mapSingleDaySchedule = new HashMap<>();
-//		if (!CollectionUtil.isEmpty(entities)) {
-//			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
-//					entity -> DayOfWeekAtr
-//							.valueOf(entity.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr()),
-//					entity -> new SingleDaySchedule(new JpaSDayScheDayOfGetMemento(entity))));
-//		}
-//	}
+	public JpaPerDayOfWeekGetMemento(List<KshmtWorkcondWeek> entities) {
+		mapSingleDaySchedule = new HashMap<>();
+		if (!CollectionUtil.isEmpty(entities)) {
+			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
+					entity -> DayOfWeekAtr
+							.valueOf(entity.getKshmtPersonalDayOfWeekPK().getPerWorkDayOffAtr()),
+					entity -> new SingleDaySchedule(new JpaSDayScheDayOfGetMemento(entity))));
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

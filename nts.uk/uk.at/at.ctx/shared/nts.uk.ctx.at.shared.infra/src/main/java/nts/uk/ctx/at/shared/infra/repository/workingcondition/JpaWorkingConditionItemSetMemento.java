@@ -19,11 +19,11 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWorkInfo;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
 
 /**
@@ -107,27 +107,6 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 * setWorkCategory(nts.uk.ctx.at.shared.dom.workingcondition.
 	 * PersonalWorkCategory)
 	 */
-	
-	@Override
-	public void setWorkCategory(WorkByIndividualWorkDay workCategory, String employeeId) {
-		if (workCategory != null) {
-			KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo = new KshmtWorkcondWorkInfo();
-			if (this.entity.getKshmtPerWorkCats() != null) {
-				kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
-			}
-			workCategory.saveToMemento(new JpaPerWorkCatSetMemento(this.entity.getHistoryId(), kshmtPerWorkCats, employeeId));
-			kshmtPerWorkCats.stream().forEach(c -> {
-				c.setSid(employeeId);
-				if (!CollectionUtil.isEmpty(c.getKshmtWorkCatTimeZones())) {
-					c.getKshmtWorkCatTimeZones().stream().forEach(catTimeZone -> {
-						catTimeZone.setSid(employeeId);
-					});
-				}
-			});
-			this.entity.setKshmtPerWorkCats(kshmtPerWorkCats);
-		}
-	}
-	
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory, String employeeId) {
 		if (workCategory != null) {
@@ -338,4 +317,5 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			this.entity.setMonthlyPattern(null);
 		}
 	}
+
 }
