@@ -64,7 +64,7 @@ module nts.uk.ui.at.kdw013.d {
                 .on('click', 'td[aria-describedby="kdw-013-ddata_link"]', (evt: JQueryEventObject) => {
                     const ds = ko.unwrap(vm.dataSource);
                     const di = $(evt.target).closest('tr[data-id]').data('id');
-                    const exist = _.find(ds, ({ overtimeLeaveAtr }) => overtimeLeaveAtr === di);
+                    const exist = _.find(ds, ({ date }) => date === di);
 
                     if (exist) {
                         const params: KAF005Params = {
