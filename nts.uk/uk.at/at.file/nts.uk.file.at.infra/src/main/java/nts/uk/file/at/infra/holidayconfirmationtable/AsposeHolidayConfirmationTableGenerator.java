@@ -128,34 +128,34 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
             count++;
 
             for (HolidayConfirmationTableContent content : contents) {
+                // page break by employee
+                if (dataSource.getPageBreak() == 1) {
+                    if (contents.indexOf(content) != 0) {
+                        cells.insertRow(row);
+                        int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
+                        try {
+                            cells.copyRows(cells, lastWkpRow, row, 1);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        sheet.getHorizontalPageBreaks().add(row);
+                        wkpIndexes.add(row);
+                        row++;
+                    } else {
+                        if (wkpCodes.indexOf(wkpCode) != 0) {
+                            int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
+                            sheet.getHorizontalPageBreaks().add(lastWkpRow);
+                        }
+                    }
+                    count = 1;
+                }
+
                 if (dataSource.isLinking()) {
                     // print linked content
                     content.getHolidayAcquisitionInfo().get().getLinkingInfos().sort(Comparator.comparing(LinkingInfo::getOccurrenceDate));
                     int col = 9;
                     int size = content.getHolidayAcquisitionInfo().get().getLinkingInfos().size();
-                    int loops = size / 10 + 1;
-
-                    // page break by employee
-                    if (dataSource.getPageBreak() == 1) {
-                        if (contents.indexOf(content) != 0) {
-                            cells.insertRow(row);
-                            int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                            try {
-                                cells.copyRows(cells, lastWkpRow, row, 1);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            sheet.getHorizontalPageBreaks().add(row);
-                            wkpIndexes.add(row);
-                            row++;
-                        } else {
-                            if (wkpCodes.indexOf(wkpCode) != 0) {
-                                int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                                sheet.getHorizontalPageBreaks().add(lastWkpRow);
-                            }
-                        }
-                        count = 1;
-                    }
+                    int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
 
                     for (int loop = 0; loop < loops; loop++) {
                         cells.insertRows(row, 2);
@@ -213,7 +213,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                 content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
                 int col = 9;
                 int size = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().size();
-                int loops = size / 10 + 1;
+                int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
 
                 for (int loop = 0; loop < loops; loop++) {
                     cells.insertRows(row, 2);
