@@ -19,15 +19,26 @@
 				enable: $root.errors.isEmpty
 			">登録</button>
 		</div>
-		<div id="contents-area">
+
+		<div id="contents-area" class="fixed-flex-layout">
+
+			<div id="left-content" class="fixed-flex-layout-left">
+					
+				<table id="items" data-bind="ntsGridList: {
+					height: '400px',
+					dataSource: items,
+					primaryKey: 'itemNo',
+					columns: itemsColumns,
+					value: selectedItemNo,
+				}"></table>
+				
+			</div>
+			<div id="right-content" class="fixed-flex-layout-right">
+				
+				<div>aaaa</div>
+
+			</div>
 			
-			<table id="items" data-bind="ntsGridList: {
-				height: '400px',
-				dataSource: items,
-				primaryKey: 'itemNo',
-				columns: itemsColumns,
-				value: selectedItemNo,
-			}"></table>
 		
 		</div>
 	</ui:define>
