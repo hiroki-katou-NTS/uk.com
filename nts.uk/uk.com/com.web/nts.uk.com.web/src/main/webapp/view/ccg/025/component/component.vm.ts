@@ -19,6 +19,7 @@ module nts.uk.com.view.ccg025.a.component {
     export module viewmodel {
         export class ComponentModel {
             listRole: KnockoutObservableArray<model.Role>;
+            listAlreadySet: KnockoutObservableArray<any> = ko.observableArray([]);
             currentCode: any;
             isAlreadySetting: KnockoutObservable<boolean>;
             private columns: KnockoutObservableArray<any>;
@@ -67,7 +68,7 @@ module nts.uk.com.view.ccg025.a.component {
                 }
                 self.roleClassification.subscribe(value => {
                     nts.uk.ui.block.invisible();
-                    self.getListRoleByRoleType(self.setting.roleType, value, [], null).always(() => {
+                    self.getListRoleByRoleType(self.setting.roleType, value).always(() => {
                         nts.uk.ui.block.clear();
                     });
                 });
@@ -79,22 +80,23 @@ module nts.uk.com.view.ccg025.a.component {
             /**
              * truyen them 2 param tu man KSP001 sang
              */
-            startPage(listRoleId?: any, selectedRoleId?: string): JQueryPromise<any> {
-                let self = this, roleIds = listRoleId || [];
-                return self.getListRoleByRoleType(self.setting.roleType, self.roleClassification(), roleIds, selectedRoleId);
+            startPage(listRoleId?: any, selectedRoleId?: string, selectedRoleCode?: string): JQueryPromise<any> {
+                let self = this;
+                return self.getListRoleByRoleType(self.setting.roleType, self.roleClassification(), listRoleId, selectedRoleId, selectedRoleCode);
             }
 
             /** Get list Role by Type */
-            private getListRoleByRoleType(roleType: number, roleAtr: number, listRoleId: any, selectedRoleId: string): JQueryPromise<Array<model.Role>> {
+            private getListRoleByRoleType(roleType: number, roleAtr: number, listRoleId?: any, selectedRoleId?: string, selectedRoleCode?: string): JQueryPromise<Array<model.Role>> {
                 let self = this;
                 let dfd = $.Deferred();
+                if (!isNullOrUndefined(listRoleId)) self.listAlreadySet(listRoleId);
                 service.getListRoleByRoleType(roleType, roleAtr).done((data: Array<model.Role>) => {
                     data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
                     self.listRole(_.map(data, (x) => {
                         return new model.Role(
                             x.roleId, x.roleCode, x.roleType,
                             x.employeeReferenceRange, x.name,
-                            x.contractCode, x.assignAtr, x.companyId, _.includes(listRoleId, x.roleId) ? 1 : 0);
+                            x.contractCode, x.assignAtr, x.companyId, _.includes(self.listAlreadySet(), x.roleId) ? 1 : 0);
                     }));
                     self.addEmptyItem();
 
@@ -123,6 +125,9 @@ module nts.uk.com.view.ccg025.a.component {
                             self.currentCode(self.setting.currentCode);
                         } else if (!!selectedRoleId) {
                             self.setting.multiple ? self.currentCode([selectedRoleId]) : self.currentCode(selectedRoleId);
+                        } else if (!!selectedRoleCode) {
+                            const role = _.find(self.listRole(), (r: any) => _.isEqual(r.roleCode, selectedRoleCode));
+                            self.setting.multiple ? self.currentCode(role ? [role.roleId] : []) : self.currentCode(role ? role.roleId : undefined);
                         } else {
                             self.selectFirstItem();
                         }

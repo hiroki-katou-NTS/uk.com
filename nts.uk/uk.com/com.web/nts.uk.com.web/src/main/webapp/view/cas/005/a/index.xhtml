@@ -81,7 +81,8 @@
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS005_8')}</div>
 							<span data-bind="if: assignAtr() == 0">#{i18n.getText('CAS005_9')}</span>
 							<com:ko-if bind="assignAtr() == 1">
-								<div data-bind="attr: {
+								<div style="width: 215px"
+										data-bind="attr: {
 												tabindex: 7,
 												id: 'A4_3'
 											},
@@ -95,7 +96,7 @@
 												editable: false,
 												enable: true,
 												columns: [
-													{ prop: 'localizedName', length: 8 },
+													{ prop: 'localizedName', length: 12 },
 												]
 											}">
 								</div>
@@ -119,7 +120,7 @@
 												enable: true,
 												columns: [
 													{ prop: 'webMenuCode', length: 4 },
-													{ prop: 'webMenuName', length: 8 }
+													{ prop: 'webMenuName', length: 12 }
 												]
 											}">
 								</div>
