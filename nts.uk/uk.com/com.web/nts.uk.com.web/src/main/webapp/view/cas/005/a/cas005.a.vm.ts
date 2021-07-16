@@ -110,8 +110,6 @@ module nts.uk.com.view.cas005.a.viewmodel {
 
                 if (!_.size(roles)) {
                     vm.createNew();
-                } else {
-                    role.roleId.valueHasMutated();
                 }
                 vm.webMenuList(result2);
             }).fail(error => {
@@ -122,10 +120,10 @@ module nts.uk.com.view.cas005.a.viewmodel {
             });
         };
 
-        getListRole(roleId?: string) {
+        getListRole(roleId?: string, roleCode?: string) {
             let vm = this, dfd = $.Deferred();
 
-            vm.component025.startPage([], roleId).done(() => {
+            vm.component025.startPage([], roleId, roleCode).done(() => {
                 let roles: Array<IRole> = ko.toJS(vm.listRole),
                     roleIds: Array<string> = _.map(roles, (x: IRole) => x.roleId);
 
@@ -140,9 +138,11 @@ module nts.uk.com.view.cas005.a.viewmodel {
 
         // create new mode
         createNew() {
-            let vm = this, role = vm.selectedRole;
-            role.roleId(undefined);
-            role.roleId.valueHasMutated();
+            let vm = this;
+            if (vm.selectedRole.roleId() != undefined)
+                vm.selectedRole.roleId(undefined);
+            else
+                vm.selectedRole.roleId.valueHasMutated();
         }
 
         // save change of role
@@ -166,14 +166,8 @@ module nts.uk.com.view.cas005.a.viewmodel {
 
             vm.$ajax("com", _.isEmpty(command.roleId) ? API.addRoleCas005 : API.updateRoleCas005, command).done(() => {
                 vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                    vm.getListRole(command.roleId).done(() => {
-                        let exist: IRole = _.find(vm.listRole(), o => o.roleCode == command.roleCode);
+                    vm.getListRole(command.roleId, command.roleCode).done(() => {
 
-                        if (!exist) {
-                            role.roleId(undefined);
-                        } else {
-                            role.roleId(exist.roleId);
-                        }
                     }).always(() => {
                         vm.$blockui("hide");
                         nts.uk.ui.errors.clearAll();
@@ -201,20 +195,10 @@ module nts.uk.com.view.cas005.a.viewmodel {
                         vm.$blockui("show");
                         vm.$ajax("com", API.deleteRoleCas005, _.pick(role, ["roleId", "assignAtr"])).done(() => {
                             vm.$dialog.info({messageId: "Msg_16"}).then(() => {
-                                vm.getListRole().done(() => {
-                                    let roles: Array<IRole> = ko.toJS(vm.listRole),
-                                        selected: IRole = roles[index];
+                                let roles: Array<IRole> = ko.toJS(vm.listRole),
+                                    selected: IRole = roles[index];
+                                vm.getListRole(selected.roleId).done(() => {
 
-                                    if (_.size(roles)) {
-                                        if (selected) {
-                                            vm.selectedRole.roleId(selected.roleId);
-                                        } else {
-                                            vm.selectedRole.roleId(roles[0].roleId);
-                                        }
-                                        vm.selectedRole.roleId.valueHasMutated();
-                                    } else {
-                                        vm.createNew();
-                                    }
                                 }).always(() => {
                                     vm.$blockui("hide");
                                     nts.uk.ui.errors.clearAll();

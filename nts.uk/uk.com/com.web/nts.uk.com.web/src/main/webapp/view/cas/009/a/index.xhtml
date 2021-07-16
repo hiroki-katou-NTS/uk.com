@@ -92,7 +92,8 @@
 							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS009_8')}</div>
 							<span data-bind="if: assignAtr() == 0">#{i18n.getText('CAS009_9')}</span>
 							<com:ko-if bind="assignAtr() == 1">
-								<div data-bind="attr: {
+								<div style="width: 215px"
+										data-bind="attr: {
 												tabindex: 7,
 												id: 'combo-box'
 											},
