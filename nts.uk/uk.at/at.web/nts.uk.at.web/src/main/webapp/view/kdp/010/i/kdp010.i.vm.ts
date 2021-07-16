@@ -88,7 +88,7 @@ module nts.uk.at.view.kdp010.i {
 
 						if (selectedHighlightRead == 1) {
 							self.checkUseWorkPlace(type);
-						}else {
+						} else {
 							self.supportWorkPlaceEnable(false);
 						}
 					}
@@ -133,10 +133,7 @@ module nts.uk.at.view.kdp010.i {
 				self.getDataFromContents(self.selectedDay());
 				block.invisible();
 				var tg = __viewContext.enums.ContentsStampType;
-				setTimeout(() => {
-					console.log(tg);
-					
-				}, 100);
+				
 				tg = _.remove(tg, (n: any) => { return n.value != 16; });
 				ajax(paths.getSettingCommonStamp).done(function (data: any) {
 					if (!data.supportUse) {
@@ -220,6 +217,7 @@ module nts.uk.at.view.kdp010.i {
 					}),
 					usrArt: self.selectedHighlight(),
 					audioType: self.selectedAudio(),
+					taskChoiceArt: ko.unwrap(self.assignmentMethod),
 					supportWplSet: self.supportWplSetEnable() ? self.supportWplSet() : null
 				});
 
@@ -254,52 +252,50 @@ module nts.uk.at.view.kdp010.i {
 			}
 
 			checkUseWorkPlace(type: number) {
-				console.log(type);
-				
 				const vm = this;
 				switch (type) {
 					case 1:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 2:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 3:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 4:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 5:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 6:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 7:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 12:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 13:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 14:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 15:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 17:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					case 18:
 						vm.supportWorkPlaceEnable(true);
-					break;
+						break;
 					default:
 						vm.supportWorkPlaceEnable(false);
-					break;
+						break;
 				}
 			}
 
@@ -595,6 +591,7 @@ module nts.uk.at.view.kdp010.i {
 		setPreClockArt: number;
 		changeClockArt: number;
 		changeCalArt: number;
+		taskChoiceArt: number;
 	}
 	__viewContext.ready(function () {
 		var screenModel = new viewmodel.ScreenModel();

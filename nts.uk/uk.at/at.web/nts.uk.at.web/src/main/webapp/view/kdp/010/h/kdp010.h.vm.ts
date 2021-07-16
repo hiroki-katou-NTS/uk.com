@@ -279,7 +279,8 @@ module nts.uk.at.view.kdp010.h {
 							}),
 							usrArt: item.usrArt,
 							audioType: item.audioType,
-							supportWplSet: item.supportWplSet
+							supportWplSet: item.supportWplSet,
+							taskChoiceArt: item.taskChoiceArt
 						});
 						lstButton.push(lstButtonSet);
 					});
@@ -513,7 +514,11 @@ module nts.uk.at.view.kdp010.h {
 			/** 音声使用方法 */
 			audioType: number;
 			
+			/** 応援職場設定方法 */
 			supportWplSet: number;
+
+			/** 作業指定方法 */
+			taskChoiceArt: number;
 
 			constructor(param: IButtonSettingsCommand) {
 				this.buttonPositionNo = param.buttonPositionNo;
@@ -522,6 +527,7 @@ module nts.uk.at.view.kdp010.h {
 				this.usrArt = param.usrArt;
 				this.audioType = param.audioType;
 				this.supportWplSet = param.supportWplSet;
+				this.taskChoiceArt = param.taskChoiceArt;
 			}
 		}
 
@@ -536,7 +542,10 @@ module nts.uk.at.view.kdp010.h {
 			usrArt: number;
 			/** 音声使用方法 */
 			audioType: number;
+			/** 応援職場設定方法 */
 			supportWplSet : number;
+			/** 作業指定方法 */
+			taskChoiceArt: number;
 		}
 
 		// ButtonDisSetCommand

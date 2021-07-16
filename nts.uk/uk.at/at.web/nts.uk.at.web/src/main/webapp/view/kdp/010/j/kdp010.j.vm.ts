@@ -325,6 +325,7 @@ module nts.uk.at.view.kdp010.j {
             audioType = 0;
 			icon: KnockoutObservable<string> = ko.observable();
 			supportWplSet: number;
+            taskChoiceArt: number
             constructor(){}
             update(param: any){
                 let self = this;
@@ -335,6 +336,7 @@ module nts.uk.at.view.kdp010.j {
 					self.icon(self.getUrlImg(self.buttonType));
                     self.usrArt(param.usrArt);
                     self.supportWplSet = param.supportWplSet;
+                    self.taskChoiceArt = param.taskChoiceArt;
                 }
             }
 
