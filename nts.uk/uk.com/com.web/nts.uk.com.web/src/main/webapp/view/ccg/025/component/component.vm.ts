@@ -12,6 +12,8 @@ module nts.uk.com.view.ccg025.a.component {
         isResize?: boolean;
         rows?: number;
         isAlreadySetting?: any;
+        selectType?: number;
+        onDialog?: boolean;
     }
 
     export module viewmodel {
@@ -23,25 +25,30 @@ module nts.uk.com.view.ccg025.a.component {
             private defaultOption: Option = {
                 multiple: true,
                 showEmptyItem: false,
-                isResize: false
-            }
+                isResize: false,
+                rows: 15
+            };
             private setting: Option;
             private searchMode: string;
+            displayRoleClassification: KnockoutObservable<boolean>;
+            roleClassification: KnockoutObservable<number>;
 
             constructor(option: Option) {
                 let self = this;
                 self.setting = $.extend({}, self.defaultOption, option);
-                //                self.searchMode = (self.setting.multiple) ? "highlight" : "filter";
+                if (self.setting.roleAtr != 0 && self.setting.roleAtr != 1) self.setting.roleAtr = undefined;
+                self.displayRoleClassification = ko.observable(self.setting.roleAtr != 0 && self.setting.roleAtr != 1);
+                self.roleClassification = ko.observable(self.setting.roleAtr || 0);
                 self.listRole = ko.observableArray([]);
                 self.isAlreadySetting = ko.observable(option.isAlreadySetting);
                 if (self.setting.multiple) {
                     self.currentCode = ko.observableArray([]);
                     self.columns = ko.observableArray([
                         { headerText: '', prop: 'roleId', width: 100, hidden: true },
-                        { headerText: getText("CCG025_3"), prop: 'roleCode', width: 100 },
-                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 180, formatter: _.escape },
+                        { headerText: getText("CCG025_6"), prop: 'roleCode', width: 100 },
+                        { headerText: getText("CCG025_7"), prop: 'roleName', width: 180, formatter: _.escape },
                         {
-                            headerText: getText("CCG025_9"), prop: 'configured', width: 80, hidden: !self.isAlreadySetting(),
+                            headerText: getText("CCG025_8"), prop: 'configured', width: 80, hidden: !self.isAlreadySetting(),
                             template: '{{if ${configured} == 1 }}<div class="cssDiv"><i  class="icon icon icon-78 cssI"></i></div>{{/if}}'
                         }
 
@@ -50,14 +57,20 @@ module nts.uk.com.view.ccg025.a.component {
                     self.currentCode = ko.observable("");
                     self.columns = ko.observableArray([
                         { headerText: '', prop: 'roleId', width: 100, hidden: true },
-                        { headerText: getText("CCG025_3"), prop: 'roleCode', width: 60 },
-                        { headerText: getText("CCG025_4"), prop: 'roleName', width: 233, formatter: _.escape },
+                        { headerText: getText("CCG025_6"), prop: 'roleCode', width: 60 },
+                        { headerText: getText("CCG025_7"), prop: 'roleName', width: 233, formatter: _.escape },
                         {
-                            headerText: getText("CCG025_9"), prop: 'configured', width: 80, hidden: !self.isAlreadySetting(),
+                            headerText: getText("CCG025_8"), prop: 'configured', width: 80, hidden: !self.isAlreadySetting(),
                             template: '{{if ${configured} == 1 }}<div class="cssDiv"><i  class="icon icon icon-78 cssI"></i></div>{{/if}}'
                         }
                     ]);
                 }
+                self.roleClassification.subscribe(value => {
+                    nts.uk.ui.block.invisible();
+                    self.getListRoleByRoleType(self.setting.roleType, value, [], null).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
+                });
             }
 
             /** 
@@ -67,10 +80,8 @@ module nts.uk.com.view.ccg025.a.component {
              * truyen them 2 param tu man KSP001 sang
              */
             startPage(listRoleId?: any, selectedRoleId?: string): JQueryPromise<any> {
-                let self = this;
-                return listRoleId ?
-                    self.getListRoleByRoleType(self.setting.roleType, self.setting.roleAtr, listRoleId, selectedRoleId) : 
-                    self.getListRoleByRoleType(self.setting.roleType, self.setting.roleAtr, [], null);
+                let self = this, roleIds = listRoleId || [];
+                return self.getListRoleByRoleType(self.setting.roleType, self.roleClassification(), roleIds, selectedRoleId);
             }
 
             /** Get list Role by Type */
@@ -87,14 +98,36 @@ module nts.uk.com.view.ccg025.a.component {
                     }));
                     self.addEmptyItem();
 
-                    // Select item base on param code
-                    if (!isNullOrUndefined(self.setting.currentCode)) {
-                        self.currentCode(self.setting.currentCode);
-                    } else if (!!selectedRoleId) {
-                        self.currentCode(selectedRoleId);
+                    if (!isNullOrUndefined(self.setting.selectType)) {
+                        switch (self.setting.selectType) {
+                            case 1: // selected list
+                                self.setting.multiple ? self.currentCode(self.setting.currentCode || []) : self.currentCode(self.setting.currentCode);
+                                break;
+                            case 2: // select all
+                                if (self.setting.multiple) {
+                                    self.currentCode(self.listRole().map(r => r.roleId));
+                                }
+                                break;
+                            case 3: // select first
+                                self.selectFirstItem();
+                                break;
+                            case 4: // select none
+                                self.setting.multiple ? self.currentCode([]) : self.currentCode(undefined);
+                                break;
+                            default:
+                                break;
+                        }
                     } else {
-                        self.selectFirstItem();
+                        // Select item base on param code
+                        if (!isNullOrUndefined(self.setting.currentCode)) {
+                            self.currentCode(self.setting.currentCode);
+                        } else if (!!selectedRoleId) {
+                            self.setting.multiple ? self.currentCode([selectedRoleId]) : self.currentCode(selectedRoleId);
+                        } else {
+                            self.selectFirstItem();
+                        }
                     }
+
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
@@ -102,7 +135,7 @@ module nts.uk.com.view.ccg025.a.component {
                         nts.uk.ui.block.clear();
                     });
                 });
-                return dfd.promise();
+                return dfd.promise() as JQueryPromise<Array<model.Role>>;
             }
 
             private addEmptyItem(): void {
@@ -116,7 +149,13 @@ module nts.uk.com.view.ccg025.a.component {
             private selectFirstItem(): void {
                 var self = this;
                 if (self.listRole().length > 0) {
-                    self.currentCode(self.listRole()[0].roleId);
+                    self.setting.multiple
+                        ? self.currentCode([self.listRole()[0].roleId])
+                        : self.currentCode(self.listRole()[0].roleId);
+                } else {
+                    self.setting.multiple
+                        ? self.currentCode([])
+                        : self.currentCode(undefined);
                 }
             }
 
