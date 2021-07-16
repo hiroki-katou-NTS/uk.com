@@ -32,14 +32,14 @@ import java.util.stream.Collectors;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGenerator implements DisplayWorkStatusReportGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR003.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR003_template.xlsx";
     private static final String DAY_OF_WEEK_FORMAT_JP = "E";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:AJ";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
-    private static final int MAX_EMP_IN_PAGE = 34;
+    private static final int MAX_EMP_IN_PAGE = 50;
     private static final int MAX_COL_IN_PAGE = 31;
 
     @Override
@@ -184,7 +184,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                     pageBreaks.add(countRow);
                     pages++;
                     //countRow += MAX_EMP_IN_PAGE - countItem;
-                    pages += 1;
+                    //pages += 1;
                     cells.copyRows(cells, 10, countRow, 3);
                     countRow += 3;
                     countItem = 3;

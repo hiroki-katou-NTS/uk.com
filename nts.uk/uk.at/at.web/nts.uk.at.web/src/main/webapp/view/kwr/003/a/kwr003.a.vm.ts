@@ -180,6 +180,7 @@ module nts.uk.at.view.kwr003.a {
       //vm.disableSelection = ko.observable(false);
       vm.employeeList = ko.observableArray<common.UnitModel>([]);
 
+
       vm.listComponentOption = {
         isShowAlreadySet: vm.isShowAlreadySet(),
         isMultiSelect: vm.isMultiSelect(),
@@ -194,7 +195,7 @@ module nts.uk.at.view.kwr003.a {
         isShowSelectAllButton: vm.isShowSelectAllButton(),
         isSelectAllAfterReload: false,
         tabindex: 5,
-        maxRows: 15
+        maxRows: 20
       };
 
       $('#kcp005').ntsListComponent(vm.listComponentOption)
