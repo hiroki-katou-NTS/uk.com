@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ManHourSummaryTableOutputContent {
     /** 項目詳細 */
-    private List<SummaryItemDetail> itemDetails;
+    private final List<SummaryItemDetail> itemDetails;
     /** 縦計値 */
     private List<VerticalValueDaily> verticalTotalValues;
     /** 期間合計 */
@@ -29,10 +29,12 @@ public class ManHourSummaryTableOutputContent {
      * [C-1] 新規作成
      * @param lstItemDetail 項目詳細
      */
-    public ManHourSummaryTableOutputContent(List<SummaryItemDetail> lstItemDetail){
-        this.itemDetails = lstItemDetail;
-        this.verticalTotalValues = Collections.emptyList();
-        this.totalPeriod = Optional.empty();
+    public static ManHourSummaryTableOutputContent create(List<SummaryItemDetail> lstItemDetail){
+        return new ManHourSummaryTableOutputContent(
+                lstItemDetail,
+                Collections.emptyList(),
+                Optional.empty()
+        );
     }
 
     /**
@@ -73,7 +75,7 @@ public class ManHourSummaryTableOutputContent {
         List<VerticalValueDaily> lstVertical = new ArrayList<>();
         for (val ym : yearMonthList) {
             val childVerticalList = itemDetails.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
-            val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().year() == ym.year()).mapToInt(VerticalValueDaily::getWorkingHours).sum();
+            val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().equals(ym)).mapToInt(VerticalValueDaily::getWorkingHours).sum();
             lstVertical.add(new VerticalValueDaily(workingTime, ym, null));
         }
         if (!lstVertical.isEmpty())

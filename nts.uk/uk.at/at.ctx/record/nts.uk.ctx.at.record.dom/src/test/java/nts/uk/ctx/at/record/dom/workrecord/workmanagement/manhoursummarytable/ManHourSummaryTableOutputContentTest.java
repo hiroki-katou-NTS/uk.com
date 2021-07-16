@@ -8,10 +8,8 @@ import nts.arc.time.YearMonth;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -28,7 +26,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void getters() {
         val itemDetails = Helper.summaryItemDetail.getList(3);
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
         NtsAssert.invokeGetters(instance);
     }
 
@@ -38,7 +36,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_Date() {
         val itemDetails = Helper.summaryItemDetail.getList(2);
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.DATE, dateList, yearMonthList);
@@ -188,7 +186,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_Date_dateList_Empty() {
         val itemDetails = Helper.summaryItemDetail.getList(2);
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.DATE, Collections.emptyList(), yearMonthList);
@@ -329,7 +327,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_Date_itemDetails_empty() {
         List<SummaryItemDetail> itemDetails = Collections.emptyList();
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.DATE, dateList, yearMonthList);
@@ -357,7 +355,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_Date_dateList_Empty_itemDetails_empty() {
         List<SummaryItemDetail> itemDetails = Collections.emptyList();
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.DATE, Collections.emptyList(), yearMonthList);
@@ -375,7 +373,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_YearMonth() {
         val itemDetails = Helper.summaryItemDetail.getList(2);
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, yearMonthList);
@@ -523,7 +521,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_YearMonth_yearMonthList_empty() {
         val itemDetails = Helper.summaryItemDetail.getList(2);
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, Collections.emptyList());
@@ -664,7 +662,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_YearMonth_itemDetails_empty() {
         List<SummaryItemDetail> itemDetails = Collections.emptyList();
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, yearMonthList);
@@ -688,7 +686,7 @@ public class ManHourSummaryTableOutputContentTest {
     @Test
     public void calculateTotal_totalUnit_YearMonth_yearMonthList_empty_itemDetails_empty() {
         List<SummaryItemDetail> itemDetails = Collections.emptyList();
-        val instance = new ManHourSummaryTableOutputContent(itemDetails);
+        val instance = ManHourSummaryTableOutputContent.create(itemDetails);
 
         // Execute
         instance.calculateTotal(TotalUnit.YEAR_MONTH, dateList, Collections.emptyList());

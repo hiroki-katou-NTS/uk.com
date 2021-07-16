@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 public class ManHourSummaryTableFormat extends AggregateRoot {
     /** 工数集計表コード*/
-    private ManHourSummaryTableCode code;
+    private final ManHourSummaryTableCode code;
     /** 工数集計表名称 */
     private ManHourSummaryTableName name;
     /** フォーマット詳細設定 */

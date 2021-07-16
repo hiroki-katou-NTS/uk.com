@@ -40,65 +40,47 @@ public class MasterNameInformation {
      * @return 表示情報
      */
     public DisplayInformation getDisplayInfo(String code, SummaryItemType summaryItemType) {
-        DisplayInformation dispInfo = null;
+        DisplayInformation dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
         switch (summaryItemType) {
             case AFFILIATION_WORKPLACE:
                 val affWkplInfo = affWorkplaceInfoList.stream().filter(x -> x.getWorkplaceId().equals(code)).findFirst();
                 if (affWkplInfo.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(affWkplInfo.get().getWorkplaceCode()), Optional.ofNullable(affWkplInfo.get().getWorkplaceDisplayName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case WORKPLACE:
                 val wkplInfo = workPlaceInfoList.stream().filter(x -> x.getWorkplaceId().equals(code)).findFirst();
                 if (wkplInfo.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(wkplInfo.get().getWorkplaceCode()), Optional.ofNullable(wkplInfo.get().getWorkplaceDisplayName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case EMPLOYEE:
                 val empInfo = employeeInfoList.stream().filter(x -> x.getSid().equals(code)).findFirst();
                 if (empInfo.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(empInfo.get().getEmployeeCode()), Optional.ofNullable(empInfo.get().getEmployeeName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case TASK1:
                 val targetWork1 = task1List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork1.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(targetWork1.get().getCode()), Optional.ofNullable(targetWork1.get().getTaskName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case TASK2:
                 val targetWork2 = task2List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork2.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(targetWork2.get().getCode()), Optional.ofNullable(targetWork2.get().getTaskName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case TASK3:
                 val targetWork3 = task3List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork3.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(targetWork3.get().getCode()), Optional.ofNullable(targetWork3.get().getTaskName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case TASK4:
                 val targetWork4 = task4List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork4.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(targetWork4.get().getCode()), Optional.ofNullable(targetWork4.get().getTaskName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
                 break;
             case TASK5:
                 val targetWork5 = task5List.stream().filter(x -> x.getCode() != null && x.getCode().equals(code)).findFirst();
                 if (targetWork5.isPresent())
                     dispInfo = createDisplayInfo(Optional.ofNullable(targetWork5.get().getCode()), Optional.ofNullable(targetWork5.get().getTaskName()));
-                else
-                    dispInfo = createDisplayInfo(Optional.empty(), Optional.empty());
-                break;
-            default:
                 break;
         }
         return dispInfo;

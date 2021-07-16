@@ -12,9 +12,9 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 @Getter
 public class DisplayInformation extends ValueObject {
     /** コード */
-    private String code;
+    private final String code;
     /** 名称 */
-    private String name;
+    private final String name;
 
     /**
      * [C-1] 削除済みマスタ

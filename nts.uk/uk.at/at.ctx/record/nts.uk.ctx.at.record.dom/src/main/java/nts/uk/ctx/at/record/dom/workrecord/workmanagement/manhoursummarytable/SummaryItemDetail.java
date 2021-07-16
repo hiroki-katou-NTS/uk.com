@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 @Getter
 public class SummaryItemDetail extends ValueObject {
     /** コード */
-    private String code;
+    private final String code;
     /** 表示情報 */
-    private DisplayInformation displayInfo;
+    private final DisplayInformation displayInfo;
     /** 子階層リスト */
-    private List<SummaryItemDetail> childHierarchyList;
+    private final List<SummaryItemDetail> childHierarchyList;
     /** 縦計リスト */
     private List<VerticalValueDaily> verticalTotalList;
     /** 期間合計 */
@@ -109,7 +109,7 @@ public class SummaryItemDetail extends ValueObject {
         List<VerticalValueDaily> lstVertical = new ArrayList<>();
         for (val ym : yearMonthList) {
             val childVerticalList = childHierarchyList.stream().flatMap(x -> x.getVerticalTotalList().stream()).collect(Collectors.toList());
-            val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().year() == ym.year()).mapToInt(VerticalValueDaily::getWorkingHours).sum();
+            val workingTime = childVerticalList.stream().filter(x -> x.getYearMonth().equals(ym)).mapToInt(VerticalValueDaily::getWorkingHours).sum();
             lstVertical.add(new VerticalValueDaily(workingTime, ym, null));
         }
         if (!lstVertical.isEmpty())

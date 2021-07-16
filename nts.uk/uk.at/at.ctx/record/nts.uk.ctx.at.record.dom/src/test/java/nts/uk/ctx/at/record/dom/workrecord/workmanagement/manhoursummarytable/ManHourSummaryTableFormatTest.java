@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
 import lombok.val;
+import mockit.Expectations;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
@@ -8,6 +9,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.adapter.function.alarmworkplace.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,6 +59,10 @@ public class ManHourSummaryTableFormatTest {
     public void createOutputContent_unitDate() {
         val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.USE, summaryItemSingleList);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Action
         val result = instance.createOutputContent(dateList, yearMonthList, workDetail, masterNameInfo);
@@ -201,6 +207,10 @@ public class ManHourSummaryTableFormatTest {
     public void createOutputContent_unitDate_disp_notUse() {
         val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.NOT_USE, summaryItemSingleList);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Action
         val result = instance.createOutputContent(dateList, yearMonthList, workDetail, masterNameInfo);
@@ -367,6 +377,10 @@ public class ManHourSummaryTableFormatTest {
     public void createOutputContent_unitMonth() {
         val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.YEAR_MONTH, NotUseAtr.USE, summaryItemSingleList);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Action
         val result = instance.createOutputContent(dateList, yearMonthList, workDetail, masterNameInfo);
@@ -490,6 +504,10 @@ public class ManHourSummaryTableFormatTest {
     public void createOutputContent_unitMonth_disp_notUse() {
         val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.YEAR_MONTH, NotUseAtr.NOT_USE, summaryItemSingleList);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Action
         val result = instance.createOutputContent(dateList, yearMonthList, workDetail, masterNameInfo);

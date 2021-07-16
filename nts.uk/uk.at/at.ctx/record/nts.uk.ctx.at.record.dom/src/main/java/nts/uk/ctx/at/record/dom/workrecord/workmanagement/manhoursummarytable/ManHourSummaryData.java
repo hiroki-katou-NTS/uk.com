@@ -14,9 +14,9 @@ public class ManHourSummaryData {
     /**
      * マスタ名称情報
      */
-    private MasterNameInformation masterNameInfo;
+    private final MasterNameInformation masterNameInfo;
     /**
      * 作業詳細リスト
      */
-    private List<WorkDetailData> workDetailDataList;
+    private final List<WorkDetailData> workDetailDataList;
 }

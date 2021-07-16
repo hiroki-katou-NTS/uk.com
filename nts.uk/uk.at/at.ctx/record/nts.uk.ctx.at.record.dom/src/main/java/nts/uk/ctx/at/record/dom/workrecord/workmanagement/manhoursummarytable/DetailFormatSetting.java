@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  * 	フォーマット詳細設定
  */
 @Getter
+@AllArgsConstructor
 public class DetailFormatSetting extends ValueObject {
     /** 表示形式 */
     private DisplayFormat displayFormat;
@@ -28,13 +30,10 @@ public class DetailFormatSetting extends ValueObject {
      * [C-1] フォーマット詳細設定
      * @return フォーマット詳細設定
      */
-    public DetailFormatSetting(DisplayFormat displayFormat, TotalUnit totalUnit, NotUseAtr displayVertHoriTotal,
+    public static DetailFormatSetting create(DisplayFormat displayFormat, TotalUnit totalUnit, NotUseAtr displayVertHoriTotal,
                                List<SummaryItem> summaryItemList) {
-        this.displayFormat = displayFormat;
-        this.totalUnit = totalUnit;
-        this.displayVerticalHorizontalTotal = displayVertHoriTotal;
         summaryItemList.sort(Comparator.comparing(SummaryItem::getHierarchicalOrder));
-        this.summaryItemList = summaryItemList;
+        return new DetailFormatSetting(displayFormat, totalUnit, displayVertHoriTotal, summaryItemList);
     }
 
     /**
@@ -50,7 +49,7 @@ public class DetailFormatSetting extends ValueObject {
                                                                                    MasterNameInformation masterNameInfo) {
         val firstItem = summaryItemList.stream().findFirst().orElse(null);
         val itemDetail = createSummaryItemDetail(dateList, yearMonthList, firstItem, workDetailList, masterNameInfo);
-        val outputContent = new ManHourSummaryTableOutputContent(itemDetail);
+        val outputContent = ManHourSummaryTableOutputContent.create(itemDetail);
 
         if (displayVerticalHorizontalTotal == NotUseAtr.USE)
             outputContent.calculateTotal(totalUnit, dateList, yearMonthList);

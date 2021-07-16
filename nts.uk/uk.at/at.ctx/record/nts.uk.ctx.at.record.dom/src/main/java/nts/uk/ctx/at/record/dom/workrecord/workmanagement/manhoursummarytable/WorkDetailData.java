@@ -12,27 +12,27 @@ import org.apache.logging.log4j.util.Strings;
 @Getter
 public class WorkDetailData {
     /** 社員ID */
-    private String employeeId;
+    private final String employeeId;
     /** 年月日 */
-    private GeneralDate date;
+    private final GeneralDate date;
     /** 応援勤務枠NO */
-    private int supportWorkFrameNo;
+    private final int supportWorkFrameNo;
     /** 所属職場ID */
-    private String affWorkplaceId;
+    private final String affWorkplaceId;
     /** 勤務職場ID */
-    private String workplaceId;
+    private final String workplaceId;
     /** 作業コード1 */
-    private String workCode1;
+    private final String workCode1;
     /** 作業コード2 */
-    private String workCode2;
+    private final String workCode2;
     /** 作業コード3 */
-    private String workCode3;
+    private final String workCode3;
     /** 作業コード4 */
-    private String workCode4;
+    private final String workCode4;
     /** 作業コード5 */
-    private String workCode5;
+    private final String workCode5;
     /** 総労働時間 */
-    private int totalWorkingHours;
+    private final int totalWorkingHours;
 
     /**
      * [1] 集計項目をマッピングする
@@ -40,35 +40,24 @@ public class WorkDetailData {
      * @return string
      */
     public String mapSummaryItem(SummaryItemType itemType) {
-        String workItem = Strings.EMPTY;
         switch (itemType) {
             case AFFILIATION_WORKPLACE:
-                workItem = affWorkplaceId;
-                break;
+                return affWorkplaceId;
             case WORKPLACE:
-                workItem = workplaceId;
-                break;
+                return workplaceId;
             case EMPLOYEE:
-                workItem = employeeId;
-                break;
+                return employeeId;
             case TASK1:
-                workItem = workCode1;
-                break;
+                return workCode1;
             case TASK2:
-                workItem = workCode2;
-                break;
+                return workCode2;
             case TASK3:
-                workItem = workCode3;
-                break;
+                return workCode3;
             case TASK4:
-                workItem = workCode4;
-                break;
+                return workCode4;
             case TASK5:
-                workItem = workCode5;
-                break;
-            default:
-                break;
+                return workCode5;
         }
-        return workItem;
+        return Strings.EMPTY;
     }
 }

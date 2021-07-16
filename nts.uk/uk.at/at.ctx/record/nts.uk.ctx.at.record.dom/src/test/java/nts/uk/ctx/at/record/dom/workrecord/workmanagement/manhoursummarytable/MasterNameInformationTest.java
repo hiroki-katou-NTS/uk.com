@@ -58,6 +58,11 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsAffWkp() {
         val instance = new MasterNameInformation(workplaceInfos, null, null, null, null, null, null, null);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
+
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.AFFILIATION_WORKPLACE);
 
@@ -139,6 +144,10 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsWkp() {
         val instance = new MasterNameInformation(null, workplaceInfos, null, null, null, null, null, null);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.WORKPLACE);
@@ -221,6 +230,10 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsEmployee() {
         val instance = new MasterNameInformation(null, null, empInfos, null, null, null, null, null);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.EMPLOYEE);
@@ -303,6 +316,10 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsTask1() {
         val instance = new MasterNameInformation(null, null, null, tasks, null, null, null, null);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.TASK1);
@@ -383,6 +400,10 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsTask2() {
         val instance = new MasterNameInformation(null, null, null, null, tasks, null, null, null);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.TASK2);
@@ -463,6 +484,10 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsTask3() {
         val instance = new MasterNameInformation(null, null, null, null, null, tasks, null, null);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.TASK3);
@@ -543,6 +568,10 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsTask4() {
         val instance = new MasterNameInformation(null, null, null, null, null, null, tasks, null);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.TASK4);
@@ -623,6 +652,10 @@ public class MasterNameInformationTest {
     @Test
     public void getDisplayInfo_equalsCode_typeIsTask5() {
         val instance = new MasterNameInformation(null, null, null, null, null, null, null, tasks);
+        new Expectations(TextResource.class) {{
+            TextResource.localize("KHA003_101");
+            result = "マスタ未登録";
+        }};
 
         // Execute
         val result = instance.getDisplayInfo("001", SummaryItemType.TASK5);
