@@ -221,14 +221,16 @@ import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
             private exportFileError(): void{
                 var self = this;
                 service.exportScheduleErrorLog(self.inputData.executionId).then(() => {
-                  setTimeout(() => {
+                  // setTimeout(() => {
                     // resize windows
                     let windowSize = nts.uk.ui.windows.getSelf();
                     windowSize.$dialog.dialog('option', {
                         width: 750,
                         height: 630
                     });
-                  }, 500);
+                    (window.parent as any).$("iframe").closest(".ui-dialog-content.ui-widget-content").addClass("fix-dialog-content");
+                    (window.parent as any).$("iframe").closest(".ui-dialog").addClass("fix-dialog");
+                  // }, 500);
                 });    
             }
 
