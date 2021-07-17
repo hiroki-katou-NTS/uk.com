@@ -32,41 +32,45 @@ public class GetListEmpWorkHours {
 	public List<EmpTaskInfoDto> get(Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap) {
 		String companyID = AppContexts.user().companyId();
 		List<EmpTaskInfoDto> dto = new ArrayList<>();
-		List<AllTaskScheduleDetail> all = new ArrayList<>();
 		// 取得する (勤務予定リスト: 勤務予定リスト): List＜Optional<社員作業情報 dto>＞
 
 		// 1.1[勤務予定.isEmpty]:create()
 		mngStatusAndWScheMap.forEach((k, v) -> {
 			if (!v.isPresent()) {
-				EmpTaskInfoDto dto1 = new EmpTaskInfoDto(k.getDate(), k.getEmployeeID(), new ArrayList());
+				EmpTaskInfoDto dto1 = new EmpTaskInfoDto(k.getDate(), k.getEmployeeID(), new ArrayList<>());
 				dto.add(dto1);
 			} else {
 				if (v.isPresent() && !v.get().getTaskSchedule().getDetails().isEmpty()) {
 					// 1.2.1:[not 勤務予定.作業予定.詳細リスト.isEmpty]: getget(会社ID, 作業枠NO,
 					// 作業コード)Optional<作業>
-					String taskCode = v.get().getTaskSchedule().getDetails().get(0).getTaskCode().v();
-					Optional<TaskData> taskDto = getOneTask.get(companyID, 1, taskCode);
+					List<TaskData> taskDtos = v.get().getTaskSchedule().getDetails().stream().map(mapper -> {
+						return getOneTask.get(companyID, 1, mapper.getTaskCode().v()).map(x -> x).orElse(null);
+					}).collect(Collectors.toList());
 
 					/*
 					 * 1.2.2：create() 作業予定詳細＝勤務予定．作業予定 作業＝Optional＜作業＞
 					 * ※勤務予定．作業予定がemptyの場合は作業予定詳細＝empty
 					 * ※Optional＜作業＞がemptyの場合は作業＝empty
 					 */
-					if(!taskDto.isPresent() && v.get().getTaskSchedule().getDetails().isEmpty()){
+					if(taskDtos.isEmpty() && v.get().getTaskSchedule().getDetails().isEmpty()){
 						EmpTaskInfoDto dto1 = new EmpTaskInfoDto(k.getDate(), k.getEmployeeID(), new ArrayList());
 						dto.add(dto1);
 					}
 					List<TaskScheduleDetail> data = v.get().getTaskSchedule().getDetails();
 					List<TaskScheduleDetailDto> detailDto = data.stream().map(c -> {
-						TaskScheduleDetailDto aa = TaskScheduleDetailDto.toDto(c);
-						return aa;
+						Optional<TaskData> task = taskDtos.stream().filter(x -> {
+							return c.getTaskCode().v().equals(x.code);
+						}).findFirst();
+						
+						if(task.isPresent())
+							return TaskScheduleDetailDto.toDto(c, task.get());
+						else
+							return TaskScheduleDetailDto.toDto(c, null);
+						
 					}).collect(Collectors.toList());
-					for(TaskScheduleDetailDto i : detailDto ){
-						AllTaskScheduleDetail a = new AllTaskScheduleDetail(i, taskDto);
-						all.add(a);
-					}
+					
 					//List<AllTaskScheduleDetail> all1 = new AllTaskScheduleDetail(detailDto.get, taskDto);
-					EmpTaskInfoDto res = new EmpTaskInfoDto(k.getDate(), k.getEmployeeID(), all);
+					EmpTaskInfoDto res = new EmpTaskInfoDto(k.getDate(), k.getEmployeeID(), detailDto);
 					dto.add(res);
 				}
 				

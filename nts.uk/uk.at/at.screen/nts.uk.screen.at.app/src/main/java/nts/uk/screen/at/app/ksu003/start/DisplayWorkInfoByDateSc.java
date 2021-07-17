@@ -42,8 +42,10 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.screen.at.app.ksu001.start.SupportCategory;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.AllTaskScheduleDetail;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.GetListEmpWorkHours;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.TaskInfoDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DailyAttdTimeVacationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoByDateDto;
 import nts.uk.screen.at.app.ksu003.start.dto.DisplayWorkInfoParam;
@@ -298,11 +300,21 @@ public class DisplayWorkInfoByDateSc {
 			}
 			
 			// 2.4
-			EmpTaskInfoDto taskInfoDto = null;
+			TaskInfoDto taskInfoDto = null;
 			if(param.getSelectedDisplayPeriod() == 2) {
 				Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
 				mngStatusAndWScheMa.put(key, value);
-				taskInfoDto = getListEmpWorkHours.get(mngStatusAndWScheMa).isEmpty() ? null : getListEmpWorkHours.get(mngStatusAndWScheMa).get(0);
+				
+				EmpTaskInfoDto infoDto = null;
+				
+				if(!getListEmpWorkHours.get(mngStatusAndWScheMa).isEmpty()) {
+					infoDto = getListEmpWorkHours.get(mngStatusAndWScheMa).get(0);
+					taskInfoDto = new TaskInfoDto(
+							infoDto.getDate(), 
+							infoDto.getEmpID(),
+							infoDto.getTaskScheduleDetail());
+				}
+				
 			}
 			// 2.3.4
 			infoByDateDto = new DisplayWorkInfoByDateDto(key.getEmployeeID(), workInfoDto, workScheduleDto, inforDto == null ? null : inforDto.getFixedWorkInforDto().get(0), taskInfoDto);

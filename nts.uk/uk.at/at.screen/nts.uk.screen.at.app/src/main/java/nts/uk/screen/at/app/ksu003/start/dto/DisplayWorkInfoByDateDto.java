@@ -3,6 +3,7 @@ package nts.uk.screen.at.app.ksu003.start.dto;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
+import nts.uk.screen.at.app.ksu003.getlistempworkhours.TaskInfoDto;
 
 @Value
 @AllArgsConstructor
@@ -20,5 +21,5 @@ public class DisplayWorkInfoByDateDto {
 		private FixedWorkInforDto fixedWorkInforDto;
 		
 		/** 社員作業情報 dto */
-		private EmpTaskInfoDto empTaskInfoDto;
+		private TaskInfoDto empTaskInfoDto;
 }

@@ -1,7 +1,9 @@
 package nts.uk.screen.at.ws.ksu003;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -9,17 +11,20 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import lombok.val;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.NumberOfDaySuspensionDto;
+import nts.gul.util.Range;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddScheduleByDisplaySettingCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddScheduleByDisplaySettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddWorkScheduleCommand;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.AddWorkScheduleCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.RegisterWorkScheduleKsu003;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.ResultRegisWorkSchedule;
-import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkInformationDto;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.TaskScheduleDetailDto;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.TaskScheduleDetailEmp;
+import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.TimeSpanForCalcDto;
 import nts.uk.ctx.at.schedule.app.command.schedule.workschedule.WorkScheduleParam;
 import nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet.GetTaskPaletteDisplayInfor;
 import nts.uk.ctx.at.schedule.app.query.schedule.task.taskpallet.GetTaskPalletQuery;
@@ -29,14 +34,12 @@ import nts.uk.ctx.at.shared.app.find.workrule.shiftmaster.TargetOrgIdenInforDto;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.ScheduleTimeSheetDto;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkType;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.checkempattendancesystem.CheckEmpAttParam;
 import nts.uk.screen.at.app.ksu003.checkempattendancesystem.CheckEmpAttendanceSystem;
-import nts.uk.screen.at.app.ksu003.checkempattendancesystem.WorkInfoOfDailyAttendanceDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.EmpWorkFixedWorkInfoDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.GetEmpWorkFixedWorkInfoSc;
 import nts.uk.screen.at.app.ksu003.getlistempworkhours.EmpTaskInfoDto;
@@ -182,7 +185,7 @@ public class KSU003WebService extends WebService{
 	@Path("getTaskInfo")
 	// 作業選択準備情報を取得する
 	public GetWorkSelectionInforDto getTaskInfo (GetTaskParam param){
-		GetWorkSelectionInforDto rs = selectTaskInfor.get(GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"), param.getPage(), param.getTargetUnit(), param.getOrganizationID());
+		GetWorkSelectionInforDto rs = selectTaskInfor.get(GeneralDate.fromString(param.getBaseDate(), "yyyy/MM/dd"), param.getTargetUnit(), param.getPage(), param.getOrganizationID());
 		return rs;
 	}
 	
@@ -224,6 +227,7 @@ public class KSU003WebService extends WebService{
 	@Path("addTaskWorkSchedule")
 	// 作業予定を登録する
 	public void addTaskPaletteDisplay (AddWorkScheduleCommand param){
+		//param.setLstTaskScheduleDetailEmp(this.checkDuplicate(param.getLstTaskScheduleDetailEmp(), param.getLstTaskScheduleDetailEmp().stream().collect(Collectors.toList())));
 		commandHandler.handle(param);
 	}
 	
