@@ -567,14 +567,17 @@ module nts.uk.at.view.ksu003.a.model {
 		workInfoDto: EmployeeWorkInfoDto; /** 社員勤務情報　dto */
 		workScheduleDto: EmployeeWorkScheduleDto; /** 社員勤務予定　dto */
 		fixedWorkInforDto: FixedWorkInforDto; /** 勤務固定情報　dto */
+		empTaskInfoDto : any;
 		constructor(empId: string,
 			workInfoDto: EmployeeWorkInfoDto,
 			workScheduleDto: EmployeeWorkScheduleDto,
-			fixedWorkInforDto: FixedWorkInforDto) {
+			fixedWorkInforDto: FixedWorkInforDto, 
+			empTaskInfoDto : any) {
 			this.empId = empId;
 			this.workInfoDto = workInfoDto;
 			this.workScheduleDto = workScheduleDto;
 			this.fixedWorkInforDto = fixedWorkInforDto;
+			this.empTaskInfoDto = empTaskInfoDto;
 		}
 	}
 
@@ -1285,6 +1288,7 @@ module nts.uk.at.view.ksu003.a.model {
 		gcCoreTime: Array<model.ICoreTime>,
 		gcHolidayTime: Array<model.IHolidayTime>,
 		gcShortTime: Array<model.IShortTime>;
+		gcTaskTime : any;
 	};
 
 	export interface IEmpidName {

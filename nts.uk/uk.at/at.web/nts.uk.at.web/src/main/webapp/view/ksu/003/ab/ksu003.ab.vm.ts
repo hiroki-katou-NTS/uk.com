@@ -59,14 +59,24 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			});
 
 			self.selectedButton.subscribe((value) => {
-				if (value.data == null || value.data == {})
-					return;
-
-				if (value.data.text == getText("KSU003_70") || value.data.text == getText("KSU003_83"))
+				
+				if(__viewContext.viewModel.viewmodelA.localStore.workSelection != 1)
 					return;
 				
-				if (_.isEmpty(self.dataTaskPallet) && _.isEmpty(self.dataTaskPalletDis))
+				if (value.data == null || value.data == {}){
+					__viewContext.viewModel.viewmodelA.delPasteTask();
 					return;
+				}
+
+				if (value.data.text == getText("KSU003_70") || value.data.text == getText("KSU003_83")){
+					__viewContext.viewModel.viewmodelA.delPasteTask();
+					return;
+				}
+				
+				if (_.isEmpty(self.dataTaskPallet) && _.isEmpty(self.dataTaskPalletDis)){
+					__viewContext.viewModel.viewmodelA.delPasteTask();
+					return;
+				}
 				
 				if (value.column == -1 || value.row == -1) {
 					self.selectedButton(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails);
@@ -76,8 +86,12 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				}
 				//__viewContext.viewModel.viewmodelA.ruler.setMode("pasteFlex");
 				if(!_.isNil(value.data)){
+					
+					let taskFilter = _.filter(self.dataTaskInfo.lstTaskDto, (x : any) => {
+							return value.data.tooltip === x.taskDisplayInfoDto.taskName;
+					});
+					
 					if(value.data.text != "t" && value.data.tooltip != "test" && __viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2)
-					__viewContext.viewModel.viewmodelA.addTypeOfTask("#6495ED", value, true);
 					__viewContext.viewModel.viewmodelA.pasteTask(value);
 				}
 				
@@ -102,8 +116,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 							disableMenuOnDataNotSet: [1], mode: "normal"
 						});
 						
-						if(window.innerWidth >= 1380){
-							$("#tableButton1 button").css("width", "202px");
+						if(window.innerWidth >= 1366){
+							$("#tableButton1 button").css("width", "200px");
 						} else {
 							$("#comboTime").css("width", "800px");
 						}
@@ -117,13 +131,38 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 						characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 					}
 					self.setErrButton();
-					self.taskChecked.subscribe((value) => {
-						__viewContext.viewModel.viewmodelA.localStore.work1Selection = value;
-						characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
-					});
+					self.subscribeTaskCombo();
+					if(__viewContext.viewModel.viewmodelA.localStore.workSelection != 1)
+					self.taskChecked.valueHasMutated();
 				});
 			});
 			return dfd.promise();
+		}
+		
+		public subscribeTaskCombo(){
+			let self = this;
+			self.taskChecked.subscribe((value) => {
+						
+				if(_.isNil(value)) return;
+				
+				let taskFilter = _.filter(self.dataTaskInfo.lstTaskDto, (x : any) => {
+					return value === x.code;
+					});
+				
+				let taskInfo : any = {
+					data :{
+						page: taskFilter[0].code,
+						text: taskFilter[0].taskDisplayInfoDto.taskAbName,
+						tooltip: taskFilter[0].taskDisplayInfoDto.taskName,
+						color: taskFilter[0].taskDisplayInfoDto.color
+					}
+				}
+				
+				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo);
+				
+				__viewContext.viewModel.viewmodelA.localStore.work1Selection = value;
+				characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+			});
 		}
 
 		// ③<<ScreenQuery>>作業選択準備情報を取得する
@@ -145,6 +184,19 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			service.getTaskInfo(param)
 				.done((data: any) => {
 					self.dataTaskInfo = data;
+					_.forEach(self.dataTaskInfo.lstTaskDto, (x : any) => {
+						let taskInfo : any = {
+							data :{
+								page: x.code,
+								text: x.taskDisplayInfoDto.taskAbName,
+								tooltip: x.taskDisplayInfoDto.taskName,
+								color: x.taskDisplayInfoDto.color
+							}
+						}
+						
+						__viewContext.viewModel.viewmodelA.addTypeOfTask(taskInfo.data.color, taskInfo);
+					});	
+						
 					dfd.resolve();
 				}).fail(function(error) {
 					alertError({ messageId: error.messageId });
@@ -169,6 +221,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					if (!_.isNil(data)){
 						self.hasDataButton.add(data.page);	
 						self.dataTaskPallet = data;					
+					} else {
+						self.dataTaskPallet = [];
 					}
 					dfd.resolve();
 				}).fail(function(error) {
@@ -191,7 +245,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 			service.getTaskPaletteDisplay(param)
 				.done((data: any) => {
-					if (!_.isNil(data))
+					if (!_.isNil(data) && !_.isNil(data.taskPalette))
 						self.hasDataButton.add(data.taskPalette.page);
 
 						self.dataTaskPalletDis = data;
@@ -216,7 +270,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					data.lstTaskDto[i].taskDisplayInfoDto.taskNote);
 				datas.add(taskData);
 			}
-			datas = datas.sort();
+			datas = datas.sort((x : any,y : any) => {
+				return x.code - y.code;
+			});
 			if (datas.length > 0)
 				self.taskList(datas);
 			else {
@@ -363,7 +419,11 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 						self.sourceCompany(soure);
 					}
 					self.checkSelectButton(1);
+					$("#tableButton1 button").css("border", "1px solid LightGrey");
 					self.setErrButton();
+					
+					if(window.innerWidth >= 1366)
+					$("#tableButton1 button").css("min-width", "200px");
 				});
 
 			} else {
@@ -400,6 +460,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				_.each(self.errButton, idx => {
 					$($("#tableButton1 button")[idx]).css("border", "1px solid red");
 					$($("#tableButton1 button")[idx]).attr("disabled", "true");
+					$($("#tableButton1 button")[idx]).css("background-color", "#D9D9D9");
 				});
 			}
 		}
@@ -425,19 +486,23 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 		closeAb1() {
 			let self = this;
+			__viewContext.viewModel.viewmodelA.delPasteTask();
 			$("#screen-Ab1").hide();
 			$("#screen-Ab2").show();
 			__viewContext.viewModel.viewmodelA.localStore.workSelection = 1;
 			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+			self.selectedButton.valueHasMutated();
 			__viewContext.viewModel.viewmodelA.setTaskMode("pasteFlex");
 		}
 
 		closeAb2() {
 			let self = this;
+			__viewContext.viewModel.viewmodelA.delPasteTask();
 			$("#screen-Ab2").hide();
 			$("#screen-Ab1").show();
 			__viewContext.viewModel.viewmodelA.localStore.workSelection = 0;
 			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
+			self.taskChecked.valueHasMutated();
 			__viewContext.viewModel.viewmodelA.setTaskMode("paste");
 		}
 

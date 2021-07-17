@@ -106,6 +106,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		shortType : any;
 		coreType : any;
 		taskType : any;
+		taskTypes : any = [];
+		taskPasteData : any = {};
+		taskData : any = [];
+		taskSaveData : any = [];
+		lstTaskScheduleDetailEmp : any = [];
 		
 		modes = ko.observableArray([ "normal", "paste", "pasteFlex" ].map(c => ({ code: c, name: c })));
 
@@ -197,55 +202,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 			
 			self.selectedDisplayPeriod.subscribe((value) => {
-				let mode = "normal";
-				if(value == 1){
-					if(_.isNil(self.fixedType)) return;
-					self.fixedType.color("#ccccff")
-					self.changeableType.color("#ffc000")
-					self.flexType.color("#ccccff")
-					self.otType.color("#ffff00")
-					self.otType.hide(false);
-					self.otType.color("#00ffcc")
-					self.coreType.hide(false);
-					self.breakType.zIndex(1001);
-					self.holidayType.zIndex(1103);
-					self.shortType.zIndex(1052);
-					
-					$(".ex-body-leftmost").removeClass("dis-pointer");
-					$(".ex-body-middle").removeClass("dis-pointer");
-					$(".ex-body-detail").removeClass("disable-css");
-					$(".x-button").removeClass("dis-pointer");
-					$(".xcell").removeClass("bg-color");
-				} else {
-					if(_.isNil(self.fixedType)) return;
-					self.fixedType.color("#fff")
-					self.changeableType.color("#fff")
-					self.flexType.color("#fff")
-					self.otType.color("#fff")
-					self.otType.hide(true);
-					self.otType.color("#fff")
-					self.coreType.hide(true);
-					self.breakType.zIndex(1999);
-					self.holidayType.zIndex(1996);
-					self.shortType.zIndex(1995);
-					
-					$(".ex-body-leftmost").addClass("dis-pointer");
-					$(".ex-body-middle").addClass("dis-pointer");
-					$(".ex-body-detail").addClass("disable-css");
-					$(".x-button").addClass("dis-pointer");
-					$(".xcell").addClass("bg-color");
-					$(".extable-header-leftmost").addClass("header-color");
-					$(".extable-header-detail").addClass("header-color");
-					
-					if(!_.isNil(self.localStore.workSelection)){
-						if(self.localStore.workSelection == 0)
-							mode = "paste";
-						if(self.localStore.workSelection == 1)
-							mode = "pasteFlex";
-					}
-				}
-				
-				ruler.setMode(mode);
+				self.subFormatDate(value);
 				self.localStore.displayFormat = value;
 				characteristics.save(self.KEY, self.localStore);
 			});
@@ -284,7 +241,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this, dfd = $.Deferred<any>();
 			self.getData().done(() => {
 				self.hoverEvent();
-				block.clear();
 				dfd.resolve();
 				block.clear();
 				model.showHide(self.showA9 , self.indexBtnToLeft , self.dataScreen003A().targetInfor);
@@ -298,6 +254,60 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 			
 			return dfd.promise();
+		}
+		
+		public subFormatDate(value : any){
+			let self = this, mode = "normal";
+				if(value == 1){
+					if(_.isNil(self.fixedType)) return;
+					self.fixedType.color("#ccccff")
+					self.changeableType.color("#ffc000")
+					self.flexType.color("#ccccff")
+					self.otType.color("#ffff00")
+					self.otType.hide(false);
+					self.otType.color("#00ffcc")
+					self.coreType.hide(false);
+					self.breakType.zIndex(1001);
+					self.holidayType.zIndex(1103);
+					self.shortType.zIndex(1052);
+					self.taskType.hide(true);
+					
+					$(".ex-body-leftmost").removeClass("dis-pointer");
+					$(".ex-body-middle").removeClass("dis-pointer");
+					$(".ex-body-detail").removeClass("disable-css");
+					$(".x-button").removeClass("dis-pointer");
+					$(".xcell").removeClass("bg-color");
+				} else {
+					if(_.isNil(self.fixedType)) return;
+					self.fixedType.color("#fff")
+					self.changeableType.color("#fff")
+					self.flexType.color("#fff")
+					self.otType.color("#fff")
+					self.otType.hide(true);
+					self.otType.color("#fff")
+					self.coreType.hide(true);
+					self.breakType.zIndex(1999);
+					self.holidayType.zIndex(1996);
+					self.shortType.zIndex(1995);
+					self.taskType.hide(false);
+					
+					$(".ex-body-leftmost").addClass("dis-pointer");
+					$(".ex-body-middle").addClass("dis-pointer");
+					$(".ex-body-detail").addClass("disable-css");
+					$(".x-button").addClass("dis-pointer");
+					$(".xcell").addClass("bg-color");
+					$(".extable-header-leftmost").addClass("header-color");
+					$(".extable-header-detail").addClass("header-color");
+					
+					if(!_.isNil(self.localStore.workSelection)){
+						if(self.localStore.workSelection == 0)
+							mode = "paste";
+						if(self.localStore.workSelection == 1)
+							mode = "pasteFlex";
+					}
+				}
+				
+				ruler.setMode(mode);
 		}
 
 		// Check and bind data when input worktype & worktime
@@ -684,10 +694,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.localStore = local;
 			self.getWorkingByDate(self.targetDate(), 1).done(() => {
+				if(self.selectedDisplayPeriod() != 1){
+					self.getTask().done(() => {
+						self.convertDataIntoExtable();
+						self.initExtableData().done(() => {
+							dfd.resolve();
+						});
+					});
+				} else {
 				self.convertDataIntoExtable();
 				self.initExtableData().done(() => {
 					dfd.resolve();
 				});
+				}
+				
 			});
 			return dfd.promise();
 		}
@@ -790,7 +810,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					errorDialog({ messageId: error.messageId });
 					dfd.reject();
 				}).always(function() {
-					block.clear();
+					//block.clear();
 				});
 			return dfd.promise();
 		}
@@ -1225,7 +1245,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							fixBreakTime: schedule.fixedWorkInforDto.fixBreakTime
 						})
 
-						// Tính tổng BREAK-TIME khi khởi động
+						// Tính tổng BREAKTIME khi khởi động
 						lstTime = self.calcChartTypeTime(schedule, schedule.workScheduleDto.listBreakTimeZoneDto, timeRangeLimit, lstTime, "BREAK", lineNo);
 					}
 
@@ -1375,7 +1395,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					gcFlexTime: gcFlexTime,
 					gcCoreTime: gcCoreTime,
 					gcHolidayTime: gcHolidayTime,
-					gcShortTime: gcShortTime
+					gcShortTime: gcShortTime,
+					gcTaskTime : schedule.empTaskInfoDto == null ? null : schedule.empTaskInfoDto.taskScheduleDetail
 				});
 			});
 			// tạo dữ liệu để truyền vào init extable
@@ -1416,6 +1437,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			if (check == 1) {
 				self.initExtableData();
 				model.showHide(self.showA9 , self.indexBtnToLeft , self.dataScreen003A().targetInfor);
+				
+				if (self.selectedDisplayPeriod() != 1){
+					self.subFormatDate(2);
+					__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
+				}
+				
+				
 				block.clear();
 			}
 			else {
@@ -1423,6 +1451,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.convertDataIntoExtable();
 					self.initExtableData();
 					model.showHide(self.showA9 , self.indexBtnToLeft , self.dataScreen003A().targetInfor);
+					
+					if (self.selectedDisplayPeriod() != 1){
+						self.subFormatDate(2);
+						__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
+					}
+					
 					block.clear();
 				});
 			}
@@ -1943,7 +1977,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				showTooltipIfOverflow: true,
 				errorMessagePopup: true,
 				windowXOccupation: 40,
-				windowYOccupation: 200
+				windowYOccupation: 200,
+				columnVirtualization: true
 			}).LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
 				.MiddleHeader(middleHeader).MiddleContent(middleContent)
 				.DetailHeader(detailHeader).DetailContent(detailContent);
@@ -2333,8 +2368,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			let self = this, dfd = $.Deferred(), updatedCells = $("#extable-ksu003").exTable("updatedCells"), params = [];
 			block.grayout();
-
-			let dataReg = model.buidDataReg(updatedCells, self.dataScreen003A().targetInfor , self.dataScreen003A().employeeInfo , self.employeeIdLogin , self.colorBreak45 , self.index045);
+			// đăng ký với mode bình thường
+			if(self.selectedDisplayPeriod() == 1){
+				let dataReg = model.buidDataReg(updatedCells, self.dataScreen003A().targetInfor , self.dataScreen003A().employeeInfo , self.employeeIdLogin , self.colorBreak45 , self.index045);
 			service.regWorkSchedule(dataReg).done((rs: any) => {
 				block.clear();
 				self.colorBreak45 = true
@@ -2364,6 +2400,62 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				alertError(error);
 				dfd.reject();
 			});
+			} else {
+				// đang ký với mode dán task
+				let taskInfo : any = [];
+				let lstTaskScheduleDetailEmp : any = [], taskScheduleDetail : any = [];
+				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp, (tsk : any) => {
+					taskInfo = _.filter(self.taskData, (x : any) => {
+						return tsk.empId == x.empID;
+					});
+					
+					lstTaskScheduleDetailEmp.push(tsk);
+				});
+				
+					if(taskInfo != null){
+						_.forEach(taskInfo, (ti : any) => {
+							_.forEach(ti.taskScheduleDetail, (tis : any) => {
+							let taskDetail = {
+								taskCode: tis.taskCode,
+								timeSpanForCalcDto : tis.timeSpanForCalcDto
+							}
+							
+							taskScheduleDetail.push(taskDetail);
+							});
+						});
+					} 
+				lstTaskScheduleDetailEmp.push({
+						empId : taskInfo[0].empID,
+						taskScheduleDetail : taskScheduleDetail
+				});	
+				lstTaskScheduleDetailEmp = _.uniqWith(lstTaskScheduleDetailEmp, _.isEqual);
+				self.taskSaveData =  {
+					lstTaskScheduleDetailEmp : lstTaskScheduleDetailEmp,
+					ymd : self.taskPasteData.ymd
+				}
+				
+				self.taskSaveData.lstTaskScheduleDetailEmp = _.sortBy(self.taskSaveData.lstTaskScheduleDetailEmp, (x : any) => {
+					return x.taskScheduleDetail.timeSpanForCalcDto.start;
+				});
+				
+				_.forEach(self.taskSaveData, (x : any) => {
+					
+				})
+				
+				service.addTaskWorkSchedule(self.taskSaveData).done((rs: any) => {
+					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+					self.taskSaveData = [];
+					self.taskPasteData = [];
+					self.getTask();
+					self.enableSave(false);
+					block.clear();
+				}).fail(function(error: any) {
+				block.clear();
+				alertError(error);
+				dfd.reject();
+			});
+			}
+			
 			dfd.resolve();
 			return dfd.promise();
 		}
@@ -2426,7 +2518,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						slide = false;
 						sliceBrk = false;
 					}
-					// add chart for FIXED-TIME - thời gian cố định
+					// add chart for FIXED TIME - thời gian cố định
 					if (datafilter[0].typeOfTime === "Fixed" || datafilter[0].gcFixedWorkTime.length > 0) {
 						if (_.isEmpty(fixCheck)) 
 							isFixBr = 1;
@@ -2515,7 +2607,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							indexRight = indexRight++;
 						}
 					}
-					// add CHANGEABLE-TIME - thời gian lưu động
+					// add CHANGEABLE TIME - thời gian lưu động
 					if (datafilter[0].typeOfTime === "Changeable" || datafilter[0].gcFlowTime.length > 0) {
 						let changeable = datafilter[0].gcFlowTime
 						if (_.isEmpty(flowCheck)) isFixBr = 1;
@@ -2559,10 +2651,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								lineNo: i,
 								start: start1 - dispStart,
 								end: end1 - dispStart,
-								limitStartMin: limitStartMin - dispStart,
-								limitStartMax: limitStartMax - dispStart,
-								limitEndMin: limitEndMin - dispStart,
-								limitEndMax: limitEndMax - dispStart,
+								limitStartMin: 0,
+								limitStartMax: 1000,
+								limitEndMin: 0,
+								limitEndMax: 1000,
 								resizeFinished: (b: any, e: any, p: any) => {
 									if (self.checkDisByDate == false) return;},
 								dropFinished: (b: any, e: any) => {
@@ -2607,9 +2699,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									start: start2 - dispStart,
 									end: end2 - dispStart,
 									limitStartMin: limitStartMin - dispStart,
-									limitStartMax: limitStartMax - dispStart,
+									limitStartMax: 1000,
 									limitEndMin: limitEndMin - dispStart,
-									limitEndMax: limitEndMax - dispStart,
+									limitEndMax: 1000,
 									resizeFinished: (b: any, e: any, p: any) => {
 										if (self.checkDisByDate == false) return;
 									},
@@ -2628,7 +2720,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 					}
 
-					// add FLEX-TIME - thời gian flex
+					// add FLEXTIME - thời gian flex
 					if (datafilter[0].typeOfTime === "Flex" || datafilter[0].gcFlexTime.length > 0) {
 						let flex = datafilter[0].gcFlexTime;
 						let coreTime = datafilter[0].gcCoreTime;
@@ -2683,7 +2775,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "Flex", `lgc${i}`, { startTime: timeStart, endTime: timeEnd }, i, null,
 								limitStartMin, limitStartMax, limitEndMin, limitEndMax));
 							indexLeft = ++indexLeft;
-							// Add CORE-TIME
+							// Add CORETIME
 							if (coreTime.length > 0 && timeChart != null && (_.inRange(coreTime[0].coreStartTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
 								_.inRange(coreTime[0].coreEndTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
 								ruler.addChartWithType("CoreTime", {
@@ -2712,7 +2804,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				/*let suportTime = datafilter[0].gcSupportTime;
 				if (suportTime != null) {
 				}*/
-				// OVER-TIME
+				// add OVERTIME
 				let overTime = datafilter[0].gcOverTime;
 				if (overTime.length > 0 && timeChart != null && datafilter[0].typeOfTime !== "Changeable" && datafilter[0].typeOfTime != "Flex") {
 					for (let o = 0; o < overTime[0].lstOverTime.length; o++) {
@@ -2760,7 +2852,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 
-				// Add BREAK-TIME
+				// Add BREAK TIME
 				if (breakTime.length > 0  && timeChart != null) {
 					for (let o = 0; o < breakTime.length; o++) {
 						let y = breakTime[o];
@@ -2849,7 +2941,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 
-				// Add short-time
+				// Add short time
 				let shortTime = datafilter[0].gcShortTime;
 				if (shortTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < shortTime[0].listShortTime.length; o++) {
@@ -2893,7 +2985,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 
-				// Add holiday-time
+				// Add holiday time
 				let holidayTime = datafilter[0].gcHolidayTime;
 				if (holidayTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < holidayTime[0].listTimeVacationAndType.length; o++) {
@@ -2940,6 +3032,88 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									indexRight = ++indexRight;
 								}
 							}
+						}
+					}
+				}
+				
+				// add Task time
+				let taskTime = datafilter[0].gcTaskTime;
+				if(taskTime != null && taskTime.length > 0){
+					for (let o = 0; o < taskTime.length; o++) {
+						let taskInfo : any = {
+						data :{
+							page: taskTime[o].taskData.code,
+							text: taskTime[o].taskData.taskDisplayInfoDto.taskAbName,
+							tooltip: taskTime[o].taskData.taskDisplayInfoDto.taskName
+								}
+						}
+						self.addTypeOfTask("", taskInfo)
+					let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
+					if (((timeChart2 != null && taskTime[o].timeSpanForCalcDto.end / 5 < timeChart2.startTime) || (timeChart2 == null)) && 
+					timeMinus.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus[0].startTime, timeMinus[0].endTime) ||
+						_.inRange(taskTime[o].timeSpanForCalcDto.end, timeMinus[0].startTime, timeMinus[0].endTime))) {
+						
+						ruler.addChartWithType(taskTime[o].taskData.taskDisplayInfoDto.taskAbName + "TASK", {
+										name : taskTime[o].taskData.taskDisplayInfoDto.taskName,
+										color: taskTime[o].taskData.taskDisplayInfoDto.color,
+										lineWidth: 30,
+										parent: parent,
+										canSlide: false,
+										unitToPx: 3.5,
+										id: id,
+										hide: ruler.loggable(self.selectedDisplayPeriod() == 1 ? false : true),
+										canPaste: true,
+                						canPasteResize: true,
+										lineNo: i,
+										start: (taskTime[o].timeSpanForCalcDto.start / 5) - dispStart,
+										end: (taskTime[o].timeSpanForCalcDto.end / 5) - dispStart,
+										pastingResizeFinished: function (line : any, type : any, start : any, end : any) {
+										let taskFilter = _.filter(ruler.gcChart[line], (tskF : any) => {
+												return tskF.id === id;
+											});
+											if (_.isNil(start) || _.isNil(end)){
+												
+												if (_.isNil(start))
+													start = taskFilter[0].start;
+												
+												if (_.isNil(end)) 
+													end = taskFilter[0].end;
+											}
+											
+											if (_.isNil(start) && _.isNil(end)){
+												start = taskFilter[0].start;
+												end = taskFilter[0].end;
+											}
+						                    console.log(line + "-" + type + "-" + start + "-" + end);
+											self.addTaskResize(line , type , start , end);
+						                }
+						});
+						indexLeft = ++indexLeft;
+						}
+						
+						if (startTime1 > timeChart.endTime && timeMinus2.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
+								_.inRange(taskTime[o].timeSpanForCalcDto.end, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
+									id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
+								ruler.addChartWithType(taskTime[o].taskData.taskDisplayInfoDto.taskAbName + "TASK", {
+									name : taskTime[o].taskData.taskDisplayInfoDto.taskName,
+									color: taskTime[o].taskData.taskDisplayInfoDto.color,
+									lineWidth: 30,
+									parent: parent,
+									canSlide: false,
+									unitToPx: 3.5,
+									id: id,
+									hide: ruler.loggable(self.selectedDisplayPeriod() == 1 ? false : true),
+									canPaste: true,
+            						canPasteResize: true,
+									lineNo: i,
+									start: (taskTime[o].timeSpanForCalcDto.start / 5) - dispStart,
+									end: (taskTime[o].timeSpanForCalcDto.end / 5) - dispStart,
+									pastingResizeFinished: function (line : any, type : any, start : any, end : any) {
+						                    console.log(line + "-" + type + "-" + start + "-" + end);
+											self.addTaskResize(line , type , start , end);
+						                }
+								});
+								indexRight = ++indexRight;
 						}
 					}
 				}
@@ -3524,7 +3698,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		setPositionButonDownAndHeightGrid() {
 			let self = this;
-			$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
+			//$("#extable-ksu003").exTable("setHeight", 10 * 30 + 18);
+			
+			$(".ex-body-leftmost").css("height", "300px");
+			$(".ex-body-detail").css("height", "301px");
+			$(".ex-body-detail-horz-scroll").css("top", "336px");
+			$(".ex-body-middle").css('height', '318px');
+			
 			$(".toDown").css({ "margin-top": 10 * 30 + 10 + 'px' });
 			
 			if (self.initDispStart != 0)
@@ -3545,8 +3725,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$(".toLeft").css('margin-left', margin + 'px');
 			
 			if (window.innerHeight < 700) {
-				$(".ex-header-detail").css({ "width": 1008 + 'px' });
-				$(".ex-body-detail").css({ "width": 1025 + 'px' });
+				//$(".ex-header-detail").css({ "width": 1008 + 'px' });
+				//$(".ex-body-detail").css({ "width": 1025 + 'px' });
 			}
 			
 			let x = $('.ex-header-leftmost').width() + $('.ex-header-detail').width();
@@ -3558,6 +3738,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			if (self.showA9) 
 			$("#extable-ksu003").exTable("showMiddle");
+			$(".ex-body-middle").css('height', '318px');
+			
 			
 			$(".toLeft").css('margin-left', margin + 'px');
 
@@ -3596,11 +3778,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$("#master-wrapper").css({ 'overflow-x': 'hidden' });
 			
 			if (self.indexBtnToDown() % 2 == 0) {
-				$("#extable-ksu003").exTable("setHeight", exTableHeight);
+				//$("#extable-ksu003").exTable("setHeight", exTableHeight);
 				$(".toDown").css('margin-top', exTableHeight - 7 + 'px');
 				$("#contents-area").css({ 'overflow-x': 'hidden' });
 				$("#contents-area").css({ 'overflow-y': 'auto' });
 				$("#note-color").css("margin-right", "6px")
+				
+				$(".ex-body-leftmost").css("height", "511px");
+				$(".ex-body-detail").css("height", "512px");
+				$(".ex-body-detail-horz-scroll").css("top", "547px");
+				$(".ex-body-middle").css('height', '529px');
 				
 				if (window.innerWidth >= 1340) {
 					$("#A1_4").css("margin-right", "0px")
@@ -3611,11 +3798,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				},10)
 			} else {
 				exTableHeight = 10 * 30 + 18;
-				$("#extable-ksu003").exTable("setHeight", exTableHeight);
+				//$("#extable-ksu003").exTable("setHeight", exTableHeight);
 				$(".toDown").css('margin-top', exTableHeight - 7 + 'px');
 				$("#contents-area").css({ 'overflow-x': 'hidden' });
 				$("#contents-area").css({ 'overflow-y': 'hidden' });
 				$("#note-color").css("margin-right", "23px")
+				
+				$(".ex-body-leftmost").css("height", "300px");
+				$(".ex-body-detail").css("height", "301px");
+				$(".ex-body-detail-horz-scroll").css("top", "336px");
+				$(".ex-body-middle").css('height', '318px');
 				
 				if (navigator.userAgent.indexOf("Chrome") == -1) {
 					$("#master-wrapper").css({ 'overflow-y': 'hidden' });
@@ -4057,6 +4249,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return;
 				block.invisible();
 				service.checkTimeIsIncorrect(command).done(function(result) {
+					block.clear();
 					let errors = [];
 					for (let i = 0; i < result.length; i++) {
 						if (!result[i].check) {
@@ -5053,8 +5246,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 		
 		// ①<<ScreenQuery>> 作業予定情報を取得する
-		public getTask(){
-			let self = this;
+		public getTask(): JQueryPromise<any> {
+			let self = this, dfd = $.Deferred<any>();
 			
 			let param = {
 				lstEmpId : _.map(self.lstEmpId, (x: model.IEmpidName) => { return x.empId }),
@@ -5062,39 +5255,255 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				endDate : self.targetDate(),
 				displayMode : 1
 			}
-			service.addTaskWorkSchedule(param).done((data : any) => {
-				console.log(data);
+			service.getTaskWorkSchedule(param).done((data : any) => {
+				self.taskData = data.sort(function(a: any, b: any) {
+							return _.findIndex(self.lstEmpId, x => { return x.empId == a.empID }) - _.findIndex(self.lstEmpId, x => { return x.empId == b.empID });
+						});
+				dfd.resolve();		
 			}).fail(function(error) {
 				errorDialog({ messageId: error.messageId });
 			}).always(function() {
 			});
+			return dfd.promise();
 		}
 		
-		addTypeOfTask(color : any, value : any, checkMode : boolean) {
-			let self = this;
-			
-			if(self.localStore.workSelection == 1 && self.selectedDisplayPeriod() == 2)
-			ruler.setMode("pasteFlex");
+		addTypeOfTask(color : any, value : any) {
+			let self = this, lgcFil : any = [], rgcFil : any = [], noneFil : any = [], index = "";
 			
 			self.taskType = ({
                 name: value.data.text + "TASK",
-                color: color,
+                color: ruler.loggable(color),
                 lineWidth: 30,
                 canSlide: false,
                 unitToPx: 3.5,
                 hide: ruler.loggable(false),
                 canPaste: true,
                 canPasteResize: true,
-                pastingResizeFinished: (line, type, start, end) => {
-                    console.log(`${line}-${type}-${start}-${end}`);
+				title: value.data.tooltip,
+                pastingResizeFinished: (line : any, type : any, start : any, end : any) => {
+	
+				if (_.isNil(start) || _.isNil(end)){
+					lgcFil  = _.filter(ruler.gcChart[line], (rul : any) => {
+						return _.includes(rul.id, "lgc");
+					});
+					
+					rgcFil = _.filter(ruler.gcChart[line], (rul : any) => {
+						return _.includes(rul.id, "rgc");
+					});
+					
+					noneFil = _.filter(ruler.gcChart[line], (rul : any) => {
+						return !_.includes(rul.id, "rgc") && !_.includes(rul.id, "lgc");
+					});
+					
+					index = "";
+					if (_.inRange(start, lgcFil[0].start, lgcFil[0].end) || _.inRange(end, lgcFil[0].start, lgcFil[0].end)){
+						index = "lgc" + line + "_" + (lgcFil.length - 1);
+					}
+					
+					if (_.inRange(start, rgcFil[0].start, rgcFil[0].end) || _.inRange(end, rgcFil[0].start, rgcFil[0].end)){
+						index = "rgc" + line + "_" + (rgcFil.length - 1);
+					}
+					
+					if (_.isNil(start) || _.isNil(end)){
+						if (_.isNil(start))
+							start = ruler.gcChart[line][noneFil[0].id].start;
+						
+						if (_.isNil(end)) 
+							end = ruler.gcChart[line][noneFil[0].id].end;
+					}
+					
+					if (_.isNil(start) && _.isNil(end)){
+						start = ruler.gcChart[line][noneFil[0].id].start;
+						end = ruler.gcChart[line][noneFil[0].id].end;
+					}
+					
+					ruler.gcChart[line][noneFil[0].id].id = index;
+					}
+					
+					self.addTaskResize(line , type , start , end);
+	                console.log(`${line}-${type}-${start}-${end}`);
                 }
             });
 
+			self.taskTypes.add(self.taskType);
 			ruler.addType(self.taskType);
 		}
 		
+		addTaskResize(line : any, type : any, start : any, end : any){
+			let self = this;
+			start = start * 5;
+			end = end * 5;
+			let taskInfo : any = _.filter(__viewContext.viewModel.viewmodelAb.dataTaskInfo.lstTaskDto, (x : any) => {
+					return _.includes(type, x.taskDisplayInfoDto.taskAbName) && _.includes(type, "TASK");
+			});
+				if(taskInfo == null) return;
+				
+				let arrRemoveTask : any = [], arrRemoveTaskNew : any = [];
+				
+				for (let i = 0; i < self.taskData[line].taskScheduleDetail.length ; i++) {
+					let task : any = self.taskData[line].taskScheduleDetail[i],
+					oldS = task.timeSpanForCalcDto.start,
+					oldE = task.timeSpanForCalcDto.end;
+					
+					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
+						_.inRange(oldS, start, end) || _.inRange(oldE, start, end)) {
+							
+						if (_.includes(taskInfo[0].taskDisplayInfoDto.taskAbName ,task.taskData.taskDisplayInfoDto.taskAbName) && 
+							taskInfo[0].taskDisplayInfoDto.color === task.taskData.taskDisplayInfoDto.color){
+								if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
+									return;
+								
+								if ((start == oldS && end < oldE) || (start < oldS && end < oldE && end > oldS)) {
+									end = oldE;
+									continue;
+								}
+								
+								if (start > oldS && end > oldE && start < oldE) {
+									start = oldS;
+									continue;
+								}
+							} else {
+								if (start == oldS && end < oldE) {
+									self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end = end;
+									continue;
+								}
+								
+								if (start < oldS && end < oldE && end > oldS) {
+									self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end = end;
+									continue;
+								}
+								
+								if (start > oldS && end > oldE && start < oldE) {
+									self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
+									continue;
+								}
+								
+								if (start > oldS && end == oldE) {
+									self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
+									continue;
+								}
+								
+								if (start > oldS && end < oldE) {
+									self.bindDataToTask(taskInfo , end , self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end , line);
+									self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
+									continue;
+								}
+							}
+						arrRemoveTask.push({
+							index : i,
+							line : line,
+							start : self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.start,
+							end : self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end
+						});
+					} 
+				}
+				_.forEach(arrRemoveTask, x => {
+					let arr = _.remove(self.taskData[x.line].taskScheduleDetail, (y : any, index) => {
+						return x.index == index && y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
+					});
+				})
+				
+				for (let i = 0; i < self.lstTaskScheduleDetailEmp.length ; i++) {
+					let task : any = self.lstTaskScheduleDetailEmp[i],
+					oldS = task.taskScheduleDetail.timeSpanForCalcDto.start,
+					oldE = task.taskScheduleDetail.timeSpanForCalcDto.end;
+					
+					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
+						_.inRange(oldS, start, end) || _.inRange(oldE, start, end)) {
+							
+						if (taskInfo[0].code === task.taskScheduleDetail.taskCode){
+								if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
+									return;
+								
+								if ((start == oldS && end < oldE) || (start < oldS && end < oldE && end > oldS)) {
+									end = oldE;
+									continue;
+								}
+								
+								if (start > oldS && end > oldE && start < oldE) {
+									start = oldS;
+									continue;
+								}
+							} else {
+								if (start == oldS && end < oldE) {
+									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = end;
+									continue;
+								}
+								
+								if (start < oldS && end < oldE && end > oldS) {
+									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = end;
+									continue;
+								}
+								
+								if (start > oldS && end > oldE && start < oldE) {
+									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = start;
+									continue;
+								}
+								
+								if (start > oldS && end == oldE) {
+									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = start;
+									continue;
+								}
+								
+								if (start > oldS && end < oldE) {
+									self.bindDataToTask(taskInfo , end , self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end , line);
+									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = start;
+									continue;
+								}
+							}
+						arrRemoveTaskNew.push({
+							index : i,
+							line : line,
+							start : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.start,
+							end : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end
+						});
+					} 
+				}
+				
+				_.forEach(arrRemoveTaskNew, x => {
+					let arr = _.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
+						return x.index == index && y.taskScheduleDetail.timeSpanForCalcDto.start == x.start && y.taskScheduleDetail.timeSpanForCalcDto.end == x.end;
+					});
+				})
+				
+				self.bindDataToTask(taskInfo , start , end , line);
+				self.enableSave(true);
+		}
+		
+		bindDataToTask(taskInfo : any, start : any, end : any, line : any){
+			let self = this;
+			let taskScheduleDetail : any = null;
+				if(taskInfo != null){
+					taskScheduleDetail = {
+						taskCode : taskInfo[0].code,
+						timeSpanForCalcDto : {
+							start : start,
+							end : end
+						}
+					}
+				};
+				
+				self.lstTaskScheduleDetailEmp.push({
+					empId : self.dataScreen003A().employeeInfo[line].empId,
+					taskScheduleDetail : taskScheduleDetail
+				}); 
+					
+				self.taskPasteData = ({
+					lstTaskScheduleDetailEmp : self.lstTaskScheduleDetailEmp,
+					ymd : self.targetDate()
+				});
+		}
+		
 		pasteTask(value : any){
+			let self = this;
+			if(self.localStore.workSelection == 1 && self.selectedDisplayPeriod() == 2)
+			ruler.setMode("pasteFlex");
+			
 			ruler.pasteChart({ typeName: value.data.text + "TASK", zIndex: 1990 });
+		}
+		
+		delPasteTask(value : any){
+			ruler.pasteBand = {};
 		}
 		
 		public setTaskMode(mode : string) {
