@@ -19,6 +19,6 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class AddWorkScheduleCommand {
 	public List<TaskScheduleDetailEmp> lstTaskScheduleDetailEmp;
-	public GeneralDate ymd;
+	public String ymd;
 	
 }

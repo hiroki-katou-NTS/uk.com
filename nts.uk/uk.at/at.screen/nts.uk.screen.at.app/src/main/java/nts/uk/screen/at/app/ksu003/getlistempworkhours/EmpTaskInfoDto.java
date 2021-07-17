@@ -17,15 +17,15 @@ public class EmpTaskInfoDto {
 	//社員ID
 	public String empID;
 	//  <<Optional>> OrderedList<作業予定詳細、作業>: OrderedList<作業予定詳細、作業>
-	// 			作業予定詳細 = TaskScheduleDetail , 作業 = Task
+	
+	//作業予定詳細
+	private List<TaskScheduleDetailDto> taskScheduleDetail;
 
-	public List<AllTaskScheduleDetail> lstAllTask;
-
-	public EmpTaskInfoDto(GeneralDate date, String empID, List<AllTaskScheduleDetail> lstAllTask) {
+	public EmpTaskInfoDto(GeneralDate date, String empID, List<TaskScheduleDetailDto> taskScheduleDetail) {
 		super();
 		this.date = date;
 		this.empID = empID;
-		this.lstAllTask = lstAllTask;
+		this.taskScheduleDetail = taskScheduleDetail;
 	}
 	
 }

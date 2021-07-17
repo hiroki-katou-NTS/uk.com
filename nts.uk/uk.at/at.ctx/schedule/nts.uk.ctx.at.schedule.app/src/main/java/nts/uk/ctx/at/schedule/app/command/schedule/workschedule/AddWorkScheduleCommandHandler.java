@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -97,25 +98,42 @@ public class AddWorkScheduleCommandHandler extends CommandHandler<AddWorkSchedul
 	@Override
 	protected void handle(CommandHandlerContext<AddWorkScheduleCommand> context) {
 		AddWorkScheduleCommand command = context.getCommand();
+		GeneralDate date = GeneralDate.fromString(command.getYmd(), "yyyy/MM/dd");
 		List<TaskScheduleDetailEmp> lst = command.lstTaskScheduleDetailEmp;
+		List<String> lstEmt = lst.stream().map(mapper -> mapper.getEmpId()).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
 		Require require = new Require(basicScheduleService, workTypeRepo, workTimeSettingRepository, fixedWorkSet,
 				flowWorkSet, flexWorkSet, predetemineTimeSet, workScheduleRepo, correctWorkSchedule,
 				interimRemainDataMngRegisterDateChange, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter,
 				sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
-		for (TaskScheduleDetailEmp item : lst) {
+		List<WorkSchedule> lstWorkSchedule = new ArrayList<WorkSchedule>();
+		for (String item : lstEmt) {
 			// 1.1:get(社員ID、年月日) : Optional<勤務予定>
-			Optional<WorkSchedule> workSchedule = repo.get(item.getEmpId(), command.getYmd());
+			Optional<WorkSchedule> workSchedule = repo.get(item, date);
 			// 1.2:not Optional<勤務予定>．isPresent
 			if (!workSchedule.isPresent()) {
 				throw new BusinessException("Msg_1541");
 			} else {
 				// 1.3:Optional<勤務予定>.isPresent :$新の作業予定 = 作る(List<作業予定詳細>):
-				List<TaskScheduleDetail> details = workSchedule.get().getTaskSchedule().getDetails();
+				List<TaskScheduleDetail> details = new ArrayList<>();
+				Optional<TaskScheduleDetailEmp> task = lst.stream().filter(pre -> pre.empId.equals(item)).findFirst();
+				
+				if (task.isPresent()) {
+				details = task.get().taskScheduleDetail.stream().map(y -> {
+						TaskScheduleDetail detail = TaskScheduleDetailDto.toDomain(y);
+						return detail;
+					}).collect(Collectors.toList());
+				}
+				
 				TaskSchedule newTaskSchedule = TaskSchedule.create(details);
 				// 1.4:Optional<勤務予定>．isPresent : 作業予定を入れ替える(@Require, 作業予定)
 				workSchedule.get().updateTaskSchedule(require, newTaskSchedule);
+				lstWorkSchedule.add(workSchedule.get());
+				// 2
 			}
 		}
+		lstWorkSchedule.forEach(x -> {
+			workScheduleRepo.update(x);
+		});
 	}
 
 	@AllArgsConstructor

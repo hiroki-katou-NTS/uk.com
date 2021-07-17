@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.schedule.workschedule;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,6 @@ public class TaskScheduleDetailEmp {
 	
 	public String empId; 
 	
-	public TaskScheduleDetailDto taskScheduleDetail;
+	public List<TaskScheduleDetailDto> taskScheduleDetail;
 
 }
