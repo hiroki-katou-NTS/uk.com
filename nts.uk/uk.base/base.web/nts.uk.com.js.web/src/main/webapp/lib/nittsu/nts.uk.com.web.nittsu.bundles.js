@@ -37251,7 +37251,7 @@ var nts;
                                     color: self.pasteBand.color,
                                     zIndex: self.pasteBand.zIndex || 1000
                                 });
-                                if (self.mode === "paste") {
+                                if (self.mode === "paste" || self.mode === "pasteFlex") {
                                     self.metaholder.tempStart = self.metaholder.start;
                                     self.metaholder.tempEnd = self.metaholder.end;
                                 }
