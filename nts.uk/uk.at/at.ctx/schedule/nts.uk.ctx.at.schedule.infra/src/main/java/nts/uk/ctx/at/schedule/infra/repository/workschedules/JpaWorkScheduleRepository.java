@@ -438,6 +438,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 									.setParameter("ymd", newData.pk.ymd)
 									.executeUpdate();
 				
+				oldData.get().kscdtSchTime.kscdtSchTask = new ArrayList<KscdtSchTask>();
 				this.commandProxy().insertAll(newData.kscdtSchTime.kscdtSchTask);
 
 			} else {

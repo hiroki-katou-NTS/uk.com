@@ -301,7 +301,7 @@ public class DisplayWorkInfoByDateSc {
 			
 			// 2.4
 			TaskInfoDto taskInfoDto = null;
-			if(param.getSelectedDisplayPeriod() == 2) {
+			//if(param.getSelectedDisplayPeriod() == 2) {
 				Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMa = new HashMap<ScheManaStatuTempo, Optional<WorkSchedule>>();
 				mngStatusAndWScheMa.put(key, value);
 				
@@ -313,7 +313,7 @@ public class DisplayWorkInfoByDateSc {
 							infoDto.getDate(), 
 							infoDto.getEmpID(),
 							infoDto.getTaskScheduleDetail());
-				}
+				//}
 				
 			}
 			// 2.3.4
