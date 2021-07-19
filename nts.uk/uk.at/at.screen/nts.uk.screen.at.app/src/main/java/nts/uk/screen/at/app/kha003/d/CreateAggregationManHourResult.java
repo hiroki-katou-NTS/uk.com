@@ -69,7 +69,7 @@ public class CreateAggregationManHourResult {
         return lstItem.stream().map(item -> new SummaryItemDto(item.getHierarchicalOrder(),
                 item.getSummaryItemType().value,
                 item.getSummaryItemType().nameId
-        )).collect(Collectors.toList());
+        )).sorted(Comparator.comparingInt(SummaryItemDto::getHierarchicalOrder)).collect(Collectors.toList());
     }
 
     private List<SummaryItemDetailDto> getSummaryItemDetails(List<SummaryItemDetail> childList) {
