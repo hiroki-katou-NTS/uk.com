@@ -13,19 +13,18 @@
 		<com:scriptfile path="cmf001.c.vm.js" />
   </ui:define>
 
-	<ui:define name="content">
+	<ui:define name="content" >
 		<div id="functions-area">
-			<button class="proceed" data-bind="
-				enable: $root.errors.isEmpty
-			">登録</button>
+			<button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>
+			<button class="danger" data-bind="enable: $root.errors.isEmpty">設定を削除する</button>
 		</div>
 
 		<div id="contents-area" class="fixed-flex-layout">
 
-			<div id="left-content" class="fixed-flex-layout-left">
+			<div class="fixed-flex-layout-left">
 					
 				<table id="items" data-bind="ntsGridList: {
-					height: '400px',
+					height: '600px',
 					dataSource: items,
 					primaryKey: 'itemNo',
 					columns: itemsColumns,
@@ -33,10 +32,80 @@
 				}"></table>
 				
 			</div>
-			<div id="right-content" class="fixed-flex-layout-right">
+			<div id="current-item" class="fixed-flex-layout-right" data-bind="with: currentItem">
 				
-				<div>aaaa</div>
+				<div id="item-def" data-bind="with: def">
+					<div class="label inline" data-bind="text: name"></div>
+					<div class="inline">
+						<span data-bind="text: constraint"></span><span data-bind="if: required">、必須</span>
+					</div>
+				</div>
 
+				<div id="select-mapping">
+					<div class="label inline">受入元</div>
+					<div class="inline">
+						<div data-bind="ntsSwitchButton: {
+							options: mappingTypes,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedMappingType,
+							required: true }"></div>
+					</div>
+					<div class="inline">
+						<input data-bind="ntsTextEditor: {value: fixedMapping, enable: selectedMappingType() == 2}" />
+					</div>
+				</div>
+				
+				<div id="csv-mapping" data-bind="with: csvMapping">
+					<div class="label">項目の編集設定</div>
+					<div id="revising" data-bind="with: revisingValue">
+						<div class="row">
+							<div class="inline check">
+								<div data-bind="ntsCheckBox: { checked: useSpecifyRange, text: '指定した桁で切り出す' }"></div>
+							</div>
+							<div class="inline detail" data-bind="with: rangeOfValue">
+								<input data-bind="ntsNumberEditor: {value: start, enable: $parent.useSpecifyRange }" /><!--
+								--> ～ <!--
+								--><input data-bind="ntsNumberEditor: {value: end, enable: $parent.useSpecifyRange }" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="inline check">
+								<div data-bind="ntsCheckBox: { checked: useFixedLength, text: '桁埋めする' }"></div>
+							</div>
+							<div class="inline detail" data-bind="with: fixedLength">
+								<input data-bind="ntsNumberEditor: {value: length, enable: $parent.useFixedLength}" />
+								<input data-bind="ntsComboBox: {
+									options: methods,
+									optionsValue: 'value',
+									optionsText: 'name',
+									value: reviseMethod,
+									editable: false,
+									enable: $parent.useFixedLength,
+									selectFirstIfNull: true,
+								}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="inline check">
+								<div data-bind="ntsCheckBox: { checked: useCodeConvert, text: 'コード変換する' }"></div>
+							</div>
+							<div id="code-convert" class="detail" data-bind="with: codeConvert">
+								
+								<div>変換前と変換後の文字列を半角カンマ記号 "," で区切って入力してください</div>
+								
+								<div class="inline">
+									<textarea data-bind="ntsMultilineEditor: { value: convertDetailsText, enable: $parent.useCodeConvert, }" />
+								</div>
+								
+								<div class="inline">
+									<div data-bind="ntsCheckBox: { checked: importWithoutSetting, text: '変換対象外を受け入れる', enable: $parent.useCodeConvert, }"></div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
 			</div>
 			
 		
