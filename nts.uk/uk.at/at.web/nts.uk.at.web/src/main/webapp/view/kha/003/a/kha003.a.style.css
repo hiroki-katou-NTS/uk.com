@@ -21,7 +21,7 @@
 }
 
 .bacg-active {
-    background-color: #e7d3193b;
+    background-color: #C6E0B4;
 }
 
 .init-width {
@@ -29,7 +29,8 @@
 }
 
 .bacg-inactive {
-    background-color: #e0d6d6;
+    color: #A6A6A6;
+    background-color: #F2F2F2;
 }
 
 .item_a_6_1 {

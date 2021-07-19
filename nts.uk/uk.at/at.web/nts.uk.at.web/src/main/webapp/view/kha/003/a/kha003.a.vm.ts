@@ -156,7 +156,7 @@ module nts.uk.at.kha003.a {
                         $(this).css({'pointer-events': 'none'});
                         $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
                         $('#append_area').append('<div class="cell valign-center">\n' +
-                            '                                        <div style="background-color: #e7d3193b" class="panel  item_a_6_4_to_67">\n' +
+                            '                                        <div style="background-color: #C6E0B4" class="panel  item_a_6_4_to_67">\n' +
                             '                                            <button tabindex="-1" id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
                             '                                            <span data-itemtype="' + itemtype + '"  class="label layout-setting summary-item" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
                             '                                        </div>\n' +
