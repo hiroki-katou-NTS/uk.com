@@ -215,6 +215,16 @@ public class WorkDaysOfMonthly implements Serializable{
 		this.timeConsumpDays.aggregate(workType, attendanceTimeOfDaily);
 	}
 	
+	/** 再集計 */
+	public void recalcSomeItem() {
+		
+		/** 特別休暇合計日数の再集計 */
+		this.specialVacationDays.recalcTotal();
+		
+		/** 欠勤合計日数の再集計 */
+		this.absenceDays.recalcTotal();
+	}
+	
 	/**
 	 * 合算する
 	 * @param target 加算対象

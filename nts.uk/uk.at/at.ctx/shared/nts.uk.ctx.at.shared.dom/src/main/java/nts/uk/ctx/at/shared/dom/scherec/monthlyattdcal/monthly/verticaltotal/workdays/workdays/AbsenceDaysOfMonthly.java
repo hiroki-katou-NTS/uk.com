@@ -169,6 +169,21 @@ public class AbsenceDaysOfMonthly implements Serializable{
 			}
 		}
 	}
+
+	/** 欠勤合計日数の再集計 */
+	public void recalcTotal() {
+
+		this.totalAbsenceDays = new AttendanceDaysMonth(0d);
+		this.totalAbsenceTime = new AttendanceTimeMonth(0);
+		
+		/** ○欠勤日数を取得 */
+		for (val abs : this.absenceDaysList.entrySet()) {
+			
+			/** ○日数、時間を累計 */
+			this.totalAbsenceDays = this.totalAbsenceDays.addDays(abs.getValue().getDays().v());
+			this.totalAbsenceTime = this.totalAbsenceTime.addMinutes(abs.getValue().getTime().valueAsMinutes());
+		}
+	}
 	
 	/**
 	 * 合算する

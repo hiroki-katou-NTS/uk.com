@@ -353,6 +353,12 @@ public class AttendanceTimeOfMonthly extends AggregateRoot implements Serializab
 
 		// 総労働時間と36協定時間の再計算
 		this.monthlyCalculation.recalcTotal();
+		
+		/** フレックス時間の再計算 */
+		this.monthlyCalculation.getFlexTime().recalcFlexTime();
+		
+		/** 縦計項目の再集計 */
+		this.verticalTotal.getWorkDays().recalcSomeItem();
 	}
 
 	public static interface RequireM3 extends AttendanceTimeOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
