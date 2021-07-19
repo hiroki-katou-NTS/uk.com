@@ -9151,6 +9151,7 @@ var nts;
                                 //                    self.dirtyCellsIn(manual);
                                 //                    self.errorCellsIn();
                                 self.detCellsIn(manual);
+                                self.disableCellsIn();
                                 //                    self.editCellIn();
                                 self.madeUpCellsIn();
                                 //                    self.detModeRemainsChanges();
@@ -9426,6 +9427,19 @@ var nts;
                                 return;
                             self.eachKey(det, function (obj) { return obj.columnKey; }, function (obj) { return manual ? true : !obj.uiReflected; }, function ($cell, obj) {
                                 helper.markCellWith(style.DET_CLS, $cell);
+                                obj.uiReflected = true;
+                            });
+                        };
+                        /**
+                         * Disable cells in.
+                         */
+                        Cloud.prototype.disableCellsIn = function () {
+                            var self = this;
+                            var disable = $.data(self.$container, internal.DISABLE);
+                            if (!disable)
+                                return;
+                            self.eachKey(disable, function (obj) { return obj.columnKey; }, function (obj) { return !obj.uiReflected; }, function ($cell, obj) {
+                                helper.markCellWith(style.SEAL_CLS, $cell);
                                 obj.uiReflected = true;
                             });
                         };
@@ -9861,7 +9875,7 @@ var nts;
                                 return;
                             if (columnDf_1.ajaxValidate && _.isFunction(columnDf_1.ajaxValidate.request)) {
                                 helper.block($exTable);
-                                columnDf_1.ajaxValidate.request(content_1).done(function (res) {
+                                columnDf_1.ajaxValidate.request(coord.rowIdx, coord.columnKey, editor.innerIdx, content_1).done(function (res) {
                                     cont_1(helper.call(columnDf_1.ajaxValidate.onValid, { rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res));
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($editingGrid_1, editor.rowIdx, editor.columnKey);
@@ -9911,7 +9925,7 @@ var nts;
                                     return;
                                 if (columnDf_2.ajaxValidate && _.isFunction(columnDf_2.ajaxValidate.request)) {
                                     helper.block($exTable);
-                                    columnDf_2.ajaxValidate.request(value).done(function (res) {
+                                    columnDf_2.ajaxValidate.request(editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, value).done(function (res) {
                                         var $parent = $editor.parentElement;
                                         helper.removeClass($parent, update.EDIT_CELL_CLS);
                                         var currentCell = new selection.Cell(editor_1.rowIdx, editor_1.columnKey, undefined, editor_1.innerIdx);
@@ -10148,7 +10162,7 @@ var nts;
                             if (!selector.is($target, "." + cellHandler.ROUND_GO)
                                 && columnDf_3.ajaxValidate && _.isFunction(columnDf_3.ajaxValidate.request)) {
                                 helper.block($exTable);
-                                columnDf_3.ajaxValidate.request(content_2).done(function (res) {
+                                columnDf_3.ajaxValidate.request(editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, content_2).done(function (res) {
                                     mo_1(helper.call(columnDf_3.ajaxValidate.onValid, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
@@ -12607,6 +12621,10 @@ var nts;
                             this.$leftHorzSumContent = this.$container.querySelector("." + BODY_PRF + LEFT_HORZ_SUM);
                             this.$horzSumHeader = this.$container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             this.$horzSumContent = this.$container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                            this.$rightHorzSumHeader = this.$container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                            this.$rightHorzSumContent = this.$container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
+                            this.$detailHorzScroll = this.$container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                            this.$verticalSumHeader = this.$container.querySelector("." + (HEADER_PRF + VERTICAL_SUM));
                             if ($follower) {
                                 this.$depLeftmostHeader = $follower.querySelector("." + HEADER_PRF + LEFTMOST);
                                 this.$depLeftmostBody = $follower.querySelector("." + BODY_PRF + LEFTMOST);
@@ -12756,12 +12774,17 @@ var nts;
                             var $leftArea = self.actionDetails.$leftArea;
                             var $rightArea = self.actionDetails.$rightArea;
                             var scrollWidth = helper.getScrollWidth();
+                            var vertSumShown = self.$verticalSumHeader && self.$verticalSumHeader.style.display !== "none";
                             if ($rightArea && $rightArea.classList.contains(HEADER_PRF + DETAIL)) {
                                 var horzLeftWidth = self.actionDetails.widths.leftHorzSum + diff;
                                 self.setWidth(self.$leftHorzSumHeader, horzLeftWidth);
                                 self.setWidth(self.$leftHorzSumContent, horzLeftWidth);
                                 self.setWidth(self.$horzSumHeader, rightWidth);
                                 self.setWidth(self.$horzSumContent, rightWidth + scrollWidth);
+                                if (self.$detailHorzScroll) {
+                                    self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
+                                    self.$detailHorzScroll.style.left = posLeft;
+                                }
                                 if (self.$horzSumHeader) {
                                     self.$horzSumHeader.style.left = posLeft;
                                     self.$horzSumContent.style.left = posLeft;
@@ -12777,10 +12800,19 @@ var nts;
                             }
                             else if ($leftArea && $leftArea.classList.contains(HEADER_PRF + DETAIL)) {
                                 self.setWidth(self.$horzSumHeader, leftWidth);
-                                self.setWidth(self.$horzSumContent, leftWidth + scrollWidth);
+                                self.setWidth(self.$horzSumContent, leftWidth + (self.$rightHorzSumHeader ? 0 : scrollWidth));
                                 if (self.$depDetailHeader) {
                                     self.setWidth(self.$depDetailHeader, leftWidth);
                                     self.setWidth(self.$depDetailBody, leftWidth + scrollWidth);
+                                }
+                                if (self.$rightHorzSumHeader) {
+                                    self.$rightHorzSumHeader.style.left = posLeft;
+                                    self.$rightHorzSumContent.style.left = posLeft;
+                                    self.setWidth(self.$rightHorzSumHeader, rightWidth);
+                                    self.setWidth(self.$rightHorzSumContent, rightWidth + scrollWidth);
+                                }
+                                if (self.$detailHorzScroll) {
+                                    self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
                                 }
                             }
                         };
@@ -13180,7 +13212,8 @@ var nts;
                      */
                     function setHeight($container, height) {
                         selector.queryAll($container, "div[class*='" + BODY_PRF + "']").forEach(function (e) {
-                            if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM))
+                            if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
+                                || e.classList.contains(BODY_PRF + RIGHT_HORZ_SUM))
                                 return;
                             if (e.classList.contains(BODY_PRF + LEFTMOST)) {
                                 e.style.height = height - helper.getScrollWidth() + "px";
@@ -14189,7 +14222,8 @@ var nts;
                                                 return;
                                             helper.markCellWith(style.DET_CLS, $c);
                                         }
-                                        else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                                        else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)
+                                            || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, item[coord.columnKey])))
                                             return;
                                         if (!det[index]) {
                                             det[index] = [{ columnKey: coord.columnKey, value: item[coord.columnKey] }];
@@ -14711,11 +14745,11 @@ var nts;
                                 $body.width(width);
                             }
                             if (keepStruct) {
-                                render.begin($body[0], body.dataSource, exTable.leftmostContent);
+                                render.begin($body[0], body.dataSource, exTable.leftmostContent, $container[0]);
                             }
                             else {
                                 $body.empty();
-                                render.process($body[0], exTable.leftmostContent, true);
+                                render.process($body[0], exTable.leftmostContent, true, $container[0]);
                             }
                         }
                     }
@@ -14729,7 +14763,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + MIDDLE);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.middleHeader, true);
+                            render.process($header[0], exTable.middleHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14737,7 +14771,7 @@ var nts;
                             _.assignIn(exTable.middleContent, body);
                             var $body = $container.find("." + BODY_PRF + MIDDLE);
                             $body.empty();
-                            render.process($body[0], exTable.middleContent, true);
+                            render.process($body[0], exTable.middleContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14769,7 +14803,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + DETAIL);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.detailHeader, true);
+                            render.process($header[0], exTable.detailHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14779,11 +14813,11 @@ var nts;
                             if (!keepStates)
                                 internal.clearStates($body[0]);
                             if (keepStruct) {
-                                render.begin($body[0], body.dataSource, exTable.detailContent);
+                                render.begin($body[0], body.dataSource, exTable.detailContent, $container[0]);
                             }
                             else {
                                 $body.empty();
-                                render.process($body[0], exTable.detailContent, true);
+                                render.process($body[0], exTable.detailContent, true, $container[0]);
                             }
                         }
                     }
@@ -14797,7 +14831,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + VERTICAL_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.verticalSumHeader, true);
+                            render.process($header[0], exTable.verticalSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14805,7 +14839,7 @@ var nts;
                             _.assignIn(exTable.verticalSumContent, body);
                             var $body = $container.find("." + BODY_PRF + VERTICAL_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.verticalSumContent, true);
+                            render.process($body[0], exTable.verticalSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14818,7 +14852,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + LEFT_HORZ_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.leftHorzSumHeader, true);
+                            render.process($header[0], exTable.leftHorzSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14826,7 +14860,7 @@ var nts;
                             _.assignIn(exTable.leftHorzSumContent, body);
                             var $body = $container.find("." + BODY_PRF + LEFT_HORZ_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.leftHorzSumContent, true);
+                            render.process($body[0], exTable.leftHorzSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14839,7 +14873,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + HORIZONTAL_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.horizontalSumHeader, true);
+                            render.process($header[0], exTable.horizontalSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14847,7 +14881,7 @@ var nts;
                             _.assignIn(exTable.horizontalSumContent, body);
                             var $body = $container.find("." + BODY_PRF + HORIZONTAL_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.horizontalSumContent, true);
+                            render.process($body[0], exTable.horizontalSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14860,7 +14894,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + RIGHT_HORZ_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.rightHorzSumHeader, true);
+                            render.process($header[0], exTable.rightHorzSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14868,7 +14902,7 @@ var nts;
                             _.assignIn(exTable.rightHorzSumContent, body);
                             var $body = $container.find("." + BODY_PRF + RIGHT_HORZ_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.rightHorzSumContent, true);
+                            render.process($body[0], exTable.rightHorzSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14989,7 +15023,7 @@ var nts;
                             exTable.detailContent.features = newFeatures;
                         }
                         var ds = helper.getOrigDS(table);
-                        render.begin(table, _.cloneDeep(ds), exTable.detailContent);
+                        render.begin(table, _.cloneDeep(ds), exTable.detailContent, $container[0]);
                     }
                     /**
                      * Set mode.
@@ -15054,7 +15088,7 @@ var nts;
                         if (updateMode && exTable.updateMode !== updateMode) {
                             exTable.setUpdateMode(updateMode);
                             refreshFeatures();
-                            render.begin(table, ds, exTable.detailContent);
+                            render.begin(table, ds, exTable.detailContent, $container[0]);
                             selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                             if (updateMode === COPY_PASTE) {
                                 selection.checkUp($container[0]);
@@ -15066,7 +15100,7 @@ var nts;
                         }
                         else if (updateViewMode) {
                             refreshFeatures();
-                            render.begin(table, ds, exTable.detailContent);
+                            render.begin(table, ds, exTable.detailContent, $container[0]);
                         }
                     }
                     /**
@@ -15438,8 +15472,6 @@ var nts;
                             });
                         }
                         var $cell = selection.cellAt($table, i, columnKey);
-                        if (_.isNil($cell))
-                            return;
                         if (found === -1) {
                             if (!disables) {
                                 disables = {};
@@ -15451,7 +15483,9 @@ var nts;
                             }
                             else
                                 disables[i].push({ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] });
-                            helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+                            if (!_.isNil($cell)) {
+                                helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+                            }
                         }
                     }
                     /**
@@ -17081,7 +17115,8 @@ var nts;
                     function addClass(node, clazz) {
                         if (!node || !clazz)
                             return;
-                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList
+                            && !node.classList.contains(clazz)) {
                             node.classList.add(clazz);
                             return;
                         }
@@ -37466,7 +37501,7 @@ var nts;
                         var self = this, posTop = self.origin[1] + self.lineNo * self.lineWidth + Math.floor((self.lineWidth - self.chartWidth) / 2), posLeft = self.origin[0] + self.start * self.unitToPx, chart = document.createElement("div");
                         chart.setAttribute("id", self.lineNo + "-" + self.id);
                         chart.className = "nts-ganttchart";
-                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
+                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                line-height: " + self.chartWidth + "px; background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
                         self.html = chart;
                         self.html.onselectstart = function () { return false; };
                     };
