@@ -37,13 +37,13 @@ module nts.uk.at.kha003.a {
         layoutSettings: KnockoutObservableArray<any>;
         isUpdateMode: KnockoutObservable<boolean>;
         isExecutionMode: KnockoutObservable<boolean>;
-        isInit: boolean = true;
+
         isOutPutAll: KnockoutObservable<boolean>;
 
         constructor() {
             super();
             const vm = this;
-            vm.currentCode = ko.observable();
+            vm.currentCode = ko.observable("");
             vm.currentCodeList = ko.observableArray([]);
             vm.items = ko.observableArray([]);
             vm.summaryItems = ko.observableArray([]);
@@ -76,7 +76,7 @@ module nts.uk.at.kha003.a {
                 vm.$errors("clear");
                 if (newValue != "") {
                     vm.getScreenDetails(newValue).done(() => {
-                        vm.isUpdateMode(true);
+                        vm.isUpdateMode(false);
                         vm.isExecutionMode(true);
                         $('#A4_3').focus();
                     });
@@ -90,18 +90,6 @@ module nts.uk.at.kha003.a {
                     vm.isExecutionMode(false);
                     vm.isUpdateMode(false);
                     $('#A4_2').focus();
-                }
-            });
-
-            vm.isUpdateMode.subscribe((isUpdate: any) => {
-                if(!isUpdate){
-                    $("#A4_2").focus();
-                }
-            });
-
-            vm.isExecutionMode.subscribe((isTrue: any) => {
-                if(isTrue){
-                    $("#A4_3").focus();
                 }
             });
 
@@ -174,10 +162,8 @@ module nts.uk.at.kha003.a {
          * */
         excutionModeToUpDateMode() {
             const vm = this;
-            if (vm.isExecutionMode()) {
-                vm.isExecutionMode(false);
-                vm.isUpdateMode(true);
-            }
+            vm.isExecutionMode(false);
+            vm.isUpdateMode(true);
         }
 
         /**
@@ -223,7 +209,6 @@ module nts.uk.at.kha003.a {
                 }).fail(err => {
                     dfd.reject();
                 }).always(() => vm.$blockui("clear"));
-                vm.isExecutionMode(true);
             }
             return dfd.promise();
         }
@@ -233,7 +218,7 @@ module nts.uk.at.kha003.a {
          *
          * @author rafiqul.islam
          * */
-        loadScreenListData(): JQueryPromise<any> {
+        loadScreenListData(codeToSelect?: string): JQueryPromise<any> {
             const vm = this;
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
@@ -241,13 +226,13 @@ module nts.uk.at.kha003.a {
                 vm.items(_.map(data.manHoursSummaryTables, function (item: any) {
                     return new ItemModel(item.code, item.name)
                 }));
-                if (data.manHoursSummaryTables.length > 0 && vm.isInit) {
-                    vm.isUpdateMode(true);
-                    vm.currentCode("");
-                    vm.currentCode(data.manHoursSummaryTables[0].code);
-                }
-                if (data.manHoursSummaryTables.length <= 0) {
-                    vm.isUpdateMode(false)
+                if (data.manHoursSummaryTables.length > 0) {
+                    if (codeToSelect)
+                        vm.currentCode() == codeToSelect ? vm.currentCode.valueHasMutated() : vm.currentCode(codeToSelect);
+                    else
+                        vm.currentCode() == data.manHoursSummaryTables[0].code ? vm.currentCode.valueHasMutated() : vm.currentCode(data.manHoursSummaryTables[0].code);
+                } else {
+                    vm.currentCode() == "" ? vm.currentCode.valueHasMutated() : vm.currentCode("");
                 }
                 data.taskFrameSettings.forEach(function (value: any) {
                     if (value.taskFrameNo == 1 && value.useAtr == 1) {
@@ -328,7 +313,9 @@ module nts.uk.at.kha003.a {
                         }
                     }
                 });
+                dfd.resolve();
             }).fail(err => {
+                dfd.reject();
                 vm.$dialog.error(err);
             }).always(() => vm.$blockui("clear"));
             return dfd.promise();
@@ -380,13 +367,7 @@ module nts.uk.at.kha003.a {
                     vm.$ajax(vm.isUpdateMode() ? API.UPDATE : API.REGISTER, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_15"})
                             .then(() => {
-                                vm.isExecutionMode(true);
-                                vm.isInit = false;
-                                vm.loadScreenListData();
-                                vm.currentCode(command.code);
-                                vm.getScreenDetails(command.code);
-                                $("#A4_3").focus();
-                                vm.isExecutionMode(true);
+                                vm.loadScreenListData(command.code);
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});
@@ -407,17 +388,15 @@ module nts.uk.at.kha003.a {
             let shareData = {
                 code: vm.manHour.code(),
                 name: vm.manHour.name()
-            }
+            };
             vm.isExecutionMode(true);
             vm.$window.storage('kha003ERequiredData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/e/index.xhtml").then(() => {
-                    vm.isInit = false;
-                    vm.loadScreenListData()
+                    vm.loadScreenListData();
                     vm.$window.storage('kha003EShareData').done((data) => {
                         vm.currentCode(data.duplicatedCode);
-                    })
+                    });
                 });
-                vm.isExecutionMode(true);
             });
         }
 
@@ -469,13 +448,7 @@ module nts.uk.at.kha003.a {
                     vm.$ajax(API.DELETE, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_16"})
                             .then(() => {
-                                vm.isInit = false;
-                                vm.loadScreenListData();
-                                vm.currentCode(selectableCode);
-                                vm.getScreenDetails(selectableCode);
-                                if (vm.items().length === 0) {
-                                    $("#A4_2").focus();
-                                }
+                                vm.loadScreenListData(selectableCode);
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});
@@ -498,11 +471,11 @@ module nts.uk.at.kha003.a {
             let shareData = {
                 isCsvOutPut: true,
                 totalUnit: vm.selectedId()
-            }
+            };
             vm.isOutPutAll(true);
             vm.currentCode('');
             vm.manHour.code('');
-            vm.manHour.name('')
+            vm.manHour.name('');
             vm.summaryItems([]);
             vm.selectedIdA622(0);
             vm.selectedId(0);

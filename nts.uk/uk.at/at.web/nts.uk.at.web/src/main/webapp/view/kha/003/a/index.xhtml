@@ -20,16 +20,16 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1_1-->
-            <button tabindex="-1" data-bind="click:clickNewButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_10')}</button>
+            <button tabindex="-1" data-bind="click: clickNewButton, enable: $vm.isUpdateMode() &#124;&#124; $vm.isExecutionMode()">#{i18n.getText('KHA003_10')}</button>
             <!--A1_2-->
             <button tabindex="5" class="proceed"
-                    data-bind="click:clickRegistrationButton, enable:vm.isExecutionMode() ? false:true">#{i18n.getText('KHA003_11')}</button>
+                    data-bind="click: clickRegistrationButton, enable: $root.errors.isEmpty() &amp;&amp; !$vm.isExecutionMode()">#{i18n.getText('KHA003_11')}</button>
             <!--A1_3-->
-            <button tabindex="3" data-bind="click:clickDuplicateButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_12')}</button>
+            <button tabindex="3" data-bind="click: clickDuplicateButton, enable: $vm.isUpdateMode() &#124;&#124; $vm.isExecutionMode()">#{i18n.getText('KHA003_12')}</button>
             <!--A1_4-->
-            <button tabindex="-1" class="danger" data-bind="click:clickDeleteButton, enable:vm.isUpdateMode()">#{i18n.getText('KHA003_13')}</button>
+            <button tabindex="-1" class="danger" data-bind="click: clickDeleteButton, enable: $vm.isUpdateMode() &#124;&#124; $vm.isExecutionMode()">#{i18n.getText('KHA003_13')}</button>
             <!--A1_5-->
-            <button tabindex="-1" data-bind="click:clickOutputAllButton, enable: vm.isUpdateMode()">#{i18n.getText('KHA003_14')}</button>
+            <button tabindex="-1" data-bind="click: clickOutputAllButton, enable: $vm.isUpdateMode()">#{i18n.getText('KHA003_14')}</button>
         </div>
         <div id="contents-area">
             <div class="table" style="margin-top: 8px;width: 100%">
