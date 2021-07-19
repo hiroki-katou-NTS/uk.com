@@ -79,7 +79,7 @@ module nts.uk.at.view.kwr004.a {
       });
       vm.KCP005_load();
       vm.initialWorkStatusInformation();
-      vm.CCG001_load(vm.periodDate);
+      vm.CCG001_load();
     }
 
     created(params: any) {
@@ -93,7 +93,7 @@ module nts.uk.at.view.kwr004.a {
       $('#btnExportExcel').focus();
     }
 
-    CCG001_load(periodDate: any) {
+    CCG001_load() {
       const vm = this;
       // Set component option
       vm.ccg001ComponentOption = {
@@ -110,8 +110,8 @@ module nts.uk.at.view.kwr004.a {
           maxPeriodRange: 'oneYear',
         /** Required parameter */
         baseDate: moment().toISOString(), //基準日
-        periodStartDate: periodDate.startDate, //対象期間開始日
-        periodEndDate: periodDate.endDate, //対象期間終了日
+        periodStartDate: vm.periodDate().startDate, //対象期間開始日
+        periodEndDate: vm.periodDate().endDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
