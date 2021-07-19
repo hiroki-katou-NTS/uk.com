@@ -11,13 +11,13 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
  */
 @Getter
 @AllArgsConstructor
-public class FixedLength {
+public class Padding {
 	
 	/** 桁長 */
 	private ExternalImportRowNumber length;
 	
 	/** 編集方法 */
-	private FixedLengthReviseMethod reviseMethod;
+	private PaddingMethod reviseMethod;
 	
 	public String fix(String target) {
 		if(this.length.v() < target.length()) {

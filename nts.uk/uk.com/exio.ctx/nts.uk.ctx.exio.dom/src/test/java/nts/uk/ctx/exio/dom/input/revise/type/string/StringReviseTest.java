@@ -10,8 +10,8 @@ import mockit.Mocked;
 import mockit.Verifications;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.FixedLength;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.FixedLengthReviseMethod;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.Padding;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.StringRevise;
 
 public class StringReviseTest {
@@ -20,13 +20,13 @@ public class StringReviseTest {
 	RangeOfValue rangeOfValue;
 	
 	@Mocked
-	FixedLength fixedLength;
+	Padding fixedLength;
 	
 	private static class Dummy{
 		private static String TARGET = "value";
 		private static String RESULT = "value";
 		private static RangeOfValue RANGE_OF_VALUE = new RangeOfValue(new ExternalImportRowNumber(2), new ExternalImportRowNumber(4));
-		private static FixedLength FIXED_LENGTH = new FixedLength(new ExternalImportRowNumber(10), FixedLengthReviseMethod.ZERO_BEFORE);
+		private static Padding PADDING = new Padding(new ExternalImportRowNumber(10), PaddingMethod.ZERO_BEFORE);
 	}
 	
 	
@@ -71,7 +71,7 @@ public class StringReviseTest {
 	
 	@Test
 	public void fixedLength() {
-		val reviser = new StringRevise(false, Optional.empty(), true, Optional.of(Dummy.FIXED_LENGTH));
+		val reviser = new StringRevise(false, Optional.empty(), true, Optional.of(Dummy.PADDING));
 		
 		new Expectations() {{
 			fixedLength.fix(Dummy.TARGET);

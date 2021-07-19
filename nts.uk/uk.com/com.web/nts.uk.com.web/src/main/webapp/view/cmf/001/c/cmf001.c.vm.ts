@@ -27,10 +27,10 @@ module nts.uk.com.cmf001.c {
                             start: 1,
                             end: 4,
                         },
-                        useFixedLength: true,
-                        fixedLength: {
+                        usePadding: true,
+                        padding: {
                             length: 15,
-                            reviseMethod: 0,
+                            method: 0,
                             methods: [
                                 { value: 0, name: "前ゼロ" },
                                 { value: 1, name: "後ゼロ" },
@@ -126,8 +126,8 @@ module nts.uk.com.cmf001.c {
     class StringRevise {
         useSpecifyRange: boolean;
         rangeOfValue: Range;
-        useFixedLength: boolean;
-        fixedLength: FixedLength;
+        usePadding: boolean;
+        padding: padding;
     }
 
     class Range {
@@ -135,8 +135,8 @@ module nts.uk.com.cmf001.c {
         end: number;
     }
 
-    class FixedLength {
+    class padding {
         length: number;
-        reviseMethod: number;
+        method: number;
     }
 }

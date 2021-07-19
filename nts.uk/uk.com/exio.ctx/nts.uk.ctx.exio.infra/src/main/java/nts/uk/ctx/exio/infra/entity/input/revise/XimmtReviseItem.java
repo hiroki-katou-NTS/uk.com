@@ -27,8 +27,8 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImpor
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.real.DecimalDigitNumber;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.real.RealRevise;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.FixedLength;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.FixedLengthReviseMethod;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.Padding;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.StringRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.HourlySegment;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase60Delimiter;
@@ -77,16 +77,16 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	private Integer decimalLength;
 	
 	/*  */
-	@Column(name = "IS_FIXED_LENGTH")
-	private Integer useFixedLength;
+	@Column(name = "IS_PADDING")
+	private Integer usePadding;
 	
 	/*  */
-	@Column(name = "FIXED_LENGTH")
-	private Integer fixLength;
+	@Column(name = "PADDING_LENGTH")
+	private Integer paddingLength;
 	
 	/*  */
-	@Column(name = "FIXED_LENGTH_METHOD")
-	private Integer reviseMethod;
+	@Column(name = "PADDING_METHOD")
+	private Integer paddingMethod;
 	
 	/*  */
 	@Column(name = "DATE_FORMAT")
@@ -129,10 +129,11 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 				return new StringRevise(
 						useSpecifyRange == 1,
 						Optional.ofNullable(useSpecifyRange == 1 ? createRangeOfValue() : null),
-						useFixedLength == 1,
-						Optional.ofNullable(useFixedLength == 1 ? new FixedLength(
-								new ExternalImportRowNumber(fixLength),
-								EnumAdaptor.valueOf(reviseMethod, FixedLengthReviseMethod.class)) : null), 
+						usePadding == 1,
+						Optional.ofNullable(usePadding == 1 ? new Padding(
+								new ExternalImportRowNumber(paddingLength),
+								EnumAdaptor.valueOf(paddingMethod, PaddingMethod.class)) : null),
+						true,
 						codeConvert);
 			case INT:
 				return new IntegerRevise(

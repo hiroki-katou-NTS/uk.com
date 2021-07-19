@@ -3,11 +3,18 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
 
+/**
+ * 文字型編集
+ * @author m_kitahira
+ *
+ */
 @AllArgsConstructor
+@Getter
 public class StringRevise implements ReviseValue {
 	
 	/** 値の有効範囲を指定する */
@@ -17,10 +24,10 @@ public class StringRevise implements ReviseValue {
 	private Optional<RangeOfValue> rangeOfValue;
 	
 	/** 固定長編集する */
-	private boolean useFixedLength;
+	private boolean usePadding;
 	
 	/** 固定長編集内容 */
-	private Optional<FixedLength> fixedLength;
+	private Optional<Padding> padding;
 	
 	/** コード変換 */
 	private Optional<ExternalImportCodeConvert> codeConvert;
@@ -37,10 +44,10 @@ public class StringRevise implements ReviseValue {
 			}
 		}
 		
-		if(useFixedLength) {
+		if(usePadding) {
 			// 固定長編集をする場合
-			if(fixedLength.isPresent()) {
-				strResult = this.fixedLength.get().fix(strResult);
+			if(padding.isPresent()) {
+				strResult = this.padding.get().fix(strResult);
 			}
 		}
 		
