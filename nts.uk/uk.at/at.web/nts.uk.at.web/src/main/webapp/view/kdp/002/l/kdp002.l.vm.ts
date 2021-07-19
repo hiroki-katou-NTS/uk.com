@@ -59,7 +59,7 @@ module nts.uk.at.view.kdp002.l {
 
         checkNext: KnockoutObservable<boolean> = ko.observable(false);
 
-        checkReturn: KnockoutObservable<boolean> = ko.observable(true);
+        checkReturn: KnockoutObservable<boolean> = ko.observable(false);
         
         searchValue: KnockoutObservable<string> = ko.observable('');
         
@@ -120,15 +120,23 @@ module nts.uk.at.view.kdp002.l {
                         if (ko.unwrap(vm.framePosition) <= vm.taskArray.length - 1) {
                             vm.reload(ko.unwrap(vm.framePosition));
                         }
+
                         if (ko.unwrap(vm.framePosition) == 0) {
                             vm.checkBack(false);
                         } else {
                             vm.checkBack(true);
                         }
+
                         if (ko.unwrap(vm.framePosition) < vm.taskArray.length - 1) {
                             vm.checkNext(true);
                         } else {
                             vm.checkNext(false);
+                        }
+                        
+                        if (vm.frameNo() == 1) {
+                            vm.checkReturn(false);
+                        } else {
+                            vm.checkReturn(true);
                         }
                     }
 
@@ -252,11 +260,6 @@ module nts.uk.at.view.kdp002.l {
 
         onClickReturn() {
             const vm = this;
-
-            if (vm.frameNo() - 1 == 0) {
-                vm.closeDialogL();
-            } else {
-
             vm.frameNo(vm.frameNo() - 1);
 
             vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(vm.frameNo())]));
@@ -270,8 +273,6 @@ module nts.uk.at.view.kdp002.l {
             }
 
             vm.wordCodeMap.set(vm.frameNo(), null);
-
-            }
         }
 
         onSelect(code: string) {
