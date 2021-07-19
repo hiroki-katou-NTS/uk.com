@@ -33,7 +33,7 @@ public class CheckAlarmTargetDate {
 		
 		// アラーム対象日 = エラー一覧：filter $.勤務実績のエラーアラームコード = 'T001' map $.処理年月日
 		List<String> processingDates = errors.stream()
-				.filter(f -> f.getErrorAlarmWorkRecordCode().v().equals("T001")).map(m -> m.getDate().toString("YYYY/MM/DD"))
+				.filter(f -> f.getErrorAlarmWorkRecordCode().v().equals("T001")).map(m -> m.getDate().toString("yyyy/MM/dd"))
 				.collect(Collectors.toList());
 		
 		if(!processingDates.isEmpty()) {
