@@ -241,6 +241,7 @@ public class CreateWorkScheduleWorkInfor {
 						.workTimeIsNotExit(workTimeIsNotExit)
 						.workTypeNameKsu002(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
 						.workTimeNameKsu002(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
+						.workTimeForm(workTimeSetting.map(m -> m.getWorkTimeDivision().getWorkTimeForm().value).orElse(null))
 						.build();
 
 				// ※Abc1

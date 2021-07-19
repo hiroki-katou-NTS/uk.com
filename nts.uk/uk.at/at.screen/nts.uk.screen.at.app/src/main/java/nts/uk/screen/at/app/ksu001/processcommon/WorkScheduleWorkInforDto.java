@@ -70,4 +70,7 @@ public class WorkScheduleWorkInforDto {
 	
 	// dùng cho màn ksu002
 	public String workTimeNameKsu002;
+	
+	//就業時間帯の勤務形態 
+	public Integer workTimeForm;
 }
