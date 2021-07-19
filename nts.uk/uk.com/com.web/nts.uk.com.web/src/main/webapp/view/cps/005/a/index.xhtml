@@ -33,7 +33,7 @@
 						<div
 							data-bind="ntsPanel:{
 									width: '300px', 
-									height: (window.screen.height - 350) >= 505 ? 505 : (window.screen.height - 350), 
+									height: '(window.screen.height - 350) >= 505 ? 505 : (window.screen.height - 350)', 
 									direction: 'right', 
 									showIcon: false, 
 									visible: true}">
@@ -72,7 +72,7 @@
 									<div
 										data-bind="ntsFormLabel: { constraint: ['CategoryName'], required: true }"
 										class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_4')}' "></span>
+										#{i18n.getText('CPS005_4')}
 									</div>
 									<input tabindex="4" id="category-name-control"
 										data-bind="ntsTextEditor: { name: '#[CPS005_4]', value: perInfoCtgName, constraint: 'CategoryName',
@@ -90,7 +90,7 @@
 
 								<div class="valign-center control-group control-group-margin-custom" data-bind="visible: !$parent.isHisTypeUpdateModel()">
 									<div data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_5')}' "></span>
+										#{i18n.getText('CPS005_5')}
 									</div>
 									<div tabindex="5"
 										data-bind="ntsSwitchButton: {
@@ -104,7 +104,7 @@
 								
 								<div class="valign-center control-group control-group-margin-custom" data-bind="visible: $parent.isHisTypeUpdateModel()">
 									<div data-bind="ntsFormLabel: {}" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_5')}' "></span>
+										#{i18n.getText('CPS005_5')}
 									</div>
 									<span class="label" data-bind="text: historyClassSelectedText"></span>
 								</div>
@@ -112,7 +112,7 @@
 								<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
 								<div class="valign-center control-group control-group-margin-custom" data-bind="visible: historyTypesDisplay()">
 									<div data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_6')}' "></span>
+										#{i18n.getText('CPS005_6')}
 									</div>
 									<div tabindex="6"
 										data-bind="ntsSwitchButton: {
@@ -130,7 +130,7 @@
 								<div class="valign-center control-group control-group-margin-custom" data-bind="visible: !historyTypesDisplay()">
 								
 									<div data-bind="ntsFormLabel: { required: true }" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_7')}' "></span>
+										#{i18n.getText('CPS005_7')}
 									</div>
 									
 									<div tabindex="8"
@@ -152,14 +152,14 @@
 							<div data-bind="visible: fixedIsSelected() ">
 								<div class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: { required: false }" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_4')}' "></span>
+										#{i18n.getText('CPS005_4')}
 									</div>
 									<span class="label" data-bind="text: perInfoCtgName">Demo</span>
 								</div>
 
 								<div class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: { required: false }" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_5')}' "></span>
+										#{i18n.getText('CPS005_5')}
 									</div>
 									<span class="label" data-bind="text: historyFixedName "></span>
 								</div>
@@ -167,7 +167,7 @@
 								<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
 								<div class="valign-center control-group control-group-margin-custom" data-bind="visible: historyTypesDisplay()">
 									<div data-bind="ntsFormLabel: { required: false }" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_6')}' "></span>
+										#{i18n.getText('CPS005_6')}
 									</div>
 									<span class="label" data-bind="text: categoryTypeName "></span>
 									<button tabindex="10" data-bind="ntsHelpButton: {image: '../image/history_type.png', position: 'right top', enable: true }">?</button>
@@ -176,7 +176,7 @@
 								<!-- mapping CategoryType enum value = 1 or 2 -->
 								<div class="valign-center control-group control-group-margin-custom" data-bind="visible: !historyTypesDisplay()">
 									<div data-bind="ntsFormLabel: { required: false }" class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_7')}' "></span>
+										#{i18n.getText('CPS005_7')}
 									</div>
 									<span class="label" data-bind="text: categoryTypeName "></span>
 									<button tabindex="11" data-bind="ntsHelpButton: {image: '../image/singe_multi.png', position: 'right top', enable: true }">?</button>
@@ -190,7 +190,7 @@
 								<button tabindex="12" id="item-setting-button" data-bind="click: $parents[0].openDialogB.bind($parents[0]), enable: isEnableButtonOpenDialog()">#{i18n.getText('CPS005_9')}</button>
 								<table id="item-info-list"
 									data-bind="ntsGridList: {								
-									height: 250,
+									height: 230,
 									name: '#[CPS005_28]',
 									dataSource: currentCtgSelected().itemNameList,
 									primaryKey: 'itemName',
