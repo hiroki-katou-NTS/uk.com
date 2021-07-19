@@ -78,44 +78,56 @@
                         </div>
                     </div>
                     <!-- A5_2 -->
-                    <div style="margin-left: 97px" class="panel panel-frame">
-                        <div class="table" id="appen-area-one">
-                            <!-- A5_3 -->
+                    <div style="margin-left: 97px" id="appen-area-one" class="panel panel-frame table">
+                        <!-- A5_3 -->
+                        <div class="cell valign-center pannel_padding">
+                            <div class="panel  panel_common bacg-active" data-itemtype="0"
+                                 id="item_type_0">#{i18n.getText('KHA003_24')}</div>
+                        </div>
+                        <!-- A5_4 -->
+                        <div class="cell valign-center pannel_padding">
+                            <div class="panel  panel_common bacg-active" data-itemtype="1"
+                                 id="item_type_1">#{i18n.getText('KHA003_25')}</div>
+                        </div>
+                        <!-- A5_5 -->
+                        <div class="cell valign-center pannel_padding">
+                            <div class="panel  panel_common bacg-active" data-itemtype="2"
+                                 id="item_type_2">#{i18n.getText('KHA003_26')}</div>
+                        </div>
+                        <!-- A5_6 -->
+                        <com:ko-if bind="taskFrameSettingA56.taskFrameName">
                             <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" data-itemtype="0"
-                                     id="item_type_0">#{i18n.getText('KHA003_24')}</div>
-                            </div>
-                            <!-- A5_4 -->
-                            <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" data-itemtype="1"
-                                     id="item_type_1">#{i18n.getText('KHA003_25')}</div>
-                            </div>
-                            <!-- A5_5 -->
-                            <div class="cell valign-center pannel_padding">
-                                <div class="panel  panel_common bacg-active" data-itemtype="2"
-                                     id="item_type_2">#{i18n.getText('KHA003_26')}</div>
-                            </div>
-                            <!-- A5_6 -->
-                            <div class="cell valign-center pannel_padding" data-bind="if:taskFrameSettingA56.taskFrameName">
                                 <div class="panel  panel_common bacg-active" data-itemtype="3" id="item_type_3" data-bind="text:taskFrameSettingA56.taskFrameName"></div>
                             </div>
-                            <!-- A5_7 -->
-                            <div class="cell valign-center pannel_padding" data-bind="if:taskFrameSettingA57.taskFrameName">
+                        </com:ko-if>
+
+                        <!-- A5_7 -->
+                        <com:ko-if bind="taskFrameSettingA57.taskFrameName">
+                            <div class="cell valign-center pannel_padding">
                                 <div class="panel  panel_common bacg-active" data-itemtype="4" id="item_type_4" data-bind="text:taskFrameSettingA57.taskFrameName"></div>
                             </div>
-                            <!-- A5_8 -->
-                            <div class="cell valign-center pannel_padding" data-bind="if:taskFrameSettingA58.taskFrameName">
+                        </com:ko-if>
+
+                        <!-- A5_8 -->
+                        <com:ko-if bind="taskFrameSettingA58.taskFrameName">
+                            <div class="cell valign-center pannel_padding">
                                 <div class="panel  panel_common bacg-active" data-itemtype="5" id="item_type_5" data-bind="text:taskFrameSettingA58.taskFrameName"></div>
                             </div>
-                            <!-- A5_9 -->
-                            <div class="cell valign-center pannel_padding" data-bind="if:taskFrameSettingA59.taskFrameName">
+                        </com:ko-if>
+
+                        <!-- A5_9 -->
+                        <com:ko-if bind="taskFrameSettingA59.taskFrameName">
+                            <div class="cell valign-center pannel_padding">
                                 <div class="panel  panel_common bacg-active" data-itemtype="6" id="item_type_6" data-bind="text:taskFrameSettingA59.taskFrameName"></div>
                             </div>
-                            <!-- A5_10 -->
-                            <div class="cell valign-center pannel_padding" data-bind="if:taskFrameSettingA510.taskFrameName">
+                        </com:ko-if>
+
+                        <!-- A5_10 -->
+                        <com:ko-if bind="taskFrameSettingA510.taskFrameName">
+                            <div class="cell valign-center pannel_padding">
                                 <div class="panel  panel_common bacg-active" data-itemtype="7" id="item_type_7" data-bind="text:taskFrameSettingA510.taskFrameName"></div>
                             </div>
-                        </div>
+                        </com:ko-if>
                     </div>
                     <div class="table" style="width: 100%;margin-top: 10px">
                         <!-- A6 -->
