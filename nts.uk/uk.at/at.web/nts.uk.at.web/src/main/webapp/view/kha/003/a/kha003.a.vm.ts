@@ -80,6 +80,16 @@ module nts.uk.at.kha003.a {
                         vm.isExecutionMode(true);
                         $('#A4_3').focus();
                     });
+                } else {
+                    vm.manHour.code('');
+                    vm.manHour.name('');
+                    vm.summaryItems([]);
+                    vm.matchWidth();
+                    vm.selectedIdA622(0);
+                    vm.selectedId(0);
+                    vm.isExecutionMode(false);
+                    vm.isUpdateMode(false);
+                    $('#A4_2').focus();
                 }
             });
 
@@ -111,7 +121,6 @@ module nts.uk.at.kha003.a {
             });
 
             vm.summaryItems.subscribe((newValue: any) => {
-                console.log("data:" + newValue);
                 vm.$errors("clear", "#append_area");
                 if (newValue.length == 4) {
                     $('#append_note').hide();
@@ -129,7 +138,7 @@ module nts.uk.at.kha003.a {
                         .addClass('bacg-inactive')
                         .parent()
                         .css({'pointer-events': 'none'});
-                })
+                });
             });
 
             vm.loadScreenListData();
@@ -192,8 +201,7 @@ module nts.uk.at.kha003.a {
                     let type1Name = vm.$i18n('KHA003_25');
                     let type2Name = vm.$i18n('KHA003_26');
                     $('#append_area').empty();
-                    vm.summaryItems([]);
-                    vm.summaryItems(_.map(data.summaryItems, function (item: any) {
+                    vm.summaryItems(_.map(data.summaryItems || [], function (item: any) {
                         let itemTypeName = '';
                         if (item.itemType === 0) {
                             itemTypeName = type0Name;
@@ -334,14 +342,6 @@ module nts.uk.at.kha003.a {
         clickNewButton() {
             const vm = this;
             vm.currentCode('');
-            vm.manHour.code('');
-            vm.manHour.name('');
-            vm.summaryItems([]);
-            vm.selectedIdA622(0);
-            vm.selectedId(0);
-            vm.isExecutionMode(false);
-            vm.isUpdateMode(false);
-            $('#A4_2').focus();
         }
 
         /**
