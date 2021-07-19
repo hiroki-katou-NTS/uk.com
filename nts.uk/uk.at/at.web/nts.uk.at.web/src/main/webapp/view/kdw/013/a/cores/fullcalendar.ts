@@ -1571,7 +1571,6 @@ module nts.uk.ui.at.kdw013.calendar {
                 eventOverlap: false,
                 selectOverlap: false,
                 eventLimit: true,
-                direction: 'ltr',
                 views: {
                     timeGrid: {
                         eventLimit: 20
@@ -2291,9 +2290,12 @@ module nts.uk.ui.at.kdw013.calendar {
                         const { setting } = popupData;
                         const { firstDay, scrollTime, slotDuration } = value;
 
-                        setting.firstDay(firstDay);
-                        setting.scrollTime(scrollTime);
-                        setting.slotDuration(slotDuration);
+                        if (firstDay)
+                            setting.firstDay(firstDay);
+                        if (scrollTime)
+                            setting.scrollTime(scrollTime);
+                        if (slotDuration)
+                            setting.slotDuration(slotDuration);
                     }
                 })
                 // render calendar after restore charactergistic domain to model
