@@ -3892,6 +3892,8 @@ public class ProgramsManager {
             "/view/kha/003/b/index.xhtml");
     public static final Program KHA003C = new Program(WebAppId.AT, ProgramIdConsts.KHA003C, "KHA003_3",
             "/view/kha/003/c/index.xhtml");
+    public static final Program KHA003D = new Program(WebAppId.AT, ProgramIdConsts.KHA003D, "KHA003_4",
+            "/view/kha/003/d/index.xhtml");
     public static final Program KHA003E = new Program(WebAppId.AT, ProgramIdConsts.KHA003E, "KHA003_5",
             "/view/kha/003/e/index.xhtml");
 

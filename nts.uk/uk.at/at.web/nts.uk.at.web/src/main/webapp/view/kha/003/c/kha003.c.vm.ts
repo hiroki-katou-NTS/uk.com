@@ -78,7 +78,7 @@ module nts.uk.at.kha003.c {
             _.extend(window, {vm});
             vm.$window.storage('kha003BShareData').done((data) => {
                 vm.dateRange(data.dateRange);
-            })
+            });
             vm.c24CurrentCodeList.subscribe((newValue: any) => {
                 vm.$errors("clear");
             });
@@ -92,7 +92,6 @@ module nts.uk.at.kha003.c {
                 vm.$errors("clear");
             });
             vm.$window.storage('kha003AShareData').done((data: any) => {
-                console.log(data)
                 if (!(data.c21.type === undefined || data.c21.type === null)) {
                     vm.c21isVisible(true)
                 }
@@ -113,14 +112,22 @@ module nts.uk.at.kha003.c {
                 vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params().name]))
                 vm.c51Params(data.c51);
                 vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params().name]))
-            })
+            });
 
             vm.$window.storage('kha003BShareData').done((data: any) => {
                 vm.c24Items(this.getItemData(vm.c21Params().type, data));
                 vm.c34Items(this.getItemData(vm.c31Params().type, data));
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
-            })
+            });
+
+            vm.$window.storage('kha003CShareData').done(data => {
+                data = data || {};
+                vm.c24CurrentCodeList(data.c24CurrentCodeList || []);
+                vm.c34CurrentCodeList(data.c34CurrentCodeList || []);
+                vm.c44CurrentCodeList(data.c44CurrentCodeList || []);
+                vm.c54CurrentCodeList(data.c54CurrentCodeList || []);
+            });
         }
 
         /**
@@ -206,11 +213,11 @@ module nts.uk.at.kha003.c {
                         c44CurrentCodeList: vm.c44CurrentCodeList(),
                         c54CurrentCodeList: vm.c54CurrentCodeList(),
                         dateRange: vm.dateRange()
-                    }
+                    };
                     vm.$window.storage('kha003CShareData', shareData).then(() => {
                         vm.$jump('/view/kha/003/d/index.xhtml');
                         nts.uk.ui.windows.close();
-                    })
+                    });
                 }
             });
         }

@@ -392,9 +392,8 @@ module nts.uk.at.kha003.a {
             vm.isExecutionMode(true);
             vm.$window.storage('kha003ERequiredData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/e/index.xhtml").then(() => {
-                    vm.loadScreenListData();
                     vm.$window.storage('kha003EShareData').done((data) => {
-                        vm.currentCode(data.duplicatedCode);
+                        if (data) vm.loadScreenListData(data.duplicatedCode);
                     });
                 });
             });
@@ -438,7 +437,7 @@ module nts.uk.at.kha003.a {
         clickDeleteButton() {
             const vm = this;
             vm.isExecutionMode(true);
-            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'yes' | 'cancel') => {
+            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: any) => {
                 if (result === 'yes') {
                     var selectableCode = vm.getSelectableCode(vm.items(), vm.manHour.code());
                     let command = {
@@ -609,7 +608,7 @@ module nts.uk.at.kha003.a {
                 totalUnit: vm.selectedId(),
                 isCsvOutPut: false,
                 code:vm.currentCode()
-            }
+            };
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
 
