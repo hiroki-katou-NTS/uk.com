@@ -298,6 +298,7 @@ module cmm015.a.viewmodel {
 
         clickMeans() {
             const vm = this;
+            vm.$blockui('grayout')
             if (_.isEmpty(vm.transferDate())) {
                 vm.$dialog.error({ messageId: 'Msg_2105' });
                 return;
@@ -313,11 +314,10 @@ module cmm015.a.viewmodel {
                 vm.baseDateLeft(new Date(moment.utc(date).subtract(1, 'd').toString()));
                 vm.enableTransferDate(true);
                 vm
-                    .$blockui('grayout')
-                    .then(() => vm.reloadKcp())
-                    .then(() => vm.getTransferOfDay(new Date(vm.transferDate())))
-                    .always(() => vm.$blockui('clear'));
+                    .reloadKcp()
+                    .then(() => vm.getTransferOfDay(new Date(vm.transferDate())));
             });
+            vm.$blockui('clear')
         }
 
         reloadKcp(): JQueryPromise<any> {
@@ -328,13 +328,16 @@ module cmm015.a.viewmodel {
             let indexLeft = $selectedLeft.parent().children().index($selectedLeft);
             let indexRight = $selectedRight.parent().children().index($selectedRight);
 
-            $('#tree-grid-left').ntsTreeComponent(vm.treeGridLeft);
-            $('#tree-grid-right').ntsTreeComponent(vm.treeGridRight);
             vm.isReloadKcp = true;
             $
-                .when(vm.loadDataWkp(Table.LEFT), vm.loadDataWkp(Table.RIGHT))
+                .when(
+                    $('#tree-grid-left').ntsTreeComponent(vm.treeGridLeft),
+                    $('#tree-grid-right').ntsTreeComponent(vm.treeGridRight)
+                )
                 .then(() => {
                     vm.setSelectedDataKcp(indexLeft, indexRight);
+                    vm.loadDataWkp(Table.LEFT);
+                    vm.loadDataWkp(Table.RIGHT);
                     dfd.resolve();
                 })
                 .fail(err => {
@@ -348,8 +351,12 @@ module cmm015.a.viewmodel {
             const vm = this;
             const dataLengthLeft = $("#tree-grid-left [data-id]").length || 0;
             const dataLengthRight = $("#tree-grid-right [data-id]").length || 0;
+            vm.selectedIdLeft('');
+            vm.selectedIdRight('');
             if (indexLeft >= dataLengthLeft) {
                 indexLeft = dataLengthLeft - 1;
+            } else if (dataLengthLeft > 0 && indexLeft <0) {
+                indexLeft = 0;
             }
 
             if (indexLeft >= 0) {
@@ -359,6 +366,8 @@ module cmm015.a.viewmodel {
 
             if (indexRight >= dataLengthRight) {
                 indexRight = dataLengthLeft - 1;
+            } else if (dataLengthRight > 0 && indexRight < 0) {
+                indexRight = 0;
             }
 
             if (indexRight >= 0) {
@@ -448,9 +457,7 @@ module cmm015.a.viewmodel {
          */
         loadDataWkp(table: Table): JQueryPromise<any> {
             const vm = this, dfd = $.Deferred();
-            if (_.isEmpty(vm.selectedIdLeft()) && _.isEmpty(vm.selectedIdRight())) {
-                return dfd.promise();
-            }
+            
             const paramLeft = {
                 wkpIds: [vm.selectedIdLeft()],
                 referDate: moment.utc(vm.baseDateLeft()),
