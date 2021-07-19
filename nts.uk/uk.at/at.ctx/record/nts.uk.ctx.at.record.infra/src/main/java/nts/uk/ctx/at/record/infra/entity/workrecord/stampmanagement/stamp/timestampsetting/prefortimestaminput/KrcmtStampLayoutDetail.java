@@ -200,7 +200,7 @@ private static final long serialVersionUID = 1L;
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
 				EnumAdaptor.valueOf(this.aidioType, AudioType.class),
 				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)),
-				Optional.ofNullable(this.taskChoiceArt == null? null: AssignmentMethod.valueOf(this.supportWplSet)));
+				Optional.ofNullable(this.taskChoiceArt == null? null: AssignmentMethod.valueOf(this.taskChoiceArt)));
 	}
 	
 	public static KrcmtStampLayoutDetail toEntity(ButtonSettings settings, String companyId, Integer pageNo, int stampMeans) {
