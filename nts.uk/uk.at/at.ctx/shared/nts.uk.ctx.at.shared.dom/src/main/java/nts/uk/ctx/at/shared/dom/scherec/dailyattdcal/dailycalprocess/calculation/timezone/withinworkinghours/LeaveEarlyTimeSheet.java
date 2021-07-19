@@ -262,7 +262,7 @@ public class LeaveEarlyTimeSheet {
 		Optional<TimeSpanForDailyCalc> calcRange = LeaveEarlyDecisionClock.getCalcRange(
 				predetermineTimeSet, timeLeavingWork, integrationOfWorkTime,
 				predetermineTimeForSet, workType.getDailyWork().decisionNeedPredTime());
-		if (!calcRange.isPresent() || calcRange.get().isReverse()) return Optional.empty();
+		if (!calcRange.isPresent() || calcRange.get().isReverse() || calcRange.get().isEqual()) return Optional.empty();
 		TimeWithDayAttr leaveEndClock = calcRange.get().getEnd();
 		// 早退時間を計算する時間帯を判断
 		Optional<LateLeaveEarlyTimeSheet> beforeAdjustOpt = checkTimeSheetForCalcLeaveTime(
