@@ -74,7 +74,7 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 		Map<Integer, List<ItemValue>> mapWorkNoItemsValue = AttendanceItemIdContainer.mapWorkNoItemsValue(values);
 		List<Integer> result = new ArrayList<Integer>();
 		for (OuenWorkTimeSheetOfDailyAttendance i : ouenTimeSheet) {
-			List<ItemValue> id = mapWorkNoItemsValue.get(i.getWorkNo());
+			List<ItemValue> id = mapWorkNoItemsValue.get(i.getWorkNo().v());
 			if (id != null) {
 				result.addAll(id.stream().map(c -> c.getItemId()).collect(Collectors.toList()));
 			}
