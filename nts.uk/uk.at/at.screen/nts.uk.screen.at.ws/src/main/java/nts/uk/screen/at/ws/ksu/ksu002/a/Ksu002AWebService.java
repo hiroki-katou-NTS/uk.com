@@ -24,6 +24,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.RegisterWorkSceduleCommandHandler;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.LegalWorkTimeOfEmployeeDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.RegisterWorkScheduleInputCommand;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.SystemDateDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
@@ -84,8 +85,8 @@ public class Ksu002AWebService extends WebService {
 	//期間に応じる基本情報を取得する
 	@POST
 	@Path("getlegalworkinghours")
-	public List<WorkScheduleWorkInforDto> getlegalworkinghours(DisplayInWorkInfoInput param) {
-		return this.getScheduleActualOfWorkInfo002.getDataScheduleAndAactualOfWorkInfo(param);
+	public LegalWorkTimeOfEmployeeDto getlegalworkinghours(DisplayInWorkInfoInput param) {
+		return this.getScheduleActualOfWorkInfo002.getlegalworkinghours(param);
 	}
 	
 	@POST
@@ -124,11 +125,11 @@ public class Ksu002AWebService extends WebService {
 				new TimeZoneDto(new TimeOfDayDto(param.getStartTime(), 0), new TimeOfDayDto(param.getEndTime(), 0)),
 				null);
 	}
-
-	// @POST
-	// @Path("getDateInfo")
-	// public List<DateInformation> getWorkType(GetDateInfoDuringThePeriodInput
-	// param) {
-	// return this.getDateInfoDuringThePeriod.get(param);
-	// }
+	
+	//予定・実績を取得する
+	@POST
+	@Path("checkTimeIsIncorrect")
+	public void getPlansResults(DisplayInWorkInfoInput param) {
+		
+	}
 }
