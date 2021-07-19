@@ -2,12 +2,6 @@
 
 module nts.uk.at.view.kwr004.a {
   import common = nts.uk.at.view.kwr004.common;
-    import getProcessingDate = nts.uk.at.kaf021.common.getProcessingDate;
-
-
-  const WORK_STATUS = 'WorkStatus';
-  const KWR004_B_INPUT = 'KWR004_WORK_STATUS_DATA';
-  const KWR004_B_OUTPUT = 'KWR004_WORK_STATUS_RETURN';
   const KWR004_SAVE_DATA = 'KWR004_SCHEDULE_STATUS_CONDITIONS';
 
   const PATH = {
@@ -108,16 +102,16 @@ module nts.uk.at.view.kwr004.a {
         showEmployeeSelection: true,
         showQuickSearchTab: true,
         showAdvancedSearchTab: true,
-        showBaseDate: true,
+        showBaseDate: false,
         showClosure: true,
         showAllClosure: true,
         showPeriod: true,
         periodFormatYM: true,
           maxPeriodRange: 'oneYear',
         /** Required parameter */
-        //baseDate: moment().toISOString(), //基準日
+        baseDate: moment().toISOString(), //基準日
         periodStartDate: periodDate.startDate, //対象期間開始日
-        periodEndDate: periodDate.endate, //対象期間終了日
+        periodEndDate: periodDate.endDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
