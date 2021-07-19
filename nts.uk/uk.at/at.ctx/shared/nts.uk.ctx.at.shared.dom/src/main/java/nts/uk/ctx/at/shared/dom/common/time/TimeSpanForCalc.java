@@ -340,4 +340,12 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Tim
 	public boolean isReverse() {
 		return this.start.greaterThan(this.end);
 	}
+	
+	/**
+	 * 開始と終了が同じ
+	 * start == end
+	 */
+	public boolean isEqual() {
+		return this.start.equals(this.end);
+	}
 }
