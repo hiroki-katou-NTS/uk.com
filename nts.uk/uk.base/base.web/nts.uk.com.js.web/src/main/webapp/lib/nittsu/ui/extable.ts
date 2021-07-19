@@ -5503,6 +5503,8 @@ module nts.uk.ui.exTable {
             $horzSumContent: HTMLElement;
             $rightHorzSumHeader: HTMLElement;
             $rightHorzSumContent: HTMLElement;
+            $detailHorzScroll: HTMLElement;
+            $verticalSumHeader: HTMLElement;
             $areaAgency: HTMLElement;
             $depLeftmostHeader: HTMLElement;
             $depLeftmostBody: HTMLElement;
@@ -5521,6 +5523,8 @@ module nts.uk.ui.exTable {
                 this.$horzSumContent = this.$container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
                 this.$rightHorzSumHeader = this.$container.querySelector(`.${HEADER_PRF + RIGHT_HORZ_SUM}`);
                 this.$rightHorzSumContent = this.$container.querySelector(`.${BODY_PRF + RIGHT_HORZ_SUM}`);
+                this.$detailHorzScroll = this.$container.querySelector(`.${BODY_PRF + DETAIL_HORZ_SCROLL}`);
+                this.$verticalSumHeader = this.$container.querySelector(`.${HEADER_PRF + VERTICAL_SUM}`);
                 if ($follower) {
                     this.$depLeftmostHeader = $follower.querySelector("." + HEADER_PRF + LEFTMOST);
                     this.$depLeftmostBody = $follower.querySelector("." + BODY_PRF + LEFTMOST);
@@ -5668,12 +5672,18 @@ module nts.uk.ui.exTable {
                 let $leftArea = self.actionDetails.$leftArea;
                 let $rightArea = self.actionDetails.$rightArea;
                 let scrollWidth = helper.getScrollWidth();
+                let vertSumShown = self.$verticalSumHeader && self.$verticalSumHeader.style.display !== "none";
                 if ($rightArea && $rightArea.classList.contains(HEADER_PRF + DETAIL)) {
                     let horzLeftWidth = self.actionDetails.widths.leftHorzSum + diff;
                     self.setWidth(self.$leftHorzSumHeader, horzLeftWidth);
                     self.setWidth(self.$leftHorzSumContent, horzLeftWidth);
                     self.setWidth(self.$horzSumHeader, rightWidth);
                     self.setWidth(self.$horzSumContent, rightWidth + scrollWidth);
+                    if (self.$detailHorzScroll) {
+                        self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
+                        self.$detailHorzScroll.style.left = posLeft;
+                    }
+                    
                     if (self.$horzSumHeader) {
                         self.$horzSumHeader.style.left = posLeft;
                         self.$horzSumContent.style.left = posLeft;
@@ -5699,6 +5709,10 @@ module nts.uk.ui.exTable {
                         self.$rightHorzSumContent.style.left = posLeft;
                         self.setWidth(self.$rightHorzSumHeader, rightWidth);
                         self.setWidth(self.$rightHorzSumContent, rightWidth + scrollWidth);
+                    }
+                    
+                    if (self.$detailHorzScroll) {
+                        self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
                     }
                 }
             }
