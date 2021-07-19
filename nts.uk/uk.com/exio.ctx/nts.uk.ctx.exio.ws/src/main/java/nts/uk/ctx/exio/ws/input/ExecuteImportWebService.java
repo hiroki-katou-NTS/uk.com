@@ -5,6 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.task.AsyncTaskInfo;
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommand;
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommandHandler;
 import nts.uk.ctx.exio.app.input.prepare.ExternalImportPrepareCommand;
@@ -19,8 +20,8 @@ public class ExecuteImportWebService {
 
 	@POST
 	@Path("prepare")
-	public void prepare(ExternalImportPrepareCommand command) {
-		prepare.handle(command);
+	public AsyncTaskInfo prepare(ExternalImportPrepareCommand command) {
+		return prepare.handle(command);
 	}
 	
 	@Inject
@@ -28,7 +29,7 @@ public class ExecuteImportWebService {
 
 	@POST
 	@Path("execute")
-	public void execute(ExternalImportExecuteCommand command) {
-		execute.handle(command);
+	public AsyncTaskInfo execute(ExternalImportExecuteCommand command) {
+		return execute.handle(command);
 	}
 }
