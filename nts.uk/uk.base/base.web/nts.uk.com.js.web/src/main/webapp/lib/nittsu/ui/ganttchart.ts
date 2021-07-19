@@ -1179,7 +1179,7 @@ module nts.uk.ui.chart {
             chart.className = "nts-ganttchart";
             chart.style.cssText = `; position: absolute; top: ${posTop}px; left: ${posLeft}px; z-index: ${self.zIndex}; 
                 overflow: hidden; white-space: nowrap; width: ${(self.end - self.start) * self.unitToPx - 1}px; height: ${self.chartWidth}px;
-                background-color: ${self.color}; cursor: ${self.cursor}; border: 1px solid #AAB7B8; font-size: 13px;`;
+                line-height: ${self.chartWidth}px; background-color: ${self.color}; cursor: ${self.cursor}; border: 1px solid #AAB7B8; font-size: 13px;`;
             
             self.html = chart;
             self.html.onselectstart = () => { return false; };
