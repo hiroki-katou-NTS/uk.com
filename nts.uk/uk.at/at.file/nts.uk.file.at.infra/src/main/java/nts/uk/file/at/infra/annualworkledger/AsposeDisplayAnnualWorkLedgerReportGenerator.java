@@ -113,13 +113,13 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void printEmployeeInfor(Worksheet worksheet, int firstRow, AnnualWorkLedgerExportDataSource dataSource, AnnualWorkLedgerContent empInfo) {
         Cells cells = worksheet.getCells();
         // B1_1 B1_2 B1_3
-        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + "　" + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
+        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + empInfo.getWorkplaceCode() + " " + empInfo.getWorkplaceName());
         // B2_1 B2_2 B2_3
-        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") + "　" + empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
+        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") +empInfo.getEmployeeCode() + " " + empInfo.getEmployeeName());
         // B3_1 B3_2 B3_3
-        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") + "　" + empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
+        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") +empInfo.getEmploymentCode() + " " + empInfo.getEmploymentName());
         // B4_1 B4_2
-        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") + "　" + empInfo.getClosureDate());
+        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") +empInfo.getClosureDate());
         // B5_1 B5_2
         cells.get(firstRow, 10).setValue(TextResource.localize("KWR004_205") +
                 TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
