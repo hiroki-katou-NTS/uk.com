@@ -187,7 +187,7 @@ module nts.uk.at.kha003.a {
                     let type1Name = vm.$i18n('KHA003_25');
                     let type2Name = vm.$i18n('KHA003_26');
                     $('#append_area').empty();
-                    vm.summaryItems(_.map(data.summaryItems || [], function (item: any) {
+                    vm.summaryItems(_.sortBy(_.map(data.summaryItems || [], function (item: any) {
                         let itemTypeName = '';
                         if (item.itemType === 0) {
                             itemTypeName = type0Name;
@@ -203,7 +203,7 @@ module nts.uk.at.kha003.a {
                             summaryItemType: item.itemType,
                             itemTypeName: itemTypeName
                         }
-                    }));
+                    }), ["hierarchicalOrder"]));
                     vm.matchWidth();
                     dfd.resolve();
                 }).fail(err => {
