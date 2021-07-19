@@ -271,6 +271,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.holidayType.zIndex(1103);
 					self.shortType.zIndex(1052);
 					
+					_.forEach(self.taskTypes, (x : any) => {
+						x.hide(true);
+					});
+					
 					$(".ex-body-leftmost").removeClass("dis-pointer");
 					$(".ex-body-middle").removeClass("dis-pointer");
 					$(".ex-body-detail").removeClass("disable-css");
@@ -288,6 +292,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.breakType.zIndex(1999);
 					self.holidayType.zIndex(1996);
 					self.shortType.zIndex(1995);
+					_.forEach(self.taskTypes, (x : any) => {
+						x.hide(false);
+					});
 					
 					$(".ex-body-leftmost").addClass("dis-pointer");
 					$(".ex-body-middle").addClass("dis-pointer");
@@ -3027,9 +3034,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										start: (taskTime[o].timeSpanForCalcDto.start / 5) - dispStart,
 										end: (taskTime[o].timeSpanForCalcDto.end / 5) - dispStart,
 										pastingResizeFinished: function (line : any, type : any, start : any, end : any) {
-										let taskFilter = _.filter(ruler.gcChart[line], (tskF : any) => {
-												return tskF.id === id;
+											let taskFilter = _.filter(ruler.gcChart[line], (tskF : any) => {
+													return tskF.id === id;
 											});
+											
 											if (_.isNil(start) || _.isNil(end)){
 												
 												if (_.isNil(start))
@@ -3068,6 +3076,23 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									start: (taskTime[o].timeSpanForCalcDto.start / 5) - dispStart,
 									end: (taskTime[o].timeSpanForCalcDto.end / 5) - dispStart,
 									pastingResizeFinished: function (line : any, type : any, start : any, end : any) {
+										let taskFilter = _.filter(ruler.gcChart[line], (tskF : any) => {
+													return tskF.id === id;
+										});
+										
+										if (_.isNil(start) || _.isNil(end)){
+											
+											if (_.isNil(start))
+												start = taskFilter[0].start;
+											
+											if (_.isNil(end)) 
+												end = taskFilter[0].end;
+										}
+										
+										if (_.isNil(start) && _.isNil(end)){
+											start = taskFilter[0].start;
+											end = taskFilter[0].end;
+										}
 						                    console.log(line + "-" + type + "-" + start + "-" + end);
 											self.addTaskResize(line , type , start , end);
 						                }
