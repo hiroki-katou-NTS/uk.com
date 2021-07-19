@@ -431,11 +431,11 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00036',
                         radioCode: 'IS00375',
-                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
+                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379', 'IS01101']
                     }, {
                         ctgCode: 'CS00036',
                         radioCode: 'IS00380',
-                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
+                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384', 'IS01102']
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',

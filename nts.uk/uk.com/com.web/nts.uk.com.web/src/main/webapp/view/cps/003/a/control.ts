@@ -800,7 +800,7 @@ module cps003 {
             },
             CS00036_IS00375: (v, id) => {
                 let $grid = $("#grid");
-                _.forEach(['IS00376', 'IS00377', 'IS00378', 'IS00379'], code => {
+                _.forEach(['IS00376', 'IS00377', 'IS00378', 'IS00379', 'IS01101'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);
@@ -809,7 +809,7 @@ module cps003 {
             },
             CS00036_IS00380: (v, id) => {
                 let $grid = $("#grid");
-                _.forEach(['IS00381', 'IS00382', 'IS00383', 'IS00384'], code => {
+                _.forEach(['IS00381', 'IS00382', 'IS00383', 'IS00384', 'IS01102'], code => {
                     $grid.mGrid(v === "1" ? "enableNtsControlAt" : "disableNtsControlAt", id, code);
                     if (v !== "1") {
                         $grid.mGrid("clearErrors", [{ id: id, columnKey: code }]);

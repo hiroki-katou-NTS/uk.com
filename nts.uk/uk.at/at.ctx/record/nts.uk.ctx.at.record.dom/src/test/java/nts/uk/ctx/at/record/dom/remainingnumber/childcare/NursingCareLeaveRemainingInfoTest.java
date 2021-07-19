@@ -59,7 +59,7 @@ public class NursingCareLeaveRemainingInfoTest {
 			}
 		};
 
-		val childCare = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.FAMILY_INFO); // 子の看護・介護休暇基本情報を取得
+		val childCare = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.PER_INFO_EVERY_YEAR); // 子の看護・介護休暇基本情報を取得
 
 		val judgePeriod = childCare.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
@@ -91,7 +91,7 @@ public class NursingCareLeaveRemainingInfoTest {
 			}
 		};
 
-		val childCare = nursingInfo(NursingCategory.Nursing, UpperLimitSetting.FAMILY_INFO); // 子の看護・介護休暇基本情報を取得
+		val childCare = nursingInfo(NursingCategory.Nursing, UpperLimitSetting.PER_INFO_EVERY_YEAR); // 子の看護・介護休暇基本情報を取得
 		val judgePeriod = childCare.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 上限日数期間
@@ -149,7 +149,7 @@ public class NursingCareLeaveRemainingInfoTest {
 			}
 		};
 
-		val childCare = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.FAMILY_INFO); // 子の看護・介護休暇基本情報を取得
+		val childCare = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.PER_INFO_EVERY_YEAR); // 子の看護・介護休暇基本情報を取得
 
 		val judgePeriod = childCare.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
@@ -181,7 +181,7 @@ public class NursingCareLeaveRemainingInfoTest {
 			}
 		};
 
-		val childCare = nursingInfo(NursingCategory.Nursing, UpperLimitSetting.FAMILY_INFO); // 子の看護・介護休暇基本情報を取得
+		val childCare = nursingInfo(NursingCategory.Nursing, UpperLimitSetting.PER_INFO_EVERY_YEAR); // 子の看護・介護休暇基本情報を取得
 
 		val judgePeriod = childCare.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
