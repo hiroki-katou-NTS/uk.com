@@ -299,9 +299,9 @@ module nts.uk.at.kha003.a {
                             aT2 = $("#append_area").parent().offset().top + $("#append_area").parent().height(),
                             aL1 = $("#append_area").parent().offset().left,
                             aL2 = $("#append_area").parent().offset().left + $("#append_area").parent().width(),
-                            hT1 = ui.offset.top + 20, // 20px padding
+                            hT1 = ui.offset.top - 20, // 20px padding
                             hT2 = ui.offset.top + $(html).height() + 20,
-                            hL1 = ui.offset.left + 20,
+                            hL1 = ui.offset.left - 20,
                             hL2 = ui.offset.left + $(html).width() + 20;
                         if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
                         if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
