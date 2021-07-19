@@ -133,42 +133,6 @@ module nts.uk.at.kha003.a {
             });
 
             vm.loadScreenListData();
-            var itemId = '';
-            var itemtype = '';
-            var itemCount = 0;
-            $("#appen-area-one .pannel_padding").draggable({
-                helper: function (e) {
-                    var html = e.target
-                    itemId = html.id;
-                    itemtype = $(html).data('itemtype');
-                    itemCount = $('#append_area .cell').length;
-                    if (itemCount <= 3) {
-                        return '<div class="panel panel-gray-bg item_a_6_4_to_67">\n' +
-                            '                                            <button class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                            '                                            <span class="label" style="display: table;margin: 71px auto;">' + html.innerText + '</span>\n' +
-                            '                                        </div>';
-                    }
-                },
-                stop: function (e, ui) {
-                    var html = ui.helper;
-                    vm.$errors("clear", "#append_area");
-                    if (itemCount <= 3) {
-                        $(this).css({'pointer-events': 'none'});
-                        $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
-                        $('#append_area').append('<div class="cell valign-center">\n' +
-                            '                                        <div style="background-color: #C6E0B4" class="panel  item_a_6_4_to_67">\n' +
-                            '                                            <button tabindex="-1" id="' + itemId + '" class="button_top_right_corner"><i class="icon icon-close"></i></button>\n' +
-                            '                                            <span data-itemtype="' + itemtype + '"  class="label layout-setting summary-item" style="display: table;margin: 71px auto;">' + $(this).children().html() + '</span>\n' +
-                            '                                        </div>\n' +
-                            '                                    </div>');
-                        vm.excutionModeToUpDateMode();
-                    }
-                    if (itemCount >= 3) {
-                        $('#append_note').hide();
-                    }
-                    vm.matchWidth();
-                }
-            });
 
             $(document).ready(function () {
                 $('#append_area').on('click', ".button_top_right_corner", function (e) {
@@ -302,6 +266,58 @@ module nts.uk.at.kha003.a {
                         vm.taskFrameSettingA510.taskFrameNo(value.taskFrameNo);
                         vm.taskFrameSettingA510.taskFrameName(value.taskFrameName);
                         vm.taskFrameSettingA510.useAtr(value.useAtr);
+                    }
+                });
+
+                $("#appen-area-one .pannel_padding").draggable({
+                    helper: function (e: any) {
+                        var html = e.target
+                        const itemId = html.id;
+                        const itemType = $(html).data('itemtype');
+                        return `<div class="panel panel-gray-bg item_a_6_4_to_67" data-itemtype="${itemType}" data-id="${itemId}">
+                                    <button class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                    <span class="label" style="display: table;margin: 71px auto;">${html.innerText}</span>
+                                </div>`;
+                    },
+                    stop: function (e, ui) {
+                        var html = ui.helper;
+                        const itemId = $(html).data('id');
+                        const itemType = $(html).data('itemtype');
+                        const itemCount = $('#append_area .cell').length;
+
+                        // check helper dragged into append area
+                        let isHelperInAppendArea = false;
+                        const aT1 = $("#append_area").parent().offset().top,
+                            aT2 = $("#append_area").parent().offset().top + $("#append_area").parent().height(),
+                            aL1 = $("#append_area").parent().offset().left,
+                            aL2 = $("#append_area").parent().offset().left + $("#append_area").parent().width(),
+                            hT1 = ui.offset.top + 20, // 20px padding
+                            hT2 = ui.offset.top + $(html).height() + 20,
+                            hL1 = ui.offset.left + 20,
+                            hL2 = ui.offset.left + $(html).width() + 20;
+                        if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
+                        if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
+                        if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
+                        if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
+
+                        if (isHelperInAppendArea) {
+                            vm.$errors("clear", "#append_area");
+                            if (itemCount <= 3) {
+                                $(this).css({'pointer-events': 'none'});
+                                $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
+                                $('#append_area').append(`<div class="cell valign-center">
+                                                                    <div class="panel  item_a_6_4_to_67 bacg-active">
+                                                                        <button tabindex="-1" id="${itemId}" class="button_top_right_corner"><i class="icon icon-close"></i></button>
+                                                                        <span data-itemtype="${itemType}"  class="label layout-setting summary-item" style="display: table;margin: 71px auto;">${$(this).children().html()}</span>
+                                                                    </div>
+                                                                </div>`);
+                                vm.excutionModeToUpDateMode();
+                            }
+                            if (itemCount >= 3) {
+                                $('#append_note').hide();
+                            }
+                            vm.matchWidth();
+                        }
                     }
                 });
             }).fail(err => {

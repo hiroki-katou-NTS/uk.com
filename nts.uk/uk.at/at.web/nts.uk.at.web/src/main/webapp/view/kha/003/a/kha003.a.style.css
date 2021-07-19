@@ -57,3 +57,7 @@
 span.label.layout-setting.summary-item {
     word-break: break-all;
 }
+
+.ui-draggable-dragging {
+    z-index: 10;
+}
