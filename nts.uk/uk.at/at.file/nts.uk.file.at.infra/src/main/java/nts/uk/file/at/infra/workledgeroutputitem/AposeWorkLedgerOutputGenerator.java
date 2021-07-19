@@ -28,10 +28,10 @@ import java.util.Locale;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR005_template.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
-    private static final int NUMBER_ROW_OF_PAGE = 36;
+    private static final int NUMBER_ROW_OF_PAGE = 50;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WorkLedgerExportDataSource dataSource) {
@@ -94,13 +94,18 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 }
             }
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + content.getWorkplaceCode() + " " + content.getWorkplaceName());
+            cells.merge(count, 6, 1, 3, true, true);
             cells.get(count, 6).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
+            Style styleTime =   cells.get(count, 6).getStyle();
+            styleTime.setHorizontalAlignment(ColumnTextAlign.CENTER.value);
+            cells.get(count, 6).setStyle(styleTime);
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + content.getEmployeeCode()+ " " + content.getEmployeeName());
             // print date
             printDate(worksheet, count + 2, yearMonths);
             count += 3;
+            itemOnePage+=3;
             val data = content.getMonthlyDataList();
             for (int j = 0; j < data.size(); j++) {
                 val oneLine = data.get(j);
