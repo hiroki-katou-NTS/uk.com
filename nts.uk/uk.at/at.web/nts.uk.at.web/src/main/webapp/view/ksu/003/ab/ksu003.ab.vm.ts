@@ -62,6 +62,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				
 				if(__viewContext.viewModel.viewmodelA.localStore.workSelection != 1)
 					return;
+					
+				__viewContext.viewModel.viewmodelA.setTaskMode("pasteFlex");
 				
 				if (value.data == null || value.data == {}){
 					__viewContext.viewModel.viewmodelA.delPasteTask();
@@ -159,7 +161,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				}
 				
 				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo);
-				
+				__viewContext.viewModel.viewmodelA.setTaskMode("paste");
 				__viewContext.viewModel.viewmodelA.localStore.work1Selection = value;
 				characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 			});
@@ -521,7 +523,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				if (data == null) return;
 				self.selectedPage(data - 1);
 				self.setDataPalletToButton(data - 1, 1);
-
+				if(window.innerWidth >= 1366)
+					$("#tableButton1 button").css("min-width", "200px");
 			});
 		}
 

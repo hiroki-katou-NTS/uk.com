@@ -270,7 +270,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.breakType.zIndex(1001);
 					self.holidayType.zIndex(1103);
 					self.shortType.zIndex(1052);
-					self.taskType.hide(true);
 					
 					$(".ex-body-leftmost").removeClass("dis-pointer");
 					$(".ex-body-middle").removeClass("dis-pointer");
@@ -289,7 +288,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.breakType.zIndex(1999);
 					self.holidayType.zIndex(1996);
 					self.shortType.zIndex(1995);
-					self.taskType.hide(false);
 					
 					$(".ex-body-leftmost").addClass("dis-pointer");
 					$(".ex-body-middle").addClass("dis-pointer");
@@ -2370,7 +2368,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			block.grayout();
 			// đăng ký với mode bình thường
 			if(self.selectedDisplayPeriod() == 1){
-				let dataReg = model.buidDataReg(updatedCells, self.dataScreen003A().targetInfor , self.dataScreen003A().employeeInfo , self.employeeIdLogin , self.colorBreak45 , self.index045);
+				let dataReg = model.buidDataReg(updatedCells, self.dataScreen003A().targetInfor , self.dataScreen003A().employeeInfo , 
+							self.employeeIdLogin , self.colorBreak45 , self.index045);
 			service.regWorkSchedule(dataReg).done((rs: any) => {
 				block.clear();
 				self.colorBreak45 = true
@@ -2402,47 +2401,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 			} else {
 				// đang ký với mode dán task
-				let taskInfo : any = [];
-				let lstTaskScheduleDetailEmp : any = [], taskScheduleDetail : any = [];
-				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp, (tsk : any) => {
-					taskInfo = _.filter(self.taskData, (x : any) => {
-						return tsk.empId == x.empID;
-					});
-					
-					lstTaskScheduleDetailEmp.push(tsk);
-				});
-				
-					if(taskInfo != null){
-						_.forEach(taskInfo, (ti : any) => {
-							_.forEach(ti.taskScheduleDetail, (tis : any) => {
-							let taskDetail = {
-								taskCode: tis.taskCode,
-								timeSpanForCalcDto : tis.timeSpanForCalcDto
-							}
-							
-							taskScheduleDetail.push(taskDetail);
-							});
-						});
-					} 
-				lstTaskScheduleDetailEmp.push({
-						empId : taskInfo[0].empID,
-						taskScheduleDetail : taskScheduleDetail
-				});	
-				lstTaskScheduleDetailEmp = _.uniqWith(lstTaskScheduleDetailEmp, _.isEqual);
-				self.taskSaveData =  {
-					lstTaskScheduleDetailEmp : lstTaskScheduleDetailEmp,
-					ymd : self.taskPasteData.ymd
-				}
-				
-				self.taskSaveData.lstTaskScheduleDetailEmp = _.sortBy(self.taskSaveData.lstTaskScheduleDetailEmp, (x : any) => {
-					return x.taskScheduleDetail.timeSpanForCalcDto.start;
-				});
-				
-				_.forEach(self.taskSaveData, (x : any) => {
-					
-				})
-				
-				service.addTaskWorkSchedule(self.taskSaveData).done((rs: any) => {
+				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 					self.taskSaveData = [];
 					self.taskPasteData = [];
@@ -4249,7 +4208,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return;
 				block.invisible();
 				service.checkTimeIsIncorrect(command).done(function(result) {
-					block.clear();
+					//block.clear();
 					let errors = [];
 					for (let i = 0; i < result.length; i++) {
 						if (!result[i].check) {
@@ -5344,6 +5303,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let task : any = self.taskData[line].taskScheduleDetail[i],
 					oldS = task.timeSpanForCalcDto.start,
 					oldE = task.timeSpanForCalcDto.end;
+					if (self.taskData[line].empID !== self.lstEmpId[line].empId)
+					continue;
 					
 					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
 						_.inRange(oldS, start, end) || _.inRange(oldE, start, end)) {
@@ -5405,8 +5366,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				
 				for (let i = 0; i < self.lstTaskScheduleDetailEmp.length ; i++) {
 					let task : any = self.lstTaskScheduleDetailEmp[i],
-					oldS = task.taskScheduleDetail.timeSpanForCalcDto.start,
-					oldE = task.taskScheduleDetail.timeSpanForCalcDto.end;
+					oldS = task.taskScheduleDetail[0].timeSpanForCalcDto.start,
+					oldE = task.taskScheduleDetail[0].timeSpanForCalcDto.end;
+					if (task.empId !== self.lstEmpId[line].empId)
+					continue;
 					
 					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
 						_.inRange(oldS, start, end) || _.inRange(oldE, start, end)) {
@@ -5472,21 +5435,55 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		bindDataToTask(taskInfo : any, start : any, end : any, line : any){
 			let self = this;
-			let taskScheduleDetail : any = null;
+			let taskScheduleDetail : any = [];
 				if(taskInfo != null){
-					taskScheduleDetail = {
+					taskScheduleDetail.push({
 						taskCode : taskInfo[0].code,
 						timeSpanForCalcDto : {
 							start : start,
 							end : end
 						}
-					}
+					});
 				};
+				let taskOld = _.filter(self.taskData, (x : any) => {
+						return self.dataScreen003A().employeeInfo[line].empId == x.empID && x.taskScheduleDetail.length > 0;
+				});
 				
-				self.lstTaskScheduleDetailEmp.push({
-					empId : self.dataScreen003A().employeeInfo[line].empId,
-					taskScheduleDetail : taskScheduleDetail
-				}); 
+				if (taskOld.length == 0){
+					self.lstTaskScheduleDetailEmp.push({
+						empId : self.dataScreen003A().employeeInfo[line].empId,
+						taskScheduleDetail : taskScheduleDetail
+					}); 
+				} else {
+					taskOld = _.map(taskOld, (map : any) => {
+						let taskScheduleDetails : any = [];
+						map.taskScheduleDetail.forEach((tsd : any) => {
+							taskScheduleDetails.push({
+								taskCode : tsd.taskCode,
+								timeSpanForCalcDto : {
+									start : tsd.timeSpanForCalcDto.start,
+									end : tsd.timeSpanForCalcDto.end
+								}
+							})
+						})
+						
+						return {
+							empId : map.empID,
+							taskScheduleDetail : taskScheduleDetails
+						}
+					})
+					self.lstTaskScheduleDetailEmp = taskOld;
+					let index = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
+						return ind.empId === self.dataScreen003A().employeeInfo[line].empId;
+					})
+					self.lstTaskScheduleDetailEmp[index].taskScheduleDetail.push({
+						taskCode : taskInfo[0].code,
+						timeSpanForCalcDto : {
+							start : start,
+							end : end
+						}
+					});
+				};
 					
 				self.taskPasteData = ({
 					lstTaskScheduleDetailEmp : self.lstTaskScheduleDetailEmp,
@@ -5495,10 +5492,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 		
 		pasteTask(value : any){
-			let self = this;
-			if(self.localStore.workSelection == 1 && self.selectedDisplayPeriod() == 2)
-			ruler.setMode("pasteFlex");
-			
 			ruler.pasteChart({ typeName: value.data.text + "TASK", zIndex: 1990 });
 		}
 		
@@ -5507,7 +5500,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 		
 		public setTaskMode(mode : string) {
+			let self = this;
+			
+			if(self.localStore.workSelection == 1 && self.selectedDisplayPeriod() == 2)
 			ruler.setMode(mode);
+			
+			if(self.localStore.workSelection == 0 && self.selectedDisplayPeriod() == 2)
+			ruler.setMode(mode);
+			
 		}
 		
 		// 決定（A14_11）をクリックする (click A14_11)
