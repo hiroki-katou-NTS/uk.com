@@ -9,6 +9,7 @@ module nts.uk.at.kha003.d {
     @bean()
     export class ViewModel extends ko.ViewModel {
         dateHeaders: KnockoutObservableArray<DateHeader>;
+        contents: KnockoutObservableArray<any>;
         tableDataList: KnockoutObservableArray<any>;
         c21Params: KnockoutObservable<any>;
         c31Params: KnockoutObservable<any>;
@@ -23,6 +24,7 @@ module nts.uk.at.kha003.d {
         cScreenData: KnockoutObservable<any>;
         agCommand: KnockoutObservable<any>;
         preriod: KnockoutObservable<any>;
+
 
         constructor() {
             super();
@@ -44,6 +46,7 @@ module nts.uk.at.kha003.d {
             vm.cScreenData = ko.observable();
             vm.agCommand = ko.observable();
             vm.preriod = ko.observable();
+            vm.contents = ko.observableArray([]);
         }
 
         created() {
@@ -86,6 +89,7 @@ module nts.uk.at.kha003.d {
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
                 vm.agCommand(data);
+                vm.printContents(data);
             }).fail(function (error) {
                 vm.$dialog.error({messageId: 'Msg_2171'}).then(() => {
                     vm.displayKha003CScreen();
@@ -94,6 +98,148 @@ module nts.uk.at.kha003.d {
                 vm.$blockui("clear");
             });
         }
+
+        printContents(data: any) {
+            let vm = this;
+            var detailFormatSetting = data.summaryTableFormat;
+            var dispFormat = detailFormatSetting.displayFormat;
+            var totalUnit = detailFormatSetting.totalUnit;
+            var isDisplayTotal = detailFormatSetting.dispHierarchy == 1;
+            var outputContent = data.outputContent;
+            var totalLevel = data.countTotalLevel;
+            if (totalLevel == 0) return;
+            // Print data
+            switch (totalLevel) {
+                case 1:
+                    vm.printData1Level(outputContent, isDisplayTotal, 31, dispFormat, totalUnit);
+                    break;
+                case 2:
+                    vm.printData2Level(outputContent, isDisplayTotal, 31, dispFormat, totalUnit)
+                    //printData2Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                    break;
+                case 3:
+                    //printData3Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                    break;
+                case 4:
+                    // printData4Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                    break;
+            }
+        }
+
+        printData1Level(outputContent: any, isDispTotal: boolean, maxDateRange: any, dispFormat: any, unit: any) {
+            var itemDetails = outputContent.itemDetails;
+            var countRow = 3;
+            for (var i = 1; i <= itemDetails.length; i++) {
+                var level1 = itemDetails[i - 1];
+                /*cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
+                cells.get(countRow, 0).setValue(level1.getDisplayInfo().getName());
+                // Border
+                Cell cell = cells.get(countRow, 0);
+                Style style = cell.getStyle();
+                style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.HAIR, Color.getBlack());
+                cell.setStyle(style);
+                val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());*/
+                for (var c = 1; c < maxDateRange + 1; c++) {
+                    /*cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap1.getOrDefault(headerList.get(c), 0)), dispFormat));
+                    setHorizontalAlignment(cells.get(countRow, c));*/
+                }
+                if (isDispTotal) {  // Tong chieu ngang level
+                    /* cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level1.getTotalPeriod(), dispFormat));
+                     setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));*/
+                }
+                countRow++;
+            }
+            if (isDispTotal) { // Tong chieu doc cua level 1
+                /* cells.copyRows(cellsTemplate, 37, countRow, 1);
+                 printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 0);
+                 setBorderStyleForTotal(cells.get(countRow, 1));*/
+            } else {
+                /* for (int j = 0;
+                 j < headerList.size();
+                 j++
+             )
+                 {
+                     setBorderBottomStyle(cells.get(countRow - 1, j));
+                 }*/
+            }
+        }
+
+        printData2Level(outputContent: any, isDispTotal: any, maxDateRange: any, dispFormat: any, unit: any) {
+            let vm = this;
+            var itemDetails = outputContent.itemDetails;
+            var countRow = 3;
+            for (let level1 of itemDetails) {
+                let isPrintNameLv1 = false;
+                let mergeIndexLv1 = countRow;
+                let childHierarchyList = level1.childHierarchyList;
+                for (let i = 1; i <= childHierarchyList.length; i++) {
+                    let subArray = [];
+                    // cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
+                    let level2 = childHierarchyList[i - 1];
+                    //cells.get(countRow, 0).setValue(!isPrintNameLv1 ? level1.getDisplayInfo().getName() : "");
+                    subArray.push(new Content(level2.displayInfo.name))
+                    isPrintNameLv1 = true;
+                    /*cells.get(countRow, 1).setValue(level2.getDisplayInfo().getName());
+                    val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());*/
+                    for (let verticalItem of level2.verticalTotalList) {
+                        /*cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(c), 0)), dispFormat));
+                        setHorizontalAlignment(cells.get(countRow, c));*/
+                        subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
+                    }
+                    if (isDispTotal) {
+                        subArray.push(new Content(vm.formatValue(level2.totalPeriod, dispFormat)))
+                        // Tong chieu ngang level 3
+                        /* cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level2.getTotalPeriod(), dispFormat));
+                         setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));*/
+                    }
+                    vm.contents.push(subArray);
+                }
+                if (isDispTotal) { // Tong chieu doc level 2
+                    /* cells.copyRows(cellsTemplate, 11, countRow, 1);
+                     printTotalByVerticalOfEachLevel(cells, level1, maxDateRange, headerList, dispFormat, unit, countRow, 1, 0);
+                     countRow++;*/
+                }
+                /*cells.merge(mergeIndexLv1, 0, isDispTotal ? countRow - mergeIndexLv1 - 1 : countRow - mergeIndexLv1, 1, true, true);
+                setVerticalAlignment(cells.get(mergeIndexLv1, 1));*/
+                /*for (let j = 0; j < headerList.size(); j++) {
+                    setBorderBottomStyle(cells.get(countRow - 1, j));
+                }*/
+            }
+            /*if (isDispTotal) { // Tong chieu doc cua level 1
+                cells.copyRows(cellsTemplate, 37, countRow, 1);
+                printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 1);
+                setBorderStyleForTotal(cells.get(countRow, 2));
+            }*/
+        }
+
+        /**
+         * Format value by display format
+         *
+         * @param value
+         * @param displayFormat
+         * @return String
+         */
+        formatValue(value: any, displayFormat: any): string {
+            let targetValue = null;
+            switch (displayFormat) {
+                case 0:
+                    targetValue = (value / 60).toLocaleString('en-US', {maximumFractionDigits: 2})
+                    break;
+                case 1:
+                    let spilt: any = (value / 60).toString().split('.');
+                    let integerPart = spilt[0];
+                    let decimalPart: any = spilt[1] * 60;
+                    let remainValue = integerPart - decimalPart;
+                    targetValue = integerPart.toLocaleString('en-US') + ":" + remainValue;
+                    break;
+                case 2:
+                    targetValue = value.toLocaleString('en-US')
+                    break;
+            }
+
+            return targetValue;
+        }
+
 
         /**
          * function for get item data to map with UI
@@ -292,7 +438,7 @@ module nts.uk.at.kha003.d {
          * export file
          * @param api
          */
-        exportFile(api:string) {
+        exportFile(api: string) {
             let vm = this;
             let command = vm.agCommand();
             command.period = vm.preriod();
@@ -360,6 +506,14 @@ module nts.uk.at.kha003.d {
             this.month = month;
             this.day = day;
             this.text = text
+        }
+    }
+
+    class Content {
+        value: any
+
+        constructor(value: any) {
+            this.value = value;
         }
     }
 }
