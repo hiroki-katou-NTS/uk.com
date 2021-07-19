@@ -84,9 +84,10 @@ module nts.uk.at.view.kwr004.a {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
       });
 
-      vm.CCG001_load();
+
       vm.KCP005_load();
       vm.initialWorkStatusInformation();
+      vm.CCG001_load(vm.periodDate());
     }
 
     created(params: any) {
@@ -100,7 +101,7 @@ module nts.uk.at.view.kwr004.a {
       $('#btnExportExcel').focus();
     }
 
-    CCG001_load() {
+    CCG001_load(periodDate: any) {
       const vm = this;
       // Set component option
       vm.ccg001ComponentOption = {
@@ -109,16 +110,16 @@ module nts.uk.at.view.kwr004.a {
         showEmployeeSelection: true,
         showQuickSearchTab: true,
         showAdvancedSearchTab: true,
-        showBaseDate: true,
+        showBaseDate: false,
         showClosure: true,
-        showAllClosure: false,
-        showPeriod: false,
-        periodFormatYM: false,
-
+        showAllClosure: true,
+        showPeriod: true,
+        periodFormatYM: true,
+          maxPeriodRange: 'oneYear',
         /** Required parameter */
         baseDate: moment().toISOString(), //基準日
-        //periodStartDate: periodStartDate, //対象期間開始日
-        //periodEndDate: periodEndDate, //対象期間終了日
+        periodStartDate: periodDate.startDate, //対象期間開始日
+        periodEndDate: periodDate.endDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
@@ -190,7 +191,7 @@ module nts.uk.at.view.kwr004.a {
         isShowSelectAllButton: vm.isShowSelectAllButton(),
         isSelectAllAfterReload: true,
         tabindex: 5,
-        maxRows: 15
+        maxRows: 20
       };
 
       $('#kcp005').ntsListComponent(vm.listComponentOption)
