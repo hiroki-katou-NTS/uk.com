@@ -38,9 +38,9 @@
                             <td style="text-align: center; padding: 5px;" data-bind="text:text"></td>
                         </tr>
                     </thead>
-                    <tbody data-bind="foreach: { data: tableDataList, as: 'prent' }">
-                        <tr data-bind="foreach:vm.dateHeaders()">
-                            <td style="text-align: center; padding: 5px;" data-bind="text:prent"></td>
+                    <tbody data-bind="foreach: { data: contents, as: 'prent' }">
+                        <tr data-bind="foreach:prent">
+                            <td style="text-align: center; padding: 5px;" data-bind="text:value"></td>
                         </tr>
                     </tbody>
                 </table>
