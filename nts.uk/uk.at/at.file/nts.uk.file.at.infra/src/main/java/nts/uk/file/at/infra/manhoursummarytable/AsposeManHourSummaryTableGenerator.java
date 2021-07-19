@@ -115,7 +115,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         cells.copyRows(cellsTemplate, 0, 0, 3);  // Copy 3 row
 
         // Delete column name thừa
-        cells.deleteColumns(0, totalLevel == 1 ? 3 : totalLevel == 2 ? 2 : 1, true);
+        cells.deleteColumns(0, totalLevel == 1 ? 3 : totalLevel == 2 ? 2 : totalLevel == 3 ? 1 : 0, true);
 
         // Check total column
         int maxColumnTemplate = isDisplayTotal ? MAX_COLUMN_TEMPLATE : (MAX_COLUMN_TEMPLATE - 1);

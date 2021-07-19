@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * 	フォーマット詳細設定
  */
 @Getter
-@AllArgsConstructor
+//@AllArgsConstructor
 public class DetailFormatSetting extends ValueObject {
     /** 表示形式 */
     private DisplayFormat displayFormat;
@@ -25,6 +25,15 @@ public class DetailFormatSetting extends ValueObject {
     private NotUseAtr displayVerticalHorizontalTotal;
     /** 集計項目一覧 */
     private List<SummaryItem> summaryItemList;
+
+    public DetailFormatSetting(DisplayFormat displayFormat, TotalUnit totalUnit, NotUseAtr displayVertHoriTotal,
+                               List<SummaryItem> summaryItemList) {
+        this.displayFormat = displayFormat;
+        this.totalUnit = totalUnit;
+        this.displayVerticalHorizontalTotal = displayVertHoriTotal;
+        summaryItemList.sort(Comparator.comparing(SummaryItem::getHierarchicalOrder));
+        this.summaryItemList = summaryItemList;
+    }
 
     /**
      * [C-1] フォーマット詳細設定
