@@ -93,7 +93,7 @@ module cmm015.a.viewmodel {
                 selectType: 4,
                 isShowSelectButton: false,
                 isDialog: false,
-                maxRows: 5,
+                maxRows: 10,
                 tabindex: 3,
                 systemType : 2,
                 listDataDisplay: vm.listDataLeft,
@@ -110,7 +110,7 @@ module cmm015.a.viewmodel {
                 selectType: 4,
                 isShowSelectButton: false,
                 isDialog: false,
-                maxRows: 5,
+                maxRows: 10,
                 tabindex: 5,
                 systemType : 2,
                 listDataDisplay: vm.listDataRight,
@@ -139,7 +139,7 @@ module cmm015.a.viewmodel {
                     template: '<div style="color: ${cssWKP}">${name}</div>'
                 },
                 {
-                    headerText: vm.$i18n('CMM015_23'), key: 'jt', width: 120, headerCssClass: 'text-left',
+                    headerText: vm.$i18n('CMM015_23'), key: 'jt', width: 140, headerCssClass: 'text-left',
                     template: '<div style="color: ${cssJT}">${jt}</div>'
                 },
                 {
@@ -163,7 +163,7 @@ module cmm015.a.viewmodel {
                     headerCssClass: 'text-left dest-wkp',
                     template: '<div style="background: ${bgPostWkp}">${postWkpName}</div>'
                 },
-                { headerText: vm.$i18n('CMM015_51'), key: 'postPositionName', width: 135, headerCssClass: 'text-left dest-wkp' }
+                { headerText: vm.$i18n('CMM015_51'), key: 'postPositionName', width: 140, headerCssClass: 'text-left dest-wkp' }
             ]);
 
             vm.baseDateLeftText = ko.computed(() => {

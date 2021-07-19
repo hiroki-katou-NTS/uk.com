@@ -25,65 +25,63 @@
 				</div>
 
 				<div class="middle-content flex valign-center">
-					<div class="left">
-						<div id ="A2_1" class="panel panel-left" style="padding: 5px 10px 0px 10px;">
-							<div class="top flex valign-center">
-								<div id ="A2_2" class="label">#{i18n.getText('CMM015_12')}</div>
-								<div id ="A2_3" class="label">#{i18n.getText('CMM015_13')}</div>
-								<div id ="A2_4" class="label" data-bind="text: baseDateLeftText"></div>
+					<div class="left" style="border-bottom: 0;">
+						<div id ="A2_1" class="panel panel-left flex" style="padding-top: 0px;">
+							<div class="side">
+								<label id ="A2_2" class="label">#{i18n.getText('CMM015_12')}</label>
+								<div>
+									<label id ="A2_3" class="label">#{i18n.getText('CMM015_13')}</label>
+									<label id ="A2_4" class="label" style="margin-left: 5px;" data-bind="text: baseDateLeftText"></label>
+								</div>
+								<div class="bottom flex valign-center">
+									<div class="group-cbb">
+										<div id="A4_1" data-bind="ntsCheckBox: { checked: incumbentLeft, text: '#{i18n.getText('CMM015_14')}' }"></div>
+										<div id="A4_2" data-bind="ntsCheckBox: { checked: closedLeft, text: '#{i18n.getText('CMM015_15')}' }"></div>
+										<div id="A4_3" data-bind="ntsCheckBox: { checked: leaveLeft, text: '#{i18n.getText('CMM015_16')}' }"></div>
+										<div id="A4_4" data-bind="ntsCheckBox: { checked: retireeLeft, text: '#{i18n.getText('CMM015_17')}' }"></div>
+									</div>
+								</div>
 							</div>
-							<div class="middle" data-bind="css: { 'disabled': !enableTransferDate() }">
+							<div data-bind="css: { 'disabled': !enableTransferDate() }">
 								<div id="tree-grid-left"></div>
-							</div>
-							<div class="bottom flex valign-center">
-								<div id="A4_1" data-bind="ntsCheckBox: { checked: incumbentLeft, text: '#{i18n.getText('CMM015_14')}' }"></div>
-								<div id="A4_2" data-bind="ntsCheckBox: { checked: closedLeft, text: '#{i18n.getText('CMM015_15')}' }"></div>
-								<div id="A4_3" data-bind="ntsCheckBox: { checked: leaveLeft, text: '#{i18n.getText('CMM015_16')}' }"></div>
-								<div id="A4_4" data-bind="ntsCheckBox: { checked: retireeLeft, text: '#{i18n.getText('CMM015_17')}' }"></div>
 							</div>
 						</div>
 					</div>
-					<div class="center"></div>
-					<div class="right">
-						<div id="A5_1" class="panel panel-right" style="padding: 5px 10px 0px 10px;">
-							<div class="top flex valign-center">
-								<div id ="A5_2" class="label">#{i18n.getText('CMM015_19')}</div>
-								<div id ="A5_3" class="label">#{i18n.getText('CMM015_20')}</div>
-								<div id ="A5_4" class="label" data-bind="text: baseDateRightText"></div>
+					<div class="center">
+						<div class="center-content"></div>
+					</div>
+					<div class="right" style="border-bottom: 0;">
+						<div id="A5_1" class="panel panel-right flex" style="padding-top: 0px;">
+							<div class="side">
+								<label id ="A5_2" class="label">#{i18n.getText('CMM015_19')}</label>
+								<div>
+									<label id ="A5_3" class="label">#{i18n.getText('CMM015_20')}</label>
+									<label id ="A5_4" class="label" style="margin-left: 5px;" data-bind="text: baseDateRightText"></label>
+								</div>
+								<div class="bottom flex valign-center">
+									<div class="group-cbb">
+										<div id="A7_1" data-bind="ntsCheckBox: { checked: incumbentRight, text: '#{i18n.getText('CMM015_14') }' }"></div>
+										<div id="A7_2" data-bind="ntsCheckBox: { checked: closedRight, text: '#{i18n.getText('CMM015_15')}' }"></div>
+										<div id="A7_3" data-bind="ntsCheckBox: { checked: leaveRight, text: '#{i18n.getText('CMM015_16')}' }"></div>
+										<div id="A7_4" data-bind="ntsCheckBox: { checked: retireeRight, text: '#{i18n.getText('CMM015_17')}' }"></div>
+									</div>
+								</div>
 							</div>
-							<div class="middle" data-bind="css: { 'disabled': !enableTransferDate() }">
+							<div data-bind="css: { 'disabled': !enableTransferDate() }">
 								<div id="tree-grid-right"></div>
-							</div>
-							<div class="bottom flex valign-center">
-								<div id="A7_1" data-bind="ntsCheckBox: { checked: incumbentRight, text: '#{i18n.getText('CMM015_14') }' }"></div>
-								<div id="A7_2" data-bind="ntsCheckBox: { checked: closedRight, text: '#{i18n.getText('CMM015_15')}' }"></div>
-								<div id="A7_3" data-bind="ntsCheckBox: { checked: leaveRight, text: '#{i18n.getText('CMM015_16')}' }"></div>
-								<div id="A7_4" data-bind="ntsCheckBox: { checked: retireeRight, text: '#{i18n.getText('CMM015_17')}' }"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<div class="middle-content flex">
-					<div class="left">
-						<div id ="A8_2" class="panel panel-left"> 
-							<div class="top flex valign-center">
-								<div id="A8_1" data-bind="ntsSearchBox: {
-										items: tableDatasSource,
-										searchMode: 'filter',
-										targetKey: 'code',
-										comId: 'A9',
-										selected: currentCodeListSource,
-										selectedKey: 'id',
-										fields: ['code', 'name'],
-										mode: 'igGrid'
-								}"></div>
-							</div>
-							<div class="middle">
+					<div class="left flex" style="border-top: 0;">
+						<div id ="A8_2" class="panel panel-left flex" style="margin-left: auto"> 
+							<div class="middle" style="margin-left: auto;">
 								<table id="A9" tabindex="4" data-bind="ntsGridList: {
 									name: '#[CMM015_18]',
 									width: 410,
-									rows: 5,
+									rows: 7,
 									dataSource: tableDatasSource,
 									primaryKey: 'id',
 									columns: columnsSource,
@@ -93,8 +91,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="center" style="margin-top: 80px; margin-bottom: 10px;">
-						<div class="flex valign-center" style="height: 100%;">
+					<div class="center" style="margin-top: 30px; margin-bottom: 10px;">
+						<div class="flex valign-center" style="height: 100%; width: 120px;">
 							<button id="A11_1"
 								class="large proceed auto-height"
 								data-bind="enable: enableTransferDate(), click: onClickRegister">
@@ -102,25 +100,13 @@
 							</button>
 						</div>
 					</div>
-					<div class="right">
-						<div id="A12_2" class="panel panel-right">
-							<div class="top flex valign-center">
-								<div id="A12_1" data-bind="ntsSearchBox: {
-										items: tableDatasDest,
-										searchMode: 'filter',
-										targetKey: 'code',
-										comId: 'A13',
-										selected: currentCodeListDest,
-										selectedKey: 'id',
-										fields: ['code', 'name'],
-										mode: 'igGrid'
-								}"></div>
-							</div>
+					<div class="right" style="border-top: 0;">
+						<div id="A12_2" class="panel panel-right" style="margin-left: auto">
 							<div class="middle">
 								<table id="A13" tabindex="6" data-bind="ntsGridList: {
 									name: '#[CMM015_30]',
-									width: 500,
-									rows: 5,
+									width: 530,
+									rows: 7,
 									dataSource: tableDatasDest,
 									primaryKey: 'id',
 									columns: columnsDest,
@@ -129,16 +115,10 @@
 								}"></table>
 							</div>
 						</div>
+						<label id="A15_1" class="label" style="position: absolute; padding-top: 5px; width: 100%;">#{i18n.getText('CMM015_36')}</label>
 					</div>
 				</div>
 
-				<div class="middle-content flex valign-center" style="margin-top: 5px;">
-					<div class="left"></div>
-					<div class="center"></div>
-					<div class="right">
-						<div id="A15_1" class="label">#{i18n.getText('CMM015_36')}</div>
-					</div>
-				</div>
 				<!-- A16 -->
 				<hr id="ruled-line"></hr>
 				
