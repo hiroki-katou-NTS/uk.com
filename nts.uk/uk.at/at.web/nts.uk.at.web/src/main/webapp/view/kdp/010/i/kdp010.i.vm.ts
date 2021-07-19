@@ -134,7 +134,7 @@ module nts.uk.at.view.kdp010.i {
 				block.invisible();
 				var tg = __viewContext.enums.ContentsStampType;
 				
-				tg = _.remove(tg, (n: any) => { return n.value != 16; });
+				_.remove(tg, (n: any) => { return n.value == 16; });
 				ajax(paths.getSettingCommonStamp).done(function (data: any) {
 					if (!data.supportUse) {
 						_.remove(tg, (n: any) => { return n.value == 14 || n.value == 15 || n.value == 17 || n.value == 18; });
@@ -171,6 +171,7 @@ module nts.uk.at.view.kdp010.i {
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
 						self.supportWplSet((data.supportWplSet == null || data.supportWplSet == undefined) ? 0 : data.supportWplSet);
+						self.assignmentMethod((data.taskChoiceArt == null || data.taskChoiceArt == undefined) ? 0 : data.taskChoiceArt);
 					} else {
 						let name = _.find(self.lstContents(), function (itemEmp) { return itemEmp.value == 1; });
 						self.simpleValue(name.name);
@@ -217,7 +218,7 @@ module nts.uk.at.view.kdp010.i {
 					}),
 					usrArt: self.selectedHighlight(),
 					audioType: self.selectedAudio(),
-					taskChoiceArt: ko.unwrap(self.assignmentMethod),
+					taskChoiceArt: ko.unwrap(self.supportWorkPlaceEnable) ? ko.unwrap(self.assignmentMethod) : null,
 					supportWplSet: self.supportWplSetEnable() ? self.supportWplSet() : null
 				});
 
