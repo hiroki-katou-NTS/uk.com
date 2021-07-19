@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * 勤務状況表の出力項目名称
  */
-@StringMaxLength(20)
+@StringMaxLength(12)
 public class FormOutputItemName extends StringPrimitiveValue<FormOutputItemName> {
 
     /**
