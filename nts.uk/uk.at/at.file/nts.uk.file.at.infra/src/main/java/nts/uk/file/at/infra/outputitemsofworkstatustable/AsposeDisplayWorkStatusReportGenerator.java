@@ -39,7 +39,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
     private static final String PRINT_AREA = "A1:AJ";
     private static final int EXPORT_EXCEL = 2;
     private static final int EXPORT_PDF = 1;
-    private static final int MAX_EMP_IN_PAGE = 50;
+    private static final int MAX_EMP_IN_PAGE = 38;
     private static final int MAX_COL_IN_PAGE = 31;
 
     @Override
