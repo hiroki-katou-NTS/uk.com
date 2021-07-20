@@ -207,7 +207,8 @@ export class KdpS01AComponent extends Vue {
                     },
                     usrArt: 1,
                     buttonType: null,
-                    icon:''
+                    icon:'',
+                    taskChoiceArt: 0
                 };
             
             if (button) {
@@ -236,7 +237,8 @@ export class KdpS01AComponent extends Vue {
                     button.buttonType.stampType == null ? null : button.buttonType.stampType.setPreClockArt, 
                     button.buttonType.stampType == null ? null : button.buttonType.stampType.changeHalfDay, 
                     button.buttonType.reservationArt) + '.png';
-            }
+                buttonSetting.taskChoiceArt = button.taskChoiceArt;
+                }
             vm.setBtnColor(buttonSetting, stampToSuppress);
             resultList.push(buttonSetting);
         }
@@ -271,7 +273,7 @@ export class KdpS01AComponent extends Vue {
                 vm.$auth.user.then((userInfo) => {
 
                     vm.$http.post('at', servicePath.getEmployeeWorkByStamping, {sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).then((result: any) => {
-                        if (vm.settingStampCommon.workUse === true && result.data.task.length > 0) {
+                        if (vm.settingStampCommon.workUse === true && result.data.task.length > 0 && button.taskChoiceArt == 1) {
                             vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
                                 command.workGroup = works;
 
@@ -356,7 +358,7 @@ export class KdpS01AComponent extends Vue {
             vm.$auth.user.then((userInfo) => {
 
                 vm.$http.post('at', servicePath.getEmployeeWorkByStamping, {sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).then((result: any) => {
-                    if (vm.settingStampCommon.workUse === true && result.data.task.length > 0) {
+                    if (vm.settingStampCommon.workUse === true && result.data.task.length > 0 && button.taskChoiceArt == 1) {
                         vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
                             command.workGroup = works;
 

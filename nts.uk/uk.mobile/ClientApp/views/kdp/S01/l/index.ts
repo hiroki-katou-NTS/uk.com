@@ -106,31 +106,6 @@ export class KdpS01LComponent extends Vue {
             vm.frameName = vm.getFrameName(1);
         });
 
-        // vm.tasks = [
-        //     { code: 'A01', frameNo: 1, displayInfo: {taskName: '名駅広場1t'}},
-        //     { code: 'V03', frameNo: 1, displayInfo: {taskName: '名駅広場2'}},
-        //     { code: '1', frameNo: 1, displayInfo: {taskName: '名駅広場3'}},
-        //     { code: 'C4', frameNo: 1, displayInfo: {taskName: '名駅広場4'}},
-        //     { code: '5', frameNo: 1, displayInfo: {taskName: '名駅広場5'}},
-        //     { code: '6', frameNo: 1, displayInfo: {taskName: '名駅広場6t'}},
-        //     { code: '7', frameNo: 1, displayInfo: {taskName: '名駅広場7'}},
-        //     { code: '8', frameNo: 1, displayInfo: {taskName: '名駅広場8'}},
-        //     { code: '9', frameNo: 1, displayInfo: {taskName: '名駅広場9'}},
-        //     { code: '10', frameNo: 1, displayInfo: {taskName: '名駅広場10'}},
-        //     { code: '11', frameNo: 1, displayInfo: {taskName: '名駅広場11'}},
-        //     { code: '12', frameNo: 1, displayInfo: {taskName: '名駅広場12'}},
-        //     { code: '13', frameNo: 1, displayInfo: {taskName: '名駅広場13'}},
-        //     { code: '14', frameNo: 1, displayInfo: {taskName: '名駅広場14'}},
-        //     { code: '15', frameNo: 1, displayInfo: {taskName: '名駅広場15'}}
-        // ];
-        // vm.setting = [
-        //     {taskFrameNo: 1, taskFrameName: '枠名１', useAtr: 1},
-        //     {taskFrameNo: 2, taskFrameName: '枠名２', useAtr: 1},
-        //     {taskFrameNo: 3, taskFrameName: '枠名３', useAtr: 1},
-        //     {taskFrameNo: 4, taskFrameName: '枠名４', useAtr: 1},
-        //     {taskFrameNo: 5, taskFrameName: '枠名５', useAtr: 1},
-            
-        // ];
     }
 
     public getFrameName(frameNo: number) {

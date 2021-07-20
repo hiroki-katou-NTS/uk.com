@@ -59,7 +59,7 @@ export module model {
         buttonPositionNo: number;
 
         /** ボタンの表示設定 */
-        buttonDisSet: IButtonDisSetDto;
+        buttonDisSet: IButtonDisSetDto; 
 
         buttonValueType: number;
 
@@ -68,6 +68,8 @@ export module model {
         buttonType: IButtonTypeDto;
         
         icon: string;
+
+        taskChoiceArt: number;
     }
 
     export interface IButtonTypeDto {
