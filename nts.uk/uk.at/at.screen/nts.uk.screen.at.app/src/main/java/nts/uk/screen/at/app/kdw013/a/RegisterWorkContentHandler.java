@@ -85,6 +85,7 @@ public class RegisterWorkContentHandler {
 
 		List<WorkDetailCommand> lstWorkDetailCmd = command.getWorkDetails();
 		
+		TimeChangeMeans changeMean = param.getEditStateSetting().equals(EditStateSetting.HAND_CORRECTION_MYSELF)? TimeChangeMeans.HAND_CORRECTION_PERSON :TimeChangeMeans.HAND_CORRECTION_OTHERS ;
 		List<WorkDetail> workDetails = lstWorkDetailCmd.stream()
 				.map(workDetail -> {
 					 AtomicInteger count = new AtomicInteger(1);
@@ -94,9 +95,9 @@ public class RegisterWorkContentHandler {
 									.map(workDetailParam -> new WorkDetailsParam(new SupportFrameNo(getSupNo(workDetail.getLstWorkDetailsParamCommand(),workDetailParam.getSupportFrameNo(),count)
 											),
 											new TimeZone(
-													new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+													new WorkTimeInformation(new ReasonTimeChange(changeMean, Optional.empty()),
 															new TimeWithDayAttr(workDetailParam.getTimeZone().getStart())),
-													new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.HAND_CORRECTION_PERSON, Optional.empty()),
+													new WorkTimeInformation(new ReasonTimeChange(changeMean, Optional.empty()),
 															new TimeWithDayAttr(workDetailParam.getTimeZone().getEnd())),
 													Optional.empty()),
 											Optional.ofNullable(WorkGroup.create(workDetailParam.getWorkGroup().getWorkCD1(),
@@ -130,7 +131,7 @@ public class RegisterWorkContentHandler {
 		//4: [List<日別勤怠(Work)>.isPresent]:<call>(対象者,画面モードList<日別勤怠(Work)>)
 		// 残業申請・休出時間申請の対象時間を取得する
 		//5: [List<残業休出時間>.isPresent]:<call>
-		List<OvertimeLeaveTime> lstOvertimeLeaveTime = new ArrayList<>();
+		List<OvertimeLeaveTimeDto> lstOvertimeLeaveTime = new ArrayList<>();
 		
 		if (!integrationOfDailyList.isEmpty()) {
 			lstOvertimeLeaveTime = getTargetTime.get(command.getEmployeeId(), command.getMode(), integrationOfDailyList);

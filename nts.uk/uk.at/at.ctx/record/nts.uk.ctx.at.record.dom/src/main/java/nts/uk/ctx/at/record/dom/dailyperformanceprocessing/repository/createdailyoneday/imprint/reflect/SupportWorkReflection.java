@@ -738,11 +738,10 @@ public class SupportWorkReflection {
 			List<OuenWorkTimeSheetOfDailyAttendance> lstOuenBefore, Map<Integer, List<ItemValue>> mapItemValue) {
 
 		// パラメータ。日別勤怠（Work）。編集状態から応援時間帯の編集状態一覧を取得する
-		List<Integer> lstIdState = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SUPPORT_TIME,
-				DailyDomainGroup.SUPPORT_TIMESHEET);
+		List<Integer> lstIdState = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.SUPPORT_TIMESHEET);
 		List<EditStateOfDailyAttd> lstEditState = integrationOfDaily.getEditState().stream()
 				.filter(x -> lstIdState.contains(x.getAttendanceItemId())).collect(Collectors.toList());
-
+		List<Integer> lstIdByState = lstEditState.stream().map(mapper -> mapper.getAttendanceItemId()).collect(Collectors.toList());
 		// 取得できない
 		if (lstEditState.isEmpty()) {
 			return;
@@ -753,7 +752,7 @@ public class SupportWorkReflection {
 
 		// 取得できた編集状態一覧は応援勤務枠Noでグループする
 		Map<Integer, List<EditStateOfDailyAttd>> mapGroupEdits = new HashMap<>();
-		List<ItemValue> lstItemValue = AttendanceItemIdContainer.getIds(lstIdState, AttendanceItemType.DAILY_ITEM);
+		List<ItemValue> lstItemValue = AttendanceItemIdContainer.getIds(lstIdByState, AttendanceItemType.DAILY_ITEM);
 		mapItemValue = AttendanceItemIdContainer.mapWorkNoItemsValue(lstItemValue);
 
 		mapItemValue.entrySet().stream().forEach(x -> {

@@ -44,7 +44,7 @@ public class CalculateAttendanceTimeBySupportWorkService {
 			//$新日別勤怠.応援時刻 = 作業時間帯
 			integrationOfDailyNew.setOuenTimeSheet(ouenWorkTimeSheetOfDailyAttendance);
 			//$計算結果 = require.計算する($新日別勤怠, 実行区分.通常実行)
-			IntegrationOfDaily calculationResult = require.calculationIntegrationOfDaily(integrationOfDailyNew, ExecutionType.NORMAL_EXECUTION);
+			IntegrationOfDaily calculationResult = require.calculationIntegrationOfDaily(integrationOfDailyNew, ExecutionType.RERUN);
 			//	return $計算結果	
 			return Optional.of(calculationResult);
 		}
@@ -66,7 +66,9 @@ public class CalculateAttendanceTimeBySupportWorkService {
 				return c.getTimeLeavingWorks().stream().filter(e -> e.getWorkNo().v() == 1).findAny();
 			}).orElse(Optional.empty());
 			//if $出退勤.出勤.isPresent　AND　$出退勤.退勤.isEmpty		
-			if(timeLeavingWorks.isPresent() && timeLeavingWorks.get().getLeaveTime().isPresent() && !timeLeavingWorks.get().getLeaveStamp().isPresent()) {
+			if(timeLeavingWorks.isPresent() 
+					&& timeLeavingWorks.get().getAttendanceStamp().get().getStamp().isPresent() 
+					&& !timeLeavingWorks.get().getLeaveStamp().get().getStamp().isPresent()) {
 				//$出退勤.退勤.打刻.時刻.時刻変更理由.時刻変更手段	時刻変更手段.手修正(本人)		
 				//$出退勤.退勤.打刻.時刻.時刻変更理由.打刻方法	Optional.empty
 				//$出退勤.退勤.打刻.時刻.時刻	日時#今()

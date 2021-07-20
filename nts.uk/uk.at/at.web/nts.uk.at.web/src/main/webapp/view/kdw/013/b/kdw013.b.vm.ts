@@ -220,7 +220,7 @@ module nts.uk.ui.at.kdw013.b {
                         if (work) {
                             model.push({ key: 'KDW013_28', value: `${work.workLocationCD} ${work.workLocationName}` });
                         } else {
-                            model.push({ key: 'KDW013_28', value: '' });
+                            model.push({ key: 'KDW013_28', value: workLocationCD ? `${workLocationCD} ` + vm.$i18n('KDW013_40') : '' });
                         }
 
                         model.push({ key: 'KDW013_29', value: remarks });

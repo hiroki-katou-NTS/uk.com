@@ -15,10 +15,9 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * 
@@ -37,6 +36,8 @@ public class CalculateAttendanceTimeBySupportWorkServiceTest {
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailyAttendance = new ArrayList<>();
 	private IntegrationOfDaily integrationOfDaily = CalculateAttendanceTimeBySupportWorkServiceHelper
 			.getIntegrationOfDaily();
+	private IntegrationOfDaily integrationOfDaily1 = CalculateAttendanceTimeBySupportWorkServiceHelper
+			.getIntegrationOfDaily1();
 
 	// Test $日別勤怠 isNotPersent
 	@Test
@@ -54,8 +55,7 @@ public class CalculateAttendanceTimeBySupportWorkServiceTest {
 		assertThat((result).isPresent()).isFalse();
 	}
 
-	// Test $日別勤怠 isPersent
-	// $計算結果 isNotPersent
+	// if $出退勤.出勤.isPresent AND $出退勤.退勤.isEmpty
 	@Test
 	public void test1() {
 
@@ -63,7 +63,7 @@ public class CalculateAttendanceTimeBySupportWorkServiceTest {
 			{
 				require.get(empId, new DatePeriod(ymd, ymd));
 				result = Optional.of(integrationOfDaily);
-				
+
 				require.calculationIntegrationOfDaily(integrationOfDaily, EnumAdaptor.valueOf(0, ExecutionType.class));
 			}
 		};
@@ -74,4 +74,22 @@ public class CalculateAttendanceTimeBySupportWorkServiceTest {
 		assertThat((result).isPresent()).isTrue();
 	}
 
+	// ifnot $出退勤.出勤.isPresent AND !$出退勤.退勤.isEmpty
+	@Test
+	public void test2() {
+
+		new Expectations() {
+			{
+				require.get(empId, new DatePeriod(ymd, ymd));
+				result = Optional.of(integrationOfDaily1);
+
+				require.calculationIntegrationOfDaily(integrationOfDaily1, EnumAdaptor.valueOf(0, ExecutionType.class));
+			}
+		};
+
+		Optional<IntegrationOfDaily> result = CalculateAttendanceTimeBySupportWorkService.calculate(require, empId, ymd,
+				ouenWorkTimeSheetOfDailyAttendance);
+
+		assertThat((result).isPresent()).isTrue();
+	}
 }

@@ -26,4 +26,6 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 
 	void removePK(String sid, GeneralDate ymd, int ouenNo);
 
+	public void persist(List<OuenWorkTimeSheetOfDaily> domain);
+
 }

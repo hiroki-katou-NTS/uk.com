@@ -34,7 +34,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 	List<String> listWpkIds = new ArrayList<>();
 	NarrowingDownTaskByWorkplace narrowingDownTask = new NarrowingDownTaskByWorkplace("0000001", taskFrameNo,
 			new ArrayList<>());
-	NarrowingDownTaskByWorkplace narrowingDownTask2 = new NarrowingDownTaskByWorkplace("0000003", taskFrameNo,
+	NarrowingDownTaskByWorkplace narrowingDownTask2 = new NarrowingDownTaskByWorkplace("0000001", taskFrameNo,
 			new ArrayList<>());
 
 	// $職場リスト != require.職場を取得する(会社ID,社員ID,基準日) == empty
@@ -101,7 +101,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 
 		assertThat(result.isPresent()).isTrue();
 		assertThat(result.get().getTaskCodeList()).isEmpty();
-		assertThat(result.get().getWorkPlaceId()).isEqualTo("0000003");
+		assertThat(result.get().getWorkPlaceId()).isEqualTo("0000001");
 	}
 	
 	// $職場リスト = require.職場を取得する(会社ID,社員ID,基準日) == notEmpty
@@ -119,6 +119,12 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 						result = listWpkIds;
 
 						require.getNarrowingDownTaskByWorkplace("0000002", taskFrameNo);
+						result = Optional.empty();
+						
+						require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
+						result = Optional.of(narrowingDownTask2);
+						
+						require.getNarrowingDownTaskByWorkplace("0000003", taskFrameNo);
 						result = Optional.of(narrowingDownTask2);
 					}
 				};
@@ -128,6 +134,6 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 
 				assertThat(result.isPresent()).isTrue();
 				assertThat(result.get().getTaskCodeList()).isEmpty();
-				assertThat(result.get().getWorkPlaceId()).isEqualTo("0000003");
+				assertThat(result.get().getWorkPlaceId()).isEqualTo("0000001");
 			}
 }

@@ -100,7 +100,7 @@ module nts.uk.ui.at.kdw013.a {
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
-        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
+        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '10000-01-01'});
 
         employee: KnockoutObservable<string> = ko.observable('');
 
@@ -286,13 +286,22 @@ module nts.uk.ui.at.kdw013.a {
                 }),
                 remove: ko.computed({
                     read: () => {
+                        
+                        let confirms = _.get(vm.$datas(),'lstComfirmerDto');
                         const editable = ko.unwrap(vm.editable);
-                        let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
+                        let confimer = _.find(confirms, ['confirmSID',vm.$user.employeeId]);
                         return !editable && !!confimer;
                     }
                 }),
                 confirm: ko.computed({
                     read: () => {
+                        let confirms = _.get(vm.$datas(),'lstComfirmerDto');
+                        if (!_.isEmpty(confirms) && confirms.length === 5) {
+                            return false;
+                        }
+                        if (vm.employee() == vm.$user.employeeId) {
+                            return false;
+                        }
                         const editable = ko.unwrap(vm.editable);
                         let confimer = _.find(_.get(vm.$datas(),'lstComfirmerDto'), ['confirmSID',vm.$user.employeeId]);
                         return !editable && !confimer;
@@ -359,7 +368,6 @@ module nts.uk.ui.at.kdw013.a {
 
                         return _
                             .chain(lstComfirmerDto)
-                            .filter(({ confirmDateTime }) => (confirmDateTime || "").indexOf($moment) === 0)
                             .map(({
                                 confirmSID: id,
                                 confirmSCD: code,
@@ -500,7 +508,7 @@ module nts.uk.ui.at.kdw013.a {
         saveData() {
             const vm = this;
             const { events, dateRange } = vm;
-            const { HAND_CORRECTION_MYSELF } = EditStateSetting;
+            const { HAND_CORRECTION_MYSELF, HAND_CORRECTION_OTHER } = EditStateSetting;
             const { start, end } = ko.unwrap(dateRange);
 
             if (!start || !end) {
@@ -523,11 +531,13 @@ module nts.uk.ui.at.kdw013.a {
     
             let sid = vm.employee() ? vm.employee() : vm.$user.employeeId;
     
+            let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
+    
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
 
             const command: RegisterWorkContentCommand = {
                 changedDate: moment().format(DATE_TIME_FORMAT),
-                editStateSetting: HAND_CORRECTION_MYSELF,
+                editStateSetting,
                 employeeId: sid,
                 mode,
                 workDetails: dateRanges().map((date) => {
@@ -579,8 +589,8 @@ module nts.uk.ui.at.kdw013.a {
                 .then((response: RegisterWorkContentDto) => {
 
                     if (response) {
+    
                         const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;
-
                         if (!lstErrorMessageInfo || lstErrorMessageInfo.length === 0) {
                             return vm.$dialog
                                 .info({ messageId: 'Msg_15' })
@@ -649,6 +659,7 @@ module nts.uk.ui.at.kdw013.a {
 
                             // update confirmers
                             $datas.valueHasMutated();
+                            vm.dataChanged(false);
                         } else {
                             $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
@@ -690,6 +701,7 @@ module nts.uk.ui.at.kdw013.a {
 
                             // update confirmers
                             $datas.valueHasMutated();
+                            vm.dataChanged(false);
                         } else {
                             $datas({ lstComfirmerDto, lstWorkRecordDetailDto: [], workCorrectionStartDate: '', workGroupDtos: [] });
                         }
@@ -722,14 +734,14 @@ module nts.uk.ui.at.kdw013.a {
             <div data-bind="ntsComboBox: {
                 name: $component.$i18n('KDW013_5'),
                 options: $component.departments,
-                visibleItemsCount: 20,
+                visibleItemsCount: 14,
                 value: $component.department,
                 editable: true,
                 selectFirstIfNull: true,
                 optionsValue: 'workplaceId',
                 optionsText: 'wkpDisplayName',
                 columns: [
-                    { prop: 'workplaceId', length: 4 },
+                    { prop: 'workplaceCode', length: 4 },
                     { prop: 'wkpDisplayName', length: 10 }
                 ]
             }"></div>
@@ -768,9 +780,11 @@ module nts.uk.ui.at.kdw013.a {
 
                             if (refWorkplaceAndEmployeeDto) {
                                 const { employeeInfos, lstEmployeeInfo } = refWorkplaceAndEmployeeDto;
-
+                                let emps = _.filter(employeeInfos,{'workplaceId': $dept });
                                 // updating
-                                return loaded ? [] : lstEmployeeInfo.filter(({ employeeId }) => employeeInfos[employeeId] === $dept);
+                                return loaded ? [] : _.filter(lstEmployeeInfo, (o) => {
+                                   return !!_.find(emps, { 'employeeId': o.employeeId });
+                                });
                             }
                         }
 
@@ -780,6 +794,8 @@ module nts.uk.ui.at.kdw013.a {
 
                     }
                 });
+    
+                
 
                 vm.departments = ko.computed({
                     read: () => {
@@ -802,6 +818,25 @@ module nts.uk.ui.at.kdw013.a {
 
                     }
                 });
+    
+                vm.departments
+                    .subscribe((deps) => {
+                        if (!_.isEmpty(deps)) {
+
+                            let empInfo = _.find(vm.params.$settings().refWorkplaceAndEmployeeDto.employeeInfos, { 'employeeId': vm.$user.employeeId });
+
+                            if (empInfo) {
+
+                                let selectedWkp = _.find(deps, { 'workplaceId': empInfo.workplaceId });
+
+                                if (selectedWkp) {
+
+                                    vm.department(selectedWkp.workplaceId);
+                                }
+                            }
+
+                        }
+                    });
 
                 vm.employees
                     .subscribe((emps: EmployeeBasicInfoDto[]) => {
@@ -815,6 +850,11 @@ module nts.uk.ui.at.kdw013.a {
                                 vm.params.employee(first.employeeId);
                             }
 
+                        } else {
+                            if (emps.length) {
+                                const [first] = emps;
+                                vm.params.employee(first.employeeId);
+                            }
                         }
                     });
             }

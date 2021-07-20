@@ -97,7 +97,7 @@ public class KDW013WebService {
 	@Path("c/start")
 	public StartWorkInputPanelDto startWorkInputPanel(StartWorkInputPanelParam param) {
 		WorkGroupDto workGrp = param.getWorkGroupDto();
-		return StartWorkInputPanelDto.toDto(startWorkInputPanel.startPanel(param.getSId(), param.getRefDate(),
+		return StartWorkInputPanelDto.toDto(startWorkInputPanel.startPanel(param.getEmployeeId(), param.getRefDate(),
 				WorkGroup.create(workGrp.getWorkCD1(), workGrp.getWorkCD2(), workGrp.getWorkCD3(), workGrp.getWorkCD4(),
 						workGrp.getWorkCD5())));
 	}
@@ -106,7 +106,7 @@ public class KDW013WebService {
 	@POST
 	@Path("c/select")
 	public List<TaskDto> selectWorkItem(SelectWorkItemParam param) {
-		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getSId(), param.getRefDate(),
+		return StartWorkInputPanelDto.setTaskListDto(selectWorkItem.select(param.getEmployeeId(), param.getRefDate(),
 				new TaskFrameNo(param.getTaskFrameNo()), Optional.of(new TaskCode(param.getTaskCode()))));
 	}
 

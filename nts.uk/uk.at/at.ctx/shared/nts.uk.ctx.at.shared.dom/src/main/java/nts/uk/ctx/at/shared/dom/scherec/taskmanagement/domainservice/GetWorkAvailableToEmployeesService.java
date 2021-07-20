@@ -63,7 +63,7 @@ public class GetWorkAvailableToEmployeesService {
     	//if 作業枠NO <> 1 AND 上位枠作業コード.isPresent
     	if(taskFrameNo.v() != 1 && taskCodes.isPresent()) {
     		//$親作業 = require.親作業を取得する(作業枠NO-1, 上位枠作業コード)
-    		Optional<Task> task = require.getOptionalTask(taskFrameNo, taskCodes.get());
+			Optional<Task> task = require.getOptionalTask(new TaskFrameNo(taskFrameNo.v() -1 ), taskCodes.get());
     		//if not $親作業.isEmpty
     		if(task.isPresent())
     			//$子作業 = $親作業.子作業一覧	
@@ -77,12 +77,13 @@ public class GetWorkAvailableToEmployeesService {
     	
     	List<TaskCode> childTaskListfilter = new ArrayList<TaskCode>();
     	//if 子作業.isPresent AND $絞込作業.isPresent
-    	if(!childTaskList.isEmpty() && !listTaskCode.isEmpty())
+    	if(!childTaskList.isEmpty() && !listTaskCode.isEmpty()) {
     		//$利用可能作業 = $子作業：filter $絞込作業.contains($)
     		childTaskListfilter = childTaskList.stream().filter(o->listTaskCode.contains(o)).collect(Collectors.toList());
-    	else 
+    	}else {
     		//$利用可能作業 = $子作業.追加($絞込作業)
     		childTaskList.addAll(listTaskCode);
+    	}
     		childTaskListfilter = childTaskList;
     		
     	//	return require.利用可能作業を取得する(基準日, 作業枠NO, $利用可能作業)	

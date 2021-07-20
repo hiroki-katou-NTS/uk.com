@@ -43,9 +43,6 @@ public class GetDailyPerformanceData {
 		List<IntegrationOfDaily> lstIntegrationOfDaily = getter.getIntegrationOfDaily(sId, period);
 
 		for (IntegrationOfDaily interDaily : lstIntegrationOfDaily) {
-			List<TimeLeavingWork> timeLeavingWorks = interDaily.getAttendanceLeave().map(x-> x.getTimeLeavingWorks()).orElse(Collections.emptyList());
-
-			for (TimeLeavingWork time : timeLeavingWorks) {
 
 				// 作業実績詳細
 				WorkRecordDetail detail = new WorkRecordDetail();
@@ -88,16 +85,6 @@ public class GetDailyPerformanceData {
 				actualContent.setTotalWorkingHours(Optional.ofNullable(interDaily.getAttendanceTimeOfDailyPerformance()
 						.map(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime()).orElse(null)));
 
-				if (time.getWorkNo().v() == 1) {
-					// 開始時刻
-					actualContent.setStart(Optional.ofNullable(time.getAttendanceStamp()
-							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
-
-					// 終了時刻
-					actualContent.setEnd(Optional.ofNullable(time.getLeaveStamp()
-							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
-				}
-
 				// 実績内容
 				detail.setActualContent(Optional.of(actualContent));
 
@@ -105,7 +92,21 @@ public class GetDailyPerformanceData {
 				detail.setLstworkDetailsParam(Optional.of(lstworkDetailsParam));
 
 				lstWorkRecordDetail.add(detail);
-			}
+				
+				
+			Optional<TimeLeavingWork> timeLeavingWork = interDaily.getAttendanceLeave()
+					.map(x -> x.getTimeLeavingWorks()).orElse(Collections.emptyList()).stream()
+					.filter(x -> x.getWorkNo().v() == 1).findFirst();
+				
+				if (timeLeavingWork.isPresent()) {
+					// 開始時刻
+					actualContent.setStart(Optional.ofNullable(timeLeavingWork.get().getAttendanceStamp()
+							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
+
+					// 終了時刻
+					actualContent.setEnd(Optional.ofNullable(timeLeavingWork.get().getLeaveStamp()
+							.map(x -> x.getStamp().map(y -> y.getTimeDay()).orElse(null)).orElse(null)));
+				}
 		}
 
 		return lstWorkRecordDetail;

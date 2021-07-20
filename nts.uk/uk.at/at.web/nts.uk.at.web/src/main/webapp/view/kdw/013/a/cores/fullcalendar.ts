@@ -98,14 +98,13 @@ module nts.uk.ui.at.kdw013.calendar {
             width: 210px;
             min-width: 210px;
             max-width: calc(100vw - 755px);
-            min-height: 1px;
-            height: calc(100vh - 162px);
             overflow: hidden;
             margin-right: 10px;
             box-sizing: border-box;
             border-right: 1px solid #ccc;
             position: relative;
             padding-right: 1px;
+            min-height: calc(100vh - 162px);
         }
         .fc-container .fc-sidebar>div {
             padding: 0 10px;
@@ -270,10 +269,10 @@ module nts.uk.ui.at.kdw013.calendar {
         .fc-timegrid-cols .fc-day-today {
             background-color: white !important;
         }
-        .fc-container .fc-day-sat {
+        .fc-container .fc-day-sat .fc-col-header-cell-cushion{
             color: #0086EA;
         }
-        .fc-container .fc-day-sun {
+        .fc-container .fc-day-sun .fc-col-header-cell-cushion {
             color: #FF2D2D;
         }
         .fc-container .fc-event-title h4 {
@@ -675,7 +674,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     attendanceTimes: ko.observableArray([]),
                     breakTime: ko.observable(null),
                     businessHours: ko.observableArray([]),
-                    validRange: ko.observable({}),
+                    validRange: ko.observable({ start: null, end: null }),
                     event: {
                         datesSet: (__: Date, ___: Date) => { }
                     },
@@ -817,6 +816,12 @@ module nts.uk.ui.at.kdw013.calendar {
                     return _.values(ko.unwrap(this.$styles)).join('\n');
                 }
             });
+            
+            this.params.employee
+                .subscribe((value) => {
+                    this.popupPosition.event(null);
+                    this.popupPosition.setting(null);
+                });
         }
 
         public mounted() {
@@ -1177,7 +1182,6 @@ module nts.uk.ui.at.kdw013.calendar {
                         e.setProp(GROUP_ID, '');
 
                         e.setProp(BORDER_COLOR, TRANSPARENT);
-                        e.setProp(DURATION_EDITABLE, true);
                     }
                 });
             };
@@ -1200,6 +1204,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                     } else {
                                         vm.calendar.changeView('timeGridDay');
                                     }
+                                    const sc = ko.unwrap(scrollTime);
+
+                                    vm.calendar.scrollToTime(formatTime(sc));
                                 })
                                 .then(() => {
                                     if (version.match(/IE/)) {
@@ -1212,6 +1219,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                     }
                                 });
                         }
+
                     }
                 },
                 'five-day': {
@@ -1229,6 +1237,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('timeGridWeek');
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'full-week': {
@@ -1246,6 +1257,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('timeGridWeek');
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'full-month': {
@@ -1263,6 +1277,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                 vm.calendar.changeView('dayGridMonth');
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'list-week': {
@@ -1350,6 +1367,9 @@ module nts.uk.ui.at.kdw013.calendar {
                                     break;
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
                 },
                 'preview-day': {
@@ -1406,7 +1426,11 @@ module nts.uk.ui.at.kdw013.calendar {
                                     break;
                             }
                         }
+                        const sc = ko.unwrap(scrollTime);
+
+                        vm.calendar.scrollToTime(formatTime(sc));
                     }
+                   
                 },
                 'settings': {
                     text: '',
@@ -1457,31 +1481,31 @@ module nts.uk.ui.at.kdw013.calendar {
             };
             const updateEvents = () => {
                 const sltds = vm.selectedEvents;
-                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(e.start) === formatDate(m.start));
-
-                const events = ko
-                    .unwrap<EventRaw[]>(params.events)
+                const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
+                const data = ko.unwrap(params.$datas);
+                const startDate =  moment(_.get(data,'workCorrectionStartDate'));
+                const events = ko.unwrap<EventRaw[]>(params.events);
+                let mapppedEvents =    _.chain(events)
                     .filter(({ extendedProps }) => extendedProps.status !== 'delete')
-                    .map((m) => ({
-                        ...m,
+                    .map((e) => ({
+                        ...e,
                         id: randomId(),
-                        start: formatDate(m.start),
-                        end: formatDate(m.end),
-                        [GROUP_ID]: isSelected(m) ? SELECTED : '',
-                        [BORDER_COLOR]: isSelected(m) ? BLACK : TRANSPARENT,
-                        [DURATION_EDITABLE]: isSelected(m) ? sltds.length < 2 : true,
+                        start: formatDate(_.get(e,'start')),
+                        end: formatDate(_.get(e,'end')),
+                        [GROUP_ID]: isSelected(e) ? SELECTED : '',
+                        [BORDER_COLOR]: isSelected(e) ? BLACK : TRANSPARENT,
+                        editable: startDate.isAfter(formatDate(_.get(e, 'start')) ) ? false : true,
                         extendedProps: {
-                            ...m.extendedProps,
-                            status: m.extendedProps.status || 'normal'
+                            ...e.extendedProps,
+                            status: e.extendedProps.status || 'normal'
                         }
-                    }));
-
+                    })).value();
+                
                 // clear old events
                 vm.calendar.removeAllEvents();
                 vm.calendar.removeAllEventSources();
-
                 // set new events
-                vm.calendar.setOption('events', events);
+                vm.calendar.setOption('events', mapppedEvents);
                 // _.each(events, (e: EventRaw) => vm.calendar.addEvent(e));
 
                 vm.selectedEvents = [];
@@ -1508,7 +1532,6 @@ module nts.uk.ui.at.kdw013.calendar {
                             e.setProp(GROUP_ID, '');
 
                             e.setProp(BORDER_COLOR, TRANSPARENT);
-                            e.setProp(DURATION_EDITABLE, true);
                         }
                     });
 
@@ -1547,7 +1570,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 slotEventOverlap: false,
                 eventOverlap: false,
                 selectOverlap: false,
-                eventLimit: true, 
+                eventLimit: true,
                 views: {
                     timeGrid: {
                         eventLimit: 20
@@ -1556,11 +1579,35 @@ module nts.uk.ui.at.kdw013.calendar {
                 // rerenderDelay: 500,
                 dateClick: (info) => {
                     const events = vm.calendar.getEvents();
-
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    
+                    
 
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
 
                     if (!hasEventNotSave) {
+                        if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                            vm.$dialog
+                                .confirm({ messageId: 'Msg_2094' })
+                                .then((v: 'yes' | 'no') => {
+                                    if (v === 'yes') {
+                                        dataEvent.delete(false);
+                                        popupPosition.event(null);
+                                        popupPosition.setting(null);
+                                    }
+
+                                    dataEvent.delete(false);
+
+                                });
+                            return;
+                        }
+                        
+                        if (startDate.isAfter(formatDate(info.date))) {
+                            return;
+                        }
+                        
+
                         const event = vm.calendar
                             .addEvent({
                                 id: randomId(),
@@ -1569,7 +1616,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                 [BORDER_COLOR]: BLACK,
                                 [GROUP_ID]: SELECTED,
                                 extendedProps: {
-                                    status: 'new'
+                                    status: 'new',
+                                    employeeId: vm.params.employee() || vm.$user.employeeId
                                 }
                             });
 
@@ -1579,8 +1627,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (el) {
                             const { view } = vm.calendar;
 
-                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
+                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true });
                         }
+                        
                     } else {
                         _.each(events, (e: EventApi) => {
                             // remove new event (empty data)
@@ -1602,14 +1651,13 @@ module nts.uk.ui.at.kdw013.calendar {
                                 e.setProp(GROUP_ID, '');
                                 // unselect events
                                 e.setProp(BORDER_COLOR, TRANSPARENT);
-                                e.setProp(DURATION_EDITABLE, true);
                             }
                         });
 
 
                     }
                 },
-                dropAccept: () => !!ko.unwrap(editable),
+                dropAccept: () => !!ko.unwrap(true),
                 dayHeaderContent: (opts: DayHeaderContentArg) => moment(opts.date).format('DD(ddd)'),
                 selectAllow: ({ start, end }) => start.getDate() === end.getDate(),
                 slotLabelContent: (opts: SlotLabelContentArg) => {
@@ -1721,9 +1769,9 @@ module nts.uk.ui.at.kdw013.calendar {
 
                                     if (fce) {
                                         const { top } = fce;
-                                        const { innerHeight } = window;
+                                        const  innerHeight  = $('.fc-sidebar').height();
 
-                                        vm.calendar.setOption('height', `${innerHeight - top - 10}px`);
+                                        vm.calendar.setOption('height', `${innerHeight }px`);
 
                                         const sidebar = $('.fc-sidebar').get(0);
 
@@ -1781,7 +1829,7 @@ module nts.uk.ui.at.kdw013.calendar {
                                             });
                                         }
 
-                                        ko.applyBindingsToNode(dpker, { ntsDatePicker: { value, startDate, endDate } }, vm);
+                                        ko.applyBindingsToNode(dpker, { ntsDatePicker: { name:vm.$i18n('KDW013_8') ,value, startDate, endDate } }, vm);
                                     }
 
                                     const setting = $('.fc-settings-button').get(0);
@@ -1805,11 +1853,68 @@ module nts.uk.ui.at.kdw013.calendar {
                         }
                     }
                 },
-                eventClick: ({ el, event, jsEvent }) => {
+                dayCellClassNames: (arg) => {
+                    if (arg.date > moment()) {
+                        return ['pika']
+                    } else {
+                        return ['mieo']
+                    }
+                }
+                ,
+                eventClick: ({ el, event, jsEvent, noCheckSave}) => {
                     const shift = ko.unwrap<boolean>(dataEvent.shift);
                     /**
                      * Note: remove group id before change other prop
                      */
+                    
+                    const events = vm.calendar.getEvents();
+                    
+                    let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
+                    
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    
+                    if (hasEventNotSave && !noCheckSave) {
+                        _.each(events, (e: EventApi) => {
+                            // remove new event (empty data)
+                            if (!e.extendedProps.id) {
+
+                                vm.$dialog
+                                    .confirm({ messageId: 'Msg_2094' })
+                                    .then((v: 'yes' | 'no') => {
+                                        if (v === 'yes') {
+                                            e.remove();
+                                            dataEvent.delete(false);
+                                            popupPosition.event(null);
+                                            popupPosition.setting(null);
+                                        }
+
+                                        dataEvent.delete(false);
+                                    });
+                            }
+                        });
+                        return;
+                    }
+                    
+                    if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                        vm.$dialog
+                            .confirm({ messageId: 'Msg_2094' })
+                            .then((v: 'yes' | 'no') => {
+                                if (v === 'yes') {
+                                    dataEvent.delete(false);
+                                    popupPosition.event(null);
+                                    popupPosition.setting(null);
+                                }
+
+                                dataEvent.delete(false);
+
+                            });
+                        return;
+                    }
+                    
+                    if (startDate.isAfter(formatDate(event.start))) {
+                        return;
+                    }
 
                     // remove new event (with no data) & background event
                     removeNewEvent(event);
@@ -1885,7 +1990,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (!!selecteds.length) {
                         // group selected event & disable resizeable
                         _.each(selecteds, (e: EventApi) => {
-                            e.setProp(DURATION_EDITABLE, selecteds.length === 1);
                             e.setProp(GROUP_ID, SELECTED);
                         });
                     }
@@ -1956,7 +2060,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         if (el) {
                             const { view } = vm.calendar;
 
-                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
+                            vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true});
                         }
                     }
                 },
@@ -2004,6 +2108,14 @@ module nts.uk.ui.at.kdw013.calendar {
                     console.log('stop', event.extendedProps);
                 },
                 select: ({ start, end }) => {
+                    
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    
+                    if (startDate.isAfter(formatDate(start))) {
+                        vm.calendar.unselect();
+                        return;
+                    }
 
                     // clean selection
                     vm.calendar.unselect();
@@ -2020,7 +2132,8 @@ module nts.uk.ui.at.kdw013.calendar {
                             [BORDER_COLOR]: BLACK,
                             [GROUP_ID]: SELECTED,
                             extendedProps: {
-                                status: 'new'
+                                status: 'new',
+                                employeeId: vm.params.employee() || vm.$user.employeeId
                             }
                         });
 
@@ -2030,7 +2143,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     if (el) {
                         const { view } = vm.calendar;
 
-                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view });
+                        vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view , noCheckSave: true});
                     }
                 },
                 eventRemove: ({ event }) => {
@@ -2057,6 +2170,13 @@ module nts.uk.ui.at.kdw013.calendar {
                         textColor,
                         extendedProps
                     } = event;
+                    const data = ko.unwrap(params.$datas);
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    
+                    if (startDate.isAfter(formatDate(start))) {
+                        event.remove();
+                        return;
+                    }
                     const sd = ko.unwrap(params.slotDuration);
                     const end = moment(start).add(sd, 'minute').toDate();
                 
@@ -2170,9 +2290,12 @@ module nts.uk.ui.at.kdw013.calendar {
                         const { setting } = popupData;
                         const { firstDay, scrollTime, slotDuration } = value;
 
-                        setting.firstDay(firstDay);
-                        setting.scrollTime(scrollTime);
-                        setting.slotDuration(slotDuration);
+                        if (firstDay)
+                            setting.firstDay(firstDay);
+                        if (scrollTime)
+                            setting.scrollTime(scrollTime);
+                        if (slotDuration)
+                            setting.slotDuration(slotDuration);
                     }
                 })
                 // render calendar after restore charactergistic domain to model
@@ -2218,12 +2341,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.calendar.setOption('editable', ed);
                     vm.calendar.setOption('droppable', ed);
                     vm.calendar.setOption('selectable', ed);
-
-                    if (ed !== false) {
-                        $el.find('.fc-copy-day-button').removeAttr('disabled');
-                    } else {
-                        $el.find('.fc-copy-day-button').attr('disabled', 'disabled');
-                    }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2242,6 +2359,9 @@ module nts.uk.ui.at.kdw013.calendar {
             ko.computed({
                 read: () => {
                     const sc = ko.unwrap<number>(scrollTime);
+                    const fd = ko.unwrap<number>(firstDay);
+                    const sd = ko.unwrap<number>(params.slotDuration);
+                    
                     setTimeout(() => {
                         vm.calendar.scrollToTime(formatTime(sc));
                     }, 500);
@@ -2259,7 +2379,15 @@ module nts.uk.ui.at.kdw013.calendar {
                     vm.calendar.gotoDate(formatDate(id));
 
                     // update selected header color
-                    vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view th.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
+                    
+                    if (vm.params.initialView() == "oneDay") {
+
+                        vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridDay-view th.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
+                    } else {
+                        vm.updateStyle('selectday', `.fc-container .fc-timegrid.fc-timeGridWeek-view th.fc-day[data-date='${formatDate(id, 'YYYY-MM-DD')}'] { background-color: #ffffcc; }`);
+
+                    }
+                    
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2372,8 +2500,8 @@ module nts.uk.ui.at.kdw013.calendar {
             ko.computed({
                 read: () => {
                     const validRange = ko.unwrap<DateRangeInput>(params.validRange);
-
-                    vm.calendar.setOption('validRange', validRange);
+                    //lỗi của calendar, nếu set '9999-12-31' thì sẽ không hiện ngày '9999-12-31' nên phải set là '9999-12-32'
+                    vm.calendar.setOption('validRange', {end: '9999-12-32'});
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2473,7 +2601,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     const cpov = $tg.closest('.fc-popup-editor').length > 0;
                     const ipkr = $tg.hasClass('.datepicker-container') && $tg.not('.datepicker-inline');
                     const cpkr = $tg.closest('.datepicker-container').length > 0 && $tg.closest('.datepicker-inline').length === 0;
-
+                    const event = $tg.closest('.fc-timegrid-event.fc-v-event.fc-event').length;
+                    
                     dataEvent.mouse(true);
 
                     const targ = $tg
@@ -2481,12 +2610,17 @@ module nts.uk.ui.at.kdw013.calendar {
                         ($tg.hasClass('fc-non-business') || $tg.hasClass('fc-timegrid-slot')) ? 'date' : null;
 
                     dataEvent.target(targ);
+                    
+                    
 
                     // close popup if target isn't owner & poper.
                     if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
 //                        popupPosition.event(null);
 //                        popupPosition.setting(null);
                     }
+                    
+
+                    
                 })
                 .registerEvent('mousemove', () => {
                     if (ko.unwrap(dataEvent.mouse)) {
@@ -3106,14 +3240,20 @@ module nts.uk.ui.at.kdw013.calendar {
                                             optionsText: 'title',
                                             optionsValue: 'id'
                                         ">
-                                        <option></option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                    <input class="nts-input" type="text" data-bind="input-time: $component.params.scrollTime" />
+                                <select data-bind="
+                                        value: $component.params.scrollTime,
+                                        options: $component.timeList,
+                                        optionsText: 'text',
+                                        optionsValue: 'value',
+                                        visibleItemsCount:5
+                                    ">
+                                </select>
                                 </td>
                             </tr>
                             <tr>
@@ -3125,7 +3265,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                             optionsText: 'title',
                                             optionsValue: 'id'
                                         ">
-                                        <option></option>
                                     </select>
                                 </td>
                             </tr>
@@ -3155,11 +3294,21 @@ module nts.uk.ui.at.kdw013.calendar {
         export class FullCalendarSettingViewmodel extends ko.ViewModel {
             firstDays: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
             slotDurations: KnockoutObservableArray<{ id: number; title: string; }> = ko.observableArray([]);
+            timeList: KnockoutObservableArray<{ value: number; text: string; }> = ko.observableArray([]);
 
             constructor(private params: SettingApi & { position: KnockoutObservable<any | null> }) {
                 super();
-
+    
+                
                 const vm = this;
+    
+                let times = [];
+                for (let i = 0; i < 49; i++) {
+                    var value = i * 30;
+                    times.push({ value: value, text: nts.uk.time.format.byId("Clock_Short_HM", value) });
+                }
+
+                vm.timeList(times);
                 // resource for slotDuration
                 const resource = [
                     'KDW013_16',
