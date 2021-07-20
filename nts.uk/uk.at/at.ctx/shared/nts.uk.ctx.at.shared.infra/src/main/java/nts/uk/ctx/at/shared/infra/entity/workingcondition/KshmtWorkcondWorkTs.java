@@ -44,16 +44,16 @@ public class KshmtWorkcondWorkTs  extends ContractCompanyUkJpaEntity implements 
 	public KshmtWorkcondWorkTsPK pk;
 	
 	@Column(name = "START_TIME_1")
-	private int startTime1;
+	private Integer startTime1;
 	
 	@Column(name = "END_TIME_1")
-	private int endTime1;
+	private Integer endTime1;
 	
 	@Column(name = "START_TIME_2")
-	private int startTime2;
+	private Integer startTime2;
 	
 	@Column(name = "END_TIME_2")
-	private int endTime2;
+	private Integer endTime2;
 	
 	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -65,7 +65,7 @@ public class KshmtWorkcondWorkTs  extends ContractCompanyUkJpaEntity implements 
 	}
 	
 	public KshmtWorkcondWorkTs(KshmtWorkcondWorkTsPK pk,
-			 int startTime1, int endTime1, int startTime2, int endTime2) {
+			Integer startTime1, Integer endTime1, Integer startTime2, Integer endTime2) {
 		super();
 		this.pk = pk;
 		this.startTime1 = startTime1;

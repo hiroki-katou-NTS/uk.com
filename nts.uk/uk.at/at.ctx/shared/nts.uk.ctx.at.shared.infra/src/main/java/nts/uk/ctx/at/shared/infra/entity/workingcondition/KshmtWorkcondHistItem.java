@@ -120,18 +120,18 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 	private KshmtWorkcondHist kshmtWorkingCond;
 
 	/** The kshmt working cond items. */
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private KshmtWorkcondScheMeth kshmtScheduleMethod;
 	
 	
 	/**Kshmt Workcond WorkInfo */
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<KshmtWorkcondWorkInfo> kshmtWorkcondWorkInfo;
+	private KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo;
 	
 	/**  */
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) })
+	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtWorkcondWorkTs> listKshmtWorkcondWorkTs;
 	
@@ -257,12 +257,12 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 		}
 		
 		// set worktype
-		WorkTypeCode weekdayTimeWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo.isEmpty() ? null : this.kshmtWorkcondWorkInfo.get(0).getWorkingDayWorktype());
-		WorkTypeCode holidayWorkWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo.isEmpty() ? null : this.kshmtWorkcondWorkInfo.get(0).getHolidayWorkWorktype());
-		WorkTypeCode holidayTimeWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo.isEmpty() ? null : this.kshmtWorkcondWorkInfo.get(0).getHolidayWorktype());
-		Optional<WorkTypeCode> inLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo.isEmpty() ? null : this.kshmtWorkcondWorkInfo.get(0).getLegalHolidayWorkWorktype()));
-		Optional<WorkTypeCode> outsideLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo.isEmpty() ? null : this.kshmtWorkcondWorkInfo.get(0).getILegalHolidayWorkWorktype()));
-		Optional<WorkTypeCode> holidayAttendanceTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo.isEmpty() ? null : this.kshmtWorkcondWorkInfo.get(0).getPublicHolidayWorkWorktype()));
+		WorkTypeCode weekdayTimeWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getWorkingDayWorktype());
+		WorkTypeCode holidayWorkWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getHolidayWorkWorktype());
+		WorkTypeCode holidayTimeWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getHolidayWorktype());
+		Optional<WorkTypeCode> inLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getLegalHolidayWorkWorktype()));
+		Optional<WorkTypeCode> outsideLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getILegalHolidayWorkWorktype()));
+		Optional<WorkTypeCode> holidayAttendanceTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getPublicHolidayWorkWorktype()));
 		
 		//set 曜日別勤務
 		PersonalDayOfWeek workDayOfWeek = new PersonalDayOfWeek(monday, tuesday, wednesday, thursday, friday, saturday, sunday);
@@ -366,7 +366,6 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 		
 		// set workType
 		WorkTypeByIndividualWorkDay workType = domain.getWorkCategory().getWorkType();
-		List<KshmtWorkcondWorkInfo> listKshmtWorkcondWorkInfo = new ArrayList<>();
 		KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo = new KshmtWorkcondWorkInfo();
 		kshmtWorkcondWorkInfo.setPk(new KshmtWorkcondWorkInfoPK(domain.getEmployeeId(), domain.getHistoryId()));
 		if(workType != null){
@@ -397,7 +396,6 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 				kshmtWorkcondWorkInfo.setSundayWorkTime(workTime.getDayOfWeek().getSunday().isPresent() && workTime.getDayOfWeek().getSunday().get().getWorkTimeCode().isPresent() ? workTime.getDayOfWeek().getSunday().get().getWorkTimeCode().get().v() : null);
 			}
 		}
-		listKshmtWorkcondWorkInfo.add(kshmtWorkcondWorkInfo);
 		
 		return new KshmtWorkcondHistItem(
 				domain.getHistoryId(), 
@@ -413,7 +411,7 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 				domain.getTimeApply().isPresent()?domain.getTimeApply().get().v():null,
 				domain.getMonthlyPattern().isPresent()?domain.getMonthlyPattern().get().v():null,
 				domain.getScheduleMethod().isPresent()?KshmtWorkcondScheMeth.toEntity(domain.getScheduleMethod().get(), domain.getEmployeeId(), domain.getHistoryId()):null,
-				listKshmtWorkcondWorkInfo, 
+				kshmtWorkcondWorkInfo, 
 				listKshmtWorkcondWorkTs);
 	}
 
@@ -422,7 +420,7 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 			int contractTime, int laborSys, Integer hdAddTimeOneDay, Integer hdAddTimeMorning,
 			Integer hdAddTimeAfternoon, String timeApply, String monthlyPattern,
 			KshmtWorkcondScheMeth kshmtScheduleMethod, 
-			List<KshmtWorkcondWorkInfo> kshmtWorkcondWorkInfo,
+			KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo,
 			List<KshmtWorkcondWorkTs> listKshmtWorkcondWorkTs) {
 		super();
 		this.historyId = historyId;
