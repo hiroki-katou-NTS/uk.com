@@ -196,6 +196,11 @@ export module model {
          */
 
         refActualResult: IRefectActualResultCommand;
+
+        /**
+         * 作業グループ
+         */
+        workGroup: IWorkGroup; 
     }
     export interface IStampButtonCommand {
         /** ページNO */
@@ -432,5 +437,14 @@ export module model {
     export interface IGetOmissionContentDto {
         errorInfo: any;
         appDispNames: Array<any>;
+    }
+
+    // 作業グループ
+    interface IWorkGroup {
+        workCode1: string; // 作業グループ.作業CD1
+        workCode2: string; // 作業グループ.作業CD2
+        workCode3: string; // 作業グループ.作業CD3
+        workCode4: string; // 作業グループ.作業CD4
+        workCode5: string; // 作業グループ.作業CD5
     }
 }
