@@ -84,15 +84,8 @@ public class CreateAttendanceTimeZoneForEachSupportWorkTest {
 	// if $旧の作業時間帯.isPresent
 	@Test
 	public void test1() {
-		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheets = new ArrayList<>();
 		
 		OuenWorkTimeSheetOfDaily ofDaily = OuenWorkTimeSheetOfDailyHelper.getOuenWorkTimeSheetOfDailyDefault();
-
-		OuenWorkTimeSheetOfDailyAttendance ouenTimeSheet = CreateAttendanceTimeZoneHelper.get();
-
-		ouenTimeSheets.add(ouenTimeSheet);
-
-//		OuenWorkTimeSheetOfDaily daily = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenTimeSheets);
 
 		new Expectations() {
 			{
