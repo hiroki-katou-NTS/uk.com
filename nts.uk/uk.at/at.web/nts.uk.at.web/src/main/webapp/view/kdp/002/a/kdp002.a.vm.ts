@@ -168,7 +168,7 @@ module nts.uk.at.view.kdp002.a {
                             vm.workUse(!!result.workUse);
                             
                             service.getEmployeeWorkByStamping({sid: __viewContext.user.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).done((res: any) => {
-                                if (vm.workUse() == true && res.task.length > 0) {
+                                if (vm.workUse() == true && res.task.length > 0 && btn.taskChoiceArt == 1) {
                                     view.$window.modal('at', '/view/kdp/002/l/index.xhtml', {employeeId: __viewContext.user.employeeId}).then((works: IWorkGroup) => {
                       
                                     vm.workGroup(works);
