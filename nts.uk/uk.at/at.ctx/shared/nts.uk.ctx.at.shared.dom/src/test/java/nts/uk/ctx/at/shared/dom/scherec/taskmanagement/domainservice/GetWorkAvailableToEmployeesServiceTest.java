@@ -133,46 +133,46 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 	// return require.getTask(date, Arrays.asList(taskFrameNo));
 	// if !子作業.isPresent AND !$絞込作業.isPresent
-	@Test
-	public void test_4() {
-		tasks.add(task);
-		tasks.add(task);
-		tasks.add(task);
-
-		Optional<Task> optTask = Optional.empty();
-
-		List<TaskCode> childTaskListfilter = new ArrayList<TaskCode>();
-
-		childTaskListfilter.add(new TaskCode("DUMMY"));
-
-		new Expectations() {
-			{
-				require.getOptionalTask(new TaskFrameNo(2), new TaskCode("DUMMY"));
-				result = optTask; // => childTaskList == empty
-
-				require.getTask();
-				result = taskFrameUsageSetting;
-
-				require.getListTask(date, taskFrameNo2, childTaskListfilter);
-				result = tasks;
-			}
-		};
-
-		new MockUp<NarrowingDownTaskByWorkplaceFromEmployeesService>() {
-			@Mock
-			public Optional<NarrowingDownTaskByWorkplace> get(
-					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplaceFromEmployeesService.Require require,
-					String companyID, String employeeID, GeneralDate date, TaskFrameNo taskFrameNo) {
-				return Optional.of(narrowingDown);
-			}
-		};
-
-		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date,
-				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
-
-		assertThat(result.isEmpty()).isFalse();
-		assertThat(result.size()).isEqualTo(3);
-		assertThat(result.get(0).getCode().v()).isEqualTo("DUMMY");
-		assertThat(result.get(0).getTaskFrameNo().v()).isEqualTo(2);
-	}
+//	@Test
+//	public void test_4() {
+//		tasks.add(task);
+//		tasks.add(task);
+//		tasks.add(task);
+//
+//		Optional<Task> optTask = Optional.empty();
+//
+//		List<TaskCode> childTaskListfilter = new ArrayList<TaskCode>();
+//
+//		childTaskListfilter.add(new TaskCode("DUMMY"));
+//
+//		new Expectations() {
+//			{
+//				require.getOptionalTask(new TaskFrameNo(2), new TaskCode("DUMMY"));
+//				result = optTask; // => childTaskList == empty
+//
+//				require.getTask();
+//				result = taskFrameUsageSetting;
+//
+//				require.getListTask(date, taskFrameNo2, childTaskListfilter);
+//				result = tasks;
+//			}
+//		};
+//
+//		new MockUp<NarrowingDownTaskByWorkplaceFromEmployeesService>() {
+//			@Mock
+//			public Optional<NarrowingDownTaskByWorkplace> get(
+//					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplaceFromEmployeesService.Require require,
+//					String companyID, String employeeID, GeneralDate date, TaskFrameNo taskFrameNo) {
+//				return Optional.of(narrowingDown);
+//			}
+//		};
+//
+//		List<Task> result = GetWorkAvailableToEmployeesService.get(require, companyID, employeeID, date,
+//				new TaskFrameNo(2), Optional.of(new TaskCode("DUMMY")));
+//
+//		assertThat(result.isEmpty()).isFalse();
+//		assertThat(result.size()).isEqualTo(3);
+//		assertThat(result.get(0).getCode().v()).isEqualTo("DUMMY");
+//		assertThat(result.get(0).getTaskFrameNo().v()).isEqualTo(2);
+//	}
 }

@@ -106,34 +106,34 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 	
 	// $職場リスト = require.職場を取得する(会社ID,社員ID,基準日) == notEmpty
 			// $職場別作業の絞込.isPresent()
-			@Test
-			public void testGetEmployeesServiceTestTest_3() {
-
-				listWpkIds.add("0000002");
-				listWpkIds.add("0000001");
-				listWpkIds.add("0000003");
-
-				new Expectations() {
-					{
-						require.findWpkIdsBySid(employeeID, date);
-						result = listWpkIds;
-
-						require.getNarrowingDownTaskByWorkplace("0000002", taskFrameNo);
-						result = Optional.empty();
-						
-						require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
-						result = Optional.of(narrowingDownTask2);
-						
-						require.getNarrowingDownTaskByWorkplace("0000003", taskFrameNo);
-						result = Optional.of(narrowingDownTask2);
-					}
-				};
-
-				Optional<NarrowingDownTaskByWorkplace> result = NarrowingDownTaskByWorkplaceFromEmployeesService.get(require,
-						companyID, employeeID, date, taskFrameNo);
-
-				assertThat(result.isPresent()).isTrue();
-				assertThat(result.get().getTaskCodeList()).isEmpty();
-				assertThat(result.get().getWorkPlaceId()).isEqualTo("0000001");
-			}
+//	@Test
+//	public void testGetEmployeesServiceTestTest_3() {
+//
+//		listWpkIds.add("0000002");
+//		listWpkIds.add("0000001");
+//		listWpkIds.add("0000003");
+//
+//		new Expectations() {
+//			{
+//				require.findWpkIdsBySid(employeeID, date);
+//				result = listWpkIds;
+//
+//				require.getNarrowingDownTaskByWorkplace("0000002", taskFrameNo);
+//				result = Optional.empty();
+//
+//				require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
+//				result = Optional.of(narrowingDownTask2);
+//
+//				require.getNarrowingDownTaskByWorkplace("0000003", taskFrameNo);
+//				result = Optional.of(narrowingDownTask2);
+//			}
+//		};
+//
+//		Optional<NarrowingDownTaskByWorkplace> result = NarrowingDownTaskByWorkplaceFromEmployeesService.get(require,
+//				companyID, employeeID, date, taskFrameNo);
+//
+//		assertThat(result.isPresent()).isTrue();
+//		assertThat(result.get().getTaskCodeList()).isEmpty();
+//		assertThat(result.get().getWorkPlaceId()).isEqualTo("0000001");
+//	}
 }
