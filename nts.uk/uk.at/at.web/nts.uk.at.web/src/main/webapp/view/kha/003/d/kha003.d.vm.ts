@@ -174,23 +174,16 @@ module nts.uk.at.kha003.d {
                 let childHierarchyList = level1.childHierarchyList;
                 for (let i = 1; i <= childHierarchyList.length; i++) {
                     let subArray = [];
-                    // cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
                     let level2 = childHierarchyList[i - 1];
-                    //cells.get(countRow, 0).setValue(!isPrintNameLv1 ? level1.getDisplayInfo().getName() : "");
+                    subArray.push(new Content(""))
+                    subArray.push(new Content(!isPrintNameLv1 ? level1.displayInfo.name:""))
                     subArray.push(new Content(level2.displayInfo.name))
                     isPrintNameLv1 = true;
-                    /*cells.get(countRow, 1).setValue(level2.getDisplayInfo().getName());
-                    val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());*/
                     for (let verticalItem of level2.verticalTotalList) {
-                        /*cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(c), 0)), dispFormat));
-                        setHorizontalAlignment(cells.get(countRow, c));*/
                         subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
                     }
                     if (isDispTotal) {
                         subArray.push(new Content(vm.formatValue(level2.totalPeriod, dispFormat)))
-                        // Tong chieu ngang level 3
-                        /* cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level2.getTotalPeriod(), dispFormat));
-                         setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));*/
                     }
                     vm.contents.push(subArray);
                 }
@@ -490,6 +483,9 @@ module nts.uk.at.kha003.d {
                 // Use UTC date to prevent problems with time zones and DST
                 currentDate.setUTCDate(currentDate.getUTCDate() + steps);
             }
+            vm.dateHeaders.push(
+                new DateHeader('', '', vm.$i18n('KHA003_98'))
+            )
         }
 
         mounted() {
