@@ -4,12 +4,11 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwmtPasswordPolicy;
 
 /**
@@ -18,21 +17,46 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwmtPasswordPolicy;
 @Stateless
 public class JpaPasswordPolicyRepository extends JpaRepository implements PasswordPolicyRepository {
 	
-	/** The select by contract code. */
-	private static  final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwmtPasswordPolicy c WHERE c.contractCd = :contractCd";
+	private final String BASIC_SELECT 
+					= "select * from SGWMT_PASSWORD_POLICY ";
+	
+	private SgwmtPasswordPolicy fromDomain(PasswordPolicy domain) {
+		return new SgwmtPasswordPolicy(domain.getContractCode().v(),
+				domain.getNotificationPasswordChange().v().intValue(),
+				domain.isLoginCheck(),
+				domain.isInitialPasswordChange(),
+				domain.isUse(),
+				domain.getHistoryCount().v().intValue(),
+				domain.getComplexityRequirement().getMinimumLength().v().intValue(),
+				domain.getValidityPeriod().v().intValue(),
+				domain.getComplexityRequirement().getNumeralDigits().v().intValue(),
+				domain.getComplexityRequirement().getSymbolDigits().v().intValue(),
+				domain.getComplexityRequirement().getAlphabetDigits().v().intValue());
+	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository#getPasswordPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)
-	 */
+	@Override
+	public void insert(PasswordPolicy domain) {
+		this.commandProxy().insert(fromDomain(domain));
+	}
+
+	@Override
+	public void update(PasswordPolicy domain) {
+		this.commandProxy().update(fromDomain(domain));
+	}
+	
+	@Override
+	public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
+		return getPasswordPolicy(new ContractCode(tenantCode));
+	}
+	
 	@Override
 	public Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCd) {
-		Optional<SgwmtPasswordPolicy> sgwmtPasswordPolicyOptional = this.queryProxy()
-				.query(SELECT_BY_CONTRACT_CODE, SgwmtPasswordPolicy.class)
-				.setParameter("contractCd", contractCd, ContractCode.class).getSingle();
-		if (sgwmtPasswordPolicyOptional.isPresent()) {
-			return Optional.ofNullable(this.toDomain(sgwmtPasswordPolicyOptional.get()));
-		}
-		return Optional.empty();
+
+		String query = BASIC_SELECT 
+				+ "where CONTRACT_CD = @contractCd ";
+		return new NtsStatement(query, this.jdbcProxy())
+				.paramString("contractCd", contractCd.toString())
+				.getSingle(p -> SgwmtPasswordPolicy.MAPPER.toEntity(p).toDomain());
 	}
 
 	/* (non-Javadoc)
@@ -58,53 +82,7 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 			sgwstPasswordPolicy.alphabetDigit = passwordPolicy.getComplexityRequirement().getAlphabetDigits().v();
 
 		} else {
-			this.commandProxy().insert(this.toEntity(passwordPolicy));
+			this.commandProxy().insert(this.fromDomain(passwordPolicy));
 		}
 	}
-
-	/**
-	 * To domain.
-	 *
-	 * @param sgwstPasswordPolicy the sgwst password policy
-	 * @return the password policy
-	 */
-	private PasswordPolicy toDomain(SgwmtPasswordPolicy sgwstPasswordPolicy) {
-		
-		val complexity = PasswordComplexityRequirement.createFromJavaType(
-				sgwstPasswordPolicy.lowestDigits,
-				sgwstPasswordPolicy.numberOfDigits,
-				sgwstPasswordPolicy.symbolCharacters,
-				sgwstPasswordPolicy.alphabetDigit);
-		
-		return PasswordPolicy.createFromJavaType(
-				sgwstPasswordPolicy.contractCd,
-				sgwstPasswordPolicy.notificationPasswordChange,
-				sgwstPasswordPolicy.loginCheck,
-				sgwstPasswordPolicy.initialPasswordChange,
-				sgwstPasswordPolicy.isUse,
-				sgwstPasswordPolicy.historyCount,
-				sgwstPasswordPolicy.validityPeriod,
-				complexity);
-	}
-
-	/**
-	 * To entity.
-	 *
-	 * @param passwordPolicy the password policy
-	 * @return the sgwst password policy
-	 */
-	private SgwmtPasswordPolicy toEntity(PasswordPolicy passwordPolicy) {
-		return new SgwmtPasswordPolicy(passwordPolicy.getContractCode().v(),
-				passwordPolicy.getNotificationPasswordChange().v().intValue(),
-				passwordPolicy.isLoginCheck(),
-				passwordPolicy.isInitialPasswordChange(),
-				passwordPolicy.isUse(),
-				passwordPolicy.getHistoryCount().v().intValue(),
-				passwordPolicy.getComplexityRequirement().getMinimumLength().v().intValue(),
-				passwordPolicy.getValidityPeriod().v().intValue(),
-				passwordPolicy.getComplexityRequirement().getNumeralDigits().v().intValue(),
-				passwordPolicy.getComplexityRequirement().getSymbolDigits().v().intValue(),
-				passwordPolicy.getComplexityRequirement().getAlphabetDigits().v().intValue());
-	}
-
 }
