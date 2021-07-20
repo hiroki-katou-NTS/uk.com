@@ -455,7 +455,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 				new UnOffsetDay(x.getBigDecimal("UNOFFSET_DAYS") == null ? 0 : x.getBigDecimal("UNOFFSET_DAYS").doubleValue()));
 	}
 
-	private static final String DELETE_FURISYUTSU_PERIOD = "DELETE FROM KrcdtInterimRecMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and : endDate";
+	private static final String DELETE_FURISYUTSU_PERIOD = "DELETE FROM KrcdtInterimRecMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
 
 	@Override
 	public void deleteRecMngWithPeriod(String sid, DatePeriod period) {
@@ -484,7 +484,7 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		return entity;
 	}
 	
-	private static final String DELETE_FURIKYU_PERIOD = "DELETE FROM KrcdtInterimHdSubMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and : endDate";
+	private static final String DELETE_FURIKYU_PERIOD = "DELETE FROM KrcdtInterimHdSubMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
 	@Override
 	public void deleteAbsMngWithPeriod(String sid, DatePeriod period) {
 		this.getEntityManager().createQuery(DELETE_FURIKYU_PERIOD).setParameter("sid", sid)

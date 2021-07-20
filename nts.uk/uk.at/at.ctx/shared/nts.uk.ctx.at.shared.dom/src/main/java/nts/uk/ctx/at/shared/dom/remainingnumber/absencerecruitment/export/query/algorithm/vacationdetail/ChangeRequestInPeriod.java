@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.vacationdetail;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class ChangeRequestInPeriod {
 	private final VacationDetails overwriteTemporaryData;
 
 	// 上書き期間
-	private final DatePeriod overwritePeriod;
+	private final Optional<DatePeriod> overwritePeriod;
 
 	// [1] 変更する
 	public VacationDetails change(VacationDetails confirmData, VacationDetails temporaryData) {
@@ -48,11 +49,14 @@ public class ChangeRequestInPeriod {
 
 	// [1] 上書き
 	private VacationDetails overwriteData(VacationDetails overwriteDataSource, VacationDetails overwriteData,
-			DatePeriod period) {
+			Optional<DatePeriod> period) {
+		if(!period.isPresent()) {
+			return overwriteDataSource;
+		}
 		val result = new VacationDetails(
 				overwriteDataSource.getLstAcctAbsenDetail().stream()
 						.filter(x -> x.getDateOccur().getDayoffDate().isPresent()
-								&& !period.contains(x.getDateOccur().getDayoffDate().get()))
+								&& !period.get().contains(x.getDateOccur().getDayoffDate().get()))
 						.collect(Collectors.toList()));
 		result.getLstAcctAbsenDetail().addAll(overwriteData.getLstAcctAbsenDetail());
 		return result;

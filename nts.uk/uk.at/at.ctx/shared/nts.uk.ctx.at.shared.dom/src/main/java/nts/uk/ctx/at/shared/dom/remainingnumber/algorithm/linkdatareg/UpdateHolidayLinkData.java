@@ -46,7 +46,7 @@ public class UpdateHolidayLinkData {
 		val linkCouple = afterResult.getSeqVacInfoList().getSeqVacInfoList().stream()
 				.map(x -> PayoutSubofHDManagement.of(sid, x)).collect(Collectors.toList());
 
-		val furisyutsu = lstRecMng.stream().map(x -> {
+		List<InterimRecMng> furisyutsu = lstRecMng.stream().map(x -> {
 			if (changeOccr.getDateChangeRequest().isPresent()) {
 				val detail = changeOccr.getDateChangeRequest().get().getChangeRequestList().stream()
 						.flatMap(y -> y.getVacDetail().getLstAcctAbsenDetail().stream())
@@ -56,9 +56,9 @@ public class UpdateHolidayLinkData {
 			return null;
 		}).filter(x -> x != null).collect(Collectors.toList());
 
-		val furikyu = lstAbsMng.stream().map(x -> {
-			if (changeOccr.getDateChangeRequest().isPresent()) {
-				val detail = changeOccr.getDateChangeRequest().get().getChangeRequestList().stream()
+		List<InterimAbsMng> furikyu = lstAbsMng.stream().map(x -> {
+			if (changeDigest.getDateChangeRequest().isPresent()) {
+				val detail = changeDigest.getDateChangeRequest().get().getChangeRequestList().stream()
 						.flatMap(y -> y.getVacDetail().getLstAcctAbsenDetail().stream())
 						.filter(y -> y.getManageId().equals(x.getId())).findFirst().orElse(null);
 				return detail == null ? null : x.updateUnoffsetNum(detail);

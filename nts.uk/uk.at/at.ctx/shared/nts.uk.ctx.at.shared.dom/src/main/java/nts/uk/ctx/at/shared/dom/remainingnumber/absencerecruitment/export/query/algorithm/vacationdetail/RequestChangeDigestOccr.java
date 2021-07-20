@@ -32,7 +32,7 @@ public class RequestChangeDigestOccr {
 
 	// [C-1] 期間での変更要求を作成する
 	public static RequestChangeDigestOccr create(VacationDetails addConfirmData, VacationDetails overwriteConfirmData,
-			VacationDetails overwriteTemporaryData, DatePeriod period) {
+			VacationDetails overwriteTemporaryData, Optional<DatePeriod> period) {
 		return new RequestChangeDigestOccr(ChangeRequestClassifi.PERIOD, Optional.empty(), Optional
 				.of(new ChangeRequestInPeriod(addConfirmData, overwriteConfirmData, overwriteTemporaryData, period)));
 	}

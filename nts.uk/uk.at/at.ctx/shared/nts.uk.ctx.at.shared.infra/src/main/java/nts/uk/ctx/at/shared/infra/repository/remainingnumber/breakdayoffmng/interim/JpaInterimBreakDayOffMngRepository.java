@@ -455,7 +455,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		.executeUpdate();
 	}
 	
-	private static final String DELETE_KYUSYUTSU_PERIOD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and : endDate";
+	private static final String DELETE_KYUSYUTSU_PERIOD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
 
 	@Override
 	public void deleteBreakoffWithPeriod(String sid, DatePeriod period) {
@@ -485,7 +485,7 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		return entity;
 	}
 	
-	private static final String DELETE_DAIKYU_PERIOD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and : endDate";
+	private static final String DELETE_DAIKYU_PERIOD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd between :startDate and :endDate";
 	@Override
 	public void deleteDayoffWithPeriod(String sid, DatePeriod period) {
 		this.getEntityManager().createQuery(DELETE_DAIKYU_PERIOD).setParameter("sid", sid)

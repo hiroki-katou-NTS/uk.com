@@ -39,10 +39,10 @@ public class CreateChangeReqDigestOccurDaikyu {
 		// 上書き期間を変更要求に追加
 		ChangeRequestInPeriod changeOccr = new ChangeRequestInPeriod(new VacationDetails(new ArrayList<>()),
 				new VacationDetails(new ArrayList<>()), new VacationDetails(new ArrayList<>()),
-				processDate.orElse(null));
+				processDate);
 		ChangeRequestInPeriod changeDigest = new ChangeRequestInPeriod(new VacationDetails(new ArrayList<>()),
 				new VacationDetails(new ArrayList<>()), new VacationDetails(new ArrayList<>()),
-				processDate.orElse(null));
+				processDate);
 
 		// パラメータ「前回代休の集計結果」をチェックする (Check param 「前回代休の集計結果」)
 		if (optBeforeResult.isPresent() && (optBeforeResult.get().getNextDay().isPresent()
@@ -77,8 +77,8 @@ public class CreateChangeReqDigestOccurDaikyu {
 		// 期間での変更要求を作成する
 		return new CreateChangeReqDigestOccurOutput(
 				RequestChangeDigestOccr.create(changeDigest.getAddConfirmData(), changeDigest.getOverwriteConfirmData(),
-						changeDigest.getOverwriteTemporaryData(), dateData),
+						changeDigest.getOverwriteTemporaryData(), processDate),
 				RequestChangeDigestOccr.create(changeOccr.getAddConfirmData(), changeOccr.getOverwriteConfirmData(),
-						changeOccr.getOverwriteTemporaryData(), dateData));
+						changeOccr.getOverwriteTemporaryData(), processDate));
 	}
 }

@@ -7,7 +7,12 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.AccumulationAbsenceDetailComparator;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 
 /**
  * @author ThanhNX
@@ -57,6 +62,29 @@ public class VacationDetails {
 		return getVacStateForAppDay(correspDay).map(x -> x.getUnbalanceNumber().getDay().v()).orElse(0.0);
 	}
 
+	//[7] 指定した期間内に未消化となる情報を取得する
+	public List<AccumulationAbsenceDetail> getUndigestInfoInPeriod(DatePeriod dateperiod) {
+		return getOccurrenceNotDateUnknown().stream()
+				.filter(x -> ((UnbalanceVacation) x).getDigestionCate() == DigestionAtr.UNUSED
+						&& dateperiod.contains(((UnbalanceVacation) x).getDeadline()))
+				.collect(Collectors.toList());
+	}
+	
+	//[8] 時系列にソートする
+	public List<AccumulationAbsenceDetail> sortAccAbsDetailASC(){
+		return this.lstAcctAbsenDetail.stream().sorted(new AccumulationAbsenceDetailComparator())
+				.collect(Collectors.toList());
+	}
+	
+	// [9] 未相殺の合計を取得する
+	public UnoffsetNumSeqVacation getTotalUnoffset() {
+		double daySum = this.lstAcctAbsenDetail.stream().mapToDouble(x -> x.getUnbalanceNumber().getDay().v()).sum();
+		int timeSum = this.lstAcctAbsenDetail.stream()
+				.mapToInt(x -> x.getUnbalanceNumber().getTime().map(y -> y.v()).orElse(0)).sum();
+		return new UnoffsetNumSeqVacation(new LeaveRemainingDayNumber(daySum), new LeaveRemainingTime(timeSum));
+	}
+	
+	
 	// [1] 該当する日の休暇明細を取得
 	private Optional<AccumulationAbsenceDetail> getVacStateForAppDay(GeneralDate correspDay) {
 
