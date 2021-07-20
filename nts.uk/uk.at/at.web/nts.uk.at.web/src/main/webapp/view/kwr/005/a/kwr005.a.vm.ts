@@ -88,7 +88,7 @@ module nts.uk.at.view.kwr005.a {
         nts.uk.ui.errors.clearAll();
       });
 
-      vm.CCG001_load();
+
       vm.KCP005_load();
 
     }
@@ -507,6 +507,7 @@ module nts.uk.at.view.kwr005.a {
                       startDate: startDate,
                       endDate: endDate
                   });
+                  vm.CCG001_load();
               });
 
             vm.periodDate({
@@ -514,6 +515,7 @@ module nts.uk.at.view.kwr005.a {
               endDate: endDate
             });
           }
+
         })
         .fail(() => { });
     }

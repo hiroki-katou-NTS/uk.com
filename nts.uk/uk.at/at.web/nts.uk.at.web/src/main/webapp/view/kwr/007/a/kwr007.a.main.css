@@ -55,11 +55,11 @@
   flex-wrap: wrap;
 }
 .kwr-007 .panel .row-right .radios-group {
-  padding-top: 5px;
+  padding-top: 3px;
   width: 110px;
 }
-.kwr-007 .panel .row-right .radios-group .ntsRadioBox:first-child {
-  margin-bottom: 20px;
+.kwr-007 .panel .row-right .radios-group :first-child {
+  margin-bottom: 10px;
 }
 .kwr-007 .panel .row-right .text-box-button {
   flex: 2;
@@ -118,4 +118,11 @@
 
 #A8_5_1 {
   padding: 1px !important;
+}
+.kwr-007a  {
+  height: 587px;
+}
+.kwr-007 .panel .switchbox-wrappers .radio-wrapper span {
+  width: 80px;
+  text-align: center;
 }

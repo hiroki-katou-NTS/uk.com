@@ -79,7 +79,7 @@ module nts.uk.at.view.kwr004.a {
       });
       vm.KCP005_load();
       vm.initialWorkStatusInformation();
-      vm.CCG001_load();
+
     }
 
     created(params: any) {
@@ -304,6 +304,7 @@ module nts.uk.at.view.kwr004.a {
                       startDate: startDate,
                       endDate: endDate
                   });
+                  vm.CCG001_load();
               });
           }
         })

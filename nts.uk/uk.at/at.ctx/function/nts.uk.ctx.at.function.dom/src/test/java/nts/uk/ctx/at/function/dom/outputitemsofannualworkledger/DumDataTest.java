@@ -25,7 +25,7 @@ public class DumDataTest {
                 Arrays.asList(
                         new DailyOutputItemsAnnualWorkLedger(
                                 1,
-                                new OutputItemNameOfAnnualWorkLedger("name"),
+                                new OutputItemNameOfAnnualWorkLedgerDaily("name"),
                                 true,
                                 IndependentCalcClassic.ALONE,
                                 DailyMonthlyClassification.DAILY,
@@ -71,7 +71,7 @@ public class DumDataTest {
                 Arrays.asList(
                         new DailyOutputItemsAnnualWorkLedger(
                                 1,
-                                new OutputItemNameOfAnnualWorkLedger("name"),
+                                new OutputItemNameOfAnnualWorkLedgerDaily("name"),
                                 true,
                                 IndependentCalcClassic.ALONE,
                                 DailyMonthlyClassification.DAILY,
