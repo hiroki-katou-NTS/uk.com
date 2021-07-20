@@ -1529,7 +1529,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                             	// 休職休業履歴変更期間を求める
                             	listDatePeriodLeave = this.tempAbsenceHistoryService
                             			.findChangingLeaveHistoryPeriod(empLeader, datePeriod, tempAbsence,
-                            					procExec.getReExecCondition().getRecreateLeave().isUse());
+                            					procExec.getReExecCondition().getRecreateLeave().isUse(),
+                            					ProcessExecutionTask.DAILY_CALCULATION);
                             }
 							listDatePeriodAll
 									.addAll(createListAllPeriod(listDatePeriodWorkplace, listDatePeriodWorktype, listDatePeriodLeave));

@@ -17,10 +17,10 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
-import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.ReExecutionCondition;
 import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
+import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -45,10 +45,10 @@ public class ChangePersionListForSche {
 	private SyWorkplaceAdapter syWorkplaceAdapter;
 	
 	@Inject
-	private SyEmployeeFnAdapter syEmployeeFnAdapter;
+	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistoryRepository;
 	
 	@Inject
-	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistoryRepository;
+	private SharedTempAbsenceAdapter sharedTempAbsenceAdapter;
 
 	public EmployeeDataDto filterEmployeeList(UpdateProcessAutoExecution procExec, List<String> employeeIdList) {
 		String companyId = AppContexts.user().companyId();
@@ -95,8 +95,7 @@ public class ChangePersionListForSche {
 		if (setting.getRecreateLeave().isUse()) {
 			// Imported「休職休業履歴」を取得する
 			// 取得した「休職休業履歴」.社員IDを休職者・休業者とする
-			absenceList = this.syEmployeeFnAdapter.filterSidLstByDatePeriodAndSids(employeeIdList, 
-					newClosurePeriod);
+			absenceList = this.sharedTempAbsenceAdapter.getAbsenceEmpsByPeriod(employeeIdList, newClosurePeriod);
 		}
 		
 		// 社員ID（異動者）（List）と社員ID（勤務種別変更者）（List）と社員ID（休職者・休業者）（List）を合わせる

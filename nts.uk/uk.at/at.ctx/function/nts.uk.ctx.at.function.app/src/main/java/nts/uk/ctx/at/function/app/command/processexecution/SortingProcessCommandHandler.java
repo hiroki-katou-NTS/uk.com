@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.adapter.stopbycompany.StopByCompanyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.stopbycompany.UsageStopOutputImport;
+import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
@@ -45,6 +46,9 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 
     @Inject
     private StopByCompanyAdapter stopBycompanyAdapter;
+    
+    @Inject
+    private ProcessExecutionService processExecutionService;
 
 //	@Inject
 //	private UkJobScheduler ukJobScheduler;
@@ -87,7 +91,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
         if (isSuspension.isUsageStop()) {
             // case 利用停止する
             // Step 前回の更新処理が実行中の登録処理
-            this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, true);
+            this.DistributionRegistProcess(companyId, execItemCd, execItemId, true);
             return;
         } else {
             // case 利用停止しない
@@ -105,7 +109,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
                 boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime().get());
                 if (checkLastTime) {
                     // Step 実行中の場合の登録処理 - Registration process when running
-                    this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
+                    this.DistributionRegistProcess(companyId, execItemCd, execItemId, false);
                 } else {
                     // Step 実行処理
                     this.executeHandler(companyId, execItemCd, execItemId, nextDate);
@@ -142,7 +146,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
      * @param nextDate   the next date
      */
     //振り分け登録処理 -> 前回の更新処理が実行中の登録処理
-    private void DistributionRegistProcess(String companyId, String execItemCd, String execItemId, GeneralDateTime nextDate, boolean isSystemSuspended) {
+    private void DistributionRegistProcess(String companyId, String execItemCd, String execItemId, boolean isSystemSuspended) {
         // Step ドメインモデル「更新処理自動実行管理」を更新する
         ProcessExecutionLogManage processExecutionLogManage = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd).get();
         processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
@@ -163,8 +167,10 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 
         //ドメインモデル「実行タスク設定」を更新する
         Optional<ExecutionTaskSetting> executionTaskSetOpt = this.execSettingRepo.getByCidAndExecCd(companyId, execItemCd);
-        if (executionTaskSetOpt.isPresent() && nextDate != null) {
+        if (executionTaskSetOpt.isPresent()) {
             ExecutionTaskSetting executionTaskSetting = executionTaskSetOpt.get();
+            // アルゴリズム「次回実行日時作成処理」を実行する
+            GeneralDateTime nextDate = this.processExecutionService.processNextExecDateTimeCreation(executionTaskSetting);
             executionTaskSetting.setNextExecDateTime(Optional.ofNullable(nextDate));
             this.execSettingRepo.update(executionTaskSetting);
         }

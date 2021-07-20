@@ -98,7 +98,7 @@ module nts.uk.at.view.kbt002.f {
       vm.$nextTick(() => {
         vm.$grid.ntsGrid({
           name: '#[KBT002_126]',
-          width: "1235px",
+          width: "1245px",
           height: "450px",
           dataSource: vm.dataSourceModel(),
           primaryKey: 'execItemCd',
@@ -152,7 +152,7 @@ module nts.uk.at.view.kbt002.f {
             {
               headerText: vm.$i18n("KBT002_143"),
               key: 'overallStatus',
-              width: 90,
+              width: 100,
               formatter: (value: number, record: ExecutionItemInfomationModel) => {
                 if (value === 0) {
                   // 全体の終了状態 = 未実施

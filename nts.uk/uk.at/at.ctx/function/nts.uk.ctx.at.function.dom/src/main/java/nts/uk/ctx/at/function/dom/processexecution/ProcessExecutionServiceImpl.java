@@ -160,7 +160,7 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 			// 実行平均時間 > 0
 			if (averageRunTime.compareTo(BigDecimal.ZERO) > 0) {
 				// 現在の経過時間と取得した「実行平均時間」を比較する
-				BigDecimal currentRunTime = BigDecimal.valueOf(GeneralDateTime.now().seconds() - execStartDateTime.seconds());
+				BigDecimal currentRunTime = BigDecimal.valueOf(GeneralDateTime.now().toEpochSecond() - execStartDateTime.toEpochSecond());
 				// 【比較方法】 システム日時 - INPUT．「実行開始日時」> 取得した「実行平均時間」*120%
 				// 【OUTPUT】 boolean（true：超過している/false：超過してない）
 				return currentRunTime.compareTo(averageRunTime.multiply(BIG_DECIMAL_120).divide(BIG_DECIMAL_100)) > 0;
@@ -179,12 +179,12 @@ public class ProcessExecutionServiceImpl implements ProcessExecutionService {
 		}
 
 		// 実行平均時間を計算する
-		Integer sumExecutionTime = listHistory.stream()
+		Long sumExecutionTime = listHistory.stream()
 				.filter(history -> history.getLastEndExecDateTime().isPresent()
 						&& history.getLastExecDateTime().isPresent())
 				.sorted(Comparator.comparing(item -> item.getLastExecDateTime().get())).limit(10)
-				.mapToInt(history -> history.getLastEndExecDateTime().get().seconds()
-						- history.getLastExecDateTime().get().seconds())
+				.mapToLong(history -> history.getLastEndExecDateTime().get().toEpochSecond()
+						- history.getLastExecDateTime().get().toEpochSecond())
 				.sum();
 
 		// 計算した「実行平均時間」を返す

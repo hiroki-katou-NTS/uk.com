@@ -142,7 +142,7 @@ module nts.uk.at.view.kbt002.b {
         }
         vm.$ajax(API.getSystemProperties).then((value: any) => {
           vm.otsukaOption(value.otsukaOption);
-          vm.isCloud(value.cloud);
+          vm.isCloud(false);
         });
         errors.clearAll();
       });

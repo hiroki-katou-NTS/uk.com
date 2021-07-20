@@ -44,7 +44,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.shared.dom.person.PersonAdaptor;
 import nts.uk.ctx.at.shared.dom.person.PersonImport;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.query.app.exi.ExacErrorLogQueryDto;
 import nts.uk.query.app.exi.ExacErrorLogQueryFinder;
@@ -536,13 +535,13 @@ public class GetDataToOutputService extends ExportService<Object> {
 					case RFL_APR_RESULT:
 					case MONTHLY_AGGR:
 						for (ErrMessageInfoDto log : logDetail.getErrMessageInfo()) {
-							Map<String, Object> rowCSV3 = this.saveHeaderCSV3(updateProAutoRuns, procExec, proHis,
-									taskLog, headerCSV3, log.getEmployeeID());
 							if (this.checkExecutionContent(taskLog.getProcExecTask(), log)) {
+								Map<String, Object> rowCSV3 = this.saveHeaderCSV3(updateProAutoRuns, procExec, proHis,
+										taskLog, headerCSV3, log.getEmployeeID());
 								rowCSV3.put(headerCSV3.get(headerCSV3.size() - 2), log.getDisposalDay().toString("yyyy-MM-dd"));
 								rowCSV3.put(headerCSV3.get(headerCSV3.size() - 1), log.getMessageError());
+								datas.add(rowCSV3);
 							}
-							datas.add(rowCSV3);
 						}
 						dataMap.get(proHis.execId).addAll(datas);
 						break;

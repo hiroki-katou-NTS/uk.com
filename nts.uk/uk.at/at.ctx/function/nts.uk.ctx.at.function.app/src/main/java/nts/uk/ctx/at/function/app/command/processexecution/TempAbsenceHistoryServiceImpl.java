@@ -2,7 +2,11 @@ package nts.uk.ctx.at.function.app.command.processexecution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,6 +17,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
 import nts.uk.ctx.at.function.dom.processexecution.TempAbsenceHistoryService;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.DateHistoryItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.SharedTempAbsenceAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.temporaryabsence.TempAbsenceHisItemImport;
@@ -34,20 +41,17 @@ public class TempAbsenceHistoryServiceImpl implements TempAbsenceHistoryService 
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
+	@Inject
+	private WorkScheduleRepository workScheduleRepository;
+	
 	@Override
 	public TempAbsenceImport getTempAbsence(String cid, DatePeriod period, List<String> employeeIds) {
 		return this.sharedTempAbsenceAdapter.getTempAbsence(cid, period, employeeIds);
 	}
-	
-	/**
-     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別実績.アルゴリズム.休職休業履歴変更期間を求める.休職休業履歴変更期間を求める
-     * @param sid					社員ID
-     * @param period				処理期間
-     * @param tempAbsence			List<休職休業履歴，休職休業履歴項目>
-     * @param isRecreateLeave		休職・休業者再作成(true，false)　
-     * @return
-     */
-    public List<DatePeriod> findChangingLeaveHistoryPeriod(String sid, DatePeriod period, TempAbsenceImport tempAbsence, boolean isRecreateLeave) {
+
+	@Override
+    public List<DatePeriod> findChangingLeaveHistoryPeriod(String sid, DatePeriod period, TempAbsenceImport tempAbsence, boolean isRecreateLeave,
+    		ProcessExecutionTask procExecTask) {
     	List<DatePeriod> periodList = new ArrayList<>();
     	String cid = AppContexts.user().companyId();
     	// INPUT「休職・休業者再作成」をチェックする
@@ -59,18 +63,18 @@ public class TempAbsenceHistoryServiceImpl implements TempAbsenceHistoryService 
     	// INPUT「休職・休業者再作成」　=　TRUE
     	// 「休職休業履歴差異」を作成する
     	boolean leaveHistoryDifferent = false;
-    	// ドメインモデル「日別実績の勤務情報」を取得する
-        List<RecordWorkInfoFunAdapterDto> listWorkInfo = this.recordWorkInfoFunAdapter
-        		.findByEmpAndPeriod(sid, period);
-        // INPUT．「期間」をループする
+    	
         DatePeriod newPeriod = null;
+        Map<GeneralDate, String> workTypeCodeMap = this.getWorkTypeCodeMap(procExecTask, sid, period);
+        // INPUT．「期間」をループする
         for (GeneralDate date: period.datesBetween()) {
-        	// ドメインモデル「勤務種類」を取得する
-        	RecordWorkInfoFunAdapterDto workInfoDto = listWorkInfo.stream()
-        			.filter(data -> data.getWorkingDate().afterOrEquals(date)).findFirst().orElse(null);
-        	if (workInfoDto != null) {
+        	Optional<String> workTypeCode = workTypeCodeMap.entrySet().stream()
+        			.filter(e -> e.getKey().equals(date))
+        			.map(Entry::getValue)
+        			.findFirst();
+        	if (workTypeCode.isPresent()) {
         		// ドメインモデル「勤務種類」を取得する
-        		Optional<WorkType> optWorkType = this.workTypeRepository.findNoAbolishByPK(cid, workInfoDto.getWorkTypeCode());
+        		Optional<WorkType> optWorkType = this.workTypeRepository.findNoAbolishByPK(cid, workTypeCode.get());
         		if (optWorkType.isPresent()) {
         			WorkType workType = optWorkType.get();
         			// 取得したドメインモデル「勤務種類」とINPUT「休職休業履歴項目」を比較する
@@ -122,7 +126,7 @@ public class TempAbsenceHistoryServiceImpl implements TempAbsenceHistoryService 
     	// 休職休業履歴項目
     	// ※履歴IDが「休職休業履歴」同じもの
     	Optional<TempAbsenceHisItemImport> optHistItem = tempAbsence.getHistoryItem().stream()
-    			.filter(data -> data.getHistoryId().contentEquals(hist.getHistoryId()))
+    			.filter(data -> data.getHistoryId().equals(hist.getHistoryId()))
     			.findAny();
     	if (!optHist.isPresent()) {
     		return false;
@@ -145,5 +149,21 @@ public class TempAbsenceHistoryServiceImpl implements TempAbsenceHistoryService 
     		}
     	}
     	return false;
+    }
+    
+    private Map<GeneralDate, String> getWorkTypeCodeMap(ProcessExecutionTask processExecutionTask, String sid, DatePeriod period) {
+    	switch (processExecutionTask) {
+		case SCH_CREATION:
+			// 「勤務予定Repository．get*()」を実行する
+			return this.workScheduleRepository.getListBySid(sid, period).stream()
+					.collect(Collectors.toMap(WorkSchedule::getYmd, data -> data.getWorkInfo().getRecordInfo().getWorkTypeCode().v()));
+		case DAILY_CREATION:
+		case DAILY_CALCULATION:
+			// ドメインモデル「日別実績の勤務情報」を取得する
+			return this.recordWorkInfoFunAdapter.findByEmpAndPeriod(sid, period).stream()
+					.collect(Collectors.toMap(RecordWorkInfoFunAdapterDto::getWorkingDate, RecordWorkInfoFunAdapterDto::getWorkTypeCode));
+		default:
+			return Collections.emptyMap();
+		}
     }
 }

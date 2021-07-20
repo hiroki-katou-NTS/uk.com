@@ -17,6 +17,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.command.processexecution.ApprovalPeriodByEmp;
 import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
 import nts.uk.ctx.at.function.dom.processexecution.TempAbsenceHistoryService;
+import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
@@ -137,7 +138,8 @@ public class CalPeriodTransferAndWorktype {
 			// INPUT．「休職・休業者再作成」をチェックする
 			if (isLeave) {
 				// 休職休業履歴変更期間を求める
-				dataLeave = this.tempAbsenceHistoryService.findChangingLeaveHistoryPeriod(empId, newPeriod, tempAbsence, true);
+				dataLeave = this.tempAbsenceHistoryService.findChangingLeaveHistoryPeriod(empId, newPeriod, tempAbsence, true,
+						ProcessExecutionTask.SCH_CREATION);
 			}
 			// 計算するする「期間」がない場合次の社員へ
 			if (dataWorkplace.isEmpty() && dataWorkType.isEmpty() && dataLeave.isEmpty())
