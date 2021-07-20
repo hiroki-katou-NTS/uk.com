@@ -37,33 +37,7 @@ public class RegisterOrUpdateManHourSummaryTableDuplicateCommand {
     /**
      * 合計単位
      */
-    private boolean isCopy;
+    private boolean overwrite;
 
-    public ManHourSummaryTableFormat toDomain(ManHourSummaryTableFormat copy) {
-        if (this.isCopy()) {
-            return new ManHourSummaryTableFormat(
-                    new ManHourSummaryTableCode(this.getSourcecode()),
-                    new ManHourSummaryTableName(this.getName()),
-                    new DetailFormatSetting(
-                            DisplayFormat.of(copy.getDetailFormatSetting().getDisplayFormat().value),
-                            TotalUnit.of(copy.getDetailFormatSetting().getTotalUnit().value),
-                            EnumAdaptor.valueOf(copy.getDetailFormatSetting().getDisplayVerticalHorizontalTotal().value, NotUseAtr.class),
-                            copy.getDetailFormatSetting().getSummaryItemList().stream().map(item -> new SummaryItem(item.getHierarchicalOrder(),
-                                    SummaryItemType.of(item.getSummaryItemType().value)))
-                                    .collect(Collectors.toList())
-                    )
-            );
-        } else {
-            return new ManHourSummaryTableFormat(
-                    new ManHourSummaryTableCode(this.getSourcecode()),
-                    new ManHourSummaryTableName(this.getName()),
-                    new DetailFormatSetting(
-                            DisplayFormat.of(0),
-                            TotalUnit.of(0),
-                            EnumAdaptor.valueOf(0, NotUseAtr.class),
-                            Collections.emptyList()
-                    )
-            );
-        }
-    }
+
 }

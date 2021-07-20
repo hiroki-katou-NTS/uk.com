@@ -1675,5 +1675,6 @@ public class ProgramIdConsts {
 	public static final String KHA003A = "KHA003A";
 	public static final String KHA003B = "KHA003B";
 	public static final String KHA003C = "KHA003C";
+	public static final String KHA003D = "KHA003D";
 	public static final String KHA003E = "KHA003E";
 }

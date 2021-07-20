@@ -31,9 +31,9 @@ public class UpdateManHourSummaryTableDuplicateCommandHandler extends CommandHan
 
     @Override
     protected void handle(CommandHandlerContext<RegisterOrUpdateManHourSummaryTableDuplicateCommand> commandHandlerContext) {
-        RegisterOrUpdateManHourSummaryTableDuplicateCommand command = commandHandlerContext.getCommand();
-        if (command == null){ return ;}
-        val copy = this.repository.get(AppContexts.user().companyId(), command.getDestinationCode()).get();
-        this.repository.update(command.toDomain(copy));
+//        RegisterOrUpdateManHourSummaryTableDuplicateCommand command = commandHandlerContext.getCommand();
+//        if (command == null){ return ;}
+//        val copy = this.repository.get(AppContexts.user().companyId(), command.getDestinationCode()).get();
+//        this.repository.update(command.toDomain(copy));
     }
 }

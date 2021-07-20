@@ -162,8 +162,10 @@ module nts.uk.at.kha003.a {
          * */
         excutionModeToUpDateMode() {
             const vm = this;
-            vm.isExecutionMode(false);
-            vm.isUpdateMode(true);
+            if (vm.isExecutionMode()) {
+                vm.isExecutionMode(false);
+                vm.isUpdateMode(true);
+            }
         }
 
         /**
@@ -178,33 +180,37 @@ module nts.uk.at.kha003.a {
             if (code != "") {
                 vm.$blockui("invisible");
                 vm.$ajax(API.FIND + "/" + code).then(data => {
-                    vm.manHour.code(data.code);
-                    vm.manHour.name(data.name);
-                    vm.selectedId(data.totalUnit);
-                    vm.selectedIdA622(data.displayFormat);
-                    vm.isA71Checked(data.dispHierarchy);
-                    let type0Name = vm.$i18n('KHA003_24');
-                    let type1Name = vm.$i18n('KHA003_25');
-                    let type2Name = vm.$i18n('KHA003_26');
-                    $('#append_area').empty();
-                    vm.summaryItems(_.sortBy(_.map(data.summaryItems || [], function (item: any) {
-                        let itemTypeName = '';
-                        if (item.itemType === 0) {
-                            itemTypeName = type0Name;
-                        } else if (item.itemType === 1) {
-                            itemTypeName = type1Name;
-                        } else if (item.itemType === 2) {
-                            itemTypeName = type2Name;
-                        } else {
-                            itemTypeName = item.itemTypeName
-                        }
-                        return {
-                            hierarchicalOrder: item.hierarchicalOrder,
-                            summaryItemType: item.itemType,
-                            itemTypeName: itemTypeName
-                        }
-                    }), ["hierarchicalOrder"]));
-                    vm.matchWidth();
+                    if (data) {
+                        vm.manHour.code(data.code);
+                        vm.manHour.name(data.name);
+                        vm.selectedId(data.totalUnit);
+                        vm.selectedIdA622(data.displayFormat);
+                        vm.isA71Checked(data.dispHierarchy);
+                        let type0Name = vm.$i18n('KHA003_24');
+                        let type1Name = vm.$i18n('KHA003_25');
+                        let type2Name = vm.$i18n('KHA003_26');
+                        $('#append_area').empty();
+                        vm.summaryItems(_.sortBy(_.map(data.summaryItems || [], function (item: any) {
+                            let itemTypeName = '';
+                            if (item.itemType === 0) {
+                                itemTypeName = type0Name;
+                            } else if (item.itemType === 1) {
+                                itemTypeName = type1Name;
+                            } else if (item.itemType === 2) {
+                                itemTypeName = type2Name;
+                            } else {
+                                itemTypeName = item.itemTypeName
+                            }
+                            return {
+                                hierarchicalOrder: item.hierarchicalOrder,
+                                summaryItemType: item.itemType,
+                                itemTypeName: itemTypeName
+                            }
+                        }), ["hierarchicalOrder"]));
+                        vm.matchWidth();
+                    } else {
+                        vm.currentCode("");
+                    }
                     dfd.resolve();
                 }).fail(err => {
                     dfd.reject();
@@ -392,9 +398,8 @@ module nts.uk.at.kha003.a {
             vm.isExecutionMode(true);
             vm.$window.storage('kha003ERequiredData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/e/index.xhtml").then(() => {
-                    vm.loadScreenListData();
                     vm.$window.storage('kha003EShareData').done((data) => {
-                        vm.currentCode(data.duplicatedCode);
+                        if (data) vm.loadScreenListData(data.duplicatedCode);
                     });
                 });
             });
@@ -438,7 +443,7 @@ module nts.uk.at.kha003.a {
         clickDeleteButton() {
             const vm = this;
             vm.isExecutionMode(true);
-            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'yes' | 'cancel') => {
+            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: any) => {
                 if (result === 'yes') {
                     var selectableCode = vm.getSelectableCode(vm.items(), vm.manHour.code());
                     let command = {
@@ -609,7 +614,7 @@ module nts.uk.at.kha003.a {
                 totalUnit: vm.selectedId(),
                 isCsvOutPut: false,
                 code:vm.currentCode()
-            }
+            };
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
 

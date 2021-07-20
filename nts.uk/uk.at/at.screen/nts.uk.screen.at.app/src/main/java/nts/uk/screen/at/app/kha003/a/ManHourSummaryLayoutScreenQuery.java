@@ -9,6 +9,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,6 @@ public class ManHourSummaryLayoutScreenQuery {
         return lstItem.stream().map(item -> new SummaryItemDto(item.getHierarchicalOrder(),
                 item.getSummaryItemType().value,
                 item.getSummaryItemType().nameId
-        )).collect(Collectors.toList());
+        )).sorted(Comparator.comparingInt(SummaryItemDto::getHierarchicalOrder)).collect(Collectors.toList());
     }
 }
