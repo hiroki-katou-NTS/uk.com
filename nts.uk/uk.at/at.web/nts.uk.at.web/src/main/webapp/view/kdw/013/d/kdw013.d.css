@@ -14,12 +14,14 @@
 
 #contents-area table tr th, #contents-area table tr td {
 	color: #4A4A58;
-	text-align: center;
+	text-align: left;
 	position: relative;
 	box-sizing: border-box;
 	border: 1px solid #EAE8F2 !important;
+	padding: 0px 5px;
 }
 
 .link-button {
 	color: #06c;
+	padding: 0px !important;
 }
