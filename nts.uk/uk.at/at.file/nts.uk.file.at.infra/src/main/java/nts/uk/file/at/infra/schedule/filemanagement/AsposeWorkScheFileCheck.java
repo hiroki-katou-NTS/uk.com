@@ -67,7 +67,7 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
 
         // get sheet
         Worksheet worksheet;
-        if (checkFileParam.isCaptureCheckSheet()) {
+        if (checkFileParam.isCaptureCheckSheet() && !StringUtils.isBlank(checkFileParam.getCaptureSheet())) {
             worksheet = workbook.getWorksheets().get(checkFileParam.getCaptureSheet());
         } else {
             worksheet = workbook.getWorksheets().get(0);
@@ -106,7 +106,11 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
         for (int i = columnStart + (isColumnNameExist ? 2 : 1); i < columnStart + (isColumnNameExist ? 66 : 61); i++) {
             Cell cellDate = cells.get(rowStart, i);
 
-            String cellValueDisplay = cellDate.getStringValue();
+            if (cellDate.getValue() == null) {
+                break;
+            }
+            
+            String cellValueDisplay = cellDate.getValue().toString();
 
             // Check if end of dates
             if (StringUtils.isBlank(cellValueDisplay)) {
@@ -116,7 +120,8 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
             // check date format
             GeneralDate date = null;
             try {
-                date = GeneralDate.fromString(cellValueDisplay, "yyyy/MM/dd");
+                date = GeneralDate.fromString(cellValueDisplay, "yyyy-MM-dd'T'HH:mm:ss");
+//                GeneralDate.fromString(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
             } catch (Exception e) {
                 throw new BusinessException("Msg_1796");
             }
@@ -260,8 +265,8 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
     }
     
     public static boolean isValidDate(String dateStr) {
-        String[] pattern = dateStr.split("/");
-        GeneralDate generalDate = GeneralDate.fromString(dateStr, "yyyy/MM/dd");
+        String[] pattern = dateStr.split("T")[0].split("-");
+        GeneralDate generalDate = GeneralDate.fromString(dateStr, "yyyy-MM-dd'T'HH:mm:ss");
         if (pattern[2].equals(generalDate.toString("dd"))) {
             return true;
         }
