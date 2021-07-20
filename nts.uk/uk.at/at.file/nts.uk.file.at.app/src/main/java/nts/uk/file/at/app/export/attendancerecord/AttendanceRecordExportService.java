@@ -762,7 +762,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							dailyData.setSecondCol(flag <= 15 ? false : true);
 							dailyDataList.add(dailyData);
 							// Check end of week
-							if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+							DayOfWeek endOfWeek = optionalAttendanceRecExpSet.get().getStartOfWeek().calculateJavatypeEndOfWeek();
+							if (startDateByClosure.localDate().getDayOfWeek().equals(endOfWeek)) {
 								AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
 								// Set weekly data
 								weeklyData.setDailyDatas(dailyDataList);
@@ -1006,7 +1007,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentCode() + "　"
 									+ result.getEmployment().getEmploymentName().toString());
 							attendanceRecRepEmpData
-									.setInvidual(employee.getEmployeeCode() + "　" + employee.getEmployeeName());
+									.setInvidual(employee.getEmployeeCode().trim() + "　" + employee.getEmployeeName().trim());
 							attendanceRecRepEmpData.setTitle(result.getPosition() == null ? ""
 									: result.getPosition().getPositionCode() + "　" + result.getPosition().getPositionName().toString());
 							attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
@@ -1222,8 +1223,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	 * @return the code from invidual
 	 */
 	String getCodeFromInvidual(String invidual) {
-		int index = invidual.indexOf(" ");
-		return invidual.substring(0, index + 1).trim();
+		int index = invidual.indexOf("　");
+		return invidual.substring(0, index).trim();
 	}
 
 	/**
