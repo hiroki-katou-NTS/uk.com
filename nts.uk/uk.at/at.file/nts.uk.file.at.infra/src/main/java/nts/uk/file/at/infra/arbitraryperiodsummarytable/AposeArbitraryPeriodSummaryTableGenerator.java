@@ -236,7 +236,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             itemOnePage = 5;
                         }
                         cells.copyRows(cellsTemplate, 10, count, 2);
-                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305", "　" + String.valueOf(item.getHierarchy())));
+                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305",String.valueOf(item.getHierarchy())));
                         itemOnePage += 2;
                         prinDetail(count, listValue, cells, mapIdAnAttribute, query);
                         count += 2;
