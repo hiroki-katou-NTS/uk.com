@@ -9,7 +9,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonAndWeekStatutoryTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
@@ -86,9 +85,10 @@ public class GetLegalWorkTimeOfEmployeeService {
 		Optional<WorkingConditionItem> getHistoryItemBySidAndBaseDate(String sid, GeneralDate baseDate);
 
 		/**
-		 * 雇用履歴を取得する( 社員ID, 期間 ): List<社員の雇用期間Imported>
+		 * 雇用履歴を取得する( 社員ID, 期間 )
 		 * @param sid 社員ID
 		 * @param datePeriod 期間
+		 * @return
 		 */
 		List<EmploymentPeriodImported> getEmploymentHistories(String sid, DatePeriod datePeriod);
 		
@@ -112,11 +112,6 @@ public class GetLegalWorkTimeOfEmployeeService {
 		 * @return
 		 */
 		Optional<MonAndWeekStatutoryTime> monAndWeekStatutoryTime(YearMonth ym, String employmentCd, String employeeId,  GeneralDate baseDate, WorkingSystem workingSystem);
-	
-		/**
-		 * フレックス勤務所定労働時間取得を取得する
-		 * @return
-		 */
-		Optional<GetFlexPredWorkTime> getFlexStatutoryTime();
+
 	}
 }
