@@ -268,7 +268,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				
 				if (as != null) {
 					krcdtTimeLeavingWork.leaveWorkActualTime = as.getTimeDay().getTimeWithDay() == null ? null
-							: as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
+							: as.getTimeDay().getTimeWithDay().map(x -> x.v()).orElse(null);
 					krcdtTimeLeavingWork.leaveWorkActualPlaceCode = !as.getLocationCode().isPresent() ? null
 							: as.getLocationCode().get().v();
 					krcdtTimeLeavingWork.leaveActualSourceInfo = as.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
@@ -280,7 +280,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				}
 				if (s != null) {
 					krcdtTimeLeavingWork.leaveWorkStampTime = s.getTimeDay().getTimeWithDay() == null ? null
-							: s.getTimeDay().getTimeWithDay().get().valueAsMinutes();
+							: s.getTimeDay().getTimeWithDay().map(x -> x.v()).orElse(null);
 					krcdtTimeLeavingWork.leaveWorkStampPlaceCode = !s.getLocationCode().isPresent() ? null
 							: s.getLocationCode().get().v();
 					krcdtTimeLeavingWork.leaveWorkStampSourceInfo = s.getTimeDay().getReasonTimeChange().getTimeChangeMeans() == null ? 0
