@@ -180,33 +180,37 @@ module nts.uk.at.kha003.a {
             if (code != "") {
                 vm.$blockui("invisible");
                 vm.$ajax(API.FIND + "/" + code).then(data => {
-                    vm.manHour.code(data.code);
-                    vm.manHour.name(data.name);
-                    vm.selectedId(data.totalUnit);
-                    vm.selectedIdA622(data.displayFormat);
-                    vm.isA71Checked(data.dispHierarchy);
-                    let type0Name = vm.$i18n('KHA003_24');
-                    let type1Name = vm.$i18n('KHA003_25');
-                    let type2Name = vm.$i18n('KHA003_26');
-                    $('#append_area').empty();
-                    vm.summaryItems(_.sortBy(_.map(data.summaryItems || [], function (item: any) {
-                        let itemTypeName = '';
-                        if (item.itemType === 0) {
-                            itemTypeName = type0Name;
-                        } else if (item.itemType === 1) {
-                            itemTypeName = type1Name;
-                        } else if (item.itemType === 2) {
-                            itemTypeName = type2Name;
-                        } else {
-                            itemTypeName = item.itemTypeName
-                        }
-                        return {
-                            hierarchicalOrder: item.hierarchicalOrder,
-                            summaryItemType: item.itemType,
-                            itemTypeName: itemTypeName
-                        }
-                    }), ["hierarchicalOrder"]));
-                    vm.matchWidth();
+                    if (data) {
+                        vm.manHour.code(data.code);
+                        vm.manHour.name(data.name);
+                        vm.selectedId(data.totalUnit);
+                        vm.selectedIdA622(data.displayFormat);
+                        vm.isA71Checked(data.dispHierarchy);
+                        let type0Name = vm.$i18n('KHA003_24');
+                        let type1Name = vm.$i18n('KHA003_25');
+                        let type2Name = vm.$i18n('KHA003_26');
+                        $('#append_area').empty();
+                        vm.summaryItems(_.sortBy(_.map(data.summaryItems || [], function (item: any) {
+                            let itemTypeName = '';
+                            if (item.itemType === 0) {
+                                itemTypeName = type0Name;
+                            } else if (item.itemType === 1) {
+                                itemTypeName = type1Name;
+                            } else if (item.itemType === 2) {
+                                itemTypeName = type2Name;
+                            } else {
+                                itemTypeName = item.itemTypeName
+                            }
+                            return {
+                                hierarchicalOrder: item.hierarchicalOrder,
+                                summaryItemType: item.itemType,
+                                itemTypeName: itemTypeName
+                            }
+                        }), ["hierarchicalOrder"]));
+                        vm.matchWidth();
+                    } else {
+                        vm.currentCode("");
+                    }
                     dfd.resolve();
                 }).fail(err => {
                     dfd.reject();

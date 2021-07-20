@@ -57,7 +57,9 @@ module nts.uk.at.kha003.e {
          */
         public cancel(): void {
             const vm = this;
-            vm.$window.storage('kha003EShareData', undefined).then(() => {
+            vm.$window.storage('kha003EShareData', {
+                duplicatedCode: vm.manHour.code()
+            }).then(() => {
                 nts.uk.ui.windows.close();
             });
         }
@@ -82,8 +84,8 @@ module nts.uk.at.kha003.e {
                     vm.$ajax(API.register, command).done(() => {
                         vm.$dialog.info({messageId: "Msg_2167"})
                             .then(() => {
-                                let shareData={
-                                    duplicatedCode:vm.e1718ManHour.code()
+                                let shareData = {
+                                    duplicatedCode: vm.e1718ManHour.code()
                                 };
                                 vm.$window.storage('kha003EShareData',shareData).then(() => {
                                     nts.uk.ui.windows.close();
