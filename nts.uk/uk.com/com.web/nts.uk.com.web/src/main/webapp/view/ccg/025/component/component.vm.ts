@@ -14,6 +14,7 @@ module nts.uk.com.view.ccg025.a.component {
         isAlreadySetting?: any;
         selectType?: number;
         onDialog?: boolean;
+        hasFocus?: boolean;
     }
 
     export module viewmodel {
@@ -33,12 +34,18 @@ module nts.uk.com.view.ccg025.a.component {
             private searchMode: string;
             displayRoleClassification: KnockoutObservable<boolean>;
             roleClassification: KnockoutObservable<number>;
+            switchFocus: KnockoutObservable<boolean> = ko.observable(false);
+            listFocus: KnockoutObservable<boolean> = ko.observable(false);
+            init: boolean = true;
 
             constructor(option: Option) {
                 let self = this;
                 self.setting = $.extend({}, self.defaultOption, option);
                 if (self.setting.roleAtr != 0 && self.setting.roleAtr != 1) self.setting.roleAtr = undefined;
                 self.displayRoleClassification = ko.observable(self.setting.roleAtr != 0 && self.setting.roleAtr != 1);
+                if (self.setting.hasFocus) {
+                    if (self.displayRoleClassification()) self.switchFocus(true); else self.listFocus(true);
+                }
                 self.roleClassification = ko.observable(self.setting.roleAtr || 0);
                 self.listRole = ko.observableArray([]);
                 self.isAlreadySetting = ko.observable(option.isAlreadySetting);
@@ -100,10 +107,22 @@ module nts.uk.com.view.ccg025.a.component {
                     }));
                     self.addEmptyItem();
 
-                    if (!isNullOrUndefined(self.setting.selectType)) {
+                    if (!isNullOrUndefined(self.setting.selectType) && self.init) {
                         switch (self.setting.selectType) {
                             case 1: // selected list
-                                self.setting.multiple ? self.currentCode(self.setting.currentCode || []) : self.currentCode(self.setting.currentCode);
+                                if (self.setting.multiple) {
+                                    if (self.listRole().filter(r => (self.setting.currentCode || []).indexOf(r.roleId) >= 0).length > 0) {
+                                        self.currentCode(self.setting.currentCode || [])
+                                    } else {
+                                        self.selectFirstItem();
+                                    }
+                                } else {
+                                    if (self.listRole().filter(r => self.setting.currentCode == r.roleId).length > 0) {
+                                        self.currentCode(self.setting.currentCode)
+                                    } else {
+                                        self.selectFirstItem();
+                                    }
+                                }
                                 break;
                             case 2: // select all
                                 if (self.setting.multiple) {
@@ -121,8 +140,12 @@ module nts.uk.com.view.ccg025.a.component {
                         }
                     } else {
                         // Select item base on param code
-                        if (!isNullOrUndefined(self.setting.currentCode)) {
-                            self.currentCode(self.setting.currentCode);
+                        if (!isNullOrUndefined(self.setting.currentCode) && self.init) {
+                            if (self.listRole().filter(r => self.setting.currentCode.indexOf(r.roleId) >= 0).length > 0) {
+                                self.currentCode(self.setting.currentCode || [])
+                            } else {
+                                self.selectFirstItem();
+                            }
                         } else if (!!selectedRoleId) {
                             self.setting.multiple ? self.currentCode([selectedRoleId]) : self.currentCode(selectedRoleId);
                         } else if (!!selectedRoleCode) {
@@ -132,7 +155,10 @@ module nts.uk.com.view.ccg025.a.component {
                             self.selectFirstItem();
                         }
                     }
-
+                    if (self.init) {
+                        if (self.listFocus()) $("#ccg025-list_container").focus();
+                        self.init = false;
+                    }
                     dfd.resolve(data);
                 }).fail(function(res: any) {
                     dfd.reject();
