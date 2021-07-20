@@ -12,6 +12,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 public class AlarmListExecutionMailSetting extends AggregateRoot {
+    private String companyId;
+
     /** 個人職場区分 */
     private IndividualWkpClassification individualWkpClassify;
 
@@ -29,8 +31,6 @@ public class AlarmListExecutionMailSetting extends AggregateRoot {
 
     /** マスタチェック結果を就業担当へ送信 */
     private boolean sendResult;
-
-    private String companyId;       // TODO: QA
 
     /**
      * [1] 設定済みか（会社ID、個人職場区分、通常自動区分、本人管理区分）
