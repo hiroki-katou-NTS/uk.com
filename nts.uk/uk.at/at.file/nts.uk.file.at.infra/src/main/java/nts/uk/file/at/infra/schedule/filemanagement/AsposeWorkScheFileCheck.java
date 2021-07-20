@@ -37,6 +37,8 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
 
     @Inject
     private StoredFileStreamService fileStreamService;
+    
+    private final String[] dateFormats = {"yyyy/MM/dd", "yyyy-MM-dd'T'HH:mm:ss"};
 
     public CapturedRawData processingFile(WorkPlaceScheCheckFileParam checkFileParam, EmployeeCodeEditSettingExport setting)
             throws Exception {
@@ -119,13 +121,17 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
 
             // check date format
             GeneralDate date = null;
-            try {
-                date = GeneralDate.fromString(cellValueDisplay, "yyyy-MM-dd'T'HH:mm:ss");
-//                GeneralDate.fromString(date, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
-            } catch (Exception e) {
-                throw new BusinessException("Msg_1796");
+            boolean isValid = true;
+            for (String format : dateFormats) {
+                try {
+                    date = GeneralDate.fromString(cellValueDisplay, format);
+                    isValid = true;
+                    break;
+                } catch (Exception e) {
+                    isValid = false;
+                }
             }
-            if (!isValidDate(cellValueDisplay)) {
+            if (!isValidDate(cellValueDisplay, isValid)) {
                 throw new BusinessException("Msg_1796");
             }
 
@@ -264,13 +270,17 @@ public class AsposeWorkScheFileCheck implements CheckFileService {
         }
     }
     
-    public static boolean isValidDate(String dateStr) {
+    public static boolean isValidDate(String dateStr, boolean isValid) {
+        if (!isValid) {
+            return false;
+        }
+        
         String[] pattern = dateStr.split("T")[0].split("-");
         GeneralDate generalDate = GeneralDate.fromString(dateStr, "yyyy-MM-dd'T'HH:mm:ss");
         if (pattern[2].equals(generalDate.toString("dd"))) {
             return true;
         }
         
-        return false;
+        return true;
     }
 }

@@ -13,6 +13,7 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
+import com.aspose.cells.NumberCategoryType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Style;
 import com.aspose.cells.StyleFlag;
@@ -115,7 +116,7 @@ public class AsposeWorkScheduleGenerator extends AsposeCellsReportGenerator impl
         List<GeneralDate> period = datePeriod.datesBetween();
         for(int i = 0; i < period.size(); i++) {
             Cell cell = cells.get(0, i + 2);
-            cell.setValue(period.get(i).toString("yyyy/MM/dd"));
+            cell.setValue(period.get(i).date());
             this.setHeaderDateStyle(cell, period.get(i), holidayList);
             this.setBorder(cell);
         }
