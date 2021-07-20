@@ -7,11 +7,14 @@
 <body>
 <ui:composition template="/master/base.xhtml">
 	<ui:define name="htmlHead">
-    <com:scriptfile set="IGNITE" />
-    
+    	<com:scriptfile set="IGNITE" />
 		<com:stylefile path="cmf001.c.style.css" />
 		<com:scriptfile path="cmf001.c.vm.js" />
-  </ui:define>
+		
+		<com:EnumScript>
+			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod
+		</com:EnumScript>
+	</ui:define>
 
 	<ui:define name="content" >
 		<div id="functions-area">

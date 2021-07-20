@@ -31,12 +31,7 @@ module nts.uk.com.cmf001.c {
                         padding: {
                             length: 15,
                             method: 0,
-                            methods: [
-                                { value: 0, name: "前ゼロ" },
-                                { value: 1, name: "後ゼロ" },
-                                { value: 2, name: "前スペース" },
-                                { value: 3, name: "後スペース" },
-                            ]
+                            methods: (<any>__viewContext).enums.PaddingMethod
                         },
                         useCodeConvert: true,
                         codeConvert: {
