@@ -95,7 +95,7 @@
   margin-bottom: 5px;
 }
 .row-right .check-list-1 .checkbox-item {
-  width: 100px;
+  width: 110px;
   margin-bottom: 4px;
 }
 .row-right .check-list-1 .checkbox-item:last-child {
@@ -112,7 +112,7 @@
   margin: 10px 0;
 }
 .row-right .multiple-check .check-list-item .checkbox-item {
-  width: 100px;
+  width: 70px;
   margin-bottom: 4px;
 }
 
