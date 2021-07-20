@@ -39,7 +39,7 @@ public class GetPeriodCanProcesseTest {
 	public void test_get_1() {
 		String employeeId = "employeeId";// dummy
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); 
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;
 		
 		List<EmploymentHistoryImported> listEmploymentHis = new ArrayList<>();
@@ -79,7 +79,7 @@ public class GetPeriodCanProcesseTest {
 	public void test_get_2() {
 		String employeeId = "employeeId";// dummy
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 3, 1), GeneralDate.ymd(2021, 4, 1)); 
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;
 		
 		List<EmploymentHistoryImported> listEmploymentHis = new ArrayList<>();
@@ -118,7 +118,7 @@ public class GetPeriodCanProcesseTest {
 	public void test_get_3() {
 		String employeeId = "employeeId";// dummy
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); 
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;
 		
 		List<EmploymentHistoryImported> listEmploymentHis = new ArrayList<>();
@@ -158,7 +158,7 @@ public class GetPeriodCanProcesseTest {
 	public void test_get_4() {
 		String employeeId = "employeeId";// dummy
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); 
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;
 		
 		List<EmploymentHistoryImported> listEmploymentHis = new ArrayList<>();
@@ -205,7 +205,7 @@ public class GetPeriodCanProcesseTest {
 	public void test_get_5() {
 		String employeeId = "employeeId";// dummy
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); 
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;
 		
 		List<EmploymentHistoryImported> listEmploymentHis = new ArrayList<>();

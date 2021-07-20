@@ -55,8 +55,8 @@ public class WorkByIndividualWorkDay extends DomainObject{
 	 */
 	public WorkInformation getHolidayWorkInformation() {
 
-		// return new 勤務情報（＠勤務種類。休日時、＠勤務時間帯。休日時。就業時間帯コード）
-		return new WorkInformation(workType.getHolidayTimeWTypeCode(), workTime.getHolidayWork().getWorkTimeCode().get());
+		//return new 勤務情報（＠勤務種類。休日時、Optinal。empty()）
+		return new WorkInformation(workType.getHolidayTimeWTypeCode(), null);
 
 	}
 
