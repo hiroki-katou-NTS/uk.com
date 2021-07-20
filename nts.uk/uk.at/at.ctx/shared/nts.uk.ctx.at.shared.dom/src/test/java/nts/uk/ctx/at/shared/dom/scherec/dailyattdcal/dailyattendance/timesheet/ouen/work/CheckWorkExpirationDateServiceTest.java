@@ -83,25 +83,25 @@ public class CheckWorkExpirationDateServiceTest {
 
 	// error == false
 	// task.get().checkExpirationDate(date) == true
-	@Test
-	public void testCheckWorkExpiration_3() {
-		frameSettingList.add(new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), null));
-		frameSettingList.add(new TaskFrameSetting(taskFrameNo2, new TaskFrameName("DUMMY1"), null));
-		
-		Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date.addMonths(-5), date), null);
-
-		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
-
-		new Expectations() {
-			{
-				require.getTask(taskFrameNo, code);
-				result = Optional.of(task);
-
-				require.getTaskFrameUsageSetting();
-				result = taskFrameUsageSetting;
-			}
-		};
-
-		CheckWorkExpirationDateService.check(require, date.addMonths(-3), taskFrameNo, Optional.of(code));
-	}
+//	@Test
+//	public void testCheckWorkExpiration_3() {
+//		frameSettingList.add(new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), null));
+//		frameSettingList.add(new TaskFrameSetting(taskFrameNo2, new TaskFrameName("DUMMY1"), null));
+//		
+//		Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date.addMonths(-5), date), null);
+//
+//		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
+//
+//		new Expectations() {
+//			{
+//				require.getTask(taskFrameNo, code);
+//				result = Optional.of(task);
+//
+//				require.getTaskFrameUsageSetting();
+//				result = taskFrameUsageSetting;
+//			}
+//		};
+//
+//		CheckWorkExpirationDateService.check(require, date.addMonths(-3), taskFrameNo, Optional.of(code));
+//	}
 }
