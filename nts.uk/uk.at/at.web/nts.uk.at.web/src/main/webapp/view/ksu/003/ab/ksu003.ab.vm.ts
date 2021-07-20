@@ -178,10 +178,10 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 			}
 			let param = {
-				baseDate: self.dataFromScrA.targetDate,
-				targetUnit: self.dataFromScrA.dataScreen003A.unit,
+				baseDate: __viewContext.viewModel.viewmodelA.targetDate(),
+				targetUnit: __viewContext.viewModel.viewmodelA.dataScreen003A().unit,
 				page: page,
-				organizationID: self.dataFromScrA.dataScreen003A.id
+				organizationID: __viewContext.viewModel.viewmodelA.organizationName().id
 			}
 			service.getTaskInfo(param)
 				.done((data: any) => {
@@ -196,7 +196,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 							}
 						}
 						
-						__viewContext.viewModel.viewmodelA.addTypeOfTask(taskInfo.data.color, taskInfo);
+						if (__viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2)
+							__viewContext.viewModel.viewmodelA.addTypeOfTask(taskInfo.data.color, taskInfo);
 					});	
 						
 					dfd.resolve();

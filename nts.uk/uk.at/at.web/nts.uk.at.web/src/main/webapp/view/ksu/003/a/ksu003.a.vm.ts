@@ -699,6 +699,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.localStore = local;
 			self.getWorkingByDate(self.targetDate(), 1).done(() => {
+				
 				if(self.selectedDisplayPeriod() != 1){
 					self.getTask().done(() => {
 						self.convertDataIntoExtable();
@@ -707,12 +708,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						});
 					});
 				} else {
-				self.convertDataIntoExtable();
-				self.initExtableData().done(() => {
-					dfd.resolve();
-				});
+						self.convertDataIntoExtable();
+						self.initExtableData().done(() => {
+							dfd.resolve();
+						});
 				}
-				
 			});
 			return dfd.promise();
 		}
@@ -3675,6 +3675,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				fixed: "Both",
 				pin: true, // cố định gant chart
 				hide: ruler.loggable(false)
+			});
+			
+			__viewContext.viewModel.viewmodelAb.getTaskInfo().done((data : any) => { // lấy type of task add vào ruler
+				console.log();
 			});
 			
 			ruler.addType(self.coreType);
