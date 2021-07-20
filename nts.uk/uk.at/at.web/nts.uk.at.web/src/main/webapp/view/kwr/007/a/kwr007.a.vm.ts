@@ -206,7 +206,7 @@ module nts.uk.at.view.kwr007.a {
         isShowSelectAllButton: vm.isShowSelectAllButton(),
         isSelectAllAfterReload: false,
         tabindex: 5,
-        maxRows: 15
+        maxRows: 20
       };
 
       $('#kcp005').ntsListComponent(vm.listComponentOption)

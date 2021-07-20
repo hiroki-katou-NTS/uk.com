@@ -34,13 +34,11 @@ import java.util.stream.Collectors;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReportGenerator implements ArbitraryPeriodSummaryTableGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR07.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR007_template.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
     private static final String FORMAT_DATE = "yyyy/MM/dd";
-    private static final int MAX_LINE_IN_PAGE = 22;
-    private static final int MAX_COL_IN_PAGE = 22;
-    private static final double PAGE_WIDTH = 11.69 -2;
+    private static final int MAX_LINE_IN_PAGE = 50;
     private static final Integer HIERARCHY_LENGTH = 3;
 
 
@@ -80,22 +78,17 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 
-        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\"" + title);
+        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\"" + title);
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
-                "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&7&\"MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);
         pageSetup.setCenterHorizontally(true);
-        pageSetup.setBottomMarginInch(1.5);
-        pageSetup.setTopMarginInch(1.5);
-        pageSetup.setLeftMarginInch(1.0);
-        pageSetup.setRightMarginInch(1.0);
-        pageSetup.setHeaderMarginInch(0.8);
         pageSetup.setZoom(100);
     }
 
@@ -172,7 +165,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             itemOnePage += 1;
                             //D1_1
                             cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
-                                    + " " + content.getWorkplaceCd() + " " + content.getWorkplaceName());
+                                    + content.getWorkplaceCd() + " " + content.getWorkplaceName());
                             count += 1;
                             for (int j = 0; j < listDisplayedEmployees.size(); j++) {
                                 val item = listDisplayedEmployees.get(j);
@@ -207,7 +200,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 itemOnePage += 1;
                                 //D1_1
                                 cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
-                                        + " " + content.getWorkplaceCd() + " " + content.getWorkplaceName());
+                                        + content.getWorkplaceCd() + " " + content.getWorkplaceName());
                                 count += 1;
                             }
                             val sumByWplOpt = totalDisplayContents
@@ -512,8 +505,5 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 ||attributes == CommonAttributesOfForms.TIME
                 ||attributes == CommonAttributesOfForms.AMOUNT_OF_MONEY
                 ||attributes == CommonAttributesOfForms.NUMBER_OF_TIMES;
-
-
     }
-
 }
