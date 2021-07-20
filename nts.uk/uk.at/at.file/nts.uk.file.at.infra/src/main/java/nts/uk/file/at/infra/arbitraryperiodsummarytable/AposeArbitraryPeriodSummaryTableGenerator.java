@@ -38,7 +38,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
     private static final String FORMAT_DATE = "yyyy/MM/dd";
-    private static final int MAX_LINE_IN_PAGE = 50;
+    private static final int MAX_LINE_IN_PAGE = 40;
     private static final Integer HIERARCHY_LENGTH = 3;
 
 
@@ -158,14 +158,14 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             }
                             val listDisplaySid = content.getListDisplayedEmployees();
                             val tComparator = Comparator
-                                    .comparing(DisplayedEmployee::getEmployeeId);
+                                    .comparing(DisplayedEmployee::getEmployeeCode);
                             val listDisplayedEmployees = listDisplaySid.stream()
                                     .sorted(tComparator).collect(Collectors.toList());
                             cells.copyRow(cellsTemplate, 5, count);
                             itemOnePage += 1;
                             //D1_1
                             cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
-                                    + content.getWorkplaceCd() + " " + content.getWorkplaceName());
+                                    + content.getWorkplaceCd() + "　" + content.getWorkplaceName());
                             count += 1;
                             for (int j = 0; j < listDisplayedEmployees.size(); j++) {
                                 val item = listDisplayedEmployees.get(j);
@@ -186,7 +186,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                     cells.copyRows(cellsTemplate, 8, count, 2);
                                 }
                                 cells.get(count, 0).setValue(
-                                        item.getEmployeeCode() + " " + item.getEmployeeName());
+                                        item.getEmployeeCode() + "　" + item.getEmployeeName());
                                 itemOnePage += 2;
                                 val contents = item.getContentList();
                                 prinDetail(count, contents, cells, mapIdAnAttribute, query);
@@ -200,7 +200,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 itemOnePage += 1;
                                 //D1_1
                                 cells.get(count, 0).setValue(TextResource.localize("KWR007_303")
-                                        + content.getWorkplaceCd() + " " + content.getWorkplaceName());
+                                        + content.getWorkplaceCd() + "　" + content.getWorkplaceName());
                                 count += 1;
                             }
                             val sumByWplOpt = totalDisplayContents
@@ -236,7 +236,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             itemOnePage = 5;
                         }
                         cells.copyRows(cellsTemplate, 10, count, 2);
-                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305", " " + String.valueOf(item.getHierarchy())));
+                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305", "　" + String.valueOf(item.getHierarchy())));
                         itemOnePage += 2;
                         prinDetail(count, listValue, cells, mapIdAnAttribute, query);
                         count += 2;
@@ -277,15 +277,10 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         Cells cellsTemplate = worksheetTemplate.getCells();
         Cells cells = worksheet.getCells();
         cells.copyRows(cellsTemplate, 0, 0, 5);
-        double columnWith = 0.41;
-        cells.setColumnWidthInch(0,(columnWith) *2);
-        for (int i = 1; i <= 20 ; i++) {
-            cells.setColumnWidthInch(i,columnWith);
-        }
         cells.clearContents(0, 0, cells.getMaxRow(), cells.getMaxColumn());
         cells.get(0, 0).setValue(TextResource.localize("KWR007_301")
-                + datePeriod.start().toString(FORMAT_DATE) + TextResource.localize("KWR007_307")
-                + datePeriod.end().toString(FORMAT_DATE));
+                + datePeriod.start().toString(FORMAT_DATE) +"　"+ TextResource.localize("KWR007_307")
+                +"　"+ datePeriod.end().toString(FORMAT_DATE));
         cells.get(1, 0).setValue(TextResource.localize("KWR007_302"));
         for (int i = 0; i < contentsList.size(); i++)
             if (i < 20) {

@@ -93,7 +93,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                     setBottomBorderStyle(cells.get(count -1, index));
                 }
             }
-            cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + content.getWorkplaceCode() + " " + content.getWorkplaceName());
+            cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
             cells.merge(count, 6, 1, 3, true, true);
             cells.get(count, 6).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
@@ -101,7 +101,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
             Style styleTime =   cells.get(count, 6).getStyle();
             styleTime.setHorizontalAlignment(ColumnTextAlign.CENTER.value);
             cells.get(count, 6).setStyle(styleTime);
-            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + content.getEmployeeCode()+ " " + content.getEmployeeName());
+            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + content.getEmployeeCode()+ "　" + content.getEmployeeName());
             // print date
             printDate(worksheet, count + 2, yearMonths);
             count += 3;
@@ -123,8 +123,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                             this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
 
-                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + content.getWorkplaceCode() + " " + content.getWorkplaceName());
-                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + content.getEmployeeCode() + " " + content.getEmployeeName());
+                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + content.getEmployeeCode() + "　" + content.getEmployeeName());
 
                     printDate(worksheet, count + 2, yearMonths);
                     count += 3;

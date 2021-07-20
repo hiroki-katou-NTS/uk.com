@@ -133,7 +133,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
             cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
             cells.merge(countRow, 0, 1, maxColumnData, true, true);
             cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + " " + dataSource.getWorkPlaceName());
+            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "　" + dataSource.getWorkPlaceName());
             isWplPrinted = true;
             countRow++;
             countItem++;
@@ -160,7 +160,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                             cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                             cells.merge(countRow, 0, 1, maxColumnData, true, true);
                             cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + " " + dataSource.getWorkPlaceName());
+                            cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "　" + dataSource.getWorkPlaceName());
                             countRow++;
                             countItem++;
                         }
@@ -192,7 +192,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                     cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                     cells.merge(countRow, 0, 1, maxColumnData, true, true);
                     cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                    cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + " " + dataSource.getWorkPlaceName());
+                    cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "　" + dataSource.getWorkPlaceName());
                     countRow++;
                     countItem++;
 
@@ -203,7 +203,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                         countRow, maxColumn));
                 cells.merge(countRow, 0, 1, maxColumnData, true, true);
                 cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_405") + code + " " + name);
+                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_405") + code + "　" + name);
                 isWplPrinted = false;
                 countRow++;
                 countItem++;
@@ -225,14 +225,14 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
                                 cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                                 cells.merge(countRow, 0, 1, maxColumnData, true, true);
                                 cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + " " + dataSource.getWorkPlaceName());
+                                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_404") + dataSource.getWorkPlaceCode() + "　" + dataSource.getWorkPlaceName());
                                 countRow++;
                                 countItem++;
                                 cells.copyRow(cells, 4, countRow);
                                 cells.clearContents(CellArea.createCellArea(countRow, 0, countRow, maxColumn));
                                 cells.merge(countRow, 0, 1, maxColumnData, true, true);
                                 cells.get(countRow, 0).getStyle().setVerticalAlignment(TextAlignmentType.LEFT);
-                                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_405") + code + " " + name);
+                                cells.get(countRow, 0).setValue(TextResource.localize("KWR003_405") + code + "　" + name);
                                 countRow++;
                                 countItem++;
                             }

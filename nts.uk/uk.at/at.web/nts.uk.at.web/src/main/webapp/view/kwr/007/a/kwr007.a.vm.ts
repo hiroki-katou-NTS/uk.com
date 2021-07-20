@@ -13,6 +13,7 @@ module nts.uk.at.view.kwr007.a {
     //getPeriodListing: 'at/function/kwr/005/a/beginningmonth',
     getPeriodList: 'at/record/kwr/007/a/arbitraryaggregatio/getlist',
     getPermissions: 'at/function/kwr/007/a/getroleinfor',
+      getDatePeriod: 'at/function/kwr/007/a/getperiod'
   };
 
   @bean()
@@ -81,6 +82,7 @@ module nts.uk.at.view.kwr007.a {
       super();
       const vm = this;
 
+
       vm.getPeriodListing();
       vm.getItemSelection();
       $.when(
@@ -97,9 +99,10 @@ module nts.uk.at.view.kwr007.a {
         $(focusId).focus();
         nts.uk.ui.errors.clearAll();
       });
-
-      vm.CCG001_load();
-      vm.KCP005_load();
+        vm.$ajax(PATH.getDatePeriod).done((data) => {
+            vm.CCG001_load(data);
+            vm.KCP005_load();
+        });
 
     }
 
@@ -116,9 +119,13 @@ module nts.uk.at.view.kwr007.a {
       $('#btnExportExcel').focus();
     }
 
-    CCG001_load() {
+    CCG001_load(date : any) {
       const vm = this;
-      // Set component option
+        if(nts.uk.util.isNullOrUndefined(date)){
+            date =  moment().toISOString();
+        }
+        let baseDate = moment(date,"YYYY/MM/DD").toDate();
+      //Set component option
       vm.ccg001ComponentOption = {
         /** Common properties */
         systemType: 2, //システム区分 - 2: 就業
@@ -132,7 +139,7 @@ module nts.uk.at.view.kwr007.a {
         periodFormatYM: false,
 
         /** Required parameter */
-        baseDate: moment().toISOString(), //基準日
+        baseDate: baseDate, //基準日
         //periodStartDate: periodStartDate, //対象期間開始日
         //periodEndDate: periodEndDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
@@ -575,7 +582,6 @@ module nts.uk.at.view.kwr007.a {
 
     getPeriodListing() {
       const vm = this;
-
       vm.$ajax(PATH.getPeriodList).done((data) => {
         if (data && data.length > 0) {
           _.forEach(data, (x) => {
