@@ -583,6 +583,7 @@ module nts.custom.component {
                                                 ctype: ko.toJS(params.combobox.object.categoryType)
                                             });
                                             params.gridlist.value(undefined);
+											params.gridlist.value.valueHasMutated();
                                         }
                                     }
                                 });
