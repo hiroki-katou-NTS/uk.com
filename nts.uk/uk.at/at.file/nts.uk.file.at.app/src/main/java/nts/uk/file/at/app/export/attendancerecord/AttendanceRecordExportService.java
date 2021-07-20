@@ -1003,14 +1003,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 																				.filter(e -> e.getEmployeeId().equals(employee.getEmployeeId()))
 																				.findFirst().get();
 		
-							attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentCode() + " "
+							attendanceRecRepEmpData.setEmployment(result.getEmployment().getEmploymentCode() + "　"
 									+ result.getEmployment().getEmploymentName().toString());
 							attendanceRecRepEmpData
-									.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
+									.setInvidual(employee.getEmployeeCode() + "　" + employee.getEmployeeName());
 							attendanceRecRepEmpData.setTitle(result.getPosition() == null ? ""
-									: result.getPosition().getPositionCode() + " " + result.getPosition().getPositionName().toString());
+									: result.getPosition().getPositionCode() + "　" + result.getPosition().getPositionName().toString());
 							attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
-									: result.getWorkplace().getWorkplaceCode().toString() + " "
+									: result.getWorkplace().getWorkplaceCode().toString() + "　"
 											+ result.getWorkplace().getWorkplaceName().toString());
 							attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
 									: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
