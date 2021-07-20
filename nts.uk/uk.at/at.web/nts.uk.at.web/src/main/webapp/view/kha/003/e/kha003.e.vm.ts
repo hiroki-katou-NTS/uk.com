@@ -1,28 +1,27 @@
 module nts.uk.at.kha003.e {
 
     const API = {
-        update: 'at/screen/kha003/e/update',
-        create: 'at/screen/kha003/e/register'
+        // update: 'at/screen/kha003/e/update',
+        register: 'at/screen/kha003/e/register'
     };
 
     @bean()
     export class ViewModel extends ko.ViewModel {
         enable: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
-        isCopy: KnockoutObservable<boolean>;
+        overwrite: KnockoutObservable<boolean>;
         dateValue: KnockoutObservable<any>;
         startDateString: KnockoutObservable<string>;
         endDateString: KnockoutObservable<string>;
         manHour: CodeName = new CodeName('', '');
         e1718ManHour: CodeName = new CodeName('', '');
-        isUpdateMode: KnockoutObservable<boolean>;
 
         constructor() {
             super();
             const vm = this;
             vm.enable = ko.observable(true);
             vm.required = ko.observable(true);
-            vm.isCopy = ko.observable(false);
+            vm.overwrite = ko.observable(false);
 
             vm.startDateString = ko.observable("");
             vm.endDateString = ko.observable("");
@@ -37,28 +36,30 @@ module nts.uk.at.kha003.e {
                 vm.dateValue().endDate = value;
                 vm.dateValue.valueHasMutated();
             });
-            vm.isUpdateMode = ko.observable(false);
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
             vm.$window.storage('kha003ERequiredData').done((data: any) => {
-                console.log("data:" + data.code)
                 vm.manHour.code(data.code);
                 vm.manHour.name(data.name);
-            })
+            });
         }
 
         mounted() {
             const vm = this;
+            $("#E1_7").focus();
         }
 
         /**
          * Event on click cancel button.
          */
         public cancel(): void {
-            nts.uk.ui.windows.close();
+            const vm = this;
+            vm.$window.storage('kha003EShareData', undefined).then(() => {
+                nts.uk.ui.windows.close();
+            });
         }
 
         /**
@@ -72,21 +73,21 @@ module nts.uk.at.kha003.e {
                 }
                 else {
                     let command = {
-                        sourcecode: vm.e1718ManHour.code(),
-                        destinationCode: vm.manHour.code(),
+                        sourcecode: vm.manHour.code(),
+                        destinationCode: vm.e1718ManHour.code(),
                         name: vm.e1718ManHour.name(),
-                        isCopy: vm.isCopy(),
+                        overwrite: vm.overwrite(),
                     };
                     vm.$blockui("invisible");
-                    vm.$ajax(vm.isUpdateMode() ? API.update : API.create, command).done((data) => {
-                        vm.$dialog.info({messageId: "Msg_15"})
+                    vm.$ajax(API.register, command).done(() => {
+                        vm.$dialog.info({messageId: "Msg_2167"})
                             .then(() => {
                                 let shareData={
                                     duplicatedCode:vm.e1718ManHour.code()
-                                }
+                                };
                                 vm.$window.storage('kha003EShareData',shareData).then(() => {
                                     nts.uk.ui.windows.close();
-                                })
+                                });
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});

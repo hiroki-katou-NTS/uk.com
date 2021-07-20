@@ -162,8 +162,10 @@ module nts.uk.at.kha003.a {
          * */
         excutionModeToUpDateMode() {
             const vm = this;
-            vm.isExecutionMode(false);
-            vm.isUpdateMode(true);
+            if (vm.isExecutionMode()) {
+                vm.isExecutionMode(false);
+                vm.isUpdateMode(true);
+            }
         }
 
         /**

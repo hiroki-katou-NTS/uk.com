@@ -20,6 +20,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -37,13 +38,26 @@ public class RegisterManHourSummaryTableDuplicateCommandHandler extends CommandH
         if (command == null) return;
 
         // Check duplicate
-        val checkDuplicate = this.repository.get(AppContexts.user().companyId(), command.getSourcecode());
-        if (!checkDuplicate.isPresent()) {
-            val copy = this.repository.get(AppContexts.user().companyId(), command.getDestinationCode()).get();
-            this.repository.insert(command.toDomain(copy));
-        } else {
+        Optional<ManHourSummaryTableFormat> checkDuplicate = this.repository.get(AppContexts.user().companyId(), command.getDestinationCode());
+        if (checkDuplicate.isPresent() && !command.isOverwrite())
             throw new BusinessException("Msg_2166");
-        }
+        ManHourSummaryTableFormat source = this.repository.get(AppContexts.user().companyId(), command.getSourcecode()).get();
+        ManHourSummaryTableFormat copy = new ManHourSummaryTableFormat(
+                new ManHourSummaryTableCode(command.getDestinationCode()),
+                new ManHourSummaryTableName(command.getName()),
+                new DetailFormatSetting(
+                        DisplayFormat.of(source.getDetailFormatSetting().getDisplayFormat().value),
+                        TotalUnit.of(source.getDetailFormatSetting().getTotalUnit().value),
+                        EnumAdaptor.valueOf(source.getDetailFormatSetting().getDisplayVerticalHorizontalTotal().value, NotUseAtr.class),
+                        source.getDetailFormatSetting().getSummaryItemList().stream().map(item -> new SummaryItem(item.getHierarchicalOrder(),
+                                SummaryItemType.of(item.getSummaryItemType().value)))
+                                .collect(Collectors.toList())
+                )
+        );
+        if (checkDuplicate.isPresent())
+            this.repository.update(copy);
+        else
+            this.repository.insert(copy);
     }
 
 

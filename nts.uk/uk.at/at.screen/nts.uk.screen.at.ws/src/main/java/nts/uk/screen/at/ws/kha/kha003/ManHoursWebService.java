@@ -40,8 +40,8 @@ public class ManHoursWebService extends WebService {
     @Inject
     private RegisterManHourSummaryTableDuplicateCommandHandler registerDuplicate;
 
-    @Inject
-    private UpdateManHourSummaryTableDuplicateCommandHandler updateDuplicate;
+//    @Inject
+//    private UpdateManHourSummaryTableDuplicateCommandHandler updateDuplicate;
 
     @Inject
     private DeleteManHourSummaryTableCommandHandler delete;
@@ -110,9 +110,9 @@ public class ManHoursWebService extends WebService {
         this.registerDuplicate.handle(command);
     }
 
-    @POST
-    @Path("e/update")
-    public void updateManHourSummaryTableDuplicate(RegisterOrUpdateManHourSummaryTableDuplicateCommand command) {
-        this.updateDuplicate.handle(command);
-    }
+//    @POST
+//    @Path("e/update")
+//    public void updateManHourSummaryTableDuplicate(RegisterOrUpdateManHourSummaryTableDuplicateCommand command) {
+//        this.updateDuplicate.handle(command);
+//    }
 }
