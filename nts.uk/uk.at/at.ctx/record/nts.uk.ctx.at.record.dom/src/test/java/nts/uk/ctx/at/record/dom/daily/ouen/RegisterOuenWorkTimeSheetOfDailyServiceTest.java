@@ -128,9 +128,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	// return require.編集状態を追加する($日別実績の編集状態) [prv-1]
 	@Test
 	public void test4() {
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(1);
 
@@ -144,7 +141,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				result = Optional.of(ouenWorkTime);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
-				result = editStateOfDailyPerformance;
 			}
 		};
 
@@ -179,8 +175,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 						Optional.empty(), Optional.empty()),
 				null);
 
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
 		this.ouenWorkTimeSheetOfDailys.add(attendance);
 
 		List<Integer> atendentceIds = new ArrayList<>();
@@ -199,7 +193,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				result = Optional.of(ouenWorkTime);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
-				result = editStateOfDailyPerformance;
 			}
 		};
 
