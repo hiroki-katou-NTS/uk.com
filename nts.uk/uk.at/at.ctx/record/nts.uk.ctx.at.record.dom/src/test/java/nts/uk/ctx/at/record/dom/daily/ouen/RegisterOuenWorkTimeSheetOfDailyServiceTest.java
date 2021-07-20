@@ -78,7 +78,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
@@ -119,7 +119,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
@@ -165,7 +165,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
@@ -197,7 +197,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily ouenWorkTime = OuenWorkTimeSheetOfDaily.create(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AttendanceItemToChange attendanceItemToChange = new AttendanceItemToChange(atendentceIds, ouenWorkTime);
