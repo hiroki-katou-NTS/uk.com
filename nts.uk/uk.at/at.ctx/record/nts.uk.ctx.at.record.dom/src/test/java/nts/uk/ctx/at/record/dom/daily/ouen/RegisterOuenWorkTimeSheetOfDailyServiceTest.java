@@ -51,20 +51,15 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	// createEditState => Insert
 	@Test
 	public void test2() {
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
 
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(1);
-		atendentceIds.add(2);
-		atendentceIds.add(3);
 
 		new Expectations() {
 			{
 				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
-				result = editStateOfDailyPerformance;
 			}
 		};
 
@@ -138,8 +133,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(1);
-		atendentceIds.add(2);
-		atendentceIds.add(3);
 
 		OuenWorkTimeSheetOfDaily ouenWorkTime = OuenWorkTimeSheetOfDaily.create(empId, ymd, ouenWorkTimeSheetOfDailys);
 
@@ -192,8 +185,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(1);
-		atendentceIds.add(2);
-		atendentceIds.add(3);
 
 		OuenWorkTimeSheetOfDaily ouenWorkTime = OuenWorkTimeSheetOfDaily.create(empId, ymd, ouenWorkTimeSheetOfDailys);
 
