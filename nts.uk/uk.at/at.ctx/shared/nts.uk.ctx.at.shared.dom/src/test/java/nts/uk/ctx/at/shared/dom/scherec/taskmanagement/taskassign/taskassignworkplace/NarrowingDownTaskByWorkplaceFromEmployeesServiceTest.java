@@ -32,10 +32,12 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 	String companyID = "companyID";
 	TaskFrameNo taskFrameNo = new TaskFrameNo(1);
 	List<String> listWpkIds = new ArrayList<>();
+	
 	NarrowingDownTaskByWorkplace narrowingDownTask = new NarrowingDownTaskByWorkplace("0000001", taskFrameNo,
 			new ArrayList<>());
-	NarrowingDownTaskByWorkplace narrowingDownTask2 = new NarrowingDownTaskByWorkplace("0000001", taskFrameNo,
+	NarrowingDownTaskByWorkplace narrowingDownTask2 = new NarrowingDownTaskByWorkplace("0000003", new TaskFrameNo(2),
 			new ArrayList<>());
+
 
 	// $職場リスト != require.職場を取得する(会社ID,社員ID,基準日) == empty
 	@Test
@@ -92,7 +94,7 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 				result = listWpkIds;
 
 				require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
-				result = Optional.of(narrowingDownTask2);
+				result = Optional.of(narrowingDownTask);
 			}
 		};
 
@@ -122,9 +124,9 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 						result = Optional.empty();
 						
 						require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
-						result = Optional.of(narrowingDownTask2);
+						result = Optional.of(narrowingDownTask);
 						
-						require.getNarrowingDownTaskByWorkplace("0000003", taskFrameNo);
+						require.getNarrowingDownTaskByWorkplace("0000003", new TaskFrameNo(2));
 						result = Optional.of(narrowingDownTask2);
 					}
 				};
