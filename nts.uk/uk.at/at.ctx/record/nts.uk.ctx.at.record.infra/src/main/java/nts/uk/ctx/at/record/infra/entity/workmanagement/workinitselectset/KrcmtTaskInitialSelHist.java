@@ -82,15 +82,14 @@ public class KrcmtTaskInitialSelHist extends ContractCompanyUkJpaEntity implemen
 		this.taskCd5 = taskCd5;
 	}
 	
-	public static List<KrcmtTaskInitialSelHist> toEntity(TaskInitialSelHist domain){
-		
-		return domain.getLstHistory().stream().map( c -> new KrcmtTaskInitialSelHist(
-				new KrcmtTaskInitialSelHistPk(c.getEmpID(), c.getDatePeriod().start()) ,
+	public static List<KrcmtTaskInitialSelHist> toEntity(TaskInitialSelHist domain){		
+		return domain.getLstHistory().stream().map(c -> new KrcmtTaskInitialSelHist(
+				new KrcmtTaskInitialSelHistPk(domain.getEmpId(), c.getDatePeriod().start()),
 				c.getDatePeriod().end(),
-				c.getTaskItem().getOtpWorkCode1().isPresent() ? "" : c.getTaskItem().getOtpWorkCode1().get().v(),
-				c.getTaskItem().getOtpWorkCode2().isPresent() ? "" : c.getTaskItem().getOtpWorkCode2().get().v(),
-				c.getTaskItem().getOtpWorkCode3().isPresent() ? "" : c.getTaskItem().getOtpWorkCode3().get().v(),
-				c.getTaskItem().getOtpWorkCode4().isPresent() ? "" : c.getTaskItem().getOtpWorkCode4().get().v(),
-				c.getTaskItem().getOtpWorkCode5().isPresent() ? "" : c.getTaskItem().getOtpWorkCode5().get().v()) ).collect(Collectors.toList());
+				c.getTaskItem().getOtpWorkCode1().isPresent() ? c.getTaskItem().getOtpWorkCode1().get().v() : "",
+				c.getTaskItem().getOtpWorkCode2().isPresent() ? c.getTaskItem().getOtpWorkCode2().get().v() : "",
+				c.getTaskItem().getOtpWorkCode3().isPresent() ? c.getTaskItem().getOtpWorkCode3().get().v() : "",
+				c.getTaskItem().getOtpWorkCode4().isPresent() ? c.getTaskItem().getOtpWorkCode4().get().v() : "",
+				c.getTaskItem().getOtpWorkCode5().isPresent() ? c.getTaskItem().getOtpWorkCode5().get().v() : "")).collect(Collectors.toList());
 	}
 }

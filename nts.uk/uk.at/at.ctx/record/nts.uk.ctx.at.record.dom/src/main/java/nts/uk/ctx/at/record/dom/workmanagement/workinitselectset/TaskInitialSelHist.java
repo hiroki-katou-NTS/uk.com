@@ -37,8 +37,9 @@ public class TaskInitialSelHist extends AggregateRoot
 		// $最新の履歴 = 最新履歴の履歴項目()
 		Optional<TaskInitialSel> data = this.latestStartItem();
 		// 追加する(追加する履歴項目)
-		List<TaskInitialSel> lstTask = new ArrayList<TaskInitialSel>();
-		lstTask.add(taskInitialSel);
+//		List<TaskInitialSel> lstTask = new ArrayList<TaskInitialSel>();
+//		lstTask.add(taskInitialSel);
+		lstHistory.add(taskInitialSel);
 
 		if (data.isPresent()) {
 			// @履歴リスト：except $最新の履歴
@@ -60,8 +61,8 @@ public class TaskInitialSelHist extends AggregateRoot
 		//	$直前の履歴 = 直前の履歴の履歴項目(追加する履歴項目)	
 		Optional<TaskInitialSel> data = this.immediatelyBefore(taskInitialSel);
 		//		削除する(削除する履歴項目)	
-		List<TaskInitialSel> lstTask = new ArrayList<TaskInitialSel>();
-		lstTask.remove(taskInitialSel);
+//		List<TaskInitialSel> lstTask = new ArrayList<TaskInitialSel>();
+		lstHistory.remove(taskInitialSel);
 		//	if $直前の履歴.isPresent
 		if(data.isPresent()){
 			//	$最大終了日 = 年月日#年月日を指定(9999,12,31)
@@ -78,8 +79,13 @@ public class TaskInitialSelHist extends AggregateRoot
 	public void changeHistory(TaskInitialSel taskInitialSel , DatePeriod datePeriod){
 		//	$直前の履歴 = 直前の履歴の履歴項目(追加する履歴項目)	
 		Optional<TaskInitialSel> data = this.immediatelyAfter(taskInitialSel);
+		
 		//	期間を変更する(変更する履歴項目,期間)	
-		this.exValidateIfCanChangeSpan(data.get(), datePeriod);
+		this.exValidateIfCanChangeSpan(taskInitialSel, datePeriod);
+		this.changeSpan(taskInitialSel, datePeriod);
+		
+//		lstHistory.remove(taskInitialSel);
+//		lstHistory.add(taskInitialSel);
 		//	if $直前の履歴.isPresent
 		if(data.isPresent()){
 			//@履歴リスト：except $直前の履歴	
@@ -88,8 +94,7 @@ public class TaskInitialSelHist extends AggregateRoot
 			data.get().shortenStartToAccept(taskInitialSel); 
 			// @履歴リスト.追加($直前の履歴)		
 			lstHistory.add(data.get());
-		}
-			
+		} 		
 	}
 	@Override
 	public List<TaskInitialSel> items() {

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.workmanagement.workinitselectset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,23 +32,36 @@ public class JpaTaskInitialSelHistRepo extends JpaRepository implements TaskInit
 	
 	private static final String SELECT_BY_BASE_DATE = SELECT_BY_SID  
 										           + " AND c.pk.startDate <= :baseDate "
-										           + " AND c.endDate >= baseDate";
+										           + " AND c.endDate >= :baseDate";
 	
-	private static final String SELECT_BY_CID = " SELECT c FROM KrcmtTaskInitialSelHist c WHERE c.companyId = :empId "; 
+	private static final String SELECT_BY_CID = " SELECT c FROM KrcmtTaskInitialSelHist c WHERE c.companyId = :companyId "; 
 
 	@Override
 	public void insert(TaskInitialSelHist taskInitialSelHist) {
-		this.commandProxy().insert(KrcmtTaskInitialSelHist.toEntity(taskInitialSelHist));
+		this.commandProxy().insertAll(KrcmtTaskInitialSelHist.toEntity(taskInitialSelHist));
 		
 	}
 
 	@Override
 	public void update(TaskInitialSelHist taskInitialSelHist) {
-		KrcmtTaskInitialSelHistPk pk = new KrcmtTaskInitialSelHistPk(taskInitialSelHist.getEmpId(), taskInitialSelHist.getLstHistory().get(0).getDatePeriod().start());
-		Optional<KrcmtTaskInitialSelHist> entity = this.queryProxy().find(pk, KrcmtTaskInitialSelHist.class);
-		if(entity.isPresent()){
-		this.commandProxy().update(KrcmtTaskInitialSelHist.toEntity(taskInitialSelHist));
-		}
+		List<KrcmtTaskInitialSelHist> listKrcmtTaskInitialSelHists = new ArrayList<KrcmtTaskInitialSelHist>();
+		
+		taskInitialSelHist.getLstHistory().stream().forEach(hist -> {
+			KrcmtTaskInitialSelHistPk pk = new KrcmtTaskInitialSelHistPk(taskInitialSelHist.getEmpId(), hist.getDatePeriod().start());
+			Optional<KrcmtTaskInitialSelHist> entity = this.queryProxy().find(pk, KrcmtTaskInitialSelHist.class);
+			if (entity.isPresent()) {
+				entity.get().endDate = hist.end();
+				entity.get().taskCd1 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode1().get().v() : "";
+				entity.get().taskCd2 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode2().get().v() : "";
+				entity.get().taskCd3 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode3().get().v() : "";
+				entity.get().taskCd4 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode4().get().v() : "";
+				entity.get().taskCd5 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode5().get().v() : "";
+				listKrcmtTaskInitialSelHists.add(entity.get());
+			}
+		});
+
+		this.commandProxy().updateAll(listKrcmtTaskInitialSelHists);
+
 	}
 
 	@Override
