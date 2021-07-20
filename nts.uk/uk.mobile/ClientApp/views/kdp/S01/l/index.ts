@@ -188,7 +188,6 @@ export class KdpS01LComponent extends Vue {
             vm.$modal.error({ messageId: 'MsgB_24' });
         } else {
             
-            //vm.initTask();
             let results =_.filter(vm.tasks, function(item) {
                 return item.displayInfo.taskName.indexOf(vm.taskNameCd) > -1 || item.code.indexOf(vm.taskNameCd) > -1 ;
                 });
@@ -210,11 +209,9 @@ export class KdpS01LComponent extends Vue {
 
     public onClickCancel() {
         let vm = this;
-        vm.initTask();
         vm.taskNameCd = '';
         vm.reload(0);
         vm.reloadData();
-        vm.framePosition = 0;
 
     }
 

@@ -164,8 +164,6 @@ module nts.uk.at.view.kdp002.l {
                     vm.model(result.task);
                     vm.taskArray = _.chunk(result.task, 6);
                     vm.framePosition.valueHasMutated();
-                } else {
-                    vm.closeDialogL();
                 }
 
             });
@@ -203,45 +201,28 @@ module nts.uk.at.view.kdp002.l {
 
             } else {
              
-                let taskParam: ITaskParam = {sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''};
+                let results =_.filter(ko.unwrap(vm.model), function(item){
+                    return item.displayInfo.taskName.indexOf(ko.unwrap(vm.searchValue)) > -1 || item.code.indexOf(ko.unwrap(vm.searchValue)) > -1 ;
+                    });
 
-                vm.$ajax('at', API.GET_EMPLOYEE_TASKS, taskParam)
-                    .then((result: Result) => {
-    
-                        if (result) {
-                            if (result.taskFrameUsageSetting) {
-                                vm.workFrameSetting(result.taskFrameUsageSetting.taskFrameSetting);
-                            }
-                            vm.model(result.task);
-                        
-                        }
-    
-                    }).then(()=> {
-                        let results =_.filter(ko.unwrap(vm.model), function(item){
-                            return item.displayInfo.taskName.indexOf(ko.unwrap(vm.searchValue)) > -1 || item.code.indexOf(ko.unwrap(vm.searchValue)) > -1 ;
-                            });
-        
-                        // L2_1の文字を含む作業見つからなかった場合
-                        if (results.length == 0) {
-                            vm.$dialog.error({ messageId: 'MsgB_25' });
-                            vm.taskArray = _.chunk(ko.unwrap(vm.model), 6);
-                        } else {
-                            vm.taskArray = _.chunk(results, 6);
-                        }
+                // L2_1の文字を含む作業見つからなかった場合
+                if (results.length == 0) {
+                    vm.$dialog.error({ messageId: 'MsgB_25' });
+                    vm.taskArray = _.chunk(ko.unwrap(vm.model), 6);
+                } else {
+                    vm.taskArray = _.chunk(results, 6);
+                }
 
-                        vm.reload(0);
-                        vm.framePosition.valueHasMutated();
-                    })
+                vm.reload(0);
+                vm.framePosition.valueHasMutated();
+            
             }
 
         }
 
 		onClickCancel() {
             const vm = this;
-            let taskParam: ITaskParam = {sid: vm.empId, workFrameNo: 1, upperFrameWorkCode: ''};
             if (ko.unwrap(vm.searchValue) != '') {
-                vm.getTask(taskParam);
-                vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(1)]));
                 vm.searchValue('');
                 vm.reload(0);
             }
