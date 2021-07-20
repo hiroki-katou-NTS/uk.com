@@ -475,6 +475,16 @@ module nts.uk.ui.at.kdw013.c {
             vm.combobox.workLocations = ko.computed({
                 read: () => {
                     const settings = ko.unwrap($settings);
+                    
+                    const wkp = ko.unwrap(vm.model.workplace);
+                    
+                    const notFoundItem = {
+                        id: wkp,
+                        code: wkp,
+                        name: vm.$i18n('KDW013_40'),
+                        $raw: null,
+                        selected: false
+                    };
 
                     if (settings) {
                         const { startManHourInputResultDto } = settings;
@@ -489,6 +499,12 @@ module nts.uk.ui.at.kdw013.c {
                                 selected: false,
                                 $raw: m
                             }));
+                        
+                        let selected = _.find(wlcs, (item) => item.code == wkp);
+                        
+                        if (!!wkp && !selected) {
+                            wlcs = [notFoundItem, ...wlcs];
+                        }
 
                         return [{
                             id: '',
@@ -499,7 +515,7 @@ module nts.uk.ui.at.kdw013.c {
                         }, ...wlcs]
                     }
 
-                    return [];
+                    return wkp ? [notFoundItem] : [];
                 },
                 write: (value: DropdownItem[]) => {
 
