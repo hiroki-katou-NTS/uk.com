@@ -24,10 +24,35 @@
 				<div class="cf">
 					<div style="float: left; margin: 5px 16px;">
 						<div class="control-group">
-							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_22')}</div>
-							<input id="search" tabindex="1"
-								data-bind="ntsTextEditor: {value: searchValue, enterkey: enterPress}" />
-							<button id="searchButton" tabindex="2" data-bind="click: search">#{i18n.getText('CAS013_25')}</button>
+							<!--B1_1-->
+							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_21')}</div>
+							<!--B1_2-->
+							<div id="combo-box2" tabindex="1"
+								 data-bind="ntsComboBox: {
+								 			width: '250px',
+											options: itemList,
+											optionsValue: 'code',
+											visibleItemsCount: 5,
+											value: ko.observable(1),
+											optionsText: 'name',
+											editable: false,
+											enable: isEnable,
+											required: false,
+											selectFirstIfNull: false,
+											dropDownAttachedToBody: true,
+											columns: [
+													{ prop: 'code', length: 4 },
+													{ prop: 'name', length: 10 },
+							]}"></div>
+						</div>
+						<div class="control-group">
+							<!--<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_22')}</div>-->
+							<div class="control-group-2">
+								<input id="search" tabindex="2"
+									   data-bind="ntsTextEditor: {value: searchValue, enterkey: enterPress}" />
+								<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_22')}</button>
+								<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_25')}</button>
+							</div>
 						</div>
 						<div class="valign-center control-group">
 							<div data-bind="ntsCheckBox: { checked: special }">#{i18n.getText('CAS013_26')}</div>
@@ -35,9 +60,9 @@
 						<div class="valign-center control-group">
 							<div data-bind="ntsCheckBox: { checked: multi }">#{i18n.getText('CAS013_27')}</div>
 						</div>
-						<table id="grid_container" style="margin: auto;"
+						<table id="grid_container" style="margin: auto;" tabindex="3"
 							data-bind="ntsGridList: {
-											rows: 10,
+											rows: 15,
 											options: dataSource,
 											optionsValue: 'userID',
 											columns: columns,

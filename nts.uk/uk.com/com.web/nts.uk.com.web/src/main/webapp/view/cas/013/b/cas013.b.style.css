@@ -10,3 +10,15 @@ div#grid_container_container.ui-widget.ui-helper-clearfix.ui-corner-all.ui-iggri
 	{
 	margin: auto !important
 }
+
+#combo-box2 {
+	vertical-align: middle;
+}
+
+#searchButton {
+	vertical-align: top;
+}
+
+div.control-group-2 {
+	margin-left: 55px;
+}

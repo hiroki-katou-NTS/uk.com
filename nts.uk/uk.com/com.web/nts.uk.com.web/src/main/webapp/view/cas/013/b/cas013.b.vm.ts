@@ -14,6 +14,14 @@ module nts.uk.com.view.cas013.b.viewmodel {
         special: KnockoutObservable<boolean>;
         multi: KnockoutObservable<boolean>;
 
+        //B1_2
+        itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        selectedCode: KnockoutObservable<string>;
+        isEnable: KnockoutObservable<boolean>;
+        isEditable: KnockoutObservable<boolean>;
+        isRequired: KnockoutObservable<boolean>;
+        selectFirstIfNull: KnockoutObservable<boolean>;
+
         constructor() {
             var self = this;
             self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
@@ -29,6 +37,18 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 { headerText: nts.uk.resource.getText("CAS013_30"), key: 'userName', width: 200 }
             ];
             self.selectUserID = ko.observable('');
+
+            //B1_2
+            self.itemList = ko.observableArray([
+                new ItemModel('1', '基本給'),
+                new ItemModel('2', '役職手当'),
+                new ItemModel('3', '基本給ながい文字')
+            ]);
+            self.selectedCode = ko.observable('1');
+            self.isEnable = ko.observable(true);
+            self.isEditable = ko.observable(true);
+            self.isRequired = ko.observable(true);
+            self.selectFirstIfNull = ko.observable(true);
         }
 
         search() {
@@ -82,5 +102,14 @@ module nts.uk.com.view.cas013.b.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+    }
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
     }
 }
