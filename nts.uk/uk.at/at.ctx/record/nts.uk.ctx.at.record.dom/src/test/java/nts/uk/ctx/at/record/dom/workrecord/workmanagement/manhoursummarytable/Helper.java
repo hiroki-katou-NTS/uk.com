@@ -98,15 +98,17 @@ public class Helper {
         public static List<SummaryItemDetail> getList(int maxSize) {
             List<SummaryItemDetail> lstSummaryItemDetail = new ArrayList<>();
             List<SummaryItemDetail> lstChildSummaryItemDetail = new ArrayList<>();
-            for (int i = 1; i <= maxSize; i++) {
-                lstChildSummaryItemDetail.add(new SummaryItemDetail(
-                        "0" + i + 1,
-                        new DisplayInformation("0" + i + 1, "NAME" + i + 1),
-                        Collections.emptyList(),
-                        Helper.verticalValueDaily.getList(i),
-                        Optional.of(Helper.verticalValueDaily.getList(i).stream().mapToInt(VerticalValueDaily::getWorkingHours).sum())
-                ));
 
+            for (int c = 1; c <= maxSize; c++) {
+                lstChildSummaryItemDetail.add(new SummaryItemDetail(
+                        "0" + c + 1,
+                        new DisplayInformation("0" + c + 1, "NAME" + c + 1),
+                        Collections.emptyList(),
+                        Helper.verticalValueDaily.getList(c),
+                        Optional.of(Helper.verticalValueDaily.getList(c).stream().mapToInt(VerticalValueDaily::getWorkingHours).sum())
+                ));
+            }
+            for (int i = 1; i <= maxSize; i++) {
                 lstSummaryItemDetail.add(new SummaryItemDetail(
                         "0" + i,
                         new DisplayInformation("0" + i, "NAME" + i),
