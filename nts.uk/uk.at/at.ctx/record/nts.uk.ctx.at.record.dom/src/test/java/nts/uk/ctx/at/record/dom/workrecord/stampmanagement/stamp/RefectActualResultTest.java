@@ -34,7 +34,7 @@ public class RefectActualResultTest {
 				Optional.of(workLocationCD), 
 				Optional.of(new SupportCardNumber(cardNumberSupport)));
 		
-		RefectActualResult data = new RefectActualResult(workInformationStamp, workTimeCode, overtimeDeclaration);
+		RefectActualResult data = new RefectActualResult(workInformationStamp, workTimeCode, overtimeDeclaration, null);
 		NtsAssert.invokeGetters(data);
 	}
 }

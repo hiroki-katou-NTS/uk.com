@@ -52,10 +52,6 @@ public class KshmtWorkcondScheMeth extends ContractUkJpaEntity implements Serial
 	@Column(name = "REF_BUSINESS_DAY_CALENDAR")
 	private Integer refBusinessDayCalendar;
 
-	/** The ref basic work. */
-	@Column(name = "REF_BASIC_WORK")
-	private Integer refBasicWork;
-
 	/** The ref working hours. */
 	@Column(name = "REF_WORKING_HOURS")
 	private Integer refWorkingHours;
@@ -114,16 +110,15 @@ public class KshmtWorkcondScheMeth extends ContractUkJpaEntity implements Serial
 		this.historyId = historyId;
 		this.basicCreateMethod = basicCreateMethod;
 		this.refBusinessDayCalendar = refBusinessDayCalendar;
-		this.refBasicWork = refBasicWork;
 		this.refWorkingHours = refWorkingHours;
 	}
 	
 	public ScheduleMethod toDomain() {
 		WorkScheduleBusCal workScheduleBusCal = null;
-		if(this.refBusinessDayCalendar != null && this.refBasicWork != null &&  this.refWorkingHours != null) {
+		if(this.refBusinessDayCalendar != null  &&  this.refWorkingHours != null) {
 			workScheduleBusCal = new WorkScheduleBusCal(
 					this.refBusinessDayCalendar ==null?null:WorkScheduleMasterReferenceAtr.valueOf(this.refBusinessDayCalendar),
-							this.refBasicWork ==null?null:WorkScheduleMasterReferenceAtr.valueOf(this.refBasicWork),
+					null,
 					this.refWorkingHours ==null?null:TimeZoneScheduledMasterAtr.valueOf(this.refWorkingHours));
 		}
 		return new ScheduleMethod(

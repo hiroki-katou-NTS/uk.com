@@ -15,12 +15,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  */
 public interface SingleDayScheduleSetMemento {
 
-	/**
-	 * Sets the work type code.
-	 *
-	 * @param workTypeCode the new work type code
-	 */
-	void setWorkTypeCode(Optional<WorkTypeCode> workTypeCode);
 
 	/**
 	 * Sets the working hours.

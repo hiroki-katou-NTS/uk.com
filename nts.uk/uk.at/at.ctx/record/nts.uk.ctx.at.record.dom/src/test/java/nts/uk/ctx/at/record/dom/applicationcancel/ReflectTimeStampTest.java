@@ -178,7 +178,7 @@ public class ReflectTimeStampTest {
 						SetPreClockArt.NONE, // 所定時刻セット区分
 						ChangeClockArt.GOING_TO_WORK, // 時刻変更区分
 						ChangeCalArt.NONE), // 計算区分変更対象
-				new RefectActualResult(null, null, null), Optional.empty());
+				new RefectActualResult(null, null, null, null), Optional.empty());
 	}
 
 	private OutputTimeReflectForWorkinfo createInput() {

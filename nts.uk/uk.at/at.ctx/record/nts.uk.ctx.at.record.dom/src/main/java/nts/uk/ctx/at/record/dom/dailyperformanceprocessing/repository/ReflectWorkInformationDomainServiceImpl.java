@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
 
 @Stateless
@@ -17,7 +16,7 @@ public class ReflectWorkInformationDomainServiceImpl implements ReflectWorkInfor
 
 	public boolean changeWorkInformation(WorkInfoOfDailyPerformance workInfo,String companyId) {
 		WorkInformation recordWorkInformation = workInfo.getWorkInformation().getRecordInfo();
-				Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
+				Optional<WorkInformation> singleDaySchedule = workingConditionItemService
 						.getHolidayWorkSchedule(companyId, workInfo.getEmployeeId(), workInfo.getYmd(), recordWorkInformation.getWorkTypeCode().v());
 				if(!singleDaySchedule.isPresent()){
 

@@ -26,8 +26,9 @@ import nts.uk.shr.com.net.Ipv4Address;
 public class EmpInfoTerminalHelper {
 	
 	public static EmpInfoTerminal getEmpInfoTerminalDefault() {
-		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(
-				Ipv4Address.parse("192.168.50.4")), 
+
+		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(
+				Optional.of(Ipv4Address.parse("192.168.50.4")), 
 				new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode("1"), 
 				Optional.of(new EmpInfoTerSerialNo("1")), 
@@ -40,8 +41,9 @@ public class EmpInfoTerminalHelper {
 	}
 	
 	public static EmpInfoTerminal getEmpInfoTerminalDefault2() {
-		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(
-				Ipv4Address.parse("192.168.50.4")), 
+
+		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(
+				Optional.of(Ipv4Address.parse("192.168.50.4")), 
 				new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode("1"), 
 				Optional.of(new EmpInfoTerSerialNo("1")), 

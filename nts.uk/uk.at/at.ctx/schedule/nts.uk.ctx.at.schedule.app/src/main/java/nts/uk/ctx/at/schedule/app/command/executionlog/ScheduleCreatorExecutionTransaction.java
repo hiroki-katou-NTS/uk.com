@@ -1161,8 +1161,8 @@ public class ScheduleCreatorExecutionTransaction {
 
 				// 「労働条件。曜日別勤務」を確認する
 				// if 取得できない
-				if (itemDto.get().getWorkDayOfWeek() == null
-						|| !this.checkDayOfWeek(itemDto.get().getWorkDayOfWeek(), dateInPeriod)) {
+				if (itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek() == null
+						|| !this.checkDayOfWeek(itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek(), dateInPeriod)) {
 
 					// ドメインモデル「スケジュール作成エラーログ」を返す
 					String errorContent = this.internationalization.localize("Msg_594", "#Msg_594").get();
@@ -1176,21 +1176,25 @@ public class ScheduleCreatorExecutionTransaction {
 					Optional<SingleDaySchedule> daySchedule = this.getDaySchedule(itemDto, dayOfWeek);
 					// データある
 					if (daySchedule.isPresent()) {
-						workInformation = daySchedule.map(m -> {
-							String workTypeCode = m.getWorkTypeCode().map(t -> t.v()).orElse("");
-							String workdTimeCode = m.getWorkTimeCode().map(t -> t.v()).orElse("");
-
-							return new WorkInformation(workTypeCode, workdTimeCode);
-						}).orElse(null);
-					} else {
+						String workTypeCode = "" , workdTimeCode = "";
+						if(itemDto.get().getWorkCategory().getWorkType() != null && itemDto.get().getWorkCategory().getWorkType().getHolidayTimeWTypeCode() != null){
+							workTypeCode = itemDto.get().getWorkCategory().getWorkType().getHolidayTimeWTypeCode().v();
+						}
+						
+						workdTimeCode = daySchedule.map(m -> {return m.getWorkTimeCode().map(t -> t.v()).orElse("");}).orElse("");
+						
+						workInformation = new WorkInformation(workTypeCode, workdTimeCode);
+					}
+					else {
 						// データがない
 						// 「個人勤務日区分別勤務」。休日時を取得する
 						workInformation = itemDto.map(m -> {
-							SingleDaySchedule sched = m.getWorkCategory().getHolidayTime();
-							String workTypeCode = sched.getWorkTypeCode().map(t -> t.v()).orElse("");
-							String workdTimeCode = sched.getWorkTimeCode().map(t -> t.v()).orElse("");
+							//SingleDaySchedule sched = m.getWorkCategory().getHolidayTime();
+							//WorkTypeCode sched = m.getWorkCategory().getWorkType().getOnHolidays();
+							String workTypeCode =  m.getWorkCategory().getWorkType().getHolidayTimeWTypeCode().v();
+							//String workdTimeCode = sched.getWorkTimeCode().map(t -> t.v()).orElse("");
 
-							return new WorkInformation(workTypeCode, workdTimeCode);
+							return new WorkInformation(workTypeCode, null);
 						}).orElse(null);
 					}
 					return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
@@ -1363,33 +1367,34 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private Optional<SingleDaySchedule> getDaySchedule(Optional<WorkCondItemDto> itemDto, DayOfWeek dayOfWeek) {
 		Optional<SingleDaySchedule> daySchedule = Optional.empty();
+		
 		switch (dayOfWeek.value) {
 		case 1: {
-			daySchedule = itemDto.get().getWorkDayOfWeek().getMonday();
+			daySchedule = itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek().getMonday();
 			break;
 		}
 		case 2: {
-			daySchedule = itemDto.get().getWorkDayOfWeek().getTuesday();
+			daySchedule = itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek().getTuesday();
 			break;
 		}
 		case 3: {
-			daySchedule = itemDto.get().getWorkDayOfWeek().getWednesday();
+			daySchedule = itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek().getWednesday();
 			break;
 		}
 		case 4: {
-			daySchedule = itemDto.get().getWorkDayOfWeek().getThursday();
+			daySchedule = itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek().getThursday();
 			break;
 		}
 		case 5: {
-			daySchedule = itemDto.get().getWorkDayOfWeek().getFriday();
+			daySchedule = itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek().getFriday();
 			break;
 		}
 		case 6: {
-			daySchedule = itemDto.get().getWorkDayOfWeek().getSaturday();
+			daySchedule = itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek().getSaturday();
 			break;
 		}
 		case 7: {
-			daySchedule = itemDto.get().getWorkDayOfWeek().getSunday();
+			daySchedule = itemDto.get().getWorkCategory().getWorkTime().getDayOfWeek().getSunday();
 			break;
 		}
 		}
@@ -1416,7 +1421,7 @@ public class ScheduleCreatorExecutionTransaction {
 				.get().getReferenceWorkingHours();
 
 		// if 個人勤務日別
-		if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.PERSONAL_WORK_DAILY.value) {
+		if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.WEEKDAYS.value) {
 
 			// 個人勤務日別をもとに「就業時間帯コード」を変換する - chưa tìm được thuật toán này
 			TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()

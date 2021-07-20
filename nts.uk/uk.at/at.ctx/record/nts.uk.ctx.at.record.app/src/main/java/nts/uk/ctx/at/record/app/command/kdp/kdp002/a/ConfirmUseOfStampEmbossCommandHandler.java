@@ -222,7 +222,7 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
 		}
 
 		@Override

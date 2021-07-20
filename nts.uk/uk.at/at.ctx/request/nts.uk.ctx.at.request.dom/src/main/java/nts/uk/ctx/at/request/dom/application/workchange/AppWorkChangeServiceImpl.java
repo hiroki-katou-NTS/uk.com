@@ -170,7 +170,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		}
 		// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードがINPUT．「勤務種類リスト」にあるかをチェックする
 		WorkingConditionItem workingConditionItem = personalLablorCodition.get();
-		Optional<WorkTypeCode> opConditionWktypeCD = workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTypeCode();
+		Optional<WorkTypeCode> opConditionWktypeCD = Optional.of(workingConditionItem.getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
 		List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 		if(opConditionWktypeCD.isPresent() && workTypeCDLst.contains(opConditionWktypeCD.get().v())) {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
@@ -193,7 +193,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 			result.setWorkType(workTypeLst.get(0));
 		}
 		// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードがINPUT．「就業時間帯リスト」にあるかをチェックする
-		Optional<WorkTimeCode> opConditionWktimeCD = workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode();
+		Optional<WorkTimeCode> opConditionWktimeCD = workingConditionItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
 		List<String> workTimeCDLst = workTimeLst.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 		if(!opConditionWktimeCD.isPresent() && !workTimeCDLst.contains(opConditionWktimeCD.get().v())) {
 			// OUTPUT「選択する就業時間帯」をセットする

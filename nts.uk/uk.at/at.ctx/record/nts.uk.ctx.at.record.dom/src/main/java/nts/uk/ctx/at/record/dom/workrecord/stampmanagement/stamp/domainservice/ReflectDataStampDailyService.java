@@ -84,7 +84,7 @@ public class ReflectDataStampDailyService {
 				dailyOneDay.getIntegrationOfDaily(),
 				changeDailyAtt);
 		
-		return stamp.isReflectedCategory();
+		return stamp.getImprintReflectionStatus().isReflectedCategory();
 	}
 
 	public static interface Require {
