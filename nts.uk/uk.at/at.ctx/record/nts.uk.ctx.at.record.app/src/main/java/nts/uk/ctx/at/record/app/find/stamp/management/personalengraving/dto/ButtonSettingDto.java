@@ -33,6 +33,8 @@ public class ButtonSettingDto {
 	private Integer btnDisplayType;
 	
 	private Integer supportWplset;
+	
+	private Integer taskChoiceArt;
 
 	public ButtonSettingDto(ButtonSettings btnSet) {
 		this.btnPositionNo = btnSet.getButtonPositionNo().v();
@@ -55,6 +57,7 @@ public class ButtonSettingDto {
 		});
 
 		this.supportWplset = btnSet.getSupportWplSet().map(m -> m.value).orElse(null);
+		this.taskChoiceArt = btnSet.getTaskChoiceArt().map(m -> m.value).orElse(null);
 		this.usrArt = btnSet.getUsrArt().value;
 		this.audioType = btnSet.getAudioType().value;
 		this.btnDisplayType = changeHalfDay != null
