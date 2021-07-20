@@ -196,8 +196,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 							}
 						}
 						
-						if (__viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2)
-							__viewContext.viewModel.viewmodelA.addTypeOfTask(taskInfo.data.color, taskInfo);
+						//if (__viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2)
+							//__viewContext.viewModel.viewmodelA.addTypeOfTask(taskInfo.data.color, taskInfo);
 					});	
 						
 					dfd.resolve();

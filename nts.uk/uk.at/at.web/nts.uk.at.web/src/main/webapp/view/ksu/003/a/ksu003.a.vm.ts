@@ -307,8 +307,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if(!_.isNil(self.localStore.workSelection)){
 						if(self.localStore.workSelection == 0)
 							mode = "paste";
-						if(self.localStore.workSelection == 1)
+						if(self.localStore.workSelection == 1){
 							mode = "pasteFlex";
+							__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
+						}
+							
 					}
 				}
 				
@@ -3005,6 +3008,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				// add Task time
 				let taskTime = datafilter[0].gcTaskTime;
 				if(taskTime != null && taskTime.length > 0){
+					let typeTask : any = []
 					for (let o = 0; o < taskTime.length; o++) {
 						let taskInfo : any = {
 						data :{
@@ -3012,8 +3016,23 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							text: taskTime[o].taskData.taskDisplayInfoDto.taskAbName,
 							tooltip: taskTime[o].taskData.taskDisplayInfoDto.taskName
 								}
+						}, checkAddType : boolean = false;
+						
+						if (typeTask.length == 0){
+							checkAddType = true;
+						} else {
+							let checkDup = _.filter(typeTask, (tsk : any) => {
+								return taskTime[o].taskData.code == tsk.taskData.code
+							})
+							
+							if (checkDup.length == 0){
+								checkAddType = true;
+							}
 						}
-						self.addTypeOfTask("", taskInfo)
+						
+						if (checkAddType == true)
+						self.addTypeOfTask(taskTime[o].taskData.taskDisplayInfoDto.color, taskInfo)
+					
 					let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 					if (((timeChart2 != null && taskTime[o].timeSpanForCalcDto.end / 5 < timeChart2.startTime) || (timeChart2 == null)) && 
 					timeMinus.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus[0].startTime, timeMinus[0].endTime) ||
