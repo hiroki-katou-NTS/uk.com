@@ -27,6 +27,8 @@ import nts.uk.ctx.sys.auth.dom.password.changelog.PasswordChangeLogRepository;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethod;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.UserInformationUseMethodRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUserRepository;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
@@ -85,7 +87,7 @@ public class UserInformationScreenQuery {
     private AnniversaryRepository anniversaryRepository;
 
     @Inject
-    private PasswordChangeLogRepository passwordChangeLogRepository;
+    private LoginPasswordOfUserRepository loginPasswordOfUserRepo;
 
     @Inject
     private PasswordPolicyRepository passwordPolicyRepository;
@@ -189,9 +191,8 @@ public class UserInformationScreenQuery {
         }
 
         //SQ10 - get パスワード変更ログ
-        List<PasswordChangeLog> passwordChangeLogs = passwordChangeLogRepository.findByUserId(loginUserId, 1);
-        PasswordChangeLog passwordChangeLog = passwordChangeLogs.isEmpty() ? null : passwordChangeLogs.get(0);
-        PasswordChangeLogDto passwordChangeLogDto = PasswordChangeLogDto.toDto(passwordChangeLog);
+        Optional<LoginPasswordOfUser> optLoginPasswordOfUser = loginPasswordOfUserRepo.find(loginUserId);
+        PasswordChangeLogDto passwordChangeLogDto = optLoginPasswordOfUser.isPresent() ? PasswordChangeLogDto.toDto(optLoginPasswordOfUser.get()) : null;
 
         //SQ11 - get パスワードポリシー
         Optional<PasswordPolicy> passwordPolicy = passwordPolicyRepository
