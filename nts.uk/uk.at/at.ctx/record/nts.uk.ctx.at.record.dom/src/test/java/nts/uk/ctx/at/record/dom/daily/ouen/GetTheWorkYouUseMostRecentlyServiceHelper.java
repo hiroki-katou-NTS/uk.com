@@ -31,7 +31,7 @@ public class GetTheWorkYouUseMostRecentlyServiceHelper {
 		List<OuenWorkTimeSheetOfDaily> result = new ArrayList<>();
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 		String empId = "empId";
-		GeneralDate ymd = GeneralDate.today();
+		GeneralDate ymd = GeneralDate.today();	
 
 		for (int i = 1; i < 100; i++) {
 			ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(new SupportFrameNo(i), WorkContent.create(

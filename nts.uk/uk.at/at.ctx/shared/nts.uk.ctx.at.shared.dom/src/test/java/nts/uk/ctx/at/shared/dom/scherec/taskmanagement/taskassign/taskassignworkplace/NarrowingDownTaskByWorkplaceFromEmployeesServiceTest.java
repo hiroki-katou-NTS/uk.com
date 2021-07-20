@@ -119,6 +119,12 @@ public class NarrowingDownTaskByWorkplaceFromEmployeesServiceTest {
 						result = listWpkIds;
 
 						require.getNarrowingDownTaskByWorkplace("0000002", taskFrameNo);
+						result = Optional.empty();
+						
+						require.getNarrowingDownTaskByWorkplace("0000001", taskFrameNo);
+						result = Optional.of(narrowingDownTask2);
+						
+						require.getNarrowingDownTaskByWorkplace("0000003", taskFrameNo);
 						result = Optional.of(narrowingDownTask2);
 					}
 				};

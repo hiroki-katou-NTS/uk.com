@@ -57,7 +57,7 @@ public class CancelConfirmationWorkResultsServiceTest {
 
 		confirmers.add(new Confirmer(confirmSid, dateTime));
 
-		ConfirmationWorkResults confirmationWorkResults = new ConfirmationWorkResults(targetSid, targetYMD, new ArrayList<>());
+		ConfirmationWorkResults confirmationWorkResults = new ConfirmationWorkResults(targetSid, targetYMD, confirmers);
 
 		new Expectations() {
 			{

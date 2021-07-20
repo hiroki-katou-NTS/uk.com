@@ -41,7 +41,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheetOfDailys = new ArrayList<>();
 	private List<EditStateOfDailyPerformance> editStateOfDailyPerformance = new ArrayList<>();
 	private EditStateOfDailyPerformance editStateOfDaily = new EditStateOfDailyPerformance(empId, ymd,
-			new EditStateOfDailyAttd());
+			new EditStateOfDailyAttd(1, EditStateSetting.HAND_CORRECTION_MYSELF));
 
 	// $実績の作業時間帯 notPresent
 	// and attendanceIds == empty
@@ -78,10 +78,14 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+				EnumAdaptor.valueOf(1, EditStateSetting.class));
+
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain));
+		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
 	}
 
 	// $実績の作業時間帯 notPresent
@@ -94,7 +98,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
 
 		List<Integer> atendentceIds = new ArrayList<>();
-		atendentceIds.add(0);
+		atendentceIds.add(1);
 
 		new Expectations() {
 			{
@@ -115,14 +119,18 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+				EnumAdaptor.valueOf(1, EditStateSetting.class));
+
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain));
+		NtsAssert.atomTask(() -> atomtask, any -> require.update(domain1));
 	}
 
-	// $実績の作業時間帯 notPresent
-	// if $更新時間帯.isEmpty
+	// $登録対象.add(require.作業時間帯を削除する($実績の作業時間帯))
+	// return require.編集状態を追加する($日別実績の編集状態) [prv-1]
 	@Test
 	public void test4() {
 		this.editStateOfDailyPerformance.add(editStateOfDaily);
@@ -157,14 +165,19 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+				EnumAdaptor.valueOf(1, EditStateSetting.class));
+
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.delete(domain));
+		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
+
 	}
 
-	// // $実績の作業時間帯 notPresent
-	// // if $更新時間帯.isNotEmpty
+	// $登録対象.add(require.作業時間帯を更新する($更新時間帯))
+	// return require.編集状態を追加する($日別実績の編集状態) [prv-1]
 	@Test
 	public void test5() {
 
@@ -183,6 +196,9 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 		atendentceIds.add(3);
 
 		OuenWorkTimeSheetOfDaily ouenWorkTime = OuenWorkTimeSheetOfDaily.create(empId, ymd, ouenWorkTimeSheetOfDailys);
+
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AttendanceItemToChange attendanceItemToChange = new AttendanceItemToChange(atendentceIds, ouenWorkTime);
 
@@ -210,6 +226,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.update(domain));
+		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
 	}
-
 }

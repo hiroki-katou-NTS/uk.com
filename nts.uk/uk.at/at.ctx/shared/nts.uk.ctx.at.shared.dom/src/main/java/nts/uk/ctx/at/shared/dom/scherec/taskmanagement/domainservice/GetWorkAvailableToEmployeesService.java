@@ -77,12 +77,13 @@ public class GetWorkAvailableToEmployeesService {
     	
     	List<TaskCode> childTaskListfilter = new ArrayList<TaskCode>();
     	//if 子作業.isPresent AND $絞込作業.isPresent
-    	if(!childTaskList.isEmpty() && !listTaskCode.isEmpty())
+    	if(!childTaskList.isEmpty() && !listTaskCode.isEmpty()) {
     		//$利用可能作業 = $子作業：filter $絞込作業.contains($)
     		childTaskListfilter = childTaskList.stream().filter(o->listTaskCode.contains(o)).collect(Collectors.toList());
-    	else 
+    	}else {
     		//$利用可能作業 = $子作業.追加($絞込作業)
     		childTaskList.addAll(listTaskCode);
+    	}
     		childTaskListfilter = childTaskList;
     		
     	//	return require.利用可能作業を取得する(基準日, 作業枠NO, $利用可能作業)	
