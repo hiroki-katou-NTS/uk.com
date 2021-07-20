@@ -3234,38 +3234,53 @@ module nts.uk.ui.at.kdw013.calendar {
                             <tr>
                                 <td style='width:' data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
-                                    <select class="nts-input" data-bind="
-                                            value: $component.params.firstDay,
-                                            options: $component.firstDays,
-                                            optionsText: 'title',
-                                            optionsValue: 'id'
-                                        ">
-                                    </select>
+                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                        width:'85px',
+                                        options: $component.firstDays,
+                                        optionsValue: 'id',
+                                        visibleItemsCount: 20,
+                                        value: $component.params.firstDay,
+                                        optionsText: 'title',
+                                        editable: false,
+                                        required: false,
+                                        selectFirstIfNull: false,
+                                        dropDownAttachedToBody: false,
+                                        columns: [{ prop: 'title', length: 2 }]}" >
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                <select data-bind="
-                                        value: $component.params.scrollTime,
+                                <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                        width:'85px',
                                         options: $component.timeList,
-                                        optionsText: 'text',
                                         optionsValue: 'value',
-                                        visibleItemsCount:5
-                                    ">
-                                </select>
+                                        visibleItemsCount: 7,
+                                        value: $component.params.scrollTime,
+                                        optionsText: 'text',
+                                        editable: false,
+                                        required: false,
+                                        selectFirstIfNull: false,
+                                        dropDownAttachedToBody: false,
+                                        columns: [{ prop: 'text', length: 2 }]}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_15'"></td>
                                 <td>
-                                    <select class="nts-input" data-bind="
-                                            value: $component.params.slotDuration,
-                                            options: $component.slotDurations,
-                                            optionsText: 'title',
-                                            optionsValue: 'id'
-                                        ">
-                                    </select>
+                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                        width:'85px',
+                                        options: $component.slotDurations,
+                                        optionsValue: 'id',
+                                        visibleItemsCount: 20,
+                                        value: $component.params.slotDuration,
+                                        optionsText: 'title',
+                                        editable: false,
+                                        required: false,
+                                        selectFirstIfNull: false,
+                                        dropDownAttachedToBody: false,
+                                        columns: [{ prop: 'title', length: 2 }]}" >
                                 </td>
                             </tr>
                         </tbody>
