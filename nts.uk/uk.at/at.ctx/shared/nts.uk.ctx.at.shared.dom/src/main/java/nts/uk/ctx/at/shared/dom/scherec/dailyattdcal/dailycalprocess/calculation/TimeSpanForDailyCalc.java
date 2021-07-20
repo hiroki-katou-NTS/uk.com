@@ -223,7 +223,7 @@ public class TimeSpanForDailyCalc implements Cloneable {
 	 * start == end
 	 */
 	public boolean isEqual() {
-		return this.isEqual();
+		return this.timeSpan.isEqual();
 	}
 	
 	public TimeSpanForDailyCalc clone() {
