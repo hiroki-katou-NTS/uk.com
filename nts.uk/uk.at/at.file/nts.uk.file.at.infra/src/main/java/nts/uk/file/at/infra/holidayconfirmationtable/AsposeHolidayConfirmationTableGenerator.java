@@ -271,7 +271,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         }
 
         cells.get(row, COLUMN_UNDIGESTED).setValue(String.format("%.1f", content.getHolidayAcquisitionInfo().get().getUndigestedNumber()));
-        if (content.getHolidayAcquisitionInfo().get().getUndigestedNumber() < 0) {
+        if (content.getHolidayAcquisitionInfo().get().getUndigestedNumber() != 0) {
             Style remainingStyle = cells.get(row, COLUMN_UNDIGESTED).getStyle();
             Font remainingFont = remainingStyle.getFont();
             remainingFont.setColor(Color.getRed());
