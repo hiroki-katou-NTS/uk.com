@@ -143,7 +143,7 @@ module cmm015.a.viewmodel {
                     template: '<div style="color: ${cssJT}">${jt}</div>'
                 },
                 {
-                    headerText: vm.$i18n('CMM015_23'), key: 'jtc', width: 100, headerCssClass: 'text-left',
+                    headerText: vm.$i18n('CMM015_34'), key: 'jtc', width: 100, headerCssClass: 'text-left',
                     template: '<a class="custom-link" jtid="${jtID}" emp="${id}" style="color: ${cssJT}">${jtc}</a>'
                 }
             ]);
