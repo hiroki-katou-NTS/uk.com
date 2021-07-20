@@ -199,10 +199,6 @@ export module model {
 
         refActualResult: IRefectActualResultCommand;
 
-        /**
-         * 作業グループ
-         */
-        workGroup: IWorkGroup; 
     }
     export interface IStampButtonCommand {
         /** ページNO */
@@ -235,6 +231,11 @@ export module model {
          */
 
         overtimeDeclaration: IOvertimeDeclarationComamnd;
+
+        /**
+         * 作業グループ
+         */
+         workGroup: IWorkGroup; 
     }
 
     interface IOvertimeDeclarationComamnd {

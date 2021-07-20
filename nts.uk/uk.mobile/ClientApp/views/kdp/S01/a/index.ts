@@ -253,8 +253,8 @@ export class KdpS01AComponent extends Vue {
                 stampDatetime: moment(vm.$dt.now).format('YYYY/MM/DD HH:mm:ss'),
                 stampButton: { pageNo: 1, buttonPositionNo: button.buttonPositionNo, stampMeans: STAMP_MEANS_SMARTPHONE },
                 geoCoordinate: { latitude: null, longitude: null },
-                refActualResult: { cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null },
-                workGroup: { workCode1: null, workCode2: null, workCode3: null, workCode4: null, workCode5: null }              
+                refActualResult: { cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null,
+                workGroup: { workCode1: null, workCode2: null, workCode3: null, workCode4: null, workCode5: null } }              
             };
 
         let latitude = null,
@@ -275,7 +275,7 @@ export class KdpS01AComponent extends Vue {
                     vm.$http.post('at', servicePath.getEmployeeWorkByStamping, {sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).then((result: any) => {
                         if (vm.settingStampCommon.workUse === true && result.data.task.length > 0 && button.taskChoiceArt == 1) {
                             vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
-                                command.workGroup = works;
+                                command.refActualResult.workGroup = works;
 
                             }).then (() => {
                                 vm.$http.post('at', servicePath.registerStamp, command)
@@ -360,7 +360,7 @@ export class KdpS01AComponent extends Vue {
                 vm.$http.post('at', servicePath.getEmployeeWorkByStamping, {sid: userInfo.employeeId, workFrameNo: 1, upperFrameWorkCode: ''}).then((result: any) => {
                     if (vm.settingStampCommon.workUse === true && result.data.task.length > 0 && button.taskChoiceArt == 1) {
                         vm.$modal(KdpS01LComponent, {employeeId: userInfo.employeeId}, { title: 'KDPS01_15' }).then((works: IWorkGroup) => {
-                            command.workGroup = works;
+                            command.refActualResult.workGroup = works;
 
                         }).then (() => {
                             vm.$http.post('at', servicePath.registerStamp, command)
