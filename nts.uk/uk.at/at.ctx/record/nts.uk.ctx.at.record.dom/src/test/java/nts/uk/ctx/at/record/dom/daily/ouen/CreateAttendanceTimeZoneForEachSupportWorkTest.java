@@ -74,20 +74,18 @@ public class CreateAttendanceTimeZoneForEachSupportWorkTest {
 		assertThat(result.get(2).getWorkNo().v()).isEqualTo(3);
 		assertThat(result.get(2).getTimeSheet().getStart().get().getTimeWithDay().get().v()).isEqualTo(300);
 		assertThat(result.get(2).getTimeSheet().getEnd().get().getTimeWithDay().get().v()).isEqualTo(3000);
+		
+		assertThat(result.get(0).getTimeSheet().getWorkNo().v()).isEqualTo(1);
+		assertThat(result.get(0).getWorkContent().getWorkRemarks().isPresent()).isFalse();
+		assertThat(result.get(0).getWorkContent().getWork().isPresent()).isTrue();
+		assertThat(result.get(0).getWorkContent().getWork().get().getWorkCD1().v()).isEqualTo("Dummy");
 	}
 
 	// if $旧の作業時間帯.isPresent
 	@Test
 	public void test1() {
-		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheets = new ArrayList<>();
 		
 		OuenWorkTimeSheetOfDaily ofDaily = OuenWorkTimeSheetOfDailyHelper.getOuenWorkTimeSheetOfDailyDefault();
-
-		OuenWorkTimeSheetOfDailyAttendance ouenTimeSheet = CreateAttendanceTimeZoneHelper.get();
-
-		ouenTimeSheets.add(ouenTimeSheet);
-
-//		OuenWorkTimeSheetOfDaily daily = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenTimeSheets);
 
 		new Expectations() {
 			{
@@ -116,9 +114,5 @@ public class CreateAttendanceTimeZoneForEachSupportWorkTest {
 		assertThat(result.get(2).getWorkNo().v()).isEqualTo(3);
 		assertThat(result.get(2).getTimeSheet().getStart().get().getTimeWithDay().get().v()).isEqualTo(300);
 		assertThat(result.get(2).getTimeSheet().getEnd().get().getTimeWithDay().get().v()).isEqualTo(3000);
-		
-		assertThat(result.get(0).getWorkContent().getWorkRemarks().isPresent()).isFalse();
-		assertThat(result.get(0).getWorkContent().getWork().isPresent()).isTrue();
-		assertThat(result.get(0).getWorkContent().getWork().get().getWorkCD1().v()).isEqualTo("Dummy");
 	}
 }
