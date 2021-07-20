@@ -175,7 +175,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                         count += 5;
                                         itemOnePage = 5;
                                     }
-                                    cells.copyRows(cellsTemplate, 6, count, 2);
+                                    cells.copyRows(cellsTemplate, 10, count, 2);
 
                                 } else {
                                     if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
@@ -212,7 +212,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                     itemOnePage = 5;
                                     count += 5;
                                 }
-                                cells.copyRows(cellsTemplate, 10, count, 2);
+                                cells.copyRows(cellsTemplate, 14, count, 2);
                                 itemOnePage += 2;
                                 // cells.clearContents(10, count, cells.getMaxRow(), cells.getMaxColumn());
                                 cells.get(count, 0).setValue(TextResource.localize("KWR007_304"));
@@ -235,7 +235,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             count += 5;
                             itemOnePage = 5;
                         }
-                        cells.copyRows(cellsTemplate, 10, count, 2);
+                        cells.copyRows(cellsTemplate, 14, count, 2);
                         cells.get(count, 0).setValue(TextResource.localize("KWR007_305",String.valueOf(item.getHierarchy())));
                         itemOnePage += 2;
                         prinDetail(count, listValue, cells, mapIdAnAttribute, query);
@@ -248,7 +248,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                         pageBreak(pageBreaks,count,cells);
                         count += 5;
                     }
-                    cells.copyRows(cellsTemplate, 10, count, 2);
+                    cells.copyRows(cellsTemplate, 14, count, 2);
                     cells.get(count, 0).setValue(TextResource.localize("KWR007_306"));
                     prinDetail(count, totalAll, cells, mapIdAnAttribute, query);
                 }
