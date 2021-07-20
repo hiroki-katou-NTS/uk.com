@@ -3305,8 +3305,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						id: self.userInfor.unit == 0 ? self.userInfor.workplaceId : self.userInfor.workplaceGroupId
 					});
 					setShared('periodR', {
-						startDate: self.dateTimeAfter(),
-						endDate: self.dateTimePrev() 	
+						startDate: self.dateTimePrev() ,
+						endDate: self.dateTimeAfter() 	
 					});
 					setShared('name', self.targetOrganizationName());
 		            nts.uk.ui.windows.sub.modal("/view/ksu/001/r/index.xhtml");
@@ -3317,8 +3317,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						id: self.userInfor.unit == 0 ? self.userInfor.workplaceId : self.userInfor.workplaceGroupId
 					});
 					setShared('period', {
-						startDate: self.dateTimeAfter(),
-						endDate: self.dateTimePrev() 	
+						startDate: self.dateTimePrev(),
+						endDate: self.dateTimeAfter() 	
 					});
 					setShared('name', self.targetOrganizationName());
 					nts.uk.ui.windows.sub.modal("/view/ksu/001/q/index.xhtml");
