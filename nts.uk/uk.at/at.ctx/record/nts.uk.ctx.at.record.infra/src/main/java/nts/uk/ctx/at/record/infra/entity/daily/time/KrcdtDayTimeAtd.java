@@ -1721,6 +1721,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 					this.absenceTime = 0;
 					this.tdvTime = 0;
 					this.tdvShortageTime = 0;
+					this.transferHolidayTime = 0;
 					if(vacationDomain != null) {
 						//年休
 						if(vacationDomain.getAnnual() != null) {
