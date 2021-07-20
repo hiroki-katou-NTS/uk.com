@@ -587,7 +587,7 @@ module nts.uk.ui.at.kdw013.a {
                 // 作業を登録する
                 .then(() => vm.$ajax('at', API.REGISTER, command))
                 .then((response: RegisterWorkContentDto) => {
-
+                    vm.dataChanged(false);
                     if (response) {
     
                         const { lstErrorMessageInfo, lstOvertimeLeaveTime } = response;
@@ -597,11 +597,16 @@ module nts.uk.ui.at.kdw013.a {
                                 .then(() => lstOvertimeLeaveTime);
                         }
                     }
+                    
+                   
 
                     return $
                         .Deferred()
                         .resolve()
                         .then(() => null);
+                    
+                    
+                    
                 })
                 .fail((response: ErrorMessage) => {
                     const { messageId, parameterIds } = response;
