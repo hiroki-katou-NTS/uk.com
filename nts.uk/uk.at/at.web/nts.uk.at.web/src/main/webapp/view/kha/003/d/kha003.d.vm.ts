@@ -10,7 +10,6 @@ module nts.uk.at.kha003.d {
     export class ViewModel extends ko.ViewModel {
         dateHeaders: KnockoutObservableArray<DateHeader>;
         contents: KnockoutObservableArray<any>;
-        tableDataList: KnockoutObservableArray<any>;
         c21Params: KnockoutObservable<any>;
         c31Params: KnockoutObservable<any>;
         c41Params: KnockoutObservable<any>;
@@ -24,7 +23,7 @@ module nts.uk.at.kha003.d {
         cScreenData: KnockoutObservable<any>;
         agCommand: KnockoutObservable<any>;
         preriod: KnockoutObservable<any>;
-
+        maxDateRange: any = 0;
 
         constructor() {
             super();
@@ -39,9 +38,6 @@ module nts.uk.at.kha003.d {
             vm.c51Text = ko.observable();
             vm.dateRange = ko.observable();
             vm.dateHeaders = ko.observableArray([]);
-            vm.tableDataList = ko.observableArray([
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-            ]);
             vm.bScreenData = ko.observable();
             vm.cScreenData = ko.observable();
             vm.agCommand = ko.observable();
@@ -99,6 +95,11 @@ module nts.uk.at.kha003.d {
             });
         }
 
+        /**
+         *  print data
+         *
+         * @param data
+         */
         printContents(data: any) {
             let vm = this;
             var detailFormatSetting = data.summaryTableFormat;
@@ -108,62 +109,61 @@ module nts.uk.at.kha003.d {
             var outputContent = data.outputContent;
             var totalLevel = data.countTotalLevel;
             if (totalLevel == 0) return;
-            // Print data
             switch (totalLevel) {
                 case 1:
-                    vm.printData1Level(outputContent, isDisplayTotal, 31, dispFormat, totalUnit);
+                    vm.printData1Level(outputContent, isDisplayTotal, vm.maxDateRange, dispFormat, totalUnit);
                     break;
                 case 2:
-                    vm.printData2Level(outputContent, isDisplayTotal, 31, dispFormat, totalUnit)
-                    //printData2Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                    vm.printData2Level(outputContent, isDisplayTotal, vm.maxDateRange, dispFormat, totalUnit);
                     break;
                 case 3:
-                    //printData3Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                    vm.printData3Level(outputContent, isDisplayTotal, vm.maxDateRange, dispFormat, totalUnit);
                     break;
                 case 4:
-                    // printData4Level(cellsTemplate, cells, outputContent, isDisplayTotal, maxDateRange, headerList, dispFormat, totalUnit);
+                    vm.printData4Level(outputContent, isDisplayTotal, vm.maxDateRange, dispFormat, totalUnit);
                     break;
             }
         }
 
+        /**
+         *  print data for level 1
+         *
+         * @param outputContent
+         * @param isDispTotal
+         * @param maxDateRange
+         * @param dispFormat
+         * @param unit
+         */
         printData1Level(outputContent: any, isDispTotal: boolean, maxDateRange: any, dispFormat: any, unit: any) {
+            let vm = this;
             var itemDetails = outputContent.itemDetails;
             var countRow = 3;
             for (var i = 1; i <= itemDetails.length; i++) {
                 var level1 = itemDetails[i - 1];
-                /*cells.copyRows(cellsTemplate, isDispTotal ? 11 : 8, countRow, 1);
-                cells.get(countRow, 0).setValue(level1.getDisplayInfo().getName());
-                // Border
-                Cell cell = cells.get(countRow, 0);
-                Style style = cell.getStyle();
-                style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.HAIR, Color.getBlack());
-                cell.setStyle(style);
-                val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());*/
-                for (var c = 1; c < maxDateRange + 1; c++) {
-                    /*cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap1.getOrDefault(headerList.get(c), 0)), dispFormat));
-                    setHorizontalAlignment(cells.get(countRow, c));*/
+                let subArray = [];
+                subArray.push(new Content(level1.displayInfo.name))
+                for (let verticalItem of level1.verticalTotalList) {
+                    subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
                 }
-                if (isDispTotal) {  // Tong chieu ngang level
-                    /* cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level1.getTotalPeriod(), dispFormat));
-                     setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));*/
+                if (isDispTotal) {
+                    subArray.push(new Content(vm.formatValue(level1.totalPeriod, dispFormat)))
                 }
-                countRow++;
+                vm.contents.push(subArray);
             }
-            if (isDispTotal) { // Tong chieu doc cua level 1
-                /* cells.copyRows(cellsTemplate, 37, countRow, 1);
-                 printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 0);
-                 setBorderStyleForTotal(cells.get(countRow, 1));*/
-            } else {
-                /* for (int j = 0;
-                 j < headerList.size();
-                 j++
-             )
-                 {
-                     setBorderBottomStyle(cells.get(countRow - 1, j));
-                 }*/
+            if (isDispTotal) {
+                vm.contents.push(vm.printAllTotalByVertical(outputContent, maxDateRange, dispFormat, unit));
             }
         }
 
+        /**
+         * print data for level 2
+         *
+         * @param outputContent
+         * @param isDispTotal
+         * @param maxDateRange
+         * @param dispFormat
+         * @param unit
+         */
         printData2Level(outputContent: any, isDispTotal: any, maxDateRange: any, dispFormat: any, unit: any) {
             let vm = this;
             var itemDetails = outputContent.itemDetails;
@@ -176,7 +176,7 @@ module nts.uk.at.kha003.d {
                     let subArray = [];
                     let level2 = childHierarchyList[i - 1];
                     subArray.push(new Content(""))
-                    subArray.push(new Content(!isPrintNameLv1 ? level1.displayInfo.name:""))
+                    subArray.push(new Content(!isPrintNameLv1 ? level1.displayInfo.name : ""))
                     subArray.push(new Content(level2.displayInfo.name))
                     isPrintNameLv1 = true;
                     for (let verticalItem of level2.verticalTotalList) {
@@ -187,22 +187,163 @@ module nts.uk.at.kha003.d {
                     }
                     vm.contents.push(subArray);
                 }
-                if (isDispTotal) { // Tong chieu doc level 2
-                    /* cells.copyRows(cellsTemplate, 11, countRow, 1);
-                     printTotalByVerticalOfEachLevel(cells, level1, maxDateRange, headerList, dispFormat, unit, countRow, 1, 0);
-                     countRow++;*/
+                if (isDispTotal) {
+                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit));
                 }
-                /*cells.merge(mergeIndexLv1, 0, isDispTotal ? countRow - mergeIndexLv1 - 1 : countRow - mergeIndexLv1, 1, true, true);
-                setVerticalAlignment(cells.get(mergeIndexLv1, 1));*/
-                /*for (let j = 0; j < headerList.size(); j++) {
-                    setBorderBottomStyle(cells.get(countRow - 1, j));
-                }*/
             }
-            /*if (isDispTotal) { // Tong chieu doc cua level 1
-                cells.copyRows(cellsTemplate, 37, countRow, 1);
-                printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 1);
-                setBorderStyleForTotal(cells.get(countRow, 2));
-            }*/
+            if (isDispTotal) {
+                vm.contents.push(vm.printAllTotalByVertical(outputContent, maxDateRange, dispFormat, unit));
+            }
+        }
+
+        /**
+         * print data for level 3
+         *
+         * @param outputContent
+         * @param isDispTotal
+         * @param maxDateRange
+         * @param dispFormat
+         * @param unit
+         */
+        printData3Level(outputContent: any, isDispTotal: any, maxDateRange: any, dispFormat: any, unit: any) {
+            let vm = this;
+            var itemDetails = outputContent.itemDetails;
+            var countRow = 3;
+            for (let level1 of itemDetails) {
+                var isPrintNameLv1 = false;
+                var mergeIndexLv1 = countRow;
+                for (let level2 of level1.childHierarchyList) {
+                    var isPrintNameLv2 = false;
+                    var mergeIndexLv2 = countRow;
+                    var childHierarchyList = level2.childHierarchyList;
+                    for (let i = 1; i <= childHierarchyList.length; i++) {
+                        let subArray = [];
+                        let level3 = childHierarchyList[i - 1];
+                        subArray.push(new Content(!isPrintNameLv1 ? level1.displayInfo.name : ""))
+                        isPrintNameLv1 = true;
+                        subArray.push(new Content(!isPrintNameLv2 ? level2.displayInfo.name : ""))
+                        isPrintNameLv2 = true;
+                        subArray.push(new Content(level3.displayInfo.name))
+                        for (let verticalItem of level3.verticalTotalList) {
+                            subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
+                        }
+                        if (isDispTotal) {
+                            subArray.push(new Content(vm.formatValue(level3.totalPeriod, dispFormat)))
+                        }
+                        vm.contents.push(subArray);
+
+                    }
+                    if (isDispTotal) {
+                        vm.contents.push(vm.printTotalByVerticalOfEachLevel(level2, maxDateRange, dispFormat, unit));
+                    }
+                }
+                if (isDispTotal) {
+                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit));
+                }
+            }
+            if (isDispTotal) {
+                vm.contents.push(vm.printAllTotalByVertical(outputContent, maxDateRange, dispFormat, unit));
+            }
+        }
+
+        /**
+         * Total of each column of each level by vertical
+         *
+         * @param summaryItemDetail
+         * @param maxDateRange
+         * @param dispFormat
+         * @param unit
+         */
+        printTotalByVerticalOfEachLevel(summaryItemDetail: any, maxDateRange: any, dispFormat: any, unit: any): any {
+            let vm = this;
+            let subArray = [];
+            subArray.push(new Content(summaryItemDetail.displayInfo.name + vm.$i18n("KHA003_100")));
+            subArray.push(new Content(""));
+            subArray.push(new Content(""));
+            for (let verticalItem of summaryItemDetail.verticalTotalList) {
+                subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
+            }
+            subArray.push(new Content(vm.formatValue(summaryItemDetail.totalPeriod, dispFormat)));
+            return subArray;
+        }
+
+        /**
+         * print data for level 4
+         *
+         * @param outputContent
+         * @param isDispTotal
+         * @param maxDateRange
+         * @param dispFormat
+         * @param unit
+         */
+        printData4Level(outputContent: any, isDispTotal: any, maxDateRange: any, dispFormat: any, unit: any) {
+            let vm = this;
+            var itemDetails = outputContent.itemDetails;
+            var countRow = 3;
+            for (let level1 of itemDetails) {
+                var isPrintNameLv1 = false;
+                var mergeIndexLv1 = countRow;
+                for (let level2 of level1.childHierarchyList) {
+                    var isPrintNameLv2 = false;
+                    var mergeIndexLv2 = countRow;
+                    for (let level3 of level2.childHierarchyList) {
+                        var isPrintNameLv3 = false;
+                        var mergeIndexLv3 = countRow;
+                        var childHierarchyList = level3.childHierarchyList;
+                        for (let i = 1; i <= childHierarchyList.length; i++) {
+                            let subArray = [];
+
+                            var level4 = childHierarchyList[i - 1];
+                            subArray.push(new Content(!isPrintNameLv1 ? level1.displayInfo.name : ""))
+                            isPrintNameLv1 = true;
+                            subArray.push(new Content(!isPrintNameLv2 ? level2.displayInfo.name : ""))
+                            isPrintNameLv2 = true;
+                            subArray.push(new Content(!isPrintNameLv3 ? level3.displayInfo.name : ""))
+                            isPrintNameLv3 = true;
+                            subArray.push(new Content(level4.displayInfo.name))
+                            for (let verticalItem of level4.verticalTotalList) {
+                                subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
+                            }
+                            if (isDispTotal) {
+                                subArray.push(new Content(vm.formatValue(level4.totalPeriod, dispFormat)))
+                            }
+                            vm.contents.push(subArray);
+                        }
+                        if (isDispTotal) {
+                            vm.contents.push(vm.printTotalByVerticalOfEachLevel(level3, maxDateRange, dispFormat, unit));
+                        }
+                    }
+                    if (isDispTotal) {
+                        vm.contents.push(vm.printTotalByVerticalOfEachLevel(level2, maxDateRange, dispFormat, unit));
+                    }
+                }
+                if (isDispTotal) {
+                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit));
+                }
+            }
+            if (isDispTotal) {
+                vm.contents.push(vm.printAllTotalByVertical(outputContent, maxDateRange, dispFormat, unit));
+            }
+        }
+
+        /**
+         * All total by vertical
+         *
+         * @param outputContent
+         * @param maxDateRange
+         * @param dispFormat
+         * @param unit
+         */
+        printAllTotalByVertical(outputContent: any, maxDateRange: any, dispFormat: any, unit: any): any {
+            let vm = this;
+            let subArray = [];
+            subArray.push(new Content(vm.$i18n("KHA003_99")));
+            subArray.push(new Content(""));
+            subArray.push(new Content(""));
+            for (let verticalItem of outputContent.verticalTotalList) {
+                subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
+            }
+            subArray.push(new Content(vm.formatValue(outputContent.totalPeriod, dispFormat)));
         }
 
         /**
@@ -213,24 +354,35 @@ module nts.uk.at.kha003.d {
          * @return String
          */
         formatValue(value: any, displayFormat: any): string {
+            let vm = this;
             let targetValue = null;
             switch (displayFormat) {
                 case 0:
                     targetValue = (value / 60).toLocaleString('en-US', {maximumFractionDigits: 2})
                     break;
                 case 1:
-                    let spilt: any = (value / 60).toString().split('.');
+                    let spilt: any = (value / 60).toFixed(2).toString().split('.');
                     let integerPart = spilt[0];
                     let decimalPart: any = spilt[1] * 60;
                     let remainValue = integerPart - decimalPart;
-                    targetValue = integerPart.toLocaleString('en-US') + ":" + remainValue;
+                    remainValue = vm.findReminder(remainValue)
+                    targetValue = integerPart.toLocaleString('en-US') + ":" + (isNaN(remainValue) ? "" : remainValue);
                     break;
                 case 2:
                     targetValue = value.toLocaleString('en-US')
                     break;
             }
-
             return targetValue;
+        }
+
+        /**
+         * find reminder
+         * @param remainValue
+         */
+        findReminder(remainValue: any): any {
+            return Math.abs(parseInt(remainValue.toString()))
+                .toString()
+                .substring(0, 2)
         }
 
 
@@ -482,6 +634,7 @@ module nts.uk.at.kha003.d {
                 )
                 // Use UTC date to prevent problems with time zones and DST
                 currentDate.setUTCDate(currentDate.getUTCDate() + steps);
+                vm.maxDateRange++;
             }
             vm.dateHeaders.push(
                 new DateHeader('', '', vm.$i18n('KHA003_98'))
