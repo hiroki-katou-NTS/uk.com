@@ -451,7 +451,7 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 						toAttendanceTime(c == null ? null : c.getTimeCompensatoryLeaveUseTime()),
 						toAttendanceTime(c == null ? null : c.getExcessHolidayUseTime()),
 						toAttendanceTime(c == null ? null : c.getTimeSpecialHolidayUseTime()),
-						Optional.ofNullable(c.specialHdFrameNo == null ? null : new SpecialHdFrameNo(c.specialHdFrameNo)),
+						Optional.ofNullable((c == null || c.specialHdFrameNo == null)  ? null : new SpecialHdFrameNo(c.specialHdFrameNo) ),
 						toAttendanceTime(c == null ? null : c.getChildCareUseTime()),
 						toAttendanceTime(c == null ? null : c.getCareUseTime())
 						);
