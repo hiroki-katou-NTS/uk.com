@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.workschedulereflected.WorkScheduleReflected;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
@@ -62,19 +61,18 @@ public class CreateDailyResults {
 	private WorkScheduleReflected workScheduleReflected;
 	
 	/**
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param ymd 年月日
-	 * @param executionType 実行タイプ（作成する、打刻反映する、実績削除する）
-	 * @param flag 打刻実行フラグ
+	 * @param companyId                 会社ID
+	 * @param employeeId                社員ID
+	 * @param ymd                       年月日
+	 * @param executionType             実行タイプ（作成する、打刻反映する、実績削除する）
 	 * @param employeeGeneralInfoImport 特定期間の社員情報(optional)
-	 * @param periodInMasterList 期間内マスタ一覧(optional)
+	 * @param periodInMasterList        期間内マスタ一覧(optional)
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
 	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
-			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-			EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,IntegrationOfDaily integrationOfDaily) {
+			ExecutionTypeDaily executionType, EmployeeGeneralInfoImport employeeGeneralInfoImport,
+			PeriodInMasterList periodInMasterList, IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 
 		// 日別実績の「情報系」のドメインを取得する

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -51,6 +53,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	
 	@Inject
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+	
+	@Inject
+	private ICorrectionAttendanceRule iCorrectionAttendanceRule;
 	
 	@Override
 	public OutputAcquireReflectEmbossingNew acquireReflectEmbossingNew(String companyID, String employeeID,
@@ -108,10 +113,19 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		//日別実績のデータをコンバーターに入れる
 		DailyRecordToAttendanceItemConverter converter = dailyRecordConverter.createDailyConverter().setData(integrationOfDaily).completed();
 		
-		//打刻を反映する (TKT)
+		//「打刻反映管理」を取得する
 		for(Stamp stamp:lstStamp) {
-			listErrorMessageInfo.addAll(temporarilyReflectStampDailyAttd.reflectStamp(stamp,
-					outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt));
+			//対象日に反映できるか
+			if(stamp.getImprintReflectionStatus().isReflectedCategory() == true) {
+				//打刻を反映する
+				List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(stamp,
+						outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt);
+				//do thuật toán スケジュール管理しない場合勤務情報を更新 có thể tạo ra nhiều lỗi giống nhau, nên cần bỏ những lỗi giống nhau trong 1 ngày.
+				listE = listE.stream().distinct().collect(Collectors.toList());
+				listErrorMessageInfo.addAll(listE);
+				//反映された年月日を更新する
+				stamp.getImprintReflectionStatus().setReflectedDate(Optional.of(GeneralDate.today()));
+			}
 		}
 		//手修正がある勤怠項目ID一覧を取得する
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
@@ -122,6 +136,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		if(!attendanceItemIdList.isEmpty()) {
 			integrationOfDaily = createDailyResults.restoreData(converter, integrationOfDaily, listItemValue);
 		}
+		//勤怠ルールの補正処理
+		integrationOfDaily = iCorrectionAttendanceRule.process(integrationOfDaily, changeDailyAtt);
 		// エラーチェック
 		integrationOfDaily = calculationErrorCheckService.errorCheck(companyID, employeeID, processingDate, integrationOfDaily, true);
 		
