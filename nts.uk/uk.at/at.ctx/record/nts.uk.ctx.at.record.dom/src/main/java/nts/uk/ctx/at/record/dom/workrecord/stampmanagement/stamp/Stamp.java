@@ -65,7 +65,7 @@ public class Stamp implements DomainAggregate {
 	private final RefectActualResult refActualResults;
 
 	/**
-	 * 打刻反映状態（追加予定）
+	 * 打刻反映状態
 	 */
 	@Getter
 	private ImprintReflectionState imprintReflectionStatus;
