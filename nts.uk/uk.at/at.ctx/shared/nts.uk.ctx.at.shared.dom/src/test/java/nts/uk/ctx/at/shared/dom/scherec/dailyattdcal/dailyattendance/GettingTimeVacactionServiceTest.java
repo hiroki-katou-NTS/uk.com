@@ -31,13 +31,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class GettingTimeVacactionServiceTest {
 	
 	@Injectable 
-	TimeLeavingOfDailyAttd timeLeaving;
+	TimeLeavingOfDailyAttd mockedTimeLeaving;
 	
 	@Injectable 
-	AttendanceTimeOfDailyAttendance attendanceTime;
+	AttendanceTimeOfDailyAttendance mockedAttendanceTime;
 	
 	@Injectable
-	OutingTimeOfDailyAttd outingTime;
+	OutingTimeOfDailyAttd mockedOutingTime;
 	/**
 	 * 勤怠時間 (attendanceTime) is empty
 	 * 出退勤(timeLeaving) is mocked 
@@ -46,7 +46,7 @@ public class GettingTimeVacactionServiceTest {
 	public void testGetTimeVacation_empty_case1() {
 		
 		// Arrange
-		val optTimeLeaving = Optional.of(timeLeaving);// 出退勤 mocked
+		val optTimeLeaving = Optional.of(mockedTimeLeaving);// 出退勤 mocked
 		val optAttendanceTime = Optional.empty();// 勤怠時間 empty
 		
 		// Action
@@ -71,8 +71,8 @@ public class GettingTimeVacactionServiceTest {
 		
 		// Arrange		
 		val optTimeLeaving = Optional.empty();// 出退勤 empty 
-		val optAttendanceTime = Optional.of(attendanceTime);// 勤怠時間 mocked
-		val outingTime = Optional.empty();// 外出時間帯 empty
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);// 勤怠時間 mocked
+		val optOutingTime = Optional.empty();// 外出時間帯 empty
 		
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> lateTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
@@ -80,7 +80,7 @@ public class GettingTimeVacactionServiceTest {
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
 				,	"getEarlyTimes", optTimeLeaving, optAttendanceTime);
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> outingTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
-				,	"getOutingTimes", optAttendanceTime, outingTime);
+				,	"getOutingTimes", optAttendanceTime, optOutingTime);
 
 		// Assert
 		assertThat(lateTimes).isEmpty();
@@ -98,11 +98,11 @@ public class GettingTimeVacactionServiceTest {
 		
 		// Arrange		
 		val optAttendanceTime = Optional.empty();// 勤怠時間 empty
-		val outingTime = Optional.of(outingTime);// 外出時間帯mocked
+		val optOutingTime = Optional.of(mockedOutingTime);// 外出時間帯mocked
 		
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
-				,	"getOutingTimes", optAttendanceTime, outingTime);
+				,	"getOutingTimes", optAttendanceTime, optOutingTime);
 		
 		// Assert
 		assertThat(result).isEmpty();
@@ -120,7 +120,7 @@ public class GettingTimeVacactionServiceTest {
 		// Arrange		
 		val optTimeLeaving = Optional.empty();// 出退勤 empty 
 		val optAttendanceTime = Optional.empty();// 勤怠時間 empty
-		val outingTime = Optional.empty();// 外出時間帯 empty
+		val optOutingTime = Optional.empty();// 外出時間帯 empty
 		
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> lateTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
@@ -128,7 +128,7 @@ public class GettingTimeVacactionServiceTest {
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
 				,	"getEarlyTimes", optTimeLeaving, optAttendanceTime);
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> outtingTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
-				,	"getOutingTimes", optAttendanceTime, outingTime);
+				,	"getOutingTimes", optAttendanceTime, optOutingTime);
 		
 		// Assert
 		assertThat(lateTimes).isEmpty();
@@ -146,19 +146,19 @@ public class GettingTimeVacactionServiceTest {
 	public void testGetTimeVacation_empty_case6() {
 		
 		// Arrange
-		val optTimeLeaving = Optional.of(timeLeaving);// 出退勤mocked 
-		val optAttendanceTime = Optional.of(attendanceTime);// 勤怠時間mocked
-		val optOutingTime = Optional.of(outingTime);// 外出時間帯 mocked
+		val optTimeLeaving = Optional.of(mockedTimeLeaving);// 出退勤mocked 
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);// 勤怠時間mocked
+		val optOutingTime = Optional.of(mockedOutingTime);// 外出時間帯 mocked
 		
 		new Expectations() {{
 			
-			attendanceTime.getLateTimeOfDaily();
+			mockedAttendanceTime.getLateTimeOfDaily();
 			// result = empty
 			
-			attendanceTime.getLeaveEarlyTimeOfDaily();
+			mockedAttendanceTime.getLeaveEarlyTimeOfDaily();
 			// result = empty
 			
-			attendanceTime.getOutingTimeOfDaily();
+			mockedAttendanceTime.getOutingTimeOfDaily();
 			// result = empty
 			
 		}};
@@ -168,13 +168,13 @@ public class GettingTimeVacactionServiceTest {
 				,	"getLateTimes", optTimeLeaving, optAttendanceTime);
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> earlyTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
 				,	"getEarlyTimes", optTimeLeaving, optAttendanceTime);
-		Map<TimezoneToUseHourlyHoliday, TimeVacation> outingTime = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> outingTimes = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
 				,	"getOutingTimes", optAttendanceTime, optOutingTime);
 		
 		// Assert
 		assertThat(lateTimes).isEmpty();
 		assertThat(earlyTimes).isEmpty();
-		assertThat(outingTime).isEmpty();
+		assertThat(outingTimes).isEmpty();
 		
 	}
 	/**
@@ -188,7 +188,7 @@ public class GettingTimeVacactionServiceTest {
 		
 		new Expectations() {{
 			
-			attendanceTime.getLateTimeOfDaily();
+			mockedAttendanceTime.getLateTimeOfDaily();
 			result = Arrays.asList( lateTime1, lateTime2 );
 			
 			lateTime1.getWorkNo();
@@ -196,10 +196,10 @@ public class GettingTimeVacactionServiceTest {
 			lateTime2.getWorkNo();
 			result = new WorkNo(2);
 			
-			timeLeaving.getStartTimeVacations(new WorkNo(1));
+			mockedTimeLeaving.getStartTimeVacations(new WorkNo(1));
 			// result = empty
 			
-			timeLeaving.getStartTimeVacations(new WorkNo(2));
+			mockedTimeLeaving.getStartTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
@@ -208,8 +208,8 @@ public class GettingTimeVacactionServiceTest {
 			// result = timePaidUseTime2;
 		}};
 		
-		val optTimeLeaving = Optional.of(timeLeaving);
-		val optAttendanceTime = Optional.of(attendanceTime);
+		val optTimeLeaving = Optional.of(mockedTimeLeaving);
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
 				,	"getLateTimes", optTimeLeaving, optAttendanceTime);
@@ -238,7 +238,7 @@ public class GettingTimeVacactionServiceTest {
 		
 		new Expectations() {{
 			
-			attendanceTime.getLateTimeOfDaily();
+			mockedAttendanceTime.getLateTimeOfDaily();
 			result = Arrays.asList( lateTime1, lateTime2 );
 			
 			lateTime1.getWorkNo();
@@ -246,12 +246,12 @@ public class GettingTimeVacactionServiceTest {
 			lateTime2.getWorkNo();
 			result = new WorkNo(2);
 			
-			timeLeaving.getStartTimeVacations(new WorkNo(1));
+			mockedTimeLeaving.getStartTimeVacations(new WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
 					new TimeWithDayAttr(100),
 					new TimeWithDayAttr(200)));
 			
-			timeLeaving.getStartTimeVacations(new WorkNo(2));
+			mockedTimeLeaving.getStartTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(300),
 									new TimeWithDayAttr(400)));
@@ -263,8 +263,8 @@ public class GettingTimeVacactionServiceTest {
 			result = timePaidUseTime2;
 		}};
 		
-		val optTimeLeaving = Optional.of(timeLeaving);
-		val optAttendanceTime = Optional.of(attendanceTime);
+		val optTimeLeaving = Optional.of(mockedTimeLeaving);
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
 				,	"getLateTimes", optTimeLeaving, optAttendanceTime);
@@ -300,7 +300,7 @@ public class GettingTimeVacactionServiceTest {
 		
 		new Expectations() {{
 			
-			attendanceTime.getLeaveEarlyTimeOfDaily();
+			mockedAttendanceTime.getLeaveEarlyTimeOfDaily();
 			result = Arrays.asList( earlyTime1, earlyTime2 );
 			
 			earlyTime1.getWorkNo();
@@ -308,9 +308,9 @@ public class GettingTimeVacactionServiceTest {
 			earlyTime2.getWorkNo();
 			result = new WorkNo(2);
 			
-			timeLeaving.getEndTimeVacations(new WorkNo(1));
+			mockedTimeLeaving.getEndTimeVacations(new WorkNo(1));
 			// result = empty
-			timeLeaving.getEndTimeVacations(new WorkNo(2));
+			mockedTimeLeaving.getEndTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
@@ -319,8 +319,8 @@ public class GettingTimeVacactionServiceTest {
 			// result = timePaidUseTime2;
 		}};
 		
-		val optTimeLeaving = Optional.of(timeLeaving);// 出退勤
-		val optAttendanceTime = Optional.of(attendanceTime);// 勤怠時間
+		val optTimeLeaving = Optional.of(mockedTimeLeaving);// 出退勤
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);// 勤怠時間
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
 				,	"getEarlyTimes", optTimeLeaving, optAttendanceTime);
@@ -346,7 +346,7 @@ public class GettingTimeVacactionServiceTest {
 		
 		new Expectations() {{
 			
-			attendanceTime.getLeaveEarlyTimeOfDaily();
+			mockedAttendanceTime.getLeaveEarlyTimeOfDaily();
 			result = Arrays.asList( earlyTime1, earlyTime2 );
 			
 			earlyTime1.getWorkNo();
@@ -354,12 +354,12 @@ public class GettingTimeVacactionServiceTest {
 			earlyTime2.getWorkNo();
 			result = new WorkNo(2);
 			
-			timeLeaving.getEndTimeVacations(new WorkNo(1));
+			mockedTimeLeaving.getEndTimeVacations(new WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
 			
-			timeLeaving.getEndTimeVacations(new WorkNo(2));
+			mockedTimeLeaving.getEndTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(300),
 									new TimeWithDayAttr(400)));
@@ -371,8 +371,8 @@ public class GettingTimeVacactionServiceTest {
 			result = timePaidUseTime2;
 		}};
 		
-		val optTimeLeaving = Optional.of(timeLeaving);// 出退勤
-		val optAttendanceTime = Optional.of(attendanceTime);// 勤怠時間
+		val optTimeLeaving = Optional.of(mockedTimeLeaving);// 出退勤
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);// 勤怠時間
 		
 		// Action
 		Map<TimezoneToUseHourlyHoliday, TimeVacation> result = NtsAssert.Invoke.staticMethod(GettingTimeVacactionService.class
@@ -406,11 +406,11 @@ public class GettingTimeVacactionServiceTest {
 	public void getOutingTimes_empty() {
 		
 		// Arrange
-		val outingTimeOpt = Optional.of(outingTime);
-		val optAttendanceTime = Optional.of(attendanceTime);// 勤怠時間
+		val outingTimeOpt = Optional.of(mockedOutingTime);
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);// 勤怠時間
 		new Expectations() {{
 			
-			attendanceTime.getOutingTimeOfDaily();
+			mockedAttendanceTime.getOutingTimeOfDaily();
 			result = Arrays.asList(
 					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithReason(GoingOutReason.COMPENSATION),
 					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithReason(GoingOutReason.PUBLIC)
@@ -436,19 +436,19 @@ public class GettingTimeVacactionServiceTest {
 			) {
 		
 		// Arrange
-		val outingTimeOpt = Optional.of(outingTime);// 外出時間帯
-		val optAttendanceTime = Optional.of(attendanceTime);// 勤怠時間
+		val outingTimeOpt = Optional.of(mockedOutingTime);// 外出時間帯
+		val optAttendanceTime = Optional.of(mockedAttendanceTime);// 勤怠時間
 		
 		new Expectations() {{
 			
-			attendanceTime.getOutingTimeOfDaily();
+			mockedAttendanceTime.getOutingTimeOfDaily();
 			result = Arrays.asList(
 					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.PRIVATE, timevacationUseTimeOfDaily1),
 					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.PUBLIC, timevacationUseTimeOfDaily2),
 					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.COMPENSATION, timevacationUseTimeOfDaily3),
 					OutingTimeOfDailyHelper.createOutingTimeOfDailyWithParams(GoingOutReason.UNION, timevacationUseTimeOfDaily4));
 			
-			outingTime.getTimeZoneByGoOutReason((GoingOutReason) any);
+			mockedOutingTime.getTimeZoneByGoOutReason((GoingOutReason) any);
 			returns(
 					Arrays.asList(
 							new TimeSpanForCalc(new TimeWithDayAttr(100), new TimeWithDayAttr(200)),
