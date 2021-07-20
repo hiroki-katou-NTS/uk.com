@@ -128,7 +128,7 @@ public class TimeLeaveAppReflectCondition extends DomainObject {
 			});
 		}
 		// 申請反映状態にする
-		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, Arrays.asList(539, 541, 543, 545));
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, Arrays.asList(540, 542, 546));
 
 		return dailyApp;
 	}
