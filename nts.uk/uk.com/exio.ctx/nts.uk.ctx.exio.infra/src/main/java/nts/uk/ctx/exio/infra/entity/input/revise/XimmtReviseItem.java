@@ -133,7 +133,6 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 						Optional.ofNullable(usePadding == 1 ? new Padding(
 								new ExternalImportRowNumber(paddingLength),
 								EnumAdaptor.valueOf(paddingMethod, PaddingMethod.class)) : null),
-						true,
 						codeConvert);
 			case INT:
 				return new IntegerRevise(
