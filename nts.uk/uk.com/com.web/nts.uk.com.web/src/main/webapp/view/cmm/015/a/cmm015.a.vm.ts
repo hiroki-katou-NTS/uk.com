@@ -24,10 +24,12 @@ module cmm015.a.viewmodel {
         treeGridRight: any;
 
         selectedIdLeft: KnockoutObservable<string> = ko.observable('');
+        selectedIdLeftClone: string = '';
         baseDateLeft: KnockoutObservable<Date> = ko.observable((new Date(moment.utc().subtract(1, 'd').toString())));
         listDataLeft: KnockoutObservableArray<any> = ko.observableArray([]);
 
         selectedIdRight: KnockoutObservable<string> = ko.observable('');
+        selectedIdRightClone: string = '';
         baseDateRight: KnockoutObservable<Date> = ko.observable(new Date(moment.utc().toString()));
         listDataRight: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -190,6 +192,7 @@ module cmm015.a.viewmodel {
             });
 
             vm.selectedIdLeft.subscribe(value => {
+                vm.selectedIdLeftClone = value;
                 if (!value) {
                     return;
                 }
@@ -201,6 +204,7 @@ module cmm015.a.viewmodel {
             });
 
             vm.selectedIdRight.subscribe(value => {
+                vm.selectedIdLeftClone = value;
                 if (!value) {
                     return;
                 }
@@ -299,6 +303,7 @@ module cmm015.a.viewmodel {
         clickMeans() {
             const vm = this;
             vm.$blockui('grayout')
+            
             if (_.isEmpty(vm.transferDate())) {
                 vm.$dialog.error({ messageId: 'Msg_2105' });
                 return;
@@ -338,6 +343,18 @@ module cmm015.a.viewmodel {
                     vm.setSelectedDataKcp(indexLeft, indexRight);
                     vm.loadDataWkp(Table.LEFT);
                     vm.loadDataWkp(Table.RIGHT);
+                    $('#tree-grid-left [data-id]').click(() => {
+                        if (_.isEmpty(vm.selectedIdLeftClone)) {
+                            vm.selectedIdLeft.valueHasMutated();
+                        }
+                        vm.selectedIdLeftClone = '';
+                    });
+                    $('#tree-grid-right [data-id]').click(() => {
+                        if (_.isEmpty(vm.selectedIdRightClone)) {
+                            vm.selectedIdRight.valueHasMutated();
+                        }
+                        vm.selectedIdRightClone = '';
+                    });
                     dfd.resolve();
                 })
                 .fail(err => {
