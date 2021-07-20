@@ -56,40 +56,40 @@ public class CalculateAttendanceTimeBySupportWorkServiceTest {
 	}
 
 	// if $出退勤.出勤.isPresent AND $出退勤.退勤.isEmpty
-//	@Test
-//	public void test1() {
-//
-//		new Expectations() {
-//			{
-//				require.get(empId, new DatePeriod(ymd, ymd));
-//				result = Optional.of(integrationOfDaily);
-//
-//				require.calculationIntegrationOfDaily(integrationOfDaily, EnumAdaptor.valueOf(0, ExecutionType.class));
-//			}
-//		};
-//
-//		Optional<IntegrationOfDaily> result = CalculateAttendanceTimeBySupportWorkService.calculate(require, empId, ymd,
-//				ouenWorkTimeSheetOfDailyAttendance);
-//
-//		assertThat((result).isPresent()).isTrue();
-//	}
+	@Test
+	public void test1() {
+
+		new Expectations() {
+			{
+				require.get(empId, new DatePeriod(ymd, ymd));
+				result = Optional.of(integrationOfDaily);
+
+				require.calculationIntegrationOfDaily(integrationOfDaily, EnumAdaptor.valueOf(0, ExecutionType.class));
+			}
+		};
+
+		Optional<IntegrationOfDaily> result = CalculateAttendanceTimeBySupportWorkService.calculate(require, empId, ymd,
+				ouenWorkTimeSheetOfDailyAttendance);
+
+		assertThat((result).isPresent()).isTrue();
+	}
 
 	// ifnot $出退勤.出勤.isPresent AND !$出退勤.退勤.isEmpty
-//	@Test
-//	public void test2() {
-//
-//		new Expectations() {
-//			{
-//				require.get(empId, new DatePeriod(ymd, ymd));
-//				result = Optional.of(integrationOfDaily1);
-//
-//				require.calculationIntegrationOfDaily(integrationOfDaily1, EnumAdaptor.valueOf(0, ExecutionType.class));
-//			}
-//		};
-//
-//		Optional<IntegrationOfDaily> result = CalculateAttendanceTimeBySupportWorkService.calculate(require, empId, ymd,
-//				ouenWorkTimeSheetOfDailyAttendance);
-//
-//		assertThat((result).isPresent()).isFalse();
-//	}
+	@Test
+	public void test2() {
+
+		new Expectations() {
+			{
+				require.get(empId, new DatePeriod(ymd, ymd));
+				result = Optional.of(integrationOfDaily1);
+
+				require.calculationIntegrationOfDaily(integrationOfDaily1, EnumAdaptor.valueOf(0, ExecutionType.class));
+			}
+		};
+
+		Optional<IntegrationOfDaily> result = CalculateAttendanceTimeBySupportWorkService.calculate(require, empId, ymd,
+				ouenWorkTimeSheetOfDailyAttendance);
+
+		assertThat((result).isPresent()).isTrue();
+	}
 }

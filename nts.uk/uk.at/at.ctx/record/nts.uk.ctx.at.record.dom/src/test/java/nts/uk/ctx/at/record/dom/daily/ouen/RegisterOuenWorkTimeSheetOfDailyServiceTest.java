@@ -85,7 +85,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain));
-//		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
+		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
 	}
 
 	// $実績の作業時間帯 notPresent
@@ -126,7 +126,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain));
-//		NtsAssert.atomTask(() -> atomtask, any -> require.update(domain1));
+		NtsAssert.atomTask(() -> atomtask, any -> require.update(domain1));
 	}
 
 	// $登録対象.add(require.作業時間帯を削除する($実績の作業時間帯))
@@ -172,7 +172,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.delete(domain));
-//		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
+		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
 
 	}
 
@@ -226,6 +226,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				ouenWorkTimeSheetOfDailys, EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		NtsAssert.atomTask(() -> atomtask, any -> require.update(domain));
-//		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
+		NtsAssert.atomTask(() -> atomtask, any -> require.insert(domain1));
 	}
 }
