@@ -302,16 +302,17 @@ module cmm015.a.viewmodel {
 
         clickMeans() {
             const vm = this;
-            vm.$blockui('grayout')
+            vm.$blockui('grayout');
             
             if (_.isEmpty(vm.transferDate())) {
-                vm.$dialog.error({ messageId: 'Msg_2105' });
+                vm.$dialog.error({ messageId: 'Msg_2105' }).then(() => vm.$blockui('clear'));
                 return;
             }
             vm.$validate('#A1_2').then(valid => {
                 if (!valid) {
                     nts.uk.ui.errors.show();
                     vm.enableTransferDate(false);
+                    vm.$blockui('clear');
                     return;
                 }
                 const date = ko.unwrap<string>(vm.transferDate);
@@ -322,7 +323,7 @@ module cmm015.a.viewmodel {
                     .reloadKcp()
                     .then(() => vm.getTransferOfDay(new Date(vm.transferDate())));
             });
-            vm.$blockui('clear')
+            vm.$blockui('clear');
         }
 
         reloadKcp(): JQueryPromise<any> {
