@@ -36,6 +36,9 @@
                                         data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'"></span>
                                 </div>
                             </div>
+
+                        	<div class= "notificationMessage" data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></div>
+
                         </div>
                     </div>
                 </com:ko-if>
@@ -50,6 +53,9 @@
                                         data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'"></span>
                                 </div>
                             </div>
+
+                            <div class= "notificationMessage" data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></div>
+
                         </div>
                     </div>
                     <div>

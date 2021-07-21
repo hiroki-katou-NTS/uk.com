@@ -1370,7 +1370,7 @@ public class WorkTimeReportService {
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -2621,7 +2621,7 @@ public class WorkTimeReportService {
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -4167,7 +4167,7 @@ public class WorkTimeReportService {
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             

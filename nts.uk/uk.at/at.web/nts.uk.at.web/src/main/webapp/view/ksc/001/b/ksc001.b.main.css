@@ -328,3 +328,12 @@ button.nts-switch-button {
 #contents-area.fix-1360 .nts-wizard.vertical .contentD {
   max-width: 730px;
 }
+
+.fix-dialog-content {
+  min-height: 583px !important;
+  width: 750px !important;
+}
+
+.fix-dialog {
+  width: auto !important;
+}

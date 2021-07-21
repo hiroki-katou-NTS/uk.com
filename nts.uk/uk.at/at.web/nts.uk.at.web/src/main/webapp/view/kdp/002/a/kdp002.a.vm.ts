@@ -284,7 +284,6 @@ module nts.uk.at.view.kdp002.a {
                 }
 
                 service.getError(data).done((res) => {
-
                     if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
                         nts.uk.ui.windows.setShared('KDP010_2T', res, true);
 
@@ -294,7 +293,8 @@ module nts.uk.at.view.kdp002.a {
                                 // T1	打刻結果の取得対象項目の追加
                                 // 残業申請（早出）
                                 let transfer = returnData.btn.transfer;
-                                nts.uk.request.jump(returnData.btn.screen, transfer);
+                                vm.$jump('at', returnData.btn.screen, { baseDate: transfer.appDate });
+                                // nts.uk.request.jump(returnData.btn.screen, transfer);
                             }
                         });
                     }
