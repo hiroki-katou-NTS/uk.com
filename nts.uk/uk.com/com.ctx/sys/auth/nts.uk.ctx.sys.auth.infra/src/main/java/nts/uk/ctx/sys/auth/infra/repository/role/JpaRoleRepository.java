@@ -271,7 +271,6 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 
 	@Override
 	public boolean exists(String cid, RoleType roleType, RoleAtr assignAtr, RoleCode roleCode) {
-		//TODO 会社ID、ロール種類、担当区分毎に、ロールコードが重複チェックするので、実装お願いします。
 		List<SacmtRole> entities = this.queryProxy().query(GET_BY_ROLE_TYPE_ROLE_ATR_ROLE_CD, SacmtRole.class)
 				.setParameter("companyId", cid)
 				.setParameter("roleType", roleType.value)
