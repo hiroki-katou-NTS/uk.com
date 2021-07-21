@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.spr.EmployeeSprPub;
 import nts.uk.ctx.bs.employee.pub.spr.export.EmpSprExport;
-import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeAdapter;
-import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeImported;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
