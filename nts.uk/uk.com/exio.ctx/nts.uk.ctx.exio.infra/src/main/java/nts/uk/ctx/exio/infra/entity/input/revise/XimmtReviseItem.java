@@ -57,7 +57,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	private int itemType;
 	
 	/*  */
-	@Column(name = "IS_FETCHING_POSITION")
+	@Column(name = "USE_FETCHING_POSITION")
 	private Integer useFetchingPosition;
 	
 	/*  */
@@ -77,7 +77,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	private Integer decimalLength;
 	
 	/*  */
-	@Column(name = "IS_PADDING")
+	@Column(name = "USE_PADDING")
 	private Integer usePadding;
 	
 	/*  */
