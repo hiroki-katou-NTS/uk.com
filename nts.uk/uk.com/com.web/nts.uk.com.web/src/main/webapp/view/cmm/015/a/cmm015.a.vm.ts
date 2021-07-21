@@ -80,7 +80,6 @@ module cmm015.a.viewmodel {
         wkpListInfo: any[];
         jtInfor: any[];
 
-        isStartpage = true;
         isReloadKcp = false;
 
         created() {
@@ -204,7 +203,7 @@ module cmm015.a.viewmodel {
             });
 
             vm.selectedIdRight.subscribe(value => {
-                vm.selectedIdLeftClone = value;
+                vm.selectedIdRightClone = value;
                 if (!value) {
                     return;
                 }
@@ -213,7 +212,13 @@ module cmm015.a.viewmodel {
                     vm.isReloadKcp = false;
                     return;
                 }
-                vm.loadDataWkp(Table.RIGHT);
+                vm
+                    .loadDataWkp(Table.RIGHT)
+                    .then(() => {
+                        if (!_.isEmpty(vm.tableDatasDest())) {
+                            vm.getTransferOfDay(vm.baseDateRight());
+                        }
+                    });
             });
 
             vm.transferDate.subscribe(() => {
@@ -263,7 +268,6 @@ module cmm015.a.viewmodel {
                                     vm.loadDataWkp(Table.RIGHT);
                                     // UI処理[6]
                                     vm.currentCodeListDest('');
-                                    vm.getTransferOfDay(vm.baseDateRight());
                                     vm.createTransferList();
                                     vm.$dialog.info({ messageId: 'Msg_15' });
                                 })
@@ -524,12 +528,6 @@ module cmm015.a.viewmodel {
                     } else {
                         vm.currentCodeListDest('');
                         vm.tableDatasDest(tableDatas);
-
-                        if (vm.isStartpage && !_.isEmpty(tableDatas)) {
-                            vm
-                                .getTransferOfDay(new Date())
-                                .then(() => vm.isStartpage = false);
-                        }
                     }
                     dfd.resolve();
                 })
@@ -618,6 +616,7 @@ module cmm015.a.viewmodel {
         getTransferOfDay(date: Date): JQueryPromise<any> {
             const vm = this, dfd = $.Deferred();
             if (_.isEmpty(vm.tableDatasDest())) {
+                dfd.resolve();
                 return dfd.promise();
             }
             let dataTableDest = ko.unwrap<DataTable[]>(vm.tableDatasDest);
@@ -822,7 +821,7 @@ module cmm015.a.viewmodel {
             const errFnc = (callback?: Function) => {
                 if (!_.isEmpty(errList)) {
                     vm.$dialog
-                        .error('Msg_2203')
+                        .error({ messageId: 'Msg_2203' })
                         .then(() => {
                             _.forEach(errList, i => {
                                 $(`#A18 [data-id="${i}"]`).children().css({ color: ERRORSCODE });
@@ -862,6 +861,9 @@ module cmm015.a.viewmodel {
                     const mergeErr = _.uniq([...wkpErr, ...jtErr]);
                     
                     const success = () => {
+                        if (wkpErr.length === affWorkplaces.length && jtErr.length === affJobTitles.length) {
+                            return;
+                        }
                         vm.$dialog.info({ messageId: 'Msg_16' });
                     };
                     if (!_.isEmpty(mergeErr)) {

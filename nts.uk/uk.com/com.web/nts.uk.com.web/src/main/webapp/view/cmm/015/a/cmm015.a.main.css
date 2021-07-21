@@ -86,7 +86,8 @@
 	color: #30CC40;
 }
 .ui-dialog .ui-dialog-content.notice-dialog > .text {
-  width: auto !important;
+  max-width: 800px !important;
+	width: auto !important;
 }
 
 #A5_1 .side,
