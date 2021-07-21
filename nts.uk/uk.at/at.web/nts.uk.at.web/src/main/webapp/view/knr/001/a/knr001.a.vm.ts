@@ -39,17 +39,17 @@ module nts.uk.at.view.knr001.a {
                 self.enableBtnRegist = ko.observable(true);
 
                 self.itemList = ko.observableArray([
-                    new ItemModel1(0, '出勤'),
+                    new ItemModel1(0, '出勤'), // 8_3
                     new ItemModel1(1, '入門'),
                     new ItemModel1(2, '応援出勤'),
                     new ItemModel1(3, '出勤'),
-                    new ItemModel1(4, '退門'),
+                    new ItemModel1(4, '退門'), // 8_5
                     new ItemModel1(5, '私用外出'),
-                    new ItemModel1(6, '公用外出'),
+                    new ItemModel1(6, '公用外出'), // 8_7
                     new ItemModel1(7, '有償外出'),
                     new ItemModel1(8, '組合外出'),
                     new ItemModel1(9, '入（応援開始）'),
-                    new ItemModel1(10, '戻り'),
+                    new ItemModel1(10, '戻り'), // 8_9
                     new ItemModel1(11, '出（応援終了/応援行く）'),
                 ]);
 
@@ -184,6 +184,12 @@ module nts.uk.at.view.knr001.a {
                 self.enableBtnDelete(false);
                 self.clearErrors();
                 self.isUpdateMode(false);
+                self.selectedIndex1(0);
+                self.selectedIndex2(4);
+                self.selectedIndex3(6);
+                self.selectedIndex4(10);
+                self.entranceExit(false);
+                self.goOutReason(10);
                 $('#A3_2').focus();
                 self.enableBtnNew(false);
             }

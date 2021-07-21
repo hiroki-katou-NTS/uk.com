@@ -93,26 +93,42 @@ module nts.uk.at.view.knr002.l {
                 nts.uk.ui.windows.close();
             }
 
+            public hasError() {
+                const vm = this;
+
+                $('#L3_2').ntsEditor('validate');
+                $('#L3_3').ntsEditor('validate');
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+            }
+
             public register() {
                 const vm = this;
                 // blockUI.invisible();
                 let dateTime = '';
                 let time = '';
-                if (vm.date() !== '') {
-                    if (vm.time() === 0) {
-                        time = '00:00:00'
-                    } else if (vm.time() < 60 && vm.time() > 0) {
-                        if (vm.time() < 10) {
-                            time = '00:0' + vm.time() + ':00';
-                        } else {
-                            time = '00:' + vm.time() + ':00';
-                        }
-                    } else {
-                        time = ((vm.time() - (vm.time() % 60)) / 60 < 10 ? '0' + (vm.time() - (vm.time() % 60)) / 60 : (vm.time() - (vm.time() % 60)) / 60)
-                                + ':' + ((vm.time() % 60) < 10 ? '0' + (vm.time() % 60) : (vm.time() % 60)) + ':00';
-                    }
-                    dateTime = moment(vm.date()).format("YYYY/MM/DD") + ' ' + time;
+
+                if (vm.hasError()) {
+                    return;
                 }
+                
+                if (vm.time() === 0) {
+                    time = '00:00:00'
+                } else if (vm.time() < 60 && vm.time() > 0) {
+                    if (vm.time() < 10) {
+                        time = '00:0' + vm.time() + ':00';
+                    } else {
+                        time = '00:' + vm.time() + ':00';
+                    }
+                } else if (vm.time() >= 60) {
+                    time = ((vm.time() - (vm.time() % 60)) / 60 < 10 ? '0' + (vm.time() - (vm.time() % 60)) / 60 : (vm.time() - (vm.time() % 60)) / 60)
+                            + ':' + ((vm.time() % 60) < 10 ? '0' + (vm.time() % 60) : (vm.time() % 60)) + ':00';
+                }
+
+                dateTime = moment(vm.date()).format("YYYY/MM/DD") + ' ' + time;
+                
 
                 let command = {
                     timeSwitchUKMode: dateTime,
