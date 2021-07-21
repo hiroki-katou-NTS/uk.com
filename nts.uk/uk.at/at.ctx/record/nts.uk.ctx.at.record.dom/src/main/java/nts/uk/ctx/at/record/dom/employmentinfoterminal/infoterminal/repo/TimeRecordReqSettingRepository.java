@@ -3,6 +3,9 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.http.annotation.Contract;
+
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -27,6 +30,8 @@ public interface TimeRecordReqSettingRepository {
 			ContractCode contractCode);
 	
 	Optional<TimeRecordReqSetting> getTrRequest(EmpInfoTerminalCode terCode, ContractCode contractCode);
+	
+	List<TimeRecordReqSetting> getListTrRequest(ContractCode contractCode);
 	
 	Optional<TimeRecordReqSetting> getTimeRecordEmployee(EmpInfoTerminalCode terCode, ContractCode contractCode);
 	
@@ -62,5 +67,9 @@ public interface TimeRecordReqSettingRepository {
     void insert(TimeRecordReqSetting reqSetting);
     
     void insert(EmpInfoTerminalCode terCode, ContractCode contractCode);
+    
+    void updateSwitchDates(ContractCode contractCode, GeneralDateTime datetime);
+    
+    void updateSwitchDate(ContractCode contractCode, EmpInfoTerminalCode empInfoTerminalCode, GeneralDateTime datetime);
     
 }

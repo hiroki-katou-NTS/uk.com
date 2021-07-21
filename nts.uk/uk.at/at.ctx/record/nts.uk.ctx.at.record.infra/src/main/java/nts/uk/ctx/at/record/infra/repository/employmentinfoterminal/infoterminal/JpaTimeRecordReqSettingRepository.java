@@ -14,6 +14,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.http.annotation.Contract;
+
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -42,8 +44,13 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 	
 	private static final String GET_BY_MASTER_TYPE;
 	private static final String GET_TR_REQUEST;
+	private static final String GET_TR_REQUEST_CONTRACTCODE;
 
 	private static final String GET_CONTRACTCD_LISTCODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode IN :listCode";
+	
+	private static final String GET_CONTRACTCD = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode";
+	
+	private static final String GET_CONTRACTCD_TERCODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode = :terminalCode";
 
 	static {
 
@@ -80,6 +87,17 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		getTrRequest.append(" FROM KRCMT_TR_REQUEST a");
 		getTrRequest.append(" WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD = ?");
 		GET_TR_REQUEST = getTrRequest.toString();
+		
+		StringBuilder getTrRequestByContractCode = new StringBuilder();
+		getTrRequestByContractCode.append("SELECT a.CONTRACT_CD, a.CID, a.COMPANY_CD, a.TIMERECORDER_CD, a.SEND_OVERTIME_NAME,");
+		getTrRequestByContractCode.append(
+				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT,  a.SEND_SWITCH_DATE, a.SWITCH_DATE, ");
+		getTrRequestByContractCode.append(
+				"a.SEND_REASON_APP, a.SEND_SERVERTIME, a.RECV_ALL_STAMP, a.RECV_ALL_RESERVATION, a.RECV_ALL_APPLICATION");
+		getTrRequestByContractCode.append(" FROM KRCMT_TR_REQUEST a");
+		getTrRequestByContractCode.append(" WHERE a.CONTRACT_CD = ?");
+		GET_TR_REQUEST_CONTRACTCODE = getTrRequestByContractCode.toString();
+		
 		
 		StringBuilder getByMasterTypeBuilder = new StringBuilder();
 		getByMasterTypeBuilder.append("SELECT a.CONTRACT_CD, a.CID, a.COMPANY_CD, a.TIMERECORDER_CD, a.SEND_OVERTIME_NAME,");
@@ -201,6 +219,18 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 			List<TimeRecordReqSetting> listFullData = createTimeReqSettingResult(stm.executeQuery(), 0);
 			if (listFullData.isEmpty()) return Optional.empty();
 			return getOneByList(listFullData);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public List<TimeRecordReqSetting> getListTrRequest(ContractCode contractCode) {
+		try (PreparedStatement stm = this.connection().prepareStatement(GET_TR_REQUEST_CONTRACTCODE)) {
+			stm.setString(1, contractCode.v());
+			List<TimeRecordReqSetting> listFullData = createTimeReqSettingResult(stm.executeQuery(), 0);
+			if (listFullData.isEmpty()) return Collections.EMPTY_LIST;
+			return listFullData;
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
@@ -480,4 +510,33 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		this.commandProxy().insert(entity);
 	}
 
+	@Override
+	public void updateSwitchDates(ContractCode contractCode, GeneralDateTime datetime) {
+		List<KrcmtTrRequest> listEntity = this.queryProxy().query(GET_CONTRACTCD, KrcmtTrRequest.class)
+				  .setParameter("contractCode", contractCode.v())
+				  .getList();
+
+		listEntity.stream()
+				  .forEach(e -> {
+					  e.switchDate = datetime;
+				  });
+		
+		this.commandProxy().updateAll(listEntity);
+	}
+
+	@Override
+	public void updateSwitchDate(ContractCode contractCode, EmpInfoTerminalCode empInfoTerminalCode,
+			GeneralDateTime datetime) {
+		
+		KrcmtTrRequest entity = this.queryProxy().query(GET_CONTRACTCD_TERCODE, KrcmtTrRequest.class)
+									.setParameter("contractCode", contractCode.v())
+									.setParameter("terminalCode", empInfoTerminalCode.v())
+									.getSingle().get();
+		
+		entity.switchDate = datetime;
+		
+		this.commandProxy().update(entity);
+	}
+
+	
 }

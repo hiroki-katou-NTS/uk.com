@@ -206,6 +206,19 @@ module nts.uk.at.view.knr002.a {
                 });
             }
 
+            private openKNR002LDialog() {
+                const vm = this;
+                blockUI.invisible();
+                let data = {
+                    mode: 'bulk',
+                    empInfoTerminalCode: ''
+                };
+                setShared('dataShareL', data);
+                modal('/view/knr/002/l/index.xhtml', { title: 'L_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
+            }
+
             private setGridSize() {
                 let width = window.innerWidth;
                 let height = window.innerHeight;
@@ -248,7 +261,7 @@ module nts.uk.at.view.knr002.a {
                             { headerText: getText("KNR002_44"), key: 'signalLastTime', dataType: 'string', width: '180px' },
                             { headerText: getText("KNR002_45"), key: 'displayCurrentState', dataType: 'string', width: '100px' },
                             { headerText: getText("KNR002_46"), key: 'open', dataType: 'string', width: '76px', unbound: true, ntsControl: 'Button7' },
-                            { headerText: getText("KNR002_47"), key: 'open1', dataType: 'string', width: '84px', unbound: true, ntsControl: 'Button8' },
+                            { headerText: getText("KNR002_47"), key: 'open1', dataType: 'string', width: '78px', unbound: true, ntsControl: 'Button8' },
                             { headerText: '', key: 'open2', dataType: 'string', width: '89px', unbound: true, ntsControl: 'Button9' },
                             { headerText: '', key: 'displayFlag', dataType: 'string', width: '133px' },
                             

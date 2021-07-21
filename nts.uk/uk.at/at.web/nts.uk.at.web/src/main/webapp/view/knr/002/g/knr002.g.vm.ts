@@ -324,6 +324,19 @@ module knr002.g {
                     } else self.selectReservation(false);
                 });
             }
+
+            private call_L_Dialog(): void{
+                var self = this;
+                blockUI.invisible();
+                let data = {
+                    mode: 'individual',
+                    empInfoTerminalCode: self.empInfoTerCode()
+                }
+                setShared('dataShareL', data);
+                modal('/view/knr/002/l/index.xhtml', { title: 'L_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
+            }
             /**
              * G11_1
              * 決定ボタン

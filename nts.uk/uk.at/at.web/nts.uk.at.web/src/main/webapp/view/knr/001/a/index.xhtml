@@ -198,16 +198,32 @@
 															enable: true }" />
 						</div>
 					</div>
+					
+					<!-- A7_1 A7_2 A7_3 -->
+					<div class="div_line" data-bind="visible: useAtr">
+						<div class="w_label" id="A7_1"
+							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_150')}</div>
+						<button class="ml-15" style="height: 26px;" id="A7_2" data-bind="click: callCDL008">#{i18n.getText('KNR001_151')}</button>
+						<span class="label ml-15" id="A7_3" data-bind="text: workplaceName"></span>
+					</div>
+
+					<!-- A7_4 A7_5 A7_6 -->
+					<div class="div_line" style="margin-bottom: 11px;" data-bind="visible: useAtr">
+						<div id="A7_4">#{i18n.getText('KNR001_181')}</div>
+						<div id="A7_5" data-bind="ntsDatePicker: { value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+						<button id="A7_6" data-bind="click: displayButtonHandle">#{i18n.getText('KNR001_182')}</button>
+					</div>
+
 					<!-- row7: A5_3 + A5_4 + A5_5 -->
 					<div class="div_line">
-						<div class="w_label" style=""
+						<div class="w_label"
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_40')}</div>
 						<button class="ml-15" style="height: 26px;" id="A5_4"
 							data-bind="click: callKDL010, enable: true">#{i18n.getText('KNR001_41')}</button>
 						<span class="label ml-15" id="A5_5"
 							data-bind="text: workLocationName">#{i18n.getText('KNR001_42')}</span>
-
 					</div>
+
 					<!-- row8: A5_6 + A5_7 + A5_8 -->
 					<div class="div_line">
 						<div class="ilb w_label" style=""
@@ -223,47 +239,6 @@
 							<label>#{i18n.getText('KNR001_44')}</label>
 						</div>
 					</div>
-					<!-- row9: A6_1 + A6_2 -->
-					<div class="div_line">
-						<div class="w_label" style=""
-							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_45')}</div>
-						<div class="va_t" style="margin-left: 12px; margin-top: 4px;" id="A6_2"
-							data-bind="ntsCheckBox: { 
-														checked: checkedOutingClass,
-														enable: enableOutingClass,
-														text: '#{i18n.getText('KNR001_46')}' 
-													}"></div>
-					</div>
-					<!-- row10: A6_3 + A6_4 -->
-					<div class="div_line">
-						<div class="ilb w_label" style=""
-							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_47')}</div>
-						<div class="ml-15 ilb va_t h_cbx" style="width: 130px; margin-top: 4px;" id="A6_4"
-							data-bind="ntsComboBox: {
-														options: outingClassList,
-														name: '{#KNR001_48}',
-														optionsValue: 'code',
-														value: goOutReason,
-														optionsText: 'name',
-														enable: enableEntranExit,
-														editable: false,
-														selectFirstIfNull: false,
-														columns: [
-															{ prop: 'name', length: 10 }
-														]}"></div>
-					</div>
-					<!-- row11: A6_5 + A6_6-->
-					<div class="div_line">
-						<div class="w_label" style=""
-							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_49')}</div>
-						<div class="va_t" style="margin-left: 12px; margin-top: 4px;" id="A6_6"
-							data-bind="ntsCheckBox: {
-														checked: checkedEntranExit,
-														enable: true,
-														text: '#{i18n.getText('KNR001_50')}'
-													}"></div>
-					</div>
-
 				</div>
 				<!-- memo -->
 				<div class="column-3">
@@ -281,12 +256,93 @@
 														name: '#[KNR001_52]',
 														constraint: 'EmpInfoTerMemo'}" />
 						</div>
-					
 
+						<div style="margin-left: 8px"> 
+							<div id="A8_1" data-bind="ntsFormLabel: {}">#{i18n.getText('KNR001_152')}</div>
+							<div class="row">
+								<div id="A8_2">#{i18n.getText('KNR001_153')}</div>
+								<div id="A8_3" data-bind="ntsComboBox: {
+									name: '＃[KNR001_154]',
+									enable: empInfoTerminalModel().modelEmpInfoTer() == 9,
+									options: itemList,
+									optionsValue: 'index',
+									visibleItemsCount: 5,
+									value: selectedIndex1,
+									optionsText: 'name',
+									columns: [{ prop: 'name', length: 10 }]}">
+								</div>
+							</div>
+							<div class="row">
+								<div id="A8_4">#{i18n.getText('KNR001_160')}</div>
+								<div id="A8_5" data-bind="ntsComboBox: {
+									name: '＃[KNR001_161]',
+									enable: empInfoTerminalModel().modelEmpInfoTer() == 9,
+									options: itemList,
+									optionsValue: 'index',
+									visibleItemsCount: 5,
+									value: selectedIndex2,
+									optionsText: 'name',
+									columns: [{ prop: 'name', length: 10 }]}">
+								</div>
+							</div>
+							<div class="row">
+								<div id="A8_6">#{i18n.getText('KNR001_165')}</div>
+								<div id="A8_7" data-bind="ntsComboBox: {
+									name: '＃[KNR001_166]',
+									enable: empInfoTerminalModel().modelEmpInfoTer() == 9,
+									options: itemList,
+									optionsValue: 'index',
+									visibleItemsCount: 5,
+									value: selectedIndex3,
+									optionsText: 'name',
+									columns: [{ prop: 'name', length: 10 }]}">
+								</div>
+							</div>
+							<div class="row">
+								<div id="A8_8">#{i18n.getText('KNR001_175')}</div>
+								<div id="A8_9" data-bind="ntsComboBox: {
+									name: '＃[KNR001_176]',
+									enable: empInfoTerminalModel().modelEmpInfoTer() == 9,
+									options: itemList,
+									optionsValue: 'index',
+									visibleItemsCount: 5,
+									value: selectedIndex4,
+									optionsText: 'name',
+									columns: [{ prop: 'name', length: 10 }]}">
+								</div>
+							</div>
+						</div>
+
+						<!-- row10: A6_3 + A6_4 -->
+						<div class="div_line" style="margin-left: 8px">
+							<div class="ilb" style="margin-right: 38px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_47')}</div>
+							<div class="ml-15 ilb va_t h_cbx" style="width: 130px; margin-top: 4px;" id="A6_4"
+								data-bind="ntsComboBox: {
+															options: empInfoTerminalModel().outingClassList,
+															name: '{#KNR001_48}',
+															optionsValue: 'code',
+															value: goOutReason,
+															optionsText: 'name',
+															enable: empInfoTerminalModel().modelEmpInfoTer() == 7 || empInfoTerminalModel().modelEmpInfoTer() == 8,
+															editable: false,
+															selectFirstIfNull: false,
+															columns: [
+																{ prop: 'name', length: 10 }
+															]}"></div>
+						</div>
+						<!-- row11: A6_5 + A6_6-->
+						<div class="div_line" style="margin-left: 8px; position: relative;">
+							<div style="margin-right: 29px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KNR001_49')}</div>
+							<div class="va_t" style="margin-left: 12px; margin-top: 4px;" id="A6_6"
+								data-bind="ntsCheckBox: {
+															checked: entranceExit,
+															enable: empInfoTerminalModel().modelEmpInfoTer() == 7 || empInfoTerminalModel().modelEmpInfoTer() == 8,
+															text: '#{i18n.getText('KNR001_50')}'
+														}"></div>
+							<span id="A6_9">#{i18n.getText('KNR001_180')}</span>
+						</div>
 				</div>
-				<!-- -->
 			</div>
-
 		</ui:define>
 	</ui:composition>
 </body>

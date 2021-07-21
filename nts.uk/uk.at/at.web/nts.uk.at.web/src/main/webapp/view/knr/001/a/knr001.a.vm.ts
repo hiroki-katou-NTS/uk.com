@@ -3,6 +3,9 @@ module nts.uk.at.view.knr001.a {
     import dialog = nts.uk.ui.dialog;
     import alertError = nts.uk.ui.alertError;
     import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
 
 
     export module viewmodel{
@@ -14,10 +17,17 @@ module nts.uk.at.view.knr001.a {
             selectedCode: KnockoutObservable<string>;
             empInfoTerminalList: KnockoutObservableArray<EmpInfoListDto>;
             enableBtnRegist: KnockoutObservable<boolean>;
-            
-            
-            
-            
+
+            itemList: KnockoutObservableArray<ItemModel1>;
+
+            selectedIndex1: KnockoutObservable<number> = ko.observable(0);
+            selectedIndex2: KnockoutObservable<number> = ko.observable(0);
+            selectedIndex3: KnockoutObservable<number> = ko.observable(0);
+            selectedIndex4: KnockoutObservable<number> = ko.observable(0);
+
+            goOutReason: KnockoutObservable<number> = ko.observable(0);
+            entranceExit: KnockoutObservable<boolean> = ko.observable(false);
+
             constructor(){
                 var self = this;
                 self.enableBtnNew = ko.observable(true);
@@ -27,6 +37,23 @@ module nts.uk.at.view.knr001.a {
                 self.empInfoTerminalList = ko.observableArray<EmpInfoListDto>([]);
                 self.selectedCode = ko.observable(null);
                 self.enableBtnRegist = ko.observable(true);
+
+                self.itemList = ko.observableArray([
+                    new ItemModel1(0, '出勤'),
+                    new ItemModel1(1, '入門'),
+                    new ItemModel1(2, '応援出勤'),
+                    new ItemModel1(3, '出勤'),
+                    new ItemModel1(4, '退門'),
+                    new ItemModel1(5, '私用外出'),
+                    new ItemModel1(6, '公用外出'),
+                    new ItemModel1(7, '有償外出'),
+                    new ItemModel1(8, '組合外出'),
+                    new ItemModel1(9, '入（応援開始）'),
+                    new ItemModel1(10, '戻り'),
+                    new ItemModel1(11, '出（応援終了/応援行く）'),
+                ]);
+
+                // self.testSelectedCode = ko.observable(1);
                 
                 //select an employment information terminal
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
@@ -51,33 +78,10 @@ module nts.uk.at.view.knr001.a {
                     self.empInfoTerminalModel().modelEmpInfoTer(modelEmpInfo);
                             if(modelEmpInfo == 7 || modelEmpInfo == 8){
                                 self.empInfoTerminalModel().enableOutingClass(false);
-                                // self.empInfoTerminalModel().checkedOutingClass(null);
-                                self.empInfoTerminalModel().enableEntranExit(true);
                             }else{
                                 self.empInfoTerminalModel().enableOutingClass(true);
-                                self.empInfoTerminalModel().enableEntranExit(self.empInfoTerminalModel().checkedOutingClass()? false : true);
                                 
                             }
-                });
-                //select a value from selectbox 外出区分
-                self.empInfoTerminalModel().goOutReason.subscribe(function(reason){
-                    self.empInfoTerminalModel().goOutReason(reason);
-                    self.empInfoTerminalModel().replace(reason > 0 ? 1 : 0);
-                });
-                //tick on checkbox outSupport
-                self.empInfoTerminalModel().checkedOutingClass.subscribe(function(check){
-
-                    self.empInfoTerminalModel().outSupport(check == true? 1 : 0);
-                    if(check && self.empInfoTerminalModel().modelEmpInfoTer() == 9){
-                        self.empInfoTerminalModel().enableEntranExit(false);
-                    } else{
-                        self.empInfoTerminalModel().enableEntranExit(true);
-                    }
-                });
-                //tick on checkbox entranceExit
-                //
-                self.empInfoTerminalModel().checkedEntranExit.subscribe(function(check){
-                    self.empInfoTerminalModel().entranceExit(check == true ? 1 : 0);
                 });
 
                 //select a worklocation
@@ -124,10 +128,44 @@ module nts.uk.at.view.knr001.a {
                 let self = this;          
                 service.getDetails(empInfoTerCode).done(function(empInfoTer: any){
                     if(empInfoTer){
+                        console.log(empInfoTer, 'hoi cham');
                         self.isUpdateMode(true);
                         self.enableBtnDelete(true);
                         self.selectedCode(empInfoTer.empInfoTerCode);
                         self.empInfoTerminalModel().updateData(empInfoTer);
+                        if (_.isNull(self.empInfoTerminalModel().nRConvertInfo())) {
+                            self.empInfoTerminalModel().lstMSConversion()
+                                .forEach((item: MSConversionDto) => {
+                                    switch (item.stampClassifi) {
+                                        case 0: 
+                                            self.selectedIndex1(item.stampDestination);
+                                            break;
+                                        case 1: 
+                                            self.selectedIndex2(item.stampDestination);
+                                            break;
+                                        case 2: 
+                                            self.selectedIndex3(item.stampDestination);
+                                            break;
+                                        case 3: 
+                                            self.selectedIndex4(item.stampDestination);
+                                            break;
+                                    }
+                                })
+                                self.goOutReason(10); // しない
+                        } else {
+                            // nr
+                            if (self.empInfoTerminalModel().nRConvertInfo().outPlaceConvert.replace === 0) {
+                                self.goOutReason(10);
+                            } else {
+                                self.goOutReason(self.empInfoTerminalModel().nRConvertInfo().outPlaceConvert.goOutReason);
+                            }
+
+                            if (!_.isNil(self.empInfoTerminalModel().nRConvertInfo().entranceExit)) {
+                                if (self.empInfoTerminalModel().nRConvertInfo().entranceExit === 1) {
+                                    self.entranceExit(true);
+                                }
+                            }
+                        }
                         self.empInfoTerminalModel().isEnableCode(false);              
                     }else{
                         self.createNewMode();
@@ -158,11 +196,7 @@ module nts.uk.at.view.knr001.a {
                 if(self.hasError()){
                     return;
                 }
-                // let ipAddress = "";
-                // ipAddress += self.empInfoTerminalModel().ipAddress1() + "."
-                //             + self.empInfoTerminalModel().ipAddress2() + "."
-                //             + self.empInfoTerminalModel().ipAddress3() + "."
-                //             + self.empInfoTerminalModel().ipAddress4();
+                
                 let command: any = {};
                 command.empInfoTerCode = self.empInfoTerminalModel().empInfoTerCode();
                 command.empInfoTerName = self.empInfoTerminalModel().empInfoTerName();
@@ -187,11 +221,52 @@ module nts.uk.at.view.knr001.a {
                 command.terSerialNo = self.empInfoTerminalModel().terSerialNo();
                 command.workLocationCode = self.empInfoTerminalModel().workLocationCode();
                 command.intervalTime = self.empInfoTerminalModel().intervalTime();
-                command.outSupport = self.empInfoTerminalModel().modelEmpInfoTer()==9?self.empInfoTerminalModel().outSupport():self.empInfoTerminalModel().outSupportTemp();
-                command.replace = self.empInfoTerminalModel().replace();
-                command.goOutReason = self.empInfoTerminalModel().goOutReason() == 0 ? null : self.empInfoTerminalModel().goOutReason() - 1;
-                command.entranceExit = self.empInfoTerminalModel().entranceExit();
                 command.memo = self.empInfoTerminalModel().memo();
+                command.workplaceId = self.empInfoTerminalModel().workplaceId();
+
+                if (command.modelEmpInfoTer == 9) {
+                    let lstMSConversion: Array<MSConversionDto> = [];
+
+                    for (let i = 0; i < 4; i++) {
+                        let stampDestination;
+                        switch (i) {
+                            case 0: 
+                                stampDestination = self.selectedIndex1();
+                                break;
+                            case 1: 
+                                stampDestination = self.selectedIndex2();
+                                break;
+                            case 2: 
+                                stampDestination = self.selectedIndex3();
+                                break;
+                            case 3: 
+                                stampDestination = self.selectedIndex4();
+                                break;
+                        }
+
+                        let item = {
+                            stampClassifi: i,
+                            stampDestination
+                        }
+
+                        lstMSConversion.push(item);
+                    }
+                    command.lstMSConversion = lstMSConversion;
+                } else {
+                    let replace = 1;
+                    if (self.goOutReason() === 10) {
+                        replace = 0;
+                    }
+                    let outPlaceConvert = {
+                        replace,
+                        goOutReason: self.goOutReason()
+                    }
+                    let nrconvertInfo = {
+                        outPlaceConvert,
+                        entranceExit: self.entranceExit() ? 1 : 0
+                    }
+                    command.nrconvertInfo = nrconvertInfo;
+                }
 
                 blockUI.invisible();
                 if(self.isUpdateMode() == false){
@@ -355,10 +430,11 @@ module nts.uk.at.view.knr001.a {
                     || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress3())
                     || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress4())
                 ) {
-                    dialog.error({messageId: "Msg_2036"}).then(()=>{
-                        return;
-                    });
-                    
+                    if(_.isNull(self.empInfoTerminalModel().ipAddress1()) || self.empInfoTerminalModel().ipAddress1().toString() == "")  $('#IP1').ntsError('set', {messageId: 'Msg_2036'});
+                    if(_.isNull(self.empInfoTerminalModel().ipAddress2()) || self.empInfoTerminalModel().ipAddress2().toString() == ""  $('#IP2').ntsError('set', {messageId: 'Msg_2036'});
+                    if(_.isNull(self.empInfoTerminalModel().ipAddress3()) || self.empInfoTerminalModel().ipAddress3().toString() == "")  $('#IP3').ntsError('set', {messageId: 'Msg_2036'});
+                    if(_.isNull(self.empInfoTerminalModel().ipAddress4()) || self.empInfoTerminalModel().ipAddress4().toString() == "")  $('#IP4').ntsError('set', {messageId: 'Msg_2036'});
+
                     return true;
                 }
 
@@ -396,6 +472,32 @@ module nts.uk.at.view.knr001.a {
         /**
          * Employment information terminal Model
          */
+
+         class ItemModel1 {
+            index: number;
+            name: string;
+        
+            constructor(index: number, name: string) {
+                this.index = index;
+                this.name = name;
+            }
+        }
+
+        export interface MSConversionDto {
+            stampClassifi: number;
+            stampDestination: number;
+        }
+
+        export interface NRConvertInfoDto {
+            outPlaceConvert: OutPlaceConvertDto;
+            entranceExit: number;
+        }
+
+        export interface OutPlaceConvertDto {
+            replace: number;
+            goOutReason: number;
+        }
+
         export class EmpInfoTerminalModel{
             //  端末No
             empInfoTerCode: KnockoutObservable<string>;
@@ -421,26 +523,21 @@ module nts.uk.at.view.knr001.a {
             workLocationName: KnockoutObservable<string>;
             //  状態監視間隔
             intervalTime: KnockoutObservable<number>;
-            //  外出応援区分
-            outSupport: KnockoutObservable<number>;
-            outSupportTemp: KnockoutObservable<number>;
             enableOutingClass: KnockoutObservable<boolean>;
             checkedOutingClass: KnockoutObservable<boolean>;
             //  外出区分: combobox
             outingClassList: KnockoutObservableArray<ItemModel>;
-            //  外出区分
-            replace: KnockoutObservable<number>;
-            //  外出理由
-            goOutReason: KnockoutObservable<number>;
-            //  入退門区分
-            entranceExit: KnockoutObservable<number>; 
-            enableEntranExit: KnockoutObservable<boolean>;
             checkedEntranExit: KnockoutObservable<boolean>;
             //  メモ
             memo: KnockoutObservable<string>;
-          
+
+            lstMSConversion: KnockoutObservableArray<MSConversionDto>;
+            nRConvertInfo: KnockoutObservable<NRConvertInfoDto>;
+            workplaceId: KnockoutObservable<string>;
+            workplaceName: KnockoutObservable<string>;  
             isEnableCode: KnockoutObservable<boolean>;
-          
+            date: KnockoutObservable<string> = ko.observable('');
+            useAtr: boolean = false;
 
             constructor(){
                 this.empInfoTerCode =  ko.observable(null);
@@ -452,6 +549,11 @@ module nts.uk.at.view.knr001.a {
                                                 new ItemModel(9, 'NRL-m/ms')				
                                             ]); 
                 
+                this.lstMSConversion =  ko.observableArray([]);
+                this.nRConvertInfo = ko.observable(null);
+                this.workplaceId = ko.observable('');
+                this.workplaceName = ko.observable('')
+
                 this.modelEmpInfoTer =  ko.observable(null);
                 
                 this.macAddress =  ko.observable('');
@@ -466,26 +568,16 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationCode =  ko.observable('');
                 this.workLocationName =  ko.observable('');
                 this.intervalTime =  ko.observable(null);
-                
-                this.outSupport =  ko.observable(0);
-                this.outSupportTemp = ko.observable(0);
                 this.enableOutingClass = ko.observable(true);
                 this.checkedOutingClass = ko.observable(false);
 
                 this.outingClassList = ko.observableArray([			
-                                                new ItemModel(0, getText('KNR001_53')),			
-                                                new ItemModel(1, getText('KNR001_54')),			
-                                                new ItemModel(2, getText('KNR001_55')),	
-                                                new ItemModel(3, getText('KNR001_56')),	
-                                                new ItemModel(4, getText('KNR001_57'))
+                                                new ItemModel(10, getText('KNR001_53')),			
+                                                new ItemModel(0, getText('KNR001_54')),			
+                                                new ItemModel(1, getText('KNR001_55')),	
+                                                new ItemModel(2, getText('KNR001_56')),	
+                                                new ItemModel(3, getText('KNR001_57'))
                                             ]); 
-                this.replace =  ko.observable(null);
-                this.goOutReason =  ko.observable(null);
-                
-                this.entranceExit =  ko.observable(null); 
-                this.enableEntranExit = ko.observable(true);;
-                this.checkedEntranExit = ko.observable(false);
-
                 this.memo =  ko.observable('');  
                
                 this.isEnableCode =  ko.observable(true);     
@@ -508,16 +600,13 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationCode('');
                 this.workLocationName('');
                 this.intervalTime(null);
-                this.outSupport(null);
-                this.replace(null);
-                this.goOutReason(null);
-                this.entranceExit(null); 
                 this.memo('');  
                 this.isEnableCode(true);
                 this.enableOutingClass(true);
-                this.enableEntranExit(true);
                 this.checkedOutingClass(false);
-                this.checkedEntranExit(false);
+                this.workplaceId('');
+                this.workplaceName('');
+                this.nRConvertInfo(null);
             }
             /**
              * update Data
@@ -527,8 +616,6 @@ module nts.uk.at.view.knr001.a {
                 this.empInfoTerName(dto.empInfoTerName);
                 this.modelEmpInfoTer(dto.modelEmpInfoTer);
                 this.macAddress(dto.macAddress);
-                //this.ipAddress(dto.ipAddress);
-                //var arrIpAddress = dto.ipAddress.split(".");
                 this.ipAddress1(dto.ipAddress1);               
                 this.ipAddress2(dto.ipAddress2);
                 this.ipAddress3(dto.ipAddress3);
@@ -537,14 +624,15 @@ module nts.uk.at.view.knr001.a {
                 this.workLocationCode(dto.workLocationCode);
                 this.workLocationName(dto.workLocationName.substring(0, 20));
                 this.intervalTime(dto.intervalTime);
-                this.outSupport(dto.outSupport);
-                this.outSupportTemp(dto.outSupport);
                 this.checkedOutingClass(dto.outSupport == 1? true : false);
-                this.replace(dto.replace);
-                this.goOutReason(dto.replace == 1 ? dto.goOutReason + 1 : 0 );
-                this.entranceExit(dto.entranceExit);
-                this.checkedEntranExit(dto.entranceExit == 1? true : false);
                 this.memo(dto.memo);
+                this.lstMSConversion(dto.lstMSConversion);
+                this.nRConvertInfo(dto.nrconvertInfo);
+                
+                if (this.useAtr) {
+                    this.workplaceId(dto.workplaceId);
+                    this.workplaceName(dto.workplaceName);
+                }
             }
             /**
              * Show Dialog Work Location
@@ -561,6 +649,67 @@ module nts.uk.at.view.knr001.a {
                     blockUI.clear();
                 });
             }
+
+            callCDL008() {
+                const self = this;
+                if (self.date().length === 0) {
+                    dialog.error({messageId: "Msg_2139"}).then(() => {
+                        $('#A7_5').focus();
+                    });
+                    return;
+                }
+                blockUI.invisible();
+                setShared('inputCDL008', {
+                    selectedCodes: _.isNil(self.workplaceId()) ? '' : self.workplaceId,
+                    baseDate: moment(self.date()).toDate(),
+                    isMultiple: false,
+                    selectedSystemType: 2,
+                    isrestrictionOfReferenceRange: false,
+                    showNoSelection: false,
+                    isShowBaseDate: false,
+                    startMode: 0
+                });
+                modal('com', '/view/cdl/008/a/index.xhtml').onClosed(() => {
+                    let output = getShared('outputCDL008');
+                    let workplaceInfor = getShared('workplaceInfor')[0];
+                    self.workplaceId(output);
+                    self.workplaceName(workplaceInfor.displayName);
+                    
+                    blockUI.clear();
+                });
+            }
+
+            displayButtonHandle() {
+                const self = this;
+                moment.locale('en'); 
+                let input = {
+                    listWorkPlaceId: [self.workplaceId()],
+                    baseDate: moment(self.date()).format("YYYY/MM/DD")
+                };
+                service.getWorkplaceNameChangingBaseDate(input).done((res: Array<GetWorkplaceNameChangingBaseDateDto>) => {
+                    if (res[0].displayName !== '' && res[0].displayName !== 'コード削除済') {
+                        self.workplaceName(res[0].displayName);
+                    } else {
+                        if (res[0].workplaceId == null) {
+                            self.workplaceName('')
+                        } else {
+                            self.workplaceName('「本日日付」' + getText('KNR001_183'));
+                        }
+                    }
+                })
+                .fail(() => {})
+                .done(() => blockUI.clear());
+            }
+        }
+
+        export interface GetWorkplaceNameChangingBaseDateDto {
+            workplaceId: string;
+            hierarchyCode: string;
+            workplaceCode: string;
+            workplaceName: string;
+            displayName: string;
+            genericName: string;
+            externalCode: string;
         }
         class EmpInfoListDto{
             empInfoTerCode: string;
