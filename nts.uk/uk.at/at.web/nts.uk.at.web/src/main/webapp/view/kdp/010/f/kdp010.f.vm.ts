@@ -461,10 +461,10 @@ module nts.uk.at.view.kdp010.f {
 		}
 		export class NoticeSet {
 			companyColor: ColorSetting = new ColorSetting();
-			companyTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_333"));
+			companyTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_333").substr(0, 5));
 			personalColor: ColorSetting = new ColorSetting({textColor: '#000000', backGroundColor: '#E2F0D9'});
 			workplaceColor: ColorSetting = new ColorSetting();
-			workplaceTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_334"));
+			workplaceTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_334").substr(0, 5));
 			displayAtr: KnockoutObservable<number> = ko.observable(0);
 			constructor() {}
 			update(param: any) {

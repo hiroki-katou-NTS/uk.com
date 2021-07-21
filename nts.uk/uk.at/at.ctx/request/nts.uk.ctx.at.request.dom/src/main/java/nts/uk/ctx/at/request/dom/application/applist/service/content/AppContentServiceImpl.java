@@ -349,11 +349,16 @@ public class AppContentServiceImpl implements AppContentService {
 			if(goWorkAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝’　’＋#CMM045_252
 				result += " " + I18NText.getText("CMM045_252");
+			} else {
+				// 申請内容　+＝’　’
+				result += " ";
 			}
 			// 申請内容　+＝　Input．勤務時間開始1
 			result += workTimeStart1 == null ? "" : workTimeStart1.getInDayTimeWithFormat();
 			// Input．勤務直帰1をチェック
-			result += I18NText.getText("CMM045_100");
+			if(workTimeStart1!=null || workTimeEnd1!=null) {
+				result += I18NText.getText("CMM045_100");
+			}
 			if(goBackAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
 				result += I18NText.getText("CMM045_252");
@@ -373,12 +378,19 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 		}
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
-			if(workTimeStart2!=null && workTimeEnd2!=null) {
+			if(workTimeStart2!=null || workTimeEnd2!=null) {
 				// 申請内容　+＝　’　’＋Input．勤務時間開始2＋#CMM045_100＋Input．勤務時間終了2
-				result += " " + workTimeStart2.getInDayTimeWithFormat() + I18NText.getText("CMM045_100") + workTimeEnd2.getInDayTimeWithFormat();
+				result += " ";
+				result += workTimeStart2 == null ? "" : workTimeStart2.getInDayTimeWithFormat();
+				result += I18NText.getText("CMM045_100");
+				result += workTimeEnd2 == null ? "" : workTimeEnd2.getInDayTimeWithFormat();
 			}
 			if(!(breakTimeStart1==null || breakTimeStart1.v()==0 || breakTimeEnd1 == null || breakTimeEnd1.v()==0)) {
-				result += " " + I18NText.getText("CMM045_251") + breakTimeStart1.getInDayTimeWithFormat() + breakTimeEnd1.getInDayTimeWithFormat();
+				result += " ";
+				result += I18NText.getText("CMM045_251");
+				result += breakTimeStart1 == null ? "" : breakTimeStart1.getInDayTimeWithFormat();
+				result += I18NText.getText("CMM045_100");
+				result += breakTimeEnd1 == null ? "" : breakTimeEnd1.getInDayTimeWithFormat();
 			}
 		}
 		// 申請理由内容　＝　申請内容の申請理由
@@ -1315,17 +1327,21 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容　＝　#CMM045_262　+　”　”　+　振出申請データ．勤務種類名称　+　”　”　+　振出申請データ．開始時刻　+　#CMM045_100　+　　振出申請データ．終了時刻1
 			String recruitmentAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, recruitmentApp.getWorkInformation().getWorkTypeCode().v());
 			result += I18NText.getText("CMM045_262") + " " + recruitmentAppWorkTypeName + " ";
-			result += recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
-			result += I18NText.getText("CMM045_100");
-			result += recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+			String recStartTime = recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+			String recEndTime= recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+			if(Strings.isNotBlank(recStartTime) || Strings.isNotBlank(recEndTime)) {
+				result += recStartTime + I18NText.getText("CMM045_100") + recEndTime;
+			}
 			// 申請内容を改行(xuống dòng nội dung đơn xin)
 			result += "\n";
 			// 申請内容　+＝　#CMM045_263　+　”　”　+　振休申請データ．勤務種類名称　+　”　”　　+　振休申請データ．開始時刻　+　#CMM045_100　+　振休申請データ．終了時刻
 			String absenceLeaveAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, absenceLeaveApp.getWorkInformation().getWorkTypeCode().v());
 			result += I18NText.getText("CMM045_263") + " " + absenceLeaveAppWorkTypeName + " ";
-			result += absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
-			result += I18NText.getText("CMM045_100");
-			result += absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+			String absStartTime = absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+			String absEndTime = absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+			if(Strings.isNotBlank(absStartTime) || Strings.isNotBlank(absEndTime)) {
+				result += absStartTime + I18NText.getText("CMM045_100") + absEndTime;
+			}
 			// 振休申請.変更元の振休日=empty(Đơn xin nghỉ bù. ngày nghỉ bù của nguồn thay đổi)
 			if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
 				// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
@@ -1337,9 +1353,11 @@ public class AppContentServiceImpl implements AppContentService {
 				String absenceLeaveAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, absenceLeaveApp.getWorkInformation().getWorkTypeCode().v());
 				result += I18NText.getText("CMM045_263") + " " + absenceLeaveAppWorkTypeName;
 				// 申請内容　+＝　”　”　+　振休申請データ．開始時刻　+　#CMM045_100　+　　振休申請データ．終了時刻
-				result += " " + absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
-				result += I18NText.getText("CMM045_100");
-				result += absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+				String absStartTime = absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+				String absEndTime = absenceLeaveApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+				if(Strings.isNotBlank(absStartTime) || Strings.isNotBlank(absEndTime)) {
+					result += " " + absStartTime + I18NText.getText("CMM045_100") + absEndTime;
+				}
 				// 振休申請.変更元の振休日=empty(đơn xin nghỉ bù. Ngày nghỉ bù của nguồn thay đổi)
 				if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
 					// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
@@ -1350,9 +1368,11 @@ public class AppContentServiceImpl implements AppContentService {
 				String recruitmentAppWorkTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, recruitmentApp.getWorkInformation().getWorkTypeCode().v());
 				result += I18NText.getText("CMM045_262") + " " + recruitmentAppWorkTypeName;
 				// 申請内容　+＝　”　”　+　振出申請データ．開始時刻　+　#CMM045_100　+　　振出申請データ．終了時刻
-				result += " " + recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
-				result += I18NText.getText("CMM045_100");
-				result += recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+				String recStartTime = recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime().getFullText()).orElse("");
+				String recEndTime = recruitmentApp.getWorkingHours().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime().getFullText()).orElse("");
+				if(Strings.isNotBlank(recStartTime) || Strings.isNotBlank(recEndTime)) {
+					result += " " + recStartTime + I18NText.getText("CMM045_100") + recEndTime;
+				}
 			}
 		}
 		// 申請理由内容　＝　申請内容の申請理由(Nội dung đơn xin = Lý do đơn xin của nội dung đơn xin)

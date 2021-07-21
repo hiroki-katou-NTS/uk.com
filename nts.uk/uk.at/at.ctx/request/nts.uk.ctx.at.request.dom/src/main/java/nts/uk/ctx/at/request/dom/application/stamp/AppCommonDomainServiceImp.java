@@ -265,7 +265,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				agentAtr,
 				application,
 				null,
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
+				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				null,
 				appStampOutput.getAppDispInfoStartupOutput());
 		
