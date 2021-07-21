@@ -267,7 +267,6 @@ module nts.uk.ui.chart {
                                     }
                                 } else if (nearestLine > child.end) {
                                     if (!self.chartArea.contains(child.html)) {
-                                        console.log(child.id + "; slideTriggerEnd: " + self.slideTrigger.end + "; start: " + child.start);
                                         if (self.slideTrigger.end > child.start 
                                             && self.slideTrigger.rangeMin > child.start) return;
                                         self.chartArea.appendChild(child.html);
@@ -361,6 +360,7 @@ module nts.uk.ui.chart {
             };
             
             chart.html.addEventListener("mousedown", () => {
+                if (event.button !== 0) return;
                 if (self.mode !== "normal") {
                     if (chart.canPasteResize) {
                         let rect = chart.html.getBoundingClientRect();
@@ -444,6 +444,7 @@ module nts.uk.ui.chart {
                                 pevt.pageX = event.pageX;
                                 pevt.pageY = event.pageY;
                                 pevt.offsetX = event.offsetX;
+                                pevt.button = 0;
                                 parentChart.html.dispatchEvent(pevt);
                                 return;
                             } else if (holdPos === HOLD_POS.END && parentChart.end <= chart.end) {
@@ -451,6 +452,7 @@ module nts.uk.ui.chart {
                                 pevt.pageX = event.pageX;
                                 pevt.pageY = event.pageY;
                                 pevt.offsetX = parseFloat(parentChart.html.style.width);
+                                pevt.button = 0;
                                 parentChart.html.dispatchEvent(pevt);
                                 return;
                             }
@@ -761,11 +763,25 @@ module nts.uk.ui.chart {
             self.slideTrigger = {};
         }
         
-        remove(chart: GanttChart, shadow?: boolean) {
+        removeBy(chartInfo: { no: any, id: string }, shallow?: boolean) {
+            if (_.isNil(chartInfo)) return;
+            let self = this,
+                chart = self.gcChart[chartInfo.no][chartInfo.id];
+            if (!shallow) {
+                _.forEach(chart.children, (child: GanttChart) => {
+                    self.remove(child, true);
+                    delete self.gcChart[child.lineNo][child.id];        
+                });
+            }
+            
+            self.remove(chart);
+        }
+        
+        remove(chart: GanttChart, shallow?: boolean) {
             if (_.isNil(chart)) return;
             let self = this;
             chart.reposition({ width: 0 });
-            if (shadow) return;
+            if (shallow) return;
             delete self.gcChart[chart.lineNo][chart.id];
             let parent = self.gcChart[chart.lineNo][chart.parent];
             if (!parent) return;
@@ -774,7 +790,6 @@ module nts.uk.ui.chart {
             });
         }
         
-        // TODO:
         setMode(modeName: manipulationMode.Type) {
             let self = this;
             self.mode = modeName;
@@ -836,6 +851,15 @@ module nts.uk.ui.chart {
                 if (meta.length < 2) return;
                 self._tailor(event.pageX, self.gcChart[meta[0]][meta[1]]);
             });
+            
+            self.chartArea.addEventListener("mouseover", () => {
+                if (self.mode !== "normal" && event.target && !event.target.classList.contains("nts-ganttchart")
+                    && !event.target.classList.contains("gantt-holder")) {
+                    self.chartArea.style.cursor = "not-allowed";
+                } else {
+                    self.chartArea.style.cursor = "";
+                }
+            });
         }
         
         private _tailor(posX: number, chart: GanttChart) {
@@ -865,11 +889,11 @@ module nts.uk.ui.chart {
                 self.placeholder = pDiv.cloneNode(true);
                 self.placeholder.className = "gantt-holder";
                 let width = self.pasteBand.blockSize * chart.unitToPx - 1;
-                let cssText = `; position: absolute; width: ${width}px; height: ${chart.chartWidth}px; 
+                let cssText = `; position: absolute; width: ${width}px; height: ${chart.chartWidth}px; user-select: none;
                     border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;`;
                 self.placeholder.style.cssText = cssText;
                 self.placeholder.addEventListener("mousedown", () => {
-                    if (!self.metaholder.hasOwnProperty("start")) return;
+                    if (!self.metaholder.hasOwnProperty("start") || event.button !== 0) return;
                     self.metaholder.id = `pgc${support.replaceAll(util.randomId(), '-', '')}`;
                     self.metaholder.isPressed = true;
                     self.addChartWithType(self.pasteBand.typeName, {
@@ -1177,7 +1201,7 @@ module nts.uk.ui.chart {
                 chart = document.createElement("div");
             chart.setAttribute("id", `${self.lineNo}-${self.id}`);
             chart.className = "nts-ganttchart";
-            chart.style.cssText = `; position: absolute; top: ${posTop}px; left: ${posLeft}px; z-index: ${self.zIndex}; 
+            chart.style.cssText = `; position: absolute; top: ${posTop}px; left: ${posLeft}px; z-index: ${self.zIndex}; text-overflow: ellipsis;
                 overflow: hidden; white-space: nowrap; width: ${(self.end - self.start) * self.unitToPx - 1}px; height: ${self.chartWidth}px;
                 line-height: ${self.chartWidth}px; background-color: ${self.color}; cursor: ${self.cursor}; border: 1px solid #AAB7B8; font-size: 13px;`;
             
@@ -1477,7 +1501,7 @@ module nts.uk.ui.chart {
                         }
                     } else {
                         if (!child.canPaste) {
-                            let left = parseFloat(target.html.style.left) - (child.end - target.start) * target.unitToPx;
+                            let left = parseFloat(target.html.style.left) + (child.end - target.start) * target.unitToPx;
                             target.reposition({ start: child.end, left: left, width: (target.end - child.end) * target.unitToPx - 1 });
                         } else if (target.definedType !== child.definedType) {
                             child.reposition({ end: target.start, width: (target.start - child.start) * child.unitToPx - 1 });
