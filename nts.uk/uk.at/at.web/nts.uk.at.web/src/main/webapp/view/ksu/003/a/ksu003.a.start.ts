@@ -14,6 +14,7 @@ module nts.uk.at.view.ksu003.a {
 				$(window).resize(function() {
 					__viewContext.viewModel.viewmodelA.setPositionButonDownAndHeightGrid();
 				});
+				
 				__viewContext.viewModel.viewmodelAb.startPage().done(function() {
 					$('#screen-Ab1').css('display','');
 					$('#screen-Ab2').css('display','');
