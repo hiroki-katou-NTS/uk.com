@@ -44,6 +44,7 @@
 }
 #sidebar-area {
 	width: 55px !important;
+	padding: 60px 10px 0;
 }
 body {
 	overflow: hidden;
@@ -61,4 +62,27 @@ body {
 .bottom-row .control-group .form-label {
   width: 60px;
   padding-right: 0px !important;
+}
+
+.control-group .valign-center>* {
+	display: inline-block;
+}
+
+.sidebar-content-header:before {
+	background: none;
+}
+
+.sidebar-content-header {
+	margin-top: 10px;
+}
+
+.nts-datepicker-wrapper {
+    display: inline-block;
+    width: 110px;
+    height: 32px;
+    position: relative;
+}
+
+.ntsControl {
+    display: inline-block;
 }

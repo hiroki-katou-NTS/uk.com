@@ -28,33 +28,39 @@
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel" style="min-width: 600px;">
 				<div class="sidebar-content-header">
-					<span tabindex="1" class="title">#{i18n.getText('CAS014_2')}</span>
-					<button tabindex="2" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
-					<button tabindex="2" id="print-button" data-bind="click: saveAsExcel" style="width: 130px;">#{i18n.getText('CAS014_53')}</button>
+					<!--<span tabindex="1" class="title">#{i18n.getText('CAS014_2')}</span>-->
+					<!--A1_1-->
+					<button tabindex="1" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
+					<!--A1_2-->
+                    <button tabindex="2" id="print-button" data-bind="click: saveAsExcel" style="width: 130px;">#{i18n.getText('KSM004_54')}</button>
 				</div>
 				<div class="contents-area-a">
 					<div class="container cf">
-						<div class="valign-center control-group" style="display: inline-block;" data-bind="with: roleSetJobTitle">
-							<div tabindex="3" data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>
-						</div>
-						<div class="valign-center control-group" style="padding-left: 32px; display: inline-block;">
-							<label>#{i18n.getText('CAS014_21')}</label>
+						<!--<div class="valign-center control-group" style="display: inline-block;" data-bind="with: roleSetJobTitle">-->
+							<!--<div tabindex="3" data-bind="ntsCheckBox: { checked: applyToConcurrentPerson, enable: true }">#{i18n.getText('CAS014_20')}</div>-->
+						<!--</div>-->
+						<!--<div class="valign-center control-group" style="padding-left: 32px; display: inline-block;">-->
+							<!--<label>#{i18n.getText('CAS014_21')}</label>-->
+						<!--</div>-->
+						<!--<br />-->
+						<div class="valign-center control-group">
+							<!--A3_3-->
+							<div data-bind="ntsFormLabel: { required: true }" style="display: inline-block;">#{i18n.getText('CAS014_22')}</div>
+							<!--A3_4-->
+                            <div id="A3_4" class="ntsControl nts-datepicker-wrapper"
+                                 data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
+							<!--A3_5-->
+							<button tabindex="4" class="caret-bottom" data-bind="click : findBtnClick, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_23')}</button>
 						</div>
 						<br />
-						<div class="valign-center control-group" style="margin-bottom: -10px">
-							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_22')}</div>
-							<div tabindex="4" id="A3_4"
-								data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
-							<button tabindex="5" class="caret-bottom" data-bind="click : findBtnClick, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_23')}</button>
-						</div>
-						<br />
-						<table class="fixed-table jobtitle-table" tabindex="6" data-bind="with: roleSetJobTitle" id="A4">
+						<table class="fixed-table jobtitle-table" tabindex="5" data-bind="with: roleSetJobTitle" id="A4">
 							<colgroup>
 								<col width="80px" />
 								<col width="170px" />
 								<col width="205px" />
 							</colgroup>
 							<thead>
+								<!--A4_H1 A4_H2 A4_H3-->
 								<tr>
 									<th class="ui-widget-header">#{i18n.getText('CAS014_24')}</th>
 									<th class="ui-widget-header">#{i18n.getText('CAS014_25')}</th>
@@ -66,6 +72,7 @@
 									<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
 									<td><div class="limited-label" data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
 									<td>
+										<!--A4-->
 										<div class="combo-box" tabindex="7"
 											data-bind="ntsComboBox: {
 											name: '#[CAS014_26]',
