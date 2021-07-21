@@ -1484,7 +1484,38 @@ module nts.uk.ui.at.kdw013.calendar {
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
                 const data = ko.unwrap(params.$datas);
                 const startDate =  moment(_.get(data,'workCorrectionStartDate'));
-                const events = ko.unwrap<EventRaw[]>(params.events);
+                let events = ko.unwrap<EventRaw[]>(params.events);
+                
+                const isDuplicated = _.uniqBy(events, 'extendedProps.supportFrameNo').length < events.length;
+                if (isDuplicated) {
+                    let selectedEvent = events[0];
+                    let {extendedProps } = selectedEvent;
+                    let {employeeId,
+                        id,
+                        remarks,
+                        status,
+                        supportFrameNo,
+                        workCD1,
+                        workCD2,
+                        workCD3,
+                        workCD4,
+                        workCD5,
+                        workLocationCD} = extendedProps;
+                    selectedEvent.extendedProps = {
+                        employeeId,
+                        id,
+                        remarks,
+                        status,
+                        supportFrameNo : null,
+                        workCD1,
+                        workCD2,
+                        workCD3,
+                        workCD4,
+                        workCD5,
+                        workLocationCD
+                    };
+
+                }
                 let mapppedEvents =    _.chain(events)
                     .filter(({ extendedProps }) => extendedProps.status !== 'delete')
                     .map((e) => ({
@@ -1994,7 +2025,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         });
                     }
                     $('#edit').focus();
-                },
+                }
+                ,
                 eventDragStart: (arg: EventDragStartArg) => {
                     const { event } = arg;
                     const {
@@ -2014,6 +2046,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // copy event by drag
                     if (ko.unwrap<boolean>(dataEvent.shift)) {
+                        
                         updateEvents();
                     }
 

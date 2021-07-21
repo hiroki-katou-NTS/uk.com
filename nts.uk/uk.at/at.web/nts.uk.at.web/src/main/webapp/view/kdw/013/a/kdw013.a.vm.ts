@@ -595,6 +595,17 @@ module nts.uk.ui.at.kdw013.a {
                             return vm.$dialog
                                 .info({ messageId: 'Msg_15' })
                                 .then(() => lstOvertimeLeaveTime);
+                        } else {
+
+                            let errors = lstErrorMessageInfo.map(x => {
+                                return {
+                                    message: x.messageError,
+                                    messageId: x.resourceID,
+                                    supplements: {}
+                                };
+                            });
+
+                            nts.uk.ui.dialog.bundledErrors({ errors });
                         }
                     }
                     
