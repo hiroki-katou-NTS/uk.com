@@ -98,7 +98,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty(): this.workTime.getHolidayWork().getWorkTimeCode();
 					}
 				} else {
-					return inOtherCase();
+					return inOtherCase(workTypeCode, workTimeCode);
 				}
 			}
 			break;
@@ -112,7 +112,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
 					}
 				} else {
-					return inOtherCase();
+					return inOtherCase(workTypeCode, workTimeCode);
 				}
 			}
 			break;
@@ -126,7 +126,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
 					}
 				} else {
-					return inOtherCase();
+					return inOtherCase(workTypeCode, workTimeCode);
 				}
 			}
 			break;
@@ -139,10 +139,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
                 				   workTimeCode.isPresent() ? workTimeCode.get().v() : null);
 	}
 	
-	private WorkInformation inOtherCase() {
-		WorkTypeCode workTypeCode = null;
-		Optional<WorkTimeCode> workTimeCode = Optional.empty();
-		
+	private WorkInformation inOtherCase( WorkTypeCode workTypeCode, Optional<WorkTimeCode> workTimeCode) {
 		workTypeCode = this.workType.getHolidayWorkWTypeCode();
 
 		if (this.workTime != null) {
