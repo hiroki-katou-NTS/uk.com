@@ -3780,7 +3780,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 hideZero: !self.displayWhenZero(),
                 getUserId: function(primaryKey) {
                     let ids = primaryKey.split("_");
-                    return ids[2] + "-" + ids[3] + "-" + ids[4] + "-" + ids[5] + "-" + ids[6];
+                    return ids[2] + "-" + ids[3] + "-" + ids[4];
                 },
                 features: [
                     //{ name: 'Paging', pageSize: 31, currentPageIndex: 0 },

@@ -2894,6 +2894,9 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
         // int size = lstEmpId.size();
         try {
             this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL), lstEmpId, empId -> {
+            	if (!listIsInterrupt.isEmpty()) {
+                    return;
+                }
                 // アルゴリズム「開始日を入社日にする」を実行する
                 DatePeriod employeeDatePeriod = this.makeStartDateForHiringDate(processExecution, empId,
                         period);

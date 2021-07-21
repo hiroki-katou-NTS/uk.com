@@ -491,7 +491,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 法定区分のチェック
 		HolidayAtrOutput holidayAtrOutput = judgmentOneDayHoliday.checkHolidayAtr(
 				companyID, 
-				actualContentDisplayLst.stream().findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
+				actualContentDisplayLst.stream().filter(x -> x.getDate().equals(dateLst.stream().findFirst().orElse(null)))
+					.findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
 				workTypeLst.get(1));
 		if(!holidayAtrOutput.isCheckResult()) {
 			String msgParam = Strings.EMPTY;
