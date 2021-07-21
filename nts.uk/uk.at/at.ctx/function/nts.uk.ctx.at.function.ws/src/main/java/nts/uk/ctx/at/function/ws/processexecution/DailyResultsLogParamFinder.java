@@ -7,6 +7,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.i18n.I18NText;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
@@ -40,7 +41,7 @@ public class DailyResultsLogParamFinder {
 		// 締めの名称を取得する
 		String closureName = this.getClosureName(AppContexts.user().companyId(), empCalAndSumExeLog.getClosureID(), 
 				empCalAndSumExeLog.getProcessingMonth().v());
-		return new DailyResultsLogParamDto(closureName, execId);
+		return new DailyResultsLogParamDto(I18NText.getText("#KBT002_344"), closureName, execId);
 	}
 	
 	/**
