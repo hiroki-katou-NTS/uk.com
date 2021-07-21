@@ -153,10 +153,14 @@ module nts.uk.at.view.kal001.b {
                         if (selectedRow) {
                             const menu = _.find(selectedRow.menuItems, (i: any) => i.programId == programId);
                             if (menu) {
-                                const url = _.isNil(menu.queryString) ? menu.url : menu.url + menu.queryString;
-                                if (url) {
-                                    nts.uk.request.jumpFromDialogOrFrame(url);
-                                }
+                                const idx = menu.url.indexOf("/view");
+                                const path = _.isNil(menu.queryString) ? menu.url.substring(idx) : menu.url.substring(idx) + "?" + menu.queryString;
+                                const webApps = ["com", "at", "pr", "hr"];
+                                const webAppId = _.find(webApps, i => menu.url.indexOf(i + ".web") >= 0);
+                                if (webAppId)
+                                    nts.uk.request.jumpFromDialogOrFrame(webAppId, path);
+                                else
+                                    nts.uk.request.jumpFromDialogOrFrame(path);
                             }
                         }
                     } else {
@@ -205,8 +209,14 @@ module nts.uk.at.view.kal001.b {
             }
 
             handleClickLinkPopup(url: string, queryString?: string) {
-                const placeToGo = _.isNil(queryString) ? url : url + queryString;
-                nts.uk.request.jumpFromDialogOrFrame(placeToGo);
+                const idx = url.indexOf("/view");
+                const path = _.isNil(queryString) ? url.substring(idx) : url.substring(idx) + "?" + queryString;
+                const webApps = ["com", "at", "pr", "hr"];
+                const webAppId = _.find(webApps,i => url.indexOf(i + ".web") >= 0);
+                if (webAppId)
+                    nts.uk.request.jumpFromDialogOrFrame(webAppId, path);
+                else
+                    nts.uk.request.jumpFromDialogOrFrame(path);
             }
 
             exportExcel(): void {

@@ -846,7 +846,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	// get application by list employee and date period
 	@Override
 	public List<Application> getAllApplication(List<String> sID, DatePeriod period) {
-		
+		if (CollectionUtil.isEmpty(sID)) return Collections.emptyList();
 		String sql = SELECT_MEMO
 				+ "FROM KRQDT_APPLICATION a " 
 				+ "join KRQDT_APP_REFLECT_STATE b "

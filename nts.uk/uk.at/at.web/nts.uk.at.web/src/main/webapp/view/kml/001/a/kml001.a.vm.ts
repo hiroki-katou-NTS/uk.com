@@ -104,8 +104,6 @@ module nts.uk.at.view.kml001.a {
               self.isInsert(false);
             } else self.$blockui('hide');
 
-            $("#premium-set-tbl").ntsFixedTable({ });
-
             dfd.resolve();
           })
           .fail((res1, res2) => {

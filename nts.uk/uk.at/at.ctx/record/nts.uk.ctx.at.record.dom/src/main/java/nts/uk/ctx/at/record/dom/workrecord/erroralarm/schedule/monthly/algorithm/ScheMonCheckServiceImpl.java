@@ -88,6 +88,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.Emplo
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex;
@@ -221,7 +222,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// Input．List＜社員ID＞をループ
-			for (String sid: lstSid) {
+			for (String sid: emps) {
 				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				// Input．期間の開始月から終了月まで１ヶ月ごとにループ
 				List<YearMonth> months = dPeriod.yearMonthsBetween();
@@ -247,7 +248,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 									&& x.getYmd().afterOrEquals(exMon.firstGeneralDate()) && x.getYmd().beforeOrEquals(exMon.lastGeneralDate()))
 							.collect(Collectors.toList());
 					
-					// 月別実績を探す
+					// 月別実績を探す update by #117229
 					// 条件：
 					// ・社員ID　＝　ループ中の社員ID
 					// ・年月　＝　ループ中の年月
@@ -259,13 +260,17 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 					if(attendanceTimeOfMonOpt.isPresent()) {
 						attendanceTimeOfMon = attendanceTimeOfMonOpt.get();
 					}
-
+					
+					// 職場ID　＝　Input．List＜社員IDと職場履歴＞から絞り込む update by #117211
+					// ・社員ID　＝　ループ中の社員ID
+					// ・期間．開始日　＜＝　ループ中の年月．終了日
+					// ・期間．終了日　＞＝　ループ中の年月．開始日
 					String wplId = "";
 					Optional<WorkPlaceHistImportAl> optWorkPlaceHistImportAl = wplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).findFirst();
 					if(optWorkPlaceHistImportAl.isPresent()) {
 						Optional<WorkPlaceIdAndPeriodImportAl> optWorkPlaceIdAndPeriodImportAl = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().stream()
-								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exMon.firstGeneralDate()) 
-										&& x.getDatePeriod().end().afterOrEquals(exMon.lastGeneralDate())).findFirst();
+								.filter(x -> x.getDatePeriod().start().beforeOrEquals(exMon.lastGeneralDate()) 
+										&& x.getDatePeriod().end().afterOrEquals(exMon.firstGeneralDate())).findFirst();
 						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
 							wplId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
 						}
@@ -344,7 +349,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		
 		if (!StringUtils.isEmpty(listOptionalItem)) {
 			// スケジュール月次の任意抽出条件を取得する
-			scheCondMonths = this.extraCondScheMonRepository.getScheAnyCond(contractCode, cid, listOptionalItem);
+			scheCondMonths = this.extraCondScheMonRepository.getScheAnyCond(contractCode, cid, listOptionalItem).stream()
+					.filter(x -> x.isUse()).collect(Collectors.toList());
 		}
 		
 		Optional<PublicHolidaySetting> publicHdSettingOpt = Optional.empty();
@@ -1011,14 +1017,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// 比較対象基準時間を計算
 			Double totalComparsion = 0.0;
-			if (!prepareData.getUsageUnitSetting().isPresent()) {
+			if (prepareData.getUsageUnitSetting().isPresent()) {
 				totalComparsion = calReferenceTimeForComparison(
 						prepareData.getUsageUnitSetting().get(), 
 						monthlyWorkTimeSetComOpt, 
 						monthlyWorkTimeSetEmpOpt, 
 						monthlyWorMonthlyWorkTimeSetWkpOpt, 
 						monthlyWorkTimeSetShasOpt,
-						monthlyWorkTimeSetAtr);
+						monthlyWorkTimeSetAtr,
+						ym);
 			}
 			
 			// 比率を加算
@@ -1047,8 +1054,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// アラーム内容
 			String param0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
-			String param1 = String.valueOf(totalComparsion);
-			String param2 = String.valueOf(totalWorkingTime);
+			String param1 = formatTime(totalComparsion.intValue());
+			String param2 = formatTime(totalWorkingTime.intValue());
 			alarmContent = TextResource.localize("KAL010_1117", param0, param1, param2);
 			
 			checkValue = TextResource.localize("KAL010_1123", param2);
@@ -1078,14 +1085,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// 比較対象基準時間を計算
 			Double totalComparsionDayOff = 0.0;
-			if (!prepareData.getUsageUnitSetting().isPresent()) {
+			if (prepareData.getUsageUnitSetting().isPresent()) {
 				totalComparsionDayOff = calReferenceTimeForComparison(
 						prepareData.getUsageUnitSetting().get(), 
 						monthlyWorkTimeSetComOpt, 
 						monthlyWorkTimeSetEmpOpt, 
 						monthlyWorMonthlyWorkTimeSetWkpOpt, 
 						monthlyWorkTimeSetShasOpt,
-						monthlyWorkTimeSetAtr);
+						monthlyWorkTimeSetAtr,
+						ym);
 			}
 			
 			// 比率を加算
@@ -1114,8 +1122,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// アラーム内容
 			String paramDayOff0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
-			String paramDayOff1 = String.valueOf(totalComparsionDayOff);
-			String paramDayOff2 = String.valueOf(totalWorkingTimeDayOff);
+			String paramDayOff1 = formatTime(totalComparsionDayOff.intValue());
+			String paramDayOff2 = formatTime(totalWorkingTimeDayOff.intValue());
 			alarmContent = TextResource.localize("KAL010_1117", paramDayOff0, paramDayOff1, paramDayOff2);
 			
 			checkValue = TextResource.localize("KAL010_1124", paramDayOff2);
@@ -1135,14 +1143,15 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// 比較対象基準時間を計算
 			Double totalComparsionPubHoliday = 0.0;
-			if (!prepareData.getUsageUnitSetting().isPresent()) {
+			if (prepareData.getUsageUnitSetting().isPresent()) {
 				totalComparsionPubHoliday = calReferenceTimeForComparison(
 						prepareData.getUsageUnitSetting().get(), 
 						monthlyWorkTimeSetComOpt, 
 						monthlyWorkTimeSetEmpOpt, 
 						monthlyWorMonthlyWorkTimeSetWkpOpt, 
 						monthlyWorkTimeSetShasOpt,
-						monthlyWorkTimeSetAtr);
+						monthlyWorkTimeSetAtr,
+						ym);
 			}
 			
 			// 繰越区分を取得
@@ -1180,8 +1189,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			if (ym.greaterThanOrEqualTo(closureIdPresentClosingPeriod.getCurrentClosingPeriod().getProcessingYm()) 
 					&& carryforwardSet != null
 					&& CarryforwardSetInShortageFlex.NEXT_MONTH_CARRYFORWARD == carryforwardSet) {
-				// 合計就業時間　＝　取得した合計就業時間　－　Input．前月の月別実績．勤怠時間．月の計算．フレックス時間．フレックス不足時間
-				totalWorkingTimePubHoliday = attendanceTimeOfMonthly.getMonthlyCalculation().getFlexTime().getFlexShortageTime().v().doubleValue();
+				// 合計就業時間　＝　取得した合計就業時間　－　Input．前月の月別実績．勤怠時間．月の計算．フレックス時間．フレックス不足時間 TODO
+				totalWorkingTimePubHoliday = totalWorkingTimePubHoliday - attendanceTimeOfMonthly.getMonthlyCalculation().getFlexTime().getFlexShortageTime().v().doubleValue();
 			} else {
 				// 合計就業時間　＝　取得した合計就業時間
 			}
@@ -1208,8 +1217,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			
 			// アラーム内容
 			String paramPub0 = getCompareOperatorText(scheCondMon.getCheckConditions(), publicHoliday.getTypeOfContrast().nameId, scheCondMon.getCheckItemType());
-			String paramPub1 = String.valueOf(totalComparsionPubHoliday);
-			String paramPub2 = String.valueOf(totalWorkingTimePubHoliday);
+			String paramPub1 = formatTime(totalComparsionPubHoliday.intValue());
+			String paramPub2 = formatTime(totalWorkingTimePubHoliday.intValue());
 			alarmContent = TextResource.localize("KAL010_1117", paramPub0, paramPub1, paramPub2);
 			
 			checkValue = TextResource.localize("KAL010_1125", paramPub2);
@@ -1250,12 +1259,13 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 	}
 	
 	/**
-	 * 比較対象基準時間を計算 QA#115653
+	 * 比較対象基準時間を計算 QA#11565w
 	 * @param usageUnitSetting 労働時間と日数の設定の利用単位の設定
 	 * @param monthlyWorkTimeSetComOpt Optional＜会社別月単位労働時間＞
 	 * @param monthlyWorkTimeSetEmpOpt Optional＜雇用別月単位労働時間＞
 	 * @param monthlyWorkTimeSetWkpOpt Optional＜職場別月単位労働時間＞
 	 * @param monthlyWorkTimeSetShas Optional＜社員別月単位労働時間＞
+	 * @param ym 年月　＃117183
 	 * 
 	 * @return
 	 */
@@ -1265,7 +1275,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmpOpt,
 			Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkpOpt,
 			Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetShasOpt,
-			MonthlyWorkTimeSetAtr monthlyWorkTimeSetAtr) {
+			MonthlyWorkTimeSetAtr monthlyWorkTimeSetAtr,
+			YearMonth ym) {
 		// 社員の労働時間と日数の管理をするかチェック
 		// Input．社員別月単位労働時間　！＝　Empty AND Input．労働時間と日数の設定の利用単位の設定．社員の労働時間と日数の管理をする　＝＝　True
 		if (monthlyWorkTimeSetShasOpt.isPresent() && usageUnitSetting.isEmployee()) {
@@ -1489,6 +1500,21 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		}
 		
 		AggrResultOfAnnualLeave annualLeaveInfo = aggResult.getAnnualLeave().get();
+		
+		// #117176
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数　！＝Empty
+		// AND
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数．日数　＞０　		
+		if (!annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveUndigestNumber().isPresent()) {
+			return output;
+		}
+		
+		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数
+		AnnualLeaveUndigestNumber annualLeaveUndigestNumber = annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveUndigestNumber().get();
+		if (annualLeaveUndigestNumber.getDays().v() <= 0) {
+			return output;
+		}
+		
 		AnnualLeaveRemainingNumber remainingNumber = annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber();
 		
 		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残日数　＞　０
@@ -1499,12 +1525,12 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		if (remainingNumber.getTotalRemainingTime().isPresent()) {
 			Double totalRemainingTime = remainingNumber.getTotalRemainingTime().get().v().doubleValue();
 			output.totalRemainingTimes = totalRemainingTime;
-			check = check || totalRemainingTime > 0;
+//			check = check || totalRemainingTime > 0;
 		}
 		
-		if (!check) {
-			return output;
-		}
+//		if (!check) {
+//			return output;
+//		}
 		
 		output.totalRemainingDays = totalRemainingDays;
 		
@@ -1558,18 +1584,35 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			output.workTypeMap.put(exDate, workType.getDailyWork().getClassification());
 		}
 		
+		// ・作成したList＜年月日、勤務分類＞
+		// ・取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残日数
+		// ・取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残時間数
 		return output;
 	}
 	
 	/**
 	 * 勤務種類の分類が年休かチェック
-	 * @return
+	 * #117176
+	 * 勤務種類の分類 == 欠勤 OR 代休 OR 振休 OR 時間消化休暇
+	 * @return true if is annual level
 	 */
 	private boolean isAnnualOrSpecialHoliday(DailyWork dailyWork) {
 		if(dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
-			return dailyWork.getOneDay().isAnnualLeave();
+			return isAnnualLevel(dailyWork.getOneDay());
 		}
-		return dailyWork.getAfternoon().isAnnualLeave() || dailyWork.getMorning().isAnnualLeave();
+		return isAnnualLevel(dailyWork.getAfternoon()) || isAnnualLevel(dailyWork.getMorning());
+	}
+	
+	private boolean isAnnualLevel(WorkTypeClassification workTypeCls) {
+		switch(workTypeCls){
+			case Absence:
+			case SubstituteHoliday:
+			case Pause:
+			case TimeDigestVacation:
+				return true;
+			default:
+				return false;
+		}
 	}
 	
 	/**
@@ -1609,12 +1652,14 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 				CheckedTimeDuration endTime = new CheckedTimeDuration(endValue.intValue());
 				endValueStr = endTime.getTimeWithFormat();
 			}
+			break;
 		case NUMBER_DAYS:
 		case REMAIN_NUMBER:
 			startValueStr = startValue.toString();
 			if (endValue != null) {
 				endValueStr = endValue.toString();
 			}
+			break;
 		default:
 			break;
 		}
@@ -1633,6 +1678,19 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		}
 		
 		return variable0;
+	}
+	
+	/**
+	 * Format time
+	 * because not defined primitive value => function created!
+	 * @param value integer value time
+	 * @return format time HH:MM
+	 */
+	private String formatTime(int value) {
+		int hours = Math.abs(value) / 60;
+		int minute = Math.abs(value) % 60;
+		
+		return hours + ":" + (minute < 10 ? "0" + minute : minute); 
 	}
 	
 	/**

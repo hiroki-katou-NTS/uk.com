@@ -321,6 +321,8 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 										&& x.getDatePeriod().end().afterOrEquals(startDate)).findFirst();
 						if(optWorkPlaceIdAndPeriodImportAl.isPresent()) {
 							workplaceId = optWorkPlaceIdAndPeriodImportAl.get().getWorkplaceId();
+						} else {
+							workplaceId = optWorkPlaceHistImportAl.get().getLstWkpIdAndPeriod().get(0).getWorkplaceId();
 						}
 					}
 

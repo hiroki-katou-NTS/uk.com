@@ -216,7 +216,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				}
 			}
 			// get work place id
-			for(String sid : lstSid) {
+			for(String sid : emps) {
 				List<AlarmExtractInfoResult> lstExtractInfoResult = new ArrayList<>();
 				List<GeneralDate> listDate = dPeriod.datesBetween();
 				for(WorkRecordExtractingCondition extCond : prepareData.getWorkRecordCond()) {

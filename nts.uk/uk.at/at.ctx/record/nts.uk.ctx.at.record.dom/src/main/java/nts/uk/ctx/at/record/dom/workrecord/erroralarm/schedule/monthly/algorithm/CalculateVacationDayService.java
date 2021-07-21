@@ -102,19 +102,19 @@ public class CalculateVacationDayService {
 				continue;
 			}
 			
-			if (!monWorkTypeWorkTime.getWorkTimeCode().isPresent()) {
-				continue;
+			Optional<PredetemineTimeSetting> predTimeSetInDayOpt = Optional.empty();
+			if (monWorkTypeWorkTime.getWorkTimeCode().isPresent()) {
+				predTimeSetInDayOpt = this.predTimeSetRepo.findByWorkTimeCode(cid, monWorkTypeWorkTime.getWorkTimeCode().get());
 			}
 			
 			workingCondtionItem = workingConditionItemMap.get(condExDatePeriod.get());
-			Optional<PredetemineTimeSetting> predTimeSetInDayOpt = this.predTimeSetRepo.findByWorkTimeCode(cid, monWorkTypeWorkTime.getWorkTimeCode().get());
 			
-			if (!workTypeOpt.isPresent() || !dailyOpt.isPresent() || !predTimeSetInDayOpt.isPresent() || workingCondtionItem == null) {
+			if (!workTypeOpt.isPresent() || !dailyOpt.isPresent() || workingCondtionItem == null) {
 				continue;
 			}
 			
 			// Input．日数の種類をチェック
-			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem, predTimeSetInDayOpt.get());
+			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem, predTimeSetInDayOpt);
 		}
 		
 		return totalTime;
@@ -168,12 +168,13 @@ public class CalculateVacationDayService {
 			WorkType workType,
 			IntegrationOfDaily daily,
 			WorkingConditionItem workingCondtionItem,
-			PredetemineTimeSetting predetemineTimeSetting) {
+			Optional<PredetemineTimeSetting> predetemineTimeSettingOpt) {
 		WorkDaysOfMonthly workDays = new WorkDaysOfMonthly();
 		WorkTypeDaysCountTable workTypeDaysCountTable = new WorkTypeDaysCountTable(
 				workType, new VacationAddSet(), Optional.empty());
 		val require = requireService.createRequire();
-				
+		PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingOpt.isPresent() ? predetemineTimeSettingOpt.get() : null;
+		
 		workDays.aggregate(
 				require,
 				workingCondtionItem.getLaborSystem(), 
