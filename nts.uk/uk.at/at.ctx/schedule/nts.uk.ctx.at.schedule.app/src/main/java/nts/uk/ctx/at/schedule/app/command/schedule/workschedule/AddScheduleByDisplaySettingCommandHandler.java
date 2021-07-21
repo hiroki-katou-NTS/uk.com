@@ -37,9 +37,9 @@ public class AddScheduleByDisplaySettingCommandHandler extends CommandHandler<Ad
 		TargetOrgIdenInfor targetOrgIdenInfor = null;
 		// 1: <call>()
 		if (command.targetUnit == TargetOrganizationUnit.WORKPLACE_GROUP.value) {
-			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(command.organizationID);
-		} else {
 			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(command.organizationID);
+		} else {
+			targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(command.organizationID);
 		}
 		// 2:作る(表示の範囲, 表示の開始時刻, 初期表示の開始時刻):スケジュール修正日付別の表示設定
 		DisplaySettingByDate displaySettingByDate = DisplaySettingByDate.create(
