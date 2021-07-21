@@ -457,9 +457,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 								id: checkPage[0].page, formatter: _.escape
 							});
 						} else {
-							if (!_.includes(self.hasDataButton, i)) {
-								self.textButtonArr.push({ name: ko.observable(getText("KSU003_84", [i])), id: i, formatter: _.escape });
-							}
+							self.textButtonArr.push({ name: ko.observable(getText("KSU003_84", [i])), id: i, formatter: _.escape });
 						}
 					}
 				});
