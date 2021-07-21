@@ -68,11 +68,6 @@ module nts.uk.at.view.ksu001.testR {
                 };
 
                 $('#tree-grid').ntsTreeComponent(self.treeGrid);
-                  $('#tree-grid').ntsTreeComponent(self.treeGrid).done(function () {
-                                    var lwps = $('#tree-grid').getDataList();
-                                    self.selectedWorkplaceId(lwps[0].id);
-                                    self.name(lwps[0].name);
-                                });
 
 
                 self.options = {
@@ -91,6 +86,17 @@ module nts.uk.at.view.ksu001.testR {
                 self.currentIds.subscribe((x) => {
                     console.log(x);
                 });
+                self.selectedWorkplaceId.subscribe((x) => {
+                    let data = {
+                        workplaceId: self.selectedWorkplaceId(),
+                        baseDate: moment().toISOString()
+                    };
+
+                    service.getWorkPlaceById(data).done(function(wkp) {
+                        //self.name(wkp.workplaceName);
+
+                    });
+                });
             }
             
             openDialog(): void {
@@ -98,6 +104,7 @@ module nts.uk.at.view.ksu001.testR {
 
                 let target: any = {};
                 let period: any = {};
+                
                 
 
                 if (self.workPlace()) {
@@ -126,13 +133,22 @@ module nts.uk.at.view.ksu001.testR {
                 }
                 setShare('targetR', target);
                 setShare('periodR', period);
-                if(self.unit === '0'){
-                setShare('name', self.name());
-                 }
-                else{
-                 setShare('name', self.currentNames());   
+                let data = {
+                    workplaceId: self.selectedWorkplaceId(),
+                    baseDate: moment().toISOString()
+                };
+
+                service.getWorkPlaceById(data).done(function(wkp) {
+                    self.name(wkp.workplaceName);
+                    if (self.unit === '0') {
+                        setShare('name', self.name());
                     }
-                self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/r/index.xhtml");
+                    else {
+                        setShare('name', self.currentNames());
+                    }
+                    self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/r/index.xhtml");
+                }); 
+
             }
             public startPage(): JQueryPromise<any> {
                 let self = this,
