@@ -5673,12 +5673,13 @@ module nts.uk.ui.exTable {
                 let $rightArea = self.actionDetails.$rightArea;
                 let scrollWidth = helper.getScrollWidth();
                 let vertSumShown = self.$verticalSumHeader && self.$verticalSumHeader.style.display !== "none";
+                let rightHorzShown = self.$rightHorzSumHeader && self.$rightHorzSumHeader.style.display !== "none";
                 if ($rightArea && $rightArea.classList.contains(HEADER_PRF + DETAIL)) {
                     let horzLeftWidth = self.actionDetails.widths.leftHorzSum + diff;
                     self.setWidth(self.$leftHorzSumHeader, horzLeftWidth);
                     self.setWidth(self.$leftHorzSumContent, horzLeftWidth);
                     self.setWidth(self.$horzSumHeader, rightWidth);
-                    self.setWidth(self.$horzSumContent, rightWidth + scrollWidth);
+                    self.setWidth(self.$horzSumContent, rightWidth + (rightHorzShown ? 0 : scrollWidth));
                     if (self.$detailHorzScroll) {
                         self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
                         self.$detailHorzScroll.style.left = posLeft;
@@ -6885,13 +6886,32 @@ module nts.uk.ui.exTable {
                     let target = event.target;
                     event.preventDefault();
                     event.stopPropagation();
-                    if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
-                        target = helper.closest(target, `.${render.CELL_CLS}`); 
+                    if (typeof rightClickFt.chartFilter === "function") {
+                        if (selector.is(target, ".gantt-holder")) {
+                            target.parentNode.removeChild(target);
+                            target = document.elementFromPoint(event.pageX, event.pageY);
+                        }
+                        
+                        if (!selector.is(target, ".nts-ganttchart")) return;     
+                        let id = target.getAttribute("id");
+                        if (_.isNil(id)) return;
+                        if (!rightClickFt.chartFilter(...id.split('-'), target)) return;
+                    } else {
+                        if (selector.is(target, `.${render.CHILD_CELL_CLS}`)) {
+                            target = helper.closest(target, `.${render.CELL_CLS}`); 
+                        }
+                        
+                        if (!selector.is(target, `.${render.CELL_CLS}`)) return;
                     }
                     
-                    if (!selector.is(target, `.${render.CELL_CLS}`)) return;
                     let cm: widget.ContextMenu, 
+                        ui = {};
+                    if (!rightClickFt.chartFilter) {
                         ui = helper.getCellCoord(target);
+                    } else {
+                        [ ui.rowIndex, ui.id ] = [ ...id.split('-') ];
+                    }
+                     
                     ui.target = target;
                     ui.contextMenu = items => {
                         if (_.isNil(cm)) {
@@ -9289,6 +9309,8 @@ module nts.uk.ui.exTable {
             if (selector.is($cell, "div")) {
                 $td = closest($cell, "td");
             }
+            
+            if (_.isNil($td)) return;
             let view = $.data($td, internal.VIEW);
             if (!view) return;
             let coord = view.split("-");

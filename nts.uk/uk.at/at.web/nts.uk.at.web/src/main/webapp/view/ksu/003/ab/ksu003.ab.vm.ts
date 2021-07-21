@@ -307,8 +307,14 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 			for (let i = 1; i <= 5; i++) {
 				let dataPallet = data.workPaletteDisplayInforDto.lstTaskPaletteOrganizationDto;
-				if (!_.isNil(dataPallet[i - 1])) {
-					self.textButtonArr.push({ name: ko.observable(dataPallet[i - 1].taskPaletteDisplayInfoDto.taskPaletteName), id: dataPallet[i - 1].page, formatter: _.escape });
+				let checkPage = _.filter(dataPallet, (x : any) => {
+					return x.page == i;
+				});
+				if (checkPage.length > 0) {
+					self.textButtonArr.push({
+						name: ko.observable(checkPage[0].taskPaletteDisplayInfoDto.taskPaletteName),
+						id: checkPage[0].page, formatter: _.escape
+					});
 				} else {
 					if (!_.includes(self.hasDataButton, i)) {
 						self.textButtonArr.push({ name: ko.observable(getText("KSU003_84", [i])), id: i, formatter: _.escape });
@@ -442,10 +448,13 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					self.textButtonArr([]);
 					for (let i = 1; i <= 5; i++) {
 						let dataPallet = self.dataTaskPalletDis.lstTaskPaletteOrganizationDto;
-						if (!_.isNil(dataPallet[i - 1])) {
+						let checkPage = _.filter(dataPallet, (x : any) => {
+							return x.page == i;
+						});
+						if (checkPage.length > 0) {
 							self.textButtonArr.push({
-								name: ko.observable(dataPallet[i - 1].taskPaletteDisplayInfoDto.taskPaletteName),
-								id: dataPallet[i - 1].page, formatter: _.escape
+								name: ko.observable(checkPage[0].taskPaletteDisplayInfoDto.taskPaletteName),
+								id: checkPage[0].page, formatter: _.escape
 							});
 						} else {
 							if (!_.includes(self.hasDataButton, i)) {
