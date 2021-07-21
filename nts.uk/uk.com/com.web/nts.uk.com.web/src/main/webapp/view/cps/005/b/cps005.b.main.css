@@ -116,3 +116,13 @@ td {
 	width: 90px !important;
 	text-align: center !important;
 }
+
+.custom-btn-1 span{
+	width: 58px !important;
+	text-align: center;
+}
+
+.custom-btn-2 span{
+	width: 86px !important;
+	text-align: center;
+}

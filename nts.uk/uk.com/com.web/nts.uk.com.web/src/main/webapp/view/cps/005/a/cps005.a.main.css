@@ -45,3 +45,14 @@
 #category-list-items_container {
 	height: 377px !important;
 }
+
+#custom-btn-1 span {
+	width: 89px !important;
+	text-align: center;
+}
+
+#custom-btn-2 span {
+	width: 58px !important;
+	text-align: center;
+}
+
