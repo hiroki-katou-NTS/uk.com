@@ -7143,6 +7143,13 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var nts;
 (function (nts) {
     var uk;
@@ -12775,12 +12782,13 @@ var nts;
                             var $rightArea = self.actionDetails.$rightArea;
                             var scrollWidth = helper.getScrollWidth();
                             var vertSumShown = self.$verticalSumHeader && self.$verticalSumHeader.style.display !== "none";
+                            var rightHorzShown = self.$rightHorzSumHeader && self.$rightHorzSumHeader.style.display !== "none";
                             if ($rightArea && $rightArea.classList.contains(HEADER_PRF + DETAIL)) {
                                 var horzLeftWidth = self.actionDetails.widths.leftHorzSum + diff;
                                 self.setWidth(self.$leftHorzSumHeader, horzLeftWidth);
                                 self.setWidth(self.$leftHorzSumContent, horzLeftWidth);
                                 self.setWidth(self.$horzSumHeader, rightWidth);
-                                self.setWidth(self.$horzSumContent, rightWidth + scrollWidth);
+                                self.setWidth(self.$horzSumContent, rightWidth + (rightHorzShown ? 0 : scrollWidth));
                                 if (self.$detailHorzScroll) {
                                     self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
                                     self.$detailHorzScroll.style.left = posLeft;
@@ -13980,15 +13988,37 @@ var nts;
                         var rightClickFt = find(options.features, feature_1.RIGHT_CLICK);
                         if (rightClickFt) {
                             $container.addXEventListener(events.CM, function () {
+                                var _a;
                                 var target = event.target;
                                 event.preventDefault();
                                 event.stopPropagation();
-                                if (selector.is(target, "." + render.CHILD_CELL_CLS)) {
-                                    target = helper.closest(target, "." + render.CELL_CLS);
+                                if (typeof rightClickFt.chartFilter === "function") {
+                                    if (selector.is(target, ".gantt-holder")) {
+                                        target.parentNode.removeChild(target);
+                                        target = document.elementFromPoint(event.pageX, event.pageY);
+                                    }
+                                    if (!selector.is(target, ".nts-ganttchart"))
+                                        return;
+                                    var id = target.getAttribute("id");
+                                    if (_.isNil(id))
+                                        return;
+                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArrays(id.split('-'), [target])))
+                                        return;
                                 }
-                                if (!selector.is(target, "." + render.CELL_CLS))
-                                    return;
-                                var cm, ui = helper.getCellCoord(target);
+                                else {
+                                    if (selector.is(target, "." + render.CHILD_CELL_CLS)) {
+                                        target = helper.closest(target, "." + render.CELL_CLS);
+                                    }
+                                    if (!selector.is(target, "." + render.CELL_CLS))
+                                        return;
+                                }
+                                var cm, ui = {};
+                                if (!rightClickFt.chartFilter) {
+                                    ui = helper.getCellCoord(target);
+                                }
+                                else {
+                                    _a = __spreadArrays(id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
+                                }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
                                     if (_.isNil(cm)) {
@@ -16390,6 +16420,8 @@ var nts;
                         if (selector.is($cell, "div")) {
                             $td = closest($cell, "td");
                         }
+                        if (_.isNil($td))
+                            return;
                         var view = $.data($td, internal.VIEW);
                         if (!view)
                             return;
@@ -17731,13 +17763,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
 };
 var nts;
 (function (nts) {
@@ -36681,7 +36706,6 @@ var nts;
                                             }
                                             else if (nearestLine > child.end) {
                                                 if (!self.chartArea.contains(child.html)) {
-                                                    console.log(child.id + "; slideTriggerEnd: " + self.slideTrigger.end + "; start: " + child.start);
                                                     if (self.slideTrigger.end > child.start
                                                         && self.slideTrigger.rangeMin > child.start)
                                                         return;
@@ -36765,6 +36789,8 @@ var nts;
                             chart.html.dispatchEvent(e);
                         };
                         chart.html.addEventListener("mousedown", function () {
+                            if (event.button !== 0)
+                                return;
                             if (self.mode !== "normal") {
                                 if (chart.canPasteResize) {
                                     var rect = chart.html.getBoundingClientRect();
@@ -36845,6 +36871,7 @@ var nts;
                                         pevt.pageX = event.pageX;
                                         pevt.pageY = event.pageY;
                                         pevt.offsetX = event.offsetX;
+                                        pevt.button = 0;
                                         parentChart.html.dispatchEvent(pevt);
                                         return;
                                     }
@@ -36853,6 +36880,7 @@ var nts;
                                         pevt.pageX = event.pageX;
                                         pevt.pageY = event.pageY;
                                         pevt.offsetX = parseFloat(parentChart.html.style.width);
+                                        pevt.button = 0;
                                         parentChart.html.dispatchEvent(pevt);
                                         return;
                                     }
@@ -37167,12 +37195,24 @@ var nts;
                         }
                         self.slideTrigger = {};
                     };
-                    Ruler.prototype.remove = function (chart, shadow) {
+                    Ruler.prototype.removeBy = function (chartInfo, shallow) {
+                        if (_.isNil(chartInfo))
+                            return;
+                        var self = this, chart = self.gcChart[chartInfo.no][chartInfo.id];
+                        if (!shallow) {
+                            _.forEach(chart.children, function (child) {
+                                self.remove(child, true);
+                                delete self.gcChart[child.lineNo][child.id];
+                            });
+                        }
+                        self.remove(chart);
+                    };
+                    Ruler.prototype.remove = function (chart, shallow) {
                         if (_.isNil(chart))
                             return;
                         var self = this;
                         chart.reposition({ width: 0 });
-                        if (shadow)
+                        if (shallow)
                             return;
                         delete self.gcChart[chart.lineNo][chart.id];
                         var parent = self.gcChart[chart.lineNo][chart.parent];
@@ -37182,7 +37222,6 @@ var nts;
                             return child.lineNo === chart.lineNo && child.id === chart.id;
                         });
                     };
-                    // TODO:
                     Ruler.prototype.setMode = function (modeName) {
                         var self = this;
                         self.mode = modeName;
@@ -37244,6 +37283,15 @@ var nts;
                                 return;
                             self._tailor(event.pageX, self.gcChart[meta[0]][meta[1]]);
                         });
+                        self.chartArea.addEventListener("mouseover", function () {
+                            if (self.mode !== "normal" && event.target && !event.target.classList.contains("nts-ganttchart")
+                                && !event.target.classList.contains("gantt-holder")) {
+                                self.chartArea.style.cursor = "not-allowed";
+                            }
+                            else {
+                                self.chartArea.style.cursor = "";
+                            }
+                        });
                     };
                     Ruler.prototype._tailor = function (posX, chart) {
                         var self = this;
@@ -37270,10 +37318,10 @@ var nts;
                             self.placeholder = chart_1.pDiv.cloneNode(true);
                             self.placeholder.className = "gantt-holder";
                             var width = self.pasteBand.blockSize * chart.unitToPx - 1;
-                            var cssText = "; position: absolute; width: " + width + "px; height: " + chart.chartWidth + "px; \n                    border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;";
+                            var cssText = "; position: absolute; width: " + width + "px; height: " + chart.chartWidth + "px; user-select: none;\n                    border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;";
                             self.placeholder.style.cssText = cssText;
                             self.placeholder.addEventListener("mousedown", function () {
-                                if (!self.metaholder.hasOwnProperty("start"))
+                                if (!self.metaholder.hasOwnProperty("start") || event.button !== 0)
                                     return;
                                 self.metaholder.id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
                                 self.metaholder.isPressed = true;
@@ -37501,7 +37549,7 @@ var nts;
                         var self = this, posTop = self.origin[1] + self.lineNo * self.lineWidth + Math.floor((self.lineWidth - self.chartWidth) / 2), posLeft = self.origin[0] + self.start * self.unitToPx, chart = document.createElement("div");
                         chart.setAttribute("id", self.lineNo + "-" + self.id);
                         chart.className = "nts-ganttchart";
-                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                line-height: " + self.chartWidth + "px; background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
+                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; text-overflow: ellipsis;\n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                line-height: " + self.chartWidth + "px; background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
                         self.html = chart;
                         self.html.onselectstart = function () { return false; };
                     };
@@ -37786,7 +37834,7 @@ var nts;
                                 }
                                 else {
                                     if (!child.canPaste) {
-                                        var left = parseFloat(target.html.style.left) - (child.end - target.start) * target.unitToPx;
+                                        var left = parseFloat(target.html.style.left) + (child.end - target.start) * target.unitToPx;
                                         target.reposition({ start: child.end, left: left, width: (target.end - child.end) * target.unitToPx - 1 });
                                     }
                                     else if (target.definedType !== child.definedType) {
