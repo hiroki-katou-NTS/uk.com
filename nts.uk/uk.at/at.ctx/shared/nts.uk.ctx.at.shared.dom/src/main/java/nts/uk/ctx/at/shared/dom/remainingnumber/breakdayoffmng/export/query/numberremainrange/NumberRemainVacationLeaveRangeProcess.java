@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class NumberRemainVacationLeaveRangeProcess {
@@ -141,8 +142,8 @@ public class NumberRemainVacationLeaveRangeProcess {
 		}
 
 		@Override
-		public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid, DatePeriod dateData) {
-			return comDayOffManaDataRepository.getByDayOffDatePeriod(sid, dateData);
+		public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid) {
+			return comDayOffManaDataRepository.getBySid(AppContexts.user().companyId(), sid);
 		}
 
 		@Override
@@ -151,8 +152,8 @@ public class NumberRemainVacationLeaveRangeProcess {
 		}
 
 		@Override
-		public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid, DatePeriod dateData) {
-			return leaveManaDataRepository.getByDayOffDatePeriod(sid, dateData);
+		public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid) {
+			return leaveManaDataRepository.getBySid(AppContexts.user().companyId(), sid);
 		}
 
 		public static class RequireImplBuilder {

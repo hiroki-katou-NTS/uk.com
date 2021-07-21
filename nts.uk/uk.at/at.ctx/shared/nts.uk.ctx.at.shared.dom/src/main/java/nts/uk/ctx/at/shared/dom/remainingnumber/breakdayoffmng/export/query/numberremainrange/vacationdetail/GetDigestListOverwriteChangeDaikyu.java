@@ -22,7 +22,7 @@ public class GetDigestListOverwriteChangeDaikyu {
 			RequestChangeDigestOccr changeDigest) {
 
 		// $確定データ一覧
-		List<CompensatoryDayOffManaData> lstFix = require.getFixByDayOffDatePeriod(sid, dateData);
+		List<CompensatoryDayOffManaData> lstFix = require.getFixByDayOffDatePeriod(sid);
 
 		// $暫定データ一覧
 		List<InterimDayOffMng> lstTemporary = require.getTempDayOffBySidPeriod(sid, dateData);
@@ -45,6 +45,6 @@ public class GetDigestListOverwriteChangeDaikyu {
 
 		// [R-2] 代休管理データを取得する
 		// ComDayOffManaDataRepository.getByDayOffDatePeriod
-		List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid, DatePeriod dateData);
+		List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid);
 	}
 }

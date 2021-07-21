@@ -120,6 +120,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantYearHolidayRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceRepository;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @AllArgsConstructor
 public class RequireImp implements RemainNumberTempRequireService.Require {
@@ -652,13 +653,13 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid, DatePeriod period) {
-		return substitutionOfHDManaDataRepo.getBySidAndDatePeriod(sid, period);
+	public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
+		return substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid);
 	}
 
 	@Override
-	public List<PayoutManagementData> getPayoutMana(String sid, DatePeriod dateData) {
-		return payoutManagementDataRepo.getBySidAndDatePeriod(sid, dateData);
+	public List<PayoutManagementData> getPayoutMana(String sid) {
+		return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
 	}
 
 	@Override
@@ -712,8 +713,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid, DatePeriod dateData) {
-		return comDayOffManaDataRepo.getByDayOffDatePeriod(sid, dateData);
+	public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid) {
+		return comDayOffManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
 	}
 
 	@Override
@@ -722,8 +723,8 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid, DatePeriod dateData) {
-		return leaveManaDataRepo.getByDayOffDatePeriod(sid, dateData);
+	public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid) {
+		return leaveManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
 	}
 
 	@Override

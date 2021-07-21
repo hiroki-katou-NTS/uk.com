@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class NumberCompensatoryLeavePeriodProcess {
@@ -134,13 +135,13 @@ public class NumberCompensatoryLeavePeriodProcess {
 		}
 
 		@Override
-		public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid, DatePeriod period) {
-			return substitutionOfHDManaDataRepository.getBySidAndDatePeriod(sid, period);
+		public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
+			return substitutionOfHDManaDataRepository.getBysiD(AppContexts.user().companyId(), sid);
 		}
 
 		@Override
-		public List<PayoutManagementData> getPayoutMana(String sid, DatePeriod dateData) {
-			return payoutManagementDataRepository.getBySidAndDatePeriod(sid, dateData);
+		public List<PayoutManagementData> getPayoutMana(String sid) {
+			return payoutManagementDataRepository.getSid(AppContexts.user().companyId(), sid);
 		}
 	}
 

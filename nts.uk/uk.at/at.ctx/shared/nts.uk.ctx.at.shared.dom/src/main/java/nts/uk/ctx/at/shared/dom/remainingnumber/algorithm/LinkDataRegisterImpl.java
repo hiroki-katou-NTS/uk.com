@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class LinkDataRegisterImpl {
@@ -100,8 +101,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid, DatePeriod dateData) {
-			return comDayOffManaDataRepo.getByDayOffDatePeriod(sid, dateData);
+		public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid) {
+			return comDayOffManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
 		}
 
 		@Override
@@ -110,8 +111,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid, DatePeriod dateData) {
-			return leaveManaDataRepo.getByDayOffDatePeriod(sid, dateData);
+		public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid) {
+			return leaveManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
 		}
 
 		@Override
@@ -155,8 +156,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid, DatePeriod period) {
-			return substitutionOfHDManaDataRepo.getBySidAndDatePeriod(sid, period);
+		public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
+			return substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid);
 		}
 
 		@Override
@@ -165,8 +166,8 @@ public class LinkDataRegisterImpl {
 		}
 
 		@Override
-		public List<PayoutManagementData> getPayoutMana(String sid, DatePeriod dateData) {
-			return payoutManagementDataRepo.getBySidAndDatePeriod(sid, dateData);
+		public List<PayoutManagementData> getPayoutMana(String sid) {
+			return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
 		}
 
 	}
