@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.lateleaveearly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -418,7 +419,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			// 2-1.新規画面登録前の処理
 			listMsg = this.newBeforeRegister.processBeforeRegister_New(companyID, EmploymentRootAtr.APPLICATION,
 					agentAtr, application, null,
-					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 					null,
 					infoOutput.getAppDispInfoStartupOutput());
 		} else {

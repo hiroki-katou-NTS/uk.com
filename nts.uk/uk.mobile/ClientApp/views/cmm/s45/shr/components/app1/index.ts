@@ -5,7 +5,6 @@ import { isEmpty, isNil, times } from 'lodash';
 
 @component({
     name: 'cmms45shrcomponentsapp1',
-    route: '/cmm/s45/shr/components/app1',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),

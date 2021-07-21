@@ -8,7 +8,7 @@
     <ui:define name="htmlHead">
         <script>var dialogSize = {
             width: 660,
-            height: 380
+            height: 420
         };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -20,7 +20,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <div class="contents-area dialog-contents">
+        <div id="contents-area" class="dialog-contents">
             <div class="content-container">
                 <label class="label" id="I1_1">#{i18n.getText('CMF004_200')}</label>
                 <table id="I2_1">
@@ -63,15 +63,15 @@
                     </tr>
                 </table>
             </div>
-            <!-- I5_1 -->
-            <div id="functions-area-bottom">
-				<com:ko-if bind="!isEnding()">
-                		<button id="I5_1" class="large" data-bind="click : breakFollow" tabindex="1">#{i18n.getText('CMF004_207')}</button>
-				</com:ko-if>
-				<com:ko-if bind="isEnding()">
-                		<button id="I5_2" class="large" data-bind="click : close" tabindex="2">#{i18n.getText('CMF004_208')}</button>
-				</com:ko-if>
-            </div>
+        </div>
+        <!-- I5_1 -->
+        <div id="functions-area-bottom">
+          <com:ko-if bind="!isEnding()">
+            <button id="I5_1" class="large" data-bind="click : breakFollow" tabindex="1">#{i18n.getText('CMF004_207')}</button>
+          </com:ko-if>
+          <com:ko-if bind="isEnding()">
+            <button id="I5_2" class="large" data-bind="click : close" tabindex="2">#{i18n.getText('CMF004_208')}</button>
+          </com:ko-if>
         </div>
     </ui:define>
 </ui:composition>

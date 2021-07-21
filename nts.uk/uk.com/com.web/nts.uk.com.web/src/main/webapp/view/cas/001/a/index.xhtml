@@ -34,7 +34,7 @@
 					<button tabindex="2" id="A1_003"
 						data-bind="click:openCModal,enable:(personRoleList().length > 1)">#{i18n.getText('CAS001_4')}</button>
 					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
-					<button id="print-button" tabindex="2" data-bind="click: exportExcel, visible:hasPermission()" style="width: 125px;">#{i18n.getText('KMK007_4')}</button>
+					<button id="print-button" tabindex="2" data-bind="click: exportExcel, visible:hasPermission()" style="width: 130px;">#{i18n.getText('KMK007_4')}</button>
 					
 					<div tabindex="3" class="float-right">
 						<a  id="A1_005" class="goout "
@@ -156,7 +156,7 @@
 																		optionsValue: 'code',
 																		optionsText: 'name',
 																		value: otherAllowAddMulti ,
-																		enable: $parents[1].allowOtherRef()===1 }" tabindex="13"></div>
+																		enable: $parents[1].switchModeAllowOtherRef }" tabindex="13"></div>
 																</td>
 																<td>
 																	<div id="A4_034" class="cf"
@@ -165,7 +165,7 @@
 																			optionsValue: 'code',
 																			optionsText: 'name',
 																			value: otherAllowDelMulti ,
-																			enable: $parents[1].allowOtherRef()===1 }" tabindex="14"></div>
+																			enable: $parents[1].switchModeAllowOtherRef }" tabindex="14"></div>
 																</td>
 
 															</tr>
@@ -178,7 +178,7 @@
 																		optionsValue: 'code',
 																		optionsText: 'name',
 																		value: selfAllowAddMulti ,
-																		enable: $parents[1].allowPersonRef() === 1 }" tabindex="15"></div>
+																		enable: $parents[1].switchModeAllowPersonRef }" tabindex="15"></div>
 																</td>
 																<td>
 																	<div id="A4_036" class="cf"
@@ -187,7 +187,7 @@
 																		optionsValue: 'code',
 																		optionsText: 'name',
 																		value: selfAllowDelMulti ,
-																		enable: $parents[1].allowPersonRef() === 1 }" tabindex="16"></div>
+																		enable: $parents[1].switchModeAllowPersonRef }" tabindex="16"></div>
 																</td>
 
 															</tr>
@@ -212,7 +212,7 @@
 																		optionsValue: 'code',
 																		optionsText: 'name',
 																		value: otherAllowAddHis ,
-																		enable: $parents[1].allowOtherRef()===1 }" tabindex="13" ></div>
+																		enable: $parents[1].switchModeAllowOtherRef }" tabindex="13" ></div>
 																</td>
 																<td>
 																	<div id="A4_021" class="cf"
@@ -221,7 +221,7 @@
 																		optionsValue: 'code',
 																		optionsText: 'name',
 																		value:  otherAllowDelHis,
-																		enable: $parents[1].allowOtherRef()===1 }" tabindex="14"></div>
+																		enable: $parents[1].switchModeAllowOtherRef }" tabindex="14"></div>
 																</td>
 																<td>
 																<div id="A4_022"
@@ -261,7 +261,7 @@
 																			optionsValue: 'code',
 																			optionsText: 'name',
 																			value:  selfAllowAddHis,
-																			enable: $parents[1].allowPersonRef() === 1 }" tabindex="17"></div>
+																			enable: $parents[1].switchModeAllowPersonRef }" tabindex="17"></div>
 																</td>
 																<td>
 																	<div id="A4_025" class="cf"
@@ -270,7 +270,7 @@
 																		optionsValue: 'code',
 																		optionsText: 'name',
 																		value: selfAllowDelHis ,
-																		enable: $parents[1].allowPersonRef() === 1 }" tabindex="18"></div>
+																		enable: $parents[1].switchModeAllowPersonRef }" tabindex="18"></div>
 																</td>
 																<td>
 																	<div id="A4_026"

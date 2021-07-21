@@ -72,16 +72,14 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                 if(loadDataFlag) {
 					vm.application().employeeIDLst(empLst);
                     const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
-                    if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
-                        return vm.$ajax(API.startNew, {appDispInfoStartupOutput: appDispInfoStartupOutput});
-                    }
+                    return vm.$ajax(API.startNew, {appDispInfoStartupOutput: appDispInfoStartupOutput});
                 }
             }).then((res: any) => {
                 if(res) {
                     vm.reflectSetting(res.reflectSetting);
                     vm.timeLeaveRemaining(res.timeLeaveRemaining);
                     vm.timeLeaveManagement(res.timeLeaveManagement);
-                    if (vm.applyTimeData().filter(i => i.display()).length == 0 && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
+                    if (vm.applyTimeData().filter(i => i.display()).length == 0 && _.isEmpty(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opMsgErrorLst)) {
                         vm.$dialog.error({messageId: "Msg_474"}).then(() => {
                             nts.uk.request.jumpToTopPage();
                         });
@@ -91,7 +89,7 @@ module nts.uk.at.view.kaf012.a.viewmodel {
                     vm.handleChangeAppDate(params.baseDate);
                 }
             }).fail((error: any) => {
-                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
+                if (_.isEmpty(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opMsgErrorLst)) {
                     vm.$dialog.error(error).then(() => {
                         if (error.messageId == "Msg_474") {
                             nts.uk.request.jumpToTopPage();
@@ -180,31 +178,31 @@ module nts.uk.at.view.kaf012.a.viewmodel {
 
         handleChangeAppDate(value: string) {
             const vm = this;
-            if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag == 0) {
-                vm.$validate(['#kaf000-a-component4 .nts-input']).then((valid: boolean) => {
-                    if (valid) {
-                        const command = {
-                            appDate: new Date(value).toISOString(),
-                            appDisplayInfo: {
-                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                                timeLeaveManagement: vm.timeLeaveManagement(),
-                                reflectSetting: vm.reflectSetting()
-                            }
-                        };
-                        vm.$blockui("show").then(() => {
-                            return vm.$ajax(API.changeAppDate, command);
-                        }).done((res: any) => {
-                            if (res) {
-                                vm.timeLeaveManagement(res.timeLeaveManagement);
-                            }
-                        }).fail((error: any) => {
+            vm.$validate(['#kaf000-a-component4 .nts-input']).then((valid: boolean) => {
+                if (valid) {
+                    const command = {
+                        appDate: new Date(value).toISOString(),
+                        appDisplayInfo: {
+                            appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                            timeLeaveManagement: vm.timeLeaveManagement(),
+                            reflectSetting: vm.reflectSetting()
+                        }
+                    };
+                    vm.$blockui("show").then(() => {
+                        return vm.$ajax(API.changeAppDate, command);
+                    }).done((res: any) => {
+                        if (res) {
+                            vm.timeLeaveManagement(res.timeLeaveManagement);
+                        }
+                    }).fail((error: any) => {
+                        if (_.isEmpty(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opMsgErrorLst)) {
                             vm.$dialog.error(error);
-                        }).always(() => {
-                            vm.$blockui("hide")
-                        });
-                    }
-                });
-            }
+                        }
+                    }).always(() => {
+                        vm.$blockui("hide")
+                    });
+                }
+            });
         }
 
         public handleConfirmMessage(listMes: any, res: any): any {
@@ -324,14 +322,16 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason').then(isValid => {
                 if (isValid && !nts.uk.ui.errors.hasError()) {
                     vm.$blockui("show").then(() => {
-                        return vm.$ajax(API.changeAppDate, {
-                            appDate: new Date(vm.application().appDate()).toISOString(),
-                            appDisplayInfo: {
-                                appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
-                                timeLeaveManagement: vm.timeLeaveManagement(),
-                                reflectSetting: vm.reflectSetting()
-                            }
-                        });
+                        if (_.isEmpty(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opMsgErrorLst)) {
+                            return vm.$ajax(API.changeAppDate, {
+                                appDate: new Date(vm.application().appDate()).toISOString(),
+                                appDisplayInfo: {
+                                    appDispInfoStartupOutput: vm.appDispInfoStartupOutput(),
+                                    timeLeaveManagement: vm.timeLeaveManagement(),
+                                    reflectSetting: vm.reflectSetting()
+                                }
+                            });
+                        }
                     }).then(() => {
                         const params = {
                             timeDigestAppType: vm.leaveType(),
