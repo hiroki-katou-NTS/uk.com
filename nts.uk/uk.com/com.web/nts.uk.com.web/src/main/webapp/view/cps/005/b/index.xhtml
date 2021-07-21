@@ -19,7 +19,7 @@
 				nts.uk.ctx.pereg.dom.person.info.timeitem.TimeItemMax
 				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
-			<script>var dialogSize = { width: 1150, height: 580 };</script>
+			<script>var dialogSize = { width: 1100, height: 590 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps005.b.main.css" />
 			<com:scriptfile path="cps005.b.start.js" />
@@ -41,7 +41,7 @@
 			</div>
 
 			<div id="contents-area" data-bind="with: currentItemData">
-				<div id="contents-area-right">
+				<div class="contents-area-left">
 					<div data-bind="ntsPanel:{
 								width: '300px', 
 								height: '430px', 
@@ -75,7 +75,7 @@
 						</table>
 					</div>
 				</div>
-				<div id="contents-area-left" data-bind="let: { cItemData: $vm.currentItemData(), cItem: $vm.currentItemData().currentItemSelected() }">
+				<div class="contents-area-right" data-bind="let: { cItemData: $vm.currentItemData(), cItem: $vm.currentItemData().currentItemSelected() }">
 					<div data-bind="with: currentItemSelected">
 						<!-- Start perInfoItem selection is not fixed -->
 						<div data-bind="visible: fixedAtr() == 0">
@@ -84,7 +84,7 @@
 								<div
 									data-bind="ntsFormLabel: { constraint: ['ItemName'], required: true }"
 									class="margin-right-FormLabel">
-									<span data-bind="text: '#{i18n.getText('CPS005_13')}' "></span>
+									#{i18n.getText('CPS005_13')}
 								</div>
 								<input tabindex="6" id="item-name-control"
 									data-bind="ntsTextEditor: {
@@ -108,7 +108,7 @@
 									class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: { required: true }"
 										class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_15')}' "></span>
+										#{i18n.getText('CPS005_15')}
 									</div>
 									<div tabindex="7" id="combo-box"
 										data-bind="ntsComboBox: {
@@ -133,7 +133,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: { required: true }"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_16')}' "></span>
+											#{i18n.getText('CPS005_16')}
 										</div>
 										<div tabindex="8" id="combo-box"
 											data-bind="ntsComboBox: {
@@ -157,7 +157,7 @@
 										<div
 											data-bind="ntsFormLabel: { constraint: ['StringItemLength'], required: true }"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_17')}' "></span>
+											#{i18n.getText('CPS005_17')}
 										</div>
 										<input id="stringItemLength" tabindex="9"
 											data-bind="ntsNumberEditor: {
@@ -178,7 +178,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: { required: true }"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_8')}' "></span>
+											#{i18n.getText('CPS005_8')}
 										</div>
 										<div tabindex="10"
 											data-bind="ntsSwitchButton: {
@@ -201,7 +201,7 @@
 									<div class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: { required: true }"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_18')}' "></span>
+											#{i18n.getText('CPS005_18')}
 										</div>
 										<div tabindex="12"
 											data-bind="ntsSwitchButton: {
@@ -217,7 +217,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: { required: true }"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_19')}' "></span>
+											#{i18n.getText('CPS005_19')}
 										</div>
 										<div tabindex="13"
 											data-bind="ntsSwitchButton: {
@@ -234,7 +234,7 @@
 										<div
 											data-bind="ntsFormLabel: { constraint: ['IntegerPart'], required: true }"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_20')}' "></span>
+											#{i18n.getText('CPS005_20')}
 										</div>
 										<input id="integerPart" tabindex="14"
 											data-bind="ntsNumberEditor: {
@@ -255,7 +255,7 @@
 										<div
 											data-bind="ntsFormLabel: { constraint: ['DecimalPart'], required: false }"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_21')}' "></span>
+											#{i18n.getText('CPS005_21')}
 										</div>
 										<input id="decimalPart" tabindex="15"
 											data-bind="ntsNumberEditor: {
@@ -276,7 +276,7 @@
 									<div class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_35')}' "></span>
+											#{i18n.getText('CPS005_35')}
 										</div>
 										<input id="numericItemMin"
 											data-bind="ntsNumberEditor: {
@@ -339,7 +339,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {required: true}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_24')}' "></span>
+											#{i18n.getText('CPS005_24')}
 										</div>
 										<div tabindex="16"
 											data-bind="ntsSwitchButton: {
@@ -361,7 +361,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {required: true, constraint: 'TimeItemMin'}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_29')}' "></span>
+											#{i18n.getText('CPS005_29')}
 										</div>
 										<input id="timeItemMin" 
 											data-bind="ntsTimeEditor: {
@@ -406,7 +406,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {required: true, constraint: 'TimeWithDayAttr'}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_32')}' "></span>
+											#{i18n.getText('CPS005_32')}
 										</div>
 										<input id="timePointItemMin" 
 											data-bind="ntsTimeWithDayEditor: {
@@ -451,7 +451,7 @@
 											class="valign-center control-group control-group-margin-custom">
 											<div data-bind="ntsFormLabel: {required: true}"
 												class="margin-right-FormLabel">
-												<span data-bind="text: '#{i18n.getText('CPS005_26')}' "></span>
+												#{i18n.getText('CPS005_26')}
 											</div>
 											<div tabindex="21" id="combo-box"
 												data-bind="ntsComboBox: {
@@ -487,7 +487,7 @@
 							<div
 								class="valign-center control-group control-group-margin-custom">
 								<div data-bind="ntsFormLabel: {}" class="margin-right-FormLabel">
-									<span data-bind="text: '#{i18n.getText('CPS005_13')}' "></span>
+									#{i18n.getText('CPS005_13')}
 								</div>
 								<span class="label" data-bind="text: itemName"></span>
 							</div>
@@ -497,7 +497,7 @@
 									class="valign-center control-group control-group-margin-custom">
 									<div data-bind="ntsFormLabel: {}"
 										class="margin-right-FormLabel">
-										<span data-bind="text: '#{i18n.getText('CPS005_15')}' "></span>
+										#{i18n.getText('CPS005_15')}
 									</div>
 									<span class="label" data-bind="text: dataTypeText"></span>
 								</div>
@@ -509,7 +509,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_16')}' "></span>
+											#{i18n.getText('CPS005_16')}
 										</div>
 										<span class="label" data-bind="text: stringItemTypeText"></span>
 									</div>
@@ -518,7 +518,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_17')}' "></span>
+											#{i18n.getText('CPS005_17')}
 										</div>
 										<span class="label" data-bind="text: stringItemLength"></span>
 									</div>
@@ -526,7 +526,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_8')}' "></span>
+											#{i18n.getText('CPS005_8')}
 										</div>
 										<span class="label" data-bind="text: stringItemDataTypeText"></span>
 										<button tabindex="11"
@@ -542,7 +542,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_18')}' "></span>
+											#{i18n.getText('CPS005_18')}
 										</div>
 										<span class="label" data-bind="text: numericItemAmountText"></span>
 									</div>
@@ -550,7 +550,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_19')}' "></span>
+											#{i18n.getText('CPS005_19')}
 										</div>
 										<span class="label" data-bind="text: numericItemMinusText"></span>
 									</div>
@@ -558,7 +558,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_20')}' "></span>
+											#{i18n.getText('CPS005_20')}
 										</div>
 										<span class="label" data-bind="text: integerPart"></span>
 									</div>
@@ -566,7 +566,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_21')}' "></span>
+											#{i18n.getText('CPS005_21')}
 										</div>
 										<span class="label" data-bind="text: decimalPart"></span>
 									</div>
@@ -574,7 +574,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_35')}' "></span>
+											#{i18n.getText('CPS005_35')}
 										</div>
 										<span class="label" data-bind="text: numericItemMin"></span> <span
 											class="label">～</span> <span class="label"
@@ -590,7 +590,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_24')}' "></span>
+											#{i18n.getText('CPS005_24')}
 										</div>
 										<span class="label" data-bind="text: dateItemTypeText"></span>
 									</div>
@@ -604,7 +604,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_29')}' "></span>
+											#{i18n.getText('CPS005_29')}
 										</div>
 										<span class="label"
 											data-bind="text: $parents[2].genTextTime(timeItemMin)"></span>
@@ -622,7 +622,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_32')}' "></span>
+											#{i18n.getText('CPS005_32')}
 										</div>
 										<span class="label"
 											data-bind="text: $parents[2].genTextTime(timePointItemMin)"></span>
@@ -641,7 +641,7 @@
 										class="valign-center control-group control-group-margin-custom">
 										<div data-bind="ntsFormLabel: {}"
 											class="margin-right-FormLabel">
-											<span data-bind="text: '#{i18n.getText('CPS005_26')}' "></span>
+											#{i18n.getText('CPS005_26')}
 										</div>
 										<span style="width: 150px;" class="label"
 											data-bind="text: selectionItemName"></span>
