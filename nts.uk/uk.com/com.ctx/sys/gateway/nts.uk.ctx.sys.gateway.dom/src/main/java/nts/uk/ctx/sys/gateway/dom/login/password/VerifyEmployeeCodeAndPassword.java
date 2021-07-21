@@ -41,9 +41,9 @@ public class VerifyEmployeeCodeAndPassword {
 		}
 		
 		// 	if パスワード.isPresent
-		if (!user.get().getPassword().toString().equals(password.get())) {
-			return InspectionResult.passwordVerificationFailed();
-		}
+//		if (!user.get().getPassword().toString().equals(password.get())) {
+//			return InspectionResult.passwordVerificationFailed();
+//		}
 		
 		// 	return 検証結果#検証成功($社員)
 		return InspectionResult.verificationSuccess(employeeInfo.get());
