@@ -35,20 +35,20 @@ public class TaskInitialSelHist extends AggregateRoot
 	public void addHistory(TaskInitialSel taskInitialSel) {
 
 		// $最新の履歴 = 最新履歴の履歴項目()
-		Optional<TaskInitialSel> data = this.latestStartItem();
+		Optional<TaskInitialSel> latestHist = this.latestStartItem();
 		// 追加する(追加する履歴項目)
 //		List<TaskInitialSel> lstTask = new ArrayList<TaskInitialSel>();
 //		lstTask.add(taskInitialSel);
-		lstHistory.add(taskInitialSel);
+		this.lstHistory.add(taskInitialSel);
 
-		if (data.isPresent()) {
+		if (latestHist.isPresent()) {
 			// @履歴リスト：except $最新の履歴
-			lstHistory.remove(data);
+			this.lstHistory.remove(latestHist.get());
 			
 			// $最新の履歴.適用による終了の調整(追加する履歴項目)
-			data.get().shortenStartToAccept(taskInitialSel);
+			latestHist.get().shortenStartToAccept(taskInitialSel);
 			//	@履歴リスト.追加($最新の履歴)		
-			lstHistory.add(data.get());
+			this.lstHistory.add(latestHist.get());
 
 		}
 	}
