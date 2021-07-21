@@ -11,18 +11,18 @@ import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;
 
 public class IntegerReviseTest {
 	
 	@Mocked
-	RangeOfValue rangeOfValue;
+	FetchingPosition rangeOfValue;
 	
 	private static class Dummy{
 		private static String TARGET = "12345";
 		private static Long RESULT = (long) 12345;
-		private static RangeOfValue RANGE_OF_VALUE = new RangeOfValue(new ExternalImportRowNumber(2), new ExternalImportRowNumber(4));
+		private static FetchingPosition RANGE_OF_VALUE = new FetchingPosition(new ExternalImportRowNumber(2), new ExternalImportRowNumber(4));
 	}
 	
 	@Test

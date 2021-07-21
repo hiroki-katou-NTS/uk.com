@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
 
 /**
@@ -17,11 +17,11 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.Extern
 @Getter
 public class StringRevise implements ReviseValue {
 	
-	/** 値の有効範囲を指定する */
-	private boolean useSpecifyRange;
+	/** 値の読み取り位置を指定する */
+	private boolean useFetchingPosition;
 	
-	/** 値の有効範囲 */
-	private Optional<RangeOfValue> rangeOfValue;
+	/** 値の読み取り位置 */
+	private Optional<FetchingPosition> fetchingPosition;
 	
 	/** 固定長編集する */
 	private boolean usePadding;
@@ -37,10 +37,10 @@ public class StringRevise implements ReviseValue {
 		
 		String strResult = target;
 		
-		if(useSpecifyRange) {
+		if(useFetchingPosition) {
 			// 値の有効範囲を指定する場合
-			if(rangeOfValue.isPresent()) {
-				strResult = this.rangeOfValue.get().extract(strResult);
+			if(fetchingPosition.isPresent()) {
+				strResult = this.fetchingPosition.get().extract(strResult);
 			}
 		}
 		

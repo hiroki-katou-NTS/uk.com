@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
 
 /**
@@ -17,7 +17,7 @@ public class IntegerRevise implements ReviseValue {
 	private boolean useSpecifyRange;
 	
 	/** 値の有効範囲 */
-	private Optional<RangeOfValue> rangeOfValue;
+	private Optional<FetchingPosition> rangeOfValue;
 	
 	/** コード変換 */
 	private Optional<ExternalImportCodeConvert> codeConvert;
