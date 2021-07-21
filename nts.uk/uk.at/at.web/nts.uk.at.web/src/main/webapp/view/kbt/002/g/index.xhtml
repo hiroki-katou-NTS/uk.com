@@ -82,13 +82,21 @@
 								<td><div data-bind="text: status" /></td>
 								<td><div data-bind="text: errorSystemText" /></td>
 								<td><div data-bind="text: errorBusinessText" /></td>
-								<com:ko-if bind="taskId === 8 || taskId === 11 || taskId === 12">
+                <com:ko-if bind="_.includes([1, 2, 3, 4, 5, 13], taskId)">
+                  <td style="text-align: center;">
+                    <button tabindex="1" class="setting small" 
+                      data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)},
+                        enable: (statusCd !== null &amp;&amp; statusCd !== 0 &amp;&amp; taskId !== 13) || (statusCd === 1 &amp;&amp; taskId === 13)"
+                      data-code="${taskId}" style="width: 100px;">#{i18n.getText('KBT002_345')}</button>
+                  </td>
+                </com:ko-if>
+								<com:ko-if bind="_.includes([8, 11, 12], taskId)">
 									<td></td>
 								</com:ko-if>
-								<com:ko-if bind="taskId !== 8 &amp;&amp; taskId !== 11 &amp;&amp; taskId !== 12">
+								<com:ko-if bind="_.includes([0, 6, 9, 10], taskId)">
 									<td style="text-align: center;">
 										<button tabindex="1" class="setting small"
-											data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: (errorBusiness == true &amp;&amp; taskId !== 13) || (statusCd === 1 &amp;&amp; taskId === 13)"
+											data-bind="click: function(data, event) { $parent.openDetailDialog(data, event)}, enable: errorBusiness == true"
 											data-code="${taskId}" style="width: 100px;">#{i18n.getText('KBT002_146')}</button>
 									</td>
 								</com:ko-if>

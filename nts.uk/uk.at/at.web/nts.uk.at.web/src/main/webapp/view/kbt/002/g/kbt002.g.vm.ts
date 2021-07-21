@@ -54,8 +54,16 @@ module nts.uk.at.view.kbt002.g {
       service.getLogHistory(self.execItemCd, self.taskLogExecId).done(logHistory => {
         if (logHistory) {
           var taskId = data.taskId;
-          self.createLinkAndSharedObject(taskId, logHistory);
-          self.$window.modal(self.webApp, self.modalLink, self.sharedObj);
+          if (taskId in [2, 3, 4, 5]) {
+            service.getDailyResultsLogParam(logHistory.execId).then(data => self.sharedObj = data)
+              .then(() => {
+                self.createLinkAndSharedObject(taskId, logHistory);
+                self.$window.modal(self.webApp, self.modalLink, self.sharedObj);
+              });
+          } else {
+            self.createLinkAndSharedObject(taskId, logHistory);
+            self.$window.modal(self.webApp, self.modalLink, self.sharedObj);
+          }
         }
       });
 
@@ -96,80 +104,32 @@ module nts.uk.at.view.kbt002.g {
           break;
         case 1: // スケジュールの作成
           self.sharedObj = {
-            executionId: logHistory.execId,
-            startDate: logHistory.schCreateStart,
-            endDate: logHistory.schCreateEnd
+            executionId: logHistory.execId
           };
           // Step アルゴリズム「個人スケジュール作成エラー内容表示処理」を実行する
-          nts.uk.ui.windows.setShared('dataFromDetailDialog', self.sharedObj);
+          nts.uk.ui.windows.setShared('executionData', self.sharedObj);
           // 「個人スケジュールの作成」K画面を起動する
-          self.modalLink = "/view/ksc/001/k/index.xhtml";
+          self.modalLink = "/view/ksc/001/h/index.xhtml";
           self.webApp = 'at';
           break;
         case 2: // 日別作成
-          self.sharedObj = {
-            empCalAndSumExecLogID: logHistory.execId, //・就業計算と集計実行ログID
-            executionContentName: "日別作成",
-            executionContent: 0,  // 日別作成
-            listTargetPerson: [], //・社員ID（list）  ・従業員の実行状況
-            executionStartTime: logHistory.lastExecDateTime, //・実行開始日時
-            objectPeriod: { startDate: null, endDate: null }, //・対象期間
-            nameClosue: null, //・選択した締め
-            processingMonth: null, //・処理月
-            height: 550
-          };
-          nts.uk.ui.windows.setShared("openH", self.sharedObj);
-          self.modalLink = "/view/kdw/001/h/index.xhtml";
+          nts.uk.ui.windows.setShared("openI", self.sharedObj);
+          self.modalLink = "/view/kdw/001/i/index.xhtml";
           self.webApp = 'at';
           break;
         case 3: // 日別計算
-          self.sharedObj = {
-            empCalAndSumExecLogID: logHistory.execId, //・就業計算と集計実行ログID
-            executionContentName: "日別計算",
-            executionContent: 1,  // 日別計算
-            listTargetPerson: [], //・社員ID（list）  ・従業員の実行状況
-            executionStartTime: logHistory.lastExecDateTime, //・実行開始日時
-            objectPeriod: { startDate: null, endDate: null }, //・対象期間
-            nameClosue: null, //・選択した締め
-            processingMonth: null, //・処理月
-            height: 550
-          };
-          nts.uk.ui.windows.setShared("openH", self.sharedObj);
-          self.modalLink = "/view/kdw/001/h/index.xhtml";
+          nts.uk.ui.windows.setShared("openI", self.sharedObj);
+          self.modalLink = "/view/kdw/001/i/index.xhtml";
           self.webApp = 'at';
           break;
         case 4: // 承認結果反映
-          // 承認結果反映のエラー内容を表示する
-          self.sharedObj = {
-            empCalAndSumExecLogID: logHistory.execId, //・就業計算と集計実行ログID
-            executionContentName: "承認結果反映", //・実施内容
-            executionContent: 2, //ExecutionContent = 承認結果反映
-            listTargetPerson: [], //・社員ID（list）  ・従業員の実行状況 ・対象者の人数
-            executionStartTime: logHistory.lastExecDateTime, //・実行開始日時
-            objectPeriod: { startDate: null, endDate: null }, //・対象期間
-            nameClosue: null, //・選択した締め
-            processingMonth: null, //・処理月
-            height: 550
-          };
-          // 「就業計算と集計」H画面を起動する
-          nts.uk.ui.windows.setShared("openH", self.sharedObj);
-          self.modalLink = "/view/kdw/001/h/index.xhtml";
+          nts.uk.ui.windows.setShared("openI", self.sharedObj);
+          self.modalLink = "/view/kdw/001/i/index.xhtml";
           self.webApp = 'at';
           break;
         case 5: // 月別集計
-          self.sharedObj = {
-            empCalAndSumExecLogID: logHistory.execId, //・就業計算と集計実行ログID
-            executionContentName: "月別集計",
-            executionContent: 3,  // 月別集計
-            listTargetPerson: [], //・社員ID（list）  ・従業員の実行状況
-            executionStartTime: logHistory.lastExecDateTime, //・実行開始日時
-            objectPeriod: { startDate: null, endDate: null }, //・対象期間
-            nameClosue: null, //・選択した締め
-            processingMonth: null, //・処理月
-            height: 550
-          };
-          nts.uk.ui.windows.setShared("openH", self.sharedObj);
-          self.modalLink = "/view/kdw/001/h/index.xhtml";
+          nts.uk.ui.windows.setShared("openI", self.sharedObj);
+          self.modalLink = "/view/kdw/001/i/index.xhtml";
           self.webApp = 'at';
           break;
         case 6: // 任意期間の集計
