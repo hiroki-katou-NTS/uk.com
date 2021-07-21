@@ -1045,61 +1045,63 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 								.map(ApprovalPeriodByEmp::getListPeriod)
 								.flatMap(List::stream)
 								.collect(Collectors.toList());
-						GeneralDate targetStartDate = targetDates.stream()
-								.map(DatePeriod::start)
-								.min(GeneralDate::compareTo)
-								.orElse(null);
-						GeneralDate targetEndDate = targetDates.stream()
-								.map(DatePeriod::end)
-								.max(GeneralDate::compareTo)
-								.orElse(null);
-						scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
-								.setPeriod(new DatePeriod(targetStartDate, targetEndDate));
-						try {
-							// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
-							// AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
-							// this.scheduleExecution.handle(ctx);
-							CountDownLatch countDownLatch = new CountDownLatch(1);
-							AsyncTask task = AsyncTask.builder().keepsTrack(false)
-									.threadName(this.getClass().getName()).build(() -> {
-										scheduleCreatorExecutionOneEmp.setCountDownLatch(countDownLatch);
-										AsyncTaskInfo handle1 = this.scheduleExecution
-												.handle(scheduleCreatorExecutionOneEmp);
-										dataToAsyn.setHandle(handle1);
-
-									});
+						if (!targetDates.isEmpty()) {
+							GeneralDate targetStartDate = targetDates.stream()
+									.map(DatePeriod::start)
+									.min(GeneralDate::compareTo)
+									.orElse(null);
+							GeneralDate targetEndDate = targetDates.stream()
+									.map(DatePeriod::end)
+									.max(GeneralDate::compareTo)
+									.orElse(null);
+							scheduleCreatorExecutionOneEmp.getScheduleExecutionLog()
+									.setPeriod(new DatePeriod(targetStartDate, targetEndDate));
 							try {
-								executorService.submit(task).get();
-								countDownLatch.await();
-								if (scheduleCreatorExecutionOneEmp.getIsExForKBT()) {
+								// AsyncCommandHandlerContext<ScheduleCreatorExecutionCommand> ctx = new
+								// AsyncCommandHandlerContext<>(scheduleCreatorExecutionOneEmp1);
+								// this.scheduleExecution.handle(ctx);
+								CountDownLatch countDownLatch = new CountDownLatch(1);
+								AsyncTask task = AsyncTask.builder().keepsTrack(false)
+										.threadName(this.getClass().getName()).build(() -> {
+											scheduleCreatorExecutionOneEmp.setCountDownLatch(countDownLatch);
+											AsyncTaskInfo handle1 = this.scheduleExecution
+													.handle(scheduleCreatorExecutionOneEmp);
+											dataToAsyn.setHandle(handle1);
+
+										});
+								try {
+									executorService.submit(task).get();
+									countDownLatch.await();
+									if (scheduleCreatorExecutionOneEmp.getIsExForKBT()) {
+										// 再実行の場合にExceptionが発生したかどうかを確認する。
+										if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
+											checkStopExec = true;
+										}
+										isException = true;
+										errorMessage = "Msg_1339";
+									}
+								} catch (Exception ex) {
 									// 再実行の場合にExceptionが発生したかどうかを確認する。
 									if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
 										checkStopExec = true;
 									}
+
 									isException = true;
 									errorMessage = "Msg_1339";
 								}
-							} catch (Exception ex) {
+								log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
+										+ GeneralDateTime.now());
+								if (checkStop(execId)) {
+									checkStopExec = true;
+								}
+							} catch (Exception e) {
 								// 再実行の場合にExceptionが発生したかどうかを確認する。
 								if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
 									checkStopExec = true;
 								}
-
-								isException = true;
 								errorMessage = "Msg_1339";
+								isException = true;
 							}
-							log.info("更新処理自動実行_個人スケジュール作成_END_" + context.getCommand().getExecItemCd() + "_"
-									+ GeneralDateTime.now());
-							if (checkStop(execId)) {
-								checkStopExec = true;
-							}
-						} catch (Exception e) {
-							// 再実行の場合にExceptionが発生したかどうかを確認する。
-							if (procExec.getExecutionType() == ProcessExecType.RE_CREATE) {
-								checkStopExec = true;
-							}
-							errorMessage = "Msg_1339";
-							isException = true;
 						}
 					}
 				}

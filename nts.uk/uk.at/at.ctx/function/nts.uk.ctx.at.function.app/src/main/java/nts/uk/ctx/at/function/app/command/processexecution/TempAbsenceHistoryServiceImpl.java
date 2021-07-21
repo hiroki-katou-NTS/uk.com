@@ -79,13 +79,15 @@ public class TempAbsenceHistoryServiceImpl implements TempAbsenceHistoryService 
         			WorkType workType = optWorkType.get();
         			// 取得したドメインモデル「勤務種類」とINPUT「休職休業履歴項目」を比較する
             		boolean compareResult = this.compareLeaveHistory(tempAbsence, workType, date);
-            		// 比較結果 == TRUE　&&　休職休業履歴差異 = FALSE
-            		if (compareResult && !leaveHistoryDifferent) {
+            		// 比較結果 == FALSE　&&　休職休業履歴差異 = FALSE
+            		if (!compareResult && !leaveHistoryDifferent) {
             			// 「期間」を作成する
             			newPeriod = new DatePeriod(date, null);
             			// 「休職休業履歴差異」を更新する
             			leaveHistoryDifferent = true;
-            		} else if (!compareResult && leaveHistoryDifferent) {
+            		} 
+            		// 比較結果 == TRUE　&&　休職休業履歴差異 = TRUE
+            		else if (compareResult && leaveHistoryDifferent) {
             			// 「期間」の終了日を更新する
             			newPeriod = new DatePeriod(newPeriod.start(), date.addDays(-1));
             			// 「休職休業履歴差異」を更新する
@@ -98,7 +100,7 @@ public class TempAbsenceHistoryServiceImpl implements TempAbsenceHistoryService 
         }
         // 処理の「期間」の終了日がNULLであるかチェック
         // NULL　の場合
-        if (newPeriod != null && newPeriod.end().equals(null)) {
+        if (newPeriod != null && newPeriod.end() == null) {
         	// 「期間」の終了日を更新してOUTPUT「期間（List）」に追加する
         	newPeriod = new DatePeriod(newPeriod.start(), period.end());
         	periodList.add(newPeriod);
@@ -135,15 +137,15 @@ public class TempAbsenceHistoryServiceImpl implements TempAbsenceHistoryService 
     	if (workType.getDailyWork().isOneDay()) {
     		// 「勤務種類．１日の勤務．勤務区分」 = 1日　AND　「勤務種類．１日の勤務．1日」= 休職　の場合
     		if (workType.getDailyWork().getOneDay().equals(WorkTypeClassification.LeaveOfAbsence)) {
-    			// ・「休職休業履歴項目．NO」 <> 1  → True
+    			// ・「休職休業履歴項目．NO」 == 1  → True
         		//　・それ以外  → False
-        		return histItem.getTempAbsenceFrNo() != 1;
+        		return histItem.getTempAbsenceFrNo() == 1;
     		}
     		// 「勤務種類．１日の勤務．勤務区分」 = 1日　AND　「勤務種類．１日の勤務．1日」= 休業　の場合
     		if (workType.getDailyWork().getOneDay().equals(WorkTypeClassification.Closure)) {
-    			// ・「休職休業履歴項目．NO」 <> 「勤務種類．勤務種類設定．休業の設定」  → True
+    			// ・「休職休業履歴項目．NO」 == 「勤務種類．勤務種類設定．休業の設定」  → True
     			// ・それ以外  → False
-    			boolean result = !workType.getWorkTypeSetList().stream()
+    			boolean result = workType.getWorkTypeSetList().stream()
     					.anyMatch(data -> data.getCloseAtr().value + 2 == histItem.getTempAbsenceFrNo());
     			return result;
     		}

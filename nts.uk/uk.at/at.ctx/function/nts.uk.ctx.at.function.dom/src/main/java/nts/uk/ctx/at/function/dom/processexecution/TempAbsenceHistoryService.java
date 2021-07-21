@@ -18,15 +18,15 @@ public interface TempAbsenceHistoryService {
     TempAbsenceImport getTempAbsence(String cid, DatePeriod period, List<String> employeeIds);
 
 	/**
-     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別実績.アルゴリズム.休職休業履歴変更期間を求める.休職休業履歴変更期間を求める
-     * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定.Export.休職休業履歴変更期間を求める.休職休業履歴変更期間を求める
+     * ※1	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別実績.アルゴリズム.休職休業履歴変更期間を求める.休職休業履歴変更期間を求める
+     * ※2	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定.Export.休職休業履歴変更期間を求める.休職休業履歴変更期間を求める
      * @param sid					社員ID
      * @param period				処理期間
      * @param tempAbsence			List<休職休業履歴，休職休業履歴項目>
      * @param isRecreateLeave		休職・休業者再作成(true，false)　
      * @param procExecTask			classifies which algorithm to use
-     * 								DAILY_CREATION		1
-     * 								SCH_CREATION		2
+     * 								DAILY_CREATION		※1
+     * 								SCH_CREATION		※2
      * @return
      */
     List<DatePeriod> findChangingLeaveHistoryPeriod(String sid, DatePeriod period, TempAbsenceImport tempAbsence, boolean isRecreateLeave,
