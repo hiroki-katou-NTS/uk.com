@@ -181,7 +181,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				baseDate: __viewContext.viewModel.viewmodelA.targetDate(),
 				targetUnit: __viewContext.viewModel.viewmodelA.dataScreen003A().unit,
 				page: page,
-				organizationID: __viewContext.viewModel.viewmodelA.organizationName().id
+				organizationID: __viewContext.viewModel.viewmodelA.dataScreen003A().id
 			}
 			service.getTaskInfo(param)
 				.done((data: any) => {
@@ -197,8 +197,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 						}
 						
 						//if (__viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2)
-							//__viewContext.viewModel.viewmodelA.addTypeOfTask(taskInfo.data.color, taskInfo);
-					});	
+						//	__viewContext.viewModel.viewmodelA.addTypeOfTask(taskInfo.data.color, taskInfo);
+					});
 						
 					dfd.resolve();
 				}).fail(function(error) {

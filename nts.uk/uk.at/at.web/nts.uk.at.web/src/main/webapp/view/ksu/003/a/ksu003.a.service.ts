@@ -16,7 +16,8 @@ module nts.uk.at.view.ksu003.a {
         	regWorkSchedule: "screen/at/schedule/registerKSU003",
 			getTaskWorkSchedule : "screen/at/schedule/getTaskWorkSchedule",
 			addTaskWorkSchedule : "screen/at/schedule/addTaskWorkSchedule",
-			addScheduleByDisplaySet : "screen/at/schedule/addScheduleByDisplaySet"
+			addScheduleByDisplaySet : "screen/at/schedule/addScheduleByDisplaySet",
+			getTaskInfo : "screen/at/schedule/getTaskInfo"
 			
 		};
 		
@@ -102,5 +103,12 @@ module nts.uk.at.view.ksu003.a {
 		export function addScheduleByDisplaySet(command: any): JQueryPromise<any> {
         	return nts.uk.request.ajax(servicePath.addScheduleByDisplaySet, command);
    		}
+
+		/**
+         * ①<<ScreenQuery>> 作業選択準備情報を取得する
+         */
+		export function getTaskInfo(command: any): JQueryPromise<any> {
+			return nts.uk.request.ajax(servicePath.getTaskInfo, command);
+		}
 	}
 }
