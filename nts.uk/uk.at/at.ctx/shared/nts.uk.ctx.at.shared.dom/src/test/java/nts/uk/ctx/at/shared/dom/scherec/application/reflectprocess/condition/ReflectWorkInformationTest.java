@@ -75,7 +75,7 @@ public class ReflectWorkInformationTest {
 				Optional.of(true), // 勤務種類を変更する＝する
 				Optional.of(false));// 就業時間帯を変更する＝しない
 
-		List<Integer> resultExpected = Arrays.asList(28, 1292, 1293, 31, 34);
+		List<Integer> resultExpected = Arrays.asList(28, 1292, 1293, 3, 4, 31, 34);
 
 		assertThat(resultActual).isEqualTo(resultExpected);
 
@@ -106,7 +106,7 @@ public class ReflectWorkInformationTest {
 	@Test
 	public void testChangeWorkTime() {
 
-		WorkInfoDto workInfoDto = new WorkInfoDto(Optional.empty(), Optional.of(new WorkTimeCode("002")));
+		WorkInfoDto workInfoDto = new WorkInfoDto(Optional.of(new WorkTypeCode("001")), Optional.of(new WorkTimeCode("002")));
 
 		new Expectations() {
 			{
@@ -130,7 +130,7 @@ public class ReflectWorkInformationTest {
 				Optional.of(false), // 勤務種類を変更する＝しない
 				Optional.of(true));// 就業時間帯を変更する＝する
 
-		List<Integer> resultExpected = Arrays.asList(29, 31, 34);
+		List<Integer> resultExpected = Arrays.asList(29, 3, 4, 31, 34);
 
 		assertThat(resultActual).isEqualTo(resultExpected);
 
@@ -183,7 +183,7 @@ public class ReflectWorkInformationTest {
 				Optional.of(true), // 勤務種類を変更する＝する
 				Optional.of(true));// 就業時間帯を変更する＝する
 
-		List<Integer> resultExpected = Arrays.asList(28, 1292, 1293, 29, 31, 34);
+		List<Integer> resultExpected = Arrays.asList(28, 1292, 1293, 29, 3, 4, 31, 34);
 
 		assertThat(resultActual).isEqualTo(resultExpected);
 
