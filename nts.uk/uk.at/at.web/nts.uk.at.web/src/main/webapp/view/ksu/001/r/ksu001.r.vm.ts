@@ -154,6 +154,7 @@ module nts.uk.at.view.ksu001.r {
 //
 //                             self.listperiodsTemp.push(new ItemModel(extBudget[i].ymd, extBudget[i].amount));         
 //                        }
+                     //   self.organizationName(getShared("name"));
                         if (extBudget) {                        
                         self.listBudgetDaily = extBudget;
                         extBudget.forEach(item => {
@@ -176,6 +177,7 @@ module nts.uk.at.view.ksu001.r {
 
             public closeDialog(): void {
                 let self = this;
+                self.EndStatus = 'cancel';  
                 setShared('EndStatus', self.EndStatus);
                 nts.uk.ui.windows.close();
             }
