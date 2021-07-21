@@ -178,9 +178,6 @@ public class WorkGroupTest {
 			{
 				require.getTask(taskFrameNo, code);
 				result = Optional.of(task);
-
-				require.getTaskFrameUsageSetting();
-				result = taskFrameUsageSetting;
 			}
 		};
 

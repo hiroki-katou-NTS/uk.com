@@ -81,7 +81,7 @@ public class OuenWorkTimeSheetOfDailyTest {
 		AttendanceItemToChange attendanceItemToChange = rs.change(OuenWorkTimeSheetOfDailyHelper.getlist());
 
 		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().size()).isEqualTo(3);
-		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().get(1).getWorkNo()).isEqualTo(2);
+		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().get(1).getWorkNo().v()).isEqualTo(2);
 	}
 	
 	@Test
@@ -106,7 +106,7 @@ public class OuenWorkTimeSheetOfDailyTest {
 		AttendanceItemToChange attendanceItemToChange = rs.change(OuenWorkTimeSheetOfDailyHelper.getlist2());
 
 		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().size()).isEqualTo(1);
-		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().get(0).getWorkNo()).isEqualTo(2);
+		assertThat(attendanceItemToChange.getOuenWorkTimeSheetOfDaily().getOuenTimeSheet().get(0).getWorkNo().v()).isEqualTo(2);
 	}
 	
 	@Test

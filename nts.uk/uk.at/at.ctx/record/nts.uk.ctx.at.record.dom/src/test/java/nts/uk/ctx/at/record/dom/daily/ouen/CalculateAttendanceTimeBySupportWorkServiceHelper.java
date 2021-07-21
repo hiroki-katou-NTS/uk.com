@@ -33,7 +33,7 @@ public class CalculateAttendanceTimeBySupportWorkServiceHelper {
 		List<TimeLeavingWork> timeleavings = new ArrayList<>();
 		
 //		TimeLeavingWork leavingWork = new TimeLeavingWork(new WorkNo(1), actualStamp, actualStamp);
-		TimeLeavingWork leavingWork = new TimeLeavingWork(new WorkNo(1), Optional.of(actualStamp), Optional.empty(), true, true);
+		TimeLeavingWork leavingWork = new TimeLeavingWork(new WorkNo(1), Optional.of(actualStamp), Optional.of(actualStamp), true, true);
 		
 		timeleavings.add(leavingWork);
 		timeleavings.add(leavingWork);

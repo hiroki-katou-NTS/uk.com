@@ -40,8 +40,6 @@ public class ManHourRecordReferenceSettingTest {
 
 		new Expectations() {
 			{
-				require.get();
-
 				require.getPeriod(employeeId, date);
 				result = new DatePeriod(date, date);
 			}
@@ -58,13 +56,11 @@ public class ManHourRecordReferenceSettingTest {
 	@Test
 	public void testCaseOneMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(1, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+//		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
+//				EnumAdaptor.valueOf(1, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		new Expectations() {
 			{
-				require.get();
-				result = setting;
 
 				require.getPeriod(employeeId, date);
 				result = new DatePeriod(date, date);
@@ -82,13 +78,13 @@ public class ManHourRecordReferenceSettingTest {
 	@Test
 	public void testCaseTowMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(2, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+//		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
+//				EnumAdaptor.valueOf(2, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		new Expectations() {
 			{
-				require.get();
-				result = setting;
+//				require.get();
+//				result = setting;
 
 				require.getPeriod(employeeId, date);
 				result = new DatePeriod(date, date);
@@ -96,7 +92,7 @@ public class ManHourRecordReferenceSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(2, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+				EnumAdaptor.valueOf(2, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -106,13 +102,13 @@ public class ManHourRecordReferenceSettingTest {
 	@Test
 	public void testCaseThreeMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(3, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+//		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
+//				EnumAdaptor.valueOf(3, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		new Expectations() {
 			{
-				require.get();
-				result = setting;
+//				require.get();
+//				result = setting;
 
 				require.getPeriod(employeeId, date);
 				result = new DatePeriod(date, date);
@@ -120,7 +116,7 @@ public class ManHourRecordReferenceSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(3, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+				EnumAdaptor.valueOf(3, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -130,13 +126,13 @@ public class ManHourRecordReferenceSettingTest {
 	@Test
 	public void testCaseFourMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(4, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+//		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
+//				EnumAdaptor.valueOf(4, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		new Expectations() {
 			{
-				require.get();
-				result = setting;
+//				require.get();
+//				result = setting;
 
 				require.getPeriod(employeeId, date);
 				result = new DatePeriod(date, date);
@@ -144,7 +140,7 @@ public class ManHourRecordReferenceSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(4, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+				EnumAdaptor.valueOf(4, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -154,13 +150,13 @@ public class ManHourRecordReferenceSettingTest {
 	@Test
 	public void testCaseFiveMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(5, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+//		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
+//				EnumAdaptor.valueOf(5, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		new Expectations() {
 			{
-				require.get();
-				result = setting;
+//				require.get();
+//				result = setting;
 
 				require.getPeriod(employeeId, date);
 				result = new DatePeriod(date, date);
@@ -168,7 +164,7 @@ public class ManHourRecordReferenceSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(5, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+				EnumAdaptor.valueOf(5, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -178,13 +174,13 @@ public class ManHourRecordReferenceSettingTest {
 	@Test
 	public void testCaseSixMonthAgo() {
 
-		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(6, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+//		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
+//				EnumAdaptor.valueOf(6, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		new Expectations() {
 			{
-				require.get();
-				result = setting;
+//				require.get();
+//				result = setting;
 
 				require.getPeriod(employeeId, date);
 				result = new DatePeriod(date, date);
@@ -192,7 +188,7 @@ public class ManHourRecordReferenceSettingTest {
 		};
 
 		ManHourRecordReferenceSetting periodSetting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(6, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+				EnumAdaptor.valueOf(6, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		GeneralDate result = periodSetting.getWorkCorrectionStartDate(require, employeeId);
 
@@ -208,7 +204,7 @@ public class ManHourRecordReferenceSettingTest {
 		map.put("Key2", "Value2");
 
 		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class), EnumAdaptor.valueOf(1, ReferenceRange.class));
+				EnumAdaptor.valueOf(0, ElapsedMonths.class),ReferenceRange.SAME_AS_EMPLOYEE_REFERENCE_RANGE_OF_ROLE);
 
 		new Expectations() {
 			{
@@ -232,7 +228,7 @@ public class ManHourRecordReferenceSettingTest {
 		map.put("Key2", "Value2");
 
 		ManHourRecordReferenceSetting setting = new ManHourRecordReferenceSetting(
-				EnumAdaptor.valueOf(0, ElapsedMonths.class), EnumAdaptor.valueOf(0, ReferenceRange.class));
+				EnumAdaptor.valueOf(0, ElapsedMonths.class), ReferenceRange.ALL_EMPLOYEES);
 
 		new Expectations() {
 			{

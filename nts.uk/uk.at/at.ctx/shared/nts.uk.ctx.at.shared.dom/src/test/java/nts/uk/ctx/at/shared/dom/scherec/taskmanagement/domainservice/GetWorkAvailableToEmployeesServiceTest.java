@@ -147,8 +147,8 @@ public class GetWorkAvailableToEmployeesServiceTest {
 
 		new Expectations() {
 			{
-				require.getOptionalTask(new TaskFrameNo(2), new TaskCode("DUMMY"));
-				result = optTask; // => childTaskList == empty
+//				require.getOptionalTask(new TaskFrameNo(2), new TaskCode("DUMMY"));
+//				result = optTask; // => childTaskList == empty
 
 				require.getTask();
 				result = taskFrameUsageSetting;

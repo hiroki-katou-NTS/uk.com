@@ -96,9 +96,6 @@ public class CheckWorkExpirationDateServiceTest {
 			{
 				require.getTask(taskFrameNo, code);
 				result = Optional.of(task);
-
-				require.getTaskFrameUsageSetting();
-				result = taskFrameUsageSetting;
 			}
 		};
 
