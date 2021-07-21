@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeImported;
 
 /**
  * 
