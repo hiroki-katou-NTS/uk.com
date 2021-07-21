@@ -41,7 +41,7 @@ public class DailyResultsLogParamFinder {
 		// 締めの名称を取得する
 		String closureName = this.getClosureName(AppContexts.user().companyId(), empCalAndSumExeLog.getClosureID(), 
 				empCalAndSumExeLog.getProcessingMonth().v());
-		return new DailyResultsLogParamDto(I18NText.getText("#KBT002_344"), closureName, execId);
+		return new DailyResultsLogParamDto(I18NText.getText("KBT002_344"), closureName, execId);
 	}
 	
 	/**
