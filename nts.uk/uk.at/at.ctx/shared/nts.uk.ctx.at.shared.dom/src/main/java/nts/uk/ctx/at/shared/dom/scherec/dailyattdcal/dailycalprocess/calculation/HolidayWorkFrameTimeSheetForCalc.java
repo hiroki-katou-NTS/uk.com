@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.gul.util.value.Finally;
@@ -22,11 +23,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
@@ -344,23 +347,32 @@ public class HolidayWorkFrameTimeSheetForCalc extends ActualWorkingTimeSheet{
 	}
 	
 	/**
-	 * 指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
 	 * @param commonSet 就業時間帯の共通設定
+	 * @return 休出枠時間帯
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+	public Optional<HolidayWorkFrameTimeSheetForCalc> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
 		Optional<TimeSpanForDailyCalc> duplicate = this.timeSheet.getDuplicatedWith(timeSpan);
 		if(!duplicate.isPresent()) {
-			return;
+			return Optional.empty();
 		}
-		this.timeSheet = duplicate.get();
+		HolidayWorkFrameTimeSheetForCalc recreated = new HolidayWorkFrameTimeSheetForCalc(
+				duplicate.get(),
+				this.rounding.clone(),
+				this.recordedTimeSheet.stream().map(r -> r.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(d -> d.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, duplicate.get()),
+				this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, duplicate.get()),
+				this.midNightTimeSheet.getDuplicateRangeTimeSheet(duplicate.get()),
+				this.frameTime.clone(),
+				this.TreatAsTimeSpentAtWork,
+				new EmTimezoneNo(this.HolidayWorkTimeSheetNo.v().intValue()),
+				this.statutoryAtr.isPresent() ? Finally.of(StaturoryAtrOfHolidayWork.valueOf(this.statutoryAtr.get().toString())) : Finally.empty());
+		
 		//控除時間帯の登録
-		this.registDeductionList(ActualWorkTimeSheetAtr.HolidayWork, this.getCloneDeductionTimeSheet(), commonSet);
-		//外出の相殺時間を削除する
-		this.deleteOffsetTimeOfGoOut();
-		//加給時間帯、特定加給時間帯、深夜時間帯を変更する
-		this.bonusPayTimeSheet = this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, duplicate.get());
-		this.specBonusPayTimesheet = this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, duplicate.get());
-		this.midNightTimeSheet = this.midNightTimeSheet.getDuplicateRangeTimeSheet(duplicate.get());
+		recreated.registDeductionList(ActualWorkTimeSheetAtr.HolidayWork, this.getCloneDeductionTimeSheet(), commonSet);
+		
+		return Optional.of(recreated);
 	}
 }

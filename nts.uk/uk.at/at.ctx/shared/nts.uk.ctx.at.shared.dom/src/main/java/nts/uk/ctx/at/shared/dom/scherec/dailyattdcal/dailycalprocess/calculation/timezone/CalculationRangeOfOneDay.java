@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -77,6 +78,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
+@AllArgsConstructor
 @Getter
 public class CalculationRangeOfOneDay {
 
@@ -1314,25 +1316,37 @@ public class CalculationRangeOfOneDay {
 	}
 	
 	/**
-	 * 指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 変更する時間
 	 * @param commonSet 就業時間帯の共通設定
+	 * @return 1日の計算範囲
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+	public Optional<CalculationRangeOfOneDay> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
 		Optional<TimeSpanForDailyCalc> duplicate = this.oneDayOfRange.getDuplicatedWith(timeSpan);
 		if(!duplicate.isPresent()) {
-			return;
+			return Optional.empty();
 		}
-		this.oneDayOfRange = duplicate.get();
-		
+		Finally<WithinWorkTimeSheet> within = Finally.empty();
 		if(this.withinWorkingTimeSheet.isPresent()) {
-			//就業時間内時間帯を指定した時間帯に絞り込む
-			this.withinWorkingTimeSheet.get().reduceRange(duplicate.get(), commonSet);
+			//就業時間内時間帯を重複する時間帯で作り直す
+			within = Finally.of(this.withinWorkingTimeSheet.get().recreateWithDuplicate(duplicate.get(), commonSet));
 		}
+		Finally<OutsideWorkTimeSheet> outside = Finally.empty();
 		if(this.outsideWorkTimeSheet.isPresent()) {
-			//就業時間外時間帯を指定した時間帯に絞り込む
-			this.outsideWorkTimeSheet.get().reduceRange(duplicate.get(), commonSet);
+			//就業時間外時間帯を重複する時間帯で作り直す
+			outside = Finally.of(this.outsideWorkTimeSheet.get().recreateWithDuplicate(duplicate.get(), commonSet));
 		}
+		return Optional.of(new CalculationRangeOfOneDay(
+				duplicate.get(),
+				this.workInformationOfDaily,
+				this.attendanceLeavingWork,
+				this.predetermineTimeSetForCalc,
+				this.nonWorkingTimeSheet,
+				this.shortTimeWSWithoutWork,
+				within,
+				outside,
+				this.beforeAttendance,
+				this.afterLeaving));
 	}
 
 	/**

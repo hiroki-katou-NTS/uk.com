@@ -599,21 +599,26 @@ public class LeaveEarlyTimeSheet {
 	}
 	
 	/**
-	 * 早退時間帯を指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param commonSet 就業時間帯の共通設定
+	 * @return 早退時間帯 
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan, DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
-		if(this.forRecordTimeSheet.isPresent()) {
-			//計上用時間帯を変更する
-			this.forRecordTimeSheet.get().reduceRange(timeSpan, ActualWorkTimeSheetAtrForLate.LeaveEarly, deductionTimeSheet, commonSet);
+	public Optional<LeaveEarlyTimeSheet> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
+		//計上用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> record = this.forRecordTimeSheet.flatMap(
+				r -> r.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.LeaveEarly, deductionTimeSheet, commonSet));
+		//控除用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> deducation = this.forDeducationTimeSheet.flatMap(
+				d -> d.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.LeaveEarly, deductionTimeSheet, commonSet));
+		if(!record.isPresent() && !deducation.isPresent()) {
+			return Optional.empty();
 		}
-		if(this.forDeducationTimeSheet.isPresent()) {
-			//控除用時間帯を変更する
-			this.forDeducationTimeSheet.get().reduceRange(timeSpan, ActualWorkTimeSheetAtrForLate.LeaveEarly, deductionTimeSheet, commonSet);
-		}
-		//相殺時間を削除する
-		this.OffsetTime = Optional.empty();
+		return Optional.of(new LeaveEarlyTimeSheet(
+				record,
+				deducation,
+				this.workNo,
+				Optional.empty()));//相殺時間を削除する
 	}
 }

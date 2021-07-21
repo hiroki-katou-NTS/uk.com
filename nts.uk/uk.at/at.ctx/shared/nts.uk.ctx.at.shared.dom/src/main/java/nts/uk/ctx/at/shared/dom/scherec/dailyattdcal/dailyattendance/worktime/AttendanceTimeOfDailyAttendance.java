@@ -852,8 +852,12 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			DailyRecordToAttendanceItemConverter converter,
 			TimeSpanForDailyCalc timeSpan) {
 		
-		//1日の計算範囲を変更する
-		recordReGetClass.reduceRange(timeSpan, recordReGetClass.getWorkTimezoneCommonSet());
+		//1日の計算範囲を重複する時間帯で作り直す
+		Optional<ManageReGetClass> duplicate = recordReGetClass.recreateWithDuplicate(timeSpan);
+		
+		if(!duplicate.isPresent()) {
+			return AttendanceTimeOfDailyAttendance.allZeroValue();
+		}
 		
 		//日別勤怠の勤怠時間を計算する
 		return collectCalculationResult(
@@ -861,15 +865,15 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				workType,
 				Optional.of(SettingOfFlexWork.defaultValue()),
 				bonusPayAutoCalcSet,
-				recordReGetClass.getCompanyCommonSetting().getCompensatoryLeaveComSet().getCompensatoryOccurrenceSetting(),
+				duplicate.get().getCompanyCommonSetting().getCompensatoryLeaveComSet().getCompensatoryOccurrenceSetting(),
 				converter,
-				recordReGetClass.getCompanyCommonSetting().getDivergenceTime(),
+				duplicate.get().getCompanyCommonSetting().getDivergenceTime(),
 				calculateOfTotalConstraintTime,
 				scheduleReGetClass,
-				recordReGetClass,
-				recordReGetClass.getPersonDailySetting().getPersonInfo(),
+				duplicate.get(),
+				duplicate.get().getPersonDailySetting().getPersonInfo(),
 				predetermineTimeSetByPersonInfo,
-				recordReGetClass.getLeaveLateSet(),
+				duplicate.get().getLeaveLateSet(),
 				scheduleReGetClass.getLeaveLateSet(),
 				recordWorkTimeCode,
 				new DeclareTimezoneResult());

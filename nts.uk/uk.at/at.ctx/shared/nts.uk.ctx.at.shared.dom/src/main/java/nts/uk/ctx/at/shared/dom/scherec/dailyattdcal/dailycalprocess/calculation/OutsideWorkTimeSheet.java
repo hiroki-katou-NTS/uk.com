@@ -302,18 +302,16 @@ public class OutsideWorkTimeSheet {
 	}
 	
 	/**
-	 * 指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
 	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間外時間帯
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
-		if(this.overTimeWorkSheet.isPresent()) {
-			//残業時間帯を指定した時間帯に絞り込む
-			this.overTimeWorkSheet.get().reduceRange(timeSpan, commonSet);
-		}
-		if(this.holidayWorkTimeSheet.isPresent()) {
-			//休出時間帯を指定した時間帯に絞り込む
-			this.holidayWorkTimeSheet.get().reduceRange(timeSpan, commonSet);
-		}
+	public OutsideWorkTimeSheet recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		//残業時間帯を重複する時間帯で作り直す
+		Optional<OverTimeSheet> overTime = this.overTimeWorkSheet.flatMap(o -> o.recreateWithDuplicate(timeSpan, commonSet));
+		//休出時間帯を重複する時間帯で作り直す
+		Optional<HolidayWorkTimeSheet> holidayWorkTime = this.holidayWorkTimeSheet.flatMap(h -> h.recreateWithDuplicate(timeSpan, commonSet));
+		return new OutsideWorkTimeSheet(overTime, holidayWorkTime);
 	}
 }
