@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -36,6 +37,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 遅刻時間帯
  * @author keisuke_hoshina
  */
+@AllArgsConstructor
 @Getter
 public class LateTimeSheet {
 	
@@ -775,21 +777,27 @@ public class LateTimeSheet {
 	}
 	
 	/**
-	 * 遅刻時間帯を指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
 	 * @param deductionTimeSheet 控除時間帯
 	 * @param commonSet 就業時間帯の共通設定
+	 * @return 遅刻時間帯
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan, DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
-		if(this.forRecordTimeSheet.isPresent()) {
-			//計上用時間帯を変更する
-			this.forRecordTimeSheet.get().reduceRange(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet);
+	public Optional<LateTimeSheet> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
+		//計上用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> record = this.forRecordTimeSheet.flatMap(
+				r -> r.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet));
+		//控除用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> deducation = this.forDeducationTimeSheet.flatMap(
+				d -> d.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet));
+		if(!record.isPresent() && !deducation.isPresent()) {
+			return Optional.empty();
 		}
-		if(this.forDeducationTimeSheet.isPresent()) {
-			//控除用時間帯を変更する
-			this.forDeducationTimeSheet.get().reduceRange(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet);
-		}
-		//相殺時間を削除する
-		this.OffsetTime = Optional.empty();
+		return Optional.of(new LateTimeSheet(
+				record,
+				deducation,
+				this.workNo,
+				Optional.empty(),//相殺時間を削除する
+				this.noCoreFlexLateTime.map(n -> new AttendanceTime(n.valueAsMinutes()))));
 	}
 }
