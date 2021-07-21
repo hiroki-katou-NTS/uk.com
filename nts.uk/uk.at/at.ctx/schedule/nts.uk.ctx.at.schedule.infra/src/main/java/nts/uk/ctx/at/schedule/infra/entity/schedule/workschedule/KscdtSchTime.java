@@ -465,13 +465,13 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 																				// //extMidNiteTotalPreApp
 				0, // đang QA 110822 // intervalAtdClock
 				0, // đang QA 110822 // intervalTime
-				//workingTime.getBreakTimeOfDaily() != null && workingTime.getBreakTimeOfDaily().getToRecordTotalTime() != null 
-				//&& workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime() != null ?
-				//		workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v() : 0, // 34
+				workingTime.getBreakTimeOfDaily() != null && workingTime.getBreakTimeOfDaily().getToRecordTotalTime() != null 
+				&& workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime() != null ?
+						workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v() : 0, // 34
 																													// //
 																													// brkTotalTime
 
-				workingTime.getBreakTimeOfDaily() == null ? 0 : workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34 // brkTotalTime
+				//workingTime.getBreakTimeOfDaily() == null ? 0 : workingTime.getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v(), // 34 // brkTotalTime
 				holidayOfDaily.getAnnual() == null ? 0 : holidayOfDaily.getAnnual().getUseTime().v(), // 35 USE_DAYLY_HD_PAID // hdPaidTime
 				holidayOfDaily.getAnnual() == null ? 0 : holidayOfDaily.getAnnual().getDigestionUseTime().v(), // 36 USE_HOURLY_HD_PAID // hdPaidHourlyTime
 				holidayOfDaily.getSubstitute() == null ? 0 : holidayOfDaily.getSubstitute().getUseTime().v(), // hdComTime
