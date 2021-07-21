@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.sys.shared.dom.employee.GetAnEmployeeImported;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeImported;
 
 /**
  * 検証結果
