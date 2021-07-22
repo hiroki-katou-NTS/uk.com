@@ -67,9 +67,6 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         if (!optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
             return;
         } else {
-//            if(optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())){
-//                alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
-//            } else
             if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
                 alarmExtractResultRepo.insert(alarmResult);
             } else {
@@ -119,15 +116,6 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     dataProcessingInputOutput(p, lstExtractResultInput, lstExtractResultDB, lstExResultInsert, lstExResultDelete);
                 }
 
-//                val empIdOfDbRemains = lstExtractResultDB.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
-//                if (!empIdOfDbRemains.isEmpty()) {
-//                    val tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
-//                            !empIdOfDbRemains.contains(x.getEmployeeID())).collect(Collectors.toList());
-//                    if (!tempDbRemain.isEmpty()) {
-//                        lstExResultDelete.addAll(tempDbRemain);
-//                    }
-//                }
-
                 //Delete: 今回のアラーム結果がないがデータベースに存在している場合データベースを削除
                 if (!CollectionUtil.isEmpty(lstExResultDelete)) {
                     PersistenceAlarmListExtractResult persisExtractResultDelete = new PersistenceAlarmListExtractResult(
@@ -151,22 +139,20 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     );
                     alarmExtractResultRepo.insert(persisExtractResultInsert);
                 }
-
-                if (!CollectionUtil.isEmpty(lstExResultDelete) || !CollectionUtil.isEmpty(lstExResultInsert)) {
-                    //アラームリストからトップページアラームデータに変換する
-                    RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
-                    List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
-                            new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
-
-                    if (!atomTasks.isEmpty()) {
-                        transaction.execute(() -> {
-                            for (AtomTask atomTask : atomTasks) {
-                                atomTask.run();
-                            }
-                        });
-                    }
-                }
             }
+        }
+
+        //アラームリストからトップページアラームデータに変換する
+        RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
+        List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
+                new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
+
+        if (!atomTasks.isEmpty()) {
+            transaction.execute(() -> {
+                for (AtomTask atomTask : atomTasks) {
+                    atomTask.run();
+                }
+            });
         }
     }
 
