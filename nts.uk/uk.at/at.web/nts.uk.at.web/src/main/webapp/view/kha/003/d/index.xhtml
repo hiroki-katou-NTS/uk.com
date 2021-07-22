@@ -34,14 +34,20 @@
             <div class="table cmm045-div-table ">
                 <table id="content-table" style="width: 100%;">
                     <thead>
-                        <tr style="background-color: #99ccff" data-bind="foreach:dateHeaders">
-                            <td style="text-align: center; padding: 5px;" data-bind="text:text"></td>
-                        </tr>
+                    <tr style="background-color: #99ccff" data-bind="foreach:dateHeaders">
+                        <td style="text-align: center; padding: 5px;" data-bind="text:text"></td>
+                    </tr>
                     </thead>
                     <tbody data-bind="foreach: { data: contents, as: 'prent' }">
-                        <tr data-bind="foreach:prent">
-                            <td style="text-align: center; padding: 5px;" data-bind="text:value"></td>
-                        </tr>
+                    <tr data-bind="foreach:prent">
+                        <!--<com:ko tag="if" bind="value=='col_span'">
+                            <td colspan="2" style="text-align: center; padding: 5px;"></td>
+                        </com:ko>
+                        <com:ko tag="if" bind="value!='col_span'">
+
+                        </com:ko>-->
+                        <td  style="text-align: center; padding: 5px;" data-bind="text:value"></td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

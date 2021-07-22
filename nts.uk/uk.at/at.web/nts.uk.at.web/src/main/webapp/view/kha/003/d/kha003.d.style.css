@@ -1,6 +1,11 @@
 .cmm045-div-table {
     width: 100%;
 }
+
 #content-table td {
     border: 1px solid black;
+}
+
+thead tr td {
+    width: 150px;
 }

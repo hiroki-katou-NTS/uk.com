@@ -246,6 +246,13 @@ module nts.uk.at.kha003.d {
             }
         }
 
+        isSpan(value:any):boolean{
+            if(value === "col_span"){
+                return true;
+            }
+            return false;
+        }
+
         /**
          * Total of each column of each level by vertical
          *
@@ -257,8 +264,8 @@ module nts.uk.at.kha003.d {
         printTotalByVerticalOfEachLevel(summaryItemDetail: any, maxDateRange: any, dispFormat: any, unit: any): any {
             let vm = this;
             let subArray = [];
-            subArray.push(new Content(summaryItemDetail.displayInfo.name + vm.$i18n("KHA003_100")));
             subArray.push(new Content(""));
+            subArray.push(new Content(summaryItemDetail.displayInfo.name + vm.$i18n("KHA003_100")));
             subArray.push(new Content(""));
             for (let verticalItem of summaryItemDetail.verticalTotalList) {
                 subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
