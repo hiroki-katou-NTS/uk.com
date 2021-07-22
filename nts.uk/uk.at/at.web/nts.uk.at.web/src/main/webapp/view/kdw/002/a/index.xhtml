@@ -49,15 +49,14 @@
 					<table tabindex="4" id="gridList"
 						data-bind="ntsGridList:{
 							width: 300,
-							height: 500,
+							height: gridHeight,
 							options: attendanceItems,
 							value: aICurrentCode,
 							columns: attendanceItemColumn,
 							optionsValue: 'displayNumber',
 							multiple: false,
 							enable: true,										
-							showCheckBox: false,
-							rows : 15}">
+							showCheckBox: false}">
 					</table>
 				</div>
 				<div class="rightContent"></div>
