@@ -480,6 +480,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         vm.switchOptions(result);
                     }
                     if (result.length > 0 && !vm.leaveType()) vm.leaveType(vm.switchOptions()[0].code);
+                    vm.leaveType.valueHasMutated();
                 }
             });
             vm.specialLeaveFrame.subscribe(value => {

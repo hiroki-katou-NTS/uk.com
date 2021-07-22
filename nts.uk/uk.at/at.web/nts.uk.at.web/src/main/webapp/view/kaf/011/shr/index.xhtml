@@ -15,7 +15,7 @@
 								<div id="recAppDate" class="marginNag" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF011_22')}', value: application.appDate, dateFormat: 'YYYY/MM/DD', required: true }"></div>
 							</com:ko-if>
 							<com:ko-if bind="!isAScreen()">
-								<div class="ntsControl marginNag" style="padding-top: 10px;" data-bind="text: application.appDate"></div>
+								<div class="ntsControl marginNag" style="padding-top: 10px;" data-bind="text: appDateWithInput"></div>
 							</com:ko-if>
 						</div>
 						<div class="row">
@@ -119,7 +119,7 @@
 							<div class="row" style="margin-top: -2px;
     							margin-bottom: -1px;">
 								<div class="ntsLabelCustome" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF011_22')}</div>
-									<div class="ntsControl marginNag" style="margin-top: 6px;" data-bind="text: application.appDate"></div>
+									<div class="ntsControl marginNag" style="margin-top: 6px;" data-bind="text: appDateWithInput"></div>
 									<com:ko-if bind="displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr == 0 &amp;&amp; _.find(displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.reflectionStatus.listReflectionStatusOfDay, function(i) {return i.actualReflectStatus == 3 || i.scheReflectStatus == 3;}) == undefined ">
 										<button style="margin-left: 100px;" data-bind="enable: outputMode() == 1, click: openKAF011C">#{i18n.getText('KAF011_26')}</button>
 									</com:ko-if>

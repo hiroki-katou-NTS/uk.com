@@ -91,10 +91,18 @@
     height: 47px !important;
 }
 
-/*#grid .padding-5{*/
-    /*padding: 0px 5px;;*/
-/*}*/
+#grid .padding-5{
+    padding: 0px 5px;;
+}
 
-/*#grid .padding-12{*/
-    /*padding: 0px 12px;;*/
-/*}*/
+#grid .padding-10{
+    padding: 0px 10px;;
+}
+
+#grid .break-jp-cell {
+    line-break: strict;
+}
+
+.mgrid table th, .mgrid table td {
+    border-color: #9c9fa2;
+}
