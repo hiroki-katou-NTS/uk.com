@@ -52,7 +52,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		dataOfGantChart: Array<model.ITimeGantChart> = []; // data của từng phần trên extable
 		midDataGC: Array<any> = [];
-		disableDs: any = [];
+		disableDs: any = []; // gantt chart bị disable, không dùng schedule
 		leftDs: any = [];
 		allGcShow: any = []; // lưu gant chart và data để tạo lại
 		gcShowChart: any = []; // tất cả chart break, holiday, short show trên màn hình
@@ -706,7 +706,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.getTask().done(() => {
 							self.convertDataIntoExtable();
 							self.initExtableData().done(() => {
-								
+								if (self.selectedDisplayPeriod() == 2 && self.disableDs.length > 0){
+									for(let i = 0; i < self.disableDs.length; i++){
+										$("#extable-ksu003 > .ex-body-detail > table > tbody tr:nth-child" + "(" + (self.disableDs[i].index + 2).toString() + ")").css("background-color",self.disableDs[i].color);
+									}
+								}
 								dfd.resolve();
 							});
 					});
@@ -1134,7 +1138,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				gcCoreTime: Array<model.ICoreTime> = [],
 				gcHolidayTime: Array<model.IHolidayTime> = [],
 				gcShortTime: Array<model.IShortTime> = [];
-			_.forEach(_.isNil(index) ? self.dataScreen003A().employeeInfo : [self.dataScreen003A().employeeInfo[index]], (schedule: model.DisplayWorkInfoByDateDto) => {
+			_.forEach(_.isNil(index) ? self.dataScreen003A().employeeInfo : [self.dataScreen003A().employeeInfo[index]], (schedule: model.DisplayWorkInfoByDateDto, indx) => {
 				gcFixedWorkTime = [], gcBreakTime = [], gcOverTime = [], gcSupportTime = null,
 					gcFlowTime = [], gcFlexTime = [], gcCoreTime = [], gcHolidayTime = [],
 					gcShortTime = [], typeOfTime = "", self.lstBreakSum = [], self.lstHolidayShort = [];
@@ -1146,6 +1150,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					disableDs.push({
 						empId: schedule.empId,
 						color: "#ddddd2",
+						index : indx
 					});
 				}
 				leftDs.push({
@@ -2937,51 +2942,51 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (shortTime.length > 0 && timeChart != null) {
 					for (let o = 0; o < shortTime[0].listShortTime.length; o++) {
 						let y = shortTime[0].listShortTime[o];
-						timeChartShort = model.convertTimeToChart(y.startTime, y.endTime);
-						startTime1 = model.checkTimeOfChart(timeChartShort.startTime, timeRangeLimit, self.dispStartHours);
-						endTime1 = model.checkTimeOfChart(timeChartShort.endTime, timeRangeLimit, self.dispStartHours);
+						//timeChartShort = model.convertTimeToChart(y.startTime, y.endTime);
+						startTime1 = model.checkTimeOfChart(y.startTime, timeRangeLimit, self.dispStartHours);
+						endTime1 = model.checkTimeOfChart(y.endTime, timeRangeLimit, self.dispStartHours);
 						let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
-						if (((timeChart2 != null && endTime1 < timeChart2.startTime) || (timeChart2 == null)) && timeMinus.length > 0 && (_.inRange(y.startTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
+						if (timeMinus.length > 0 && (_.inRange(y.startTime, timeMinus[0].startTime, timeMinus[0].endTime) ||
 							_.inRange(y.endTime, timeMinus[0].startTime, timeMinus[0].endTime))) {
 							ruler.addChartWithType("ShortTime", {
 								id: id,
-								parent: parent,
+								//parent: parent,
 								lineNo: i,
-								start: timeChartShort.startTime - dispStart,
-								end: timeChartShort.endTime - dispStart,
+								start: y.startTime / 5 - dispStart,
+								end: y.endTime / 5 - dispStart,
 								zIndex: 1052,
 								pin: true,
 								bePassedThrough: false
 							});
-							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "ShortTime", id, { startTime: y.startTime / 5 - dispStart, endTime: y.endTime / 5 - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexLeft = ++indexLeft;
 							self.gcShowChart.push({
-								startTime: timeChartShort.startTime,
-								endTime: timeChartShort.endTime,
+								startTime: y.startTime / 5 - dispStart,
+								endTime: y.endTime / 5 - dispStart,
 								line : i,
 								empId: datafilter[0].empId
 							})
 						}
 
-						if (startTime1 > timeChart.endTime && timeMinus2.length > 0 && (_.inRange(y.startTime, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
+						if (timeMinus2.length > 0 && (_.inRange(y.startTime, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
 							_.inRange(y.endTime, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
 							id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
 							ruler.addChartWithType("ShortTime", {
 								id: id,
-								parent: parent,
+								//parent: parent,
 								lineNo: i,
-								start: timeChartShort.startTime - dispStart,
-								end: timeChartShort.endTime - dispStart,
+								start: y.startTime / 5 - dispStart,
+								end: y.endTime / 5 - dispStart,
 								zIndex: 1052,
 								pin: true,
 								bePassedThrough: false
 							});
-							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
+							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "ShortTime", id, { startTime: y.startTime / 5 - dispStart, endTime: y.endTime / 5 - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexRight = ++indexRight;
 							
 							self.gcShowChart.push({
-								startTime: timeChartShort.startTime,
-								endTime: timeChartShort.endTime,
+								startTime: y.startTime / 5 - dispStart,
+								endTime: y.endTime / 5 - dispStart,
 								line : i,
 								empId: datafilter[0].empId
 							})
@@ -5324,11 +5329,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					});
 					
 					index = "";
-					if (lgcFil.length > 0 && _.inRange(start, lgcFil[0].start, lgcFil[0].end) || _.inRange(end, lgcFil[0].start, lgcFil[0].end)){
+					if (lgcFil.length > 0 && (_.inRange(start, lgcFil[0].start, lgcFil[0].end) || _.inRange(end, lgcFil[0].start, lgcFil[0].end))){
 						index = "lgc" + line + "_" + (lgcFil.length - 1);
 					}
 					
-					if (rgcFil.length > 0 && _.inRange(start, rgcFil[0].start, rgcFil[0].end) || _.inRange(end, rgcFil[0].start, rgcFil[0].end)){
+					if (rgcFil.length > 0 && (_.inRange(start, rgcFil[0].start, rgcFil[0].end) || _.inRange(end, rgcFil[0].start, rgcFil[0].end))){
 						index = "rgc" + line + "_" + (rgcFil.length - 1);
 					}
 					
@@ -5367,13 +5372,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if(taskInfo == null) return;
 				
 				let arrRemoveTask : any = [], arrRemoveTaskNew : any = [];
-				if (!_.isNil(self.taskData[line])) {
+				let filTaskData = _.filter (self.taskData, (x : any) => {
+					return x.empID == self.lstEmpId[line].empId;
+				});
+				if (filTaskData.length > 0) {
 				
 				for (let i = 0; i < self.taskData[line].taskScheduleDetail.length ; i++) {
 					let task : any = self.taskData[line].taskScheduleDetail[i],
 					oldS = task.timeSpanForCalcDto.start,
 					oldE = task.timeSpanForCalcDto.end;
-					if (self.taskData[line].empID !== self.lstEmpId[line].empId)
+					if (filTaskData[0].empID !== self.lstEmpId[line].empId)
 					continue;
 					
 					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
@@ -5512,18 +5520,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									continue;
 								}
 							}
-						arrRemoveTaskNew.push({
-							index : i,
-							line : line,
-							start : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.start,
-							end : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end
-						});
+						if (self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.length > 0)	{
+							arrRemoveTaskNew.push({
+								index : i,
+								line : line,
+								start : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.start,
+								end : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.end
+							});
+						}
 					} 
 				}
 				
 				_.forEach(arrRemoveTaskNew, x => {
 					let arr = _.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
-						return x.index == index && y.taskScheduleDetail.timeSpanForCalcDto.start == x.start && y.taskScheduleDetail.timeSpanForCalcDto.end == x.end;
+						return x.index == index && y.taskScheduleDetail[0].timeSpanForCalcDto.start == x.start && y.taskScheduleDetail[0].timeSpanForCalcDto.end == x.end;
 					});
 				});
 				
