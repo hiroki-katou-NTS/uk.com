@@ -55,7 +55,9 @@ public class KshmtWorkcondWorkTs  extends ContractCompanyUkJpaEntity implements 
 	@Column(name = "END_TIME_2")
 	private Integer endTime2;
 	
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@JoinColumns({
+		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false)})
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo;
 	
