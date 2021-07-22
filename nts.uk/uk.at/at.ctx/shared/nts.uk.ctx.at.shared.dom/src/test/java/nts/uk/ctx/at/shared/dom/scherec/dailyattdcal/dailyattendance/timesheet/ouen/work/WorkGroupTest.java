@@ -159,33 +159,30 @@ public class WorkGroupTest {
 	}
 
 	// [2] 作業内容の有効期限を確認する => NotError
-//	@Test
-//	public void testPublic2_2() {
-//
-//		frameSettingList.add(
-//				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), EnumAdaptor.valueOf(1, UseAtr.class)));
-//		frameSettingList.add(
-//				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY1"), EnumAdaptor.valueOf(0, UseAtr.class)));
-//
-//		WorkGroup workGroup = WorkGroup.create("WorkCode", null, null, null, null);
-//
-//		Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date, date),
-//				null);
-//
-//		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
-//
-//		new Expectations() {
-//			{
-//				require.getTask(taskFrameNo, code);
-//				result = Optional.of(task);
-//
-//				require.getTaskFrameUsageSetting();
-//				result = taskFrameUsageSetting;
-//			}
-//		};
-//
-//		workGroup.checkExpirationDate(require, date);
-//	}
+	@Test
+	public void testPublic2_2() {
+
+		frameSettingList.add(
+				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY"), EnumAdaptor.valueOf(1, UseAtr.class)));
+		frameSettingList.add(
+				new TaskFrameSetting(taskFrameNo, new TaskFrameName("DUMMY1"), EnumAdaptor.valueOf(0, UseAtr.class)));
+
+		WorkGroup workGroup = WorkGroup.create("WorkCode", null, null, null, null);
+
+		Task task = new Task(new TaskCode("Code"), taskFrameNo, null, new ArrayList<>(), new DatePeriod(date, date),
+				null);
+
+		TaskFrameUsageSetting taskFrameUsageSetting = new TaskFrameUsageSetting(frameSettingList);
+
+		new Expectations() {
+			{
+				require.getTask(taskFrameNo, code);
+				result = Optional.of(task);
+			}
+		};
+
+		workGroup.checkExpirationDate(require, date);
+	}
 
 	// if(!this.workCD1.v().equals(workGroup.getWorkCD1().v()))
 	@Test

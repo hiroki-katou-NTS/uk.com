@@ -163,6 +163,7 @@ public class RegisterWorkContentHandler {
 						count.set(newNo);
 					}
 					result = count.getAndIncrement();
+					break;
 				}
 			}
 		}

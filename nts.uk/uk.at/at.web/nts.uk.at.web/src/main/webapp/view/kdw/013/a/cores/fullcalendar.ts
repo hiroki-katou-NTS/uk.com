@@ -1484,7 +1484,38 @@ module nts.uk.ui.at.kdw013.calendar {
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
                 const data = ko.unwrap(params.$datas);
                 const startDate =  moment(_.get(data,'workCorrectionStartDate'));
-                const events = ko.unwrap<EventRaw[]>(params.events);
+                let events = ko.unwrap<EventRaw[]>(params.events);
+                
+                const isDuplicated = _.uniqBy(events, 'extendedProps.supportFrameNo').length < events.length;
+                if (isDuplicated) {
+                    let selectedEvent = events[0];
+                    let {extendedProps } = selectedEvent;
+                    let {employeeId,
+                        id,
+                        remarks,
+                        status,
+                        supportFrameNo,
+                        workCD1,
+                        workCD2,
+                        workCD3,
+                        workCD4,
+                        workCD5,
+                        workLocationCD} = extendedProps;
+                    selectedEvent.extendedProps = {
+                        employeeId,
+                        id,
+                        remarks,
+                        status,
+                        supportFrameNo : null,
+                        workCD1,
+                        workCD2,
+                        workCD3,
+                        workCD4,
+                        workCD5,
+                        workLocationCD
+                    };
+
+                }
                 let mapppedEvents =    _.chain(events)
                     .filter(({ extendedProps }) => extendedProps.status !== 'delete')
                     .map((e) => ({
@@ -1994,7 +2025,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         });
                     }
                     $('#edit').focus();
-                },
+                }
+                ,
                 eventDragStart: (arg: EventDragStartArg) => {
                     const { event } = arg;
                     const {
@@ -2014,6 +2046,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     // copy event by drag
                     if (ko.unwrap<boolean>(dataEvent.shift)) {
+                        
                         updateEvents();
                     }
 
@@ -3234,38 +3267,53 @@ module nts.uk.ui.at.kdw013.calendar {
                             <tr>
                                 <td style='width:' data-bind="i18n: 'KDW013_13'"></td>
                                 <td>
-                                    <select class="nts-input" data-bind="
-                                            value: $component.params.firstDay,
-                                            options: $component.firstDays,
-                                            optionsText: 'title',
-                                            optionsValue: 'id'
-                                        ">
-                                    </select>
+                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                        width:'85px',
+                                        options: $component.firstDays,
+                                        optionsValue: 'id',
+                                        visibleItemsCount: 20,
+                                        value: $component.params.firstDay,
+                                        optionsText: 'title',
+                                        editable: false,
+                                        required: false,
+                                        selectFirstIfNull: false,
+                                        dropDownAttachedToBody: false,
+                                        columns: [{ prop: 'title', length: 2 }]}" >
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_14'"></td>
                                 <td>
-                                <select data-bind="
-                                        value: $component.params.scrollTime,
+                                <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                        width:'85px',
                                         options: $component.timeList,
-                                        optionsText: 'text',
                                         optionsValue: 'value',
-                                        visibleItemsCount:5
-                                    ">
-                                </select>
+                                        visibleItemsCount: 7,
+                                        value: $component.params.scrollTime,
+                                        optionsText: 'text',
+                                        editable: false,
+                                        required: false,
+                                        selectFirstIfNull: false,
+                                        dropDownAttachedToBody: false,
+                                        columns: [{ prop: 'text', length: 2 }]}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td data-bind="i18n: 'KDW013_15'"></td>
                                 <td>
-                                    <select class="nts-input" data-bind="
-                                            value: $component.params.slotDuration,
-                                            options: $component.slotDurations,
-                                            optionsText: 'title',
-                                            optionsValue: 'id'
-                                        ">
-                                    </select>
+                                    <div style="margin-left: 15px;" data-bind="ntsComboBox: {
+                                        width:'85px',
+                                        options: $component.slotDurations,
+                                        optionsValue: 'id',
+                                        visibleItemsCount: 20,
+                                        value: $component.params.slotDuration,
+                                        optionsText: 'title',
+                                        editable: false,
+                                        required: false,
+                                        selectFirstIfNull: false,
+                                        dropDownAttachedToBody: false,
+                                        columns: [{ prop: 'title', length: 2 }]}" >
                                 </td>
                             </tr>
                         </tbody>

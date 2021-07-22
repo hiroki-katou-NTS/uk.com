@@ -733,7 +733,7 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                taskList2(getmapperList(data, ko.unwrap(vm.task2)));
+                                taskList2(getmapperList(data, ko.unwrap(task2)));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
@@ -760,7 +760,7 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                taskList3(getmapperList(data, ko.unwrap(vm.task3)));
+                                taskList3(getmapperList(data, ko.unwrap(task3)));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
@@ -788,7 +788,7 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                taskList4(getmapperList(data, ko.unwrap(vm.task4)));
+                                taskList4(getmapperList(data, ko.unwrap(task4)));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }
@@ -815,7 +815,7 @@ module nts.uk.ui.at.kdw013.c {
                             .$blockui('grayoutView')
                             .then(() => vm.$ajax('at', API.SELECT, params))
                             .then((data: TaskDto[]) => {
-                                taskList5(getmapperList(data, ko.unwrap(vm.task5)));
+                                taskList5(getmapperList(data, ko.unwrap(task5)));
                             })
                             .always(() => vm.$blockui('clearView'));
                     }

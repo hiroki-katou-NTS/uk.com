@@ -51,20 +51,15 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	// createEditState => Insert
 	@Test
 	public void test2() {
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
 
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(1);
-		atendentceIds.add(2);
-		atendentceIds.add(3);
 
 		new Expectations() {
 			{
 				require.findOuenWorkTimeSheetOfDaily(empId, ymd);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
-				result = editStateOfDailyPerformance;
 			}
 		};
 
@@ -78,7 +73,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
@@ -119,7 +114,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
@@ -133,13 +128,8 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 	// return require.編集状態を追加する($日別実績の編集状態) [prv-1]
 	@Test
 	public void test4() {
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(1);
-		atendentceIds.add(2);
-		atendentceIds.add(3);
 
 		OuenWorkTimeSheetOfDaily ouenWorkTime = OuenWorkTimeSheetOfDaily.create(empId, ymd, ouenWorkTimeSheetOfDailys);
 
@@ -151,7 +141,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				result = Optional.of(ouenWorkTime);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
-				result = editStateOfDailyPerformance;
 			}
 		};
 
@@ -165,7 +154,7 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 
 		OuenWorkTimeSheetOfDaily domain = new OuenWorkTimeSheetOfDaily(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AtomTask atomtask = RegisterOuenWorkTimeSheetOfDailyService.register(require, empId, ymd,
@@ -186,18 +175,14 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 						Optional.empty(), Optional.empty()),
 				null);
 
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
-		this.editStateOfDailyPerformance.add(editStateOfDaily);
 		this.ouenWorkTimeSheetOfDailys.add(attendance);
 
 		List<Integer> atendentceIds = new ArrayList<>();
 		atendentceIds.add(1);
-		atendentceIds.add(2);
-		atendentceIds.add(3);
 
 		OuenWorkTimeSheetOfDaily ouenWorkTime = OuenWorkTimeSheetOfDaily.create(empId, ymd, ouenWorkTimeSheetOfDailys);
 
-		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 0, ymd,
+		EditStateOfDailyPerformance domain1 = new EditStateOfDailyPerformance(empId, 1, ymd,
 				EnumAdaptor.valueOf(1, EditStateSetting.class));
 
 		AttendanceItemToChange attendanceItemToChange = new AttendanceItemToChange(atendentceIds, ouenWorkTime);
@@ -208,7 +193,6 @@ public class RegisterOuenWorkTimeSheetOfDailyServiceTest {
 				result = Optional.of(ouenWorkTime);
 
 				require.getEditStateOfDailyPerformance(empId, ymd);
-				result = editStateOfDailyPerformance;
 			}
 		};
 

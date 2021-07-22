@@ -113,19 +113,19 @@ public class ReflectSupportStartEndTest {
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(939, 931));
 
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkNo()).isEqualTo(2);// 応援勤務枠No
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getStart().get().getTimeWithDay().get().v())
-//				.isEqualTo(666);// 時刻
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getStart().get().getReasonTimeChange()
-//				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
-//				.isEqualTo("lo");// 勤務場所コード
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId().v())
-//				.isEqualTo("wplId");// 職場
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkNo().v()).isEqualTo(2);// 応援勤務枠No
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getStart().get().getTimeWithDay().get().v())
+				.isEqualTo(666);// 時刻
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getStart().get().getReasonTimeChange()
+				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
+				.isEqualTo("lo");// 勤務場所コード
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId().v())
+				.isEqualTo("wplId");// 職場
 	}
 	
 	/*
@@ -200,18 +200,18 @@ public class ReflectSupportStartEndTest {
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(940, 931));
 
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkNo()).isEqualTo(2);// 応援勤務枠No
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getEnd().get().getTimeWithDay().get().v())
-//				.isEqualTo(666);// 時刻
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getEnd().get().getReasonTimeChange()
-//				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
-//				.isEqualTo("lo");// 勤務場所コード
-//
-//		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId().v())
-//				.isEqualTo("wplId");// 職場
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkNo().v()).isEqualTo(2);// 応援勤務枠No
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getEnd().get().getTimeWithDay().get().v())
+				.isEqualTo(666);// 時刻
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getTimeSheet().getEnd().get().getReasonTimeChange()
+				.getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);// 時刻変更手段
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkLocationCD().get().v())
+				.isEqualTo("lo");// 勤務場所コード
+
+		assertThat(dailyApp.getOuenTimeSheet().get(1).getWorkContent().getWorkplace().getWorkplaceId().v())
+				.isEqualTo("wplId");// 職場
 	}
 }
