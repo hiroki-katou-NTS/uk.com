@@ -21,8 +21,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
         isDelete: KnockoutObservable<boolean> = ko.observable(false);
 
         //ComboBOx RollType
-        listNewRole: Array<any>; //A41
-        listRoleType: KnockoutObservableArray<RollType>;
+        listRoleType: KnockoutObservableArray<RollType> = ko.observableArray([]);
         selectedRoleType: KnockoutObservable<string>;
 
         //list Roll
@@ -61,8 +60,15 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.isRequired = ko.observable(true);
             self.selectFirstIfNull = ko.observable(true);
 
-
-            self.listRoleType = ko.observableArray([]);
+            // Set data A4_2
+            self.listRoleType = ko.observableArray([
+                new RollType('1', nts.uk.resource.getText("CAS013_26")),
+                new RollType('2', nts.uk.resource.getText("CAS013_27")),
+                new RollType('3', nts.uk.resource.getText("CAS013_28")),
+                new RollType('4', nts.uk.resource.getText("CAS013_29")),
+                new RollType('5', nts.uk.resource.getText("CAS013_30")),
+                new RollType('6', nts.uk.resource.getText("CAS013_31")),
+                ]);
             self.listRole = ko.observableArray([]);
             self.selectedRoleType = ko.observable('');
             self.selectedRole = ko.observable('');
@@ -77,39 +83,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 {headerText: nts.uk.resource.getText("CAS013_15"), key: 'loginId', width: 120},
                 {headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120},
                 {headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 210},
-            ]);
-            //A41
-            self.listNewRole = ([
-                {
-                    description: nts.uk.resource.getText("CAS013_26"),
-                    nameId: nts.uk.resource.getText("CAS013_26"),
-                    value: 1
-                },
-                {
-                    description: nts.uk.resource.getText("CAS013_27"),
-                    nameId: nts.uk.resource.getText("CAS013_27"),
-                    value: 2
-                },
-                {
-                    description: nts.uk.resource.getText("CAS013_28"),
-                    nameId: nts.uk.resource.getText("CAS013_28"),
-                    value: 3
-                },
-                {
-                    description: nts.uk.resource.getText("CAS013_29"),
-                    nameId: nts.uk.resource.getText("CAS013_29"),
-                    value: 4
-                },
-                {
-                    description: nts.uk.resource.getText("CAS013_30"),
-                    nameId: nts.uk.resource.getText("CAS013_30"),
-                    value: 5
-                },
-                {
-                    description: nts.uk.resource.getText("CAS013_31"),
-                    nameId: nts.uk.resource.getText("CAS013_31"),
-                    value: 6
-                },
             ]);
             self.selectedRoleIndividual = ko.observable('');
             self.loginID = ko.observable('');
@@ -164,8 +137,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     if(nts.uk.util.isNullOrUndefined(data)){
                         self.backToTopPage();
                     }else{
-                        //A41
-                        self.listRoleType(self.listNewRole);
+                        //A41_2
+                        self.listRoleType();
                         self.selectedRoleType(data[0].value);
                     }
                 }else{
@@ -386,16 +359,14 @@ module nts.uk.com.view.cas013.a.viewmodel {
     }
 
 
-
+    // Use form for A4_2
     class RollType {
         value: string;
-        nameId: string;
-        description: string;
+        name: string;
 
-        constructor(value: string, nameId: string, description: string) {
+        constructor(value: string, name: string) {
             this.value = value;
-            this.nameId = nameId;
-            this.description = description;
+            this.name = name;
         }
     }
     class Role {

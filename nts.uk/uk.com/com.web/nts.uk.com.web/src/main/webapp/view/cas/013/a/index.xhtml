@@ -43,11 +43,11 @@
                                      data-bind="ntsComboBox: {
 							options: listRoleType,
 							optionsValue: 'value',
+							optionsText: 'name',
 							value: selectedRoleType,
-							optionsText: 'nameId',
+							visibleItemsCount:6,
 							columns: [
-								{ prop: 'description', length: 10 },
-								{ prop: 'name', length: 10 }
+								{ prop: 'name', length: 6 }
 							]}"></div>
                             </div>
                             <div class="valign-center control-group">
