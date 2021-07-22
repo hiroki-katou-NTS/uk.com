@@ -175,7 +175,6 @@ module nts.uk.at.kha003.d {
                 for (let i = 1; i <= childHierarchyList.length; i++) {
                     let subArray = [];
                     let level2 = childHierarchyList[i - 1];
-                    subArray.push(new Content(""))
                     subArray.push(new Content(!isPrintNameLv1 ? level1.displayInfo.name : ""))
                     subArray.push(new Content(level2.displayInfo.name))
                     isPrintNameLv1 = true;
@@ -188,7 +187,7 @@ module nts.uk.at.kha003.d {
                     vm.contents.push(subArray);
                 }
                 if (isDispTotal) {
-                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit));
+                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit, 2));
                 }
             }
             if (isDispTotal) {
@@ -234,11 +233,11 @@ module nts.uk.at.kha003.d {
 
                     }
                     if (isDispTotal) {
-                        vm.contents.push(vm.printTotalByVerticalOfEachLevel(level2, maxDateRange, dispFormat, unit));
+                        vm.contents.push(vm.printTotalByVerticalOfEachLevel(level2, maxDateRange, dispFormat, unit, 3));
                     }
                 }
                 if (isDispTotal) {
-                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit));
+                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit, 3));
                 }
             }
             if (isDispTotal) {
@@ -246,8 +245,8 @@ module nts.uk.at.kha003.d {
             }
         }
 
-        isSpan(value:any):boolean{
-            if(value === "col_span"){
+        isSpan(value: any): boolean {
+            if (value === "col_span") {
                 return true;
             }
             return false;
@@ -261,12 +260,24 @@ module nts.uk.at.kha003.d {
          * @param dispFormat
          * @param unit
          */
-        printTotalByVerticalOfEachLevel(summaryItemDetail: any, maxDateRange: any, dispFormat: any, unit: any): any {
+        printTotalByVerticalOfEachLevel(summaryItemDetail: any, maxDateRange: any, dispFormat: any, unit: any, level: any): any {
             let vm = this;
             let subArray = [];
-            subArray.push(new Content(""));
-            subArray.push(new Content(summaryItemDetail.displayInfo.name + vm.$i18n("KHA003_100")));
-            subArray.push(new Content(""));
+            switch (level) {
+                case 1:
+                    break;
+                case 2:
+                    subArray.push(new Content(summaryItemDetail.displayInfo.name + vm.$i18n("KHA003_100")));
+                    subArray.push(new Content(""));
+                    break;
+                case 3:
+                    subArray.push(new Content(""));
+                    subArray.push(new Content(summaryItemDetail.displayInfo.name + vm.$i18n("KHA003_100")));
+                    subArray.push(new Content(""));
+                    break;
+                case 4:
+                    break;
+            }
             for (let verticalItem of summaryItemDetail.verticalTotalList) {
                 subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
             }
@@ -317,15 +328,15 @@ module nts.uk.at.kha003.d {
                             vm.contents.push(subArray);
                         }
                         if (isDispTotal) {
-                            vm.contents.push(vm.printTotalByVerticalOfEachLevel(level3, maxDateRange, dispFormat, unit));
+                            vm.contents.push(vm.printTotalByVerticalOfEachLevel(level3, maxDateRange, dispFormat, unit, 4));
                         }
                     }
                     if (isDispTotal) {
-                        vm.contents.push(vm.printTotalByVerticalOfEachLevel(level2, maxDateRange, dispFormat, unit));
+                        vm.contents.push(vm.printTotalByVerticalOfEachLevel(level2, maxDateRange, dispFormat, unit, 4));
                     }
                 }
                 if (isDispTotal) {
-                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit));
+                    vm.contents.push(vm.printTotalByVerticalOfEachLevel(level1, maxDateRange, dispFormat, unit, 4));
                 }
             }
             if (isDispTotal) {
@@ -347,7 +358,7 @@ module nts.uk.at.kha003.d {
             subArray.push(new Content(vm.$i18n("KHA003_99")));
             subArray.push(new Content(""));
             subArray.push(new Content(""));
-            for (let verticalItem of outputContent.verticalTotalList) {
+            for (let verticalItem of outputContent.verticalTotalValues) {
                 subArray.push(new Content(vm.formatValue(verticalItem.workingHours, dispFormat)));
             }
             subArray.push(new Content(vm.formatValue(outputContent.totalPeriod, dispFormat)));
