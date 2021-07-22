@@ -4,6 +4,7 @@ module nts.uk.at.view.kdr003.a {
     import common = nts.uk.at.view.kdr003.common;
     const PATH = {
         exportExcelPDF: 'at/function/holidayconfirmationtable/export',
+        getClosurePeriod: "ctx/at/shared/workrule/closure/get-current-closure-period-by-logged-in-employee"
     };
 
     @bean()
@@ -57,15 +58,29 @@ module nts.uk.at.view.kdr003.a {
         constructor(params: any) {
             super();
             const vm = this;
+            vm.$window.storage("KDR003_OPTIONS").done(options => {
+                if (options) {
+                    vm.moreSubstituteHolidaysThanHolidays(options.moreSubstituteHolidaysThanHolidays);
+                    vm.moreHolidaysThanSubstituteHolidays(options.moreHolidaysThanSubstituteHolidays);
+                    vm.howToPrintDate(options.howToPrintDate);
+                    vm.pageBreakSpecification(options.pageBreakSpecification);
+                }
+            });
             //パラメータ.就業担当者であるか = true || false
             vm.isWorker(vm.$user.role.isInCharge.attendance);
             vm.getItemSelection();
-            vm.CCG001_load();
-            vm.KCP005_load();
+            vm.$ajax("at", PATH.getClosurePeriod).done(data => {
+                vm.CCG001_load(data);
+                vm.KCP005_load();
+            }).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
-
         created(params: any) {
             const vm = this;
+
         }
 
         mounted() {
@@ -74,9 +89,10 @@ module nts.uk.at.view.kdr003.a {
             $('#btnExportExcel').focus();
         }
 
-        CCG001_load() {
+        CCG001_load(period: any) {
             const vm = this;
             // Set component option
+            let date = moment.utc(period.endDate, "YYYY/MM/DD").toISOString()
             vm.ccg001ComponentOption = {
                 /** Common properties */
                 systemType: 2, //システム区分 - 2: 就業
@@ -85,12 +101,12 @@ module nts.uk.at.view.kdr003.a {
                 showAdvancedSearchTab: true, //詳細検索
                 showBaseDate: true, //基準日利用
                 showClosure: true,
-                showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）
+                showAllClosure: true, //氏名の種類	-> ビジネスネーム（日本語）
                 showPeriod: false, //対象期間利用
                 periodFormatYM: false,
 
                 /** Required parameter */
-                baseDate: moment().toISOString(), //基準日
+                baseDate: date, //基準日
                 inService: true, //在職区分 = 対象
                 leaveOfAbsence: true, //休職区分 = 対象
                 closed: true, //休業区分 = 対象
@@ -112,6 +128,7 @@ module nts.uk.at.view.kdr003.a {
                 showJobTitle: true,// 職位条件
                 showWorktype: true,// 勤種条件
                 isMutipleCheck: true,// 選択モード
+
                 tabindex: -1,
                 returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
                     vm.closureId(data.closureId);
@@ -228,8 +245,13 @@ module nts.uk.at.view.kdr003.a {
                 }
                 return;
             }
-
             //save conditions
+            vm.$window.storage("KDR003_OPTIONS", {
+                moreSubstituteHolidaysThanHolidays: vm.moreSubstituteHolidaysThanHolidays(),
+                moreHolidaysThanSubstituteHolidays: vm.moreHolidaysThanSubstituteHolidays(),
+                howToPrintDate: vm.howToPrintDate(),
+                pageBreakSpecification: vm.pageBreakSpecification()
+            });
             let multiSelectedCode: Array<string> = vm.multiSelectedCode();
             let lstEmployeeIds: Array<string> = [];
             _.forEach(multiSelectedCode, (employeeCode) => {
