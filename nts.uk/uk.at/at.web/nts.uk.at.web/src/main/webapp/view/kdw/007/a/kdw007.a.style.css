@@ -83,3 +83,7 @@ div[id^="tab"] {
 .d-flex {
 	display: flex;
 }
+
+.tabs-list {
+	padding: 7px !important;	
+}
