@@ -58,7 +58,7 @@ public class GetDailyPerformanceData {
 				for (OuenWorkTimeSheetOfDailyAttendance ouenSheet : interDaily.getOuenTimeSheet()) {
 					
 					Optional<OuenWorkTimeOfDailyAttendance> ouentime = interDaily.getOuenTime().stream()
-							.filter(x -> x.getWorkNo() == ouenSheet.getWorkNo()).findFirst();
+							.filter(x -> x.getWorkNo().v().equals(ouenSheet.getWorkNo().v())).findFirst();
 					
 					WorkDetailsParam workDetailsParam = new WorkDetailsParam(
 							new SupportFrameNo(ouenSheet.getWorkNo().v()),

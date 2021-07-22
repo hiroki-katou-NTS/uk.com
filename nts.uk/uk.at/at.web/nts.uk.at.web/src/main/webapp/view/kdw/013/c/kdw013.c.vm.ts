@@ -96,7 +96,8 @@ module nts.uk.ui.at.kdw013.c {
         descriptions: ko.observable(''),
         timeRange: ko.observable({
             start: null,
-            end: null
+            end: null,
+            workingHours: null
         }),
         workplace: ko.observable(''),
         task1: ko.observable(''),
@@ -614,7 +615,8 @@ module nts.uk.ui.at.kdw013.c {
                                 workCD2,
                                 workCD3,
                                 workCD4,
-                                workCD5
+                                workCD5,
+                                workingHours
                             } = extendedProps;
                             const startTime = getTimeOfDate(start);
                             const endTime = getTimeOfDate(end);
@@ -1173,6 +1175,7 @@ module nts.uk.ui.at.kdw013.c {
                             event.setExtendedProp('workLocationCD', ko.unwrap(workplace));
 
                             event.setExtendedProp('remarks', descriptions());
+                            event.setExtendedProp('workingHours', tr.end - tr.start);
                         }
 
                         // close popup

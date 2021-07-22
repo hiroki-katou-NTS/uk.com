@@ -182,7 +182,7 @@ module nts.uk.ui.at.kdw013.a {
                                         }) => {
                                             const $date = moment(date, DATE_FORMAT).toDate();
 
-                                            const { end, start } = timeZone;
+                                            const { end, start, workingHours } = timeZone;
                                             const {
                                                 workCD1,
                                                 workCD2,
@@ -220,7 +220,8 @@ module nts.uk.ui.at.kdw013.a {
                                                     workCD3,
                                                     workCD4,
                                                     workCD5,
-                                                    workLocationCD
+                                                    workLocationCD,
+                                                    workingHours
                                                 } as any
                                             };
                                         })

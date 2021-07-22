@@ -55,6 +55,7 @@ module nts.uk.ui.at.kdw013.calendar {
             workCD5: string;
             workLocationCD: string;
             remarks: string;
+            workingHours:number;
         };
     };
 
@@ -1053,7 +1054,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                         displayInfo,
                                         expirationEndDate,
                                         expirationStartDate,
-                                        childTaskList
+                                        childTaskList,
+                                        workingHours
                                     } = task;
 
                                     return {
@@ -1077,7 +1079,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                             workCD3,
                                             workCD4,
                                             workCD5,
-                                            remarks: ''
+                                            remarks: '',
+                                            workingHours
                                         } as any
                                     };
                                 })
@@ -1500,7 +1503,9 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD3,
                         workCD4,
                         workCD5,
-                        workLocationCD} = extendedProps;
+                        workLocationCD,
+                        workingHours
+                        } = extendedProps;
                     selectedEvent.extendedProps = {
                         employeeId,
                         id,
@@ -1512,7 +1517,8 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD3,
                         workCD4,
                         workCD5,
-                        workLocationCD
+                        workLocationCD,
+                        workingHours
                     };
 
                 }
