@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -167,8 +168,11 @@ public class GetActualOfShift {
 		private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
-				rs.put(k, s);
+				Set<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream()
+						.map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(
+								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
+								new EmployeeLeaveJobPeriodImport(i.getEmpID(), new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end())))).collect(Collectors.toSet()) ;
+				rs.put(k, s.stream().collect(Collectors.toList()));
 			});
 			return rs;
 		}
