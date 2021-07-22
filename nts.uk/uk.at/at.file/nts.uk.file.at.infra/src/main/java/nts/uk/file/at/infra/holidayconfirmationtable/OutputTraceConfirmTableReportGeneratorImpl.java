@@ -76,7 +76,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         }
     }
 
-    
+
     private void setPageHeader(AsposeCellsReportContext reportContext, OutputTraceConfirmTableDataSource dataSource, String menuName) {
         reportContext.setHeader(0, "&7&\"MS ゴシック\"" + dataSource.getCompanyInfo().getCompanyName());
         reportContext.setHeader(1, "&12&\"MS ゴシック,Bold\"" + menuName);
@@ -138,12 +138,6 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             count++;
 
             for (DisplayContentsOfSubLeaveConfirmationTable content : contents) {
-                if (dataSource.isLinking() && content.getObservationOfExitLeave().isPresent()) {
-                    // print linked content
-                    content.getObservationOfExitLeave().get().getListTyingInformation().sort(Comparator.comparing(LinkingInformation::getOccurrenceDate));
-                    int col = 9;
-                    int size = content.getObservationOfExitLeave().get().getListTyingInformation().size();
-                    int loops = size / 10 + 1;
 
                     // page break by employee
                     if (dataSource.getQuery().getPageBreak() == 1) {
@@ -166,7 +160,12 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                         }
                         count = 1;
                     }
-
+                if (dataSource.isLinking()) {
+                    // print linked content
+                    content.getObservationOfExitLeave().get().getListTyingInformation().sort(Comparator.comparing(LinkingInformation::getOccurrenceDate));
+                    int col = 9;
+                    int size = content.getObservationOfExitLeave().get().getListTyingInformation().size();
+                    int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
                     for (int loop = 0; loop < loops; loop++) {
                         cells.insertRows(row, 2);
                         try {
@@ -223,7 +222,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
                 int col = 9;
                 int size = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().size();
-                int loops = size / 10 + 1;
+                int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
 
                 for (int loop = 0; loop < loops; loop++) {
                     cells.insertRows(row, 2);
@@ -313,16 +312,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             remainingFont.setColor(Color.getRed());
             cells.get(row, COLUMN_REMAINING).setStyle(remainingStyle);
         }
-
         cells.get(row, COLUMN_UNDIGESTED).setValue(String.format("%.1f", undeterminedNumber));
-        if (undeterminedNumber!=null && undeterminedNumber < 0) {
+        if (undeterminedNumber!=null && undeterminedNumber != 0) {
             Style remainingStyle = cells.get(row, COLUMN_UNDIGESTED).getStyle();
             Font remainingFont = remainingStyle.getFont();
             remainingFont.setColor(Color.getRed());
             cells.get(row, COLUMN_UNDIGESTED).setStyle(remainingStyle);
         }
     }
-
     /**
      *
      * @param date
