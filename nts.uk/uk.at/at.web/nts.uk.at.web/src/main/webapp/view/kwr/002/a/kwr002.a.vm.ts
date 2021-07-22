@@ -132,7 +132,7 @@ module nts.uk.com.view.kwr002.a {
 
                     tabindex: -1,
                     /** Common properties */
-                    systemType: 1, // システム区分
+                    systemType: 2, // システム区分
                     showEmployeeSelection: false, // 検索タイプ
                     showQuickSearchTab: true, // クイック検索
                     showAdvancedSearchTab: true, // 詳細検索
