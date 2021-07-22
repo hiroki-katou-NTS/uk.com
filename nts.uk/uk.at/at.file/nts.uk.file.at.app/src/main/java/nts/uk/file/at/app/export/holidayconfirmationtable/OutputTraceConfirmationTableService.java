@@ -134,14 +134,14 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
                     && comSubstVacation.getLinkingManagementATR() == ManageDistinct.YES) {
                 mngUnit = 1;
                 linkingMng = true;
-            } else if (comSubstVacation.getIsManaged() != ManageDistinct.YES
+            } else if (comSubstVacation.getIsManaged() == ManageDistinct.YES
                     && comSubstVacation.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.NO
                     && comSubstVacation.getLinkingManagementATR() == ManageDistinct.NO) {
                 mngUnit = 1;
                 linkingMng = false;
 
-            } else if (comSubstVacation.getIsManaged() != ManageDistinct.YES
-                    && comSubstVacation.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.NO) {
+            } else if (comSubstVacation.getIsManaged() == ManageDistinct.YES
+                    && comSubstVacation.getCompensatoryDigestiveTimeUnit().getIsManageByTime() == ManageDistinct.YES) {
                 mngUnit = 2;
                 linkingMng = false;
             }
