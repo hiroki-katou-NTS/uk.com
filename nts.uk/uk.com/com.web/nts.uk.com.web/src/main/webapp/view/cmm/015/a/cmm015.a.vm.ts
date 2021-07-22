@@ -269,7 +269,7 @@ module cmm015.a.viewmodel {
                         if (output) {
                             const index = _.findIndex(vm.tableDatasDest(), (item: DataTable) => item.id === employeeID);
                             const data: DataTable = vm.tableDatasDest()[index];
-                            if (vm.uiProcess20(data.jtID, output)) return;
+                            if (vm.isDuplicateId(data.jtID, output)) return;
 
                             vm.$blockui('grayout');
                             // 職位異動の登録をする
@@ -430,11 +430,10 @@ module cmm015.a.viewmodel {
          */
         onClickRegister() {
             const vm = this;
-            if (vm.uiProcess14()) {
+            if (vm.isEmptySelectedSource()) {
                 return;
             }
             // UI処理[18]
-            // $('#A9 tr').children().css({ color: ''})
             _.map(vm.tableDatasSource(), i => i.cssWKP = '');
             vm.tableDatasSource.valueHasMutated();
 
@@ -458,7 +457,7 @@ module cmm015.a.viewmodel {
                         vm.$dialog
                             .error({ messageId: 'Msg_102' })
                             .then(() => ifNotErrors());
-                        vm.uiProcess17(errorList);
+                        vm.changeColorWhenError(errorList);
                     }
 
                     // If not has errors
@@ -560,7 +559,7 @@ module cmm015.a.viewmodel {
             return dfd.promise();
         }
 
-        uiProcess02() {
+        showMessageApprove() {
             const vm = this;
             //List<承認ルート状況>
             const approvalRoutes = vm.transfereeOnApproved().approvalRoutes;
@@ -610,7 +609,7 @@ module cmm015.a.viewmodel {
             }
         }
 
-        uiProcess14(): boolean {
+        isEmptySelectedSource(): boolean {
             const vm = this;
             if (_.isEmpty(vm.currentCodeListSource())) {
                 vm.$dialog.error({ messageId: 'Msg_2107' });
@@ -619,18 +618,17 @@ module cmm015.a.viewmodel {
             return false;
         }
 
-        uiProcess17(errorList: string[]) {
+        changeColorWhenError(errorList: string[]) {
             const vm = this;
             _.map(vm.tableDatasSource(), j => {
                 if (_.includes(errorList, j.id)) {
                     j.cssWKP = `${ERRORSCODE} !important`;
                 }
             });
-            // $(`#A9 [data-id="${i}"]`).children().css({color: ERRORSCODE})
             vm.tableDatasSource.valueHasMutated();
         }
 
-        uiProcess20(jtID: string, newID: string): boolean {
+        isDuplicateId(jtID: string, newID: string): boolean {
             const vm = this;
             if(jtID === newID) {
                 vm.$dialog.error({ messageId: 'Msg_2120' });
@@ -713,7 +711,7 @@ module cmm015.a.viewmodel {
                 .$ajax('com', API.transOnApproved, { sids, baseDate })
                 .then((res:TransfereeOnApproved) => {
                     vm.transfereeOnApproved(res);
-                    vm.uiProcess02();
+                    vm.showMessageApprove();
                     dfd.resolve();
                 })
                 .fail(err => {
