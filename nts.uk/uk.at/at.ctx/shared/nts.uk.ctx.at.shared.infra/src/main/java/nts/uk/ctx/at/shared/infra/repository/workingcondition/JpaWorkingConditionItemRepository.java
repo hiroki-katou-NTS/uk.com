@@ -426,7 +426,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 	public void add(WorkingConditionItem item) {
 		KshmtWorkcondHistItem entity = new KshmtWorkcondHistItem();
 		//item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
-		toEntity(item, entity);
+		toEntity(item, entity, false);
 		this.commandProxy().insert(entity);
 	}
 	
@@ -445,7 +445,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		KshmtWorkcondHistItem entity = optEntity.get();
 
-		toEntity(item, entity);
+		toEntity(item, entity, false);
 		
 		//item.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 		
@@ -462,7 +462,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 
 		KshmtWorkcondHistItem entity = optEntity.get();
 
-		toEntity(item, entity);
+		toEntity(item, entity, true);
 		
 		//item.saveToMemento(new JpaWorkingConditionItem2SetMemento(entity));
 
@@ -973,7 +973,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		List<KshmtWorkcondHistItem> entities = new ArrayList<>();
 		items.stream().forEach(c ->{
 			KshmtWorkcondHistItem entity = new KshmtWorkcondHistItem();
-			toEntity(c, entity);
+			toEntity(c, entity, false);
 			//c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 			entities.add(entity);
 		});
@@ -991,7 +991,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			List<KshmtWorkcondHistItem> entities = this.getByHistIds(histIds);
 			items.stream().forEach(c ->{
 				KshmtWorkcondHistItem entity = entities.stream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
-				toEntity(c, entity);
+				toEntity(c, entity, false);
 				//c.saveToMemento(new JpaWorkingConditionItem2SetMemento(entity));
 				updateLst.add(entity);
 				
@@ -1011,7 +1011,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			List<KshmtWorkcondHistItem> entities = this.getByHistIds(histIds);
 			items.stream().forEach(c ->{
 				KshmtWorkcondHistItem entity = entities.stream().filter(item -> item.getHistoryId().equals(c.getHistoryId())).findFirst().get();
-				toEntity(c, entity);
+				toEntity(c, entity, true);
 				//c.saveToMemento(new JpaWorkingConditionItemSetMemento(entity));
 				updateLst.add(entity);
 				
@@ -1205,8 +1205,12 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		
 		List<TimeZone> timeZones = new ArrayList<>();
 		if(workTs.isPresent()){
-			timeZones.add(new TimeZone(NotUseAtr.USE, 1, workTs.get().getStartTime1(), workTs.get().getEndTime1()));
-			timeZones.add(new TimeZone(NotUseAtr.USE, 2, workTs.get().getStartTime2(), workTs.get().getEndTime2()));
+			if(workTs.get().getStartTime1() != null && workTs.get().getEndTime1() != null) {
+				timeZones.add(new TimeZone(NotUseAtr.USE, 1, workTs.get().getStartTime1(), workTs.get().getEndTime1()));
+			}
+			if(workTs.get().getStartTime2() != null && workTs.get().getEndTime2() != null) {
+				timeZones.add(new TimeZone(NotUseAtr.USE, 2, workTs.get().getStartTime2(), workTs.get().getEndTime2()));
+			}	
 		}
 		return new SingleDaySchedule(timeZones, Optional.ofNullable(workTimeCode));
 		
@@ -1218,9 +1222,12 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			WorkTypeCode weekdayTimeWTypeCode = new WorkTypeCode(workInfo.getWorkingDayWorktype()); // 出勤時: 勤務種類コード
 			WorkTypeCode holidayWorkWTypeCode = new WorkTypeCode(workInfo.getHolidayWorkWorktype()); // 休日出勤時: 勤務種類コード
 			WorkTypeCode holidayTimeWTypeCode = new WorkTypeCode(workInfo.getHolidayWorktype()); // 休日時: 勤務種類コード
-			Optional<WorkTypeCode> inLawBreakTimeWTypeCode = Optional.ofNullable(new WorkTypeCode(workInfo.getLegalHolidayWorkWorktype())); // Optional 法内休出時: 勤務種類コード
-			Optional<WorkTypeCode> outsideLawBreakTimeWTypeCode = Optional.ofNullable(new WorkTypeCode(workInfo.getILegalHolidayWorkWorktype()));  // Optional 法外休出時: 勤務種類コード
-			Optional<WorkTypeCode> holidayAttendanceTimeWTypeCode = Optional.ofNullable(new WorkTypeCode(workInfo.getPublicHolidayWorkWorktype()));  // Optinal 祝日休出時: 勤務種類コード
+			Optional<WorkTypeCode> inLawBreakTimeWTypeCode = workInfo.getLegalHolidayWorkWorktype() != null ? 
+					Optional.ofNullable(new WorkTypeCode(workInfo.getLegalHolidayWorkWorktype())) : Optional.empty(); // Optional 法内休出時: 勤務種類コード
+			Optional<WorkTypeCode> outsideLawBreakTimeWTypeCode = workInfo.getILegalHolidayWorkWorktype() != null ? 
+					Optional.ofNullable(new WorkTypeCode(workInfo.getILegalHolidayWorkWorktype())) : Optional.empty();  // Optional 法外休出時: 勤務種類コード
+			Optional<WorkTypeCode> holidayAttendanceTimeWTypeCode = workInfo.getPublicHolidayWorkWorktype() != null ? 
+					Optional.ofNullable(new WorkTypeCode(workInfo.getPublicHolidayWorkWorktype())) : Optional.empty();  // Optinal 祝日休出時: 勤務種類コード
 			workType = new WorkTypeByIndividualWorkDay(weekdayTimeWTypeCode, holidayWorkWTypeCode, holidayTimeWTypeCode,
 					inLawBreakTimeWTypeCode, outsideLawBreakTimeWTypeCode, holidayAttendanceTimeWTypeCode);
 		}
@@ -1278,7 +1285,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		return new ScheduleMethod(basicCreateMethod.value, workScheduleBusCal, monthlyPatternWorkScheduleCre);
 	}
 	
-	private void toEntity(WorkingConditionItem domain, KshmtWorkcondHistItem entity){
+	private void toEntity(WorkingConditionItem domain, KshmtWorkcondHistItem entity, boolean isWorkCond2){
 		// KSHMT_WORKCOND_HIST_ITEM
 		entity.setHistoryId(domain.getHistoryId());
 		if(domain.getHourlyPaymentAtr() != null) {
@@ -1333,7 +1340,11 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		setScheduleMethod(domain.getScheduleMethod(), entity, domain.getEmployeeId(), domain.getHistoryId());
 		
 		// KSHMT_WORKCOND_WORKINFO
-		setWorkInfo(domain.getWorkCategory(), entity, domain.getEmployeeId(), domain.getHistoryId());
+		if (!isWorkCond2) {
+			setWorkInfo(domain.getWorkCategory(), entity, domain.getEmployeeId(), domain.getHistoryId());
+		} else {
+			setWorkInfo2(domain.getWorkCategory(), entity, domain.getEmployeeId(), domain.getHistoryId());
+		}
 		
 		// KSHMT_WORKCOND_WORK_TS
 		setWorkTimeSheet(domain.getWorkCategory(), entity, domain.getEmployeeId(), domain.getHistoryId());
@@ -1409,6 +1420,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				}
 			}
 		}
+		entity.setListKshmtWorkcondWorkTs(timeSheets);
 	}
 	
 	private void setTimeZone(SingleDaySchedule singleDaySchedule, List<KshmtWorkcondWorkTs> timeSheets,
@@ -1447,6 +1459,9 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		
 		// setPk
 		KshmtWorkcondWorkInfoPK pk = workInfoEntity.getPk();
+		if (pk == null) {
+			pk = new KshmtWorkcondWorkInfoPK();
+		}
 		pk.setSid(employeeId);
 		pk.setHisId(historyId);
 		workInfoEntity.setPk(pk);
@@ -1454,11 +1469,11 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		if (workCategory.getWorkType() != null) {
 			WorkTypeByIndividualWorkDay workType = workCategory.getWorkType();
 			// WORKING_DAY_WORKTYPE
-			workInfoEntity.setWorkingDayWorktype(workType.getWeekdayTimeWTypeCode() != null ? null : workType.getWeekdayTimeWTypeCode().v());
+			workInfoEntity.setWorkingDayWorktype(workType.getWeekdayTimeWTypeCode() != null ? workType.getWeekdayTimeWTypeCode().v() : null);
 			// HOLIDAY_WORK_WORKTYPE
-			workInfoEntity.setHolidayWorkWorktype(workType.getHolidayWorkWTypeCode() != null ? null : workType.getHolidayWorkWTypeCode().v());
+			workInfoEntity.setHolidayWorkWorktype(workType.getHolidayWorkWTypeCode() != null ? workType.getHolidayWorkWTypeCode().v() : null);
 			// HOLIDAY_WORKTYPE
-			workInfoEntity.setHolidayWorktype(workType.getHolidayTimeWTypeCode() != null ? null : workType.getHolidayTimeWTypeCode().v());
+			workInfoEntity.setHolidayWorktype(workType.getHolidayTimeWTypeCode() != null ? workType.getHolidayTimeWTypeCode().v() : null);
 			// LEGAL_HOLIDAY_WORK_WORKTYPE
 			workInfoEntity.setLegalHolidayWorkWorktype((workType.getInLawBreakTimeWTypeCode().isPresent() ? workType.getInLawBreakTimeWTypeCode().get().v() : null));
 			// ILLEGAL_HOLIDAY_WORK_WORKTYPE
@@ -1511,6 +1526,60 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				workInfoEntity.setSundayWorkTime(sunday.isPresent() && sunday.get().getWorkTimeCode().isPresent() ? sunday.get().getWorkTimeCode().get().v() : null);
 			}
 		}
+		entity.setKshmtWorkcondWorkInfo(workInfoEntity);
+	}
+	
+	private void setWorkInfo2(WorkByIndividualWorkDay workCategory, KshmtWorkcondHistItem entity, String employeeId, String historyId) {
+		if (workCategory == null) {
+			return;
+		}
+
+		KshmtWorkcondWorkInfo workInfoEntity = entity.getKshmtWorkcondWorkInfo();
+		
+		if (workInfoEntity == null) {
+			return;
+		}
+		
+		// setPk
+		KshmtWorkcondWorkInfoPK pk = workInfoEntity.getPk();
+		pk.setSid(employeeId);
+		pk.setHisId(historyId);
+		workInfoEntity.setPk(pk);
+
+		PersonalWorkCategory workTime = workCategory.getWorkTime();
+		if (workTime != null) {
+			PersonalDayOfWeek dayOfWeek = workTime.getDayOfWeek();
+			if (dayOfWeek != null) {
+				// MONDAY_WORKTIME
+				Optional<SingleDaySchedule> monday = dayOfWeek.getMonday();
+				workInfoEntity.setMondayWorkTime(monday.isPresent() && monday.get().getWorkTimeCode().isPresent() ? monday.get().getWorkTimeCode().get().v() : null);
+			
+				// TUESDAY_WORKTIME
+				Optional<SingleDaySchedule> tuesday = dayOfWeek.getTuesday();
+				workInfoEntity.setTuesdayWorkTime(tuesday.isPresent() && tuesday.get().getWorkTimeCode().isPresent() ? tuesday.get().getWorkTimeCode().get().v() : null);
+			
+				// WEDNESDAY_WORKTIME
+				Optional<SingleDaySchedule> wednesday = dayOfWeek.getWednesday();
+				workInfoEntity.setWednesdayWorkTime(wednesday.isPresent() && wednesday.get().getWorkTimeCode().isPresent() ? wednesday.get().getWorkTimeCode().get().v() : null);
+			
+				// THURSDAY_WORKTIME
+				Optional<SingleDaySchedule> thursday = dayOfWeek.getThursday();
+				workInfoEntity.setThursdayWorkTime(thursday.isPresent() && thursday.get().getWorkTimeCode().isPresent() ? thursday.get().getWorkTimeCode().get().v() : null);
+				
+				// FRIDAY_WORKTIME
+				Optional<SingleDaySchedule> friday = dayOfWeek.getFriday();
+				workInfoEntity.setFridayWorkTime(friday.isPresent() && friday.get().getWorkTimeCode().isPresent() ? friday.get().getWorkTimeCode().get().v() : null);
+			
+				// SATURDAY_WORKTIME
+				Optional<SingleDaySchedule> saturday = dayOfWeek.getSaturday();
+				workInfoEntity.setSaturdayWorkTime(saturday.isPresent() && saturday.get().getWorkTimeCode().isPresent() ? saturday.get().getWorkTimeCode().get().v() : null);
+				
+				// SUNDAY_WORKTIME
+				Optional<SingleDaySchedule> sunday = dayOfWeek.getSunday();
+				workInfoEntity.setSundayWorkTime(sunday.isPresent() && sunday.get().getWorkTimeCode().isPresent() ? sunday.get().getWorkTimeCode().get().v() : null);
+			}
+		}
+		entity.setKshmtWorkcondWorkInfo(workInfoEntity);
 	}
 
 	private void setScheduleMethod(Optional<ScheduleMethod> scheduleMethodDm, KshmtWorkcondHistItem entity, String employeeId, String historyId) {
