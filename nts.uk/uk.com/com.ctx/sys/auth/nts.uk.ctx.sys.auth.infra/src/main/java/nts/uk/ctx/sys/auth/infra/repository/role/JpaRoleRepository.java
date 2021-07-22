@@ -23,7 +23,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -56,6 +55,17 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 			+ " AND e.assignAtr = :roleAtr "
 			+ " AND e.code = :roleCode ";
 
+	
+	private final static String OBTAIN_ROLE_WORK = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :cid"
+			+ " AND e.roleType = :roleType";
+	
+	private final static String GET_ROLE_WORK = "SELECT e FROM SacmtRole e"
+			+ " WHERE e.cid = :cid"
+			+ " AND e.roleId = :roleId";
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.auth.dom.role.RoleRepository#findById(java.lang.String)
 	 */
@@ -279,6 +289,35 @@ public class JpaRoleRepository extends JpaRepository implements RoleRepository {
 				.setParameter("roleCode", roleCode.v())
 				.getList();
 		return entities != null && !entities.isEmpty();
+	}
+
+	@Override
+	public List<Role> obtainRoleWorks(String cid) {
+		
+		return this.queryProxy()
+			.query(OBTAIN_ROLE_WORK, SacmtRole.class)
+			.setParameter("cid", cid)
+			.setParameter("roleType", 3) // ロール種類.就業
+			.getList()
+			.stream()
+			.map(x-> new Role(new JpaRoleGetMemento(x)))
+			.filter(x -> x.getApprovalAuthority().orElse(false))
+			.collect(Collectors.toList());		
+		
+	}
+
+	@Override
+	public Optional<Role> getRoleWorks(String cid, String eplRoleId) {
+		
+		return this.queryProxy()
+				.query(GET_ROLE_WORK, SacmtRole.class)
+				.setParameter("cid", cid)
+				.setParameter("roleId", eplRoleId) // ロール種類.就業
+				.getList()
+				.stream()
+				.map(x-> new Role(new JpaRoleGetMemento(x)))
+				.filter(x -> x.getApprovalAuthority().orElse(false))
+				.findFirst();
 	}
 
 }
