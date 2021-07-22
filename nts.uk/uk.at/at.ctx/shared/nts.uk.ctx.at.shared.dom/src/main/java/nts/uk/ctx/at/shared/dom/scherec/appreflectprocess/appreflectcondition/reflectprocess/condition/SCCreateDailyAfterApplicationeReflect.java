@@ -15,14 +15,12 @@ import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.RecruitmentAppShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.furiapp.TypeApplicationHolidaysShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.holidayworktime.AppHolidayWorkShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.optional.OptionalItemApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.overtime.AppOverTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.optional.ReflectionOptionalItemApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
@@ -31,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ti
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
  * @author thanh_nx
@@ -42,10 +41,15 @@ public class SCCreateDailyAfterApplicationeReflect {
 	public static DailyAfterAppReflectResult process(Require require, String companyId, ApplicationShare application,
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
 
-		// TODO: typeDaikyu chua co domain
+		//各申請反映条件のドメインモデルを取得する
 		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
 				application.getAppType() != ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION ? Optional.empty()
 						: Optional.of(((ApplicationForHolidaysShare) application).getTypeApplicationHolidays()));
+		
+		// 勤怠時間を存在しない場合は、全て0の値でインスタンスを作成する
+		if (!dailyApp.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			dailyApp.setAttendanceTimeOfDailyPerformance(Optional.of(AttendanceTimeOfDailyAttendance.createDefault()));
+		}
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:

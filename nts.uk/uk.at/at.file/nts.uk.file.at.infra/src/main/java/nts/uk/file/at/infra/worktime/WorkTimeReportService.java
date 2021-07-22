@@ -1370,7 +1370,7 @@ public class WorkTimeReportService {
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -1947,7 +1947,7 @@ public class WorkTimeReportService {
                  * 休憩時間帯.流動休憩設定（休憩時間の固定しない）.外出の計上方法
                  */
                 Integer useStampCalcMethod = data.getFlowWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getUseStampCalcMethod();
-                cells.get("BQ" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "外出として計上する" : "休憩として計上する");
+                cells.get("BQ" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "休憩として計上する" : "外出として計上する");
                 
                 /*
                  * R5_128
@@ -2621,7 +2621,7 @@ public class WorkTimeReportService {
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -3483,7 +3483,7 @@ public class WorkTimeReportService {
                  * 流動休憩設定（休憩時間の固定しない）.外出の計上方法
                  */
                 Integer useStampCalcMethod = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getUseStampCalcMethod();
-                cells.get("CT" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "外出として計上する" : "休憩として計上する");
+                cells.get("CT" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "休憩として計上する" : "外出として計上する");
                 
                 /*
                  * R6_168
@@ -4167,7 +4167,7 @@ public class WorkTimeReportService {
              * 育児.介護時間帯に勤務した場合の扱い
              */
             boolean nursTimezoneWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
-            cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+            cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "介護時間を減算する" : "介護時間を減算しない");
             
             // 15       タブグ:                医療
             
@@ -4480,23 +4480,23 @@ public class WorkTimeReportService {
             cells.get(startIndex, columnIndex).setValue(useCoreTimeZone);
             columnIndex++;
             
-            /*
-             * R6_77
-             * 始業時刻
-             */
-            Integer coreTimeStart = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getStartTime();
-            cells.get(startIndex, columnIndex).setValue(coreTimeStart != null ? getInDayTimeWithFormat(coreTimeStart) : "");
-            columnIndex++;
-            
-            /*
-             * R6_78
-             * 終業時刻
-             */
-            Integer coreTimeEnd = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getEndTime();
-            cells.get(startIndex, columnIndex).setValue(coreTimeEnd != null ? getInDayTimeWithFormat(coreTimeEnd) : "");
-            columnIndex++;
-            
-            if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (coreTimeZoneUsage.equals(ApplyAtr.USE.value)) {
+                /*
+                 * R6_77
+                 * 始業時刻
+                 */
+                Integer coreTimeStart = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getStartTime();
+                cells.get(startIndex, columnIndex).setValue(coreTimeStart != null ? getInDayTimeWithFormat(coreTimeStart) : "");
+                columnIndex++;
+                
+                /*
+                 * R6_78
+                 * 終業時刻
+                 */
+                Integer coreTimeEnd = data.getFlexWorkSetting().getCoreTimeSetting().getCoreTimeSheet().getEndTime();
+                cells.get(startIndex, columnIndex).setValue(coreTimeEnd != null ? getInDayTimeWithFormat(coreTimeEnd) : "");
+                columnIndex++;
+                
                 /*
                  * R6_258
                  * コアタイム内と外の外出時間を分けて集計する
@@ -4512,17 +4512,19 @@ public class WorkTimeReportService {
                 Integer deductTime = data.getFlexWorkSetting().getCoreTimeSetting().getGoOutCalc().getRemoveFromWorkTime();
                 cells.get(startIndex, columnIndex).setValue(deductTime == 1 ? "○" : "-");
                 columnIndex++;
-                
+            } else {
+                columnIndex += 4;
+            }
+           
+            if (coreTimeZoneUsage.equals(ApplyAtr.NOT_USE.value)) {
                 /*
                  * R6_79
                  * 最低勤務時間
                  */
                 Integer minWorkTime = data.getFlexWorkSetting().getCoreTimeSetting().getMinWorkTime();
                 cells.get(startIndex, columnIndex).setValue(getInDayTimeWithFormat(minWorkTime));
-                columnIndex++;
-            } else {
-                columnIndex += 3;
             }
+            columnIndex++;
         }
         
         /*
@@ -4810,7 +4812,7 @@ public class WorkTimeReportService {
             return "";
         }
         
-        String[] calculateMethods = {"マスタを参照する", "予定を参照する", "参照せずに打刻する"};
+        String[] calculateMethods = {"マスタを参照する", "参照せずに打刻する"};
         for (int i = 0; i < calculateMethods.length; i++) {
             if (calculateMethod == i) {
                 return calculateMethods[i];

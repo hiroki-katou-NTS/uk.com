@@ -1,7 +1,3 @@
-#contents-area {
-	height: auto !important;
-}
-
 #contents-area .swap-list-updown-contaier>div {
 	display: inline-block;
 }
@@ -37,7 +33,6 @@ label.ntsControl.limited-label {
 #contents-area .form-group.main>* {
 	vertical-align: top;
 }
-
-#contents-area .form-group.main>.cps003d-grid-list {
-	float: right;
+.form-label {
+  width: 90px;
 }
