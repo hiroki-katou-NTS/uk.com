@@ -64,7 +64,7 @@ public class CanApprovalOnBaseDateServiceImpl implements CanApprovalOnBaseDateSe
 			roleSetCode = roleSetGrand.get().getRoleSetCd().toString();
 		}
 		// Acquire domain model "Roll set"
-		Optional<RoleSet> roleSet = roleSetRepo.findByRoleSetCdAndCompanyId(companyId, roleSetCode.toString());
+		Optional<RoleSet> roleSet = roleSetRepo.findByRoleSetCdAndCompanyId(roleSetCode.toString(), companyId);
 		if (roleSet.isPresent()) {
 			RoleSet rs = roleSet.get();
 			
