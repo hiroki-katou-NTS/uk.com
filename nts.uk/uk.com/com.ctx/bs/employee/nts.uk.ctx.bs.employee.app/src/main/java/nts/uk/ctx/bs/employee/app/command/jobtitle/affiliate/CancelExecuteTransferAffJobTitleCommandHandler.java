@@ -46,13 +46,13 @@ public class CancelExecuteTransferAffJobTitleCommandHandler extends CommandHandl
 			} catch (Throwable t) {
 				if (t.getCause().getClass() == BusinessException.class) {
 					BusinessException bex = (BusinessException)t.getCause();
-					MyCustomizeException ex = new MyCustomizeException(bex.getMessageId(), Arrays.asList(jt.getEmployeeId()));
+					MyCustomizeException ex = new MyCustomizeException(bex.getMessageId(), Arrays.asList(jt.getEmployeeId() + " " + jt.getHistId()));
 					result.add(ex);
 				}
 				
 				if (t.getCause().getClass() == RuntimeException.class) {
 					RuntimeException rex = (RuntimeException)t.getCause();
-					MyCustomizeException ex = new MyCustomizeException(rex.getMessage(), Arrays.asList(jt.getEmployeeId()));
+					MyCustomizeException ex = new MyCustomizeException(rex.getMessage(), Arrays.asList(jt.getEmployeeId() + " " + jt.getHistId()));
 					result.add(ex);
 				}
 			}

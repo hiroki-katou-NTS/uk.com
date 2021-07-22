@@ -120,14 +120,20 @@ module cmm015.a.viewmodel {
 
             vm.columnsSource = ko.observableArray([
                 { headerText: '', key: 'id', hidden: true },
-                { headerText: vm.$i18n('CMM015_21'), key: 'code', width: 115, headerCssClass: 'text-left' },
-                { headerText: vm.$i18n('CMM015_22'), key: 'name', width: 140, headerCssClass: 'text-left' },
+                { headerText: '', key: 'cssWKP', hidden: true },
+                {
+                    headerText: vm.$i18n('CMM015_21'), key: 'code', width: 115, headerCssClass: 'text-left',
+                    template: '<div style="color: ${cssWKP}">${code}</div>'
+                },
+                {
+                    headerText: vm.$i18n('CMM015_22'), key: 'name', width: 140, headerCssClass: 'text-left',
+                    template: '<div style="color: ${cssWKP}">${name}</div>'
+                },
                 { headerText: vm.$i18n('CMM015_23'), key: 'jt', width: 80, headerCssClass: 'text-left' }
             ]);
 
             vm.columnsDest = ko.observableArray([
                 { headerText: '', key: 'id', hidden: true },
-                { headerText: '', key: 'css', hidden: true },
                 { headerText: '', key: 'jtID', hidden: true },
                 { headerText: '', key: 'cssWKP', hidden: true },
                 { headerText: '', key: 'cssJT', hidden: true },
@@ -152,19 +158,29 @@ module cmm015.a.viewmodel {
             vm.columnsHistory = ko.observableArray([
                 { headerText: '', key: 'key', hidden: true },
                 { headerText: '', key: 'bgPostWkp', hidden: true},
-                { headerText: vm.$i18n('CMM015_45'), key: 'startDate', width: 100, headerCssClass: 'text-left' },
-                { headerText: vm.$i18n('CMM015_46'), key: 'sCD', width: 130, headerCssClass: 'text-left' },
-                { headerText: vm.$i18n('CMM015_47'), key: 'sName', width: 140, headerCssClass: 'text-left' },
+                { headerText: '', key: 'css', hidden: true},
+                {
+                    headerText: vm.$i18n('CMM015_45'), key: 'startDate', width: 100, headerCssClass: 'text-left',
+                    template: '<div style="color: ${css};">${startDate}</div>'
+                },
+                {
+                    headerText: vm.$i18n('CMM015_46'), key: 'sCD', width: 130, headerCssClass: 'text-left',
+                    template: '<div style="color: ${css};">${sCD}</div>'
+                },
+                {
+                    headerText: vm.$i18n('CMM015_47'), key: 'sName', width: 140, headerCssClass: 'text-left',
+                    template: '<div style="color: ${css};">${sName}</div>'
+                },
                 { headerText: vm.$i18n('CMM015_48'), key: 'prevWkpName', width: 220, headerCssClass: 'text-left' },
                 { headerText: vm.$i18n('CMM015_49'), key: 'prevPositionName', width: 135, headerCssClass: 'text-left' },
                 {
-                    headerText: vm.$i18n('CMM015_50'),
-                    key: 'postWkpName',
-                    width: 220,
-                    headerCssClass: 'text-left dest-wkp',
-                    template: '<div style="background: ${bgPostWkp}">${postWkpName}</div>'
+                    headerText: vm.$i18n('CMM015_50'), key: 'postWkpName', width: 220, headerCssClass: 'text-left dest-wkp',
+                    template: '<div style="background: ${bgPostWkp}; color: ${css};">${postWkpName}</div>'
                 },
-                { headerText: vm.$i18n('CMM015_51'), key: 'postPositionName', width: 140, headerCssClass: 'text-left dest-wkp' }
+                {
+                    headerText: vm.$i18n('CMM015_51'), key: 'postPositionName', width: 140, headerCssClass: 'text-left dest-wkp',
+                    template: '<div style="color: ${css};">${postPositionName}</div>'
+                }
             ]);
 
             vm.baseDateLeftText = ko.computed(() => {
@@ -265,7 +281,9 @@ module cmm015.a.viewmodel {
                                     endDate: moment.utc(new Date(MAX_DATE)).toISOString()
                                 })
                                 .then(() => {
-                                    vm.loadDataWkp(Table.RIGHT);
+                                    vm
+                                        .loadDataWkp(Table.RIGHT)
+                                        .then(() => vm.getTransferOfDay(vm.baseDateRight()));
                                     // UI処理[6]
                                     vm.currentCodeListDest('');
                                     vm.createTransferList();
@@ -416,7 +434,9 @@ module cmm015.a.viewmodel {
                 return;
             }
             // UI処理[18]
-            $('#A9 tr').children().css({ color: ''})
+            // $('#A9 tr').children().css({ color: ''})
+            _.map(vm.tableDatasSource(), i => i.cssWKP = '');
+            vm.tableDatasSource.valueHasMutated();
 
             const selectedSidsource: string[] = [];
             const param = _.map(vm.currentCodeListSource(), sid => {
@@ -525,9 +545,11 @@ module cmm015.a.viewmodel {
                     if (isLeft) {
                         vm.currentCodeListSource.removeAll();
                         vm.tableDatasSource(tableDatas);
+                        vm.tableDatasSource.valueHasMutated();
                     } else {
                         vm.currentCodeListDest('');
                         vm.tableDatasDest(tableDatas);
+                        vm.tableDatasDest.valueHasMutated();
                     }
                     dfd.resolve();
                 })
@@ -598,9 +620,14 @@ module cmm015.a.viewmodel {
         }
 
         uiProcess17(errorList: string[]) {
-            _.forEach(errorList, i => {
-                $(`#A9 [data-id="${i}"]`).children().css({color: ERRORSCODE})
+            const vm = this;
+            _.map(vm.tableDatasSource(), j => {
+                if (_.includes(errorList, j.id)) {
+                    j.cssWKP = `${ERRORSCODE} !important`;
+                }
             });
+            // $(`#A9 [data-id="${i}"]`).children().css({color: ERRORSCODE})
+            vm.tableDatasSource.valueHasMutated();
         }
 
         uiProcess20(jtID: string, newID: string): boolean {
@@ -782,10 +809,13 @@ module cmm015.a.viewmodel {
 
         cancelExecuteTransfer() {
             const vm = this;
-            $('#A18 tr').children().css({ color: '' });
-            $('#A18 tr').children().children().css({ color: '' });
+            vm.$blockui('grayout');
+            // Clear red color in table history
+            _.map(vm.tableDatasHistory(), i => i.css = '');
+            vm.tableDatasHistory.valueHasMutated();
             if (_.isEmpty(vm.currentCodeListHistory())) {
                 vm.$dialog.error({ messageId: 'Msg_2115' });
+                vm.$blockui('clear');
                 return;
             }
 
@@ -823,27 +853,31 @@ module cmm015.a.viewmodel {
                     vm.$dialog
                         .error({ messageId: 'Msg_2203' })
                         .then(() => {
-                            _.forEach(errList, i => {
-                                $(`#A18 [data-id="${i}"]`).children().css({ color: ERRORSCODE });
-                                $(`#A18 [data-id="${i}"]`).children().children().css({ color: ERRORSCODE });
+                            _.map(vm.tableDatasHistory(), i => {
+                                if (_.includes(errList, i.key)) {
+                                    i.css = `${ERRORSCODE} !important`;
+                                }
                             });
                             if (callback) {
                                 callback();
                             }
+                            vm.tableDatasHistory.valueHasMutated();
                         });
                 } else if (callback) {
                     callback();
+                    vm.tableDatasHistory.valueHasMutated();
                 }
             };
             if (errList.length === vm.currentCodeListHistory().length) {
                 errFnc();
+                vm.$blockui('clear');
                 return;
             }
             
             const param = { affWorkplaces, affJobTitles };
             let affWorkplaceErr: any[] = [];
             let affJobTitleErr: any[] = [];
-            vm.$blockui('grayout');
+            
             vm
                 .$ajax('com', API.cancelExecuteTransfer, param)
                 .then((res: CancelExecuteTransferResult) => {
@@ -855,20 +889,29 @@ module cmm015.a.viewmodel {
                 })
                 .then(() => vm.getTransferOfDay(vm.baseDateRight()))
                 .then(() => {
-                    
-                    const wkpErr = _.map(affWorkplaceErr, i => `${vm.$i18n.message(i.messageId)}<br/>`);
-                    const jtErr = _.map(affJobTitleErr, i => `${vm.$i18n.message(i.messageId)}<br/>`);
-                    const mergeErr = _.uniq([...wkpErr, ...jtErr]);
-                    
+                    // Merge 2 list error
+                    const mergeErr = [...affWorkplaceErr, ...affJobTitleErr];
+                    // Get list error id
+                    const errIds = _.map(mergeErr, i => i.errorLst[0]);
+                    const mergeErrMsg = _.uniq(_.map(mergeErr, i => `${vm.$i18n.message(i.messageId)}<br/>`));
                     const success = () => {
-                        if (wkpErr.length === affWorkplaces.length && jtErr.length === affJobTitles.length) {
+                        _.map(vm.tableDatasHistory(), i => {
+                            // If id data equals error id => change color to red
+                            if (_.includes(errIds, `${i.sID} ${i.wkpHID}`) || _.includes(errIds, `${i.sID} ${i.postPositionHID}`)) {
+                                i.css = `${ERRORSCODE} !important`;
+                            }
+                        });
+
+                        if (mergeErr.length === affWorkplaces.length + affJobTitles.length) {
+                            vm.tableDatasHistory.valueHasMutated();
+                            vm.$blockui('clear');
                             return;
                         }
                         vm.$dialog.info({ messageId: 'Msg_16' });
                     };
                     if (!_.isEmpty(mergeErr)) {
                         errFnc(() => vm.$dialog
-                            .error(mergeErr.join(''))
+                            .error(mergeErrMsg.join(''))
                             .then(() => success()));
                     } else {
                         errFnc(() => success());
@@ -973,6 +1016,7 @@ module cmm015.a.viewmodel {
         postPositionOrder: string = ''; //後職位並び順
         postPositionHID: string = ''; //後職位履歴ID
         bgPostWkp: string = '';
+        css: string = '';
 
         constructor(prevAWH: HistoryItem, prevAJH: HistoryItem, post: HistoryItem, empInfors: any[], wkpListInfo: any[], jtInfor: any[]) {
             const self = this;

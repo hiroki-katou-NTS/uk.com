@@ -45,13 +45,13 @@ public class CancelExecuteTransferAffWkpCommandHandler extends CommandHandlerWit
 			} catch (Throwable t) {
 				if (t.getCause().getClass() == BusinessException.class) {
 					BusinessException bex = (BusinessException)t.getCause();
-					MyCustomizeException ex = new MyCustomizeException(bex.getMessageId(), Arrays.asList(wkp.getEmployeeId()));
+					MyCustomizeException ex = new MyCustomizeException(bex.getMessageId(), Arrays.asList(wkp.getEmployeeId() + " " + wkp.getHistoryId()));
 					result.add(ex);
 				}
 				
 				if (t.getCause().getClass() == RuntimeException.class) {
 					RuntimeException rex = (RuntimeException)t.getCause();
-					MyCustomizeException ex = new MyCustomizeException(rex.getMessage(), Arrays.asList(wkp.getEmployeeId()));
+					MyCustomizeException ex = new MyCustomizeException(rex.getMessage(), Arrays.asList(wkp.getEmployeeId() + " " + wkp.getHistoryId()));
 					result.add(ex);
 				}
 			}
