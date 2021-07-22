@@ -22,6 +22,7 @@ module nts.uk.at.view.knr002.a {
             numNormalState: KnockoutObservable<number> = ko.observable(0);
             numOfRegTerminals: KnockoutObservable<number> = ko.observable(0);
             numUntransmitted: KnockoutObservable<number> = ko.observable(0);
+            managementSection: KnockoutObservable<boolean> = ko.observable(false);
             
 
             
@@ -106,7 +107,10 @@ module nts.uk.at.view.knr002.a {
                         vm.numOfRegTerminals(res.numOfRegTerminals);
                         vm.numAbnormalState(res.numAbnormalState);
                         vm.numNormalState(res.numNormalState);
-                        vm.numUntransmitted(res.numUntransmitted)
+                        vm.numUntransmitted(res.numUntransmitted);
+                        vm.managementSection(res.managementSection == 1 ? true : false);
+
+                        console.log(vm.dataSource(), 'xem');
     
                         for (let dto of res.listEmpInfoTerminalDto) {
     
@@ -173,6 +177,7 @@ module nts.uk.at.view.knr002.a {
                 setShared('KNR002G_empInfoTerName', data.empInfoTerName);
                 setShared('KNR002G_modelEmpInfoTer', data.displayModelEmpInfoTer);
                 setShared('KNR002G_workLocationName', data.workLocationName);
+                setShared('KNR002G_managementSection', vm.managementSection());
        
                 modal('/view/knr/002/g/index.xhtml', { title: 'G_Screen', }).onClosed(() => {
                     blockUI.clear();
@@ -303,6 +308,7 @@ module nts.uk.at.view.knr002.a {
             numNormalState: number;
             numOfRegTerminals: number;
             numUntransmitted: number;
+            managementSection: number;
         }
         export interface ListEmpInfoTerminalDto {
             empInfoTerCode: string; 

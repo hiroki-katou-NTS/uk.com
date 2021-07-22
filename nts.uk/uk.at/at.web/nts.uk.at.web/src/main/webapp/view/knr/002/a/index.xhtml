@@ -20,7 +20,7 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="book-conversion">
-					<button class="x-large w-300" data-bind="click: openKNR002LDialog">#{i18n.getText('KNR002_53')}</button>
+					<button class="x-large w-300" data-bind="click: openKNR002LDialog, visible: managementSection()">#{i18n.getText('KNR002_53')}</button>
 				</div>
 				<div class="top-container">
 					<div class="first">
