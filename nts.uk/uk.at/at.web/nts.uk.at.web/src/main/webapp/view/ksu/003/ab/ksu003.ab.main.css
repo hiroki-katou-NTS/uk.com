@@ -116,3 +116,7 @@
 .ntsTable .ntsButtonCellData {
 	border : 1px solid grey;
 }
+
+.ui-igcombo-list {
+	max-height: 260px !important;
+}
