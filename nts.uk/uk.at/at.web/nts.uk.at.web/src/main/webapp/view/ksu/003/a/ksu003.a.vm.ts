@@ -55,6 +55,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		disableDs: any = [];
 		leftDs: any = [];
 		allGcShow: any = []; // lưu gant chart và data để tạo lại
+		gcShowChart: any = []; // tất cả chart break, holiday, short show trên màn hình
 		allTimeChart: any = [];
 		allTimeBrk: any = [];
 		
@@ -1944,7 +1945,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				features: [{
 					name: "BodyCellStyle",
 					decorator: detailContentDeco
-				}]
+				}, {
+                        name: "RightClick",
+                        chartFilter: function() {
+                            return true;
+                        },
+                        handler: function(ui) {
+                            let items = [
+                                { id: "終日に拡大", text: "終日に拡大", selectHandler: function(id) { } },
+                                { id: "削除", text: "削除", selectHandler: function(id) { ruler.removeBy({ no: ui.rowIndex, id: ui.id }); } }
+                            ];
+                            
+                            ui.contextMenu(items);
+                            ui.contextMenu("show");
+                        }
+                    }]
 			};
 
 			if (detailColumns.length < 24) {
@@ -2405,7 +2420,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				dfd.reject();
 			});
 			} else {
-				// đang ký với mode dán task
 				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
 					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
 					self.taskSaveData = [];
@@ -2860,6 +2874,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								empId: datafilter[0].empId
 							})
 							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "BreakTime", `lgc${i}_` + indexBrks, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, parent, timeRange.start, timeRange.end, timeRange.start, timeRange.end, 1001));
+							self.gcShowChart.push({
+								startTime: timeChartBrk.startTime,
+								endTime: timeChartBrk.endTime,
+								line : i,
+								empId: datafilter[0].empId
+							})
 							indexLeft = ++indexLeft;
 						}
 
@@ -2897,6 +2917,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									id: `rgc${i}_` + indexBrkr,
 									empId: datafilter[0].empId
 								})
+								
+								self.gcShowChart.push({
+									startTime: timeChartBrk.startTime,
+									endTime: timeChartBrk.endTime,
+									line : i,
+									empId: datafilter[0].empId
+								})
 								fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "BreakTime", `rgc${i}_` + indexBrkr, { startTime: timeChartBrk.startTime - dispStart, endTime: timeChartBrk.endTime - dispStart }, i, `rgc${i}`, 0, 9999, 0, 9999, 1001));
 								indexRight = ++indexRight;
 							}
@@ -2928,6 +2955,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							});
 							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexLeft = ++indexLeft;
+							self.gcShowChart.push({
+								startTime: timeChartShort.startTime,
+								endTime: timeChartShort.endTime,
+								line : i,
+								empId: datafilter[0].empId
+							})
 						}
 
 						if (startTime1 > timeChart.endTime && timeMinus2.length > 0 && (_.inRange(y.startTime, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
@@ -2945,6 +2978,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							});
 							fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "ShortTime", id, { startTime: timeChartShort.startTime - dispStart, endTime: timeChartShort.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1052));
 							indexRight = ++indexRight;
+							
+							self.gcShowChart.push({
+								startTime: timeChartShort.startTime,
+								endTime: timeChartShort.endTime,
+								line : i,
+								empId: datafilter[0].empId
+							})
 						}
 					}
 				}
@@ -2976,6 +3016,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									});
 									fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
 									indexLeft = ++indexLeft;
+									
+									self.gcShowChart.push({
+										startTime: timeChartHoliday.startTime,
+										endTime: timeChartHoliday.endTime,
+										line : i,
+										empId: datafilter[0].empId
+									})
 								}
 							}
 
@@ -2994,6 +3041,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									});
 									fixedGc.push(self.addChartWithType045(fixedGc, datafilter, "HolidayTime", id, { startTime: timeChartHoliday.startTime - dispStart, endTime: timeChartHoliday.endTime - dispStart }, i, parent, 0, 9999, 0, 9999, 1103));
 									indexRight = ++indexRight;
+									
+									self.gcShowChart.push({
+										startTime: timeChartHoliday.startTime,
+										endTime: timeChartHoliday.endTime,
+										line : i,
+										empId: datafilter[0].empId
+									})
 								}
 							}
 						}
@@ -5270,11 +5324,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					});
 					
 					index = "";
-					if (_.inRange(start, lgcFil[0].start, lgcFil[0].end) || _.inRange(end, lgcFil[0].start, lgcFil[0].end)){
+					if (lgcFil.length > 0 && _.inRange(start, lgcFil[0].start, lgcFil[0].end) || _.inRange(end, lgcFil[0].start, lgcFil[0].end)){
 						index = "lgc" + line + "_" + (lgcFil.length - 1);
 					}
 					
-					if (_.inRange(start, rgcFil[0].start, rgcFil[0].end) || _.inRange(end, rgcFil[0].start, rgcFil[0].end)){
+					if (rgcFil.length > 0 && _.inRange(start, rgcFil[0].start, rgcFil[0].end) || _.inRange(end, rgcFil[0].start, rgcFil[0].end)){
 						index = "rgc" + line + "_" + (rgcFil.length - 1);
 					}
 					
@@ -5305,14 +5359,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		addTaskResize(line : any, type : any, start : any, end : any){
 			let self = this;
-			start = start * 5;
-			end = end * 5;
+			start = start * 5 + self.dispStart * 5;
+			end = end * 5 + self.dispStart * 5;
 			let taskInfo : any = _.filter(__viewContext.viewModel.viewmodelAb.dataTaskInfo.lstTaskDto, (x : any) => {
 					return _.includes(type, x.taskDisplayInfoDto.taskAbName) && _.includes(type, "TASK");
 			});
 				if(taskInfo == null) return;
 				
 				let arrRemoveTask : any = [], arrRemoveTaskNew : any = [];
+				if (!_.isNil(self.taskData[line])) {
 				
 				for (let i = 0; i < self.taskData[line].taskScheduleDetail.length ; i++) {
 					let task : any = self.taskData[line].taskScheduleDetail[i],
@@ -5373,11 +5428,39 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						});
 					} 
 				}
+				}
 				_.forEach(arrRemoveTask, x => {
 					let arr = _.remove(self.taskData[x.line].taskScheduleDetail, (y : any, index) => {
 						return x.index == index && y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
 					});
 				})
+				
+				let filShowChart = _.filter(self.gcShowChart, (x : any) => {
+					return x.line == line;
+				});
+				
+				if (filShowChart.length > 0){
+					for (let i = 0; i < filShowChart.length; i++){
+						let sTime = filShowChart[i].startTime * 5,
+							eTime = filShowChart[i].endTime * 5,
+							sTimeNew = 0, eTimeNew = 0;
+						if (_.inRange(sTime, start, end) || _.inRange(eTime, start, end)) {
+							if (sTime > start && sTime < end && eTime > end)
+								end = sTime;
+							
+							if (sTime < start && eTime > sTime && eTime < end)
+								start = eTime
+								
+							if (sTime > start && eTime < end){
+								sTimeNew = eTime;
+								eTimeNew = end;
+								end = sTime;
+								
+								self.bindDataToTask(taskInfo , sTimeNew , eTimeNew , line);
+							}	
+						}
+					}
+				}
 				
 				for (let i = 0; i < self.lstTaskScheduleDetailEmp.length ; i++) {
 					let task : any = self.lstTaskScheduleDetailEmp[i],
@@ -5442,7 +5525,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let arr = _.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
 						return x.index == index && y.taskScheduleDetail.timeSpanForCalcDto.start == x.start && y.taskScheduleDetail.timeSpanForCalcDto.end == x.end;
 					});
-				})
+				});
 				
 				self.bindDataToTask(taskInfo , start , end , line);
 				self.enableSave(true);
@@ -5450,6 +5533,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		bindDataToTask(taskInfo : any, start : any, end : any, line : any){
 			let self = this;
+			
 			let taskScheduleDetail : any = [];
 				if(taskInfo != null){
 					taskScheduleDetail.push({
@@ -5465,10 +5549,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 				
 				if (taskOld.length == 0){
-					self.lstTaskScheduleDetailEmp.push({
-						empId : self.dataScreen003A().employeeInfo[line].empId,
-						taskScheduleDetail : taskScheduleDetail
-					}); 
+					let oldNewTask =  _.filter(self.lstTaskScheduleDetailEmp, (x : any) => {
+						return self.dataScreen003A().employeeInfo[line].empId == x.empId && x.taskScheduleDetail.length > 0;
+					});
+					
+					if (oldNewTask.length == 0){
+						self.lstTaskScheduleDetailEmp.push({
+							empId : self.dataScreen003A().employeeInfo[line].empId,
+							taskScheduleDetail : taskScheduleDetail
+						});
+					} else {
+						_.forEach(self.lstTaskScheduleDetailEmp[0].taskScheduleDetail, (old : any) => {
+							self.lstTaskScheduleDetailEmp[0].taskScheduleDetail.add(taskScheduleDetail[0]);
+						})
+					}
+					 
 				} else {
 					taskOld = _.map(taskOld, (map : any) => {
 						let taskScheduleDetails : any = [];
@@ -5567,16 +5662,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public closePopupA14() {
 			let self = this;
 			$('#A14').ntsPopup("hide");
-			self.timeRange = self.selectedTimeRange() == 0 ? 24 : 48;// tổng số cột ở phần detail (24 or 48)
+			self.timeRange = self.selectedTimeRange() == 1 ? 24 : 48;// tổng số cột ở phần detail (24 or 48)
 			self.initDispStart = self.initDispStartChecked();// thời gian bắt đầu của scroll phần detail
 			self.dispStart = (self.dispStartChecked() * 60) / 5;// thời gian bắt đầu ở header phần detail
 			self.dispStartHours = self.dispStartChecked();
 			self.destroyAndCreateGrid(self.lstEmpId, 0);
 			
 			let param = {
-				dispRange : self.displayRangeSelect(),
-				startTime : self.initDispStartChecked(),
-				initDispStart : self.dispStartChecked(), 
+				dispRange : self.selectedTimeRange() == 1 ? 0 : 1,
+				startTime : self.dispStartChecked(),
+				initDispStart : self.initDispStartChecked(), 
 				targetUnit : self.dataScreen003A().unit,
 				organizationID : self.dataScreen003A().id
 			}
