@@ -86,6 +86,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
@@ -729,6 +730,11 @@ public class HolidayShipmentScreenAFinder {
         @Override
         public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
             return interimRecAbasMngRepo.getRecBySidDatePeriod(sid, period);
+        }
+
+        @Override
+        public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+            return closureRepo.findAllActive(companyId, useAtr);
         }
     }
 }
