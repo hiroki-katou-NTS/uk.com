@@ -122,7 +122,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	
 	private static final String GET_WKPS_AS_APPROVERS = "SELECT m.wwfmtWpApprovalRootPK.workplaceId"
 			+ " FROM WwfmtApprovalRouteWp m JOIN WwfmtAppover d"
-			+ " ON m.wwfmtWpApprovalRootPK.approvalId = d.wwfmtAppoverPK.approvalId AND d.wwfmtAppoverPK.approvalId = :sid"
+			+ " ON m.wwfmtWpApprovalRootPK.approvalId = d.wwfmtAppoverPK.approvalId AND d.employeeId = :sid"
 			+ " WHERE m.startDate <= :referDate AND m.endDate >= :referDate";
 	
 	private static final String FIND_COMMON;
