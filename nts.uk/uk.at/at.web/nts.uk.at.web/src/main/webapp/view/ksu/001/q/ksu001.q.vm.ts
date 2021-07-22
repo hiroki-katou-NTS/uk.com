@@ -185,7 +185,6 @@ module nts.uk.at.view.ksu001.q {
 
 			public closeDialog(): void {
 				let self = this;
-                self.EndStatus = 'cancel';  
 				setShared('EndStatus', self.EndStatus);
 				nts.uk.ui.windows.close();
 			}
