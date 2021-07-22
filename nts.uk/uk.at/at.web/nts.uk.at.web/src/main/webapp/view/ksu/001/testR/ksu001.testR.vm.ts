@@ -26,10 +26,12 @@ module nts.uk.at.view.ksu001.testR {
             check: KnockoutObservable<boolean> = ko.observable(true);
             check1: KnockoutObservable<boolean> = ko.observable(true);
             name: KnockoutObservable<string> = ko.observable('');
+            stt: KnockoutObservable<string> = ko.observable('');
             constructor() {
                 var self = this;
                 self.enable = ko.observable(true);
                 self.required = ko.observable(true);
+                self.stt = ko.observable('');
                 self.baseDate = ko.observable(new Date());
                 self.selectedWorkplaceId = ko.observable('');
                 self.startDateString = ko.observable("2020/08/01");
@@ -146,12 +148,26 @@ module nts.uk.at.view.ksu001.testR {
                     else {
                         setShare('name', self.currentNames());
                     }
-                    self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/r/index.xhtml");
-                }); 
+                    // self.currentScreen = nts.uk.ui.windows.sub.modeless("/view/ksu/001/r/index.xhtml");
+                    self.currentScreen = nts.uk.ui.windows.sub.modal("/view/ksu/001/r/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+
+                        var sttData = nts.uk.ui.windows.getShared("EndStatus");
+                        if (sttData !== undefined) {
+                            self.stt(sttData);
+                            nts.uk.ui.block.clear();
+                        }
+                        else {
+                            self.stt = ko.observable("");
+                            nts.uk.ui.block.clear();
+                        }
+                    });
+                });
+   
 
             }
             public startPage(): JQueryPromise<any> {
                 let self = this,
+               
                     dfd = $.Deferred();
 
                 dfd.resolve();

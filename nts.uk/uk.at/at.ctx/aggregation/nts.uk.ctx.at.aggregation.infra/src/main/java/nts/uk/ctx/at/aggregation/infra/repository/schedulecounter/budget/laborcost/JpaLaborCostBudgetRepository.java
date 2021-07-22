@@ -30,7 +30,12 @@ public class JpaLaborCostBudgetRepository extends JpaRepository implements Labor
 									   + "AND c.pk.ymd = :ymd ";
 	
 	
-	private static final String SELECT_BY_WORKPLACE = " SELECT c FROM KagdtLaborCostBudgetDaily c WHERE c.pk.targetUnit = :targetUnit AND c.companyId = :companyId AND c.pk.ymd >= :startDate AND c.pk.ymd <= :endDate";
+	private static final String SELECT_BY_WORKPLACE = " SELECT c FROM KagdtLaborCostBudgetDaily c"
+														+ " WHERE c.pk.targetUnit = :targetUnit "
+														+ "AND c.pk.targetID = :id "	
+														+ "AND c.companyId = :companyId "
+														+ "AND c.pk.ymd >= :startDate "
+														+ "AND c.pk.ymd <= :endDate";
 	
 	
 	
@@ -68,6 +73,7 @@ public class JpaLaborCostBudgetRepository extends JpaRepository implements Labor
 	
 		List<LaborCostBudget> data = this.queryProxy().query(SELECT_BY_WORKPLACE ,KagdtLaborCostBudgetDaily.class )
 				.setParameter("targetUnit", targetUnit)
+				.setParameter("id", targetOrg.getTargetId())
 				.setParameter("companyId", companyId)
 				.setParameter("startDate",period.start())
 				.setParameter("endDate",period.end())
@@ -78,6 +84,7 @@ public class JpaLaborCostBudgetRepository extends JpaRepository implements Labor
 			int targetUnit = 1;
 			List<LaborCostBudget> data = this.queryProxy().query(SELECT_BY_WORKPLACE ,KagdtLaborCostBudgetDaily.class )
 					.setParameter("targetUnit", targetUnit)
+					.setParameter("id", targetOrg.getTargetId())
 					.setParameter("companyId", companyId)
 					.setParameter("startDate",period.start())
 					.setParameter("endDate",period.end())

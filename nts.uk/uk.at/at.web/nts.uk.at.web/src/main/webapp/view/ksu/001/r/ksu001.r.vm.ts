@@ -177,7 +177,6 @@ module nts.uk.at.view.ksu001.r {
 
             public closeDialog(): void {
                 let self = this;
-                self.EndStatus = 'cancel';  
                 setShared('EndStatus', self.EndStatus);
                 nts.uk.ui.windows.close();
             }
@@ -194,7 +193,7 @@ module nts.uk.at.view.ksu001.r {
                 //command.itemCode = self.selectItemCode();
                 var dateValues = [];                
                 self.listperiods().forEach((x) => {
-                    if(x.date() != '' && x.value() !=''){
+                    if(x.date() != '' ){
                         dateValues.push({
                             date: x.date().slice(0, 10),
                             value: x.value()
@@ -204,7 +203,7 @@ module nts.uk.at.view.ksu001.r {
                 command.dateAndValues = dateValues;             
                 command.type = self.labelQ32();
 
-                requestBudget.id = command.id;
+                requestBudget.id = command.targetID;
                 requestBudget.unit = command.unit;
                 requestBudget.itemCode = command.itemCode;
                 requestBudget.startDate = dateValues[0].date;
@@ -213,7 +212,8 @@ module nts.uk.at.view.ksu001.r {
                     blockUI.invisible();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
                     self.loadFindBudgetDaily(requestBudget);
-                    self.EndStatus = 'update';                  
+                    self.EndStatus = 'update';    
+                    setShared('EndStatus', self.EndStatus);              
                     blockUI.clear();                    
                 }).always (function() {
                     self.clearError();
