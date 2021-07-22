@@ -5,46 +5,26 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 	<div class="sidebar-content-header">
-		<span class="title" tabindex="1">#{i18n.getText('CAS014_3')}</span>
-		<button tabindex="2"
+		<!--<span class="title" tabindex="1">#{i18n.getText('CAS014_3')}</span>-->
+		<!--B1_1-->
+		<button tabindex="1"
 			data-bind="click: createNewRoleSetPerson, enable: true">#{i18n.getText('CAS014_10')}</button>
-		<button tabindex="3" class="proceed"
+		<!--B1_2-->
+		<button tabindex="2" class="proceed"
 			data-bind="click: registerRoleSetPerson, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_11')}</button>
-		<button tabindex="4" class="danger"
+		<!--B1_3-->
+		<button tabindex="3" class="danger"
 			data-bind="click: deleteRoleSetPerson, enable: screenMode() == 1">#{i18n.getText('CAS014_12')}</button>
-		<button tabindex="4" id="print-button" data-bind="click: saveAsExcel" style="width: 130px;">#{i18n.getText('CAS014_53')}</button>
+		<!--B1_4-->
+		<button tabindex="4" id="print-button" data-bind="click: saveAsExcel" style="width: 150px;">#{i18n.getText('CAS014_54')}</button>
 	</div>
 
 	<div class="contents-area-b">
 		<div class="container-b">
 			<div class="block">
 				<div class="top-row flex valign-center">
-					<label>#{i18n.getText('CAS014_30')}</label>
-				</div>
-				<div class="bottom-row">
-					<div style="float: left">
-						<table id="B3_2" tabindex="5"
-							data-bind="ntsGridList: {
-									name: '#[CAS014_30]',								
-									height: 250,
-									options: roleSetList,
-									primaryKey: 'code',
-									columns: [
-						                { headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 130, formatter: _.escape },
-						                { headerText: '#{i18n.getText('CAS014_32')}', key: 'name', width: 150, formatter: _.escape }
-						            ],
-						            rows: 8,
-									multiple: false,
-									value: selectedRoleSet
-								}"></table>
-					</div>
-					<span class="caret-right outline"
-						style="float: left; height: 250px"></span>
-				</div>
-			</div>
-			<div class="block">
-				<div class="top-row flex valign-center">
 					<label>#{i18n.getText('CAS014_33')}</label>
+					<!--<div data-bind="ntsFormLabel: {required: true }" style=" display: inline-block;">#{i18n.getText('CAS014_33')}</div>-->
 				</div>
 				<div class="bottom-row">
 					<table id="B4_2" tabindex="6"
@@ -66,20 +46,69 @@
 					</table>
 				</div>
 			</div>
+			<div class="block">
+				<!--<div class="top-row flex valign-center">-->
+					<!--<label>#{i18n.getText('CAS014_30')}</label>-->
+				<!--</div>-->
+				<div class="bottom-row">
+					<!--<div style="float: left">-->
+						<!--<table id="B3_2" tabindex="5"-->
+							   <!--data-bind="ntsGridList: {-->
+									<!--name: '#[CAS014_30]',-->
+									<!--height: 250,-->
+									<!--options: roleSetList,-->
+									<!--primaryKey: 'code',-->
+									<!--columns: [-->
+						                <!--{ headerText: '#{i18n.getText('CAS014_31')}', key: 'code', width: 130, formatter: _.escape },-->
+						                <!--{ headerText: '#{i18n.getText('CAS014_32')}', key: 'name', width: 150, formatter: _.escape }-->
+						            <!--],-->
+						            <!--rows: 8,-->
+									<!--multiple: false,-->
+									<!--value: selectedRoleSet-->
+								<!--}"></table>-->
+					<!--</div>-->
+					<span class="caret-right outline"
+						  style="float: left; height: 250px; font-size: 0.4rem; margin-top: 70px;"></span>
+				</div>
+			</div>
 			<div class="block" style="padding-left: 10px;">
 				<div class="top-row"></div>
 				<div class="bottom-row">
-					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_39')}</div>
+					<div class="valign-center control-group" style="margin-bottom: 10px">
+						<!--B3_1-->
+						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_57')}</div>
+						<!--B3_2-->
 						<button tabindex="7" id="B5_1_1"
 							data-bind="click: openDialogCDL009, enable: screenMode() == 0">#{i18n.getText('CAS014_39')}</button>
+						<!--B3_3-->
 						<label data-bind="text: roleSetPerson().employeeCd"
-							class="ntsControl label-code"></label> <label
-							data-bind="text: roleSetPerson().employeeName" class="label-name limited-label"></label>
+							class="ntsControl label-code"></label>
+						<!--B3_4-->
+						<label
+							data-bind="text: roleSetPerson().employeeName"
+							class="label-name limited-label"
+							style="width: 150px; margin-bottom: 0px; vertical-align: middle;"></label>
 					</div>
+                    <div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: { required: true }" style="width: 120px">#{i18n.getText('CAS014_58')}</div>
+                        <!--B4_2-->
+						<div id="combo-box"
+							 data-bind="ntsComboBox: {
+										options: itemList,
+										optionsValue: 'code',
+										visibleItemsCount: 10,
+										value: selectedCode,
+										optionsText: 'name',
+										enable: isEnable,
+										columns: [
+											{ prop: 'code', length: 4 },
+											{ prop: 'name', length: 10 },
+						]}"></div>
+                    </div>
 					<div class="valign-center control-group">
-						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS014_40')}</div>
-						<div id="B5_2_1" tabindex="8"
+						<!--B5_1-->
+						<div data-bind="ntsFormLabel: { required: true }" style="margin-top: 10px">#{i18n.getText('CAS014_40')}</div>
+						<div id="B5_2_1" tabindex="9"
 							style="display: inline-block;"
 							data-bind="ntsDateRangePicker: { 
 											required: true, 

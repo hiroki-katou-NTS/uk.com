@@ -92,6 +92,8 @@ module nts.uk.com.view.cas014.a {
                 }
             }
 
+
+
             register() {
                 if (nts.uk.ui.errors.hasError()) {
                     return;

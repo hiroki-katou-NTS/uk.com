@@ -28,11 +28,10 @@
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel" style="min-width: 600px;">
 				<div class="sidebar-content-header">
-					<!--<span tabindex="1" class="title">#{i18n.getText('CAS014_2')}</span>-->
 					<!--A1_1-->
 					<button tabindex="1" class="proceed" data-bind="click: register">#{i18n.getText('CAS014_11')}</button>
 					<!--A1_2-->
-                    <button tabindex="2" id="print-button" data-bind="click: saveAsExcel" style="width: 130px;">#{i18n.getText('KSM004_54')}</button>
+                    <button tabindex="2" id="print-button" data-bind="click: loadTab2" >#{i18n.getText('KSM004_54')}</button>
 				</div>
 				<div class="contents-area-a">
 					<div class="container cf">
@@ -45,10 +44,11 @@
 						<!--<br />-->
 						<div class="valign-center control-group">
 							<!--A3_3-->
-							<div data-bind="ntsFormLabel: { required: true }" style="display: inline-block;">#{i18n.getText('CAS014_22')}</div>
-							<!--A3_4-->
+							<div data-bind="ntsFormLabel: {required: true }" style=" display: inline-block;">#{i18n.getText('CAS014_22')}</div>							<!--A3_4-->
                             <div id="A3_4" class="ntsControl nts-datepicker-wrapper"
-                                 data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"></div>
+                                 data-bind="ntsDatePicker: { name: '#[CAS014_22]', value: date, dateFormat: 'YYYY/MM/DD' }"
+								 style="vertical-align: top;"
+							></div>
 							<!--A3_5-->
 							<button tabindex="4" class="caret-bottom" data-bind="click : findBtnClick, enable: $root.errors.isEmpty">#{i18n.getText('CAS014_23')}</button>
 						</div>

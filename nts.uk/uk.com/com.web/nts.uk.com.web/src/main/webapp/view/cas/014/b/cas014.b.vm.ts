@@ -21,6 +21,13 @@ module nts.uk.com.view.cas014.b {
             selectedEmployeeId: KnockoutObservable<string>;
             roleSetPerson: KnockoutObservable<RoleSetPerson>;
             screenMode: KnockoutObservable<number>;
+
+            // B4_2
+            itemList: KnockoutObservableArray<ItemModel>;
+            selectedCode: KnockoutObservable<string>;
+            isEnable: KnockoutObservable<boolean>;
+            isEditable: KnockoutObservable<boolean>;
+
             constructor() {
                 let self = this;
                 self.screenMode = ko.observable(ScreenMode.UPDATE);
@@ -59,6 +66,23 @@ module nts.uk.com.view.cas014.b {
                 self.roleSetPerson.subscribe((data: RoleSetPerson) => {
                     self.dateValue({ startDate: data.startDate, endDate: data.endDate });
                 });
+                // B4_2
+                self.itemList = ko.observableArray([
+                    new ItemModel('1', 'いち'),
+                    new ItemModel('2', 'に'),
+                    new ItemModel('3', 'さん'),
+                    new ItemModel('4', 'よん'),
+                    new ItemModel('5', 'ご'),
+                    new ItemModel('6', 'ろく'),
+                    new ItemModel('7', 'なな'),
+                    new ItemModel('8', 'はち'),
+                    new ItemModel('9', 'きゅう'),
+                    new ItemModel('10', 'じゅう')
+                ]);
+
+                self.selectedCode = ko.observable('1');
+                self.isEnable = ko.observable(true);
+                self.isEditable = ko.observable(true);
 
             }
 
@@ -75,6 +99,9 @@ module nts.uk.com.view.cas014.b {
                         });
                         _rsList = _.sortBy(_rsList, ['code']);
                         _.each(_rsList, rs => self.roleSetList.push(rs));
+
+                        // B4_2
+                        self.itemList();
 
                         //select first role set
                         if (self.selectedRoleSet() == self.roleSetList()[0].code) 
@@ -319,6 +346,16 @@ module nts.uk.com.view.cas014.b {
     export class ScreenMode {
         static NEW = 0;
         static UPDATE = 1;
+    }
+
+    class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
     }
 }
 
