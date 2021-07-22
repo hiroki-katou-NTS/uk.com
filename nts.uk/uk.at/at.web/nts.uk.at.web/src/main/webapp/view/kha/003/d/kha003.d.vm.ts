@@ -276,6 +276,10 @@ module nts.uk.at.kha003.d {
                     subArray.push(new Content(""));
                     break;
                 case 4:
+                    subArray.push(new Content(""));
+                    subArray.push(new Content(""));
+                    subArray.push(new Content(summaryItemDetail.displayInfo.name + vm.$i18n("KHA003_100")));
+                    subArray.push(new Content(""));
                     break;
             }
             for (let verticalItem of summaryItemDetail.verticalTotalList) {
