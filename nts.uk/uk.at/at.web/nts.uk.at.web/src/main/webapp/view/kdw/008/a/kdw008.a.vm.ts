@@ -170,15 +170,19 @@ module nts.uk.at.view.kdw008.a {
                     } else {
                         self.enableSheetNo(true);
                     }
-                    if (self.isDaily()) {
-                        nts.uk.ui.errors.clearAll();
-                        self.getDailyDetail(self.currentDailyFormatCode(), value).done(() => {
-                            block.clear();
-                        })
-                    } else {
-                        self.getMonthCorrectionDetail(value);
-                        block.clear();
-                    }
+                    if (self.formatCodeItems().length > 0) {
+	                    if (self.isDaily()) {
+	                        nts.uk.ui.errors.clearAll();
+	                        self.getDailyDetail(self.currentDailyFormatCode(), value).done(() => {
+	                            block.clear();
+	                        })
+	                    } else {
+	                        self.getMonthCorrectionDetail(value);
+	                        block.clear();
+	                    }
+	                } else {
+	                	block.clear();
+	                }
                 });
 
                 self.authorityFormatDailyValue = ko.observableArray([]);
