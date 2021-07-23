@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +44,6 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
@@ -71,9 +71,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceConfigurationRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
+import nts.uk.ctx.sys.auth.dom.adapter.workplace.SysAuthWorkplaceAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.file.at.app.export.yearholidaymanagement.AnnualLeaveAcquisitionDate;
 import nts.uk.file.at.app.export.yearholidaymanagement.BreakPageType;
 import nts.uk.file.at.app.export.yearholidaymanagement.ClosurePrintDto;
@@ -166,10 +166,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	@Inject
 	private ManagedParallelWithContext parallel;
 	@Inject
-	private WorkplaceConfigurationRepository wpConfigRepo;
-	@Inject
-	private WorkplaceInformationRepository wpConfigInfoRepo;
-	@Inject
 	private ClosureRepository closureRepo;
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
@@ -179,6 +175,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 	@Inject
 	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+	@Inject
+	private SysAuthWorkplaceAdapter sysAuthWorkplaceAdapter;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
@@ -297,28 +295,25 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		List<String> workplaceIds = employeeExports.stream().map(x -> {
 			return x.getWorkplace().getWorkplaceId();
 		}).collect(Collectors.toList());
-
-		List<WorkplaceConfigInfo> wpInfos = getHiCDFromWPID(companyId, workplaceIds, baseDate);
-
+//
+//		List<WorkplaceConfigInfo> wpInfos = getHiCDFromWPID(companyId, workplaceIds, baseDate);
+//
+		
+		// [No.560]職場IDから職場の情報をすべて取得する
+		List<WorkplaceInfoImport> wkpInfos = this.sysAuthWorkplaceAdapter
+				.getWorkplaceInfoByWkpIds(companyId, workplaceIds, baseDate);
 		// set code Hierarchy vào employee
 		employeeExports.forEach(emp -> {
 			String wpId = emp.getWorkplace().getWorkplaceId();
-			wpInfos.stream().filter(info -> {
-				if (!CollectionUtil.isEmpty(info.getLstWkpHierarchy())) {
-					return !CollectionUtil.isEmpty(info.getLstWkpHierarchy().stream().filter(wphi -> {
-						return wphi.getWorkplaceId().equals(wpId);
-					}).collect(Collectors.toList()));
-				} else {
-					return false;
-				}
-			}).findFirst().ifPresent(info -> {
-				emp.getWorkplace()
-						.setHierarchyCode(info.getLstWkpHierarchy().stream().findFirst().get().getHierarchyCode().v());
-			});
-
+			String hierarchyCd = wkpInfos.stream().filter(data -> data.getWorkplaceId().equals(wpId))
+					.findAny()
+					.map(WorkplaceInfoImport::getHierarchyCode)
+					.orElse(null);
+			emp.getWorkplace().setHierarchyCode(hierarchyCd);
 		});
+		
 		// 職場を職場階層コードの順に並び替える ※帳票出力時は、職場階層コード > 社員コード の順に出力する
-
+		employeeExports.sort(Comparator.comparing(emp -> emp.getWorkplace().getHierarchyCode()));
 		// đảo xuống dưới để tiện việc map data
 		// 社員分ループ
 
@@ -476,26 +471,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));
 		return resultmap.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList());
-	}
-
-	/**
-	 * 
-	 * @param companyId
-	 * @param wPIDs
-	 * @param baseDate
-	 * @return
-	 */
-	private List<WorkplaceConfigInfo> getHiCDFromWPID(String companyId, List<String> workplaceIds,
-			GeneralDate baseDate) {
-
-		List<String> historyIds = new ArrayList<String>();
-		this.wpConfigRepo.findByDate(companyId, baseDate).ifPresent(config -> {
-			historyIds.addAll(config.items().stream().map(x -> {
-				return x.identifier();
-			}).collect(Collectors.toList()));
-		});
-		return this.convertData(this.wpConfigInfoRepo.findByHistoryIdsAndWplIds(companyId, historyIds, workplaceIds));
-
 	}
 
 	/**
@@ -675,11 +650,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					holidayDetailRow = currentRow;
 					holidayDetailCol = MIN_GRANT_DETAIL_COL;
 					List<String> dateList = holidayDetails.stream()
-							.filter(detail -> detail.getUsedNumbers().getUsedTime().isPresent())
+							.filter(detail -> detail.getUsedNumbers().getUsedTime().isPresent()
+									&& detail.getUsedNumbers().getUsedTime().get().v() > 0)
 							.map(detail -> this.genHolidayText(detail, query.getPrintAnnualLeaveDate()))
 							.collect(Collectors.toList());
 					List<String> hourList = holidayDetails.stream()
-							.filter(detail -> detail.getUsedNumbers().getUsedTime().isPresent())
+							.filter(detail -> detail.getUsedNumbers().getUsedTime().isPresent()
+									&& detail.getUsedNumbers().getUsedTime().get().v() > 0)
 							.map(this::genTimeText)
 							.collect(Collectors.toList());
 					
