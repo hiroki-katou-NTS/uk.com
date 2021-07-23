@@ -2722,7 +2722,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const ipkr = $tg.hasClass('datepicker-container') && $tg.not('datepicker-inline');
                             const cpkr = $tg.closest('.datepicker-container').length > 0 && $tg.closest('.datepicker-inline').length === 0;
                             const event = $tg.closest('.fc-timegrid-event.fc-v-event.fc-event').length;
-                            const dig = $tg.closest('.ui-dialog-buttonset').length > 0;
+                            const dig = $tg.closest('.ui-dialog-buttons').length > 0;
                             const cd = $tg.hasClass('fc-next-day-button') || $tg.hasClass('fc-preview-day-button') ;
                             const st = $tg.hasClass('fc-settings-button');
                             const cv = $tg.hasClass('fc-one-day-button') || $tg.hasClass('fc-full-week-button') ;
