@@ -1886,7 +1886,8 @@ public class DailyPerformanceCorrectionProcessor {
 						.fromYearMonth(requireService.createRequire(), new CacheCarrier(),
 								empTarget, dateRefer, closurePeriodOpt.get().getYearMonth()));
 			}
-			if(lstClosurePeriod.isEmpty()) return null;
+//			if(lstClosurePeriod.isEmpty()) return null;
+			if(lstClosurePeriod.isEmpty()) return new DatePeriodInfo(new ArrayList<>(), result, yearMonth == null ? 0 : yearMonth.v(), closureId, lstClosureCache, lstPeriod);;
 			
 			List<AggrPeriodEachActualClosure> lstAggrPeriod = lstClosurePeriod.stream().flatMap(x -> x.getAggrPeriods().stream())
 					    .sorted((x, y) -> x.getPeriod().start().compareTo(y.getPeriod().end()))
