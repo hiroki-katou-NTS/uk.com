@@ -98,7 +98,7 @@ public class TaskInitialSelHist extends AggregateRoot
 	public void changeHistory(TaskInitialSel taskInitialSel , DatePeriod datePeriod ,TaskItem taskItem ){
 		
 		//		if 変更する履歴項目.期間 == 変更後の期間		
-				if(taskInitialSel.getDatePeriod() == datePeriod){
+				if(taskInitialSel.getDatePeriod().equals(datePeriod)){
 					//	[prv-1] 作業項目を変更する(変更後の期間,変更後の作業項目)	
 					changeTaskItem(datePeriod, taskItem);
 				}
