@@ -1191,11 +1191,15 @@ module nts.uk.ui.at.kdw013.calendar {
 
             const checkEditDialog = () => {
                 let dfd = $.Deferred();
-                if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
+                if (vm.$view() == "edit" && vm.params.$settings().isChange || !!eventNotSave) {
                     vm.$dialog
                         .confirm({ messageId: 'Msg_2094' })
                         .then((v: 'yes' | 'no') => {
                             if (v === 'yes') {
+                                if (eventNotSave) {
+                                    eventNotSave.remove();
+                                }
                                 popupPosition.event(null);
                                 popupPosition.setting(null);
                             }
