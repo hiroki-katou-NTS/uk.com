@@ -1189,6 +1189,27 @@ module nts.uk.ui.at.kdw013.calendar {
                 });
             };
 
+            const checkEditDialog = () => {
+                let dfd = $.Deferred();
+                if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                    vm.$dialog
+                        .confirm({ messageId: 'Msg_2094' })
+                        .then((v: 'yes' | 'no') => {
+                            if (v === 'yes') {
+                                popupPosition.event(null);
+                                popupPosition.setting(null);
+                            }
+                            dataEvent.delete(false);
+                            dfd.resolve(v);
+                        });
+                } else {
+                    popupPosition.event(null);
+                    popupPosition.setting(null);
+                    dfd.resolve('yes');
+                }
+                return dfd.promise();
+            }
+
             const viewButtons: ButtonSet = {
                 'one-day': {
                     text: vm.$i18n('KDW013_10'),
@@ -1196,20 +1217,27 @@ module nts.uk.ui.at.kdw013.calendar {
                         clearSelection();
 
                         if (vm.calendar.view.type !== 'timeGridDay') {
-                            activeClass(evt.target);
 
                             weekends(true);
                             $.Deferred()
                                 .resolve(true)
                                 .then(() => {
-                                    if (ko.isObservable(initialView)) {
-                                        initialView('oneDay');
-                                    } else {
-                                        vm.calendar.changeView('timeGridDay');
-                                    }
-                                    const sc = ko.unwrap(scrollTime);
+                                    
+                                    checkEditDialog().done((v) => {
+                                        if (v == 'yes') {
+                                            activeClass(evt.target);
 
-                                    vm.calendar.scrollToTime(formatTime(sc));
+                                            if (ko.isObservable(initialView)) {
+                                                initialView('oneDay');
+                                            } else {
+                                                vm.calendar.changeView('timeGridDay');
+                                            }
+                                            const sc = ko.unwrap(scrollTime);
+
+                                            vm.calendar.scrollToTime(formatTime(sc));
+                                        }
+                                    });
+                                      
                                 })
                                 .then(() => {
                                     if (version.match(/IE/)) {
@@ -1248,21 +1276,28 @@ module nts.uk.ui.at.kdw013.calendar {
                 'full-week': {
                     text: vm.$i18n('KDW013_11'),
                     click: (evt) => {
-                        clearSelection();
+                        
+                        checkEditDialog().done((v) => {
+                            if (v == 'yes') {
+                                clearSelection();
 
-                        if (vm.calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== true) {
-                            activeClass(evt.target);
+                                if (vm.calendar.view.type !== 'timeGridWeek' || ko.unwrap(weekends) !== true) {
+                                    activeClass(evt.target);
 
-                            weekends(true);
-                            if (ko.isObservable(initialView)) {
-                                initialView('fullWeek');
-                            } else {
-                                vm.calendar.changeView('timeGridWeek');
+                                    weekends(true);
+                                    if (ko.isObservable(initialView)) {
+                                        initialView('fullWeek');
+                                    } else {
+                                        vm.calendar.changeView('timeGridWeek');
+                                    }
+                                }
+                                const sc = ko.unwrap(scrollTime);
+
+                                vm.calendar.scrollToTime(formatTime(sc));
                             }
-                        }
-                        const sc = ko.unwrap(scrollTime);
+                        });
 
-                        vm.calendar.scrollToTime(formatTime(sc));
+
                     }
                 },
                 'full-month': {
@@ -1319,7 +1354,10 @@ module nts.uk.ui.at.kdw013.calendar {
                 'next-day': {
                     text: vm.$i18n('▶'),
                     click: () => {
-                        clearSelection();
+                        
+                        checkEditDialog().done((v) => {
+                            if (v == 'yes') {
+                                 clearSelection();
 
                         if (ko.isObservable(initialDate)) {
                             const date = ko.unwrap(initialDate);
@@ -1373,12 +1411,18 @@ module nts.uk.ui.at.kdw013.calendar {
                         const sc = ko.unwrap(scrollTime);
 
                         vm.calendar.scrollToTime(formatTime(sc));
+                            }
+                        });
+                       
                     }
                 },
                 'preview-day': {
                     text: vm.$i18n('◀'),
                     click: () => {
-                        clearSelection();
+                        
+                        checkEditDialog().done((v) => {
+                            if (v == 'yes') {
+                                 clearSelection();
 
                         if (ko.isObservable(initialDate)) {
                             const date = ko.unwrap(initialDate);
@@ -1432,19 +1476,28 @@ module nts.uk.ui.at.kdw013.calendar {
                         const sc = ko.unwrap(scrollTime);
 
                         vm.calendar.scrollToTime(formatTime(sc));
+                            }
+                        });
+                       
                     }
                    
                 },
                 'settings': {
                     text: '',
                     click: (evt) => {
-                        const tg: HTMLElement = evt.target as any;
+                        
+                        checkEditDialog().done((v) => {
+                            if (v == 'yes') {
+                               const tg: HTMLElement = evt.target as any;
 
                         if (tg) {
                             tg.classList.add(POWNER_CLASS_CPY);
 
                             popupPosition.setting(tg);
-                        }
+                        } 
+                            }
+                        });
+                        
                     }
                 }
             };
@@ -2596,6 +2649,23 @@ module nts.uk.ui.at.kdw013.calendar {
             vm.$styles(styles);
         }
 
+
+
+        checkEditDialog() {
+            let dfd = $.Deferred();
+            const vm = this;
+            if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+                vm.$dialog
+                    .confirm({ messageId: 'Msg_2094' })
+                    .then((v: 'yes' | 'no') => {
+                        dfd.resolve(v);
+                    });
+            } else {
+                dfd.resolve('yes');
+            }
+            return dfd.promise();
+        }
+
         private initalEvents() {
             const vm = this;
             const { $el, params, calendar, dataEvent, popupPosition } = vm;
@@ -2632,31 +2702,49 @@ module nts.uk.ui.at.kdw013.calendar {
 //                    }
 //                })
                 .registerEvent('mousedown', (evt) => {
-                    const $tg = $(evt.target);
-
-                    const iown = $tg.hasClass('.popup-owner-copy');
-                    const cown = $tg.closest('.popup-owner-copy').length > 0;
-                    const ipov = $tg.hasClass('.fc-popup-editor');
-                    const cpov = $tg.closest('.fc-popup-editor').length > 0;
-                    const ipkr = $tg.hasClass('.datepicker-container') && $tg.not('.datepicker-inline');
-                    const cpkr = $tg.closest('.datepicker-container').length > 0 && $tg.closest('.datepicker-inline').length === 0;
-                    const event = $tg.closest('.fc-timegrid-event.fc-v-event.fc-event').length;
                     
-                    dataEvent.mouse(true);
+                  
+                            const $tg = $(evt.target);
 
-                    const targ = $tg
-                        .closest('.fc-timegrid-event.fc-v-event.fc-event').length ? 'event' :
-                        ($tg.hasClass('fc-non-business') || $tg.hasClass('fc-timegrid-slot')) ? 'date' : null;
-
-                    dataEvent.target(targ);
+                            const iown = $tg.hasClass('popup-owner-copy');
+                            const cown = $tg.closest('.popup-owner-copy').length > 0;
+                            const ipov = $tg.hasClass('fc-popup-editor');
+                            const cpov = $tg.closest('.fc-popup-editor').length > 0;
+                            const ipkr = $tg.hasClass('datepicker-container') && $tg.not('datepicker-inline');
+                            const cpkr = $tg.closest('.datepicker-container').length > 0 && $tg.closest('.datepicker-inline').length === 0;
+                            const event = $tg.closest('.fc-timegrid-event.fc-v-event.fc-event').length;
+                            const dig = $tg.closest('.ui-dialog-buttonset').length > 0;
+                            const cd = $tg.hasClass('fc-next-day-button') || $tg.hasClass('fc-preview-day-button') ;
+                            const st = $tg.hasClass('fc-settings-button');
+                            const cv = $tg.hasClass('fc-one-day-button') || $tg.hasClass('fc-full-week-button') ;
                     
                     
+                            
 
-                    // close popup if target isn't owner & poper.
-                    if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr) {
-//                        popupPosition.event(null);
-//                        popupPosition.setting(null);
-                    }
+                            dataEvent.mouse(true);
+
+                            const targ = $tg
+                                .closest('.fc-timegrid-event.fc-v-event.fc-event').length ? 'event' :
+                                ($tg.hasClass('fc-non-business') || $tg.hasClass('fc-timegrid-slot')) ? 'date' : null;
+
+                            dataEvent.target(targ);
+
+
+
+                            // close popup if target isn't owner & poper.
+                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv) {
+                                vm.checkEditDialog().done((v) => {
+                                    if (v == 'yes') {   
+                                        popupPosition.event(null);
+                                        popupPosition.setting(null);
+
+                                    }
+                                });
+                            }
+
+                        
+                    
+                   
                     
 
                     

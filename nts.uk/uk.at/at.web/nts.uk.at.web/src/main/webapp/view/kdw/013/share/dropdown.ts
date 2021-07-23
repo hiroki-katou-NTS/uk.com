@@ -357,7 +357,7 @@ module nts.uk.ui.at.kdw013.share {
 
                     let selected = $(vm.$el).find('.dropdown-container').find('.selected');
                     
-                    if (selected) {
+                    if (selected.offset()) {
                         setTimeout(() => { $(vm.$el).find('.dropdown-container').scrollTop(0 - (ddlTop - selected.offset().top)) }, 50);
                     }
                 } else {

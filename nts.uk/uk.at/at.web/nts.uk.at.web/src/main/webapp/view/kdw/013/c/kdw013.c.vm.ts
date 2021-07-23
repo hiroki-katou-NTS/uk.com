@@ -1087,32 +1087,32 @@ module nts.uk.ui.at.kdw013.c {
             const wkp = ko.unwrap(workplace);
             if (t1) {
                 if (t1 != workCD1) {
-                    return false;
+                    return true;
                 }
             }
             if (t2) {
                 if (t2 != workCD2) {
-                    return false;
+                    return true;
                 }
             }
             if (t3) {
                 if (t3 != workCD3) {
-                    return false;
+                    return true;
                 }
             }
             if (t4) {
                 if (t4 != workCD4) {
-                    return false;
+                    return true;
                 }
             }
             if (t5) {
                 if (t5 != workCD5) {
-                    return false;
+                    return true;
                 }
             }
             if (wkp) {
                 if (wkp != workLocationCD) {
-                    return false;
+                    return true;
                 }
             }
         }
