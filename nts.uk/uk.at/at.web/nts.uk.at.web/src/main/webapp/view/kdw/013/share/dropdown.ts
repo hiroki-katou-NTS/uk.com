@@ -16,6 +16,9 @@ module nts.uk.ui.at.kdw013.share {
                 border-radius: 2px;
                 overflow: hidden;
             }
+            .dropdown-container{
+                overflow-y: auto;
+            }
             .nts-dropdown.error>div.dropdown-container {
                 border: 1px solid #ff6666 !important;
             }
@@ -54,6 +57,7 @@ module nts.uk.ui.at.kdw013.share {
                 height: auto;
                 z-index: 3;
                 position: fixed;
+                overflow-y: auto;
             }
             .nts-dropdown.show>div.dropdown-container {
                 background-color: #fff;
@@ -99,6 +103,7 @@ module nts.uk.ui.at.kdw013.share {
                 const selected = valueAccessor();
                 const name = allBindingsAccessor.get('name');
                 const items = allBindingsAccessor.get('items');
+                const visibleItemsCount = allBindingsAccessor.get('visibleItemsCount'); 
                 const required = allBindingsAccessor.get('required');
                 const hasError: undefined | KnockoutObservable<boolean> = allBindingsAccessor.get('hasError');
 
@@ -152,7 +157,7 @@ module nts.uk.ui.at.kdw013.share {
 
                 ko.applyBindingsToNode(msg, { text }, bindingContext);
 
-                ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { selected, items, required } } }, bindingContext);
+                ko.applyBindingsToNode(element, { component: { name: COMPONENT_NAME, params: { selected, items, required, visibleItemsCount } } }, bindingContext);
 
                 element.removeAttribute('data-bind');
 
@@ -293,8 +298,10 @@ module nts.uk.ui.at.kdw013.share {
 
             filter: KnockoutObservable<string> = ko.observable('');
             highlight: KnockoutObservable<number> = ko.observable(-1);
+        
+            visibleItemsCount: number = 5;
 
-            constructor(private params: { selected: KnockoutObservable<string>; items: KnockoutObservableArray<DropdownItem>; required: undefined | boolean | KnockoutObservable<undefined | boolean>; }) {
+            constructor(private params: { selected: KnockoutObservable<string>; items: KnockoutObservableArray<DropdownItem>; required: undefined | boolean | KnockoutObservable<undefined | boolean>; visibleItemsCount: number }) {
                 super();
 
                 const vm = this;
@@ -336,6 +343,27 @@ module nts.uk.ui.at.kdw013.share {
                         return null;
                     }
                 });
+                vm.visibleItemsCount = params.visibleItemsCount;
+            }
+        
+            setvisibleItemCount(show){
+                const vm = this;
+                const { visibleItemsCount } = vm;
+            
+                if (show) {
+                    let height = (visibleItemsCount * 31) + 69;
+                    $(vm.$el).find('.dropdown-container').css({ "maxHeight": height });
+                    let ddlTop = $(vm.$el).find('.dropdown-container').offset().top;
+
+                    let selected = $(vm.$el).find('.dropdown-container').find('.selected');
+                    
+                    if (selected) {
+                        setTimeout(() => { $(vm.$el).find('.dropdown-container').scrollTop(0 - (ddlTop - selected.offset().top)) }, 50);
+                    }
+                } else {
+                    $(vm.$el).find('.dropdown-container').removeAttr('style');
+                    $(vm.$el).find('.dropdown-container').scrollTop(0);
+                }
             }
 
             mounted() {
@@ -355,12 +383,16 @@ module nts.uk.ui.at.kdw013.share {
                         const items = ko.unwrap(vm.items).map(({ id }) => id);
                         const selected = ko.unwrap(vm.params.selected);
                         const index = _.indexOf(items, selected);
-
+                        
                         if (index > -1) {
                             vm.highlight(index);
                         }
+                        
                     }
+                    vm.setvisibleItemCount(sh); 
                 });
+        
+                
 
                 ko.computed({
                     read: () => {
@@ -475,6 +507,8 @@ module nts.uk.ui.at.kdw013.share {
                             }
                         }
                     });
+            
+                
             }
 
             selecteItem(item: DropdownItem, evt: MouseEvent) {

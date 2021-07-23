@@ -237,7 +237,8 @@ module nts.uk.ui.at.kdw013.c {
                                 items: $component.combobox.taskList1,
                                 required: true,
                                 name: $component.labels.taskLbl1,
-                                hasError: $component.errors.dropdown
+                                hasError: $component.errors.dropdown,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse2">
@@ -245,7 +246,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task2,
                                 name: $component.labels.taskLbl2,
-                                items: $component.combobox.taskList2
+                                items: $component.combobox.taskList2,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse3">
@@ -253,7 +255,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task3,
                                 name: $component.labels.taskLbl3,
-                                items: $component.combobox.taskList3
+                                items: $component.combobox.taskList3,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse4">
@@ -261,7 +264,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task4,
                                 name: $component.labels.taskLbl4,
-                                items: $component.combobox.taskList4
+                                items: $component.combobox.taskList4,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse5">
@@ -269,7 +273,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task5,
                                 name: $component.labels.taskLbl5,
-                                items: $component.combobox.taskList5
+                                items: $component.combobox.taskList5,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr class="workplace">
@@ -278,7 +283,8 @@ module nts.uk.ui.at.kdw013.c {
                                 dropdown: $component.model.workplace,
                                 items: $component.combobox.workLocations,
                                 name: 'WORKPLACE',
-                                hasError: $component.errors.workplace
+                                hasError: $component.errors.workplace,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr class="note">
