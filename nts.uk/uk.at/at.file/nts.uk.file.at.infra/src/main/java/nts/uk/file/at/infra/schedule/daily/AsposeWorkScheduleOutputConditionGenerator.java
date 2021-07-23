@@ -473,7 +473,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			setFixedData(condition, sheet, reportData, currentRow, remarkPosition);
 			
 			// Write display map
-			writeDisplayMap(sheet.getCells(),reportData, currentRow, nSize, chunkSize);
+			writeDisplayMap(sheet.getCells(),reportData, currentRow, nSize, chunkSize, outputItemDailyWork.getFontSize());
 			
 			currentRow+=nSize*2;
 			
@@ -2232,7 +2232,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param currentRow the current row
 	 * @param nSize the n size
 	 */
-	private void writeDisplayMap(Cells cells, DailyPerformanceReportData reportData, int currentRow, int nSize, int chunkSize) {
+	private void writeDisplayMap(Cells cells, DailyPerformanceReportData reportData, int currentRow, int nSize, int chunkSize, FontSizeEnum fontSize) {
 		List<OutputItemSetting> lstItem = reportData.getHeaderData().getLstOutputItemSettingCode();
 		
 		// Divide list into smaller lists (max 16 items)
@@ -2253,8 +2253,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             	outputItem = lstItemRow.get(j);
             	// Column 4, 6, 8,...
             	// Row 3, 4, 5
-            	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2); 
-            	cell.setValue(outputItem.getItemName());
+            	Cell cell = cells.get(currentRow + i*2, DATA_COLUMN_INDEX[0] + j * 2);
+            	int atdMaxLength = fontSize.equals(FontSizeEnum.BIG) ? 15 : 12;
+            	cell.setValue(
+	    			outputItem.getItemName().length() > atdMaxLength
+    				? outputItem.getItemName().substring(0, atdMaxLength)
+					: outputItem.getItemName()
+    			);
             	
             	cell = cells.get(currentRow + i*2 + 1, DATA_COLUMN_INDEX[0] + j * 2);
             }
@@ -2984,7 +2989,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		int remarkPosition = fontSize == FontSizeEnum.BIG ? 35 : 43;
 		int contentPosition = fontSize == FontSizeEnum.BIG ? 39 : 47;
 		int contentPosition1 = fontSize == FontSizeEnum.BIG ? 42 : 50;
-        String workplaceTitle = TextResource.localize("KWR001_90") + "　" + rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName();
+        String workplaceTitle = TextResource.localize("KWR001_90") + rootWorkplace.getWorkplaceCode() + "　" + rootWorkplace.getWorkplaceName();
 
         boolean colorWhite = true; // true = white, false = light blue, start with white row
 		
@@ -3946,6 +3951,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cells cells = sheetInfo.getSheet().getCells();
 		Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 		Range dateRange = cells.createRange(currentRow, 0, 1, contentPosition);
+		dateRangeTemp.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		dateRange.copy(dateRangeTemp);
 		Cell dateTagCell = cells.get(currentRow, 0);
 		dateTagCell.setValue(titleDate);
