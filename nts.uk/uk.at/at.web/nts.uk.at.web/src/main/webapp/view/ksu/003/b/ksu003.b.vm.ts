@@ -279,8 +279,8 @@ module nts.uk.at.view.ksu003.b {
             } else if (event && event != undefined) {
                 index = _.indexOf(self.taskPaletteOrgnization().keys(), Number($(event)[0].dataset.idx) + 1);
             }
-            self.textName(data ? data.text : null);
-            self.tooltip(data ? data.tooltip : null);
+            // self.textName(data ? data.text : null);
+            // self.tooltip(data ? data.tooltip : null);
 
             if (nts.uk.ui.errors.hasError()) {
                 return;
@@ -304,7 +304,7 @@ module nts.uk.at.view.ksu003.b {
                     self.taskPaletteOrgnization().keys.push(position);
                     self.taskPaletteOrgnization().taskCodes.push(dataFromKdl012[0].code);
                     self.taskPaletteOrgnization().taskNames.push(dataFromKdl012[0].taskName);
-                    self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012[0].taskAbNames);
+                    self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012[0].taskAbName);
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012[0] });
                 }
             });
