@@ -29,8 +29,8 @@ public class ManHourPeriod {
     public YearMonthPeriod getYearMonthPeriod() {
         if (totalUnit == 0) return null;
         return new YearMonthPeriod(
-                YearMonth.of(Integer.parseInt(yearMonthStart.substring(0, 4)), Integer.parseInt(yearMonthStart.substring(6, 7))),
-                YearMonth.of(Integer.parseInt(yearMonthEnd.substring(0, 4)), Integer.parseInt(yearMonthEnd.substring(6, 7)))
+                YearMonth.of(Integer.parseInt(yearMonthStart.substring(0, 4)), Integer.parseInt(yearMonthStart.substring(4, 6))),
+                YearMonth.of(Integer.parseInt(yearMonthEnd.substring(0, 4)), Integer.parseInt(yearMonthEnd.substring(4, 6)))
         );
     }
 
