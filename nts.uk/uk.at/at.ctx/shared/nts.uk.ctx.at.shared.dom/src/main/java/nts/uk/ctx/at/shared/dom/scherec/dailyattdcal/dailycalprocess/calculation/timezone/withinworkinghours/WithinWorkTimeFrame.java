@@ -1270,38 +1270,35 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	}
 	
 	/**
-	 * 指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間内時間枠
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.timeSheet.getDuplicatedWith(timeSpan);
-		if(!duplicates.isPresent())
-			return;
+	public Optional<WithinWorkTimeFrame> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.timeSheet.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
+			return Optional.empty();
+		}
+		WithinWorkTimeFrame recreated = new WithinWorkTimeFrame(
+				new EmTimeFrameNo(this.workingHoursTimeNo.v().intValue()),
+				duplicate.get(),
+				this.beforeLateEarlyTimeSheet.getDuplicatedWith(duplicate.get()).orElse(duplicate.get()),
+				this.rounding.clone(),
+				this.recordedTimeSheet.stream().map(t->t.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.deductionTimeSheet.stream().map(t->t.getAfterDeleteOffsetTime()).collect(Collectors.toList()),
+				this.getDuplicatedBonusPayNotStatic(this.bonusPayTimeSheet, duplicate.get()),
+				this.midNightTimeSheet.getDuplicateRangeTimeSheet(duplicate.get()),
+				this.getDuplicatedSpecBonusPayzNotStatic(this.specBonusPayTimesheet, duplicate.get()),
+				this.lateTimeSheet.flatMap(l -> l.recreateWithDuplicate(duplicate.get(), this.getCloneDeductionTimeSheet(), commonSet.get())),
+				this.leaveEarlyTimeSheet.flatMap(l -> l.recreateWithDuplicate(duplicate.get(), this.getCloneDeductionTimeSheet(), commonSet.get())));
 		
-		//時間帯を変更する
-		this.shiftTimeSheet(duplicates.get());
+		//所定内時間帯を重複する時間帯で作り直す
+		recreated.premiumTimeSheetInPredetermined = recreated.premiumTimeSheetInPredetermined.flatMap(p -> p.recreateWithDuplicate(duplicate.get()));
 		
-		//外出の相殺時間を削除する
-		this.deleteOffsetTimeOfGoOut();
+		//控除時間帯の登録
+		recreated.registDeductionListForWithin(this.getCloneDeductionTimeSheet(), commonSet);
 		
-		//加給時間帯、特定加給時間帯、深夜時間帯を指定した時間帯に絞り込む
-		this.reduceRangeOfBonusPay(duplicates.get());
-		this.reduceRangeOfSpecBonusPay(duplicates.get());
-		this.reduceRangeOfMidnight(duplicates.get());
-		
-		//遅刻時間帯を指定した時間帯に絞り込む
-		if(this.lateTimeSheet.isPresent())
-			this.lateTimeSheet.get().reduceRange(duplicates.get());
-		
-		//早退時間帯を指定した時間帯に絞り込む
-		if(this.leaveEarlyTimeSheet.isPresent())
-			this.leaveEarlyTimeSheet.get().reduceRange(duplicates.get());
-		
-		//所定内時間帯を指定した時間帯に絞り込む
-		if(this.premiumTimeSheetInPredetermined.isPresent())
-			this.premiumTimeSheetInPredetermined.get().reduceRange(duplicates.get());
-		
-		//遅刻早退控除前時間帯を変更する
-		this.beforeLateEarlyTimeSheet = duplicates.get();
+		return Optional.of(recreated);
 	}
 }

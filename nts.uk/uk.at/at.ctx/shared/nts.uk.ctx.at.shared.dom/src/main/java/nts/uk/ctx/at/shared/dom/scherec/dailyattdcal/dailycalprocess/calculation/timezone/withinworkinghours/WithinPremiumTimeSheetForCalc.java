@@ -23,21 +23,20 @@ public class WithinPremiumTimeSheetForCalc extends ActualWorkingTimeSheet{
 	 * Constructor
 	 * @param withinPremiumtimeSheet
 	 */
-	public WithinPremiumTimeSheetForCalc(TimeSpanForDailyCalc timeSheet) {
-		super(timeSheet, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN));
+	public WithinPremiumTimeSheetForCalc(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding) {
+		super(timeSheet, rounding);
 		this.withinPremiumtimeSheet = timeSheet;
 	}
 	
 	/**
-	 * 所定内時間帯を指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.withinPremiumtimeSheet.getDuplicatedWith(timeSheet);
-		if(!duplicates.isPresent())
-			return;
-		
-		this.withinPremiumtimeSheet = duplicates.get();
-		
+	public Optional<WithinPremiumTimeSheetForCalc> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.withinPremiumtimeSheet.getDuplicatedWith(timeSheet);
+		if(!duplicate.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(new WithinPremiumTimeSheetForCalc(duplicate.get(), this.rounding.clone()));
 	}
 }

@@ -1805,19 +1805,28 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	}
 
 	/**
-	 * 指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間内時間帯
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
+	public WithinWorkTimeSheet recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
 		List<WithinWorkTimeFrame> frames = this.withinWorkTimeFrame.stream()
 				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
 				.collect(Collectors.toList());
 		
-		for(int i=0; i<frames.size(); i++) {
-			//就業時間内時間枠を指定した時間帯に絞り込む
-			frames.get(i).reduceRange(timeSpan);
-		}
-		this.withinWorkTimeFrame.clear();
-		this.withinWorkTimeFrame.addAll(frames);
+		List<WithinWorkTimeFrame> duplicate = frames.stream()
+				.map(f -> f.recreateWithDuplicate(timeSpan, commonSet))
+				.filter(f -> f.isPresent())
+				.map(f -> f.get())
+				.collect(Collectors.toList());
+		
+		return new WithinWorkTimeSheet(
+				duplicate,
+				this.shortTimeSheet,
+				this.leaveEarlyDecisionClock,
+				this.lateDecisionClock,
+				this.outingVacationUseTime,
+				this.timeVacationAdditionRemainingTime);
 	}
 }

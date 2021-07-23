@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
@@ -301,18 +302,16 @@ public class OutsideWorkTimeSheet {
 	}
 	
 	/**
-	 * 指定した時間帯に絞り込む
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 就業時間外時間帯
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		if(this.overTimeWorkSheet.isPresent()) {
-			//残業時間帯を指定した時間帯に絞り込む
-			this.overTimeWorkSheet.get().reduceRange(timeSpan);
-		}
-		
-		if(this.holidayWorkTimeSheet.isPresent()) {
-			//休出時間帯を指定した時間帯に絞り込む
-			this.holidayWorkTimeSheet.get().reduceRange(timeSpan);
-		}
+	public OutsideWorkTimeSheet recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		//残業時間帯を重複する時間帯で作り直す
+		Optional<OverTimeSheet> overTime = this.overTimeWorkSheet.flatMap(o -> o.recreateWithDuplicate(timeSpan, commonSet));
+		//休出時間帯を重複する時間帯で作り直す
+		Optional<HolidayWorkTimeSheet> holidayWorkTime = this.holidayWorkTimeSheet.flatMap(h -> h.recreateWithDuplicate(timeSpan, commonSet));
+		return new OutsideWorkTimeSheet(overTime, holidayWorkTime);
 	}
 }

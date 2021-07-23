@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -59,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySet
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowCalculateSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
@@ -76,6 +78,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
+@AllArgsConstructor
 @Getter
 public class CalculationRangeOfOneDay {
 
@@ -1312,23 +1315,38 @@ public class CalculationRangeOfOneDay {
 		return true;
 	}
 	
-	/**指定した時間帯に絞り込む
+	/**
+	 * 重複する時間帯で作り直す
 	 * @param timeSpan 変更する時間
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 1日の計算範囲
 	 */
-	public void reduceRange(TimeSpanForDailyCalc timeSpan) {
-		Optional<TimeSpanForDailyCalc> duplicates = this.oneDayOfRange.getDuplicatedWith(timeSpan);
-		if(!duplicates.isPresent())
-			return;
-		
-		this.oneDayOfRange = duplicates.get();
-		
-		if(this.withinWorkingTimeSheet.isPresent())
-			//就業時間内時間帯を指定した時間帯に絞り込む
-			this.withinWorkingTimeSheet.get().reduceRange(duplicates.get());
-		
-		if(this.outsideWorkTimeSheet.isPresent())
-			//就業時間外時間帯を指定した時間帯に絞り込む
-			this.outsideWorkTimeSheet.get().reduceRange(duplicates.get());
+	public Optional<CalculationRangeOfOneDay> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		Optional<TimeSpanForDailyCalc> duplicate = this.oneDayOfRange.getDuplicatedWith(timeSpan);
+		if(!duplicate.isPresent()) {
+			return Optional.empty();
+		}
+		Finally<WithinWorkTimeSheet> within = Finally.empty();
+		if(this.withinWorkingTimeSheet.isPresent()) {
+			//就業時間内時間帯を重複する時間帯で作り直す
+			within = Finally.of(this.withinWorkingTimeSheet.get().recreateWithDuplicate(duplicate.get(), commonSet));
+		}
+		Finally<OutsideWorkTimeSheet> outside = Finally.empty();
+		if(this.outsideWorkTimeSheet.isPresent()) {
+			//就業時間外時間帯を重複する時間帯で作り直す
+			outside = Finally.of(this.outsideWorkTimeSheet.get().recreateWithDuplicate(duplicate.get(), commonSet));
+		}
+		return Optional.of(new CalculationRangeOfOneDay(
+				duplicate.get(),
+				this.workInformationOfDaily,
+				this.attendanceLeavingWork,
+				this.predetermineTimeSetForCalc,
+				this.nonWorkingTimeSheet,
+				this.shortTimeWSWithoutWork,
+				within,
+				outside,
+				this.beforeAttendance,
+				this.afterLeaving));
 	}
 
 	/**

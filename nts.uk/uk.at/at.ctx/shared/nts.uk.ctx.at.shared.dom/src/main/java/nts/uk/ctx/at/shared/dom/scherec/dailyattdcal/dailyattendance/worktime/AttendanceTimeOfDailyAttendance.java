@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAuto
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
@@ -521,18 +522,6 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 					.getTotalWorkingTime().calcTotalWorkingTimeForReCalc();
 		}
-
-		// 予実差異時間
-		AttendanceTimeOfExistMinus scheActDiffTime = calcScheActDiffTime(calcResultIntegrationOfDaily, attendanceItemIdList);
-		
-		// 不就労時間
-		AttendanceTimeOfExistMinus alreadlyDedBindTime = calcAlreadlyDedBindTime(
-				recordReGetClass.getCalculationRangeOfOneDay(),
-				calcResultIntegrationOfDaily,
-				attendanceItemIdList,
-				PremiumAtr.RegularWork,
-				recordReGetClass.getHolidayCalcMethodSet(),
-				recordReGetClass.getWorkTimezoneCommonSet());
 		
 		// 乖離時間計算用 勤怠項目ID紐づけDto作成
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
@@ -543,32 +532,20 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 						recordReGetClass.getCompanyCommonSetting().getPersonnelCostSetting().get(recordReGetClass.getIntegrationOfDaily().getYmd()),
 						forCalcDivergenceDto,
 						recordReGetClass.getPersonDailySetting().getUnitPrice());
-		
-		// 乖離時間(AggregateRoot)取得
-		List<DivergenceTimeRoot> divergenceTimeList = recordReGetClass.getCompanyCommonSetting().getDivergenceTime();
-		
-		val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(
-				forCalcDivergenceDto,
-				divergenceTimeList,
-				calcResultIntegrationOfDaily.getCalAttr(),
-				recordReGetClass.getFixRestTimeSetting(),
-				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
-				recordReGetClass.getWorkTimeSetting(),
-				recordReGetClass.getWorkType());
 
 		val reCreateActual = ActualWorkingTimeOfDaily.of(
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintDifferenceTime(),
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getConstraintTime(),
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTimeDifferenceWorkingHours(),
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime(),
-				reCalcDivergence,
+				new DivergenceTimeOfDaily(new ArrayList<>()),
 				premiumTimeOfDailyPerformance);
 
 		val reCreateAttendanceTime = new AttendanceTimeOfDailyAttendance(
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getWorkScheduleTimeOfDaily(),
 				reCreateActual,
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime(),
-				alreadlyDedBindTime, scheActDiffTime,
+				AttendanceTimeOfExistMinus.ZERO, AttendanceTimeOfExistMinus.ZERO,
 				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getMedicalCareTime());
 		
 		calcResultIntegrationOfDaily.setAttendanceTimeOfDailyPerformance(Optional.of(reCreateAttendanceTime));
@@ -582,86 +559,7 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 
 		return calcResultIntegrationOfDaily;
 	}
-	
-	/**
-	 * 予実差異時間を計算する
-	 * @param calcResultIntegrationOfDaily
-	 * @param attendanceItemIdList
-	 * @return 予実差異時間
-	 */
-	private static AttendanceTimeOfExistMinus calcScheActDiffTime(IntegrationOfDaily calcResultIntegrationOfDaily, List<Integer> attendanceItemIdList) {
-		// 予実差異時間
-		AttendanceTimeOfExistMinus scheActDiffTime = new AttendanceTimeOfExistMinus(0);
-		
-		if (!calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent())
-			return scheActDiffTime;
-		
-		// 総労働時間が編集している項目リストに含まれていなければ再計算
-		AttendanceTimeOfExistMinus scheTime = new AttendanceTimeOfExistMinus(
-				calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get()
-						.getWorkScheduleTimeOfDaily().getWorkScheduleTime().getTotal().valueAsMinutes());
-		
-		scheActDiffTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getBudgetTimeVariance();
-		
-		if (calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
-				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
-				&& !attendanceItemIdList.contains(new Integer(559))) {
-			
-			AttendanceTimeOfExistMinus totalWorkTime = new AttendanceTimeOfExistMinus(
-					calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get()
-							.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime().valueAsMinutes());
-			
-			scheActDiffTime = totalWorkTime.minusMinutes(scheTime.valueAsMinutes());
-		}
-		return scheActDiffTime;
-	}
-	
-	/**
-	 * 不就労時間を計算する
-	 * @param calculationRangeOfOneDay
-	 * @param calcResultIntegrationOfDaily
-	 * @param attendanceItemIdList
-	 * @param premiumAtr
-	 * @param holidayCalcMethodSet
-	 * @param commonSetting
-	 * @return 不就労時間
-	 */
-	private static AttendanceTimeOfExistMinus calcAlreadlyDedBindTime(
-			CalculationRangeOfOneDay calculationRangeOfOneDay,
-			IntegrationOfDaily calcResultIntegrationOfDaily,
-			List<Integer> attendanceItemIdList,
-			PremiumAtr premiumAtr,
-			HolidayCalcMethodSet holidayCalcMethodSet,
-			Optional<WorkTimezoneCommonSet> commonSetting) {
-		// 不就労時間
-		AttendanceTimeOfExistMinus alreadlyDedBindTime = new AttendanceTimeOfExistMinus(0);
-		
-		if (!calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent())
-			return alreadlyDedBindTime;
-		
-		// 総労働時間が編集している項目リストに含まれていなければ再計算
-		alreadlyDedBindTime = calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getUnEmployedTime();
-		if (calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
-				&& calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
-				&& !attendanceItemIdList.contains(new Integer(559))) {
-			// ↓で総控除時間を引く
-			alreadlyDedBindTime = new AttendanceTimeOfExistMinus(
-					calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getStayingTime().getStayingTime()
-							.minusMinutes(calcResultIntegrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-									.getTotalWorkingTime().calcTotalDedTime(
-											calculationRangeOfOneDay,
-											PremiumAtr.RegularWork,
-											holidayCalcMethodSet,
-											commonSetting)
-									.valueAsMinutes())
-							.valueAsMinutes());
-			alreadlyDedBindTime = alreadlyDedBindTime.minusMinutes(calcResultIntegrationOfDaily
-					.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.recalcActualTime().valueAsMinutes());
-		}
-		return alreadlyDedBindTime;
-	}
-	
+
 	/**
 	 * 
 	 * @param recordReGetClass 実績のデータ管理クラス
@@ -954,8 +852,12 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			DailyRecordToAttendanceItemConverter converter,
 			TimeSpanForDailyCalc timeSpan) {
 		
-		//1日の計算範囲を変更する
-		recordReGetClass.reduceRange(timeSpan);
+		//1日の計算範囲を重複する時間帯で作り直す
+		Optional<ManageReGetClass> duplicate = recordReGetClass.recreateWithDuplicate(timeSpan);
+		
+		if(!duplicate.isPresent()) {
+			return AttendanceTimeOfDailyAttendance.allZeroValue();
+		}
 		
 		//日別勤怠の勤怠時間を計算する
 		return collectCalculationResult(
@@ -963,15 +865,15 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 				workType,
 				Optional.of(SettingOfFlexWork.defaultValue()),
 				bonusPayAutoCalcSet,
-				recordReGetClass.getCompanyCommonSetting().getCompensatoryLeaveComSet().getCompensatoryOccurrenceSetting(),
+				duplicate.get().getCompanyCommonSetting().getCompensatoryLeaveComSet().getCompensatoryOccurrenceSetting(),
 				converter,
-				recordReGetClass.getCompanyCommonSetting().getDivergenceTime(),
+				duplicate.get().getCompanyCommonSetting().getDivergenceTime(),
 				calculateOfTotalConstraintTime,
 				scheduleReGetClass,
-				recordReGetClass,
-				recordReGetClass.getPersonDailySetting().getPersonInfo(),
+				duplicate.get(),
+				duplicate.get().getPersonDailySetting().getPersonInfo(),
 				predetermineTimeSetByPersonInfo,
-				recordReGetClass.getLeaveLateSet(),
+				duplicate.get().getLeaveLateSet(),
 				scheduleReGetClass.getLeaveLateSet(),
 				recordWorkTimeCode,
 				new DeclareTimezoneResult());

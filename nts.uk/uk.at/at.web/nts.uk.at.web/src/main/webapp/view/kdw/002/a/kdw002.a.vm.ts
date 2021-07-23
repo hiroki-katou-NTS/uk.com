@@ -38,6 +38,8 @@ module nts.uk.at.view.kdw002.a {
             //  ver8 A7_2
             displayName: KnockoutObservable<string> = ko.observable("");
             displayNameEnable: KnockoutObservable<boolean> = ko.observable(false);
+
+            gridHeight = window.innerHeight - 250;
             
             constructor(dataShare: any) {
                 var self = this;
