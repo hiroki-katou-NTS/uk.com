@@ -2,7 +2,12 @@
 
 module nts.uk.at.view.kwr003.a {
   import common = nts.uk.at.view.kwr003.common;
+  import ComponentOption = kcp.share.list.ComponentOption;
+
+  const KWR003_B_INPUT = 'KWR003_WORK_STATUS_DATA';
+  const KWR003_B_OUTPUT = 'KWR003WORK_STATUS_RETURN';
   const KWR003_SAVE_DATA = 'WORK_SCHEDULE_STATUS_OUTPUT_CONDITIONS';
+
   const PATH = {
     exportExcelPDF: 'at/function/kwr/003/report/export',
     getSettingListWorkStatus: 'at/function/kwr/003/a/listworkstatus',
@@ -12,12 +17,15 @@ module nts.uk.at.view.kwr003.a {
 
   @bean()
   class ViewModel extends ko.ViewModel {
+
     // start variable of CCG001
     ccg001ComponentOption: common.GroupOption;
     closureId: KnockoutObservable<number> = ko.observable(null);
     // end variable of CCG001
+
     //panel left
     dpkYearMonth: KnockoutObservable<string> = ko.observable(null);
+
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
     standardSelectedCode: KnockoutObservable<string> = ko.observable(null);
@@ -49,22 +57,28 @@ module nts.uk.at.view.kwr003.a {
     employeeList: KnockoutObservableArray<common.UnitModel>;
     baseDate: KnockoutObservable<Date>;
     // end KCP005
+
     mode: KnockoutObservable<common.UserSpecificInformation> = ko.observable(null);
+
     isPermission51: KnockoutObservable<boolean> = ko.observable(false);
     itemSelection: KnockoutObservableArray<any> = ko.observableArray([]);
+
     constructor(params: any) {
       super();
       const vm = this;
         vm.$ajax(PATH.getInitDateLoginEmployee).done((data) => {
           if(!_.isNil(data))
             vm.dpkYearMonth(data);
-            vm.CCG001_load(data);
         });
       //パラメータ.就業担当者であるか = true || false
       vm.isWorker(vm.$user.role.isInCharge.attendance);
+
+      //
       vm.getItemSelection();
+
       vm.getSettingListItems();
       vm.getWorkScheduleOutputConditions();
+
       vm.rdgSelectedId.subscribe((value) => {
         vm.isEnableSelectedCode(value === common.StandardOrFree.Standard);
         vm.isEnableStdBtn(!nts.uk.util.isNullOrEmpty(vm.standardSelectedCode()));
@@ -74,44 +88,42 @@ module nts.uk.at.view.kwr003.a {
         $(focusId).focus();
         nts.uk.ui.errors.clearAll();
       });
+
+      vm.CCG001_load();
       vm.KCP005_load();
+
     }
+
     created(params: any) {
       const vm = this;
     }
+
     mounted() {
       const vm = this;
+
       $('#kcp005 table').attr('tabindex', '-1');
       $('#btnExportExcel').focus();
     }
-    CCG001_load(date:any) {
+
+    CCG001_load() {
       const vm = this;
       // Set component option
-        if(nts.uk.util.isNullOrUndefined(date)){
-          date =  moment().toISOString();
-        }else {
-            date = date +'01';
-        }
-        let startDate = moment(date,"YYYY/MM/DD").toDate();
-        let endDate = moment(date).add(1, 'month').toDate();
       vm.ccg001ComponentOption = {
         /** Common properties */
         systemType: 2,
         showEmployeeSelection: true,
         showQuickSearchTab: true,
         showAdvancedSearchTab: true,
-        showBaseDate: false,
+        showBaseDate: true,
         showClosure: true,
-        showAllClosure: true,
-        showPeriod: true,//対象期間利用
-        periodFormatYM: true,//対象期間精度
-        maxPeriodRange: 'oneMonth', //最長期間
+        showAllClosure: false,
+        showPeriod: false,
+        periodFormatYM: false,
+
         /** Required parameter */
-        //baseDate: moment().toISOString(), //基準日
-        //対象期間開始日
-        periodStartDate: ko.observable(startDate),
-        //対象期間終了日
-        periodEndDate: ko.observable(endDate),
+        baseDate: moment().toISOString(), //基準日
+        //periodStartDate: periodStartDate, //対象期間開始日
+        //periodEndDate: periodEndDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
@@ -150,6 +162,7 @@ module nts.uk.at.view.kwr003.a {
 
     KCP005_load() {
       const vm = this;
+
       // start define KCP005
       vm.baseDate = ko.observable(new Date());
       vm.selectedCode = ko.observable('1');
@@ -166,6 +179,7 @@ module nts.uk.at.view.kwr003.a {
       vm.isShowSelectAllButton = ko.observable(true);
       //vm.disableSelection = ko.observable(false);
       vm.employeeList = ko.observableArray<common.UnitModel>([]);
+
 
       vm.listComponentOption = {
         isShowAlreadySet: vm.isShowAlreadySet(),
@@ -186,6 +200,7 @@ module nts.uk.at.view.kwr003.a {
 
       $('#kcp005').ntsListComponent(vm.listComponentOption)
     }
+
     /**
      *  get employees from CCG001
      */
