@@ -120,18 +120,22 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 	private KshmtWorkcondHist kshmtWorkingCond;
 
 	/** The kshmt working cond items. */
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
+	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable=false, updatable=false) })
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private KshmtWorkcondScheMeth kshmtScheduleMethod;
 	
 	
 	/**Kshmt Workcond WorkInfo */
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
+	@JoinColumns({
+		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable=false, updatable=false),
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable=false, updatable=false)})
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo;
 	
 	/**  */
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
+	@JoinColumns({
+		@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable=false, updatable=false),
+		@JoinColumn(name = "SID", referencedColumnName = "SID", insertable=false, updatable=false)})
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KshmtWorkcondWorkTs> listKshmtWorkcondWorkTs;
 	

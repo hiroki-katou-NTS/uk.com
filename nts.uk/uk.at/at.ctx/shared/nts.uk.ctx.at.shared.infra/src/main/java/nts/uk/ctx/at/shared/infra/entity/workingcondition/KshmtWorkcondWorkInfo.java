@@ -83,10 +83,6 @@ public class KshmtWorkcondWorkInfo  extends ContractCompanyUkJpaEntity implement
 	@Column(name = "SUNDAY_WORKTIME")
 	private String sundayWorkTime;
 	
-	@JoinColumns({@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = true, updatable = true) })
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<KshmtWorkcondWorkTs> listKshmtWorkcondWorkTs;
-	
 	@Override
 	protected Object getKey() {
 		return pk;
