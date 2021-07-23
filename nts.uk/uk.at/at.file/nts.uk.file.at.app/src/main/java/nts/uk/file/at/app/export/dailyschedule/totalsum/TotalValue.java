@@ -1,5 +1,7 @@
 package nts.uk.file.at.app.export.dailyschedule.totalsum;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -58,5 +60,13 @@ public class TotalValue {
 			return (T) this.value;
 		}
 		throw new RuntimeException("invalid type: " + this.valueType);
+	}
+	
+	public <T> void addValue(T value, ValueType valueType) {
+		if (valueType.isInteger()) {
+			this.value = String.valueOf(NumberUtils.toInt(this.value, 0) + (int) value);
+		} else if (valueType.isDouble()) {
+			this.value = String.valueOf(NumberUtils.toDouble(this.value, 0) + (double) value);
+		}
 	}
 }
