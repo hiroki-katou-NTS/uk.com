@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.dom.login.password.InspectionResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.getaneemployee.GetAnEmployeeImported;
+import nts.uk.shr.com.communicate.PathToWebApi.App;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -26,7 +28,7 @@ public class InspectionResultDto {
 	// 検証失敗メッセージ
 	private String verificationFailureMessage;
 
-	public static InspectionResultDto toInspectionResultDto(InspectionResult param) {
+	public static InspectionResultDto toInspectionResultDto(InspectionResult param,String password) {
 
 		InspectionResultDto result = new InspectionResultDto();
 
@@ -37,7 +39,7 @@ public class InspectionResultDto {
 
 			GetAnEmployeeImported emp = param.getEmployeeInformation().get();
 			result.setEmployeeInformation(new GetAnEmployeeImportedDto(emp.getCid(), emp.getPersonalId(), emp.getSid(),
-					emp.getEmployeeCode()));
+					emp.getEmployeeCode(), password, AppContexts.user().companyCode()));
 		}
 
 		return result;
@@ -58,4 +60,8 @@ class GetAnEmployeeImportedDto {
 
 	// 社員コード
 	private String employeeCode;
+	
+	private String password;
+	
+	private String companyCode;
 }

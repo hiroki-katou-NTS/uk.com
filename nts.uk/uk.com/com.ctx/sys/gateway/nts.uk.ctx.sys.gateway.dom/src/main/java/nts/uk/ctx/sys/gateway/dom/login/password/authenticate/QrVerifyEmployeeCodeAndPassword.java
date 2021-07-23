@@ -36,7 +36,7 @@ public class QrVerifyEmployeeCodeAndPassword {
 	public InspectionResultDto verifyEmployeeCodeAndPassword (String cid, String employeeCode, String password) {
 		VerifyEmployeeCodeAndPasswordImp require = new VerifyEmployeeCodeAndPasswordImp();
 		
-		return InspectionResultDto.toInspectionResultDto(VerifyEmployeeCodeAndPassword.verify(require, cid, employeeCode, password));
+		return InspectionResultDto.toInspectionResultDto(VerifyEmployeeCodeAndPassword.verify(require, cid, employeeCode, password), password);
 	}
 	
 	private class VerifyEmployeeCodeAndPasswordImp implements VerifyEmployeeCodeAndPassword.Require {
