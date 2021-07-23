@@ -10,7 +10,6 @@ import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.To
 import nts.uk.screen.at.app.kha003.SummaryItemDetailDto;
 import nts.uk.screen.at.app.kha003.SummaryItemDto;
 import nts.uk.screen.at.app.kha003.VerticalValueDailyDto;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ManHourAggregationResultExportService extends ExportService<ManHourDataSummaryQuery> {
-//public class ManHourAggregationResultExportService extends ExportService<List<RegistrationErrorListDto>> {
     @Inject
     private CSVReportGenerator generator;
 
@@ -40,33 +38,13 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
 
     private static final String TOTAL = "KHA003_100";
 
-    private static final String PGID = "KHA003";
-
     private static final String FILE_EXTENSION = ".csv";
-
-    private static final String DATE_FORMAT = "yyyy/MM/dd";
 
     @Override
     protected void handle(ExportServiceContext<ManHourDataSummaryQuery> exportServiceContext) {
-//    protected void handle(ExportServiceContext<List<RegistrationErrorListDto>> exportServiceContext) {
         val query = exportServiceContext.getQuery();
         if (query == null) return;
-//        AggregationResultQuery query = new AggregationResultQuery(
-//                "01", null, Collections.emptyList(),
-//                new ManHourPeriod(
-//                        0,
-//                        "2021/06/01",
-//                        "2021/06/03",
-//                        "2021/06",
-//                        "2021/06"
-//                )
-//        );
 
-        String executionTime = GeneralDateTime.now().toString().replaceAll("[/:\\s]", "");
-
-//        ManHourAggregationResultDto data = new ManHourAggregationResultDto(
-//                Dummy.SummaryTableFormat.create(),
-//                Dummy.SummaryTableOutputContent.create());
         val formatSetting = query.getSummaryTableFormat();
         val displayFormat = DisplayFormat.of(formatSetting.getDisplayFormat());
         val outputContent = query.getOutputContent();
