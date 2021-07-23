@@ -48,4 +48,19 @@ public class TaskInitialSelHistHelper {
 		return item;
 	}
 	
+	public static TaskItem getTaskItemDefault(){
+		TaskItem taskItem = new TaskItem(
+				Optional.of(new TaskCode("TaskCode1") ),
+				Optional.of(new TaskCode("TaskCode2") ),
+				Optional.of(new TaskCode("TaskCode3") ),
+				Optional.of(new TaskCode("TaskCode4") ),
+				Optional.of(new TaskCode("TaskCode5") )
+				);
+		return taskItem;
+	} 
+	
+	public static DatePeriod getDatePeriodDefault(){
+		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 04, 01), GeneralDate.ymd(2021, 05, 31));
+		return period;
+ 	}
 }
