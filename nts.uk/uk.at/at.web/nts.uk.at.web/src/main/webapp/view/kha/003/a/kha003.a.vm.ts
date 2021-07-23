@@ -442,7 +442,7 @@ module nts.uk.at.kha003.a {
             const vm = this;
             let shareData = {
                 isCsvOutPut: true,
-                totalUnit: vm.selectedId()
+                totalUnit: 0
             };
             vm.isOutPutAll(true);
 
@@ -591,7 +591,7 @@ module nts.uk.at.kha003.a {
          * */
         private getcodeAndName(identifier: any, taskList: any, type: any) {
             let info = null;
-            identifier = identifier.trim();
+            if (!_.isEmpty(identifier)) identifier = identifier.trim();
             for (let element of taskList) {
                 //check aff work place
                 if (type == 0 && element.workplaceId === identifier) {
