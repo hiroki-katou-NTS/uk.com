@@ -95,32 +95,29 @@ public class TaskInitialSelHist extends AggregateRoot
 	/**
 	 * [8] 履歴を変更する	
 	 */
-	public void changeHistory(TaskInitialSel taskInitialSel , DatePeriod datePeriod ,TaskItem taskItem ){
-		
-		//		if 変更する履歴項目.期間 == 変更後の期間		
-				if(taskInitialSel.getDatePeriod().equals(datePeriod)){
-					//	[prv-1] 作業項目を変更する(変更後の期間,変更後の作業項目)	
-					changeTaskItem(datePeriod, taskItem);
-				}
-				else{
-					//$直前の履歴 = 直前の履歴の履歴項目(変更する履歴項目)
-					Optional<TaskInitialSel> data = this.immediatelyBefore(taskInitialSel);
-					//	期間を変更する(変更する履歴項目,期間)	...changeSpan -- check param DatePeriod
-					this.changeSpan(taskInitialSel, datePeriod);
-					//[prv-1] 作業項目を変更する(変更後の期間,変更後の作業項目)		
-					changeTaskItem(datePeriod, taskItem);
-					//if $直前の履歴.isPresent	
-					if(data.isPresent()){
-						//	@履歴リスト：except $直前の履歴																			
-						lstHistory.remove(data);
-						// $直前の履歴.適用による終了の調整(変更する履歴項目)		
-						data.get().shortenEndToAccept(taskInitialSel);
-						// @履歴リスト.追加($直前の履歴)
-						lstHistory.add(data.get());
-						
-					}
-				}
- 		
+	public void changeHistory(TaskInitialSel taskInitialSel, DatePeriod datePeriod, TaskItem taskItem) {
+
+		// if 変更する履歴項目.期間 == 変更後の期間
+		if (taskInitialSel.getDatePeriod().equals(datePeriod)) {
+			// [prv-1] 作業項目を変更する(変更後の期間,変更後の作業項目)
+			changeTaskItem(datePeriod, taskItem);
+		} else {
+			// $直前の履歴 = 直前の履歴の履歴項目(変更する履歴項目)
+			Optional<TaskInitialSel> data = this.immediatelyBefore(taskInitialSel);
+			// 期間を変更する(変更する履歴項目,期間) ...changeSpan -- check param DatePeriod
+			this.changeSpan(taskInitialSel, datePeriod);
+			// [prv-1] 作業項目を変更する(変更後の期間,変更後の作業項目)
+			changeTaskItem(datePeriod, taskItem);
+			// if $直前の履歴.isPresent
+			if (data.isPresent()) {
+				// @履歴リスト：except $直前の履歴
+				lstHistory.remove(data.get());
+				// $直前の履歴.適用による終了の調整(変更する履歴項目)
+				data.get().shortenEndToAccept(taskInitialSel);
+				// @履歴リスト.追加($直前の履歴)
+				lstHistory.add(data.get());
+			}
+		}
 	}
 	@Override
 	public List<TaskInitialSel> items() {
