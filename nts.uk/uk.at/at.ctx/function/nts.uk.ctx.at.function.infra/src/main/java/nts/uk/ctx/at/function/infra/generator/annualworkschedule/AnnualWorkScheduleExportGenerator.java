@@ -151,7 +151,6 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 		empRange = wsc.getRangeByName("employeeRange");
 		// set border bottom after delete superfluous rows
 		empRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-		empRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		// print header
 		this.printHeader(wsc, dataSource.getHeader());
 
@@ -218,12 +217,17 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 	private void print(RangeCustom range, EmployeeData emp, boolean isPrintWorkplace,
 			List<ExportItem> itemBooks, boolean isOutNumExceedTime36Agr) {
+		Range empRange = range.worksheets.getRangeByName("employeeRange");
+		// set top border medium for first employee range 
+		empRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		if (isPrintWorkplace) {
 			String workplace = TextResource.localize("KWR008_50")		// D1_1
 							 + emp.getEmployeeInfo().getWorkplaceCode() // D1_3
 						   	 + "　"
 						   	 + emp.getEmployeeInfo().getWorkplaceName(); // D1_2
 			range.cell("workplace").putValue(workplace);
+			// set border top after set value for workspace
+			empRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		}
 		// print employee info
 		if (itemBooks.size() >= 1) {
