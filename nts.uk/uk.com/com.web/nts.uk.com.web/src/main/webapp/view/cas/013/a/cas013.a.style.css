@@ -87,3 +87,8 @@ label.ntsControl.limited-label {
 .nts-gridlist.ui-iggrid table th.ui-widget-header {
 	text-align: inherit;
 }
+
+.table-food-td{
+    border: 1px solid #dddddd;
+
+}
