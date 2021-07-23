@@ -182,7 +182,7 @@ module nts.uk.ui.at.kdw013.a {
                                         }) => {
                                             const $date = moment(date, DATE_FORMAT).toDate();
 
-                                            const { end, start } = timeZone;
+                                            const { end, start, workingHours } = timeZone;
                                             const {
                                                 workCD1,
                                                 workCD2,
@@ -220,7 +220,8 @@ module nts.uk.ui.at.kdw013.a {
                                                     workCD3,
                                                     workCD4,
                                                     workCD5,
-                                                    workLocationCD
+                                                    workLocationCD,
+                                                    workingHours
                                                 } as any
                                             };
                                         })
@@ -811,6 +812,16 @@ module nts.uk.ui.at.kdw013.a {
                     }
                 });
     
+    
+                vm.department.subscribe((value) => {
+                    const emps = ko.unwrap(vm.employees);
+                    if (vm.employees().length) {
+                        
+                        const [first] = emps;
+                        vm.params.employee(first.employeeId);
+                    }
+                });
+    
                 
 
                 vm.departments = ko.computed({
@@ -866,11 +877,6 @@ module nts.uk.ui.at.kdw013.a {
                                 vm.params.employee(first.employeeId);
                             }
 
-                        } else {
-                            if (emps.length) {
-                                const [first] = emps;
-                                vm.params.employee(first.employeeId);
-                            }
                         }
                     });
             }
@@ -892,7 +898,7 @@ module nts.uk.ui.at.kdw013.a {
 
                 employee(id);
 
-                department.valueHasMutated();
+                //department.valueHasMutated();
             }
         }
     }

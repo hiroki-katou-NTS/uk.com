@@ -96,7 +96,8 @@ module nts.uk.ui.at.kdw013.c {
         descriptions: ko.observable(''),
         timeRange: ko.observable({
             start: null,
-            end: null
+            end: null,
+            workingHours: null
         }),
         workplace: ko.observable(''),
         task1: ko.observable(''),
@@ -236,7 +237,8 @@ module nts.uk.ui.at.kdw013.c {
                                 items: $component.combobox.taskList1,
                                 required: true,
                                 name: $component.labels.taskLbl1,
-                                hasError: $component.errors.dropdown
+                                hasError: $component.errors.dropdown,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse2">
@@ -244,7 +246,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task2,
                                 name: $component.labels.taskLbl2,
-                                items: $component.combobox.taskList2
+                                items: $component.combobox.taskList2,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse3">
@@ -252,7 +255,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task3,
                                 name: $component.labels.taskLbl3,
-                                items: $component.combobox.taskList3
+                                items: $component.combobox.taskList3,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse4">
@@ -260,7 +264,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task4,
                                 name: $component.labels.taskLbl4,
-                                items: $component.combobox.taskList4
+                                items: $component.combobox.taskList4,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr data-bind="kdw-ttg: $component.usages.taskUse5">
@@ -268,7 +273,8 @@ module nts.uk.ui.at.kdw013.c {
                         <td><div data-bind="
                                 dropdown: $component.model.task5,
                                 name: $component.labels.taskLbl5,
-                                items: $component.combobox.taskList5
+                                items: $component.combobox.taskList5,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr class="workplace">
@@ -277,7 +283,8 @@ module nts.uk.ui.at.kdw013.c {
                                 dropdown: $component.model.workplace,
                                 items: $component.combobox.workLocations,
                                 name: 'WORKPLACE',
-                                hasError: $component.errors.workplace
+                                hasError: $component.errors.workplace,
+                                visibleItemsCount:10
                             "></div></td>
                     </tr>
                     <tr class="note">
@@ -614,7 +621,8 @@ module nts.uk.ui.at.kdw013.c {
                                 workCD2,
                                 workCD3,
                                 workCD4,
-                                workCD5
+                                workCD5,
+                                workingHours
                             } = extendedProps;
                             const startTime = getTimeOfDate(start);
                             const endTime = getTimeOfDate(end);
@@ -1079,32 +1087,32 @@ module nts.uk.ui.at.kdw013.c {
             const wkp = ko.unwrap(workplace);
             if (t1) {
                 if (t1 != workCD1) {
-                    return false;
+                    return true;
                 }
             }
             if (t2) {
                 if (t2 != workCD2) {
-                    return false;
+                    return true;
                 }
             }
             if (t3) {
                 if (t3 != workCD3) {
-                    return false;
+                    return true;
                 }
             }
             if (t4) {
                 if (t4 != workCD4) {
-                    return false;
+                    return true;
                 }
             }
             if (t5) {
                 if (t5 != workCD5) {
-                    return false;
+                    return true;
                 }
             }
             if (wkp) {
                 if (wkp != workLocationCD) {
-                    return false;
+                    return true;
                 }
             }
         }
@@ -1173,6 +1181,7 @@ module nts.uk.ui.at.kdw013.c {
                             event.setExtendedProp('workLocationCD', ko.unwrap(workplace));
 
                             event.setExtendedProp('remarks', descriptions());
+                            event.setExtendedProp('workingHours', tr.end - tr.start);
                         }
 
                         // close popup
