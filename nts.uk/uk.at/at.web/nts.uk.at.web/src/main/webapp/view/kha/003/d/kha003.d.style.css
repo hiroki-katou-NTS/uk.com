@@ -9,3 +9,7 @@
 thead tr td {
     width: 150px;
 }
+
+.ui-iggrid table td {
+    vertical-align: baseline;
+}
