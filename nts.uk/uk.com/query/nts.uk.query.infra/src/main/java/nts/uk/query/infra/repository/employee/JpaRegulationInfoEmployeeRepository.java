@@ -261,6 +261,10 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 				
 		// isWorking
 		String isWorking = "((TEMP_ABS_FRAME_NO is null and ABS_STR_DATE is null) or (ABS_STR_DATE > endDate) or (ABS_END_DATE < startDate) )";
+		
+		// isWorking2 - fix cho trường hợp có nhiều khoảng lịch sử nghỉ bug: 118466
+		String isWorking2 = " ((TEMP_ABS_FRAME_NO is null and ABS_STR_DATE is null) OR (SID NOT IN (SELECT DISTINCT SID FROM EMPLOYEE_DATA_VIEW WHERE ABS_STR_DATE <= startDate AND ABS_END_DATE >= endDate AND CID = '" + comId + "' )) ) ";
+		
 		// is in company
 		String isInCompany = " NOT ( COM_STR_DATE > endDate OR COM_END_DATE < startDate) ";
 
@@ -270,7 +274,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		String retireCondition = null;
 		// includeIncumbents
 		if (paramQuery.getIncludeIncumbents()) {
-			incumbentCondition = isWorking + and + isInCompany;
+			incumbentCondition = isWorking2 + and + isInCompany;
 		}
 
 		// workerOnLeave
