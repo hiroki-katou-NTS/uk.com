@@ -100,10 +100,15 @@ module nts.uk.at.kha003.d {
         initGrid() {
             const vm = this;
             const columns: Array<any> = [
-                { headerText: "", key: "ID", dataType: "string", hidden: true, width: '0px' }
+                {headerText: "", key: "ID", dataType: "string", hidden: true, width: '0px'}
             ];
             for (let i = 0; i < vm.dateHeaders().length; i++) {
-                columns.push({ headerText: vm.dateHeaders()[i].text, key: "c" + (i + 1), dataType: "object", width: i < vm.level || i == vm.dateHeaders().length - 1 ? '130px' : '70px' });
+                columns.push({
+                    headerText: vm.dateHeaders()[i].text,
+                    key: "c" + (i + 1),
+                    dataType: "object",
+                    width: i < vm.level || i == vm.dateHeaders().length - 1 ? '130px' : '70px'
+                });
             }
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
@@ -166,6 +171,11 @@ module nts.uk.at.kha003.d {
             var dispFormat = detailFormatSetting.displayFormat;
             var totalUnit = detailFormatSetting.totalUnit;
             var isDisplayTotal = detailFormatSetting.dispHierarchy == 1;
+            if (isDisplayTotal) {
+                vm.dateHeaders.push(
+                    new DateHeader('', '', vm.$i18n('KHA003_98'))
+                )
+            }
             var outputContent = data.outputContent;
             var totalLevel = data.countTotalLevel;
             vm.level = totalLevel;
@@ -355,7 +365,7 @@ module nts.uk.at.kha003.d {
                     count = 5;
                     break;
             }
-            for (let i = 0; i < summaryItemDetail.verticalTotalList.length; i ++) {
+            for (let i = 0; i < summaryItemDetail.verticalTotalList.length; i++) {
                 const verticalItem = summaryItemDetail.verticalTotalList[i];
                 rowData["c" + (i + count)] = vm.formatValue(verticalItem.workingHours, dispFormat);
             }
@@ -746,9 +756,6 @@ module nts.uk.at.kha003.d {
                 currentDate.setUTCDate(currentDate.getUTCDate() + steps);
                 vm.maxDateRange++;
             }
-            vm.dateHeaders.push(
-                new DateHeader('', '', vm.$i18n('KHA003_98'))
-            )
         }
 
         mounted() {

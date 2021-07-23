@@ -20,15 +20,15 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--D1_4-->
-            <a class="goback"
+            <a tabindex="1" class="goback"
                data-bind="ntsLinkButton: { }, click:backToAScreen">#{i18n.getText('KHA003_73')}</a>
             <!--D1_1-->
-            <button tabindex="5" class="proceed"
+            <button tabindex="2" class="proceed"
                     data-bind="click:exportExcell">#{i18n.getText('KHA003_70')}</button>
             <!--D1_2-->
-            <button class="proceed" data-bind="click:exportCsv">#{i18n.getText('KHA003_71')}</button>
+            <button tabindex="3" class="proceed" data-bind="click:exportCsv">#{i18n.getText('KHA003_71')}</button>
             <!--D1_3-->
-            <button data-bind="click:displayKha003CScreen">#{i18n.getText('KHA003_72')}</button>
+            <button tabindex="4" data-bind="click:displayKha003CScreen">#{i18n.getText('KHA003_72')}</button>
         </div>
         <div id="contents-area">
             <div id="grid1"></div>
