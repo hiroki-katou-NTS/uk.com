@@ -31,6 +31,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -64,6 +65,7 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
@@ -897,10 +899,16 @@ public class DailyPerformanceCorrectionProcessor {
 						dateRange.getEndDate());
 		appplicationName.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
-			if (appMapDateSid.containsKey(key)) {
-				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + x.getAppTypeName());
+			String textValue = x.getAppTypeName();
+			if(x.getPrePostAtr()==PrePostAtr.PREDICT.value) {
+				textValue += "(" + I18NText.getText("KDW003_140") + ")";
 			} else {
-				appMapDateSid.put(key, x.getAppTypeName());
+				textValue += "(" + I18NText.getText("KDW003_141") + ")";
+			}
+			if (appMapDateSid.containsKey(key)) {
+				appMapDateSid.put(key, appMapDateSid.get(key) + "  " + textValue);
+			} else {
+				appMapDateSid.put(key, textValue);
 			}
 		});
 		

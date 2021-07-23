@@ -70,6 +70,7 @@ public class ApplicationListForScreen {
 						.appType(application.getAppType().value)
 						.appTypeName(application.getAppType().name)
 						.reflectState(application.getReflectionStatus().getListReflectionStatusOfDay().get(0).getActualReflectStatus().value)
+						.prePostAtr(application.getPrePostAtr().value)
 						.build();
 				
 				applicationExports.add(applicationExport);
@@ -95,7 +96,7 @@ public class ApplicationListForScreen {
 		List<AppGroupExportDto> result = new ArrayList<>();
 		
 		Map<Object, List<AppGroupExportDto>> mapDate =  appExportLst.stream()
-				.map(x -> new AppGroupExportDto(x.getAppDate(),x.getAppType(),x.getEmployeeID(),x.getAppTypeName()))
+				.map(x -> new AppGroupExportDto(x.getAppDate(),x.getAppType(),x.getEmployeeID(),x.getAppTypeName(), x.getPrePostAtr()))
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getAppDate(), x.getEmployeeID())));
 		mapDate.entrySet().stream().forEach(x -> {
 			Map<Object, List<AppGroupExportDto>> mapDateType = x.getValue().stream().collect(Collectors.groupingBy(y -> y.getAppType()));
