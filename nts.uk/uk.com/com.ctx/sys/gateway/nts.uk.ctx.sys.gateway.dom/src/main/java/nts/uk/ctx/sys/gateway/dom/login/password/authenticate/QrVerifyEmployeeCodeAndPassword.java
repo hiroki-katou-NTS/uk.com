@@ -33,10 +33,10 @@ public class QrVerifyEmployeeCodeAndPassword {
 	@Inject
 	private LoginPasswordOfUserRepository loginPasswordOfUserRepository;
 	
-	public InspectionResult verifyEmployeeCodeAndPassword (String cid, String employeeCode, String password) {
+	public InspectionResultDto verifyEmployeeCodeAndPassword (String cid, String employeeCode, String password) {
 		VerifyEmployeeCodeAndPasswordImp require = new VerifyEmployeeCodeAndPasswordImp();
 		
-		return VerifyEmployeeCodeAndPassword.verify(require, cid, employeeCode, password);
+		return InspectionResultDto.toInspectionResultDto(VerifyEmployeeCodeAndPassword.verify(require, cid, employeeCode, password));
 	}
 	
 	private class VerifyEmployeeCodeAndPasswordImp implements VerifyEmployeeCodeAndPassword.Require {
