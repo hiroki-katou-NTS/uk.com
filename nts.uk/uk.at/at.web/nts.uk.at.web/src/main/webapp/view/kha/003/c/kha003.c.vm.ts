@@ -105,13 +105,31 @@ module nts.uk.at.kha003.c {
                     vm.c51isVisible(true)
                 }
                 vm.c21Params(data.c21);
-                vm.c21Text(vm.$i18n('KHA003_61', [data.c21.name]))
+                vm.c21Text(vm.$i18n('KHA003_61', [data.c21.name]));
                 vm.c31Params(data.c31);
-                vm.c31Text(vm.$i18n('KHA003_61', [vm.c31Params().name]))
+                vm.c31Text(vm.$i18n('KHA003_61', [vm.c31Params().name]));
                 vm.c41Params(data.c41);
-                vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params().name]))
+                vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params().name]));
                 vm.c51Params(data.c51);
-                vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params().name]))
+                vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params().name]));
+                vm.$window.storage('kha003AShareData_OLD').done((oldData: any) => {
+                    if (oldData && (data.c21.type != oldData.c21.type
+                        || data.c31.type != oldData.c31.type
+                        || data.c41.type != oldData.c41.type
+                        || data.c51.type != oldData.c51.type)) {
+                        vm.$dialog.error({messageId: "Msg_2168"});
+                        vm.$window.storage('kha003CShareData', {});
+                    } else {
+                        vm.$window.storage('kha003CShareData').done(data => {
+                            data = data || {};
+                            vm.c24CurrentCodeList(data.c24CurrentCodeList || []);
+                            vm.c34CurrentCodeList(data.c34CurrentCodeList || []);
+                            vm.c44CurrentCodeList(data.c44CurrentCodeList || []);
+                            vm.c54CurrentCodeList(data.c54CurrentCodeList || []);
+                        });
+                    }
+                    vm.$window.storage('kha003AShareData_OLD', data);
+                });
             });
 
             vm.$window.storage('kha003BShareData').done((data: any) => {
@@ -119,14 +137,6 @@ module nts.uk.at.kha003.c {
                 vm.c34Items(this.getItemData(vm.c31Params().type, data));
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
-            });
-
-            vm.$window.storage('kha003CShareData').done(data => {
-                data = data || {};
-                vm.c24CurrentCodeList(data.c24CurrentCodeList || []);
-                vm.c34CurrentCodeList(data.c34CurrentCodeList || []);
-                vm.c44CurrentCodeList(data.c44CurrentCodeList || []);
-                vm.c54CurrentCodeList(data.c54CurrentCodeList || []);
             });
         }
 
