@@ -2169,10 +2169,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cells cells = sheet.getCells();
 		Cell periodCell = cells.get(dateRow,0);
 		
-		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
-		String periodStr = TextResource.localize("KWR001_112") + " "
-							+ query.getStartDate().toLocalDate().format(jpFormatter) + " "
-							+ WorkScheOutputConstants.PERIOD_SYMBOL + " "
+		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd（E）", Locale.JAPAN);
+		String periodStr = TextResource.localize("KWR001_112")
+							+ query.getStartDate().toLocalDate().format(jpFormatter)
+							+ WorkScheOutputConstants.PERIOD_SYMBOL
 							+ query.getEndDate().toLocalDate().format(jpFormatter);
 		periodCell.setValue(periodStr);
 	}
