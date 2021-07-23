@@ -105,6 +105,9 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        if (itemCheck == 6) {
+                            self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(1); 
+                        }
                         //fix bug 100145
                         self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                         self.comparisonRange().minAmountOfMoneyValue(null);
