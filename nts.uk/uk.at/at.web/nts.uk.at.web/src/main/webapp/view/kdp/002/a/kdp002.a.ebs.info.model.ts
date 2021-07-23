@@ -11,6 +11,7 @@ module nts.uk.at.view.kdp002.a {
 			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }>;
 			yearMonth: KnockoutObservable<any>;
 			workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
+			loadCurrentCd: KnockoutObservable<boolean> = ko.observable(true);
 
 			constructor(start: IStartPage, workManagementMultiple: boolean) {
 				let self = this;
@@ -50,6 +51,11 @@ module nts.uk.at.view.kdp002.a {
 						self.bindItemData(start.timeCard.listAttendances);
 					}
 				}
+
+				self.yearMonth.subscribe(() => {
+					self.currentCode(null);
+					self.loadCurrentCd(true);
+				})
 			}
 
 			setTimeStampType(stampData) {
@@ -102,11 +108,21 @@ module nts.uk.at.view.kdp002.a {
 						} else {
 							formatedCardTime = "<span class=''>" + formatedCardTime + "</span>";
 						}
+						let systemDate = moment().format('YYYY/MM/DD');
+						
+						if (model.loadCurrentCd()) {
+							
+							if (timeCard.date === systemDate && systemDate.substr(0, 7) === model.yearMonth()) {
+								model.currentCode(timeCard.code);
+							}
+						}
+						
 						timeCard.date = formatedCardTime;
 						timeCard.workIn1 = timeCard.workIn1 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn1) : null;
 						timeCard.workOut1 = timeCard.workOut1 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workOut1) : null;
 						timeCard.workIn2 = timeCard.workIn2 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workIn2) : null;
 						timeCard.workOut2 = timeCard.workOut2 ? nts.uk.time.format.byId("ClockDay_Short_HM", timeCard.workOut2) : null;
+						
 					});
 					model.items(items);
 				}
@@ -190,4 +206,8 @@ module nts.uk.at.view.kdp002.a {
 			backGroundColor: string;
 		}
 	}
+}
+
+var setScroll = function(currentCode: number){
+	$( "#time-card-list_scrollContainer" ).scrollTop(24*(currentCode-3));
 }

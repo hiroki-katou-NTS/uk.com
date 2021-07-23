@@ -8,6 +8,7 @@ module nts.uk.at.view.kdp002.a {
                     reCalGridWidthHeight();
                 });			
 			}
+            setTimeout(() => setScroll(screenModel.stampGrid().currentCode()), 200);
 			$(window).resize(function () {reCalGridWidthHeight()});
         });
     });
