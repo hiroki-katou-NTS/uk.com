@@ -63,6 +63,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -504,7 +505,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			List<WorkType> workTypeLst,
 			List<WorkTimeSetting> workTimeLst,
 			AchievementDetail achievementDetail) {
+		
 		String companyID = AppContexts.user().companyId();
+		
 		// 申請日付チェック
 		if(inputDate != null && achievementDetail != null) {
 			// INPUT．「実績詳細」をチェックする
@@ -527,34 +530,51 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, paramDate);
 		String processWorkType = null;
 		String processWorkTime = null; 
+		
 		if(opWorkingConditionItem.isPresent()) {
-			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
-			Optional<WorkTypeCode> opConditionWktypeCD = Optional.of(opWorkingConditionItem.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
-			List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-			if(opConditionWktypeCD.isPresent() && workTypeCDLst.contains(opConditionWktypeCD.get().v())) {
-				// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
-				processWorkType = opConditionWktypeCD.get().v();
+			
+			WorkingConditionItem workingConditionItem = opWorkingConditionItem.get();
+			
+			// $勤務情報　＝　労働条件項目.区分別勤務.出勤日の勤務情報を取得する()
+			WorkInformation workInformation =
+					workingConditionItem.getWorkCategory()
+										.getWorkInformationWorkDay();
+			// $勤務情報．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
+			String workType = workInformation.getWorkTypeCode().v();
+			
+			// $勤務情報．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
+			if (workTypeLst.stream().anyMatch(x -> x.getWorkTypeCode().v().equals(workType))) {
+				// $勤務情報.勤務種類コードを選択する
+				processWorkType = workType;
+				
 			} else {
-				// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+				// 先頭の勤務種類を選択する
 				processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			}
-			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードがINPUT「就業時間帯リスト」Listに含まれているかをチェックする
-			processWorkTime = opWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null);
+			// $勤務情報.就業時間帯コードがINPUT「就業時間帯リスト」Listに含まれているかをチェックする
+			String workTime = 
+					opWorkingConditionItem.get()
+										  .getWorkCategory()
+										  .getWorkTime()
+										  .getWeekdayTime()
+										  .getWorkTimeCode()
+										  .map(x -> x.v())
+										  .orElse(null);
 			
-			final String workTime = processWorkTime;
-			
-			if (workTimeLst.stream().map(x -> x.getWorktimeCode().v()).filter(x -> x.equals(workTime)).findFirst().isPresent()) { // Listに存在する
-				// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
+			if (workTimeLst.stream().anyMatch(x -> x.getWorktimeCode().v().equals(workTime))) {
+				// $勤務情報.就業時間帯コードを選択する
 				processWorkTime = workTime;
-				
-			} else { // Listに存在しない
+			} else {
 				// INPUT「就業時間帯リスト」Listの先頭の就業時間帯を選択する
 				if (CollectionUtil.isEmpty(workTimeLst)) {
+					// 就業時間帯コード　＝　NULL(WorktimeCode = NULL)
 					processWorkTime = null;
 				} else {
+					// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
 					processWorkTime = workTimeLst.get(0).getWorktimeCode().v();	
 				}
 			}
+			
 			
 		} else {
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
