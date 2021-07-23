@@ -140,6 +140,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -1478,8 +1479,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 					new ErrMessageContent(TextResource.localize("Msg_429")));
 			errMesInfos.add(employmentErrMes);
 		}
-		
-		if(!worktypeHistItemImport.isPresent()) {
+		// 大塚モード
+		if(!worktypeHistItemImport.isPresent() && AppContexts.optionLicense().customize().ootsuka() == true) {
 			ErrorMessageInfo employmentErrMes = new ErrorMessageInfo(companyId, employeeId, day,
 					EnumAdaptor.valueOf(0, ExecutionContent.class),
 					// trong EA đang để リソースID　=　？？？, nên đang để tạm là 100
@@ -1502,11 +1503,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
-			EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
-					new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
-			this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
-			
-			return new AffiliationInforState(new ArrayList<>(), Optional.empty(), errMesInfos);
+			// 大塚モードじゃない
+				EmployeeDailyPerError employeeDailyPerError = new EmployeeDailyPerError(companyId, employeeId, day,
+						new ErrorAlarmWorkRecordCode("S025"), new ArrayList<>());
+				this.createEmployeeDailyPerError.createEmployeeError(employeeDailyPerError);
+				
+				return new AffiliationInforState(new ArrayList<>(), Optional.empty(), errMesInfos);
 		}
 	}
 

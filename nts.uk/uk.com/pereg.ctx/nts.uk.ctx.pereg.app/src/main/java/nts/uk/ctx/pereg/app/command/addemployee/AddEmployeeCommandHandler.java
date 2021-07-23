@@ -40,9 +40,9 @@ import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistory;
 import nts.uk.ctx.pereg.dom.reghistory.EmpRegHistoryRepository;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter;
 import nts.uk.ctx.sys.log.app.command.pereg.PersonCategoryCorrectionLogParameter.PersonCorrectionItemInfo;
+import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
-import nts.uk.ctx.sys.log.app.command.pereg.PersonCorrectionLogParameter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.security.audittrail.correction.DataCorrectionContext;
 import nts.uk.shr.com.security.audittrail.correction.content.pereg.InfoOperateAttr;
@@ -52,7 +52,7 @@ import nts.uk.shr.com.security.audittrail.correction.content.pereg.TargetDataKey
 import nts.uk.shr.com.security.audittrail.correction.processor.CorrectionProcessorId;
 import nts.uk.shr.pereg.app.ItemValue;
 import nts.uk.shr.pereg.app.ItemValueType;
-import nts.uk.shr.pereg.app.command.ItemsByCategory;
+import nts.uk.shr.pereg.app.command.ItemsByCategory; 
 
 /**
  * @author sonnlb

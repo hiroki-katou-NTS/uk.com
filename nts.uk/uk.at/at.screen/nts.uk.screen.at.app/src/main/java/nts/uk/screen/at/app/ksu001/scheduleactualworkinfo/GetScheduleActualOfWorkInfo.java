@@ -27,7 +27,6 @@ public class GetScheduleActualOfWorkInfo {
 	private GetWorkActualOfWorkInfo getWorkActualOfWorkInfo;
 	
 	public List<WorkScheduleWorkInforDto> getDataScheduleAndAactualOfWorkInfo(DisplayInWorkInfoParam param) {
-		
 		// lay data Schedule
 		List<WorkScheduleWorkInforDto> listDataSchedule = getScheduleOfWorkInfo.getDataScheduleOfWorkInfo(param);
 		
@@ -41,7 +40,7 @@ public class GetScheduleActualOfWorkInfo {
 				String sid = dataSchedule.employeeId;
 				GeneralDate date = dataSchedule.date;
 				Optional<WorkScheduleWorkInforDto> dataDaily = listDataDaily.stream().filter(data -> {
-					if (data.employeeId.equals(sid) && data.date.equals(date))
+					if (data.employeeId.equals(sid) && data.date.equals(date) && data.date.beforeOrEquals(GeneralDate.today()))
 						return true;
 					return false;
 				}).findFirst();

@@ -41,7 +41,7 @@ public class SpecialHolidayFrameFinder {
 		// user contexts
 		String companyId = AppContexts.user().companyId();
 		
-		return this.specialHolidayFrameRepository.findAll(companyId).stream().map(c -> SpecialHolidayFrameDto.fromDomain(c))
+		return this.specialHolidayFrameRepository.findDataDisplay(companyId, 1, 1).stream().map(c -> SpecialHolidayFrameDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 	
