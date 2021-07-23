@@ -361,9 +361,7 @@ module nts.uk.at.kdp003.f {
 			submitData.companyCode = _.escape(model.companyCode);
 			submitData.employeeCode = _.escape(model.employeeCode);
 			submitData.password = _.escape(model.password);
-
-			console.log(_.escape(model.companyId));
-
+			
 			var showDialogError: boolean = false;
 
 			const message = ko.unwrap(vm.message);

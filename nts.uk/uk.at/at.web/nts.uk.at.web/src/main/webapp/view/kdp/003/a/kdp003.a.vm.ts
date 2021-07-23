@@ -9,7 +9,8 @@ module nts.uk.at.kdp003.a {
 		NAME: '/sys/portal/webmenu/username',
 		SETTING: '/at/record/stamp/management/personal/startPage',
 		HIGHTLIGHT: 'at/record/stamp/management/personal/stamp/getHighlightSetting',
-		LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
+		// LOGIN_ADMIN: 'ctx/sys/gateway/kdp/login/adminmode',
+		LOGIN_ADMIN: 'ctx/sys/gateway/login/password' + location.search,
 		LOGIN_EMPLOYEE: 'ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
@@ -95,6 +96,7 @@ module nts.uk.at.kdp003.a {
 
 		pageComment: KnockoutObservable<string> = ko.observable('');
 		commentColor: KnockoutObservable<string> = ko.observable('');
+		passContract: String;
 
 		created() {
 			const vm = this;
@@ -105,6 +107,11 @@ module nts.uk.at.kdp003.a {
 				vm.showClockButton.company(value === null);
 
 			});
+
+			vm.$window.storage('contractInfo')
+				.done((data: any) => {
+					vm.passContract =  _.escape(data ? data.contractPassword : "");
+				});
 
 			vm.$ajax('at', API.NOW)
 				.then((c) => {
@@ -285,23 +292,17 @@ module nts.uk.at.kdp003.a {
 
 					// data login by storage
 					const {
-						CCD,
-						CID,
 						PWD,
 						SCD,
-						SID
+						CCD
 					} = storageData as StorageData;
 
-					const loginParams: f.ModelData = {
-						contractCode: vm.$user.contractCode,
+					const loginParams: any = {
 						companyCode: CCD,
-						companyId: CID,
 						employeeCode: SCD,
-						employeeId: SID,
 						password: PWD,
-						passwordInvalid: false,
-						isAdminMode: true,
-						runtimeEnvironmentCreate: true
+						contractCode: vm.$user.contractCode,
+						contractPassword: vm.passContract
 					};
 
 					// auto login by storage data of preview login
@@ -309,6 +310,7 @@ module nts.uk.at.kdp003.a {
 
 					return vm.$ajax('at', API.COMPANIES, { contractCode: vm.$user.contractCode })
 						.then((data: f.CompanyItem[]) => {
+
 
 							if (!data.length || _.every(data, d => d.selectUseOfName === false)) {
 								// note: ログイン失敗(打刻会社一覧が取得できない場合)
@@ -324,7 +326,7 @@ module nts.uk.at.kdp003.a {
 
 							vm.showClockButton.setting(true);
 
-							return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
+							return vm.$ajax('com', API.LOGIN_ADMIN, loginParams)
 								.then((loginData: f.TimeStampLoginData) => ({
 									loginData,
 									storageData
@@ -749,10 +751,10 @@ module nts.uk.at.kdp003.a {
 					if (!exist && !ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 						return vm.$window.modal('at', DIALOG.K, params)
 							.then((workplaceData: undefined | k.Return) => {
-								if(workplaceData === undefined) {
+								if (workplaceData === undefined) {
 									location.reload();
 								}
-								
+
 								openViewK = true;
 								return {
 									loginData,
