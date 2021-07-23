@@ -812,6 +812,16 @@ module nts.uk.ui.at.kdw013.a {
                     }
                 });
     
+    
+                vm.department.subscribe((value) => {
+                    const emps = ko.unwrap(vm.employees);
+                    if (vm.employees().length) {
+                        
+                        const [first] = emps;
+                        vm.params.employee(first.employeeId);
+                    }
+                });
+    
                 
 
                 vm.departments = ko.computed({
@@ -867,11 +877,6 @@ module nts.uk.ui.at.kdw013.a {
                                 vm.params.employee(first.employeeId);
                             }
 
-                        } else {
-                            if (emps.length) {
-                                const [first] = emps;
-                                vm.params.employee(first.employeeId);
-                            }
                         }
                     });
             }
@@ -893,7 +898,7 @@ module nts.uk.ui.at.kdw013.a {
 
                 employee(id);
 
-                department.valueHasMutated();
+                //department.valueHasMutated();
             }
         }
     }
