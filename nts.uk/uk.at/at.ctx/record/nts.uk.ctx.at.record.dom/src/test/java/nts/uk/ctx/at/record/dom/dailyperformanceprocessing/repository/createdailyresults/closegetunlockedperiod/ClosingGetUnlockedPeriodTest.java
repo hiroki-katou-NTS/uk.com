@@ -38,7 +38,7 @@ public class ClosingGetUnlockedPeriodTest {
 	public void test_get_1() {
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); // dummy
 		String employmentCode = "employmentCode";// dummy
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAL_DURING_LOCK;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;// dummy
 		List<DatePeriod> result = ClosingGetUnlockedPeriod.get(require, period, employmentCode, ignoreFlagDuringLock,
 				achievementAtr);
@@ -57,7 +57,7 @@ public class ClosingGetUnlockedPeriodTest {
 	public void test_get_2() {
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); // dummy
 		String employmentCode = "employmentCode";// dummy
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CANNOT_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;// dummy
 
 		new Expectations() {
@@ -81,7 +81,7 @@ public class ClosingGetUnlockedPeriodTest {
 	public void test_get_3() {
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); // dummy
 		String employmentCode = "employmentCode";// dummy
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CANNOT_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;// dummy
 		ClosureEmployment closureEmployment = new ClosureEmployment("companyId", employmentCode, 1);
 		new Expectations() {
@@ -109,7 +109,7 @@ public class ClosingGetUnlockedPeriodTest {
 	public void test_get_4() {
 		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); // dummy
 		String employmentCode = "employmentCode";// dummy
-		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CAN_BE_AGGREGATED;
+		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CANNOT_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;// dummy
 		ClosureEmployment closureEmployment = new ClosureEmployment("companyId", employmentCode, 1);
 		

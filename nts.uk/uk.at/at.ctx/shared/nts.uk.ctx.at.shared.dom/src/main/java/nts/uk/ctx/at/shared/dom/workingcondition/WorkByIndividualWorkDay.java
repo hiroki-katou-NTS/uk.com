@@ -6,6 +6,10 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
  * 
@@ -55,8 +59,8 @@ public class WorkByIndividualWorkDay extends DomainObject{
 	 */
 	public WorkInformation getHolidayWorkInformation() {
 
-		// return new 勤務情報（＠勤務種類。休日時、＠勤務時間帯。休日時。就業時間帯コード）
-		return new WorkInformation(workType.getHolidayTimeWTypeCode(), workTime.getHolidayWork().getWorkTimeCode().get());
+		//return new 勤務情報（＠勤務種類。休日時、Optinal。empty()）
+		return new WorkInformation(workType.getHolidayTimeWTypeCode(), null);
 
 	}
 
@@ -71,4 +75,78 @@ public class WorkByIndividualWorkDay extends DomainObject{
 		return new WorkInformation(workType.getWeekdayTimeWTypeCode(), workTime.getWeekdayTime().getWorkTimeCode().get());
 
 	}
+	/**
+	 * [4] 休出時の勤務情報を取得する
+	 */
+	public WorkInformation GetWorkinfoOnVacation(WorkType workType) {
+		 WorkTypeCode workTypeCode = null;
+		 Optional<WorkTimeCode> workTimeCode = Optional.empty();
+
+		// 休日設定を確認する
+		Optional<HolidayAtr> holidayAtr = workType.getHolidayAtr();
+		if (!holidayAtr.isPresent())
+			return null;
+		
+		switch (holidayAtr.get()) {
+		case STATUTORY_HOLIDAYS: /** 法定内休日 */
+			// 法内休出時
+			if (this.workType != null) {
+				if (this.workType.getInLawBreakTimeWTypeCode().isPresent()) {
+					workTypeCode = this.workType.getInLawBreakTimeWTypeCode().get();
+
+					if (this.workTime != null) {
+						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty(): this.workTime.getHolidayWork().getWorkTimeCode();
+					}
+				} else {
+					return inOtherCase(workTypeCode, workTimeCode);
+				}
+			}
+			break;
+		case NON_STATUTORY_HOLIDAYS:/** 法定外休日 */
+			// 法外休出時
+			if (this.workType != null) {
+				if (this.workType.getOutsideLawBreakTimeWTypeCode().isPresent()) {
+					workTypeCode = this.workType.getOutsideLawBreakTimeWTypeCode().get();
+
+					if (this.workTime != null) {
+						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
+					}
+				} else {
+					return inOtherCase(workTypeCode, workTimeCode);
+				}
+			}
+			break;
+		case PUBLIC_HOLIDAY:/** 祝日 */
+			// 祝日休出時
+			if (this.workType != null) {
+				if (this.workType.getHolidayAttendanceTimeWTypeCode().isPresent()) {
+					workTypeCode = this.workType.getHolidayAttendanceTimeWTypeCode().get();
+
+					if (this.workTime != null) {
+						workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
+					}
+				} else {
+					return inOtherCase(workTypeCode, workTimeCode);
+				}
+			}
+			break;
+
+		default:
+			break;
+		}
+
+		return new WorkInformation(workTypeCode == null ? null : workTypeCode.v(),
+                				   workTimeCode.isPresent() ? workTimeCode.get().v() : null);
+	}
+	
+	private WorkInformation inOtherCase( WorkTypeCode workTypeCode, Optional<WorkTimeCode> workTimeCode) {
+		workTypeCode = this.workType.getHolidayWorkWTypeCode();
+
+		if (this.workTime != null) {
+			workTimeCode = this.workTime.getHolidayWork() == null ? Optional.empty() : this.workTime.getHolidayWork().getWorkTimeCode();
+		}
+		return new WorkInformation(workTypeCode == null ? null : workTypeCode.v(),
+				                   workTimeCode.isPresent() ? workTimeCode.get().v() : null);
+	}
+	
 }

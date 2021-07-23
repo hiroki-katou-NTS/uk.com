@@ -60,7 +60,7 @@ public class RegisterDailyAchievements {
 			this.stampDakokuRepository.update(stampItem);
 		});
 		// エラーで本人確認と上司承認を解除する
-		dailyRecordAdUpService.removeConfirmApproval(listIntegrationOfDaily, Optional.empty(), Optional.empty());
+		dailyRecordAdUpService.removeConfirmApproval(listIntegrationOfDaily);
 
 		for (IntegrationOfDaily integrationOfDaily : listIntegrationOfDaily) {
 			// 登録する (Đăng ký)
