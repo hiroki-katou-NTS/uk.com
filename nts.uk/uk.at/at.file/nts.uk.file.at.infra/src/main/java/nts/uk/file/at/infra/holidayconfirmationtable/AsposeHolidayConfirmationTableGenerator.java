@@ -185,7 +185,13 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row, col + i - 1).setStyle(style);
                                     } else {
-                                        cells.get(row, col + i).setValue(this.formatDate(linkingInfo.getOccurrenceDate(), linkingInfo.getUseDateNumber(), dataSource.getHowToPrintDate()));
+                                        cells.get(row, col + i).setValue(this.formatDate(
+                                                OccurrenceDigClass.OCCURRENCE,
+                                                linkingInfo.getOccurrenceDate(),
+                                                linkingInfo.getUseDateNumber(),
+                                                dataSource.getHowToPrintDate(),
+                                                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                                        ));
                                     }
                                     if (linkingInfo.getUseDate().equals(prevLinkingInfo.getUseDate())
                                             && linkingInfo.getUseDateNumber() == 0.5
@@ -195,11 +201,29 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row + 1, col + i - 1).setStyle(style);
                                     } else {
-                                        cells.get(row + 1, col + i).setValue(this.formatDate(linkingInfo.getUseDate(), linkingInfo.getUseDateNumber(), dataSource.getHowToPrintDate()));
+                                        cells.get(row + 1, col + i).setValue(this.formatDate(
+                                                OccurrenceDigClass.DIGESTION,
+                                                linkingInfo.getUseDate(),
+                                                linkingInfo.getUseDateNumber(),
+                                                dataSource.getHowToPrintDate(),
+                                                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                                        ));
                                     }
                                 } else {
-                                    cells.get(row, col + i).setValue(this.formatDate(linkingInfo.getOccurrenceDate(), linkingInfo.getUseDateNumber(), dataSource.getHowToPrintDate()));
-                                    cells.get(row + 1, col + i).setValue(this.formatDate(linkingInfo.getUseDate(), linkingInfo.getUseDateNumber(), dataSource.getHowToPrintDate()));
+                                    cells.get(row, col + i).setValue(this.formatDate(
+                                            OccurrenceDigClass.OCCURRENCE,
+                                            linkingInfo.getOccurrenceDate(),
+                                            linkingInfo.getUseDateNumber(),
+                                            dataSource.getHowToPrintDate(),
+                                            content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                                    ));
+                                    cells.get(row + 1, col + i).setValue(this.formatDate(
+                                            OccurrenceDigClass.DIGESTION,
+                                            linkingInfo.getUseDate(),
+                                            linkingInfo.getUseDateNumber(),
+                                            dataSource.getHowToPrintDate(),
+                                            content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                                    ));
                                 }
                             } else {
                                 break;
@@ -281,11 +305,14 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
 
     /**
      *
+     * @param cls
      * @param date
+     * @param usedNumber
      * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
+     * @param occurrenceAcquisitionDetails
      * @return
      */
-    private String formatDate(GeneralDate date, double usedNumber, int howToPrintDate) {
+    private String formatDate(OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetail> occurrenceAcquisitionDetails) {
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
@@ -295,6 +322,18 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         if (usedNumber != 1.0) {
             formattedDate.append(TextResource.localize("KDR004_120"));
         }
+        occurrenceAcquisitionDetails.stream()
+                .filter(o -> o.getOccurrenceDigCls() == cls && o.getDate().getDayoffDate().isPresent() && o.getDate().getDayoffDate().get().equals(date))
+                .findFirst().ifPresent(detail -> {
+            if (detail.getStatus() == MngDataStatus.SCHEDULE || detail.getStatus() == MngDataStatus.NOTREFLECTAPP) {
+                formattedDate.insert(0, "(");
+                formattedDate.append(")");
+            }
+            if (detail.getExpiringThisMonth().isPresent() && detail.getExpiringThisMonth().get()) {
+                formattedDate.insert(0, "[");
+                formattedDate.append("]");
+            }
+        });
         return formattedDate.toString();
     }
 
