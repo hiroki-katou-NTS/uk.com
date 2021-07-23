@@ -2312,13 +2312,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 		&& !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()
                 		&& !condition.getSettingDetailTotalOutput().isGrossTotal()
                 		&& !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
-	                String personalTitle = TextResource.localize("KWR001_91") + "　" // A4_1
-	                		+ employeeReportData.employeeCode + "　"				   // A4_2
-	                        + employeeReportData.employeeName + "　"				   // A4_3
-	                		+ TextResource.localize("KWR001_92") + "　"			   // A4_4
-	                		+ employeeReportData.employmentCode + "　"			   // A4_8
-	                        + employeeReportData.employmentName + "　"			   // A4_5
-	                		+ TextResource.localize("KWR001_93") + "　"			   // A4_6
+	                String personalTitle = TextResource.localize("KWR001_91")	// A4_1
+	                		+ employeeReportData.employeeCode + "　"				// A4_2
+	                        + employeeReportData.employeeName + "　"				// A4_3
+	                		+ TextResource.localize("KWR001_92")			    // A4_4
+	                		+ employeeReportData.employmentCode	 + "　"		    // A4_8
+	                        + employeeReportData.employmentName	 + "　"		   	// A4_5
+	                		+ TextResource.localize("KWR001_93")			    // A4_6
 	                		+ employeeReportData.jobTitleCode + "　"			   
 	                        + employeeReportData.position;
 
@@ -2354,13 +2354,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					}
 
 					Cell employeeTagCell = cells.get(currentRow, 0);
-					employeeTagCell.setValue(TextResource.localize("KWR001_91") + "　"
+					employeeTagCell.setValue(TextResource.localize("KWR001_91")
 							+ employeeReportData.employeeCode + "　"
 							+ employeeReportData.employeeName + "　"
-							+ TextResource.localize("KWR001_92") + "　"
+							+ TextResource.localize("KWR001_92")
 							+ employeeReportData.employmentCode + "　"
 							+ employeeReportData.employmentName + "　"
-							+ TextResource.localize("KWR001_93") + "　"
+							+ TextResource.localize("KWR001_93")
 							+ employeeReportData.jobTitleCode + "　"
 							+ employeeReportData.position);
 					currentRow++;
@@ -2888,9 +2888,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 
 			// B3_1
-			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
+			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd（E）", Locale.JAPAN);
 			String date = dailyReportData.getDate().toLocalDate().format(jpFormatter);
-			String titleDate = TextResource.localize("KWR001_115") + "　" + date;
+			String titleDate = TextResource.localize("KWR001_115") + date;
 			
 //			// B3_2
 //			Cell dateCell = cells.get(currentRow, 2);
