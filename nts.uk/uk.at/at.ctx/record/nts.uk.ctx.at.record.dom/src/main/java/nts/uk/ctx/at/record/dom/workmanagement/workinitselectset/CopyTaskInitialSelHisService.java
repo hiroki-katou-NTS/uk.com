@@ -28,19 +28,19 @@ public class CopyTaskInitialSelHisService {
 		AtomTask atomTaks = AtomTask.none();
 		if (!optTask.isPresent()) {
 			throw new BusinessException("Msg_1185");
-		} else {
-			Optional<TaskInitialSelHist> mainTask = require.getById(empMain);
-			// $登録履歴 = 作業初期選択履歴#作業初期選択履歴(複写先社員,$複写元設定.履歴リスト)
-			TaskInitialSelHist data = new TaskInitialSelHist(empMain, optTask.get().getLstHistory());
-			atomTaks = AtomTask.of(() -> {
-				// $複写先の既存設定 : $登録対象.add(require.削除する(複写先社員)
-				if (mainTask.isPresent()) {
-					require.delete(empMain);
-				}
-				require.insert(data);
-			});
-
-		}
+		} 
+		//$複写先の既存設定 = require.作業初期選択履歴を取得する(複写先社員)
+		Optional<TaskInitialSelHist> mainTask = require.getById(empMain);
+		// $登録履歴 = 作業初期選択履歴#作業初期選択履歴(複写先社員,$複写元設定.履歴リスト)
+		TaskInitialSelHist data = new TaskInitialSelHist(empMain, optTask.get().getLstHistory());
+		atomTaks = AtomTask.of(() -> {
+			// $複写先の既存設定 : $登録対象.add(require.削除する(複写先社員)
+			if (mainTask.isPresent()) {
+				require.delete(empMain);
+			}
+			require.insert(data);
+		});
+		
 		return atomTaks;
 	}
 
