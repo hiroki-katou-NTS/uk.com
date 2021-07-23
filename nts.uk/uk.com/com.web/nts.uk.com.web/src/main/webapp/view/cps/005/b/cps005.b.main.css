@@ -116,3 +116,8 @@ td {
 	width: 90px !important;
 	text-align: center !important;
 }
+
+.custom-btn span{
+	width: 98px !important;
+	text-align: center;
+}
