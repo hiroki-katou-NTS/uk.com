@@ -392,21 +392,22 @@ module nts.uk.at.kdp003.a {
 						}
 					}
 
-					if (!check1527) {
-						if (data.loginData !== undefined) {
-							if (data.loginData.notification == null) {
-								exest = true;
-							}
+					// if (!check1527) {
+					// 	if (data.loginData !== undefined) {
+					// 		// if (data.loginData.notification == null) {
+					// 		// 	exest = true;
+					// 		// }
 
-							if (data.loginData.result) {
-								exest = false;
-							}
-						}
-					}
+					// 		if (data.loginData.result) {
+					// 			exest = false;
+					// 		}
+					// 	}
+					// }
 
 					// if dialog f return data (first login)
 
-					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData && !exest) {
+					//&& !exest
+					if (data.loginData && !data.loginData.msgErrorId && !data.loginData.errorMessage && !data.storageData) {
 						const { loginData } = data;
 						const params = { multiSelect: true };
 
