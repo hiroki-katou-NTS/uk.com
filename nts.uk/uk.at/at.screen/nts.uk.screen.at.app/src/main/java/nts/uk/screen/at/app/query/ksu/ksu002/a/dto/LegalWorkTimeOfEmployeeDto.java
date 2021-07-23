@@ -18,17 +18,17 @@ public class LegalWorkTimeOfEmployeeDto {
 	/** 社員ID */
 	private String sid;
 	/** 週の時間 */
-	private String weeklyEstimateTime = "0";
+	private Integer weeklyEstimateTime = 0;
 	/** 月の時間 */
-	private String monthlyEstimateTime = "0";
+	private Integer monthlyEstimateTime = 0;
 	
 	public void setValue(Optional<LegalWorkTimeOfEmployee> domain) {
 		domain.ifPresent(e -> {
 			this.sid = e.getSid();
 			e.getWeeklyEstimateTime().ifPresent(d-> {
-				this.weeklyEstimateTime = d.toString();
+				this.weeklyEstimateTime = d.valueAsMinutes();
 			});
-			this.monthlyEstimateTime = e.getMonthlyEstimateTime().toString();
+			this.monthlyEstimateTime = e.getMonthlyEstimateTime().v();
 		});
 	}
 

@@ -97,20 +97,22 @@ public class KSU002Finder {
 		}else {
 			GeneralDate start = period.start();
 			while (start.dayOfWeekEnum().value != startWeekDate.value) {
-				start.addDays(-1);
+				start = start.addDays(-1);
 			}
 			GeneralDate end = period.end();
 			end.addDays(1);
 			while (end.dayOfWeekEnum().value != startWeekDate.value) {
-				start.addDays(1);
+				end = end.addDays(1);
 			}
-			end.addDays(-1);
+			end = end.addDays(-1);
 			
 			PeriodListPeriodDto result = new PeriodListPeriodDto();
 			result.setDatePeriod(new DatePeriod(start, end));
 			List<DatePeriod> datePeriodList = new ArrayList<DatePeriod>();
-			while (start.before(end)) {
-				datePeriodList.add(new DatePeriod(start, start.addDays(7)));
+			GeneralDate startDateNew = start;
+			while (startDateNew.before(end)) {
+				datePeriodList.add(new DatePeriod(startDateNew, startDateNew.addDays(7)));
+				startDateNew = startDateNew.addDays(8);
 			}
 			result.setDatePeriodList(datePeriodList);
 			return result;

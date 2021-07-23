@@ -168,6 +168,11 @@ module nts.uk.ui.at.ksu002.a {
 		
 		readyLoadData: boolean = false;
 		
+		// Data result from 予定・実績を取得する
+		plansResultsData: KnockoutObservable<any> = ko.observable(null);
+		
+		legalworkinghours: KnockoutObservable<any> = ko.observable(null);
+		
 		created() {
 			const vm = this;
 			//<<Query>> 週の管理を取得する
@@ -179,7 +184,6 @@ module nts.uk.ui.at.ksu002.a {
 					vm.readyLoadData = true;					
 				}
 			});
-			
 			vm.employeeId = ko.observableArray([vm.$user.employeeId]);
 			const dr: c.DateRange = {
 				begin: null,
@@ -188,6 +192,8 @@ module nts.uk.ui.at.ksu002.a {
 			
 			initEvent();
 			const loadData = () => {
+				
+				vm.getPlansResultsData();
 				
 				let datePeriod = calculateDaysStartEndWeek(moment(dr.begin).toDate(),moment(dr.finish).toDate(), vm.dayStartWeek(), true);
 				
@@ -517,6 +523,27 @@ module nts.uk.ui.at.ksu002.a {
 //				vm.bidingDataDaily();
 			}
 		}
+		
+		getPlansResultsData(){
+			let vm = this;
+			const { begin, finish } = vm.baseDate();
+					
+			const command = {
+				listSid: [vm.$user.employeeId],
+				startDate: moment(begin).format('YYYY/MM/DD'),
+				endDate: moment(finish).format('YYYY/MM/DD'),
+				actualData: vm.achievement()
+			};
+			
+			let sv1 = vm.$ajax('at','screen/ksu/ksu002/getPlansResults', command);
+			let sv2 = vm.$ajax('at','screen/ksu/ksu002/getlegalworkinghours', command);
+			$.when(sv1, sv2).done((data1: any, data2: any) => {
+				vm.legalworkinghours(data2);
+				vm.plansResultsData(data1);
+				vm.plansResultsData.valueHasMutated();
+			});
+		}
+		
 		
 		mounted() {
 			const vm = this;
@@ -892,4 +919,7 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 	}else{
 		return {start: start, end: end};
 	}
+}
+function converNumberToTime(number: number): string{
+	return (number/60).toString() +':'+ (Math.abs(number%60) == 0 ? '00': (Math.abs(number%60)).toString()); 
 }

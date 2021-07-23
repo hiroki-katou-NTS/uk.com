@@ -7,10 +7,10 @@ module nts.uk.ui.at.ksu002.a {
     <div class="workhour-info">
         <span data-bind="i18n: 'KSU002_33'"></span>
         <span data-bind="i18n: 'KSU002_7'"></span>
-        <span data-bind="text: workingHoursMonth"></span>
+        <span data-bind="text: monthlyEstimateTime"></span>
         <span style="margin-left: 15px;" data-bind="i18n: 'KSU002_34'"></span>
         <span data-bind="i18n: 'KSU002_7'"></span>
-        <span data-bind="text: workingHoursWeek"></span>
+        <span data-bind="text: weeklyEstimateTime"></span>
     </div>
     <table>
         <tbody>
@@ -68,11 +68,8 @@ module nts.uk.ui.at.ksu002.a {
 		init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
 			const name = COMPONENT_NAME;
 
-			const tabIndex = element.getAttribute('tabindex') || '1';
-			const clickable = allBindingsAccessor.get('clickable');
-			const clickBtn = allBindingsAccessor.get('click-btn');
 
-			const params = { clickable, clickBtn, tabIndex };
+			const params = { viewModel };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -90,18 +87,40 @@ module nts.uk.ui.at.ksu002.a {
 		template
 	})
 	export class WorkHourOfMonthComponent extends ko.ViewModel {
-		workingHoursMonth: KnockoutObservable<string> = ko.observable('160:00');
-		workingHoursWeek: KnockoutObservable<string> = ko.observable('48:00');
+		monthlyEstimateTime: KnockoutObservable<string> = ko.observable('');
+		weeklyEstimateTime: KnockoutObservable<string> = ko.observable('');
 		compareWorkingHours: KnockoutObservable<string> = ko.observable('');
-		workingDays: KnockoutObservable<string> = ko.observable('22');
-		holidayDay: KnockoutObservable<string> = ko.observable('1');
-		constructor(private data: Parameter) {
+		workingDays: KnockoutObservable<string> = ko.observable('');
+		holidayDay: KnockoutObservable<string> = ko.observable('');
+		constructor(data: any) {
 			super();
 			let self = this;
-			self.compareWorkingHours('150:00 '+ getText('KSU002_15') +'-10:00'+ getText('KSU002_16'));
+			self.compareWorkingHours('');
+			data.viewModel.legalworkinghours.subscribe((v: any) => {
+				if(v){
+					let {monthlyEstimateTime, weeklyEstimateTime} = v;
+					self.monthlyEstimateTime(monthlyEstimateTime);
+					self.weeklyEstimateTime(weeklyEstimateTime);
+				}else{
+					self.monthlyEstimateTime('');
+					self.weeklyEstimateTime('');
+				}
+			});
+			data.viewModel.plansResultsData.subscribe((v: any) => {
+				if(v){
+					let {workingHoursMonth, numberWorkingDaysCurrentMonth, numberHolidaysCurrentMonth} = v;
+					self.compareWorkingHours(converNumberToTime(workingHoursMonth) + ' '+ getText('KSU002_15') + converNumberToTime(workingHoursMonth - data.viewModel.legalworkinghours().monthlyEstimateTime) + getText('KSU002_16'));
+					self.workingDays(numberWorkingDaysCurrentMonth);
+					self.holidayDay(numberHolidaysCurrentMonth);
+				}else{
+					self.compareWorkingHours('');
+					self.workingDays('');
+					self.holidayDay('');
+				}
+			});
 		}
 	}
 
-	interface Parameter { 
+	interface Parameter {
 	} 
 }

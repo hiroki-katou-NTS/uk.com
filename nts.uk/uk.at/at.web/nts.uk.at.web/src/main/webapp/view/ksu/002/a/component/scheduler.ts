@@ -64,11 +64,14 @@ module nts.uk.ui.at.ksu002.a {
     }
 
 	 export class TotalData {
+		no: number;
 		workingHoursTitle: KnockoutObservable<string> = ko.observable('');
         workingTime: KnockoutObservable<string> = ko.observable('');
         holidaysTitle: KnockoutObservable<string> = ko.observable('');
         holidaysNumber: KnockoutObservable<string> = ko.observable('');
-        constructor() {}
+        constructor(no: number) {
+			this.no = no;
+		}
 		setStatusFisrt(){
 			let self = this;
 			self.workingHoursTitle('<span>'+getText('KSU002_25')+'<br/>'+getText('KSU002_35')+'</span>');
@@ -78,6 +81,11 @@ module nts.uk.ui.at.ksu002.a {
 			let self = this;
 			self.workingTime('<span>'+workingTime+'<br/>'+ getText('KSU002_15') + overUnder +getText('KSU002_16')+'</span>');
 			self.holidaysNumber('<span>'+ holidaysNumber +'</span>');
+		}
+		clear(){
+			let self = this;
+			self.workingTime();
+			self.holidaysNumber();
 		}
     }
 
@@ -226,19 +234,33 @@ module nts.uk.ui.at.ksu002.a {
     })
     export class ShedulerComponent extends ko.ViewModel {
 
-		weekSumData: KnockoutObservableArray<TotalData>;
+		weekSumData: KnockoutObservableArray<TotalData> = ko.observableArray([]);
 
         constructor(private data: c.Parameter) {
             super();
 			let self = this;
 			let tg: TotalData[] = [];
-			_.forEach([0,1,2,3,4,5], e => {
-				let t = new TotalData();
-				t.update('16:00', '-8:00', '1');
+			_.forEach([1,2,3,4,5,6], n => {
+				let t = new TotalData(n);
 				tg.push(t);
 			});
 			tg[0].setStatusFisrt();
-			self.weekSumData = ko.observableArray(tg);
+			self.weekSumData(tg);
+			data.rootVm.plansResultsData.subscribe((v: any) => {
+				_.forEach(self.weekSumData(), e => {
+					if(v !=  null){
+						let i = _.find(v.weeklyData, (c: any) => c.no == e.no);
+						if(i){
+							let overUnder = i.workingHoursMonth - data.rootVm.legalworkinghours().weeklyEstimateTime;
+							e.update(converNumberToTime(i.workingHoursMonth), converNumberToTime(overUnder), i.numberHolidaysCurrentMonth);
+						} else {
+							e.clear();							
+						}
+					} else {
+						e.clear();												
+					}
+				});
+			});
         }
 
         created() {
