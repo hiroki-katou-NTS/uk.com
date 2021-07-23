@@ -1574,43 +1574,29 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						
 						// Get all total
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-						TotalValue personalTotal = employeeData.mapPersonalTotal.get(attdId);
-						ValueType totalValueTypeEnum = EnumAdaptor.valueOf(personalTotal.getValueType(), ValueType.class);
-						TotalValue totalVal = lstTotalValue.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
-						TotalValue totalGrossVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
-						
-						// Change value type
-						personalTotal.setValueType(valueType);
-						totalVal.setValueType(valueType);
-						totalGrossVal.setValueType(valueType);
-						
-						if (aVal.value() == null) return;
+	                    TotalValue personalTotal = employeeData.mapPersonalTotal.get(attdId);
+	                    TotalValue totalVal = lstTotalValue.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
+	                    ValueType totalValueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
+	                    TotalValue totalGrossVal = lstWorkplaceGrossTotal.stream().filter(attendance -> attendance.getAttendanceId() == attdId).findFirst().get();
+	                    ValueType totalGrossValueTypeEnum = EnumAdaptor.valueOf(totalVal.getValueType(), ValueType.class);
+	                    
+	                    // Change value type
+	                    personalTotal.setValueType(valueType);
+	                    totalVal.setValueType(valueType);
+	                    totalGrossVal.setValueType(valueType);
+	                    
+	                    if (aVal.value() == null) return;
 
-						if (valueTypeEnum.isIntegerCountable()) {
-							int currentValue = (int) aVal.value();
-							int personalTotalValue = totalValueTypeEnum.isInteger() && !StringUtil.isNullOrEmpty(personalTotal.getValue(), true)
-											? Integer.parseInt(personalTotal.getValue()) : 0;
-							personalTotal.setValue(String.valueOf(personalTotalValue + currentValue));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							totalVal.setValue(String.valueOf(personalTotalValue + currentValue));
-							totalGrossVal.setValue(String.valueOf(personalTotalValue + currentValue));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-						} else if (valueTypeEnum.isDoubleCountable()) {
-							double currentValueDouble = (double) aVal.value();
-							double personalTotalValue = totalValueTypeEnum.isDouble() && !StringUtil.isNullOrEmpty(personalTotal.getValue(), true)
-									? Double.parseDouble(personalTotal.getValue()) : 0d;
-							personalTotal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							totalVal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
-							totalGrossVal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-						} else {
-							personalTotal.setValue("");
-							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-							totalVal.setValue("");
-							totalGrossVal.setValue("");
- 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-						}
+	                    if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
+	                    	personalTotal.addValue(aVal.value(), valueTypeEnum);
+	                    	totalVal.addValue(aVal.value(), totalValueTypeEnum);
+	                    	totalGrossVal.addValue(aVal.value(), totalGrossValueTypeEnum);
+	                    } else {
+	                        personalTotal.setValue("");
+	                        employeeData.mapPersonalTotal.put(attdId, personalTotal);
+	                        totalVal.setValue("");
+	                        totalGrossVal.setValue("");
+	                    }
 					});
 				});
 			});
@@ -1630,10 +1616,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						int valueType = item.getValueType();
 						totalVal.setValueType(valueType);
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
-						if (valueTypeEnum.isIntegerCountable()) {
-							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
-						} else if (valueTypeEnum.isDoubleCountable()) {
-							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
+						if (valueTypeEnum.isIntegerCountable() || valueTypeEnum.isDoubleCountable()) {
+							totalVal.addValue(item.value(), valueTypeEnum);
 						} else {
 							totalVal.setValue("");
 						}
