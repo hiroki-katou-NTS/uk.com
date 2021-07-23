@@ -194,7 +194,13 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row, col + i - 1).setStyle(style);
                                     } else {
-                                        cells.get(row, col + i).setValue(this.formatDate(linkingInfo.getOccurrenceDate(), linkingInfo.getDateOfUse().v(), dataSource.getQuery().getHowToPrintDate()));
+                                        cells.get(row, col + i).setValue(this.formatDate(
+                                                OccurrenceDigClass.DIGESTION,
+                                                linkingInfo.getOccurrenceDate(),
+                                                linkingInfo.getDateOfUse().v(),
+                                                dataSource.getQuery().getHowToPrintDate(),
+                                                content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
+                                                ));
                                     }
                                     if (linkingInfo.getYmd().equals(prevLinkingInfo.getYmd())
                                             && linkingInfo.getDateOfUse().v() == 0.5
@@ -204,11 +210,29 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row + 1, col + i - 1).setStyle(style);
                                     } else {
-                                        cells.get(row + 1, col + i).setValue(this.formatDate(linkingInfo.getOccurrenceDate(), linkingInfo.getDateOfUse().v(), dataSource.getQuery().getHowToPrintDate()));
+                                        cells.get(row + 1, col + i).setValue(this.formatDate(
+                                                OccurrenceDigClass.DIGESTION,
+                                                linkingInfo.getYmd(),
+                                                linkingInfo.getDateOfUse().v(),
+                                                dataSource.getQuery().getHowToPrintDate(),
+                                                content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
+                                        ));
                                     }
                                 } else {
-                                    cells.get(row, col + i).setValue(this.formatDate(linkingInfo.getOccurrenceDate(), linkingInfo.getDateOfUse().v(), dataSource.getQuery().getHowToPrintDate()));
-                                    cells.get(row + 1, col + i).setValue(this.formatDate(linkingInfo.getYmd(), linkingInfo.getDateOfUse().v(), dataSource.getQuery().getHowToPrintDate()));
+                                    cells.get(row, col + i).setValue(this.formatDate(
+                                            OccurrenceDigClass.OCCURRENCE,
+                                            linkingInfo.getOccurrenceDate(),
+                                            linkingInfo.getDateOfUse().v(),
+                                            dataSource.getQuery().getHowToPrintDate(),
+                                            content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
+                                    ));
+                                    cells.get(row + 1, col + i).setValue(this.formatDate(
+                                            OccurrenceDigClass.DIGESTION,
+                                            linkingInfo.getYmd(),
+                                            linkingInfo.getDateOfUse().v(),
+                                            dataSource.getQuery().getHowToPrintDate(),
+                                            content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
+                                    ));
                                 }
                             } else {
                                 break;
@@ -326,7 +350,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
      * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
      * @return
      */
-    private String formatDate(GeneralDate date, double usedNumber, int howToPrintDate) {
+    private String formatDate(OccurrenceDigClass cls,GeneralDate date, double usedNumber, int howToPrintDate,List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetails) {
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
@@ -336,6 +360,18 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         if (usedNumber != 1.0) {
             formattedDate.append(TextResource.localize("KDR003_120"));
         }
+        occurrenceAcquisitionDetails.stream()
+                .filter(o -> o.getOccurrenceDigClass() == cls && o.getDate().getDayoffDate().isPresent() && o.getDate().getDayoffDate().get().equals(date))
+                .findFirst().ifPresent(detail -> {
+            if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
+                formattedDate.insert(0, "(");
+                formattedDate.append(")");
+            }
+            if (detail.getIsExpiredInCurrentMonth().isPresent() && detail.getIsExpiredInCurrentMonth().get()) {
+                formattedDate.insert(0, "[");
+                formattedDate.append("]");
+            }
+        });
         return formattedDate.toString();
     }
 
