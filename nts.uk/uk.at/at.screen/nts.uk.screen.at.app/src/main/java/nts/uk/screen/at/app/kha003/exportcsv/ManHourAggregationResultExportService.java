@@ -85,8 +85,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         this.dataOutputProcessing(outputContent, isDisplayTotal, totalUnit, dataSource, headerList, maxRangeDate, displayFormat);
 
         // Execute export
+        String fileName = formatSetting.getName() + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
         CSVFileData fileData = new CSVFileData(
-                PGID + "_" + executionTime + "_" + AppContexts.user().companyCode() + FILE_EXTENSION, headerList, dataSource);
+                fileName + FILE_EXTENSION, headerList, dataSource);
         generator.generate(exportServiceContext.getGeneratorContext(), fileData);
     }
 
