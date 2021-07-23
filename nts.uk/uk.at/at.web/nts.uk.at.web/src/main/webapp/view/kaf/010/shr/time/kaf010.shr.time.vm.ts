@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 
 	const template = `
 	<div class="container cf" data-bind="with: $parent">
-	<div class="cf valign-top control-group" data-bind="visible: restTimeTableVisible() && restTimeTableVisible2()">
+	<div class="cf valign-top control-group" data-bind="visible: restTimeTableVisible2()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
