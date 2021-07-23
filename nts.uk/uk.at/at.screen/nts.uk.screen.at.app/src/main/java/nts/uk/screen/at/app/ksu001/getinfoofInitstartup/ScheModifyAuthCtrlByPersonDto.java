@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyAuthCtrlByPerson;
 
 /**
- * できる／できない権限の設定
+ * スケジュール修正個人別の権限制御
  */
 @Getter
 @AllArgsConstructor

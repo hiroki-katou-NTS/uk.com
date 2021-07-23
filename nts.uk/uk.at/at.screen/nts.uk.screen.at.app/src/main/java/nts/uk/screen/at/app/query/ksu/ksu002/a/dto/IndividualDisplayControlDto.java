@@ -14,10 +14,13 @@ import nts.uk.screen.at.app.ksu001.getinfoofInitstartup.ScheModifyAuthCtrlCommon
 @Getter
 public class IndividualDisplayControlDto {
 
+	/**スケジュール修正共通の権限制御*/
 	public List<ScheModifyAuthCtrlCommonDto> scheModifyAuthCtrlCommon;
 	
+	/**スケジュール修正個人別の権限制御*/
 	public List<ScheModifyAuthCtrlByPersonDto> scheModifyAuthCtrlByPerson;
 	
+	/**スケジュール修正の機能制御*/
 	public ScheFunctionControlDto scheFunctionControl;
 	
 }

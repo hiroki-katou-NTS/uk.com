@@ -173,8 +173,11 @@ module nts.uk.ui.at.ksu002.a {
 		
 		legalworkinghours: KnockoutObservable<any> = ko.observable(null);
 		
+		startupProcessingInformation: KnockoutObservable<any> = ko.observable(null); 
+		
 		created() {
 			const vm = this;
+			vm.getStartupProcessingInformation();
 			//<<Query>> 週の管理を取得する
 			vm.$ajax('at', API.GET_START_DAY_OF_WEEK).done((data: any) => {
 				vm.dayStartWeek(data.dayOfWeek);	
@@ -524,10 +527,21 @@ module nts.uk.ui.at.ksu002.a {
 			}
 		}
 		
+		getStartupProcessingInformation(){
+			let self = this;
+			self.$ajax('at','screen/ksu/ksu002/getStartupProcessingInformation').done((data: any)=>{
+				self.startupProcessingInformation(data);
+			});
+		}
+		
 		getPlansResultsData(){
 			let vm = this;
 			const { begin, finish } = vm.baseDate();
-					
+			if(!begin || !finish){
+				vm.legalworkinghours(null);
+				vm.plansResultsData(null);
+				return;
+			}
 			const command = {
 				listSid: [vm.$user.employeeId],
 				startDate: moment(begin).format('YYYY/MM/DD'),

@@ -23,10 +23,12 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.CorrectWorkTimeHalfDayKSu002;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.CorrectWorkTimeHalfDayOutput;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetDataDaily;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.GetScheduleActualOfWorkInfo002;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.GetStartupProcessingInformation;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.KSU002Finder;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.ListOfPeriodsClose;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.RegisterWorkSceduleCommandHandler;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.GetStartupProcessingInformationDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.LegalWorkTimeOfEmployeeDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PlansResultsDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.RegisterWorkScheduleInputCommand;
@@ -71,6 +73,9 @@ public class Ksu002AWebService extends WebService {
 	
 	@Inject
     private WeekRuleManagementFinder weekRuleManagementFinder;
+	
+	@Inject
+	private GetStartupProcessingInformation getStartupProcessingInformation;
 
 	@POST
 	@Path("getListOfPeriodsClose")
@@ -142,5 +147,12 @@ public class Ksu002AWebService extends WebService {
 			param.startWeekDate = weekRuleManagemento.getDayOfWeek();
 		}
 		return this.kSU002Finder.getPlansResults(param);
+	}
+	
+	//起動処理情報を取得する
+	@POST
+	@Path("getStartupProcessingInformation")
+	public GetStartupProcessingInformationDto getStartupProcessingInformation() {
+		return this.getStartupProcessingInformation.get();
 	}
 }

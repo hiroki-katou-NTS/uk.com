@@ -41,25 +41,27 @@ module nts.uk.ui.at.ksu002.a {
 					{ prop: 'title', length: 10 },
 				]
 			}"></div>
-		<div class="title-label">
-			<span data-bind="i18n: 'KSU002_6'"></span>
-			<span data-bind="i18n: 'KSU002_7'"></span>
-		</div>
-		<div class="cf" data-bind="
-			attr: {
-				tabindex: $component.params.tabIndex
-			},
-			ntsSwitchButton: {
-				name: $i18n('KSU002_6'),
-				value: $component.achievement,
-				options: [
-					{ code: 1, name: $i18n('KSU002_8') },
-					{ code: 0, name: $i18n('KSU002_9') }
-				],
-				optionsText: 'name',
-				optionsValue: 'code',
-				enable: ko.computed(function() {return $component.dateRanges().length > 0})
-			}"></div>				
+		<!-- ko if: isDisplayActual -->
+			<div class="title-label">
+				<span data-bind="i18n: 'KSU002_6'"></span>
+				<span data-bind="i18n: 'KSU002_7'"></span>
+			</div>
+			<div class="cf" data-bind="
+				attr: {
+					tabindex: $component.params.tabIndex
+				},
+				ntsSwitchButton: {
+					name: $i18n('KSU002_6'),
+					value: $component.achievement,
+					options: [
+						{ code: 1, name: $i18n('KSU002_8') },
+						{ code: 0, name: $i18n('KSU002_9') }
+					],
+					optionsText: 'name',
+					optionsValue: 'code',
+					enable: ko.computed(function() {return $component.dateRanges().length > 0})
+				}"></div>	
+		<!-- /ko -->	
 		<style type="text/css" rel="stylesheet">
             .title-date {
 				margin: 5px 0;
@@ -114,7 +116,8 @@ module nts.uk.ui.at.ksu002.a {
 			const workplaceId = allBindingsAccessor.get('workplace-id');
 			const hasChange = allBindingsAccessor.get('has-change');
 			const tabIndex = element.getAttribute('tabindex') || '1';
-			const params = { achievement, hasChange, dateRange, tabIndex, workplaceId };
+			const rootVm = allBindingsAccessor.get('rootVm');
+			const params = { achievement, hasChange, dateRange, tabIndex, workplaceId, rootVm };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -145,6 +148,8 @@ module nts.uk.ui.at.ksu002.a {
 
 		public achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 
+		isDisplayActual: KnockoutObservable<boolean> = ko.observable(false);
+		
 		constructor(private params: Params) {
 			super();
 
@@ -159,11 +164,12 @@ module nts.uk.ui.at.ksu002.a {
 					dateRange: ko.observable({ begin, finish }),
 					achievement: ko.observable(1),
 					workplaceId: ko.observable(''),
-					hasChange: ko.computed(() => false)
+					hasChange: ko.computed(() => false),
+					rootVm: null
 				};
 			}
 
-			const { achievement, dateRange, workplaceId, hasChange } = params;
+			const { achievement, dateRange, workplaceId, hasChange, rootVm} = params;
 
 			if (achievement === undefined) {
 				vm.params.achievement = ko.observable(ACHIEVEMENT.NO);
@@ -180,6 +186,13 @@ module nts.uk.ui.at.ksu002.a {
 			if (hasChange === undefined) {
 				vm.params.hasChange = ko.computed(() => false)
 			}
+			rootVm.startupProcessingInformation.subscribe((v: any) => {
+				if(v){
+					vm.isDisplayActual(v.scheFunctionControl.isDisplayActual);
+				}else{
+					vm.isDisplayActual(false);
+				}
+			});		
 		}
 
 		created() {
@@ -364,6 +377,7 @@ module nts.uk.ui.at.ksu002.a {
 		achievement: KnockoutObservable<ACHIEVEMENT>;
 		workplaceId: KnockoutObservable<string>;
 		hasChange: KnockoutComputed<boolean>;
+		rootVm: any;
 	}
 
 	interface DateOption extends c.DateRange {
