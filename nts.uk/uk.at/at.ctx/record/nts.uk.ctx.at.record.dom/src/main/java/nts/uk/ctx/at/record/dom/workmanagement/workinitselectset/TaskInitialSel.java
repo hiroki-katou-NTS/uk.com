@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workmanagement.workinitselectset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.history.HistoryItem;
@@ -22,6 +23,7 @@ public class TaskInitialSel extends  HistoryItem<DatePeriod, GeneralDate> {
 	private DatePeriod datePeriod;
 	
 	/** 作業項目 **/
+	@Setter
 	private TaskItem taskItem;
 
 	@Override
@@ -40,6 +42,24 @@ public class TaskInitialSel extends  HistoryItem<DatePeriod, GeneralDate> {
 	public String identifier() {
 		return this.empID;
 	}
-
 	
+	@Override
+	public boolean equals(HistoryItem<DatePeriod, GeneralDate> other) {
+		// TODO Auto-generated method stub
+		if (other == null) {
+			return false;
+		}
+		return other.start().equals(datePeriod.start()) && other.end().equals(datePeriod.end());
+	}
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((empID == null) ? 0 : empID.hashCode());
+		result = prime * result + ((datePeriod == null) ? 0 : datePeriod.start().hashCode());
+		result = prime * result + ((datePeriod == null) ? 0 : datePeriod.end().hashCode());
+		return result;
+	}
 }

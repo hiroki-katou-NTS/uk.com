@@ -18,7 +18,7 @@ public class TaskInitialSelHistHelper {
 						Optional.of(new TaskCode("TaskCode4") ),
 						Optional.of(new TaskCode("TaskCode5") )
 						));
-		TaskInitialSel item2 = new TaskInitialSel("000000000001", new DatePeriod( GeneralDate.ymd(2021, 07, 01),  GeneralDate.ymd(2021, 07, 31)), 
+		TaskInitialSel item2 = new TaskInitialSel("000000000001", new DatePeriod( GeneralDate.ymd(2021, 07, 01),  GeneralDate.ymd(9999, 12, 31)), 
 				new TaskItem(
 						Optional.of(new TaskCode("TaskCode1") ),
 						Optional.of(new TaskCode("TaskCode2") ),
@@ -37,7 +37,7 @@ public class TaskInitialSelHistHelper {
 	
 	
 	public static TaskInitialSel getTaskInitialSelDefault(){
-		TaskInitialSel item = new TaskInitialSel("000000000001", new DatePeriod( GeneralDate.ymd(2021, 05, 01),  GeneralDate.ymd(2021, 05, 30)), 
+		TaskInitialSel item = new TaskInitialSel("000000000001", new DatePeriod( GeneralDate.ymd(2021, 8, 01),  GeneralDate.ymd(9999, 12,31)), 
 				new TaskItem(
 						Optional.of(new TaskCode("TaskCode1") ),
 						Optional.of(new TaskCode("TaskCode2") ),
