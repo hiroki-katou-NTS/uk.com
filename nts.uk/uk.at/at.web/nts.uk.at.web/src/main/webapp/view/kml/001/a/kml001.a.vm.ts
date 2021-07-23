@@ -75,6 +75,9 @@ module nts.uk.at.view.kml001.a {
             self.setPremiumTo100();
           else
             self.currentPersonCost().unitPrice.valueHasMutated();
+            _.defer(() => {
+                $("#premium-set-div .nts-fixed-body-container").height(newValue === 1 ? 441 : 401);
+            });
         });
 
         self.getDefaultPremiumSetting();
@@ -101,8 +104,7 @@ module nts.uk.at.view.kml001.a {
               self.isInsert(false);
             } else self.$blockui('hide');
 
-            let height__: number = 424;
-            $("#premium-set-tbl").ntsFixedTable({ height: height__ });
+            $("#premium-set-tbl").ntsFixedTable({ });
 
             dfd.resolve();
           })
@@ -578,7 +580,11 @@ module nts.uk.at.view.kml001.a {
             //} else {
             self.$blockui('hide');
             //}
-          }).fail(res => { console.log(res); });
+          }).fail(res => {
+            console.log(res);
+          }).always(() => {
+              self.currentPersonCost().calculationSetting.valueHasMutated();
+          });
 
           self.isInsert(false);
           $("#A4_10").focus();
@@ -586,6 +592,7 @@ module nts.uk.at.view.kml001.a {
         } else {
           $("#A4_10").focus();
           self.isInsert(true);
+          self.currentPersonCost().calculationSetting.valueHasMutated();
         }
       }
 

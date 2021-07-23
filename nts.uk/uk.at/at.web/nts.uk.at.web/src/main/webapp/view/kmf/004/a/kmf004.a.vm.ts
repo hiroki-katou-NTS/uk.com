@@ -728,7 +728,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     return;
                 }
                 let output = nts.uk.ui.windows.getShared('CDL002Output');
-                self.empLst(output);
+                /** #117090s */
+                self.empLst(_.sortBy(output, e => e));
+                // self.empLst(output);
+                /** #117090e */
             });
         }
 
@@ -742,7 +745,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/003/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared('outputCDL003');
                 if (data) {
-                    self.clsLst(data);
+                    /** #117090s */
+                    self.clsLst(_.sortBy(data, e => e));
+                    // self.clsLst(data);
+                    /** #117090e */
                 }
             });
         }

@@ -82,7 +82,7 @@
 											optionsValue: 'id',
 											optionsText: 'name',
 											value: selectedStopMode ,
-											enable:selectedSystemMode()==2
+											enable: ko.computed(function() { return selectedSystemMode()==2; })
 											 }"></div>
 
 						</div>

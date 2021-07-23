@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
     import setShared = nts.uk.ui.windows.setShared;
 
     const template = `
-    <div id="kaf012-share-component1" class="control-group">
+    <div id="kaf012-share-component1">
         <div class="cell" style="font-weight: bold" data-bind="text: $i18n('KAF012_2')"></div>
         <div class="space-between-table ">
             <!-- ko if: display1() -->
