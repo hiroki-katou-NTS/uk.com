@@ -267,6 +267,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
 
     private boolean checkShow(Integer mngAtr, boolean moreSubstituteHolidaysThanHolidays,
                               boolean moreHolidaysThanSubstituteHolidays, SubstituteHolidayAggrResult substituteHolidayAggrResult) {
+        Boolean check = false;
         if (mngAtr != null && mngAtr == DAY) {
 
             //　・「代休が休出より多い人」のチェックボックスが☑されている場合は、代休の集計結果．繰越日数＋代休の集計結果．発生日数＜代休の集計結果．使用日数
@@ -276,20 +277,20 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverDay() != null ? substituteHolidayAggrResult.getCarryoverDay().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceDay() != null ? substituteHolidayAggrResult.getOccurrenceDay().v() : 0)
                         - (substituteHolidayAggrResult.getDayUse() != null ? substituteHolidayAggrResult.getDayUse().v() : 0);
-                if (checkShow > 0) return false;
+                if (checkShow < 0) check =  true;
             }
             if (moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverDay() != null ? substituteHolidayAggrResult.getCarryoverDay().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceDay() != null ? substituteHolidayAggrResult.getOccurrenceDay().v() : 0)
                         - (substituteHolidayAggrResult.getDayUse() != null ? substituteHolidayAggrResult.getDayUse().v() : 0);
 
-                if (checkShow < 0) return false;
+                if (checkShow > 0) check = true;
             }
             if (moreSubstituteHolidaysThanHolidays && moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverDay() != null ? substituteHolidayAggrResult.getCarryoverDay().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceDay() != null ? substituteHolidayAggrResult.getOccurrenceDay().v() : 0)
                         - (substituteHolidayAggrResult.getDayUse() != null ? substituteHolidayAggrResult.getDayUse().v() : 0);
-                if (checkShow == 0) return false;
+                if (checkShow != 0) check = true;
             }
         } else if (mngAtr != null && mngAtr == TIME) {
             //　・「代休が休出より多い人」のチェックボックスが☑されている場合は、代休の集計結果．繰越時間＋代休の集計結果．発生時間＜代休の集計結果．使用時間
@@ -299,22 +300,22 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverTime() != null ? substituteHolidayAggrResult.getCarryoverTime().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceTime() != null ? substituteHolidayAggrResult.getOccurrenceTime().v() : 0)
                         - (substituteHolidayAggrResult.getTimeUse() != null ? substituteHolidayAggrResult.getTimeUse().v() : 0);
-                if (checkShow > 0) return false;
+                if (checkShow < 0) check = true;
             }
             if (moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverTime() != null ? substituteHolidayAggrResult.getCarryoverTime().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceTime() != null ? substituteHolidayAggrResult.getOccurrenceTime().v() : 0)
                         - (substituteHolidayAggrResult.getTimeUse() != null ? substituteHolidayAggrResult.getTimeUse().v() : 0);
 
-                if (checkShow < 0) return false;
+                if (checkShow > 0) check = true;
             }
             if (moreSubstituteHolidaysThanHolidays && moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverTime() != null ? substituteHolidayAggrResult.getCarryoverTime().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceTime() != null ? substituteHolidayAggrResult.getOccurrenceTime().v() : 0)
                         - (substituteHolidayAggrResult.getTimeUse() != null ? substituteHolidayAggrResult.getTimeUse().v() : 0);
-                if (checkShow == 0) return false;
+                if (checkShow != 0) check = true;
             }
         }
-        return false;
+        return check;
     }
 }
