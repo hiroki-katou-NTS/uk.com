@@ -28,7 +28,7 @@ public class WorkScheOutputConstants {
 	public static final String REMARK = "備考";
 	
 	/** The Constant PERSONAL_NAME. */
-	public static final String PERSONAL_NAME = "個人名";
+	public static final String PERSONAL_NAME = "KWR006_76";
 	
 	/** The Constant PERIOD. */
 	public static final String PERIOD = "[期間]";

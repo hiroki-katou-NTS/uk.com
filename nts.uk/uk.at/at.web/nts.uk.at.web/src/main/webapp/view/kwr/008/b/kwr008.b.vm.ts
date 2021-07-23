@@ -11,8 +11,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.at.view.kwr008.share.model;
     import errors = nts.uk.ui.errors;
-    const ADDITION = getText('KWR002_178');
-    const SUBTRACTION = getText('KWR002_179');
+    const ADDITION = getText('KDL048_8');
+    const SUBTRACTION = getText('KDL048_9');
 
     export class ScreenModel {
         //enum mode
@@ -471,7 +471,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.itemId);
                     const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
                     if (targetItem) {
-                        if (operationName || item.operator.equals("－")) {
+                        if (operationName || item.operator.equals(getText(SUBTRACTION))) {
                             operationName = operationName + " " +  item.operator + " " + targetItem.attendanceItemName;
                         } else {
                             operationName = targetItem.attendanceItemName;

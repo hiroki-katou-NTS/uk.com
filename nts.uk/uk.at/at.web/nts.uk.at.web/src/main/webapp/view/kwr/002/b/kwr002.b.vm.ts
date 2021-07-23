@@ -25,6 +25,8 @@ module nts.uk.com.view.kwr002.b {
         inputKWR002B: KnockoutObservable<DataInputScreenB>;
         selectionType: number;
         layoutId: string;
+        dayOfWeekList: KnockoutObservableArray<any>;
+        selectedDayOfWeek: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
@@ -47,6 +49,7 @@ module nts.uk.com.view.kwr002.b {
             ]);
 
             self.newMode = ko.observable(false);
+            self.dayOfWeekList = ko.observableArray((__viewContext as any).enums.DayOfWeek);
 
             self.currentARESCode.subscribe((value) => {
                 _.defer(() => {
@@ -279,7 +282,8 @@ module nts.uk.com.view.kwr002.b {
                 exportFontSize: currentData.exportFontSize(),
                 itemSelType : self.selectionType,
                 layoutId: currentData.layoutId,
-                monthlyDisplay: rcdExport.monthlyDisplay
+                monthlyDisplay: rcdExport.monthlyDisplay,
+                startOfWeek: currentData.startOfWeek()
             };
 
             let itemCmd = {
@@ -442,6 +446,7 @@ module nts.uk.com.view.kwr002.b {
         itemSelType: number;
         sealStamp: any;
         monthlyDisplay: any;
+        startOfWeek: number;
     }
 
     export class AttendanceRecordExportSettingWrapper {
@@ -462,6 +467,7 @@ module nts.uk.com.view.kwr002.b {
         itemSelType: number;
         sealStamp: any;
         monthlyDisplay: KnockoutObservable<number>;
+        startOfWeek: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
@@ -474,6 +480,7 @@ module nts.uk.com.view.kwr002.b {
             self.itemSelType = param.itemSelType;
             self.sealStamp = param.sealStamp;
             self.monthlyDisplay = ko.observable(param.monthlyDisplay);
+            self.startOfWeek = ko.observable(param.startOfWeek);
         };
 
 
