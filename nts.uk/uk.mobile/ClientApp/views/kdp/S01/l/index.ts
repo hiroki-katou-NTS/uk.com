@@ -129,7 +129,7 @@ export class KdpS01LComponent extends Vue {
     public onClickTask(code: string) {
         let vm = this;
         vm.selectedCode = code;
-        
+        vm.framePosition = 0;
         let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo + 1, upperFrameWorkCode: vm.selectedCode};
 
         vm.$mask('show');
@@ -149,7 +149,6 @@ export class KdpS01LComponent extends Vue {
                     vm.frameName = vm.getFrameName(vm.frameNo);
                     vm.taskArray = _.chunk(result.data.task, 6);
                     vm.reloadData();
-                    vm.framePosition = 0;
                 }
 
             }
