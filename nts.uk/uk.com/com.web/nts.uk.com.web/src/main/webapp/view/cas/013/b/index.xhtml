@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 400, height: 540 };</script>
+			<script>var dialogSize = { width: 400, height: 620 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -54,12 +54,12 @@
 								<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_25')}</button>
 							</div>
 						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsCheckBox: { checked: special }">#{i18n.getText('CAS013_26')}</div>
-						</div>
-						<div class="valign-center control-group">
-							<div data-bind="ntsCheckBox: { checked: multi }">#{i18n.getText('CAS013_27')}</div>
-						</div>
+						<!--<div class="valign-center control-group">-->
+							<!--<div data-bind="ntsCheckBox: { checked: special }">#{i18n.getText('CAS013_26')}</div>-->
+						<!--</div>-->
+						<!--<div class="valign-center control-group">-->
+							<!--<div data-bind="ntsCheckBox: { checked: multi }">#{i18n.getText('CAS013_27')}</div>-->
+						<!--</div>-->
 						<table id="grid_container" style="margin: auto;" tabindex="3"
 							data-bind="ntsGridList: {
 											rows: 15,
