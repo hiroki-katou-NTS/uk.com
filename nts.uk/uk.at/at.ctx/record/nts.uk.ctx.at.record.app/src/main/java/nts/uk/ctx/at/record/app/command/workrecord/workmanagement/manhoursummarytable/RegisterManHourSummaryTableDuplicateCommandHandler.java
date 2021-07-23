@@ -1,25 +1,15 @@
 package nts.uk.ctx.at.record.app.command.workrecord.workmanagement.manhoursummarytable;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.DetailFormatSetting;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.DisplayFormat;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableCode;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableFormat;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableFormatRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.ManHourSummaryTableName;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.SummaryItem;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.SummaryItemType;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.TotalUnit;
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,7 +35,7 @@ public class RegisterManHourSummaryTableDuplicateCommandHandler extends CommandH
         ManHourSummaryTableFormat copy = new ManHourSummaryTableFormat(
                 new ManHourSummaryTableCode(command.getDestinationCode()),
                 new ManHourSummaryTableName(command.getName()),
-                new DetailFormatSetting(
+                DetailFormatSetting.create(
                         DisplayFormat.of(source.getDetailFormatSetting().getDisplayFormat().value),
                         TotalUnit.of(source.getDetailFormatSetting().getTotalUnit().value),
                         EnumAdaptor.valueOf(source.getDetailFormatSetting().getDisplayVerticalHorizontalTotal().value, NotUseAtr.class),
