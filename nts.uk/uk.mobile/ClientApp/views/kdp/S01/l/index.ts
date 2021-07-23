@@ -53,10 +53,7 @@ export class KdpS01LComponent extends Vue {
 
     public created() {
         let vm = this;
-
-
         vm.initTask();
-        vm.reload(0);
     }
 
     public mounted() {
@@ -104,6 +101,9 @@ export class KdpS01LComponent extends Vue {
             vm.setting = result.data.taskFrameUsageSetting.taskFrameSetting;
             vm.taskArray = _.chunk(vm.tasks, 6);
             vm.frameName = vm.getFrameName(1);
+        }).then(() => {
+            vm.reload(0);
+            vm.reloadData();
         });
 
     }
@@ -185,8 +185,15 @@ export class KdpS01LComponent extends Vue {
     public onClickCancel() {
         let vm = this;
         vm.taskNameCd = '';
-        vm.reload(0);
-        vm.reloadData();
+        let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo, upperFrameWorkCode: vm.selectedCode};
+        vm.$mask('show');
+        vm.$http.post('at', API.GET_EMPLOYEE_TASKS, param).then((result: any) => {
+            vm.$mask('hide');
+            vm.taskArray = _.chunk(result.data.task, 6);
+        }).then(() => {
+            vm.reload(0);
+            vm.reloadData();
+        });
 
     }
 

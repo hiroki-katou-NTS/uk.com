@@ -15,7 +15,8 @@
             v-model="taskNameCd"
             v-bind:show-title="true"
             v-bind:placeholder="$i18n('KDPS01_75')"
-            v-bind:columns="{ title: '', input: '' }" />
+            v-bind:columns="{ title: '', input: '' }"
+            @keyup.enter.native="onClickSearch" />
         </div>
         <div class="col-4 pl-1 pr-0">
             <!-- L2_2: 検索ボタン -->
