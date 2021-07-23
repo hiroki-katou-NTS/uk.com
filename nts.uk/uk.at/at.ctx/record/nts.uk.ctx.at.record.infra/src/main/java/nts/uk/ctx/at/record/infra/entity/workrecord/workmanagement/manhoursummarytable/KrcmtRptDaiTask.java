@@ -70,7 +70,7 @@ public class KrcmtRptDaiTask extends ContractUkJpaEntity implements Serializable
         return new ManHourSummaryTableFormat(
                 new ManHourSummaryTableCode(this.pk.code),
                 new ManHourSummaryTableName(this.name),
-                new DetailFormatSetting(
+                DetailFormatSetting.create(
                         DisplayFormat.of(this.displayFormat),
                         TotalUnit.of(this.totalUnit),
                         NotUseAtr.valueOf(this.sumVerticalHorizontalDisplay),

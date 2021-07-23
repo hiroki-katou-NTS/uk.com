@@ -39,7 +39,7 @@ public class RegisterOrUpdateManHourSummaryTableCommand {
         return new ManHourSummaryTableFormat(
                 new ManHourSummaryTableCode(this.code),
                 new ManHourSummaryTableName(this.name),
-                new DetailFormatSetting(
+                DetailFormatSetting.create(
                         DisplayFormat.of(this.displayFormat),
                         TotalUnit.of(this.totalUnit),
                         EnumAdaptor.valueOf(this.dispHierarchy, NotUseAtr.class),

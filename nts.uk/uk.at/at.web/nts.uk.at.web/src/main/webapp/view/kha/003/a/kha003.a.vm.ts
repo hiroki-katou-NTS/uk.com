@@ -10,7 +10,7 @@ module nts.uk.at.kha003.a {
 
     @bean()
     export class ViewModel extends ko.ViewModel {
-        items: KnockoutObservableArray<ItemModel>;
+        layoutSettings: KnockoutObservableArray<ItemModel>;
         summaryItems: KnockoutObservableArray<any>;
         taskFrameSettingA56: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
         taskFrameSettingA57: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
@@ -18,60 +18,41 @@ module nts.uk.at.kha003.a {
         taskFrameSettingA59: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
         taskFrameSettingA510: TaskFrameSetting = new TaskFrameSetting(0, '', 0);
         currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
         manHour: CodeName = new CodeName('', '');
         // A6_1_1 radio button
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
         // A6_2_2 radio button
         itemListA622: KnockoutObservableArray<any>;
         selectedIdA622: KnockoutObservable<number>;
-        enableA622: KnockoutObservable<boolean>;
         //A7_1
         isA71Checked: KnockoutObservable<boolean>;
-        isA71Enable: KnockoutObservable<boolean>;
-        //A7_2
-        isA72Enable: KnockoutObservable<boolean>;
 
-        layoutSettings: KnockoutObservableArray<any>;
         isUpdateMode: KnockoutObservable<boolean>;
         isExecutionMode: KnockoutObservable<boolean>;
-
         isOutPutAll: KnockoutObservable<boolean>;
 
-        constructor() {
-            super();
+        created() {
             const vm = this;
             vm.currentCode = ko.observable("");
-            vm.currentCodeList = ko.observableArray([]);
-            vm.items = ko.observableArray([]);
-            vm.summaryItems = ko.observableArray([]);
             vm.layoutSettings = ko.observableArray([]);
+            vm.summaryItems = ko.observableArray([]);
             vm.itemList = ko.observableArray([
                 new BoxModel(0, vm.$i18n('KHA003_28')),
                 new BoxModel(1, vm.$i18n('KHA003_29')),
             ]);
             vm.selectedId = ko.observable(0);
-            vm.enable = ko.observable(true);
             vm.itemListA622 = ko.observableArray([
                 new BoxModel(0, vm.$i18n('KHA003_32') + "<br/>" + vm.$i18n('KHA003_35')),
                 new BoxModel(1, vm.$i18n('KHA003_33') + "<br/>" + vm.$i18n('KHA003_36')),
                 new BoxModel(2, vm.$i18n('KHA003_34') + "<br/>" + vm.$i18n('KHA003_37')),
             ]);
             vm.selectedIdA622 = ko.observable(0);
-            vm.enableA622 = ko.observable(true);
             vm.isA71Checked = ko.observable(true);
-            vm.isA71Enable = ko.observable(true);
-            vm.isA72Enable = ko.observable(true);
             vm.isUpdateMode = ko.observable(false);
             vm.isExecutionMode = ko.observable(false);
             vm.isOutPutAll = ko.observable(false);
-        }
 
-        created() {
-            const vm = this;
-            _.extend(window, {vm});
             vm.currentCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
                 if (newValue != "") {
@@ -84,7 +65,6 @@ module nts.uk.at.kha003.a {
                     vm.manHour.code('');
                     vm.manHour.name('');
                     vm.summaryItems([]);
-                    vm.matchWidth();
                     vm.selectedIdA622(0);
                     vm.selectedId(0);
                     vm.isExecutionMode(false);
@@ -117,44 +97,30 @@ module nts.uk.at.kha003.a {
                 }
                 $('.panel_common')
                     .removeClass('bacg-inactive')
-                    .addClass('bacg-active')
-                    .parent()
-                    .css({'pointer-events': 'auto'});
+                    .addClass('bacg-active');
                 newValue.forEach((item: any) => {
                     $('#item_type_' + item.summaryItemType)
                         .removeClass('bacg-active')
-                        .addClass('bacg-inactive')
-                        .parent()
-                        .css({'pointer-events': 'none'});
+                        .addClass('bacg-inactive');
                 });
+                $("#append_area").width(Math.min(newValue.length + 1, 4) * 124);
+                $("#free_area").width(Math.min(newValue.length + 1, 4) * 124);
             });
-
-            vm.loadScreenListData();
 
             $(document).ready(function () {
                 $('#append_area').on('click', ".button_top_right_corner", function (e) {
-                    var id = $(this).attr('id');
-                    $('#' + id).removeClass('bacg-inactive').addClass('bacg-active');
-                    $('#' + id).parent().css({'pointer-events': 'auto'});
-                    $(this).parent().parent().remove();
-                    if ($('#append_area .cell').length <= 3) {
-                        $('#append_note').show();
-                    }
+                    const id = $(this).attr('id');
+                    vm.summaryItems.remove((i: any) => i.summaryItemType == id.substring(10));
                     vm.excutionModeToUpDateMode();
-                    vm.matchWidth();
                 });
             });
         }
 
         mounted() {
             const vm = this;
-        }
-
-        /**
-         * function for match with
-         * */
-        matchWidth() {
-            $('#free_area').css("width", $('#appen_parent').width());
+            _.defer(() => {
+                vm.loadScreenListData();
+            });
         }
 
         /**
@@ -189,25 +155,40 @@ module nts.uk.at.kha003.a {
                         let type0Name = vm.$i18n('KHA003_24');
                         let type1Name = vm.$i18n('KHA003_25');
                         let type2Name = vm.$i18n('KHA003_26');
-                        $('#append_area').empty();
-                        vm.summaryItems(_.sortBy(_.map(data.summaryItems || [], function (item: any) {
-                            let itemTypeName = '';
-                            if (item.itemType === 0) {
-                                itemTypeName = type0Name;
-                            } else if (item.itemType === 1) {
-                                itemTypeName = type1Name;
-                            } else if (item.itemType === 2) {
-                                itemTypeName = type2Name;
-                            } else {
-                                itemTypeName = item.itemTypeName
-                            }
-                            return {
-                                hierarchicalOrder: item.hierarchicalOrder,
-                                summaryItemType: item.itemType,
-                                itemTypeName: itemTypeName
-                            }
-                        }), ["hierarchicalOrder"]));
-                        vm.matchWidth();
+                        vm.summaryItems(_.map(
+                            _.filter(_.sortBy((data.summaryItems || []), ["hierarchicalOrder"]), (item: any) => {
+                                if (item.itemType < 3) return true;
+                                if (item.itemType == 3) return vm.taskFrameSettingA56.useAtr() == 1;
+                                if (item.itemType == 4) return vm.taskFrameSettingA57.useAtr() == 1;
+                                if (item.itemType == 5) return vm.taskFrameSettingA58.useAtr() == 1;
+                                if (item.itemType == 6) return vm.taskFrameSettingA59.useAtr() == 1;
+                                if (item.itemType == 7) return vm.taskFrameSettingA510.useAtr() == 1;
+                            }), (item: any, index: number) => {
+                                let itemTypeName = '';
+                                if (item.itemType === 0) {
+                                    itemTypeName = type0Name;
+                                } else if (item.itemType === 1) {
+                                    itemTypeName = type1Name;
+                                } else if (item.itemType === 2) {
+                                    itemTypeName = type2Name;
+                                } else if (item.itemType == 3) {
+                                    itemTypeName = vm.taskFrameSettingA56.taskFrameName();
+                                } else if (item.itemType == 4) {
+                                    itemTypeName = vm.taskFrameSettingA57.taskFrameName();
+                                } else if (item.itemType == 5) {
+                                    itemTypeName = vm.taskFrameSettingA58.taskFrameName();
+                                } else if (item.itemType == 6) {
+                                    itemTypeName = vm.taskFrameSettingA59.taskFrameName();
+                                } else if (item.itemType == 7) {
+                                    itemTypeName = vm.taskFrameSettingA510.taskFrameName();
+                                }
+                                return {
+                                    hierarchicalOrder: index + 1,
+                                    summaryItemType: item.itemType,
+                                    itemTypeName: itemTypeName
+                                }
+                            })
+                        );
                     } else {
                         vm.currentCode("");
                     }
@@ -229,17 +210,6 @@ module nts.uk.at.kha003.a {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.INIT).then(data => {
-                vm.items(_.map(data.manHoursSummaryTables, function (item: any) {
-                    return new ItemModel(item.code, item.name)
-                }));
-                if (data.manHoursSummaryTables.length > 0) {
-                    if (codeToSelect)
-                        vm.currentCode() == codeToSelect ? vm.currentCode.valueHasMutated() : vm.currentCode(codeToSelect);
-                    else
-                        vm.currentCode() == data.manHoursSummaryTables[0].code ? vm.currentCode.valueHasMutated() : vm.currentCode(data.manHoursSummaryTables[0].code);
-                } else {
-                    vm.currentCode() == "" ? vm.currentCode.valueHasMutated() : vm.currentCode("");
-                }
                 data.taskFrameSettings.forEach(function (value: any) {
                     if (value.taskFrameNo == 1 && value.useAtr == 1) {
                         vm.taskFrameSettingA56.taskFrameNo(value.taskFrameNo);
@@ -268,9 +238,23 @@ module nts.uk.at.kha003.a {
                     }
                 });
 
-                $("#appen-area-one .pannel_padding").draggable({
+                vm.layoutSettings(_.map(data.manHoursSummaryTables, function (item: any) {
+                    return new ItemModel(item.code, item.name)
+                }));
+                if (data.manHoursSummaryTables.length > 0) {
+                    if (codeToSelect)
+                        vm.currentCode() == codeToSelect ? vm.currentCode.valueHasMutated() : vm.currentCode(codeToSelect);
+                    else
+                        vm.currentCode() == data.manHoursSummaryTables[0].code ? vm.currentCode.valueHasMutated() : vm.currentCode(data.manHoursSummaryTables[0].code);
+                } else {
+                    vm.currentCode() == "" ? vm.currentCode.valueHasMutated() : vm.currentCode("");
+                }
+
+                $("#appen-area-one .panel_padding").draggable({
+                    cancel: '.panel_padding:has(.bacg-inactive)',
+                    zIndex: 10,
                     helper: function (e: any) {
-                        var html = e.target
+                        const html = e.target;
                         const itemId = html.id;
                         const itemType = $(html).data('itemtype');
                         return `<div class="panel panel-gray-bg item_a_6_4_to_67" data-itemtype="${itemType}" data-id="${itemId}">
@@ -280,16 +264,14 @@ module nts.uk.at.kha003.a {
                     },
                     stop: function (e, ui) {
                         var html = ui.helper;
-                        const itemId = $(html).data('id');
                         const itemType = $(html).data('itemtype');
-                        const itemCount = $('#append_area .cell').length;
 
                         // check helper dragged into append area
                         let isHelperInAppendArea = false;
-                        const aT1 = $("#append_area").parent().offset().top,
-                            aT2 = $("#append_area").parent().offset().top + $("#append_area").parent().height(),
-                            aL1 = $("#append_area").parent().offset().left,
-                            aL2 = $("#append_area").parent().offset().left + $("#append_area").parent().width(),
+                        const aT1 = $("#append_area").offset().top,
+                            aT2 = $("#append_area").offset().top + $("#append_area").height(),
+                            aL1 = $("#append_area").offset().left,
+                            aL2 = $("#append_area").offset().left + $("#append_area").width(),
                             hT1 = ui.offset.top - 20, // 20px padding
                             hT2 = ui.offset.top + $(html).height() + 20,
                             hL1 = ui.offset.left - 20,
@@ -301,21 +283,14 @@ module nts.uk.at.kha003.a {
 
                         if (isHelperInAppendArea) {
                             vm.$errors("clear", "#append_area");
-                            if (itemCount <= 3) {
-                                $(this).css({'pointer-events': 'none'});
-                                $(this).children().removeClass('bacg-active').addClass('bacg-inactive');
-                                $('#append_area').append(`<div class="cell valign-center">
-                                                                    <div class="panel  item_a_6_4_to_67 bacg-active">
-                                                                        <button tabindex="-1" id="${itemId}" class="button_top_right_corner"><i class="icon icon-close"></i></button>
-                                                                        <span data-itemtype="${itemType}"  class="label layout-setting summary-item" style="display: table;margin: 71px auto;">${$(this).children().html()}</span>
-                                                                    </div>
-                                                                </div>`);
+                            if (vm.summaryItems().length <= 3) {
+                                vm.summaryItems.push({
+                                    hierarchicalOrder: vm.summaryItems().length + 1,
+                                    summaryItemType: itemType,
+                                    itemTypeName: $(this).children().text()
+                                });
                                 vm.excutionModeToUpDateMode();
                             }
-                            if (itemCount >= 3) {
-                                $('#append_note').hide();
-                            }
-                            vm.matchWidth();
                         }
                     }
                 });
@@ -344,15 +319,7 @@ module nts.uk.at.kha003.a {
          * */
         clickRegistrationButton() {
             const vm = this;
-            let summaryItemsParams: any = [];
-            $('#append_area .summary-item').each(function (index, object) {
-                let item = {
-                    hierarchicalOrder: index + 1,
-                    summaryItemType: $(object).data('itemtype')
-                }
-                summaryItemsParams.push(item);
-                console.log(summaryItemsParams);
-            })
+            let summaryItemsParams = ko.toJS(vm.summaryItems);
             vm.$validate('#A4_2', '#A4_3').then((valid: boolean) => {
                 if (!valid) {
                     return;
@@ -445,7 +412,7 @@ module nts.uk.at.kha003.a {
             vm.isExecutionMode(true);
             vm.$dialog.confirm({messageId: "Msg_18"}).then((result: any) => {
                 if (result === 'yes') {
-                    var selectableCode = vm.getSelectableCode(vm.items(), vm.manHour.code());
+                    var selectableCode = vm.getSelectableCode(vm.layoutSettings(), vm.manHour.code());
                     let command = {
                         code: vm.manHour.code()
                     };
@@ -475,15 +442,10 @@ module nts.uk.at.kha003.a {
             const vm = this;
             let shareData = {
                 isCsvOutPut: true,
-                totalUnit: vm.selectedId()
+                totalUnit: 0
             };
             vm.isOutPutAll(true);
-            vm.currentCode('');
-            vm.manHour.code('');
-            vm.manHour.name('');
-            vm.summaryItems([]);
-            vm.selectedIdA622(0);
-            vm.selectedId(0);
+
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
                     vm.$window.storage('kha003BShareData').done((data: any) => {
@@ -576,36 +538,33 @@ module nts.uk.at.kha003.a {
             var c31 = {};
             var c41 = {};
             var c51 = {};
-            $('.layout-setting').each(function (i, obj) {
-                let object = $(obj);
-                if (i == 0) {
+            vm.summaryItems().forEach((i: any) => {
+                if (i.summaryItemType == 0) {
                     c21 = {
-                        type: object.data('itemtype'),
-                        name: obj.innerHTML
+                        type: i.summaryItemType,
+                        name: i.itemTypeName
                     };
                 }
-                if (i == 1) {
+                if (i.summaryItemType == 1) {
                     c31 = {
-                        type: object.data('itemtype'),
-                        name: obj.innerHTML
+                        type: i.summaryItemType,
+                        name: i.itemTypeName
                     };
-                    ;
                 }
-                if (i == 2) {
+                if (i.summaryItemType == 2) {
                     c41 = {
-                        type: object.data('itemtype'),
-                        name: obj.innerHTML
+                        type: i.summaryItemType,
+                        name: i.itemTypeName
                     };
-                    ;
                 }
-                if (i == 3) {
+                if (i.summaryItemType == 3) {
                     c51 = {
-                        type: object.data('itemtype'),
-                        name: obj.innerHTML
+                        type: i.summaryItemType,
+                        name: i.itemTypeName
                     };
-                    ;
                 }
             });
+
             let shareData = {
                 c21: c21,
                 c31: c31,
@@ -632,7 +591,7 @@ module nts.uk.at.kha003.a {
          * */
         private getcodeAndName(identifier: any, taskList: any, type: any) {
             let info = null;
-            identifier = identifier.trim();
+            if (!_.isEmpty(identifier)) identifier = identifier.trim();
             for (let element of taskList) {
                 //check aff work place
                 if (type == 0 && element.workplaceId === identifier) {

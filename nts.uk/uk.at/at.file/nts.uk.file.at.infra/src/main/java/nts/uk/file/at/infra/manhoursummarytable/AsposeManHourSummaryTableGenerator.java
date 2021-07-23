@@ -48,7 +48,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
-            String title = FILE_TITLE;
+            String title = dataSource.getSummaryTableFormat().getName();
 
             val isDisplayTotal = dataSource.getSummaryTableFormat().getDispHierarchy() == 1;
             Worksheet worksheetTemplate = isDisplayTotal ? worksheets.get(0) : worksheets.get(1);
