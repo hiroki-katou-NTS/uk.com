@@ -2727,9 +2727,11 @@ module nts.uk.ui.at.kdw013.calendar {
                             const st = $tg.hasClass('fc-settings-button');
                             const cv = $tg.hasClass('fc-one-day-button') || $tg.hasClass('fc-full-week-button') ;
                             const ts = $tg.hasClass('fc-timegrid-slot');
+                            const ovl = $tg.hasClass('ui-widget-overlay');
                     
-                    
-                            
+                                if (ovl) {
+                                return;
+                            }
 
                             dataEvent.mouse(true);
 
