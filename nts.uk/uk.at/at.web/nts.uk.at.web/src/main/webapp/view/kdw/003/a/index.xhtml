@@ -70,7 +70,7 @@
                             data-bind="enable: !changeConditionExtract(), visible: showButton().available2, click: btnCalculation_Click">#{i18n.getText('KDW003_6')}</button>
                         <button
                             data-bind="enable: !changeConditionExtract(), visible: showButton().available3, click: btnReCalculation_Click">#{i18n.getText('KDW003_12')}</button>
-                        <button data-bind="enable: !changeConditionExtract(), click: employmentOk, visible:false">#{i18n.getText('KDW003_65')}</button>
+                        <button data-bind="enable: !changeConditionExtract(), click: employmentOk, visible: showButton().available26Confirm">#{i18n.getText('KDW003_65')}</button>
                         <button
                             data-bind="click: tighProcessShow, enable:indentityMonth().enableButton &amp;&amp; !changeConditionExtract(), visible: showButton().available9() &amp;&amp; indentityMonth().show26 &amp;&amp; !indentityMonth().hideAll">#{i18n.getText('KDW003_88')}</button>
                         <button

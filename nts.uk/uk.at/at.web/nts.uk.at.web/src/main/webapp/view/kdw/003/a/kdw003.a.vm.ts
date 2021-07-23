@@ -793,7 +793,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.employmentCode(data.employmentCode);
             self.lstAttendanceItem(data.lstControlDisplayItem.lstAttendanceItem);
             let showCheckbox = _.isEmpty(self.shareObject()) ? data.showPrincipal : data.showSupervisor;
-            self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox));
+			let confirmEmployment = data.confirmEmployment ? data.confirmEmployment : false;
+            self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox, confirmEmployment));
             self.hideLock(self.showButton().available12());
             self.showLock(true);
             self.unLock(false);
@@ -4748,7 +4749,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         available19: KnockoutObservable<boolean> = ko.observable(false);
         available20: KnockoutObservable<boolean> = ko.observable(false);
         available21: KnockoutObservable<boolean> = ko.observable(false);
-        constructor(data: Array<DailyPerformanceAuthorityDto>, authority: any, showCheckbox) {
+		available26Confirm: KnockoutObservable<boolean> = ko.observable(false);
+        constructor(data: Array<DailyPerformanceAuthorityDto>, authority: any, showCheckbox: any, confirmEmployment: any) {
             var self = this;
             if (!data) return;
             this.available1(self.checkAvailable(data, 1));
@@ -4780,7 +4782,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.available21(self.checkAvailable(data, 21));
             this.available8Authority(this.available8() && authority)
             this.available11(self.checkAvailable(data, 11));
-
+			this.available26Confirm(self.checkAvailable(data, 26) && confirmEmployment);
         }
         checkAvailable(data: Array<DailyPerformanceAuthorityDto>, value: number): boolean {
             let self = this;

@@ -139,6 +139,11 @@ public class DailyPerformanceCorrectionDto implements Serializable{
 	
 	private DPCorrectionMenuDto dPCorrectionMenuDto;
 	
+	// 就業確定の機能制限.就業確定を行う	RestrictConfirmEmployment.confirmEmployment
+	private Boolean confirmEmployment;
+	// 作業運用設定.作業運用方法	TaskOperationSetting.taskOperationMethod
+	private Integer taskOperationMethod;
+	
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstFixedHeader = DPHeaderDto.GenerateFixedHeader();
