@@ -2654,10 +2654,15 @@ module nts.uk.ui.at.kdw013.calendar {
         checkEditDialog() {
             let dfd = $.Deferred();
             const vm = this;
-            if (vm.$view() == "edit" && vm.params.$settings().isChange) {
+            let eventNotSave = _.find(vm.calendar.getEvents(), (e) => !_.get(e, 'extendedProps.id'));
+            if (vm.$view() == "edit" && vm.params.$settings().isChange  || !!eventNotSave) {
                 vm.$dialog
                     .confirm({ messageId: 'Msg_2094' })
                     .then((v: 'yes' | 'no') => {
+                        if(v=='yes'){
+                            if (eventNotSave)
+                                eventNotSave.remove();
+                        }
                         dfd.resolve(v);
                     });
             } else {
@@ -2717,6 +2722,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const cd = $tg.hasClass('fc-next-day-button') || $tg.hasClass('fc-preview-day-button') ;
                             const st = $tg.hasClass('fc-settings-button');
                             const cv = $tg.hasClass('fc-one-day-button') || $tg.hasClass('fc-full-week-button') ;
+                            const ts = $tg.hasClass('fc-timegrid-slot');
                     
                     
                             
@@ -2732,7 +2738,7 @@ module nts.uk.ui.at.kdw013.calendar {
 
 
                             // close popup if target isn't owner & poper.
-                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv) {
+                            if (!iown && !cown && !ipov && !cpov && !ipkr && !cpkr && !dig && !cd && !st && !cv && !ts) {
                                 vm.checkEditDialog().done((v) => {
                                     if (v == 'yes') {   
                                         popupPosition.event(null);
