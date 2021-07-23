@@ -58,14 +58,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-row">
-                        <div class="row-left" style="width: 300px;">
+                    <div class="panel-row valign-center" style="display: flex;">
                             <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KDR003_12')">
                             </div>
-                        </div>
-                        <div class="row-right row-switch-button">
                             <div tabindex="5" style="display: inline-flex;"
-                                 class="cf"
                                  data-bind="ntsSwitchButton: {
                                             name: '#[KDR003_12]',
                                             options: [
@@ -75,18 +71,13 @@
                                             optionsValue: 'code',
                                             optionsText: 'name',
                                             value: howToPrintDate}">
-                            </div>
+
                         </div>
                     </div>
-                    <div class="panel-row">
-                        <div class="row-left" style="display: flex; width: 300px;">
-
+                    <div class="panel-row valign-center" style="display: flex">
                             <div class="label" data-bind="ntsFormLabel: {}, text: $i18n('KDR003_15')">
                             </div>
-                        </div>
-                        <div class="row-right row-switch-button">
-                            <div tabindex="6"
-                                 class="cf"
+                            <div tabindex="6" style="display: inline-flex;"
                                  data-bind="ntsSwitchButton: {
                                             name: '#[KDR003_15]',
                                             options: [
@@ -98,7 +89,6 @@
                                             optionsText: 'name',
                                             value: pageBreakSpecification}">
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
