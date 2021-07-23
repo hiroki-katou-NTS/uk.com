@@ -85,6 +85,17 @@
                                     value: selectType,
                                     enable: true}"/>
 					</div>
+					<div class="control-group valign-center" data-bind="if: selectType() == 1">
+						<div data-bind="ntsFormLabel: {required: false, text: 'showEmptyItem'}"/>
+						<div data-bind="ntsComboBox: {
+											options: listRole,
+											optionsValue: 'roleId',
+											visibleItemsCount: 5,
+											value: selectedId,
+											optionsText: 'roleCode',
+								}">
+						</div>
+					</div>
 					<div class="valign-center control-group">
 						<div data-bind="ntsFormLabel: {required: false, text: 'rows'}"/>
 						<input data-bind="ntsNumberEditor: {value: rows}" />
@@ -93,8 +104,8 @@
 					<div data-bind="with: componentViewmodel">
 						<ui:include src="component/index.xhtml" />
 						<div>
-							<b>CurrentCode:</b> <span
-								data-bind="text: ko.toJSON(currentCode)"></span>
+							<b>Current Selected Item:</b> <span
+								data-bind="text: $parent.displaySelected"></span>
 						</div>
 					</div>
 					<article class="cf">

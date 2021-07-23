@@ -19,7 +19,8 @@ module nts.uk.com.view.cas005.a.viewmodel {
         component025: ComponentModelCCG025 = new ComponentModelCCG025({
             roleType: 3,
             multiple: false,
-            rows: 15
+            rows: 15,
+            tabindex: 4
         });
 
         created() {
