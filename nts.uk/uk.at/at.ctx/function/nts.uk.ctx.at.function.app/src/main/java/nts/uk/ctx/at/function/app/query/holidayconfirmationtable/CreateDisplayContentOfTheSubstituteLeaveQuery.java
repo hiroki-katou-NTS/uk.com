@@ -277,20 +277,20 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverDay() != null ? substituteHolidayAggrResult.getCarryoverDay().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceDay() != null ? substituteHolidayAggrResult.getOccurrenceDay().v() : 0)
                         - (substituteHolidayAggrResult.getDayUse() != null ? substituteHolidayAggrResult.getDayUse().v() : 0);
-                if (checkShow < 0) check =  true;
+                check = checkShow < 0;
             }
             if (moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverDay() != null ? substituteHolidayAggrResult.getCarryoverDay().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceDay() != null ? substituteHolidayAggrResult.getOccurrenceDay().v() : 0)
                         - (substituteHolidayAggrResult.getDayUse() != null ? substituteHolidayAggrResult.getDayUse().v() : 0);
 
-                if (checkShow > 0) check = true;
+                check = checkShow > 0;
             }
             if (moreSubstituteHolidaysThanHolidays && moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverDay() != null ? substituteHolidayAggrResult.getCarryoverDay().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceDay() != null ? substituteHolidayAggrResult.getOccurrenceDay().v() : 0)
                         - (substituteHolidayAggrResult.getDayUse() != null ? substituteHolidayAggrResult.getDayUse().v() : 0);
-                if (checkShow != 0) check = true;
+                check = checkShow != 0;
             }
         } else if (mngAtr != null && mngAtr == TIME) {
             //　・「代休が休出より多い人」のチェックボックスが☑されている場合は、代休の集計結果．繰越時間＋代休の集計結果．発生時間＜代休の集計結果．使用時間
@@ -300,20 +300,20 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverTime() != null ? substituteHolidayAggrResult.getCarryoverTime().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceTime() != null ? substituteHolidayAggrResult.getOccurrenceTime().v() : 0)
                         - (substituteHolidayAggrResult.getTimeUse() != null ? substituteHolidayAggrResult.getTimeUse().v() : 0);
-                if (checkShow < 0) check = true;
+                check = checkShow < 0;
             }
             if (moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverTime() != null ? substituteHolidayAggrResult.getCarryoverTime().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceTime() != null ? substituteHolidayAggrResult.getOccurrenceTime().v() : 0)
                         - (substituteHolidayAggrResult.getTimeUse() != null ? substituteHolidayAggrResult.getTimeUse().v() : 0);
 
-                if (checkShow > 0) check = true;
+                check = checkShow > 0;
             }
             if (moreSubstituteHolidaysThanHolidays && moreHolidaysThanSubstituteHolidays && substituteHolidayAggrResult != null) {
                 val checkShow = (substituteHolidayAggrResult.getCarryoverTime() != null ? substituteHolidayAggrResult.getCarryoverTime().v() : 0)
                         + (substituteHolidayAggrResult.getOccurrenceTime() != null ? substituteHolidayAggrResult.getOccurrenceTime().v() : 0)
                         - (substituteHolidayAggrResult.getTimeUse() != null ? substituteHolidayAggrResult.getTimeUse().v() : 0);
-                if (checkShow != 0) check = true;
+                check = checkShow != 0;
             }
         }
         return check;
