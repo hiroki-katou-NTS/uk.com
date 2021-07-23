@@ -44,12 +44,14 @@ module nts.uk.at.kdp003.f {
 	const CONTRACTDATA = 'contractInfo';
 
 	export const API = {
-		LOGIN_ADMIN: '/ctx/sys/gateway/kdp/login/adminmode',
+		// LOGIN_ADMIN: '/ctx/sys/gateway/kdp/login/adminmode',
+		LOGIN_ADMIN: 'ctx/sys/gateway/login/password' + location.search,
 		LOGIN_EMPLOYEE: '/ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
 		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
 		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input',
-		ROLE: '/ctx/sys/gateway/kdp/login/employeeRoleStamping'
+		ROLE: '/ctx/sys/gateway/kdp/login/employeeRoleStamping',
+		VERIFI_LOGIN: 'ctx/sys/gateway/login/verify_employeecode_and_password' + location.search,
 	};
 
 	@bean()
@@ -76,7 +78,7 @@ module nts.uk.at.kdp003.f {
 			if (!params) {
 				vm.params = {} as any;
 			} else if (params) {
-				
+
 				const { companyId, employee } = params as EmployeeModeParam;
 
 				if (companyId) {
@@ -217,7 +219,7 @@ module nts.uk.at.kdp003.f {
 								vm.contractCd = data.contractCode;
 							}
 						})
-						.then(() => vm.$ajax(API.COMPANIES, {contractCode: vm.contractCd}))
+						.then(() => vm.$ajax(API.COMPANIES, { contractCode: vm.contractCd }))
 						.then((data: CompanyItem[]) => {
 							const valueHasMutated = () => {
 								const companyId = ko.toJS(params.companyId);
@@ -355,10 +357,16 @@ module nts.uk.at.kdp003.f {
 			const { password, companyCode } = model;
 			const companies: CompanyItem[] = ko.unwrap(vm.listCompany);
 
+			var submitData: any = {};
+			submitData.companyCode = _.escape(model.companyCode);
+			submitData.employeeCode = _.escape(model.employeeCode);
+			submitData.password = _.escape(model.password);
+			
+			var showDialogError: boolean = false;
+
 			const message = ko.unwrap(vm.message);
 
 			var dataResultLogin: TimeStampLoginData;
-
 			var roleEmployee: RoleEmployee;
 
 			if (message) {
@@ -367,7 +375,7 @@ module nts.uk.at.kdp003.f {
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
-			// note: メニュー別OCD内の記述を移送表に追加する
+				// note: メニュー別OCD内の記述を移送表に追加する
 				model.passwordInvalid = true;
 			}
 
@@ -376,61 +384,90 @@ module nts.uk.at.kdp003.f {
 					if (!valid) {
 						return;
 					}
-					vm.$blockui('show')
-						.then(() => vm.$ajax(api, model))
-						.fail((response: any) => {
-							const { message, messageId } = response;
-
-							if (!messageId) {
-								vm.$dialog.error(message);
-							} else {
-								vm.$dialog.error({ messageId });
-							}
-						})
-						.then((response: TimeStampLoginData) => {
-							dataResultLogin = response;
+					nts.uk.characteristics.restore("contractInfo")
+						.done((data: any) => {
+							submitData.contractCode = _.escape(data ? data.contractCode : "")
+							submitData.contractPassword = _.escape(data ? data.contractPassword : "")
 						})
 						.then(() => {
-							vm.$ajax(API.ROLE)
-								.done((data: RoleEmployee) => {
-									if (data) {
-										roleEmployee = data;
-										if (roleEmployee.employeeReferenceRange == 3) {
-											vm.$dialog.error({ messageId: 'Msg_1887' });
-										}
+							vm.$blockui('show')
+								.then(() => vm.$ajax('com', api, submitData))
+								// .fail((response: any) => {
+								// 	const { message, messageId } = response;
+
+								// 	console.log(message);
+								// 	console.log(messageId);
+
+								// 	if (!messageId) {
+								// 		vm.$dialog.error(message);
+								// 	} else {
+								// 		vm.$dialog.error({ messageId });
+								// 	}
+								// })
+								.done((response: TimeStampLoginData) => {
+									dataResultLogin = response;
+									if (response.msgErrorId !== null) {
+										vm.$dialog.error({ messageId: response.msgErrorId });
+										showDialogError = true;
+										return;
 									}
 								})
-						})
-						.then(() => {
-							const { successMsg } = dataResultLogin;
-							if (!!successMsg) {
-								return vm.$dialog
-									.info({ messageId: successMsg })
-									.then(() => dataResultLogin);
-							}
-
-							return dataResultLogin;
-						})
-						.then(() => {
-
-							_.extend(dataResultLogin, {
-								companies
-							});
-
-							_.extend(dataResultLogin.em, {
-								password,
-								companyCode
-							});
-							setTimeout(() => {
-								if (roleEmployee) {
-									if (roleEmployee.employeeReferenceRange != 3) {
-										vm.$window.close(dataResultLogin);
+								.then(() => {
+									if (!showDialogError) {
+										const param = { cid: model.companyId, employeeCode: model.employeeCode, password: model.password };
+										vm.$ajax('com', API.VERIFI_LOGIN, param)
+											.done((data: any) => {
+												dataResultLogin.em = data.employeeInformation;
+											})
 									}
-								}
-							}, 100);
-						})
-						.always(() => vm.$blockui('clear'));
+								})
+								.then(() => {
+									if (!showDialogError) {
+										vm.$ajax(API.ROLE)
+											.done((data: RoleEmployee) => {
+												if (data) {
+													roleEmployee = data;
+													if (roleEmployee.employeeReferenceRange == 3) {
+														vm.$dialog.error({ messageId: 'Msg_1887' });
+													}
+												}
+											})
+									}
+								})
+								.then(() => {
+									if (!showDialogError) {
+										const { successMsg } = dataResultLogin;
+										console.log(successMsg);
+										if (!!successMsg) {
+											return vm.$dialog
+												.info({ messageId: successMsg })
+												.then(() => dataResultLogin);
+										}
 
+										return dataResultLogin;
+									}
+								})
+								.then(() => {
+									if (!showDialogError) {
+										_.extend(dataResultLogin, {
+											companies
+										});
+
+										_.extend(dataResultLogin.em, {
+											password,
+											companyCode
+										});
+										setTimeout(() => {
+											if (roleEmployee) {
+												if (roleEmployee.employeeReferenceRange != 3) {
+													vm.$window.close(dataResultLogin);
+												}
+											}
+										}, 100);
+									}
+								})
+								.always(() => vm.$blockui('clear'));
+						})
 				});
 		}
 
@@ -455,7 +492,7 @@ module nts.uk.at.kdp003.f {
 
 			if (passwordRequired === false) {
 				_.omit(model, ['password']);
-			// note: メニュー別OCD内の記述を移送表に追加する
+				// note: メニュー別OCD内の記述を移送表に追加する
 				model.passwordInvalid = true;
 			}
 
@@ -583,23 +620,23 @@ module nts.uk.at.kdp003.f {
 	}
 
 	export interface EmployeeData {
-		readonly companyId: string;
-		readonly companyCode?: string;
-		readonly personalId: string;
-		readonly employeeId: string;
-		readonly employeeCode: string;
-		readonly employeeName: string;
+		companyId: string;
+		companyCode?: string;
+		personalId: string;
+		employeeId: string;
+		employeeCode: string;
+		employeeName: string;
 		password?: string;
 	}
 
 	export interface TimeStampLoginData {
-		readonly showChangePass: boolean;
-		readonly msgErrorId: string;
-		readonly showContract: boolean;
-		readonly result: boolean;
-		readonly em: EmployeeData;
-		readonly successMsg: string;
-		readonly errorMessage: string;
+		showChangePass: boolean;
+		msgErrorId: string;
+		showContract: boolean;
+		result: boolean;
+		em: EmployeeData;
+		successMsg: string;
+		errorMessage: string;
 	}
 
 	export interface ModelData {
@@ -625,6 +662,15 @@ module nts.uk.at.kdp003.f {
 		rolcontractCodeeId: string;
 		assignAtr: number;
 		companyId: string
+	}
+
+	export interface IDataLogin {
+		changePassReason: null | string;
+		msgErrorId: null | string;
+		showChangePass: null | boolean;
+		showContract: null | boolean;
+		spanDays: number
+		successMsg: null | string;
 	}
 
 	export class Model {
