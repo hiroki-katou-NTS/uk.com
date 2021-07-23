@@ -155,34 +155,40 @@ module nts.uk.at.kha003.a {
                         let type0Name = vm.$i18n('KHA003_24');
                         let type1Name = vm.$i18n('KHA003_25');
                         let type2Name = vm.$i18n('KHA003_26');
-                        vm.summaryItems(_.sortBy(
-                            _.map(
-                                _.filter((data.summaryItems || []), (item: any) => {
-                                    if (item.itemType < 3) return true;
-                                    if (item.itemType == 3) return vm.taskFrameSettingA56.useAtr() == 1;
-                                    if (item.itemType == 4) return vm.taskFrameSettingA57.useAtr() == 1;
-                                    if (item.itemType == 5) return vm.taskFrameSettingA58.useAtr() == 1;
-                                    if (item.itemType == 6) return vm.taskFrameSettingA59.useAtr() == 1;
-                                    if (item.itemType == 7) return vm.taskFrameSettingA510.useAtr() == 1;
-                                }), (item: any) => {
-                                    let itemTypeName = '';
-                                    if (item.itemType === 0) {
-                                        itemTypeName = type0Name;
-                                    } else if (item.itemType === 1) {
-                                        itemTypeName = type1Name;
-                                    } else if (item.itemType === 2) {
-                                        itemTypeName = type2Name;
-                                    } else {
-                                        itemTypeName = item.itemTypeName
-                                    }
-                                    return {
-                                        hierarchicalOrder: item.hierarchicalOrder,
-                                        summaryItemType: item.itemType,
-                                        itemTypeName: itemTypeName
-                                    }
-                                }),
-                            ["hierarchicalOrder"]
-                        ));
+                        vm.summaryItems(_.map(
+                            _.filter(_.sortBy((data.summaryItems || []), ["hierarchicalOrder"]), (item: any) => {
+                                if (item.itemType < 3) return true;
+                                if (item.itemType == 3) return vm.taskFrameSettingA56.useAtr() == 1;
+                                if (item.itemType == 4) return vm.taskFrameSettingA57.useAtr() == 1;
+                                if (item.itemType == 5) return vm.taskFrameSettingA58.useAtr() == 1;
+                                if (item.itemType == 6) return vm.taskFrameSettingA59.useAtr() == 1;
+                                if (item.itemType == 7) return vm.taskFrameSettingA510.useAtr() == 1;
+                            }), (item: any, index: number) => {
+                                let itemTypeName = '';
+                                if (item.itemType === 0) {
+                                    itemTypeName = type0Name;
+                                } else if (item.itemType === 1) {
+                                    itemTypeName = type1Name;
+                                } else if (item.itemType === 2) {
+                                    itemTypeName = type2Name;
+                                } else if (item.itemType == 3) {
+                                    itemTypeName = vm.taskFrameSettingA56.taskFrameName();
+                                } else if (item.itemType == 4) {
+                                    itemTypeName = vm.taskFrameSettingA57.taskFrameName();
+                                } else if (item.itemType == 5) {
+                                    itemTypeName = vm.taskFrameSettingA58.taskFrameName();
+                                } else if (item.itemType == 6) {
+                                    itemTypeName = vm.taskFrameSettingA59.taskFrameName();
+                                } else if (item.itemType == 7) {
+                                    itemTypeName = vm.taskFrameSettingA510.taskFrameName();
+                                }
+                                return {
+                                    hierarchicalOrder: index + 1,
+                                    summaryItemType: item.itemType,
+                                    itemTypeName: itemTypeName
+                                }
+                            })
+                        );
                     } else {
                         vm.currentCode("");
                     }
