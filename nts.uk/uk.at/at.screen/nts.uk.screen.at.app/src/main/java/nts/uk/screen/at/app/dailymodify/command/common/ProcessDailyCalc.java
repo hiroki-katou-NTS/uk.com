@@ -89,7 +89,10 @@ public class ProcessDailyCalc {
 			List<DPItemValue> items = validatorDataDaily.checkCareItemDuplicate(itemCovert, itemOlds);
 			itemErrors.addAll(items);
 			List<DPItemValue> itemInputs = validatorDataDaily.checkInputData(itemCovert, itemValues);
+			// 開始終了時刻順序不正チェック
+			List<DPItemValue> itemInputsPlus = validatorDataDaily.checkInputDataPlus(itemCovert, itemValues);
 			itemInputErors.addAll(itemInputs);
+			itemInputErors.addAll(itemInputsPlus);
 			itemInputWorkType = lstNotFoundWorkType.stream().filter(
 					wt -> wt.getEmployeeId().equals(x.getKey().getLeft()) && wt.getDate().equals(x.getKey().getRight()))
 					.collect(Collectors.toList());
