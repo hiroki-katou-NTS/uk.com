@@ -38,7 +38,7 @@ public class TaskInitialSelHist extends AggregateRoot
 		Optional<TaskInitialSel> dataChangePeriod = lstHistory.stream().filter( c -> c.getDatePeriod().equals(targetDatePeriod)).findFirst();
 		//@履歴リスト：except $変更する履歴	
 		if (dataChangePeriod.isPresent()) {
-		lstHistory.remove(dataChangePeriod);
+		lstHistory.remove(dataChangePeriod.get());
 		//$変更する履歴.作業項目 = 変更後の作業項目			
 		dataChangePeriod.get().setTaskItem(taskItem);
 		//@履歴リスト.追加($変更する履歴)
