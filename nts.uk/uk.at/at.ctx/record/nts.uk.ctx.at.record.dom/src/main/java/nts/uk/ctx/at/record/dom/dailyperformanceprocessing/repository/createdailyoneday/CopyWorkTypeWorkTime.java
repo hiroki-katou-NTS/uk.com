@@ -50,8 +50,8 @@ public class CopyWorkTypeWorkTime {
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidAndStandardDate(employeeId, ymd);
 		if (!optWorkingConditionItem.isPresent()
-				|| optWorkingConditionItem.get().getWorkCategory().getWorkType() == null
-				|| !optWorkingConditionItem.get().getWorkCategory().getWorkType().getHolidayAttendanceTimeWTypeCode().isPresent()) {
+				|| optWorkingConditionItem.get().getWorkCategory().getHolidayWorkInformation().getWorkTypeCode() ==null
+				) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("012"), new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return listErrorMessageInfo;

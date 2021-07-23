@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -15,7 +14,6 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class EmployeeUnitPriceHistoryItem extends AggregateRoot {
 	/* 社員ID */

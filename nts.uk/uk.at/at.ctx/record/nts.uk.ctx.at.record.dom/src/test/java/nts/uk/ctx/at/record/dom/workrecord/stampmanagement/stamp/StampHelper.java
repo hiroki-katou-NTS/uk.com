@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
@@ -73,8 +74,9 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
-								new AttendanceTime(2))),
-				true,Optional.ofNullable(getGeoCoordinateDefault()),
+								new AttendanceTime(2)), null),
+				new ImprintReflectionState(true, Optional.empty()),
+				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty());
 	}
 	
@@ -160,7 +162,8 @@ public class StampHelper {
 				Optional.of(new WorkLocationCD("workLocationCD")), 
 						Optional.of(new SupportCardNumber(9999))),
 				new WorkTimeCode("workTimeCode"),
-				getOvertimeDeclarationDefault(), null);
+				getOvertimeDeclarationDefault(),
+				WorkGroup.create("workCd1", "workCd2", "workCd3", "workCd4", "workCd5"));
 	}
 	
 	public static Relieve getRelieveDefault() {
