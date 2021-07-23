@@ -95,6 +95,73 @@ public class Helper {
     }
 
     public static class summaryItemDetail {
+        public static List<SummaryItemDetail> getItemDetails(int unit) {
+            return Arrays.asList(
+                    new SummaryItemDetail(
+                            "01",
+                            new DisplayInformation("displayCode01", "displayName01"),
+                            Arrays.asList(
+                                    new SummaryItemDetail(
+                                            "0101",
+                                            new DisplayInformation("displayCode0101", "displayName0101"),
+                                            Collections.emptyList(),
+                                            Arrays.asList(
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/01", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/02", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/03", "yyyy/MM/dd") : null)),
+                                            Optional.of(3)
+                                    ),
+                                    new SummaryItemDetail(
+                                            "0102",
+                                            new DisplayInformation("displayCode0102", "displayName0102"),
+                                            Collections.emptyList(),
+                                            Arrays.asList(
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/01", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/02", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/03", "yyyy/MM/dd") : null)),
+                                            Optional.of(3)
+                                    )
+                            ),
+                            Arrays.asList(
+                                    new VerticalValueDaily(2, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/01", "yyyy/MM/dd") : null),
+                                    new VerticalValueDaily(2, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/02", "yyyy/MM/dd") : null),
+                                    new VerticalValueDaily(2, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/03", "yyyy/MM/dd") : null)),
+                            Optional.of(6)
+                    ),
+                    new SummaryItemDetail(
+                            "02",
+                            new DisplayInformation("displayCode02", "displayName02"),
+                            Arrays.asList(
+                                    new SummaryItemDetail(
+                                            "0201",
+                                            new DisplayInformation("displayCode0201", "displayName0201"),
+                                            Collections.emptyList(),
+                                            Arrays.asList(
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/01", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/02", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/03", "yyyy/MM/dd") : null)),
+                                            Optional.of(3)
+                                    ),
+                                    new SummaryItemDetail(
+                                            "0202",
+                                            new DisplayInformation("displayCode0202", "displayName0202"),
+                                            Collections.emptyList(),
+                                            Arrays.asList(
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/01", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/02", "yyyy/MM/dd") : null),
+                                                    new VerticalValueDaily(1, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/03", "yyyy/MM/dd") : null)),
+                                            Optional.of(3)
+                                    )
+                            ),
+                            Arrays.asList(
+                                    new VerticalValueDaily(2, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/01", "yyyy/MM/dd") : null),
+                                    new VerticalValueDaily(2, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/02", "yyyy/MM/dd") : null),
+                                    new VerticalValueDaily(2, unit == 1 ? YearMonth.of(2021, 6) : null, unit == 0 ? GeneralDate.fromString("2021/06/03", "yyyy/MM/dd") : null)),
+                            Optional.of(6)
+                    )
+            );
+        }
+
         public static List<SummaryItemDetail> getList(int maxSize) {
             List<SummaryItemDetail> lstSummaryItemDetail = new ArrayList<>();
             List<SummaryItemDetail> lstChildSummaryItemDetail = new ArrayList<>();

@@ -24,11 +24,9 @@ import static org.assertj.core.api.Assertions.tuple;
 @RunWith(JMockit.class)
 public class ManHourSummaryTableFormatTest {
     private final List<SummaryItem> summaryItemFullList = Helper.DetailFormatSetting.summaryItemList;
-    List<SummaryItem> summaryItemSingleList = Arrays.asList(
-            new SummaryItem(1, SummaryItemType.EMPLOYEE),
-            new SummaryItem(1, SummaryItemType.TASK5),
-            new SummaryItem(2, SummaryItemType.TASK1)
-    );
+    List<SummaryItem> summaryItemList2Level = Arrays.asList(
+            new SummaryItem(2, SummaryItemType.TASK1),
+            new SummaryItem(1, SummaryItemType.EMPLOYEE));
     private final List<YearMonth> yearMonthList = Collections.singletonList(YearMonth.of(2021, 6));
     private final List<GeneralDate> dateList = Arrays.asList(
             GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"),
@@ -51,13 +49,32 @@ public class ManHourSummaryTableFormatTest {
     }
 
     /**
+     * Test create detail format setting
+     */
+    @Test
+    public void create_detail_format_setting_test() {
+        val instance = DetailFormatSetting.create(DisplayFormat.DECIMAL, TotalUnit.DATE, NotUseAtr.USE, summaryItemList2Level);
+
+        // Assertion
+        assertThat(instance.getDisplayFormat().value).isEqualTo(0);
+        assertThat(instance.getTotalUnit().value).isEqualTo(0);
+        assertThat(instance.getDisplayVerticalHorizontalTotal().value).isEqualTo(1);
+        assertThat(instance.getSummaryItemList())
+                .extracting(SummaryItem::getHierarchicalOrder, x -> x.getSummaryItemType().value, x -> x.getSummaryItemType().nameId)
+                .containsExactly(
+                        tuple(1, 2, "社員"),
+                        tuple(2, 3, "作業1")
+                );
+    }
+
+    /**
      * displayVerticalHorizontalTotal = USE
      * TotalUnit = DATE
      * summaryItemList NOT_EMPTY
      */
     @Test
     public void createOutputContent_unitDate() {
-        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.USE, summaryItemSingleList);
+        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.USE, summaryItemList2Level);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
         new Expectations(TextResource.class) {{
             TextResource.localize("KHA003_101");
@@ -78,7 +95,6 @@ public class ManHourSummaryTableFormatTest {
                         tuple(8, null, GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
                         tuple(16, null, GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"))
                 );
-
         // List SummaryItemDetail
         assertThat(result.getItemDetails()).hasSize(2);
         //1
@@ -96,8 +112,7 @@ public class ManHourSummaryTableFormatTest {
                             VerticalValueDaily::getDate)
                     .containsExactly(
                             tuple(4, null, GeneralDate.fromString("2021/06/01", "yyyy/MM/dd")),
-                            tuple(8, null, GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"))
-                    );
+                            tuple(8, null, GeneralDate.fromString("2021/06/02", "yyyy/MM/dd")));
             assertThat(result.getItemDetails().get(0).getChildHierarchyList()).hasSize(2);
             //1.1
             {
@@ -205,7 +220,7 @@ public class ManHourSummaryTableFormatTest {
      */
     @Test
     public void createOutputContent_unitDate_disp_notUse() {
-        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.NOT_USE, summaryItemSingleList);
+        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.NOT_USE, summaryItemList2Level);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
         new Expectations(TextResource.class) {{
             TextResource.localize("KHA003_101");
@@ -375,7 +390,7 @@ public class ManHourSummaryTableFormatTest {
      */
     @Test
     public void createOutputContent_unitMonth() {
-        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.YEAR_MONTH, NotUseAtr.USE, summaryItemSingleList);
+        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.YEAR_MONTH, NotUseAtr.USE, summaryItemList2Level);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
         new Expectations(TextResource.class) {{
             TextResource.localize("KHA003_101");
@@ -502,7 +517,7 @@ public class ManHourSummaryTableFormatTest {
      */
     @Test
     public void createOutputContent_unitMonth_disp_notUse() {
-        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.YEAR_MONTH, NotUseAtr.NOT_USE, summaryItemSingleList);
+        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.YEAR_MONTH, NotUseAtr.NOT_USE, summaryItemList2Level);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
         new Expectations(TextResource.class) {{
             TextResource.localize("KHA003_101");

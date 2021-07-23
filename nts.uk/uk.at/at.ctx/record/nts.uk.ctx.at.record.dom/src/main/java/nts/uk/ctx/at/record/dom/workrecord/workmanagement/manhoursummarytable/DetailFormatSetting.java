@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
