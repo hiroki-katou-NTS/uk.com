@@ -2989,7 +2989,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		int remarkPosition = fontSize == FontSizeEnum.BIG ? 35 : 43;
 		int contentPosition = fontSize == FontSizeEnum.BIG ? 39 : 47;
 		int contentPosition1 = fontSize == FontSizeEnum.BIG ? 42 : 50;
-        String workplaceTitle = TextResource.localize("KWR001_90") + "　" + rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName();
+        String workplaceTitle = TextResource.localize("KWR001_90") + rootWorkplace.getWorkplaceCode() + "　" + rootWorkplace.getWorkplaceName();
 
         boolean colorWhite = true; // true = white, false = light blue, start with white row
 		
@@ -3951,6 +3951,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cells cells = sheetInfo.getSheet().getCells();
 		Range dateRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 		Range dateRange = cells.createRange(currentRow, 0, 1, contentPosition);
+		dateRangeTemp.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		dateRange.copy(dateRangeTemp);
 		Cell dateTagCell = cells.get(currentRow, 0);
 		dateTagCell.setValue(titleDate);
