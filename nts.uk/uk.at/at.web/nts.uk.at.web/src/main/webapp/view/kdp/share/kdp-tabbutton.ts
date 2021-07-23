@@ -161,7 +161,7 @@ module nts.uk.at.view.kdp.share {
 
 			const text = document.createElement('div');
 
-			const { supportUse, temporaryUse } = data;
+			const { supportUse, temporaryUse, entranceExitUse } = data;
 
 			ko.applyBindingsToNode(text, { text: data.btnName });
 
@@ -174,7 +174,7 @@ module nts.uk.at.view.kdp.share {
 					'color': data.btnTextColor,
 					'background-color': data.btnBackGroundColor,
 					'visibility': data.btnPositionNo === -1 || data.usrArt === 0 || (supportUse === false && _.includes([14, 15, 16, 17, 18], btnType)) 
-					|| (temporaryUse === false && _.includes([12, 13], btnType)) ? 'hidden' : 'visible'
+					|| (temporaryUse === false && _.includes([12, 13], btnType)) || (entranceExitUse === false && _.includes([10, 11], btnType)) ? 'hidden' : 'visible'
 				});
 			changeHeightBtn(true);
 			if (data.btnPositionNo === 1 || data.btnPositionNo === 2) {
@@ -220,6 +220,8 @@ module nts.uk.at.view.kdp.share {
 		supportUse: KnockoutObservable<boolean> = ko.observable(false);
 
 		temporaryUse: KnockoutObservable<boolean> = ko.observable(false);
+
+		entranceExitUse: KnockoutObservable<boolean> = ko.observable(false);
 		
 		constructor(public params: StampParam) {
 			super();
@@ -328,6 +330,7 @@ module nts.uk.at.view.kdp.share {
 					};
 					const supportUsed = ko.unwrap(vm.supportUse);
 					const temporaryUsed = ko.unwrap(vm.temporaryUse);
+					const entranceExitUse = ko.unwrap(vm.entranceExitUse);
 
 					const filters: TabLayout[] = [];
 
@@ -374,6 +377,7 @@ module nts.uk.at.view.kdp.share {
 									btn.height = Math.max(buttonSize, 70) * constance + (buttonLayoutType === SMALL_8 ? 7 : 0);
 									btn.supportUse = supportUsed;
 									btn.temporaryUse = temporaryUsed;
+									btn.entranceExitUse = entranceExitUse;
 
 									buttons.push(btn);
 								} else {
@@ -393,7 +397,8 @@ module nts.uk.at.view.kdp.share {
 										usrArt: -1,
 										height: buttonSize,
 										supportUse: supportUsed,
-										temporaryUse: temporaryUsed
+										temporaryUse: temporaryUsed,
+										entranceExitUse: entranceExitUse
 									});
 								}
 							}
@@ -541,6 +546,7 @@ module nts.uk.at.view.kdp.share {
 		height: number;
 		supportUse: boolean;
 		temporaryUse: boolean;
+		entranceExitUse: boolean;
 	}
 
 	export enum NotUseAtr {
