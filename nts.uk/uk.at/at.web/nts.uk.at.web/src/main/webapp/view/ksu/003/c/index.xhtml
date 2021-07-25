@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 930, height: 680 };</script>
+            <script>var dialogSize = { width: 930, height: 620 };</script>
             <com:ValidatorScript>
                 nts.uk.shr.com.time.TimeWithDayAttr
             </com:ValidatorScript>
@@ -27,10 +27,10 @@
             <div id="contents-area">
                 <!--C2-1-->
                 <div style="display: flex;">
-                    <div id="name" style="margin-left: 20px;" data-bind="ntsFormLabel: {required: false}">
+                    <div id="name" style="margin-left: 15px;" data-bind="ntsFormLabel: {required: false}">
                         #{i18n.getText('KSU003_88')}</div>
                     <!--C2-2-->
-                    <div style=" margin-top: 9px;" data-bind="html: date()"></div>
+                    <div style=" margin-top: 5px;" data-bind="html: date()"></div>
                 </div>
                 <hr id="line" />
                 <!--C4-->
@@ -53,7 +53,7 @@
                         <div id="name" data-bind="ntsFormLabel: {required: true}">
                             #{i18n.getText('KSU003_89')}</div>
                         <!--C5-3-->
-                        <span class="ntsControl" style="margin-left: 35px; margin-top: 8px;">
+                        <span class="ntsControl" style="margin-left: 15px; margin-top: 8px;">
                             <label class="ntsRadioBox">
                                 <input type="radio" name="textRadio"
                                     data-bind="checkedValue: 0, checked: selectedMode, enable: true" />
@@ -64,7 +64,7 @@
                     <div class="container-custom">
 
                          <!--C5-4-->
-                        <span class="ntsControl" style="margin-left: 100px; margin-top: 4px;" tabindex="4">
+                        <span class="ntsControl" style="margin-left: 57px; margin-top: 4px;" tabindex="4">
                             <label class="ntsRadioBox" >
                                 <input id="timezone" type="radio" name="textRadio"
                                     data-bind="checkedValue: 1, checked: selectedMode, enable: true" />
@@ -73,7 +73,7 @@
                         </span>
                         
                         <!--C5-4-1-->                       
-                        <input id="startTime"  tabindex="5" style="margin-left: 26px;" data-bind="ntsTimeWithDayEditor: {
+                        <input id="startTime"  tabindex="5" style="margin-left: 35px;" data-bind="ntsTimeWithDayEditor: {
                             value: startTime,
                             constraint: 'TimeWithDayAttr',
                             option: {width: '60px', timeWithDay: false},
@@ -106,7 +106,7 @@
                         <div  data-bind="ntsFormLabel: {required: true}">
                             #{i18n.getText('KSU003_96')}</div>
                         <!--C6-2-->
-                        <div id="task-list" tabindex="7" style="margin-left: 50px;" 
+                        <div id="task-list" tabindex="7" style="margin-left: 33px;" 
                                 data-bind="ntsComboBox: {
                                     options: taskMasterList,
                                     width: 230,
