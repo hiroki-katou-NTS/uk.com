@@ -59,6 +59,9 @@ public class GetListEmpWorkHours {
 					List<TaskScheduleDetail> data = v.get().getTaskSchedule().getDetails();
 					List<TaskScheduleDetailDto> detailDto = data.stream().map(c -> {
 						Optional<TaskData> task = taskDtos.stream().filter(x -> {
+							if (c.getTaskCode() == null || x == null)
+								return false;
+							
 							return c.getTaskCode().v().equals(x.code);
 						}).findFirst();
 						

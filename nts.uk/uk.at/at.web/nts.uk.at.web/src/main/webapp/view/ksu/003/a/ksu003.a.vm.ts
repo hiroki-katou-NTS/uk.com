@@ -113,6 +113,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		taskSaveData : any = [];
 		lstTaskScheduleDetailEmp : any = [];
 		typeTask : any = [];
+		checkSaveDataMode : any = true;
 		
 		modes = ko.observableArray([ "normal", "paste", "pasteFlex" ].map(c => ({ code: c, name: c })));
 
@@ -257,66 +258,93 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 		
 		public subFormatDate(value : any){
-			let self = this, mode = "normal";
-				if(value == 1){
-					if(_.isNil(self.fixedType)) return;
-					self.fixedType.color("#ccccff")
-					self.changeableType.color("#ffc000")
-					self.flexType.color("#ccccff")
-					self.otType.color("#ffff00")
-					self.otType.hide(false);
-					self.otType.color("#00ffcc")
-					self.coreType.hide(false);
-					self.breakType.zIndex(1001);
-					self.holidayType.zIndex(1103);
-					self.shortType.zIndex(1052);
-					if (self.taskTypes.length > 0){
-						for (let i = 0; i < self.taskTypes.length; i++)
-						self.taskTypes[i].hide(true);
-					}
-					
-					$(".ex-body-leftmost").removeClass("dis-pointer");
-					$(".ex-body-middle").removeClass("dis-pointer");
-					$(".ex-body-detail").removeClass("disable-css");
-					$(".x-button").removeClass("dis-pointer");
-					$(".xcell").removeClass("bg-color");
-				} else {
-					if(_.isNil(self.fixedType)) return;
-					self.fixedType.color("#fff")
-					self.changeableType.color("#fff")
-					self.flexType.color("#fff")
-					self.otType.color("#fff")
-					self.otType.hide(true);
-					self.otType.color("#fff")
-					self.coreType.hide(true);
-					self.breakType.zIndex(1999);
-					self.holidayType.zIndex(1996);
-					self.shortType.zIndex(1995);
-					if (self.taskTypes.length > 0){
-						for (let i = 0; i < self.taskTypes.length; i++)
-						self.taskTypes[i].hide(false);
-					}
-					
-					$(".ex-body-leftmost").addClass("dis-pointer");
-					$(".ex-body-middle").addClass("dis-pointer");
-					$(".ex-body-detail").addClass("disable-css");
-					$(".x-button").addClass("dis-pointer");
-					$(".xcell").addClass("bg-color");
-					$(".extable-header-leftmost").addClass("header-color");
-					$(".extable-header-detail").addClass("header-color");
-					
-					if(!_.isNil(self.localStore.workSelection)){
-						if(self.localStore.workSelection == 0)
-							mode = "paste";
-						if(self.localStore.workSelection == 1){
-							mode = "pasteFlex";
-							__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
-						}
-							
-					}
+			let self = this;
+				if (self.checkSaveDataMode == false) return;
+				if (self.enableSave() == true){
+					dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+						self.changeModeColor(value);
+						return;
+					}).ifNo(() => {
+						self.checkSaveDataMode = false;
+						if (value == 2)
+						self.selectedDisplayPeriod(1);
+						else 
+						self.selectedDisplayPeriod(2);
+						return; 
+					})
 				}
 				
-				ruler.setMode(mode);
+				if (self.enableSave() == false)
+				self.changeModeColor(value);
+		}
+		
+		public changeModeColor(value : any){
+			let self = this, mode = "normal";
+			if(value == 1){
+				if(_.isNil(self.fixedType)) return;
+				self.fixedType.color("#ccccff")
+				self.changeableType.color("#ffc000")
+				self.flexType.color("#ccccff")
+				self.otType.color("#ffff00")
+				self.otType.hide(false);
+				self.otType.color("#00ffcc")
+				self.coreType.hide(false);
+				self.breakType.zIndex(1001);
+				self.holidayType.zIndex(1103);
+				self.shortType.zIndex(1052);
+				if (self.taskTypes.length > 0){
+					for (let i = 0; i < self.taskTypes.length; i++)
+					self.taskTypes[i].hide(true);
+				}
+				
+				$("#ab1-viewModel").hide();
+				$(".ab-view").addClass('hide-pallet');
+				
+				$(".ex-body-leftmost").removeClass("dis-pointer");
+				$(".ex-body-middle").removeClass("dis-pointer");
+				$(".ex-body-detail").removeClass("disable-css");
+				$(".x-button").removeClass("dis-pointer");
+				$(".xcell").removeClass("bg-color");
+			} else {
+				if(_.isNil(self.fixedType)) return;
+				self.fixedType.color("#fff")
+				self.changeableType.color("#fff")
+				self.flexType.color("#fff")
+				self.otType.color("#fff")
+				self.otType.hide(true);
+				self.otType.color("#fff")
+				self.coreType.hide(true);
+				self.breakType.zIndex(1999);
+				self.holidayType.zIndex(1996);
+				self.shortType.zIndex(1995);
+				if (self.taskTypes.length > 0){
+					for (let i = 0; i < self.taskTypes.length; i++)
+					self.taskTypes[i].hide(false);
+				}
+				
+				$("#ab1-viewModel").show();
+				$(".ab-view").removeClass('hide-pallet');
+				
+				$(".ex-body-leftmost").addClass("dis-pointer");
+				$(".ex-body-middle").addClass("dis-pointer");
+				$(".ex-body-detail").addClass("disable-css");
+				$(".x-button").addClass("dis-pointer");
+				$(".xcell").addClass("bg-color");
+				$(".extable-header-leftmost").addClass("header-color");
+				$(".extable-header-detail").addClass("header-color");
+				
+				if(!_.isNil(self.localStore.workSelection)){
+					if(self.localStore.workSelection == 0)
+						mode = "paste";
+					if(self.localStore.workSelection == 1){
+						mode = "pasteFlex";
+						__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
+					}
+						
+				}
+			}
+			
+			ruler.setMode(mode);
 		}
 
 		// Check and bind data when input worktype & worktime
@@ -689,6 +717,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			}
 			self.dataScreen003A(data003A);
 			self.getInforFirt();
+			// tạo localStore lần đầu tiên
 			let local: model.ILocalStore = {
 				startTimeSort: self.checked(),
 				showWplName: self.checkedName() == true,
@@ -699,7 +728,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				pageNo : !_.isNil(self.localStore) ? self.localStore.pageNo : 0,
 				work1Selection : !_.isNil(self.localStore) ? self.localStore.work1Selection : '',
 				workPalletDetails : !_.isNil(self.localStore) ? self.localStore.workPalletDetails : {column: 0, data: {text: "t", tooltip: "test", page: 1}, row: 0},
-				workSelection: !_.isNil(self.localStore) ? self.localStore.workSelection : 1
+				workSelection: !_.isNil(self.localStore) ? self.localStore.workSelection : 0
 			}
 			self.localStore = local;
 			self.getWorkingByDate(self.targetDate(), 1).done(() => {
@@ -752,8 +781,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						? self.dataInitStartKsu003Dto().functionControlDto.changeableWorks : [];
 					
 					if(data.taskOperationMethod != 0){
-						self.selectedDisplayPeriod(self.localStore.displayFormat);
+						$("#label-display").hide()
+						$("#hai-cham").hide()
+						$("#display-format").hide()
+						self.selectedDisplayPeriod(1);
 					} else {
+						$("#label-display").show();
+						$("#hai-cham").show();
+						$("#display-format").show();
 						self.selectedDisplayPeriod(self.localStore.displayFormat);
 					}
 				}).fail(function(error) {
@@ -1955,10 +1990,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                         chartFilter: function() {
                             return true;
                         },
-                        handler: function(ui) {
+                        handler: function(ui : any) {
+							if (self.selectedDisplayPeriod() == 1) return;
                             let items = [
-                                { id: "終日に拡大", text: "終日に拡大", selectHandler: function(id) { } },
-                                { id: "削除", text: "削除", selectHandler: function(id) { ruler.removeBy({ no: ui.rowIndex, id: ui.id }); } }
+                                { id: "終日に拡大", text: "終日に拡大", selectHandler: function(id : any) { } },
+                                { id: "削除", text: "削除", selectHandler: function(id : any) { ruler.removeBy({ no: ui.rowIndex, id: ui.id }); } }
                             ];
                             
                             ui.contextMenu(items);
@@ -2426,10 +2462,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 			} else {
 				service.addTaskWorkSchedule(self.taskPasteData).done((rs: any) => {
-					nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+					if (type != 1) {
+						nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+						self.getTask();
+					}
 					self.taskSaveData = [];
 					self.taskPasteData = [];
-					self.getTask();
 					self.enableSave(false);
 					block.clear();
 				}).fail(function(error: any) {
@@ -3065,11 +3103,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					for (let o = 0; o < taskTime.length; o++) {
 					
 					let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
-					if (((timeChart2 != null && taskTime[o].timeSpanForCalcDto.end / 5 < timeChart2.startTime) || (timeChart2 == null)) && 
+					if (taskTime[o].taskData != null && ((timeChart2 != null && taskTime[o].timeSpanForCalcDto.end / 5 < timeChart2.startTime) || (timeChart2 == null)) && 
 					timeMinus.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus[0].startTime, timeMinus[0].endTime) ||
 						_.inRange(taskTime[o].timeSpanForCalcDto.end, timeMinus[0].startTime, timeMinus[0].endTime))) {
 						
-						ruler.addChartWithType(taskTime[o].taskData.taskDisplayInfoDto.taskAbName + "TASK", {
+						ruler.addChartWithType(taskTime[o].taskCode + "TASK", {
 										name : taskTime[o].taskData.taskDisplayInfoDto.taskName,
 										color: taskTime[o].taskData.taskDisplayInfoDto.color,
 										lineWidth: 30,
@@ -3108,10 +3146,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						indexLeft = ++indexLeft;
 						}
 						
-						if (startTime1 > timeChart.endTime && timeMinus2.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
+						if (taskTime[o].taskData != null && timeMinus2.length > 0 && (_.inRange(taskTime[o].timeSpanForCalcDto.start, timeMinus2[0].startTime, timeMinus2[0].endTime) ||
 								_.inRange(taskTime[o].timeSpanForCalcDto.end, timeMinus2[0].startTime, timeMinus2[0].endTime))) {
 									id = `rgc${i}_` + indexRight, parent = `rgc${i}`;
-								ruler.addChartWithType(taskTime[o].taskData.taskDisplayInfoDto.taskAbName + "TASK", {
+								ruler.addChartWithType(taskTime[o].taskCode + "TASK", {
 									name : taskTime[o].taskData.taskDisplayInfoDto.taskName,
 									color: taskTime[o].taskData.taskDisplayInfoDto.color,
 									lineWidth: 30,
@@ -4123,7 +4161,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public nextDay() {
 			let self = this, checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
+			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
 						self.nextDayImpl();
@@ -4153,7 +4191,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			block.grayout();
 			let self = this, i = 7, nextDay: any = moment(moment(self.targetDate()).add(7, 'd').format('YYYY/MM/DD')),
 				checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
+			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
 						self.nextAllDayImpl(i, nextDay);
@@ -4184,7 +4222,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public prevDay() {
 			let self = this, checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
+			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
 						self.prevDayImpl();
@@ -4214,7 +4252,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this, i = 7;
 			let prvDay: any = moment(moment(self.targetDate()).subtract(7, 'd').format('YYYY/MM/DD'));
 			let checkSort = $("#extable-ksu003").exTable('updatedCells');
-			if (checkSort.length > 0) {
+			if (checkSort.length > 0 || self.enableSave() == true) {
 				dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
 					self.saveData(1).done(() => {
 						self.prevAllDayImpl(i, prvDay);
@@ -5304,7 +5342,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this, lgcFil : any = [], rgcFil : any = [], noneFil : any = [], index = "";
 			
 			self.taskType = ({
-                name: value.data.text + "TASK",
+                name: value.data.page + "TASK",
                 color: ruler.loggable(color),
                 lineWidth: 30,
                 canSlide: false,
@@ -5312,7 +5350,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 hide: self.selectedDisplayPeriod() == 1 ? ruler.loggable(false) : ruler.loggable(true),
                 canPaste: true,
                 canPasteResize: true,
-				title: value.data.tooltip,
+				title: value.data.text,
                 pastingResizeFinished: (line : any, type : any, start : any, end : any) => {
 	
 				if (_.isNil(start) || _.isNil(end)){
@@ -5367,7 +5405,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			start = start * 5 + self.dispStart * 5;
 			end = end * 5 + self.dispStart * 5;
 			let taskInfo : any = _.filter(__viewContext.viewModel.viewmodelAb.dataTaskInfo.lstTaskDto, (x : any) => {
-					return _.includes(type, x.taskDisplayInfoDto.taskAbName) && _.includes(type, "TASK");
+					return _.split(type,'TASK',1)[0] === x.code && _.includes(type, "TASK");
 			});
 				if(taskInfo == null) return;
 				
@@ -5384,10 +5422,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					if (filTaskData[0].empID !== self.lstEmpId[line].empId)
 					continue;
 					
+					if (task.taskData != null) {
 					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
 						_.inRange(oldS, start, end) || _.inRange(oldE, start, end)) {
-							
-						if (_.includes(taskInfo[0].taskDisplayInfoDto.taskAbName ,task.taskData.taskDisplayInfoDto.taskAbName) && 
+						if (_.includes(taskInfo[0].code ,task.taskData.code) && 
 							taskInfo[0].taskDisplayInfoDto.color === task.taskData.taskDisplayInfoDto.color){
 								if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
 									return;
@@ -5435,6 +5473,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							end : self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end
 						});
 					} 
+				}	
 				}
 				}
 				_.forEach(arrRemoveTask, x => {
@@ -5611,12 +5650,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 		}
 		
-		pasteTask(value : any){
-			ruler.pasteChart({ typeName: value.data.text + "TASK", zIndex: 1990 });
+		pasteTask(value : any, code : any){
+			ruler.pasteChart({ typeName: code + "TASK", zIndex: 1990 });
 		}
 		
-		delPasteTask(value : any){
-			ruler.pasteBand = {};
+		delPasteTask(){
+			ruler.pasteBand = undefined;
 		}
 		
 		public setTaskMode(mode : string) {

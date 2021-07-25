@@ -218,7 +218,7 @@
 	text-align: left;
 }
 
-.xheader *, .ex-body-vert-sum *, .ex-body-horz-sum *
+.xheader *,.ex-body-detail *, .ex-body-vert-sum *, .ex-body-horz-sum *
 	{
 	text-align: center;
 }
@@ -378,4 +378,18 @@ html {
 
 .header-color {
 	background-color: #D9D9D9 !important;
+}
+
+.show-pallet {
+	border: 1px solid #cccccc;
+    background: rgb(219, 238, 244);
+}
+
+.hide-pallet {
+	background-color: white !important;
+    border: none !important;
+}
+
+.x-context-menu:after, .x-context-menu{
+	background-color : #edfac2;
 }

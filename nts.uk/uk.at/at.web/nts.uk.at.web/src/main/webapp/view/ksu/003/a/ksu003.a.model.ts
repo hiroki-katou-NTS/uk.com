@@ -257,7 +257,7 @@ module nts.uk.at.view.ksu003.a.model {
 
 		if (start2 != 0 && end2 != 0 && __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor == 1)
 			totalTimeWork = ((end2) - (start2)) + ((end1) - (start1));
-		else if (end1 != 0 && __viewContext.viewModel.viewmodelA.dataScreen003A().targetInfor == 0)
+		else if (end1 != 0)
 			totalTimeWork = ((end1) - (start1));
 		totalTimeWork = totalTimeWork - totalTimeAll;
 
