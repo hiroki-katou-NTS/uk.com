@@ -37295,13 +37295,13 @@ var nts;
                     };
                     Ruler.prototype._tailor = function (posX, chart) {
                         var self = this;
-                        if (self.mode === "normal" || _.isNil(self.pasteBand) || _.isNil(chart))
-                            return;
                         if (!chart.canPaste) {
                             chart.html.style.cursor = "not-allowed";
                             self.metaholder = {};
                             return;
                         }
+                        if (self.mode === "normal" || _.isNil(self.pasteBand) || _.isNil(chart))
+                            return;
                         if (chart.canPasteResize) {
                             var holdPos = self.getHoldPos(chart);
                             if (holdPos === HOLD_POS.START || holdPos === HOLD_POS.END) {

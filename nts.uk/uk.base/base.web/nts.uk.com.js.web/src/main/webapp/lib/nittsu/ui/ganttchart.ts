@@ -864,12 +864,13 @@ module nts.uk.ui.chart {
         
         private _tailor(posX: number, chart: GanttChart) {
             let self = this;
-            if (self.mode === "normal" || _.isNil(self.pasteBand) || _.isNil(chart)) return;
-            if (!chart.canPaste) {
+			 if (!chart.canPaste) {
                 chart.html.style.cursor = "not-allowed";
                 self.metaholder = {};
                 return;
             }
+			
+            if (self.mode === "normal" || _.isNil(self.pasteBand) || _.isNil(chart)) return;
             
             if (chart.canPasteResize) {
                 let holdPos = self.getHoldPos(chart);
