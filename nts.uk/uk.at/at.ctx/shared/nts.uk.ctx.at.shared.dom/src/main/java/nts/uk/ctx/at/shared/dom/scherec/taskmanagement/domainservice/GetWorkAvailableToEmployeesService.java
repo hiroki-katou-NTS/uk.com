@@ -43,6 +43,10 @@ public class GetWorkAvailableToEmployeesService {
     	//	$作業枠利用設定 = require.作業枠利用設定を取得する()	
     	TaskFrameUsageSetting taskFrameUsageSetting = require.getWorkFrameUsageSetting(companyID);
     	
+    	if (taskFrameUsageSetting == null) {
+    		return new ArrayList<Task>();
+    	}
+    	
     	//$作業枠設定 = $作業枠利用設定.枠設定:																		
     		//filter $.作業枠NO = 作業枠NO																	
     		//filter $.利用区分 == する
