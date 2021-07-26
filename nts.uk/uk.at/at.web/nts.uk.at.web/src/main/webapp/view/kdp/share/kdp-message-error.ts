@@ -7,6 +7,7 @@ module nts.uk.at.view.kdp.share {
         notiSet: KnockoutObservable<FingerStampSetting>;
         messageNoti: KnockoutObservable<IMessage>;
         viewShow: String;
+        showMessage: KnockoutObservable<boolean | null>;
     }
 
     const API = {
@@ -201,6 +202,8 @@ module nts.uk.at.view.kdp.share {
 
             if (params) {
                 vm.messageNoti = params.messageNoti;
+
+                vm.showMessage = params.showMessage;
 
                 if (ko.unwrap(params.notiSet)) {
                     vm.notiSet = params.notiSet;

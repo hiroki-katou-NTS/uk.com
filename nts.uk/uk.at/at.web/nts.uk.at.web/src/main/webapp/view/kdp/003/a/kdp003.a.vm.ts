@@ -61,6 +61,8 @@ module nts.uk.at.kdp003.a {
 		workPlaceId: string = null;
 		contractCd: string = '';
 
+		showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
+
 		// setting for button A3
 		showClockButton: {
 			setting: KnockoutObservable<boolean>;
@@ -110,7 +112,7 @@ module nts.uk.at.kdp003.a {
 
 			vm.$window.storage('contractInfo')
 				.done((data: any) => {
-					vm.passContract =  _.escape(data ? data.contractPassword : "");
+					vm.passContract = _.escape(data ? data.contractPassword : "");
 				});
 
 			vm.$ajax('at', API.NOW)
@@ -133,6 +135,30 @@ module nts.uk.at.kdp003.a {
 						}
 					});
 			});
+
+			ko.computed({
+				read: () => {
+					const mes = ko.unwrap(vm.message);
+					const noti = ko.unwrap(vm.fingerStampSetting).noticeSetDto;
+
+					var result = null;
+
+					if (mes === null) {
+						result = false;
+					}
+					if (noti) {
+						if (ko.unwrap(vm.fingerStampSetting).noticeSetDto.displayAtr == 1) {
+							result = true;
+						}else {
+							result = false;
+						}
+					}else {
+						result = false;
+					}
+
+					vm.showMessage(result);
+				}
+			})
 		}
 
 		// get WorkPlace from basyo -> save locastorage.
@@ -732,23 +758,24 @@ module nts.uk.at.kdp003.a {
 					return loginData;
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
-					var exist = false;
-					var exist1 = false;
-					if (loginData === undefined) {
-						exist = true;
-						return loginData;
-					}
+					// var exist = false;
+					// var exist1 = false;
+					// if (loginData === undefined) {
+					// 	exist = true;
+					// 	return loginData;
+					// }
 
-					if (loginData.result) {
-						exist1 = true;
-					}
+					// if (loginData.result) {
+					// 	exist1 = true;
+					// }
 
-					if (loginData.notification == null && !exist1) {
-						exist = true;
-					}
+					// if (loginData.notification == null && !exist1) {
+					// 	exist = true;
+					// }
 
 					const params = { multiSelect: true };
-					if (!exist && !ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
+					// !exist && 
+					if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
 						return vm.$window.modal('at', DIALOG.K, params)
 							.then((workplaceData: undefined | k.Return) => {
 								if (workplaceData === undefined) {
@@ -785,9 +812,9 @@ module nts.uk.at.kdp003.a {
 						return false;
 					}
 
-					if (data.loginData) {
-						exist1 = true;
-					}
+					// if (data.loginData) {
+					// 	exist1 = true;
+					// }
 
 					if (ko.unwrap(vm.modeBasyo)) {
 
@@ -804,13 +831,14 @@ module nts.uk.at.kdp003.a {
 						return false;
 					}
 
-					if (data.notification == null && !exist1 && !ko.unwrap(vm.modeBasyo)) {
+					// data.notification == null
+					if (!exist1 && !ko.unwrap(vm.modeBasyo)) {
 						exist = false;
 					}
 
-					if (!exist) {
-						return false;
-					}
+					// if (!exist) {	
+					// 	return false;
+					// }
 
 					if (ko.unwrap(vm.modeBasyo)) {
 						if (vm.workPlace.length <= 0) {
