@@ -90,5 +90,8 @@ label.ntsControl.limited-label {
 
 .table-food-td{
     border: 1px solid #dddddd;
+}
 
+div.ntsLabel, label.ntsLabel, div.form-label, label.form-label {
+    width: 55px;
 }

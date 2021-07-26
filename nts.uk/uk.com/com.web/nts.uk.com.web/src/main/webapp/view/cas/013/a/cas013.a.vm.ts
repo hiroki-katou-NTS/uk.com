@@ -7,12 +7,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
     import dialog = nts.uk.ui.dialog;
     export class ScreenModel {
         //A51
-        itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isEditable: KnockoutObservable<boolean>;
-        isRequired: KnockoutObservable<boolean>;
-        selectFirstIfNull: KnockoutObservable<boolean>;
+        selectRoleCheckbox: KnockoutObservable<string>;
 
         langId: KnockoutObservable<string> = ko.observable('ja');
         // Metadata
@@ -21,11 +16,12 @@ module nts.uk.com.view.cas013.a.viewmodel {
         isDelete: KnockoutObservable<boolean> = ko.observable(false);
 
         //ComboBOx RollType
-        listRoleType: KnockoutObservableArray<RollType> = ko.observableArray([]);
+        listNewRole: Array<any>; //A41
+        listRoleType: KnockoutObservableArray<RollType>;
         selectedRoleType: KnockoutObservable<string>;
 
         //list Roll
-        listRole: KnockoutObservableArray<Role>;
+        listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
         selectedRole: KnockoutObservable<string>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
 
@@ -49,26 +45,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
         constructor() {
             var self = this;
             //A51
-            self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給ながい文字列ながい文字列ながい文字列')
-            ]);
-            self.selectedCode = ko.observable('1');
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
-            self.isRequired = ko.observable(true);
-            self.selectFirstIfNull = ko.observable(true);
+            self.selectRoleCheckbox = ko.observable('');
 
-            // Set data A4_2
-            self.listRoleType = ko.observableArray([
-                new RollType('1', nts.uk.resource.getText("CAS013_26")),
-                new RollType('2', nts.uk.resource.getText("CAS013_27")),
-                new RollType('3', nts.uk.resource.getText("CAS013_28")),
-                new RollType('4', nts.uk.resource.getText("CAS013_29")),
-                new RollType('5', nts.uk.resource.getText("CAS013_30")),
-                new RollType('6', nts.uk.resource.getText("CAS013_31")),
-                ]);
+            self.listRoleType = ko.observableArray([]);
             self.listRole = ko.observableArray([]);
             self.selectedRoleType = ko.observable('');
             self.selectedRole = ko.observable('');
@@ -84,6 +63,33 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 {headerText: nts.uk.resource.getText("CAS013_16"), key: 'name', width: 120},
                 {headerText: nts.uk.resource.getText("CAS013_17"), key: 'datePeriod', width: 210},
             ]);
+            //A41
+            self.listNewRole = [
+                {
+                    description: nts.uk.resource.getText("CAS013_26"),
+                    value: 1
+                },
+                {
+                    description: nts.uk.resource.getText("CAS013_27"),
+                    value: 2
+                },
+                {
+                    description: nts.uk.resource.getText("CAS013_28"),
+                    value: 3
+                },
+                {
+                    description: nts.uk.resource.getText("CAS013_29"),
+                    value: 4
+                },
+                {
+                    description: nts.uk.resource.getText("CAS013_30"),
+                    value: 5
+                },
+                {
+                    description: nts.uk.resource.getText("CAS013_31"),
+                    value: 6
+                },
+            ];
             self.selectedRoleIndividual = ko.observable('');
             self.loginID = ko.observable('');
             self.userName = ko.observable('');
@@ -102,6 +108,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 self.isSelectedUser(false);
                 self.isDelete(false);
             });
+
             self.selectedRoleIndividual.subscribe((userId: string) => {
                 self.selectRoleGrant(userId.toString());
             });
@@ -137,8 +144,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     if(nts.uk.util.isNullOrUndefined(data)){
                         self.backToTopPage();
                     }else{
-                        //A41_2
-                        self.listRoleType();
+                        //A41
+                        self.listRoleType(self.listNewRole);
                         self.selectedRoleType(data[0].value);
                     }
                 }else{
@@ -161,18 +168,21 @@ module nts.uk.com.view.cas013.a.viewmodel {
             if (roleType != '') {
                 new service.Service().getRole(roleType).done(function(data: any) {
                     if (data != null && data.length > 0) {
-                        data = _.orderBy(data, ['assignAtr', 'roleCode'], ['asc', 'asc']);
+                        data = _.orderBy(data, ['name', 'roleCode'], ['asc', 'asc']);
                         self.listRole(data);
                         self.selectedRole(data[0].roleId);
+                        self.selectRoleCheckbox(data[0].roleId);
                     }
                     else {
                         self.listRole([]);
                         self.selectedRole('')
+                        self.selectRoleCheckbox('');
                     }
                 });
             } else {
                 self.listRole([]);
                 self.selectedRole('');
+                self.selectRoleCheckbox('');
             }
         }
 
@@ -274,13 +284,13 @@ module nts.uk.com.view.cas013.a.viewmodel {
         }
         private insert(): void {
             var self = this;
-            var roleTpye = self.selectedRoleType();
+            var roleType = self.selectedRoleType();
             var roleId = self.selectedRole();
             var userId = self.selectedRoleIndividual();
             var start = nts.uk.time.parseMoment(self.dateValue().startDate).format();
             var end = nts.uk.time.parseMoment(self.dateValue().endDate).format();
             block.invisible();
-            new service.Service().insertRoleGrant(roleTpye, roleId, userId, start, end).done(function(data: any) {
+            new service.Service().insertRoleGrant(roleType, roleId, userId, start, end).done(function(data: any) {
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     self.selectedRoleIndividual("");
                     self.selectRole(roleId, data);
@@ -359,14 +369,14 @@ module nts.uk.com.view.cas013.a.viewmodel {
     }
 
 
-    // Use form for A4_2
+
     class RollType {
         value: string;
-        name: string;
+        description: string;
 
-        constructor(value: string, name: string) {
+        constructor(value: string, nameId: string, description: string) {
             this.value = value;
-            this.name = name;
+            this.description = description;
         }
     }
     class Role {
@@ -401,11 +411,11 @@ module nts.uk.com.view.cas013.a.viewmodel {
     }
 
     class ItemModel {
-        code: string;
+        roleCode: string;
         name: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
+        constructor(roleCode: string, name: string) {
+            this.roleCode = roleCode;
             this.name = name;
         }
     }
