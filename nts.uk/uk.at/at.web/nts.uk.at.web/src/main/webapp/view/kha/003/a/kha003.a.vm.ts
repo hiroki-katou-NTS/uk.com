@@ -34,6 +34,7 @@ module nts.uk.at.kha003.a {
 
         created() {
             const vm = this;
+            _.extend(window, {vm});
             vm.currentCode = ko.observable("");
             vm.layoutSettings = ko.observableArray([]);
             vm.summaryItems = ko.observableArray([]);
@@ -70,6 +71,7 @@ module nts.uk.at.kha003.a {
                     vm.isExecutionMode(false);
                     vm.isUpdateMode(false);
                     $('#A4_2').focus();
+                    vm.$window.storage('kha003AShareData_OLD', {});
                 }
             });
 
