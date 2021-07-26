@@ -17,7 +17,7 @@ public class Padding {
 	private ExternalImportRowNumber length;
 	
 	/** 編集方法 */
-	private PaddingMethod reviseMethod;
+	private PaddingMethod method;
 	
 	public String fix(String target) {
 		if(this.length.v() < target.length()) {
@@ -26,7 +26,7 @@ public class Padding {
 		}
 		else {
 			// 編集方法に従って桁数を補完する
-			return this.reviseMethod.complement(target, length.v());
+			return this.method.complement(target, length.v());
 		}
 	}
 }
