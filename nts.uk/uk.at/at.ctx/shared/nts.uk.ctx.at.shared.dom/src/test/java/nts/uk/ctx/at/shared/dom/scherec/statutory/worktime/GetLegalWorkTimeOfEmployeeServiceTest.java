@@ -55,8 +55,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+				, new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
 		
 		assertThat(legalWorkTimeOfEmployee).isEmpty();
 	}
@@ -79,9 +78,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val legalWorkTimeOfEmployee = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod( GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						        , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")
-				));
+				, new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
 		
 		assertThat(legalWorkTimeOfEmployee).isEmpty();
 	}
@@ -237,8 +234,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		};
 		
 		val actual = GetLegalWorkTimeOfEmployeeService.get(require, "sid"
-				, new DatePeriod(GeneralDate.fromString("2018-10-10", "yyyy-MM-dd")
-						       , GeneralDate.fromString("2019-10-10", "yyyy-MM-dd")));
+				, new DatePeriod(GeneralDate.ymd(2018, 10, 10), GeneralDate.ymd(2019, 10, 10)));
 		
 		assertThat(actual).isEmpty();
 	}
