@@ -4,17 +4,11 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 
 @AllArgsConstructor
 public class RealRevise implements ReviseValue {
-	
-	/** 値の有効範囲を指定する */
-	private boolean useSpecifyRange;
-	
-	/** 値の有効範囲 */
-	private Optional<FetchingPosition> rangeOfValue;
 	
 	/** 整数値を小数として受け入れる */
 	private boolean isDecimalization;
@@ -22,14 +16,9 @@ public class RealRevise implements ReviseValue {
 	/** 桁数 */
 	private Optional<DecimalDigitNumber> length;
 	
-	
 	@Override
 	public Object revise(String target) {
 		String strResult = target;
-		if(useSpecifyRange) {
-			// 値の有効範囲を指定する場合
-			strResult = this.rangeOfValue.get().extract(strResult);
-		}
 		
 		if(isDecimalization) {
 			// 整数　→　小数編集する場合

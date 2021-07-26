@@ -20,7 +20,6 @@ import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.DateRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImportDateFormat;
@@ -55,18 +54,6 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	/*  */
 	@Column(name = "ITEM_TYPE")
 	private int itemType;
-	
-	/*  */
-	@Column(name = "USE_FETCHING_POSITION")
-	private Integer useFetchingPosition;
-	
-	/*  */
-	@Column(name = "FETCHING_START")
-	private Integer fetchingStart;
-	
-	/*  */
-	@Column(name = "FETCHING_LENGTH")
-	private Integer fetchingLength;
 	
 	/*  */
 	@Column(name = "IS_DECIMALIZATION")
@@ -127,8 +114,6 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 		switch(EnumAdaptor.valueOf(itemType, ItemType.class)) {
 			case STRING:
 				return new StringRevise(
-						useFetchingPosition == 1,
-						Optional.ofNullable(useFetchingPosition == 1 ? createRangeOfValue() : null),
 						usePadding == 1,
 						Optional.ofNullable(usePadding == 1 ? new Padding(
 								new ExternalImportRowNumber(paddingLength),
@@ -136,13 +121,9 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 						codeConvert);
 			case INT:
 				return new IntegerRevise(
-						useFetchingPosition == 1,
-						Optional.ofNullable(useFetchingPosition == 1 ? createRangeOfValue() : null), 
 						codeConvert);
 			case REAL:
 				return new RealRevise(
-						useFetchingPosition == 1,
-						Optional.ofNullable(useFetchingPosition == 1 ? createRangeOfValue() : null),
 						BooleanUtils.toBoolean(isDecimalization),
 						Optional.ofNullable(isDecimalization == 1 ? new DecimalDigitNumber(decimalLength) : null));
 			case DATE:
@@ -151,8 +132,6 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 			case TIME_POINT:
 			case TIME_DURATION:
 				return new TimeRevise(
-						useFetchingPosition == 1,
-						Optional.ofNullable(useFetchingPosition == 1 ? createRangeOfValue() : null),
 						EnumAdaptor.valueOf(hourly, HourlySegment.class),
 						EnumAdaptor.valueOf(baseNumber, TimeBaseNumber.class),
 						Optional.ofNullable(delimiter != null ? EnumAdaptor.valueOf(delimiter, TimeBase60Delimiter.class) : null),
@@ -160,11 +139,5 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 			default:
 				throw new RuntimeException("項目型に対する実装が存在しません。:" + EnumAdaptor.valueOf(itemType, ItemType.class));
 		}
-	}
-	
-	private FetchingPosition createRangeOfValue() {
-		return new FetchingPosition(
-				new ExternalImportRowNumber(fetchingStart),
-				new ExternalImportRowNumber(fetchingLength));
 	}
 }

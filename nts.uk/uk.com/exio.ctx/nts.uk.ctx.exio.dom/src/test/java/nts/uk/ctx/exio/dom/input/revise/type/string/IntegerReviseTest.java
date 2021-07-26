@@ -11,7 +11,7 @@ import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;
 
 public class IntegerReviseTest {

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type;
+package nts.uk.ctx.exio.dom.input.setting.assembly.mapping;
 
 import lombok.Value;
 

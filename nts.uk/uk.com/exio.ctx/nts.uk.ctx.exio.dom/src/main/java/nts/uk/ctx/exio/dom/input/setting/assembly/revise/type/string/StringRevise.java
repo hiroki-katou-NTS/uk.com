@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
 
 /**
@@ -16,12 +15,6 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.Extern
 @AllArgsConstructor
 @Getter
 public class StringRevise implements ReviseValue {
-	
-	/** 値の読み取り位置を指定する */
-	private boolean useFetchingPosition;
-	
-	/** 値の読み取り位置 */
-	private Optional<FetchingPosition> fetchingPosition;
 	
 	/** 固定長編集する */
 	private boolean usePadding;
@@ -36,13 +29,6 @@ public class StringRevise implements ReviseValue {
 	public Object revise(String target) {
 		
 		String strResult = target;
-		
-		if(useFetchingPosition) {
-			// 値の有効範囲を指定する場合
-			if(fetchingPosition.isPresent()) {
-				strResult = this.fetchingPosition.get().extract(strResult);
-			}
-		}
 		
 		if(usePadding) {
 			// 固定長編集をする場合

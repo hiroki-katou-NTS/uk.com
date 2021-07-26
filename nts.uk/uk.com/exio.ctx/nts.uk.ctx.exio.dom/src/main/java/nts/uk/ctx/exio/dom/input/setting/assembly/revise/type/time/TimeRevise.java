@@ -5,19 +5,12 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 
 /**
  * 時間・時刻型編集
  */
 @AllArgsConstructor
 public class TimeRevise implements ReviseValue {
-	
-	/** 値の有効範囲を指定する */
-	private boolean useSpecifyRange;
-	
-	/** 値の有効範囲 */
-	private Optional<FetchingPosition> rangeOfValue;
 	
 	/** 時分 */
 	private HourlySegment hourly;
@@ -33,22 +26,16 @@ public class TimeRevise implements ReviseValue {
 
 	@Override
 	public Object revise(String target) {
-		String strTarget = target;
-		if(useSpecifyRange) {
-			// 値の有効範囲を指定する場合
-			strTarget = this.rangeOfValue.get().extract(target);
-		}
-		
 		Long longResult;
 		
 		if (baseNumber == TimeBaseNumber.HEXA_DECIMAL) {
 			// 60進数の場合
 			// 区切り文字を用いて時分→分変換
-			longResult = delimiter.get().convert(strTarget);
+			longResult = delimiter.get().convert(target);
 		}else {
 			// 10進数の場合
 			// 分に揃える
-			BigDecimal decimalTarget = hourly.toMinute(new BigDecimal(strTarget));
+			BigDecimal decimalTarget = hourly.toMinute(new BigDecimal(target));
 			
 			// 端数処理を用いて端数を処理
 			longResult = rounding.round(decimalTarget);
