@@ -95,3 +95,7 @@ label.ntsControl.limited-label {
 div.ntsLabel, label.ntsLabel, div.form-label, label.form-label {
     width: 55px;
 }
+
+.caret-background:not(.deprecate).caret-bottom, .caret-background:not(.deprecate).caret-top, .caret-background:not(.deprecate).caret-left, .caret-background:not(.deprecate).caret-right {
+	margin: -20px;
+}
