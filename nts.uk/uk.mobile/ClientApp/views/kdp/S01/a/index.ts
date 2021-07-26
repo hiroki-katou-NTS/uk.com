@@ -113,6 +113,7 @@ export class KdpS01AComponent extends Vue {
                         vm.settingStampCommon.temporaryUse = result.data.temporaryUse;
                         vm.locationInfoUse = data.setting.locationInfoUse;
                         vm.settingStampCommon.workUse = result.data.workUse;
+                        vm.settingStampCommon.entranceExitUse = result.data.entranceExitUse;
                     
                         if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {                          
 
