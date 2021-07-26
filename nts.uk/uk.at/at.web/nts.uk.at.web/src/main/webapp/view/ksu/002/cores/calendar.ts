@@ -729,7 +729,8 @@ module nts.uk.ui.calendar {
 					const schedules = ko.unwrap(data.schedules);
 					const [first] = schedules;
 					const [last] = schedules.slice(-1);
-					const start = moment(_.isDate(baseDate) ? baseDate : baseDate.begin).startOf('day');
+					let start = moment(_.isDate(baseDate) ? baseDate : baseDate.begin).startOf('day');
+					
 					const isStartDate = (d: moment.Moment) => {
 						if (d.get('date') === 1) {
 							return true;
@@ -767,9 +768,15 @@ module nts.uk.ui.calendar {
 					} else {
 						const { begin, finish } = baseDate;
 						const initDate = () => {
-							const diff = moment(finish).diff(begin, 'day');
-
-							initRange(diff);
+							if(vm.startDaySelected()){
+								let daysStartEndWeek = calculateDaysStartEndWeek(begin, finish, vm.data.rootVm.dayStartWeek(), true);
+								start = moment(daysStartEndWeek.start);
+								const diff = moment(daysStartEndWeek.end).diff(start, 'day');
+								initRange(diff);
+							}else{
+								const diff = moment(finish).diff(begin, 'day');
+								initRange(diff);
+							}
 						};
 
 						if (!first || !last) {
