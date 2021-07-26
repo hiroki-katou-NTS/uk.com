@@ -215,6 +215,7 @@ module nts.uk.at.view.kdp002.l {
 
                 vm.reload(0);
                 vm.framePosition.valueHasMutated();
+                vm.reloadData();
             
             }
 
@@ -222,10 +223,11 @@ module nts.uk.at.view.kdp002.l {
 
 		onClickCancel() {
             const vm = this;
-            if (ko.unwrap(vm.searchValue) != '') {
-                vm.searchValue('');
-                vm.reload(0);
-            }
+            let param: ITaskParam = {sid: vm.empId, workFrameNo: vm.frameNo(), upperFrameWorkCode: vm.selectedCode()};
+           
+            vm.searchValue('');
+            vm.getTask(param);
+            vm.reload(0);
 			
 		}
 
