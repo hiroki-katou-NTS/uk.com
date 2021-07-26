@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
 
@@ -10,6 +11,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImp
  * 整数型編集
  */
 @AllArgsConstructor
+@Getter
 public class IntegerRevise implements ReviseValue {
 	
 	/** コード変換 */

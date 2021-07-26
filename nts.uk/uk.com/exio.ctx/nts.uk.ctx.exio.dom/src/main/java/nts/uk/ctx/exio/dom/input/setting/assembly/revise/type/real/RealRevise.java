@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 
 @AllArgsConstructor
+@Value
 public class RealRevise implements ReviseValue {
 	
 	/** 整数値を小数として受け入れる */

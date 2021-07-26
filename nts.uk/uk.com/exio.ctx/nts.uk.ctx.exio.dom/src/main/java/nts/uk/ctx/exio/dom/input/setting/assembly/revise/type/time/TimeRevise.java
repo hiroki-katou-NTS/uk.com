@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 
 /**
  * 時間・時刻型編集
  */
 @AllArgsConstructor
+@Getter
 public class TimeRevise implements ReviseValue {
 	
 	/** 時分 */
