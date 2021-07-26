@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOv
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -165,9 +164,8 @@ public class StampType implements DomainValue {
 	 */
 	public boolean changeWorkOnHolidays(Require require, AutoCalRestTimeSetting holidayTimeSetting,
 			String workTypeCode) {
-		String companyId = AppContexts.user().companyId();
 		// 勤務種類を取得する
-		Optional<WorkType> workType = require.findByPK(companyId, workTypeCode);
+		Optional<WorkType> workType = require.findByPK(workTypeCode);
 		if (!workType.isPresent())
 			return false;
 		//一日休日かを確認する
@@ -188,7 +186,7 @@ public class StampType implements DomainValue {
 	}
 
 	public static interface Require {
-		Optional<WorkType> findByPK(String companyId, String workTypeCd);
+		Optional<WorkType> findByPK(String workTypeCd);
 	}
 
 }

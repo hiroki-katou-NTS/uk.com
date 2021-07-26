@@ -534,7 +534,8 @@ public class ReflectAttendanceClock {
 	public class RequireStampTypeImpl implements StampType.Require{
 		
 		@Override
-		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+		public Optional<WorkType> findByPK(String workTypeCd) {
+			String companyId = AppContexts.user().companyId();
 			return workTypeRepository.findByPK(companyId, workTypeCd);
 		}
 	}

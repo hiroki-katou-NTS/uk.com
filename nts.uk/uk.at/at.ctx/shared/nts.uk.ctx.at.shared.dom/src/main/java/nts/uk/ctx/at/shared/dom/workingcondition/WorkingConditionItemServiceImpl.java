@@ -70,8 +70,8 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 			Optional<WorkType> workType =  this.workTypeRepository.findByPK(companyId, workTypeCode);
 			if(workType.isPresent() && workType.get().getWorkTypeSetByAtr(WorkAtr.OneDay).isPresent()) {
 				//TODO:休日出勤時の勤務情報を取得する (TKT) 
-				WorkInformation wi = null;
-				return Optional.empty();
+				WorkInformation wi = optWorkingCondItem.get().getWorkCategory().getWorkinfoOnVacation(workType.get());
+				return Optional.of(wi);
 			}
 		}
 		// 終了状態：勤務情報なし
