@@ -12,6 +12,10 @@
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="cmf001.b.css" />
 				<com:scriptfile path="cmf001.b.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.exio.dom.input.setting.ExternalImportCode
+					nts.uk.ctx.exio.dom.input.setting.ExternalImportName
+				</com:ValidatorScript>
 			</ui:define>
 
 			<ui:define name="content">
@@ -46,41 +50,76 @@
 
 				<div id="contents-area" class="fixed-flex-layout">
 					<div class="fixed-flex-layout-left" style="padding-top: 20px; padding-left: 20px">
-						<table id="single-list"></table>
+						<div class="settings">
+							<table id="setting-list" data-bind="ntsGridList: {
+								height: '400px',
+								dataSource: settingList,
+								primaryKey: 'code',
+								columns: settingListColumns,
+								value: selectedSetting}">
+							</table>
+						</div>
 					</div>
-					<div class="fixed-flex-layout-right" style="padding-top: 20px;">
 
-						<div class="group">
+					<div class="fixed-flex-layout-right" style="padding-top: 20px;">
+						<div class="group" data-bind="with: settingInfo">
 							<div class="code">
-								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">コード</div>
-								<input id="importCode"/> 
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportCode'] }">コード</div>
+								<input id="settingCode" data-bind="ntsTextEditor: { value: code}" />
 							</div>
 							<div class="name">
-								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">名称</div>
-								<input id="importName"/>
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportName'] }">名称</div>
+								<input id="settingName" data-bind="ntsTextEditor: { value: name}" />
 							</div>
 							<div class="import-group">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入グループ</div>
+								<div id="importGroup" data-bind="ntsComboBox: {
+									options: $root.content.importGroup,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: group,
+									columns: [
+										{ prop: 'name', length: 5 },
+									],
+									dropDownAttachedToBody:true}"></div>
 							</div>
 							<div class="import-mode">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入モード</div>
+								<div id="importMode" data-bind="ntsComboBox: {
+									options: $root.content.importMode,
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: mode,
+									columns: [
+										{ prop: 'name', length: 5 },
+									],
+									dropDownAttachedToBody:true}"></div>
 							</div>
 						</div>
 
-						<div class="group">
+						<div class="group" data-bind="with: settingInfo">
 							<div class="divi">CSVファイルの情報</div><hr />
-							<div class="import-group">
+							<div class="item-name-row">
 								<div data-bind="ntsFormLabel: { required: true }">項目名の行</div>
-								<input  />
+								<input id="itemNameRow" data-bind="ntsTextEditor: { value: itemNameRow}" />
 							</div>
-							<div class="import-group">
+							<div class="import-start-row">
 								<div data-bind="ntsFormLabel: { required: true }">受入開始行</div>
-								<input  />
+								<input id="importStartRow" data-bind="ntsTextEditor: { value: importStartRow}" />
 							</div>
 						</div>
-					
+						
 						<div class="group">
 							<div class="divi">受入レイアウト</div><hr />
+							<button class="normal" data-bind="text: '項目を追加する'" ></button>
+							<button class="normal" data-bind="text: '受入項目の詳細設定'" ></button>
+							<table id="layout-list" data-bind="ntsGridList: {
+								height: '300px',
+								dataSource: layoutList,
+								primaryKey: 'itemNo',
+								columns: layoutListColumns,
+								value: selectedItem}">
+							</table>
 						</div>
 					</div>
 				</div>
