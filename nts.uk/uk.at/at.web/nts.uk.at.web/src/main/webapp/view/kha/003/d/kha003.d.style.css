@@ -31,3 +31,11 @@ tbody.ui-ig-record.ui-iggrid-record tr td {
 .ui-iggrid table tr td, .ui-iggrid table tr th {
     text-align: center;
 }
+
+.ui-iggrid table tr th {
+    background-color: #DDDDDD;
+}
+.ui-iggrid table tr th.ui-widget-header, .ui-iggrid table tr.ui-state-focus th.ui-widget-header, .ui-iggrid table tr.ui-ig-altrecord.ui-state-focus th.ui-widget-header {
+    color: #595959;
+    background-color: #DDDDDD;
+}
