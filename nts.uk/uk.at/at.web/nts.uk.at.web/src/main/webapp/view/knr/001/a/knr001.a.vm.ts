@@ -42,7 +42,7 @@ module nts.uk.at.view.knr001.a {
                     new ItemModel1(0, '出勤'), // 8_3
                     new ItemModel1(1, '入門'),
                     new ItemModel1(2, '応援出勤'),
-                    new ItemModel1(3, '出勤'),
+                    new ItemModel1(3, '退勤'),
                     new ItemModel1(4, '退門'), // 8_5
                     new ItemModel1(5, '私用外出'),
                     new ItemModel1(6, '公用外出'), // 8_7
@@ -53,9 +53,6 @@ module nts.uk.at.view.knr001.a {
                     new ItemModel1(11, '出（応援終了/応援行く）'),
                 ]);
 
-                // self.testSelectedCode = ko.observable(1);
-                
-                //select an employment information terminal
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
                     blockUI.invisible();
                     setTimeout(() => {
@@ -128,7 +125,6 @@ module nts.uk.at.view.knr001.a {
                 let self = this;          
                 service.getDetails(empInfoTerCode).done(function(empInfoTer: any){
                     if(empInfoTer){
-                        console.log(empInfoTer, 'hoi cham');
                         self.isUpdateMode(true);
                         self.enableBtnDelete(true);
                         self.selectedCode(empInfoTer.empInfoTerCode);
@@ -185,7 +181,7 @@ module nts.uk.at.view.knr001.a {
                 self.clearErrors();
                 self.isUpdateMode(false);
                 self.selectedIndex1(0);
-                self.selectedIndex2(4);
+                self.selectedIndex2(3);
                 self.selectedIndex3(6);
                 self.selectedIndex4(10);
                 self.entranceExit(false);
@@ -341,7 +337,6 @@ module nts.uk.at.view.knr001.a {
                 
                 dialog.confirm({messageId:"Msg_18"})
                     .ifYes(() => {
-                        //  var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
                         var index = _.indexOf(self.empInfoTerminalList().map(e => e.empInfoTerCode), delCode);
                         let command = {
                             empInfoTerCode: delCode
@@ -564,7 +559,6 @@ module nts.uk.at.view.knr001.a {
                 
                 this.macAddress =  ko.observable('');
                 
-                //this.ipAddress = ko.observable('');
                 this.ipAddress1 =  ko.observable(null);
                 this.ipAddress2 =  ko.observable(null);
                 this.ipAddress3 =  ko.observable(null);

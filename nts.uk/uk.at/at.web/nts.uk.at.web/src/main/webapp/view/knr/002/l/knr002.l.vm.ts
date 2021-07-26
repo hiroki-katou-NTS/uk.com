@@ -20,8 +20,7 @@ module nts.uk.at.view.knr002.l {
 
                 vm.dataShared = getShared('dataShareL');
                 vm.modeBulk(vm.dataShared.mode == 'bulk' ? true : false);
-                vm.loadData();
-                
+                vm.loadData();   
             }
 
             public startPage(): JQueryPromise<void> {
@@ -33,6 +32,7 @@ module nts.uk.at.view.knr002.l {
 
             private loadData() {
                 const vm = this;
+
                 blockUI.invisible();
                 let input;
                 if (vm.modeBulk()) {
@@ -51,6 +51,7 @@ module nts.uk.at.view.knr002.l {
                 service.getProductionSwitchDate(input).done((res: Array<GetProductionSwitchDateDto>) => {
                     if (res.length > 0) {
                         console.log(res, 'res L');
+                        $('#L3_2').focus(); 
                         if (vm.modeBulk()) {
                             let switchDateList = res.map((item: GetProductionSwitchDateDto) => item.switchDateTime);
                             let duplicateList = res.filter((item: GetProductionSwitchDateDto, index: number) => {

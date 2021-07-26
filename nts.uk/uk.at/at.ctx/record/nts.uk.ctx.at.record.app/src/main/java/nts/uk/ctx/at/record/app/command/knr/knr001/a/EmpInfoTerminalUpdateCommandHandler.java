@@ -62,7 +62,12 @@ public class EmpInfoTerminalUpdateCommandHandler extends CommandHandler<EmpInfoT
 									   EnumAdaptor.valueOf(e.getStampDestination(), StampDestination.class)))
 							   .collect(Collectors.toList()));
 		} else {
-			GoingOutReason goOutReason = EnumAdaptor.valueOf(command.getNrconvertInfo().getOutPlaceConvert().getGoOutReason(), GoingOutReason.class);
+			GoingOutReason goOutReason;
+			if (command.getNrconvertInfo().getOutPlaceConvert().getGoOutReason() == 10) {
+				goOutReason = null;
+			} else {
+				goOutReason = EnumAdaptor.valueOf(command.getNrconvertInfo().getOutPlaceConvert().getGoOutReason(), GoingOutReason.class);
+			}
 			
 			OutPlaceConvert outPlaceConvert = new OutPlaceConvert(
 					EnumAdaptor.valueOf(command.getNrconvertInfo().getOutPlaceConvert().getReplace(), NotUseAtr.class),
