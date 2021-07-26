@@ -9,15 +9,15 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class CodeConvertDetail extends DomainObject {
 	
-	/** 出力項目 */
-	private CodeConvertValue targetCode;
+	/** 前 */
+	private CodeConvertValue before;
 	
-	/** 本システムのコード */
-	private CodeConvertValue systemCode;
+	/** 後 */
+	private CodeConvertValue after;
 	
-	public CodeConvertDetail(String targetCode, String systemCode) {
+	public CodeConvertDetail(String before, String after) {
 		super();
-		this.targetCode = new CodeConvertValue(targetCode);
-		this.systemCode = new CodeConvertValue(systemCode);
+		this.before = new CodeConvertValue(before);
+		this.after = new CodeConvertValue(after);
 	}
 }

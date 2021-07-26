@@ -31,8 +31,8 @@ public class ExternalImportCodeConvert extends DomainObject {
 	 */
 	public CodeConvertValue convert(String target) {
 		for (val detail : convertDetails) {
-			if (detail.getTargetCode().toString().equals(target)) {
-				return detail.getSystemCode();
+			if (detail.getBefore().v().equals(target)) {
+				return detail.getAfter();
 			}
 		}
 		
