@@ -76,6 +76,7 @@ module nts.uk.at.view.kdp010.i {
 			checkGoOut: KnockoutObservable<number> = ko.observable(0);
 
 			isUseWork: KnockoutObservable<boolean | null> = ko.observable(null);
+			isSupportUse: KnockoutObservable<boolean | null> = ko.observable(null);
 			supportWorkPlaceEnable: KnockoutObservable<boolean | null> = ko.observable(null);
 
 			showSelectedAudio = ko.observable(false);
@@ -144,6 +145,7 @@ module nts.uk.at.view.kdp010.i {
 					}
 					self.contentsStampType(tg);
 					self.isUseWork(data.workUse);
+					self.isSupportUse(data.supportUse);
 					dfd.resolve();
 				}).fail(function (res: any) {
 					error({ messageId: res.messageId });
