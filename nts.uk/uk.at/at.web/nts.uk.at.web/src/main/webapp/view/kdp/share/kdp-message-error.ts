@@ -11,13 +11,14 @@ module nts.uk.at.view.kdp.share {
     }
 
     const API = {
+        GET_NOTI_SYSTEM: 'at/record/stamp/employment/get-stamp-system-outage'
     };
 
     const template = `
     <div>
         <!-- ko if: ko.toJS($component.modeSystemNoti) -->
             <div data-bind="css: { 'error1': $component.state() === 'state1' , 'error2': $component.state() === 'state2'}">
-                <span class="text-error" data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'" style="color: white;"></span>
+                <span class="text-error" data-bind="i18n: $component.messageSys" style="color: white;"></span>
             </div>
         <!-- /ko -->
         <!-- ko if: $component.showCompanyNoti() -->
@@ -186,6 +187,7 @@ module nts.uk.at.view.kdp.share {
 
         messageNoti: KnockoutObservable<IMessage> = ko.observable();
         notiSet: KnockoutObservable<FingerStampSetting> = ko.observable();
+        messageSys: KnockoutObservable<String> = ko.observable('');
 
         modeSystemNoti: KnockoutObservable<boolean | null> = ko.observable(true);
 
@@ -277,6 +279,8 @@ module nts.uk.at.view.kdp.share {
         mounted() {
             const vm = this;
 
+            vm.getNotiSys();
+
             if (ko.unwrap(vm.messageNoti)) {
                 vm.reload();
             }
@@ -341,6 +345,23 @@ module nts.uk.at.view.kdp.share {
                     }
                 })
                 .then(() => {
+                    vm.$blockui('clear');
+                });
+        }
+
+        getNotiSys() {
+            const vm = this;
+
+            vm.$blockui('invisible')
+                .then(() => {
+                    vm.$ajax('at', API.GET_NOTI_SYSTEM)
+                        .done((data: IMessageSys) => {
+                            console.log(data);
+                            
+                            vm.modeSystemNoti(data.stopSystem);
+                            vm.messageSys(data.notiMessage);
+                        })
+                }).then(() => {
                     vm.$blockui('clear');
                 });
         }
@@ -428,6 +449,12 @@ module nts.uk.at.view.kdp.share {
         targetSIDs: string[];
         targetWpids: string[];
         destination: number | null;
+    }
+
+    interface IMessageSys {
+        notiMessage: string;
+        stopMessage: string;
+        stopSystem: boolean;
     }
 
     enum DestinationClassification {
