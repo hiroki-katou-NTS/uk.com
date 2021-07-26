@@ -165,7 +165,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					}
 				}
 				
-				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo);
+				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo, taskFilter[0].code);
 				__viewContext.viewModel.viewmodelA.setTaskMode("paste");
 				__viewContext.viewModel.viewmodelA.localStore.work1Selection = value;
 				characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
