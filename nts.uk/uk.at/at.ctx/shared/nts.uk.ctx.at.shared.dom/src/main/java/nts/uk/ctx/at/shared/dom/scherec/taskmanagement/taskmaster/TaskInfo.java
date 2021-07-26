@@ -1,15 +1,11 @@
-package nts.uk.ctx.at.shared.pub.workmanagement.workmaster;
+package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.calendar.period.DatePeriod;
 
-import java.util.List;
-
-@Getter
 @AllArgsConstructor
-public class TaskPubExport {
-
+@Getter
+public class TaskInfo {
     private String code;
 
     // 作業枠NO
