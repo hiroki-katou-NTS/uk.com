@@ -91,6 +91,10 @@ public class Ksu002AWebService extends WebService {
 	@POST
 	@Path("displayInWorkInformation")
 	public List<WorkScheduleWorkInforDto> getScheduleActualOfWorkInfo(DisplayInWorkInfoInput param) {
+		WeekRuleManagementDto weekRuleManagemento = weekRuleManagementFinder.find();
+		if(weekRuleManagemento != null) {
+			param.startWeekDate = weekRuleManagemento.getDayOfWeek();
+		}
 		return this.getScheduleActualOfWorkInfo002.getDataScheduleAndAactualOfWorkInfo(param);
 	}
 	

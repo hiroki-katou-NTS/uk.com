@@ -49,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.LegalWorkTimeOfEmployeeDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodListPeriodDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 import nts.uk.shr.com.context.AppContexts;
@@ -108,7 +109,17 @@ public class GetScheduleActualOfWorkInfo002 {
 	@Inject
 	private DeforLaborTimeShaRepo deforLaborTimeShaRepo;
 	
+	@Inject
+	private KSU002Finder kSU002Finder;
+	
+	
 	public List<WorkScheduleWorkInforDto> getDataScheduleAndAactualOfWorkInfo(DisplayInWorkInfoInput param) {
+		
+		PeriodListPeriodDto periodListPeriod = kSU002Finder.getPeriodList(param.getPeriod(), param.getStartWeekDate());
+		
+		param.startDate = periodListPeriod.datePeriod.start().toString("yyyy/MM/dd");
+		param.endDate = periodListPeriod.datePeriod.end().toString("yyyy/MM/dd");
+		
 		// lay data Schedule
 		List<WorkScheduleWorkInforDto> listDataSchedule = getScheduleOfWorkInfo002.getDataScheduleOfWorkInfo(param);
 

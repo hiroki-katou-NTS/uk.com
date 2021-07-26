@@ -647,7 +647,7 @@ module nts.uk.ui.calendar {
 
 					moment.updateLocale(locale, {
 						week: {
-							dow: ko.unwrap(startDate - 1),
+							dow: ko.unwrap(startDate),
 							doy: 0
 						}
 					});
@@ -677,6 +677,9 @@ module nts.uk.ui.calendar {
 						};
 					}
 
+					const [begin] = raws;
+					const [finsh] = raws.slice(-1);
+
 					const initRange = (start: moment.Moment, diff: number): DayData[] => _.range(0, Math.abs(diff), 1)
 						.map((d) => start.clone().add(d, 'day'))
 						.map((d) => ({
@@ -688,31 +691,12 @@ module nts.uk.ui.calendar {
 							className: ko.observableArray([])
 						}));
 
-					let days: any[] = [];
-					let rawsfilter: DayData[] = [];
-					
-					if(vm.startDaySelected() == true){
-						rawsfilter = raws;
-						const [finsh] = rawsfilter.slice(-1);
-						const start2 = moment(finsh.date).add(1, 'day');
-						const afters = initRange(start2, 42 - rawsfilter.length);
-						days = _.chunk([...raws, ...afters], 7);
-					}else{
-						_.each(raws, (raw: any)=>{
-							if(new Date(vm.data.baseDate().begin.toDateString()) <= new Date(raw.date.toDateString()) && new Date(raw.date.toDateString()) <= new Date(vm.data.baseDate().finish.toDateString())){
-								rawsfilter.push(raw);		
-							}
-						});
-						const [begin] = rawsfilter;
-						const [finsh] = rawsfilter.slice(-1);
-						const start1 = moment(begin.date).startOf('week');
-						const start2 = moment(finsh.date).add(1, 'day');
-						const diff1 = start1.diff(begin.date, 'day');
-	
-						const befores = initRange(start1, diff1);
-						const afters = initRange(start2, 42 - befores.length - rawsfilter.length);
-						days = _.chunk([...befores, ...rawsfilter, ...afters], 7);
-					}
+					const start1 = moment(begin.date).startOf('week');
+					const start2 = moment(finsh.date).add(1, 'day');
+					const diff1 = start1.diff(begin.date, 'day');
+
+					const befores = initRange(start1, diff1);
+					const afters = initRange(start2, 42 - befores.length - raws.length);
 
 					moment.updateLocale(locale, {
 						week: {
@@ -720,11 +704,13 @@ module nts.uk.ui.calendar {
 							doy: 0
 						}
 					});
-//					vm.$nextTick(() => $(vm.$el).find('[data-bind]').removeAttr('data-bind'));
 
+					vm.$nextTick(() => $(vm.$el).find('[data-bind]').removeAttr('data-bind'));
+
+					const days = _.chunk([...befores, ...raws, ...afters], 7);
 					const [titles] = days;
 
-					return { rawsfilter, days, titles };
+					return { raws, days, titles };
 				},
 				owner: vm
 			});
@@ -743,7 +729,7 @@ module nts.uk.ui.calendar {
 					const schedules = ko.unwrap(data.schedules);
 					const [first] = schedules;
 					const [last] = schedules.slice(-1);
-					const start = moment(_.isDate(baseDate) ? baseDate : baseDate.begin).startOf(vm.startDaySelected() ? 'week' : 'day');
+					const start = moment(_.isDate(baseDate) ? baseDate : baseDate.begin).startOf('day');
 					const isStartDate = (d: moment.Moment) => {
 						if (d.get('date') === 1) {
 							return true;
@@ -755,9 +741,9 @@ module nts.uk.ui.calendar {
 
 						return false;
 					};
-					const initRange = (diff: number, nstart: Date) => {
+					const initRange = (diff: number) => {
 						const daysOfMonth = _.range(0, Math.abs(diff + 1), 1)
-							.map((d) => moment(nstart).clone().add(d, 'day'))
+							.map((d) => start.clone().add(d, 'day'))
 							.map((d) => ({
 								date: d.toDate(),
 								inRange: true,
@@ -772,26 +758,30 @@ module nts.uk.ui.calendar {
 
 					if (_.isDate(baseDate)) {
 						if (!schedules.length || !start.isSame(first.date, 'month')) {
-							
 							const start = moment(baseDate).startOf('month').startOf('day');
 							const end = moment(baseDate).endOf('month').endOf('day');
-							
-							let datePeriod = calculateDaysStartEndWeek(start.toDate(), end.toDate(), vm.baseDate.start(), true);
-							
-							const diff = moment(datePeriod.end).diff(datePeriod.start, 'day');
+							const diff = end.diff(start, 'day');
 
-							initRange(diff, datePeriod.start);
+							initRange(diff);
 						}
 					} else {
-						let datePeriod = calculateDaysStartEndWeek(baseDate.begin, baseDate.finish, vm.baseDate.start(), true);
-						const { begin, finish } = { begin: moment(datePeriod.start), finish: moment(datePeriod.end)};
+						const { begin, finish } = baseDate;
 						const initDate = () => {
 							const diff = moment(finish).diff(begin, 'day');
 
-							initRange(diff, datePeriod.start);
+							initRange(diff);
 						};
-						
-						initDate();
+
+						if (!first || !last) {
+							initDate();
+						} else {
+							const notStart = !moment(begin).isSame(first.date, 'date');
+							const notEnd = !moment(finish).isSame(last.date, 'date');
+
+							if (notStart && notEnd) {
+								initDate();
+							}
+						}
 					}
 				});
 		}

@@ -198,8 +198,6 @@ module nts.uk.ui.at.ksu002.a {
 				
 				vm.getPlansResultsData();
 				
-				let datePeriod = calculateDaysStartEndWeek(moment(dr.begin).toDate(),moment(dr.finish).toDate(), vm.dayStartWeek(), true);
-				
 				const command = {
 					listSid: [vm.$user.employeeId],
 					startDate: moment(dr.begin).format('YYYY/MM/DD'),
@@ -421,12 +419,10 @@ module nts.uk.ui.at.ksu002.a {
 					const { IMPRINT } = EDIT_STATE;
 					const { begin, finish } = vm.baseDate();
 					
-					let datePeriod = calculateDaysStartEndWeek(moment(begin).toDate(),moment(finish).toDate(), vm.dayStartWeek(), true);
-
 					const command = {
 						listSid: [vm.$user.employeeId],
-						startDate: moment(datePeriod.start).format('YYYY/MM/DD'),
-						endDate: moment(datePeriod.end).format('YYYY/MM/DD')
+						startDate: moment(begin).format('YYYY/MM/DD'),
+						endDate: moment(finish).format('YYYY/MM/DD')
 					};
 					
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
@@ -917,7 +913,7 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 		const locale = moment.locale();
 		moment.updateLocale(locale, {
 			week: {
-				dow: settingDayStart - 1,
+				dow: settingDayStart,
 				doy: 0
 			}
 		});
