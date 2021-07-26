@@ -20,7 +20,7 @@ import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.DateRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImportDateFormat;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;

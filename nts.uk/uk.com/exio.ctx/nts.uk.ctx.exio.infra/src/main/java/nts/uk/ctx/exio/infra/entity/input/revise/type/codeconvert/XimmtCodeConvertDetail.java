@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert.CodeConvertDetail;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.CodeConvertDetail;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.codeconvert;
+package nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
