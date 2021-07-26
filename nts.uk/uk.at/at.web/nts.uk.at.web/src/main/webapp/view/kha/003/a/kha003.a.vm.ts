@@ -285,7 +285,7 @@ module nts.uk.at.kha003.a {
 
                         if (isHelperInAppendArea) {
                             vm.$errors("clear", "#append_area");
-                            if (vm.summaryItems().length <= 3) {
+                            if (itemType !== 'undefined' && vm.summaryItems().length <= 3 ) {
                                 vm.summaryItems.push({
                                     hierarchicalOrder: vm.summaryItems().length + 1,
                                     summaryItemType: itemType,
