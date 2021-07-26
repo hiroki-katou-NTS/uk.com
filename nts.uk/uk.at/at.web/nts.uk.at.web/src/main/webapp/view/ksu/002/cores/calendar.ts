@@ -647,7 +647,7 @@ module nts.uk.ui.calendar {
 
 					moment.updateLocale(locale, {
 						week: {
-							dow: ko.unwrap(startDate),
+							dow: ko.unwrap(startDate == 7 ? 0: startDate),
 							doy: 0
 						}
 					});

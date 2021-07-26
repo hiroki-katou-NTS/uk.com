@@ -249,10 +249,11 @@ module nts.uk.ui.at.ksu002.a {
 				}
 			};
 
-			// first load
-			vm.$ajax('at', API.BASE_DATE)
-				.then(proccesPeriod)
-				.fail(processExceps);
+			vm.params.rootVm.listOfPeriodsClose.subscribe((value: any) => {
+				if(value){
+					proccesPeriod(value);
+				}
+			});
 
 			vm.yearMonth
 				.subscribe((ym: string) => {
