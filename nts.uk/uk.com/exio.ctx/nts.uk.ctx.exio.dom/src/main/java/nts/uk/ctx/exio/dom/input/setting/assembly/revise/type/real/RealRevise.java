@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FetchingPosition;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 
 @AllArgsConstructor
