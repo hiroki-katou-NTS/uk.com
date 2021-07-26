@@ -76,38 +76,38 @@ public class KshmtWorkcondWorkTs  extends ContractCompanyUkJpaEntity implements 
 		this.endTime2 = endTime2;
 	}
 	
-	public SingleDaySchedule toDomain() {
+	public SingleDaySchedule toDomain(KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo) {
 		List<TimeZone> timeZones = new ArrayList<>();
-		timeZones.add(new TimeZone(NotUseAtr.USE, 1, this.startTime1, this.endTime1));
-		timeZones.add(new TimeZone(NotUseAtr.USE, 2, this.startTime2, this.endTime2));
+		timeZones.add(new TimeZone(NotUseAtr.USE, 1, this.startTime1 == null ? 0 : this.startTime1, this.endTime1 == null ? 0 : this.endTime1));
+		timeZones.add(new TimeZone(NotUseAtr.USE, 2, this.startTime2 == null ? 0 : this.startTime2, this.endTime2 == null ? 0 : this.endTime2));
 		String workTimeCode = null;
 		switch(this.pk.getPerWorkDayAtr()) {
 		case 0:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getWeekdaysWorktime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getWeekdaysWorktime();
 			break;
 		case 1:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getHolidayWorkWorktime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getHolidayWorkWorktime();
 			break;
 		case 2:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getMondayWorkTime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getMondayWorkTime();
 			break;
 		case 3:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getTuesdayWorkTime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getTuesdayWorkTime();
 			break;
 		case 4:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getWednesdayWorkTime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getWednesdayWorkTime();
 			break;
 		case 5:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getThursdayWorkTime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getThursdayWorkTime();
 			break;
 		case 6:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getFridayWorkTime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getFridayWorkTime();
 			break;
 		case 7:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getSaturdayWorkTime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getSaturdayWorkTime();
 			break;
 		case 8:
-			workTimeCode = this.kshmtWorkcondWorkInfo.getSundayWorkTime();
+			workTimeCode = kshmtWorkcondWorkInfo == null? null : kshmtWorkcondWorkInfo.getSundayWorkTime();
 			break;
 		default:
 			break;
