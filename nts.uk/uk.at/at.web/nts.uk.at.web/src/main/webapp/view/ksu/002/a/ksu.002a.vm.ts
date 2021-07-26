@@ -202,8 +202,8 @@ module nts.uk.ui.at.ksu002.a {
 				
 				const command = {
 					listSid: [vm.$user.employeeId],
-					startDate: moment(datePeriod.start).format('YYYY/MM/DD'),
-					endDate: moment(datePeriod.end).format('YYYY/MM/DD'),
+					startDate: moment(dr.begin).format('YYYY/MM/DD'),
+					endDate: moment(dr.finish).format('YYYY/MM/DD'),
 					actualData: vm.achievement() === ACHIEVEMENT.YES
 				};
 
@@ -546,7 +546,7 @@ module nts.uk.ui.at.ksu002.a {
 				listSid: [vm.$user.employeeId],
 				startDate: moment(begin).format('YYYY/MM/DD'),
 				endDate: moment(finish).format('YYYY/MM/DD'),
-				actualData: vm.achievement()
+				actualData: vm.achievement() === ACHIEVEMENT.YES
 			};
 			
 			let sv1 = vm.$ajax('at','screen/ksu/ksu002/getPlansResults', command);

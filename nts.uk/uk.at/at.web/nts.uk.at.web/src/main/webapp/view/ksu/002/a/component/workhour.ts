@@ -99,8 +99,8 @@ module nts.uk.ui.at.ksu002.a {
 			data.viewModel.legalworkinghours.subscribe((v: any) => {
 				if(v){
 					let {monthlyEstimateTime, weeklyEstimateTime} = v;
-					self.monthlyEstimateTime(monthlyEstimateTime);
-					self.weeklyEstimateTime(weeklyEstimateTime);
+					self.monthlyEstimateTime(converNumberToTime(monthlyEstimateTime));
+					self.weeklyEstimateTime(converNumberToTime(weeklyEstimateTime));
 				}else{
 					self.monthlyEstimateTime('');
 					self.weeklyEstimateTime('');
