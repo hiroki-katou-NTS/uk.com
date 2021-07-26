@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Embeddable
-public class XimmtMappingImportItemPK implements Serializable{
+public class XimmtItemMappingPK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

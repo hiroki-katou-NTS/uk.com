@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 
 /**
  * 色々な型の値を文字列表現する
@@ -110,5 +111,17 @@ public class StringifiedValue {
 	public GeneralDate asGeneralDate() {
 		if (value == null) return null;
 		return GeneralDate.fromString(value, DATE_FORMAT);
+	}
+	
+	public Object asTypeOf(ItemType type) {
+		switch (type) {
+		case STRING: return asString();
+		case INT: return asLong();
+		case REAL: return asBigDecimal();
+		case TIME_DURATION: return asInteger();
+		case TIME_POINT: return asInteger();
+		case DATE: return asGeneralDate();
+		default: throw new RuntimeException("unknown: " + type);
+		}
 	}
 }
