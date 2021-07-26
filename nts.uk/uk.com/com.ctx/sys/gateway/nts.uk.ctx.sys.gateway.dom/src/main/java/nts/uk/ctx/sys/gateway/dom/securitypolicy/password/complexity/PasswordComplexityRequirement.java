@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,14 @@ public class PasswordComplexityRequirement implements DomainValue {
 	
 	/** 記号桁数 */
 	private final PasswordSpecifiedCharacterDigits symbolDigits;
+	
+	public static PasswordComplexityRequirement createNotCheck() {
+		return new PasswordComplexityRequirement(
+				new PasswordMinimumLength(0), 
+				new PasswordSpecifiedCharacterDigits(0), 
+				new PasswordSpecifiedCharacterDigits(0), 
+				new PasswordSpecifiedCharacterDigits(0));
+	}
 	
 	public static PasswordComplexityRequirement createFromJavaType(
 			int minimumLength,
