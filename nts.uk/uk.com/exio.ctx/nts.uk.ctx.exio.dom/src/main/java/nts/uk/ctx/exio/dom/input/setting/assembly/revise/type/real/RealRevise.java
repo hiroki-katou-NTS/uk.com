@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 
 @AllArgsConstructor
 public class RealRevise implements ReviseValue {
@@ -14,7 +14,7 @@ public class RealRevise implements ReviseValue {
 	private boolean useSpecifyRange;
 	
 	/** 値の有効範囲 */
-	private Optional<RangeOfValue> rangeOfValue;
+	private Optional<FetchingPosition> rangeOfValue;
 	
 	/** 整数値を小数として受け入れる */
 	private boolean isDecimalization;

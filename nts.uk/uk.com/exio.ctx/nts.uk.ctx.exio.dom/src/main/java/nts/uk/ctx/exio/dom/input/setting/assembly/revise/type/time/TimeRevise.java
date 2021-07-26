@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.RangeOfValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.FetchingPosition;
 
 /**
  * 時間・時刻型編集
@@ -17,7 +17,7 @@ public class TimeRevise implements ReviseValue {
 	private boolean useSpecifyRange;
 	
 	/** 値の有効範囲 */
-	private Optional<RangeOfValue> rangeOfValue;
+	private Optional<FetchingPosition> rangeOfValue;
 	
 	/** 時分 */
 	private HourlySegment hourly;
