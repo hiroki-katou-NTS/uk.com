@@ -251,7 +251,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	}
 
 	@Override
-	public List<WorkplaceManager> getWkpManagerByWorkplaceIdAndSid(String workplaceId, String sid) {
+	public List<WorkplaceManager> getWkpManager(String workplaceId, String sid) {
 		//TODO this next time, because design add this method, please fix
 		return null;
 	}

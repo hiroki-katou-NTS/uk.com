@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.auth.dom.adapter.employee;
+package nts.uk.ctx.sys.shared.dom.employee;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.auth.dom.wkpmanager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
@@ -15,20 +15,21 @@ import nts.gul.text.IdentifierUtil;
  */
 @AllArgsConstructor
 @Getter
-public class WorkplaceManager extends AggregateRoot {
+public class WorkplaceManager implements DomainAggregate{
 	/** ID */
 	private String workplaceManagerId;
 	
 	/** 職場ID */
 	private String workplaceId;
 	
-	/** 社員IDD */
+	/** 社員ID */
 	private String employeeId;
 
 	/** 履歴期間 */
 	private DatePeriod historyPeriod;
 	
 	/**
+	 * 新規作成する
 	 * createNew
 	 * @param workplaceId 職場ID
 	 * @param employeeId 社員ID
