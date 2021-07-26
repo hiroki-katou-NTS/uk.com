@@ -7,12 +7,10 @@ import nts.arc.time.GeneralDate;
  */
 public enum ExternalImportDateFormat {
 	
-	YYYY_MM_DD(0, "YYYY/MM/DD", "yyyy/MM/dd"),
-	YYYYMMDD(1, "YYYYMMDD", "yyyyMMdd"),
-	YY_MM_DD(2, "YY/MM/DD", "yy/MM/dd"),
-	YYMMDD(3, "YYMMDD", "yyMMdd"),
-	JJYY_MM_DD(4, "JJYY/MM/DD", ""),
-	JJYYMMDD(5, "JJYYMMDD", ""),
+	YYYY_MM_DD(0, "Enum_ExternalImportDateFormat_YYYY_MM_DD", "yyyy/MM/dd"),
+	YYYYMMDD(1, "Enum_ExternalImportDateFormat_YYYYMMDD", "yyyyMMdd"),
+	YY_MM_DD(2, "Enum_ExternalImportDateFormat_YY_MM_DD", "yy/MM/dd"),
+	YYMMDD(3, "Enum_ExternalImportDateFormat_YYMMDD", "yyMMdd"),
 	;
 	
 	/** The value. */
@@ -37,9 +35,9 @@ public enum ExternalImportDateFormat {
 	public GeneralDate fromString(String target) {
 		try {
 			//指定の書式に変換
-			return GeneralDate.fromString(target, this.nameId);
+			return GeneralDate.fromString(target, this.format);
 		} catch (Exception e) {
-			throw new RuntimeException("指定の日付形式に変換することができませんでした：" + this.nameId);
+			throw new RuntimeException("指定の日付形式に変換することができませんでした：" + this.format);
 		}
 	}
 }
