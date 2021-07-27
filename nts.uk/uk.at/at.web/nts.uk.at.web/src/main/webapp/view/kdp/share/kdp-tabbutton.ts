@@ -424,6 +424,7 @@ module nts.uk.at.view.kdp.share {
 				.done((data: ISettingsStampCommon) => {
 					vm.supportUse(!!data.supportUse);
 					vm.temporaryUse(!!data.temporaryUse);
+					vm.entranceExitUse(!!data.entranceExitUse);
 				});
 			window.onresize = function() {vm.setSize();params.reCalGridWidthHeight();}
 		}
@@ -605,6 +606,8 @@ module nts.uk.at.view.kdp.share {
 		supportUse: boolean;
 		temporaryUse: boolean;
 		workUse: boolean;
+		entranceExitUse: boolean;
+
 	}
 	let changeFontSize = function(element: HTMLButtonElement, type : number){
 		let text = element.innerText.replace(/(\r\n|\n|\r)/gm,"");
