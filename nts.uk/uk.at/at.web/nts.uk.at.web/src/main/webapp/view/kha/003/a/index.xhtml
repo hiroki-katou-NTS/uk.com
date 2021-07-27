@@ -219,8 +219,8 @@
                             <button tabindex="4"
                                     style="width: 60%"
                                     data-bind="click: clickRunButton,
-                                                enable: $vm.isExecutionMode(),
-                                                attr:{ class: isExecutionMode() ? 'proceed x-large' : 'x-large'}">
+                                                enable: isA81Enable(),
+                                                attr:{ class: isA81Enable() ? 'proceed x-large' : 'x-large'}">
                                 #{i18n.getText('KHA003_40')}
                             </button>
                         </div>

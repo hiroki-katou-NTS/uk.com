@@ -125,6 +125,11 @@ module nts.uk.at.kha003.a {
             });
         }
 
+        isA81Enable(): boolean {
+            let vm = this;
+            return (vm.isExecutionMode() && vm.summaryItems().length > 0);
+        }
+
         /**
          * Function for making execution mode to update mode
          * */
@@ -285,7 +290,7 @@ module nts.uk.at.kha003.a {
 
                         if (isHelperInAppendArea) {
                             vm.$errors("clear", "#append_area");
-                            if (itemType !== 'undefined' && vm.summaryItems().length <= 3 ) {
+                            if (itemType !== 'undefined' && vm.summaryItems().length <= 3) {
                                 vm.summaryItems.push({
                                     hierarchicalOrder: vm.summaryItems().length + 1,
                                     summaryItemType: itemType,
@@ -536,10 +541,22 @@ module nts.uk.at.kha003.a {
         clickRunButton() {
             const vm = this;
             vm.isOutPutAll(false);
-            var c21 = {};
-            var c31 = {};
-            var c41 = {};
-            var c51 = {};
+            var c21 = {
+                type: null,
+                name: null
+            };
+            var c31 = {
+                type: null,
+                name: null
+            }
+            var c41 = {
+                type: null,
+                name: null
+            }
+            var c51 = {
+                type: null,
+                name: null
+            }
             vm.summaryItems().forEach((i: any) => {
                 if (i.summaryItemType == 0) {
                     c21 = {
@@ -574,7 +591,7 @@ module nts.uk.at.kha003.a {
                 c51: c51,
                 totalUnit: vm.selectedId(),
                 isCsvOutPut: false,
-                code:vm.currentCode()
+                code: vm.currentCode()
             };
             vm.$window.storage('kha003AShareData', shareData).then(() => {
                 vm.$window.modal("/view/kha/003/b/index.xhtml").then(() => {
