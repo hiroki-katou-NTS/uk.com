@@ -6,6 +6,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
@@ -46,6 +47,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
     private static final int COLUMN_USED = 4;
     private static final int COLUMN_REMAINING = 5;
     private static final int COLUMN_UNDIGESTED = 6;
+    private static final int COLUMN_LINK = 7;
 
     private static final int TEMPLATE_ROWS = 13;
     private static final int MAX_ROW_PER_PAGE = 51;
@@ -186,6 +188,14 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                             && linkingInfo.getUseDateNumber() == 0.5
                                             && prevLinkingInfo.getUseDateNumber() == 0.5) {
                                         cells.merge(row, col + i - 1, 1, 2);
+                                        String value = this.formatDate(
+                                                OccurrenceDigClass.OCCURRENCE,
+                                                linkingInfo.getOccurrenceDate(),
+                                                1.0,
+                                                dataSource.getHowToPrintDate(),
+                                                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                                        );
+                                        cells.get(row, col + i - 1).setValue(value);
                                         Style style = cells.get(row, col + i - 1).getStyle();
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row, col + i - 1).setStyle(style);
@@ -203,6 +213,14 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                             && linkingInfo.getUseDateNumber() == 0.5
                                             && prevLinkingInfo.getUseDateNumber() == 0.5) {
                                         cells.merge(row + 1, col + i - 1, 1, 2);
+                                        String value = this.formatDate(
+                                                OccurrenceDigClass.DIGESTION,
+                                                linkingInfo.getUseDate(),
+                                                linkingInfo.getUseDateNumber(),
+                                                dataSource.getHowToPrintDate(),
+                                                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                                        );
+                                        cells.get(row + 1, col + i - 1).setValue(value);
                                         Style style = cells.get(row + 1, col + i - 1).getStyle();
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row + 1, col + i - 1).setStyle(style);
@@ -239,6 +257,15 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                 break;
                             }
                         }
+                        // if there is only 1 block => draw thin border
+                        if (loops == 1) {
+                            Style style1 = cells.get(row, COLUMN_LINK).getStyle();
+                            style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+                            cells.get(row, COLUMN_LINK).setStyle(style1);
+                            Style style2 = cells.get(row + 1, COLUMN_LINK).getStyle();
+                            style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+                            cells.get(row + 1, COLUMN_LINK).setStyle(style2);
+                        }
                         row += 2;
                         if (count + 2 > MAX_ROW_PER_PAGE) {
                             // add page break at the end of page
@@ -265,6 +292,29 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                     }
                 }
 
+                if (!content.getHolidayAcquisitionInfo().get().getLinkingInfos().isEmpty()) {
+                    // remove linked date
+                    ListIterator<OccurrenceAcquisitionDetail> iterator = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().listIterator();
+                    while (iterator.hasNext()) {
+                        OccurrenceAcquisitionDetail detail = iterator.next();
+                        double linkingUsedDays;
+                        if (detail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
+                            linkingUsedDays = content.getHolidayAcquisitionInfo().get().getLinkingInfos()
+                                    .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate().get()))
+                                    .collect(Collectors.summingDouble(LinkingInfo::getUseDateNumber));
+                        } else {
+                            linkingUsedDays = content.getHolidayAcquisitionInfo().get().getLinkingInfos()
+                                    .stream().filter(i -> i.getUseDate().equals(detail.getDate().getDayoffDate().get()))
+                                    .collect(Collectors.summingDouble(LinkingInfo::getUseDateNumber));
+                        }
+                        if (linkingUsedDays >= detail.getOccurrencesUseNumber().getDay().v()) {
+                            iterator.remove();
+                        } else if (linkingUsedDays > 0) {
+                            detail.getOccurrencesUseNumber().setDay(new ManagementDataRemainUnit(detail.getOccurrencesUseNumber().getDay().v() - linkingUsedDays));
+                            iterator.set(detail);
+                        }
+                    }
+                }
                 content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
                 int col = 9;
                 int size = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().size();
@@ -301,6 +351,15 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                             break;
                         }
                     }
+                    // if there is only 1 block => draw thin border
+                    if (loops == 1) {
+                        Style style1 = cells.get(row, COLUMN_LINK).getStyle();
+                        style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+                        cells.get(row, COLUMN_LINK).setStyle(style1);
+                        Style style2 = cells.get(row + 1, COLUMN_LINK).getStyle();
+                        style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+                        cells.get(row + 1, COLUMN_LINK).setStyle(style2);
+                    }
                     row += 2;
                     if (count + 2 > MAX_ROW_PER_PAGE) {
                         // add page break at the end of page
@@ -328,7 +387,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
             }
         }
         if (!dataSource.isLinking()) {
-            cells.deleteColumn(7);
+            cells.deleteColumn(COLUMN_LINK);
         }
 
         // remove template rows
@@ -419,9 +478,9 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
-            formattedDate.append(detail.getDate().getDayoffDate().get().toString());
+            formattedDate.append(detail.getDate().getDayoffDate().get().toString("yy/MM/dd"));
         }
-        if (detail.getOccurrencesUseNumber() != 1.0) {
+        if (detail.getOccurrencesUseNumber().getDay().v() != 1.0) {
             formattedDate.append(TextResource.localize("KDR004_120"));
             spaceRight += -1;
         }
