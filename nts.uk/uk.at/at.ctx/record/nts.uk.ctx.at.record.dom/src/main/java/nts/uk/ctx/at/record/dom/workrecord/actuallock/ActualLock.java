@@ -139,11 +139,25 @@ public class ActualLock extends AggregateRoot {
 		// if 期間。終了 < $締め期間。終了 && 期間。開始 > $締め期間。開始
 		if (period.end().before(periodClosure.end()) && period.start().after(periodClosure.start())) {
 			return listPeriod;
+		//	else if 期間。開始　＞＝　$締め終了日 || 期間。終了　<＝　$締め開始日															
 		} else if (period.start().afterOrEquals(periodClosure.end())
 				|| period.end().beforeOrEquals(periodClosure.start())) {
 			listPeriod.add(period);
 			return listPeriod;
+		//else if 期間。開始 > $締め開始日 && 期間。開始　<＝　$締め終了日 && 期間。終了　>＝　$締め終了日 
+		}else if(period.start().after(periodClosure.start()) && period.start().beforeOrEquals(periodClosure.end())
+				&& period.end().after(periodClosure.end())) {
+			//return new List (new 期間($締め終了日、期間。終了))
+			listPeriod.add(new DatePeriod(periodClosure.end().addDays(1), period.end()));
+			return listPeriod; 
+		//else if 期間。開始 ＜＝ $締め開始日 && 期間。終了　<＝　$締め終了日 && 期間。終了　>　$締め開始日
+		}else if(period.start().beforeOrEquals(periodClosure.start()) && period.end().beforeOrEquals(periodClosure.end())
+				&& period.end().after(periodClosure.start())) {
+			//return new List (new 期間(期間。開始、$締め開始日))
+			listPeriod.add(new DatePeriod(period.start(), periodClosure.start().addDays(-1)));
+			return listPeriod; 
 		}
+		
 		// return new List(new 期間(期間。開始、$締め期間。開始)、new 期間($締め期間。終了、期間。終了))
 		listPeriod.add(new DatePeriod(period.start(), periodClosure.start()));
 		listPeriod.add(new DatePeriod(periodClosure.end(), period.end()));
