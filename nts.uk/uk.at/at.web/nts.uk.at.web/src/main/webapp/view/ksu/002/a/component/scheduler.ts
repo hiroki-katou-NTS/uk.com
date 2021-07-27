@@ -84,8 +84,8 @@ module nts.uk.ui.at.ksu002.a {
 		}
 		clear(){
 			let self = this;
-			self.workingTime();
-			self.holidaysNumber();
+			self.workingTime('');
+			self.holidaysNumber('');
 		}
     }
 
@@ -247,8 +247,9 @@ module nts.uk.ui.at.ksu002.a {
 			tg[0].setStatusFisrt();
 			self.weekSumData(tg);
 			data.rootVm.plansResultsData.subscribe((v: any) => {
+				let isSelectedStartWeek:boolean = data.rootVm.isSelectedStartWeek();
 				_.forEach(self.weekSumData(), e => {
-					if(v !=  null){
+					if(v !=  null && isSelectedStartWeek){
 						let i = _.find(v.weeklyData, (c: any) => c.no == e.no);
 						if(i){
 							let overUnder = i.workingHoursMonth - data.rootVm.legalworkinghours().weeklyEstimateTime;
@@ -260,6 +261,9 @@ module nts.uk.ui.at.ksu002.a {
 						e.clear();												
 					}
 				});
+			});
+			data.rootVm.isSelectedStartWeek.subscribe(() => {
+				data.rootVm.plansResultsData(data.rootVm.plansResultsData());
 			});
         }
 

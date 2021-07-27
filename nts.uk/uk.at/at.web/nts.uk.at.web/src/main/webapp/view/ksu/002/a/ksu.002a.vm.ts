@@ -166,7 +166,7 @@ module nts.uk.ui.at.ksu002.a {
 		
 		dayStartWeek: KnockoutObservable<number> = ko.observable(null);
 		
-		isSelectedStartWeek: KnockoutObservable<boolean> = ko.observable(null);
+		isSelectedStartWeek: KnockoutObservable<boolean> = ko.observable(false);
 		
 		storageDataStartWeek: KnockoutObservable<any> = ko.observable(null);
 		
