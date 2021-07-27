@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
  */
 
 
-@RunWith(JMockit.class)
+//@RunWith(JMockit.class)
 public class ConfirmationWorkResultsTestTest {
 
 //	@Injectable

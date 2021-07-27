@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.jobmanagement.manhourrecordreferencesetting.ManH
  *
  */
 
-@RunWith(JMockit.class)
+//@RunWith(JMockit.class)
 public class WorkChangeablePeriodSettingTest {
 
 //	@Injectable
