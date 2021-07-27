@@ -106,7 +106,7 @@ public class KrcmtRptDaiTask extends ContractUkJpaEntity implements Serializable
         this.displayFormat = entity.displayFormat;
         this.sumVerticalHorizontalDisplay = entity.sumVerticalHorizontalDisplay;
 
-//        this.rptDaiTaskItems.removeIf(r -> !entity.rptDaiTaskItems.contains(r));
+        this.rptDaiTaskItems.removeIf(r -> !entity.rptDaiTaskItems.contains(r));
         entity.rptDaiTaskItems.forEach(e -> {
             val checkExist = this.rptDaiTaskItems.stream().filter(x -> x.pk.equals(e.pk)).findFirst();
             if (checkExist.isPresent()) {
