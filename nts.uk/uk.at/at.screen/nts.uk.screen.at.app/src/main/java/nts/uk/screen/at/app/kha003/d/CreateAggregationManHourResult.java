@@ -124,8 +124,8 @@ public class CreateAggregationManHourResult {
                 BigDecimal decimalValue = new BigDecimal(value);
                 BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
                 BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
-                StringBuilder sb = new StringBuilder();
-                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
+                val valueStr = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP)).toPlainString();
+                targetValue = valueStr.replace(".", ":");
                 break;
             case MINUTE:
                 DecimalFormat df = new DecimalFormat("#,###");
