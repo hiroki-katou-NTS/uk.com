@@ -111,8 +111,8 @@ public class KSU002Finder {
 			List<DatePeriod> datePeriodList = new ArrayList<DatePeriod>();
 			GeneralDate startDateNew = start;
 			while (startDateNew.before(end)) {
-				datePeriodList.add(new DatePeriod(startDateNew, startDateNew.addDays(7)));
-				startDateNew = startDateNew.addDays(8);
+				datePeriodList.add(new DatePeriod(startDateNew, startDateNew.addDays(6)));
+				startDateNew = startDateNew.addDays(7);
 			}
 			result.setDatePeriodList(datePeriodList);
 			return result;
