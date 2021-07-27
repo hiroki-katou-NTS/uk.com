@@ -216,10 +216,10 @@ module nts.uk.at.kha003.d {
                 rowData["c1"] = level1.displayInfo.name;
                 for (let j = 0; j < level1.verticalTotalList.length; j++) {
                     const verticalItem = level1.verticalTotalList[j];
-                    rowData["c" + (j + 2)] = vm.formatValue(verticalItem.workingHours, dispFormat);
+                    rowData["c" + (j + 2)] = verticalItem.workingHours;
                 }
                 if (isDispTotal) {
-                    rowData["c" + (level1.verticalTotalList.length + 2)] = vm.formatValue(level1.totalPeriod, dispFormat);
+                    rowData["c" + (level1.verticalTotalList.length + 2)] = level1.totalPeriod;
                 }
                 vm.contents.push(rowData);
             }
@@ -249,10 +249,10 @@ module nts.uk.at.kha003.d {
                     rowData["c2"] = level2.displayInfo.name;
                     for (let j = 0; j < level2.verticalTotalList.length; j++) {
                         const verticalItem = level2.verticalTotalList[j];
-                        rowData["c" + (j + 3)] = vm.formatValue(verticalItem.workingHours, dispFormat);
+                        rowData["c" + (j + 3)] = verticalItem.workingHours;
                     }
                     if (isDispTotal) {
-                        rowData["c" + (level2.verticalTotalList.length + 3)] = vm.formatValue(level2.totalPeriod, dispFormat);
+                        rowData["c" + (level2.verticalTotalList.length + 3)] = level2.totalPeriod;
                     }
                     vm.contents.push(rowData);
                 }
@@ -288,10 +288,10 @@ module nts.uk.at.kha003.d {
                         rowData["c3"] = level3.displayInfo.name;
                         for (let j = 0; j < level3.verticalTotalList.length; j++) {
                             const verticalItem = level3.verticalTotalList[j];
-                            rowData["c" + (j + 4)] = vm.formatValue(verticalItem.workingHours, dispFormat);
+                            rowData["c" + (j + 4)] = verticalItem.workingHours;
                         }
                         if (isDispTotal) {
-                            rowData["c" + (level3.verticalTotalList.length + 4)] = vm.formatValue(level3.totalPeriod, dispFormat);
+                            rowData["c" + (level3.verticalTotalList.length + 4)] = level3.totalPeriod;
                         }
                         vm.contents.push(rowData);
                     }
@@ -369,9 +369,9 @@ module nts.uk.at.kha003.d {
             }
             for (let i = 0; i < summaryItemDetail.verticalTotalList.length; i++) {
                 const verticalItem = summaryItemDetail.verticalTotalList[i];
-                rowData["c" + (i + count)] = vm.formatValue(verticalItem.workingHours, dispFormat);
+                rowData["c" + (i + count)] = verticalItem.workingHours;
             }
-            rowData["c" + (summaryItemDetail.verticalTotalList.length + count)] = vm.formatValue(summaryItemDetail.totalPeriod, dispFormat);
+            rowData["c" + (summaryItemDetail.verticalTotalList.length + count)] = summaryItemDetail.totalPeriod;
             return rowData;
         }
 
@@ -400,10 +400,10 @@ module nts.uk.at.kha003.d {
                             rowData["c4"] = level4.displayInfo.name;
                             for (let j = 0; j < level4.verticalTotalList.length; j++) {
                                 const verticalItem = level4.verticalTotalList[j];
-                                rowData["c" + (j + 5)] = vm.formatValue(verticalItem.workingHours, dispFormat);
+                                rowData["c" + (j + 5)] = verticalItem.workingHours;
                             }
                             if (isDispTotal) {
-                                rowData["c" + (level4.verticalTotalList.length + 5)] = vm.formatValue(level4.totalPeriod, dispFormat);
+                                rowData["c" + (level4.verticalTotalList.length + 5)] = level4.totalPeriod;
                             }
                             vm.contents.push(rowData);
                         }
@@ -462,9 +462,9 @@ module nts.uk.at.kha003.d {
             }
             for (let i = 0; i < outputContent.verticalTotalValues.length; i++) {
                 const verticalItem = outputContent.verticalTotalValues[i];
-                rowData["c" + (i + count)] = vm.formatValue(verticalItem.workingHours, dispFormat);
+                rowData["c" + (i + count)] = verticalItem.workingHours;
             }
-            rowData["c" + (outputContent.verticalTotalValues.length + count)] = vm.formatValue(outputContent.totalPeriod, dispFormat);
+            rowData["c" + (outputContent.verticalTotalValues.length + count)] = outputContent.totalPeriod;
             return rowData;
         }
 
