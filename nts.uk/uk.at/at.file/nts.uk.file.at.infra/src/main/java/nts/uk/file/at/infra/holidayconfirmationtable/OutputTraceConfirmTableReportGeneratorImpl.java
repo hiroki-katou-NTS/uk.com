@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttri
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.MngHistDataAtr;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.portal.dom.enums.MenuAtr;
@@ -196,7 +197,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                         if (linkingInfo.getOccurrenceDate().equals(prevLinkingInfo.getOccurrenceDate())
                                                 && linkingInfo.getDateOfUse().v() == 0.5
                                                 && prevLinkingInfo.getDateOfUse().v() == 0.5) {
-                                            cells.merge(row, col + i - 1, 1, 2);
+                                            String value = this.formatDate(
+                                                    OccurrenceDigClass.OCCURRENCE,
+                                                    linkingInfo.getOccurrenceDate(),
+                                                    1.0,
+                                                    dataSource.getQuery().getHowToPrintDate(),
+                                                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
+                                            );
+                                            cells.get(row, col + i - 1).setValue(value);
                                             Style style = cells.get(row, col + i - 1).getStyle();
                                             style.setHorizontalAlignment(HorizontalAlignment.Center);
                                             cells.get(row, col + i - 1).setStyle(style);
@@ -214,6 +222,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                                 && linkingInfo.getDateOfUse().v() == 0.5
                                                 && prevLinkingInfo.getDateOfUse().v() == 0.5) {
                                             cells.merge(row + 1, col + i - 1, 1, 2);
+                                            String value = this.formatDate(
+                                                    OccurrenceDigClass.DIGESTION,
+                                                    linkingInfo.getYmd(),
+                                                    linkingInfo.getDateOfUse().v(),
+                                                    dataSource.getQuery().getHowToPrintDate(),
+                                                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
+                                            );
+                                            cells.get(row + 1, col + i - 1).setValue(value);
                                             Style style = cells.get(row + 1, col + i - 1).getStyle();
                                             style.setHorizontalAlignment(HorizontalAlignment.Center);
                                             cells.get(row + 1, col + i - 1).setStyle(style);
@@ -250,6 +266,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                 }
                             }
                         }
+                        if (loops == 1) {
+                            Style style1 = cells.get(row, 7).getStyle();
+                            style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+                            cells.get(row, 7).setStyle(style1);
+                            Style style2 = cells.get(row + 1, 7).getStyle();
+                            style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+                            cells.get(row + 1, 7).setStyle(style2);
+                        }
                         row += 2;
                         if (count + 2 > MAX_ROW_PER_PAGE) {
                             // add page break at the end of page
@@ -272,6 +296,28 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                             count = row - wkpIndexes.get(wkpIndexes.size() - 1);
                         } else {
                             count += 2;
+                        }
+                    }
+                }
+                if (!content.getObservationOfExitLeave().get().getListTyingInformation().isEmpty()) {
+                    // remove linked date
+                    ListIterator<OccurrenceAcquisitionDetails> iterator = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().listIterator();
+                    while (iterator.hasNext()) {
+                        OccurrenceAcquisitionDetails detail = iterator.next();
+                        double linkingUsedDays;
+                        if (detail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
+                            linkingUsedDays = content.getObservationOfExitLeave().get().getListTyingInformation()
+                                    .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate()
+                                            .get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
+                        } else {
+                            linkingUsedDays = content.getObservationOfExitLeave().get().getListTyingInformation()
+                                    .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate().get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
+                        }
+                        if (linkingUsedDays >= detail.getNumberConsecuVacation().getDay().v()) {
+                            iterator.remove();
+                        } else if (linkingUsedDays > 0) {
+                            detail.getNumberConsecuVacation().setDay(new ManagementDataRemainUnit(detail.getNumberConsecuVacation().getDay().v() - linkingUsedDays));
+                            iterator.set(detail);
                         }
                     }
                 }
