@@ -5,7 +5,8 @@ import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.DisplayFormat;
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.TotalUnit;
 import nts.uk.file.at.app.export.manhoursummarytable.ManHourSummaryExportData;
 import nts.uk.file.at.app.export.manhoursummarytable.ManHourSummaryTableGenerator;
 import nts.uk.screen.at.app.kha003.ManHourSummaryTableFormatDto;
@@ -17,6 +18,7 @@ import nts.uk.screen.at.app.kha003.exportcsv.ManHourSummaryTableOutputContentDto
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -24,7 +26,6 @@ import javax.ejb.TransactionAttributeType;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -33,7 +34,6 @@ import java.util.stream.Collectors;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerator implements ManHourSummaryTableGenerator {
-    private static final String FILE_TITLE = "職場別作業集計表";
     private static final String TEMPLATE_FILE = "report/KHA003.xlsx";
     private static final String EXCEL_EXTENSION = ".xlsx";
     private static final String DATE_FORMAT = "yyyy/MM/dd";
@@ -458,6 +458,8 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
      * @return String
      */
     private String formatValue(Double value, DisplayFormat displayFormat) {
+        if (value == 0) return Strings.EMPTY;
+
         String targetValue = null;
         switch (displayFormat) {
             case DECIMAL:

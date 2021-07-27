@@ -10,10 +10,21 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskPubExport {
 
-    private String code;
+    // コード
+    private final String code;
 
     // 作業枠NO
-    private Integer taskFrameNo;
+    private final Integer taskFrameNo;
 
-    private String name;
+    // 外部連携情報
+    private ExternalCorporationInfoPubExport cooperationInfo;
+
+    // 子作業一覧
+    private List<String> childTaskList;
+
+    // 有効期限
+    private DatePeriod expirationDate;
+
+    // 表示情報 : 作業表示情報
+    private TaskDisplayInfoPubExport displayInfo;
 }

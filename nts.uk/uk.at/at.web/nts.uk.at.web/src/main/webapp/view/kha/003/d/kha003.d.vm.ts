@@ -477,7 +477,8 @@ module nts.uk.at.kha003.d {
          */
         formatValue(value: any, displayFormat: any): string {
             let vm = this;
-            let targetValue = null;
+            let targetValue = "";
+            if (value === 0) return targetValue;
             switch (displayFormat) {
                 case 0:
                     targetValue = (value / 60).toLocaleString('en-US', {maximumFractionDigits: 2})
