@@ -30,7 +30,7 @@ public class TimeRevise implements ReviseValue {
 	public Object revise(String target) {
 		Long longResult;
 		
-		if (baseNumber == TimeBaseNumber.HEXA_DECIMAL) {
+		if (baseNumber == TimeBaseNumber.SEXAGESIMAL) {
 			// 60進数の場合
 			// 区切り文字を用いて時分→分変換
 			longResult = delimiter.get().convert(target);
