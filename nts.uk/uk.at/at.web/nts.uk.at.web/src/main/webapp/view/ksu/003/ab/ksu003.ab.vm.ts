@@ -23,6 +23,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 		taskList: KnockoutObservableArray<any> = ko.observableArray([]);
 		taskChecked: KnockoutObservable<string> = ko.observable('');
 		taskSelect: KnockoutObservable<string> = ko.observable('');
+		enableAb : KnockoutObservable<boolean> = ko.observable(false);
 
 		// Screen Ab2
 		//list hyper link
@@ -281,12 +282,14 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			datas = datas.sort((x : any,y : any) => {
 				return x.code - y.code;
 			});
-			if (datas.length > 0)
+			if (datas.length > 0){
 				self.taskList(datas);
-			else {
+				self.enableAb(true);
+			} else {
 				self.taskList([
 					new TaskModel('なし', '', '')
 				]);
+				self.enableAb(false);
 			}
 			if (!_.isNil(__viewContext.viewModel.viewmodelA.localStore.work1Selection)) {
 				self.taskChecked(__viewContext.viewModel.viewmodelA.localStore.work1Selection);
@@ -557,6 +560,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			self.checkEmpAttendance().done((data: any) => {
 				setShared("dataShareKsu003c", self.lstEmpToC);
 				nts.uk.ui.windows.sub.modal('/view/ksu/003/c/index.xhtml').onClosed(() => {
+					let data = getShared('dataShareFromKsu003c');
+					if (data == "Cancel") return;
+					__viewContext.viewModel.viewmodelA.destroyAndCreateGrid(__viewContext.viewModel.viewmodelA.lstEmpId, 0)
 					block.clear();
 				});
 			});

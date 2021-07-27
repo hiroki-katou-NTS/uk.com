@@ -6,9 +6,9 @@
 				<td>
 					<div id="button-ab" style="float: right;">
 						<!-- Ab1_4 -->
-						<button tabindex="2" id="open-pallet" class="small" data-bind="click: closeAb1">#{i18n.getText('KSU003_66')}</button>
+						<button tabindex="2" id="open-pallet" class="small" data-bind="click: closeAb1, enable: enableAb">#{i18n.getText('KSU003_66')}</button>
 						<!-- Ab1_5 -->
-						<button tabindex="3" id="open-C" class="small" data-bind="click: openC">#{i18n.getText('KSU003_67')}</button>
+						<button tabindex="3" id="open-C" class="small" data-bind="click: openC, enable: enableAb">#{i18n.getText('KSU003_67')}</button>
 					</div>
 				</td>
 			</tr>
@@ -23,7 +23,7 @@
 					value: taskChecked,
 					optionsText: 'name',
 					visibleItemsCount: 10,
-					enable: true,
+					enable: enableAb,
 					columns: [
 						{ prop: 'code', length: 10 },
 						{ prop: 'name', length: 40 },
