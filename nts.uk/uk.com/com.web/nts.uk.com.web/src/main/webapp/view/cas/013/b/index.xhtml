@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 400, height: 620 };</script>
+			<script>var dialogSize = { width: 430, height: 620 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -16,6 +16,8 @@
 			<com:scriptfile path="cas013.b.service.js" />
 			<com:scriptfile path="cas013.b.start.js" />
 			<com:scriptfile path="cas013.b.vm.js" />
+			<!-- KCP005 -->
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 		</ui:define>
 
 		<ui:define name="content">
@@ -23,7 +25,7 @@
 			<div id="contents-area">
 				<div class="cf">
 					<div style="float: left; margin: 5px 16px;">
-						<div class="control-group">
+						<div class="control-group" style="margin-top: -5px">
 							<!--B1_1-->
 							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_21')}</div>
 							<!--B1_2-->
@@ -47,27 +49,38 @@
 						</div>
 						<div class="control-group">
 							<!--<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_22')}</div>-->
-							<div class="control-group-2">
-								<input id="search" tabindex="2"
-									   data-bind="ntsTextEditor: {value: searchValue, enterkey: enterPress}" />
-								<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_22')}</button>
-								<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_25')}</button>
-							</div>
+							<div id="B3" style="margin-left: 55px;" data-bind="ntsSearchBox: {
+								  searchMode: 'highlight',
+								  targetKey: 'userID',
+								  comId: 'C6',
+								  items: dataSource,
+								  selected: selectUserID,
+								  selectedKey: 'userID',
+								  mode: 'igGrid',
+								  fields: ['userID', 'patternName']
+								}"/>
+                            <!--<div class="control-group-2">-->
+								<!--<input id="search" tabindex="2"-->
+									   <!--data-bind="ntsTextEditor: {value: searchValue, enterkey: enterPress}" />-->
+								<!--<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_22')}</button>-->
+								<!--<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_25')}</button>-->
+							<!--</div>-->
 						</div>
+						<div id="kcp005" class="panel panel-frame" style="width: 312px; margin-top: -15px; margin-left: 25px"></div>
 						<!--<div class="valign-center control-group">-->
 							<!--<div data-bind="ntsCheckBox: { checked: special }">#{i18n.getText('CAS013_26')}</div>-->
 						<!--</div>-->
 						<!--<div class="valign-center control-group">-->
 							<!--<div data-bind="ntsCheckBox: { checked: multi }">#{i18n.getText('CAS013_27')}</div>-->
 						<!--</div>-->
-						<table id="grid_container" style="margin: auto;" tabindex="3"
-							data-bind="ntsGridList: {
-											rows: 15,
-											options: dataSource,
-											optionsValue: 'userID',
-											columns: columns,
-											value: selectUserID}">
-						</table>
+						<!--<table id="grid_container" style="margin: auto;" tabindex="3"-->
+							<!--data-bind="ntsGridList: {-->
+											<!--rows: 15,-->
+											<!--options: dataSource,-->
+											<!--optionsValue: 'userID',-->
+											<!--columns: columns,-->
+											<!--value: selectUserID}">-->
+						<!--</table>-->
 					</div>
 				</div>
 			</div>

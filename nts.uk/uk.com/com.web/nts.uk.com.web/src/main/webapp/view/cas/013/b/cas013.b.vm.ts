@@ -22,6 +22,23 @@ module nts.uk.com.view.cas013.b.viewmodel {
         isRequired: KnockoutObservable<boolean>;
         selectFirstIfNull: KnockoutObservable<boolean>;
 
+        // start declare KCP005
+        listComponentOption: any;
+        selectedCodeKCP: KnockoutObservable<string>;
+        multiSelectedCode: KnockoutObservableArray<string>;
+        isShowAlreadySet: KnockoutObservable<boolean>;
+        alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
+        isDialog: KnockoutObservable<boolean>;
+        isShowNoSelectRow: KnockoutObservable<boolean>;
+        isMultiSelect: KnockoutObservable<boolean>;
+        isShowWorkPlaceName: KnockoutObservable<boolean>;
+        isShowSelectAllButton: KnockoutObservable<boolean>;
+        disableSelection : KnockoutObservable<boolean>;
+
+        employeeList: KnockoutObservableArray<UnitModel>;
+        baseDate: KnockoutObservable<Date>;
+        // end KCP005
+
         constructor() {
             var self = this;
             self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
@@ -49,6 +66,38 @@ module nts.uk.com.view.cas013.b.viewmodel {
             self.isEditable = ko.observable(true);
             self.isRequired = ko.observable(true);
             self.selectFirstIfNull = ko.observable(true);
+
+            // KCP005
+            self.baseDate = ko.observable(new Date());
+            self.selectedCodeKCP = ko.observable('');
+            self.multiSelectedCode = ko.observableArray([]);
+            self.isShowAlreadySet = ko.observable(false);
+            self.alreadySettingPersonal = ko.observableArray([]);
+            self.isDialog = ko.observable(false);
+            self.isShowNoSelectRow = ko.observable(false);
+            self.isMultiSelect = ko.observable(false);
+            self.isShowWorkPlaceName = ko.observable(false);
+            self.isShowSelectAllButton = ko.observable(false);
+            self.disableSelection = ko.observable(false);
+            self.employeeList = ko.observableArray<UnitModel>([]);
+
+
+            // KCP005
+            self.listComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: false,
+                listType: ListType.EMPLOYEE,
+                employeeInputList: self.employeeList,
+                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                selectedCode: self.selectedCodeKCP,
+                isDialog: false,
+                isShowWorkPlaceName: false,
+                alreadySettingList: self.alreadySettingPersonal,
+                isShowSelectAllButton: false,
+                maxWidth: 310,
+                maxRows: 15
+            };
+            $('#kcp005').ntsListComponent(self.listComponentOption)
         }
 
         search() {
@@ -88,6 +137,16 @@ module nts.uk.com.view.cas013.b.viewmodel {
             var selectUser: any = _.find(self.dataSource(), (item: any) => {
                 return item.userID == self.selectUserID()
             });
+            var employeeSearchs: UnitModel[] = []; //KCP005
+            var periodDate = '';//KCP005
+            var employee: UnitModel = {
+                code: selectUser.userID,
+                name: selectUser.loginID,
+                affiliationName: selectUser.userName
+            };
+            employeeSearchs.push(employee);
+            self.multiSelectedCode.push(employee.code);
+            self.employeeList(employeeSearchs);
 
             let dataSetShare = {
                 decisionUserID: selectUser.userID,
@@ -111,5 +170,30 @@ module nts.uk.com.view.cas013.b.viewmodel {
             this.code = code;
             this.name = name;
         }
+    }
+
+    export class ListType {
+        static EMPLOYMENT = 1;
+        static Classification = 2;
+        static JOB_TITLE = 3;
+        static EMPLOYEE = 4;
+    }
+
+    export interface UnitModel {
+        code: string;
+        name?: string;
+        affiliationName?: string;
+    }
+
+    export class SelectType {
+        static SELECT_BY_SELECTED_CODE = 1;
+        static SELECT_ALL = 2;
+        static SELECT_FIRST_ITEM = 3;
+        static NO_SELECT = 4;
+    }
+
+    export interface UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
     }
 }

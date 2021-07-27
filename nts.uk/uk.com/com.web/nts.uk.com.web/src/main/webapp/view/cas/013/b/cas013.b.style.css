@@ -22,3 +22,7 @@ div#grid_container_container.ui-widget.ui-helper-clearfix.ui-corner-all.ui-iggri
 div.control-group-2 {
 	margin-left: 55px;
 }
+
+.caret-background:not(.deprecate).caret-bottom, .caret-background:not(.deprecate).caret-top, .caret-background:not(.deprecate).caret-left, .caret-background:not(.deprecate).caret-right {
+	margin: -20px;
+}

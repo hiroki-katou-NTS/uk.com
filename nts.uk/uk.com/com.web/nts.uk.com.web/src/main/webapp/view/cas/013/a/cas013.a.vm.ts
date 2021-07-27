@@ -214,9 +214,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 maxRows: 15
             };
             //Fixing
-            // self.multiSelectedCode.subscribe((e) => {
-            //     self.selectRoleEmployee(e.toString());
-            // });
+            self.multiSelectedCode.subscribe((e) => {
+                self.selectRoleEmployee(e.toString());
+            });
             $('#kcp005').ntsListComponent(self.listComponentOption)
         }
 
@@ -258,13 +258,11 @@ module nts.uk.com.view.cas013.a.viewmodel {
                             //KCO005
                             periodDate = (entry.startValidPeriod + " ~ " + entry.endValidPeriod).toString();
                             var employee: UnitModel = {
-                                code: entry.loginID,
+                                code: entry.userID,
                                 name: entry.userName,
                                 affiliationName: periodDate,
                             };
                             employeeSearchs.push(employee);
-                            self.multiSelectedCode.push(employee.code);
-
                         }
                         self.employeeList(employeeSearchs);
                         //End KCP005
@@ -301,10 +299,39 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var roleId = self.selectedRole();
             if (roleId != '' && UserId != '') {
                 var userSelected = _.find(self.listRoleIndividual(), ['userId',UserId]);
-                self.userName(userSelected.name);
+                //self.userName(userSelected.name);
                 new service.Service().getRoleGrant(roleId, UserId).done(function(data: any) {
                     if (data != null) {
-                        self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
+                        //self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
+                        self.isCreateMode(false);
+                        self.isSelectedUser(false);
+                        self.isDelete(true);
+                    }
+                });
+            }else{
+                self.isDelete(false);
+            }
+        }
+
+        private selectRoleEmployee(UserId: string): void {
+            var self = this;
+            var roleId = self.selectedRole();
+            if (roleId != '' && UserId != '') {
+                var userSelected = _.find(self.employeeList(), ['code',UserId]);
+                var userEmployee = _.find(self.listRoleIndividual(), ['userId',UserId]);
+                new service.Service().getRoleGrant(roleId, UserId).done(function(data: any) {
+                    if (data != null) {
+                        if(nts.uk.text.isNullOrEmpty(userSelected)
+                        && nts.uk.text.isNullOrEmpty(userEmployee)
+                        ){
+                            self.loginID('');
+                            self.userName('');
+                            self.dateValue('');
+                        } else {
+                            self.dateValue(new datePeriod(userEmployee.start, userEmployee.end));
+                            self.loginID(userSelected.code);
+                            self.userName(userSelected.name);
+                        }
                         self.isCreateMode(false);
                         self.isSelectedUser(false);
                         self.isDelete(true);
