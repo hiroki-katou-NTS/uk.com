@@ -746,13 +746,14 @@ module nts.uk.at.kha003.d {
          * @param startDate
          * @param endDate
          */
-        getDateRange(fromDate: any, toDate: any,displayFormat: any, steps = 1,) {
+        getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1,) {
             let vm = this;
+            fromDate = new Date(fromDate);
+            toDate = new Date(toDate);
             switch (displayFormat) {
                 case 0:
-
-                    let currentDate = new Date(fromDate);
-                    while (currentDate <= new Date(toDate)) {
+                    let currentDate = fromDate;
+                    while (currentDate <= toDate) {
                         let date = new Date(currentDate.toISOString());
                         let headerText = (date.getMonth() + 1) + "月" + date.getDate() + "日";
                         vm.dateHeaders.push(
@@ -765,9 +766,9 @@ module nts.uk.at.kha003.d {
                     break;
                 case 1:
                     const fromYear = fromDate.getFullYear();
-                    const fromMonth = fromDate.getMonth();
+                    const fromMonth = fromDate.getMonth()+1;
                     const toYear = toDate.getFullYear();
-                    const toMonth = toDate.getMonth();
+                    const toMonth = toDate.getMonth()+1;
                     const months = [];
                     for (let year = fromYear; year <= toYear; year++) {
                         let month = year === fromYear ? fromMonth : 0;
@@ -775,7 +776,7 @@ module nts.uk.at.kha003.d {
                         for (; month <= monthLimit; month++) {
                             vm.dateHeaders.push(
                                 new DateHeader('', '', '' + year + '/' + month)
-                        );
+                            );
                         }
                     }
                     break;
