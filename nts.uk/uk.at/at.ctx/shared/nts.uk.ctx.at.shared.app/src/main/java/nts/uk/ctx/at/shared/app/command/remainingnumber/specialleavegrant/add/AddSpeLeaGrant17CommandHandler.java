@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.remainingnumber.specialleavegrant.add;
 
+import java.math.BigDecimal;
+
 //import java.math.BigDecimal;
 
 import javax.ejb.Stateless;
@@ -39,20 +41,37 @@ public class AddSpeLeaGrant17CommandHandler
 		val command = context.getCommand();
 		String specialId = IdentifierUtil.randomUniqueId();
 		String cid = AppContexts.user().companyId();
+		SpecialLeaveGrantRemainingData domain = null;
 
-		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
+		boolean exist = SpecialLeaveGrantRemainingData.validate(command.getGrantDate(), command.getDeadlineDate(),
+				command.getNumberDayGrant(), command.getNumberDayUse(), null, command.getNumberDayRemain());
+
+		if (!exist) {
+			// #117982
+			// ケース①：この辺が入力しないとき、登録しないと思います。
+			return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
+		}
+
+		// #117982
+		// ケース②：「付与日」だけ入力する場合は、「登録」を押すと、エラーが表示されます。
+		// ケース③：「付与日」と「期限日」だけ入力する場合は、 全部 区分①の値はゼロになります。
+		SpecialLeaveGrantRemainingData.validate(command.getGrantDate(), command.getDeadlineDate(),
+				command.getNumberDayGrant(), command.getNumberDayUse(), new BigDecimal(0), command.getNumberDayRemain(),
+				command.grantDateItemName, command.deadlineDateItemName);
+
+		domain = SpecialLeaveGrantRemainingData.createFromJavaType(
 				specialId,
 				command.getSid(),
 				command.getGrantDate(),
 				command.getDeadlineDate(),
-				command.getExpStatus().intValue(),
+				command.getExpStatus() != null ? command.getExpStatus().intValue() : 0,
 				GrantRemainRegisterType.MANUAL.value,
-				command.getNumberDayGrant().doubleValue(),
+				command.getNumberDayGrant() != null ? command.getNumberDayGrant().doubleValue() : 0,
 				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null ,
-				command.getNumberDayUse().doubleValue(),
+				command.getNumberDayUse() != null ? command.getNumberDayUse().doubleValue() : 0,
 				command.getTimeUse() != null ? command.getTimeUse().intValue() : null,
 				null,
-				command.getNumberDayRemain().doubleValue(),
+				command.getNumberDayRemain() != null ? command.getNumberDayRemain().doubleValue() : 0,
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
 				0.0,
 				17);

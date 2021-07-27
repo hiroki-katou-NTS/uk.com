@@ -316,7 +316,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
 
                 setShared("CMF002_R_PARAMS", params);
                 nts.uk.ui.windows.sub.modal("/view/cmf/002/s/index.xhtml").onClosed(() => {
-                    $('#ex_output_wizard').ntsWizard("goto", 0);
+                    $('#ex_output_wizard').ntsWizard("goto", 1);
                 });
             }).fail(res => {
                 block.clear();
