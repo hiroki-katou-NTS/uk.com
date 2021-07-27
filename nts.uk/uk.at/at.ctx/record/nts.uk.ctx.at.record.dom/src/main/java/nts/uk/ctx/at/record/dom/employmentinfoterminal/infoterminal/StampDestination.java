@@ -13,7 +13,7 @@ public enum StampDestination {
 
 	SUPPORT_ATTENDANCE(2, "応援出勤"),
 
-	LEAV(3, "出勤"),
+	LEAV(3, "退勤"),
 
 	START_OUT(4, "退門"),
 

@@ -22,6 +22,7 @@ module nts.uk.at.view.knr002.a {
             numNormalState: KnockoutObservable<number> = ko.observable(0);
             numOfRegTerminals: KnockoutObservable<number> = ko.observable(0);
             numUntransmitted: KnockoutObservable<number> = ko.observable(0);
+            managementSection: KnockoutObservable<boolean> = ko.observable(false);
             
 
             
@@ -106,7 +107,10 @@ module nts.uk.at.view.knr002.a {
                         vm.numOfRegTerminals(res.numOfRegTerminals);
                         vm.numAbnormalState(res.numAbnormalState);
                         vm.numNormalState(res.numNormalState);
-                        vm.numUntransmitted(res.numUntransmitted)
+                        vm.numUntransmitted(res.numUntransmitted);
+                        vm.managementSection(res.managementSection == 1 ? true : false);
+
+                        console.log(vm.dataSource(), 'xem');
     
                         for (let dto of res.listEmpInfoTerminalDto) {
     
@@ -173,6 +177,7 @@ module nts.uk.at.view.knr002.a {
                 setShared('KNR002G_empInfoTerName', data.empInfoTerName);
                 setShared('KNR002G_modelEmpInfoTer', data.displayModelEmpInfoTer);
                 setShared('KNR002G_workLocationName', data.workLocationName);
+                setShared('KNR002G_managementSection', vm.managementSection());
        
                 modal('/view/knr/002/g/index.xhtml', { title: 'G_Screen', }).onClosed(() => {
                     blockUI.clear();
@@ -202,6 +207,19 @@ module nts.uk.at.view.knr002.a {
                 blockUI.invisible();
                 setShared('knr002-e', data);
                 modal('/view/knr/002/e/index.xhtml', { title: 'E_Screen', }).onClosed(() => {
+                    blockUI.clear();
+                });
+            }
+
+            private openKNR002LDialog() {
+                const vm = this;
+                blockUI.invisible();
+                let data = {
+                    mode: 'bulk',
+                    empInfoTerminalCode: ''
+                };
+                setShared('dataShareL', data);
+                modal('/view/knr/002/l/index.xhtml', { title: 'L_Screen', }).onClosed(() => {
                     blockUI.clear();
                 });
             }
@@ -248,7 +266,7 @@ module nts.uk.at.view.knr002.a {
                             { headerText: getText("KNR002_44"), key: 'signalLastTime', dataType: 'string', width: '180px' },
                             { headerText: getText("KNR002_45"), key: 'displayCurrentState', dataType: 'string', width: '100px' },
                             { headerText: getText("KNR002_46"), key: 'open', dataType: 'string', width: '76px', unbound: true, ntsControl: 'Button7' },
-                            { headerText: getText("KNR002_47"), key: 'open1', dataType: 'string', width: '84px', unbound: true, ntsControl: 'Button8' },
+                            { headerText: getText("KNR002_47"), key: 'open1', dataType: 'string', width: '78px', unbound: true, ntsControl: 'Button8' },
                             { headerText: '', key: 'open2', dataType: 'string', width: '89px', unbound: true, ntsControl: 'Button9' },
                             { headerText: '', key: 'displayFlag', dataType: 'string', width: '133px' },
                             
@@ -290,6 +308,7 @@ module nts.uk.at.view.knr002.a {
             numNormalState: number;
             numOfRegTerminals: number;
             numUntransmitted: number;
+            managementSection: number;
         }
         export interface ListEmpInfoTerminalDto {
             empInfoTerCode: string; 

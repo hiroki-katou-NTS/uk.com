@@ -30,6 +30,17 @@
 	width: 100%;
 }
 
+#A6_9 {
+	position: absolute;
+	width: 230px;
+	left: 145px;
+	top: 30px;
+}
+
+#A7_3 {
+	padding-top: 3px;
+}
+
 .toggle_div {
 	background-color: #F2F2F2;
 	margin-top: 10px;
@@ -69,7 +80,7 @@
 }
 
 .column-2>div.div_line {
-	margin-top: 5px;
+	margin-top: 11px;
     width: 425px;
 	display: flex;
 }
@@ -101,8 +112,28 @@
     padding-top: 5px;
 }
 
-.testcss{
-	color: green;
+#A7_4, #A8_2, #A8_4, #A8_6, #A8_8 {
+	display: flex;
+	align-items: center;
+	margin-right: 50px;
 }
+
+#A7_4 {
+	margin-left: 100px;
+	margin-right: 10px;
+}
+
+#A7_6 {
+	margin-left: 5px;
+}
+
+.column-3 .row {
+	display: flex;
+	margin-left: 30px;
+	margin-bottom: 5px;
+}
+
+
+
 
 

@@ -1,8 +1,9 @@
-module knr002.test { 
+module nts.uk.at.view.knr002.l {
+    
     __viewContext.ready(function() {
-        var screenModel = new knr002.test.viewmodel.ScreenModel(); 
+        var screenModel = new nts.uk.at.view.knr002.l.viewmodel.ScreenModel(); 
         screenModel.startPage().done(() => {
             __viewContext.bind(screenModel);
-        });        
+        });    
     });
 }
