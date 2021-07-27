@@ -101,7 +101,7 @@ module nts.uk.at.view.knr002.a {
                 
                 service.getAll()
                 .done((res: ResponseData) => {
-                    if (res) {
+                    if (!_.isNil(res.listEmpInfoTerminalDto)) {
                         // let start = performance.now();
                         vm.dataSource(res);
                         vm.numOfRegTerminals(res.numOfRegTerminals);
@@ -110,8 +110,6 @@ module nts.uk.at.view.knr002.a {
                         vm.numUntransmitted(res.numUntransmitted);
                         vm.managementSection(res.managementSection == 1 ? true : false);
 
-                        console.log(vm.dataSource(), 'xem');
-    
                         for (let dto of res.listEmpInfoTerminalDto) {
     
                             if (dto.modelEmpInfoTer === 7) {
