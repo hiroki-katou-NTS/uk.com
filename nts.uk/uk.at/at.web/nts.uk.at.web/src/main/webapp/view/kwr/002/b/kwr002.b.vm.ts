@@ -333,7 +333,7 @@ module nts.uk.com.view.kwr002.b {
 
             setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(() => {
-                const duplicateItem = getShared('duplicateItem');
+                const duplicateItem = getShared('annualAttendance');
                 if (duplicateItem) {
                     currentData.code(duplicateItem.code);
                     currentData.name(duplicateItem.name);
