@@ -106,8 +106,6 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                     new FixedManagementDataMonth());
             val substituteHolidayAggrResult = NumberRemainVacationLeaveRangeQuery
                     .getBreakDayOffMngInPeriod(rq, inputRefactor);
-            if (!checkShow(mngAtr, moreSubstituteHolidaysThanHolidays, moreHolidaysThanSubstituteHolidays, substituteHolidayAggrResult))
-                continue;
             val employeeInfo = mapEmployee.get(sid);
             val wplInfo = mapWplInfo.get(employeeInfo.getWorkPlaceId());
 
@@ -116,6 +114,18 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
             val workplaceCode = wplInfo.getWorkplaceCode();
             val workplaceName = wplInfo.getWorkplaceName();
             val hierarchyCode = wplInfo.getHierarchyCode();
+
+            if (!checkShow(mngAtr, moreSubstituteHolidaysThanHolidays, moreHolidaysThanSubstituteHolidays, substituteHolidayAggrResult)){
+                val sub = new DisplayContentsOfSubLeaveConfirmationTable(
+                        employeeCode,
+                        employeeName,
+                        workplaceCode,
+                        workplaceName,
+                        hierarchyCode,
+                        Optional.empty());
+                rs.add(sub);
+                continue;
+            }
             //・繰越数　．日数＝代休の集計結果．繰越日数
             NumberOfSubstituteHolidayCarriedForward numberCarriedForward = null;
             TotalNumberOfSubstituteHolidays totalNumberOfSubstituteHolidays = null;
@@ -179,44 +189,51 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 for (val affComHistItem : affComHistItems.getLstAffComHistItem()) {
                     for (val acctAbsenDetail : substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail()) {
                         val dateOptional = acctAbsenDetail.getDateOccur().getDayoffDate();
-                        //※１
-                        Boolean isExpired = (dateOptional.isPresent() && affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
-                                && (dateOptional.get()).beforeOrEquals(affComHistItem.getDatePeriod().end()));
                         //　・発生取得明細(i)．発生消化区分　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生消化区分
-                        OccurrenceDigClass occurrenceDigClass = acctAbsenDetail.getOccurrentClass();
-                        CompensatoryDayoffDate date = null;
-                        AccumulationAbsenceDetail.NumberConsecuVacation numberConsecuVacation = null;
-                        MngHistDataAtr status = null;
-                        GeneralDate deadline = null;
-                        Optional<Boolean> isExpiredInCurrentMonth = Optional.empty();
-                        //　【発生消化区分:発生の場合】
-                        if (occurrenceDigClass.equals(OccurrenceDigClass.OCCURRENCE)) {
-                            //　・発生取得明細(i)．年月日　　　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
-                            date = acctAbsenDetail.getDateOccur();
-                            //  ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
-                            numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
-                            //  ・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
-                            status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
-                            // ・発生取得明細(i)．期限日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．休暇発生明細．期限日
-                            UnbalanceVacation rss = (UnbalanceVacation) acctAbsenDetail;
-                            deadline = rss.getDeadline(); // TODO PHẢI QA.
-                            //　・発生取得明細(i)．当月で期限切れ　＝※１
-                            isExpiredInCurrentMonth = Optional.of(isExpired);
-                        } else if (occurrenceDigClass.equals(OccurrenceDigClass.DIGESTION)) {
-                            // 　・発生取得明細(i)．年月日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
-                            date = acctAbsenDetail.getDateOccur();
-                            //   ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
-                            numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
-                            //　・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
-                            status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
+                        if(dateOptional.isPresent()
+                                && affComHistItem.getDatePeriod().start().beforeOrEquals(dateOptional.get())
+                                && affComHistItem.getDatePeriod().end().afterOrEquals(dateOptional.get())){
+                            OccurrenceDigClass occurrenceDigClass = acctAbsenDetail.getOccurrentClass();
+                            CompensatoryDayoffDate date = null;
+                            AccumulationAbsenceDetail.NumberConsecuVacation numberConsecuVacation = null;
+                            MngHistDataAtr status = null;
+                            GeneralDate deadline = null;
+                            Optional<Boolean> isExpiredInCurrentMonth = Optional.empty();
+                            //　【発生消化区分:発生の場合】
+                            if (occurrenceDigClass.equals(OccurrenceDigClass.OCCURRENCE)) {
+                                //　・発生取得明細(i)．年月日　　　　　＝ 代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
+                                date = acctAbsenDetail.getDateOccur();
+                                //  ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
+                                numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
+                                //  ・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
+                                status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
+                                // ・発生取得明細(i)．期限日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．休暇発生明細．期限日
+                                UnbalanceVacation rss = (UnbalanceVacation) acctAbsenDetail;
+                                deadline = rss.getDeadline(); // TODO PHẢI QA.
+                                //　・発生取得明細(i)．当月で期限切れ　＝※１
+
+                                isExpiredInCurrentMonth = deadline!=null
+                                        ? Optional.of(
+                                        deadline.afterOrEquals(period.start())
+                                                && deadline.beforeOrEquals(period.end())
+                                ) : Optional.empty();
+
+                            } else if (occurrenceDigClass.equals(OccurrenceDigClass.DIGESTION)) {
+                                // 　・発生取得明細(i)．年月日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．年月日
+                                date = acctAbsenDetail.getDateOccur();
+                                //   ・発生取得明細(i)．発生使用数．日数＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．発生数．日数
+                                numberConsecuVacation = acctAbsenDetail.getNumberOccurren();
+                                //　・発生取得明細(i)．状態　　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．状態
+                                status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
+                            }
+                            occurrenceAcquisitionDetailsList.add(new OccurrenceAcquisitionDetails(
+                                    date,
+                                    status,
+                                    numberConsecuVacation,
+                                    occurrenceDigClass,
+                                    isExpiredInCurrentMonth,
+                                    deadline));
                         }
-                        occurrenceAcquisitionDetailsList.add(new OccurrenceAcquisitionDetails(
-                                date,
-                                status,
-                                numberConsecuVacation,
-                                occurrenceDigClass,
-                                isExpiredInCurrentMonth,
-                                deadline));
                     }
                 }
             }
