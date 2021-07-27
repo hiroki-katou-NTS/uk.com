@@ -33,6 +33,11 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
     private static final String USER_GUIDE_COL = "J";
     private static final String EXPIRATION_COL = "Q";
 
+    private static final String ROUND_OPENING_BRACKET = "(";
+    private static final String ROUND_CLOSING_BRACKET = ")";
+    private static final String SQUARE_OPENING_BRACKET = "[";
+    private static final String SQUARE_CLOSING_BRACKET = "]";
+
     private static final int HEADER_ROW = 1;
     private static final int COLUMN_ER = 0;
     private static final int COLUMN_EMP = 1;
@@ -132,13 +137,13 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                 if (dataSource.getPageBreak() == 1) {
                     if (contents.indexOf(content) != 0) {
                         cells.insertRow(row);
+                        sheet.getHorizontalPageBreaks().add(row);
                         int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
                         try {
                             cells.copyRows(cells, lastWkpRow, row, 1);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        sheet.getHorizontalPageBreaks().add(row);
                         wkpIndexes.add(row);
                         row++;
                     } else {
@@ -185,13 +190,14 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row, col + i - 1).setStyle(style);
                                     } else {
-                                        cells.get(row, col + i).setValue(this.formatDate(
+                                        String value = this.formatDate(
                                                 OccurrenceDigClass.OCCURRENCE,
                                                 linkingInfo.getOccurrenceDate(),
                                                 linkingInfo.getUseDateNumber(),
                                                 dataSource.getHowToPrintDate(),
                                                 content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                        ));
+                                        );
+                                        this.setValue(cells, row, col + i, value);
                                     }
                                     if (linkingInfo.getUseDate().equals(prevLinkingInfo.getUseDate())
                                             && linkingInfo.getUseDateNumber() == 0.5
@@ -201,36 +207,61 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                         style.setHorizontalAlignment(HorizontalAlignment.Center);
                                         cells.get(row + 1, col + i - 1).setStyle(style);
                                     } else {
-                                        cells.get(row + 1, col + i).setValue(this.formatDate(
+                                        String value = this.formatDate(
                                                 OccurrenceDigClass.DIGESTION,
                                                 linkingInfo.getUseDate(),
                                                 linkingInfo.getUseDateNumber(),
                                                 dataSource.getHowToPrintDate(),
                                                 content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                        ));
+                                        );
+                                        this.setValue(cells, row + 1, col + i, value);
                                     }
                                 } else {
-                                    cells.get(row, col + i).setValue(this.formatDate(
+                                    String value = this.formatDate(
                                             OccurrenceDigClass.OCCURRENCE,
                                             linkingInfo.getOccurrenceDate(),
                                             linkingInfo.getUseDateNumber(),
                                             dataSource.getHowToPrintDate(),
                                             content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                    ));
-                                    cells.get(row + 1, col + i).setValue(this.formatDate(
+                                    );
+                                    this.setValue(cells, row, col + i, value);
+
+                                    String value2 = this.formatDate(
                                             OccurrenceDigClass.DIGESTION,
                                             linkingInfo.getUseDate(),
                                             linkingInfo.getUseDateNumber(),
                                             dataSource.getHowToPrintDate(),
                                             content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                    ));
+                                    );
+                                    this.setValue(cells, row + 1, col + i, value2);
                                 }
                             } else {
                                 break;
                             }
                         }
                         row += 2;
-                        this.checkPageBreak(sheet, cells, wkpIndexes, empIndexes, row, count);
+                        if (count + 2 > MAX_ROW_PER_PAGE) {
+                            // add page break at the end of page
+                            int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
+                            int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
+                            if (lastEmpRow == lastWkpRow + 1) {
+                                sheet.getHorizontalPageBreaks().add(lastWkpRow);
+                            } else {
+                                cells.insertRow(lastEmpRow);
+                                sheet.getHorizontalPageBreaks().add(lastEmpRow); // always add page break before insert row
+                                try {
+                                    cells.copyRows(cells, lastWkpRow, lastEmpRow, 1);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                wkpIndexes.add(lastEmpRow);
+                                empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
+                                row++;
+                            }
+                            count = row - wkpIndexes.get(wkpIndexes.size() - 1);
+                        } else {
+                            count += 2;
+                        }
                     }
                 }
 
@@ -259,24 +290,53 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                         int idx = loop * 10 + i;
                         if (idx < size) {
                             OccurrenceAcquisitionDetail acquisitionDetail = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().get(idx);
-                            if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE)
-                                cells.get(row, col + i).setValue(this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate()));
-                            else
-                                cells.get(row + 1, col + i).setValue(this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate()));
+                            if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
+                                String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
+                                this.setValue(cells, row, col + i, value);
+                            } else {
+                                String value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getHowToPrintDate());
+                                this.setValue(cells, row + 1, col + i, value);
+                            }
                         } else {
                             break;
                         }
                     }
                     row += 2;
-                    this.checkPageBreak(sheet, cells, wkpIndexes, empIndexes, row, count);
+                    if (count + 2 > MAX_ROW_PER_PAGE) {
+                        // add page break at the end of page
+                        int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
+                        int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
+                        if (lastEmpRow == lastWkpRow + 1) {
+                            sheet.getHorizontalPageBreaks().add(lastWkpRow);
+                        } else {
+                            cells.insertRow(lastEmpRow);
+                            try {
+                                cells.copyRows(cells, lastWkpRow, lastEmpRow, 1);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            sheet.getHorizontalPageBreaks().add(lastEmpRow); // always add page break before insert row
+                            wkpIndexes.add(lastEmpRow);
+                            empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
+                            row++;
+                        }
+                        count = row - wkpIndexes.get(wkpIndexes.size() - 1);
+                    } else {
+                        count += 2;
+                    }
                 }
             }
         }
         if (!dataSource.isLinking()) {
             cells.deleteColumn(7);
         }
+
         // remove template rows
         cells.deleteRows(row, TEMPLATE_ROWS);
+
+        // set print area
+        PageSetup pageSetup = sheet.getPageSetup();
+        pageSetup.setPrintArea("A1:" + (dataSource.isLinking() ? "S" : "R") + row);
     }
 
     private void printCommonContent(Cells cells, int row, HolidayConfirmationTableContent content) {
@@ -314,26 +374,36 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
      */
     private String formatDate(OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetail> occurrenceAcquisitionDetails) {
         StringBuilder formattedDate = new StringBuilder();
+        int spaceLeft = 2, spaceRight = 3;
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
         } else {
-            formattedDate.append(date.toString());
+            formattedDate.append(date.toString("yy/MM/dd"));
         }
         if (usedNumber != 1.0) {
             formattedDate.append(TextResource.localize("KDR004_120"));
+            spaceRight += -1;
         }
-        occurrenceAcquisitionDetails.stream()
+        Optional<OccurrenceAcquisitionDetail> occurrenceAcquisitionDetail = occurrenceAcquisitionDetails.stream()
                 .filter(o -> o.getOccurrenceDigCls() == cls && o.getDate().getDayoffDate().isPresent() && o.getDate().getDayoffDate().get().equals(date))
-                .findFirst().ifPresent(detail -> {
+                .findFirst();
+        if (occurrenceAcquisitionDetail.isPresent()) {
+            OccurrenceAcquisitionDetail detail = occurrenceAcquisitionDetail.get();
             if (detail.getStatus() == MngDataStatus.SCHEDULE || detail.getStatus() == MngDataStatus.NOTREFLECTAPP) {
-                formattedDate.insert(0, "(");
-                formattedDate.append(")");
+                formattedDate.insert(0, ROUND_OPENING_BRACKET);
+                formattedDate.append(ROUND_CLOSING_BRACKET);
+                spaceLeft += -1;
+                spaceRight += -1;
             }
             if (detail.getExpiringThisMonth().isPresent() && detail.getExpiringThisMonth().get()) {
-                formattedDate.insert(0, "[");
-                formattedDate.append("]");
+                formattedDate.insert(0, SQUARE_OPENING_BRACKET);
+                formattedDate.append(SQUARE_CLOSING_BRACKET);
+                spaceLeft += -1;
+                spaceRight += -1;
             }
-        });
+        }
+        if (spaceLeft > 0) formattedDate.insert(0, spaceLeft == 1 ? " " : "  ");
+        if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
         return formattedDate.toString();
     }
 
@@ -345,6 +415,7 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
      */
     private String formatNoLinkedDate(OccurrenceAcquisitionDetail detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
+        int spaceLeft = 2, spaceRight = 3;
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
@@ -352,39 +423,35 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         }
         if (detail.getOccurrencesUseNumber() != 1.0) {
             formattedDate.append(TextResource.localize("KDR004_120"));
+            spaceRight += -1;
         }
         if (detail.getStatus() == MngDataStatus.SCHEDULE || detail.getStatus() == MngDataStatus.NOTREFLECTAPP) {
-            formattedDate.insert(0, "(");
-            formattedDate.append(")");
+            formattedDate.insert(0, ROUND_OPENING_BRACKET);
+            formattedDate.append(ROUND_CLOSING_BRACKET);
+            spaceLeft += -1;
+            spaceRight += -1;
         }
         if (detail.getExpiringThisMonth().isPresent() && detail.getExpiringThisMonth().get()) {
-            formattedDate.insert(0, "[");
-            formattedDate.append("]");
+            formattedDate.insert(0, SQUARE_OPENING_BRACKET);
+            formattedDate.append(SQUARE_CLOSING_BRACKET);
+            spaceLeft += -1;
+            spaceRight += -1;
         }
+        if (spaceLeft > 0) formattedDate.insert(0, spaceLeft == 1 ? " " : "  ");
+        if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
         return formattedDate.toString();
     }
 
-    private void checkPageBreak(Worksheet sheet, Cells cells, List<Integer> wkpIndexes, List<Integer> empIndexes, int row, int count) {
-        if (count + 2 > MAX_ROW_PER_PAGE) {
-            int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
-            int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-            if (lastEmpRow == lastWkpRow + 1) {
-                sheet.getHorizontalPageBreaks().add(lastWkpRow);
-            } else {
-                sheet.getHorizontalPageBreaks().add(lastEmpRow);
-                cells.insertRow(lastEmpRow);
-                try {
-                    cells.copyRows(cells, lastWkpRow, lastEmpRow, 1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                wkpIndexes.add(lastEmpRow);
-                empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
-                row++;
-            }
-            count = row - wkpIndexes.get(wkpIndexes.size() - 1);
-        } else {
-            count += 2;
+    private void setValue(Cells cells, int row, int col, String value) {
+        cells.get(row, col).setValue(value);
+
+        if (!value.contains(ROUND_OPENING_BRACKET)
+                && !value.contains(SQUARE_OPENING_BRACKET)
+                && !value.contains(TextResource.localize("KDR004_120"))) {
+            Style style = cells.get(row, col).getStyle();
+            style.setHorizontalAlignment(TextAlignmentType.CENTER);
+            cells.get(row, col).setStyle(style);
         }
+
     }
 }

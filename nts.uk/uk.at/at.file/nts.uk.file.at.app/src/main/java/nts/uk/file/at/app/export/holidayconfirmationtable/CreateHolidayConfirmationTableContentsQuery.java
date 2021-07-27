@@ -122,6 +122,8 @@ public class CreateHolidayConfirmationTableContentsQuery {
                     if (absRecRemain.getCarryoverDay().v() + absRecRemain.getOccurrenceDay().v() > absRecRemain.getDayUse().v()) {
                         output = true;
                     }
+                } else {
+                    output = true;
                 }
 
                 if (output) {
