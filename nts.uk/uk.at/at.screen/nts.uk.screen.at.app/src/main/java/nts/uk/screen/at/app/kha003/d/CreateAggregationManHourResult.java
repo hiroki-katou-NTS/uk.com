@@ -46,7 +46,7 @@ public class CreateAggregationManHourResult {
         )).orElse(null);
 
         val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
-        if (manHourOutputContent == null || workDetailList == null)
+        if (manHourOutputContent == null || CollectionUtil.isEmpty(workDetailList) || masterNameInfo == null)
             throw new BusinessException("Msg_2171");
 
         // Convert domain ManHourSummaryTableOutputContent to dto
