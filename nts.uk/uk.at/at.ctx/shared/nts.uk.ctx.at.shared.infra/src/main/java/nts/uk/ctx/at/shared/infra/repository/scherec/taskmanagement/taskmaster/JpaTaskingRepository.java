@@ -256,7 +256,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
 
     private static TaskInfo toTask(NtsResultSet.NtsResultRecord rec) {
         return new TaskInfo(
-                rec.getString("CD"),
+                rec.getString("CD") != null ? rec.getString("CD").trim() : rec.getString("CD"),
                 rec.getInt("FRAME_NO"),
                 rec.getString("NAME")
         );

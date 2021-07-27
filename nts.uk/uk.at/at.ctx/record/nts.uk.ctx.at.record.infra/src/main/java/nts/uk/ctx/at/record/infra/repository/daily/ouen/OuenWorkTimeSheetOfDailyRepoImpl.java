@@ -296,11 +296,11 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 				rec.getInt("SUP_NO"),
 				rec.getString("WKP_ID"),
 				rec.getString("WORKPLACE_ID"),
-				rec.getString("WORK_CD1"),
-				rec.getString("WORK_CD2"),
-				rec.getString("WORK_CD3"),
-				rec.getString("WORK_CD4"),
-				rec.getString("WORK_CD5"),
+				rec.getString("WORK_CD1") != null ? rec.getString("WORK_CD1").trim() : rec.getString("WORK_CD1"),
+				rec.getString("WORK_CD2") != null ? rec.getString("WORK_CD2").trim() : rec.getString("WORK_CD2"),
+				rec.getString("WORK_CD3") != null ? rec.getString("WORK_CD3").trim() : rec.getString("WORK_CD3"),
+				rec.getString("WORK_CD4") != null ? rec.getString("WORK_CD4").trim() : rec.getString("WORK_CD4"),
+				rec.getString("WORK_CD5") != null ? rec.getString("WORK_CD5").trim() : rec.getString("WORK_CD5"),
 				rec.getInt("TOTAL_TIME"));
 	}
 
