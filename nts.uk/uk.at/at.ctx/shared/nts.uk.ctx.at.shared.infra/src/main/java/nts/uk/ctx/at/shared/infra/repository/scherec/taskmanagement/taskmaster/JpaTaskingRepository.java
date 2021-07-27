@@ -245,6 +245,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
 
     @Override
     public List<TaskInfo> getListTask(String cid, Integer taskFrameNo, List<String> codes) {
+        if (codes.isEmpty()) return new ArrayList<>();
         String sql = "SELECT * FROM KSRMT_TASK_MASTER WHERE CID = @cid AND FRAME_NO = @taskFrameNo AND CD IN @codes";
         return new NtsStatement(sql, this.jdbcProxy())
                 .paramString("cid", cid)
