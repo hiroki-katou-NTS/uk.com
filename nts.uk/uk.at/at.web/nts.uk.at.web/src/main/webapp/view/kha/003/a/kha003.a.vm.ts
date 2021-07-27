@@ -327,7 +327,7 @@ module nts.uk.at.kha003.a {
         clickRegistrationButton() {
             const vm = this;
             let summaryItemsParams: any = [];//ko.toJS(vm.summaryItems);
-            vm.summaryItems().forEach(function(item:any, index: any) {
+            vm.summaryItems().forEach(function (item: any, index: any) {
                 summaryItemsParams.push(
                     {
                         hierarchicalOrder: (index + 1),
@@ -566,29 +566,29 @@ module nts.uk.at.kha003.a {
                 type: null,
                 name: null
             }
-            vm.summaryItems().forEach((i: any) => {
-                if (i.summaryItemType == 0) {
+            vm.summaryItems().forEach((item: any, index) => {
+                if (index == 0) {
                     c21 = {
-                        type: i.summaryItemType,
-                        name: i.itemTypeName
+                        type: item.summaryItemType,
+                        name: item.itemTypeName
                     };
                 }
-                if (i.summaryItemType == 1) {
+                if (index == 1) {
                     c31 = {
-                        type: i.summaryItemType,
-                        name: i.itemTypeName
+                        type: item.summaryItemType,
+                        name: item.itemTypeName
                     };
                 }
-                if (i.summaryItemType == 2) {
+                if (index == 2) {
                     c41 = {
-                        type: i.summaryItemType,
-                        name: i.itemTypeName
+                        type: item.summaryItemType,
+                        name: item.itemTypeName
                     };
                 }
-                if (i.summaryItemType == 3) {
+                if (index == 3) {
                     c51 = {
-                        type: i.summaryItemType,
-                        name: i.itemTypeName
+                        type: item.summaryItemType,
+                        name: item.itemTypeName
                     };
                 }
             });
