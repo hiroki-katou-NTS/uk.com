@@ -27,13 +27,13 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="new" data-bind="click: $vm.createNew" tabindex="1">#{i18n.getText('CAS009_2')}</button>
+					<button id="new" data-bind="click: $vm.createNew">#{i18n.getText('CAS009_2')}</button>
 					<button id="registration"
 						data-bind="click: $vm.save, enable : $root.errors.isEmpty"
-						class="proceed" tabindex="2">#{i18n.getText('CAS009_3')}</button>
+						class="proceed">#{i18n.getText('CAS009_3')}</button>
 					<button id="delete"
 						data-bind="click: $vm.remove, enable: !!ko.toJS($vm.selectedRole.roleId)"
-						class="danger" tabindex="3">#{i18n.getText('CAS009_4')}</button>
+						class="danger">#{i18n.getText('CAS009_4')}</button>
 					<!--<button id="reference"-->
 						<!--data-bind="enable: $vm.enableDetail, click: $vm.openDialog"-->
 						<!--tabindex="4">#{i18n.getText('CAS009_6')}</button>-->
@@ -62,8 +62,7 @@
 									}">#{i18n.getText('CAS009_5')}</div>
 							<input data-bind="
 									attr: {
-										id: 'roleCode',
-										tabindex: 5
+										id: 'roleCode'
 									},
 									ntsTextEditor: {
 										 name: '#[CAS009_6]',
@@ -76,8 +75,7 @@
 									 hasFocus: roleCodeFocus" />
 							<input data-bind="
 									attr: {
-										id: 'roleName',
-										tabindex: 6
+										id: 'roleName'
 									},
 									ntsTextEditor: {
 										 name: '#[CAS009_7]',
@@ -94,7 +92,6 @@
 							<com:ko-if bind="assignAtr() == 1">
 								<div style="width: 215px"
 										data-bind="attr: {
-												tabindex: 7,
 												id: 'combo-box'
 											},
 											ntsComboBox: {
@@ -119,7 +116,7 @@
 														require: false,
 														text: 'CAS009_14'
 													},
-													tabindex: 8,
+													tabindex: 0,
 													roleId: roleId,
 													roleType: 8,
 													changeData: permisions,

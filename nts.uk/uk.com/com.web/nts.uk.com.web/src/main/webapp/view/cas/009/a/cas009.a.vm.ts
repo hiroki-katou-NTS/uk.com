@@ -19,7 +19,7 @@ module nts.uk.com.view.cas009.a.viewmodel {
             roleType: 8,
             multiple: false,
             rows: 15,
-            tabindex: 4
+            tabindex: 0
         });
 
         created() {

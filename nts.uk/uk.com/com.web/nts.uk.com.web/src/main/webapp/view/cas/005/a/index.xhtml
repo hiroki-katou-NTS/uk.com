@@ -25,11 +25,11 @@
 			<div id="functions-area">
 				<div class="container">
 					<!-- A1_1 -->
-					<button tabindex="1" data-bind="click: createNew">#{i18n.getText('CAS005_2')}</button>
+					<button data-bind="click: createNew">#{i18n.getText('CAS005_2')}</button>
 					<!-- A1_2 -->
-					<button tabindex="2" class="proceed" data-bind="click: save, enable : $root.errors.isEmpty">#{i18n.getText('CAS005_3')}</button>
+					<button class="proceed" data-bind="click: save, enable : $root.errors.isEmpty">#{i18n.getText('CAS005_3')}</button>
 					<!-- A1_3 -->
-					<button tabindex="3" class="danger" data-bind="click: remove, enable: !!ko.toJS($vm.selectedRole.roleId)">#{i18n.getText('CAS005_4')}</button>
+					<button class="danger" data-bind="click: remove, enable: !!ko.toJS($vm.selectedRole.roleId)">#{i18n.getText('CAS005_4')}</button>
 				</div>
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
@@ -51,8 +51,7 @@
 									}">#{i18n.getText('CAS005_5')}</div>
 							<input data-bind="
 									attr: {
-										id: 'roleCode',
-										tabindex: 5
+										id: 'roleCode'
 									},
 									ntsTextEditor: {
 										 name: '#[CAS005_6]',
@@ -65,8 +64,7 @@
 									 hasFocus: roleCodeFocus" />
 							<input data-bind="
 									attr: {
-										id: 'roleName',
-										tabindex: 6
+										id: 'roleName'
 									},
 									ntsTextEditor: {
 										 name: '#[CAS005_7]',
@@ -83,7 +81,6 @@
 							<com:ko-if bind="assignAtr() == 1">
 								<div style="width: 215px"
 										data-bind="attr: {
-												tabindex: 7,
 												id: 'A4_3'
 											},
 											ntsComboBox: {
@@ -106,7 +103,6 @@
 							<com:ko-if bind="assignAtr() == 0">
 								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS005_14')}</div>
 								<div data-bind="attr: {
-												tabindex: 8,
 												id: 'A5_2'
 											},
 											ntsComboBox: {
@@ -127,7 +123,7 @@
 							</com:ko-if>
 							<com:ko-if bind="assignAtr() == 1">
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CAS005_16')}</div>
-								<div id="A6_2" tabindex="9" style="display: inline-block;"
+								<div id="A6_2" style="display: inline-block;"
 									 data-bind="ntsSwitchButton: {
 													name: '#[CAS005_10]',
 													options: [
