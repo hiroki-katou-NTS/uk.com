@@ -39,8 +39,6 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtS
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -183,18 +181,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString()
 						: null,
-				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent()) ? stamp.getImprintReflectionStatus().getReflectedDate().get() : null, // REFLECTED_INTO_DATE
-				
-				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD1() != null) // TASK_CD1
-					    ? stamp.getRefActualResults().getWork().get().getWorkCD1().v(): null,
-				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD2().isPresent())// TASK_CD2
-						? stamp.getRefActualResults().getWork().get().getWorkCD2().get().v() : null,
-				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD3().isPresent())// TASK_CD3
-						? stamp.getRefActualResults().getWork().get().getWorkCD3().get().v() : null,
-				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD4().isPresent())// TASK_CD4
-						? stamp.getRefActualResults().getWork().get().getWorkCD4().get().v() : null,
-				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWork().isPresent() && stamp.getRefActualResults().getWork().get().getWorkCD5().isPresent())// TASK_CD5
-					    ? stamp.getRefActualResults().getWork().get().getWorkCD5().get().v() : null
+				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent()) ? stamp.getImprintReflectionStatus().getReflectedDate().get() : null // REFLECTED_INTO_DATE
 		);	
 		
 		
@@ -223,16 +210,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
-		WorkGroup workGroup = WorkGroup.create(
-				new WorkCode(entity.taskCd1),
-				Optional.of(new WorkCode(entity.taskCd2)), 
-				Optional.of(new WorkCode(entity.taskCd3)), 
-				Optional.of(new WorkCode(entity.taskCd4)), 
-				Optional.of(new WorkCode(entity.taskCd5)));
-		
 		val refectActualResult = new RefectActualResult(workInformationStamp,
 				entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-				overtime , workGroup);
+				overtime);
 		
 		val imprintReflectionState = new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate));
 		
@@ -253,13 +233,6 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
-		WorkGroup workGroup = WorkGroup.create(
-				new WorkCode(entity.taskCd1),
-				Optional.of(new WorkCode(entity.taskCd2)), 
-				Optional.of(new WorkCode(entity.taskCd3)), 
-				Optional.of(new WorkCode(entity.taskCd4)), 
-				Optional.of(new WorkCode(entity.taskCd5)));
-		
 		Stamp stamp = new Stamp(new ContractCode(entity.pk.contractCode), new StampNumber(entity.pk.cardNumber),
 				entity.pk.stampDateTime,
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
@@ -269,8 +242,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						ChangeCalArt.valueOf(entity.changeCalArt)),
 				new RefectActualResult(workInformationStamp,
 						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-						entity.overTime == null ? null : new OvertimeDeclaration(new AttendanceTime(entity.overTime),new AttendanceTime(entity.lateNightOverTime)),
-						workGroup),
+						entity.overTime == null ? null : new OvertimeDeclaration(new AttendanceTime(entity.overTime),new AttendanceTime(entity.lateNightOverTime))),
 				new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate)),
 				Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null ) ? null
 						: new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue())), 
@@ -288,13 +260,6 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.stampPlace == null ? Optional.empty() : Optional.of(new WorkLocationCD(entity.stampPlace)), 
 				entity.suportCard == null ? Optional.empty() : Optional.of(new SupportCardNumber(entity.suportCard)));
 		
-		WorkGroup workGroup = WorkGroup.create(
-				new WorkCode(entity.taskCd1),
-				Optional.of(new WorkCode(entity.taskCd2)), 
-				Optional.of(new WorkCode(entity.taskCd3)), 
-				Optional.of(new WorkCode(entity.taskCd4)), 
-				Optional.of(new WorkCode(entity.taskCd5)));
-		
 		Stamp stamp =  new Stamp(contractCd, new StampNumber(entity.pk.cardNumber), entity.pk.stampDateTime,
 					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 					StampType.getStampType(entity.changeHalfDay,
@@ -304,8 +269,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 
 					new RefectActualResult(workInformationStamp,
 							entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
-							entity.overTime == null ? null : new OvertimeDeclaration(new AttendanceTime(entity.overTime),new AttendanceTime(entity.lateNightOverTime)),
-							workGroup),
+							entity.overTime == null ? null : new OvertimeDeclaration(new AttendanceTime(entity.overTime),new AttendanceTime(entity.lateNightOverTime))),
 					new ImprintReflectionState(entity.reflectedAtr, Optional.ofNullable(entity.reflectedIntoDate)),
 					Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null) ? null :
 						new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue())),

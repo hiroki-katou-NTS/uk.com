@@ -47,7 +47,7 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
-								new AttendanceTime(0)), null),
+								new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty()
@@ -74,7 +74,7 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
-								new AttendanceTime(2)), null),
+								new AttendanceTime(2))),
 				new ImprintReflectionState(true, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty());
@@ -100,7 +100,7 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
-								new AttendanceTime(2)), null),
+								new AttendanceTime(2))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty()
@@ -117,7 +117,7 @@ public class StampHelper {
 						Optional.of(new WorkLocationCD("workLocationCD")), 
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
-						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0)), null),
+						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty())
@@ -130,7 +130,7 @@ public class StampHelper {
 						Optional.of(new WorkLocationCD("workLocationCD")), 
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
-						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0)), null),
+						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty())
@@ -162,8 +162,7 @@ public class StampHelper {
 				Optional.of(new WorkLocationCD("workLocationCD")), 
 						Optional.of(new SupportCardNumber(9999))),
 				new WorkTimeCode("workTimeCode"),
-				getOvertimeDeclarationDefault(),
-				WorkGroup.create("workCd1", "workCd2", "workCd3", "workCd4", "workCd5"));
+				getOvertimeDeclarationDefault());
 	}
 	
 	public static Relieve getRelieveDefault() {
