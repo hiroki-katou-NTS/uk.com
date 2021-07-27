@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.domservice.AprrovalWorkPlaceDomService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 承認権限を持っている社員一覧を取得
@@ -61,7 +62,8 @@ public class ScreenQueryApprovalAuthorityEmp {
 		List<String> sids = AprrovalWorkPlaceDomService.get(
 				require,
 				workPlaceIds,
-				date);
+				date,
+				AppContexts.user().companyId());
 		
 		return sids;
 	}

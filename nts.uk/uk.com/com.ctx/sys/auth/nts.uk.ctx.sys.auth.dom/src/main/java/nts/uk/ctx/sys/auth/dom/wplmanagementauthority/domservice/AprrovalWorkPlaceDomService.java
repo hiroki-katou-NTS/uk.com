@@ -8,9 +8,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.permission.roleId.RoleIdWorkDomService;
 import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.shr.com.context.AppContexts;
 
 
 /**
@@ -31,9 +31,9 @@ public class AprrovalWorkPlaceDomService {
 	public static List<String> get(
 			Require require,
 			List<String> workPlaceIds,
-			GeneralDate date
+			GeneralDate date,
+			String cid
 			) {
-		String cid = AppContexts.user().companyId();
 		
 		// 取得する(職場ID, 期間)
 		List<String> sids = require.getSids(
@@ -53,7 +53,11 @@ public class AprrovalWorkPlaceDomService {
 		
 		return roles.entrySet()
 					.stream()
-					.filter(x -> roleList.stream().filter(y -> y.getRoleId().equals(x.getValue())).findFirst().isPresent())
+					.filter(x -> 
+						roleList.stream()
+								.filter(y -> y.getRoleId().equals(x.getValue()))
+								.findFirst()
+								.isPresent())
 					.map(x -> x.getKey())
 					.collect(Collectors.toList());
 	}

@@ -38,7 +38,6 @@ public class RoleIdWorkDomService {
 												x -> require.getUserIDByEmpID(x).orElse("")))
 										.entrySet()
 										.stream()
-										.filter(x -> x.getValue() != "")
 										.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		
 		//ユーザIDからロールセットを取得する：　Map<社員ID、ロールID> 
