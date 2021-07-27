@@ -49,7 +49,7 @@ public class CreateAggregationManHourResult {
         if (!optManHour.isPresent()) return null;
 
         // 4. 工数集計表出力内容を作成する(年月日, 年月, 作業詳細データ, マスタ名称情報)
-        val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
+        val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailFilters, masterNameInfo);
 
         // Convert domain ManHourSummaryTableOutputContent to dto
         val dispFormat = optManHour.get().getDetailFormatSetting().getDisplayFormat();

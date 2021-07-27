@@ -101,14 +101,14 @@ public class MasterNameInformation {
         val task4Codes = task4List.stream().map(TaskImport::getCode).collect(Collectors.toList());
         val task5Codes = task5List.stream().map(TaskImport::getCode).collect(Collectors.toList());
 
-        return workDetailList.stream().filter(x -> (!empIds.isEmpty() && empIds.contains(x.getEmployeeId()))
-                || (!affWkplIds.isEmpty() && affWkplIds.contains(x.getAffWorkplaceId()))
-                || (!wkplIds.isEmpty() && wkplIds.contains(x.getWorkplaceId()))
-                || (!task1Codes.isEmpty() && task1Codes.contains(x.getWorkCode1()))
-                || (!task2Codes.isEmpty() && task2Codes.contains(x.getWorkCode2()))
-                || (!task3Codes.isEmpty() && task3Codes.contains(x.getWorkCode3()))
-                || (!task4Codes.isEmpty() && task4Codes.contains(x.getWorkCode4()))
-                || (!task5Codes.isEmpty() && task5Codes.contains(x.getWorkCode5())))
+        return workDetailList.stream().filter(x -> (empIds.isEmpty() || empIds.contains(x.getEmployeeId()))
+                && (affWkplIds.isEmpty() || affWkplIds.contains(x.getAffWorkplaceId()))
+                && (wkplIds.isEmpty() || wkplIds.contains(x.getWorkplaceId()))
+                && (task1Codes.isEmpty() || task1Codes.contains(x.getWorkCode1()))
+                && (task2Codes.isEmpty() || task2Codes.contains(x.getWorkCode2()))
+                && (task3Codes.isEmpty() || task3Codes.contains(x.getWorkCode3()))
+                && (task4Codes.isEmpty() || task4Codes.contains(x.getWorkCode4()))
+                && (task5Codes.isEmpty() || task5Codes.contains(x.getWorkCode5())))
                 .collect(Collectors.toList());
     }
 
