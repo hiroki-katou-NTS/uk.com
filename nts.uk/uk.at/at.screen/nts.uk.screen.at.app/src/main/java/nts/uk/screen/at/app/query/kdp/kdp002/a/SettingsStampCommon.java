@@ -62,9 +62,8 @@ public class SettingsStampCommon {
 		
 		Optional<ManageEntryExit> manageEntryExitOpt = manageEntryExitRepo.findByID(cid);
 		
-		result.setManageEntryExit(manageEntryExitOpt.map(m -> m.getUseClassification().value == 1 ? true : false).orElse(false));
+		result.setEntranceExitUse(manageEntryExitOpt.map(m -> m.getUseClassification().value == 1 ? true : false).orElse(false));
 		
 		return result;
 	}
-	
 }
