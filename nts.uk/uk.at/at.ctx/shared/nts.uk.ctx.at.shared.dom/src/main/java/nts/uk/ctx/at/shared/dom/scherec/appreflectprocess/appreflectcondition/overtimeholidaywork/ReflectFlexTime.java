@@ -23,15 +23,11 @@ public class ReflectFlexTime {
 		}
 
 		// 事前フレックス時間を反映する
-		if (dailyApp.getAttendanceTimeOfDailyPerformance().isPresent()
-				&& dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-			dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime()
-					.setBeforeApplicationTime(new AttendanceTime(flexOverTime.v()));
+		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime()
+				.setBeforeApplicationTime(new AttendanceTime(flexOverTime.v()));
 
-			UpdateEditSttCreateBeforeAppReflect.update(dailyApp, Arrays.asList(555));
-		}
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, Arrays.asList(555));
 
 		return dailyApp;
 	}
@@ -41,15 +37,11 @@ public class ReflectFlexTime {
 			AttendanceTimeOfExistMinus flexOverTime) {
 
 		// フレックス時間を反映する
-		if (dailyApp.getAttendanceTimeOfDailyPerformance().isPresent()
-				&& dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
-			dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
-					.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime()
-					.replaceTimeAndCalcDiv(flexOverTime);
+		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
+				.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getFlexTime().getFlexTime()
+				.replaceTimeAndCalcDiv(flexOverTime);
 
-			UpdateEditSttCreateBeforeAppReflect.update(dailyApp, Arrays.asList(556));
-		}
+		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, Arrays.asList(556));
 		return dailyApp;
 	}
 }
