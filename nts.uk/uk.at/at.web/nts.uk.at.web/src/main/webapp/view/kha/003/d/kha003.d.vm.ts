@@ -484,7 +484,7 @@ module nts.uk.at.kha003.d {
                     targetValue = (value / 60).toLocaleString('en-US', {maximumFractionDigits: 2})
                     break;
                 case 1:
-                    let spilt: any = (value / 60).toFixed(2).toString().split('.');
+                    let spilt: any = (value / 60).toString().split('.');
                     let integerPart = spilt[0];
                     let decimalPart: any = spilt[1] * 60;
                     let remainValue = integerPart - decimalPart;
@@ -633,17 +633,29 @@ module nts.uk.at.kha003.d {
             switch (type) {
                 case 0:
                     selectedCodes.forEach((data: any) => {
-                        array.push(masterInfo.affWorkplaceInfoList.find((x: any) => x.workplaceCode === data))
+                        array.push(
+                        masterInfo.affWorkplaceInfoList.filter(function (el:any) {
+                            return el.workplaceCode === data
+                        })[0]
+                        )
                     });
                     break;
                 case 1:
                     selectedCodes.forEach((data: any) => {
-                        array.push(masterInfo.workPlaceInfoList.find((x: any) => x.workplaceCode === data))
+                        array.push(
+                            masterInfo.workPlaceInfoList.filter(function (el:any) {
+                                return el.workplaceCode === data
+                            })[0]
+                        )
                     });
                     break;
                 case 2:
                     selectedCodes.forEach((data: any) => {
-                        array.push(masterInfo.employeeInfoList.find((x: any) => x.employeeCode === data))
+                        array.push(
+                            masterInfo.employeeInfoList.filter(function (el:any) {
+                                return el.employeeCode === data
+                            })[0]
+                        )
                     });
                     break;
                 case 3:
@@ -673,7 +685,9 @@ module nts.uk.at.kha003.d {
         mapTask1To5(selectedCodes: any, taskList: any) {
             let array: any = [];
             selectedCodes.forEach((data: any) => {
-                array.push(taskList.find((x: any) => x.code === data))
+                array.push(taskList.workPlaceInfoList.filter(function (el:any) {
+                    return el.code === data
+                })[0])
             });
             return array;
         }
