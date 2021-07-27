@@ -153,15 +153,15 @@ public class KSU002Finder {
 		Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> workingTimeCounter = WorkingTimeCounterService.get(mergeToFlatList);
 		//2.1: <call>
 		//$当月の労働時間 = result.get(社員ID).get( 就業時間 )
-		Double workingHoursMonth = workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_EXTRA).doubleValue();
+		Double workingHoursMonth = workingTimeCounter.isEmpty() ? 0 : workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_EXTRA).doubleValue();
 		
 		/*3: 集計する(Require, List<日別勤怠(Work)>) */
 		Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> workdayHolidayCounter = WorkdayHolidayCounterService.count(new Require(AppContexts.user().companyId()), mergeToFlatList);
 		//3.1: <call>()
 		//$当月の出勤日数 = result.get(社員ID).get( 出勤 )
-		Double numberWorkingDaysCurrentMonth = workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.WORKING).doubleValue();
+		Double numberWorkingDaysCurrentMonth = workdayHolidayCounter.isEmpty() ? 0 : workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.WORKING).doubleValue();
 		//$当月の休日日数 = result.get(社員ID).get( 休日 )
-		Double numberHolidaysCurrentMonth = workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.HOLIDAY).doubleValue();
+		Double numberHolidaysCurrentMonth = workdayHolidayCounter.isEmpty() ? 0 : workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.HOLIDAY).doubleValue();
 		
 		return new MonthlyDataDto(workingHoursMonth, numberWorkingDaysCurrentMonth, numberHolidaysCurrentMonth);
 	}
@@ -187,14 +187,14 @@ public class KSU002Finder {
 			Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> workingTimeCounter = WorkingTimeCounterService.get(dailyWorks);
 			//1.2.1: <call>
 			//$労働時間 = result.get(社員ID).get( 就業時間 )
-			Double workingHoursMonth = workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN).doubleValue();
+			Double workingHoursMonth = workingTimeCounter.isEmpty() ? 0 : workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN).doubleValue();
 			
 			//1.3: 集計する(Require, List<日別勤怠(Work)>)
 			Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> workdayHolidayCounter = WorkdayHolidayCounterService.count(new Require(AppContexts.user().companyId()), dailyWorks);
 			
 			//1.3.1: <call>()
 			//$休日日数 = result.get(社員ID).get (休日）
-			Double numberHolidaysCurrentMonth = workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.HOLIDAY).doubleValue();
+			Double numberHolidaysCurrentMonth = workdayHolidayCounter.isEmpty() ? 0 : workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.HOLIDAY).doubleValue();
 			
 			result.add(new WeeklyDataDto( ++no, workingHoursMonth, numberHolidaysCurrentMonth));
 		}
