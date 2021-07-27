@@ -256,7 +256,8 @@ module nts.uk.at.view.kdw003.cg {
         }
 
         findTaskItemDetail(id: string): void {     
-            let self = this, taskItem: TaskItemModel;       
+            let self = this, taskItem: TaskItemModel;  
+            if(id == "")  return; 
             taskItem = _.filter(self.listTaskItemInfo(), itemInfo => { return itemInfo.id == id; })[0];
             self.startDateString(taskItem.startDate);
             self.endDateString(taskItem.endDate);
@@ -279,10 +280,11 @@ module nts.uk.at.view.kdw003.cg {
             self.selectedTaskCode3("");
             self.selectedTaskCode4("");
             self.selectedTaskCode5("");
+            self.selectedHist("");
             $('#taskFrame1').focus();
         }
 
-        register(): void {
+        registerOrUpdate(): void {
             let self = this;            
             let command: any = {};
             command.employeeId = self.selectedEmployee();
@@ -296,39 +298,50 @@ module nts.uk.at.view.kdw003.cg {
                 self.selectedTaskCode5()
             ]
             self.$blockui("invisible");
-            self.$ajax(Paths.REGISTER_TASK_INITIAL_SEL_SETTING, command).done(() => {
-                self.findDetail(self.selectedEmployee());
-            }).fail((res) => {
-                self.$dialog.info({ messageId: res.messageId});
-            }).always(() => {
-                self.$blockui("hide");
-            });
+            if(self.selectedHist() == "") {
+                self.$ajax(Paths.REGISTER_TASK_INITIAL_SEL_SETTING, command).done(() => {
+                    self.findDetail(self.selectedEmployee());
+                }).fail((res) => {
+                    self.$dialog.info({ messageId: res.messageId});
+                }).always(() => {
+                    self.$blockui("hide");
+                });               
+            } else {
+                self.$blockui("invisible");
+                self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
+                    self.findDetail(self.selectedEmployee());
+                }).fail((res) => {
+                    self.$dialog.info({ messageId: res.messageId});
+                }).always(() => {
+                    self.$blockui("hide");
+                });
+            }       
             self.$blockui("hide");
         }
 
-        update(): void {
-            let self = this;            
-            let command: any = {};
-            command.employeeId = self.selectedEmployee();
-            command.startDate = moment(self.dateValue().startDate).format("YYYY/MM/DD");
-            command.endDate = moment(self.dateValue().endDate).format("YYYY/MM/DD");
-            command.lstTask = [
-                self.selectedTaskCode1(), 
-                self.selectedTaskCode2(), 
-                self.selectedTaskCode3(), 
-                self.selectedTaskCode4(), 
-                self.selectedTaskCode5()
-            ]
-            self.$blockui("invisible");
-            self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
-                self.findDetail(self.selectedEmployee());
-            }).fail((res) => {
-                self.$dialog.info({ messageId: res.messageId});
-            }).always(() => {
-                self.$blockui("hide");
-            });
-            self.$blockui("hide");
-        }
+        // update(): void {
+        //     let self = this;            
+        //     let command: any = {};
+        //     command.employeeId = self.selectedEmployee();
+        //     command.startDate = moment(self.dateValue().startDate).format("YYYY/MM/DD");
+        //     command.endDate = moment(self.dateValue().endDate).format("YYYY/MM/DD");
+        //     command.lstTask = [
+        //         self.selectedTaskCode1(), 
+        //         self.selectedTaskCode2(), 
+        //         self.selectedTaskCode3(), 
+        //         self.selectedTaskCode4(), 
+        //         self.selectedTaskCode5()
+        //     ]
+        //     self.$blockui("invisible");
+        //     self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
+        //         self.findDetail(self.selectedEmployee());
+        //     }).fail((res) => {
+        //         self.$dialog.info({ messageId: res.messageId});
+        //     }).always(() => {
+        //         self.$blockui("hide");
+        //     });
+        //     self.$blockui("hide");
+        // }
 
         public remove(): void {
             let self = this;
@@ -366,6 +379,8 @@ module nts.uk.at.view.kdw003.cg {
                                 self.selectedHist(self.listHistPeriod()[indexSelected].code);                                
                             }                           
                         });
+                    }).fail((res) => {
+                        self.$dialog.info({ messageId: res.messageId});
                     }).always(() =>{
                         self.$blockui("hide");
                     });    
