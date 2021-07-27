@@ -96,8 +96,6 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 			//this.designatedTime = oldDomain.getDesignatedTime();
 			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
 				this.useDivision = false;
-			} else {
-				this.useDivision = true;
 			}
 			//this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			return;
@@ -134,26 +132,24 @@ public class SubHolTransferSet extends WorkTimeDomainObject implements Cloneable
 	 *            the screen mode
 	 */
 	public void correctDefaultData(ScreenMode screenMode,CompensatoryOccurrenceDivision originAtr) {
-		// Simple mode
-		if (screenMode == ScreenMode.SIMPLE) {
-			// Only designatedTime not get restore
-			this.certainTime = new OneDayTime(0);
-			this.designatedTime.restoreDefaultData();
-			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
-				this.useDivision = false;
-			} else {
-				this.useDivision = true;
-			}
-			this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
-			return;
-		}
-
-		// Detail mode
 		// Setting not use - restore old data
 		if (!this.useDivision) {
 			this.certainTime = new OneDayTime(0);
 			this.subHolTransferSetAtr = SubHolTransferSetAtr.SPECIFIED_TIME_SUB_HOL;
 			this.designatedTime.restoreDefaultData();
+			return;
+		}
+
+		// Simple mode
+		if (screenMode == ScreenMode.SIMPLE) {
+			// Only designatedTime not get restore
+			this.certainTime = new OneDayTime(0);
+			if (originAtr.equals(CompensatoryOccurrenceDivision.FromOverTime)) {
+				this.useDivision = false;
+				this.designatedTime.restoreDefaultData();
+			} else {
+				this.useDivision = true;
+			}
 			return;
 		}
 

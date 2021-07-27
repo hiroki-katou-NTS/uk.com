@@ -50,7 +50,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -65,6 +64,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.WorkInfoListOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
@@ -344,7 +344,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     			, agentAtr
     			, appAbsence
     			, null
-    			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get()
+    			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList())
     			, holidayDates
     			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()));
     	// 休暇申請登録時チェック処理
@@ -871,7 +871,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		} else if (holidayType == HolidayAppType.DIGESTION_TIME) {
 		    // 指定する勤務種類に必要な休暇時間を算出する
 		    AttendanceTime requiredTime = this.calculateTimeRequired(
-		            appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getScd(),
+		            appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 		            appDates.isEmpty() ? Optional.empty() : Optional.of(GeneralDate.fromString(appDates.get(0), FORMAT_DATE)),
 		            workTypeCD,
 		            appAbsenceStartInfoOutput.getSelectedWorkTimeCD(),
@@ -1422,7 +1422,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				, false // KAF006: -PhuongDV domain fix pending- confirm input
 				, newAbsence.getApplication()
 				, null
-				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR) // KAF006: -PhuongDV domain fix pending- confirm input
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()) // KAF006: -PhuongDV domain fix pending- confirm input
 				, holidayDates
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.setConfirmMsgLst(lstConfirmMsg);
@@ -2004,16 +2004,13 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 EmploymentRootAtr.APPLICATION,
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication().getAppType(),
                 refDate);
-
+        List<MsgErrorOutput> msgErrorLst = new ArrayList<>();
         // 返ってきた「エラー情報」をチェックするする
         switch (approvalRootContentImport.getErrorFlag()) {
         case NO_ERROR:
             // 「休暇申請起動時の表示情報」を更新する
             appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
                 .setOpListApprovalPhaseState(Optional.of(approvalRootContentImport.getApprovalRootState().getListApprovalPhaseState()));
-            appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
-                .setOpErrorFlag(Optional.of(approvalRootContentImport.getErrorFlag()));
-
             List<ActualContentDisplay> actualContentDisplays = collectAchievement.getAchievementContents(
                     companyID,
                     appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
@@ -2024,17 +2021,17 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
             break;
         case NO_APPROVER:
             // →Msg_324
-            throw new BusinessException("Msg_324");
+        	msgErrorLst.add(new MsgErrorOutput("Msg_324", Collections.emptyList()));
         case NO_CONFIRM_PERSON:
             // →Msg_238
-            throw new BusinessException("Msg_238");
+        	msgErrorLst.add(new MsgErrorOutput("Msg_238", Collections.emptyList()));
         case APPROVER_UP_10:
             // →Msg_237
-            throw new BusinessException("Msg_237");
+        	msgErrorLst.add(new MsgErrorOutput("Msg_237", Collections.emptyList()));
         default:
             break;
         }
-
+        appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().setOpMsgErrorLst(Optional.of(msgErrorLst));
         return appAbsenceStartInfoDto;
     }
 

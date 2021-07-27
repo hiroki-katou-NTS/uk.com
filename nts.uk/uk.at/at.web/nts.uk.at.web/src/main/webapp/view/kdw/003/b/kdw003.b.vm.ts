@@ -12,9 +12,9 @@ module nts.uk.at.view.kdw003.b {
             isDisableExportCSV: KnockoutObservable<boolean> = ko.observable(false);
             messageAlert: KnockoutObservable<any> =  ko.observable(nts.uk.resource.getText('KDW003_63'));
             showMessage: KnockoutObservable<any> = ko.observable(false);
-
+            errName: : KnockoutObservable<any> = ko.observable('');
             constructor() {
-
+                
             }
 
             exportCSV(): void {
@@ -103,7 +103,6 @@ module nts.uk.at.view.kdw003.b {
                                         f.fieldName =  app.length > 0 ? app[0].name : f.fieldName;
                                     });
                                 });
-                                
                                 self.lstError(arr.map((d) => { 
                                     return new ErrorReferModel(d, data1.employeeIdLogin, !!data1.mapErrCdAppTypeCd[d.errorCode] ? data1.mapErrCdAppTypeCd[d.errorCode] : []); 
                                 }));
@@ -197,6 +196,7 @@ module nts.uk.at.view.kdw003.b {
                                 { key: "employeeName", width: "150px", headerText: getText('KDW003_33'), dataType: "string" },
                                 { key: "date", width: "130px", headerText: getText('KDW003_34'), dataType: "string" },
                                 { key: "errorCode", width: "50px", headerText: "コード", dataType: "string" },
+                                { key: "errorAlarmAtr", width: "80px", headerText: getText('KDW003_129'), dataType: "string" },
                                 { key: "message", width: "300px", headerText: getText('KDW003_36'), dataType: "string" },
                                 { key: "itemName", width: "170px", headerText: getText('KDW003_37'), dataType: "string" },
                                 { key: "submitedName", width: "170px", headerText: getText('KDW003_62'), dataType: "string" },
@@ -288,10 +288,10 @@ module nts.uk.at.view.kdw003.b {
                         jump("/view/kaf/007/a/index.xhtml", transfer);
                         break;
 
-                    //                        case 5:
-                    //                            //KAF008-出張申請
-                    //                            nts.uk.request.jump("/view/kaer);
-                    //                            break;
+                    case 5:
+                        //KAF008-出張申請 
+                        jump("/view/kaf/008/b/index.xhtml", transfer);
+                        break;
 
                     case 6:
                         //KAF009-直行直帰申請
@@ -305,48 +305,41 @@ module nts.uk.at.view.kdw003.b {
                         break;
 
                     case 8:
-                        //KAF002-打刻申請（外出許可）
-                        transfer.stampRequestMode = 0;
-                         transfer.screenMode = 1;
-                        jump("/view/kaf/002/b/index.xhtml", transfer);
+                        //KAF002-打刻申請（外出許可） 打刻申請
+                        jump("/view/kaf/002/a/index.xhtml", transfer);
                         break;
 
                     case 9:
                         //KAF002-打刻申請（出退勤打刻漏れ）
-                        transfer.stampRequestMode = 1;
-                         transfer.screenMode = 1;
+
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 10:
                         //KAF002-打刻申請（打刻取消）
                         transfer.stampRequestMode = 2;
-                         transfer.screenMode = 1;
+                        transfer.screenMode = 1;
                         jump("/view/kaf/002/b/index.xhtml", transfer);
                         break;
 
                     case 11:
-                        //KAF002-打刻申請（レコーダイメージ）
-                        transfer.stampRequestMode = 3;
-                         transfer.screenMode = 1;
-                        jump("/view/kaf/002/b/index.xhtml", transfer);
+                        //遅刻早退取消申請
+                        jump("/view/kaf/004/a/index.xhtml", transfer);
                         break;
 
                     case 12:
-                        //KAF002-打刻申請（その他）
-                        transfer.stampRequestMode = 4;
-                         transfer.screenMode = 1;
-                        jump("/view/kaf/002/b/index.xhtml", transfer);
-                        break;
-                        
-                    //                        case 14:
-                    //                            //KAF004-遅刻早退取消申請
-                    //                            nts.uk.request.jump("/view/kaer);
-                    //                            break;
-
-                    case 14:
                         //KAF011-振休振出申請
                         jump("/view/kaf/011/a/index.xhtml", transfer);
+                        break;
+
+                    case 13:
+                        //任意申請
+                        nts.uk.request.jump("/view/kaf/020/a/index.xhtml", transfer);
+                        break;
+
+                    case 14:
+                        //申請一覧
+                        jump("/view/cmm/045/a/index.xhtml", transfer);
                         break;
                     default:
                         break;
@@ -368,6 +361,8 @@ module nts.uk.at.view.kdw003.b {
             boldAtr: boolean;
             messageColor: string;
             submitedName: string;
+            errorAlarmAtr: number;
+            
         }
 
         class ErrorReferModel {
@@ -416,6 +411,15 @@ module nts.uk.at.view.kdw003.b {
                 self.employeeIdLogin = employeeIdLogin;
                 self.arrAppTypeCode = arrAppTypeCode;
                 self.stateBtn = ((model.employeeId == employeeIdLogin) && (arrAppTypeCode.length > 0)) ? "" : "hidden";
+                  if(model.errorAlarmAtr == 0){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_130');
+                    }
+                      if(model.errorAlarmAtr == 1){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_131');
+                    }
+                      if(model.errorAlarmAtr == 2){
+                    self.errorAlarmAtr = '';
+                    } 
             }
         }
 
@@ -427,6 +431,8 @@ module nts.uk.at.view.kdw003.b {
             message: string;
             itemName: string;
             submitedName: string;
+            errorAlarmAtr: String;
+            
 
             constructor(model: IErrorReferModel) {
                 let self = this;
@@ -447,6 +453,16 @@ module nts.uk.at.view.kdw003.b {
                 self.errorCode = model.errorCode;
                 self.message = model.message;
                 self.itemName = model.itemName;
+                if(model.errorAlarmAtr == 0){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_130');
+                    }
+                      if(model.errorAlarmAtr == 1){
+                    self.errorAlarmAtr = nts.uk.resource.getText('KDW003_131');
+                    }
+                      if(model.errorAlarmAtr == 2){
+                    self.errorAlarmAtr = '';
+                    }
+                
             }
         }
     }

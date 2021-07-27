@@ -184,9 +184,9 @@ public class ProcessDailyCalc {
 		List<DailyRecordWorkCommand> commandNew = ProcessCommonCalc.createCommands(sid, dailyEdits, queryChange);
 
 		List<DailyRecordWorkCommand> commandOld = ProcessCommonCalc.createCommands(sid, dailyOlds, queryChange);
-
+		//日別実績の修正からの計算
 		resultIU = calcDaily(dailyEdits, commandNew, commandOld, dailyItemOlds, monthParam, execType);
-
+		//計算後エラーチェック
 		ErrorAfterCalcDaily checkErrorAfterCalcDaily = checkErrorAfterCalcDaily(resultIU, param.getResultOlds(),
 				param.getDateRange(),
 				param.getDailyDtoEditAll().stream()
