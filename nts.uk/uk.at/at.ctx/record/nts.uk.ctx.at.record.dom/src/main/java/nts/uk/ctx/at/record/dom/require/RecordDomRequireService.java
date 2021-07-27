@@ -1187,9 +1187,9 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public List<ScheRemainCreateInfor> scheRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid,
+		public List<ScheRemainCreateInfor> scheRemainCreateInfor(String sid,
 				DatePeriod dateData) {
-			return remainCreateInforByScheData.createRemainInfor(cacheCarrier, cid, sid, dateData);
+			return remainCreateInforByScheData.createRemainInforNew(sid, dateData.datesBetween());
 		}
 
 		@Override

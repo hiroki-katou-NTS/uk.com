@@ -73,11 +73,12 @@
   margin-right: 10px;
   width: calc(100% - 30px);
 }
-.kwr-007 .panel .switchButton-wrapper {
+.kwr-007 .panel .switchbox-wrappers .radio-wrapper span {
   margin-right: 5px;
 }
-.kwr-007 .panel .switchButton-wrapper button {
+.kwr-007 .panel .switchbox-wrappers .radio-wrapper span {
   min-width: 75px;
+  text-align: center;
 }
 
 .kwr-007 .panel .row-switch-button .ui-igcombo-wrapper {
@@ -95,7 +96,7 @@
   margin-bottom: 5px;
 }
 .row-right .check-list-1 .checkbox-item {
-  width: 100px;
+  width: 65px;
   margin-bottom: 4px;
 }
 .row-right .check-list-1 .checkbox-item:last-child {
@@ -112,10 +113,14 @@
   margin: 10px 0;
 }
 .row-right .multiple-check .check-list-item .checkbox-item {
-  width: 100px;
+  width: 65px;
   margin-bottom: 4px;
 }
 
 #A8_5_1 {
   padding: 1px !important;
+}
+
+.btn-open-dialog-b {
+  width: 80px;
 }

@@ -727,7 +727,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		String loginID = AppContexts.user().employeeId();
 		for (ListOfApplication appFull : listApp) {
 			int add = 1;
-			if(appFull.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
+			if(appFull.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && 
+					appFull.getOpComplementLeaveApp().isPresent() && 
+					appFull.getOpComplementLeaveApp().get().getComplementLeaveFlg() != null) {
 				add = 2;
 			}
 			//承認状況＝否

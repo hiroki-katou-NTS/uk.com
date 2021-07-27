@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.PeregUpdateCommandHandler;
 
@@ -55,70 +56,77 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 		UpdateCareLeaveCommand data = context.getCommand();
 
 		// 子の看護-使用数
-		ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
-				data.getSId(),
-				new ChildCareNurseUsedNumber(
-						new DayNumberOfUse(data.getChildCareUsedDays().doubleValue())
-						,Optional.empty()
-				)
-		);
-
-		Optional<ChildCareUsedNumberData> checkChildCareDataisPresent = childCareDataRepo
-				.find(data.getSId());
-		if (checkChildCareDataisPresent.isPresent()) {
-			childCareDataRepo.update(cId, usedNumber);
-		} else {
-			if (data.getChildCareUsedDays() != null)
-				childCareDataRepo.add(cId, usedNumber );
+		if (data.getChildCareUsedDays() != null) {
+			ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
+					data.getSId(),
+					new ChildCareNurseUsedNumber(
+							new DayNumberOfUse(data.getChildCareUsedDays().doubleValue())
+							, data.getChildCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getChildCareUsedTimes().intValue()))
+					)
+			);
+	
+			Optional<ChildCareUsedNumberData> checkChildCareDataisPresent = childCareDataRepo
+					.find(data.getSId());
+			if (checkChildCareDataisPresent.isPresent()) {
+				childCareDataRepo.update(cId, usedNumber);
+			} else {
+				if (data.getChildCareUsedDays() != null)
+					childCareDataRepo.add(cId, usedNumber );
+			}
 		}
 
 		// 介護-使用数
-		CareUsedNumberData careUsedNumber = new CareUsedNumberData(
-				data.getSId(),
-				new ChildCareNurseUsedNumber(
-						new DayNumberOfUse(data.getCareUsedDays().doubleValue())
-						,Optional.empty()
-				)
-		);
-
-		Optional<ChildCareUsedNumberData> checkCareDataisPresent = childCareDataRepo
-				.find(data.getSId());
-		if (checkCareDataisPresent.isPresent()) {
-			childCareDataRepo.update(cId, usedNumber);
-		} else {
-			if (data.getChildCareUsedDays() != null)
-				childCareDataRepo.add(cId, usedNumber );
+		if (data.getCareUsedDays() != null) {
+			CareUsedNumberData careUsedNumber = new CareUsedNumberData(
+					data.getSId(),
+					new ChildCareNurseUsedNumber(
+							new DayNumberOfUse(data.getCareUsedDays().doubleValue())
+							, data.getCareUsedDays() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getCareUsedDays().intValue()))
+					)
+			);
+	
+			Optional<CareUsedNumberData> checkCareDataisPresent = careDataRepo
+					.find(data.getSId());
+			if (checkCareDataisPresent.isPresent()) {
+				careDataRepo.update(cId, careUsedNumber);
+			} else {
+				if (data.getCareUsedDays() != null)
+					careDataRepo.add(cId, careUsedNumber );
+			}
 		}
 
 		// 子の看護 - 上限情報
 		ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(data.getSId(),
 				data.getChildCareUseArt().intValue(),
-				data.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
+				data.getChildCareUpLimSet() == null ? UpperLimitSetting.PER_INFO_EVERY_YEAR.value
 						: data.getChildCareUpLimSet().intValue(),
-				data.getChildCareThisFiscal() == null ? null : data.getChildCareThisFiscal().intValue(),
-				data.getChildCareNextFiscal() == null ? null : data.getChildCareNextFiscal().intValue());
+				data.getChildCareThisFiscal() == null ? 0 : data.getChildCareThisFiscal().intValue(),
+				data.getChildCareNextFiscal() == null ? 0 : data.getChildCareNextFiscal().intValue());
 		Optional<ChildCareLeaveRemainingInfo> checkChildCareInfoisPresent = childCareInfoRepo
 				.getChildCareByEmpId(childCareInfo.getSId());
 		if (checkChildCareInfoisPresent.isPresent()) {
 			childCareInfoRepo.update(childCareInfo, cId);
 		} else {
-			childCareInfoRepo.add(childCareInfo, cId);
+			if (data.getChildCareUsedDays() != null) {
+				childCareInfoRepo.add(childCareInfo, cId);
+			}
 		}
 
 		// 介護-上限情報
 		CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),
 				data.getCareUseArt() == null ? 0 : data.getCareUseArt().intValue(),
-				data.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
+				data.getCareUpLimSet() == null ? UpperLimitSetting.PER_INFO_EVERY_YEAR.value
 						: data.getCareUpLimSet().intValue(),
-				data.getCareThisFiscal() == null ? null : data.getCareThisFiscal().intValue(),
-				data.getCareNextFiscal() == null ? null : data.getCareNextFiscal().intValue());
+				data.getCareThisFiscal() == null ? 0 : data.getCareThisFiscal().intValue(),
+				data.getCareNextFiscal() == null ? 0 : data.getCareNextFiscal().intValue());
 
 		Optional<CareLeaveRemainingInfo> checkCareInfoisPresent = careInfoRepo.getCareByEmpId(data.getSId());
 		if (checkCareInfoisPresent.isPresent()) {
 			careInfoRepo.update(careInfo, cId);
 		} else {
-			if (data.getCareUsedDays() != null)
+			if (data.getCareUsedDays() != null) {
 				careInfoRepo.add(careInfo, cId);
+			}
 		}
 	}
 
