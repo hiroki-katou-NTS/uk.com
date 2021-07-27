@@ -25,5 +25,6 @@ public class SettingsStampCommonDto {
 	public boolean workUse;
 	
 	// 入退門管理追加
-	public boolean manageEntryExit;
+	// public boolean manageEntryExit;
+	public boolean entranceExitUse;
 }
