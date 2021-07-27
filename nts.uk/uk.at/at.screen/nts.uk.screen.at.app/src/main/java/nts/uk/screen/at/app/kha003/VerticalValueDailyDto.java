@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class VerticalValueDailyDto {
     /** 作業時間 */
-    private int workingHours;
+    private String workingHours;
     /** 年月 */
     private String yearMonth;
     /** 年月日 */

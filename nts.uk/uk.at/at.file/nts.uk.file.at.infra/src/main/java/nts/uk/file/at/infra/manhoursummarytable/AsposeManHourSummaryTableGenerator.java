@@ -180,11 +180,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
             cell.setStyle(style);
             val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
             for (int c = 1; c < maxDateRange + 1; c++) {
-                cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap1.getOrDefault(headerList.get(c), 0)), dispFormat));
+                cells.get(countRow, c).setValue(workingTimeMap1.getOrDefault(headerList.get(c), ""));
                 setHorizontalAlignment(cells.get(countRow, c));
             }
             if (isDispTotal) {  // Tong chieu ngang level
-                cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level1.getTotalPeriod(), dispFormat));
+                cells.get(countRow, headerList.size() - 1).setValue(level1.getTotalPeriod());
                 setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
             }
             countRow++;
@@ -215,11 +215,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                 cells.get(countRow, 1).setValue(level2.getDisplayInfo().getName());
                 val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
                 for (int c = 2; c < maxDateRange + 2; c++) {
-                    cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap2.getOrDefault(headerList.get(c), 0)), dispFormat));
+                    cells.get(countRow, c).setValue(workingTimeMap2.getOrDefault(headerList.get(c), ""));
                     setHorizontalAlignment(cells.get(countRow, c));
                 }
                 if (isDispTotal) {  // Tong chieu ngang level 3
-                    cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level2.getTotalPeriod(), dispFormat));
+                    cells.get(countRow, headerList.size() - 1).setValue(level2.getTotalPeriod());
                     setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                 }
                 countRow++;
@@ -270,11 +270,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                     cells.get(countRow, 2).setValue(level3.getDisplayInfo().getName());
                     val workingTimeMap3 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
                     for (int c = 3; c < maxDateRange + 3; c++) {
-                        cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap3.getOrDefault(headerList.get(c), 0)), dispFormat));
+                        cells.get(countRow, c).setValue(workingTimeMap3.getOrDefault(headerList.get(c), ""));
                         setHorizontalAlignment(cells.get(countRow, c));
                     }
                     if (isDispTotal) {  // Tong chieu ngang level 3
-                        cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level3.getTotalPeriod(), dispFormat));
+                        cells.get(countRow, headerList.size() - 1).setValue(level3.getTotalPeriod());
                         setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                     }
                     countRow++;
@@ -340,11 +340,11 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
                         cells.get(countRow, 3).setValue(level4.getDisplayInfo().getName());
                         val workingTimeMap4 = this.getWorkingTimeByDate(unit, level4.getVerticalTotalList());
                         for (int c = 4; c < maxDateRange + 4; c++) {
-                            cells.get(countRow, c).setValue(formatValue(Double.valueOf(workingTimeMap4.getOrDefault(headerList.get(c), 0)), dispFormat));
+                            cells.get(countRow, c).setValue(workingTimeMap4.getOrDefault(headerList.get(c), ""));
                             setHorizontalAlignment(cells.get(countRow, c));
                         }
                         if (isDispTotal) {  // Tong chieu ngang level 4
-                            cells.get(countRow, headerList.size() - 1).setValue(formatValue((double) level4.getTotalPeriod(), dispFormat));
+                            cells.get(countRow, headerList.size() - 1).setValue(level4.getTotalPeriod());
                             setHorizontalAlignment(cells.get(countRow, headerList.size() - 1));
                         }
                         countRow++;
@@ -389,9 +389,9 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         for (int t = 1; t <= maxDateRange; t++) {
             val mapTotal = this.getWorkingTimeByDate(unit, summaryItemDetail.getVerticalTotalList());
             setHorizontalAlignment(cells.get(row, t + index));
-            cells.get(row, t + index).setValue(formatValue(Double.valueOf(mapTotal.getOrDefault(headerList.get(t + index), 0)), dispFormat));
+            cells.get(row, t + index).setValue(mapTotal.getOrDefault(headerList.get(t + index), ""));
         }
-        cells.get(row, headerList.size() - 1).setValue(formatValue((double) summaryItemDetail.getTotalPeriod(), dispFormat));
+        cells.get(row, headerList.size() - 1).setValue(summaryItemDetail.getTotalPeriod());
     }
 
     // All total by vertical
@@ -401,9 +401,9 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         for (int t = 1; t <= maxDateRange; t++) {
             val mapTotal = this.getWorkingTimeByDate(unit, outputContent.getVerticalTotalValues());
             setHorizontalAlignment(cells.get(row, t + index));
-            cells.get(row, t + index).setValue(formatValue(Double.valueOf(mapTotal.getOrDefault(headerList.get(t + index), 0)), dispFormat));
+            cells.get(row, t + index).setValue(mapTotal.getOrDefault(headerList.get(t + index), ""));
         }
-        cells.get(row, headerList.size() - 1).setValue(formatValue((double) outputContent.getTotalPeriod(), dispFormat));
+        cells.get(row, headerList.size() - 1).setValue(outputContent.getTotalPeriod());
     }
 
     private int checkTotalColumn(int maxColumnTemplate, int countColumn) {
@@ -419,8 +419,8 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         return countColumnNeedHandle;
     }
 
-    private Map<String, Integer> getWorkingTimeByDate(int unit, List<VerticalValueDailyDto> lstValueDaily) {
-        Map<String, Integer> map = new HashMap<>();
+    private Map<String, String> getWorkingTimeByDate(int unit, List<VerticalValueDailyDto> lstValueDaily) {
+        Map<String, String> map = new HashMap<>();
         if (unit == TotalUnit.DATE.value)
             lstValueDaily.forEach(d -> map.put(d.getDate(), d.getWorkingHours()));
         else
@@ -450,38 +450,38 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         return lstHeader;
     }
 
-    /**
-     * Format value by display format
-     *
-     * @param value
-     * @param displayFormat
-     * @return String
-     */
-    private String formatValue(Double value, DisplayFormat displayFormat) {
-        if (value == 0) return Strings.EMPTY;
-
-        String targetValue = null;
-        switch (displayFormat) {
-            case DECIMAL:
-                BigDecimal decimaValue = new BigDecimal(value);
-                decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-                targetValue = String.valueOf(decimaValue.doubleValue());
-                break;
-            case HEXA_DECIMAL:
-                BigDecimal decimalValue = new BigDecimal(value);
-                BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
-                BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
-                StringBuilder sb = new StringBuilder();
-                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
-                break;
-            case MINUTE:
-                DecimalFormat df = new DecimalFormat("#,###");
-                targetValue = df.format(value);
-                break;
-        }
-
-        return targetValue;
-    }
+//    /**
+//     * Format value by display format
+//     *
+//     * @param value
+//     * @param displayFormat
+//     * @return String
+//     */
+//    private String formatValue(Double value, DisplayFormat displayFormat) {
+//        if (value == 0) return Strings.EMPTY;
+//
+//        String targetValue = null;
+//        switch (displayFormat) {
+//            case DECIMAL:
+//                BigDecimal decimaValue = new BigDecimal(value);
+//                decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+//                targetValue = String.valueOf(decimaValue.doubleValue());
+//                break;
+//            case HEXA_DECIMAL:
+//                BigDecimal decimalValue = new BigDecimal(value);
+//                BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
+//                BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
+//                StringBuilder sb = new StringBuilder();
+//                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
+//                break;
+//            case MINUTE:
+//                DecimalFormat df = new DecimalFormat("#,###");
+//                targetValue = df.format(value);
+//                break;
+//        }
+//
+//        return targetValue;
+//    }
 
     private void setVerticalAlignment(Cell cell) {
         Style style = cell.getStyle();
