@@ -33,6 +33,7 @@ module nts.uk.at.kha003.c {
         c41isVisible: KnockoutObservable<boolean>;
         c51isVisible: KnockoutObservable<boolean>;
         dateRange: KnockoutObservable<any>;
+        gridRows: KnockoutObservable<any>;
 
         constructor() {
             super();
@@ -71,6 +72,7 @@ module nts.uk.at.kha003.c {
             vm.c41isVisible = ko.observable(false);
             vm.c51isVisible = ko.observable(false);
             vm.dateRange = ko.observable();
+            vm.gridRows = ko.observable(8);
         }
 
         created() {
@@ -114,9 +116,9 @@ module nts.uk.at.kha003.c {
                 vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params().name]));
                 vm.$window.storage('kha003AShareData_OLD').done((oldData: any) => {
                     if (oldData && (data.c21.type != oldData.c21.type
-                        || data.c31.type != oldData.c31.type
-                        || data.c41.type != oldData.c41.type
-                        || data.c51.type != oldData.c51.type)) {
+                            || data.c31.type != oldData.c31.type
+                            || data.c41.type != oldData.c41.type
+                            || data.c51.type != oldData.c51.type)) {
                         vm.$dialog.error({messageId: "Msg_2168"});
                         vm.$window.storage('kha003CShareData', {});
                     } else {
@@ -138,6 +140,9 @@ module nts.uk.at.kha003.c {
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
             });
+           /* $(document).ready(function () {
+                vm.gridRows((12*$(window).height())/768);
+            });*/
         }
 
         /**
