@@ -63,15 +63,16 @@ module nts.uk.at.kha003.a {
                         $('#A4_3').focus();
                     });
                 } else {
-                    vm.manHour.code('');
-                    vm.manHour.name('');
-                    vm.summaryItems([]);
-                    vm.selectedIdA622(0);
-                    vm.selectedId(0);
-                    vm.isExecutionMode(false);
-                    vm.isUpdateMode(false);
-                    $('#A4_2').focus();
-                    vm.$window.storage('kha003AShareData_OLD', {});
+                    vm.$window.storage('kha003AShareData_OLD', null).then(()=>{
+                        vm.manHour.code('');
+                        vm.manHour.name('');
+                        vm.summaryItems([]);
+                        vm.selectedIdA622(0);
+                        vm.selectedId(0);
+                        vm.isExecutionMode(false);
+                        vm.isUpdateMode(false);
+                        $('#A4_2').focus();
+                    });
                 }
             });
 
