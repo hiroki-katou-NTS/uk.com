@@ -774,7 +774,7 @@ module nts.uk.ui.calendar {
 					} else {
 						const { begin, finish } = baseDate;
 						const initDate = () => {
-							if(vm.data.rootVm.isSelectedStartWeek()){
+							if(true){
 								let daysStartEndWeek = calculateDaysStartEndWeek(begin, finish, vm.data.rootVm.dayStartWeek(), true);
 								start = moment(daysStartEndWeek.start);
 								const diff = moment(daysStartEndWeek.end).diff(start, 'day');

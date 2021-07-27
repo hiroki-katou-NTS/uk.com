@@ -278,7 +278,7 @@ module nts.uk.ui.at.ksu002.a {
 						vm.loadData();
 						return;
 					}
-
+					vm.getPlansResultsData();
 					$.Deferred()
 						.resolve(true)
 						.then(() => vm.$blockui('grayout'))
