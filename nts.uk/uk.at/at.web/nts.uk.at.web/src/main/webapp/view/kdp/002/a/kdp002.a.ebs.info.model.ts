@@ -11,7 +11,6 @@ module nts.uk.at.view.kdp002.a {
 			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }>;
 			yearMonth: KnockoutObservable<any>;
 			workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
-			loadCurrentCd: KnockoutObservable<boolean> = ko.observable(true);
 
 			constructor(start: IStartPage, workManagementMultiple: boolean) {
 				let self = this;
@@ -54,7 +53,6 @@ module nts.uk.at.view.kdp002.a {
 
 				self.yearMonth.subscribe(() => {
 					self.currentCode(null);
-					self.loadCurrentCd(true);
 				})
 			}
 
@@ -110,11 +108,9 @@ module nts.uk.at.view.kdp002.a {
 						}
 						let systemDate = moment().format('YYYY/MM/DD');
 						
-						if (model.loadCurrentCd()) {
-							
-							if (timeCard.date === systemDate && systemDate.substr(0, 7) === model.yearMonth()) {
-								model.currentCode(timeCard.code);
-							}
+						if (timeCard.date === systemDate && systemDate.substr(0, 7) === model.yearMonth()) {
+							model.currentCode(timeCard.code);
+							self.setScroll(timeCard.code);
 						}
 						
 						timeCard.date = formatedCardTime;

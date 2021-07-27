@@ -59,3 +59,7 @@
 .functions-area button {
 	margin-left: 0 !important;
 }
+
+#contents-area {
+    height: auto !important;
+}
