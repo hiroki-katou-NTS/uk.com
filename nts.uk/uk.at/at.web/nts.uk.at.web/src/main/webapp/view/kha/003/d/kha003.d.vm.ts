@@ -68,7 +68,9 @@ module nts.uk.at.kha003.d {
                     vm.$window.storage('kha003CShareData').done((cData: any) => {
                         vm.cScreenData(cData);
                         vm.dateRange(cData.dateRange);
-                        vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate);
+                        vm.$window.storage('kha003AShareData').done((aData: any) => {
+                            vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate, aData.totalUnit);
+                        })
                         let command = vm.getItemData(aData, bData, cData);
                         vm.initData(command);
                     })
@@ -743,18 +745,39 @@ module nts.uk.at.kha003.d {
          * @param startDate
          * @param endDate
          */
-        getDateRange(startDate: any, endDate: any, steps = 1) {
+        getDateRange(fromDate: any, toDate: any,displayFormat: any, steps = 1,) {
             let vm = this;
-            let currentDate = new Date(startDate);
-            while (currentDate <= new Date(endDate)) {
-                let date = new Date(currentDate.toISOString());
-                let headerText = (date.getMonth() + 1) + "月" + date.getDate() + "日";
-                vm.dateHeaders.push(
-                    new DateHeader(date.getMonth(), date.getDate(), headerText)
-                )
-                // Use UTC date to prevent problems with time zones and DST
-                currentDate.setUTCDate(currentDate.getUTCDate() + steps);
-                vm.maxDateRange++;
+            switch (displayFormat) {
+                case 0:
+
+                    let currentDate = new Date(fromDate);
+                    while (currentDate <= new Date(toDate)) {
+                        let date = new Date(currentDate.toISOString());
+                        let headerText = (date.getMonth() + 1) + "月" + date.getDate() + "日";
+                        vm.dateHeaders.push(
+                            new DateHeader(date.getMonth(), date.getDate(), headerText)
+                        )
+                        // Use UTC date to prevent problems with time zones and DST
+                        currentDate.setUTCDate(currentDate.getUTCDate() + steps);
+                        vm.maxDateRange++;
+                    }
+                    break;
+                case 1:
+                    const fromYear = fromDate.getFullYear();
+                    const fromMonth = fromDate.getMonth();
+                    const toYear = toDate.getFullYear();
+                    const toMonth = toDate.getMonth();
+                    const months = [];
+                    for (let year = fromYear; year <= toYear; year++) {
+                        let month = year === fromYear ? fromMonth : 0;
+                        const monthLimit = year === toYear ? toMonth : 11;
+                        for (; month <= monthLimit; month++) {
+                            vm.dateHeaders.push(
+                                new DateHeader('', '', '' + year + '/' + month)
+                        );
+                        }
+                    }
+                    break;
             }
         }
 
