@@ -22,7 +22,7 @@ public class WorkMasterAdapterImpl implements WorkMasterAdapter {
         return taskExportList.stream().map(t -> new TaskImport(
                 t.getCode(),
                 t.getTaskFrameNo(),
-                t.getName()
+                t.getDisplayInfo().getTaskName()
         )).collect(Collectors.toList());
     }
 }

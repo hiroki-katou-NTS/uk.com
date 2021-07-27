@@ -5,7 +5,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskInfo;
 
 import java.util.List;
 import java.util.Optional;
@@ -134,7 +133,7 @@ public interface TaskingRepository {
      * @param codes
      * @return
      */
-    List<TaskInfo> getListTask(String cid, Integer taskFrameNo, List<String> codes);
+    List<Task> getListTask(String cid, Integer taskFrameNo, List<String> codes);
 
     /**
      * @param cid
