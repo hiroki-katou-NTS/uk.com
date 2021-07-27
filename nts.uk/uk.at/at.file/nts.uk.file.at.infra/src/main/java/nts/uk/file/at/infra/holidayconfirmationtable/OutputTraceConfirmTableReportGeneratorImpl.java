@@ -197,6 +197,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                         if (linkingInfo.getOccurrenceDate().equals(prevLinkingInfo.getOccurrenceDate())
                                                 && linkingInfo.getDateOfUse().v() == 0.5
                                                 && prevLinkingInfo.getDateOfUse().v() == 0.5) {
+                                            cells.merge(row, col + i - 1, 1, 2);
                                             String value = this.formatDate(
                                                     OccurrenceDigClass.OCCURRENCE,
                                                     linkingInfo.getOccurrenceDate(),
@@ -210,7 +211,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                             cells.get(row, col + i - 1).setStyle(style);
                                         } else {
                                             val value = this.formatDate(
-                                                    OccurrenceDigClass.DIGESTION,
+                                                    OccurrenceDigClass.OCCURRENCE,
                                                     linkingInfo.getOccurrenceDate(),
                                                     linkingInfo.getDateOfUse().v(),
                                                     dataSource.getQuery().getHowToPrintDate(),
@@ -311,7 +312,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                             .get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
                         } else {
                             linkingUsedDays = content.getObservationOfExitLeave().get().getListTyingInformation()
-                                    .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate().get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
+                                    .stream().filter(i -> i.getYmd().equals(detail.getDate().getDayoffDate().get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
                         }
                         if (linkingUsedDays >= detail.getNumberConsecuVacation().getDay().v()) {
                             iterator.remove();
@@ -506,7 +507,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
         } else {
-            formattedDate.append(date.toString());
+            formattedDate.append(date.toString("yy/MM/dd"));
         }
         if (usedNumber != 1.0) {
             formattedDate.append(TextResource.localize("KDR003_120"));
@@ -536,7 +537,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
-            formattedDate.append(detail.getDate().getDayoffDate().get().toString());
+            formattedDate.append(detail.getDate().getDayoffDate().get().toString("yy/MM/dd"));
         }
         if (detail.getNumberConsecuVacation().getDay().v() != 1.0) {
             formattedDate.append(TextResource.localize("KDR003_120"));

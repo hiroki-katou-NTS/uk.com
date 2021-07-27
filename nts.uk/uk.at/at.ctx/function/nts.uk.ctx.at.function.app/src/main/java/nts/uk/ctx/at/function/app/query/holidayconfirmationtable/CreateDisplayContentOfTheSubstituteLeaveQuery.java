@@ -242,12 +242,12 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
             if (linkingMng) {
                 for (SeqVacationAssociationInfo lstSeqVacationItem : lstSeqVacation) {
                     //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
-                    GeneralDate ymd = lstSeqVacationItem.getOutbreakDay();
+                    GeneralDate ymd = lstSeqVacationItem.getDateOfUse();
                     // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
                     MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
                             lstSeqVacationItem.getDayNumberUsed().v());
                     //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
-                    GeneralDate occurrenceDate = lstSeqVacationItem.getDateOfUse();
+                    GeneralDate occurrenceDate =  lstSeqVacationItem.getOutbreakDay();
                     listTyingInformation.add(new LinkingInformation(
                             ymd,
                             dateOfUse,
