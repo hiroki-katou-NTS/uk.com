@@ -51,7 +51,7 @@ public class ReflectWorkInformation {
 			// スケジュール管理しない場合勤務情報を更新
 			UpdateIfNotManagedOutput updated = updateIfNotManaged.update(AppContexts.user().companyId(), integrationOfDaily.getEmployeeId(), 
 														integrationOfDaily.getYmd(), integrationOfDaily);
-
+			listErrorMessageInfo.addAll(updated.getListError());
 			if (updated.isCheckUpdated()) {
 				changeDailyAtt.setCorrectValCopyFromSche(true);
 				changeDailyAtt.setWorkInfo(true);
