@@ -1,19 +1,20 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-module nts.uk.com.view.cmf001.b {
+module nts.uk.com.view.cmf001.b.viewmodel {
 	
 	@bean()
 	class ViewModel extends ko.ViewModel {
+		settingList: KnockoutObservableArray<Setting>;  
+		settingInfo: KnockoutObservable<SettingInfo>;
 
-		settingInfo: KnockoutObservable<SettingInfo> = ko.observable();
+
 		
 		importGroup: KnockoutObservableArray<any> = ko.observableArray([]);
 		importMode: KnockoutObservableArray<any> = ko.observableArray([]);
-		
+
 		selectedSetting: KnockoutObservable<string> = ko.observable("001");
 		selectedGroup: KnockoutObservable<number> = ko.observable(1);
 		selectedItem: KnockoutObservable<number> = ko.observable();
 		
-		settingList: KnockoutObservableArray<Setting> = ko.observableArray([]);  
 		layoutList: KnockoutObservableArray<Layout> = ko.observableArray([]);
 		
 		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
@@ -29,15 +30,15 @@ module nts.uk.com.view.cmf001.b {
 			{ headerText: "詳細設定の有無", key: "alreadyDetail", width: 120 		},
 		]);
 
-		constructor(data: any) {
+		constructor() {
 			super();
 			var self = this;
-			self.settingList.push(new Setting("001", "会社の受入", true));
-			self.settingList.push(new Setting("002", "社員の受入", true));
-			self.settingList.push(new Setting("003", "所属の受入", false));
-			self.settingList.push(new Setting("004", "勤務の受入", false));
 
-			self.settingInfo = ko.observable(new SettingInfo(ko.observable("001"), ko.observable("会社の受入"), ko.observable("1"), ko.observable("1"), ko.observable(1), ko.observable(2)));
+			self.settingList = ko.observableArray<Setting>([]);
+			self.settingInfo = ko.observable(new SettingInfo);
+
+
+			//self.settingInfo = ko.observable(new SettingInfo(ko.observable("001"), ko.observable("会社の受入"), ko.observable("1"), ko.observable("1"), ko.observable(1), ko.observable(2)));
 
 			self.importGroup.push(new comboBoxItem("1", "会社情報"));
 			self.importGroup.push(new comboBoxItem("2", "社員情報"));
@@ -62,9 +63,23 @@ module nts.uk.com.view.cmf001.b {
 		mounted() {
 			const vm = this;
 		}
+
+		getListData(){
+			var self = this;
+			let dfd = $.Deferred();
+			nts.uk.request.ajax("exio/input/setting/find-all").done((lstData: Array<viewmodel.Setting>) => {
+				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
+				self.settingList(sortedData);
+				dfd.resolve();
+			}).fail(function(error) {
+				dfd.reject();
+				alert(error.message);
+		})
+			return dfd.promise();
+		}
 	}	
 	
-	class Setting {
+	export class Setting {
 		code: string;
 		name: string;
 		configured: string;
@@ -84,13 +99,13 @@ module nts.uk.com.view.cmf001.b {
 		itemNameRow: KnockoutObservable<number>;
 		importStartRow: KnockoutObservable<number>;
 
-		constructor(code: KnockoutObservable<string>,　name: KnockoutObservable<string>, group: KnockoutObservable<string>, mode: KnockoutObservable<string>, itemNameRow: KnockoutObservable<number>, importStartRow: KnockoutObservable<number>) {
-			this.code = code;
-			this.name = name;
-			this.group = group;
-			this.mode = mode;
-			this.itemNameRow = itemNameRow;
-			this.importStartRow = importStartRow;
+		constructor() {
+			this.code = ko.observable("");
+			this.name = ko.observable("");
+			this.group = ko.observable("");
+			this.mode = ko.observable("");
+			this.itemNameRow = ko.observable(1);
+			this.importStartRow = ko.observable(2);
 		}
 	}
 
