@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -12,6 +13,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  *
  */
 @Getter
+@AllArgsConstructor
 public class AggregationPeriod {
 
 	/*
@@ -25,9 +27,4 @@ public class AggregationPeriod {
 	private DatePeriod period;
 	
 	
-	
-	public AggregationPeriod(YearMonth yearMonth, DatePeriod period){
-		this.yearMonth = yearMonth;
-		this.period = period;
-	}
 }

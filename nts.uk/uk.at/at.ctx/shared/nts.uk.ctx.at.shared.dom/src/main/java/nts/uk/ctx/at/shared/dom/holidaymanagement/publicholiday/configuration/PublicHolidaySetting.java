@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,14 +20,17 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.MonthlyNumberOfDays;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.AggregatePublicHolidayWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery.RequireM7;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureStartEndOutput;
+import nts.uk.ctx.at.shared.dom.workrule.closure.GetClosurePeriodBySpecifyingTheYeatMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -78,12 +80,44 @@ public class PublicHolidaySetting extends AggregateRoot {
 		
 		//集計期間List毎の日数設定を取得
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = 
-				AggregationPeriodDailyNumberSetting(employeeId, periodList, 
+				createAggregatePublicHolidayWork(employeeId, periodList, 
 						criteriaDate, cacheCarrier,require);
 		
 		return aggregatePublicHolidayWork;
 	}
 	
+	
+	/**
+	 * 繰越期限を計算する
+	 * @param int 期首月
+	 * @param endDay 当月の最終日
+	 * @return GeneralDate 期限日
+	 */
+	public GeneralDate createDeadline(RequireM2 require, 
+			CacheCarrier cacheCarrier,
+			String employeeId, 
+			GeneralDate endDay,
+			GeneralDate criteriaDate){
+		
+		//繰越期限を確認
+		switch(this.publicHolidayCarryOverDeadline){
+			//当月
+			case CURRENT_MONTH:
+				return  endDay;
+				
+			//無期限
+			case INDEFINITE:
+				return GeneralDate.ymd(9999, 12, 31);
+				
+			//年度末
+			case YEAR_END:
+				return createYearEndDeadline(require, cacheCarrier,employeeId, endDay, criteriaDate);
+						
+			default:
+				throw new RuntimeException();
+		}
+		
+	}
 	
 	/**
 	 * 集計期間を作成する
@@ -102,6 +136,12 @@ public class PublicHolidaySetting extends AggregateRoot {
 		
 		//INPUT．Require締め日を取得
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, this.companyID, criteriaDate);
+		
+		//締めが取得できたか
+		if(closure == null){
+			return new ArrayList<>();
+		}
+		
 		//公休管理期間設定を確認
 		if(this.publicHolidayPeriod == PublicHolidayPeriod.CLOSURE_PERIOD){
 			List<AggregationPeriod> periodList = new ArrayList<>();
@@ -152,83 +192,35 @@ public class PublicHolidaySetting extends AggregateRoot {
 		
 	}
 	
+
 	/**
-	 * 集計期間List毎の日数設定を取得
-	 * @param employeeId
-	 * @param periodList
-	 * @param yearMonths
-	 * @param criteriaDate
-	 * @param cacheCarrier
-	 * @param require
-	 * @return 公休集計期間WORK
+	 * 繰越データを作成する
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param ymd 期限日
+	 * @param numberCarriedForward 繰越数
+	 * @param grantRemainRegisterType 登録種別
+	 * @return Optional<公休繰越データ>
 	 */
-	public List<AggregatePublicHolidayWork> AggregationPeriodDailyNumberSetting(String employeeId, 
-			List<AggregationPeriod> periodList, GeneralDate criteriaDate, CacheCarrier cacheCarrier,RequireM2 require){
+	public Optional<PublicHolidayCarryForwardData> createPublicHolidayCarryForwardData(
+			String employeeId,
+			YearMonth yearMonth,
+			GeneralDate ymd,
+			LeaveRemainingDayNumber numberCarriedForward,
+			GrantRemainRegisterType grantRemainRegisterType
+			){
 		
-		//公休日数取得
-		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit =
-				require.publicHolidayManagementUsageUnit(this.companyID);
-		
-		List<PublicHolidayMonthSetting> publicHolidayMonthSettings =
-				publicHolidayManagementUsageUnit.GetNumberofPublicHoliday(require, this.companyID, employeeId,periodList , criteriaDate);
-		
-		
-		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork =  new ArrayList<>();
-		//期限日作成
-		for(AggregationPeriod period : periodList){
-			
-			aggregatePublicHolidayWork.add(new AggregatePublicHolidayWork(
-					period.getYearMonth(),
-					period.getPeriod(),
-					publicHolidayMonthSettings.stream().filter(
-							x -> x.getPublicHdManagementYear().v() == period.getYearMonth().year()&&
-							x.getMonth() == period.getYearMonth().month()).findFirst().orElse(
-									new PublicHolidayMonthSetting(
-											new Year(period.getYearMonth().year()), 
-											new Integer(period.getYearMonth().month()), 
-											new MonthlyNumberOfDays(0.0))),
-					createDeadline(require, cacheCarrier, employeeId ,period.getPeriod().end(), criteriaDate),
-					Finally.empty()
-					));
-			
+		if((iscarryOverNumberOfPublicHoliday() && numberCarriedForward.lessThan(0.0)) || numberCarriedForward.greaterThan(0.0)){
+			return Optional.of(new PublicHolidayCarryForwardData(
+					employeeId,
+					yearMonth,
+					ymd,
+					numberCarriedForward,
+					grantRemainRegisterType));
 		}
-		
-		
-		return aggregatePublicHolidayWork;
+		return Optional.empty();
 	}
 	
-	
-	/**
-	 * 繰越期限を計算する
-	 * @param int 期首月
-	 * @param endDay 当月の最終日
-	 * @return GeneralDate 期限日
-	 */
-	public GeneralDate createDeadline(RequireM2 require, 
-			CacheCarrier cacheCarrier,
-			String employeeId, 
-			GeneralDate endDay,
-			GeneralDate criteriaDate){
-		
-		//繰越期限を確認
-		switch(this.publicHolidayCarryOverDeadline){
-			//当月
-			case CURRENT_MONTH:
-				return  endDay;
-				
-			//無期限
-			case INDEFINITE:
-				return GeneralDate.ymd(9999, 12, 31);
-				
-			//年度末
-			case YEAR_END:
-				return createYearEndDeadline(require, cacheCarrier,employeeId, endDay, criteriaDate);
-						
-			default:
-				return endDay;
-		}
-		
-	}
 	
 	/**
 	 * 年度末の期限日を求める
@@ -246,48 +238,86 @@ public class PublicHolidaySetting extends AggregateRoot {
 			GeneralDate criteriaDate){
 		
 		//暦の年月から年月期間を取得する
-		Optional<YearMonthPeriod> period = require.getYearMonthPeriod(this.companyID, endDay.yearMonth());
+		YearMonthPeriod period = require.getYearMonthPeriod(this.companyID, endDay.yearMonth());
 		
-		if(!period.isPresent()){
-			return endDay;
-		}
-		
+		//公休管理期間 = １日～末日
 		if(this.publicHolidayPeriod == PublicHolidayPeriod.FIRST_DAY_TO_LAST_DAY){
-			return period.get().end().lastGeneralDate();
+			return period.end().lastGeneralDate();
+		}
 
-		}else{
-			//INPUT．Require締め日を取得
-			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, this.companyID, criteriaDate);
+		//公休管理期間 = 締め期間
+		if(this.publicHolidayPeriod == PublicHolidayPeriod.CLOSURE_PERIOD){
+
+			//取得する
+			Optional<DatePeriod> datePeriod = GetClosurePeriodBySpecifyingTheYeatMonth.getPeriod(
+					require, employeeId, criteriaDate, period.end(), cacheCarrier);
 			
-			//指定した年月の締め期間を取得する
-			List<DatePeriod> datePeriodList = closure.getPeriodByYearMonth(period.get().end());
 			
-			if(datePeriodList.isEmpty()){
-				return endDay;
+			if(!datePeriod.isPresent()){
+				return period.end().lastGeneralDate();
 			}
 			
-			//締め期間リストから締め日が一番後の期間の終了日を取得
-			return getClosurePeriodLast(datePeriodList);
+			//取得した年月日を期限日として返す
+			return datePeriod.get().end();
 		}
-	}
-	
-	//公休日数がマイナス時に繰越するがtrueか
-	public boolean iscarryOverNumberOfPublicHoliday(){
-		return this.carryOverNumberOfPublicHolidayIsNegative == 1;
+		
+		throw new RuntimeException();
 	}
 	
 	
 	/**
-	 * 締め期間リストから締め日が一番後の期間の終了日を取得
-	 * @param datePeriodList　締め履歴期間一覧
-	 * @return GeneralDate 年月日
+	 * 集計期間WORK作成
+	 * @param employeeId
+	 * @param periodList
+	 * @param yearMonths
+	 * @param criteriaDate
+	 * @param cacheCarrier
+	 * @param require
+	 * @return 公休集計期間WORK
 	 */
-	public GeneralDate getClosurePeriodLast(List<DatePeriod> datePeriodList){
-		return datePeriodList.stream()
-				.map(x -> x.end())
-				.sorted(Comparator.reverseOrder())
-				.findFirst()
-				.get();
+	private List<AggregatePublicHolidayWork> createAggregatePublicHolidayWork(String employeeId, 
+			List<AggregationPeriod> periodList, GeneralDate criteriaDate, CacheCarrier cacheCarrier,RequireM2 require){
+		
+		//公休日数取得
+		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit =
+				require.publicHolidayManagementUsageUnit(this.companyID);
+		
+		List<PublicHolidayMonthSetting> publicHolidayMonthSettings =
+				publicHolidayManagementUsageUnit.GetNumberofPublicHoliday(require, this.companyID, employeeId,periodList , criteriaDate);
+		
+		
+		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork =  new ArrayList<>();
+		//公休集計期間WORKを作成
+		for(AggregationPeriod period : periodList){
+			
+			//月間公休日数設定を取得
+			PublicHolidayMonthSetting publicHolidayMonthSetting = publicHolidayMonthSettings.stream()
+					.filter(x -> x.getPublicHdManagementYear().v() == period.getYearMonth().year()&&
+							x.getMonth() == period.getYearMonth().month())
+					.findFirst()
+					.orElse(
+							new PublicHolidayMonthSetting(
+									new Year(period.getYearMonth().year()), 
+									new Integer(period.getYearMonth().month()), 
+									new MonthlyNumberOfDays(0.0)));
+			
+			aggregatePublicHolidayWork.add(new AggregatePublicHolidayWork(
+					period.getYearMonth(),
+					period.getPeriod(),
+					publicHolidayMonthSetting,
+					//期限日作成
+					createDeadline(require, cacheCarrier, employeeId ,period.getPeriod().end(), criteriaDate)
+					));
+		}
+		
+		
+		return aggregatePublicHolidayWork;
+	}
+	
+
+	//公休日数がマイナス時に繰越するがtrueか
+	public boolean iscarryOverNumberOfPublicHoliday(){
+		return this.carryOverNumberOfPublicHolidayIsNegative == 1;
 	}
 	
 	
@@ -297,7 +327,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 
 	public static interface RequireM2 extends ClosureService.RequireM3, RequireM7, PublicHolidayManagementUsageUnit.RequireM1 {
 		//暦の年月から年月期間を取得する
-		Optional<YearMonthPeriod> getYearMonthPeriod(String cid, YearMonth yearMonth);
+		YearMonthPeriod getYearMonthPeriod(String cid, YearMonth yearMonth);
 		
 		//公休利用単位設定
 		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit(String companyId);

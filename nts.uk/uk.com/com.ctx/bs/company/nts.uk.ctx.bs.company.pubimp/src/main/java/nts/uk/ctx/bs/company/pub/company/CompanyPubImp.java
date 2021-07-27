@@ -248,6 +248,6 @@ public class CompanyPubImp implements ICompanyPub {
 			return Optional.empty();
 		}
 
-		return Optional.of(company.get().getYearMonthPeriod(yearMonth));
+		return Optional.of(company.get().getYearMonthPeriodByCalendarYearmonth(yearMonth));
 	}
 }

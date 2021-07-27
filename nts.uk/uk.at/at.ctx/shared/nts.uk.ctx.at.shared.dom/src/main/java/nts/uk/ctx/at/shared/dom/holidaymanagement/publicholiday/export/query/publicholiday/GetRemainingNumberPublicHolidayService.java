@@ -14,8 +14,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardDataList;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.AggrResultOfPublicHoliday;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformationOutput;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayCarryForwardInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayDigestionInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayInformation;
@@ -73,7 +74,8 @@ public class GetRemainingNumberPublicHolidayService {
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = publicHolidaySetting.createAggregatePeriodWork(
 				employeeId, yearMonth,criteriaDate, cacheCarrier, require);
 		//繰越データを取得する
-		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData = require.publicHolidayCarryForwardData(employeeId);
+		PublicHolidayCarryForwardDataList carryForwardDataList = new PublicHolidayCarryForwardDataList(
+				require.publicHolidayCarryForwardData(employeeId));
 		
 		//暫定公休管理データを取得する
 		List<TempPublicHolidayManagement> tempPublicHolidayManagement = getTempPublicHolidayManagement(
@@ -95,31 +97,35 @@ public class GetRemainingNumberPublicHolidayService {
 			//公休消化情報を作成する
 			PublicHolidayDigestionInformation afterDigestion = 
 					publicHolidayWork.createDigestionInformation(
-							publicHolidayCarryForwardData, tempPublicHolidayManagement);
+							carryForwardDataList, tempPublicHolidayManagement);
 			
-			//翌月繰越数を求める
-			publicHolidayWork.calculateCarriedForward(publicHolidayCarryForwardData,afterDigestion.getNumberOfAcquisitions());
+			//公休取得数エラーチェック
+			Optional<PublicHolidayErrors> Errors = publicHolidayWork.errorCheck(carryForwardDataList, tempPublicHolidayManagement);
 			
-			//エラーチェック
-			Optional<PublicHolidayErrors> Errors = publicHolidayWork.errorCheck();
 			
-			//繰越データを作成
-			PublicHolidayCarryForwardInformationOutput CarryForwardInformation=
+			//公休繰越情報を作成
+			PublicHolidayCarryForwardInformation publicHolidayCarryForwardInformation =
 					publicHolidayWork.calculateCarriedForwardInformation(
+							carryForwardDataList, tempPublicHolidayManagement);
+			
+			
+			//公休繰越データを更新
+			carryForwardDataList=
+					publicHolidayWork.updatePublicHolidayCarryForwardDataList(
 							companyId,
 							employeeId,
-							publicHolidayCarryForwardData,
+							tempPublicHolidayManagement,
+							carryForwardDataList,
 							require);
 
 			
 			publicHolidayInformation.add(new PublicHolidayInformation(publicHolidayWork.getYearMonth(),
 																		afterDigestion,
-																		CarryForwardInformation.getPublicHolidayCarryForwardInformation(),
+																		publicHolidayCarryForwardInformation,
 																		Errors));
 			
-			publicHolidayCarryForwardData = CarryForwardInformation.getPublicHolidayCarryForwardData();
 		}
-		return new AggrResultOfPublicHoliday(publicHolidayInformation, publicHolidayCarryForwardData);
+		return new AggrResultOfPublicHoliday(publicHolidayInformation, carryForwardDataList.publicHolidayCarryForwardData);
 		
 	}
 	
@@ -169,7 +175,7 @@ public class GetRemainingNumberPublicHolidayService {
 	}
 	
 	
-	public static interface RequireM1 extends RequireM5, RequireM6,RequireM7, RequireM8{
+	public static interface RequireM1 extends RequireM4, RequireM5, RequireM6,RequireM7, RequireM8{
 		//公休設定を取得する（会社ID）
 		PublicHolidaySetting publicHolidaySetting(String companyId);
 	}
@@ -199,9 +205,9 @@ public class GetRemainingNumberPublicHolidayService {
 		List<TempPublicHolidayManagement> tempPublicHolidayManagement(String employeeId, DatePeriod ymd, RemainType remainType);
 	}
 	
-	public static interface RequireM7 extends PublicHolidaySetting.RequireM1, RequireM8{
+	public static interface RequireM7 extends PublicHolidaySetting.RequireM1{
 	}
-	public static interface RequireM8 extends PublicHolidaySetting.RequireM2{
+	public static interface RequireM8 extends AggregatePublicHolidayWork.RequireM1{
 	}
 
 }

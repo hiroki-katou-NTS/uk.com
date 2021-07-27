@@ -69,4 +69,67 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 		return Math.min(this.numberCarriedForward.v(), carryForwardNotAcquired);
 	}
 	
+	/**
+	 * 相殺後の残数を取得する
+	 * @param numberCarriedForward 残数
+	 * @return 残数
+	 */
+	public LeaveRemainingDayNumber getAfterOffset(LeaveRemainingDayNumber remainingData){
+		
+		if(remainingData.v() < 0.0 && this.numberCarriedForward.v() > 0.0){
+			return new LeaveRemainingDayNumber(
+					remainingData.v() + getOffsetDays(remainingData).v());
+		}
+		
+		if(remainingData.v() > 0.0 && this.numberCarriedForward.v() < 0.0){
+			return new LeaveRemainingDayNumber(
+					remainingData.v() - getOffsetDays(remainingData).v());
+		}
+		
+		return remainingData;
+	}
+	
+	/**
+	 * 相殺後の繰越数を求める
+	 * @param numberCarriedForward 残数
+	 * @return 公休繰越データ
+	 */
+	public PublicHolidayCarryForwardData getCarryForwardDataAfterOffset(LeaveRemainingDayNumber remainingData){
+		
+		if(remainingData.v() < 0.0 && this.numberCarriedForward.v() > 0.0){
+			return new PublicHolidayCarryForwardData(
+					this.employeeId,
+					this.yearMonth,
+					this.ymd,
+					new LeaveRemainingDayNumber(this.numberCarriedForward.v() - getOffsetDays(remainingData).v()),
+					this.grantRemainRegisterType);
+		}
+		
+		if(remainingData.v() > 0.0 && this.numberCarriedForward.v() < 0.0){
+			return new PublicHolidayCarryForwardData(
+					this.employeeId,
+					this.yearMonth,
+					this.ymd,
+					new LeaveRemainingDayNumber(this.numberCarriedForward.v() + getOffsetDays(remainingData).v()),
+					this.grantRemainRegisterType);
+		}
+		
+		return new PublicHolidayCarryForwardData(
+				this.employeeId,
+				this.yearMonth,
+				this.ymd,
+				this.numberCarriedForward,
+				this.grantRemainRegisterType);
+	}
+	
+	
+	/**
+	 * 相殺できる日数を取得する
+	 * @param numberCarriedForward 残数
+	 * @return 残数
+	 */
+	private LeaveRemainingDayNumber getOffsetDays(LeaveRemainingDayNumber numberCarriedForward){
+		return new LeaveRemainingDayNumber(
+				Math.min(Math.abs(numberCarriedForward.v()), Math.abs(this.numberCarriedForward.v())));
+	}
 }
