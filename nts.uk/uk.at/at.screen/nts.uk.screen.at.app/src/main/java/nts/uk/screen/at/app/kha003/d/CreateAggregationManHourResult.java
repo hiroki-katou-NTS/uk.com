@@ -7,13 +7,18 @@ import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.*;
 import nts.uk.screen.at.app.kha003.*;
-import nts.uk.screen.at.app.kha003.exportcsv.ManHourHierarchyFlatData;
 import nts.uk.screen.at.app.kha003.exportcsv.ManHourSummaryTableOutputContentDto;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -33,8 +38,28 @@ public class CreateAggregationManHourResult {
      */
     public ManHourAggregationResultDto get(String code, MasterNameInformation masterNameInfo, List<WorkDetailData> workDetailList,
                                            List<GeneralDate> dateList, List<YearMonth> yearMonthList) {
+        // 1. 作業詳細データを絞り込む(作業詳細データ)
+        val workDetailFilters = masterNameInfo.filterWorkDetailData(workDetailList);
+        // 2. List<作業詳細データ>＝NULL
+        if (CollectionUtil.isEmpty(workDetailFilters))
+            throw new BusinessException("Msg_2171");
+
+        // 3. get(工数集計表コード)
         val optManHour = this.manHourSummaryRepo.get(AppContexts.user().companyId(), code);
         if (!optManHour.isPresent()) return null;
+
+        // 4. 工数集計表出力内容を作成する(年月日, 年月, 作業詳細データ, マスタ名称情報)
+        val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
+
+        // Convert domain ManHourSummaryTableOutputContent to dto
+        val dispFormat = optManHour.get().getDetailFormatSetting().getDisplayFormat();
+        val itemDetails = getSummaryItemDetails(manHourOutputContent.getItemDetails(), dispFormat);
+        val outputContent = new ManHourSummaryTableOutputContentDto(
+                itemDetails,
+                convertValueDaily(manHourOutputContent.getVerticalTotalValues(), dispFormat),
+                manHourOutputContent.getTotalPeriod().isPresent() ? manHourOutputContent.getTotalPeriod().get() : 0
+        );
+
         // Convert domain to dto
         val manHourObj =  optManHour.map(opt -> new ManHourSummaryTableFormatDto(
                 opt.getCode().v(),
@@ -45,19 +70,6 @@ public class CreateAggregationManHourResult {
                 getSummaryItemList(opt.getDetailFormatSetting().getSummaryItemList())
         )).orElse(null);
 
-        val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
-        if (manHourOutputContent == null || CollectionUtil.isEmpty(workDetailList) || masterNameInfo == null)
-            throw new BusinessException("Msg_2171");
-
-        // Convert domain ManHourSummaryTableOutputContent to dto
-        val itemDetails = getSummaryItemDetails(manHourOutputContent.getItemDetails());
-        val outputContent = new ManHourSummaryTableOutputContentDto(
-                itemDetails,
-                convertValueDaily(manHourOutputContent.getVerticalTotalValues()),
-                manHourOutputContent.getTotalPeriod().isPresent() ? manHourOutputContent.getTotalPeriod().get() : 0
-        );
-
-        // Flat data
 //        val flatDataList = this.flatDataProcessing(outputContent, manHourObj.getTotalUnit());
         CountTotalLevel totalLevel = new CountTotalLevel(0);
         countHierarchy(outputContent.getItemDetails(), totalLevel);
@@ -72,96 +84,56 @@ public class CreateAggregationManHourResult {
         )).sorted(Comparator.comparingInt(SummaryItemDto::getHierarchicalOrder)).collect(Collectors.toList());
     }
 
-    private List<SummaryItemDetailDto> getSummaryItemDetails(List<SummaryItemDetail> childList) {
+    private List<SummaryItemDetailDto> getSummaryItemDetails(List<SummaryItemDetail> childList, DisplayFormat displayFormat) {
         return childList.isEmpty() ? Collections.emptyList()
                 : childList.stream().map(x -> new SummaryItemDetailDto(
                 x.getCode(),
                 new DisplayInfoDto(x.getDisplayInfo().getCode(), x.getDisplayInfo().getName()),
-                getSummaryItemDetails(x.getChildHierarchyList()),
-                convertValueDaily(x.getVerticalTotalList()),
+                getSummaryItemDetails(x.getChildHierarchyList(), displayFormat),
+                convertValueDaily(x.getVerticalTotalList(), displayFormat),
                 x.getTotalPeriod().isPresent() ? x.getTotalPeriod().get() : 0
         )).collect(Collectors.toList());
     }
 
-    private List<VerticalValueDailyDto> convertValueDaily(List<VerticalValueDaily> dailyValues) {
+    private List<VerticalValueDailyDto> convertValueDaily(List<VerticalValueDaily> dailyValues, DisplayFormat displayFormat) {
         return dailyValues.stream().map(x -> new VerticalValueDailyDto(
-                x.getWorkingHours(),
+                formatValue((double) x.getWorkingHours(), displayFormat),
                 x.getYearMonth() != null ? x.getYearMonth().toString() : null,
                 x.getDate() != null ? x.getDate().toString() : null
         )).collect(Collectors.toList());
     }
 
-    private List<ManHourHierarchyFlatData> flatDataProcessing(ManHourSummaryTableOutputContentDto outputContent, int unit) {
-        List<ManHourHierarchyFlatData> lstResult = new ArrayList<>();
-        for (SummaryItemDetailDto level1 : outputContent.getItemDetails()) {
-            if (level1.getChildHierarchyList().isEmpty()) {
-                val workingTimeMap1 = this.getWorkingTime(unit, level1.getVerticalTotalList());
-                lstResult.add(new ManHourHierarchyFlatData(
-                        level1.getCode(),
-                        null,
-                        null,
-                        null,
-                        level1.getDisplayInfo(),
-                        workingTimeMap1,
-                        level1.getTotalPeriod()
-                ));
-            } else {
-                for (SummaryItemDetailDto level2 : level1.getChildHierarchyList()) {
-                    if (level2.getChildHierarchyList().isEmpty()) {
-                        val workingTimeMap2 = this.getWorkingTime(unit, level2.getVerticalTotalList());
-                        lstResult.add(new ManHourHierarchyFlatData(
-                                level1.getCode(),
-                                level2.getCode(),
-                                null,
-                                null,
-                                level2.getDisplayInfo(),
-                                workingTimeMap2,
-                                level2.getTotalPeriod()
-                        ));
-                    } else {
-                        for (SummaryItemDetailDto level3 : level2.getChildHierarchyList()) {
-                            if (level3.getChildHierarchyList().isEmpty()) {
-                                val workingTimeMap3 = this.getWorkingTime(unit, level3.getVerticalTotalList());
-                                lstResult.add(new ManHourHierarchyFlatData(
-                                        level1.getCode(),
-                                        level2.getCode(),
-                                        level3.getCode(),
-                                        null,
-                                        level3.getDisplayInfo(),
-                                        workingTimeMap3,
-                                        level3.getTotalPeriod()
-                                ));
-                            } else {
-                                for (SummaryItemDetailDto level4 : level3.getChildHierarchyList()) {
-                                    val workingTimeMap4 = this.getWorkingTime(unit, level4.getVerticalTotalList());
-                                    lstResult.add(new ManHourHierarchyFlatData(
-                                            level1.getCode(),
-                                            level2.getCode(),
-                                            level3.getCode(),
-                                            level4.getCode(),
-                                            level4.getDisplayInfo(),
-                                            workingTimeMap4,
-                                            level4.getTotalPeriod()
-                                    ));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    /**
+     * Format value by display format
+     *
+     * @param value
+     * @param displayFormat
+     * @return String
+     */
+    private String formatValue(Double value, DisplayFormat displayFormat) {
+        if (value == 0) return Strings.EMPTY;
+
+        String targetValue = null;
+        switch (displayFormat) {
+            case DECIMAL:
+                BigDecimal decimaValue = new BigDecimal(value);
+                decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
+                targetValue = String.valueOf(decimaValue.doubleValue());
+                break;
+            case HEXA_DECIMAL:
+                BigDecimal decimalValue = new BigDecimal(value);
+                BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
+                BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
+                StringBuilder sb = new StringBuilder();
+                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
+                break;
+            case MINUTE:
+                DecimalFormat df = new DecimalFormat("#,###");
+                targetValue = df.format(value);
+                break;
         }
 
-        return lstResult;
-    }
-
-    private Map<String, Integer> getWorkingTime(int unit, List<VerticalValueDailyDto> lstValueDaily) {
-        Map<String, Integer> map = new HashMap<>();
-        if (unit == TotalUnit.DATE.value)
-            lstValueDaily.forEach(d -> map.put(d.getDate(), d.getWorkingHours()));
-        else
-            lstValueDaily.forEach(d -> map.put(d.getYearMonth(), d.getWorkingHours()));
-
-        return map;
+        return targetValue;
     }
 
     private void countHierarchy(List<SummaryItemDetailDto> parentList, CountTotalLevel result) {

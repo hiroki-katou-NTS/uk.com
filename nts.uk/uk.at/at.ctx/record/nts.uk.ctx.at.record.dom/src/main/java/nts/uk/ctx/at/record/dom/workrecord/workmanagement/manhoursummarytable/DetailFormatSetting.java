@@ -82,15 +82,13 @@ public class DetailFormatSetting extends ValueObject {
 
         for (val entry : workDataGroup.entrySet()) {
             val key = entry.getKey();
+            val value = entry.getValue();
             if (lastFlag) {
-                SummaryItemDetail itemDetail = createItemDetailForBottomLayer(dateList, yearMonthList, key, summaryItem.getSummaryItemType(), workDetailList, masterNameInfo);
+                SummaryItemDetail itemDetail = createItemDetailForBottomLayer(dateList, yearMonthList, key, summaryItem.getSummaryItemType(), value, masterNameInfo);
                 summaryItemDetails.add(itemDetail);
             } else {
-//                SummaryItem nextTargetItem = summaryItemList.stream().filter(x -> x.getHierarchicalOrder() == summaryItem.getHierarchicalOrder() + 1).findFirst().orElse(null);
-//                if (nextTargetItem != null) {
-                val itemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, summaryItem, workDetailList, masterNameInfo);
+                val itemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, summaryItem, value, masterNameInfo);
                 summaryItemDetails.add(itemDetail);
-//                }
             }
         }
 
