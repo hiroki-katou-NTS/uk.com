@@ -143,6 +143,9 @@ module nts.uk.at.view.kdp010.i {
 					if (!data.temporaryUse) {
 						_.remove(tg, (n: any) => { return n.value == 12 || n.value == 13; });
 					}
+					if(!data.entranceExitUse){
+						_.remove(tg, (n: any) => { return n.value == 10 || n.value == 11; });
+					}
 					self.contentsStampType(tg);
 					self.isUseWork(data.workUse);
 					self.isSupportUse(data.supportUse);
