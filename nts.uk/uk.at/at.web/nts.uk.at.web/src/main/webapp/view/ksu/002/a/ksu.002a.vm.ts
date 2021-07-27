@@ -166,6 +166,10 @@ module nts.uk.ui.at.ksu002.a {
 		
 		dayStartWeek: KnockoutObservable<number> = ko.observable(null);
 		
+		isSelectedStartWeek: KnockoutObservable<boolean> = ko.observable(null);
+		
+		storageDataStartWeek: KnockoutObservable<any> = ko.observable(null);
+		
 		readyLoadData: boolean = false;
 		
 		// Data result from 予定・実績を取得する
@@ -528,8 +532,11 @@ module nts.uk.ui.at.ksu002.a {
 				.fail((error:any)=>{
 					self.$dialog.error(error);
 				});
-				
-			$.when(sv1, sv2).done((data1: any, data2: any)=>{
+			let sv3 = self.$window.storage("KSU002.USER_DATA");
+			$.when(sv1, sv2, sv3).done((data1: any, data2: any, data3: any)=>{
+				if(data3){
+					self.storageDataStartWeek(data3.fdate);
+				}
 				self.dayStartWeek(data1.dayOfWeek);	
 				if(self.readyLoadData){
 					self.loadData();

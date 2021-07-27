@@ -493,21 +493,22 @@ module nts.uk.ui.calendar {
 	export class CalendarComponent extends ko.ViewModel {
 		style: KnockoutObservable<string> = ko.observable('');
 
-		baseDate: BaseDate = {
-			show: ko.computed(() => true),
-			model: ko.observable(null),
-			start: ko.observable(null),
-			options: ko.observableArray([])
-		};
+		baseDate: BaseDate;
 
 		schedules!: KnockoutComputed<Schedule>;
 		
-		startDaySelected: KnockoutObservable<boolean> = ko.observable(null);
-
 		constructor(private data: Parameter) {
 			super();
-
+			
 			const vm = this;
+			
+			vm.baseDate = {
+				show: ko.computed(() => true),
+				model: ko.observable(null),
+				start: vm.data.rootVm.storageDataStartWeek,
+				options: ko.observableArray([])
+			};
+			
 			const date = new Date();
 
 			if (!vm.data) {
@@ -573,13 +574,9 @@ module nts.uk.ui.calendar {
 						}
 					});
 					baseDate.options(options);
-					vm.startDaySelected(vm.baseDate.start() == item);
+					vm.data.rootVm.isSelectedStartWeek(vm.baseDate.start() == item);
 				}
 			});
-			
-			vm.$window
-				.storage(KSU_USER_DATA)
-				.then((v: StorageData) => vm.baseDate.start(v.fdate));
 
 			ko.computed({
 				read: () => {
@@ -608,12 +605,12 @@ module nts.uk.ui.calendar {
 							}
 						});
 					if(fdate == vm.data.rootVm.dayStartWeek()){
-						vm.startDaySelected(true);
+						vm.data.rootVm.isSelectedStartWeek(true);
 					}else {
-						vm.startDaySelected(false);
+						vm.data.rootVm.isSelectedStartWeek(false);
 					}
 				});
-			vm.startDaySelected.subscribe((newValue: boolean) => {
+			vm.data.rootVm.isSelectedStartWeek.subscribe((newValue: boolean) => {
 //				data.baseDate(data.baseDate());
 //				vm.data.rootVm.rebidingData();
 			});
@@ -768,7 +765,7 @@ module nts.uk.ui.calendar {
 					} else {
 						const { begin, finish } = baseDate;
 						const initDate = () => {
-							if(vm.startDaySelected()){
+							if(vm.data.rootVm.isSelectedStartWeek()){
 								let daysStartEndWeek = calculateDaysStartEndWeek(begin, finish, vm.data.rootVm.dayStartWeek(), true);
 								start = moment(daysStartEndWeek.start);
 								const diff = moment(daysStartEndWeek.end).diff(start, 'day');
