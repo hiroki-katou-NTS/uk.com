@@ -38,7 +38,7 @@ module nts.uk.ui.calendar {
 	export interface Parameter {
 		tabIndex: string;
 		width: KnockoutObservable<number>;
-		baseDate: KnockoutObservable<Date | DateRange>;
+		baseDate: KnockoutObservable<DateRange>;
 		schedules: KnockoutObservableArray<DayData>;
 		clickCell: (target: CLICK_CELL, day: DayData) => void;
 		rootVm: any;
@@ -515,7 +515,7 @@ module nts.uk.ui.calendar {
 				vm.data = {
 					tabIndex: '1',
 					width: ko.observable(630),
-					baseDate: ko.observable(date),
+					baseDate: ko.observable(null),
 					schedules: ko.observableArray([]),
 					clickCell: () => { },
 					rootVm: null
@@ -537,7 +537,7 @@ module nts.uk.ui.calendar {
 			}
 
 			if (ko.unwrap(baseDate) && !ko.isObservable(baseDate)) {
-				vm.data.baseDate = ko.observable(date);
+				vm.data.baseDate = ko.observable(null);
 			}
 
 			if (!ko.unwrap(schedules)) {
@@ -618,7 +618,7 @@ module nts.uk.ui.calendar {
 			vm.baseDate.model
 				.subscribe((date: string) => {
 					if (date && date.match(/^\d{6}$/)) {
-						data.baseDate(moment(date, D_FORMAT).toDate());
+//						data.baseDate(moment(date, D_FORMAT).toDate());
 					}
 				});
 
@@ -639,7 +639,16 @@ module nts.uk.ui.calendar {
 			vm.schedules = ko.computed({
 				read: () => {
 					const locale = moment.locale();
-					const raws = ko.unwrap(data.schedules);
+					let raws:any[] = [];
+					if(!vm.data.rootVm.isSelectedStartWeek()){
+						raws = _.filter(data.schedules(), function(n:any) {
+							let date: Date = new Date(moment(n.date).format("YYYY/MM/DD"));
+						  	return date >= new Date(moment(vm.data.baseDate().begin).format("YYYY/MM/DD")) && 
+								date <= new Date(moment(vm.data.baseDate().finish).format("YYYY/MM/DD"));
+						});
+					}else{
+						raws = data.schedules();
+					}
 					const startDate = ko.unwrap(vm.baseDate.start);
 
 					moment.updateLocale(locale, {
