@@ -6,6 +6,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import org.apache.logging.log4j.util.Strings;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import java.util.*;
@@ -75,7 +76,9 @@ public class DetailFormatSetting extends ValueObject {
         int hierarchyNo = summaryItemList.indexOf(summaryItem);
         boolean lastFlag = hierarchyNo >= summaryItemList.size() - 1;
         //$作業データグループ = 作業詳細リスト：map groupingBy $.集計項目をマッピングする(対象項目)
-        Map<String, List<WorkDetailData>> workDataGroup = workDetailList.stream().collect(Collectors.groupingBy(x -> x.mapSummaryItem(summaryItem.getSummaryItemType())));
+        Map<String, List<WorkDetailData>> workDataGroup = workDetailList.stream()
+                .filter(x -> !x.mapSummaryItem(summaryItem.getSummaryItemType()).equals(Strings.EMPTY))
+                .collect(Collectors.groupingBy(x -> x.mapSummaryItem(summaryItem.getSummaryItemType())));
 
         for (val entry : workDataGroup.entrySet()) {
             val key = entry.getKey();
@@ -83,11 +86,11 @@ public class DetailFormatSetting extends ValueObject {
                 SummaryItemDetail itemDetail = createItemDetailForBottomLayer(dateList, yearMonthList, key, summaryItem.getSummaryItemType(), workDetailList, masterNameInfo);
                 summaryItemDetails.add(itemDetail);
             } else {
-                SummaryItem nextTargetItem = summaryItemList.stream().filter(x -> x.getHierarchicalOrder() == summaryItem.getHierarchicalOrder() + 1).findFirst().orElse(null);
-                if (nextTargetItem != null) {
-                    val itemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, nextTargetItem, workDetailList, masterNameInfo);
-                    summaryItemDetails.add(itemDetail);
-                }
+//                SummaryItem nextTargetItem = summaryItemList.stream().filter(x -> x.getHierarchicalOrder() == summaryItem.getHierarchicalOrder() + 1).findFirst().orElse(null);
+//                if (nextTargetItem != null) {
+                val itemDetail = createItemDetailOtherThanBottomLayer(dateList, yearMonthList, key, summaryItem, workDetailList, masterNameInfo);
+                summaryItemDetails.add(itemDetail);
+//                }
             }
         }
 
@@ -108,7 +111,8 @@ public class DetailFormatSetting extends ValueObject {
                                                                    String code, SummaryItem summaryItem, List<WorkDetailData> workDetailList,
                                                                    MasterNameInformation masterNameInfo) {
         val displayInfo = masterNameInfo.getDisplayInfo(code, summaryItem.getSummaryItemType());
-        val nextLevelList = createSummaryItemDetail(dateList, yearMonthList, summaryItem, workDetailList, masterNameInfo);
+        val nextTargetItem = summaryItemList.stream().filter(x -> x.getHierarchicalOrder() == summaryItem.getHierarchicalOrder() + 1).findFirst().orElse(null);
+        val nextLevelList = createSummaryItemDetail(dateList, yearMonthList, nextTargetItem, workDetailList, masterNameInfo);
         val summaryItemDetail = SummaryItemDetail.createNew(code, displayInfo, nextLevelList);
 
         if (displayVerticalHorizontalTotal == NotUseAtr.USE)

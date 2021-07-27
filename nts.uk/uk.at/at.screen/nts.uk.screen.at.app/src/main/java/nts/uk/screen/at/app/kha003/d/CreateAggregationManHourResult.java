@@ -46,7 +46,7 @@ public class CreateAggregationManHourResult {
         )).orElse(null);
 
         val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
-        if (manHourOutputContent == null)
+        if (manHourOutputContent == null || workDetailList == null)
             throw new BusinessException("Msg_2171");
 
         // Convert domain ManHourSummaryTableOutputContent to dto
@@ -58,11 +58,11 @@ public class CreateAggregationManHourResult {
         );
 
         // Flat data
-        val flatDataList = this.flatDataProcessing(outputContent, manHourObj.getTotalUnit());
+//        val flatDataList = this.flatDataProcessing(outputContent, manHourObj.getTotalUnit());
         CountTotalLevel totalLevel = new CountTotalLevel(0);
         countHierarchy(outputContent.getItemDetails(), totalLevel);
 
-        return new ManHourAggregationResultDto(manHourObj, outputContent, flatDataList, totalLevel.getCountTotalLevel());
+        return new ManHourAggregationResultDto(manHourObj, outputContent, Collections.emptyList(), totalLevel.getCountTotalLevel());
     }
 
     private List<SummaryItemDto> getSummaryItemList(List<SummaryItem> lstItem) {
