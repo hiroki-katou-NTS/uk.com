@@ -341,8 +341,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$(".extable-header-detail").addClass("header-color");
 				
 				if(!_.isNil(self.localStore.workSelection)){
-					if(self.localStore.workSelection == 0)
+					if(self.localStore.workSelection == 0){
 						mode = "paste";
+						__viewContext.viewModel.viewmodelAb.taskChecked.valueHasMutated();
+					}
+						
 					if(self.localStore.workSelection == 1){
 						mode = "pasteFlex";
 						__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
