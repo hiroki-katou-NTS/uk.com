@@ -5443,7 +5443,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let filTaskData = _.filter (self.taskData, (x : any) => {
 					return x.empID == self.lstEmpId[line].empId;
 				});
-				if (filTaskData.length > 0) {
+				if (filTaskData.length > 0 && !_.isNil(self.taskData[line])) {
 				
 				for (let i = 0; i < self.taskData[line].taskScheduleDetail.length ; i++) {
 					let task : any = self.taskData[line].taskScheduleDetail[i],
@@ -5667,13 +5667,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let index = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
 						return ind.empId === self.dataScreen003A().employeeInfo[line].empId;
 					})
-					self.lstTaskScheduleDetailEmp[index].taskScheduleDetail.push({
-						taskCode : taskInfo[0].code,
-						timeSpanForCalcDto : {
-							start : start,
-							end : end
-						}
-					});
+					
+					if (index != -1){
+						self.lstTaskScheduleDetailEmp[index].taskScheduleDetail.push({
+							taskCode : taskInfo[0].code,
+							timeSpanForCalcDto : {
+								start : start,
+								end : end
+							}
+						});
+					} else {
+						self.lstTaskScheduleDetailEmp = taskOld;
+					}
+					
 				};
 				
 				self.lstChartTask.push({
