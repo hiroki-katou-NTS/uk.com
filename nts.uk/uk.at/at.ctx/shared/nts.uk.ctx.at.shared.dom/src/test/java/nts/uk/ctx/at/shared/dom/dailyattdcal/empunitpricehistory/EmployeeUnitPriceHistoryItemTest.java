@@ -31,7 +31,7 @@ public class EmployeeUnitPriceHistoryItemTest {
 	public void testgetEmployeeHourlyUnitPrice1() {
 		EmployeeUnitPriceHistoryItem empUnitPriceHisItem = EmployeeUnitPriceHistoryHelper.getEmployeeUnitPriceHistoryItemDefault();
 		
-		Optional<WorkingHoursUnitPrice> result = empUnitPriceHisItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_2.value);
+		Optional<WorkingHoursUnitPrice> result = empUnitPriceHisItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_2);
 		
 		assertThat(result.get().v()).isEqualTo(200);
 	}
@@ -44,7 +44,7 @@ public class EmployeeUnitPriceHistoryItemTest {
 	public void testgetEmployeeHourlyUnitPrice2() {
 		EmployeeUnitPriceHistoryItem empUnitPriceHisItem = EmployeeUnitPriceHistoryHelper.getEmployeeUnitPriceHistoryItemDefault();
 		
-		Optional<WorkingHoursUnitPrice> result = empUnitPriceHisItem.getEmployeeHourlyUnitPrice(20);
+		Optional<WorkingHoursUnitPrice> result = empUnitPriceHisItem.getEmployeeHourlyUnitPrice(UnitPrice.Price_10);
 		
 		assertThat(result).isEqualTo(Optional.empty());
 	}
