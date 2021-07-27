@@ -99,6 +99,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -528,6 +529,11 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public List<Closure> closure(String companyId) {
 		return closureRepo.findAll(companyId);
+	}
+	
+	@Override
+	public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+		return closureRepo.findAllActive(companyId, useAtr);
 	}
 
 	@Override

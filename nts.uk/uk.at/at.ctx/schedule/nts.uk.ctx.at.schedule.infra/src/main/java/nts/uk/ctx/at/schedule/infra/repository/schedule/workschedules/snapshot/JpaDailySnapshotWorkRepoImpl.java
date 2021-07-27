@@ -37,25 +37,29 @@ public class JpaDailySnapshotWorkRepoImpl extends JpaRepository implements Daily
 
 	@Override
 	public void save(DailySnapshotWork snapshot) {
-
-		this.commandProxy().insert(KscdtSnapshot.create(snapshot));
+		addAndUpdate(snapshot);
 	}
 
 	@Override
 	public void update(DailySnapshotWork snapshot) {
-		val entity = this.queryProxy().find(new KscdtSnapshotPK(snapshot.getSid(), snapshot.getYmd()), KscdtSnapshot.class);
-		
+		addAndUpdate(snapshot);
+	}
+	
+	private void addAndUpdate(DailySnapshotWork snapshot) {
+		val entity = this.queryProxy().find(new KscdtSnapshotPK(snapshot.getSid(), snapshot.getYmd()),KscdtSnapshot.class);
+
 		if (entity.isPresent()) {
 			entity.ifPresent(e -> {
 				e.predeterminedTime = snapshot.getSnapshot().getPredetermineTime().valueAsMinutes();
 				e.workTypeCd = snapshot.getSnapshot().getWorkInfo().getWorkTypeCode().v();
-				e.workTimeCd = snapshot.getSnapshot().getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v()).orElse(null);
-				
+				e.workTimeCd = snapshot.getSnapshot().getWorkInfo().getWorkTimeCodeNotNull().map(c -> c.v())
+						.orElse(null);
+
 				this.commandProxy().update(e);
 			});
 		} else {
-			
-			save(snapshot);
+
+			this.commandProxy().insert(KscdtSnapshot.create(snapshot));
 		}
 	}
 

@@ -78,7 +78,7 @@ public class WorkByIndividualWorkDay extends DomainObject{
 	/**
 	 * [4] 休出時の勤務情報を取得する
 	 */
-	public WorkInformation GetWorkinfoOnVacation(WorkType workType) {
+	public WorkInformation getWorkinfoOnVacation(WorkType workType) {
 		 WorkTypeCode workTypeCode = null;
 		 Optional<WorkTimeCode> workTimeCode = Optional.empty();
 

@@ -168,7 +168,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.currentWorkType().oneDayCls.subscribe(function(newOneDayCls) {
                 self.checkCalculatorMethod(newOneDayCls);
 
-                if (newOneDayCls == self.currentOneDayCls()) {
+                if (newOneDayCls == self.currentOneDayCls() && !self.isCreated()) {
                     self.setWorkTypeSet(self.currentWorkType().oneDay(), ko.toJS(self.currentOneDay()));
                 } else {
                     self.setWorkTypeSet(self.currentWorkType().oneDay(), ko.toJS(self.oneDay));
@@ -184,7 +184,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.checkCalculatorMethod(afternoonCode);
                 }
 
-                if (newOneDayCls == self.currentMorningCls()) {
+                if (newOneDayCls == self.currentMorningCls() && !self.isCreated()) {
                     self.setWorkTypeSet(self.currentWorkType().morning(), ko.toJS(self.currentMorning));
                 } else {
                     self.setWorkTypeSet(self.currentWorkType().morning(), ko.toJS(self.oneDay));
@@ -199,7 +199,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.checkCalculatorMethod(morningCode);
                 }
 
-                if (newOneDayCls == self.currentAfternoonCls()) {
+                if (newOneDayCls == self.currentAfternoonCls() && !self.isCreated()) {
                     self.setWorkTypeSet(self.currentWorkType().afternoon(), ko.toJS(self.currentAfternoon));
                 } else {
                     self.setWorkTypeSet(self.currentWorkType().afternoon(), ko.toJS(self.oneDay));
@@ -243,14 +243,21 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             cwt.abolishAtr(itemWorkType.abolishAtr);
                             cwt.memo(itemWorkType.memo);
                             cwt.workAtr(itemWorkType.workAtr);
-                            cwt.oneDayCls(itemWorkType.oneDayCls);
-                            cwt.morningCls(itemWorkType.morningCls);
-                            cwt.afternoonCls(itemWorkType.afternoonCls);
                             cwt.calculatorMethod(itemWorkType.calculatorMethod);
                         }
-                        self.setWorkTypeSet(cwt.oneDay(), itemWorkType.oneDay);
-                        self.setWorkTypeSet(cwt.morning(), itemWorkType.morning);
-                        self.setWorkTypeSet(cwt.afternoon(), itemWorkType.afternoon);
+                        if (cwt.workAtr() === 0) {
+                          cwt.oneDayCls(itemWorkType.oneDayCls);
+                          cwt.oneDayCls.valueHasMutated();
+                          self.setWorkTypeSet(cwt.oneDay(), itemWorkType.oneDay);
+                        } else if (cwt.workAtr() === 1) {
+                          cwt.morningCls(itemWorkType.morningCls);
+                          cwt.morningCls.valueHasMutated();
+                          cwt.afternoonCls(itemWorkType.afternoonCls);
+                          cwt.afternoonCls.valueHasMutated();
+                          self.setWorkTypeSet(cwt.morning(), itemWorkType.morning);
+                          self.setWorkTypeSet(cwt.afternoon(), itemWorkType.afternoon);
+                        }
+                        
                     });
                 } else {
                     self.isCreated(true);
@@ -486,6 +493,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          * Check Calculator Method based on work type cls
          */
         private checkCalculatorMethod(workTypeSetCode: number): void {
+          console.log("TING")
             let self = this;
             if (self.langId() != 'ja') {
                 self.enableMethod(false);
@@ -573,10 +581,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.oneDay().sumSpHodidayNo(0);
             self.currentOneDay().sumAbsenseNo = 0;
             self.currentOneDay().sumSpHodidayNo = 0;
-            od.timeLeaveWork(0);
-            od.attendanceTime(0);
-            od.genSubHodiday(0);
-            od.dayNightTimeAsk(0);
+            self.resetCheckbox(od);
 
             mn.workTypeCode('');
             mn.workAtr(0);
@@ -588,10 +593,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             mn.sumSpHodidayNo(0);
             self.currentMorning().sumAbsenseNo = 0;
             self.currentMorning().sumSpHodidayNo = 0;
-            mn.timeLeaveWork(0);
-            mn.attendanceTime(0);
-            mn.genSubHodiday(0);
-            mn.dayNightTimeAsk(0);
+            self.resetCheckbox(mn);
 
             af.workTypeCode('');
             af.workAtr(0);
@@ -603,10 +605,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             af.sumSpHodidayNo(0);
             self.currentAfternoon().sumAbsenseNo = 0;
             self.currentAfternoon().sumSpHodidayNo = 0;
-            af.timeLeaveWork(0);
-            af.attendanceTime(0);
-            af.genSubHodiday(0);
-            af.dayNightTimeAsk(0);
+            self.resetCheckbox(af);
             self.currentCode("");
             
             cwt.oneDayCls(0);
@@ -615,6 +614,16 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (lwtData.length > 0) {
                 nts.uk.ui.errors.clearAll();
             }
+        }
+
+        private resetCheckbox(parent: WorkTypeSet): void {
+          parent.timeLeaveWork(0);
+          parent.attendanceTime(0);
+          parent.genSubHodiday(0);
+          parent.digestPublicHd(0);
+          parent.dayNightTimeAsk(0);
+          parent.attendanceTime(0);
+          parent.countHodiday(0);
         }
 
         /**

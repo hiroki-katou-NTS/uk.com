@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 
@@ -48,7 +48,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 	 * @param appDispInfoStartupOutput 表示する実績内容 
 	 * 
 	 */
-	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, ErrorFlagImport opErrorFlag, List<ActualContentDisplay> opActualContentDisplayLst, AppDispInfoStartupOutput appDispInfoStartup) {
+	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, List<MsgErrorOutput> msgErrorLst, List<ActualContentDisplay> opActualContentDisplayLst, AppDispInfoStartupOutput appDispInfoStartup) {
 		
 		//登録前エラーチェック（新規）(Check error trước khi đăng ký (New)
 		this.PreRegistrationErrorCheck.errorCheck(companyId, abs, rec, 
@@ -61,11 +61,11 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		
 		if(rec.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, rec.get(), null, opErrorFlag, new ArrayList<>(), appDispInfoStartup);
+			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, rec.get(), null, msgErrorLst, new ArrayList<>(), appDispInfoStartup);
 		}
 		
 		if(abs.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, abs.get(), null, opErrorFlag, new ArrayList<>(), appDispInfoStartup);
+			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, abs.get(), null, msgErrorLst, new ArrayList<>(), appDispInfoStartup);
 		}
 		//TODO
 	}

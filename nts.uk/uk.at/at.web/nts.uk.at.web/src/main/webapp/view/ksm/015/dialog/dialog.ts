@@ -121,9 +121,19 @@ module nts.uk.at.view.ksm015 {
             
             closeButton.appendTo(functionArea);
 			span.appendTo(container);
-            functionArea.appendTo(container);
             errorBoard.appendTo(container);
-            container.appendTo(getRoot()); 
+            functionArea.appendTo(container);
+            container.appendTo(getRoot());
+
+            const cssFunctionArea = {
+                "left": "0px",
+                "width": "100%",
+                "position": "absolute",
+                "text-align": "center",
+                "padding": "10px 0px",
+                "border-top": "1px solid #ccc",
+                "bottom": "0"
+            };
             
             setTimeout(function() {
                 container.dialog({ 
@@ -135,8 +145,8 @@ module nts.uk.at.view.ksm015 {
                     maxHeight: 500,
                     closeOnEscape: false,
                     open: function() {
-                        errorBoard.css({"overflow": "auto", "max-height" : "289px", "margin-bottom": "65px"});
-                        functionArea.css({"left": "0px"});
+                        errorBoard.css({"overflow": "auto", "max-height" : "289px", "margin": "0px 0px 65px 0px", "border": "1px solid #EAE8F2"});
+                        functionArea.css(cssFunctionArea);
                         closeButton.text(nts.uk.resource.getText('KSM015_104')).click(function(evt){
                             container.dialog("destroy");  
                             container.remove();

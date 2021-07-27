@@ -1,8 +1,22 @@
 #editMode {
   margin-top: 7px;
+  display: flex;
+flex-direction: column;
 }
 
 #editMode .ntsRadioBox:first-child {
   display: block;
   margin-bottom: 10px;
+}
+
+.control-group {
+  display: inline-flex;
+}
+
+div#master-wrapper div#master-content>div[id^="contents-area"]:first-child {
+  margin-left: 35px;
+}
+
+.control-group.valign-top>* {
+  margin-right: 10px;
 }

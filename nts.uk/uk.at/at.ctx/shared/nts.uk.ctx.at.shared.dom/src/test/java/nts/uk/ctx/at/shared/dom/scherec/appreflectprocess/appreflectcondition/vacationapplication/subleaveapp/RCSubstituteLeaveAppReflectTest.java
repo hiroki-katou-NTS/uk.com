@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -54,7 +53,7 @@ public class RCSubstituteLeaveAppReflectTest {
 
 		/// 勤務情報、出退勤を反映する
 		VacationAppReflectOption workInfoAttendanceReflect = new VacationAppReflectOption(NotUseAtr.USE, // 1日休暇の場合は出退勤を削除
-				NotUseAtr.USE, // 出退勤を反映する
+				NotUseAtr.NOT_USE,
 				ReflectWorkHourCondition.REFLECT);// 就業時間帯を反映する
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
@@ -78,15 +77,6 @@ public class RCSubstituteLeaveAppReflectTest {
 		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets())
 				.extracting(x -> x.getWorkNo().v(), x -> x.getAttendance().v(), x -> x.getLeaveWork().v())
 				.contains(Tuple.tuple(1, 777, 999));
-		
-		//③ 出退勤の反映
-		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks())
-		.extracting(x -> x.getWorkNo().v(), // No
-				x -> x.getStampOfAttendance().get().getTimeDay().getTimeWithDay().get().v(), // 出勤 .時刻
-				x -> x.getStampOfAttendance().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(), // 出勤.時刻変更手段
-				x -> x.getStampOfLeave().get().getTimeDay().getTimeWithDay().get().v(), // 退勤 .時刻
-				x -> x.getStampOfLeave().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans())// 退勤.時刻変更手段
-		.contains(Tuple.tuple(1, 777, TimeChangeMeans.APPLICATION, 999, TimeChangeMeans.APPLICATION));
 
 	}
 

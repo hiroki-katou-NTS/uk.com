@@ -153,7 +153,7 @@ module nts.uk.at.view.kdl048.screenModel {
       } else {
         vm.diligenceData(tableDatas);
         vm.diligenceData(_.orderBy(vm.diligenceData(), ["indicatesNumber"], ["asc"]));
-        vm.currentCodeList.push(vm.diligenceData()[0].id);
+        // vm.currentCodeList.push(vm.diligenceData()[0].id);
       }
     }
 

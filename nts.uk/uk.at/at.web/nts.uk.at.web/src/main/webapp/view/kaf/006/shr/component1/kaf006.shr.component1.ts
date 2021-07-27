@@ -33,7 +33,6 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 </div>
                 <!-- /ko -->
             </div>
-            <div class="end-line"></div>
         </div>
         <div id="kaf006-shr-component1" class="control-group" 
             data-bind="visible: $parent.selectedType() === 6 && ($parent.condition19Over60 || $parent.condition19Annual || $parent.condition19ChildNursing || $parent.condition19Nursing || $parent.condition19Substitute)" 
@@ -71,7 +70,6 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 </div>
                 <!-- /ko -->
             </div>
-            <div class="end-line"></div>
         </div>
         `
     })

@@ -25,6 +25,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -759,18 +760,21 @@ public class ScheCreExeWorkTimeHandler {
 
 		// check reference working hours
 		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE.value) {
-			worktimeCode = this.convertWorkingHoursEmploymentStatus(command.toWorkTimeConvert(), masterCache.getMapEmploymentStatus());
-		}
-
-		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_WORK_DAILY.value) {
-			worktimeCode = this.convertWorkingHoursPersonalWork(command.toWorkTimeConvert(), masterCache.getMapEmploymentStatus(),
-					masterCache.getListWorkingConItem());
-		}
-
-		if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			worktimeCode = this.convertWorkingHoursPersonalDayofWeek(command.toWorkTimeConvert(), masterCache.getMapEmploymentStatus(),
-					masterCache.getListWorkingConItem());
-
+			//入力パラメータ.就業時間帯コードを使う
+			worktimeCode = command.getWorkingCode();
+		} else if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.WEEKDAYS.value) {
+			Optional<WorkCondItemDto> optionalWorkingConditionItem = masterCache.getListWorkingConItem().stream()
+					.filter(x -> x.getDatePeriod().contains(command.toWorkTimeConvert().getBaseGetter().getToDate())
+							&& command.getEmployeeId().equals(x.getEmployeeId())).findFirst();
+			//平日の就業時間帯コードを取得する
+			worktimeCode = optionalWorkingConditionItem.isPresent() && optionalWorkingConditionItem.get()
+					.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()
+							? optionalWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime()
+									.getWorkTimeCode().get().v()
+							: null;
+		}else if (command.getReferenceWorkingHours() == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
+			//個人曜日別をもとに就業時間帯コードを変換する
+			worktimeCode = this.getWorkTimeByWeekdays(command.toWorkTimeConvert(), masterCache.getListWorkingConItem());
 		}
 
 		// check not exist data work
@@ -793,5 +797,36 @@ public class ScheCreExeWorkTimeHandler {
 			return Pair.of(true, Optional.of(worktimeCode));
 		}
 	}
+	
+	/**
+	 * 在職の「就業時間帯コード」を返す（曜日別）
+	 * @param command
+	 * @param listWorkingConItem
+	 * @return
+	 */
+	public String getWorkTimeByWeekdays(WorkTimeConvertCommand command, List<WorkCondItemDto> listWorkingConItem) {
+		//就業時間帯の必須チェック
+			SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(command.getWorkTypeCode());
+			if(setupType == SetupType.NOT_REQUIRED ) {
+				return null;
+			}
+			
+			Optional<WorkCondItemDto> optionalWorkingConditionItem = listWorkingConItem.stream()
+					.filter(x -> x.getDatePeriod().contains(command.getBaseGetter().getToDate())
+							&& command.getEmployeeId().equals(x.getEmployeeId()))
+					.findFirst();
+			if (!optionalWorkingConditionItem.isPresent()) {
+				return null;
+			}
+			Optional<SingleDaySchedule> optSingleDaySchedule = optionalWorkingConditionItem.get().getWorkCategory()
+					.getWorkTime().getDayOfWeek().getSingleDaySchedule(command.getBaseGetter().getToDate());
+			//入力パラメータ「年月日」の曜日に対応する「単一日勤務時間」から、就業時間帯コードを取得する
+			if(optSingleDaySchedule.isPresent() && optSingleDaySchedule.get().getWorkTimeCode().isPresent()) {
+				return optSingleDaySchedule.get().getWorkTimeCode().get().v();
+			}
+			//エラーログを作成する
+			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_594");
+			return null;
+	} 
 
 }
