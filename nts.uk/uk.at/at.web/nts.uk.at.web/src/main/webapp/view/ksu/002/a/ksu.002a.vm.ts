@@ -718,8 +718,16 @@ module nts.uk.ui.at.ksu002.a {
 						const registerDates: StorageData[] = [];
 						const command = { sid, registerDates };
 						const schedules = ko.unwrap(vm.schedules);
-
-						_.each(schedules, ({ date, data }) => {
+						let schedulesFilter = schedules;
+						if(!vm.isSelectedStartWeek()){
+							schedulesFilter = _.filter(schedulesFilter, function(n:any) {
+								let date: Date = new Date(moment(n.date).format("YYYY/MM/DD"));
+							  	return date >= new Date(moment(vm.dr.begin).format("YYYY/MM/DD")) && 
+									date <= new Date(moment(vm.dr.finish).format("YYYY/MM/DD"));
+							});
+						}
+						
+						_.each(schedulesFilter, ({ date, data }) => {
 							const {
 								$raw,
 								wtime,
@@ -739,6 +747,7 @@ module nts.uk.ui.at.ksu002.a {
 							const workTypeCd = ko.unwrap(wtype.code);
 
 							if (workTypeCd !== workTypeCode || workTimeCd !== workTimeCode || start !== startTime || end !== endTime) {
+								
 								registerDates.push({ date, end, start, workTimeCode: workTimeCd, workTypeCode: workTypeCd });
 							}
 						});
@@ -746,6 +755,8 @@ module nts.uk.ui.at.ksu002.a {
 						vm.$blockui('show')
 							.then(() => vm.$ajax('at', API.SAVE_DATA, command))
 							.then((info: HandlerResult) => {
+								vm.achievement(vm.achievement());
+								vm.achievement.valueHasMutated();
 								if (!info.listErrorInfo.length) {
 									return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => vm.schedules.reset(true));
 								} else {

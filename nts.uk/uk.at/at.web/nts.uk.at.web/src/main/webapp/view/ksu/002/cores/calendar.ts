@@ -774,15 +774,10 @@ module nts.uk.ui.calendar {
 					} else {
 						const { begin, finish } = baseDate;
 						const initDate = () => {
-							if(true){
-								let daysStartEndWeek = calculateDaysStartEndWeek(begin, finish, vm.data.rootVm.dayStartWeek(), true);
-								start = moment(daysStartEndWeek.start);
-								const diff = moment(daysStartEndWeek.end).diff(start, 'day');
-								initRange(diff);
-							}else{
-								const diff = moment(finish).diff(begin, 'day');
-								initRange(diff);
-							}
+							let daysStartEndWeek = calculateDaysStartEndWeek(begin, finish, vm.data.rootVm.dayStartWeek(), true);
+							start = moment(daysStartEndWeek.start);
+							const diff = moment(daysStartEndWeek.end).diff(start, 'day');
+							initRange(diff);
 						};
 
 						if (!first || !last) {
