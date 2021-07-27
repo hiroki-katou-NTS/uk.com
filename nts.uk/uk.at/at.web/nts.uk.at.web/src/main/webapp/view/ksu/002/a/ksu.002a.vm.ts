@@ -297,7 +297,7 @@ module nts.uk.ui.at.ksu002.a {
 								if (!exist) {
 									$raw.achievements = null;
 								} else {
-									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
+									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName, workTimeForm } = exist;
 
 									$raw.achievements = {
 										endTime,
@@ -305,7 +305,8 @@ module nts.uk.ui.at.ksu002.a {
 										workTimeCode,
 										workTimeName,
 										workTypeCode,
-										workTypeName
+										workTypeName,
+										workTimeForm
 									};
 								}
 							});
@@ -314,7 +315,7 @@ module nts.uk.ui.at.ksu002.a {
 							// reset data
 							_.each(schedules, (sc) => {
 								const { data } = sc;
-								const { $raw, wtype, wtime, value } = data;
+								const { $raw, wtype, wtime, value, holiday } = data;
 								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
 
 								// UI-4-1 実績表示を「する」に選択する
@@ -326,8 +327,11 @@ module nts.uk.ui.at.ksu002.a {
 										workTimeCode,
 										workTimeName,
 										startTime,
-										endTime
+										endTime,
+										workTimeForm
 									} = $raw.achievements;
+									
+									//holiday(workTimeForm);
 
 									wtype.code(workTypeCode || null);
 									wtype.name(workTypeName || null);
@@ -422,7 +426,8 @@ module nts.uk.ui.at.ksu002.a {
 									workTypeCode,
 									workTimeCode,
 									startTime,
-									endTime
+									endTime,
+									workTimeForm
 								} = arch === NO ? $raw : (achievements || $raw);
 
 								// hack i18n
@@ -464,7 +469,7 @@ module nts.uk.ui.at.ksu002.a {
 										wtype: ko.observable(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT)
 									}
 								};
-
+								//exits.data.holiday(workTimeForm);
 								if (dateInfoDuringThePeriod) {
 									const {
 										holidayName,
@@ -881,6 +886,8 @@ module nts.uk.ui.at.ksu002.a {
 		startTime: null | number;
 		// 終了時刻
 		endTime: null | number;
+		//就業時間帯の勤務形態 
+		workTimeForm: null | string;
 	}
 
 	interface WorkSchedule<D = Date> {
@@ -921,6 +928,8 @@ module nts.uk.ui.at.ksu002.a {
 		endTimeEditState: null | EditStateOfDailyAttd;
 		// Data info for event daisy (sakura)
 		dateInfoDuringThePeriod: DateInfoDuringThePeriod;
+		//就業時間帯の勤務形態 
+		workTimeForm: null | string;
 	}
 
 	interface DateInfoDuringThePeriod {
