@@ -59,12 +59,14 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			});
 
 			self.selectedButton.subscribe((value) => {
+				if (_.isEmpty(self.sourceCompany()[0]) && _.isEmpty(self.sourceCompany()[1]) && _.isEmpty(self.sourceCompany()[2]) &&
+				_.isEmpty(self.sourceCompany()[3]) && _.isEmpty(self.sourceCompany()[4])){
+					__viewContext.viewModel.viewmodelA.delPasteTask();
+				}
 				
 				if(__viewContext.viewModel.viewmodelA.localStore.workSelection != 1)
 					return;
 					
-				__viewContext.viewModel.viewmodelA.setTaskMode("pasteFlex");
-				
 				if (value.data == null || value.data == {}){
 					__viewContext.viewModel.viewmodelA.delPasteTask();
 					return;
@@ -92,9 +94,12 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					let taskFilter = _.filter(self.dataTaskInfo.lstTaskDto, (x : any) => {
 							return value.data.tooltip === x.taskDisplayInfoDto.taskName;
 					});
-					
-					if(value.data.text != "t" && value.data.tooltip != "test" && __viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2)
-					__viewContext.viewModel.viewmodelA.pasteTask(value);
+					if(value.data.text != "t" && value.data.tooltip != "test" && __viewContext.viewModel.viewmodelA.selectedDisplayPeriod() == 2){
+						__viewContext.viewModel.viewmodelA.setTaskMode("pasteFlex");
+						
+						if (taskFilter.length > 0)
+						__viewContext.viewModel.viewmodelA.pasteTask(value, taskFilter[0].code);
+					}
 				}
 				
 				//$("#tableButton1").ntsButtonTable("setSelectedCell", value.row, value.column);
@@ -160,7 +165,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					}
 				}
 				
-				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo);
+				__viewContext.viewModel.viewmodelA.pasteTask(taskInfo, taskFilter[0].code);
 				__viewContext.viewModel.viewmodelA.setTaskMode("paste");
 				__viewContext.viewModel.viewmodelA.localStore.work1Selection = value;
 				characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
@@ -369,6 +374,11 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					return;
 				}
 			} else {
+				if (_.isEmpty(selectButtonChoice)) {
+					self.selectedButton(0);
+					return;
+				}
+				
 				let value = {
 					column: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.column,
 					data: {
@@ -412,6 +422,8 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			let self = this;
 			self.selectedPage(indexLinkBtn());
 			self.setDataPalletToButton(indexLinkBtn(), 0);
+			if(window.innerWidth >= 1366)
+			$("#tableButton1 button").css("min-width", "200px");
 			__viewContext.viewModel.viewmodelA.localStore.pageNo = indexLinkBtn();
 			characteristics.save(self.KEY, __viewContext.viewModel.viewmodelA.localStore);
 		}
@@ -460,6 +472,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 							self.textButtonArr.push({ name: ko.observable(getText("KSU003_84", [i])), id: i, formatter: _.escape });
 						}
 					}
+					
+					if(window.innerWidth >= 1366)
+					$("#tableButton1 button").css("min-width", "200px");
 				});
 			}
 		}

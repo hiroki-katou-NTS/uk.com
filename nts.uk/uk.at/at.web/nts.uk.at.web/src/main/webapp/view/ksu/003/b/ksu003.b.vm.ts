@@ -39,8 +39,7 @@ module nts.uk.at.view.ksu003.b {
         taskPaletteOrgnization: KnockoutObservable<TaskPaletteOrgnization> = ko.observable(new TaskPaletteOrgnization());       
         sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
         isClickLink: KnockoutObservable<boolean> = ko.observable(false);
-        endStatus: KnockoutObservable<string> = ko.observable("Cancel");
-		dataShareA : any = getShared("dataShareKsu003b"); 
+        endStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
 
         constructor() {
             super();
@@ -280,20 +279,20 @@ module nts.uk.at.view.ksu003.b {
             } else if (event && event != undefined) {
                 index = _.indexOf(self.taskPaletteOrgnization().keys(), Number($(event)[0].dataset.idx) + 1);
             }
-            self.textName(data ? data.text : null);
-            self.tooltip(data ? data.tooltip : null);
+            // self.textName(data ? data.text : null);
+            // self.tooltip(data ? data.tooltip : null);
 
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            
+            let dataShare = getShared("dataShareKsu003b");
             data ? position = Number(data.target.dataset.idx) + 1 : position = Number($(event)[0].dataset.idx) + 1
 
             let request = {
                 isMultiple: false,
                 showExpireDate: true,
                 workFrameNoSelection: 1,
-                referenceDate: moment(self.dataShareA.referenceDate).format("YYYY/MM/DD"),
+                referenceDate: moment(dataShare.referenceDate).format("YYYY/MM/DD"),
                 selectionCodeList: [self.taskPaletteOrgnization().taskCodes()[index]]
             };
             setShared('KDL012Params', request);
@@ -301,11 +300,11 @@ module nts.uk.at.view.ksu003.b {
             nts.uk.ui.windows.sub.modal("/view/kdl/012/index.xhtml").onClosed(() => {
                 let dataFromKdl012 = getShared("KDL012OutputList");
                 if (dataFromKdl012) {
-                    self.textName(dataFromKdl012 ? dataFromKdl012[0].taskName : self.textName());
+                    self.textName(dataFromKdl012[0].taskAbName);
                     self.taskPaletteOrgnization().keys.push(position);
                     self.taskPaletteOrgnization().taskCodes.push(dataFromKdl012[0].code);
                     self.taskPaletteOrgnization().taskNames.push(dataFromKdl012[0].taskName);
-                    self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012[0].taskAbNames);
+                    self.taskPaletteOrgnization().taskAbNames.push(dataFromKdl012[0].taskAbName);
                     dfd.resolve({ text: self.textName(), tooltip: self.tooltip(), data: dataFromKdl012[0] });
                 }
             });
@@ -421,12 +420,8 @@ module nts.uk.at.view.ksu003.b {
 
         resetData() {
             const self = this;
-            // self.targetUnit();
-            // self.targetId('');
-            // self.displayName();
             self.name('');
             self.remarks('');
-            // self.page();
             self.keys([]);
             self.taskCodes([]);
             self.taskNames([]);

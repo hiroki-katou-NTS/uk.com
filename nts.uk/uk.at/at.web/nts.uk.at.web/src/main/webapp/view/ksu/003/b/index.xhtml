@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 995, height: 450 };</script>
+            <script>var dialogSize = { width: 995, height: 480 };</script>
             <com:ValidatorScript>
                 nts.uk.ctx.at.schedule.dom.schedule.task.taskpalette.TaskPaletteName
                 nts.uk.ctx.at.schedule.dom.schedule.task.taskpalette.TaskPaletteRemark
@@ -58,7 +58,7 @@
                     <div id="name" data-bind="ntsFormLabel: {required: false, constraint: 'TaskPaletteRemark'}">
                         #{i18n.getText('KSU003_79')}</div>
                     <!--B2-12-->
-                    <textarea id="remarks" tabindex="6" rows="3" cols="87" style="margin-left: 14px;" data-bind="ntsMultilineEditor: {
+                    <textarea id="remarks" tabindex="6" rows="3" cols="87" style="margin-left: 28px;" data-bind="ntsMultilineEditor: {
                                         value: taskPaletteOrgnization().remarks,
                                         required: false, 
                                         constraint: 'TaskPaletteRemark', 
@@ -71,7 +71,7 @@
                     <div id="name" data-bind="ntsFormLabel: {required: true}">
                         #{i18n.getText('KSU003_80')}</div>
                     <!--B3-2 ~ B3-11-->
-                    <div id="task" style="margin-left: 27px;" data-bind="ntsTableButton: {
+                    <div id="task" style="margin-left: 16px;" data-bind="ntsTableButton: {
                         source: tasks, 
                         row: 2, 
                         column: 5, 
