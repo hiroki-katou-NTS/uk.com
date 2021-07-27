@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.a.component9.viewmodel {
     @component({
         name: 'kaf000-b-component9',
         template: `
-            <div id="kaf000-b-component9" style="padding-left: 15px; padding-right: 15px;">
+            <div id="kaf000-b-component9">
 				<div class="table" style="padding-top: 20px; padding-bottom: 10px;">
 				    <div class="cell" data-bind="i18n: 'KAF000_54'" style="font-weight: bold;"></div>
 				</div>

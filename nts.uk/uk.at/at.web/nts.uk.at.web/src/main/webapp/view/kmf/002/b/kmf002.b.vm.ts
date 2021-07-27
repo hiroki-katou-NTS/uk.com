@@ -166,7 +166,7 @@ module nts.uk.at.view.kmf002.b {
                     blockUI.invisible();
                     service.save(self.commonTableMonthDaySet().fiscalYear(), 
                                     self.commonTableMonthDaySet().arrMonth(), 
-                                    self.multiSelectedWorkplaceId()[0]).done((data) => {
+                                    self.multiSelectedWorkplaceId()).done((data) => {
                     self.getDataFromService();
                     self.alreadySettingList.push({'workplaceId': self.multiSelectedWorkplaceId(), 'isAlreadySetting': true});
                                              

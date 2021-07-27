@@ -5,4 +5,7 @@
 		</div>
 		<div class="cell valign-center" data-bind="text: appDateString"></div>
 	</div>
+	<div data-bind="if: !dispSingleDate && from006">
+		<div class="ml-120 cell valign-center" data-bind=" text: $i18n('KAF006_101')"></div>
+	</div>
 </div>

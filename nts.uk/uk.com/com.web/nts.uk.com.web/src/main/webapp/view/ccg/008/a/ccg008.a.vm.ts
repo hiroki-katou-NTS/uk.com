@@ -465,6 +465,12 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				}
 
 				vm.isShowSwitch(!_.isEmpty(showSwitchLayout2) || !_.isEmpty(showSwitchLayout3));
+				const setScrollTop = setInterval(() => {
+					if ($('.widget-container').length === vm.widgetLeft().length + vm.widgetRight().length){
+						$('.widget-group').scrollTop(0);
+						clearInterval(setScrollTop);
+					}
+				},100);
 			};
 
 			if (screen === 'login') {
