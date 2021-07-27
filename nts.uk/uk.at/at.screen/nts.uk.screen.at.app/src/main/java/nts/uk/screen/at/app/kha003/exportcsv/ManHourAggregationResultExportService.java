@@ -13,6 +13,7 @@ import nts.uk.screen.at.app.kha003.VerticalValueDailyDto;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
+import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -215,7 +216,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         // Add code & name to header
         for (int i = 0; i < sortedList.size(); i++) {
             SummaryItemDto item = sortedList.get(i);
-            lstHeader.add(TextResource.localize(CODE_HEADER) + i);
+            lstHeader.add(TextResource.localize(CODE_HEADER) + (i + 1));
             lstHeader.add(item.getItemTypeName());
         }
 
@@ -240,6 +241,8 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
      * @return String
      */
     private String formatValue(Double value, DisplayFormat displayFormat) {
+        if (value == 0) return Strings.EMPTY;
+
         String targetValue = null;
         switch (displayFormat) {
             case DECIMAL:
