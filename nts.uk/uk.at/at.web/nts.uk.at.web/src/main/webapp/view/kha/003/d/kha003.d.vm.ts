@@ -684,7 +684,7 @@ module nts.uk.at.kha003.d {
         mapTask1To5(selectedCodes: any, taskList: any) {
             let array: any = [];
             selectedCodes.forEach((data: any) => {
-                array.push(taskList.workPlaceInfoList.filter(function (el: any) {
+                array.push(taskList.filter(function (el: any) {
                     return el.code === data
                 })[0])
             });
