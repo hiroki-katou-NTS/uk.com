@@ -326,7 +326,16 @@ module nts.uk.at.kha003.a {
          * */
         clickRegistrationButton() {
             const vm = this;
-            let summaryItemsParams = ko.toJS(vm.summaryItems);
+            let summaryItemsParams: any = [];//ko.toJS(vm.summaryItems);
+            vm.summaryItems().forEach(function(item:any, index: any) {
+                summaryItemsParams.push(
+                    {
+                        hierarchicalOrder: (index + 1),
+                        summaryItemType: item.summaryItemType,
+                        itemTypeName: item.itemTypeName
+                    }
+                )
+            })
             vm.$validate('#A4_2', '#A4_3').then((valid: boolean) => {
                 if (!valid) {
                     return;

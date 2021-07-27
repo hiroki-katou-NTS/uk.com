@@ -503,9 +503,8 @@ module nts.uk.at.kha003.d {
          * @param remainValue
          */
         findReminder(remainValue: any): any {
-            return Math.abs(parseInt(remainValue.toString()))
-                .toString()
-                .substring(0, 2)
+            let value = Math.abs(parseInt(remainValue.toString()));
+            return parseFloat('0.' + value).toFixed(2).toString().substring(2)
         }
 
 
@@ -634,16 +633,16 @@ module nts.uk.at.kha003.d {
                 case 0:
                     selectedCodes.forEach((data: any) => {
                         array.push(
-                        masterInfo.affWorkplaceInfoList.filter(function (el:any) {
-                            return el.workplaceCode === data
-                        })[0]
+                            masterInfo.affWorkplaceInfoList.filter(function (el: any) {
+                                return el.workplaceCode === data
+                            })[0]
                         )
                     });
                     break;
                 case 1:
                     selectedCodes.forEach((data: any) => {
                         array.push(
-                            masterInfo.workPlaceInfoList.filter(function (el:any) {
+                            masterInfo.workPlaceInfoList.filter(function (el: any) {
                                 return el.workplaceCode === data
                             })[0]
                         )
@@ -652,7 +651,7 @@ module nts.uk.at.kha003.d {
                 case 2:
                     selectedCodes.forEach((data: any) => {
                         array.push(
-                            masterInfo.employeeInfoList.filter(function (el:any) {
+                            masterInfo.employeeInfoList.filter(function (el: any) {
                                 return el.employeeCode === data
                             })[0]
                         )
@@ -685,7 +684,7 @@ module nts.uk.at.kha003.d {
         mapTask1To5(selectedCodes: any, taskList: any) {
             let array: any = [];
             selectedCodes.forEach((data: any) => {
-                array.push(taskList.workPlaceInfoList.filter(function (el:any) {
+                array.push(taskList.workPlaceInfoList.filter(function (el: any) {
                     return el.code === data
                 })[0])
             });
@@ -780,9 +779,9 @@ module nts.uk.at.kha003.d {
                     break;
                 case 1:
                     const fromYear = fromDate.getFullYear();
-                    const fromMonth = fromDate.getMonth()+1;
+                    const fromMonth = fromDate.getMonth() + 1;
                     const toYear = toDate.getFullYear();
-                    const toMonth = toDate.getMonth()+1;
+                    const toMonth = toDate.getMonth() + 1;
                     const months = [];
                     for (let year = fromYear; year <= toYear; year++) {
                         let month = year === fromYear ? fromMonth : 0;
