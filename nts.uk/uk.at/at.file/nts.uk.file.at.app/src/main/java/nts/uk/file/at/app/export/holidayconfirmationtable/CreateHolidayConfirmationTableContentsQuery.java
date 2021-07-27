@@ -149,7 +149,7 @@ public class CreateHolidayConfirmationTableContentsQuery {
                                     OccurrenceAcquisitionDetail acquisitionDetail = new OccurrenceAcquisitionDetail();
                                     acquisitionDetail.setOccurrenceDigCls(detail.getOccurrentClass());
                                     acquisitionDetail.setDate(detail.getDateOccur());
-                                    acquisitionDetail.setOccurrencesUseNumber(detail.getNumberOccurren().getDay().v());
+                                    acquisitionDetail.setOccurrencesUseNumber(detail.getNumberOccurren());
                                     acquisitionDetail.setStatus(detail.getDataAtr());
                                     if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
                                         UnbalanceCompensation itemOccurrence = (UnbalanceCompensation) detail;

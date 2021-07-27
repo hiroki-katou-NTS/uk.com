@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class OccurrenceAcquisitionDetail {
     private OccurrenceDigClass occurrenceDigCls;
 
     // 発生使用数
-    private double occurrencesUseNumber;
+    private AccumulationAbsenceDetail.NumberConsecuVacation occurrencesUseNumber;
 
     // 状態
     private MngDataStatus status;
