@@ -754,13 +754,24 @@ module nts.uk.at.kha003.d {
             }
         }
 
+        correctformat(date: any): any {
+            if (date.length === 6) {
+                return (date.substring(0, 4) + "/" + date.substring(4))
+            }
+            return date;
+        }
+
         /**
          * function for arrange date range headers.
          * @param startDate
          * @param endDate
          */
-        getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1,) {
+        getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1) {
             let vm = this;
+            if (displayFormat == 1) {
+                fromDate = this.correctformat(fromDate);
+                toDate = this.correctformat(toDate);
+            }
             fromDate = new Date(fromDate);
             toDate = new Date(toDate);
             switch (displayFormat) {
