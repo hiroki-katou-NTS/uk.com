@@ -55,6 +55,9 @@ public class CreateGroupCanonicalization {
 		
 		// 雇用履歴
 		CREATES.put(ImportingGroupId.EMPLOYMENT_HISTORY, EmploymentHistoryCanonicalization::new);
+		
+		//分類
+		CREATES.put(ImportingGroupId.CLASSIFICATION_HISTORY, AffClassHistoryCanonicalization::new);
 	}
 	
 	public static interface Require {

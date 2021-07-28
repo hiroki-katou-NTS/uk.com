@@ -16,6 +16,8 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRe
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
@@ -111,6 +113,9 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
+	
+	@Inject
+	private AffClassHistoryRepository affClassHistoryRepository;
 	
 	public class RequireImpl implements Require {
 		
@@ -236,6 +241,11 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public boolean existsDomainData(DomainDataId id) {
 			return domainDataRepo.exists(id);
+		}
+
+		@Override
+		public Optional<AffClassHistory> getAffClassHistory(String employeeId) {
+			return affClassHistoryRepository.getByEmployeeId(companyId, employeeId);
 		}
 
 	}
