@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 残数不足区分
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

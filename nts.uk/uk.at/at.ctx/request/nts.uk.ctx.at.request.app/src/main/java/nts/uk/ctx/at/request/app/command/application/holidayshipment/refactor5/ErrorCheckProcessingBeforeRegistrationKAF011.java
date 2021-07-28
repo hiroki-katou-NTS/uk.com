@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * @author thanhpv
@@ -76,22 +78,44 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 												Optional.empty(), 
 												Optional.empty());
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
-		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
+//		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		
 		if(rec.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, rec.get(), null, msgErrorLst, new ArrayList<>(), appDispInfoStartup);
+			this.newBeforeRegister.processBeforeRegister_New(
+			        companyId, 
+			        EmploymentRootAtr.APPLICATION, 
+			        represent, 
+			        rec.get(), 
+			        null, 
+			        msgErrorLst, 
+			        new ArrayList<>(), 
+			        appDispInfoStartup,
+			        Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
+			        Optional.empty(), 
+			        rec.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 		}
 		
 		if(abs.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, abs.get(), null, msgErrorLst, new ArrayList<>(), appDispInfoStartup);
+			this.newBeforeRegister.processBeforeRegister_New(
+			        companyId, 
+			        EmploymentRootAtr.APPLICATION, 
+			        represent, 
+			        abs.get(), 
+			        null, 
+			        msgErrorLst, 
+			        new ArrayList<>(), 
+			        appDispInfoStartup,
+			        Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
+                    Optional.empty(), 
+                    abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 		}
-		//TODO
 	}
 	
 	
 	/**
 	 * 振休残数不足チェック (Check số nghỉ bù thiếu)
 	 */
+	/**
 	public void checkForInsufficientNumberOfHolidays(String companyId, String employeeId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec) {
 		//4.社員の当月の期間を算出する (Tính thời gian tháng hiện tại của nhân viên)
 		PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyId, employeeId, GeneralDate.today());
@@ -135,6 +159,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 			}
 		}
 	}
+	*/
 	
 	private List<AppRemainCreateInfor> createAppRemain(AbsenceLeaveApp application) {
 	    List<AppRemainCreateInfor> result = new ArrayList<AppRemainCreateInfor>();

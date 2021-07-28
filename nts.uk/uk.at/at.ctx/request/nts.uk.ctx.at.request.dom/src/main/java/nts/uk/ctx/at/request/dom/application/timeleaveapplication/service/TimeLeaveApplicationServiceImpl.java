@@ -501,7 +501,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         timeLeavePriorityCheck(companyId, timeLeaveType, timeLeaveApplication, output.getTimeVacationRemaining(), output.getTimeVacationManagement());
 
         //時間休暇残数チェック
-        remainingTimeVacationCheck(companyId, timeLeaveType, timeLeaveApplication);
+//        remainingTimeVacationCheck(companyId, timeLeaveType, timeLeaveApplication);
 
         //時間休暇の消化単位チェック
         Optional<TimeDigestiveUnit> super60HDigestion = Optional.ofNullable(output.getTimeVacationManagement().getSupHolidayManagement().getSuper60HDigestion());
@@ -591,6 +591,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     /**
      * 時間休暇残数チェック
      */
+    /**
     private void remainingTimeVacationCheck(String companyId, TimeDigestAppType timeDigestAppType, TimeLeaveApplication timeLeaveApplication) {
         //4.社員の当月の期間を算出する
         PeriodCurrentMonth periodCurrentMonth =
@@ -639,6 +640,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             throw new BusinessException("Msg_1409", timeDigestAppType.name);
         }
     }
+    */
 
     /**
      * 契約時間をチェック

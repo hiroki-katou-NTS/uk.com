@@ -91,6 +91,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	
 	@Inject
     private RecordDomRequireService recordDomRequireService;
+	
+	@Inject
+	private RemainingNumberCheck remainingNumberCheck;
 
 	@Override
 	public EarchInterimRemainCheck checkRegister(InterimRemainCheckInputParam inputParam) {
@@ -101,6 +104,10 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		CompensatoryLeaveComSetting leaveComSetting = leaveSetRepos.find(inputParam.getCid());
 		CompanyHolidayMngSetting comHolidaySetting = new CompanyHolidayMngSetting(inputParam.getCid(), comSetting,
 				leaveComSetting);
+		
+		// 各残数をチェックするか判断する    #118506
+		RemainNumberClassification remainNumberClassification = remainingNumberCheck.determineCheckRemain(inputParam.getCid(), inputParam.getWorkTypeCds(), inputParam.getTimeDigestionUsageInfor());
+		
 		// 暫定管理データをメモリ上で作成する
 		Map<GeneralDate, DailyInterimRemainMngData> mapDataOutput = new HashMap<>();
 
@@ -153,7 +160,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		List<TempCareManagement> careData = eachData.getCareData();
 
 		// 代休チェック区分をチェックする
-		if (inputParam.isChkSubHoliday()) {
+		if (remainNumberClassification.isChkSubHoliday()) {
 
 			// 期間内の休出代休残数を取得する
 			BreakDayOffRemainMngRefactParam inputParamBreak =  new BreakDayOffRemainMngRefactParam(
@@ -174,7 +181,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}
 		}
 		// 振休不足区分をチェックする
-		if (inputParam.isChkPause()) {
+		if (remainNumberClassification.isChkPause()) {
 			// 振出振休残数を取得する
 			val mngParam = new AbsRecMngInPeriodRefactParamInput(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.getBaseDate(), inputParam.isMode(),
@@ -190,7 +197,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}
 		}
 		// 特休チェック区分をチェックする
-		if (inputParam.isChkSpecial() && !specialHolidayData.isEmpty()) {
+		if (remainNumberClassification.isChkSpecial() && !specialHolidayData.isEmpty()) {
 			// 暫定残数管理データ(output)に「特別休暇暫定データ」が存在するかチェックする
 			for (InterimSpecialHolidayMng a : specialHolidayData) {
 				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
@@ -221,7 +228,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		}
 		// 年休チェック区分をチェックする
 		List<TempAnnualLeaveMngs> mngWork = new ArrayList<>();
-		if (inputParam.isChkAnnual()) {
+		if (remainNumberClassification.isChkAnnual()) {
 			mngWork = annualHolidayData;
 			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(), inputParam.getBaseDate(),
@@ -237,7 +244,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}
 		}
 		// 期間中の年休積休残数を取得
-		if (inputParam.isChkFundingAnnual()) {
+		if (remainNumberClassification.isChkFundingAnnual()) {
 			List<TmpResereLeaveMng> lstReserve = resereLeaveData;
 			List<ReserveLeaveErrorImport> reserveLeaveErrors = annualService.reserveLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(), inputParam.getBaseDate(),
@@ -252,7 +259,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}
 		}
 		// 子の看護チェック区分をチェックする
-		if (inputParam.isChkChildNursing()) {
+		if (remainNumberClassification.isChkChildNursing()) {
 //		    specialHolidayData.stream()
 //		    .map(x -> TempChildCareManagement.of(x.getRemainManaID(), x.getSID(), x.getYmd(), x.getCreatorAtr(), ChildCareNurseUsedNumber.of(), x.getAppTimeType()))
 //		    .collect(Collectors.toList());
@@ -277,7 +284,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		    }
 		}
 		// 介護チェック区分をチェックする
-		if (inputParam.isChkLongTermCare()) {
+		if (remainNumberClassification.isChkLongTermCare()) {
 		    // [NO.207]期間中の介護休暇残数を取得
 		    AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
 		            inputParam.getCid(), 

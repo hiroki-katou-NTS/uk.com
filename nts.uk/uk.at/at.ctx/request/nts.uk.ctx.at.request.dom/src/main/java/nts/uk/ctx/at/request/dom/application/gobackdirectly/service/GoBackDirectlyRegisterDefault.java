@@ -39,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
@@ -136,8 +137,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				inforGoBackCommonDirectOutput
 				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				Collections.emptyList(),
-				inforGoBackCommonDirectOutput
-				.getAppDispInfoStartup());
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup(), 
+                goBackDirectly.getDataWork().isPresent() ? Arrays.asList(goBackDirectly.getDataWork().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
+                Optional.empty(),
+                goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty());
 		return listResult;
 	}
 	/**Refactor4
@@ -196,7 +199,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getVersion(),
 				workTypeCode,
 				workTimeCode,
-				inforGoBackCommonDirectOutput.getAppDispInfoStartup());
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup(), 
+				goBackDirectly.getDataWork().isPresent() ? Arrays.asList(goBackDirectly.getDataWork().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
+				Optional.empty());
 	}
 	/**
 	 * 共通登録前のエラーチェック処理

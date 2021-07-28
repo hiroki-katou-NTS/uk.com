@@ -105,6 +105,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainChec
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -135,6 +136,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -443,6 +445,18 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()
     			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().isPresent() ? appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v() : null);
     	// 申請全般登録時チェック処理
+    	TimeDigestionParam timeDigestionParam = new TimeDigestionParam();
+        if (appAbsence.getReflectFreeTimeApp().getTimeDegestion().isPresent()) {
+            TimeDigestApplication timeDigestApplication = appAbsence.getReflectFreeTimeApp().getTimeDegestion().get();
+            timeDigestionParam = new TimeDigestionParam(
+                    timeDigestApplication.getOvertime60H().v(), 
+                    timeDigestApplication.getNursingTime().v(), 
+                    timeDigestApplication.getChildTime().v(), 
+                    timeDigestApplication.getTimeOff().v(), 
+                    timeDigestApplication.getTimeAnnualLeave().v(), 
+                    0, 
+                    new ArrayList<TimeLeaveApplicationDetailShare>());
+        }
     	result.setConfirmMsgLst(newBeforeRegister.processBeforeRegister_New(companyID
     			, EmploymentRootAtr.APPLICATION
     			, agentAtr
@@ -450,7 +464,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     			, null
     			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList())
     			, holidayDates
-    			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()));
+    			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()
+    			, Arrays.asList(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v())
+    			, Optional.of(timeDigestionParam)
+    			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v)));
     	// 休暇申請登録時チェック処理
     	result.getConfirmMsgLst().addAll(this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates));
     	// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
@@ -1387,12 +1404,12 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
 
 		// 休暇残数チェック
-		this.checkRemainVacation(
-				companyID, 
-				appAbsence,
-				closureStartDate, 
-				appAbsence.getVacationInfo().getHolidayApplicationType(), 
-				timeDigestApplication);
+//		this.checkRemainVacation(
+//				companyID, 
+//				appAbsence,
+//				closureStartDate, 
+//				appAbsence.getVacationInfo().getHolidayApplicationType(), 
+//				timeDigestApplication);
 		// 返ってきた確認メッセージリストを返す
 		return result;
 	}
@@ -1581,6 +1598,18 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
             throw new BusinessException("Msg_1459", dateParam);
         }
 		// 2-1.新規画面登録前の処理
+        TimeDigestionParam timeDigestionParam = new TimeDigestionParam();
+        if (newAbsence.getReflectFreeTimeApp().getTimeDegestion().isPresent()) {
+            TimeDigestApplication timeDigestApplication = newAbsence.getReflectFreeTimeApp().getTimeDegestion().get();
+            timeDigestionParam = new TimeDigestionParam(
+                    timeDigestApplication.getOvertime60H().v(), 
+                    timeDigestApplication.getNursingTime().v(), 
+                    timeDigestApplication.getChildTime().v(), 
+                    timeDigestApplication.getTimeOff().v(), 
+                    timeDigestApplication.getTimeAnnualLeave().v(), 
+                    0, 
+                    new ArrayList<TimeLeaveApplicationDetailShare>());
+        }
 		List<ConfirmMsgOutput> lstConfirmMsg = newBeforeRegister.processBeforeRegister_New(companyID
 				, EmploymentRootAtr.APPLICATION
 				, false // KAF006: -PhuongDV domain fix pending- confirm input
@@ -1588,7 +1617,10 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				, null
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()) // KAF006: -PhuongDV domain fix pending- confirm input
 				, holidayDates
-				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()
+				, Arrays.asList(newAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v())
+				, Optional.of(timeDigestionParam) 
+				, newAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 		result.setConfirmMsgLst(lstConfirmMsg);
 		// 申請の矛盾チェック
 		List<GeneralDate> dateLst = new ArrayList<GeneralDate>();
@@ -2096,6 +2128,18 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 workTime = appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v();
             }
         }
+        TimeDigestionParam timeDigestionParam = new TimeDigestionParam();
+        if (appAbsence.getReflectFreeTimeApp().getTimeDegestion().isPresent()) {
+            TimeDigestApplication timeDigestApplication = appAbsence.getReflectFreeTimeApp().getTimeDegestion().get();
+            timeDigestionParam = new TimeDigestionParam(
+                    timeDigestApplication.getOvertime60H().v(), 
+                    timeDigestApplication.getNursingTime().v(), 
+                    timeDigestApplication.getChildTime().v(), 
+                    timeDigestApplication.getTimeOff().v(), 
+                    timeDigestApplication.getTimeAnnualLeave().v(), 
+                    0, 
+                    new ArrayList<TimeLeaveApplicationDetailShare>());
+        }
         detailBeforeUpdate.processBeforeDetailScreenRegistration(
                 companyID,
                 appAbsence.getApplication().getEmployeeID(),
@@ -2106,7 +2150,9 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication().getVersion(),
                 workType,
                 workTime,
-                appAbsenceStartInfoOutput.getAppDispInfoStartupOutput());
+                appAbsenceStartInfoOutput.getAppDispInfoStartupOutput(), 
+                Arrays.asList(workType), 
+                Optional.of(timeDigestionParam));
 
         // 休暇申請登録時チェック処理
         List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates);
@@ -2386,43 +2432,43 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
     }
 
-    @Override
-    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date,
-            HolidayAppType vacationType, Optional<TimeDigestApplication> timeDigestApplication) {
-        InterimRemainCheckInputParam param = new InterimRemainCheckInputParam(
-                companyID, 
-                application.getEmployeeID(), 
-                new DatePeriod(date, date.addYears(1).addDays(-1)), 
-                false, 
-                application.getAppDate().getApplicationDate(), 
-                new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()), 
-                true, 
-                Collections.emptyList(), 
-                Collections.emptyList(), 
-                createAppRemain(application), 
-                vacationType.equals(HolidayAppType.SUBSTITUTE_HOLIDAY), 
-                false, 
-                vacationType.equals(HolidayAppType.ANNUAL_PAID_LEAVE), 
-                vacationType.equals(HolidayAppType.YEARLY_RESERVE), 
-                true, 
-                false, 
-                true, 
-                vacationType.equals(HolidayAppType.DIGESTION_TIME) && timeDigestApplication.isPresent() && timeDigestApplication.get().getChildTime().v() > 0, 
-                vacationType.equals(HolidayAppType.DIGESTION_TIME) && timeDigestApplication.isPresent() && timeDigestApplication.get().getNursingTime().v() > 0);
-        // 登録時の残数チェック
-        EarchInterimRemainCheck earchInterimRemainCheck = remainDataCheckRegister.checkRegister(param);
-        
-        // 代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分　OR　・子の看護不足区分　OR　介護不足区分 = true（残数不足）
-        if (earchInterimRemainCheck.isChkSubHoliday() 
-                || earchInterimRemainCheck.isChkPause() 
-                || earchInterimRemainCheck.isChkAnnual() 
-                || earchInterimRemainCheck.isChkFundingAnnual() 
-                || earchInterimRemainCheck.isChkSpecial() 
-                || earchInterimRemainCheck.isChkChildNursing() 
-                || earchInterimRemainCheck.isChkLongTermCare()) {
-            throw new BusinessException("Msg_1409", vacationType.name);
-        }
-    }
+//    @Override
+//    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date,
+//            HolidayAppType vacationType, Optional<TimeDigestApplication> timeDigestApplication) {
+//        InterimRemainCheckInputParam param = new InterimRemainCheckInputParam(
+//                companyID, 
+//                application.getEmployeeID(), 
+//                new DatePeriod(date, date.addYears(1).addDays(-1)), 
+//                false, 
+//                application.getAppDate().getApplicationDate(), 
+//                new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()), 
+//                true, 
+//                Collections.emptyList(), 
+//                Collections.emptyList(), 
+//                createAppRemain(application), 
+//                vacationType.equals(HolidayAppType.SUBSTITUTE_HOLIDAY), 
+//                false, 
+//                vacationType.equals(HolidayAppType.ANNUAL_PAID_LEAVE), 
+//                vacationType.equals(HolidayAppType.YEARLY_RESERVE), 
+//                true, 
+//                false, 
+//                true, 
+//                vacationType.equals(HolidayAppType.DIGESTION_TIME) && timeDigestApplication.isPresent() && timeDigestApplication.get().getChildTime().v() > 0, 
+//                vacationType.equals(HolidayAppType.DIGESTION_TIME) && timeDigestApplication.isPresent() && timeDigestApplication.get().getNursingTime().v() > 0);
+//        // 登録時の残数チェック
+//        EarchInterimRemainCheck earchInterimRemainCheck = remainDataCheckRegister.checkRegister(param);
+//        
+//        // 代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分　OR　・子の看護不足区分　OR　介護不足区分 = true（残数不足）
+//        if (earchInterimRemainCheck.isChkSubHoliday() 
+//                || earchInterimRemainCheck.isChkPause() 
+//                || earchInterimRemainCheck.isChkAnnual() 
+//                || earchInterimRemainCheck.isChkFundingAnnual() 
+//                || earchInterimRemainCheck.isChkSpecial() 
+//                || earchInterimRemainCheck.isChkChildNursing() 
+//                || earchInterimRemainCheck.isChkLongTermCare()) {
+//            throw new BusinessException("Msg_1409", vacationType.name);
+//        }
+//    }
     
     public List<AppRemainCreateInfor> createAppRemain(ApplyForLeave application) {
         List<AppRemainCreateInfor> result = new ArrayList<AppRemainCreateInfor>();

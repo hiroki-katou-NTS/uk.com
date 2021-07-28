@@ -472,5 +472,5 @@ public interface AbsenceServiceProcess {
      * @param datePeriod
      * @param vacationType
      */
-    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date, HolidayAppType vacationType, Optional<TimeDigestApplication> timeDigestApplication);
+//    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date, HolidayAppType vacationType, Optional<TimeDigestApplication> timeDigestApplication);
 }
