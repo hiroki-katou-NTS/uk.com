@@ -115,7 +115,7 @@ module nts.uk.at.kha003.c {
                 vm.c51Params(data.c51);
                 vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params().name]));
                 vm.$window.storage('kha003AShareData_OLD').done((oldData: any) => {
-                    if (oldData && (data.c21.type != oldData.c21.type
+                    if ((oldData && !oldData.isNewCode) && (data.c21.type != oldData.c21.type
                             || data.c31.type != oldData.c31.type
                             || data.c41.type != oldData.c41.type
                             || data.c51.type != oldData.c51.type)) {
@@ -124,6 +124,7 @@ module nts.uk.at.kha003.c {
                     } else {
                         vm.$window.storage('kha003CShareData').done(data => {
                             data = data || {};
+                            data.isNewCode = false;
                             vm.c24CurrentCodeList(data.c24CurrentCodeList || []);
                             vm.c34CurrentCodeList(data.c34CurrentCodeList || []);
                             vm.c44CurrentCodeList(data.c44CurrentCodeList || []);
@@ -140,9 +141,9 @@ module nts.uk.at.kha003.c {
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
             });
-           /* $(document).ready(function () {
-                vm.gridRows((12*$(window).height())/768);
-            });*/
+            /* $(document).ready(function () {
+                 vm.gridRows((12*$(window).height())/768);
+             });*/
         }
 
         /**

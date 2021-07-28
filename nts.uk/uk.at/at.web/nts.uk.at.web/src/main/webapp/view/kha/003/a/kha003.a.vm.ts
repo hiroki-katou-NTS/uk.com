@@ -63,7 +63,7 @@ module nts.uk.at.kha003.a {
                         $('#A4_3').focus();
                     });
                 } else {
-                    vm.$window.storage('kha003AShareData_OLD', null).then(()=>{
+                    vm.$window.storage('kha003AShareData_OLD', {isNewCode:true}).then(()=>{
                         vm.manHour.code('');
                         vm.manHour.name('');
                         vm.summaryItems([]);
