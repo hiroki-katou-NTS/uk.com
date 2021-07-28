@@ -47,6 +47,7 @@ module nts.uk.ui.at.ksu002.a {
             validate: KnockoutObservable<boolean>;
             required: KnockoutObservable<WORKTIME_SETTING>;
         };
+		workTimeForm: KnockoutObservable<number | null>;
         state: StateEdit;
         confirmed: KnockoutObservable<boolean>;
         classification: KnockoutObservable<WORK_STYLE | null>;
@@ -589,11 +590,14 @@ module nts.uk.ui.at.ksu002.a {
                     read: () => {
                         const { dayData, context } = data;
 
+						let ischangeableWorks = _.includes(context.$vm.startupProcessingInformation().scheFunctionControl.changeableWorks, dayData.data ? dayData.data.workTimeForm() : false);
+
                         return context.$editable()
                             && !!dayData.data.wtime.code()
                             && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
                             && dayData.data.classification() !== WORK_STYLE.HOLIDAY
-                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED;
+                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED
+							&& ischangeableWorks;
                     },
                     owner: this
                 });

@@ -181,13 +181,43 @@ module nts.uk.ui.at.ksu002.a {
 		
 		listOfPeriodsClose: KnockoutObservable<any> = ko.observable(null);
 		
+		visibleA1_1: KnockoutObservable<boolean> = ko.observable(false);
+		visibleA1_2: KnockoutObservable<boolean> = ko.observable(false);
+		visibleA1_3: KnockoutObservable<boolean> = ko.observable(false);
+		visibleA1_4: KnockoutObservable<boolean> = ko.observable(false);
+		
 		dr: c.DateRange = {
 				begin: null,
 				finish: null
 			};
 		
+		constructor(){
+			super();
+			let self = this;
+			self.startupProcessingInformation.subscribe((v:any)=>{
+				_.each(v.scheModifyAuthCtrlByPerson, (e:any) => {
+					if(e.functionNo == 1){
+						self.visibleA1_1(e.isAvailable);
+					}
+					if(e.functionNo == 2){
+						self.visibleA1_4(e.isAvailable);
+					}
+				});
+				_.each(v.scheModifyAuthCtrlCommon, (e:any) => {
+					if(e.functionNo == 1){
+						self.visibleA1_3(e.isAvailable);
+					}
+					if(e.functionNo == 2){
+						self.visibleA1_2(e.isAvailable);
+					}
+				});
+			});
+		}
+		
 		created() {
 			const vm = this;
+			
+			
 			vm.getfirst();
 			
 			vm.employeeId = ko.observableArray([vm.$user.employeeId]);
@@ -296,7 +326,7 @@ module nts.uk.ui.at.ksu002.a {
 								if (!exist) {
 									$raw.achievements = null;
 								} else {
-									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName, workTimeForm } = exist;
+									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
 
 									$raw.achievements = {
 										endTime,
@@ -304,8 +334,7 @@ module nts.uk.ui.at.ksu002.a {
 										workTimeCode,
 										workTimeName,
 										workTypeCode,
-										workTypeName,
-										workTimeForm
+										workTypeName
 									};
 								}
 							});
@@ -314,7 +343,7 @@ module nts.uk.ui.at.ksu002.a {
 							// reset data
 							_.each(schedules, (sc) => {
 								const { data } = sc;
-								const { $raw, wtype, wtime, value, holiday } = data;
+								const { $raw, wtype, wtime, value } = data;
 								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
 
 								// UI-4-1 実績表示を「する」に選択する
@@ -327,11 +356,8 @@ module nts.uk.ui.at.ksu002.a {
 										workTimeName,
 										startTime,
 										endTime,
-										workTimeForm
 									} = $raw.achievements;
 									
-									//holiday(workTimeForm);
-
 									wtype.code(workTypeCode || null);
 									wtype.name(workTypeName || null);
 
@@ -416,7 +442,8 @@ module nts.uk.ui.at.ksu002.a {
 									confirmed,
 									achievements,
 									needToWork,
-									dateInfoDuringThePeriod
+									dateInfoDuringThePeriod,
+									workTimeForm
 								} = $raw;
 
 								const {
@@ -425,8 +452,7 @@ module nts.uk.ui.at.ksu002.a {
 									workTypeCode,
 									workTimeCode,
 									startTime,
-									endTime,
-									workTimeForm
+									endTime
 								} = arch === NO ? $raw : (achievements || $raw);
 
 								// hack i18n
@@ -452,6 +478,7 @@ module nts.uk.ui.at.ksu002.a {
 										validate: ko.observable(true),
 										required: ko.observable(needToWork ? WORKTIME_SETTING.REQUIRED : WORKTIME_SETTING.OPTIONAL)
 									},
+									workTimeForm: ko.observable(workTimeForm),
 									holiday: ko.observable(null),
 									event: ko.observable(null),
 									specialDay: ko.observable(false),
@@ -881,8 +908,6 @@ module nts.uk.ui.at.ksu002.a {
 		startTime: null | number;
 		// 終了時刻
 		endTime: null | number;
-		//就業時間帯の勤務形態 
-		workTimeForm: null | string;
 	}
 
 	interface WorkSchedule<D = Date> {
@@ -923,8 +948,7 @@ module nts.uk.ui.at.ksu002.a {
 		endTimeEditState: null | EditStateOfDailyAttd;
 		// Data info for event daisy (sakura)
 		dateInfoDuringThePeriod: DateInfoDuringThePeriod;
-		//就業時間帯の勤務形態 
-		workTimeForm: null | string;
+		workTimeForm: null | number;
 	}
 
 	interface DateInfoDuringThePeriod {
