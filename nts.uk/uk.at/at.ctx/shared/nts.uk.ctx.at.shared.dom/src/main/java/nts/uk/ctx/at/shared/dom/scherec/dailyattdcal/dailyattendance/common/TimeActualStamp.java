@@ -203,6 +203,6 @@ public class TimeActualStamp {
 	//時刻変更手段とデフォルトを作成する
 	public static TimeActualStamp createDefaultWithReason(TimeChangeMeans reason) {
 		return new TimeActualStamp(null, new WorkStamp(
-				new WorkTimeInformation(new ReasonTimeChange(reason, null), null), Optional.empty()), 0);
+				new WorkTimeInformation(new ReasonTimeChange(reason, Optional.empty()), null), Optional.empty()), 0);
 	}
 }

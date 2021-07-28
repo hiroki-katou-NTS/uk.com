@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		titleLabelInput2: KnockoutObservable<String>;
 
 		agentForTable: KnockoutObservable<Boolean> = ko.observable(false);
-		
+		opOvertimeAppAtr: KnockoutObservable<number>;
 		
 		setTitleLabel() {
 			const vm = this;
@@ -147,6 +147,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 			}
 			
+			vm.opOvertimeAppAtr = ko.observable(vm.getOverTimeAtrByUrl());
 			// load setting common KAF000
 			vm.loadData(empLst, dateLst, vm.appType(), null, Number(vm.getOverTimeAtrByUrl()))
 				.then((loadDataFlag: any) => {
@@ -1029,6 +1030,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 					item.backgroundColor(COLOR_36.error);
 					item.textColor(COLOR_36.error_letter);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
 				}
 				
 				
@@ -1077,6 +1081,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 					item.backgroundColor(COLOR_36.error);
 					item.textColor(COLOR_36.error_letter);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
 				}
 				overTimeWorks.push(item);
 			}
@@ -2994,7 +3001,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		// 36協定エラー文字
 		error_letter: 'color-36contract-error',
 		// 36協定アラーム文字
-		alarm_character: 'color-36contract-alarm'
+		alarm_character: 'color-36contract-alarm',
+		// 特条上限超過背景色
+		bg_upper_limit: 'bg-exceed-special-upperlimit',
+		// 特条上限超過文字色
+		color_upper_limit: 'color-exceed-special-upperlimit'
+		
 		
 	}
 	export class VisibleModel {

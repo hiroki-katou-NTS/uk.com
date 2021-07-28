@@ -164,38 +164,38 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	/*----------------------日別実績の休憩時間帯------------------------------*/
 	@Column(name = "TO_RECORD_TOTAL_TIME")
-	public Integer toRecordTotalTime;
+	public int toRecordTotalTime;
 	@Column(name ="TO_RECORD_IN_TIME")
-	public Integer toRecordInTime;
+	public int toRecordInTime;
 	@Column(name ="TO_RECORD_OUT_TIME")
-	public Integer toRecordOutTime;
+	public int toRecordOutTime;
 	
 	@Column(name ="DEDUCTION_TOTAL_TIME")
-	public Integer deductionTotalTime;
+	public int deductionTotalTime;
 	@Column(name ="DEDUCTION_IN_TIME")
-	public Integer deductionInTime;
+	public int deductionInTime;
 	@Column(name ="DEDUCTION_OUT_TIME")
-	public Integer deductionOutTime;
+	public int deductionOutTime;
 	
 	@Column(name ="CAL_TO_RECORD_TOTAL_TIME")
-	public Integer calToRecordTotalTime;
+	public int calToRecordTotalTime;
 	@Column(name ="CAL_TO_RECORD_IN_TIME")
-	public Integer calToRecordInTime;
+	public int calToRecordInTime;
 	@Column(name ="CAL_TO_RECORD_OUT_TIME")
-	public Integer calToRecordOutTime;
+	public int calToRecordOutTime;
 	
 	@Column(name ="CAL_DEDUCTION_TOTAL_TIME")
-	public Integer calDeductionTotalTime;
+	public int calDeductionTotalTime;
 	@Column(name ="CAL_DEDUCTION_IN_TIME")
-	public Integer calDeductionInTime;
+	public int calDeductionInTime;
 	@Column(name ="CAL_DEDUCTION_OUT_TIME")
-	public Integer calDeductionOutTime;
+	public int calDeductionOutTime;
 	
 	@Column(name ="DURINGWORK_TIME")
 	public int duringworkTime;
 	
 	@Column(name ="COUNT")
-	public Integer count;
+	public int count;
 	/*----------------------日別実績の休憩時間帯------------------------------*/
 	
 	/*----------------------日別実績の休出枠時間------------------------------*/
@@ -916,127 +916,127 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	/*----------------------日別実績の休出時間帯------------------------------*/
 	/*休日出勤1開始時刻*/
 	@Column(name = "HOLI_WORK_1_STR_CLC")
-	public int holiWork1StrClc;
+	public Integer holiWork1StrClc;
 	/*休日出勤1終了時刻*/
 	@Column(name = "HOLI_WORK_1_END_CLC")
-	public int holiWork1EndClc;
+	public Integer holiWork1EndClc;
 	/*休日出勤2開始時刻*/
 	@Column(name = "HOLI_WORK_2_STR_CLC")
-	public int holiWork2StrClc;
+	public Integer holiWork2StrClc;
 	/*休日出勤2終了時刻*/
 	@Column(name = "HOLI_WORK_2_END_CLC")
-	public int holiWork2EndClc;
+	public Integer holiWork2EndClc;
 	/*休日出勤3開始時刻*/
 	@Column(name = "HOLI_WORK_3_STR_CLC")
-	public int holiWork3StrClc;
+	public Integer holiWork3StrClc;
 	/*休日出勤3終了時刻*/
 	@Column(name = "HOLI_WORK_3_END_CLC")
-	public int holiWork3EndClc;
+	public Integer holiWork3EndClc;
 	/*休日出勤4開始時刻*/
 	@Column(name = "HOLI_WORK_4_STR_CLC")
-	public int holiWork4StrClc;
+	public Integer holiWork4StrClc;
 	/*休日出勤4終了時刻*/
 	@Column(name = "HOLI_WORK_4_END_CLC")
-	public int holiWork4EndClc;
+	public Integer holiWork4EndClc;
 	/*休日出勤5開始時刻*/
 	@Column(name = "HOLI_WORK_5_STR_CLC")
-	public int holiWork5StrClc;
+	public Integer holiWork5StrClc;
 	/*休日出勤5終了時刻*/
 	@Column(name = "HOLI_WORK_5_END_CLC")
-	public int holiWork5EndClc;
+	public Integer holiWork5EndClc;
 	/*休日出勤6開始時刻*/
 	@Column(name = "HOLI_WORK_6_STR_CLC")
-	public int holiWork6StrClc;
+	public Integer holiWork6StrClc;
 	/*休日出勤6終了時刻*/
 	@Column(name = "HOLI_WORK_6_END_CLC")
-	public int holiWork6EndClc;
+	public Integer holiWork6EndClc;
 	/*休日出勤7開始時刻*/
 	@Column(name = "HOLI_WORK_7_STR_CLC")
-	public int holiWork7StrClc;
+	public Integer holiWork7StrClc;
 	/*休日出勤7終了時刻*/
 	@Column(name = "HOLI_WORK_7_END_CLC")
-	public int holiWork7EndClc;
+	public Integer holiWork7EndClc;
 	/*休日出勤8開始時刻*/
 	@Column(name = "HOLI_WORK_8_STR_CLC")
-	public int holiWork8StrClc;
+	public Integer holiWork8StrClc;
 	/*休日出勤8終了時刻*/
 	@Column(name = "HOLI_WORK_8_END_CLC")
-	public int holiWork8EndClc;
+	public Integer holiWork8EndClc;
 	/*休日出勤9開始時刻*/
 	@Column(name = "HOLI_WORK_9_STR_CLC")
-	public int holiWork9StrClc;
+	public Integer holiWork9StrClc;
 	/*休日出勤9終了時刻*/
 	@Column(name = "HOLI_WORK_9_END_CLC")
-	public int holiWork9EndClc;
+	public Integer holiWork9EndClc;
 	/*休日出勤10開始時刻*/
 	@Column(name = "HOLI_WORK_10_STR_CLC")
-	public int holiWork10StrClc;
+	public Integer holiWork10StrClc;
 	/*休日出勤10終了時刻*/
 	@Column(name = "HOLI_WORK_10_END_CLC")
-	public int holiWork10EndClc;
+	public Integer holiWork10EndClc;
 	/*----------------------日別実績の休出時間帯------------------------------*/
 	
 	/*----------------------日別実績の残業時間帯------------------------------*/
 	/*残業1開始時刻*/
 	@Column(name = "OVER_TIME_1_STR_CLC")
-	public int overTime1StrClc;
+	public Integer overTime1StrClc;
 	/*残業1終了時刻*/
 	@Column(name = "OVER_TIME_1_END_CLC")
-	public int overTime1EndClc;
+	public Integer overTime1EndClc;
 	/*残業2開始時刻*/
 	@Column(name = "OVER_TIME_2_STR_CLC")
-	public int overTime2StrClc;
+	public Integer overTime2StrClc;
 	/*残業2終了時刻*/
 	@Column(name = "OVER_TIME_2_END_CLC")
-	public int overTime2EndClc;
+	public Integer overTime2EndClc;
 	/*残業3開始時刻*/
 	@Column(name = "OVER_TIME_3_STR_CLC")
-	public int overTime3StrClc;
+	public Integer overTime3StrClc;
 	/*残業3終了時刻*/
 	@Column(name = "OVER_TIME_3_END_CLC")
-	public int overTime3EndClc;
+	public Integer overTime3EndClc;
 	/*残業4開始時刻*/
 	@Column(name = "OVER_TIME_4_STR_CLC")
-	public int overTime4StrClc;
+	public Integer overTime4StrClc;
 	/*残業4終了時刻*/
 	@Column(name = "OVER_TIME_4_END_CLC")
-	public int overTime4EndClc;
+	public Integer overTime4EndClc;
 	/*残業5開始時刻*/
 	@Column(name = "OVER_TIME_5_STR_CLC")
-	public int overTime5StrClc;
+	public Integer overTime5StrClc;
 	/*残業5終了時刻*/
 	@Column(name = "OVER_TIME_5_END_CLC")
-	public int overTime5EndClc;
+	public Integer overTime5EndClc;
 	/*残業6開始時刻*/
 	@Column(name = "OVER_TIME_6_STR_CLC")
-	public int overTime6StrClc;
+	public Integer overTime6StrClc;
 	/*残業6終了時刻*/
 	@Column(name = "OVER_TIME_6_END_CLC")
-	public int overTime6EndClc;
+	public Integer overTime6EndClc;
 	/*残業7開始時刻*/
 	@Column(name = "OVER_TIME_7_STR_CLC")
-	public int overTime7StrClc;
+	public Integer overTime7StrClc;
 	/*残業7終了時刻*/
 	@Column(name = "OVER_TIME_7_END_CLC")
-	public int overTime7EndClc;
+	public Integer overTime7EndClc;
 	/*残業8開始時刻*/
 	@Column(name = "OVER_TIME_8_STR_CLC")
-	public int overTime8StrClc;
+	public Integer overTime8StrClc;
 	/*残業8終了時刻*/
 	@Column(name = "OVER_TIME_8_END_CLC")
-	public int overTime8EndClc;
+	public Integer overTime8EndClc;
 	/*残業9開始時刻*/
 	@Column(name = "OVER_TIME_9_STR_CLC")
-	public int overTime9StrClc;
+	public Integer overTime9StrClc;
 	/*残業9終了時刻*/
 	@Column(name = "OVER_TIME_9_END_CLC")
-	public int overTime9EndClc;
+	public Integer overTime9EndClc;
 	/*残業10開始時刻*/
 	@Column(name = "OVER_TIME_10_STR_CLC")
-	public int overTime10StrClc;
+	public Integer overTime10StrClc;
 	/*残業10終了時刻*/
 	@Column(name = "OVER_TIME_10_END_CLC")
-	public int overTime10EndClc;
+	public Integer overTime10EndClc;
 	/*----------------------日別実績の残業時間帯------------------------------*/
 	/*----------------------日別実績の加給時間------------------------------*/
 	/*加給時間1*/
@@ -1721,6 +1721,7 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 					this.absenceTime = 0;
 					this.tdvTime = 0;
 					this.tdvShortageTime = 0;
+					this.transferHolidayTime = 0;
 					if(vacationDomain != null) {
 						//年休
 						if(vacationDomain.getAnnual() != null) {
@@ -2446,8 +2447,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																					   new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(entity.aftPcLogoffTime),
 																								new AttendanceTimeOfExistMinus(entity.bfrPcLogonTime), new AttendanceTimeOfExistMinus(entity.bfrWorkTime),
 																								new AttendanceTime(entity.stayingTime), new AttendanceTimeOfExistMinus(entity.aftLeaveTime)),
-																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance),
-																					   new AttendanceTimeOfExistMinus(entity.unemployedTime)
+																					   new AttendanceTimeOfExistMinus(entity.unemployedTime),
+																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance)
 																					   );
 		
 		return domain;

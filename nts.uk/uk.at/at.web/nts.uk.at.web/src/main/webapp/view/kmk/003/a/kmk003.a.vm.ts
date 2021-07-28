@@ -1363,6 +1363,16 @@ module nts.uk.at.view.kmk003.a {
                     screenMode: _self.tabMode()
                 };
 
+                if (_self.tabMode() === TabMode.SIMPLE) {
+                    let temp: EmTimeZoneSetModel = new EmTimeZoneSetModel();
+                    temp.employmentTimeFrameNo(1);
+                    temp.timezone.start(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode()[0].timeRange().startTime);
+                    temp.timezone.end(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode()[0].timeRange().endTime);
+                    temp.timezone.rounding.rounding(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode()[0].rounding());
+                    temp.timezone.rounding.roundingTime(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezoneSimpleMode()[0].roundingTime());
+                    _self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone([temp]);
+                }
+
                 let workTimes = _self.autoCreateHalfDayWT(_self.fixedWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone());
 
                 command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = workTimes.morning;
@@ -1375,7 +1385,7 @@ module nts.uk.at.view.kmk003.a {
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
                 }
 
-                if (!_self.useHalfDayBreak()) {
+                if (_self.isNewMode() && !_self.useHalfDayBreak()) {
                     let restTimes = _self.autoCreateHalfDayBreak(_self.fixedWorkSetting.getHDWtzOneday().restTimezone.timezones());
 
                     command.fixedWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.timezones = restTimes.morning;
@@ -1429,7 +1439,7 @@ module nts.uk.at.view.kmk003.a {
                     command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstOTTimezone = OTTimes.afternoon;
                 }
 
-                if (!self.useHalfDayBreak()) {
+                if (self.isNewMode() && !self.useHalfDayBreak()) {
                     let breakTimes = self.autoCreateHalfDayBreak(self.flexWorkSetting.getHDWtzOneday().restTimezone.fixedRestTimezone.timezones());
 
                     command.flexWorkSetting.lstHalfDayWorkTimezone[1].restTimezone.fixedRestTimezone.timezones = breakTimes.morning;
