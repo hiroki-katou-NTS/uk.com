@@ -106,10 +106,7 @@ public class GetPeriodCanProcesseTest {
 		
 		List<ClosureStatusManagement> listClosureStatus = new ArrayList<>();
 		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202101), employeeId, 1,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 22))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 1,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 23))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202101), employeeId, 1,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 27))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 1,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 28))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 1,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 10))));
+		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 2,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 23))));
 		
 		new MockUp<ClosureStatusManagement>() {
 			@Mock
@@ -146,11 +143,8 @@ public class GetPeriodCanProcesseTest {
 		
 		List<ClosureStatusManagement> listClosureStatus = new ArrayList<>();
 		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202101), employeeId, 1,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 22))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 2,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 23))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202101), employeeId, 3,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 27))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 4,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 28))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 5,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 10))));
-		
+		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 2,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 23))));
+	
 		new MockUp<ClosingGetUnlockedPeriod>() {
 			@Mock
 			public List<DatePeriod> get(GetPeriodCanProcesse.Require require, DatePeriod period, String employmentCode,
@@ -185,11 +179,8 @@ public class GetPeriodCanProcesseTest {
 		
 		List<ClosureStatusManagement> listClosureStatus = new ArrayList<>();
 		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202101), employeeId, 1,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 22))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 2,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 23))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202101), employeeId, 3,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 27))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 4,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 28))));
-		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 5,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 10))));
-		
+		listClosureStatus.add(new ClosureStatusManagement(new YearMonth(202102), employeeId, 2,new ClosureDate(1, true), new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 23))));
+	
 		DatePeriod dateP = new DatePeriod(GeneralDate.ymd(2021, 1,10), GeneralDate.ymd(2021, 2, 5));
 		new MockUp<ClosureStatusManagement>() {
 			@Mock

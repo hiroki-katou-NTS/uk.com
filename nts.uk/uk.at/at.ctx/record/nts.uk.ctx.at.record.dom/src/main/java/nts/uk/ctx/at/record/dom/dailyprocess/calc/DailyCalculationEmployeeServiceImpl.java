@@ -196,7 +196,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			//実績処理できる期間を取得する
 			List<DatePeriod> listPeriod = GetPeriodCanProcesse.get(require, employeeId, datePeriod,
 					listEmploymentHis.stream().map(c -> convert(c)).collect(Collectors.toList()),
-					isCalWhenLock ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK,
+					isCalWhenLock !=null && isCalWhenLock.booleanValue() ? IgnoreFlagDuringLock.CAN_CAL_LOCK : IgnoreFlagDuringLock.CANNOT_CAL_LOCK,
 					AchievementAtr.DAILY);
 			for(DatePeriod newPeriod : listPeriod) {
 				//ドメインモデル「就業計算と集計実行ログ」を取得し、実行状況を確認する
