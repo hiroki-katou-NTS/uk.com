@@ -20,5 +20,5 @@ public class SummaryItemDetailDto {
     /** 縦計リスト */
     private List<VerticalValueDailyDto> verticalTotalList;
     /** 期間合計 */
-    private int totalPeriod;
+    private String totalPeriod;
 }

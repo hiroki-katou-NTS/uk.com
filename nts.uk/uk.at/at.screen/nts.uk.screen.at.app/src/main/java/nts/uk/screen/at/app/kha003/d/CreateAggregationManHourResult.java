@@ -54,10 +54,11 @@ public class CreateAggregationManHourResult {
         // Convert domain ManHourSummaryTableOutputContent to dto
         val dispFormat = optManHour.get().getDetailFormatSetting().getDisplayFormat();
         val itemDetails = getSummaryItemDetails(manHourOutputContent.getItemDetails(), dispFormat);
+        val totalPeriod = manHourOutputContent.getTotalPeriod().orElse(0);
         val outputContent = new ManHourSummaryTableOutputContentDto(
                 itemDetails,
                 convertValueDaily(manHourOutputContent.getVerticalTotalValues(), dispFormat),
-                manHourOutputContent.getTotalPeriod().isPresent() ? manHourOutputContent.getTotalPeriod().get() : 0
+                formatValue((double)totalPeriod, dispFormat)
         );
 
         // Convert domain to dto
@@ -70,7 +71,6 @@ public class CreateAggregationManHourResult {
                 getSummaryItemList(opt.getDetailFormatSetting().getSummaryItemList())
         )).orElse(null);
 
-//        val flatDataList = this.flatDataProcessing(outputContent, manHourObj.getTotalUnit());
         CountTotalLevel totalLevel = new CountTotalLevel(0);
         countHierarchy(outputContent.getItemDetails(), totalLevel);
 
@@ -91,7 +91,7 @@ public class CreateAggregationManHourResult {
                 new DisplayInfoDto(x.getDisplayInfo().getCode(), x.getDisplayInfo().getName()),
                 getSummaryItemDetails(x.getChildHierarchyList(), displayFormat),
                 convertValueDaily(x.getVerticalTotalList(), displayFormat),
-                x.getTotalPeriod().isPresent() ? x.getTotalPeriod().get() : 0
+                formatValue((double)x.getTotalPeriod().orElse(0), displayFormat)
         )).sorted(Comparator.comparing(SummaryItemDetailDto::getCode)).collect(Collectors.toList());
     }
 

@@ -17,5 +17,5 @@ public class ManHourSummaryTableOutputContentDto {
     /** 縦計値 */
     private List<VerticalValueDailyDto> verticalTotalValues;
     /** 期間合計 */
-    private int totalPeriod;
+    private String totalPeriod;
 }

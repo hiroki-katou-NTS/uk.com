@@ -754,14 +754,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -791,13 +784,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -827,13 +814,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -863,13 +844,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -899,13 +874,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -935,13 +904,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -971,13 +934,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -1007,13 +964,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("008", GeneralDate.fromString("2021/06/08", "yyyy/MM/dd"), 8, "008", "008", "008", "008", "008", "008", "008", 16)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -1043,13 +994,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2),
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("004", GeneralDate.fromString("2021/06/04", "yyyy/MM/dd"), 4, "004", "004", "004", "004", "004", "004", "004", 8),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 
@@ -1081,11 +1026,7 @@ public class MasterNameInformationTest {
                         WorkDetailData::getWorkCode5,
                         WorkDetailData::getTotalWorkingHours)
                 .containsExactly(
-                        tuple("002", GeneralDate.fromString("2021/06/02", "yyyy/MM/dd"), 2, "002", "002", "002", "002", "002", "002", "002", 4),
-                        tuple("003", GeneralDate.fromString("2021/06/03", "yyyy/MM/dd"), 3, "003", "003", "003", "003", "003", "003", "003", 6),
-                        tuple("005", GeneralDate.fromString("2021/06/05", "yyyy/MM/dd"), 5, "005", "005", "005", "005", "005", "005", "005", 10),
-                        tuple("006", GeneralDate.fromString("2021/06/06", "yyyy/MM/dd"), 6, "006", "006", "006", "006", "006", "006", "006", 12),
-                        tuple("007", GeneralDate.fromString("2021/06/07", "yyyy/MM/dd"), 7, "007", "007", "007", "007", "007", "007", "007", 14)
+                        tuple("001", GeneralDate.fromString("2021/06/01", "yyyy/MM/dd"), 1, "001", "001", "001", "001", "001", "001", "001", 2)
                 );
     }
 }

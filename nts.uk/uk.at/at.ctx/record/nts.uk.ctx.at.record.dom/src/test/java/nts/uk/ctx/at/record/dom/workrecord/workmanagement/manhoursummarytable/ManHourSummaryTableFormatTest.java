@@ -220,7 +220,7 @@ public class ManHourSummaryTableFormatTest {
      */
     @Test
     public void createOutputContent_unitDate_disp_notUse() {
-        val detailFormatSetting = new DetailFormatSetting(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.NOT_USE, summaryItemList2Level);
+        val detailFormatSetting = DetailFormatSetting.create(DisplayFormat.MINUTE, TotalUnit.DATE, NotUseAtr.NOT_USE, summaryItemList2Level);
         val instance = new ManHourSummaryTableFormat(new ManHourSummaryTableCode("CD01"), new ManHourSummaryTableName("NAME01"), detailFormatSetting);
         new Expectations(TextResource.class) {{
             TextResource.localize("KHA003_101");

@@ -47,7 +47,6 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         if (query == null) return;
 
         val formatSetting = query.getSummaryTableFormat();
-        val displayFormat = DisplayFormat.of(formatSetting.getDisplayFormat());
         val outputContent = query.getOutputContent();
         val totalUnit = formatSetting.getTotalUnit();
         int maxRangeDate = totalUnit == TotalUnit.DATE.value ? query.getPeriod().getDateList().size() : query.getPeriod().getYearMonthList().size();
@@ -216,7 +215,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         // Add code & name to header
         for (int i = 0; i < sortedList.size(); i++) {
             SummaryItemDto item = sortedList.get(i);
-            lstHeader.add(TextResource.localize(CODE_HEADER) + addSign(i));
+            lstHeader.add(TextResource.localize(getCodeHeader(i + 1)));
             lstHeader.add(item.getItemTypeName());
         }
 
@@ -233,8 +232,18 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         return lstHeader;
     }
 
-    private String addSign(int num){
-        return num == 1 ? " " : num == 2 ? "  " : num == 3 ? "   " : "";
+    private String getCodeHeader(int num){
+        switch (num){
+            case 1:
+                return "KHA003_117";
+            case 2:
+                return "KHA003_118";
+            case 3:
+                return "KHA003_119";
+            case 4:
+                return "KHA003_120";
+        }
+        return "";
     }
 
     /**
