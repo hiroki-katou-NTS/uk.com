@@ -13,7 +13,7 @@ module nts.uk.at.kdp003.r {
     @bean()
 	export class ViewModel extends ko.ViewModel {
 
-        notiErrorSystem: KnockoutObservable<boolean| null> = ko.observable(false);
+        notiErrorSystem: KnockoutObservable<boolean| null> = ko.observable(true);
 
         // ver50
         // R5 利用停止前内容
@@ -98,6 +98,8 @@ module nts.uk.at.kdp003.r {
                 vm.$blockui('show');
                 vm.$ajax('at', API.DISPLAY_NOTICE, noticeParam)
                     .then((noticeList: Array<MsgNoticeDto>) => {
+                        console.log(noticeList);
+                        
                         if (noticeList) {
     
                             let headOfficeNoticeList = _.filter(noticeList, n => n.message.targetInformation.destination == DestinationClassification.ALL);
