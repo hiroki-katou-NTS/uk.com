@@ -4,16 +4,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -213,14 +210,14 @@ public class WorkScheduleImportService {
 		// チェック結果
 		val checkedWorkSchedule = interimResult.getUncheckedResults().stream()
 				.map( detail -> {
-					// 勤務予定を取得
-					val schedule = require.getWorkSchedule( detail.getEmployeeId(), detail.getYmd() );
-					// 勤務予定の状態をチェック
-					if( !schedule.isPresent() ) {
+					// 勤務予定の存在チェック
+					if( !require.isWorkScheduleExisted( detail.getEmployeeId(), detail.getYmd() ) ) {
 						// 既存の勤務予定が存在しない
 						// チェック結果：取り込み可能
 						return detail.updateStatus( ImportStatus.IMPORTABLE );
-					} else if( schedule.get().getConfirmedATR() == ConfirmedATR.CONFIRMED ) {
+					}
+					// 勤務予定の確定済みチェック
+					if( require.isWorkScheduleComfirmed( detail.getEmployeeId(), detail.getYmd() ) ) {
 						// 既存の勤務予定が存在する(確定済)
 						// チェック結果：確定済み
 						return detail.updateStatus( ImportStatus.SCHEDULE_IS_COMFIRMED );
@@ -265,12 +262,19 @@ public class WorkScheduleImportService {
 		 */
 		List<ShiftMaster> getShiftMasters(List<ShiftMasterImportCode> importCodes);
 		/**
-		 * 勤務予定を取得する
+		 * 勤務予定が登録されているか
 		 * @param employeeId 社員ID
 		 * @param ymd 年月日
-		 * @return 勤務予定
+		 * @return true:登録されている/false:登録されていない
 		 */
-		Optional<WorkSchedule> getWorkSchedule(EmployeeId employeeId, GeneralDate ymd);
+		boolean isWorkScheduleExisted(EmployeeId employeeId, GeneralDate ymd);
+		/**
+		 * 勤務予定が確定されているか
+		 * @param employeeId 社員ID
+		 * @param ymd 年月日
+		 * @return true:確定されている/false:確定されていない
+		 */
+		boolean isWorkScheduleComfirmed(EmployeeId employeeId, GeneralDate ymd);
 	}
 
 }
