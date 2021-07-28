@@ -76,7 +76,7 @@ module nts.uk.ui.at.ksu002.a {
 				display: block;
 			}
 			.title-date>div.title-label {
-				padding: 0 25px;
+				padding: 0 25px 0 54px;
 				line-height: 32px;
 			}
 			.title-date .nts-switch-button {
