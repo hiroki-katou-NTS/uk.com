@@ -26,7 +26,6 @@ module nts.uk.com.view.kwr002.b {
         selectionType: number;
         layoutId: string;
         dayOfWeekList: KnockoutObservableArray<any>;
-        selectedDayOfWeek: KnockoutObservable<number>;
 
         constructor() {
             let self = this;
@@ -172,7 +171,8 @@ module nts.uk.com.view.kwr002.b {
                 exportFontSize: 2,
                 itemSelType: self.selectionType,
                 layoutId: null,
-                sealStamp: []
+                sealStamp: [],
+                startOfWeek: 7,
             };
 
             self.currentARES(new AttendanceRecordExportSetting(params));
