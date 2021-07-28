@@ -115,6 +115,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
 
     private void printData(Worksheet sheet, OutputTraceConfirmTableDataSource dataSource) {
         Cells cells = sheet.getCells();
+        Integer mngUnit = dataSource.getMngUnit();
         Map<String, List<DisplayContentsOfSubLeaveConfirmationTable>> mapData = dataSource.getContents().stream().collect(Collectors.groupingBy(DisplayContentsOfSubLeaveConfirmationTable::getHierarchyCode));
         int row = 3, count = 0;
         List<Integer> wkpIndexes = new ArrayList<>();
@@ -181,7 +182,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                             e.printStackTrace();
                         }
                         if (loop == 0) {
-                            this.printCommonContent(cells, row, content, dataSource.getMngUnit());
+                            this.printCommonContent(cells, row, content, mngUnit);
                             empIndexes.add(row);
                             cells.get(row, 7).setValue(TextResource.localize("KDR003_39"));
                         }
@@ -198,7 +199,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                                 && linkingInfo.getDateOfUse().v() == 0.5
                                                 && prevLinkingInfo.getDateOfUse().v() == 0.5) {
                                             cells.merge(row, col + i - 1, 1, 2);
-                                            String value = this.formatDate(
+                                            String value = this.formatDate(mngUnit,
                                                     OccurrenceDigClass.OCCURRENCE,
                                                     linkingInfo.getOccurrenceDate(),
                                                     1.0,
@@ -210,7 +211,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                             style.setHorizontalAlignment(HorizontalAlignment.Center);
                                             cells.get(row, col + i - 1).setStyle(style);
                                         } else {
-                                            val value = this.formatDate(
+                                            val value = this.formatDate(mngUnit,
                                                     OccurrenceDigClass.OCCURRENCE,
                                                     linkingInfo.getOccurrenceDate(),
                                                     linkingInfo.getDateOfUse().v(),
@@ -223,7 +224,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                                 && linkingInfo.getDateOfUse().v() == 0.5
                                                 && prevLinkingInfo.getDateOfUse().v() == 0.5) {
                                             cells.merge(row + 1, col + i - 1, 1, 2);
-                                            String value = this.formatDate(
+                                            String value = this.formatDate(mngUnit,
                                                     OccurrenceDigClass.DIGESTION,
                                                     linkingInfo.getYmd(),
                                                     linkingInfo.getDateOfUse().v(),
@@ -235,7 +236,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                             style.setHorizontalAlignment(HorizontalAlignment.Center);
                                             cells.get(row + 1, col + i - 1).setStyle(style);
                                         } else {
-                                            val value = this.formatDate(
+                                            val value = this.formatDate(mngUnit,
                                                     OccurrenceDigClass.DIGESTION,
                                                     linkingInfo.getYmd(),
                                                     linkingInfo.getDateOfUse().v(),
@@ -245,7 +246,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                             this.setValue(cells, row + 1, col + i, value);
                                         }
                                     } else {
-                                        val value = this.formatDate(
+                                        val value = this.formatDate(mngUnit,
                                                 OccurrenceDigClass.OCCURRENCE,
                                                 linkingInfo.getOccurrenceDate(),
                                                 linkingInfo.getDateOfUse().v(),
@@ -253,7 +254,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                                 content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
                                         );
                                         this.setValue(cells, row, col + i, value);
-                                        val value2 = this.formatDate(
+                                        val value2 = this.formatDate(mngUnit,
                                                 OccurrenceDigClass.DIGESTION,
                                                 linkingInfo.getYmd(),
                                                 linkingInfo.getDateOfUse().v(),
@@ -361,23 +362,23 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                             OccurrenceAcquisitionDetails acquisitionDetail = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().get(idx);
                             if (!isTime) {
                                 if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
-                                    val value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                    val value = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                     this.setValue(cells, row, col + i, value);
                                 } else {
-                                    val value = this.formatNoLinkedDate(acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                    val value = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                     this.setValue(cells, row + 1, col + i, value);
                                 }
                             } else {
                                 Optional<AttendanceTime> timeOpt = acquisitionDetail.getNumberConsecuVacation().getTime();
                                 if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
-                                    val value1 = this.formatNoLinkedDate(acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                    val value1 = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                     this.setValue(cells, row, col + i, value1);
                                     val value2 = timeOpt.isPresent() ?
                                             formatNoLinkedTime(acquisitionDetail, timeOpt.get().valueAsMinutes()) : null;
                                     this.setValue(cells, row + 1, col + i, value2);
 
                                 } else {
-                                    val value3 = this.formatNoLinkedDate(acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                    val value3 = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
                                     this.setValue(cells, row + 2, col + i, value3);
 
                                     val value4 = timeOpt.isPresent() ?
@@ -503,14 +504,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
      * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
      * @return
      */
-    private String formatDate(OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetails) {
+    private String formatDate(Integer mngUnit,OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetails) {
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
         } else {
             formattedDate.append(date.toString("yy/MM/dd"));
         }
-        if (usedNumber != 1.0) {
+        if (usedNumber != 1.0 && mngUnit == 1) {
             formattedDate.append(TextResource.localize("KDR003_120"));
         }
         occurrenceAcquisitionDetails.stream()
@@ -533,14 +534,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
      * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
      * @return
      */
-    private String formatNoLinkedDate(OccurrenceAcquisitionDetails detail, int howToPrintDate) {
+    private String formatNoLinkedDate(Integer mngUnit,OccurrenceAcquisitionDetails detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("yy/MM/dd"));
         }
-        if (detail.getNumberConsecuVacation().getDay().v() != 1.0) {
+        if (detail.getNumberConsecuVacation().getDay().v() != 1.0 && mngUnit!= 2) {
             formattedDate.append(TextResource.localize("KDR003_120"));
         }
         if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
