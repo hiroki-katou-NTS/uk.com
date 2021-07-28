@@ -76,7 +76,7 @@ module nts.uk.at.view.ksu003.b {
         }
         loadData(): void {
             const self = this; 
-            let request = getShared("dataShareKsu003b");        
+            let request = self.dataShareA;        
             self.targetUnit(request.targetUnit);
             self.targetId(request.targetId)
 
@@ -101,7 +101,7 @@ module nts.uk.at.view.ksu003.b {
 
         loadDetail(page?: number): void {
             const self = this;  
-            let request = getShared("dataShareKsu003b");
+            let request = self.dataShareA;
             request.page = page;
             let dataSource: Array<any> = _.clone(self.sourceEmpty), idxExp: Array<number> = [], idxDel: Array<number> = [];
             self.$blockui("invisible");

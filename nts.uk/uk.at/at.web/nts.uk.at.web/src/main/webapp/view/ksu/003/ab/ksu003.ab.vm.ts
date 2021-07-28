@@ -385,15 +385,39 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					return;
 				}
 				
-				let value = {
-					column: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.column,
-					data: {
-						page: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.page,
-						text: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,
-						tooltip: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.tooltip
-					},
-					row: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.row
+				let value : any = null 
+				if(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text != "storeNull") {
+					value = {
+						column: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.column,
+						data: {
+							page: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.page,
+							text: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,
+							tooltip: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.tooltip
+						},
+						row: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.row
+					}
+				} else {
+					for(let i =0; i < self.sourceCompany().length; i++) {
+						let cpn = self.sourceCompany()[i];
+						if (!_.isEmpty(cpn)){
+							let column = 0;
+							if (cpn.page == 2 || cpn.page == 7) column = 1;
+							if (cpn.page == 3 || cpn.page == 8) column = 2;
+							if (cpn.page == 4 || cpn.page == 9) column = 3;
+							if (cpn.page == 5 || cpn.page == 10) column = 4;
+							value = {
+								column: column,
+								data: {
+									page: cpn.page,
+									text: cpn.text,
+									tooltip: cpn.tooltip
+								},
+								row: cpn.page > 5 ? 1 : 0
+							}
+						}
+					}
 				}
+				
 				if (value.data.text == getText("KSU003_70") || value.data.text == getText("KSU003_83")) {
 					self.selectedButton(0);
 				}

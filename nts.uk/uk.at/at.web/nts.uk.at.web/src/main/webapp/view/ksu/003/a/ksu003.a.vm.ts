@@ -737,7 +737,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lstEmpIdSort: _.map(self.lstEmpId, (x: model.IEmpidName) => { return x.empId }),
 				pageNo : !_.isNil(self.localStore) ? self.localStore.pageNo : 0,
 				work1Selection : !_.isNil(self.localStore) ? self.localStore.work1Selection : '',
-				workPalletDetails : !_.isNil(self.localStore) ? self.localStore.workPalletDetails : {column: 0, data: {text: "t", tooltip: "test", page: 1}, row: 0},
+				workPalletDetails : !_.isNil(self.localStore) ? self.localStore.workPalletDetails : {column: 0, data: {text: "storeNull", tooltip: "storeNull", page: 1}, row: 0},
 				workSelection: !_.isNil(self.localStore) ? self.localStore.workSelection : 0
 			}
 			self.localStore = local;
@@ -2487,6 +2487,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 					self.taskSaveData = [];
 					self.taskPasteData = [];
+					self.lstTaskScheduleDetailEmp = [];
 					self.enableSave(false);
 					block.clear();
 				}).fail(function(error: any) {
@@ -5401,14 +5402,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (_.isNil(start) || _.isNil(end)){
 					
 					
-					index = "";
+					/*index = "";
 					if (lgcFil.length > 0 && (_.inRange(start, lgcFil[0].start, lgcFil[0].end) || _.inRange(end, lgcFil[0].start, lgcFil[0].end))){
 						index = "lgc" + line + "_" + (lgcFil.length - 1);
 					}
 					
 					if (rgcFil.length > 0 && (_.inRange(start, rgcFil[0].start, rgcFil[0].end) || _.inRange(end, rgcFil[0].start, rgcFil[0].end))){
 						index = "rgc" + line + "_" + (rgcFil.length - 1);
-					}
+					}*/
 					
 					if (_.isNil(start) || _.isNil(end)){
 						if (_.isNil(start))
@@ -5423,7 +5424,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						end = ruler.gcChart[line][noneFil[0].id].end;
 					}
 					
-					ruler.gcChart[line][noneFil[0].id].id = index;
+					//ruler.gcChart[line][noneFil[0].id].id = index;
 					}
 					
 					self.addTaskResize(line , type , start , end, ruler.gcChart[line][noneFil[0].id].id);
@@ -5444,14 +5445,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 				if(taskInfo == null) return;
 				
+				let filDuplicate = _.filter(self.lstChartTask, (x : any) => {
+					return x.line == line && x.start <= start && x.end >= end && taskInfo[0].code == x.code;
+				});
+				
+				if (filDuplicate.length > 0) return; // kiem tra trung code
+				
 				let arrRemoveTask : any = [], arrRemoveTaskNew : any = [];
 				let filTaskData = _.filter (self.taskData, (x : any) => {
 					return x.empID == self.lstEmpId[line].empId;
 				});
 				if (filTaskData.length > 0 && !_.isNil(self.taskData[line])) {
 				
-				for (let i = 0; i < self.taskData[line].taskScheduleDetail.length ; i++) {
-					let task : any = self.taskData[line].taskScheduleDetail[i],
+				for (let i = 0; i < self.taskData[line].taskScheduleDetail.length ; i++) { // kiem tra voi list task cu
+					let task : any = self.taskData[line].taskScheduleDetail[i], 
 					oldS = task.timeSpanForCalcDto.start,
 					oldE = task.timeSpanForCalcDto.end;
 					if (filTaskData[0].empID !== self.lstEmpId[line].empId)
@@ -5496,7 +5503,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								}
 								
 								if (start > oldS && end < oldE) {
-									self.bindDataToTask(taskInfo , end , self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end , line, id);
+									self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null, end , self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end , line, id);
 									self.taskData[line].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
 									continue;
 								}
@@ -5542,71 +5549,79 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								eTimeNew = end;
 								end = sTime;
 								
-								self.bindDataToTask(taskInfo , sTimeNew , eTimeNew , line, id);
+								self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null , sTimeNew , eTimeNew , line, id);
 							}	
 						}
 					}
 				}
 				
-				for (let i = 0; i < self.lstTaskScheduleDetailEmp.length ; i++) {
-					let task : any = self.lstTaskScheduleDetailEmp[i],
-					oldS = task.taskScheduleDetail[0].timeSpanForCalcDto.start,
-					oldE = task.taskScheduleDetail[0].timeSpanForCalcDto.end;
+				for (let i = 0; i < self.lstTaskScheduleDetailEmp.length ; i++) { // kiem tra voi list task moi
+					let task : any = self.lstTaskScheduleDetailEmp[i];
+					
 					if (task.empId !== self.lstEmpId[line].empId)
 					continue;
 					
-					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
-						_.inRange(oldS, start, end) || _.inRange(oldE, start, end)) {
+					let indx = _.findIndex(task.taskScheduleDetail, (x : any) => {
+						return _.inRange(start, x.timeSpanForCalcDto.start, x.timeSpanForCalcDto.end) || _.inRange(end, x.timeSpanForCalcDto.start, x.timeSpanForCalcDto.end) || 
+						_.inRange(x.timeSpanForCalcDto.start, start, end) || _.inRange(x.timeSpanForCalcDto.end, start, end);
+					});
+					
+					if (indx == -1) continue;
+					let oldS = task.taskScheduleDetail[indx].timeSpanForCalcDto.start,
+					oldE = task.taskScheduleDetail[indx].timeSpanForCalcDto.end;
 							
-						if (taskInfo[0].code === task.taskScheduleDetail.taskCode){
-								if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
-									return;
-								
-								if ((start == oldS && end < oldE) || (start < oldS && end < oldE && end > oldS)) {
-									end = oldE;
-									continue;
-								}
-								
-								if (start > oldS && end > oldE && start < oldE) {
-									start = oldS;
-									continue;
-								}
-							} else {
-								if (start == oldS && end < oldE) {
-									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = end;
-									continue;
-								}
-								
-								if (start < oldS && end < oldE && end > oldS) {
-									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = end;
-									continue;
-								}
-								
-								if (start > oldS && end > oldE && start < oldE) {
-									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = start;
-									continue;
-								}
-								
-								if (start > oldS && end == oldE) {
-									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = start;
-									continue;
-								}
-								
-								if (start > oldS && end < oldE) {
-									self.bindDataToTask(taskInfo , end , self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end , line, id);
-									self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.timeSpanForCalcDto.end = start;
-									continue;
-								}
+					if (taskInfo[0].code === task.taskScheduleDetail.taskCode){
+							if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
+								return;
+							
+							if ((start == oldS && end < oldE) || (start < oldS && end < oldE && end > oldS)) {
+								end = oldE;
+								continue;
 							}
-						if (self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.length > 0)	{
-							arrRemoveTaskNew.push({
-								index : i,
-								line : line,
-								start : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.start,
-								end : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.end
-							});
+							
+							if (start > oldS && end > oldE && start < oldE) {
+								start = oldS;
+								continue;
+							}
+						} else {
+							if (start == oldS && end < oldE) {
+								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = end;
+								continue;
+							}
+							
+							if (start < oldS && end < oldE && end > oldS) {
+								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = end;
+								continue;
+							}
+							
+							if (start > oldS && end > oldE && start < oldE) {
+								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = start;
+								continue;
+							}
+							
+							if (start > oldS && end == oldE) {
+								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = start;
+								continue;
+							}
+							
+							if (start > oldS && end < oldE) {
+								let filTask = _.filter(self.lstChartTask, (tsk : any ) => {
+									return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
+								})
+								
+								self.bindDataToTask(filTask != null ? filTask[0].code : null , end , self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end , line, id);
+								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = start;
+								continue;
+							}
 						}
-					} 
+					if (self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.length > 0)	{
+						arrRemoveTaskNew.push({
+							index : i,
+							line : line,
+							start : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.start,
+							end : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.end
+						});
+					}
 				}
 				
 				_.forEach(arrRemoveTaskNew, x => {
@@ -5615,17 +5630,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					});
 				});
 				
-				self.bindDataToTask(taskInfo , start , end , line, id);
+				self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null , start , end , line, id);
 				self.enableSave(true);
 		}
 		
-		bindDataToTask(taskInfo : any, start : any, end : any, line : any, id : any){
+		bindDataToTask(code : any, start : any, end : any, line : any, id : any){
 			let self = this;
 			
 			let taskScheduleDetail : any = [];
-				if(taskInfo != null){
+				if(code != null){
 					taskScheduleDetail.push({
-						taskCode : taskInfo[0].code,
+						taskCode : code,
 						timeSpanForCalcDto : {
 							start : start,
 							end : end
@@ -5647,9 +5662,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							taskScheduleDetail : taskScheduleDetail
 						});
 					} else {
-						_.forEach(self.lstTaskScheduleDetailEmp[0].taskScheduleDetail, (old : any) => {
-							self.lstTaskScheduleDetailEmp[0].taskScheduleDetail.add(taskScheduleDetail[0]);
-						})
+						let indTask =  _.findIndex(self.lstTaskScheduleDetailEmp, (x : any) => {
+									return self.dataScreen003A().employeeInfo[line].empId == x.empId;
+						});
+							
+						let indx = _.filter(self.lstTaskScheduleDetailEmp[indTask].taskScheduleDetail, (x : any) => {
+							return (start == x.timeSpanForCalcDto.start) && (end == x.timeSpanForCalcDto.end);
+						});
+						
+						if (indx.length == 0)
+						self.lstTaskScheduleDetailEmp[indTask].taskScheduleDetail.add(taskScheduleDetail[0]);
 					}
 					 
 				} else {
@@ -5679,7 +5701,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					if (index != -1){
 						self.lstTaskScheduleDetailEmp[index].taskScheduleDetail.push({
-							taskCode : taskInfo[0].code,
+							taskCode : code,
 							timeSpanForCalcDto : {
 								start : start,
 								end : end
@@ -5696,7 +5718,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					end : end,
 					id : id,
 					line : line,
-					code : taskInfo[0].code
+					code : code
 				});
 				
 				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp, (emp : any) => {
@@ -5829,8 +5851,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this;
 			let filRuler = ruler.gcChart[index][`lgc` + index],
 			filTask = _.filter(self.lstChartTask, (x : any) => x.line == index),
-			
-			let filTime = _.filter(filTask, (x : any) => {
+			filTime = _.filter(filTask, (x : any) => {
 				return id == x.id;
 			});
 			_.forEach(filTask, (x : any) => {
