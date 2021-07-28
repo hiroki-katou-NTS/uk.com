@@ -9,6 +9,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.AchievementAtr;
@@ -136,31 +137,34 @@ public class ActualLock extends AggregateRoot {
 		}
 		// val $締め期間 = require.指定した年月の期間を算出する(@締めID、@期間。開始日。年月);
 		DatePeriod periodClosure = require.getClosurePeriod(this.closureId.value, period.start().yearMonth());
+		GeneralDate startPeriodClosure = periodClosure.start().addDays(-1);
+		GeneralDate endPeriodClosure = periodClosure.end().addDays(1);
+		
 		// if 期間。終了 < $締め期間。終了 && 期間。開始 > $締め期間。開始
-		if (period.end().before(periodClosure.end()) && period.start().after(periodClosure.start())) {
+		if (period.end().before(endPeriodClosure) && period.start().after(startPeriodClosure)) {
 			return listPeriod;
 		//	else if 期間。開始　＞＝　$締め終了日 || 期間。終了　<＝　$締め開始日															
-		} else if (period.start().afterOrEquals(periodClosure.end())
-				|| period.end().beforeOrEquals(periodClosure.start())) {
+		} else if (period.start().afterOrEquals(endPeriodClosure)
+				|| period.end().beforeOrEquals(startPeriodClosure)) {
 			listPeriod.add(period);
 			return listPeriod;
 		//else if 期間。開始 > $締め開始日 && 期間。開始　<＝　$締め終了日 && 期間。終了　>＝　$締め終了日 
-		}else if(period.start().after(periodClosure.start()) && period.start().beforeOrEquals(periodClosure.end())
-				&& period.end().after(periodClosure.end())) {
+		}else if(period.start().after(startPeriodClosure) && period.start().beforeOrEquals(endPeriodClosure)
+				&& period.end().after(endPeriodClosure)) {
 			//return new List (new 期間($締め終了日、期間。終了))
-			listPeriod.add(new DatePeriod(periodClosure.end().addDays(1), period.end()));
+			listPeriod.add(new DatePeriod(endPeriodClosure, period.end()));
 			return listPeriod; 
 		//else if 期間。開始 ＜＝ $締め開始日 && 期間。終了　<＝　$締め終了日 && 期間。終了　>　$締め開始日
-		}else if(period.start().beforeOrEquals(periodClosure.start()) && period.end().beforeOrEquals(periodClosure.end())
-				&& period.end().after(periodClosure.start())) {
+		}else if(period.start().beforeOrEquals(startPeriodClosure) && period.end().beforeOrEquals(endPeriodClosure)
+				&& period.end().after(startPeriodClosure)) {
 			//return new List (new 期間(期間。開始、$締め開始日))
-			listPeriod.add(new DatePeriod(period.start(), periodClosure.start().addDays(-1)));
+			listPeriod.add(new DatePeriod(period.start(), startPeriodClosure));
 			return listPeriod; 
 		}
 		
 		// return new List(new 期間(期間。開始、$締め期間。開始)、new 期間($締め期間。終了、期間。終了))
-		listPeriod.add(new DatePeriod(period.start(), periodClosure.start()));
-		listPeriod.add(new DatePeriod(periodClosure.end(), period.end()));
+		listPeriod.add(new DatePeriod(period.start(), startPeriodClosure));
+		listPeriod.add(new DatePeriod(endPeriodClosure, period.end()));
 		return listPeriod;
 	}
 
