@@ -73,7 +73,7 @@ public class WorkScheduleWorkInforDto {
 	public DateInfoDuringThePeriodDto dateInfoDuringThePeriod;
 	
 	//就業時間帯の勤務形態 
-	public String workTimeForm;
+	public Integer workTimeForm;
 	
 	@Builder
 	public static class Achievement {
@@ -102,8 +102,6 @@ public class WorkScheduleWorkInforDto {
 		// 終了時刻
 		public Integer endTime;	
 		
-		//就業時間帯の勤務形態 
-		public String workTimeForm;
 	}
 
 }

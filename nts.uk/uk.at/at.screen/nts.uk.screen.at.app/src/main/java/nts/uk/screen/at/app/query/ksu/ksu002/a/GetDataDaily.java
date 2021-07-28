@@ -48,7 +48,6 @@ public class GetDataDaily {
 					.workTimeName(m.getWorkTimeName())
 					.startTime(m.getStartTime())
 					.endTime(m.getEndTime())
-					.workTimeForm(m.workTimeForm)
 					.build();
 		}).collect(Collectors.toList());
 	}

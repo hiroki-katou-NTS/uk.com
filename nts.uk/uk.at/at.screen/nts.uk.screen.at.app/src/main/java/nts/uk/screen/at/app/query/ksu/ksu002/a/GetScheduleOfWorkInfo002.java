@@ -14,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
@@ -43,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -156,7 +154,7 @@ public class GetScheduleOfWorkInfo002 {
 							.endTimeEditState(endTimeEditState)
 							.workHolidayCls(m.workHolidayCls)
 							.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
-							.workTimeForm(m.workTimeForm == null? null:EnumAdaptor.valueOf(m.workTimeForm, WorkTimeForm.class).name)
+							.workTimeForm(m.workTimeForm)
 							.build();
 					return dto;
 				}).collect(Collectors.toList());

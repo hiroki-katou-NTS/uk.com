@@ -189,7 +189,6 @@ module nts.uk.ui.at.ksu002.a {
 		created() {
 			const vm = this;
 			vm.getfirst();
-			vm.getStartupProcessingInformation();
 			
 			vm.employeeId = ko.observableArray([vm.$user.employeeId]);
 			
@@ -531,6 +530,7 @@ module nts.uk.ui.at.ksu002.a {
 		
 		getfirst(){
 			let self = this;
+			let sv = self.$ajax('at','screen/ksu/ksu002/getStartupProcessingInformation');
 			//<<Query>> 週の管理を取得する
 			let sv1 = self.$ajax('at', API.GET_START_DAY_OF_WEEK);
 			let sv2 = self.$ajax('at', '/screen/ksu/ksu002/getListOfPeriodsClose')
@@ -538,7 +538,9 @@ module nts.uk.ui.at.ksu002.a {
 					self.$dialog.error(error);
 				});
 			let sv3 = self.$window.storage("KSU002.USER_DATA");
-			$.when(sv1, sv2, sv3).done((data1: any, data2: any, data3: any)=>{
+			
+			$.when(sv, sv1, sv2, sv3).done((data: any, data1: any, data2: any, data3: any)=>{
+				self.startupProcessingInformation(data);
 				if(data3){
 					self.storageDataStartWeek(data3.fdate);
 				}
@@ -551,13 +553,6 @@ module nts.uk.ui.at.ksu002.a {
 				if(data2){
 					self.listOfPeriodsClose(data2);
 				}
-			});
-		}
-		
-		getStartupProcessingInformation(){
-			let self = this;
-			self.$ajax('at','screen/ksu/ksu002/getStartupProcessingInformation').done((data: any)=>{
-				self.startupProcessingInformation(data);
 			});
 		}
 		
