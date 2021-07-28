@@ -117,6 +117,9 @@ module nts.uk.at.view.kdp010.j {
 				if(value == 12 || value == 13){
 					return !self.settingsStampUse.temporaryUse;
 				}
+                if(value == 10 || value == 11) {
+					return !self.settingsStampUse.entranceExitUse;
+				}
 				return false;
 			}
             

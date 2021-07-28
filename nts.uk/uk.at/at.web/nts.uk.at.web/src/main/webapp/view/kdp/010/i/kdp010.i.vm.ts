@@ -134,7 +134,7 @@ module nts.uk.at.view.kdp010.i {
 				self.getDataFromContents(self.selectedDay());
 				block.invisible();
 				var tg = __viewContext.enums.ContentsStampType;
-				
+
 				_.remove(tg, (n: any) => { return n.value == 16; });
 				ajax(paths.getSettingCommonStamp).done(function (data: any) {
 					if (!data.supportUse) {
@@ -143,7 +143,7 @@ module nts.uk.at.view.kdp010.i {
 					if (!data.temporaryUse) {
 						_.remove(tg, (n: any) => { return n.value == 12 || n.value == 13; });
 					}
-					if(!data.entranceExitUse){
+					if (!data.entranceExitUse) {
 						_.remove(tg, (n: any) => { return n.value == 10 || n.value == 11; });
 					}
 					self.contentsStampType(tg);
