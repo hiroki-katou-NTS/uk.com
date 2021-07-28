@@ -9,7 +9,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 
 	export class ScreenModel {
 		KEY: string = 'USER_KSU003_INFOR';
-		view = __viewContext.viewModel;
+		//viewA : any = __viewContext.viewModel.viewmodelA;
 		dataFromScrA: any = [];
 		characteristic: KnockoutObservable<ksu003.a.model.ILocalStore> = ko.observable();
 		// Screen Ab1
@@ -192,6 +192,9 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 			service.getTaskInfo(param)
 				.done((data: any) => {
 					self.dataTaskInfo = data;
+					if (self.dataTaskInfo != null && self.dataTaskInfo.workPaletteDisplayInforDto.lstTaskPaletteOrganizationDto.length  == 0){
+						self.selectedPage(0);
+					}
 					_.forEach(self.dataTaskInfo.lstTaskDto, (x : any) => {
 						let taskInfo : any = {
 							data :{

@@ -41,6 +41,8 @@ module nts.uk.at.view.ksu003.b {
         isClickLink: KnockoutObservable<boolean> = ko.observable(false);
         endStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
 
+		dataShareA : any = getShared("dataShareKsu003b");
+
         constructor() {
             super();
             const self = this;
@@ -285,7 +287,7 @@ module nts.uk.at.view.ksu003.b {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            let dataShare = getShared("dataShareKsu003b");
+            let dataShare = self.dataShareA;
             data ? position = Number(data.target.dataset.idx) + 1 : position = Number($(event)[0].dataset.idx) + 1
 
             let request = {
