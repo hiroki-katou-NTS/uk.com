@@ -540,8 +540,8 @@ module nts.uk.at.kha003.d {
                 totalUnit: aScreenData.totalUnit,
                 startDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.startDate : null,
                 endDate: aScreenData.totalUnit == 0 ? bScreenData.dateRange.endDate : null,
-                yearMonthStart: aScreenData.totalUnit == 1 ? bScreenData.dateRange.startDate : null,
-                yearMonthEnd: aScreenData.totalUnit == 1 ? bScreenData.dateRange.endDate : null
+                yearMonthStart: aScreenData.totalUnit == 1 ? bScreenData.dateRange.startDate.replace('/', '') : null,
+                yearMonthEnd: aScreenData.totalUnit == 1 ? bScreenData.dateRange.endDate.replace('/', '') : null
             };
             vm.preriod(period);
             return {
@@ -787,6 +787,9 @@ module nts.uk.at.kha003.d {
                         let month = year === fromYear ? fromMonth : 0;
                         const monthLimit = year === toYear ? toMonth : 11;
                         for (; month <= monthLimit; month++) {
+                            if (month < 10) {
+                                month = '0' + month;
+                            }
                             vm.dateHeaders.push(
                                 new DateHeader('', '', '' + year + '/' + month)
                             );

@@ -93,8 +93,8 @@ module nts.uk.at.kha003.b {
             let command = {
                 startDate: vm.totalUnit() == 0 ? vm.dateValue().startDate : null,
                 endDate: vm.totalUnit() == 0 ? vm.dateValue().endDate : null,
-                yearMonthStart: vm.totalUnit() == 1 ? vm.dateValue().startDate : null,
-                yearMonthEnd: vm.totalUnit() == 1 ? vm.dateValue().endDate : null,
+                yearMonthStart: vm.totalUnit() == 1 ? vm.dateValue().startDate.replace('/','') : null,
+                yearMonthEnd: vm.totalUnit() == 1 ? vm.dateValue().endDate.replace('/','') : null,
                 totalUnit: vm.totalUnit()
             }
             vm.$ajax(API.getData, command).then(data => {
