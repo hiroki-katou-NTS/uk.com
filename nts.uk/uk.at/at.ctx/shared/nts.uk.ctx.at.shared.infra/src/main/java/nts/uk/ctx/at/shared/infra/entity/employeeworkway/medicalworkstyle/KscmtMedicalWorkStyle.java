@@ -14,17 +14,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistory;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.FulltimeRemarks;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalCareWorkStyle;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.MedicalWorkFormInfor;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NightShiftRemarks;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassifiCode;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NursingWorkFormInfor;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
@@ -104,15 +97,15 @@ public class KscmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements
 	}
 
 	public static KscmtMedicalWorkStyle toEntityMedicalWorkStyle(EmpMedicalWorkStyleHistory his,
-			EmpMedicalWorkFormHisItem hisItem) {
+			EmpMedicalWorkStyleHistoryItem hisItem) {
 		KscmtMedicalWorkStyle kscmtMedicalWorkStyle = new KscmtMedicalWorkStyle();
 		KscmtMedicalWorkStylePk pk = new KscmtMedicalWorkStylePk(his.getEmpID(), hisItem.getHistoryID());
 		if (his.getEmpID().equals(hisItem.getEmpID())) {
 			Optional<DateHistoryItem> optional = his.getListDateHistoryItem().stream()
 					.filter(predicate -> predicate.identifier() == hisItem.getHistoryID()).findFirst();
 			if (optional.isPresent()) {
-
-				kscmtMedicalWorkStyle = new KscmtMedicalWorkStyle(pk, optional.get().span().start(),
+//TODO 社員の医療勤務形態履歴項目を変更したので、修正お願いいたします。
+/*				kscmtMedicalWorkStyle = new KscmtMedicalWorkStyle(pk, optional.get().span().start(),
 						optional.get().span().end(), 
 						hisItem.isNightShiftFullTime(),
 						hisItem.getOptMedicalWorkFormInfor().isPresent()
@@ -128,7 +121,7 @@ public class KscmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements
 						hisItem.getOpyNursingWorkFormInfor().isPresent()
 								? hisItem.getOpyNursingWorkFormInfor().get().getFulltimeRemarks().v() : null,
 						hisItem.getOpyNursingWorkFormInfor().isPresent()
-								? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);
+								? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);*/
 			}
 		}
 
@@ -136,14 +129,16 @@ public class KscmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements
 
 	}
 
-	public EmpMedicalWorkFormHisItem toDomainHisItem() {
-		EmpMedicalWorkFormHisItem domain  = new EmpMedicalWorkFormHisItem(
+	public EmpMedicalWorkStyleHistoryItem toDomainHisItem() {
+//TODO 社員の医療勤務形態履歴項目を変更したので、修正お願いいたします。		
+/*		EmpMedicalWorkFormHisItem domain  = new EmpMedicalWorkFormHisItem(
 				this.getPk().getSid(),
 				this.getPk().getHistId(),
 				this.isOnlyNightShift ,
 				Optional.ofNullable( new MedicalWorkFormInfor((EnumAdaptor.valueOf(this.getMedicalCareWorkStyle(), MedicalCareWorkStyle.class)) ,new NurseClassifiCode(this.getNurseLicenseCd()),this.getMedicalConcurrentPost()) ),
 				Optional.ofNullable(new NursingWorkFormInfor( (EnumAdaptor.valueOf(this.getMedicalCareWorkStyle(), MedicalCareWorkStyle.class)), this.getCareConcurrentPost() , new FulltimeRemarks(this.getCareRptNote()), new NightShiftRemarks(this.getCareNightRptNote())  ) ));
-		return domain;
+		return domain;*/
+		return null;
 	}
 	
 	public  EmpMedicalWorkStyleHistory toDomainHis(){

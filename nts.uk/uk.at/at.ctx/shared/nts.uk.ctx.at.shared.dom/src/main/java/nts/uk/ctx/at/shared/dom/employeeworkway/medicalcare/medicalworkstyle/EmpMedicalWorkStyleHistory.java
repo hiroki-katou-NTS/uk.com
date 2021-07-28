@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.strategic.PersistentHistory;
 /**
  * 社員の医療勤務形態履歴
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.スケジュールチーム
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療介護.医療勤務形態.社員の医療勤務形態履歴
  * @author HieuLt
  *
  */

@@ -1,16 +1,17 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.nursingcareworkstyle;
 
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.MedicalCareWorkStyle;
 
 /**
  * 介護勤務形態情報
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.スケジュールチーム
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療介護.介護勤務形態.介護勤務形態情報
  * @author HieuLt
  *
  */
 @Value
-public class NursingWorkFormInfor implements DomainValue {
+public class NursingCareWorkStyleInfo implements DomainValue {
 	
 	/** 介護勤務形態 **/
 	private final MedicalCareWorkStyle medicalCareWorkStyle;

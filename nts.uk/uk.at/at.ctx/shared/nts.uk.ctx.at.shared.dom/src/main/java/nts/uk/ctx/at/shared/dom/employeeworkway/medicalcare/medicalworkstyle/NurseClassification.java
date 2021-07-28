@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * @author ThanhNX 看護区分
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療介護.医療勤務形態.看護区分
  */
 @AllArgsConstructor 
 public class NurseClassification implements DomainAggregate {

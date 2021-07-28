@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 
 /**
  * 社員の免許区分を取得する
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.医療勤務形態
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療介護.医療勤務形態.社員の免許区分を取得する
  * @author HieuLt
  *
  */
@@ -22,10 +22,10 @@ public class GetEmpLicenseClassificationService {
 		Map<NurseClassifiCode ,NurseClassification> map = new HashMap<>();
 
 		// $社員の看護区分Map = require.社員の医療勤務形態履歴項目を取得する(基準日, 社員リスト)
-		List<EmpMedicalWorkFormHisItem> listEmpMedicalWorkFormHisItem  = require.getEmpClassifications(listEmp, referenceDate);
+		List<EmpMedicalWorkStyleHistoryItem> listEmpMedicalWorkFormHisItem  = require.getEmpMedicalWorkStyleHistoryItem(listEmp, referenceDate);
 		
-		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream().filter(x-> x.getOptMedicalWorkFormInfor().isPresent()).collect(Collectors
-				.toMap(EmpMedicalWorkFormHisItem::getEmpID, item -> item.getOptMedicalWorkFormInfor().get().getNurseClassifiCode()));
+		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream()
+				.collect(Collectors.toMap(EmpMedicalWorkStyleHistoryItem::getEmpID, EmpMedicalWorkStyleHistoryItem::getNurseClassifiCode));
 		
 		// $看護区分Map = require.会社の看護区分リストを取得する()
 		List<NurseClassification>  listNurseClassification = require.getListCompanyNurseCategory();
@@ -65,7 +65,7 @@ public class GetEmpLicenseClassificationService {
 		 * @param referenceDate
 		 * @return
 		 */
-		List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp , GeneralDate referenceDate);
+		List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp , GeneralDate referenceDate);
 		//		看護区分Repository.会社の看護区分リストを取得する(会社ID)		
 		/**
 		 * [R-1] 会社の看護区分リストを取得する

@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistory;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtMedicalWorkStyle;
 import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtMedicalWorkStylePk;
 
@@ -35,8 +35,8 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 			 											 + " AND c.endDate >= :referenceDate "
                                                          + " AND c.startDate <= :referenceDate "; 
 	@Override
-	public Optional<EmpMedicalWorkFormHisItem> get(String empID, GeneralDate referenceDate) {
-		Optional<EmpMedicalWorkFormHisItem> data = this.queryProxy().query(GET_BY_EMPID_AND_DATE, KscmtMedicalWorkStyle.class)
+	public Optional<EmpMedicalWorkStyleHistoryItem> get(String empID, GeneralDate referenceDate) {
+		Optional<EmpMedicalWorkStyleHistoryItem> data = this.queryProxy().query(GET_BY_EMPID_AND_DATE, KscmtMedicalWorkStyle.class)
 														.setParameter("empId", empID)
 														.setParameter("referenceDate", referenceDate)
 														.getSingle(c ->c.toDomainHisItem());			
@@ -44,10 +44,10 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	}
 
 	@Override
-	public List<EmpMedicalWorkFormHisItem> get(List<String> listEmpId, GeneralDate referenceDate) {
+	public List<EmpMedicalWorkStyleHistoryItem> get(List<String> listEmpId, GeneralDate referenceDate) {
 		if(listEmpId.isEmpty())
-			return new ArrayList<EmpMedicalWorkFormHisItem>();
-		List<EmpMedicalWorkFormHisItem> data = this.queryProxy().query(GET_BY_EMPIDS_AND_DATE, KscmtMedicalWorkStyle.class)
+			return new ArrayList<EmpMedicalWorkStyleHistoryItem>();
+		List<EmpMedicalWorkStyleHistoryItem> data = this.queryProxy().query(GET_BY_EMPIDS_AND_DATE, KscmtMedicalWorkStyle.class)
 																.setParameter("listEmpId", listEmpId)
 																.setParameter("referenceDate", referenceDate)
 																.getList( c -> c.toDomainHisItem()); 
@@ -56,8 +56,8 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 
 	@Override
 	public void insert(EmpMedicalWorkStyleHistory empMedicalWorkStyleHistory,
-			EmpMedicalWorkFormHisItem empMedicalWorkFormHisItem) {
-		this.commandProxy().insert(KscmtMedicalWorkStyle.toEntityMedicalWorkStyle(empMedicalWorkStyleHistory, empMedicalWorkFormHisItem));
+			EmpMedicalWorkStyleHistoryItem empMedicalWorkStyleHistoryItem) {
+		this.commandProxy().insert(KscmtMedicalWorkStyle.toEntityMedicalWorkStyle(empMedicalWorkStyleHistory, empMedicalWorkStyleHistoryItem));
 		
 	}
 
@@ -97,17 +97,18 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	}
 
 	@Override
-	public void update(EmpMedicalWorkFormHisItem hisItem) {
+	public void update(EmpMedicalWorkStyleHistoryItem hisItem) {
 
 		 Optional<KscmtMedicalWorkStyle> entity = this.queryProxy().find(new KscmtMedicalWorkStylePk(hisItem.getEmpID(), hisItem.getHistoryID()), KscmtMedicalWorkStyle.class);
 		if(entity.isPresent()){
-			entity.get().setOnlyNightShift(hisItem.isNightShiftFullTime());
+			//TODO
+			/*entity.get().setOnlyNightShift(hisItem.isNightShiftFullTime());
 			entity.get().setMedicalCareWorkStyle(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().getMedicalCareWorkStyle().value : hisItem.getOpyNursingWorkFormInfor().get().getMedicalCareWorkStyle().value );
 			entity.get().setNurseLicenseCd(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().getNurseClassifiCode().v() : null );
 			entity.get().setMedicalConcurrentPost(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().isOtherDepartmentConcurrently() : null );
 			entity.get().setCareConcurrentPost(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().isAsNursingCare() : null);
 			entity.get().setCareRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getFulltimeRemarks().v() :  null);	
-			entity.get().setCareNightRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);
+			entity.get().setCareNightRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);*/
 			this.commandProxy().update(entity);
 		}
 	}

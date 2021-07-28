@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
+package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare;
 
 import lombok.RequiredArgsConstructor;
 /**
  * 医療介護勤務形態
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.スケジュールチーム
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.医療介護.医療介護勤務形態
  * @author HieuLT
  *
  */
