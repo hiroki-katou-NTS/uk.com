@@ -22,6 +22,8 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -115,7 +117,10 @@ public class ExternalImportPrepareRequire {
 	private ReviseItemRepository reviseItemRepo;
 	
 	@Inject
-	private AffClassHistoryRepository affClassHistoryRepository;
+	private AffClassHistoryRepository affClassHistoryRepo;
+	
+	@Inject
+	private AffJobTitleHistoryRepository affJobTitleHistoryRepo;
 	
 	public class RequireImpl implements Require {
 		
@@ -245,7 +250,12 @@ public class ExternalImportPrepareRequire {
 
 		@Override
 		public Optional<AffClassHistory> getAffClassHistory(String employeeId) {
-			return affClassHistoryRepository.getByEmployeeId(companyId, employeeId);
+			return affClassHistoryRepo.getByEmployeeId(companyId, employeeId);
+		}
+
+		@Override
+		public Optional<AffJobTitleHistory> getAffJobTitleHistory(String employeeId) {
+			return affJobTitleHistoryRepo.getListBySid(companyId, employeeId);
 		}
 
 	}

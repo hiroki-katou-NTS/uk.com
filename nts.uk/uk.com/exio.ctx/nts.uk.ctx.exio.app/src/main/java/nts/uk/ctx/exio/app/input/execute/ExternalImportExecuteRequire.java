@@ -19,6 +19,7 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
@@ -91,6 +92,8 @@ public class ExternalImportExecuteRequire {
 	@Inject
 	private AffClassHistoryRepository affClassHistoryRepo;
 	
+	@Inject
+	private AffJobTitleHistoryRepository affJobTitleHistoryRepo; 
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
@@ -186,6 +189,16 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public void deleteAffClassHistory(String employeeId, DateHistoryItem historyItem) {
 			affClassHistoryRepo.delete(historyItem.identifier());
+		}
+
+		@Override
+		public void changeAffJobTitleHistory(String employeeId, DateHistoryItem historyItem) {
+			affJobTitleHistoryRepo.update(historyItem);
+		}
+
+		@Override
+		public void deleteAffJobTitleHistory(String employeeId, DateHistoryItem historyItem) {
+			affJobTitleHistoryRepo.delete(historyItem.identifier());
 		}
 		
 	}

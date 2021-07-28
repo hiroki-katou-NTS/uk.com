@@ -18,6 +18,8 @@ public enum ImportingGroupId{
 	/** 分類 */
 	CLASSIFICATION_HISTORY(300),
 
+	/** 職位 */
+	JOBTITLE_HISTORY(400),
 	;
 	
 	public final int value;
