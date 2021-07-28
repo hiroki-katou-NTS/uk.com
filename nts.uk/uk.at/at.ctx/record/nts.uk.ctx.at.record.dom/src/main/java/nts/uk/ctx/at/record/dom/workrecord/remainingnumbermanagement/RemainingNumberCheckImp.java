@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
  * @author anhnm
  *
  */
+@Stateless
 public class RemainingNumberCheckImp implements RemainingNumberCheck {
     
     @Inject
