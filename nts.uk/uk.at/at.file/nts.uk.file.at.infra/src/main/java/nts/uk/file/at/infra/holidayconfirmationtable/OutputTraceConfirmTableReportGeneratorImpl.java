@@ -88,7 +88,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     }
 
     private void printSubHeader(Cells cells, OutputTraceConfirmTableDataSource dataSource) {
-        val st = dataSource.getMngUnit() != null && dataSource.getMngUnit() == 2 ? TextResource.localize("KDR003_19") : TextResource.localize("KDR003_20");
+        val st = dataSource.getMngUnit() != null && dataSource.getMngUnit() == 2 ? TextResource.localize("KDR003_20") : TextResource.localize("KDR003_19");
         cells.get(USER_GUIDE_COL + (SUB_HEADER_ROW + 1)).setValue(st);
         cells.get(EXPIRATION_COL + (SUB_HEADER_ROW + 1)).setValue(TextResource.localize("KDR003_123") + dataSource.getComSubstVacation().getCompensatoryAcquisitionUse().getExpirationTime().nameId);
     }
@@ -467,13 +467,13 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                     undeterminedNumber = undeterminedNumberOpt.get().v().doubleValue();
                 }
             }
-            if (mngUnit == 2) {
+            if (mngUnit!= null && mngUnit == 2) {
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(carry == null ? "" : convertToTime(carry.intValue()));
                 cells.get(row, COLUMN_OCCURRENCE).setValue(occ == null ? "" : convertToTime(occ.intValue()));
                 cells.get(row, COLUMN_USED).setValue(numofUse == null ? "" : convertToTime(numofUse.intValue()));
 
                 cells.get(row, COLUMN_REMAINING).setValue(numberOfRemaining == null ? "" : convertToTime(numberOfRemaining.intValue()));
-            } else {
+            } else if(mngUnit!= null && mngUnit == 1) {
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(String.format("%.1f", carry));
                 cells.get(row, COLUMN_OCCURRENCE).setValue(String.format("%.1f", occ));
 
