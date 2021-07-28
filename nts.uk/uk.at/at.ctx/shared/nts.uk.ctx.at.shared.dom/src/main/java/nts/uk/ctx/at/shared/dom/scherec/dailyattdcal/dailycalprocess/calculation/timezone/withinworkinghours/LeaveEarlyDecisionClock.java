@@ -140,25 +140,30 @@ public class LeaveEarlyDecisionClock {
 				
 				// コアタイム使用するかどうか
 				if(coreTimeSetting.getTimesheet().isNOT_USE()) {
-					return Optional.empty();
+					result = Optional.empty();
 				}
 				val coreTime = coreTimeSetting.getDecisionCoreTimeSheet(attr, predetermineTimeSetForCalc.getAMEndTime(),predetermineTimeSetForCalc.getPMStartTime());
 				if(leave.lessThanOrEqualTo(coreTime.getStartTime())) {
-					return Optional.of(new TimeSpanForDailyCalc(coreTime.getStartTime(),coreTime.getEndTime()));
+					result = Optional.of(new TimeSpanForDailyCalc(coreTime.getStartTime(),coreTime.getEndTime()));
 				}
-				return Optional.of(new TimeSpanForDailyCalc(leave,coreTime.getEndTime()));
+				result = Optional.of(new TimeSpanForDailyCalc(leave,coreTime.getEndTime()));
 			}
 			// 勤務形態を取得する
 			WorkTimeForm workTimeform = workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm();
 			if (workTimeform.isFixed()){
 				// 固定勤務
 				// 固定勤務の計算範囲の取得
-				return getCalcRangeForFixed(predetermineTimeSet, leave, workTime, attr);
+				result = getCalcRangeForFixed(predetermineTimeSet, leave, workTime, attr);
 			}
 			// 流動勤務
-			if(leave.lessThanOrEqualTo(predetermineTimeSet.getStart())) {
-				result = Optional.of(new TimeSpanForDailyCalc(predetermineTimeSet.getStart(),predetermineTimeSet.getEnd()));
+			if(workTimeform.isFlow()) {
+				if(leave.lessThanOrEqualTo(predetermineTimeSet.getStart())) {
+					result = Optional.of(new TimeSpanForDailyCalc(predetermineTimeSet.getStart(),predetermineTimeSet.getEnd()));
+				}
 			}
+		}
+		if(!result.isPresent() || result.get().isReverse() || result.get().isEqual()) {
+			return Optional.empty();
 		}
 		return result;
 	}
