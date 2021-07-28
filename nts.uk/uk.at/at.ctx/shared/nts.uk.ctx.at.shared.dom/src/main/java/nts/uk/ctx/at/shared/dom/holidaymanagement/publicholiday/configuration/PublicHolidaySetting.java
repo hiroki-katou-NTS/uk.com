@@ -257,7 +257,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 				return period.end().lastGeneralDate();
 			}
 			
-			//取得した年月日を期限日として返す
+			//取得した期間.終了日を期限日として返す
 			return datePeriod.get().end();
 		}
 		

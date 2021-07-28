@@ -145,7 +145,8 @@ public class AggregatePublicHolidayWork {
 				carryForwardDataList,
 				require);
 		
-		PublicHolidayCarryForwardDataList AddCarryForwardDataList = carryForwardDataList;
+		PublicHolidayCarryForwardDataList AddCarryForwardDataList = new PublicHolidayCarryForwardDataList();
+		AddCarryForwardDataList.publicHolidayCarryForwardData.addAll(carryForwardDataList.publicHolidayCarryForwardData);
 		if(CarryForwardData.isPresent()){
 			AddCarryForwardDataList.publicHolidayCarryForwardData.add(CarryForwardData.get());
 		}
@@ -250,7 +251,7 @@ public class AggregatePublicHolidayWork {
 			List<TempPublicHolidayManagement> tempPublicHolidayManagement){
 		
 		return new LeaveUsedDayNumber(tempPublicHolidayManagement.stream()
-				.filter(x -> this.period.start().beforeOrEquals(x.getYmd()) && this.period.end().afterOrEquals(x.getYmd()))
+				.filter(x -> this.period.contains(x.getYmd()))
 				.mapToDouble(x->x.getPublicHolidayUseNumber().v())
 				.sum());		
 	}

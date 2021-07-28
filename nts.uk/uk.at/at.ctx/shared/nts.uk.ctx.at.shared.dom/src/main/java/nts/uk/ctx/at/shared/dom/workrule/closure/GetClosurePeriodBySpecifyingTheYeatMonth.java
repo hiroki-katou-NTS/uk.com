@@ -11,12 +11,21 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 /**
- * 
+ * 年月を指定して締め期間を取得する
  * @author hayata_maekawa
  *
  */
 public class GetClosurePeriodBySpecifyingTheYeatMonth {
 	
+	/**
+	 * 取得する
+	 * @param require
+	 * @param employeeId　社員ID
+	 * @param criteriaDate　基準日
+	 * @param yearMonth　年月
+	 * @param cacheCarrier
+	 * @return
+	 */
 	public static Optional<DatePeriod> getPeriod(
 			RequireM2 require,
 			String employeeId,

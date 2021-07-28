@@ -49,16 +49,17 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 		this.numberCarriedForward = numberCarriedForward;
 		this.grantRemainRegisterType = grantRemainRegisterType;
 	}
+
 	
-	/**
-	 * 削除するか判断する
-	 * @param endDay
-	 * @return
-	 */
-	public boolean deleteDecision(GeneralDate endDay){
-		return (this.numberCarriedForward.v() == 0.0 || 
-				this.ymd.beforeOrEquals(endDay));
+	public PublicHolidayCarryForwardData clone(){
+		return new PublicHolidayCarryForwardData(
+				this.employeeId,
+				this.yearMonth,
+				this.ymd,
+				this.numberCarriedForward,
+				this.grantRemainRegisterType);
 	}
+	
 	
 	/**
 	 * //繰り越されてきた取れてない日数と相殺
@@ -114,12 +115,7 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 					this.grantRemainRegisterType);
 		}
 		
-		return new PublicHolidayCarryForwardData(
-				this.employeeId,
-				this.yearMonth,
-				this.ymd,
-				this.numberCarriedForward,
-				this.grantRemainRegisterType);
+		return this.clone();
 	}
 	
 	
