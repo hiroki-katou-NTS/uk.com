@@ -49,7 +49,7 @@ public class CreateAggregationManHourResult {
         if (!optManHour.isPresent()) return null;
 
         // 4. 工数集計表出力内容を作成する(年月日, 年月, 作業詳細データ, マスタ名称情報)
-        val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailList, masterNameInfo);
+        val manHourOutputContent = optManHour.get().createOutputContent(dateList, yearMonthList, workDetailFilters, masterNameInfo);
 
         // Convert domain ManHourSummaryTableOutputContent to dto
         val dispFormat = optManHour.get().getDetailFormatSetting().getDisplayFormat();
@@ -92,7 +92,7 @@ public class CreateAggregationManHourResult {
                 getSummaryItemDetails(x.getChildHierarchyList(), displayFormat),
                 convertValueDaily(x.getVerticalTotalList(), displayFormat),
                 x.getTotalPeriod().isPresent() ? x.getTotalPeriod().get() : 0
-        )).collect(Collectors.toList());
+        )).sorted(Comparator.comparing(SummaryItemDetailDto::getCode)).collect(Collectors.toList());
     }
 
     private List<VerticalValueDailyDto> convertValueDaily(List<VerticalValueDaily> dailyValues, DisplayFormat displayFormat) {
@@ -124,8 +124,8 @@ public class CreateAggregationManHourResult {
                 BigDecimal decimalValue = new BigDecimal(value);
                 BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
                 BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
-                StringBuilder sb = new StringBuilder();
-                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
+                val valueStr = intValue.add(remainValue.divide(BigDecimal.valueOf(100.00), 2, RoundingMode.HALF_UP)).toPlainString();
+                targetValue = valueStr.replace(".", ":");
                 break;
             case MINUTE:
                 DecimalFormat df = new DecimalFormat("#,###");
