@@ -1148,7 +1148,8 @@ module nts.layout {
                                         workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                                         selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
                                         workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value,
+                                        showNone: false
                                     }, true);
 
                                     modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -1203,7 +1204,8 @@ module nts.layout {
                                         workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                                         selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
                                         workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value,
+                                        showNone: false
                                     }, true);
 
                                     modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
