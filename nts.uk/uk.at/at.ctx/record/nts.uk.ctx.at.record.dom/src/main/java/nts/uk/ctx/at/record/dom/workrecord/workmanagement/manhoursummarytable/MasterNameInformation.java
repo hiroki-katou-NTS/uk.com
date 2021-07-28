@@ -6,6 +6,7 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.adapter.function.alarmworkplace.EmployeeInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,26 +17,43 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 public class MasterNameInformation {
-    /** 所属職場情報リスト */
+    /**
+     * 所属職場情報リスト
+     */
     private List<WorkplaceInfor> affWorkplaceInfoList;
-    /** 勤務職場情報リスト */
+    /**
+     * 勤務職場情報リスト
+     */
     private List<WorkplaceInfor> workPlaceInfoList;
-    /** 社員情報リスト */
+    /**
+     * 社員情報リスト
+     */
     private List<EmployeeInfoImport> employeeInfoList;
-    /**	作業1リスト */
+    /**
+     * 作業1リスト
+     */
     private List<TaskImport> task1List;
-    /** 作業2リスト */
+    /**
+     * 作業2リスト
+     */
     private List<TaskImport> task2List;
-    /** 作業3リスト */
+    /**
+     * 作業3リスト
+     */
     private List<TaskImport> task3List;
-    /** 作業4リスト */
+    /**
+     * 作業4リスト
+     */
     private List<TaskImport> task4List;
-    /** 作業5リスト */
+    /**
+     * 作業5リスト
+     */
     private List<TaskImport> task5List;
 
     /**
-     * 	[1] 表示情報を取得する
-     * @param code コード
+     * [1] 表示情報を取得する
+     *
+     * @param code            コード
      * @param summaryItemType 集計項目種類
      * @return 表示情報
      */
@@ -88,6 +106,7 @@ public class MasterNameInformation {
 
     /**
      * [2] 作業詳細データを絞り込む
+     *
      * @param workDetailList List<作業詳細データ>
      * @return List<作業詳細データ>
      */
@@ -100,7 +119,9 @@ public class MasterNameInformation {
         val task3Codes = task3List.stream().map(TaskImport::getCode).collect(Collectors.toList());
         val task4Codes = task4List.stream().map(TaskImport::getCode).collect(Collectors.toList());
         val task5Codes = task5List.stream().map(TaskImport::getCode).collect(Collectors.toList());
-
+        if (workDetailList.isEmpty()) {
+            return Collections.emptyList();
+        }
         return workDetailList.stream().filter(x -> (empIds.isEmpty() || empIds.contains(x.getEmployeeId()))
                 && (affWkplIds.isEmpty() || affWkplIds.contains(x.getAffWorkplaceId()))
                 && (wkplIds.isEmpty() || wkplIds.contains(x.getWorkplaceId()))
@@ -114,9 +135,10 @@ public class MasterNameInformation {
 
     /**
      * [prv-1] 表示情報を作成する
-     * @param code 	コード
-     * @param name 	名称
-     * @return 	表示情報
+     *
+     * @param code コード
+     * @param name 名称
+     * @return 表示情報
      */
     private DisplayInformation createDisplayInfo(Optional<String> code, Optional<String> name) {
         if (!code.isPresent())
