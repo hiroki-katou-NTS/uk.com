@@ -141,9 +141,9 @@ module nts.uk.at.kha003.c {
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
             });
-            /* $(document).ready(function () {
+             $(document).ready(function () {
                  vm.gridRows((12*$(window).height())/768);
-             });*/
+             });
         }
 
         /**

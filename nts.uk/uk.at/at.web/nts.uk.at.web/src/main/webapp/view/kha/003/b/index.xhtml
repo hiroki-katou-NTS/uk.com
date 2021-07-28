@@ -10,7 +10,7 @@
         <script>
             var dialogSize = {
                 width : 500,
-                height : 300
+                height : 250
             };
         </script>
         <com:stylefile path="kha003.b.style.css"/>
@@ -19,7 +19,7 @@
     </ui:define>
     <ui:define name="content">
         <div id="contents-area" style="display: none" data-bind="visible: true" >
-            <div class="table" style="width: 100%">
+            <div class="table" style="width: 100%;margin-top: 48px;" id="b_table">
                 <!-- B1_1 -->
                 <div class="cell valign-center" style="text-align: right">
                     <div data-bind="ntsFormLabel: { enable: true, required:true }">#{i18n.getText('KHA003_50')}</div>
