@@ -121,8 +121,10 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 						GeneralDate startCompare = period.start().after(ym.firstGeneralDate()) ? period.start() : ym.firstGeneralDate();
 						// 期間．終了日　＜＝　（Input. 期間．終了日　＜　ループ中の年月．終了日　？　Input. 期間．終了日　：　ループ中の年月．終了日）　QA#115666
 						GeneralDate endCompare = period.end().before(ym.lastGeneralDate()) ? period.end() : ym.lastGeneralDate();
-						List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklyYms = attendanceTimeOfWeeklys.stream()
-								.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym) 
+						
+						List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklyYmsByEmp = attendanceTimeOfWeeklys.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+						List<AttendanceTimeOfWeekly> attendanceTimeOfWeeklyYms = attendanceTimeOfWeeklyYmsByEmp.stream()
+								.filter(x -> x.getYearMonth().equals(ym) 
 										&& x.getPeriod().start().afterOrEquals(startCompare) && x.getPeriod().start().beforeOrEquals(endCompare))
 								.collect(Collectors.toList());
 						
@@ -135,11 +137,11 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 		            	});
 						
 						// 絞り込みしたList＜週別実績の勤怠時間＞をループする
-						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {							
+						for (AttendanceTimeOfWeekly attWeekly : attendanceTimeOfWeeklyYms) {
 							// 任意抽出条件のアラーム値を作成する
 							ExtractResultDetailAndCount extractDetail = createAlarmExtraction(
 									attWeekly, weeklyCond, count, attendanceItemMap, cid, sid, ym,
-									attendanceTimeOfWeeklys, wplByListSidAndPeriods);
+									attendanceTimeOfWeeklyYmsByEmp, wplByListSidAndPeriods);
 							count = extractDetail.count;
 							if (extractDetail.detail == null) {
 								continue;
