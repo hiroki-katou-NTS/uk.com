@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workmanagement.workinitselectset;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,19 +34,7 @@ public class TaskInitialSelHist extends AggregateRoot
 	 * 	説明:指定期間の作業初期選択項目の作業項目を変更する	
 	 * **/
 	
-	private void changeTaskItem (DatePeriod targetDatePeriod, TaskItem taskItem ){
-		//	$変更する履歴 = @履歴リスト：filter $.期間 == 対象履歴期間															
 
-		Optional<TaskInitialSel> dataChangePeriod = lstHistory.stream().filter( c -> c.getDatePeriod().equals(targetDatePeriod)).findFirst();
-		//@履歴リスト：except $変更する履歴	
-		if (dataChangePeriod.isPresent()) {
-		lstHistory.remove(dataChangePeriod.get());
-		//$変更する履歴.作業項目 = 変更後の作業項目			
-		dataChangePeriod.get().setTaskItem(taskItem);
-		//@履歴リスト.追加($変更する履歴)
-		lstHistory.add(dataChangePeriod.get());}
-	
-	}
 	
 	/**
 	 * [6] 履歴を追加する 説明:新しい作業初期選択項目を追加する
@@ -95,29 +85,23 @@ public class TaskInitialSelHist extends AggregateRoot
 	/**
 	 * [8] 履歴を変更する	
 	 */
-	public void changeHistory(TaskInitialSel taskInitialSel, DatePeriod datePeriod, TaskItem taskItem) {
-
-		// if 変更する履歴項目.期間 == 変更後の期間
-		if (taskInitialSel.getDatePeriod().equals(datePeriod)) {
-			// [prv-1] 作業項目を変更する(変更後の期間,変更後の作業項目)
-			changeTaskItem(datePeriod, taskItem);
-		} else {
-			// $直前の履歴 = 直前の履歴の履歴項目(変更する履歴項目)
-			Optional<TaskInitialSel> data = this.immediatelyBefore(taskInitialSel);
-			// 期間を変更する(変更する履歴項目,期間) ...changeSpan -- check param DatePeriod
-			this.changeSpan(taskInitialSel, datePeriod);
-			// [prv-1] 作業項目を変更する(変更後の期間,変更後の作業項目)
-			changeTaskItem(datePeriod, taskItem);
-			// if $直前の履歴.isPresent
-			if (data.isPresent()) {
-				// @履歴リスト：except $直前の履歴
-				lstHistory.remove(data.get());
-				// $直前の履歴.適用による終了の調整(変更する履歴項目)
-				data.get().shortenEndToAccept(taskInitialSel);
-				// @履歴リスト.追加($直前の履歴)
-				lstHistory.add(data.get());
-			}
+	public void changeHistory(TaskItem taskItem, DatePeriod datePeriod, GeneralDate date) {
+		
+		//if 変更する履歴開始日 <> 変更後の期間.開始日		
+		if(date != datePeriod.start() ){
+			//$変更する履歴 = @履歴リスト：filter $.期間.開始日 == 変更する履歴開始日	
+			List<TaskInitialSel> changeHistory = this.lstHistory.stream().filter(c ->c.getDatePeriod().start() == date).collect(Collectors.toList());
+			//期間を変更する($変更する履歴,変更後の期間)
+			this.exValidateIfCanChangeSpan(changeHistory.get(0), datePeriod);
 		}
+		//$対象履歴項目 = @履歴リスト：filter $.期間.開始日 == 変更後の期間.開始日
+		List<TaskInitialSel> history = this.lstHistory.stream().filter(c ->c.getDatePeriod().start() == datePeriod.start()).collect(Collectors.toList());
+		if(history.isEmpty()){
+			//$対象履歴項目.作業項目を変更する(変更後の作業項目)
+				history.get(0).changeTaskItem(taskItem);
+		}
+			
+		
 	}
 	@Override
 	public List<TaskInitialSel> items() {

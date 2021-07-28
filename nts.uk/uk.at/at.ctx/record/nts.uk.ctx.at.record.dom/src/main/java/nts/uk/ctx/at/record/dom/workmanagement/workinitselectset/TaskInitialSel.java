@@ -25,6 +25,12 @@ public class TaskInitialSel extends  HistoryItem<DatePeriod, GeneralDate> {
 	/** 作業項目 **/
 	@Setter
 	private TaskItem taskItem;
+	
+	//	[1] 作業項目を変更する
+	public void changeTaskItem(TaskItem changetaskItem){
+	//	@作業項目 = 変更後の作業項目	
+	setTaskItem(changetaskItem);
+	}
 
 	@Override
 	public DatePeriod span() {
