@@ -312,7 +312,7 @@ module nts.uk.ui.mgrid {
                         headPart.width = freeWrapperWidth + "px";
                     }
                     headPart.isHeader = true;
-                    let $headerWrapper = v.createWrapper(_sheeting ? gp.SHEET_HEIGHT + "px" : "0px", left, headPart);
+                    let $headerWrapper = v.createWrapper("0px", left, headPart);
                     pTable.owner.headers.push($headerWrapper); 
                     $headerWrapper.classList.add(HEADER);
 //                    self.$container.appendChild($headerWrapper);
@@ -329,7 +329,7 @@ module nts.uk.ui.mgrid {
                     } else {
                         if ($fixedHeaderTbl) $fixedHeaderTbl.style.height = self.headerHeight;
                         $tbl.style.height = self.headerHeight;
-                        top = (parseFloat(self.headerHeight) + DISTANCE + (_sheeting ? gp.SHEET_HEIGHT : 0)) + "px";
+                        top = (parseFloat(self.headerHeight) + DISTANCE) + "px";
                         _mafollicle[_currentPage][_currentSheet] = {};
                         _vessel().$hGroup = $tbl.querySelector("colgroup");
                         _vessel().$hBody = $tbl.querySelector("tbody");
@@ -406,7 +406,7 @@ module nts.uk.ui.mgrid {
             let dWrapper = _hasFixed ? bodyWrappers[1] : bodyWrappers[0];
             _vessel().$bBody = dWrapper.querySelector("tbody");
             
-            top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT + (_sheeting ? gp.SHEET_HEIGHT : 0);
+            top = parseFloat(self.height) + DISTANCE - scrollWidth - SUM_HEIGHT;
             ti.calcTotal();
             [ self.fixedSummaries, self.summaries ].filter(s => s && s.columns).forEach((sumPart, i) => {
                 if (!sumPart.columns || sumPart.columns.length === 0) return;
@@ -2437,7 +2437,8 @@ module nts.uk.ui.mgrid {
                             update: (v, i, r, p) => {
                                 su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                 if (_.isFunction(controlDef.onChange)) {
-                                    controlDef.onChange(id, key, v, rData);
+                                    let rObj = _dataSource[i];
+                                    controlDef.onChange(rObj[_pk], key, v, rObj);
                                 }
                             },
                             deleteRow: su.deleteRow,
@@ -2464,7 +2465,8 @@ module nts.uk.ui.mgrid {
                         update: (v, i, r, p) => {
                             su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                             if (_.isFunction(controlDef.onChange)) {
-                                controlDef.onChange(id, key, v, rData);
+                                let rObj = _dataSource[i];
+                                controlDef.onChange(rObj[_pk], key, v, rObj);
                             }
                         },
                         deleteRow: su.deleteRow,
@@ -4739,8 +4741,10 @@ module nts.uk.ui.mgrid {
                     _sumWrappers[1].style.width = width + "px";
                     height += SUM_HEIGHT;
                     vari += SUM_HEIGHT;
-                    _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
-                    _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari) + "px";
+                    if (height >= 0) {
+                        _sumWrappers[0].style.top = (parseFloat(_sumWrappers[0].style.top) + vari) + "px";
+                        _sumWrappers[1].style.top = (parseFloat(_sumWrappers[1].style.top) + vari) + "px";
+                    }
                 }
                 if (pageDiv) {
                     pageDiv.style.width = btmw + "px";
@@ -4750,7 +4754,10 @@ module nts.uk.ui.mgrid {
                 }
                 if (sheetDiv) {
                     sheetDiv.style.width = btmw + "px";
-//                    sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                    if (height >= 0) {
+                        sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                    }
+                    
                     let sheetBtn = sheetDiv.querySelector(".mgrid-sheet-buttonlist");
                     let scrollbar = sheetDiv.querySelector(".mgrid-sheet-scrollbar");
                     if (sheetBtn.offsetHeight <= gp.SHEET_HEIGHT) {
@@ -4788,7 +4795,7 @@ module nts.uk.ui.mgrid {
             }
             if (sheetDiv) {
                 sheetDiv.style.width = btmw + "px";
-//                sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
+                sheetDiv.style.top = (parseFloat(sheetDiv.style.top) + vari) + "px";
             }
             _bodyWrappers[0].style.height = height + "px";
         }
@@ -6714,6 +6721,8 @@ module nts.uk.ui.mgrid {
                             $cbxCell.textContent = selectedOpt ? selectedOpt.name : "";
                             $.data($cbxCell, lo.CBX_SELECTED_TD, inputVal);
                         }
+                        
+                        inputRidd();
                     } else if ((sCol = _specialLinkColumn[editor.columnKey]) && sCol.changed) {
                         let data = _mafollicle[_currentPage].origDs[editor.rowIdx];
                         sCol.changed(editor.columnKey, data[_pk], formatted, data[editor.columnKey]).done(res => {
@@ -7835,7 +7844,7 @@ module nts.uk.ui.mgrid {
          */
         export function imiSheets($container: HTMLElement, top: any, width: any) {
             if (!_sheeting) return;
-            $sheetArea = v.createWrapper("0px" /*top + ti.getScrollWidth() + SUM_HEIGHT + "px"*/, 0, 
+            $sheetArea = v.createWrapper(top + ti.getScrollWidth() + SUM_HEIGHT + "px", 0, 
                 { width: parseFloat(width) + ti.getScrollWidth() + "px", height: SHEET_HEIGHT + "px", containerClass: SHEET_CLS });
             $container.appendChild($sheetArea);
             let $scrollBar = document.createElement("ul");

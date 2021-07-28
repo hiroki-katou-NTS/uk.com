@@ -59,3 +59,10 @@
 #workplace-group-pannel .ntsSearchBox.nts-editor.ntsSearchBox_Component {
   width: 275px !important;
 }
+#combo-box-tree-component{
+	margin-left: 45px !important;
+}
+
+.control-group.valign-center{
+	width: 450px;
+}

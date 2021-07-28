@@ -72,10 +72,23 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             self.appTypeEnum = ko.observableArray([]);
             let appTypeEnum = __viewContext.enums.ApplicationType;
             _.forEach(appTypeEnum, (item) => {
-                self.appTypeEnum().push({
-                    value: item.value,
-                    name: item.name
-                })
+                if (item.value == 0 || 
+                    item.value == 1 ||
+                    item.value == 2 ||
+                    item.value == 3 ||
+                    item.value == 4 ||
+                    item.value == 5 ||
+                    item.value == 6 ||
+                    item.value == 7 ||
+                    item.value == 8 ||
+                    item.value == 13 ||
+                    item.value == 14 ||
+                    item.value == 15) {
+                    self.appTypeEnum().push({
+                        value: item.value,
+                        name: item.name
+                    })
+                }
             })
 
             self.appType = ko.observable('');

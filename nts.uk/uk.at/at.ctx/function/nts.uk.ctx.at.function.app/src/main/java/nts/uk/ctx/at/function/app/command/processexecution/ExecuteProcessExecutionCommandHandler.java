@@ -318,9 +318,6 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private AutoExecutionPreparationAdapter autoExecutionPreparationAdapter;
 
 	@Inject
-	private ProcessExecutionLogManageRepository processExecutionLogManageRepository;
-	
-	@Inject
 	private EmployeeManageAdapter employeeManageAdapter;
 	
 	@Inject
@@ -458,7 +455,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
      	}
         
         //更新処理自動実行エラーからトップページアラームを作成する
-        DefaultRequireImpl rq = new DefaultRequireImpl(processExecutionLogManageRepository, employeeManageAdapter, topPageAlarmAdapter);
+        DefaultRequireImpl rq = new DefaultRequireImpl(processExecLogManaRepo, employeeManageAdapter, topPageAlarmAdapter);
         CreateFromUpdateAutoRunError.create(rq, companyId);
     }
 

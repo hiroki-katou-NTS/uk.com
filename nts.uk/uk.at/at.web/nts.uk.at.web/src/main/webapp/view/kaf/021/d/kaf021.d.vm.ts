@@ -195,8 +195,8 @@ module nts.uk.at.kaf021.d {
 
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
                 subWidth: "60px",
-                subHeight: "280px",
-                headerHeight: '60px',
+                subHeight: "290px",
+                headerHeight: '70px',
                 rowHeight: '40px',
                 dataSource: vm.datas,
                 primaryKey: 'applicantId',
@@ -283,7 +283,7 @@ module nts.uk.at.kaf021.d {
             // D2_3
             columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'workplaceName', dataType: 'string', width: '105px', ntsControl: "Label" });
             // D2_4
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '105px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employee', dataType: 'string', width: '115px', ntsControl: "Label" });
             // D2_5
             columns.push({ headerText: vm.$i18n("KAF021_2"), key: 'appType', dataType: 'string', width: '70px', ntsControl: "Label" });
             // D2_6
@@ -384,15 +384,29 @@ module nts.uk.at.kaf021.d {
         getHeaderStyles(): Array<any> {
             const vm = this;
             return [
-                { key: "monthAverage2Str", colors: ['padding-12'] },
-                { key: "monthAverage3Str", colors: ['padding-12'] },
-                { key: "monthAverage4Str", colors: ['padding-12'] },
-                { key: "monthAverage5Str", colors: ['padding-12'] },
-                { key: "monthAverage6Str", colors: ['padding-12'] },
-                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: "approvalChecked", colors: ['#CFF1A5'] },
+                { key: "denialChecked", colors: ['#CFF1A5'] },
+                { key: "appType", colors: ['#CFF1A5'] },
+                { key: "workplaceName", colors: ['#CFF1A5'] },
+                { key: "employee", colors: ['#CFF1A5'] },
+                { key: "month", colors: ['#CFF1A5'] },
+                { key: "year", colors: ['#CFF1A5'] },
+                { key: "monthAverage2Str", colors: ['padding-10', 'break-jp-cell', '#CFF1A5'] },
+                { key: "monthAverage3Str", colors: ['padding-10', 'break-jp-cell', '#CFF1A5'] },
+                { key: "monthAverage4Str", colors: ['padding-10', 'break-jp-cell', '#CFF1A5'] },
+                { key: "monthAverage5Str", colors: ['padding-10', 'break-jp-cell', '#CFF1A5'] },
+                { key: "monthAverage6Str", colors: ['padding-10', 'break-jp-cell', '#CFF1A5'] },
+                { key: "exceededNumber", colors: ['padding-5', '#CFF1A5'] },
                 { key: "currentMax", colors: ['#F8EFD4'] },
                 { key: "newMax", colors: ['#F8EFD4'] },
+                { key: "reason", colors: ["#CFF1A5"] },
                 { key: "comment", colors: ['#F8EFD4'] },
+                { key: "applicant", colors: ["#CFF1A5"] },
+                { key: "inputDateStr", colors: ["#CFF1A5"] },
+                { key: "approver", colors: ["#CFF1A5"] },
+                { key: "approverStatusStr", colors: ["#CFF1A5"] },
+                { key: "confirmer", colors: ["#CFF1A5"] },
+                { key: "confirmStatusStr", colors: ["#CFF1A5"] },
             ]
         }
 

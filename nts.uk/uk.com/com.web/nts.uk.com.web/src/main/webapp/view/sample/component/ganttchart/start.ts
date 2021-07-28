@@ -5,9 +5,29 @@ __viewContext.ready(function() {
     class ScreenModel {
         constructor() { 
             this.itemList = ko.observableArray([ 5, 10, 15, 30 ].map(c => ({ code: c, name: c })));
-            this.selectedCode = ko.observable(5);
+            this.selectedCode = ko.observable(15);
             this.selectedCode.subscribe(c => {
                 this.ruler.setSnatchInterval(c / 5);
+            });
+            
+            this.modes = ko.observableArray([ "normal", "paste", "pasteFlex" ].map(c => ({ code: c, name: c })));
+            this.selectedMode = ko.observable("normal");
+            this.selectedMode.subscribe(s => {
+                if (s !== "normal") {
+                    this.otType.hide(true);
+                    this.fixedType.color("#fff");
+                    this.changableType.color("#fff");
+                    this.flexType.color("#fff");
+                    this.breakTimeType.zIndex(3000);
+                } else {
+                    this.otType.hide(false);
+                    this.fixedType.color("#ccccff");
+                    this.changableType.color("#ffc000");
+                    this.flexType.color("#ccccff");
+                    this.breakTimeType.zIndex(1000);
+                }
+                
+                ruler.setMode(s);
             });
 //            let ruler = new nts.uk.ui.chart.Ruler($("#gc")[0]);
             
@@ -65,6 +85,7 @@ __viewContext.ready(function() {
 //                followParent: true,
 //                color: "#0ff"
 //            });
+            
             let leftmostColumns = [
                 { key: "empId", headerText: "社員ID", width: "50px" },
                 { key: "empName", headerText: "社員名", width: "160px", css: { whiteSpace: "pre" }},
@@ -259,32 +280,61 @@ __viewContext.ready(function() {
             
             this.ruler = extable.getChartRuler();
             ruler = this.ruler;
-            this.ruler.addType({
-                name: "Fixed",
-                color: "#ccccff",
+            ruler.setMode("paste");
+            ruler.setSnatchInterval(3);
+            ruler.addType({
+                name: "C1",
+                color: "#F00",
                 lineWidth: 30,
                 canSlide: false,
-                unitToPx: 4
+                unitToPx: 4,
+                canPaste: true,
+                canPasteResize: true
             });
             
-            this.ruler.addType({
+            ruler.addType({
+                name: "C2",
+                color: "#0F0",
+                lineWidth: 30,
+                canSlide: false,
+                unitToPx: 4,
+                canPaste: true,
+                canPasteResize: true
+            });
+            
+            this.fixedType = {
+                name: "Fixed",
+                color: ruler.loggable("#ccccff"),
+                lineWidth: 30,
+                canSlide: false,
+                unitToPx: 4,
+                canPaste: true
+            };
+            
+            this.ruler.addType(this.fixedType);
+            
+            this.changableType = {
                 name: "Changeable",
-                color: "#ffc000",
+                color: ruler.loggable("#ffc000"),
                 lineWidth: 30,
                 canSlide: true,
                 unitToPx: 4,
-                bePassedThrough: false
-            });
+                bePassedThrough: false,
+                canPaste: true
+            };
+            this.ruler.addType(this.changableType);
             
-            this.ruler.addType({
+            this.flexType = {
                 name: "Flex",
-                color: "#ccccff",
+                color: ruler.loggable("#ccccff"),
                 lineWidth: 30,
                 canSlide: true,
-                unitToPx: 4
-            });
+                unitToPx: 4,
+                canPaste: true
+            };
+            this.ruler.addType(this.flexType);
             
-            this.ruler.addType({
+            this.breakTimeType = {
                 name: "BreakTime",
                 followParent: true,
                 color: "#ff9999",
@@ -295,10 +345,12 @@ __viewContext.ready(function() {
                 rollup: true,
                 roundEdge: true,
                 fixed: "Both",
-                bePassedThrough: false
-            });
+                bePassedThrough: false,
+                zIndex: ruler.loggable(1000)
+            };
+            this.ruler.addType(this.breakTimeType);
             
-            this.ruler.addType({
+            this.otType = {
                 name: "OT",
                 followParent: true,
                 color: "#ffff00",
@@ -307,15 +359,19 @@ __viewContext.ready(function() {
                 unitToPx: 4,
                 pin: true,
                 rollup: true,
-                fixed: "Both"
-            });
+                fixed: "Both",
+                canPaste: true,
+                hide: ruler.loggable(false)
+            };
+            this.ruler.addType(this.otType);
             
             this.ruler.addType({
                 name: "CoreTime",
                 color: "#00ffcc",
                 lineWidth: 30,
                 unitToPx: 4,
-                fixed: "Both"
+                fixed: "Both",
+                canPaste: true
             });
             
             for (let i = 0; i < 300; i++) {
@@ -632,6 +688,14 @@ __viewContext.ready(function() {
                     end: 72
                 }
             }]);
+        }
+        
+        chart1() {
+            ruler.pasteChart({ typeName: "C1", zIndex: 2002 });
+        }
+        
+        chart2() {
+            ruler.pasteChart({ typeName: "C2", zIndex: 2002 });
         }
     }
     

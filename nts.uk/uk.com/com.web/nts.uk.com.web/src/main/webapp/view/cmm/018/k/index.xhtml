@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1105, height: 610 };</script>
+			<script>var dialogSize = { width: 1100, height: 570 };</script>
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
@@ -52,7 +52,7 @@
 						<div class="titleSelect" data-bind="ntsFormLabel: {required: false, text: k2_1 }"></div>
 						<!--選択された承認者 -->
 						<!--K2_14-->
-						<div class="approverSelect" style="margin-left: 50px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() == 0"></div>
+						<div class="approverSelect" style="margin-left: 42px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() == 0"></div>
 						<div class="approverSelect" style="margin-left: 70px" data-bind="ntsFormLabel: {required: false, text: k2_2 }, visible: selectTypeSet() != 0"></div>
 						<br />
 						<!-- List Approver -->
@@ -62,7 +62,7 @@
 							<div id="swap-list"
 								data-bind="ntsSwapList: { 
 											showSearchBox: { showLeft : true, showRight: false},
-											height: 350,
+											height: 325,
 											dataSource: employeeList,
 											disableMoveButton: false,
 											primaryKey: 'code',
@@ -87,7 +87,7 @@
 						</div>
 						<br />
 						<!-- Setting chon 1ng hoac toan bo -->
-						<div style="display: flex; float: right; margin-right: 132px; margin-top: -100px; margin-bottom: 5px">
+						<div style="display: flex; float: right; margin-right: 125px; margin-top: -100px; margin-bottom: 5px">
 							<!--K2_10-->
 							<div class="titleSelected"
 								data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>
@@ -101,7 +101,7 @@
 												enable: true }"></div>
 						</div>
 						<!-- Setting ng quan trong -->
-						<div style="float: right; margin-right: 100px; margin-top: -45px; margin-bottom: 5px">
+						<div style="float: right; margin-right: 92px; margin-top: -33px; margin-bottom: 5px">
 							<!--K2_20-->
 							<div style="vertical-align: top;"
 								data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_64')}</div>
@@ -152,7 +152,7 @@
 									rows: 8
 								}"></table>
 								<!-- Setting chon 1ng hoac toan bo -->
-								<div style="margin-top: 30px;">
+								<div style="margin-top: 65px; display: flex">
 								<!--K2_10-->
 								<div class="titleSelected"
 									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>
@@ -184,7 +184,7 @@
 												columns: columns2,
 												multiple: false,
 												value: selectG,
-												rows: 14
+												rows: 12
 												}">
 						</table>
 					</div>
@@ -225,7 +225,7 @@
 								}"></table>
 							</div>
 							<!-- Setting chon 1ng hoac toan bo -->
-							<div style="margin-top: 30px">
+							<div style="margin-top: 15px; display: flex">
 							<!--K2_10-->
 							<div class="titleSelected"
 								data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>

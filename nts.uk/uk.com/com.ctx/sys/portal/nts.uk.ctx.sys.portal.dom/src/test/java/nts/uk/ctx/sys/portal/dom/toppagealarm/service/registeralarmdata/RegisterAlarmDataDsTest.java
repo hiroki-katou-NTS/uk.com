@@ -249,14 +249,6 @@ public class RegisterAlarmDataDsTest {
 		
 		new Expectations() {
 			{
-				require.getUrl(RegisterAlarmDataDsHelper.CID, 
-						RegisterAlarmDataDsHelper.KINJIRO, 
-						RegisterAlarmDataDsHelper.STANDARD, 
-						RegisterAlarmDataDsHelper.KAL001,
-						RegisterAlarmDataDsHelper.B);
-				result = Optional.of(RegisterAlarmDataDsHelper.URL);
-			}
-			{
 				TextResource.localize(RegisterAlarmDataDsHelper.KTG031_37, Arrays.asList(patternName));
 				result = RegisterAlarmDataDsHelper.KTG031_37;
 			}
@@ -306,14 +298,6 @@ public class RegisterAlarmDataDsTest {
 		String patternName = param.getPatternName().orElse("");
 
 		new Expectations() {
-			{
-				require.getUrl(RegisterAlarmDataDsHelper.CID, 
-						RegisterAlarmDataDsHelper.KINJIRO, 
-						RegisterAlarmDataDsHelper.STANDARD, 
-						RegisterAlarmDataDsHelper.KAL001, 
-						RegisterAlarmDataDsHelper.B);
-				result = Optional.of(RegisterAlarmDataDsHelper.URL);
-			}
 			{
 				TextResource.localize(RegisterAlarmDataDsHelper.KTG031_38, Arrays.asList(patternName));
 				result = RegisterAlarmDataDsHelper.KTG031_38;
@@ -419,14 +403,6 @@ public class RegisterAlarmDataDsTest {
 		ToppageAlarmParam param = RegisterAlarmDataDsHelper.mockParamAlarmListPic();
 		
 		new Expectations() {
-			{
-				require.getUrl(RegisterAlarmDataDsHelper.CID, 
-						RegisterAlarmDataDsHelper.KINJIRO, 
-						RegisterAlarmDataDsHelper.STANDARD, 
-						RegisterAlarmDataDsHelper.KAL001,
-						RegisterAlarmDataDsHelper.B);
-				result = Optional.of(RegisterAlarmDataDsHelper.URL);
-			}
 			{
 				TextResource.localize(RegisterAlarmDataDsHelper.KTG031_40);
 				result = RegisterAlarmDataDsHelper.KTG031_40;

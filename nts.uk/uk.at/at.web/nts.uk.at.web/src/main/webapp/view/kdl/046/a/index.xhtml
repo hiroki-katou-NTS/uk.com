@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 460, height: 520 };</script>
+			<script>var dialogSize = { width: 455, height: 520 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:scriptfile path="/view/kcp/011/kcp.011.vm.js" of="/nts.uk.com.web"/>
@@ -33,17 +33,15 @@
                         onDialog: true,
                         showAlreadySetting: false,
                         workplaceRows: 12,
-                        workplaceGroupRows: 8,
+                        workplaceGroupRows: 10,
                         selectedWorkplaces: workplaceId,
                         selectedWorkplaceGroups: workplaceGroupId
                     }
                 }"/>
 			</div>
 			<div id= "functions-area-bottom">
-				<div class="div-func-area">
           <button class="proceed x-large" id="save" data-bind="click: submit, enable: $root.errors.isEmpty" tabindex="4">#{i18n.getText('KDL010_3')}</button>
 				<button id="cancel" data-bind="click: cancel_Dialog" tabindex="5">#{i18n.getText('KDL010_4')}</button>
-        </div>
 			</div>
 		</ui:define>
 	</ui:composition>

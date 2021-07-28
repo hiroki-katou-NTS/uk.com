@@ -23,7 +23,7 @@
             data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_19')"
           ></div>
         </div>
-        <div class="cell">
+        <div class="cell valign-center">
           <div tabindex="4" id="Ba3_2"
             class="cf"
             data-bind="ntsSwitchButton: {
@@ -64,8 +64,7 @@
             <div class="table mb-5">
               <div class="cell cell-left">
                 <div class="normal"
-                  data-bind="ntsFormLabel: { required: false, constraint: 'HolidayAvailabilityMaxdays' }">
-                  <span data-bind="text: $vm.$i18n('KSM011_26')"></span>
+                  data-bind="ntsFormLabel: { required: false, constraint: 'HolidayAvailabilityMaxdays', text: $vm.$i18n('KSM011_26') }">
                 </div>
               </div>
               <div class="cell valign-center">

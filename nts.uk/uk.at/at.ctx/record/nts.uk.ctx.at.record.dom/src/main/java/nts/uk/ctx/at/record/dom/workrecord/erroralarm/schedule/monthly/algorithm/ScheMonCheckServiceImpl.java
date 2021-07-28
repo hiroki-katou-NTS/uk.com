@@ -71,7 +71,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmployment
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
@@ -336,7 +335,8 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		
 		if (!StringUtils.isEmpty(listFixedItem)) {
 			// スケジュール月次の固有抽出条件を取得する
-			fixedScheConds = this.fixedExtractSMonthlyConRepository.getScheFixCond(contractCode, cid, listFixedItem);
+			fixedScheConds = this.fixedExtractSMonthlyConRepository.getScheFixCond(contractCode, cid, listFixedItem).stream()
+					.filter(x -> x.isUseAtr()).collect(Collectors.toList());
 			
 			// スケジュール月次の固有抽出項目を取得
 			fixedScheCondItems = this.fixedExtractionSMonItemsRepository.getAll();
@@ -1341,9 +1341,11 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						: Strings.EMPTY;
 		// アラーム内容
 		String param = getCompareOperatorText(scheCondMon.getCheckConditions(), timeCheckCond.getTypeOfTime().nameId, scheCondMon.getCheckItemType());
-		String alarmContent = TextResource.localize("KAL010_1118", param, String.valueOf(totalTime));
+		
+		CheckedTimeDuration totalTimeDuration = new CheckedTimeDuration(totalTime);
+		String alarmContent = TextResource.localize("KAL010_1118", param, totalTimeDuration.getTimeWithFormat());
 		// チェック対象値
-		String checkValue = TextResource.localize("KAL010_1121", String.valueOf(totalTime));
+		String checkValue = TextResource.localize("KAL010_1121", totalTimeDuration.getTimeWithFormat());
 		
 		ExtractionAlarmPeriodDate extractionAlarmPeriodDate = new ExtractionAlarmPeriodDate(Optional.of(ym.firstGeneralDate()), Optional.empty());
 		return new ExtractResultDetail(

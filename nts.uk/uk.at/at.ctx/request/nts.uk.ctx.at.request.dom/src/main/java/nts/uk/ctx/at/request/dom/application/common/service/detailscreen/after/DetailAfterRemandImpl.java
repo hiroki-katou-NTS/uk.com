@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
@@ -69,6 +70,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	
 	@Inject
 	private AppEmailSetRepository appEmailSetRepository;
+	
+	@Inject
+	private IApplicationContentService applicationContentService;
 	
 	/**
 	 * 11-2.詳細画面差し戻し後の処理
@@ -145,7 +149,7 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 		String cid = AppContexts.user().companyId();
 		String sidLogin = AppContexts.user().employeeId();
 		//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
-		String appContent = "";
+		String appContent = applicationContentService.getApplicationContent(application);
 		// String appContent = appContentService.getApplicationContent(application);
 		AppEmailSet appEmailSet = appEmailSetRepository.findByDivision(Division.REMAND);
 		mailTitle = appEmailSet.getEmailContentLst().stream().findFirst().map(x -> x.getOpEmailSubject().map(y -> y.v()).orElse("")).orElse("");

@@ -114,7 +114,7 @@ module nts.uk.ui.errors {
             const vme = this;
             const { show } = ko.unwrap(vme.option);
 
-            show(hide);
+            show(false);
         }
 
         addError(error: ErrorListItem) {

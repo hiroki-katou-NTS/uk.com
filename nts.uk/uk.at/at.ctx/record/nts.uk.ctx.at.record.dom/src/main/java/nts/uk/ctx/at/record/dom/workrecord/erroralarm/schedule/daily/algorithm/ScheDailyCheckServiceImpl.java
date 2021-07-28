@@ -527,22 +527,25 @@ public class ScheDailyCheckServiceImpl implements ScheDailyCheckService {
 			// {1}: チェック条件　（例：　＜＞8：00）
 			String checkCondTypeName = dailyCheckType.nameId;
 			String variable1 = "";
-			if(compare <= 5) {
-				variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
-			} else {
-				if (compare == 6 || compare == 7) {
-					variable1 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName 
-							+ compareOperatorText.getCompareright() + endValue;
+			
+			if (compareOperatorText != null) {
+				if(compare <= 5) {
+					variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
 				} else {
-					variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
-							+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
+					if (compare == 6 || compare == 7) {
+						variable1 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName 
+								+ compareOperatorText.getCompareright() + endValue;
+					} else {
+						variable1 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
+								+ ", " + checkCondTypeName + compareOperatorText.getCompareright() + endValue;
+					}
 				}
 			}
 			
 			// {2}: 
 				// チェック項目種類　＝＝　「時間」　－＞""
 				// チェック項目種類　！＝　「時間」  －＞ #KAL010_1015　（{0}: ループ中のスケジュール日次の任意抽出条件．連続期間）
-			String variable2 = DaiCheckItemType.TIME != dailyCheckType ? TextResource.localize("KAL010_1013", conPeriodStr) : Strings.EMPTY;
+			String variable2 = DaiCheckItemType.TIME != dailyCheckType ? TextResource.localize("KAL010_1015", conPeriodStr) : Strings.EMPTY;
 			// {3}:
 				// チェック項目種類　＝＝　「時間」　－＞探した勤務予定．勤怠時間．勤務時間．総労働時間
 			String variable3 = "";

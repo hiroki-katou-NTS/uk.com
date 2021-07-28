@@ -1,6 +1,5 @@
 .distane {
 	margin-left: 10px;
-	margin-top: 10px;
 }
 
 #itemLst {
@@ -20,7 +19,7 @@
 }
 
 #registration {
-	margin-top: 10px !important;
+	margin-top: 3px !important;
 }
 
 #grid0 td[role="gridcell"] {

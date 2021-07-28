@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -74,7 +73,11 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmCheckConditionCode;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmEmployeeList;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmExtractInfoResult;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.AlarmExtractionCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.ExtractResultDetail;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
@@ -110,8 +113,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
-import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -220,7 +221,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				List<GeneralDate> listDate = dPeriod.datesBetween();
 				for(WorkRecordExtractingCondition extCond : prepareData.getWorkRecordCond()) {
 					// 日次のチェック条件のアラーム値を生成する
-					OutputCheckResult checkTab3 = this.extractAlarmConditionTab3(extCond, 
+					this.extractAlarmConditionTab3(extCond, 
 							prepareData.getListErrorAlarmCon(),
 							prepareData.getListIntegrationDai(),
 							sid,
@@ -252,10 +253,8 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 						integrationDaily = lstDaily.get(0);
 					}
 					if(integrationDaily != null) {
-						
-						
 						// 日別実績のエラーアラームのアラーム値を生成する
-						OutputCheckResult checkTab2 = this.extractAlarmDailyTab2(prepareData.getListError(),
+						this.extractAlarmDailyTab2(prepareData.getListError(),
 								prepareData.getListErrorAlarmCon(),
 								integrationDaily,
 								sid,
@@ -265,11 +264,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 								alarmExtractConditions,
 								alarmCheckConditionCode,
 								lstExtractInfoResult);
-							
 					}
 					
 					// 日次の固定抽出条件のアラーム値を生成する
-					OutputCheckResult checkTab4 = this.extractAlarmFixTab4(prepareData,
+					this.extractAlarmFixTab4(prepareData,
 							integrationDaily,
 							sid,
 							exDate,
@@ -322,8 +320,6 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			listError = errorAlarmRep.getListErAlByListCode(cid, errorDailyCheckCd).stream()
 					.filter(x -> x.getUseAtr())
 					.collect(Collectors.toList());
-			List<String> lstAlarmId = listError.stream().map(x -> x.getErrorAlarmCheckID()).collect(Collectors.toList());
-			listErrorAlarmCon = errorConRep.findConditionByListErrorAlamCheckId(lstAlarmId);
 		}
 		if(!extractConditionWorkRecord.isEmpty()) {
 			List<ErrorAlarmCondition> lstErrorAlarmCon = errorConRep.findConditionByListErrorAlamCheckId(extractConditionWorkRecord);
@@ -1006,9 +1002,11 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			}
 			String alarmContent = afterFilter.get(0).getErrorAlarmMessage().isPresent() 
 					? afterFilter.get(0).getErrorAlarmMessage().get().v() : "";
-			
-			String alarmMess = listErrorAlarmCon.stream().filter(x -> x.getErrorAlarmCheckID().equals(item.getErrorAlarmCheckID())).collect(Collectors.toList())
-					.get(0).getDisplayMessage().v();
+			String alarmMess = "";
+			List<ErrorAlarmCondition> lstTemp =  listErrorAlarmCon.stream().filter(x -> x.getErrorAlarmCheckID().equals(item.getErrorAlarmCheckID())).collect(Collectors.toList());
+			if(!lstTemp.isEmpty()) {
+				alarmMess = lstTemp.get(0).getDisplayMessage() == null ? "" : lstTemp.get(0).getDisplayMessage().v();
+			}
 			createExtractAlarm(sid,
 					day,
 					listResultCond,

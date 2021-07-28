@@ -10,7 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailapplicationapproval.ApplicationEmailBody
 			</com:ValidatorScript>
-			<script>var dialogSize = { width: 870, height: 640 };</script>
+			<script>var dialogSize = { width: 870, height: 650 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="kdl030.a.start.js" />
 			<com:scriptfile path="kdl030.a.vm.js" />
@@ -19,12 +19,12 @@
 		</ui:define>
 		<ui:define name="content">
 			
-			<div id="contents-area" style="width: 850px; height: 630px">
+			<div id="contents-area" style="width: 850px;">
 				<!-- A1_1 承認者にメールを送信します。 -->
 				<div class="label-div" style="margin-left: 25px;">
 					<label>#{i18n.getText('KDL030_2')}</label>
 				</div>
-				<div class="table valign-center" data-bind="if: isExpandMode" style="margin-left: 22px">
+				<div class="table valign-center" data-bind="if: isExpandMode" style="margin-left: 22px; margin-top: 5px">
 					<div id="checkSendApplicant" data-bind="i18n: 'KDL030_36', ntsCheckBox: { checked: isSendApplicant }"></div>
 				</div>
 				<div class="table valign-center">
@@ -74,7 +74,8 @@
 											</com:ko-if>
 											<com:ko-if bind="$index() !==  undefined">
 												<td style="width: 78px; text-align: left;" class="bg-green">
-									            	<span data-bind="text: $vm.getApproverLabelNew(loopPhase.listApprovalFrame, loopApprover, $parentContext.$index(), $index())">
+<!--									            	<span data-bind="text: $vm.getApproverLabelNew(loopPhase.listApprovalFrame, loopApprover, $parentContext.$index(), $index())">-->
+									            	<span data-bind="text: $vm.getApproverLabel()">
 									            	</span>
 												</td>
 											
@@ -98,7 +99,7 @@
 								            ]),   
 	  										optionsValue: 'dispCode',  
 	  										optionsText: 'dispName',  
-	  										value: handleSendMail }">
+	  										value: loopApprover.handleSendMail }">
 													</div>
 												</div>
 												<div data-bind="ifnot: loopApprover.approverMail"
@@ -115,18 +116,19 @@
 				</div>
 				<div class="table valign-center">
 				</div>
-				<div class="table valign-center">
+				<div class="table valign-center" style="margin-bottom: 0px">
 					<div class="cell" style="width: 102px;">
 						<div id="A4_1" class="column1"
 							data-bind="ntsFormLabel: { required : true,  constraint: 'ApplicationEmailBody' }">#{i18n.getText('KDL030_6')}</div>
 					</div>
 					<div class="cell column2">
 						<textarea id="A4_2"
-							data-bind="ntsMultilineEditor: { 
+							data-bind="ntsMultilineEditor: {
 									name: '#[KDL030_6]',
 									value: mailContent,
 									required : true,
-									constraint: 'ApplicationEmailBody' }" />
+									constraint: 'ApplicationEmailBody' },
+									style: {height: isExpandMode ? '140px' : '170px'}" />
 					</div>
 				</div>
 			</div>

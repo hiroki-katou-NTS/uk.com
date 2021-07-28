@@ -40,7 +40,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         </div>
         <div class="control-group table" style="margin-bottom: -3px">
             <div class="cell" style="padding-right: 3px; vertical-align: top" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
-            <div class="cell valign-center" style="display: inline-flex;" data-bind="css: {hidden: appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag > 0}">
+            <div class="cell valign-center" style="display: inline-flex;">
                 <div class="pull-left" >
                     <table id="kaf012-input-table">
                         <thead>
@@ -380,6 +380,15 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
             const vm = this;
             vm.leaveType.subscribe(value => {
                 vm.$errors("clear");
+                //change width
+                if (value < 6 ) { // small table
+                    $('.left-panel').css('width', '872px');
+                    $('.two-panel').css('width', '1260px');
+                } else {
+                    let hiddenCols = $('#kaf012-calc-table').find('th:hidden').length * 85;
+                    $('.left-panel').css('width', 1305 - hiddenCols + 'px');
+                    $('.two-panel').css('width', 1693 - hiddenCols + 'px');
+                }
             });
             vm.timeLeaveManagement.subscribe(value => {
                 if (value) {

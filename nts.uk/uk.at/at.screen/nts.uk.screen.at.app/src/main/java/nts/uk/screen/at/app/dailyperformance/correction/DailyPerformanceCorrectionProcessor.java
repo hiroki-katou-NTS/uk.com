@@ -486,7 +486,7 @@ public class DailyPerformanceCorrectionProcessor {
 			ApproveRootStatusForEmpDto approvalCheckMonth = dpLock.getLockCheckMonth().get(data.getEmployeeId() + "|" + data.getDate());
 		//	}
 			DailyModifyResult resultOfOneRow = getRow(resultDailyMap, data.getEmployeeId(), data.getDate());
-			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false, lockApproval = false;
+			boolean lockDaykWpl = false, lockDay = false, lockWpl = false, lockHist = false, lockApprovalMonth = false, lockConfirmMonth = false;
 			if (resultOfOneRow != null && (displayFormat == 2 ? !data.getError().equals("") : true)) {
 				//set disable and lock
 				lockDataCheckbox(sId, screenDto, data, identityProcessDtoOpt, approvalUseSettingDtoOpt, mode, data.isApproval(), data.isSign());
@@ -497,15 +497,7 @@ public class DailyPerformanceCorrectionProcessor {
 					lockApprovalMonth = approvalCheckMonth == null ? false : approvalCheckMonth.isCheckApproval();
 					lockConfirmMonth = checkLockConfirmMonth(dpLock.getLockConfirmMonth(), data);
 					lockDaykWpl = lockDay || lockWpl;
-					if(dataApproval != null) {
-						if(!dataApproval.isStatusNormal()) {
-							lockApproval = dataApproval.getPermissionCheck() == ReleasedAtr.CAN_IMPLEMENT ? false : true;
-						} else {
-							lockApproval = dataApproval.getPermissionRelease() == ReleasedAtr.CAN_IMPLEMENT ? false : true;
-						}
-					}
-					
-					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, lockApproval, lockHist,
+					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, dataApproval == null ? false : dataApproval.isStatusNormal(), lockHist,	
 							data.isSign(), lockApprovalMonth, lockConfirmMonth);
 				} else {
 					lockDaykWpl = lockAndDisable(screenDto, data, mode, lockDaykWpl, false, lockHist,
@@ -776,6 +768,8 @@ public class DailyPerformanceCorrectionProcessor {
 						} else {
 							cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 						}
+					} else if(attendanceAtr == DailyAttendanceAtr.AmountOfMoney.value){
+						cellDatas.add(new DPCellDataDto(anyChar, value.equals("0.0") ? "0" : value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					} else {
 						cellDatas.add(new DPCellDataDto(anyChar, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 					}

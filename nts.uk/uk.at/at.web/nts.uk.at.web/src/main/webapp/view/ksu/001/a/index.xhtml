@@ -418,14 +418,14 @@
 										<button tabindex="41"  data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
 											style="margin-top: 13px;">？</button>
 									</div>
-									<div data-bind="ifnot: visibleShiftPalette">
+									<div data-bind="ifnot: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
 										<div id="oViewModel">
 											<div data-bind="with: $parent.viewAB">
 												<ui:include src="../ab/index.xhtml" />
 											</div>
 										</div>
 									</div>
-									<div data-bind="if: visibleShiftPalette">
+									<div data-bind="if: visibleShiftPalette" style="width: 100%;margin-left: 140px; margin-top: 5px;">
 										<div id="qViewModel">
 											<div data-bind="with: $parent.viewAC">
 												<ui:include src="../ac/index.xhtml" />

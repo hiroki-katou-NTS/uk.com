@@ -16,12 +16,6 @@
     display: inline-block;
 }
 
-@media ( min-width : 1280px) {
-	#functions-area, #contents-area {
-		overflow-x: hidden;
-	}
-}
-
 #contents-area>.left-area, 
 #contents-area>.right-area,
 #contents-area>*>.left-area, 

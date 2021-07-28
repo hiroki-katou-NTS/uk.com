@@ -171,10 +171,46 @@ module nts.uk.at.view.kmk005.f {
                 self.currentBPSetCode(self.currentBonusPaySetting().code());
                 self.currentBonusPayTimesheets.removeAll();
                 self.currentSpecBonusPayTimesheets.removeAll();
-                for (let i = 0; i < 10; i++) {
-                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('',  i + 1, '0', (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
-                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('',  i + 1, '0', (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
+                if (self.bonusPayTimeItemList().length == 0) {
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 1, '0', 1, 1, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 2, '0', 2, 2, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 3, '0', 3, 3, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 4, '0', 4, 4, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 5, '0', 5, 5, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 6, '0', 6, 6, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 7, '0', 7, 7, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('',  8, '0', 8, 8, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('',  9, '0', 9, 9, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('',  10, '0',10, 10, 0, 0, 0, 0));
                 }
+                else {
+                    for (let i = 0; i < 10; i++) {
+                        self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, '0', (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
+                        //  self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('',  i + 1, '0', (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
+                    }
+                }
+
+                if (self.specBonusPayTimeItemList().length == 0) {
+                   self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 1, '0', 1, 1, 0, 0, 0, 0, 0));
+                   self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 2, '0', 2, 2, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 3, '0', 3, 3, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 4, '0', 4, 4, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 5, '0', 5, 5, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 6, '0', 6, 6, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 7, '0', 7, 7, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 8, '0', 8, 8, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 9, '0', 9, 9, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 10, '0', 10, 10, 0, 0, 0, 0, 0));
+                }
+                else {
+                    for (let i = 0; i < 10; i++) {
+                        self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, '0', (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
+                    }
+                }
+
+
+
+
             }
 
             submitData(): void {
