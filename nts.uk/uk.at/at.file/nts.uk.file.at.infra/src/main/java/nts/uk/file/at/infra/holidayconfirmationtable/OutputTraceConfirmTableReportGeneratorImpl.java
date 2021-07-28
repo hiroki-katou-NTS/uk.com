@@ -471,8 +471,8 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(carry == null ? "" : convertToTime(carry.intValue()));
                 cells.get(row, COLUMN_OCCURRENCE).setValue(occ == null ? "" : convertToTime(occ.intValue()));
                 cells.get(row, COLUMN_USED).setValue(numofUse == null ? "" : convertToTime(numofUse.intValue()));
-
                 cells.get(row, COLUMN_REMAINING).setValue(numberOfRemaining == null ? "" : convertToTime(numberOfRemaining.intValue()));
+                cells.get(row, COLUMN_UNDIGESTED).setValue(undeterminedNumber == null ? "" : convertToTime(undeterminedNumber.intValue()));
             } else if(mngUnit!= null && mngUnit == 1) {
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(String.format("%.1f", carry));
                 cells.get(row, COLUMN_OCCURRENCE).setValue(String.format("%.1f", occ));
@@ -480,6 +480,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 cells.get(row, COLUMN_USED).setValue(String.format("%.1f", numofUse));
 
                 cells.get(row, COLUMN_REMAINING).setValue(String.format("%.1f", numberOfRemaining));
+                cells.get(row, COLUMN_UNDIGESTED).setValue(String.format("%.1f", undeterminedNumber));
             }
             if (numberOfRemaining != null && numberOfRemaining < 0) {
                 Style remainingStyle = cells.get(row, COLUMN_REMAINING).getStyle();
@@ -487,7 +488,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 remainingFont.setColor(Color.getRed());
                 cells.get(row, COLUMN_REMAINING).setStyle(remainingStyle);
             }
-            cells.get(row, COLUMN_UNDIGESTED).setValue(String.format("%.1f", undeterminedNumber));
+
             if (undeterminedNumber != null && undeterminedNumber != 0) {
                 Style remainingStyle = cells.get(row, COLUMN_UNDIGESTED).getStyle();
                 Font remainingFont = remainingStyle.getFont();
@@ -556,9 +557,6 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     private String formatNoLinkedTime(OccurrenceAcquisitionDetails detail, int value) {
         StringBuilder formattedDate = new StringBuilder();
         formattedDate.append(convertToTime(value));
-        if (detail.getNumberConsecuVacation().getDay().v() != 1.0) {
-            formattedDate.append(TextResource.localize("KDR003_120"));
-        }
         if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
             formattedDate.insert(0, "(");
             formattedDate.append(")");
