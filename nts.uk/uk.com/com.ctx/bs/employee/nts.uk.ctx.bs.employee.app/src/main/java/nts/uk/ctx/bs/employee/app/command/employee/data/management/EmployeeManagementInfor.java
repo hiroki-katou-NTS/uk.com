@@ -22,8 +22,21 @@ public class EmployeeManagementInfor {
 	@Inject
 	private EmployeeDataMngInfoRepository employeeRepo;
 
-	public Optional<EmployeeDataMngInfo> getEmployeeManagementInfor(String cid, String employeeCode) {
+	public EmployeeManagementInforDto getEmployeeManagementInfor(String cid, String employeeCode) {
+		
+		EmployeeManagementInforDto result = new EmployeeManagementInforDto();
 
-		return employeeRepo.findByEmployeCD(employeeCode, cid);
+		Optional<EmployeeDataMngInfo> OpEmp =  employeeRepo.findByEmployeCD(employeeCode, cid);
+		
+		if (OpEmp.isPresent()) {
+			EmployeeDataMngInfo emp = OpEmp.get();
+			
+			result.setCompanyId(emp.getCompanyId());
+			result.setEmployeeCode(emp.getEmployeeCode().v());
+			result.setEmployeeId(emp.getEmployeeId());
+			result.setPersonalId(emp.getPersonId());
+		}
+		
+		return result;
 	}
 }
