@@ -138,15 +138,8 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                 // page break by employee
                 if (dataSource.getPageBreak() == 1) {
                     if (contents.indexOf(content) != 0) {
-                        cells.insertRow(row);
-                        sheet.getHorizontalPageBreaks().add(row);
                         int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                        try {
-                            cells.copyRows(cells, lastWkpRow, row, 1);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        wkpIndexes.add(row);
+                        this.insertWkpRowAndPageBreak(sheet, cells, wkpIndexes, lastWkpRow, row);
                         row++;
                     } else {
                         if (wkpCodes.indexOf(wkpCode) != 0) {
@@ -159,7 +152,10 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
 
                 if (dataSource.isLinking()) {
                     // print linked content
-                    content.getHolidayAcquisitionInfo().get().getLinkingInfos().sort(Comparator.comparing(LinkingInfo::getOccurrenceDate));
+                    this.prepareLinkingData(
+                            content.getHolidayAcquisitionInfo().get().getLinkingInfos(),
+                            content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                    );
                     int col = 9;
                     int size = content.getHolidayAcquisitionInfo().get().getLinkingInfos().size();
                     int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
@@ -182,23 +178,18 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                             int idx = loop * 10 + i;
                             if (idx < size) {
                                 LinkingInfo linkingInfo = content.getHolidayAcquisitionInfo().get().getLinkingInfos().get(idx);
-                                if (i > 0) {
-                                    LinkingInfo prevLinkingInfo = content.getHolidayAcquisitionInfo().get().getLinkingInfos().get(idx - 1);
-                                    if (linkingInfo.getOccurrenceDate().equals(prevLinkingInfo.getOccurrenceDate())
-                                            && linkingInfo.getUseDateNumber() == 0.5
-                                            && prevLinkingInfo.getUseDateNumber() == 0.5) {
-                                        cells.merge(row, col + i - 1, 1, 2);
-                                        String value = this.formatDate(
-                                                OccurrenceDigClass.OCCURRENCE,
-                                                linkingInfo.getOccurrenceDate(),
-                                                1.0,
+                                if (linkingInfo.getUseDateNumber() != 0.1) { // check dummy number in preparing data
+                                    if (i > 0) {
+                                        LinkingInfo prevLinkingInfo = content.getHolidayAcquisitionInfo().get().getLinkingInfos().get(idx - 1);
+                                        this.fillLinkingData(
+                                                cells,
+                                                linkingInfo,
+                                                prevLinkingInfo,
+                                                row,
+                                                col + i,
                                                 dataSource.getHowToPrintDate(),
                                                 content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
                                         );
-                                        cells.get(row, col + i - 1).setValue(value);
-                                        Style style = cells.get(row, col + i - 1).getStyle();
-                                        style.setHorizontalAlignment(HorizontalAlignment.Center);
-                                        cells.get(row, col + i - 1).setStyle(style);
                                     } else {
                                         String value = this.formatDate(
                                                 OccurrenceDigClass.OCCURRENCE,
@@ -208,83 +199,25 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                                                 content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
                                         );
                                         this.setValue(cells, row, col + i, value);
-                                    }
-                                    if (linkingInfo.getUseDate().equals(prevLinkingInfo.getUseDate())
-                                            && linkingInfo.getUseDateNumber() == 0.5
-                                            && prevLinkingInfo.getUseDateNumber() == 0.5) {
-                                        cells.merge(row + 1, col + i - 1, 1, 2);
-                                        String value = this.formatDate(
-                                                OccurrenceDigClass.DIGESTION,
-                                                linkingInfo.getUseDate(),
-                                                linkingInfo.getUseDateNumber(),
-                                                dataSource.getHowToPrintDate(),
-                                                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                        );
-                                        cells.get(row + 1, col + i - 1).setValue(value);
-                                        Style style = cells.get(row + 1, col + i - 1).getStyle();
-                                        style.setHorizontalAlignment(HorizontalAlignment.Center);
-                                        cells.get(row + 1, col + i - 1).setStyle(style);
-                                    } else {
-                                        String value = this.formatDate(
-                                                OccurrenceDigClass.DIGESTION,
-                                                linkingInfo.getUseDate(),
-                                                linkingInfo.getUseDateNumber(),
-                                                dataSource.getHowToPrintDate(),
-                                                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                        );
-                                        this.setValue(cells, row + 1, col + i, value);
-                                    }
-                                } else {
-                                    String value = this.formatDate(
-                                            OccurrenceDigClass.OCCURRENCE,
-                                            linkingInfo.getOccurrenceDate(),
-                                            linkingInfo.getUseDateNumber(),
-                                            dataSource.getHowToPrintDate(),
-                                            content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                    );
-                                    this.setValue(cells, row, col + i, value);
 
-                                    String value2 = this.formatDate(
-                                            OccurrenceDigClass.DIGESTION,
-                                            linkingInfo.getUseDate(),
-                                            linkingInfo.getUseDateNumber(),
-                                            dataSource.getHowToPrintDate(),
-                                            content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
-                                    );
-                                    this.setValue(cells, row + 1, col + i, value2);
+                                        String value2 = this.formatDate(
+                                                OccurrenceDigClass.DIGESTION,
+                                                linkingInfo.getUseDate(),
+                                                linkingInfo.getUseDateNumber(),
+                                                dataSource.getHowToPrintDate(),
+                                                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails()
+                                        );
+                                        this.setValue(cells, row + 1, col + i, value2);
+                                    }
                                 }
                             } else {
                                 break;
                             }
                         }
-                        // if there is only 1 block => draw thin border
-                        if (loops == 1) {
-                            Style style1 = cells.get(row, COLUMN_LINK).getStyle();
-                            style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
-                            cells.get(row, COLUMN_LINK).setStyle(style1);
-                            Style style2 = cells.get(row + 1, COLUMN_LINK).getStyle();
-                            style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
-                            cells.get(row + 1, COLUMN_LINK).setStyle(style2);
-                        }
                         row += 2;
                         if (count + 2 > MAX_ROW_PER_PAGE) {
                             // add page break at the end of page
-                            int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
-                            int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                            if (lastEmpRow == lastWkpRow + 1) {
-                                sheet.getHorizontalPageBreaks().add(lastWkpRow);
-                            } else {
-                                cells.insertRow(lastEmpRow);
-                                sheet.getHorizontalPageBreaks().add(lastEmpRow); // always add page break before insert row
-                                try {
-                                    cells.copyRows(cells, lastWkpRow, lastEmpRow, 1);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                wkpIndexes.add(lastEmpRow);
-                                empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
-                                row++;
-                            }
+                            row = this.checkPageBreakEndPage(sheet, cells, wkpIndexes, empIndexes, row);
                             count = row - wkpIndexes.get(wkpIndexes.size() - 1);
                         } else {
                             count += 2;
@@ -292,30 +225,10 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                     }
                 }
 
-                if (!content.getHolidayAcquisitionInfo().get().getLinkingInfos().isEmpty()) {
-                    // remove linked date
-                    ListIterator<OccurrenceAcquisitionDetail> iterator = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().listIterator();
-                    while (iterator.hasNext()) {
-                        OccurrenceAcquisitionDetail detail = iterator.next();
-                        double linkingUsedDays;
-                        if (detail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
-                            linkingUsedDays = content.getHolidayAcquisitionInfo().get().getLinkingInfos()
-                                    .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate().get()))
-                                    .collect(Collectors.summingDouble(LinkingInfo::getUseDateNumber));
-                        } else {
-                            linkingUsedDays = content.getHolidayAcquisitionInfo().get().getLinkingInfos()
-                                    .stream().filter(i -> i.getUseDate().equals(detail.getDate().getDayoffDate().get()))
-                                    .collect(Collectors.summingDouble(LinkingInfo::getUseDateNumber));
-                        }
-                        if (linkingUsedDays >= detail.getOccurrencesUseNumber().getDay().v()) {
-                            iterator.remove();
-                        } else if (linkingUsedDays > 0) {
-                            detail.getOccurrencesUseNumber().setDay(new ManagementDataRemainUnit(detail.getOccurrencesUseNumber().getDay().v() - linkingUsedDays));
-                            iterator.set(detail);
-                        }
-                    }
-                }
-                content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+                this.prepareNoLinkingData(
+                        content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails(),
+                        content.getHolidayAcquisitionInfo().get().getLinkingInfos()
+                );
                 int col = 9;
                 int size = content.getHolidayAcquisitionInfo().get().getOccurrenceAcquisitionDetails().size();
                 int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
@@ -352,33 +265,13 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
                         }
                     }
                     // if there is only 1 block => draw thin border
-                    if (loops == 1) {
-                        Style style1 = cells.get(row, COLUMN_LINK).getStyle();
-                        style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
-                        cells.get(row, COLUMN_LINK).setStyle(style1);
-                        Style style2 = cells.get(row + 1, COLUMN_LINK).getStyle();
-                        style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
-                        cells.get(row + 1, COLUMN_LINK).setStyle(style2);
+                    if (loops > 1) {
+                        this.drawBorder(cells, row);
                     }
                     row += 2;
                     if (count + 2 > MAX_ROW_PER_PAGE) {
                         // add page break at the end of page
-                        int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
-                        int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                        if (lastEmpRow == lastWkpRow + 1) {
-                            sheet.getHorizontalPageBreaks().add(lastWkpRow);
-                        } else {
-                            cells.insertRow(lastEmpRow);
-                            try {
-                                cells.copyRows(cells, lastWkpRow, lastEmpRow, 1);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            sheet.getHorizontalPageBreaks().add(lastEmpRow); // always add page break before insert row
-                            wkpIndexes.add(lastEmpRow);
-                            empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
-                            row++;
-                        }
+                        row = this.checkPageBreakEndPage(sheet, cells, wkpIndexes, empIndexes, row);
                         count = row - wkpIndexes.get(wkpIndexes.size() - 1);
                     } else {
                         count += 2;
@@ -433,21 +326,42 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
      */
     private String formatDate(OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetail> occurrenceAcquisitionDetails) {
         StringBuilder formattedDate = new StringBuilder();
-        int spaceLeft = 2, spaceRight = 3;
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
         } else {
             formattedDate.append(date.toString("yy/MM/dd"));
         }
-        if (usedNumber != 1.0) {
-            formattedDate.append(TextResource.localize("KDR004_120"));
-            spaceRight += -1;
-        }
         Optional<OccurrenceAcquisitionDetail> occurrenceAcquisitionDetail = occurrenceAcquisitionDetails.stream()
                 .filter(o -> o.getOccurrenceDigCls() == cls && o.getDate().getDayoffDate().isPresent() && o.getDate().getDayoffDate().get().equals(date))
                 .findFirst();
-        if (occurrenceAcquisitionDetail.isPresent()) {
-            OccurrenceAcquisitionDetail detail = occurrenceAcquisitionDetail.get();
+        this.formatDateCommon(formattedDate, usedNumber != 1.0, occurrenceAcquisitionDetail.orElse(null));
+        return formattedDate.toString();
+    }
+
+    /**
+     *
+     * @param detail
+     * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
+     * @return
+     */
+    private String formatNoLinkedDate(OccurrenceAcquisitionDetail detail, int howToPrintDate) {
+        StringBuilder formattedDate = new StringBuilder();
+        if (howToPrintDate == 0) {
+            formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
+        } else {
+            formattedDate.append(detail.getDate().getDayoffDate().get().toString("yy/MM/dd"));
+        }
+        this.formatDateCommon(formattedDate, detail.getOccurrencesUseNumber().getDay().v() != 1.0, detail);
+        return formattedDate.toString();
+    }
+
+    public void formatDateCommon(StringBuilder formattedDate, boolean isHalfDay, OccurrenceAcquisitionDetail detail) {
+        int spaceLeft = 2, spaceRight = 3;
+        if (isHalfDay) {
+            formattedDate.append(TextResource.localize("KDR004_120"));
+            spaceRight += -1;
+        }
+        if (detail != null) {
             if (detail.getStatus() == MngDataStatus.SCHEDULE || detail.getStatus() == MngDataStatus.NOTREFLECTAPP) {
                 formattedDate.insert(0, ROUND_OPENING_BRACKET);
                 formattedDate.append(ROUND_CLOSING_BRACKET);
@@ -463,42 +377,6 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         }
         if (spaceLeft > 0) formattedDate.insert(0, spaceLeft == 1 ? " " : "  ");
         if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
-        return formattedDate.toString();
-    }
-
-    /**
-     *
-     * @param detail
-     * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
-     * @return
-     */
-    private String formatNoLinkedDate(OccurrenceAcquisitionDetail detail, int howToPrintDate) {
-        StringBuilder formattedDate = new StringBuilder();
-        int spaceLeft = 2, spaceRight = 3;
-        if (howToPrintDate == 0) {
-            formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
-        } else {
-            formattedDate.append(detail.getDate().getDayoffDate().get().toString("yy/MM/dd"));
-        }
-        if (detail.getOccurrencesUseNumber().getDay().v() != 1.0) {
-            formattedDate.append(TextResource.localize("KDR004_120"));
-            spaceRight += -1;
-        }
-        if (detail.getStatus() == MngDataStatus.SCHEDULE || detail.getStatus() == MngDataStatus.NOTREFLECTAPP) {
-            formattedDate.insert(0, ROUND_OPENING_BRACKET);
-            formattedDate.append(ROUND_CLOSING_BRACKET);
-            spaceLeft += -1;
-            spaceRight += -1;
-        }
-        if (detail.getExpiringThisMonth().isPresent() && detail.getExpiringThisMonth().get()) {
-            formattedDate.insert(0, SQUARE_OPENING_BRACKET);
-            formattedDate.append(SQUARE_CLOSING_BRACKET);
-            spaceLeft += -1;
-            spaceRight += -1;
-        }
-        if (spaceLeft > 0) formattedDate.insert(0, spaceLeft == 1 ? " " : "  ");
-        if (spaceRight > 0) formattedDate.append(spaceRight == 1 ? " " : spaceRight == 2 ? "  " : "   ");
-        return formattedDate.toString();
     }
 
     private void setValue(Cells cells, int row, int col, String value) {
@@ -513,4 +391,143 @@ public class AsposeHolidayConfirmationTableGenerator extends AsposeCellsReportGe
         }
 
     }
+
+    private void drawBorder(Cells cells, int row) {
+        Style style1 = cells.get(row, COLUMN_LINK).getStyle();
+        style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+        cells.get(row, COLUMN_LINK).setStyle(style1);
+        Style style2 = cells.get(row + 1, COLUMN_LINK).getStyle();
+        style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+        cells.get(row + 1, COLUMN_LINK).setStyle(style2);
+    }
+
+    private void insertWkpRowAndPageBreak(Worksheet sheet, Cells cells, List<Integer> indexes, int fromRow, int toRow) {
+        cells.insertRow(toRow);
+        try {
+            cells.copyRows(cells, fromRow, toRow, 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        sheet.getHorizontalPageBreaks().add(toRow); // always add page break before insert row
+        indexes.add(toRow);
+    }
+
+    private int checkPageBreakEndPage(Worksheet sheet, Cells cells, List<Integer> wkpIndexes, List<Integer> empIndexes, int currentRow) {
+        int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
+        int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
+        if (lastEmpRow == lastWkpRow + 1) {
+            sheet.getHorizontalPageBreaks().add(lastWkpRow);
+            return currentRow;
+        } else {
+            this.insertWkpRowAndPageBreak(sheet, cells, wkpIndexes, lastWkpRow, lastEmpRow);
+            empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
+            return currentRow + 1;
+        }
+    }
+
+    private void fillLinkingData(Cells cells, LinkingInfo current, LinkingInfo prev, int row, int col, int howToPrintDate, List<OccurrenceAcquisitionDetail> details) {
+        if (current.getOccurrenceDate().equals(prev.getOccurrenceDate())
+                && current.getUseDateNumber() == 0.5
+                && prev.getUseDateNumber() == 0.5) {
+            cells.merge(row, col - 1, 1, 2);
+            String value = this.formatDate(
+                    OccurrenceDigClass.OCCURRENCE,
+                    current.getOccurrenceDate(),
+                    1.0,
+                    howToPrintDate,
+                    details
+            );
+            cells.get(row, col - 1).setValue(value);
+            Style style = cells.get(row, col - 1).getStyle();
+            style.setHorizontalAlignment(HorizontalAlignment.Center);
+            cells.get(row, col - 1).setStyle(style);
+        } else {
+            String value = this.formatDate(
+                    OccurrenceDigClass.OCCURRENCE,
+                    current.getOccurrenceDate(),
+                    current.getUseDateNumber(),
+                    howToPrintDate,
+                    details
+            );
+            this.setValue(cells, row, col, value);
+        }
+        if (current.getUseDate().equals(prev.getUseDate())
+                && current.getUseDateNumber() == 0.5
+                && prev.getUseDateNumber() == 0.5) {
+            cells.merge(row + 1, col - 1, 1, 2);
+            String value = this.formatDate(
+                    OccurrenceDigClass.DIGESTION,
+                    current.getUseDate(),
+                    1.0,
+                    howToPrintDate,
+                    details
+            );
+            cells.get(row + 1, col - 1).setValue(value);
+            Style style = cells.get(row + 1, col - 1).getStyle();
+            style.setHorizontalAlignment(HorizontalAlignment.Center);
+            cells.get(row + 1, col - 1).setStyle(style);
+        } else {
+            String value = this.formatDate(
+                    OccurrenceDigClass.DIGESTION,
+                    current.getUseDate(),
+                    current.getUseDateNumber(),
+                    howToPrintDate,
+                    details
+            );
+            this.setValue(cells, row + 1, col, value);
+        }
+    }
+
+    private void prepareLinkingData(List<LinkingInfo> linkingInfors, List<OccurrenceAcquisitionDetail> details) {
+        // sort before check
+        linkingInfors.sort(Comparator.comparing(LinkingInfo::getOccurrenceDate));
+        // check cell at the end of line, if it can be merged with next cell, add dummy data to list to leave it blank
+        ListIterator<LinkingInfo> iterator = linkingInfors.listIterator();
+        while (iterator.hasNext()) {
+            int index = iterator.nextIndex();
+            LinkingInfo info = iterator.next();
+            if (index % 10 == 9 && info.getUseDateNumber() == 0.5) {
+                if (iterator.hasNext()) {
+                    LinkingInfo nextInfo = iterator.next();
+                    if (info.getOccurrenceDate().equals(nextInfo.getOccurrenceDate()) || info.getUseDate().equals(nextInfo.getUseDate())) {
+                        iterator.add(new LinkingInfo(
+                                info.getOccurrenceDate(),
+                                info.getUseDate(),
+                                0.1 // a number to know when to skip
+                        ));
+                    }
+                }
+            }
+        }
+        // sort by occurence date after check
+        linkingInfors.sort(Comparator.comparing(LinkingInfo::getOccurrenceDate).thenComparing(LinkingInfo::getUseDateNumber));
+    }
+
+    private void prepareNoLinkingData(List<OccurrenceAcquisitionDetail> details, List<LinkingInfo> linkingInfors) {
+        if (!linkingInfors.isEmpty()) {
+            // remove linked date
+            ListIterator<OccurrenceAcquisitionDetail> iterator = details.listIterator();
+            while (iterator.hasNext()) {
+                OccurrenceAcquisitionDetail detail = iterator.next();
+                double linkingUsedDays;
+                if (detail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
+                    linkingUsedDays = linkingInfors
+                            .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate().get()))
+                            .mapToDouble(LinkingInfo::getUseDateNumber).sum();
+                } else {
+                    linkingUsedDays = linkingInfors
+                            .stream().filter(i -> i.getUseDate().equals(detail.getDate().getDayoffDate().get()))
+                            .mapToDouble(LinkingInfo::getUseDateNumber).sum();
+                }
+                if (linkingUsedDays >= detail.getOccurrencesUseNumber().getDay().v()) {
+                    iterator.remove();
+                } else if (linkingUsedDays > 0) {
+                    detail.getOccurrencesUseNumber().setDay(new ManagementDataRemainUnit(detail.getOccurrencesUseNumber().getDay().v() - linkingUsedDays));
+                    iterator.set(detail);
+                }
+            }
+        }
+        details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
+    }
+
 }

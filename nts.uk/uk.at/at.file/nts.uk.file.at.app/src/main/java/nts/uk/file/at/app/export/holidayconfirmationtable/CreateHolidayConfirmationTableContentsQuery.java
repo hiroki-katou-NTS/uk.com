@@ -127,67 +127,75 @@ public class CreateHolidayConfirmationTableContentsQuery {
                 }
 
                 if (output) {
-                    HolidayAcquisitionInfo holidayAcquisitionInfo = new HolidayAcquisitionInfo(
-                            absRecRemain.getCarryoverDay().v(),
-                            absRecRemain.getOccurrenceDay().v(),
-                            absRecRemain.getDayUse().v(),
-                            absRecRemain.getRemainDay().v(),
-                            absRecRemain.getUnusedDay().v(),
-                            absRecRemain.getRemainDay().v() < 0,
-                            new ArrayList<>(),
-                            new ArrayList<>()
-                    );
                     List<AffCompanyHistByEmployee> affCompHistsOfEmp = affCompHists.stream()
                             .filter(i -> i.getSId().equals(employee.getSid()))
                             .collect(Collectors.toList());
-                    for (AffCompanyHistByEmployee hist : affCompHistsOfEmp) {
-                        for (AffCompanyHistItem histItem : hist.items()) {
-                            for (AccumulationAbsenceDetail detail : absRecRemain.getVacationDetails().getLstAcctAbsenDetail()) {
-                                if (detail.getDateOccur().getDayoffDate().isPresent()
-                                        && histItem.getDatePeriod().start().beforeOrEquals(detail.getDateOccur().getDayoffDate().get())
-                                        && histItem.getDatePeriod().end().afterOrEquals(detail.getDateOccur().getDayoffDate().get())) {
-                                    OccurrenceAcquisitionDetail acquisitionDetail = new OccurrenceAcquisitionDetail();
-                                    acquisitionDetail.setOccurrenceDigCls(detail.getOccurrentClass());
-                                    acquisitionDetail.setDate(detail.getDateOccur());
-                                    acquisitionDetail.setOccurrencesUseNumber(detail.getNumberOccurren());
-                                    acquisitionDetail.setStatus(detail.getDataAtr());
-                                    if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
-                                        UnbalanceCompensation itemOccurrence = (UnbalanceCompensation) detail;
-                                        acquisitionDetail.setDeadline(Optional.ofNullable(itemOccurrence.getDeadline()));
-                                        acquisitionDetail.setExpiringThisMonth(acquisitionDetail.getDeadline().isPresent()
-                                                ? Optional.of(
-                                                        acquisitionDetail.getDeadline().get().afterOrEquals(period.start())
-                                                        && acquisitionDetail.getDeadline().get().beforeOrEquals(period.end())
-                                                ) : Optional.empty()
-                                        );
+                    if (!affCompHistsOfEmp.isEmpty()) {
+                        HolidayAcquisitionInfo holidayAcquisitionInfo = new HolidayAcquisitionInfo(
+                                absRecRemain.getCarryoverDay().v(),
+                                absRecRemain.getOccurrenceDay().v(),
+                                absRecRemain.getDayUse().v(),
+                                absRecRemain.getRemainDay().v(),
+                                absRecRemain.getUnusedDay().v(),
+                                absRecRemain.getRemainDay().v() < 0,
+                                new ArrayList<>(),
+                                new ArrayList<>()
+                        );
+                        boolean betweenWorkTime = true;
+                        for (AffCompanyHistByEmployee hist : affCompHistsOfEmp) {
+                            for (AffCompanyHistItem histItem : hist.items()) {
+                                for (AccumulationAbsenceDetail detail : absRecRemain.getVacationDetails().getLstAcctAbsenDetail()) {
+                                    if (detail.getDateOccur().getDayoffDate().isPresent()
+                                            && histItem.getDatePeriod().start().beforeOrEquals(detail.getDateOccur().getDayoffDate().get())
+                                            && histItem.getDatePeriod().end().afterOrEquals(detail.getDateOccur().getDayoffDate().get())) {
+                                        OccurrenceAcquisitionDetail acquisitionDetail = new OccurrenceAcquisitionDetail();
+                                        acquisitionDetail.setOccurrenceDigCls(detail.getOccurrentClass());
+                                        acquisitionDetail.setDate(detail.getDateOccur());
+                                        acquisitionDetail.setOccurrencesUseNumber(detail.getNumberOccurren());
+                                        acquisitionDetail.setStatus(detail.getDataAtr());
+                                        if (acquisitionDetail.getOccurrenceDigCls() == OccurrenceDigClass.OCCURRENCE) {
+                                            UnbalanceCompensation itemOccurrence = (UnbalanceCompensation) detail;
+                                            acquisitionDetail.setDeadline(Optional.ofNullable(itemOccurrence.getDeadline()));
+                                            acquisitionDetail.setExpiringThisMonth(acquisitionDetail.getDeadline().isPresent()
+                                                            ? Optional.of(
+                                                    acquisitionDetail.getDeadline().get().afterOrEquals(period.start())
+                                                            && acquisitionDetail.getDeadline().get().beforeOrEquals(period.end())
+                                                    ) : Optional.empty()
+                                            );
+                                        } else {
+                                            acquisitionDetail.setDeadline(Optional.empty());
+                                            acquisitionDetail.setExpiringThisMonth(Optional.empty());
+                                        }
+                                        holidayAcquisitionInfo.getOccurrenceAcquisitionDetails().add(acquisitionDetail);
                                     } else {
-                                        acquisitionDetail.setDeadline(Optional.empty());
-                                        acquisitionDetail.setExpiringThisMonth(Optional.empty());
+                                        betweenWorkTime = false;
                                     }
-                                    holidayAcquisitionInfo.getOccurrenceAcquisitionDetails().add(acquisitionDetail);
                                 }
                             }
                         }
-                    }
-                    if (linkingMng) {
-                        for (SeqVacationAssociationInfo associationInfo : absRecRemain.getLstSeqVacation()) {
-                            LinkingInfo linkingInfo = new LinkingInfo(
-                                    associationInfo.getOutbreakDay(),
-                                    associationInfo.getDateOfUse(),
-                                    associationInfo.getDayNumberUsed().v()
+
+                        if (betweenWorkTime) {
+                            if (linkingMng) {
+                                for (SeqVacationAssociationInfo associationInfo : absRecRemain.getLstSeqVacation()) {
+                                    LinkingInfo linkingInfo = new LinkingInfo(
+                                            associationInfo.getOutbreakDay(),
+                                            associationInfo.getDateOfUse(),
+                                            associationInfo.getDayNumberUsed().v()
+                                    );
+                                    holidayAcquisitionInfo.getLinkingInfos().add(linkingInfo);
+                                }
+                            }
+                            HolidayConfirmationTableContent content = new HolidayConfirmationTableContent(
+                                    employee.getEmployeeCode(),
+                                    employee.getEmployeeName(),
+                                    workplace == null ? null : workplace.getWorkplaceCode(),
+                                    workplace == null ? null : workplace.getWorkplaceName(),
+                                    workplace == null ? null : workplace.getHierarchyCode(),
+                                    Optional.of(holidayAcquisitionInfo)
                             );
-                            holidayAcquisitionInfo.getLinkingInfos().add(linkingInfo);
+                            contents.add(content);
                         }
                     }
-                    HolidayConfirmationTableContent content = new HolidayConfirmationTableContent(
-                            employee.getEmployeeCode(),
-                            employee.getEmployeeName(),
-                            workplace == null ? null : workplace.getWorkplaceCode(),
-                            workplace == null ? null : workplace.getWorkplaceName(),
-                            workplace == null ? null : workplace.getHierarchyCode(),
-                            Optional.of(holidayAcquisitionInfo)
-                    );
-                    contents.add(content);
                 }
             }
         }
