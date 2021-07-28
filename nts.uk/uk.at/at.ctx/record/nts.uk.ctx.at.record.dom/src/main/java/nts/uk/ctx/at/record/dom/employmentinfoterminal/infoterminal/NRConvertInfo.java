@@ -77,6 +77,9 @@ public class NRConvertInfo implements StampInfoConversion {
 
 		case TEMPORARY_ENTRANCE:
 			return Optional.of(ChangeClockArt.TEMPORARY_WORK);
+			
+		case RETIRED_TEMPORARY:
+			return Optional.of(ChangeClockArt.TEMPORARY_LEAVING);
 
 		default:
 			return Optional.empty();
