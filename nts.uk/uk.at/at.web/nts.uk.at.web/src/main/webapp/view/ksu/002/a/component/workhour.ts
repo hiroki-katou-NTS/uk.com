@@ -48,6 +48,10 @@ module nts.uk.ui.at.ksu002.a {
             width: 50%;
             padding: 5px 7px;
         }
+		.work-hour-info table td {
+			min-height: 33px;
+    		display: inline-table;
+		}
         .work-hour-info table th {
             background-color: #CFF1A5;
         }
