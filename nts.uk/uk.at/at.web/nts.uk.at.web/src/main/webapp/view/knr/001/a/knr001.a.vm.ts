@@ -18,7 +18,10 @@ module nts.uk.at.view.knr001.a {
             empInfoTerminalList: KnockoutObservableArray<EmpInfoListDto>;
             enableBtnRegist: KnockoutObservable<boolean>;
 
-            itemList: KnockoutObservableArray<ItemModel1>;
+            itemList1: KnockoutObservableArray<ItemModel1>;
+            itemList2: KnockoutObservableArray<ItemModel1>;
+            itemList3: KnockoutObservableArray<ItemModel1>;
+            itemList4: KnockoutObservableArray<ItemModel1>;
 
             selectedIndex1: KnockoutObservable<number> = ko.observable(0);
             selectedIndex2: KnockoutObservable<number> = ko.observable(0);
@@ -38,20 +41,35 @@ module nts.uk.at.view.knr001.a {
                 self.selectedCode = ko.observable(null);
                 self.enableBtnRegist = ko.observable(true);
 
-                self.itemList = ko.observableArray([
-                    new ItemModel1(0, '出勤'), // 8_3
-                    new ItemModel1(1, '入門'),
-                    new ItemModel1(2, '応援出勤'),
-                    new ItemModel1(3, '退勤'),
-                    new ItemModel1(4, '退門'), // 8_5
-                    new ItemModel1(5, '私用外出'),
-                    new ItemModel1(6, '公用外出'), // 8_7
-                    new ItemModel1(7, '有償外出'),
-                    new ItemModel1(8, '組合外出'),
-                    new ItemModel1(9, '入（応援開始）'),
-                    new ItemModel1(10, '戻り'), // 8_9
-                    new ItemModel1(11, '出（応援終了/応援行く）'),
+                // 8_3
+                self.itemList1 = ko.observableArray([
+                    new ItemModel1(0, getText('KNR001_155')),
+                    new ItemModel1(1, getText('KNR001_156')),
+                    new ItemModel1(2, getText('KNR001_157'))
                 ]);
+
+                // 8_5
+                self.itemList2 = ko.observableArray([
+                    new ItemModel1(3, getText('KNR001_162')),
+                    new ItemModel1(4, getText('KNR001_163'))
+                ]);
+
+                // 8_7
+                self.itemList3 = ko.observableArray([
+                    new ItemModel1(5, getText('KNR001_167')),
+                    new ItemModel1(6, getText('KNR001_168')),
+                    new ItemModel1(7, getText('KNR001_169')),
+                    new ItemModel1(8, getText('KNR001_170')),
+                    new ItemModel1(9, getText('KNR001_171'))
+                ]);
+
+                // 8_9
+                self.itemList4 = ko.observableArray([
+                    new ItemModel1(10, getText('KNR001_177')),
+                    new ItemModel1(11, getText('KNR001_178'))
+                ]);
+
+                // getText('KNR001_53')
 
                 self.selectedCode.subscribe(function(empInfoTerminalCode){
                     blockUI.invisible();
@@ -75,9 +93,13 @@ module nts.uk.at.view.knr001.a {
                     self.empInfoTerminalModel().modelEmpInfoTer(modelEmpInfo);
                             if(modelEmpInfo == 7 || modelEmpInfo == 8){
                                 self.empInfoTerminalModel().enableOutingClass(false);
+                                self.selectedIndex1(0);
+                                self.selectedIndex2(3);
+                                self.selectedIndex3(6);
+                                self.selectedIndex4(10);
                             }else{
                                 self.empInfoTerminalModel().enableOutingClass(true);
-                                
+                                self.goOutReason(10);
                             }
                 });
 
