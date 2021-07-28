@@ -5,7 +5,7 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pre
  * @author phongtq
  *
  */
-public enum ChangeClockArt {
+public enum ChangeClockAtr {
 	/**
 	 * "時刻変更区分
 	 * 0:出勤 1:退勤 2:入門 3:退門 4:外出 5:戻り 6:応援開始 7:臨時出勤 8:応援終了 9:臨時退勤 10:PCログオン
@@ -61,7 +61,7 @@ public enum ChangeClockArt {
 	public String nameId;
 
 	/** The Constant values. */
-	private final static ChangeClockArt[] values = ChangeClockArt.values();
+	private final static ChangeClockAtr[] values = ChangeClockAtr.values();
 
 	/**
 	 * Instantiates a new closure id.
@@ -71,7 +71,7 @@ public enum ChangeClockArt {
 	 * @param description
 	 *            the description
 	 */
-	private ChangeClockArt(int value, String nameId) {
+	private ChangeClockAtr(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}
@@ -83,14 +83,14 @@ public enum ChangeClockArt {
 	 *            the value
 	 * @return the use division
 	 */
-	public static ChangeClockArt valueOf(Integer value) {
+	public static ChangeClockAtr valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (ChangeClockArt val : ChangeClockArt.values) {
+		for (ChangeClockAtr val : ChangeClockAtr.values) {
 			if (val.value == value) {
 				return val;
 			}
@@ -103,6 +103,6 @@ public enum ChangeClockArt {
 	 * @return
 	 */
 	public boolean checkWorkingOut() {
-		return this == ChangeClockArt.WORKING_OUT;
+		return this == ChangeClockAtr.WORKING_OUT;
 	}
 }

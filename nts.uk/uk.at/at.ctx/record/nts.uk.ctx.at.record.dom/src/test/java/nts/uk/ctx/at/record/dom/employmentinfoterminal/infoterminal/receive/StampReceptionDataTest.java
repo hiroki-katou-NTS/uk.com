@@ -26,7 +26,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.Stam
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
@@ -125,101 +125,101 @@ public class StampReceptionDataTest {
 		EmpInfoTerminal empInfoTerminal = createEmpInfoTer(NotUseAtr.NOT_USE);
 		StampReceptionData dataNRA = new StampDataBuilder("1", "B", "1", "A", "200303", "01").time("0101")
 				.overTimeHours("1101").midnightTime(" ").build();
-		assertEquals(ChangeClockArt.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "B", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "D", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "S", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "U", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.GOING_TO_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "G", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "H", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "J", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.OVER_TIME, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.NOT_USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "L", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.WORKING_OUT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.WORKING_OUT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "O", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.NOT_USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "O", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.GO_OUT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.GO_OUT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "Q", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.END_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.END_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		empInfoTerminal = createEmpInfoTer(NotUseAtr.NOT_USE);
 		dataNRA = new StampDataBuilder("1", "B", "1", "Q", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.RETURN, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.RETURN, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "0", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.TEMPORARY_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.TEMPORARY_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "1", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "2", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.END_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.END_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "3", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "4", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "5", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "6", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "7", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.TEMPORARY_SUPPORT_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.TEMPORARY_SUPPORT_WORK, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "8", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.START_OF_SUPPORT, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 		dataNRA = new StampDataBuilder("1", "B", "1", "9", "200303", "01").time("0101").overTimeHours("1101")
 				.midnightTime(" ").build();
-		assertEquals(ChangeClockArt.TEMPORARY_LEAVING, dataNRA.convertChangeClockArt(empInfoTerminal));
+		assertEquals(ChangeClockAtr.TEMPORARY_LEAVING, dataNRA.convertChangeClockArt(empInfoTerminal));
 
 	}
 

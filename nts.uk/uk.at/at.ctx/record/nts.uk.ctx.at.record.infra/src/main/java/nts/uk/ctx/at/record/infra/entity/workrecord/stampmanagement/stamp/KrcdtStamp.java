@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -244,10 +244,10 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.workplaceId = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get() : null;
 		this.timeRecordCode = (stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent()) ? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString() : null;
 		this.taskCd1 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD1().v()).orElse(null);
-		this.taskCd2 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD2().map(t -> t.v()).orElse(null)).orElse(null);
-		this.taskCd3 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD3().map(t -> t.v()).orElse(null)).orElse(null);
-		this.taskCd4 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD4().map(t -> t.v()).orElse(null)).orElse(null);
-		this.taskCd5 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null);
+		this.taskCd2 = stamp.getRefActualResults().getWorkGroup().flatMap(m -> m.getWorkCD2()).map(t -> t.v()).orElse(null);
+		this.taskCd3 = stamp.getRefActualResults().getWorkGroup().flatMap(m -> m.getWorkCD3()).map(t -> t.v()).orElse(null);
+		this.taskCd4 = stamp.getRefActualResults().getWorkGroup().flatMap(m -> m.getWorkCD4()).map(t -> t.v()).orElse(null);
+		this.taskCd5 = stamp.getRefActualResults().getWorkGroup().flatMap(m -> m.getWorkCD5()).map(t -> t.v()).orElse(null);
 		
 		return this;
 	}
@@ -262,7 +262,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		val relieve = new Relieve(AuthcMethod.valueOf(this.autcMethod), StampMeans.valueOf(this.stampMeans));
 		val stampType = StampType.getStampType(this.changeHalfDay,
 				this.goOutArt == null ? null : GoingOutReason.valueOf(this.goOutArt),
-				SetPreClockArt.valueOf(this.preClockArt), ChangeClockArt.valueOf(this.pk.changeClockArt),
+				SetPreClockArt.valueOf(this.preClockArt), ChangeClockAtr.valueOf(this.pk.changeClockArt),
 				ChangeCalArt.valueOf(this.changeCalArt));
 		
 		OvertimeDeclaration overtime = this.overTime == null ? null
@@ -278,10 +278,10 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		
 		if (this.taskCd1 != null) {
 			workGroup = new WorkGroup(new WorkCode(this.taskCd1),
-					Optional.ofNullable(new WorkCode(this.taskCd2)),
-					Optional.ofNullable(new WorkCode(this.taskCd3)),
-					Optional.ofNullable(new WorkCode(this.taskCd4)),
-					Optional.ofNullable(new WorkCode(this.taskCd5)));
+					Optional.ofNullable(taskCd2 == null ? null : new WorkCode(this.taskCd2)),
+					Optional.ofNullable(taskCd3 == null ? null : new WorkCode(this.taskCd3)),
+					Optional.ofNullable(taskCd4 == null ? null : new WorkCode(this.taskCd4)),
+					Optional.ofNullable(taskCd5 == null ? null : new WorkCode(this.taskCd5)));
 		}
 		
 		val refectActualResult = new RefectActualResult(workInformationStamp,

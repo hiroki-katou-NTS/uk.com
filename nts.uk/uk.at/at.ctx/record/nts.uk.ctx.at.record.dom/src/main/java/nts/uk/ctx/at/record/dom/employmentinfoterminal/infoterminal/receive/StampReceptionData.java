@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -153,64 +153,64 @@ public class StampReceptionData implements ReceptionData {
 	}
 
 	// 出退区分
-	public ChangeClockArt convertChangeClockArt(EmpInfoTerminal empInfo) {
+	public ChangeClockAtr convertChangeClockArt(EmpInfoTerminal empInfo) {
 		switch (LeaveCategory.valueStringOf(leavingCategory.trim())) {
 
 		case WORK:
 		case WORK_HALF:
 		case WORK_FLEX:
 			if (empInfo.getCreateStampInfo().getConvertEmbCate().getEntranceExit() == NotUseAtr.USE)
-				return ChangeClockArt.OVER_TIME;
-			return ChangeClockArt.GOING_TO_WORK;
+				return ChangeClockAtr.OVER_TIME;
+			return ChangeClockAtr.GOING_TO_WORK;
 
 		case EARLY:
 		case VACATION:
-			return ChangeClockArt.GOING_TO_WORK;
+			return ChangeClockAtr.GOING_TO_WORK;
 
 		case LEAVE:
 		case LEAVE_HALF:
 		case LEAVE_OVERTIME:
 		case LEAVE_FLEX:
 			if (empInfo.getCreateStampInfo().getConvertEmbCate().getEntranceExit() == NotUseAtr.USE)
-				return ChangeClockArt.OVER_TIME;
-			return ChangeClockArt.WORKING_OUT;
+				return ChangeClockAtr.OVER_TIME;
+			return ChangeClockAtr.WORKING_OUT;
 
 		case GO_OUT:
 			if (empInfo.getCreateStampInfo().getConvertEmbCate().getOutSupport() == NotUseAtr.USE)
-				return ChangeClockArt.START_OF_SUPPORT;
-			return ChangeClockArt.GO_OUT;
+				return ChangeClockAtr.START_OF_SUPPORT;
+			return ChangeClockAtr.GO_OUT;
 
 		case RETURN:
 			if (empInfo.getCreateStampInfo().getConvertEmbCate().getOutSupport() == NotUseAtr.USE)
-				return ChangeClockArt.END_OF_SUPPORT;
-			return ChangeClockArt.RETURN;
+				return ChangeClockAtr.END_OF_SUPPORT;
+			return ChangeClockAtr.RETURN;
 
 		case WORK_TEMPORARY:
-			return ChangeClockArt.TEMPORARY_WORK;
+			return ChangeClockAtr.TEMPORARY_WORK;
 
 		case RETURN_START:
-			return ChangeClockArt.START_OF_SUPPORT;
+			return ChangeClockAtr.START_OF_SUPPORT;
 
 		case GO_EN:
-			return ChangeClockArt.END_OF_SUPPORT;
+			return ChangeClockAtr.END_OF_SUPPORT;
 
 		case WORK_ENTRANCE:
 		case WORK_HALF_ENTRANCE:
 		case WORK_FLEX_ENTRANCE:
-			return ChangeClockArt.SUPPORT;
+			return ChangeClockAtr.SUPPORT;
 
 		case VACATION_ENTRANCE:
 		case EARLY_ENTRANCE:
-			return ChangeClockArt.START_OF_SUPPORT;
+			return ChangeClockAtr.START_OF_SUPPORT;
 
 		case TEMPORARY_ENTRANCE:
-			return ChangeClockArt.TEMPORARY_SUPPORT_WORK;
+			return ChangeClockAtr.TEMPORARY_SUPPORT_WORK;
 
 //		case RETIRED_TEMPORARY:
 //			return ChangeClockArt.TEMPORARY_LEAVING;
 
 		default:
-			return ChangeClockArt.TEMPORARY_LEAVING;
+			return ChangeClockAtr.TEMPORARY_LEAVING;
 		}
 	}
 
