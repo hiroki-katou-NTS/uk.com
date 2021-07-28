@@ -124,6 +124,9 @@ module nts.uk.at.kha003.c {
                     } else {
                         vm.$window.storage('kha003CShareData').done(data => {
                             data = data || {};
+                            if (oldData.isNewCode) {
+                                data = {};
+                            }
                             data.isNewCode = false;
                             vm.c24CurrentCodeList(data.c24CurrentCodeList || []);
                             vm.c34CurrentCodeList(data.c34CurrentCodeList || []);
@@ -132,6 +135,7 @@ module nts.uk.at.kha003.c {
                         });
                     }
                     vm.$window.storage('kha003AShareData_OLD', data);
+
                 });
             });
 
@@ -141,9 +145,9 @@ module nts.uk.at.kha003.c {
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
             });
-             $(document).ready(function () {
-                 vm.gridRows((12*$(window).height())/768);
-             });
+            $(document).ready(function () {
+                vm.gridRows((12 * $(window).height()) / 768);
+            });
         }
 
         /**
