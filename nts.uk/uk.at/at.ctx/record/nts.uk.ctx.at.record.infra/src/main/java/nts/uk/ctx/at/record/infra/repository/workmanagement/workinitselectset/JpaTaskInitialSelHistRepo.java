@@ -35,16 +35,36 @@ public class JpaTaskInitialSelHistRepo extends JpaRepository implements TaskInit
 										           + " AND c.endDate >= :baseDate";
 	
 	private static final String SELECT_BY_CID = " SELECT c FROM KrcmtTaskInitialSelHist c WHERE c.companyId = :companyId "; 
+	
+	private static final String SELECT_BY_SID_ORDER_BY_STARTDATE = SELECT_BY_SID + " ORDER BY c.pk.startDate DESC ";
 
 	@Override
 	public void insert(TaskInitialSelHist taskInitialSelHist) {
-		this.commandProxy().insertAll(KrcmtTaskInitialSelHist.toEntity(taskInitialSelHist));
-		
+		for(int i = 0; i < taskInitialSelHist.getLstHistory().size(); i++) {
+			KrcmtTaskInitialSelHistPk pk = new KrcmtTaskInitialSelHistPk(taskInitialSelHist.getEmpId(), taskInitialSelHist.getLstHistory().get(i).getDatePeriod().start());
+			Optional<KrcmtTaskInitialSelHist> entity = this.queryProxy().find(pk, KrcmtTaskInitialSelHist.class);
+			if (!entity.isPresent()) {
+				this.commandProxy().insert(KrcmtTaskInitialSelHist.toEntity(taskInitialSelHist, i));
+			} else {
+				TaskInitialSel hist = taskInitialSelHist.getLstHistory().get(i);
+				entity.get().endDate = hist.end();
+				entity.get().taskCd1 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode1().get().v() : "";
+				entity.get().taskCd2 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode2().get().v() : "";
+				entity.get().taskCd3 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode3().get().v() : "";
+				entity.get().taskCd4 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode4().get().v() : "";
+				entity.get().taskCd5 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode5().get().v() : "";
+				this.commandProxy().update(entity.get());
+			}
+		}		
 	}
 
 	@Override
 	public void update(TaskInitialSelHist taskInitialSelHist) {
 		List<KrcmtTaskInitialSelHist> listKrcmtTaskInitialSelHists = new ArrayList<KrcmtTaskInitialSelHist>();
+		List<KrcmtTaskInitialSelHist> listKrcmtTaskInitialSelHistsOld = this.queryProxy().query(SELECT_BY_SID_ORDER_BY_STARTDATE ,  KrcmtTaskInitialSelHist.class )
+																						.setParameter("empId", taskInitialSelHist.getEmpId())
+																						.getList().stream().collect(Collectors.toList());
+		
 		
 		taskInitialSelHist.getLstHistory().stream().forEach(hist -> {
 			KrcmtTaskInitialSelHistPk pk = new KrcmtTaskInitialSelHistPk(taskInitialSelHist.getEmpId(), hist.getDatePeriod().start());
@@ -60,6 +80,9 @@ public class JpaTaskInitialSelHistRepo extends JpaRepository implements TaskInit
 			}
 		});
 
+		if(listKrcmtTaskInitialSelHistsOld.size() > listKrcmtTaskInitialSelHists.size()) {
+			this.commandProxy().remove(listKrcmtTaskInitialSelHistsOld.get(0));
+		}
 		this.commandProxy().updateAll(listKrcmtTaskInitialSelHists);
 
 	}

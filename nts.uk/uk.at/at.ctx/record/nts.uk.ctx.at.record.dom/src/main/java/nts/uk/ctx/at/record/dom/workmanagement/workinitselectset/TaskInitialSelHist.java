@@ -44,11 +44,7 @@ public class TaskInitialSelHist extends AggregateRoot
 		// $最新の履歴 = 最新履歴の履歴項目()
 		Optional<TaskInitialSel> latestHist = this.latestStartItem();
 		// 追加する(追加する履歴項目)
-//		List<TaskInitialSel> lstTask = new ArrayList<TaskInitialSel>();
-//		lstTask.add(taskInitialSel);
 		this.add(taskInitialSel);
-//		this.lstHistory.add(taskInitialSel);
-	//	this.lstHistory.add(taskInitialSel);
 
 		if (latestHist.isPresent()) {
 			// @履歴リスト：except $最新の履歴
@@ -56,6 +52,8 @@ public class TaskInitialSelHist extends AggregateRoot
 			
 			// $最新の履歴.適用による終了の調整(追加する履歴項目)
 			latestHist.get().shortenEndToAccept(taskInitialSel);
+			
+			TaskInitialSel temp = latestHist.get();
 			//	@履歴リスト.追加($最新の履歴)		
 			this.lstHistory.add(latestHist.get());
 
@@ -70,7 +68,6 @@ public class TaskInitialSelHist extends AggregateRoot
 		//	$直前の履歴 = 直前の履歴の履歴項目(追加する履歴項目)	
 		Optional<TaskInitialSel> data = this.immediatelyBefore(taskInitialSel);
 		//		削除する(削除する履歴項目)	
-//		List<TaskInitialSel> lstTask = new ArrayList<TaskInitialSel>();
 		this.remove(taskInitialSel);
 		//	if $直前の履歴.isPresent
 		if(data.isPresent()){
