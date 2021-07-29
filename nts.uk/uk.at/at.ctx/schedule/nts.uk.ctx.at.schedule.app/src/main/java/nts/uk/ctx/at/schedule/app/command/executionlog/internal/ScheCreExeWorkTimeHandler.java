@@ -178,38 +178,38 @@ public class ScheCreExeWorkTimeHandler {
 
 		// get MONDAY of data
 		if (DayOfWeek.MONDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getMonday())) {
-			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getMonday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getMonday())) {
+			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getMonday());
 		}
 		// get TUESDAY of data
 		if (DayOfWeek.TUESDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getTuesday())) {
-			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getTuesday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getTuesday())) {
+			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getTuesday());
 		}
 		// get WEDNESDAY of data
 		if (DayOfWeek.WEDNESDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getWednesday())) {
-			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getWednesday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getWednesday())) {
+			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getWednesday());
 		}
 		// get THURSDAY of data
 		if (DayOfWeek.THURSDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getThursday())) {
-			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getThursday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getThursday())) {
+			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getThursday());
 		}
 		// get FRIDAY of data
 		if (DayOfWeek.FRIDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getFriday())) {
-			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getFriday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getFriday())) {
+			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getFriday());
 		}
 		// get SATURDAY of data
 		if (DayOfWeek.SATURDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSaturday())) {
-			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSaturday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSaturday())) {
+			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSaturday());
 		}
 		// get SUNDAY of data
 		if (DayOfWeek.SUNDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSunday())) {
-			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSunday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSunday())) {
+			return this.getWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSunday());
 		}
 		return DEFAULT_CODE;
 
@@ -227,38 +227,38 @@ public class ScheCreExeWorkTimeHandler {
 
 		// get MONDAY of data
 		if (DayOfWeek.MONDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getMonday())) {
-			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getMonday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getMonday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getMonday());
 		}
 		// get TUESDAY of data
 		if (DayOfWeek.TUESDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getTuesday())) {
-			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getTuesday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getTuesday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getTuesday());
 		}
 		// get WEDNESDAY of data
 		if (DayOfWeek.WEDNESDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getWednesday())) {
-			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getWednesday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getWednesday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getWednesday());
 		}
 		// get THURSDAY of data
 		if (DayOfWeek.THURSDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getThursday())) {
-			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getThursday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getThursday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getThursday());
 		}
 		// get FRIDAY of data
 		if (DayOfWeek.FRIDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getFriday())) {
-			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getFriday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getFriday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getFriday());
 		}
 		// get SATURDAY of data
 		if (DayOfWeek.SATURDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSaturday())) {
-			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSaturday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSaturday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSaturday());
 		}
 		// get SUNDAY of data
 		if (DayOfWeek.SUNDAY.getValue() == command.getBaseGetter().getToDate().dayOfWeek() && this
-				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSunday())) {
-			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkDayOfWeek().getSunday());
+				.checkExistWorkTimeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSunday())) {
+			return this.getWorkTypeCodeBySingleDaySchedule(workingConditionItem.getWorkCategory().getWorkTime().getDayOfWeek().getSunday());
 		}
 		return DEFAULT_CODE;
 
@@ -385,8 +385,7 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	private String getWorkTypeCodeBySingleDaySchedule(Optional<SingleDaySchedule> optionalSingleDaySchedule) {
-		return optionalSingleDaySchedule.get().getWorkTypeCode().isPresent()
-				? optionalSingleDaySchedule.get().getWorkTypeCode().get().v() : null;
+		return null;
 	}
 
 	/**
@@ -396,8 +395,8 @@ public class ScheCreExeWorkTimeHandler {
 	 * @return
 	 */
 	private String getHolidayWorkOfWorkingConditionItem(WorkCondItemDto workingConditionItem) {
-		if (workingConditionItem.getWorkCategory().getHolidayWork().getWorkTimeCode().isPresent()) {
-			return workingConditionItem.getWorkCategory().getHolidayWork().getWorkTimeCode().get().v();
+		if (workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode().isPresent()) {
+			return workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode().get().v();
 		}
 		return DEFAULT_CODE;
 	}
@@ -483,10 +482,9 @@ public class ScheCreExeWorkTimeHandler {
 				if (this.checkHolidaySetting(worktype)) {
 
 					// check exist work time
-					if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-							workingConditionItem.getWorkCategory().getPublicHolidayWork())) {
+					if (this.checkExistWorkTimeCodeBySingleDaySchedule(Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 						return this.getWorkTimeCodeBySingleDaySchedule (
-								workingConditionItem.getWorkCategory().getPublicHolidayWork());
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));
 					}
 				}
 
@@ -499,13 +497,13 @@ public class ScheCreExeWorkTimeHandler {
 					// case 法定内休日
 					case STATUTORY_HOLIDAYS:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-								workingConditionItem.getWorkCategory().getInLawBreakTime())) {
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 							/*return this.getWorkTimeCodeBySingleDaySchedule(
 									workingConditionItem.getWorkCategory().getInLawBreakTime());*/
 							if(!this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getInLawBreakTime()).isEmpty()){
+									Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork())).isEmpty()){
 								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getInLawBreakTime());
+										Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));
 							}
 							else{
 								return command.getWorkingCode();
@@ -517,13 +515,13 @@ public class ScheCreExeWorkTimeHandler {
 					// case 法定外休日
 					case NON_STATUTORY_HOLIDAYS:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-								workingConditionItem.getWorkCategory().getOutsideLawBreakTime())) {
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 						/*	return this.getWorkTimeCodeBySingleDaySchedule(
 									workingConditionItem.getWorkCategory().getOutsideLawBreakTime());*/
 							if(!this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getOutsideLawBreakTime()).isEmpty()){
+									Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork())).isEmpty()){
 								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getOutsideLawBreakTime());	
+										Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));	
 							}else{
 								return command.getWorkingCode();
 							}
@@ -533,13 +531,13 @@ public class ScheCreExeWorkTimeHandler {
 					// case 祝日
 					default:
 						if (this.checkExistWorkTimeCodeBySingleDaySchedule(
-								workingConditionItem.getWorkCategory().getHolidayAttendanceTime())) {
+								Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()))) {
 							/*return this.getWorkTimeCodeBySingleDaySchedule(
 									workingConditionItem.getWorkCategory().getHolidayAttendanceTime());*/
 							if(!this.getWorkTimeCodeBySingleDaySchedule(
-									workingConditionItem.getWorkCategory().getHolidayAttendanceTime()).isEmpty()){
+									Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork())).isEmpty()){
 								return this.getWorkTimeCodeBySingleDaySchedule(
-										workingConditionItem.getWorkCategory().getHolidayAttendanceTime());
+										Optional.ofNullable(workingConditionItem.getWorkCategory().getWorkTime().getHolidayWork()));
 							}else{
 								return command.getWorkingCode();
 							}
@@ -558,8 +556,8 @@ public class ScheCreExeWorkTimeHandler {
 				}
 
 				// check exist data work category of week day
-				if (workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-					return workingConditionItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v();
+				if (workingConditionItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()) {
+					return workingConditionItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get().v();
 				}
 			}
 		}

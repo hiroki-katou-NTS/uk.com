@@ -43,7 +43,7 @@ public class WorkScheduleBusCal extends DomainObject {
 	 */
 	public void saveToMemento(WorkScheduleBusCalSetMemento memento) {
 		memento.setReferenceBusinessDayCalendar(this.referenceBusinessDayCalendar);
-		memento.setReferenceBasicWork(this.referenceBasicWork);
+//		memento.setReferenceBasicWork(this.referenceBasicWork);
 		memento.setReferenceWorkingHours(this.referenceWorkingHours);
 	}
 

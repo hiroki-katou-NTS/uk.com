@@ -40,9 +40,11 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCal;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkTypeByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.i18n.TextResource;	
 /**
  * UnitTest: 社員の法定労働時間を取得する
@@ -389,15 +391,16 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 		 * @return
 		 */
 		public  static WorkingConditionItem createItemHistory(WorkingSystem workingSystem) {
-			val perCate = new PersonalWorkCategory(
-					new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
-					, new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
-					, new SingleDaySchedule("workTypeCode", Collections.emptyList(), Optional.empty())
-					, Optional.empty(), Optional.empty(), Optional.empty()
-					, Optional.empty());
 			val perDay = new PersonalDayOfWeek(Optional.empty(), Optional.empty(), Optional.empty()
 					, Optional.empty(), Optional.empty(), Optional.empty()
 					, Optional.empty());
+			val perCate = new PersonalWorkCategory(
+					new SingleDaySchedule(Collections.emptyList(), Optional.empty())
+					, new SingleDaySchedule(Collections.emptyList(), Optional.empty())
+					, perDay
+					);
+			val workTypeByIndividualWorkDay = new WorkTypeByIndividualWorkDay( new WorkTypeCode("001WC"), new WorkTypeCode("002WC"), new WorkTypeCode("003WC"), Optional.empty(), Optional.empty(), Optional.empty());
+			val workByIndividualWorkDay =new nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay(perCate, workTypeByIndividualWorkDay);
 			val holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
 			val workScheduleBusCal = new WorkScheduleBusCal(WorkScheduleMasterReferenceAtr.WORK_PLACE
 					, WorkScheduleMasterReferenceAtr.WORK_PLACE
@@ -407,7 +410,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 			val timeApply = new BonusPaySettingCode("001");
 			val monthlyPattern = new MonthlyPatternCode("001");
 			return new WorkingConditionItem(
-					"historyId", ManageAtr.USE, perDay, perCate
+					"historyId", ManageAtr.USE, workByIndividualWorkDay
 					, NotUseAtr.USE, NotUseAtr.USE, "sid", NotUseAtr.USE
 					, new LaborContractTime(3200)
 					, workingSystem

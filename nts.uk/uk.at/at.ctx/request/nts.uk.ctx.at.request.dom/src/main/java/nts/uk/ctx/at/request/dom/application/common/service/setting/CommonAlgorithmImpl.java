@@ -548,7 +548,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		String processWorkTime = null; 
 		if(opWorkingConditionItem.isPresent()) {
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
-			Optional<WorkTypeCode> opConditionWktypeCD = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTypeCode();
+			Optional<WorkTypeCode> opConditionWktypeCD = Optional.of(opWorkingConditionItem.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode());
 			List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
 			if(opConditionWktypeCD.isPresent() && workTypeCDLst.contains(opConditionWktypeCD.get().v())) {
 				// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
@@ -558,7 +558,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			}
 			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードがINPUT「就業時間帯リスト」Listに含まれているかをチェックする
-			processWorkTime = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null);
+			processWorkTime = opWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null);
 			
 			final String workTime = processWorkTime;
 			
