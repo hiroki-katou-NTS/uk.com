@@ -40,7 +40,7 @@ public class TaskInitialSelHistTest {
 						Optional.of(new TaskCode("TaskCode5") )
 						));
 		taskInitialSelHist.addHistory(param);
-		assertThat(taskInitialSelHist.getLstHistory().get(0)).isEqualTo(param);
+		assertThat(taskInitialSelHist.getLstHistory().get(0)).isEqualToComparingFieldByField(param);
 	}
 	
 	/**
