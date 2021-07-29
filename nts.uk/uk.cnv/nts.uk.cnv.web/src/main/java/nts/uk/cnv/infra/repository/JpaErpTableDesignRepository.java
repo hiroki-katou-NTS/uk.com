@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
@@ -14,10 +15,9 @@ import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotColumn;
 import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotColumnPk;
 import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotTable;
 import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotTablePk;
-import nts.uk.cnv.infra.impls.JpaSourceOrutaRepository;
 
 @Stateless
-public class JpaErpTableDesignRepository extends JpaSourceOrutaRepository implements ErpTableDesignRepository {
+public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {
 
 	@Override
 	public void insert(ErpTableDesign tableDesign) {

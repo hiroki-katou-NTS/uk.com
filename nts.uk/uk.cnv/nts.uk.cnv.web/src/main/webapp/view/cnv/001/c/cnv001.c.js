@@ -290,10 +290,21 @@ $(function(){
 		}
 
 		$.ajax(
-				$.extend({url:server + servicePath.getukcolumns_oruta + '/' + tableId + '/not-accepted'}, {type: "GET"})
+				$.extend({url:server + servicePath.getukcolumns_oruta + '/' + parentTable + '/not-accepted'}, {type: "GET"})
 		).done(function (res) {
-			var options = $.map(res, function (value, index) {
-				return $('<option>', { value: value.name, text: value.name + String.fromCharCode(160).repeat(25-getLen(value.name)) + " : " + value.dataType });
+			var options = $.map(res.columns, function (value, index) {
+				return $('<option>', {
+					value: value.name,
+					text: value.name
+						+ String.fromCharCode(160).repeat(25-getLen(value.name))
+						+ " : "
+						+ value.type.dataType
+						+ "("
+						+ value.type.length
+						+ ","
+						+ value.type.scale
+						+")"
+					});
 			});
 
 			$(".selSourceParentColumn > option").remove();
