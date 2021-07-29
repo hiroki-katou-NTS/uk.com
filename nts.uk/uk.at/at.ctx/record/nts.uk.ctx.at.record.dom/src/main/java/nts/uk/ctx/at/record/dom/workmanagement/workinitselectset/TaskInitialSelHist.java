@@ -83,21 +83,20 @@ public class TaskInitialSelHist extends AggregateRoot
 	public void changeHistory(TaskItem taskItem, DatePeriod datePeriod, GeneralDate date) {
 		
 		//if 変更する履歴開始日 <> 変更後の期間.開始日		
-		if(date != datePeriod.start() ){
+		if(!date.equals(datePeriod.start()) ){
 			//$変更する履歴 = @履歴リスト：filter $.期間.開始日 == 変更する履歴開始日	
-			List<TaskInitialSel> changeHistory = this.lstHistory.stream().filter(c ->c.getDatePeriod().start() == date).collect(Collectors.toList());
+			List<TaskInitialSel> changeHistory = this.lstHistory.stream().filter(c ->c.getDatePeriod().start().equals(date)).collect(Collectors.toList());
 			//期間を変更する($変更する履歴,変更後の期間)
 			this.exValidateIfCanChangeSpan(changeHistory.get(0), datePeriod);
 		}
 		//$対象履歴項目 = @履歴リスト：filter $.期間.開始日 == 変更後の期間.開始日
-		List<TaskInitialSel> history = this.lstHistory.stream().filter(c ->c.getDatePeriod().start() == datePeriod.start()).collect(Collectors.toList());
-		if(history.isEmpty()){
-			//$対象履歴項目.作業項目を変更する(変更後の作業項目)
-				history.get(0).changeTaskItem(taskItem);
+		List<TaskInitialSel> history = this.lstHistory.stream().filter(c ->c.getDatePeriod().start().equals(datePeriod.start())).collect(Collectors.toList());
+		if (!history.isEmpty()) {
+			// $対象履歴項目.作業項目を変更する(変更後の作業項目)
+			history.get(0).changeTaskItem(taskItem);
 		}
-			
-		
 	}
+	
 	@Override
 	public List<TaskInitialSel> items() {
 		// TODO Auto-generated method stub
