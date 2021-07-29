@@ -24,7 +24,7 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_WorkTime_empty() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), null );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		Optional<String> result = AggregationUnitOfWorkMethod.WORK_TIME.getWorkMethod(require, workInfoOfDailyAttendance);
 		
@@ -36,7 +36,7 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_WorkTime_isPresent() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		Optional<String> result = AggregationUnitOfWorkMethod.WORK_TIME.getWorkMethod(require, workInfoOfDailyAttendance);
 		
@@ -48,7 +48,7 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_Shift_empty() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), null );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		new Expectations() {{
 			require.getShiftMaster(workInfo);
@@ -65,7 +65,7 @@ public class AggregationUnitOfWorkMethodTest {
 	public void testGetWorkMethod_Shift_isPresent() {
 		
 		WorkInformation workInfo = new WorkInformation(new WorkTypeCode("work-type-code"), null );
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.getData(workInfo);
+		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(workInfo);
 		
 		new Expectations() {{
 			require.getShiftMaster(workInfo);
