@@ -60,30 +60,60 @@ public class JpaTaskInitialSelHistRepo extends JpaRepository implements TaskInit
 
 	@Override
 	public void update(TaskInitialSelHist taskInitialSelHist) {
+		Boolean isExist = false;
+		List<KrcmtTaskInitialSelHist> krcmtTaskInitialSelHists = new ArrayList<KrcmtTaskInitialSelHist>();
 		List<KrcmtTaskInitialSelHist> listKrcmtTaskInitialSelHists = new ArrayList<KrcmtTaskInitialSelHist>();
 		List<KrcmtTaskInitialSelHist> listKrcmtTaskInitialSelHistsOld = this.queryProxy().query(SELECT_BY_SID_ORDER_BY_STARTDATE ,  KrcmtTaskInitialSelHist.class )
 																						.setParameter("empId", taskInitialSelHist.getEmpId())
 																						.getList().stream().collect(Collectors.toList());
 		
-		
 		taskInitialSelHist.getLstHistory().stream().forEach(hist -> {
-			KrcmtTaskInitialSelHistPk pk = new KrcmtTaskInitialSelHistPk(taskInitialSelHist.getEmpId(), hist.getDatePeriod().start());
-			Optional<KrcmtTaskInitialSelHist> entity = this.queryProxy().find(pk, KrcmtTaskInitialSelHist.class);
-			if (entity.isPresent()) {
-				entity.get().endDate = hist.end();
-				entity.get().taskCd1 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode1().get().v() : "";
-				entity.get().taskCd2 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode2().get().v() : "";
-				entity.get().taskCd3 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode3().get().v() : "";
-				entity.get().taskCd4 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode4().get().v() : "";
-				entity.get().taskCd5 = hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode5().get().v() : "";
-				listKrcmtTaskInitialSelHists.add(entity.get());
-			}
+			KrcmtTaskInitialSelHist entity = new KrcmtTaskInitialSelHist( 
+				new KrcmtTaskInitialSelHistPk(taskInitialSelHist.getEmpId(), hist.getDatePeriod().start()),
+				hist.end(),	hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode1().get().v() : "",
+				hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode2().get().v() : "",
+				hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode3().get().v() : "",
+				hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode4().get().v() : "",
+				hist.getTaskItem().getOtpWorkCode1().isPresent() ? hist.getTaskItem().getOtpWorkCode5().get().v() : "");
+			
+			listKrcmtTaskInitialSelHists.add(entity);
 		});
-
+		
+		for(int i = 0; i < listKrcmtTaskInitialSelHistsOld.size(); i++) {
+			isExist = false;
+			for(int j= 0; j < listKrcmtTaskInitialSelHists.size(); j++) {
+				if(listKrcmtTaskInitialSelHistsOld.get(i).pk.startDate == listKrcmtTaskInitialSelHists.get(j).pk.startDate) {
+					isExist = true;
+				}
+			}
+			if(!isExist) {
+				this.commandProxy().remove(listKrcmtTaskInitialSelHistsOld.get(i));
+			}			
+		}
+		
 		if(listKrcmtTaskInitialSelHistsOld.size() > listKrcmtTaskInitialSelHists.size()) {
 			this.commandProxy().remove(listKrcmtTaskInitialSelHistsOld.get(0));
 		}
-		this.commandProxy().updateAll(listKrcmtTaskInitialSelHists);
+		
+		listKrcmtTaskInitialSelHists.forEach(taskIntialSelHist -> {
+			Optional<KrcmtTaskInitialSelHist> entity = this.queryProxy().find(taskIntialSelHist.pk, KrcmtTaskInitialSelHist.class);
+			if (entity.isPresent()) {
+				entity.get().endDate = taskIntialSelHist.endDate;
+				entity.get().taskCd1 = taskIntialSelHist.taskCd1;
+				entity.get().taskCd2 = taskIntialSelHist.taskCd2;
+				entity.get().taskCd3 = taskIntialSelHist.taskCd3;
+				entity.get().taskCd4 = taskIntialSelHist.taskCd4;
+				entity.get().taskCd5 = taskIntialSelHist.taskCd5;
+				krcmtTaskInitialSelHists.add(entity.get());
+			} else {
+//				listKrcmtTaskInitialSelHists.remove(taskIntialSelHist);
+				this.commandProxy().insert(taskIntialSelHist);
+			}			
+			
+		});
+
+		
+		this.commandProxy().updateAll(krcmtTaskInitialSelHists);
 
 	}
 

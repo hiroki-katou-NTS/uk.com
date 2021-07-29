@@ -45,7 +45,8 @@ public class RegisterHistCommandHandler extends CommandHandler<HistCommand>{
 			taskInitialSelHist = new TaskInitialSelHist(employeeId, optional.get().getLstHistory());
 		}	
 		
-		taskInitialSelHist.addHistory(taskInitialSel);
+//		taskInitialSelHist.addHistory(taskInitialSel);
+		taskInitialSelHist.add(taskInitialSel);
 		this.taskInitialSelHistRepo.insert(taskInitialSelHist);
 	}
 }

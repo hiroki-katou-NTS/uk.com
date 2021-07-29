@@ -13,6 +13,7 @@ import nts.uk.screen.at.app.command.kdw.kdw003.g.CopyHistCommandHandler;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.DeleteHistCommandHandler;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.HistCommand;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.HistCommandCopy;
+import nts.uk.screen.at.app.command.kdw.kdw003.g.HistCommandUpdate;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.RegisterHistCommandHandler;
 import nts.uk.screen.at.app.command.kdw.kdw003.g.UpdateHistCommandHandler;
 import nts.uk.screen.at.app.query.kdw.kdw003.g.EmployeeInfoDto;
@@ -78,7 +79,7 @@ public class Kdw003gWebService extends WebService {
 	
 	@POST
 	@Path("/update")
-	public void updateHist(HistCommand command) {
+	public void updateHist(HistCommandUpdate command) {
 		this.updateHistCommandHandler.handle(command);
 	}
 	

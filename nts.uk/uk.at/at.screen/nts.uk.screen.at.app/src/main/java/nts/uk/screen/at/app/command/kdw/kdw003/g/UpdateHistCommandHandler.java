@@ -20,13 +20,13 @@ import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskItem;
  *
  */
 @Stateless
-public class UpdateHistCommandHandler extends CommandHandler<HistCommand>{
+public class UpdateHistCommandHandler extends CommandHandler<HistCommandUpdate>{
 	@Inject
 	TaskInitialSelHistRepo taskInitialSelHistRepo;
 
 	@Override
-	protected void handle(CommandHandlerContext<HistCommand> context) {
-		HistCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<HistCommandUpdate> context) {
+		HistCommandUpdate command = context.getCommand();
 		String employeeId = command.getEmployeeId();
 		
 		TaskItem taskItem = new TaskItem(Optional.ofNullable(new TaskCode(command.getLstTask().get(0))),
@@ -35,14 +35,14 @@ public class UpdateHistCommandHandler extends CommandHandler<HistCommand>{
 				Optional.ofNullable(new TaskCode(command.getLstTask().get(3))),
 				Optional.ofNullable(new TaskCode(command.getLstTask().get(4))));
 
-		TaskInitialSel taskInitialSel = new TaskInitialSel(employeeId, command.toDatePeriod(), taskItem);
+//		TaskInitialSel taskInitialSel = new TaskInitialSel(employeeId, command.toOldDatePeriod(), taskItem);
 		Optional<TaskInitialSelHist> optional = this.taskInitialSelHistRepo.getById(employeeId);
 		if (!optional.isPresent()) {
 			return;
 		}
 
 		TaskInitialSelHist taskInitialSelHist = optional.get();
-		taskInitialSelHist.changeHistory(taskInitialSel, command.toDatePeriod(), taskItem);
+		taskInitialSelHist.changeHistory(taskItem, command.toDatePeriod(), command.toCurrentStartDate());
 
 		this.taskInitialSelHistRepo.update(taskInitialSelHist);
 	}

@@ -30,15 +30,19 @@ module nts.uk.at.view.kdw003.cg {
         selectedItem: KnockoutObservable<string> = ko.observable(null);
        
         columns: KnockoutObservableArray<any>;
-        // listTimeRange: KnockoutObservableArray<any>;
         listHistPeriod: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedHist: KnockoutObservable<string>= ko.observable('');
         listTaskItemInfo: KnockoutObservableArray<TaskItemModel> = ko.observableArray([]);
 
-        startDateString: KnockoutObservable<string> = ko.observable('');
-        endDateString: KnockoutObservable<string> = ko.observable('');
-        dateValue: KnockoutObservable<any> = ko.observable({});
         ENDDATE_LATEST: string = '9999/12/31';
+        startDate: KnockoutObservable<string> = ko.observable(new Date().toString());
+        startDatePeriod: KnockoutObservable<string> = ko.observable('');
+        endDate: KnockoutObservable<string> = ko.observable('2021/12/31');
+        // endDateString: KnockoutObservable<string> = ko.observable('');
+        // dateValue: KnockoutObservable<any> = ko.observable({});
+
+        enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(false); 
+        isReload: KnockoutObservable<boolean> = ko.observable(false); 
 
         taskListFrame1: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame2: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
@@ -57,17 +61,7 @@ module nts.uk.at.view.kdw003.cg {
             self.systemReference = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(true);
             self.selectedItem = ko.observable(null);
-
-            self.startDateString.subscribe((value) => {
-                self.dateValue().startDate = value;
-                self.dateValue.valueHasMutated();        
-            });
-            
-            self.endDateString.subscribe((value) => {
-                self.dateValue().endDate = value;   
-                self.dateValue.valueHasMutated();      
-            });
-           
+            self.endDate('2021/12/31');
             self.selectedHist.subscribe(histId => {
                 self.findTaskItemDetail(histId);
             })
@@ -79,8 +73,7 @@ module nts.uk.at.view.kdw003.cg {
             ]);
 
             self.selectedEmployee.subscribe((employeeCode) => {
-                self.findDetail(employeeCode);
-                // self.loadData();
+                self.findDetail(employeeCode, false);
             })
 
             let ccg001ComponentOption: any = {
@@ -99,7 +92,7 @@ module nts.uk.at.view.kdw003.cg {
                 baseDate: moment().toISOString(), // 基準日
                 periodStartDate: moment.utc("1900/01/01", "YYYY/MM/DD").toISOString(), // 対象期間開始日
                 periodEndDate: moment.utc("9999/12/31", "YYYY/MM/DD").toISOString(), // 対象期間終了日
-                dateRangePickerValue: self.dateValue,
+                // dateRangePickerValue: self.dateValue,
                 inService: true, // 在職区分
                 leaveOfAbsence: true, // 休職区分
                 closed: true, // 休業区分
@@ -135,12 +128,12 @@ module nts.uk.at.view.kdw003.cg {
                         }
                     });
                     self.lstEmployee(_.orderBy(items, ['code'], ['asc']));
-                    let employeeLoginInList = _.find(self.lstEmployee(), (emp) =>{
-                        return __viewContext.user.employeeId == emp.id;
-                     });
+                    // let employeeLoginInList = _.find(self.lstEmployee(), (emp) =>{
+                    //     return __viewContext.user.employeeId == emp.id;
+                    //  });
                     //  self.selectedEmployee(_.isEmpty(employeeLoginInList) ? self.lstEmployee()[0].id : employeeLoginInList.id);
                     self.selectedEmployee(self.lstEmployee()[0].id);
-                     self.loadKcp009();
+                    self.loadKcp009();
                     //Fix bug 42, bug 43
                     let selectList = _.map(data.listEmployee, item => {
                         return item.employeeId;
@@ -217,10 +210,10 @@ module nts.uk.at.view.kdw003.cg {
             }).always(() => {
                 self.$blockui("hide");
             });            
-            $('#daterangepicker.ntsStartDate').focus();
+            // $('#startDate').focus();
         }
         
-        findDetail(employeeId: string): void {
+        findDetail(employeeId: string, reload: boolean): void {
             const self = this;
             let lstHist: Array<ListHistory> = [], listTaskItem: Array<TaskItemModel> = [],
                 task1: string, task2: string, task3: string, task4: string, task5: string;
@@ -241,14 +234,18 @@ module nts.uk.at.view.kdw003.cg {
                     self.listTaskItemInfo(listTaskItem); 
                     // let temp = _.orderBy(lstHist,['startDate'],['desc']);
                     self.listHistPeriod(_.orderBy(lstHist,['startDate'],['desc']));
-                    self.selectedHist(self.listHistPeriod()[0].id); 
-                    self.selectedHist.valueHasMutated();
-                    $('#daterangepicker.ntsStartDate').focus();
+                    if(!reload){
+                        self.selectedHist(self.listHistPeriod()[0].id);
+                        self.selectedHist.valueHasMutated(); 
+                        self.findTaskItemDetail(self.selectedHist());
+                    }  
+                    // self.selectedHist.valueHasMutated();                    
+                    $('#taskFrame1').focus();
 
                 } else {
                     self.listHistPeriod([]);
                     self.resetData();
-                    $('#taskFrame1').focus();
+                    // $('#taskFrame1').focus();
                 }
             }).always(() => {
                 self.$blockui("hide");
@@ -257,39 +254,51 @@ module nts.uk.at.view.kdw003.cg {
 
         findTaskItemDetail(id: string): void {     
             let self = this, taskItem: TaskItemModel;  
-            if(id == "")  return; 
+            if(id === "")  return; 
+
+            self.enableDeleteBtn(id == self.listHistPeriod()[0].id);
             taskItem = _.filter(self.listTaskItemInfo(), itemInfo => { return itemInfo.id == id; })[0];
-            self.startDateString(taskItem.startDate);
-            self.endDateString(taskItem.endDate);
+            self.startDate(taskItem.startDate);
+            self.endDate(taskItem.endDate);
+            self.startDatePeriod(taskItem.startDate);
+            // self.endDateString(taskItem.endDate);
             self.selectedTaskCode1(taskItem.task1);
             self.selectedTaskCode2(taskItem.task2);
             self.selectedTaskCode3(taskItem.task3);
             self.selectedTaskCode4(taskItem.task4);
             self.selectedTaskCode5(taskItem.task5);
-            $('#daterangepicker.ntsStartDate').focus();
+            $('#taskFrame1').focus();
         }
 
         resetData(): void {
             let self = this;
-            self.startDateString(moment(new Date()).format("YYYY/MM/DD"));
-            self.startDateString.valueHasMutated();
-            self.endDateString(self.ENDDATE_LATEST);
-            self.endDateString.valueHasMutated();
+            self.startDate(moment(new Date()).format("YYYY/MM/DD"));
+            self.startDatePeriod('');
+            self.endDate(self.ENDDATE_LATEST);
             self.selectedTaskCode1("");
             self.selectedTaskCode2("");
             self.selectedTaskCode3("");
             self.selectedTaskCode4("");
             self.selectedTaskCode5("");
             self.selectedHist("");
-            $('#taskFrame1').focus();
+            $('#startDate').focus();
         }
 
         registerOrUpdate(): void {
+            let self = this; 
+            if(self.selectedHist() == "") {
+                self.register();
+            } else {
+                self.update();
+            }            
+        }
+
+        register(): void {
             let self = this;            
             let command: any = {};
             command.employeeId = self.selectedEmployee();
-            command.startDate = moment(self.dateValue().startDate).format("YYYY/MM/DD");
-            command.endDate = moment(self.dateValue().endDate).format("YYYY/MM/DD");
+            command.startDate = moment(self.startDate()).format("YYYY/MM/DD");
+            command.endDate = moment(self.endDate()).format("YYYY/MM/DD");
             command.lstTask = [
                 self.selectedTaskCode1(), 
                 self.selectedTaskCode2(), 
@@ -298,50 +307,45 @@ module nts.uk.at.view.kdw003.cg {
                 self.selectedTaskCode5()
             ]
             self.$blockui("invisible");
-            if(self.selectedHist() == "") {
-                self.$ajax(Paths.REGISTER_TASK_INITIAL_SEL_SETTING, command).done(() => {
-                    self.findDetail(self.selectedEmployee());
-                }).fail((res) => {
-                    self.$dialog.info({ messageId: res.messageId});
-                }).always(() => {
-                    self.$blockui("hide");
-                });               
-            } else {
-                self.$blockui("invisible");
-                self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
-                    self.findDetail(self.selectedEmployee());
-                }).fail((res) => {
-                    self.$dialog.info({ messageId: res.messageId});
-                }).always(() => {
-                    self.$blockui("hide");
-                });
-            }       
+            
+            self.$ajax(Paths.REGISTER_TASK_INITIAL_SEL_SETTING, command).done(() => {
+                self.isReload(false);
+                self.findDetail(self.selectedEmployee(), self.isReload());
+            }).fail((res) => {
+                self.$dialog.info({ messageId: res.messageId});
+            }).always(() => {
+                self.$blockui("hide");
+            });               
+          
             self.$blockui("hide");
         }
 
-        // update(): void {
-        //     let self = this;            
-        //     let command: any = {};
-        //     command.employeeId = self.selectedEmployee();
-        //     command.startDate = moment(self.dateValue().startDate).format("YYYY/MM/DD");
-        //     command.endDate = moment(self.dateValue().endDate).format("YYYY/MM/DD");
-        //     command.lstTask = [
-        //         self.selectedTaskCode1(), 
-        //         self.selectedTaskCode2(), 
-        //         self.selectedTaskCode3(), 
-        //         self.selectedTaskCode4(), 
-        //         self.selectedTaskCode5()
-        //     ]
-        //     self.$blockui("invisible");
-        //     self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
-        //         self.findDetail(self.selectedEmployee());
-        //     }).fail((res) => {
-        //         self.$dialog.info({ messageId: res.messageId});
-        //     }).always(() => {
-        //         self.$blockui("hide");
-        //     });
-        //     self.$blockui("hide");
-        // }
+        update(): void {
+            let self = this;            
+            let command: any = {};
+            command.employeeId = self.selectedEmployee();
+            command.startDate = moment(self.startDate()).format("YYYY/MM/DD");
+            command.endDate = moment(self.endDate()).format("YYYY/MM/DD");
+            command.oldStartDate =  moment(self.startDatePeriod()).format("YYYY/MM/DD");
+            // command.oldEndDate = moment(self.endDate()).format("YYYY/MM/DD");
+            command.lstTask = [
+                self.selectedTaskCode1(), 
+                self.selectedTaskCode2(), 
+                self.selectedTaskCode3(), 
+                self.selectedTaskCode4(), 
+                self.selectedTaskCode5()
+            ]
+            self.$blockui("invisible");
+            self.$ajax(Paths.UPDATE_TASK_INITIAL_SEL_SETTING, command).done(() => {
+                self.isReload(true);
+                self.findDetail(self.selectedEmployee(), self.isReload());
+            }).fail((res) => {
+                self.$dialog.info({ messageId: res.messageId});
+            }).always(() => {
+                self.$blockui("hide");
+            });
+            self.$blockui("hide");
+        }
 
         public remove(): void {
             let self = this;
@@ -349,8 +353,8 @@ module nts.uk.at.view.kdw003.cg {
                 self.$blockui("invisible");
                 let command: any = {
                     employeeId: self.selectedEmployee(),
-                    startDate : moment(self.dateValue().startDate).format("YYYY/MM/DD"),
-                    endDate : moment(self.dateValue().endDate).format("YYYY/MM/DD"),
+                    startDate : moment(self.startDate()).format("YYYY/MM/DD"),
+                    endDate : moment(self.endDate()).format("YYYY/MM/DD"),
                     lstTask : [
                         self.selectedTaskCode1(), 
                         self.selectedTaskCode2(), 
@@ -362,22 +366,10 @@ module nts.uk.at.view.kdw003.cg {
                 
                 if(result === 'yes'){
                     self.$ajax(Paths.DELETE_TASK_INITIAL_SEL_SETTING, command).done(() =>{
-                        self.$dialog.info({messageId: "Msg_16"}).then(() =>{
-                            if(self.listHistPeriod().length == 1) {
-                                self.listHistPeriod([]);
-                                self.resetData();
-                            } else {
-                                let indexSelected: number;
-                                for(let index = 0; index < self.listHistPeriod().length; index++){
-                                    if(self.listHistPeriod()[index].id == self.selectedHist()) {
-                                        indexSelected = (index == self.listHistPeriod().length - 1)? index -1: index;
-                                        self.listHistPeriod.splice(index, 1);
-                                        break;
-                                    }
-                                }
-                                self.findDetail(self.selectedEmployee());                                
-                                self.selectedHist(self.listHistPeriod()[indexSelected].code);                                
-                            }                           
+                        self.$dialog.info({messageId: "Msg_16"}).then(() =>{                           
+                            // self.selectedHist(self.listHistPeriod()[0].id);
+                            self.isReload(false);
+                            self.findDetail(self.selectedEmployee(), self.isReload());    
                         });
                     }).fail((res) => {
                         self.$dialog.info({ messageId: res.messageId});
@@ -424,7 +416,8 @@ module nts.uk.at.view.kdw003.cg {
             self.$blockui("invisible");
             self.$ajax(Paths.COPY_TASK_INITIAL_SEL_SETTING, command).done(() => {
                 self.$dialog.info({messageId: 'Msg_926'}).then(() => {
-                    self.findDetail(command.empIdDes[0]);
+                    self.isReload(false);
+                    self.findDetail(command.empIdDes[0], self.isReload());
                 });
             }).fail((error) => {
                 self.$dialog.error(error);
