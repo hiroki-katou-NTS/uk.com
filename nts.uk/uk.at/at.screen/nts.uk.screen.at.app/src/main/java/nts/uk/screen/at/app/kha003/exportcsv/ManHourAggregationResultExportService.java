@@ -193,7 +193,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         if (unit == TotalUnit.DATE.value)
             lstValueDaily.forEach(d -> map.put(d.getDate(), d.getWorkingHours()));
         else
-            lstValueDaily.forEach(d -> map.put(d.getYearMonth(), d.getWorkingHours()));
+            lstValueDaily.forEach(d -> map.put(d.getYearMonth().substring(0, 4) + "/" + d.getYearMonth().substring(4), d.getWorkingHours()));
 
         return map;
     }
