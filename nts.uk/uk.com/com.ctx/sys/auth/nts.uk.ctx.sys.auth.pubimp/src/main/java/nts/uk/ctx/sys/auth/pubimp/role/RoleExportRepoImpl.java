@@ -64,9 +64,7 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	@Inject
 	private EmpReferenceRangeService empReferenceRangeService;
 	
-	@Inject
-	private EmpReferenceRangeService empReferenceRangeService;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
