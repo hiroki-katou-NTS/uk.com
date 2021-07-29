@@ -2353,9 +2353,9 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 														  vacation,
 														  IntervalTimeOfDaily.of(
 																  new AttendanceClock(entity.intervalAttendance), 
-																  new AttendanceTime(entity.intervalTime)));
-		totalTime.setVacationAddTime(new AttendanceTime(entity.vactnAddTime));
-		totalTime.setCalcDiffTime(new AttendanceTime(entity.calcDiffTime));
+																  new AttendanceTime(entity.intervalTime)),
+														  new AttendanceTime(entity.calcDiffTime),
+														  new AttendanceTime(entity.vactnAddTime));
 
 		/*日別実績の乖離時間*/
 		val divergence = createDivergence(entity);

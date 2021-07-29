@@ -11,7 +11,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
@@ -42,8 +41,6 @@ import nts.uk.shr.com.context.AppContexts;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.実働時間.日別勤怠の勤務時間
  * 
  * @author nampt 日別実績の勤務実績時間 (old)
- * 
- *
  */
 @Getter
 public class ActualWorkingTimeOfDaily {
@@ -130,7 +127,6 @@ public class ActualWorkingTimeOfDaily {
 	 * @param divergenceTimeList 
 	 * @param conditionItem 
 	 * @param predetermineTimeSetByPersonInfo 
-	 * @param leaveLateSet 
 	 * @param workScheduleTime 
 	 * @param recordWorkTimeCode 
 	 * @param declareResult 申告時間帯作成結果
@@ -146,7 +142,6 @@ public class ActualWorkingTimeOfDaily {
 			   List<DivergenceTimeRoot> divergenceTimeList, 
 			   WorkingConditionItem conditionItem,
 			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   DeductLeaveEarly leaveLateSet,
 			   WorkScheduleTimeOfDaily workScheduleTime,
 			   Optional<WorkTimeCode> recordWorkTimeCode,
 			   DeclareTimezoneResult declareResult) {
@@ -161,7 +156,6 @@ public class ActualWorkingTimeOfDaily {
 					eachCompanyTimeSet,
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
-					leaveLateSet,
 					recordWorkTimeCode,
 					declareResult);
 		
@@ -180,8 +174,7 @@ public class ActualWorkingTimeOfDaily {
 						bonusPayAutoCalcSet,
 						eachCompanyTimeSet,
 						conditionItem,
-						predetermineTimeSetByPersonInfo,
-						leaveLateSet);
+						predetermineTimeSetByPersonInfo);
 			}
 			else{
 				// 大塚残業

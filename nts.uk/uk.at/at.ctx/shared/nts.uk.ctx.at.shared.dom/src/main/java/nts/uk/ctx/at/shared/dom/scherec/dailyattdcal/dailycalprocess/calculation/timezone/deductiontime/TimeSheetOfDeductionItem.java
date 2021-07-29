@@ -655,21 +655,19 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	
 	/**
 	 * 外出の控除相殺時間をセットする
-	 * @param deductionAtr 控除区分
 	 * @param priorityOrder 時間休暇相殺優先順位
 	 * @param useTimes 時間休暇使用時間
 	 */
-	public void setOutOffsetTime(CompanyHolidayPriorityOrder priorityOrder, Map<GoingOutReason,TimevacationUseTimeOfDaily> useTimes) {
-		if(!this.getGoOutReason().isPresent() || !this.goOutReason.get().isPrivateOrUnion()) {
-			return;
-		}
-		if(!useTimes.containsKey(this.getGoOutReason().get())){
-			return;
-		}
-		this.deductionOffSetTime = Optional.of(this.offsetProcess(
-				priorityOrder,
-				useTimes.get(this.getGoOutReason().get()),
-				NotUseAtr.USE));
+	public void setDeductionOffsetTimeOfOuting(
+			CompanyHolidayPriorityOrder priorityOrder,
+			Map<GoingOutReason, TimevacationUseTimeOfDaily> useTimes){
+		
+		if (!this.deductionAtr.isGoOut()) return;
+		if (!this.goOutReason.isPresent()) return;
+		if (!this.goOutReason.get().isPrivateOrUnion()) return;
+		if (!useTimes.containsKey(this.goOutReason.get())) return;
+		TimevacationUseTimeOfDaily target = useTimes.get(this.getGoOutReason().get());
+		target = this.offsetProcess(priorityOrder, target, NotUseAtr.NOT_USE);
 	}
 	
 	private Optional<TimeRoundingSetting> getShortTimeRounding(DeductionAtr dedAtr, WorkTimezoneCommonSet commonSet,TimeRoundingSetting rounding) {

@@ -133,5 +133,15 @@ public class HolidayCalcMethodSet extends DomainObject implements Serializable{
 				this.premiumCalcMethodOfHoliday.of(this.workTimeCalcMethodOfHoliday),
 				this.workTimeCalcMethodOfHoliday);
 	}
+	
+	/**
+	 * 遅刻、早退の控除設定を「控除する」に変更して作成する
+	 * @return 遅刻、早退の控除設定を「控除する」に変更したインスタンス
+	 */
+	public HolidayCalcMethodSet createNewDeductLateEarly(){
+		return new HolidayCalcMethodSet(
+				this.premiumCalcMethodOfHoliday,
+				this.workTimeCalcMethodOfHoliday.changeDeduct());
+	}
 }
 
