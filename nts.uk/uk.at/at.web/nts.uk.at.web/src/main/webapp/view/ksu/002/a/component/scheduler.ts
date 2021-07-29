@@ -590,14 +590,20 @@ module nts.uk.ui.at.ksu002.a {
                     read: () => {
                         const { dayData, context } = data;
 
-						let ischangeableWorks = _.includes(context.$vm.startupProcessingInformation().scheFunctionControl.changeableWorks, dayData.data ? dayData.data.workTimeForm() : false);
-
-                        return context.$editable()
-                            && !!dayData.data.wtime.code()
-                            && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
-                            && dayData.data.classification() !== WORK_STYLE.HOLIDAY
-                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED
-							&& ischangeableWorks;
+						let ischangeableWorks = false;
+						if(context.$vm.startupProcessingInformation().scheFunctionControl,  dayData.data){
+							ischangeableWorks = _.includes(context.$vm.startupProcessingInformation().scheFunctionControl.changeableWorks, dayData.data.workTimeForm());
+						}
+						if(dayData.data){
+	                        return context.$editable()
+	                            && !!dayData.data.wtime.code()
+	                            && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
+	                            && dayData.data.classification() !== WORK_STYLE.HOLIDAY
+	                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED
+								&& ischangeableWorks;
+						}else{
+							return false;
+						}
                     },
                     owner: this
                 });
