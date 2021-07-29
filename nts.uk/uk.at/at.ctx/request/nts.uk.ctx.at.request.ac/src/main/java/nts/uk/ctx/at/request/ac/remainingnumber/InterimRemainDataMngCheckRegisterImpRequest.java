@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.ac.remainingnumber;
 import java.util.Map;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.InterimRemainDataMngCheckRegisterPub;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInpu
 @Stateless
 public class InterimRemainDataMngCheckRegisterImpRequest implements InterimRemainDataMngCheckRegisterRequest {
     
+    @Inject
     private InterimRemainDataMngCheckRegisterPub interimRemainDataMngCheckRegisterPub;
 
     @Override
