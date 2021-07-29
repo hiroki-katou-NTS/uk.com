@@ -206,4 +206,12 @@ public class HourlyPaymentAdditionSet extends AggregateRoot implements Serializa
 	public HourlyPaymentAdditionSet getWorkTimeDeductFlexTime() {
 		return new HourlyPaymentAdditionSet(this.companyId, this.vacationCalcMethodSet.getWorkTimeDeductFlexTime());
 	}
+
+	/**
+	 * 遅刻、早退の控除設定を「控除する」に変更して作成する
+	 * @return 遅刻、早退の控除設定を「控除する」に変更したインスタンス
+	 */
+	public HourlyPaymentAdditionSet createNewDeductLateEarly() {
+		return new HourlyPaymentAdditionSet(this.companyId, this.vacationCalcMethodSet.createNewDeductLateEarly());
+	}
 }

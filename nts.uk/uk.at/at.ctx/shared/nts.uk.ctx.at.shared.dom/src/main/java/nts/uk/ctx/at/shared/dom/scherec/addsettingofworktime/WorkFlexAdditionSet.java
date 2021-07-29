@@ -227,4 +227,12 @@ public class WorkFlexAdditionSet extends AggregateRoot implements Serializable, 
 	public WorkFlexAdditionSet getWorkTimeDeductFlexTime() {
 		return new WorkFlexAdditionSet(this.companyId, this.vacationCalcMethodSet.getWorkTimeDeductFlexTime());
 	}
+
+	/**
+	 * 遅刻、早退の控除設定を「控除する」に変更して作成する
+	 * @return 遅刻、早退の控除設定を「控除する」に変更したインスタンス
+	 */
+	public WorkFlexAdditionSet createNewDeductLateEarly() {
+		return new WorkFlexAdditionSet(this.companyId, this.vacationCalcMethodSet.createNewDeductLateEarly());
+	}
 }

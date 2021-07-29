@@ -66,26 +66,23 @@ public class WithinStatutoryMidNightTime {
 			WithinWorkTimeSheet withinWorkTimeSheet = oneDay.getWithinWorkingTimeSheet().get();
 			if (isFlex){
 				calcTime = ((FlexWithinWorkTimeSheet)withinWorkTimeSheet).calcWithinMidnightTime(
-						recordReGet.getHolidayCalcMethodSet(),
+						recordReGet.getIntegrationOfDaily(),
+						recordReGet.getIntegrationOfWorkTime(),
 						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
 						workType,
-						flexCalcMethod.map(x-> x).orElse(null),
+						flexCalcMethod.get(),
 						recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 						vacationClass,
-						withinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
 						StatutoryDivision.Nomal,
-						workTimeCode,
 						recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 						recordReGet.getAddSetting(),
-						recordReGet.getHolidayAddtionSet().map(x-> x).orElse(null),
+						recordReGet.getHolidayAddtionSet().get(),
 						recordReGet.getDailyUnit(),
 						recordReGet.getWorkTimezoneCommonSet(),
 						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
 						conditionItem,
 						predetermineTimeSetByPersonInfo,
-						recordReGet.getCoreTimeSetting(),
-						NotUseAtr.NOT_USE,
-						Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
+						NotUseAtr.NOT_USE);
 			}
 			else{
 				calcTime = withinWorkTimeSheet.calcMidNightTime();

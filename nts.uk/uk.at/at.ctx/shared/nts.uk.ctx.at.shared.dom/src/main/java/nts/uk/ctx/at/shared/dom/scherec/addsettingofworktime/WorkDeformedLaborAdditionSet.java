@@ -225,4 +225,12 @@ public class WorkDeformedLaborAdditionSet extends AggregateRoot implements Seria
 	public WorkDeformedLaborAdditionSet getWorkTimeDeductFlexTime() {
 		return new WorkDeformedLaborAdditionSet(this.companyId, this.vacationCalcMethodSet.getWorkTimeDeductFlexTime());
 	}
+
+	/**
+	 * 遅刻、早退の控除設定を「控除する」に変更して作成する
+	 * @return 遅刻、早退の控除設定を「控除する」に変更したインスタンス
+	 */
+	public WorkDeformedLaborAdditionSet createNewDeductLateEarly() {
+		return new WorkDeformedLaborAdditionSet(this.companyId, this.vacationCalcMethodSet.createNewDeductLateEarly());
+	}
 }

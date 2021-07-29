@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehou
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
@@ -87,7 +86,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * 各時間の計算を指示するクラス
 	 * アルゴリズム：日別実績の所定外時間
 	 * @param recordReget 実績
-	 * @param calcMethod フレックス勤務の非勤務日の場合の計算方法
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
@@ -103,7 +101,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	public static ExcessOfStatutoryTimeOfDaily calculationExcessTime(
 			ManageReGetClass recordReget,
-			CalcMethodOfNoWorkingDayForCalc calcMethod,
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
@@ -132,7 +129,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 		//残業時間
 		val overTime = calculationOverTime(
 				recordReget,
-				calcMethod,
 				workType,
 				flexCalcMethod,
 				vacationClass,
@@ -161,7 +157,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	/**
 	 * 残業時間の計算
 	 * @param oneDay 実績
-	 * @param calcMethod フレックス勤務の非勤務日の場合の計算方法
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
@@ -179,7 +174,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 */
 	private static OverTimeOfDaily calculationOverTime(
 			ManageReGetClass oneDay,
-			CalcMethodOfNoWorkingDayForCalc calcMethod,
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
@@ -195,7 +189,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 			if(oneDay.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getOverTimeWorkSheet().isPresent()) {
 				return OverTimeOfDaily.calculationTime(
 						oneDay,
-						calcMethod,
 						workType,
 						flexCalcMethod,
 						vacationClass,

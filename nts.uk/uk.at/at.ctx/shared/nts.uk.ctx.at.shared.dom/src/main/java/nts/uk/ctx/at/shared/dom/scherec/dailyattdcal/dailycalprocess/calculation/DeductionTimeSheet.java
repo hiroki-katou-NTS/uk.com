@@ -25,8 +25,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
@@ -36,7 +34,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
@@ -46,6 +43,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.childcareset.ShortTimeWorkGetRan
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -571,55 +569,58 @@ public class DeductionTimeSheet {
 		}
 		return sheetList;
 	}
-
-	/**
-	 * 休憩時間帯の合計時間を算出する
-	 * @param deductionTimeSheetList
-	 * @return
-	 */
-	public AttendanceTime calcDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionItemTimeSheetList,DeductionAtr atr) {
-		AttendanceTime totalTime = new AttendanceTime(0);
-		for (TimeSheetOfDeductionItem deductionItemTimeSheet : deductionItemTimeSheetList) {
-			totalTime.addMinutes(deductionItemTimeSheet.calcTotalTime().valueAsMinutes());
-		}
-		return totalTime;
-	}
 	
 	/**
 	 * 算出された外出時間の合計を取得する
-	 * @param dedAtr
-	 * @return
+	 * @param dedAtr 控除区分
+	 * @return 控除合計時間List
 	 */
 	public List<DeductionTotalTime> getTotalGoOutTime(DeductionAtr dedAtr) {
 		List<DeductionTotalTime> dedTotalTimeList = new ArrayList<>();
 		switch (dedAtr) {
 		case Appropriate:
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-																		   .filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList()),dedAtr));
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList()),dedAtr));
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList()),dedAtr));
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList()),dedAtr));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forDeductionTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isPrivate())
+						.collect(Collectors.toList()), true));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forDeductionTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isCompensation())
+						.collect(Collectors.toList()), true));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forDeductionTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isPublic())
+						.collect(Collectors.toList()), true));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forDeductionTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isUnion())
+						.collect(Collectors.toList()), true));
 			break;
 		case Deduction:
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPrivate()).collect(Collectors.toList()),dedAtr));
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isCompensation()).collect(Collectors.toList()),dedAtr));
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isPublic()).collect(Collectors.toList()),dedAtr));
-			dedTotalTimeList.add(
-					getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isGoOut())
-							.filter(tc -> tc.getGoOutReason().get().isUnion()).collect(Collectors.toList()),dedAtr));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forRecordTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isPrivate())
+						.collect(Collectors.toList()), true));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forRecordTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isCompensation())
+						.collect(Collectors.toList()), true));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forRecordTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isPublic())
+						.collect(Collectors.toList()), true));
+			dedTotalTimeList.add(getDeductionTotalTime(
+					this.forRecordTimeZoneList.stream()
+						.filter(tc -> tc.getDeductionAtr().isGoOut())
+						.filter(tc -> tc.getGoOutReason().get().isUnion())
+						.collect(Collectors.toList()), true));
 			break;
 		default:
 			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
@@ -629,21 +630,28 @@ public class DeductionTimeSheet {
 
 	/**
 	 * 法定内・外、相殺時間から合計時間算出
-	 * @param deductionTimeSheetList
-	 * @return
+	 * @param deductionItemList 控除項目の時間帯(List)
+	 * @param deductOffset 相殺時間控除区分
+	 * @return 控除合計時間
 	 */
-	public DeductionTotalTime getDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionTimeSheetList,DeductionAtr atr) {
-		AttendanceTime statutoryTotalTime = calcDeductionTotalTime(deductionTimeSheetList.stream()
-				// .filter(tc -> tc) 一時的に
-				.collect(Collectors.toList()),atr);
-		AttendanceTime excessOfStatutoryTotalTime = calcDeductionTotalTime(deductionTimeSheetList.stream()
-				// .filter(tc -> tc.getWithinStatutoryAtr().isExcessOfStatutory()) 一時的に
-				.collect(Collectors.toList()),atr);
+	public DeductionTotalTime getDeductionTotalTime(
+			List<TimeSheetOfDeductionItem> deductionItemList,
+			boolean deductOffset) {
+
+		int statMinutes = 0;		// 法定内
+		int exStatMinutes = 0;		// 法定外
+		for (TimeSheetOfDeductionItem item : deductionItemList){
+			AttendanceTime time = item.calcTotalTime(deductOffset ? NotUseAtr.USE : NotUseAtr.NOT_USE, NotUseAtr.USE);
+			// 2021.7.14 shuichi_ishida
+			// 本来は、法内・外の振り分けが必要？　従来から振り分けが機能していなかったため、暫定的に法内に全て加算。
+			// 元々は、控除項目の時間帯（または継承元）に、属性「法内外区分」があり、その区分で判断していた模様。
+			statMinutes += time.valueAsMinutes();
+		}
+
 		return DeductionTotalTime.of(
-				TimeWithCalculation
-						.sameTime(statutoryTotalTime.addMinutes(excessOfStatutoryTotalTime.valueAsMinutes())),
-				TimeWithCalculation.sameTime(statutoryTotalTime),
-				TimeWithCalculation.sameTime(excessOfStatutoryTotalTime));
+				TimeWithCalculation.sameTime(new AttendanceTime(statMinutes + exStatMinutes)),
+				TimeWithCalculation.sameTime(new AttendanceTime(statMinutes)),
+				TimeWithCalculation.sameTime(new AttendanceTime(exStatMinutes)));
 	}
 
 	/**
@@ -858,29 +866,6 @@ public class DeductionTimeSheet {
 										: timeLeave1.flatMap(c -> c.getLeaveStamp());
 		
 		return new TimeLeavingWork(new WorkNo(1), attendance.orElse(null), leave.orElse(null));
-	}
-
-	/**
-	 * 控除時間中の時間休暇相殺時間の計算
-	 * @return
-	 */
-	public DeductionOffSetTime calcTotalDeductionOffSetTime(LateTimeOfDaily lateTimeOfDaily,
-			LateTimeSheet lateTimeSheet, LeaveEarlyTimeOfDaily leaveEarlyTimeOfDaily,
-			LeaveEarlyTimeSheet leaveEarlyTimeSheet) {
-
-		// 遅刻相殺時間の計算
-		// DeductionOffSetTime lateDeductionSffSetTime =
-		// lateTimeSheet.calcDeductionOffSetTime(lateTimeOfDaily.getTimePaidUseTime(),DeductionAtr.Appropriate);
-		DeductionOffSetTime lateDeductionSffSetTime = new DeductionOffSetTime(new AttendanceTime(0),
-				new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
-		// 早退相殺時間の計算
-
-		// 外出相殺時間の計算
-
-		// 3つの相殺時間を合算する
-		DeductionOffSetTime timeVacationOffSetTime = lateDeductionSffSetTime/* + 早退相殺時間 + 外出相殺時間 */;// 合算するメソッドは別途考慮
-
-		return timeVacationOffSetTime;
 	}
 
 	/**
