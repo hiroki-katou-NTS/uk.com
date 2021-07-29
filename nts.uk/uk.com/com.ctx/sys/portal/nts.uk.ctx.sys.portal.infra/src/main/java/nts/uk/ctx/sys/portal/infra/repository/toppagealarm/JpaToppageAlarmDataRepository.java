@@ -141,7 +141,8 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 	
 		if (oldEntity.isPresent()) {
 			
-			List<SptdtTopAlarmSubSya> listSubSids = SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids());
+			List<SptdtTopAlarmSubSya> listSubSids = SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids(),
+					domain.getPatternCode().map(AlarmListPatternCode::v).orElse(""));
 
 			//delete subSids
 			List<SptdtTopAlarmSubSyaPK> listPk = listSubSids.stream().map(sub -> sub.getPk()).collect(Collectors.toList());
