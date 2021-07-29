@@ -58,7 +58,9 @@ public class TaskInitialSelHist extends AggregateRoot
 			//$変更する履歴 = @履歴リスト：filter $.期間.開始日 == 変更する履歴開始日	
 			List<TaskInitialSel> changeHistory = this.lstHistory.stream().filter(c ->c.getDatePeriod().start().equals(date)).collect(Collectors.toList());
 			//期間を変更する($変更する履歴,変更後の期間)
+			if(!changeHistory.isEmpty()){
 			this.changeSpan(changeHistory.get(0), datePeriod);
+			}
 		}
 		//$対象履歴項目 = @履歴リスト：filter $.期間.開始日 == 変更後の期間.開始日
 		List<TaskInitialSel> history = this.lstHistory.stream().filter(c ->c.getDatePeriod().start().equals(datePeriod.start())).collect(Collectors.toList());
