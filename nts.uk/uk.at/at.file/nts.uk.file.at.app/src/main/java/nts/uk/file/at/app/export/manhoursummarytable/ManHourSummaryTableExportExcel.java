@@ -39,7 +39,7 @@ public class ManHourSummaryTableExportExcel extends ExportService<ManHourSummary
                 query.getSummaryTableFormat(),
                 query.getOutputContent(),
                 query.getPeriod(),
-                Collections.emptyList(), //flatDataList,
+                Collections.emptyList(),
                 countTotalLevel
         );
         this.manHourSummaryTableGenerator.generate(generatorContext, data);

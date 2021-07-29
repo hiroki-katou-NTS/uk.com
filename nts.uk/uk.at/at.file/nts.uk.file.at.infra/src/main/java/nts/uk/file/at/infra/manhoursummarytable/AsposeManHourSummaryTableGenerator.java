@@ -18,14 +18,10 @@ import nts.uk.screen.at.app.kha003.exportcsv.ManHourSummaryTableOutputContentDto
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
-import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -164,6 +160,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         if (columnHandle > 0) {
             cells.deleteColumns(headerList.size(), columnHandle, true);
         }
+        worksheet.freezePanes(2, 4, 2, cells.getMaxColumn());
     }
 
     private void printData1Level(Cells cellsTemplate, Cells cells, ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int maxDateRange, List<String> headerList, DisplayFormat dispFormat, int unit) throws Exception {
@@ -379,6 +376,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         if (isDispTotal) { // Tong chieu doc cua level 1
             cells.copyRows(cellsTemplate, 37, countRow, 1);
             printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 3);
+            cells.merge(countRow, 0, 1, 4, true,true);
         }
     }
 
@@ -449,39 +447,6 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
 
         return lstHeader;
     }
-
-//    /**
-//     * Format value by display format
-//     *
-//     * @param value
-//     * @param displayFormat
-//     * @return String
-//     */
-//    private String formatValue(Double value, DisplayFormat displayFormat) {
-//        if (value == 0) return Strings.EMPTY;
-//
-//        String targetValue = null;
-//        switch (displayFormat) {
-//            case DECIMAL:
-//                BigDecimal decimaValue = new BigDecimal(value);
-//                decimaValue = decimaValue.divide(BigDecimal.valueOf(60), 2, RoundingMode.HALF_UP);
-//                targetValue = String.valueOf(decimaValue.doubleValue());
-//                break;
-//            case HEXA_DECIMAL:
-//                BigDecimal decimalValue = new BigDecimal(value);
-//                BigDecimal intValue = decimalValue.divideToIntegralValue(BigDecimal.valueOf(60));
-//                BigDecimal remainValue = decimalValue.subtract(intValue.multiply(BigDecimal.valueOf(60)));
-//                StringBuilder sb = new StringBuilder();
-//                targetValue = sb.append(intValue).append(":").append(remainValue).toString();
-//                break;
-//            case MINUTE:
-//                DecimalFormat df = new DecimalFormat("#,###");
-//                targetValue = df.format(value);
-//                break;
-//        }
-//
-//        return targetValue;
-//    }
 
     private void setVerticalAlignment(Cell cell) {
         Style style = cell.getStyle();
