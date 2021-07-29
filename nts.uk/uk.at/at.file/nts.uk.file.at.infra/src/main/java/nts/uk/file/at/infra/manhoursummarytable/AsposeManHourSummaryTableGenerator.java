@@ -235,6 +235,7 @@ public class AsposeManHourSummaryTableGenerator extends AsposeCellsReportGenerat
         if (isDispTotal) { // Tong chieu doc cua level 1
             cells.copyRows(cellsTemplate, 37, countRow, 1);
             printAllTotalByVertical(cells, outputContent, maxDateRange, headerList, dispFormat, unit, countRow, 1);
+            cells.merge(countRow, 0, 1, 2, true,true);
             setBorderStyleForTotal(cells.get(countRow, 2));
         }
     }
