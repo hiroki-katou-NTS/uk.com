@@ -468,7 +468,7 @@ module nts.uk.at.kha003.a {
                     vm.$window.storage('kha003BShareData').done((data: any) => {
                         if (!data.isCancel) {
                             var rows: any = [];
-                            rows.push(['職場別作業集計表']);
+                            rows.push(['全て出力']);
                             rows.push([data.datePriod]);
                             var masterNameInfo = data.masterNameInfo;
                             rows.push(
