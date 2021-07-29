@@ -122,9 +122,9 @@ module nts.uk.at.kha003.c {
                             || data.c41.type != oldData.c41.type
                             || data.c51.type != oldData.c51.type)) {
                         vm.$dialog.error({messageId: "Msg_2168"});
-                        vm.$window.storage('kha003CShareData', {});
+                        vm.$window.storage('kha003CShareData_' + data.code, {});
                     } else {
-                        vm.$window.storage('kha003CShareData').done(savedDataC => {
+                        vm.$window.storage('kha003CShareData_' + data.code).done(savedDataC => {
                             const dataC = savedDataC || {};
                             if (dataC.code == data.code) {
                                 vm.c24CurrentCodeList(dataC.c24CurrentCodeList || []);
@@ -234,6 +234,7 @@ module nts.uk.at.kha003.c {
                         c54CurrentCodeList: vm.c54CurrentCodeList(),
                         dateRange: vm.dateRange()
                     };
+					vm.$window.storage('kha003CShareData_' + vm.code, shareData);
                     vm.$window.storage('kha003CShareData', shareData).then(() => {
                         vm.$jump('/view/kha/003/d/index.xhtml');
                         nts.uk.ui.windows.close();
