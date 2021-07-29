@@ -19,8 +19,12 @@
 	width: 180px;
 }
 
-#noticed-label, #boldAtr {
+#noticed-label {
 	margin-left: 187px;
+}
+
+#boldAtr {
+	margin-left: 10px;
 }
 
 #noticed-label {

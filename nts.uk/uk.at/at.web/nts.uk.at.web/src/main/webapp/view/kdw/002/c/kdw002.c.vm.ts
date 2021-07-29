@@ -663,6 +663,7 @@ module nts.uk.at.view.kdw002.c {
         class DisplayAndInputControl {
             itemDailyID: number;
             itemDailyName: string;
+            displayName: string;
             displayNumber: number;
             userCanUpdateAtr: number;
             toUse: boolean;
@@ -673,7 +674,11 @@ module nts.uk.at.view.kdw002.c {
             static fromApp(app) {
                 let dto = new DisplayAndInputControl();
                 dto.itemDailyID = app.attendanceItemId;
-                dto.itemDailyName = app.attendanceItemName;
+                if (!_.isNil(app.displayName)) {
+                    dto.itemDailyName = app.displayName;
+                } else {
+                    dto.itemDailyName = app.attendanceItemName;
+                }
                 dto.displayNumber = app.attendanceItemDisplayNumber;
                 dto.userCanUpdateAtr = app.userCanUpdateAtr;
                 if (app.authority != null) {

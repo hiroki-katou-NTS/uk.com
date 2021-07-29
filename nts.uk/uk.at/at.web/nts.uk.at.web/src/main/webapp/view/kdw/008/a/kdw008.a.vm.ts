@@ -208,6 +208,9 @@ module nts.uk.at.view.kdw008.a {
                         self.getMonthlyDetail(newValue).done(() => {
                             self.initSelectedSheetNoHasMutated();
                         });
+                        service.getAllByCIDAndCode(self.selectedCode()).done((res) => {
+                            self.listDailyFormSheetCommand = res.listDailyFormSheetCommand;
+                        });
                     } else {
                         self.getMonPfmCorrectionFormat(self.currentDailyFormatCode());
                         self.initSelectedSheetNoHasMutated();
@@ -270,7 +273,7 @@ module nts.uk.at.view.kdw008.a {
                                     self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
                                     service.getAllByCIDAndCode(self.selectedCode()).done((res) => {
                                         self.listDailyFormSheetCommand = res.listDailyFormSheetCommand;
-                                    })
+                                    });
                                 } else {
                                     self.formatCodeItems([]);
                                     self.setNewMode();

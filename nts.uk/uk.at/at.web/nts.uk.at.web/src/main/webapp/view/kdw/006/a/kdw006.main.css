@@ -15,7 +15,7 @@
 
 .panel-frame {
 	width: 308px;
-	text-align: center;
+	/* text-align: center; */
 }
 
 .panel-custom-font-size {
@@ -41,7 +41,7 @@
 }
 
 .btn-icon {
-	text-align: center;
+	/* text-align: center; */
 }
 
 .btn-unit-setting {
