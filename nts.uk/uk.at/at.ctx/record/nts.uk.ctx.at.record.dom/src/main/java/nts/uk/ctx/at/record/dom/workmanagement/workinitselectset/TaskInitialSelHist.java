@@ -28,35 +28,6 @@ public class TaskInitialSelHist extends AggregateRoot
 	/** 作業初期選択項目 ---履歴リスト **/
 	private List<TaskInitialSel> lstHistory;
 
-	/** 
-	 * [prv-1] 作業項目を変更する
-	 * 	説明:指定期間の作業初期選択項目の作業項目を変更する	
-	 * **/
-	
-
-	
-	/**
-	 * [6] 履歴を追加する 説明:新しい作業初期選択項目を追加する
-	 **/
-	public void addHistory(TaskInitialSel taskInitialSel) {
-
-		// $最新の履歴 = 最新履歴の履歴項目()
-		Optional<TaskInitialSel> latestHist = this.latestStartItem();
-		// 追加する(追加する履歴項目)
-		this.add(taskInitialSel);
-
-		if (latestHist.isPresent()) {
-			// @履歴リスト：except $最新の履歴
-			this.lstHistory.remove(latestHist.get());
-			
-			// $最新の履歴.適用による終了の調整(追加する履歴項目)
-			latestHist.get().shortenEndToAccept(taskInitialSel);
-			
-			//	@履歴リスト.追加($最新の履歴)		
-			this.lstHistory.add(latestHist.get());
-
-		}
-	}
 	
 	/**
 	 * [7] 履歴を削除する
@@ -102,8 +73,4 @@ public class TaskInitialSelHist extends AggregateRoot
 		// TODO Auto-generated method stub
 		return lstHistory;
 	}
-
-	
-
-
 }
