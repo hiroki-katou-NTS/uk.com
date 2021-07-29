@@ -76,7 +76,7 @@ module nts.uk.ui.at.ksu002.a {
 					value: $component.workTypeData.selected,
 					options: $component.workTypeData.dataSources,
 					optionsValue: 'workTypeCode',
-					enable: ko.unwrap($component.data.mode) === 'copy' && !!$component.data.workplaceId(),
+					enable: ko.unwrap($component.data.mode) === 'copy' && $component.data.workplaceId() != null,
 					editable: false,
 					selectFirstIfNull: true,
 					visibleItemsCount: 10,

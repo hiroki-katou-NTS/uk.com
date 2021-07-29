@@ -163,7 +163,7 @@ module nts.uk.ui.at.ksu002.a {
 					tabIndex: "1",
 					dateRange: ko.observable({ begin, finish }),
 					achievement: ko.observable(1),
-					workplaceId: ko.observable(''),
+					workplaceId: ko.observable(null),
 					hasChange: ko.computed(() => false),
 					rootVm: null
 				};
@@ -180,7 +180,7 @@ module nts.uk.ui.at.ksu002.a {
 			}
 
 			if (workplaceId === undefined) {
-				vm.params.workplaceId = ko.observable('');
+				vm.params.workplaceId = ko.observable(null);
 			}
 
 			if (hasChange === undefined) {
@@ -242,7 +242,7 @@ module nts.uk.ui.at.ksu002.a {
 								vm.$dialog
 									.error({ messageId: 'Msg_2021' });
 
-								vm.params.workplaceId('');
+								vm.params.workplaceId(null);
 								vm.params.dateRange({ finish: null, begin: null });
 							}
 						});
@@ -376,7 +376,7 @@ module nts.uk.ui.at.ksu002.a {
 		tabIndex: string;
 		dateRange: KnockoutObservable<c.DateRange | null>;
 		achievement: KnockoutObservable<ACHIEVEMENT>;
-		workplaceId: KnockoutObservable<string>;
+		workplaceId: KnockoutObservable<string | null>;
 		hasChange: KnockoutComputed<boolean>;
 		rootVm: any;
 	}

@@ -30,12 +30,16 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="ksu-002a cf">
-					<com:ko-if bind="visibleA1_1">
-					<button tabindex="1" class="proceed" data-bind="i18n: 'KSU002_1', click: $vm.saveData, mutable: $vm.enable"></button>
-					</com:ko-if>
-					<com:ko-if bind="visibleA1_2">
-					<button tabindex="2" class="" data-bind="i18n: 'KSU002_2', enable: $vm.enable"></button>
-					</com:ko-if>
+					<div style="display: inline-block; width: 80px">
+						<com:ko-if bind="visibleA1_1">
+						<button tabindex="1" class="proceed" data-bind="i18n: 'KSU002_1', click: $vm.saveData, mutable: $vm.enable"></button>
+						</com:ko-if>
+					</div>
+					<div style="display: inline-block; width: 115px">
+						<com:ko-if bind="visibleA1_2">
+						<button tabindex="2" class="" data-bind="i18n: 'KSU002_2', enable: $vm.enable"></button>
+						</com:ko-if>
+					</div>
 					<com:ko-if bind="visibleA1_3">
 					<div id="A1_10" style="display: inline-block;"
 						data-bind="component: {

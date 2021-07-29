@@ -154,7 +154,7 @@ module nts.uk.ui.at.ksu002.a {
 		baseDateKCP015: KnockoutObservable<Date> = ko.observable(null);
 		schedules: m.MementoObservableArray<DayDataRawObsv> = ko.observableArray([]).extend({ memento }) as any;
 
-		workplaceId: KnockoutObservable<string> = ko.observable('');
+		workplaceId: KnockoutObservable<string> = ko.observable(null);
 		achievement: KnockoutObservable<ACHIEVEMENT> = ko.observable(ACHIEVEMENT.NO);
 		workData: KnockoutObservable<null | WorkData> = ko.observable(null);
 		kdl053Open: any = null;
