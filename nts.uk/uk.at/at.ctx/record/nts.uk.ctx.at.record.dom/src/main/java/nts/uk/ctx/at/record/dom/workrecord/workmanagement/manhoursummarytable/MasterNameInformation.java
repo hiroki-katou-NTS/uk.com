@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -111,14 +112,14 @@ public class MasterNameInformation {
      * @return List<作業詳細データ>
      */
     public List<WorkDetailData> filterWorkDetailData(List<WorkDetailData> workDetailList) {
-        val affWkplIds = affWorkplaceInfoList.stream().map(WorkplaceInfor::getWorkplaceId).collect(Collectors.toList());
-        val wkplIds = workPlaceInfoList.stream().map(WorkplaceInfor::getWorkplaceId).collect(Collectors.toList());
-        val empIds = employeeInfoList.stream().map(EmployeeInfoImport::getSid).collect(Collectors.toList());
-        val task1Codes = task1List.stream().map(TaskImport::getCode).collect(Collectors.toList());
-        val task2Codes = task2List.stream().map(TaskImport::getCode).collect(Collectors.toList());
-        val task3Codes = task3List.stream().map(TaskImport::getCode).collect(Collectors.toList());
-        val task4Codes = task4List.stream().map(TaskImport::getCode).collect(Collectors.toList());
-        val task5Codes = task5List.stream().map(TaskImport::getCode).collect(Collectors.toList());
+        val affWkplIds = affWorkplaceInfoList.stream().filter(Objects::nonNull).map(WorkplaceInfor::getWorkplaceId).collect(Collectors.toList());
+        val wkplIds = workPlaceInfoList.stream().filter(Objects::nonNull).map(WorkplaceInfor::getWorkplaceId).collect(Collectors.toList());
+        val empIds = employeeInfoList.stream().filter(Objects::nonNull).map(EmployeeInfoImport::getSid).collect(Collectors.toList());
+        val task1Codes = task1List.stream().filter(Objects::nonNull).map(TaskImport::getCode).collect(Collectors.toList());
+        val task2Codes = task2List.stream().filter(Objects::nonNull).map(TaskImport::getCode).collect(Collectors.toList());
+        val task3Codes = task3List.stream().filter(Objects::nonNull).map(TaskImport::getCode).collect(Collectors.toList());
+        val task4Codes = task4List.stream().filter(Objects::nonNull).map(TaskImport::getCode).collect(Collectors.toList());
+        val task5Codes = task5List.stream().filter(Objects::nonNull).map(TaskImport::getCode).collect(Collectors.toList());
         if (workDetailList.isEmpty()) {
             return Collections.emptyList();
         }
