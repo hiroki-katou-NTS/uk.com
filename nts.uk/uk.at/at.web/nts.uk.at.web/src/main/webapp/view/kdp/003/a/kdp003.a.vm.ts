@@ -1135,7 +1135,8 @@ module nts.uk.at.kdp003.a {
 																					overtimeDeclaration: {
 																						overTime: 0,
 																						overLateNightTime: 0
-																					}
+																					},
+																					workGroup
 																				}
 																			}).then(() => {
 																				const { stampResultDisplay } = fingerStampSetting;
