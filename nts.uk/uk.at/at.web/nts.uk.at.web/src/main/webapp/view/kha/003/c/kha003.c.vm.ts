@@ -33,7 +33,8 @@ module nts.uk.at.kha003.c {
         c41isVisible: KnockoutObservable<boolean>;
         c51isVisible: KnockoutObservable<boolean>;
         dateRange: KnockoutObservable<any>;
-        gridRows: KnockoutObservable<any>;
+        // gridRows: KnockoutObservable<any>;
+        code: string;
 
         constructor() {
             super();
@@ -72,7 +73,7 @@ module nts.uk.at.kha003.c {
             vm.c41isVisible = ko.observable(false);
             vm.c51isVisible = ko.observable(false);
             vm.dateRange = ko.observable();
-            vm.gridRows = ko.observable(8);
+            // vm.gridRows = ko.observable(12);
         }
 
         created() {
@@ -94,6 +95,7 @@ module nts.uk.at.kha003.c {
                 vm.$errors("clear");
             });
             vm.$window.storage('kha003AShareData').done((data: any) => {
+                vm.code = data.code;
                 if (!(data.c21.type === undefined || data.c21.type === null)) {
                     vm.c21isVisible(true)
                 }
@@ -114,28 +116,25 @@ module nts.uk.at.kha003.c {
                 vm.c41Text(vm.$i18n('KHA003_61', [vm.c41Params().name]));
                 vm.c51Params(data.c51);
                 vm.c51Text(vm.$i18n('KHA003_61', [vm.c51Params().name]));
-                vm.$window.storage('kha003AShareData_OLD').done((oldData: any) => {
-                    if ((oldData && !oldData.isNewCode) && (data.c21.type != oldData.c21.type
+                vm.$window.storage('kha003AShareData_' + data.code).done((oldData: any) => {
+                    if ((oldData && oldData.code == data.code) && (data.c21.type != oldData.c21.type
                             || data.c31.type != oldData.c31.type
                             || data.c41.type != oldData.c41.type
                             || data.c51.type != oldData.c51.type)) {
                         vm.$dialog.error({messageId: "Msg_2168"});
                         vm.$window.storage('kha003CShareData', {});
                     } else {
-                        vm.$window.storage('kha003CShareData').done(data => {
-                            data = data || {};
-                            if (oldData.isNewCode) {
-                                data = {};
+                        vm.$window.storage('kha003CShareData').done(savedDataC => {
+                            const dataC = savedDataC || {};
+                            if (dataC.code == data.code) {
+                                vm.c24CurrentCodeList(dataC.c24CurrentCodeList || []);
+                                vm.c34CurrentCodeList(dataC.c34CurrentCodeList || []);
+                                vm.c44CurrentCodeList(dataC.c44CurrentCodeList || []);
+                                vm.c54CurrentCodeList(dataC.c54CurrentCodeList || []);
                             }
-                            data.isNewCode = false;
-                            vm.c24CurrentCodeList(data.c24CurrentCodeList || []);
-                            vm.c34CurrentCodeList(data.c34CurrentCodeList || []);
-                            vm.c44CurrentCodeList(data.c44CurrentCodeList || []);
-                            vm.c54CurrentCodeList(data.c54CurrentCodeList || []);
                         });
                     }
-                    vm.$window.storage('kha003AShareData_OLD', data);
-
+                    vm.$window.storage('kha003AShareData_' + data.code, data);
                 });
             });
 
@@ -145,9 +144,9 @@ module nts.uk.at.kha003.c {
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
             });
-            $(document).ready(function () {
-                vm.gridRows((12 * $(window).height()) / 768);
-            });
+            // $(document).ready(function () {
+            //     vm.gridRows((12 * $(window).height()) / 768);
+            // });
         }
 
         /**
@@ -228,6 +227,7 @@ module nts.uk.at.kha003.c {
                     vm.$errors("#multi-list-c2_4", "Msg_2165");
                 } else {
                     let shareData = {
+                        code: vm.code,
                         c24CurrentCodeList: vm.c24CurrentCodeList(),
                         c34CurrentCodeList: vm.c34CurrentCodeList(),
                         c44CurrentCodeList: vm.c44CurrentCodeList(),

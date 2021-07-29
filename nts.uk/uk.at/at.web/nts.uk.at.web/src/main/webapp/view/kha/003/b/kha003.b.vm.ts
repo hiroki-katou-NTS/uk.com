@@ -13,6 +13,7 @@ module nts.uk.at.kha003.b {
         endDateString: KnockoutObservable<string>;
         isCsvOutPut: KnockoutObservable<boolean>;
         totalUnit: KnockoutObservable<any>;
+        code: string;
 
         constructor() {
             super();
@@ -62,6 +63,7 @@ module nts.uk.at.kha003.b {
             vm.$window.storage('kha003AShareData').done((data: any) => {
                 vm.isCsvOutPut(data.isCsvOutPut);
                 vm.totalUnit(data.totalUnit);
+                vm.code = data.code;
             })
         }
 
@@ -96,15 +98,14 @@ module nts.uk.at.kha003.b {
                 yearMonthStart: vm.totalUnit() == 1 ? vm.dateValue().startDate.replace('/','') : null,
                 yearMonthEnd: vm.totalUnit() == 1 ? vm.dateValue().endDate.replace('/','') : null,
                 totalUnit: vm.totalUnit()
-            }
+            };
             vm.$ajax(API.getData, command).then(data => {
                 data.datePriod = vm.dateValue().startDate + " ~ " + vm.dateValue().endDate;
                 data.isCancel = false;
                 data.dateRange=vm.dateValue();
-                console.log("csv data:" + data)
                 vm.$window.storage('kha003BShareData', data).then(() => {
                     nts.uk.ui.windows.close();
-                })
+                });
                 dfd.resolve();
             }).fail(err => {
                 dfd.reject();

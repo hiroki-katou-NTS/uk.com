@@ -78,3 +78,7 @@ table#main-table td {
     height: 169px;
     background-color: #BDD7EE;
 }
+
+table#single-list tr td {
+    height: 24px;
+}
