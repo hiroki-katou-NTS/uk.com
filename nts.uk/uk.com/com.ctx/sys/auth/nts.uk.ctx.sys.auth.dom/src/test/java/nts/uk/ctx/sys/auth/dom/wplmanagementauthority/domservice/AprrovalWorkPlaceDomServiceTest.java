@@ -4,7 +4,6 @@ package nts.uk.ctx.sys.auth.dom.wplmanagementauthority.domservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +20,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.permission.roleId.RoleIdWorkDomService;
-import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.domservice.AprrovalWorkPlaceDomService.Require;
 
 @RunWith(JMockit.class)
@@ -40,7 +38,7 @@ public class AprrovalWorkPlaceDomServiceTest {
 	@Test
 	public void testEmptyAll() {
 		List<String> workPlaceIds = 
-				Arrays.asList("w1", "w2", "w3");
+				AprrovalWorkPlaceDomServiceHelper.Helper.WPLS;
 		GeneralDate date = GeneralDate.today();
 		Map<String, String> inputResult = new HashMap<String, String>();
 		new Expectations() {
@@ -83,7 +81,7 @@ public class AprrovalWorkPlaceDomServiceTest {
 	@Test
 	public void testEmptySids() {
 		List<String> workPlaceIds = 
-				Arrays.asList("w1", "w2", "w3");
+				AprrovalWorkPlaceDomServiceHelper.Helper.WPLS;
 		
 		GeneralDate date = GeneralDate.today();
 		Map<String, String> inputResult = new HashMap<String, String>();
@@ -105,39 +103,7 @@ public class AprrovalWorkPlaceDomServiceTest {
 				};
 				
 				require.getRoles("cid");
-				result = 
-					Arrays.asList(
-							new Role(
-									"r1",
-									null,
-									null,
-									null,
-									null,
-									null,
-									null,
-									null
-									),
-							new Role(
-									"r2",
-									null,
-									null,
-									null,
-									null,
-									null,
-									null,
-									null
-									),
-							new Role(
-									"r3",
-									null,
-									null,
-									null,
-									null,
-									null,
-									null,
-									null
-									));
-				
+				result = AprrovalWorkPlaceDomServiceHelper.Helper.ROLE_IDS;
 				
 						
 			}
@@ -161,16 +127,13 @@ public class AprrovalWorkPlaceDomServiceTest {
 	@Test
 	public void testNotEmptyRoles() {
 		List<String> workPlaceIds = 
-				Arrays.asList("w1", "w2", "w3");
+				AprrovalWorkPlaceDomServiceHelper.Helper.WPLS;
 		
 		List<String> sids = 
-				Arrays.asList("s1", "s2", "s3");
+				AprrovalWorkPlaceDomServiceHelper.Helper.SIDS;
 		
 		GeneralDate date = GeneralDate.today();
-		Map<String, String> inputResult = new HashMap<String, String>();
-		inputResult.put("e1", "r1");
-		inputResult.put("e2", "r2");
-		inputResult.put("e3", "r3");
+		Map<String, String> inputResult = AprrovalWorkPlaceDomServiceHelper.Helper.ROLE_IDS;
 		new Expectations() {
 			{
 				require.getSids(
@@ -189,38 +152,8 @@ public class AprrovalWorkPlaceDomServiceTest {
 				};
 				
 				require.getRoles("cid");
-				result = 
-					Arrays.asList(
-							new Role(
-									"r1",
-									null,
-									null,
-									null,
-									null,
-									null,
-									null,
-									null
-									),
-							new Role(
-									"r2",
-									null,
-									null,
-									null,
-									null,
-									null,
-									null,
-									null
-									),
-							new Role(
-									"r3",
-									null,
-									null,
-									null,
-									null,
-									null,
-									null,
-									null
-									));
+				result = AprrovalWorkPlaceDomServiceHelper.Helper.ROLES;
+					
 				
 				
 						
@@ -253,13 +186,11 @@ public class AprrovalWorkPlaceDomServiceTest {
 	@Test
 	public void testNotInRole() {
 		List<String> workPlaceIds = 
-				Arrays.asList("w1", "w2", "w3");
+				AprrovalWorkPlaceDomServiceHelper.Helper.WPLS;
 		
 		GeneralDate date = GeneralDate.today();
-		Map<String, String> inputResult = new HashMap<String, String>();
-		inputResult.put("e1", "r1");
-		inputResult.put("e2", "r2");
-		inputResult.put("e3", "r3");
+		Map<String, String> inputResult = 
+				AprrovalWorkPlaceDomServiceHelper.Helper.ROLE_IDS;
 		new Expectations() {
 			{
 				require.getSids(

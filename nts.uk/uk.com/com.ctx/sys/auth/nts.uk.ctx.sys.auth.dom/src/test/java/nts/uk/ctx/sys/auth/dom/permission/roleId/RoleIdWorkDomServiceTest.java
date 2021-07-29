@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.auth.dom.permission.roleId;
 
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.permission.roleId.RoleIdWorkDomService.Require;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -61,66 +59,34 @@ public class RoleIdWorkDomServiceTest {
 	 */
 	@Test
 	public void testNotEmptyAll() {
+		
 		List<String> sids = 
-				Arrays.asList("e1", "e2", "e3");
+				RoleIdWorkDomServiceHelper.Helper.SIDS;
 
 		GeneralDate date = GeneralDate.today();
 		new Expectations() {
 			{
 				// e1
-				require.getUserIDByEmpID("e1");
-				result = Optional.of("u1");
+				require.getUserIDByEmpID(RoleIdWorkDomServiceHelper.Helper.E1);
+				result = RoleIdWorkDomServiceHelper.Helper.U1OP;
 				
 				require.getRoleSetFromUserId("u1", date);
 						
-				result = Optional.of(new RoleSet(
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						"r1",
-						null
-						));
+				result = RoleIdWorkDomServiceHelper.Helper.R1_ROLESET;
 				
 				// e2
 				require.getUserIDByEmpID("e2");
 				result = Optional.of("u2");
 				
 				require.getRoleSetFromUserId("u2", date);
-				result = Optional.of(new RoleSet(
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						"r2",
-						null
-						));
+				result = RoleIdWorkDomServiceHelper.Helper.R2_ROLESET;
 				
 				// e3
 				require.getUserIDByEmpID("e3");
 				result = Optional.of("u3");
 				
 				require.getRoleSetFromUserId("u3", date);
-				result = Optional.of(new RoleSet(
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						null,
-						"r3",
-						null
-						));
+				result = RoleIdWorkDomServiceHelper.Helper.R3_ROLESET;
 				
 			}
 		};
@@ -154,7 +120,7 @@ public class RoleIdWorkDomServiceTest {
 	@Test
 	public void testEmptyUserId() {
 		List<String> sids = 
-				Arrays.asList("e1", "e2", "e3");
+				RoleIdWorkDomServiceHelper.Helper.SIDS;
 
 		GeneralDate date = GeneralDate.today();
 		new Expectations() {
@@ -181,22 +147,22 @@ public class RoleIdWorkDomServiceTest {
 	@Test
 	public void testEmptyRoles() {
 		List<String> sids = 
-				Arrays.asList("e1", "e2", "e3");
+				RoleIdWorkDomServiceHelper.Helper.SIDS;
 
 		GeneralDate date = GeneralDate.today();
 		new Expectations() {
 			{
 				// e1
-				require.getUserIDByEmpID("e1");
-				result = Optional.of("u1");
+				require.getUserIDByEmpID(RoleIdWorkDomServiceHelper.Helper.E1);
+				result = RoleIdWorkDomServiceHelper.Helper.U1OP;
 				
 				// e2
-				require.getUserIDByEmpID("e2");
-				result = Optional.of("u2");
+				require.getUserIDByEmpID(RoleIdWorkDomServiceHelper.Helper.E2);
+				result = RoleIdWorkDomServiceHelper.Helper.U2OP;
 				
 				// e3
-				require.getUserIDByEmpID("e2");
-				result = Optional.of("u2");
+				require.getUserIDByEmpID(RoleIdWorkDomServiceHelper.Helper.E3);
+				result = RoleIdWorkDomServiceHelper.Helper.U3OP;
 				
 				require.getRoleSetFromUserId(anyString, date);
 			}
