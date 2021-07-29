@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.workmanagement.workinitselectset;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -53,7 +52,6 @@ public class TaskInitialSelHist extends AggregateRoot
 			// $最新の履歴.適用による終了の調整(追加する履歴項目)
 			latestHist.get().shortenEndToAccept(taskInitialSel);
 			
-			TaskInitialSel temp = latestHist.get();
 			//	@履歴リスト.追加($最新の履歴)		
 			this.lstHistory.add(latestHist.get());
 
