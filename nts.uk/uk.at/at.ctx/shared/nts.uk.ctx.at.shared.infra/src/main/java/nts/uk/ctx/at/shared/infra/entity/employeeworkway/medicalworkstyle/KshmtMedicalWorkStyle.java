@@ -24,15 +24,15 @@ import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_MEDICAL_WORK_STYLE")
+@Table(name = "KSHMT_MEDICAL_WORK_STYLE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements Serializable {
+public class KshmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KscmtMedicalWorkStylePk pk;
+	public KshmtMedicalWorkStylePk pk;
 
 	/** 開始日 **/
 	@Column(name = "START_DATE")
@@ -47,53 +47,37 @@ public class KscmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements
 	public boolean isOnlyNightShift;
 
 	/** 医療介護勤務形態 **/
-	@Column(name = "MEDICAL_CARE_WORK_STYLE")
-	public int medicalCareWorkStyle;
+	@Column(name = "WORK_STYLE")
+	public int workStyle;
 
 	/** 看護区分 **/
 	@Column(name = "NURSE_LICENSE_CD")
 	public String nurseLicenseCd;
 
 	/** 他部署兼務か **/
-	@Column(name = "MEDICAL_CONCURRENT_POST")
-	public Boolean medicalConcurrentPost;
-
-	/** 介護の兼務可能か **/
-	@Column(name = "CARE_CONCURRENT_POST")
-	public Boolean careConcurrentPost;
-
-	/** 常勤換算表備考 **/
-	@Column(name = "CARE_RPT_NOTE")
-	public String careRptNote;
-
-	/** 夜勤職員配置加算表備考 **/
-	@Column(name = "CARE_NIGHT_RPT_NOTE")
-	public String careNightRptNote;
+	@Column(name = "CONCURRENT_POST")
+	public Boolean concurrentPost;
 
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 
-	public KscmtMedicalWorkStyle(KscmtMedicalWorkStylePk pk, GeneralDate startDate, GeneralDate endDate) {
+	public KshmtMedicalWorkStyle(KshmtMedicalWorkStylePk pk, GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.pk = pk;
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
 
-	public KscmtMedicalWorkStyle(KscmtMedicalWorkStylePk pk, boolean isOnlyNightShift, int medicalCareWorkStyle,
-			String nurseLicenseCd, boolean medicalConcurrentPost, boolean careConcurrentPost, String careRptNote,
-			String careNightRptNote) {
+	public KshmtMedicalWorkStyle(KshmtMedicalWorkStylePk pk, boolean isOnlyNightShift, int workStyle,
+			String nurseLicenseCd, boolean concurrentPost) {
 		super();
 		this.pk = pk;
 		this.isOnlyNightShift = isOnlyNightShift;
-		this.medicalCareWorkStyle = medicalCareWorkStyle;
+		this.workStyle = workStyle;
 		this.nurseLicenseCd = nurseLicenseCd;
-		this.medicalConcurrentPost = medicalConcurrentPost;
-		this.careConcurrentPost = careConcurrentPost;
-		this.careRptNote = careRptNote;
-		this.careNightRptNote = careNightRptNote;
+		this.concurrentPost = concurrentPost;
 	}
 
 	public static KscmtMedicalWorkStyle toEntityMedicalWorkStyle(EmpMedicalWorkStyleHistory his,
@@ -110,7 +94,7 @@ public class KscmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements
 						hisItem.isNightShiftFullTime(),
 						hisItem.getOptMedicalWorkFormInfor().isPresent()
 								? hisItem.getOptMedicalWorkFormInfor().get().getMedicalCareWorkStyle().value
-								: hisItem.getOpyNursingWorkFormInfor().get().getMedicalCareWorkStyle().value,
+								: hisItem.getOpyNursingWorkFormInfor().get().getMedicalCareWorkStyle().value, 
 						hisItem.getOptMedicalWorkFormInfor().isPresent()
 								? hisItem.getOptMedicalWorkFormInfor().get().getNurseClassifiCode().v() : null,
 						hisItem.getOptMedicalWorkFormInfor().isPresent()

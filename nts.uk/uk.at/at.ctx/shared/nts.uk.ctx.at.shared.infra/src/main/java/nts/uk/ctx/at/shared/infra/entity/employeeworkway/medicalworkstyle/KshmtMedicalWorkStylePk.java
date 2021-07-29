@@ -15,7 +15,7 @@ import lombok.Setter;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtMedicalWorkStylePk implements Serializable {
+public class KshmtMedicalWorkStylePk implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** 社員ID **/

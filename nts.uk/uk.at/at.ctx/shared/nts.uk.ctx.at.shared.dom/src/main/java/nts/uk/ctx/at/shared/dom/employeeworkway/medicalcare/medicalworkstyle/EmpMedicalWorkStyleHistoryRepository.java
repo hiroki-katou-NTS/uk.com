@@ -26,4 +26,24 @@ public interface EmpMedicalWorkStyleHistoryRepository {
 	void update(EmpMedicalWorkStyleHistoryItem empMedicalWorkStyleHistoryItem);
 	/**[6] delete(社員ID, 履歴ID)**/
 	void delete(String empId , String historyId); 
+	
+	void insertAll(List<EmpMedicalWorkStyleHistory> empMedicalWorkStyleHistoryList, List<EmpMedicalWorkFormHisItem> empMedicalWorkFormHisItemList);
+	
+	void updateAllHist(List<EmpMedicalWorkStyleHistory> empMedicalWorkStyleHistoryList);
+
+	void updateAllItem(List<EmpMedicalWorkFormHisItem> empMedicalWorkFormHisItemList);
+	
+	Optional<EmpMedicalWorkFormHisItem> getItemByHistId(String histId);
+	
+	List<EmpMedicalWorkFormHisItem> getItemByHistIdList(List<String> histIdList);
+	
+	Optional<EmpMedicalWorkStyleHistory> getHistByHistId(String histId);
+	
+	Optional<EmpMedicalWorkStyleHistory> getHist(String empID , GeneralDate referenceDate);
+	
+	Optional<EmpMedicalWorkStyleHistory> getHistBySidDesc(String cid, String sid);
+	
+	Optional<EmpMedicalWorkStyleHistory> getHistBySid(String cid, String sid);
+	
+	List<EmpMedicalWorkStyleHistory> getHistBySidsAndCid(List<String> listEmpId , GeneralDate referenceDate, String cid);
 }
