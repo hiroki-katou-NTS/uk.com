@@ -5,7 +5,7 @@ import nts.arc.task.tran.AtomTask;
 
 /**
  * スケジュール表の出力設定を複製する
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.スケジュール表.スケジュール表の出力設定を複製する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール表.スケジュール表の出力設定を複製する
  * @author dan_pv
  *
  */

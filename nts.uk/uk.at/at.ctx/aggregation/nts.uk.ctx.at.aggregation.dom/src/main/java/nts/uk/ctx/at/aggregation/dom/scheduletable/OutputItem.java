@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.Value;
 import nts.arc.error.BusinessException;
@@ -14,7 +15,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 出力項目
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.スケジュール表.出力項目
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール表.出力項目
  * @author dan_pv
  *
  */
@@ -92,6 +93,12 @@ public class OutputItem implements DomainValue {
 			throw new BusinessException("Msg_1973");
 		}
 		
+		// inv-7
+		if ( attendanceItemList.contains(ScheduleTableAttendanceItem.SHIFT) && 
+				attendanceItemList.contains(ScheduleTableAttendanceItem.WORK_TIME)) {
+			throw new BusinessException("Msg_2209");
+		}
+		
 		return new OutputItem(additionalColumnUseAtr, shiftBackgroundColorUseAtr, dailyDataDisplayAtr, details);
 	}
 	
@@ -103,6 +110,41 @@ public class OutputItem implements DomainValue {
 				this.shiftBackgroundColorUseAtr, 
 				this.dailyDataDisplayAtr, 
 				new ArrayList<>(this.details));
+	}
+	
+	/**
+	 * 表示対象の個人情報項目を取得する
+	 * @return List<スケジュール表の個人情報項目>
+	 */
+	public List<ScheduleTablePersonalInfoItem> getDisplayPersonalInfoItems() {
+
+		// $個人情報リスト
+		List<ScheduleTablePersonalInfoItem> personalItemList = this.details.stream()
+				.map(item -> item.getPersonalInfo())
+				.flatMap( OptionalUtil::stream )
+				.collect(Collectors.toList());
+		
+		// $追加列情報リスト
+		List<ScheduleTablePersonalInfoItem> additionalItemList = this.details.stream()
+				.map(item -> item.getAdditionalInfo())
+				.flatMap( OptionalUtil::stream )
+				.collect(Collectors.toList());
+		
+		return Stream.of(personalItemList, additionalItemList)
+				.flatMap(x -> x.stream())
+				.collect(Collectors.toList());
+	}
+	
+	/**
+	 * 表示対象の勤怠項目を取得する
+	 * @return List<スケジュール表の勤怠項目>
+	 */
+	public List<ScheduleTableAttendanceItem> getDisplayAttendanceItems() {
+		
+		return this.details.stream()
+				.map(item -> item.getAttendanceItem())
+				.flatMap( OptionalUtil::stream )
+				.collect(Collectors.toList());
 	}
 	
 }

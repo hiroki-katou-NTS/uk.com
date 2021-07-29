@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * スケジュール表の勤怠項目
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.スケジュール表.スケジュール表の勤怠項目
@@ -85,6 +88,27 @@ public enum ScheduleTableAttendanceItem {
 	private ScheduleTableAttendanceItem(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
+	}
+	
+	/**
+	 * 人件費時間種類を取得する
+	 * @return Map<スケジュール表の勤怠項目, Integer>
+	 */
+	@SuppressWarnings("serial")
+	public static Map<ScheduleTableAttendanceItem, Integer> getLaborCostTimeTypes() {
+		
+		return new HashMap<ScheduleTableAttendanceItem, Integer>() {{
+			put(LABOR_COST_TIME_1, 1);
+			put(LABOR_COST_TIME_2, 2);
+			put(LABOR_COST_TIME_3, 3);
+			put(LABOR_COST_TIME_4, 4);
+			put(LABOR_COST_TIME_5, 5);
+			put(LABOR_COST_TIME_6, 6);
+			put(LABOR_COST_TIME_7, 7);
+			put(LABOR_COST_TIME_8, 8);
+			put(LABOR_COST_TIME_9, 9);
+			put(LABOR_COST_TIME_10, 10);
+		}};
 	}
 
 }
