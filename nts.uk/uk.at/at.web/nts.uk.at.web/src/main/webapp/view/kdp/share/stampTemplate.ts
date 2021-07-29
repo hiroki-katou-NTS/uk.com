@@ -26,7 +26,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -45,7 +45,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -64,7 +64,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -83,7 +83,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -144,7 +144,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: 0,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -163,7 +163,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -224,7 +224,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: 0,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -243,7 +243,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -262,7 +262,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -285,7 +285,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -304,7 +304,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: null,
 					buttonDisSet: {
 						buttonNameSet: {
@@ -323,7 +323,7 @@ module nts.uk.at.view.kdp010 {
 							changeHalfDay: false, 
 							goOutArt: null},
 						reservationArt: 0},
-					taskChoiceArt: null,
+					taskChoiceArt: 0,
 					supportWplSet: 1,
 					buttonDisSet: {
 						buttonNameSet: {
