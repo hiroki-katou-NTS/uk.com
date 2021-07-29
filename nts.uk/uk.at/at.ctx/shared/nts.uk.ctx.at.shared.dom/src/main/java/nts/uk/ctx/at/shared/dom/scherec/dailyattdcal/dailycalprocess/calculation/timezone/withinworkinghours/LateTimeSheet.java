@@ -247,7 +247,7 @@ public class LateTimeSheet {
 		Optional<TimeSpanForDailyCalc> calcRange = LateDecisionClock.getCalcRange(
 				predetermineTimeSet, timeLeavingWork, integrationOfWorkTime,
 				predetermineTimeForSet, workType.getDailyWork().decisionNeedPredTime());
-		if (!calcRange.isPresent() || calcRange.get().isReverse() || calcRange.get().isEqual()) return Optional.empty();
+		if (!calcRange.isPresent()) return Optional.empty();
 		TimeWithDayAttr lateStartClock = calcRange.get().getStart();
 		// 遅刻時間を計算する時間帯を判断
 		Optional<LateLeaveEarlyTimeSheet> beforeAdjustOpt = checkTimeSheetForCalcLateTime(
