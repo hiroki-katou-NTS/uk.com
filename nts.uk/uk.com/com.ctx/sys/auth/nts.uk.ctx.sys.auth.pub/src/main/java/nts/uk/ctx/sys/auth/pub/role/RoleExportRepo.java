@@ -140,4 +140,6 @@ public interface RoleExportRepo {
 	
 	Integer getEmployeeReferenceRange(String userId, int roleType, GeneralDate baseDate);
 
+	Integer getEmployeeReferenceRange(String userId, int roleType, GeneralDate baseDate);
+
 }

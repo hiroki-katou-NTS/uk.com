@@ -13,6 +13,11 @@ import javax.ejb.TransactionAttributeType;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -20,6 +25,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.WorkDetailData;
 import nts.uk.ctx.at.record.infra.entity.daily.ouen.KrcdtDayOuenTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
@@ -39,7 +45,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements OuenWorkTimeSheetOfDailyRepo {
-
 	@Override
 	public OuenWorkTimeSheetOfDaily find(String empId, GeneralDate ymd) {
 		
@@ -255,6 +260,70 @@ public class OuenWorkTimeSheetOfDailyRepoImpl extends JpaRepository implements O
 		});
 
 		return domains;
+	}
+
+	@Override
+	public List<WorkDetailData> getWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period) {
+		String sql =
+				" SELECT " +
+						" t.SID, t.YMD, t.SUP_NO, i.WKP_ID, t.WORKPLACE_ID, t.WORK_CD1, " +
+						" t.WORK_CD2, t.WORK_CD3, t.WORK_CD4, t.WORK_CD5, s.TOTAL_TIME " +
+						" FROM KRCDT_DAY_TS_SUP t " +
+						" INNER JOIN KRCDT_DAY_TIME_SUP s " +
+						"   ON t.SID = s.SID AND t.YMD = s.YMD AND t.SUP_NO = s.SUP_NO " +
+						" INNER JOIN KRCDT_DAY_AFF_INFO i " +
+						" 	ON t.SID = i.SID AND t.YMD = i.YMD" +
+						" WHERE " +
+						" t.YMD BETWEEN @startDate AND @endDate ";
+
+		if (!CollectionUtil.isEmpty(empIdList)) {
+			sql += " AND t.SID IN @empIdList ";
+		}
+
+		if (!CollectionUtil.isEmpty(wkplIdList)) {
+			sql += " AND i.WKP_ID in @wkplIdList ";
+		}
+
+		if (!empIdList.isEmpty() && wkplIdList.isEmpty()) {
+			return new NtsStatement(sql, this.jdbcProxy())
+					.paramDate("startDate", period.start())
+					.paramDate("endDate", period.end())
+					.paramString("empIdList", empIdList)
+					.getList(OuenWorkTimeSheetOfDailyRepoImpl::toWorkDetailData);
+		} else if (empIdList.isEmpty() && !wkplIdList.isEmpty()) {
+			return new NtsStatement(sql, this.jdbcProxy())
+					.paramDate("startDate", period.start())
+					.paramDate("endDate", period.end())
+					.paramString("wkplIdList", wkplIdList)
+					.getList(OuenWorkTimeSheetOfDailyRepoImpl::toWorkDetailData);
+		} else if (empIdList.isEmpty() && wkplIdList.isEmpty()) {
+			return new NtsStatement(sql, this.jdbcProxy())
+					.paramDate("startDate", period.start())
+					.paramDate("endDate", period.end())
+					.getList(OuenWorkTimeSheetOfDailyRepoImpl::toWorkDetailData);
+		} else {
+			return new NtsStatement(sql, this.jdbcProxy())
+					.paramDate("startDate", period.start())
+					.paramDate("endDate", period.end())
+					.paramString("wkplIdList", wkplIdList)
+					.paramString("empIdList", empIdList)
+					.getList(OuenWorkTimeSheetOfDailyRepoImpl::toWorkDetailData);
+		}
+	}
+
+	private static WorkDetailData toWorkDetailData(NtsResultSet.NtsResultRecord rec) {
+		return new WorkDetailData(
+				rec.getString("SID"),
+				rec.getGeneralDate("YMD"),
+				rec.getInt("SUP_NO"),
+				rec.getString("WKP_ID"),
+				rec.getString("WORKPLACE_ID"),
+				rec.getString("WORK_CD1") != null ? rec.getString("WORK_CD1").trim() : rec.getString("WORK_CD1"),
+				rec.getString("WORK_CD2") != null ? rec.getString("WORK_CD2").trim() : rec.getString("WORK_CD2"),
+				rec.getString("WORK_CD3") != null ? rec.getString("WORK_CD3").trim() : rec.getString("WORK_CD3"),
+				rec.getString("WORK_CD4") != null ? rec.getString("WORK_CD4").trim() : rec.getString("WORK_CD4"),
+				rec.getString("WORK_CD5") != null ? rec.getString("WORK_CD5").trim() : rec.getString("WORK_CD5"),
+				rec.getInt("TOTAL_TIME"));
 	}
 
 }

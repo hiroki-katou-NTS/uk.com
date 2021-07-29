@@ -5,6 +5,8 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.WorkDetailData;
+
 
 public interface OuenWorkTimeSheetOfDailyRepo {
 
@@ -15,7 +17,9 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	public void insert(List<OuenWorkTimeSheetOfDaily> domain);
 	
 	public void delete(List<OuenWorkTimeSheetOfDaily> domain);
-	
+
+	List<WorkDetailData> getWorkDetailData(List<String> empIdList, List<String> wkplIdList, DatePeriod period);
+
 	public void remove(String sid, GeneralDate ymd);
 
 	boolean findPK(String empId, GeneralDate ymd, int ouenNo);
@@ -27,5 +31,4 @@ public interface OuenWorkTimeSheetOfDailyRepo {
 	void removePK(String sid, GeneralDate ymd, int ouenNo);
 
 	public void persist(List<OuenWorkTimeSheetOfDaily> domain);
-
 }
