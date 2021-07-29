@@ -57,6 +57,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         baseDate: KnockoutObservable<Date>;
 
+
         constructor() {
             var self = this;
             //A51
@@ -478,7 +479,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
         value: string;
         description: string;
 
-        constructor(value: string, nameId: string, description: string) {
+        constructor(value: string, description: string) {
             this.value = value;
             this.description = description;
         }
@@ -514,27 +515,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
         }
     }
 
-    class ItemModel {
-        roleCode: string;
-        name: string;
-
-        constructor(roleCode: string, name: string) {
-            this.roleCode = roleCode;
-            this.name = name;
-        }
-    }
-
-    class ObjectRole {
-        roleDtos: Array<Role>;
-        roleIndividualGrantDtos: Array<RoleIndividual>;
-        roleTypeDtos: Array<RollType>;
-        constructor(roleDtos: Array<Role>, roleIndividualGrantDtos: Array<RoleIndividual>, roleTypeDtos: Array<RollType>) {
-            this.roleDtos = roleDtos;
-            this.roleIndividualGrantDtos = roleIndividualGrantDtos;
-            this.roleTypeDtos = roleTypeDtos;
-
-        }
-    }
     class datePeriod {
         startDate: string;
         endDate: string;
