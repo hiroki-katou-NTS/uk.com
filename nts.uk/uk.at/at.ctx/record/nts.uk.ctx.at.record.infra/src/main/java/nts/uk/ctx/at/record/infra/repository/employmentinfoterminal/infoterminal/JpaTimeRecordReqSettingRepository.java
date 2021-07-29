@@ -14,8 +14,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import org.apache.http.annotation.Contract;
-
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -27,6 +25,14 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRec
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrRequest;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrRequestPK;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendEmployee;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendEmployeePK;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendReservation;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendReservationPK;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendWorkTime;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendWorkTimePK;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendWorkType;
+import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTrSendWorkTypePK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -540,5 +546,30 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		this.commandProxy().update(entity);
 	}
 
-	
+	@Override
+	public void delete(TimeRecordReqSetting reqSetting) {	
+		KrcmtTrRequest krcmtTrRequest = toEntity(reqSetting);
+		
+		List<KrcmtTrSendWorkTypePK> listKrcmtTrSendWorkTypePK = reqSetting.getWorkTypeCodes().stream()
+				.map(e -> new KrcmtTrSendWorkTypePK(reqSetting.getContractCode().v(), reqSetting.getTerminalCode().v(), e.v()))
+				.collect(Collectors.toList());		
+		
+		List<KrcmtTrSendWorkTimePK> listKrcmtTrSendWorkTimePK = reqSetting.getWorkTimeCodes().stream()
+				.map(e -> new KrcmtTrSendWorkTimePK(reqSetting.getContractCode().v(), reqSetting.getTerminalCode().v(), e.v()))
+				.collect(Collectors.toList());	
+		
+		List<KrcmtTrSendReservationPK> listKrcmtTrSendReservationPK = reqSetting.getBentoMenuFrameNumbers().stream()
+				.map(e -> new KrcmtTrSendReservationPK(reqSetting.getContractCode().v(), reqSetting.getTerminalCode().v(), e))
+				.collect(Collectors.toList());
+		
+		List<KrcmtTrSendEmployeePK> listKrcmtTrSendEmployeePK = reqSetting.getEmployeeIds().stream()
+				.map(e -> new KrcmtTrSendEmployeePK(reqSetting.getContractCode().v(), reqSetting.getTerminalCode().v(), e.v()))
+				.collect(Collectors.toList());
+		
+		this.commandProxy().remove(KrcmtTrRequest.class, krcmtTrRequest.pk);
+		this.commandProxy().removeAll(KrcmtTrSendWorkType.class, listKrcmtTrSendWorkTypePK);
+		this.commandProxy().removeAll(KrcmtTrSendWorkTime.class, listKrcmtTrSendWorkTimePK);
+		this.commandProxy().removeAll(KrcmtTrSendReservation.class, listKrcmtTrSendReservationPK);
+		this.commandProxy().removeAll(KrcmtTrSendEmployee.class, listKrcmtTrSendEmployeePK);
+	}
 }

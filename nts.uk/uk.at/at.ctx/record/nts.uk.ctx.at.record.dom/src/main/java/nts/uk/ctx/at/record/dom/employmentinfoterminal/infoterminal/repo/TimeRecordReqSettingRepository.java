@@ -72,4 +72,6 @@ public interface TimeRecordReqSettingRepository {
     
     void updateSwitchDate(ContractCode contractCode, EmpInfoTerminalCode empInfoTerminalCode, GeneralDateTime datetime);
     
+    void delete(TimeRecordReqSetting reqSetting);
+    
 }
