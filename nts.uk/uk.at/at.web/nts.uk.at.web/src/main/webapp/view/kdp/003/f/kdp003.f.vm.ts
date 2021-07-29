@@ -439,7 +439,6 @@ module nts.uk.at.kdp003.f {
 								.then(() => {
 									if (!showDialogError) {
 										const { successMsg } = dataResultLogin;
-										console.log(successMsg);
 										if (!!successMsg) {
 											return vm.$dialog
 												.info({ messageId: successMsg })
@@ -509,8 +508,6 @@ module nts.uk.at.kdp003.f {
 										dataResultLogin.em = data.employeeInformation;
 									})
 									.then(() => {
-										console.log(dataResultLogin);
-
 										if (!dataResultLogin.verificationSuccess) {
 											return vm.$dialog.error({ messageId: dataResultLogin.verificationFailureMessage });
 										} else {
@@ -625,8 +622,6 @@ module nts.uk.at.kdp003.f {
 										})
 								})
 								.then(() => {
-
-									console.log(dataResultLogin);
 
 									_.extend(dataResultLogin, {
 										companies
