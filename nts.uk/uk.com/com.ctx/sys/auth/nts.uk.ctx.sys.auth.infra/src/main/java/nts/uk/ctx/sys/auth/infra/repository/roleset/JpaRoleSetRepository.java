@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
-import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.*;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSet;
 import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtRoleSetPK;
 
@@ -49,17 +49,21 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      * @param entity
      * @return
      */
-    private RoleSet toDomain(SacmtRoleSet entity) {
-		/**
-		 * TODO Class RoleSet have @AllContructor since there is, I deleted it this time, please fix
-		 * return new RoleSet(entity.roleSetPK.roleSetCd ,
-		 * entity.roleSetPK.companyId , entity.roleSetName ,
-		 * EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class) ,
-		 * entity.officeHelperRole , entity.myNumberRole , entity.hRRole ,
-		 * entity.personInfRole , entity.employmentRole , entity.salaryRole );
-		 */
-    	return null;
-    }
+	private RoleSet toDomain(SacmtRoleSet entity) {
+
+		return new RoleSet(
+			entity.roleSetPK.companyId,
+			new RoleSetCode(entity.roleSetPK.roleSetCd),
+			new RoleSetName(entity.roleSetName),
+			EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class),
+			Optional.of(entity.officeHelperRole),
+			Optional.of(entity.myNumberRole),
+			Optional.of(entity.hRRole),
+			Optional.of(entity.personInfRole),
+			Optional.of(entity.employmentRole),
+			Optional.of(entity.salaryRole)
+		);
+	}
 
     /**
      * Build Entity from Domain
@@ -68,21 +72,17 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      */
     private SacmtRoleSet toEntity(RoleSet domain) {
         SacmtRoleSetPK key = new SacmtRoleSetPK(domain.getRoleSetCd().v(), domain.getCompanyId());
-		/**
-		 * TODO employmentRoleId, personInfRoleId, salaryRoleId, hRRoleId
-		 * ,	myNumberRoleId, officeHelperRoleId are updated from String to Optional<String>
-		 * ,	case roleId are Optional.empty, value is "", please fix
-		 * return new SacmtRoleSet(key , domain.getRoleSetName().v() ,
-			,	domain.getApprovalAuthority().value ,
-			,	domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"" 
-			,	domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): ""
-			,	domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): ""
-			,	domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get():"" 
-			,	domain.getEmploymentRoleId().isPresent()?domain.getEmploymentRoleId().get(): ""
-			,	domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): "");
-		 */
-        return new SacmtRoleSet();
-
+        return new SacmtRoleSet(
+			key,
+			domain.getRoleSetName().v(),
+			domain.getApprovalAuthority().value,
+			domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"",
+			domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): "",
+			domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): "",
+			domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get():"",
+			domain.getEmploymentRoleId().isPresent()?domain.getEmploymentRoleId().get(): "",
+			domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): ""
+		);
     }
 
     /**
@@ -92,19 +92,17 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      * @return
      */
 	private SacmtRoleSet toEntiryForUpdate(RoleSet domain, SacmtRoleSet upEntity) {
-		/**
-		 * TODO employmentRoleId, personInfRoleId, salaryRoleId, hRRoleId
-		 * ,	myNumberRoleId, officeHelperRoleId are updated from String to Optional<String>
-		 * ,	case roleId are Optional.empty, value is "", please fix
-		  upEntity.buildEntity(upEntity.roleSetPK , domain.getRoleSetName().v()
-		  	,	domain.getApprovalAuthority().value ,
-		  	,	domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"" 
-		  	,	domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): ""
-		  	,	domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): ""
-		  	,	domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get():"" 
-		  	,	domain.getEmploymentRoleId().isPresent()?domain.getEmploymentRoleId().get(): ""
-		  	,	domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): "");
-		 */
+		upEntity.buildEntity(
+			upEntity.roleSetPK,
+			domain.getRoleSetName().v(),
+			domain.getApprovalAuthority().value,
+			domain.getOfficeHelperRoleId().isPresent()? domain.getOfficeHelperRoleId().get():"",
+			domain.getMyNumberRoleId().isPresent()? domain.getMyNumberRoleId().get(): "",
+			domain.getHRRoleId().isPresent()? domain.getHRRoleId().get(): "",
+			domain.getPersonInfRoleId().isPresent()? domain.getPersonInfRoleId().get():"",
+			domain.getEmploymentRoleId().isPresent()?domain.getEmploymentRoleId().get(): "",
+			domain.getSalaryRoleId().isPresent()? domain.getSalaryRoleId().get(): ""
+		);
 		return upEntity;
 	}
 
@@ -135,6 +133,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
             this.commandProxy().update(toEntiryForUpdate(domain, upEntity.get()));
         }
     }
+
+	@Override
+	public boolean exists(String roleSetCd, String companyId) {
+		SacmtRoleSetPK pk = new SacmtRoleSetPK(roleSetCd, companyId);
+		return this.queryProxy().find(pk, SacmtRoleSet.class).isPresent();
+	}
 
     @Override
     public void delete(String roleSetCd, String companyId) {
