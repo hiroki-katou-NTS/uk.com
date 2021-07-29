@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.auth.dom.permission.roleId.RoleIdWorkDomService;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 

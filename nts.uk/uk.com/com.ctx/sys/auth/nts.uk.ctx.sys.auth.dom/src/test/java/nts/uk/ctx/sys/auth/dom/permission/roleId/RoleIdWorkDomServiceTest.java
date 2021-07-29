@@ -29,6 +29,12 @@ public class RoleIdWorkDomServiceTest {
 	@Injectable
 	private Require require;
 	
+	
+	// 社員IDList  empty
+	
+	/**
+	 * output: Map<社員ID、ロールID> is empty
+	 */
 	@Test
 	public void testEmptySids() {
 		List<String> sids = 
@@ -42,11 +48,19 @@ public class RoleIdWorkDomServiceTest {
 		
 	}
 	
+	//  社員IDList not empty
 	
 	
-
+	/**
+	 * 
+	 * Map<社員ID、ユーザID> not empty
+	 * Map<社員ID、ロールID>  not empty
+	 * 
+	 * output: Map<社員ID、ロールID> not empty
+	 * 
+	 */
 	@Test
-	public void testSids() {
+	public void testNotEmptyAll() {
 		List<String> sids = 
 				Arrays.asList("e1", "e2", "e3");
 
@@ -127,6 +141,70 @@ public class RoleIdWorkDomServiceTest {
 				tuple("e2", "r2"),
 				tuple("e3", "r3")
 				);
+		
+
+		
+	}
+	
+	/**
+	 * Map<社員ID、ユーザID> empty
+	 * output: Map<社員ID、ロールID> empty
+	 */
+	
+	@Test
+	public void testEmptyUserId() {
+		List<String> sids = 
+				Arrays.asList("e1", "e2", "e3");
+
+		GeneralDate date = GeneralDate.today();
+		new Expectations() {
+			{
+				// e1
+				require.getUserIDByEmpID(anyString);	
+				
+			}
+		};
+		
+		Map<String, String> roles = RoleIdWorkDomService.get(require, sids, date);
+				
+		assertThat(roles.isEmpty()).isEqualTo(true);
+		
+
+		
+	}
+	
+	/**
+	 * Map<社員ID、ユーザID> not empty
+	 * Map<社員ID、ロールID> empty
+	 * output: Map<社員ID、ロールID> empty
+	 */
+	@Test
+	public void testEmptyRoles() {
+		List<String> sids = 
+				Arrays.asList("e1", "e2", "e3");
+
+		GeneralDate date = GeneralDate.today();
+		new Expectations() {
+			{
+				// e1
+				require.getUserIDByEmpID("e1");
+				result = Optional.of("u1");
+				
+				// e2
+				require.getUserIDByEmpID("e2");
+				result = Optional.of("u2");
+				
+				// e3
+				require.getUserIDByEmpID("e2");
+				result = Optional.of("u2");
+				
+				require.getRoleSetFromUserId(anyString, date);
+			}
+		};
+		
+		Map<String, String> roles = RoleIdWorkDomService.get(require, sids, date);
+				
+		assertThat(roles.isEmpty()).isEqualTo(true);
 		
 
 		
