@@ -519,6 +519,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		listEntity.stream()
 				  .forEach(e -> {
 					  e.switchDate = datetime;
+					  e.sendSwitchDate = 1;
 				  });
 		
 		this.commandProxy().updateAll(listEntity);
@@ -534,6 +535,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 									.getSingle().get();
 		
 		entity.switchDate = datetime;
+		entity.sendSwitchDate = 1;
 		
 		this.commandProxy().update(entity);
 	}
