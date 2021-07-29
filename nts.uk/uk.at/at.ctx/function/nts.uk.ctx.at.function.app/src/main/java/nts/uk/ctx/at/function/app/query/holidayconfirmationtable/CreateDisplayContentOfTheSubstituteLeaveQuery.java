@@ -201,7 +201,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                                 status = EnumAdaptor.valueOf(acctAbsenDetail.getDataAtr().value, MngHistDataAtr.class);
                                 // ・発生取得明細(i)．期限日　　　　　＝代休の集計結果．逐次発生の休暇明細一覧(i)．休暇リスト．休暇発生明細．期限日
                                 UnbalanceVacation rss = (UnbalanceVacation) acctAbsenDetail;
-                                deadline = rss.getDeadline(); // TODO PHẢI QA.
+                                deadline = rss.getDeadline(); //
                                 //　・発生取得明細(i)．当月で期限切れ　＝※１
 
                                 isExpiredInCurrentMonth = deadline != null
@@ -225,43 +225,51 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                                     occurrenceDigClass,
                                     isExpiredInCurrentMonth,
                                     deadline));
-                        }
+
                     }
                 }
             }
             List<SeqVacationAssociationInfo> lstSeqVacation = substituteHolidayAggrResult
                     .getLstSeqVacation();
-            if (linkingMng) {
-                for (SeqVacationAssociationInfo lstSeqVacationItem : lstSeqVacation) {
-                    //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
-                    GeneralDate ymd = lstSeqVacationItem.getDateOfUse();
-                    // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
-                    MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
-                            lstSeqVacationItem.getDayNumberUsed().v());
-                    //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
-                    GeneralDate occurrenceDate = lstSeqVacationItem.getOutbreakDay();
-                    listTyingInformation.add(new LinkingInformation(
-                            ymd,
-                            dateOfUse,
-                            occurrenceDate));
+                if (linkingMng) {
+                    for (SeqVacationAssociationInfo lstSeqVacationItem : lstSeqVacation) {
+                        //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
+                        GeneralDate ymd = null;
+                        GeneralDate occurrenceDate = null;
+                        if(checkTimeInWork(lstSeqVacationItem.getDateOfUse(),lstAffComHistItem)){
+                            ymd = lstSeqVacationItem.getDateOfUse();
+                        }
+                        // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
+                        MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
+                                lstSeqVacationItem.getDayNumberUsed().v());
+                        //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
+                        if(checkTimeInWork(lstSeqVacationItem.getOutbreakDay(),lstAffComHistItem)){
+                            occurrenceDate = lstSeqVacationItem.getOutbreakDay();
+                        }
+                        listTyingInformation.add(new LinkingInformation(
+                                ymd,
+                                dateOfUse,
+                                occurrenceDate));
+                    }
                 }
+                SubstituteHolidayOccurrenceInfo observationOfExitLeave = new SubstituteHolidayOccurrenceInfo(
+                        er,
+                        numOfUse, undeterminedNumber,
+                        numberOfRemaining,
+                        occurrenceAcquisitionDetailsList,
+                        totalNumberOfSubstituteHolidays,
+                        listTyingInformation,
+                        numberCarriedForward);
+                val sub = new DisplayContentsOfSubLeaveConfirmationTable(
+                        employeeCode,
+                        employeeName,
+                        workplaceCode,
+                        workplaceName,
+                        hierarchyCode,
+                        Optional.of(observationOfExitLeave));
+                rs.add(sub);
             }
-            SubstituteHolidayOccurrenceInfo observationOfExitLeave = new SubstituteHolidayOccurrenceInfo(
-                    er,
-                    numOfUse, undeterminedNumber,
-                    numberOfRemaining,
-                    occurrenceAcquisitionDetailsList,
-                    totalNumberOfSubstituteHolidays,
-                    listTyingInformation,
-                    numberCarriedForward);
-            val sub = new DisplayContentsOfSubLeaveConfirmationTable(
-                    employeeCode,
-                    employeeName,
-                    workplaceCode,
-                    workplaceName,
-                    hierarchyCode,
-                    Optional.of(observationOfExitLeave));
-            rs.add(sub);
+
         }
         if (rs.isEmpty()) {
             throw new BusinessException("Msg_1926");
@@ -325,5 +333,19 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
             }
         }
         return check;
+    }
+    private boolean checkTimeInWork(GeneralDate date,List<AffCompanyHistImport> lstAffComHistItem ){
+        boolean rs = false;
+        for (AffCompanyHistImport affComHistItems : lstAffComHistItem) {
+            if(!rs)
+            for (val affComHistItem : affComHistItems.getLstAffComHistItem()) {
+                if ( affComHistItem.getDatePeriod().start().beforeOrEquals(date)
+                        && affComHistItem.getDatePeriod().end().afterOrEquals(date)) {
+                    rs = true;
+                    break;
+                }
+            }
+        }
+        return rs;
     }
 }

@@ -147,15 +147,8 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 // page break by employee
                 if (dataSource.getQuery().getPageBreak() == 1) {
                     if (contents.indexOf(content) != 0) {
-                        cells.insertRow(row);
-                        sheet.getHorizontalPageBreaks().add(row);
                         int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                        try {
-                            cells.copyRows(cells, lastWkpRow, row, 1);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        wkpIndexes.add(row);
+                        this.insertWkpRowAndPageBreak(sheet, cells, wkpIndexes, lastWkpRow, row);
                         row++;
                     } else {
                         if (wkpCodes.indexOf(wkpCode) != 0) {
@@ -168,11 +161,11 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 val isPresent = content.getObservationOfExitLeave().isPresent();
                 if (dataSource.isLinking()) {
                     // print linked content
-                    if(isPresent){
+                    if (isPresent) {
                         content.getObservationOfExitLeave().get().getListTyingInformation().sort(Comparator.comparing(LinkingInformation::getOccurrenceDate));
                     }
                     int col = 9;
-                    int size = isPresent ? content.getObservationOfExitLeave().get().getListTyingInformation().size():1;
+                    int size = isPresent ? content.getObservationOfExitLeave().get().getListTyingInformation().size() : 1;
                     int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
                     for (int loop = 0; loop < loops; loop++) {
                         cells.insertRows(row, 2);
@@ -188,63 +181,23 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                         }
                         cells.get(row, 8).setValue(TextResource.localize("KDR003_41"));
                         cells.get(row + 1, 8).setValue(TextResource.localize("KDR003_42"));
-                        if(isPresent){
+                        if (isPresent) {
                             for (int i = 0; i < 10; i++) {
                                 int idx = loop * 10 + i;
                                 if (idx < size) {
                                     LinkingInformation linkingInfo = content.getObservationOfExitLeave().get().getListTyingInformation().get(idx);
                                     if (i > 0) {
                                         LinkingInformation prevLinkingInfo = content.getObservationOfExitLeave().get().getListTyingInformation().get(idx - 1);
-                                        if (linkingInfo.getOccurrenceDate().equals(prevLinkingInfo.getOccurrenceDate())
-                                                && linkingInfo.getDateOfUse().v() == 0.5
-                                                && prevLinkingInfo.getDateOfUse().v() == 0.5) {
-                                            cells.merge(row, col + i - 1, 1, 2);
-                                            String value = this.formatDate(mngUnit,
-                                                    OccurrenceDigClass.OCCURRENCE,
-                                                    linkingInfo.getOccurrenceDate(),
-                                                    1.0,
-                                                    dataSource.getQuery().getHowToPrintDate(),
-                                                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
-                                            );
-                                            cells.get(row, col + i - 1).setValue(value);
-                                            Style style = cells.get(row, col + i - 1).getStyle();
-                                            style.setHorizontalAlignment(HorizontalAlignment.Center);
-                                            cells.get(row, col + i - 1).setStyle(style);
-                                        } else {
-                                            val value = this.formatDate(mngUnit,
-                                                    OccurrenceDigClass.OCCURRENCE,
-                                                    linkingInfo.getOccurrenceDate(),
-                                                    linkingInfo.getDateOfUse().v(),
-                                                    dataSource.getQuery().getHowToPrintDate(),
-                                                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
-                                            );
-                                            this.setValue(cells, row, col + i, value);
-                                        }
-                                        if (linkingInfo.getYmd().equals(prevLinkingInfo.getYmd())
-                                                && linkingInfo.getDateOfUse().v() == 0.5
-                                                && prevLinkingInfo.getDateOfUse().v() == 0.5) {
-                                            cells.merge(row + 1, col + i - 1, 1, 2);
-                                            String value = this.formatDate(mngUnit,
-                                                    OccurrenceDigClass.DIGESTION,
-                                                    linkingInfo.getYmd(),
-                                                    linkingInfo.getDateOfUse().v(),
-                                                    dataSource.getQuery().getHowToPrintDate(),
-                                                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
-                                            );
-                                            cells.get(row + 1, col + i - 1).setValue(value);
-                                            Style style = cells.get(row + 1, col + i - 1).getStyle();
-                                            style.setHorizontalAlignment(HorizontalAlignment.Center);
-                                            cells.get(row + 1, col + i - 1).setStyle(style);
-                                        } else {
-                                            val value = this.formatDate(mngUnit,
-                                                    OccurrenceDigClass.DIGESTION,
-                                                    linkingInfo.getYmd(),
-                                                    linkingInfo.getDateOfUse().v(),
-                                                    dataSource.getQuery().getHowToPrintDate(),
-                                                    content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
-                                            );
-                                            this.setValue(cells, row + 1, col + i, value);
-                                        }
+                                        this.fillLinkingData(
+                                                mngUnit,
+                                                cells,
+                                                linkingInfo,
+                                                prevLinkingInfo,
+                                                row,
+                                                col + i,
+                                                dataSource.getQuery().getHowToPrintDate(),
+                                                content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList()
+                                        );
                                     } else {
                                         val value = this.formatDate(mngUnit,
                                                 OccurrenceDigClass.OCCURRENCE,
@@ -268,66 +221,25 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                                 }
                             }
                         }
-                        if (loops == 1) {
-                            Style style1 = cells.get(row, 7).getStyle();
-                            style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
-                            cells.get(row, 7).setStyle(style1);
-                            Style style2 = cells.get(row + 1, 7).getStyle();
-                            style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
-                            cells.get(row + 1, 7).setStyle(style2);
-                        }
                         row += 2;
                         if (count + 2 > MAX_ROW_PER_PAGE) {
                             // add page break at the end of page
-                            int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
-                            int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                            if (lastEmpRow == lastWkpRow + 1) {
-                                sheet.getHorizontalPageBreaks().add(lastWkpRow);
-                            } else {
-                                cells.insertRow(lastEmpRow);
-                                sheet.getHorizontalPageBreaks().add(lastEmpRow); // always add page break before insert row
-                                try {
-                                    cells.copyRows(cells, lastWkpRow, lastEmpRow, 1);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                wkpIndexes.add(lastEmpRow);
-                                empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
-                                row++;
-                            }
+                            row = this.checkPageBreakEndPage(sheet, cells, wkpIndexes, empIndexes, row);
                             count = row - wkpIndexes.get(wkpIndexes.size() - 1);
                         } else {
                             count += 2;
                         }
                     }
                 }
-                if (!content.getObservationOfExitLeave().get().getListTyingInformation().isEmpty()) {
-                    // remove linked date
-                    ListIterator<OccurrenceAcquisitionDetails> iterator = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().listIterator();
-                    while (iterator.hasNext()) {
-                        OccurrenceAcquisitionDetails detail = iterator.next();
-                        double linkingUsedDays;
-                        if (detail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
-                            linkingUsedDays = content.getObservationOfExitLeave().get().getListTyingInformation()
-                                    .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate()
-                                            .get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
-                        } else {
-                            linkingUsedDays = content.getObservationOfExitLeave().get().getListTyingInformation()
-                                    .stream().filter(i -> i.getYmd().equals(detail.getDate().getDayoffDate().get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
-                        }
-                        if (linkingUsedDays >= detail.getNumberConsecuVacation().getDay().v()) {
-                            iterator.remove();
-                        } else if (linkingUsedDays > 0) {
-                            detail.getNumberConsecuVacation().setDay(new ManagementDataRemainUnit(detail.getNumberConsecuVacation().getDay().v() - linkingUsedDays));
-                            iterator.set(detail);
-                        }
-                    }
-                }
-                if(isPresent){
+                this.prepareNoLinkingData(
+                        content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList(),
+                        content.getObservationOfExitLeave().get().getListTyingInformation()
+                );
+                if (isPresent) {
                     content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
                 }
                 int col = 9;
-                int size = isPresent? content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().size():1;
+                int size = isPresent ? content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().size() : 1;
                 int loops = size > 0 && size % 10 == 0 ? (size / 10) : (size / 10 + 1);
 
                 for (int loop = 0; loop < loops; loop++) {
@@ -355,64 +267,53 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                     }
                     cells.get(row, 8).setValue(TextResource.localize("KDR003_41"));
                     cells.get(isTime ? row + 2 : row + 1, 8).setValue(TextResource.localize("KDR003_42"));
-                    if(isPresent)
-                    for (int i = 0; i < 10; i++) {
-                        int idx = loop * 10 + i;
-                        if (idx < size) {
-                            OccurrenceAcquisitionDetails acquisitionDetail = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().get(idx);
-                            if (!isTime) {
-                                if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
-                                    val value = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
-                                    this.setValue(cells, row, col + i, value);
+                    if (isPresent)
+                        for (int i = 0; i < 10; i++) {
+                            int idx = loop * 10 + i;
+                            if (idx < size) {
+                                OccurrenceAcquisitionDetails acquisitionDetail = content.getObservationOfExitLeave().get().getOccurrenceAcquisitionDetailsList().get(idx);
+                                if (!isTime) {
+                                    if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
+                                        val value = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                        this.setValue(cells, row, col + i, value);
+                                    } else {
+                                        val value = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                        this.setValue(cells, row + 1, col + i, value);
+                                    }
                                 } else {
-                                    val value = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
-                                    this.setValue(cells, row + 1, col + i, value);
+                                    Optional<AttendanceTime> timeOpt = acquisitionDetail.getNumberConsecuVacation().getTime();
+                                    if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
+                                        val value1 = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                        this.setValue(cells, row, col + i, value1);
+                                        val value2 = timeOpt.isPresent() ?
+                                                formatNoLinkedTime(acquisitionDetail, timeOpt.get().valueAsMinutes()) : null;
+                                        this.setValue(cells, row + 1, col + i, value2);
+
+                                    } else {
+                                        val value3 = this.formatNoLinkedDate(mngUnit, acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
+                                        this.setValue(cells, row + 2, col + i, value3);
+
+                                        val value4 = timeOpt.isPresent() ?
+                                                formatNoLinkedTime(acquisitionDetail, timeOpt.get().valueAsMinutes()) : null;
+                                        this.setValue(cells, row + 3, col + i, value4);
+
+                                    }
+
                                 }
+
                             } else {
-                                Optional<AttendanceTime> timeOpt = acquisitionDetail.getNumberConsecuVacation().getTime();
-                                if (acquisitionDetail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
-                                    val value1 = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
-                                    this.setValue(cells, row, col + i, value1);
-                                    val value2 = timeOpt.isPresent() ?
-                                            formatNoLinkedTime(acquisitionDetail, timeOpt.get().valueAsMinutes()) : null;
-                                    this.setValue(cells, row + 1, col + i, value2);
-
-                                } else {
-                                    val value3 = this.formatNoLinkedDate(mngUnit,acquisitionDetail, dataSource.getQuery().getHowToPrintDate());
-                                    this.setValue(cells, row + 2, col + i, value3);
-
-                                    val value4 = timeOpt.isPresent() ?
-                                            formatNoLinkedTime(acquisitionDetail, timeOpt.get().valueAsMinutes()) : null;
-                                    this.setValue(cells, row + 3, col + i, value4);
-
-                                }
-
+                                break;
                             }
-
-                        } else {
-                            break;
                         }
+                    // if there is only 1 block => draw thin border
+                    if (loops > 1) {
+                        this.drawBorder(cells, row);
                     }
                     val countTimeRow = isTime ? 4 : 2;
                     row += countTimeRow;
                     if (count + countTimeRow > MAX_ROW_PER_PAGE) {
                         // add page break at the end of page
-                        int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
-                        int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
-                        if (lastEmpRow == lastWkpRow + 1) {
-                            sheet.getHorizontalPageBreaks().add(lastWkpRow);
-                        } else {
-                            cells.insertRow(lastEmpRow);
-                            try {
-                                cells.copyRows(cells, lastWkpRow, lastEmpRow, 1);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            sheet.getHorizontalPageBreaks().add(lastEmpRow); // always add page break before insert row
-                            wkpIndexes.add(lastEmpRow);
-                            empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
-                            row++;
-                        }
+                        row = this.checkPageBreakEndPage(sheet, cells, wkpIndexes, empIndexes, row);
                         count = row - wkpIndexes.get(wkpIndexes.size() - 1);
                     } else {
                         count += countTimeRow;
@@ -433,7 +334,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
 
     private void printCommonContent(Cells cells, int row, DisplayContentsOfSubLeaveConfirmationTable content, Integer mngUnit) {
         cells.get(row, COLUMN_EMP).setValue(content.getEmployeeCode() + " " + content.getEmployeeName());
-        if(content.getObservationOfExitLeave().isPresent()){
+        if (content.getObservationOfExitLeave().isPresent()) {
             cells.get(row, COLUMN_ER).setValue(content.getObservationOfExitLeave().get().isEr() ? TextResource.localize("KDR003_122") : null);
             Double carry = null;
             Double occ = null;
@@ -468,13 +369,13 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                     undeterminedNumber = undeterminedNumberOpt.get().v().doubleValue();
                 }
             }
-            if (mngUnit!= null && mngUnit == 2) {
+            if (mngUnit != null && mngUnit == 2) {
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(carry == null ? "" : convertToTime(carry.intValue()));
                 cells.get(row, COLUMN_OCCURRENCE).setValue(occ == null ? "" : convertToTime(occ.intValue()));
                 cells.get(row, COLUMN_USED).setValue(numofUse == null ? "" : convertToTime(numofUse.intValue()));
                 cells.get(row, COLUMN_REMAINING).setValue(numberOfRemaining == null ? "" : convertToTime(numberOfRemaining.intValue()));
                 cells.get(row, COLUMN_UNDIGESTED).setValue(undeterminedNumber == null ? "" : convertToTime(undeterminedNumber.intValue()));
-            } else if(mngUnit!= null && mngUnit == 1) {
+            } else if (mngUnit != null && mngUnit == 1) {
                 cells.get(row, COLUMN_CARRY_FORWARD).setValue(String.format("%.1f", carry));
                 cells.get(row, COLUMN_OCCURRENCE).setValue(String.format("%.1f", occ));
 
@@ -504,7 +405,9 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
      * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
      * @return
      */
-    private String formatDate(Integer mngUnit,OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetails) {
+    private String formatDate(Integer mngUnit, OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetails) {
+        if(date ==null)
+            return null;
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
             formattedDate.append(date.toString("MM/dd"));
@@ -534,14 +437,14 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
      * @param howToPrintDate 1: YYYY/MM/DD, 0: MM/DD
      * @return
      */
-    private String formatNoLinkedDate(Integer mngUnit,OccurrenceAcquisitionDetails detail, int howToPrintDate) {
+    private String formatNoLinkedDate(Integer mngUnit, OccurrenceAcquisitionDetails detail, int howToPrintDate) {
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("MM/dd"));
         } else {
             formattedDate.append(detail.getDate().getDayoffDate().get().toString("yy/MM/dd"));
         }
-        if (detail.getNumberConsecuVacation().getDay().v() != 1.0 && mngUnit!= 2) {
+        if (detail.getNumberConsecuVacation().getDay().v() != 1.0 && mngUnit != 2) {
             formattedDate.append(TextResource.localize("KDR003_120"));
         }
         if (detail.getStatus() == MngHistDataAtr.SCHEDULE || detail.getStatus() == MngHistDataAtr.NOTREFLECT) {
@@ -582,13 +485,123 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
     }
 
+    private void drawBorder(Cells cells, int row) {
+        Style style1 = cells.get(row, 7).getStyle();
+        style1.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+        cells.get(row, 7).setStyle(style1);
+        Style style2 = cells.get(row + 1, 7).getStyle();
+        style2.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
+        cells.get(row + 1, 7).setStyle(style2);
+    }
+
     private void setValue(Cells cells, int row, int col, String value) {
         cells.get(row, col).setValue(value);
-        if (!value.contains("(") && !value.contains("[")&&
+        if (value!=null &&!value.contains("(") && !value.contains("[") &&
                 !value.contains(TextResource.localize("KDR003_120"))) {
             Style style = cells.get(row, col).getStyle();
             style.setHorizontalAlignment(TextAlignmentType.CENTER);
             cells.get(row, col).setStyle(style);
         }
+    }
+
+    private int checkPageBreakEndPage(Worksheet sheet, Cells cells, List<Integer> wkpIndexes, List<Integer> empIndexes, int currentRow) {
+        int lastEmpRow = empIndexes.get(empIndexes.size() - 1);
+        int lastWkpRow = wkpIndexes.get(wkpIndexes.size() - 1);
+        if (lastEmpRow != lastWkpRow + 1) {
+            this.insertWkpRowAndPageBreak(sheet, cells, wkpIndexes, lastWkpRow, lastEmpRow);
+            empIndexes.set(empIndexes.size() - 1, lastEmpRow + 1);
+            return currentRow + 1;
+        } else {
+            sheet.getHorizontalPageBreaks().add(lastWkpRow);
+            return currentRow;
+        }
+    }
+
+    private void insertWkpRowAndPageBreak(Worksheet sheet, Cells cells, List<Integer> indexes, int fromRow, int toRow) {
+        cells.insertRow(toRow);
+        try {
+            cells.copyRows(cells, fromRow, toRow, 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        sheet.getHorizontalPageBreaks().add(toRow); // always add page break before insert row
+        indexes.add(toRow);
+    }
+
+    private void fillLinkingData(Integer mngUnit, Cells cells, LinkingInformation current, LinkingInformation prev, int row, int col, int howToPrintDate, List<OccurrenceAcquisitionDetails> details) {
+        if (current.getOccurrenceDate().equals(prev.getOccurrenceDate())
+                && current.getDateOfUse().v() == 0.5
+                && prev.getDateOfUse().v() == 0.5) {
+            cells.merge(row, col - 1, 1, 2);
+            String value = this.formatDate(mngUnit,
+                    OccurrenceDigClass.OCCURRENCE,
+                    current.getOccurrenceDate(),
+                    1.0,
+                    howToPrintDate,
+                    details
+            );
+            cells.get(row, col - 1).setValue(value);
+            Style style = cells.get(row, col - 1).getStyle();
+            style.setHorizontalAlignment(HorizontalAlignment.Center);
+            cells.get(row, col - 1).setStyle(style);
+        } else {
+            String value = this.formatDate(mngUnit,
+                    OccurrenceDigClass.OCCURRENCE,
+                    current.getOccurrenceDate(),
+                    current.getDateOfUse().v(),
+                    howToPrintDate,
+                    details
+            );
+            this.setValue(cells, row, col, value);
+        }
+        if (current.getYmd().equals(prev.getYmd())
+                && current.getDateOfUse().v() == 0.5
+                && prev.getDateOfUse().v() == 0.5) {
+            cells.merge(row + 1, col - 1, 1, 2);
+            String value = this.formatDate(mngUnit,
+                    OccurrenceDigClass.DIGESTION,
+                    current.getYmd(),
+                    1.0,
+                    howToPrintDate,
+                    details
+            );
+            cells.get(row + 1, col - 1).setValue(value);
+            Style style = cells.get(row + 1, col - 1).getStyle();
+            style.setHorizontalAlignment(HorizontalAlignment.Center);
+            cells.get(row + 1, col - 1).setStyle(style);
+        } else {
+            String value = this.formatDate(mngUnit,
+                    OccurrenceDigClass.DIGESTION,
+                    current.getYmd(),
+                    current.getDateOfUse().v(),
+                    howToPrintDate,
+                    details
+            );
+            this.setValue(cells, row + 1, col, value);
+        }
+    }
+
+    private void prepareNoLinkingData(List<OccurrenceAcquisitionDetails> details, List<LinkingInformation> linkingInfors) {
+        // remove linked date
+        ListIterator<OccurrenceAcquisitionDetails> iterator = details.listIterator();
+        while (iterator.hasNext()) {
+            OccurrenceAcquisitionDetails detail = iterator.next();
+            double linkingUsedDays;
+            if (detail.getOccurrenceDigClass() == OccurrenceDigClass.OCCURRENCE) {
+                linkingUsedDays = linkingInfors
+                        .stream().filter(i -> i.getOccurrenceDate().equals(detail.getDate().getDayoffDate()
+                                .get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
+            } else {
+                linkingUsedDays = linkingInfors
+                        .stream().filter(i -> i.getYmd().equals(detail.getDate().getDayoffDate().get())).mapToDouble(e -> e.getDateOfUse().v()).sum();
+            }
+            if (linkingUsedDays >= detail.getNumberConsecuVacation().getDay().v()) {
+                iterator.remove();
+            } else if (linkingUsedDays > 0) {
+                detail.getNumberConsecuVacation().setDay(new ManagementDataRemainUnit(detail.getNumberConsecuVacation().getDay().v() - linkingUsedDays));
+                iterator.set(detail);
+            }
+        }
+        details.sort(Comparator.comparing(i -> i.getDate().getDayoffDate().get()));
     }
 }
