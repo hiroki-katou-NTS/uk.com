@@ -7,8 +7,8 @@ module nts.uk.at.view.kdp004.a {
 			startPage: 'at/record/stamp/finger/get-finger-stamp-setting',
 			stampInput: 'at/record/stamp/finger/register-finger-stamp',
 			confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
-			loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
-			loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
+			loginAdminMode: 'ctx/sys/gateway/login/password' + location.search,
+			// loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
 			fingerAuth: '',
 			getError: 'at/record/stamp/employment_system/get_omission_contents',
 			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress',
@@ -28,9 +28,8 @@ module nts.uk.at.view.kdp004.a {
 			return ajax("at", url.confirmUseOfStampInput, data);
 		}
 
-		export function login(isAdmin, data) {
-			data.runtimeEnvironmentCreate = true;
-			return ajax("at", isAdmin ? url.loginAdminMode : url.loginEmployeeMode, data);
+		export function login(data): JQueryPromise<any> {
+			return ajax("com", url.loginAdminMode, data);
 		}
 
 		export function fingerAuth(param) {

@@ -21,7 +21,8 @@ module nts.uk.at.view.kdp004.a {
 			R: '/view/kdp/003/r/index.xhtml',
 			F: '/view/kdp/003/f/index.xhtml',
 			M: '/view/kdp/003/m/index.xhtml',
-			P: '/view/kdp/003/p/index.xhtml'
+			P: '/view/kdp/003/p/index.xhtml',
+			KDP002_L: '/view/kdp/002/l/index.xhtml'
 		};
 
 		const API = {
@@ -56,6 +57,7 @@ module nts.uk.at.view.kdp004.a {
 			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
 			modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
+			useWork: KnockoutObservable<boolean> = ko.observable(false);
 
 			// get from basyo;
 			workplace: string[] | [] = [];
@@ -78,6 +80,12 @@ module nts.uk.at.view.kdp004.a {
 				let self = this;
 				let dfd = $.Deferred<void>();
 				const vm = new ko.ViewModel;
+
+				vm.$ajax(API.SETTING_STAMP_COMMON)
+					.done((data: any) => {
+						self.useWork(data.workUse);
+					})
+
 
 				self.getWorkPlacesInfo();
 				self.basyo().done(() => {
@@ -155,58 +163,71 @@ module nts.uk.at.view.kdp004.a {
 
 			doFirstLoad(): JQueryPromise<any> {
 				let dfd = $.Deferred<any>(), self = this;
-				let loginInfo = self.loginInfo;
-				block.grayout();
-				service.confirmUseOfStampInput({ employeeId: null, stampMeans: 1 }).done((res) => {
-					self.isUsed(res.used == 0);
-					if (self.isUsed()) {
-						let isAdmin = true;
-						service.login(isAdmin, loginInfo).done((res) => {
-							block.grayout();
-							service.startPage()
-								.done((res: any) => {
-									
-									if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
-										self.errorMessage(self.getErrorNotUsed(1));
-										self.isUsed(false);
-										dfd.resolve();
-										return;
-									}
+				const vm = new ko.ViewModel();
 
-									self.alwaysLoadMessage(res.stampSetting.correctionInterval);
-									self.stampSetting(res.stampSetting);
-									self.stampTab().bindData(res.stampSetting.pageLayouts);
-									self.stampResultDisplay(res.stampResultDisplay);
-									self.fingerStampSetting(res);
-									dfd.resolve();
+				let loginInfo = {
+					companyCode: self.loginInfo.companyCode,
+					employeeCode: self.loginInfo.employeeCode,
+					password: self.loginInfo.password
+				}
+
+				vm.$window.storage('contractInfo')
+					.done((data: any) => {
+						loginInfo.contractPassword = _.escape(data ? data.contractPassword : "");
+						loginInfo.contractCode = _.escape(data ? data.contractCode : "");
+					}).then(() => {
+						block.grayout();
+						service.confirmUseOfStampInput({ employeeId: null, stampMeans: 1 }).done((res) => {
+							self.isUsed(res.used == 0);
+							if (self.isUsed()) {
+								service.login(loginInfo).done((res) => {
+
+									block.grayout();
+									service.startPage()
+										.done((res: any) => {
+
+											if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
+												self.errorMessage(self.getErrorNotUsed(1));
+												self.isUsed(false);
+												dfd.resolve();
+												return;
+											}
+
+											self.alwaysLoadMessage(res.stampSetting.correctionInterval);
+											self.stampSetting(res.stampSetting);
+											self.stampTab().bindData(res.stampSetting.pageLayouts);
+											self.stampResultDisplay(res.stampResultDisplay);
+											self.fingerStampSetting(res);
+											dfd.resolve();
+										}).fail((res) => {
+											dialog.alertError({ messageId: res.messageId }).then(() => {
+												jump("com", "/view/ccg/008/a/index.xhtml");
+											});
+										}).always(() => {
+											dfd.resolve();
+											block.clear();
+										});
+
+									self.getStampToSuppress();
+
 								}).fail((res) => {
-									dialog.alertError({ messageId: res.messageId }).then(() => {
-										jump("com", "/view/ccg/008/a/index.xhtml");
-									});
-								}).always(() => {
+									self.isUsed(false);
+									self.errorMessage(getMessage(res.messageId));
 									dfd.resolve();
+								}).always(() => {
+
 									block.clear();
 								});
-
-							self.getStampToSuppress();
-
-						}).fail((res) => {
-							self.isUsed(false);
-							self.errorMessage(getMessage(res.messageId));
-							dfd.resolve();
+							} else {
+								self.isUsed(false);
+								self.errorMessage(self.getErrorNotUsed(res.used));
+								dfd.resolve();
+							}
 						}).always(() => {
-
 							block.clear();
 						});
-					} else {
-						self.isUsed(false);
-						self.errorMessage(self.getErrorNotUsed(res.used));
-						dfd.resolve();
-					}
-				}).always(() => {
-					block.clear();
-				});
-				return dfd.promise();
+						return dfd.promise();
+					})
 			}
 
 			public setLoginInfo(): JQueryPromise<any> {
@@ -216,15 +237,16 @@ module nts.uk.at.view.kdp004.a {
 				self.openScreenF({
 					mode: 'admin'
 				}).done((loginResult) => {
+
 					const exest = false;
 
-					if (loginResult !== undefined) {
-						if (!loginResult.result) {
-							loginResult = undefined;
-						}
-					} else {
-						loginResult = undefined;
-					}
+					// if (loginResult !== undefined) {
+					// 	if (!loginResult.result) {
+					// 		loginResult = undefined;
+					// 	}
+					// } else {
+					// 	loginResult = undefined;
+					// }
 
 					if (loginResult == undefined) {
 						self.errorMessage(getMessage("Msg_1647"));
@@ -232,11 +254,11 @@ module nts.uk.at.view.kdp004.a {
 						return;
 					}
 
-					if (!loginResult || !loginResult.result) {
-						self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
-						dfd.resolve();
-						return;
-					}
+					// if (!loginResult || !loginResult.result) {
+					// 	self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
+					// 	dfd.resolve();
+					// 	return;
+					// }
 					self.loginInfo = loginResult.em;
 
 					self.basyo()
@@ -307,6 +329,7 @@ module nts.uk.at.view.kdp004.a {
 				let dfd = $.Deferred<any>();
 
 				service.fingerAuth({ fingerAuthCkb: this.fingerAuthCkb(), selectedMsg: this.selectedMsg() }).done((res) => {
+
 					dfd.resolve(res);
 				});
 
@@ -374,6 +397,7 @@ module nts.uk.at.view.kdp004.a {
 						.then(() => {
 							return vm.$window.modal('at', '/view/kdp/004/g/index.xhtml')
 								.then((result) => {
+
 									let redirect: "retry" | "loginPass" | "cancel" = result.actionName;
 
 									if (redirect === "retry") {
@@ -392,15 +416,15 @@ module nts.uk.at.view.kdp004.a {
 									return 'cancel';
 								})
 								.then((res) => {
-
+									
 									if (res !== 'cancel' && !!res) {
 
-										if (!res.result) {
+										if (!res.verificationSuccess) {
 											errorMessage = 'Msg_301';
 											return process();
 										}
 
-										if (res.result) {
+										if (res.verificationSuccess) {
 											return { em: res.em, isSuccess: true, authType: res.em ? 0 : 2 };
 										}
 									} else {
@@ -414,10 +438,12 @@ module nts.uk.at.view.kdp004.a {
 			}
 
 			public clickBtn1(btn: any, layout: any) {
+				
 				const vm = this;
 				vm.getWorkPlacesInfo();
 				nts.uk.ui.block.invisible();
 				vm.doAuthent().done((res: IAuthResult) => {
+					
 					if (res.isSuccess) {
 						vm.registerData(btn, layout, res);
 					}
@@ -429,8 +455,10 @@ module nts.uk.at.view.kdp004.a {
 				let dfd = $.Deferred<any>();
 
 				self.fingerAuth().done((res) => {
-					if (res.result) {
+
+					if (res.verificationSuccess) {
 						service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
+							
 							self.isUsed(res.used == 0);
 							if (!self.isUsed()) {
 								self.errorMessage(getMessage(res.messageId));
@@ -488,7 +516,7 @@ module nts.uk.at.view.kdp004.a {
 					companyId: self.loginInfo.companyId
 				} : { mode: 'admin' };
 				self.openScreenF(param).done((loginResult) => {
-					if (loginResult && loginResult.result) {
+					if (loginResult) {
 						let result: any = loginResult.em;
 						result.selectedWP = self.loginInfo ? self.loginInfo.selectedWP : null;
 						self.loginInfo = loginResult.em;
@@ -498,6 +526,7 @@ module nts.uk.at.view.kdp004.a {
 								if (!ko.unwrap(self.modeBasyo)) {
 									self.openScreenK().done((result) => {
 										if (result) {
+
 											self.loginInfo.selectedWP = result;
 											self.saveSuccess = true;
 											nts.uk.characteristics.save(KDP004_SAVE_DATA, self.loginInfo).done(() => {
@@ -534,23 +563,14 @@ module nts.uk.at.view.kdp004.a {
 				let self = this;
 				let vm = new ko.ViewModel();
 				block.invisible();
-				let registerdata = {
-					employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
-					datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-					stampNumber: null,
-					stampButton: {
-						pageNo: layout.pageNo,
-						buttonPositionNo: button.btnPositionNo
-					},
-					refActualResult: {
-						cardNumberSupport: null,
-						workPlaceId: self.workPlaceId,
-						workLocationCD: self.worklocationCode,
-						workTimeCode: null,
-						overtimeDeclaration: null
-					},
-					authcMethod: loginInfo.authType
-				};
+				var showViewL = false;
+
+				if (ko.unwrap(self.useWork)) {
+					if (button.taskChoiceArt && button.taskChoiceArt) {
+						showViewL = true;
+					}
+				}
+
 				const mode: number = 1;
 				const { employeeId, employeeCode } = loginInfo.em;
 
@@ -575,50 +595,101 @@ module nts.uk.at.view.kdp004.a {
 										if (result.notification !== null) {
 											self.workPlaceId = result;
 
-											let registerdata = {
-												employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
-												datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-												stampNumber: null,
-												stampButton: {
-													pageNo: layout.pageNo,
-													buttonPositionNo: button.btnPositionNo
-												},
-												refActualResult: {
-													cardNumberSupport: null,
-													workPlaceId: self.workPlaceId,
-													workLocationCD: self.worklocationCode,
-													workTimeCode: null,
-													overtimeDeclaration: null
-												},
-												authcMethod: loginInfo.authType
-											};
+											if (showViewL) {
+												vm.$window.modal('at', DIALOG.KDP002_L, { employeeId: employeeId })
+													.then((data: any) => {
+														let registerdata = {
+															employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
+															datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+															stampNumber: null,
+															stampButton: {
+																pageNo: layout.pageNo,
+																buttonPositionNo: button.btnPositionNo
+															},
+															refActualResult: {
+																cardNumberSupport: null,
+																workPlaceId: self.workPlaceId,
+																workLocationCD: self.worklocationCode,
+																workTimeCode: null,
+																overtimeDeclaration: null,
+																workGroup: data
+															},
+															authcMethod: loginInfo.authType
+														};
 
-											service.stampInput(registerdata).done((res) => {
+														service.stampInput(registerdata).done((res) => {
 
-												const param = {
-													sid: employeeId,
-													date: vm.$date.now()
-												}
+															const param = {
+																sid: employeeId,
+																date: vm.$date.now()
+															}
 
-												service.createDaily(param);
+															service.createDaily(param);
 
-												//phat nhac
-												self.playAudio(button.audioType);
-												// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
+															//phat nhac
+															self.playAudio(button.audioType);
+															// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
 
 
-												if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-													self.openScreenC(button, layout, loginInfo.em);
-												} else {
-													self.openScreenB(button, layout, loginInfo.em);
-												}
+															if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+																self.openScreenC(button, layout, loginInfo.em);
+															} else {
+																self.openScreenB(button, layout, loginInfo.em);
+															}
 
-											}).fail((res) => {
-												dialog.alertError({ messageId: res.messageId });
-											}).always(() => {
-												self.getStampToSuppress();
-												block.clear();
-											});
+														}).fail((res) => {
+															dialog.alertError({ messageId: res.messageId });
+														}).always(() => {
+															self.getStampToSuppress();
+															block.clear();
+														});
+													});
+											} else {
+												let registerdata = {
+													employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
+													datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+													stampNumber: null,
+													stampButton: {
+														pageNo: layout.pageNo,
+														buttonPositionNo: button.btnPositionNo
+													},
+													refActualResult: {
+														cardNumberSupport: null,
+														workPlaceId: self.workPlaceId,
+														workLocationCD: self.worklocationCode,
+														workTimeCode: null,
+														overtimeDeclaration: null
+													},
+													authcMethod: loginInfo.authType
+												};
+
+												service.stampInput(registerdata).done((res) => {
+
+													const param = {
+														sid: employeeId,
+														date: vm.$date.now()
+													}
+
+													service.createDaily(param);
+
+													//phat nhac
+													self.playAudio(button.audioType);
+													// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
+
+
+													if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+														self.openScreenC(button, layout, loginInfo.em);
+													} else {
+														self.openScreenB(button, layout, loginInfo.em);
+													}
+
+												}).fail((res) => {
+													dialog.alertError({ messageId: res.messageId });
+												}).always(() => {
+													self.getStampToSuppress();
+													block.clear();
+												});
+											}
 										}
 									}
 								});
@@ -629,49 +700,100 @@ module nts.uk.at.view.kdp004.a {
 								self.workPlaceId = dataStorage.selectedWP[0];
 							}
 
-							let registerdata = {
-								employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
-								datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-								stampNumber: null,
-								stampButton: {
-									pageNo: layout.pageNo,
-									buttonPositionNo: button.btnPositionNo
-								},
-								refActualResult: {
-									cardNumberSupport: null,
-									workPlaceId: self.workPlaceId,
-									workLocationCD: self.worklocationCode,
-									workTimeCode: null,
-									overtimeDeclaration: null
-								},
-								authcMethod: loginInfo.authType
-							};
+							if (showViewL) {
+								vm.$window.modal('at', DIALOG.KDP002_L, { employeeId: employeeId })
+									.then((data: any) => {
+										let registerdata = {
+											employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
+											datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+											stampNumber: null,
+											stampButton: {
+												pageNo: layout.pageNo,
+												buttonPositionNo: button.btnPositionNo
+											},
+											refActualResult: {
+												cardNumberSupport: null,
+												workPlaceId: self.workPlaceId,
+												workLocationCD: self.worklocationCode,
+												workTimeCode: null,
+												overtimeDeclaration: null,
+												workGroup: data
+											},
+											authcMethod: loginInfo.authType
+										};
 
-							service.stampInput(registerdata).done((res) => {
+										service.stampInput(registerdata).done((res) => {
 
-								const param = {
-									sid: employeeId,
-									date: vm.$date.now()
-								}
+											const param = {
+												sid: employeeId,
+												date: vm.$date.now()
+											}
 
-								service.createDaily(param);
+											service.createDaily(param);
 
-								//phat nhac
-								self.playAudio(button.audioType);
-								// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
+											//phat nhac
+											self.playAudio(button.audioType);
+											// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
 
-								if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-									self.openScreenC(button, layout, loginInfo.em);
-								} else {
-									self.openScreenB(button, layout, loginInfo.em);
-								}
 
-							}).fail((res) => {
-								dialog.alertError({ messageId: res.messageId });
-							}).always(() => {
-								self.getStampToSuppress();
-								block.clear();
-							});
+											if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+												self.openScreenC(button, layout, loginInfo.em);
+											} else {
+												self.openScreenB(button, layout, loginInfo.em);
+											}
+
+										}).fail((res) => {
+											dialog.alertError({ messageId: res.messageId });
+										}).always(() => {
+											self.getStampToSuppress();
+											block.clear();
+										});
+									});
+							} else {
+								let registerdata = {
+									employeeId: loginInfo && loginInfo.em ? loginInfo.em.employeeId : vm.$user.employeeId,
+									datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+									stampNumber: null,
+									stampButton: {
+										pageNo: layout.pageNo,
+										buttonPositionNo: button.btnPositionNo
+									},
+									refActualResult: {
+										cardNumberSupport: null,
+										workPlaceId: self.workPlaceId,
+										workLocationCD: self.worklocationCode,
+										workTimeCode: null,
+										overtimeDeclaration: null
+									},
+									authcMethod: loginInfo.authType
+								};
+
+								service.stampInput(registerdata).done((res) => {
+
+									const param = {
+										sid: employeeId,
+										date: vm.$date.now()
+									}
+
+									service.createDaily(param);
+
+									//phat nhac
+									self.playAudio(button.audioType);
+									// const employeeInfo = { mode, employeeId, employeeCode, workLocationName, workPlaceId };
+
+									if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+										self.openScreenC(button, layout, loginInfo.em);
+									} else {
+										self.openScreenB(button, layout, loginInfo.em);
+									}
+
+								}).fail((res) => {
+									dialog.alertError({ messageId: res.messageId });
+								}).always(() => {
+									self.getStampToSuppress();
+									block.clear();
+								});
+							}
 						}
 					});
 
