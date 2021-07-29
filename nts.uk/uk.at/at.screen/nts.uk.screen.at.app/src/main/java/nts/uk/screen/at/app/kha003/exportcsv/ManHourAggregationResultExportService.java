@@ -5,7 +5,6 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.DisplayFormat;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.TotalUnit;
 import nts.uk.screen.at.app.kha003.SummaryItemDetailDto;
 import nts.uk.screen.at.app.kha003.SummaryItemDto;
@@ -13,15 +12,11 @@ import nts.uk.screen.at.app.kha003.VerticalValueDailyDto;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.csv.CSVFileData;
 import nts.uk.shr.infra.file.csv.CSVReportGenerator;
-import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +26,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
     @Inject
     private CSVReportGenerator generator;
 
-    private static final String CODE_HEADER = "KHA003_103";
+    private static final String DATE_FORMAT = "yyyy/MM/dd";
 
     private static final String VERTICAL_TOTAL = "KHA003_99";
 
@@ -50,12 +45,15 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         val outputContent = query.getOutputContent();
         val totalUnit = formatSetting.getTotalUnit();
         int maxRangeDate = totalUnit == TotalUnit.DATE.value ? query.getPeriod().getDateList().size() : query.getPeriod().getYearMonthList().size();
+        String dateRange = totalUnit == TotalUnit.DATE.value
+                ? query.getPeriod().getDatePeriod().start().toString(DATE_FORMAT) + "　～　" + query.getPeriod().getDatePeriod().end().toString(DATE_FORMAT)
+                : query.getPeriod().getYearMonthPeriod().start().toString() + "　～　" + query.getPeriod().getYearMonthPeriod().end().toString();
 
         // Flag display total  (USE = 1)
         val isDisplayTotal = formatSetting.getDispHierarchy() == 1;
 
         // create Header list
-        List<String> headerList = this.createTextHeader(query, isDisplayTotal);
+        List<String> headerList = this.createTextHeader(query, isDisplayTotal, dateRange);
 
         // Add data source
         List<Map<String, Object>> dataSource = new ArrayList<>();
@@ -144,7 +142,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                                 }
                                 if (isDispTotal) {  // Tong level 4 theo chieu doc
                                     Map<String, Object> rowTotalLv4 = new HashMap<>();
-                                    rowTotalLv4.put(headerList.get(5), headerList.get(5) + TextResource.localize(TOTAL));
+                                    rowTotalLv4.put(headerList.get(5), level3.getDisplayInfo().getName() + TextResource.localize(TOTAL));
                                     for (int i = 8; i < headerList.size(); i++) {
                                         val mapTotal4 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
                                         rowTotalLv4.put(headerList.get(i), mapTotal4.getOrDefault(headerList.get(i), ""));
@@ -156,7 +154,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                         }
                         if (isDispTotal) {  // Tong level 3 theo chieu doc
                             Map<String, Object> rowTotalLv3 = new HashMap<>();
-                            rowTotalLv3.put(headerList.get(3), headerList.get(3) + TextResource.localize(TOTAL));
+                            rowTotalLv3.put(headerList.get(3), level2.getDisplayInfo().getName() + TextResource.localize(TOTAL));
                             for (int i = 6; i < headerList.size(); i++) {
                                 val mapTotal2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
                                 rowTotalLv3.put(headerList.get(i), mapTotal2.getOrDefault(headerList.get(i), ""));
@@ -168,7 +166,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                 }
                 if (isDispTotal) { // Tong level 2 theo chieu doc
                     Map<String, Object> rowTotalLv2 = new HashMap<>();
-                    rowTotalLv2.put(headerList.get(1), headerList.get(1) + TextResource.localize(TOTAL));
+                    rowTotalLv2.put(headerList.get(1), level1.getDisplayInfo().getName() + TextResource.localize(TOTAL));
                     for (int i = 4; i < headerList.size(); i++) {
                         val mapTotal2 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
                         rowTotalLv2.put(headerList.get(i), mapTotal2.getOrDefault(headerList.get(i), ""));
@@ -207,7 +205,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
      * @param isDispTotal
      * @return
      */
-    private List<String> createTextHeader(ManHourDataSummaryQuery query, boolean isDispTotal) {
+    private List<String> createTextHeader(ManHourDataSummaryQuery query, boolean isDispTotal, String dateRange) {
         val formatSetting = query.getSummaryTableFormat();
         List<String> lstHeader = new ArrayList<>();
         // Sort before adding
@@ -215,7 +213,12 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         // Add code & name to header
         for (int i = 0; i < sortedList.size(); i++) {
             SummaryItemDto item = sortedList.get(i);
-            lstHeader.add(TextResource.localize(getCodeHeader(i + 1)));
+            if (i == 0) {
+                val name = query.getSummaryTableFormat().getName();
+                lstHeader.add(name + "\n" + dateRange + "\n" + TextResource.localize(getCodeHeader(i + 1)));
+            } else {
+                lstHeader.add(TextResource.localize(getCodeHeader(i + 1)));
+            }
             lstHeader.add(item.getItemTypeName());
         }
 
@@ -232,8 +235,8 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         return lstHeader;
     }
 
-    private String getCodeHeader(int num){
-        switch (num){
+    private String getCodeHeader(int num) {
+        switch (num) {
             case 1:
                 return "KHA003_117";
             case 2:
