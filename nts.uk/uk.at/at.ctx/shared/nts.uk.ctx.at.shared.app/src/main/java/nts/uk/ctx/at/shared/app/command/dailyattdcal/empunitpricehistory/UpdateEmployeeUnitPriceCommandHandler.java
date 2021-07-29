@@ -57,7 +57,7 @@ public class UpdateEmployeeUnitPriceCommandHandler extends CommandHandler<Update
 				throw new RuntimeException("Invalid EmployeeUnitPriceHistory");
 			}
 			
-			GeneralDate endDate = command.getEndDate() !=null? command.getEndDate() : GeneralDate.max();
+			GeneralDate endDate = command.getEndDate() != null ? command.getEndDate() : GeneralDate.max();
 			eupHistOp.get().changeSpan(itemToBeUpdated.get(), new DatePeriod(command.getStartDate(), endDate));
 			eupHistRepo.update(itemToBeUpdated.get());
 		}

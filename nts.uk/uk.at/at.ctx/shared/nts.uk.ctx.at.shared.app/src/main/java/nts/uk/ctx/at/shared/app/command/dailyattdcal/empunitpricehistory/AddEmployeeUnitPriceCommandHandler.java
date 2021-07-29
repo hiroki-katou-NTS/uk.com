@@ -58,7 +58,7 @@ public class AddEmployeeUnitPriceCommandHandler extends CommandHandlerWithResult
 		}
 		
 		if (eupHist.getHistoryItems().size() > 0) {
-			List<DateHistoryItem> histItemList = eupHistOp.get().getHistoryItems();
+			List<DateHistoryItem> histItemList = eupHist.getHistoryItems();
 			Comparator<DateHistoryItem> compareByStartDate = 
     				(DateHistoryItem hist1, DateHistoryItem hist2) 
     				-> hist1.start().compareTo(hist2.start());

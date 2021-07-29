@@ -27,19 +27,17 @@ public interface EmployeeUnitPriceHistoryRepository {
 	
 	Optional<EmployeeUnitPriceHistory> getBySidDesc(String cid, String sid);
 	
-	List<EmployeeUnitPriceHistory> getBySidsAndCid(List<String> employeeIds,GeneralDate baseDate, String cid);
+	List<EmployeeUnitPriceHistory> getBySidsAndCid(List<String> employeeIds, String cid);
+	
+	List<EmployeeUnitPriceHistory> getBySidsAndCidAndBaseDate(List<String> employeeIds, String cid, GeneralDate baseDate);
 	
 	void add(EmployeeUnitPriceHistory employeeUnitPriceHistory);
 	
 	void add(String sid, DateHistoryItem domain);
 	
-	void addAll(List<EmployeeUnitPriceHistory> employeeUnitPriceHistoryList);
-	
 	void update(EmployeeUnitPriceHistory employeeUnitPriceHistory);
 	
 	void update(DateHistoryItem itemToBeUpdated);
-	
-	void updateAll(List<EmployeeUnitPriceHistory> employeeUnitPriceHistoryList);
 	
 	void delete(String companyId, String empId , String historyId);
 	

@@ -23,11 +23,7 @@ public interface EmployeeUnitPriceHistoryItemRepository {
 	
 	void add(EmployeeUnitPriceHistoryItem employeeUnitPriceHistoryItem);
 	
-	void addAll(List<EmployeeUnitPriceHistoryItem> employeeUnitPriceHistoryItemList);
-	
 	void update(EmployeeUnitPriceHistoryItem employeeUnitPriceHistoryItem);
-	
-	void updateAll(List<EmployeeUnitPriceHistoryItem> employeeUnitPriceHistoryItemList);
 
 	void delete(String companyId, String empId , String historyId); 
 }

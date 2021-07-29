@@ -100,7 +100,7 @@ public class EmployeeUnitPriceFinder implements PeregFinder<EmployeeUnitPriceDto
 			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
 		
-		List<EmployeeUnitPriceHistory> eupHistList = eupHistRepo.getBySidsAndCid(sids, query.getStandardDate(), cid);
+		List<EmployeeUnitPriceHistory> eupHistList = eupHistRepo.getBySidsAndCidAndBaseDate(sids, cid, query.getStandardDate());
 		
 		Map<String, DateHistoryItem> dateHistList = new HashMap<>();
 

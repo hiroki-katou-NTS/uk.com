@@ -74,6 +74,10 @@ public class JpaEmployeeUnitPriceHistoryItemRepository extends JpaRepository imp
 	
 	@Override
 	public List<EmployeeUnitPriceHistoryItem> getByHistIdList(List<String> histIdList) {
+		if (histIdList.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		List<KrcmtUnitPriceItem> listHistItem = this.queryProxy()
 				.query(SELECT_BY_HISTIDLLIST, KrcmtUnitPriceItem.class)
 				.setParameter("histIdList", histIdList)
@@ -104,17 +108,6 @@ public class JpaEmployeeUnitPriceHistoryItemRepository extends JpaRepository imp
 	}
 
 	@Override
-	public void addAll(List<EmployeeUnitPriceHistoryItem> employeeUnitPriceHistoryItemList) {
-		List<KrcmtUnitPriceItem> entityList = new ArrayList<KrcmtUnitPriceItem>();
-		employeeUnitPriceHistoryItemList.forEach(domain -> {
-			entityList.addAll(toEntity(domain));
-		});
-		if (!entityList.isEmpty()) {
-			this.commandProxy().insertAll(entityList);
-		}
-	}
-
-	@Override
 	public void update(EmployeeUnitPriceHistoryItem employeeUnitPriceHistoryItem) {
 		List<KrcmtUnitPriceItem> oldEntities = this.queryProxy()
 				.query(SELECT_BY_HISTID, KrcmtUnitPriceItem.class)
@@ -129,13 +122,6 @@ public class JpaEmployeeUnitPriceHistoryItemRepository extends JpaRepository imp
 				KrcmtUnitPriceItem y = newDataOldId.get();
 				x.hourlyUnitPrice = y.hourlyUnitPrice;
 			}
-		});
-	}
-
-	@Override
-	public void updateAll(List<EmployeeUnitPriceHistoryItem> employeeUnitPriceHistoryItemList) {
-		employeeUnitPriceHistoryItemList.forEach(eupHistItem -> {
-			this.update(eupHistItem);
 		});
 	}
 

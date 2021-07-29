@@ -44,7 +44,10 @@ public class JpaEmployeeUnitPriceHistoryRepository extends JpaRepository impleme
 	private static final String SELECT_BY_HISTIDLIST = "SELECT up FROM KrcmtUnitPrice up up.pk.sid = :sid AND up.pk.histId IN :histIdList";
 	
 	private static final String SELECT_BY_SIDS_AND_CID = "SELECT up FROM KrcmtUnitPrice up "
-			+ " WHERE up.cid = :cid AND up.startDate <= :baseDate AND :baseDate <= up.endDate AND up.pk.sid IN :sids";
+			+ " WHERE up.cid = :cid AND up.pk.sid IN :sids ORDER BY up.pk.sid, up.startDate DESC";
+	
+	private static final String SELECT_BY_SIDS_AND_CID_AND_BASEDATE = "SELECT up FROM KrcmtUnitPrice up "
+			+ " WHERE up.cid = :cid AND up.pk.sid IN :sids AND up.startDate <= :baseDate AND :baseDate <= up.endDate";
 	
 	private static final String SELECT_BY_SID_DESC = "SELECT up FROM KrcmtUnitPrice up WHERE up.cid = :cid AND up.pk.sid = :sid ORDER BY up.startDate DESC";
 	
@@ -110,10 +113,14 @@ public class JpaEmployeeUnitPriceHistoryRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public List<EmployeeUnitPriceHistory> getBySidsAndCid(List<String> employeeIds, GeneralDate baseDate, String cid) {
+	public List<EmployeeUnitPriceHistory> getBySidsAndCid(List<String> employeeIds, String cid) {
+		if (employeeIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		List<KrcmtUnitPrice> listHist = this.queryProxy()
 				.query(SELECT_BY_SIDS_AND_CID, KrcmtUnitPrice.class)
-				.setParameter("cid", cid).setParameter("sids", employeeIds).setParameter("baseDate", baseDate)
+				.setParameter("cid", cid).setParameter("sids", employeeIds)
 				.getList();
 
 		if (listHist.isEmpty()) {
@@ -169,20 +176,13 @@ public class JpaEmployeeUnitPriceHistoryRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public void addAll(List<EmployeeUnitPriceHistory> employeeUnitPriceHistoryList) {
-		List<KrcmtUnitPrice> entityList = new ArrayList<KrcmtUnitPrice>();
-		employeeUnitPriceHistoryList.forEach(domain -> {
-			entityList.addAll(toEntity(domain));
-		});
-		if (!entityList.isEmpty()) {
-			this.commandProxy().insertAll(entityList);
-		}
-	}
-
-	@Override
 	public void update(EmployeeUnitPriceHistory employeeUnitPriceHistory) {
 		List <String> lstHistId = employeeUnitPriceHistory.getHistoryItems()
 				.stream().map( c -> c.identifier()).collect(Collectors.toList());
+		
+		if (lstHistId.isEmpty()) {
+			return;
+		}
 
 		List<KrcmtUnitPrice> oldData = this.queryProxy().query(SELECT_BY_HISTIDLIST, KrcmtUnitPrice.class)
 																  .setParameter("sid", employeeUnitPriceHistory.getSid())
@@ -220,13 +220,6 @@ public class JpaEmployeeUnitPriceHistoryRepository extends JpaRepository impleme
 	}
 
 	@Override
-	public void updateAll(List<EmployeeUnitPriceHistory> employeeUnitPriceHistoryList) {
-		employeeUnitPriceHistoryList.forEach(eupHist -> {
-			this.update(eupHist);
-		});
-	}
-
-	@Override
 	public void delete(String companyId, String empId, String historyId) {
 		this.commandProxy().remove(KrcmtUnitPrice.class, new KrcmtUnitPricePK(empId, historyId));
 	}
@@ -245,5 +238,34 @@ public class JpaEmployeeUnitPriceHistoryRepository extends JpaRepository impleme
 	@Override
 	public void add(String sid, DateHistoryItem domain) {
 		this.commandProxy().insert(toEntity(sid, domain));
+	}
+
+	@Override
+	public List<EmployeeUnitPriceHistory> getBySidsAndCidAndBaseDate(List<String> employeeIds, String cid,
+			GeneralDate baseDate) {
+		if (employeeIds.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<KrcmtUnitPrice> listHist = this.queryProxy()
+				.query(SELECT_BY_SIDS_AND_CID_AND_BASEDATE, KrcmtUnitPrice.class)
+				.setParameter("cid", cid).setParameter("sids", employeeIds).setParameter("baseDate", baseDate)
+				.getList();
+
+		if (listHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<EmployeeUnitPriceHistory> listHistDomain = new ArrayList<EmployeeUnitPriceHistory>();
+		
+		Map<String, List<KrcmtUnitPrice>> listHistMapBySid = listHist.stream().collect(Collectors.groupingBy(entity -> entity.pk.sid));
+		
+		for (Map.Entry<String, List<KrcmtUnitPrice>> entry : listHistMapBySid.entrySet()) {
+		    if (!entry.getValue().isEmpty()) {
+		    	listHistDomain.add(toHistDomain(entry.getValue()));
+		    }
+		}
+		
+		return listHistDomain;
 	}
 }
