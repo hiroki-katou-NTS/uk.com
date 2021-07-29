@@ -1,12 +1,10 @@
-#contents-area {
-	margin-left: 20px!important;
-}
 .ksu-002a {
     width: 903px;
+    margin-left: 20px!important;
 }
 
-#functions-area .ksu-002a {
-    padding-left: 5px;
+#functions-area .proceed{
+	margin-left: 0px!important;
 }
 
 .ksu-002a .btn-right {
