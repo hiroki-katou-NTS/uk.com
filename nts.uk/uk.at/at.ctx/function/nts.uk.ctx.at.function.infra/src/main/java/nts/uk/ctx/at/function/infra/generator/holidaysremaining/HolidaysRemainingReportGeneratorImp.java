@@ -75,7 +75,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     @Inject
     private SpecialHolidayFrameRepository specialHolidayFrameRepository;
 
-    private static final String TEMPLATE_FILE = "report/KDR001_V6.xlsx";
+    private static final String TEMPLATE_FILE = "report/KDR001_template.xlsx";
     private static final String REPORT_FILE_NAME = "休暇残数管理表.xlsx";
     private static final int NUMBER_ROW_OF_PAGE = 32;
     private static final int NUMBER_ROW_OF_HEADER = 5;
@@ -84,6 +84,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private static final int TOTAL_MONTH_IN_YEAR = 12;
     private static final int MAX_ROW_IN_PAGE = 28;
     private static final int MAX_ROW_IN_PAGE_TEMPLATE = 60;
+
+    private static final String COLON = "：";
+    private static final String SPACE = "　";
 
     @Override
     public void generate(FileGeneratorContext generatorContext, HolidayRemainingDataSource dataSource) {
@@ -106,19 +109,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             } else if (dataSource.getPageBreak() == BreakSelection.Individual.value) {
                 printPersonBreakPage(worksheet, dataSource, pageBreaks);
             }
-            PageSetup pageSetup = worksheet.getPageSetup();
-            pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-            pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-            pageSetup.setFitToPagesTall(0);
-            pageSetup.setFitToPagesWide(0);
-            pageSetup.setFirstPageNumber(1);
 
-            pageSetup.setCenterHorizontally(true);
-            pageSetup.setHeaderMarginInch(0.8);
-            pageSetup.setRightMarginInch(1);
-            pageSetup.setLeftMarginInch(1);
-            pageSetup.setTopMarginInch(1.5);
-            pageSetup.setBottomMarginInch(1.5);
             removeTemplate(worksheet);
             designer.getDesigner().setWorkbook(workbook);
             designer.processDesigner();
@@ -134,11 +125,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
         YearMonth startMonth = dataSource.getStartMonth().yearMonth();
         YearMonth endMonth = dataSource.getEndMonth().yearMonth();
-
-        double columnWidth = 0.36;
-        for (int i = 0; i < NUMBER_COLUMN; i++) {
-            cells.setColumnWidthInch(i, columnWidth);
-        }
+        
         // B1_1, B1_2 // Update ~ -> KDR001_73
         cells.get(1, 0).setValue(TextResource.localize("KDR001_2") +
                 dataSource.getStartMonth().toString("yyyy/MM")
@@ -198,8 +185,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val countStep = checkStepCount(employee, dataSource);
             if ((MAX_ROW_IN_PAGE - counts) > (countStep + 1)) {
                 cells.copyRows(cells, 5, firstRow, 1);
-                cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                        + "　" + employee.getWorkplaceName());
+                cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                        + SPACE + employee.getWorkplaceName());
                 firstRow += 1;
                 counts += 1;
                 if (i >= 1) {
@@ -213,8 +200,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 }
                 pageBreaks.add(firstRow);
                 cells.copyRows(cells, 0, firstRow, 6);
-                cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                        + "　" + employee.getWorkplaceName());
+                cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                        + SPACE + employee.getWorkplaceName());
                 for (int index = 0; index < NUMBER_COLUMN; index++) {
                     setBottomBorderStyle(cells.get(firstRow + 5, index));
                 }
@@ -277,8 +264,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             val countStep = checkStepCount(employee, dataSource);
             if ((MAX_ROW_IN_PAGE - counts) > (countStep + 1)) {
                 cells.copyRows(cells, 5, firstRow, 1);
-                cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                        + "　" + employee.getWorkplaceName());
+                cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                        + SPACE + employee.getWorkplaceName());
                 firstRow += 1;
                 counts += 1;
                 if (i >= 1) {
@@ -292,8 +279,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 }
                 pageBreaks.add(firstRow);
                 cells.copyRows(cells, 0, firstRow, 6);
-                cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                        + "　" + employee.getWorkplaceName());
+                cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                        + SPACE + employee.getWorkplaceName());
                 for (int index = 0; index < NUMBER_COLUMN; index++) {
                     setBottomBorderStyle(cells.get(firstRow + 5, index));
                 }
@@ -330,8 +317,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             String employeeIds = empIds.get(i);
             HolidaysRemainingEmployee employee = dataSource.getMapEmployees().get(employeeIds);
             cells.copyRows(cells, 5, firstRow, 1);
-            cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             firstRow += 1;
             checkDto.setCount(6);
             checkDto.setFirstRow(firstRow);
@@ -351,8 +338,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         // print Header
         cells.copyRows(cells, 0, firstRow, NUMBER_ROW_OF_HEADER + 1);
         // D1_1, D1_2
-        cells.get(firstRow + NUMBER_ROW_OF_HEADER, 0).setValue(TextResource.localize("KDR001_12") + ": "
-                + employee.getWorkplaceCode() + "　" + employee.getWorkplaceName());
+        cells.get(firstRow + NUMBER_ROW_OF_HEADER, 0).setValue(TextResource.localize("KDR001_12")
+                + employee.getWorkplaceCode() + SPACE + employee.getWorkplaceName());
         firstRow += NUMBER_ROW_OF_HEADER + 1;
         val checkDto = new DtoCheck(firstRow, 0, false, 0);
         val printHolidayRemainingEachPerson = printHolidayRemainingEachPerson(worksheet, firstRow, employee, dataSource, checkDto);
@@ -450,8 +437,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             for (int index = 0; index < NUMBER_COLUMN; index++) {
                 setBottomBorderStyle(cells.get(firstRow + 5, index));
             }
@@ -508,8 +495,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         }
                         pageBreaks.add(firstRow);
                         cells.copyRows(cells, 0, firstRow, 6);
-                        cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                                + "　" + employee.getWorkplaceName());
+                        cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                                + SPACE + employee.getWorkplaceName());
                         for (int index = 0; index < NUMBER_COLUMN; index++) {
                             setBottomBorderStyle(cells.get(firstRow + 5, index));
                         }
@@ -950,8 +937,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             for (int index = 0; index < NUMBER_COLUMN; index++) {
                 setBottomBorderStyle(cells.get(firstRow + 5, index));
             }
@@ -1111,8 +1098,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             for (int index = 0; index < NUMBER_COLUMN; index++) {
                 setBottomBorderStyle(cells.get(firstRow + 5, index));
             }
@@ -1444,8 +1431,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             for (int index = 0; index < NUMBER_COLUMN; index++) {
                 setBottomBorderStyle(cells.get(firstRow + 5, index));
             }
@@ -1671,8 +1658,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             for (int index = 0; index < NUMBER_COLUMN; index++) {
                 setBottomBorderStyle(cells.get(firstRow + 5, index));
             }
@@ -1782,8 +1769,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             for (int index = 0; index < NUMBER_COLUMN; index++) {
                 setBottomBorderStyle(cells.get(firstRow + 5, index));
             }
@@ -2049,8 +2036,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             for (int index = 0; index < NUMBER_COLUMN; index++) {
                 setBottomBorderStyle(cells.get(firstRow + 5, index));
             }
@@ -2251,8 +2238,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 }
                 pageBreaks.add(firstRow);
                 cells.copyRows(cells, 0, firstRow, 6);
-                cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                        + "　" + employee.getWorkplaceName());
+                cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                        + SPACE + employee.getWorkplaceName());
                 for (int index = 0; index < NUMBER_COLUMN; index++) {
                     setBottomBorderStyle(cells.get(firstRow + 5, index));
                 }
@@ -2511,8 +2498,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
 //            for (int index = 0; index < NUMBER_COLUMN; index++) {
 //                setBottomBorderStyle(cells.get(firstRow + 5, index));
 //            }
@@ -2625,8 +2612,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             firstRow += 6;
             count = 6;
         }
@@ -2737,8 +2724,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             }
             pageBreaks.add(firstRow);
             cells.copyRows(cells, 0, firstRow, 6);
-            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-                    + "　" + employee.getWorkplaceName());
+            cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+                    + SPACE + employee.getWorkplaceName());
             firstRow += 6;
             count = 6;
         }
@@ -2980,13 +2967,13 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
     private void setTopBorderStyle(Cell cell) {
         Style style = cell.getStyle();
-        style.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
         cell.setStyle(style);
     }
 
     private void setBottomBorderStyle(Cell cell) {
         Style style = cell.getStyle();
-        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
         cell.setStyle(style);
     }
 
@@ -3022,10 +3009,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         pageSetup.setFirstPageNumber(1);
         //pageSetup.setPrintArea("A1:N");
         //ý 1 của bug #102883  事象(1)
-        pageSetup.setHeader(0, "&7&\"MS ゴシック\"" + dataSource.getCompanyName());
-        pageSetup.setHeader(1, "&14&\"MS ゴシック,Bold\"" + title);
+        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
+        pageSetup.setHeader(1, "&16&\"MS ゴシック,Bold\"" + title);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&7&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
+        pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
 
     }
 
@@ -3449,10 +3436,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         for (int j = 0; j < 2; j++) {
             setTopBorderStyle(cells.get(firstRow, j));
         }
-        val d2_7 = employee.getPositionCode() + "  "
+        val d2_7 = employee.getPositionCode() + SPACE
                 + employee.getPositionName();
         // D2_6 +D2_4: EMPLOYMENT CODE +EMPLOYMENT NAME
-        val d2_6 = employee.getEmploymentCode() + "  "
+        val d2_6 = employee.getEmploymentCode() + SPACE
                 + employee.getEmploymentName();
         Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
                 .getHolidayRemainingInfor().getGrantDate();
@@ -3460,12 +3447,12 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 && dataSource.getHolidaysRemainingManagement()
                 .getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
 //        cells.copyRows(cells, 0, firstRow, 6);
-//        cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + ": " + employee.getWorkplaceCode()
-//            + "　" + employee.getWorkplaceName());
+//        cells.get(firstRow + 5, 0).setValue(TextResource.localize("KDR001_12") + employee.getWorkplaceCode()
+//            + SPACE + employee.getWorkplaceName());
 //    val rowIndexDs = firstRow + 6;
         // merger cột  D2_1 + D2_2
         cells.merge(firstRow, 0, 1, 2, true);
-        cells.get(firstRow, 0).setValue(employee.getEmployeeCode() + " " + employee.getEmployeeName());
+        cells.get(firstRow, 0).setValue(employee.getEmployeeCode() + SPACE + employee.getEmployeeName());
         // D2_7 + D25 (POISITION CODE + POISITION NAME)
         cells.merge(firstRow + 1, 0, 1, 2, true);
         cells.get(firstRow + 1, 0).setValue(d2_7);
