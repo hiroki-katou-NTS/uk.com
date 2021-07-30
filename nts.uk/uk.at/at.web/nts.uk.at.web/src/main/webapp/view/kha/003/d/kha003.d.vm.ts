@@ -756,7 +756,7 @@ module nts.uk.at.kha003.d {
 
         correctformat(date: any): any {
             if (date.length === 6) {
-                return (date.substring(0, 4) + "/" + date.substring(4))
+                return (date.substring(0, 4) + "-" + date.substring(4))
             }
             return date;
         }
@@ -769,8 +769,8 @@ module nts.uk.at.kha003.d {
         getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1) {
             let vm = this;
             if (displayFormat === 1) {
-                fromDate = fromDate.replace('/', '-');
-                toDate = toDate.replace('/', '-');
+                fromDate = vm.correctformat(fromDate);
+                toDate = vm.correctformat(toDate);
             }
             fromDate = new Date(fromDate);
             toDate = new Date(toDate);
