@@ -50,7 +50,6 @@ module nts.uk.at.kha003.d {
             const vm = this;
             _.extend(window, {vm});
             vm.$window.storage('kha003AShareData').done((aData: any) => {
-                console.log('in side kha003 D:' + aData)
                 vm.c21Params(aData.c21);
                 vm.c31Params(aData.c31);
                 vm.c41Params(aData.c41);
@@ -68,11 +67,10 @@ module nts.uk.at.kha003.d {
                     vm.$window.storage('kha003CShareData').done((cData: any) => {
                         vm.cScreenData(cData);
                         vm.dateRange(cData.dateRange);
-                        vm.$window.storage('kha003AShareData').done((aData: any) => {
-                            vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate, aData.totalUnit);
+                        vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate, aData.totalUnit).done(() => {
+                            let command = vm.getItemData(aData, bData, cData);
+                            vm.initData(command);
                         })
-                        let command = vm.getItemData(aData, bData, cData);
-                        vm.initData(command);
                     })
                 })
             })
@@ -599,7 +597,6 @@ module nts.uk.at.kha003.d {
         match(aScreenData: any, cScreenData: any, type: any) {
             let params = '';
             jQuery.each(aScreenData, function (i, val) {
-                console.log(i + ":" + val)
                 if (val.type == type) {
                     params = i;
                     return;
@@ -766,8 +763,9 @@ module nts.uk.at.kha003.d {
          * @param startDate
          * @param endDate
          */
-        getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1) {
+        getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1): JQueryPromise<any> {
             let vm = this;
+            let dfd = $.Deferred<any>();
             if (displayFormat === 1) {
                 fromDate = vm.correctformat(fromDate);
                 toDate = vm.correctformat(toDate);
@@ -808,6 +806,8 @@ module nts.uk.at.kha003.d {
                     }
                     break;
             }
+            dfd.resolve();
+            return dfd.promise();
         }
 
         mounted() {
