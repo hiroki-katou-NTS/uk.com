@@ -44,7 +44,7 @@ public class NRConvertInfo implements StampInfoConversion {
 		case LEAVE_OVERTIME:
 		case LEAVE_FLEX:
 			if (entranceExit == NotUseAtr.USE)
-				return Optional.of(ChangeClockArt.OVER_TIME);
+				return Optional.of(ChangeClockArt.BRARK);
 			return Optional.of(ChangeClockArt.WORKING_OUT);
 
 		case GO_OUT:
