@@ -703,7 +703,11 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		Optional<WorkTypeCode> initWorkTypeCd = Optional.empty();
 		Optional<WorkTimeCode> initWorkTimeCd = Optional.empty();
 		
-		if(!actualContentDisplayList.isEmpty()) { // Input．表示する実績内容をチェックする
+		boolean isArchivement = !CollectionUtil.isEmpty(actualContentDisplayList) ? 
+				actualContentDisplayList.get(0).getOpAchievementDetail().isPresent()
+				: false;
+		
+		if(isArchivement) { // Input．表示する実績内容をチェックする
 			//	休出の法定区分を取得
 			Optional<HolidayAtr> holidayAtr = 
 					judgmentOneDayHoliday.getHolidayAtr(
