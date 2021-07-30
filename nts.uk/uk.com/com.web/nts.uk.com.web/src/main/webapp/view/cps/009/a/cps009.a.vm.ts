@@ -1254,14 +1254,16 @@ module nts.uk.com.view.cps009.a.viewmodel {
                                 workTypeCodes: workType && _.map(self.selection(), x => x.optionValue),
                                 selectedWorkTypeCode: self.selectedCode() && ko.toJS(self.selectedCode),
                                 workTimeCodes: _.map(itemWorkTime != undefined ? itemWorkTime.selection : [], x => x.optionValue),
-                                selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode)
+                                selectedWorkTimeCode: ko.toJS(itemWorkTime.selectedCode),
+                                showNone: false
                             };
                         } else {
                             objShare = {
                                 workTypeCodes: _.map(itemWorkType != undefined ? itemWorkType.selection : [], x => x.optionValue),
                                 selectedWorkTypeCode: ko.toJS(itemWorkType.selectedCode),
                                 workTimeCodes: workTime && _.map(self.selection(), x => x.optionValue),
-                                selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode)
+                                selectedWorkTimeCode: self.selectedCode() && ko.toJS(self.selectedCode),
+                                showNone: false
                             };
                         }
 

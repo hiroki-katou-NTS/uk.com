@@ -81,7 +81,7 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 					data.getSId(),
 					new ChildCareNurseUsedNumber(
 							new DayNumberOfUse(data.getCareUsedDays().doubleValue())
-							, data.getCareUsedDays() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getCareUsedDays().intValue()))
+							, data.getCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getCareUsedTimes().intValue()))
 					)
 			);
 	
