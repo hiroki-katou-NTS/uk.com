@@ -187,7 +187,7 @@ module nts.uk.ui.at.ksu002.a {
 				vm.params.hasChange = ko.computed(() => false)
 			}
 			rootVm.startupProcessingInformation.subscribe((v: any) => {
-				if(v){
+				if(v && v.scheFunctionControl){
 					vm.isDisplayActual(v.scheFunctionControl.isDisplayActual);
 				}else{
 					vm.isDisplayActual(false);
