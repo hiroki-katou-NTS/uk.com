@@ -74,7 +74,7 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 					data.getSId(),
 					new ChildCareNurseUsedNumber(
 							new DayNumberOfUse(data.getCareUsedDays().doubleValue())
-							, data.getCareUsedDays() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getCareUsedDays().intValue()))
+							, data.getCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getCareUsedTimes().intValue()))
 					)
 			);
 			careUsedNumberRepository.add(cId, usedNumber);
