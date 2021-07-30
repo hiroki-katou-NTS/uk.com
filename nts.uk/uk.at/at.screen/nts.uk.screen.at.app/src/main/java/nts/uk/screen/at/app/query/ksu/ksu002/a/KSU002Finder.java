@@ -141,7 +141,7 @@ public class KSU002Finder {
 	
 	/**
 	 * @name 月の集計データを集計する
-	 * @param integrationOfDailyList 実績リスト
+	 * @param integrationOfDailyList 予定リスト
 	 * @param integrationOfDailyListDaily 実績リスト
 	 */
 	public MonthlyDataDto getMonthlyData(EmployeeId employeeId, DatePeriod period, List<IntegrationOfDaily> integrationOfDailyList, List<IntegrationOfDaily> integrationOfDailyListDaily) {
