@@ -41,10 +41,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.C
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -97,6 +96,9 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	
 	@Inject
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+	
+	@Inject
+	private DailyRecordShareFinder dailyRecordShareFinder;
 
 	@Override
 	protected void handle(CommandHandlerContext<ConfirmUseOfStampEmbossCommand> context) {
@@ -104,7 +106,8 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 
 		StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl(stampUsageRepo,
 				stampCardRepo, stampRecordRepo, stampDakokuRepo, createDailyResultDomainServiceNew, stampCardEditRepo,
-				sysEmpPub, companyAdapter, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd);
+				sysEmpPub, companyAdapter, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
+				dailyRecordShareFinder);
 
 		MakeUseJudgmentResults judgmentResults = StampFunctionAvailableService.decide(checkFuncRq, employeeId,
 				StampMeans.INDIVITION);
@@ -166,6 +169,8 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 		
+		private DailyRecordShareFinder dailyRecordShareFinder;
+		
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
 			return stampCardRepo.getListStampCard(sid);
@@ -221,23 +226,22 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		}
 
 		@Override
-		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
+		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag, integrationOfDaily);
 		}
 
 		@Override
-		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
+		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
-			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
+			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
 		}
 
 		@Override
-		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+		public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
-			return this.temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
+			return this.temporarilyReflectStampDailyAttd.reflectStamp(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 		
 		@Override
@@ -246,6 +250,10 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
 		}
 
+		@Override
+		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
+			return dailyRecordShareFinder.find(employeeId, date);
+		}
 	}
 
 }

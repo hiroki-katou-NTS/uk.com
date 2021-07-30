@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectProcessService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * @author ThanhNX
@@ -53,8 +55,20 @@ public class ConvertTimeRecordStampService {
 		Optional<StampCard> stampCard = require.getByCardNoAndContractCode(contractCode,
 				new StampNumber(stampReceptData.getIdNumber()));
 
-		StampDataReflectResult strampReflectResult = StampDataReflectProcessService.reflect(require,
-				Optional.ofNullable(stampCard.map(x -> x.getEmployeeId()).orElse(null)), stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
+		val employeeId = stampCard.map(x -> x.getEmployeeId()).orElse(null);
+		StampDataReflectResult stampReflectResult = StampDataReflectProcessService.reflect(require, requestSetting.get().getCompanyId().v(),
+				Optional.ofNullable(employeeId), stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
+		if (employeeId != null && stampReflectResult.getReflectDate().isPresent()) {
+			val domdaily = StampDataReflectProcessService.updateStampToDaily(require, requestSetting.get().getCompanyId().v(), employeeId,
+					stampReflectResult.getReflectDate().get(), stamp.get().getLeft());
+			if (domdaily.isPresent()) {
+				AtomTask task = stampReflectResult.getAtomTask().then(() -> {
+					require.addAllDomain(domdaily.get());
+				});
+				return Optional.of(Pair.of(Optional.empty(),
+						Optional.of(new StampDataReflectResult(stampReflectResult.getReflectDate(), task))));
+			}
+		}
 
 		// TODO: 処理にエラーがある場合、別の申請受信データの処理を続行
 //		if (!strampReflectResult.getReflectDate().isPresent()) {
@@ -64,7 +78,7 @@ public class ConvertTimeRecordStampService {
 //				require.insertLogAll(alEmpTer.get());
 //		}
 
-		return Optional.of(Pair.of(Optional.empty(), Optional.of(strampReflectResult)));
+		return Optional.of(Pair.of(Optional.empty(), Optional.of(stampReflectResult)));
 	}
 
 	// [pvt-1] 新しいを作成することができる
@@ -94,7 +108,7 @@ public class ConvertTimeRecordStampService {
 //
 //	}
 
-	public static interface Require extends StampDataReflectProcessService.Require {
+	public static interface Require extends StampDataReflectProcessService.Require, StampDataReflectProcessService.Require2 {
 
 		// [R-1]就業情報端末を取得する
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -116,5 +130,9 @@ public class ConvertTimeRecordStampService {
 
 		// [R-6] 就業担当者の社員ID（List）を取得する
 		public List<String> getListEmpID(String companyID, GeneralDate referenceDate);
+		
+		//[R-7] 日別実績を更新する
+		//DailyRecordAdUpService - 日別実績を登録する
+		void addAllDomain(IntegrationOfDaily domain);
 	}
 }

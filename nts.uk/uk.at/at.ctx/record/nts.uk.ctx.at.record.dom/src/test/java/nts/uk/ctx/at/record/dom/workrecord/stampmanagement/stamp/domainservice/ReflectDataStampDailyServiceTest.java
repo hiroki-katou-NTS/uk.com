@@ -18,11 +18,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.ReflectDataStampDailyService.Require;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
@@ -51,8 +47,7 @@ public class ReflectDataStampDailyServiceTest {
 	OutputTimeReflectForWorkinfo info = new OutputTimeReflectForWorkinfo();
 
 	@Injectable
-	private Require require;
-	
+	private ReflectDataStampDailyService.Require require;
 	
 	// Test all date is error
 	@Test
@@ -66,39 +61,19 @@ public class ReflectDataStampDailyServiceTest {
 		new Expectations() {
 			{
 				require.createDailyResult(
+						cid,
 						employeeId,
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
 						EmbossingExecutionFlag.ALL,
-						(EmployeeGeneralInfoImport)any,
-						(PeriodInMasterList)any,
-						new IntegrationOfDaily(
-								employeeId,
-								(GeneralDate)any,
-								null, 
-								null, 
-								null,
-								Optional.empty(), 
-								new ArrayList<>(), 
-								Optional.empty(), 
-								new BreakTimeOfDailyAttd(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								new ArrayList<>(),
-								Optional.empty(),
-								new ArrayList<>(),
-								Optional.empty()));
+						(IntegrationOfDaily)any);
 				
 				result = resultData;
 				
 			}
 		};
 		
-		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require,employeeId, stamp);
+		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, cid, employeeId, stamp);
 		
 		assertThat(optional.isPresent()).isFalse();
 
@@ -116,32 +91,12 @@ public class ReflectDataStampDailyServiceTest {
 		new Expectations() {
 			{
 				require.createDailyResult(
+						cid,
 						employeeId,
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
 						EmbossingExecutionFlag.ALL,
-						(EmployeeGeneralInfoImport)any,
-						(PeriodInMasterList)any,
-						new IntegrationOfDaily(
-								employeeId,
-								(GeneralDate)any,
-								null, 
-								null, 
-								null,
-								Optional.empty(), 
-								new ArrayList<>(), 
-								Optional.empty(), 
-								new BreakTimeOfDailyAttd(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								new ArrayList<>(),
-								Optional.empty(),
-								new ArrayList<>(),
-								Optional.empty()));
+						(IntegrationOfDaily)any);
 				
 				result = resultData;
 				
@@ -162,7 +117,7 @@ public class ReflectDataStampDailyServiceTest {
 			}
 		};
 		
-		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, employeeId, stamp);
+		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, cid, employeeId, stamp);
 		
 		assertThat(optional.isPresent()).isFalse();
 	}
@@ -177,32 +132,12 @@ public class ReflectDataStampDailyServiceTest {
 		new Expectations() {
 			{
 				require.createDailyResult(
+						cid,
 						employeeId,
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
 						EmbossingExecutionFlag.ALL,
-						(EmployeeGeneralInfoImport)any,
-						(PeriodInMasterList)any,
-						new IntegrationOfDaily(
-								employeeId,
-								(GeneralDate)any,
-								null, 
-								null, 
-								null,
-								Optional.empty(), 
-								new ArrayList<>(), 
-								Optional.empty(), 
-								new BreakTimeOfDailyAttd(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								new ArrayList<>(),
-								Optional.empty(),
-								new ArrayList<>(),
-								Optional.empty()));
+						(IntegrationOfDaily)any);
 				
 				result = resultData;
 				
@@ -223,7 +158,7 @@ public class ReflectDataStampDailyServiceTest {
 			}
 		};
 		
-		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, employeeId, stamp);
+		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, cid, employeeId, stamp);
 		
 		assertThat(optional.isPresent()).isTrue();
 		GeneralDate date = GeneralDate.today().addDays(-2);

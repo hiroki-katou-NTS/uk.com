@@ -760,6 +760,48 @@ public class CreateDailyResultDomainServiceNew {
 		}
 	}
 
+	public EmployeeGeneralAndPeriodMaster getMasterData(String companyId, String employeeId,
+			DatePeriod periodTime) {
+
+		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
+				.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
+		List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(Arrays.asList(employeeId), periodTime);
+		
+		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
+		
+		List<WorkingCondition> workingConditions = workingConditionRepo.getBySidsAndDatePeriod(Arrays.asList(employeeId),
+				periodTime);
+
+		// Map<Sid, List<DateHistoryItem>>
+		Map<String, List<DateHistoryItem>> mapLstDateHistoryItem = workingConditions.parallelStream().collect(
+				Collectors.toMap(WorkingCondition::getEmployeeId, WorkingCondition::getDateHistoryItem));
+		// 会社IDと期間から期間内の職場構成期間を取得する
+		// ReqList485
+		// List<DatePeriod> workPlaceHistory =
+		// this.affWorkplaceAdapter.getLstPeriod(companyId, periodTime);
+
+		// [No.647]期間に対応する職場構成を取得する
+		List<WorkPlaceConfig> workPlaceConfigLst = this.affWorkplaceAdapter.findByCompanyIdAndPeriod(companyId,
+				periodTime);
+		List<DatePeriod> workPlaceHistory = new ArrayList<>();
+
+		List<List<DatePeriod>> listWorkplaceHistory = workPlaceConfigLst.stream()
+				.map(c -> c.getWkpConfigHistory().stream().map(m -> m.getPeriod()).collect(Collectors.toList()))
+				.collect(Collectors.toList());
+
+		workPlaceHistory.addAll(listWorkplaceHistory.get(0));
+		
+		DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
+		List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod,
+				workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
+		
+		PeriodInMasterList periodInMasterList = getPeriodInMasterList(companyId, employeeId,
+				newPeriod, historySeparatedList, employeeGeneralInfoImport);
+		
+		return new EmployeeGeneralAndPeriodMaster(employeeGeneralInfoImport, periodInMasterList);
+		
+	}
+	
 	// 特定日、加給、計算区分情報を取得する
 	private PeriodInMasterList getPeriodInMasterList(String companyId, String employeeId, DatePeriod period,
 			List<GeneralDate> historySeparatedList, EmployeeGeneralInfoImport employeeGeneralInfoImport) {

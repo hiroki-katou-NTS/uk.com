@@ -39,6 +39,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.net.Ipv4Address;
@@ -120,7 +121,7 @@ public class ConvertTimeRecordStampServiceTest {
 				.overTimeHours("1101").midnightTime("1201").build();
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
+				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, new CompanyId("1"), null, null, null, null).build());
 
 		Optional<StampRecord> stampRecord = Optional.empty();
 //				Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
@@ -136,7 +137,7 @@ public class ConvertTimeRecordStampServiceTest {
 
 				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
 				result = stampRecord;
-
+	
 			}
 		};
 
@@ -152,7 +153,7 @@ public class ConvertTimeRecordStampServiceTest {
 				.overTimeHours("1101").midnightTime("1201").build();
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
+				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, new CompanyId("1"), null, null, null, null).build());
 
 		new Expectations() {
 			{
@@ -177,7 +178,7 @@ public class ConvertTimeRecordStampServiceTest {
 				.overTimeHours("1101").midnightTime("1201").build();
 
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
-				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, null, null, null, null, null).build());
+				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, new CompanyId("1"), null, null, null, null).build());
 
 		new Expectations() {
 			{
