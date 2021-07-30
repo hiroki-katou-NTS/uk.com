@@ -50,7 +50,6 @@ module nts.uk.at.kha003.d {
             const vm = this;
             _.extend(window, {vm});
             vm.$window.storage('kha003AShareData').done((aData: any) => {
-                console.log('in side kha003 D:' + aData)
                 vm.c21Params(aData.c21);
                 vm.c31Params(aData.c31);
                 vm.c41Params(aData.c41);
@@ -599,7 +598,6 @@ module nts.uk.at.kha003.d {
         match(aScreenData: any, cScreenData: any, type: any) {
             let params = '';
             jQuery.each(aScreenData, function (i, val) {
-                console.log(i + ":" + val)
                 if (val.type == type) {
                     params = i;
                     return;
