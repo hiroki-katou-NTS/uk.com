@@ -806,6 +806,7 @@ module nts.uk.at.kha003.d {
                     }
                     break;
             }
+            dfd.resolve();
             return dfd.promise();
         }
 
