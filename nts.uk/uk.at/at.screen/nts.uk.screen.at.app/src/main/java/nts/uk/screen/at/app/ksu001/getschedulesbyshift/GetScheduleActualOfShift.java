@@ -50,7 +50,7 @@ public class GetScheduleActualOfShift {
 				String sid = dataSchedule.employeeId;
 				GeneralDate date = dataSchedule.date;
 				Optional<ScheduleOfShiftDto> dataDaily = listDataDailyShift.stream().filter(data -> {
-					if (data.employeeId.equals(sid) && data.date.equals(date) && data.date.beforeOrEquals(GeneralDate.today()))
+					if (data.employeeId.equals(sid) && data.date.equals(date) && data.date.before(GeneralDate.today()))
 						return true;
 					return false;
 				}).findFirst();

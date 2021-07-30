@@ -31,7 +31,7 @@ import java.util.Locale;
 @Stateless
 public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsReportGenerator
         implements DisplayAnnualWorkLedgerReportGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR0004.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR004_v2.xlsx";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_PDF = 1;
@@ -76,20 +76,15 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         String companyName = dataSource.getCompanyName();
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);
-        pageSetup.setBottomMarginInch(1.5);
-        pageSetup.setTopMarginInch(1.5);
-        pageSetup.setLeftMarginInch(1.0);
-        pageSetup.setRightMarginInch(1.0);
-        pageSetup.setHeaderMarginInch(0.8);
         pageSetup.setCenterHorizontally(true);
-        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\""
+        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
                 + dataSource.getOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
 
         pageSetup.setHeader(2,
-                "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&7&\"MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setPrintArea("A1:Z" + dataSource.getLstAnnualWorkLedgerContent().size()*NUMBER_ROW_OF_PAGE);
     }
@@ -118,13 +113,13 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void printEmployeeInfor(Worksheet worksheet, int firstRow, AnnualWorkLedgerExportDataSource dataSource, AnnualWorkLedgerContent empInfo) {
         Cells cells = worksheet.getCells();
         // B1_1 B1_2 B1_3
-        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + "　" + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
+        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
         // B2_1 B2_2 B2_3
-        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") + "　" + empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
+        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") +empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
         // B3_1 B3_2 B3_3
-        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") + "　" + empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
+        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") +empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
         // B4_1 B4_2
-        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") + "　" + empInfo.getClosureDate());
+        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") +empInfo.getClosureDate());
         // B5_1 B5_2
         cells.get(firstRow, 10).setValue(TextResource.localize("KWR004_205") +
                 TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
@@ -302,7 +297,10 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
      * Convert minute to HH:mm
      */
     private String convertToTime(int minute) {
-        val minuteAbs = Math.abs(minute);
+        int minuteAbs = Math.abs(minute);
+        if (minute < 0) {
+            minuteAbs = Math.abs(minute +1440);
+        }
         int hours = minuteAbs / 60;
         int minutes = minuteAbs % 60;
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
