@@ -447,12 +447,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 					
 					// Set header value
-					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&" + sideHeaderFontSize + " " + dataSource.getData().getCompanyName());
-					pageSetup.setHeader(1, "&\"ＭＳ ゴシック,Bold\"&"+ fontSize + " " + dataSource.getData().getReportName());
+					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&" + sideHeaderFontSize + "\0" + dataSource.getData().getCompanyName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック,Bold\"&"+ fontSize + "\0" + dataSource.getData().getReportName());
 					// Get current date and format it
 					DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
-					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&" + sideHeaderFontSize + " " + currentFormattedDate+"\npage&P");
+					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&" + sideHeaderFontSize + "\0" + currentFormattedDate+"\npage&P");
 					// Delete template column
 					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
 						worksheet.getCells().deleteColumns(42, 20, true);
@@ -482,6 +482,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			String fileName = data.getReportName() + "_"
 					+ data.getExportDateTime().replaceAll(" ", "").replaceAll(":", "").replaceAll("/", "");
 
+			// Fix #119010
+			reportContext.getWorkbook().getBuiltInDocumentProperties().setAuthor("Kinjirou");
+			reportContext.getWorkbook().getBuiltInDocumentProperties().setLastSavedBy("");
+			
 			if (dataSource.getMode() == EXPORT_EXCEL) {
 				// save as excel file
 				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
