@@ -96,7 +96,7 @@ public class CreateStampInfo implements DomainValue {
 		if (!changeClockArt.isPresent())
 			return Optional.empty();
 
-		return Optional.of(new StampType(changeHalfDay, convertReason(leavCategory, nrData.getShift()),
+		return Optional.of(new StampType(changeHalfDay, leavCategory == LeaveCategory.GO_OUT ? convertReason(leavCategory, nrData.getShift()) : Optional.empty(),
 				SetPreClockArt.NONE, changeClockArt.get(), nrData.convertChangeCalArt()));
 	}
 
