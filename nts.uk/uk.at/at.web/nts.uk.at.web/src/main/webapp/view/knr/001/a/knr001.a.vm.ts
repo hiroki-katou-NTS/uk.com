@@ -181,6 +181,8 @@ module nts.uk.at.view.knr001.a {
                             if (!_.isNil(self.empInfoTerminalModel().nRConvertInfo().entranceExit)) {
                                 if (self.empInfoTerminalModel().nRConvertInfo().entranceExit === 1) {
                                     self.entranceExit(true);
+                                } else {
+                                    self.entranceExit(false);
                                 }
                             }
                         }
