@@ -1491,14 +1491,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 		// 存在する - has data
 		// 「2020/02/12」 追加　Tin
 		if (employmentHistItemImport.isPresent() && workplaceHistItemImport.isPresent()
-				&& classificationHistItemImport.isPresent() && jobTitleHistItemImport.isPresent() && worktypeHistItemImport.isPresent()) {
+				&& classificationHistItemImport.isPresent() && jobTitleHistItemImport.isPresent()) {
 			return new AffiliationInforState(Collections.emptyList(),
 					Optional.of(new AffiliationInforOfDailyAttd(
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
-							worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()),
+							worktypeHistItemImport.isPresent() ? worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()) : Optional.empty(),
 							Optional.empty())),errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
