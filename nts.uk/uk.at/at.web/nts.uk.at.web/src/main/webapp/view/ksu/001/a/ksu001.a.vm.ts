@@ -3258,14 +3258,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // update A11
         updateVertSumGrid() {
             let self = this;
-            $("#cacheDiv").append($('#vertDiv'));
-            let vertSumHeader = self.createVertSumHeader();
-            let vertSumContent = self.createVertSumContent();
-            $("#extable").exTable("updateTable", "verticalSummaries", vertSumHeader, vertSumContent);   
             if (self.showA11()) {
+                $("#cacheDiv").append($('#vertDiv'));
+                let vertSumHeader = self.createVertSumHeader();
+                let vertSumContent = self.createVertSumContent();
+                $("#extable").exTable("updateTable", "verticalSummaries", vertSumHeader, vertSumContent);
                 $("#vertDropDown").html(function() { return $('#vertDiv'); });
-                $('#vertDiv').css('display', '');   
-                
+                $('#vertDiv').css('display', '');
+
                 $('.ex-body-vert-sum').scroll(() => {
                     $('#vertDiv').css('margin-left', $('.ex-body-vert-sum').scrollLeft().valueOf() + 'px');
                 });
@@ -3275,17 +3275,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // update A12
         updateHorzSumGrid() {
             let self = this;
-            $("#cacheDiv").append($('#horzDiv'));
-            let leftHorzSumHeader = self.createLeftHorzSumHeader();
-            let leftHorzSumContent = self.createLeftHorzSumContent();
-            let horizontalSumHeader = self.createHorizontalSumHeader();
-            let horizontalSumContent = self.createHorizontalSumContent();
-			let rightHorzSumHeader = self.createRightHorzSumHeader();
-			let rightHorzSumContent = self.createRightHorzSumContent();
-            $("#extable").exTable("updateTable", "leftHorizontalSummaries", leftHorzSumHeader, leftHorzSumContent);
-            $("#extable").exTable("updateTable", "horizontalSummaries", horizontalSumHeader, horizontalSumContent);
-			$("#extable").exTable("updateTable", "rightHorizontalSummaries", rightHorzSumHeader, rightHorzSumContent);
             if (self.showA12()) {
+                $("#cacheDiv").append($('#horzDiv'));
+                let leftHorzSumHeader = self.createLeftHorzSumHeader();
+                let leftHorzSumContent = self.createLeftHorzSumContent();
+                let horizontalSumHeader = self.createHorizontalSumHeader();
+                let horizontalSumContent = self.createHorizontalSumContent();
+                let rightHorzSumHeader = self.createRightHorzSumHeader();
+                let rightHorzSumContent = self.createRightHorzSumContent();
+                $("#extable").exTable("updateTable", "leftHorizontalSummaries", leftHorzSumHeader, leftHorzSumContent);
+                $("#extable").exTable("updateTable", "horizontalSummaries", horizontalSumHeader, horizontalSumContent);
+                $("#extable").exTable("updateTable", "rightHorizontalSummaries", rightHorzSumHeader, rightHorzSumContent);
                 $("#horzDropDown").html(function() { return $('#horzDiv'); });
                 $('#horzDiv').css('display', '');
             
