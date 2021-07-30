@@ -608,6 +608,10 @@ module nts.uk.at.view.kdp.share {
 			}else{
 				element.style.fontSize = '20px';
 			}
+
+			if ($(element).parentsUntil($('.btn-layout-type-1')).length == 1) {
+				element.style.fontSize = '20px';
+			}
 			return;
 		}
 		let maxSize : number = 16;
