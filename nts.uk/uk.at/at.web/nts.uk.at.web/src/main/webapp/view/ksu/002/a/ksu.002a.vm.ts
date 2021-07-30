@@ -996,5 +996,5 @@ function calculateDaysStartEndWeek(start: Date, end: Date, settingDayStart: numb
 	}
 }
 function converNumberToTime(number: number): string{
-	return (number/60).toString() +':'+ (Math.abs(number%60) == 0 ? '00': (Math.abs(number%60)).toString()); 
+	return number < 0 ? Math.ceil(number/60).toString():Math.floor(number/60).toString() +':'+ (Math.abs(number%60) == 0 ? '00': (Math.abs(number%60)).toString()); 
 }
