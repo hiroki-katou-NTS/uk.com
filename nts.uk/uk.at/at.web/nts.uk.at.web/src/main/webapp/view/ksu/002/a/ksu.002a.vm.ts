@@ -254,7 +254,7 @@ module nts.uk.ui.at.ksu002.a {
 						vm.baseDateKCP015(null);
 						vm.dr.begin = null;
 						vm.dr.finish = null;
-
+						vm.getPlansResultsData();	
 						// reset memento
 						vm.schedules.reset();
 
@@ -267,7 +267,7 @@ module nts.uk.ui.at.ksu002.a {
 						vm.baseDateKCP015(null);
 						vm.dr.begin = null;
 						vm.dr.finish = null;
-
+						vm.getPlansResultsData();
 						// reset memento
 						vm.schedules.reset();
 
