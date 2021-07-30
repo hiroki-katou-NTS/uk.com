@@ -252,9 +252,9 @@ module nts.uk.ui.at.ksu002.a {
 				_.forEach(self.weekSumData(), e => {
 					if(v !=  null && isSelectedStartWeek){
 						let i = _.find(v.weeklyData, (c: any) => c.no == e.no);
-						if(i){
+						if(i && i.workingHoursMonth){
 							let overUnder = i.workingHoursMonth - data.rootVm.legalworkinghours().weeklyEstimateTime;
-							e.update(converNumberToTime(i.workingHoursMonth), converNumberToTime(overUnder), i.numberHolidaysCurrentMonth);
+							e.update(converNumberToTime(i.workingHoursMonth), converNumberToTime(overUnder), i.numberHolidaysCurrentMonth == null? '' : i.numberHolidaysCurrentMonth);
 						} else {
 							e.clear();							
 						}
