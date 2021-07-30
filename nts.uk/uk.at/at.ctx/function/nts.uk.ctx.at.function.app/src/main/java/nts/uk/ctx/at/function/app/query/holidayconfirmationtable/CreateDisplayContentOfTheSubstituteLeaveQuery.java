@@ -25,6 +25,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.MonthlyVacationUsageTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -66,6 +69,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
 
     public List<DisplayContentsOfSubLeaveConfirmationTable> getDisplayContent(GeneralDate referenceDate,
                                                                               List<EmployeeInfor> basicInfoImportList,
+                                                                              ManageDistinct isManaged,
                                                                               Integer mngAtr,
                                                                               boolean linkingMng,
                                                                               boolean moreSubstituteHolidaysThanHolidays,
@@ -106,6 +110,9 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                     new FixedManagementDataMonth());
             val substituteHolidayAggrResult = NumberRemainVacationLeaveRangeQuery
                     .getBreakDayOffMngInPeriod(rq, inputRefactor);
+            if (substituteHolidayAggrResult.getCarryoverDay() == null) {
+                throw new BusinessException("Msg_1926");
+            }
             val employeeInfo = mapEmployee.get(sid);
             val wplInfo = mapWplInfo.get(employeeInfo.getWorkPlaceId());
 
@@ -125,7 +132,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
             NumberOfSubstituteHoliday numberOfRemaining = null;
             NumberOfUndigestedSubstitutes undeterminedNumber = null;
             Boolean er = false;
-            if (mngAtr != null && mngAtr == DAY) {
+            if (isManaged != ManageDistinct.NO && mngAtr != null && mngAtr == DAY) {
                 numberCarriedForward = new NumberOfSubstituteHolidayCarriedForward(
                         new LeaveRemainingDayNumber(substituteHolidayAggrResult.getCarryoverDay().v()),
                         Optional.empty());
@@ -148,7 +155,7 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                 //・ER　＝残数．日数が負の場合、ture
                 er = substituteHolidayAggrResult.getRemainDay() == null || substituteHolidayAggrResult.getRemainDay().v() < 0;
             }
-            if (mngAtr != null && mngAtr == TIME) {
+            if (isManaged != ManageDistinct.NO && mngAtr != null && mngAtr == TIME) {
                 // ・繰越数　．時間＝代休の集計結果．繰越時間
                 numberCarriedForward = new NumberOfSubstituteHolidayCarriedForward(
                         null,
@@ -177,7 +184,6 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                     .collect(Collectors.toList());
             List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetailsList = new ArrayList<>();
             List<LinkingInformation> listTyingInformation = new ArrayList<>();
-            boolean checkTimeInWork = true;
             for (AffCompanyHistImport affComHistItems : lstAffComHistItem) {
                 for (val affComHistItem : affComHistItems.getLstAffComHistItem()) {
                     for (val acctAbsenDetail : substituteHolidayAggrResult.getVacationDetails().getLstAcctAbsenDetail()) {
@@ -226,28 +232,29 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                                     occurrenceDigClass,
                                     isExpiredInCurrentMonth,
                                     deadline));
-
-                    }else {
-                            checkTimeInWork = false;
                         }
-                }
-            }
-            List<SeqVacationAssociationInfo> lstSeqVacation = substituteHolidayAggrResult
-                    .getLstSeqVacation();
-                if(checkTimeInWork){
+                    }
+                    List<SeqVacationAssociationInfo> lstSeqVacation = substituteHolidayAggrResult
+                            .getLstSeqVacation();
                     if (linkingMng) {
                         for (SeqVacationAssociationInfo lstSeqVacationItem : lstSeqVacation) {
-                            //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
-                            GeneralDate ymd = lstSeqVacationItem.getDateOfUse();
-                            // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
-                            MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
-                                    lstSeqVacationItem.getDayNumberUsed().v());
-                            //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
-                            GeneralDate occurrenceDate = lstSeqVacationItem.getOutbreakDay();
-                            listTyingInformation.add(new LinkingInformation(
-                                    ymd,
-                                    dateOfUse,
-                                    occurrenceDate));
+                            if (affComHistItem.getDatePeriod().start().beforeOrEquals(lstSeqVacationItem.getOutbreakDay())
+                                    && affComHistItem.getDatePeriod().end().afterOrEquals(lstSeqVacationItem.getOutbreakDay())
+                                    && affComHistItem.getDatePeriod().start().beforeOrEquals(lstSeqVacationItem.getDateOfUse())
+                                    && affComHistItem.getDatePeriod().end().afterOrEquals(lstSeqVacationItem.getDateOfUse())) {
+                                //・紐付け情報(j)．発生日　＝代休の集計結果．逐次休暇の紐付け情報(j)．発生日
+                                GeneralDate ymd = lstSeqVacationItem.getDateOfUse();
+                                // ・紐付け情報(j)．使用日　＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日
+                                MonthlyVacationDays dateOfUse = new MonthlyVacationDays(
+                                        lstSeqVacationItem.getDayNumberUsed().v());
+                                //・紐付け情報(j)．使用日数＝代休の集計結果．逐次休暇の紐付け情報(j)．使用日数
+                                GeneralDate occurrenceDate = lstSeqVacationItem.getOutbreakDay();
+                                listTyingInformation.add(new LinkingInformation(
+                                        ymd,
+                                        dateOfUse,
+                                        occurrenceDate));
+                            }
+
                         }
                     }
                 }
@@ -326,23 +333,24 @@ public class CreateDisplayContentOfTheSubstituteLeaveQuery {
                         + (substituteHolidayAggrResult.getOccurrenceTime() != null ? substituteHolidayAggrResult.getOccurrenceTime().v() : 0)
                         - (substituteHolidayAggrResult.getTimeUse() != null ? substituteHolidayAggrResult.getTimeUse().v() : 0);
                 check = checkShow > 0;
-            }else {
+            } else {
                 check = true;
             }
         }
         return check;
     }
+
     private boolean checkTimeInWork(GeneralDate date,List<AffCompanyHistImport> lstAffComHistItem ){
         boolean rs = false;
         for (AffCompanyHistImport affComHistItems : lstAffComHistItem) {
             if(!rs)
-            for (val affComHistItem : affComHistItems.getLstAffComHistItem()) {
-                if ( affComHistItem.getDatePeriod().start().beforeOrEquals(date)
-                        && affComHistItem.getDatePeriod().end().afterOrEquals(date)) {
-                    rs = true;
-                    break;
+                for (val affComHistItem : affComHistItems.getLstAffComHistItem()) {
+                    if ( affComHistItem.getDatePeriod().start().beforeOrEquals(date)
+                            && affComHistItem.getDatePeriod().end().afterOrEquals(date)) {
+                        rs = true;
+                        break;
+                    }
                 }
-            }
         }
         return rs;
     }
