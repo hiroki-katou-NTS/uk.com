@@ -47,14 +47,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String SELECT_CHECK_UPDATE = "SELECT count (c) FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
 	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
-	
+
 	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
-	
-//	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
-	
-//	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
-//			+ " WHERE c.pk.sid IN :listEmp"
-//			+ " ORDER BY c.pk.ymd desc ";
 
 	private static final List<String> DELETE_TABLES = Arrays.asList(
 			"DELETE FROM KscdtSchTime a ",
@@ -73,6 +67,14 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			"DELETE FROM KscdtSchLeaveEarly a "
 			);
 
+
+
+	public KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
+		return KscdtSchBasicInfo.toEntity(workSchedule, cID);
+	}
+
+
+
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkSchedule> workSchedule = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
@@ -80,14 +82,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
 	}
-	
-//	@Override
-//	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
-//		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
-//				.setParameter("employeeIDs", employeeIDs)
-//				.getSingleOrNull();
-//		return Optional.ofNullable(date);
-//	}
 
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
@@ -101,25 +95,37 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	}
 
 	@Override
+	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
+
+		List<WorkSchedule> result = this.queryProxy()
+				.query("SELECT a FROM KscdtSchBasicInfo a " + WHERE_PK, KscdtSchBasicInfo.class)
+				.setParameter("sid", sid)
+				.setParameter("ymdStart", period.start())
+				.setParameter("ymdEnd", period.end())
+				.getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
+
+		 return result;
+	}
+
+
+	@Override
 	public boolean checkExits(String employeeID, GeneralDate ymd) {
 		return this.queryProxy().query(SELECT_CHECK_UPDATE, Long.class).setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
 	}
+
 
 	@Override
 	public void insert(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
 		this.commandProxy().insert(this.toEntity(workSchedule, cID));
 	}
-	
+
 	@Override
 	public void insertAll(String cID, List<WorkSchedule> workSchedules) {
 		this.commandProxy().insertAll(workSchedules.stream().map(s -> this.toEntity(s, cID)).collect(Collectors.toList()));
 	}
 
-	public KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
-		return KscdtSchBasicInfo.toEntity(workSchedule, cID);
-	}
 
 	@Override
 	public void update(WorkSchedule workSchedule) {
@@ -260,7 +266,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					}
 				}
 				///
-				
+
 				//#114431
 				//KSCDT_SCH_COME_LATE
 				if (!oldData.get().kscdtSchTime.kscdtSchComeLate.isEmpty()) {
@@ -283,7 +289,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 								checkExist = true;
 							}
 						}
-						
+
 						if(!checkExist) {
 							listInsert.add(schComeLate);
 						}
@@ -305,7 +311,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							listRemove.add(schComeLateOld);
 						}
 					}
-					
+
 					//remove
 					String delete = "delete from KscdtSchComeLate o " + " where o.pk.sid = :sid "
 							+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
@@ -318,11 +324,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					for(KscdtSchComeLate sle : listInsert) {
 						this.commandProxy().insert(sle);
 					}
-					
+
 				} else {
 					oldData.get().kscdtSchTime.kscdtSchComeLate = newData.kscdtSchTime.kscdtSchComeLate;
 				}
-				
+
 				//KSCDT_SCH_GOING_OUT
 				if (!oldData.get().kscdtSchTime.kscdtSchGoingOut.isEmpty()) {
 					// get list insert and update data exist
@@ -344,7 +350,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 								checkExist = true;
 							}
 						}
-						
+
 						if(!checkExist) {
 							listInsert.add(schGoingOut);
 						}
@@ -366,7 +372,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							listRemove.add(schGoingOutOld);
 						}
 					}
-					
+
 					//remove
 					String delete = "delete from KscdtSchGoingOut o " + " where o.pk.sid = :sid "
 							+ " and o.pk.ymd = :ymd " + " and o.pk.reasonAtr = :reasonAtr";
@@ -379,11 +385,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					for(KscdtSchGoingOut sgo : listInsert) {
 						this.commandProxy().insert(sgo);
 					}
-					
+
 				} else {
 					oldData.get().kscdtSchTime.kscdtSchGoingOut = newData.kscdtSchTime.kscdtSchGoingOut;
 				}
-				
+
 				//kscdtSchLeaveEarly
 				if (!oldData.get().kscdtSchTime.kscdtSchLeaveEarly.isEmpty()) {
 					// get list insert and update data exist
@@ -405,7 +411,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 								checkExist = true;
 							}
 						}
-						
+
 						if(!checkExist) {
 							listInsert.add(schLeaveEarly);
 						}
@@ -427,7 +433,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							listRemove.add(schLeaveEarlyOld);
 						}
 					}
-					
+
 					//remove
 					String delete = "delete from KscdtSchLeaveEarly o " + " where o.pk.sid = :sid "
 							+ " and o.pk.ymd = :ymd " + " and o.pk.workNo = :workNo";
@@ -440,12 +446,12 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					for(KscdtSchLeaveEarly sle : listInsert) {
 						this.commandProxy().insert(sle);
 					}
-					
+
 				} else {
 					oldData.get().kscdtSchTime.kscdtSchLeaveEarly = newData.kscdtSchTime.kscdtSchLeaveEarly;
 				}
 			}
-			
+
 //			if (!oldData.get().kscdtSchTime.kscdtSchTask.isEmpty()) {
 //				// get list insert and update data exist
 //				List<KscdtSchTask> listInsert = new ArrayList<>();
@@ -459,13 +465,13 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 //							x.startClock = task.startClock;
 //							x.endClock = task.endClock;
 //							checkLst.add(x);
-//						} 
+//						}
 //					});
 //					if(checkLst.isEmpty()) {
 //						listInsert.add(task);
 //					}
 //				}
-				
+
 //				List<KscdtSchTask> listRemove = new ArrayList<>();
 //				for (KscdtSchTask taskOld : oldData.get().kscdtSchTime.kscdtSchTask) {
 //					boolean checkExist = false;
@@ -482,7 +488,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 //						listRemove.add(taskOld);
 //					}
 //				}
-//				
+//
 //				//remove
 //				String delete = "delete from KscdtSchTask o " + " where o.pk.sid = :sid "
 //						+ " and o.pk.ymd = :ymd " + " and o.pk.serialNo = :serialNo";
@@ -495,13 +501,13 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 //				for(KscdtSchTask sle : listInsert) {
 //					this.commandProxy().insert(sle);
 //				}
-//				
+//
 //			} else {
 //				oldData.get().kscdtSchTime.kscdtSchTask = newData.kscdtSchTime.kscdtSchTask;
 //			}
-//			
+//
 
-			// List<KscdtSchEditState> editStates;			
+			// List<KscdtSchEditState> editStates;
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
 				List<KscdtSchEditState> listInsert = new ArrayList<>();
@@ -514,7 +520,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							x.sditState = schState.sditState;
 							x.cid = schState.cid;
 							checkLst.add(x);
-						} 
+						}
 					});
 					if(checkLst.isEmpty()) {
 						listInsert.add(schState);
@@ -524,7 +530,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				for(KscdtSchEditState sle : listInsert) {
 					this.commandProxy().insert(sle);
 				}
-				
+
 			} else {
 				oldData.get().editStates = newData.editStates;
 			}
@@ -561,7 +567,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						}
 						// Delete work no 2 when new data just have work no 1
 						if(newData.atdLvwTimes.size() < 2 && x.pk.workNo == 2) {
-							
+
 							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
 									.setParameter("ymd", x.pk.ymd)
 									.setParameter("workNo", x.pk.workNo).executeUpdate();
@@ -605,7 +611,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 								x.shortTimeTsStart = ts.shortTimeTsStart;
 								x.shortTimeTsEnd = ts.shortTimeTsEnd;
 							}
-	
+
 							if (x.pk.frameNo == 2 && workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().size() < 2) {
 								String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
 										+ " and o.pk.ymd = :ymd " + " and o.pk.childCareAtr = :childCareAtr "
@@ -613,7 +619,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 								this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
 										.setParameter("ymd", x.pk.ymd).setParameter("childCareAtr", x.pk.childCareAtr)
 										.setParameter("frameNo", x.pk.frameNo).executeUpdate();
-	
+
 							}
 						});
 						if (ts.pk.frameNo == 2 && oldData.get().schShortTimeTs.size() < 2) {
@@ -639,13 +645,13 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							x.breakTsStart = schBrk.breakTsStart;
 							x.breakTsEnd = schBrk.breakTsEnd;
 							checkLst.add(x);
-						} 
+						}
 					});
 					if(checkLst.isEmpty()) {
 						listInsert.add(schBrk);
 					}
 				}
-				
+
 				//get list remove
 				List<KscdtSchBreakTs> listRemove = new ArrayList<>();
 				for (KscdtSchBreakTs schBrkTsOld : oldData.get().breakTs) {
@@ -663,7 +669,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						listRemove.add(schBrkTsOld);
 					}
 				}
-				
+
 				//remove
 				String delete = "delete from KscdtSchBreakTs o " + " where o.pk.sid = :sid "
 						+ " and o.pk.ymd = :ymd " + " and o.pk.frameNo = :frameNo";
@@ -672,16 +678,16 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					.setParameter("ymd", sle.pk.ymd)
 					.setParameter("frameNo", sle.pk.frameNo).executeUpdate();
 				}
-				
+
 				//add
 				for(KscdtSchBreakTs sle : listInsert) {
 					this.commandProxy().insert(sle);
 				}
-				
+
 			} else {
 				oldData.get().breakTs = newData.breakTs;
 			}
-			
+
 			//#114431
 			if (!oldData.get().kscdtSchGoingOutTs.isEmpty()) {
 				oldData.get().kscdtSchGoingOutTs.sort(Comparator.comparing(KscdtSchGoingOutTs::getGoingOutClock));
@@ -719,28 +725,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		}
 	}
 
-	@Override
-	public void delete(String sid, GeneralDate ymd) {
-		Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
-		if (optWorkSchedule.isPresent()) {
-			KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(),
-					optWorkSchedule.get().getYmd());
-			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
-			this.getEntityManager().flush();
-		}
-	}
-	
-	@Override
-	public void deleteListDate(String sid, List<GeneralDate> ymds) {
-		if(ymds.isEmpty())
-			return;
-		for (val deleteTable : DELETE_TABLES){	
-		this.getEntityManager().createQuery(deleteTable + DELETE_BY_LIST_DATE)
-		.setParameter("sid", sid)
-		.setParameter("ymds",ymds)
-		.executeUpdate();
-		}
-	}
 
 	@Override
 	public void delete(String sid, DatePeriod datePeriod) {
@@ -754,60 +738,32 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	}
 
 	@Override
-	public void deleteAllShortTime(String sid, GeneralDate ymd) {
-		Boolean optWorkShortTime = this.checkExitsShortTime(sid, ymd);
-		if (optWorkShortTime) {
-			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd);
-			this.commandProxy().remove(KscdtSchShortTimeTs.class, pk);
+	public void delete(String sid, GeneralDate ymd) {
+		Optional<WorkSchedule> optWorkSchedule = this.get(sid, ymd);
+		if (optWorkSchedule.isPresent()) {
+			KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(),
+					optWorkSchedule.get().getYmd());
+			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
+			this.getEntityManager().flush();
 		}
 	}
-	
-	@Override
-	public void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo) {
-			KscdtSchAtdLvwTimePK pk = new KscdtSchAtdLvwTimePK(sid, ymd, workNo);
-			this.commandProxy().remove(KscdtSchAtdLvwTime.class, pk);
-	}
 
 	@Override
-	public void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID) {
-		this.commandProxy().insert(KscdtSchShortTimeTs.toEntity(shortWorkingTimeSheets, sID, yMD, cID));
-	}
-	
-	@Override
-	public void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID) {
-		this.commandProxy().insert(KscdtSchAtdLvwTime.toEntity(leavingWork, sID, yMD, cID));
-	}
-
-	private static final String SELECT_BY_SHORTTIME_TS = "SELECT c FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd AND c.pk.childCareAtr = :childCareAtr AND c.pk.frameNo = :frameNo";
-
-	@Override
-	public Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo) {
-		Optional<ShortTimeOfDailyAttd> workSchedule = this.queryProxy()
-				.query(SELECT_BY_SHORTTIME_TS, KscdtSchShortTimeTs.class).setParameter("employeeID", sid)
-				.setParameter("ymd", ymd).setParameter("childCareAtr", childCareAtr).setParameter("frameNo", frameNo)
-				.getSingle(c -> c.toDomain(sid, ymd, childCareAtr, frameNo));
-		return workSchedule;
+	public void deleteListDate(String sid, List<GeneralDate> ymds) {
+		if(ymds.isEmpty())
+			return;
+		for (val deleteTable : DELETE_TABLES){
+		this.getEntityManager().createQuery(deleteTable + DELETE_BY_LIST_DATE)
+		.setParameter("sid", sid)
+		.setParameter("ymds",ymds)
+		.executeUpdate();
+		}
 	}
 
-	private static final String SELECT_ALL_SHORTTIME_TS = "SELECT count (c) FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
-	@Override
-	public boolean checkExitsShortTime(String employeeID, GeneralDate ymd) {
-		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
-				.setParameter("ymd", ymd).getSingle().get() > 0;
-	}
-	@Override
-	public List<WorkSchedule> getListBySid(String sid, DatePeriod period) {
-		
-		List<WorkSchedule> result = this.queryProxy()
-				.query("SELECT a FROM KscdtSchBasicInfo a " + WHERE_PK, KscdtSchBasicInfo.class)
-				.setParameter("sid", sid)
-				.setParameter("ymdStart", period.start())
-				.setParameter("ymdEnd", period.end())
-				.getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
-		 
-		 return result;
-	}
+//	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
+//			+ " WHERE c.pk.sid IN :listEmp"
+//			+ " ORDER BY c.pk.ymd desc ";
 	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
 			+ " WHERE c.pk.sid IN :listEmp"
 			+ " ORDER BY c.pk.ymd desc ";
@@ -821,4 +777,59 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			return Optional.empty();
 		return Optional.of(data.get(0));
 	}
+
+
+//	private static final String SELECT_MAX = "SELECT MAX(c.startDate) FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :employeeIDs";
+//	@Override
+//	public Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd) {
+//		GeneralDate date = this.queryProxy().query(SELECT_MAX, GeneralDate.class)
+//				.setParameter("employeeIDs", employeeIDs)
+//				.getSingleOrNull();
+//		return Optional.ofNullable(date);
+//	}
+
+
+	@Override
+	public void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID) {
+		this.commandProxy().insert(KscdtSchAtdLvwTime.toEntity(leavingWork, sID, yMD, cID));
+	}
+
+	@Override
+	public void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo) {
+			KscdtSchAtdLvwTimePK pk = new KscdtSchAtdLvwTimePK(sid, ymd, workNo);
+			this.commandProxy().remove(KscdtSchAtdLvwTime.class, pk);
+	}
+
+
+	private static final String SELECT_BY_SHORTTIME_TS = "SELECT c FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd AND c.pk.childCareAtr = :childCareAtr AND c.pk.frameNo = :frameNo";
+	@Override
+	public Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo) {
+		Optional<ShortTimeOfDailyAttd> workSchedule = this.queryProxy()
+				.query(SELECT_BY_SHORTTIME_TS, KscdtSchShortTimeTs.class).setParameter("employeeID", sid)
+				.setParameter("ymd", ymd).setParameter("childCareAtr", childCareAtr).setParameter("frameNo", frameNo)
+				.getSingle(c -> c.toDomain(sid, ymd, childCareAtr, frameNo));
+		return workSchedule;
+	}
+
+	private static final String SELECT_ALL_SHORTTIME_TS = "SELECT count (c) FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
+	@Override
+	public boolean checkExitsShortTime(String employeeID, GeneralDate ymd) {
+		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
+				.setParameter("ymd", ymd).getSingle().get() > 0;
+	}
+
+	@Override
+	public void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID) {
+		this.commandProxy().insert(KscdtSchShortTimeTs.toEntity(shortWorkingTimeSheets, sID, yMD, cID));
+	}
+
+	@Override
+	public void deleteAllShortTime(String sid, GeneralDate ymd) {
+		Boolean optWorkShortTime = this.checkExitsShortTime(sid, ymd);
+		if (optWorkShortTime) {
+			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd);
+			this.commandProxy().remove(KscdtSchShortTimeTs.class, pk);
+		}
+	}
+
 }
