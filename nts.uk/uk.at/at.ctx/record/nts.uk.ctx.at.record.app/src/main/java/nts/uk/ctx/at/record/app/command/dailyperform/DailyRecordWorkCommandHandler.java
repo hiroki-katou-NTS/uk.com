@@ -720,13 +720,10 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 		case DAILY_SUPPORT_TIMESHEET_NAME:
 			return isUpdate ? this.supportUpdateHandler : this.supportAddHandler;
-<<<<<<< HEAD
 		case DAILY_SNAPSHOT_NAME:
 			return isUpdate ? this.snapshotUpdateHandler : this.snapshotAddHandler;
-=======
 		case DAILY_SUPPORT_TIME_NAME:
 			return isUpdate ? this.ouenWorkTimeUpdateHandler : this.ouenWorkTimeAddHandler;
->>>>>>> feature/task_demo/main
 		default:
 			return null;
 		}

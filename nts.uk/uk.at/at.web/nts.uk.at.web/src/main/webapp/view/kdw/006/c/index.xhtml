@@ -53,8 +53,8 @@
 					</div>
 					
 
-					<div id="C2_7" class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_282')}</div>
-					<div class="right-content">
+					<div id="C2_7" class="left-content" data-bind="ntsFormLabel: { required: false }, visible: checkLicense">#{i18n.getText('KDW006_282')}</div>
+					<div class="right-content" data-bind="visible: checkLicense">
 						<div id="C2_8" class="cf" tabindex="4" data-bind="ntsSwitchButton: {
 							name: $i18n('KDW006_282'),
 							options: ko.observableArray([
@@ -82,45 +82,10 @@
 							enable: true,
 							required: false }"></div>
 					</div>
-<<<<<<< HEAD
-					<!-- C2_6 -->
-					<!-- fix bug 101969 -->
-<!-- 					<div id="checkBox41" class="check-box-atr" tabindex="7"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().monthChkMsgAtr }">#{i18n.getText('KDW006_64')}</div> -->
-					<!-- C2_7 -->
-					<div id="checkBox51" class="check-box-atr" tabindex="8"
-						data-bind="ntsCheckBox: { checked: checkBox51 }">#{i18n.getText('KDW006_65')}</div>
-					<!-- C2_8 -->
-					<div id="checkBox61" class="check-box-atr" tabindex="9"
-						data-bind="ntsCheckBox: { checked: checkBox61 }">#{i18n.getText('KDW006_66')}</div>
-					<!-- C2_9 -->
-					<!-- <div id="checkBox71" class="check-box-atr" tabindex="10"
-						data-bind="ntsCheckBox: { checked : daiPerformanceFunDto().autoSetTimeAtr }">#{i18n.getText('KDW006_67')}</div>-->
-					<!-- C2_10 -->
-					<div id="checkBox81" class="check-box-atr" tabindex="11"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().manualFixAutoSetAtr }">#{i18n.getText('KDW006_68')}</div>
-					<!-- C2_11 -->
-					<!-- <div id="checkBox91" class="check-box-atr" tabindex="12"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().breakClrTimeAtr }">#{i18n.getText('KDW006_69')}</div> -->
-					<!-- C2_12 -->
-					<div id="checkBox101" class="check-box-atr" tabindex="13"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().clearManuAtr }">#{i18n.getText('KDW006_70')}</div>
-					<!-- C2_16 -->
-					<div id="checkBox161" class="check-box-atr" tabindex="14"
-						data-bind="ntsCheckBox: { checked: daiPerformanceFunDto().checkErrRefDisp }">#{i18n.getText('KDW006_84')}</div>
-						
-						
-					<!-- C2_13 -->
-					<div id="label13" class="label">#{i18n.getText('KDW006_77')}</div>
-					<!-- C2_14 -->
-					<button id="dialog" data-bind="click: openHDialog">#{i18n.getText('KDW006_78')}</button>
-					<!-- C2_15 -->
-=======
 
 					<div id="C2_15" class="left-content" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDW006_284')}</div>
 					<div class="right-content">
 						<button id="C2_16" tabindex="6" data-bind="click: openHDialog">#{i18n.getText('KDW006_55')}</button>
->>>>>>> feature/task_demo/main
 								
 						<input id="C2_17" data-bind="ntsTextEditor: {
 									value: appType,

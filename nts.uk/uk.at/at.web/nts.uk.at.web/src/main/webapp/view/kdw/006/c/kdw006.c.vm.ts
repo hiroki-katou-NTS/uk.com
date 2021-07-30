@@ -13,21 +13,16 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
         appType: KnockoutObservable<string>;
         appTypeEnum : KnockoutObservableArray<any>;
-<<<<<<< HEAD
-        checkBox51: KnockoutObservable<boolean>;
-        checkBox61:  KnockoutObservable<boolean>;
-=======
 
+        checkLicense: KnockoutObservable<boolean>;
         yourselfConfirmErrorOldValue: number;
         supervisorConfirmErrorOldValue: number;
 
->>>>>>> feature/task_demo/main
         constructor() {
             super();
 
             let self = this;
-            self.checkBox51 = ko.observable(false);
-            self.checkBox61 = ko.observable(false);
+            self.checkLicense = ko.observable(false);
             self.itemList = ko.observableArray([]);
 
             let yourSelf = __viewContext.enums.YourselfConfirmError;
@@ -101,13 +96,9 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-<<<<<<< HEAD
-            nts.uk.ui.block.grayout();
-            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType() ,self.licenseCheck()).done(() => {
-=======
+
             self.$blockui("grayout");
-            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType(), self.getRestrict()).done(() => {
->>>>>>> feature/task_demo/main
+            $.when(self.getIdentity(), self.getApproval(), self.getDaily(), self.getMonthly(), self.getAppType(), self.getRestrict(),self.licenseCheck()).done(() => {
                 dfd.resolve();
             }).always(() => {
                 nts.uk.ui.errors.clearAll();
@@ -197,21 +188,18 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             });
             return dfd.promise();
         }
-<<<<<<< HEAD
         
          licenseCheck(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             service.licenseCheck().done(function(data: any) {
                  if(data == true){
-                     self.checkBox51(true);
-                     self.checkBox61(true);
+                     self.checkLicense(true);
                  }   
                 dfd.resolve();
             });
             return dfd.promise();
         }
-=======
 
         // get RestrictConfirmEmployment 就業確定の機能制限
         getRestrict(): JQueryPromise<any> {
@@ -228,7 +216,6 @@ module nts.uk.at.view.kdw006.c.viewmodel {
             return dfd.promise();
         }
 
->>>>>>> feature/task_demo/main
         // when click register button 
         saveData() {
             let self = this;

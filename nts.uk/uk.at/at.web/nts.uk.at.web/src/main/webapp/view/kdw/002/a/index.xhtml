@@ -49,33 +49,18 @@
 					<table tabindex="4" id="gridList"
 						data-bind="ntsGridList:{
 							width: 300,
-<<<<<<< HEAD
-							height: 700,
-=======
 							height: gridHeight,
->>>>>>> feature/task_demo/main
 							options: attendanceItems,
 							value: aICurrentCode,
 							columns: attendanceItemColumn,
 							optionsValue: 'displayNumber',
 							multiple: false,
 							enable: true,										
-<<<<<<< HEAD
-							showCheckBox: false,
-							rows : 15}">
-=======
 							showCheckBox: false}">
->>>>>>> feature/task_demo/main
 					</table>
 				</div>
 				<div class="rightContent"></div>
 				<div class="component-area">
-<<<<<<< HEAD
-					<div data-bind="ntsFormLabel:{}">#{i18n.getText('KDW002_23')}</div>
-					<div class="mylabel" data-bind="text: txtItemId"></div>
-					<div class="mylabel2" data-bind="ntsFormLabel:{}">#{i18n.getText('KDW002_4')}</div>
-					<div class="mylabel" data-bind="text: txtItemName"></div>
-=======
 					<!-- ver 8 -->
 					<!-- <label>#{i18n.getText('KDW002_23')} </label>  -->
 					<table class="detail-data">
@@ -174,21 +159,12 @@
 						</tr>
 					</table>
 
->>>>>>> feature/task_demo/main
 				</div>
 				<!-- <label data-bind="value: linebreak "></label> -->
 				<div class="component-area">
-<<<<<<< HEAD
-					<div data-bind="ntsFormLabel:{}">#{i18n.getText('KDW002_25')}</div>
-					<div id="colorID" tabindex="5" class="headerColor"
-						data-bind="ntsColorPicker: {value: headerColorValue, width: 50}" ></div>
+
 				</div>
 				<div class="component-area">
-					<div data-bind="ntsFormLabel:{}">#{i18n.getText('KDW002_27')}</div> 
-=======
-				</div>
-				<div class="component-area">
->>>>>>> feature/task_demo/main
 					<!-- <select tabindex="6"
 						class="unitRounding"
 						data-bind="options: unitRoundings , optionsText: 'timeInputName', optionsValue: 'timeInputValue' , value: timeInputCurrentCode, enable: timeInputEnable"></select> -->
@@ -199,18 +175,11 @@
 							name: '丸め単位',
 							value: roundingUnitValue,
 							enable: timeInputEnable
-<<<<<<< HEAD
-						}" />
-						<span class="label" data-bind="visible: unit() === 0" style="margin-top: 6px">#{i18n.getText('KDW002_45')}</span>
-						<span class="label" data-bind="visible: unit() === 1" style="margin-top: 6px">#{i18n.getText('KDW002_46')}</span>
-						<span class="label" data-bind="visible: unit() === 2" style="margin-top: 6px">#{i18n.getText('KDW002_47')}</span>
-=======
 						}" /> -->
 
 					<!-- <span class="label" data-bind="visible: unit() === 0">#{i18n.getText('KDW002_45')}</span>
 						<span class="label" data-bind="visible: unit() === 1">#{i18n.getText('KDW002_46')}</span>
 						<span class="label" data-bind="visible: unit() === 2">#{i18n.getText('KDW002_47')}</span> -->
->>>>>>> feature/task_demo/main
 				</div>
 			</div>
 		</ui:define>

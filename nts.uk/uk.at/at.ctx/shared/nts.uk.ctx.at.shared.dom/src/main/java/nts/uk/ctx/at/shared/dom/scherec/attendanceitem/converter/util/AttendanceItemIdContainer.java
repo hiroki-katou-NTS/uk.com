@@ -1008,11 +1008,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(393, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_8)));
 		temp.put(394, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_9)));
 		temp.put(395, join(totalLabol, RAISING_SALARY, SPECIFIC, LEGAL, joinNS(TIME, NUMBER_1, NUMBER_0)));
-<<<<<<< HEAD
 		temp.put(1144, join(totalLabol, HOLIDAY, TRANSFER_HOLIDAY));
-=======
 		AttendanceItemIdContainer.getSupporTimeKey(temp);
->>>>>>> feature/task_demo/main
 	}
 	
 	private static void getSupporTimeKey(Map<Integer, String> temp) {
