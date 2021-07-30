@@ -1,16 +1,19 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 
 /**
  * 日別勤怠の割増時間 (new)
@@ -43,29 +46,56 @@ public class PremiumTimeOfDailyPerformance {
 		this.totalWorkingTime = new AttendanceTime( 0 );
 	}
 
+	/**
+	 * 空で作成する
+	 * @return 日別実績の割増時間
+	 */
+	public static PremiumTimeOfDailyPerformance createEmpty() {
+		return new PremiumTimeOfDailyPerformance(Collections.emptyList(), AttendanceAmountDaily.ZERO, AttendanceTime.ZERO);
+	}
 
 	/**
-	 * 割増時間の計算
-	 * @param personnelCostSettingImport
-	 * @return
+	 * 日別勤怠の割増時間の計算
+	 * @param dailyRecordDto 日別勤怠コンバーター
+	 * @param unitPriceHistory 社員単価履歴
+	 * @param personCostCalculation 人件費計算設定
+	 * @return 日別勤怠の割増時間
 	 */
-	public static PremiumTimeOfDailyPerformance calcPremiumTime(List<PersonnelCostSettingImport> personnelCostSettingImport,
-														 		Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
+	public static PremiumTimeOfDailyPerformance calcPremiumTime(
+			DailyRecordToAttendanceItemConverter dailyRecordDto,
+			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
+			PersonCostCalculation personCostCalculation) {
 
-		List<PremiumTime> list = new ArrayList<>();
+		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
+				.map(pcc -> PremiumTime.create(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
+				.collect(Collectors.toList());
+		
+		return new PremiumTimeOfDailyPerformance(times);
+	}
+	
+	/**
+	 * 日別勤怠の割増時間の計算（応援用）
+	 * @param dailyRecordDto 日別勤怠コンバーター
+	 * @param unitPriceHistory 社員単価履歴
+	 * @param personCostCalculation 人件費計算設定
+	 * @return 日別勤怠の割増時間
+	 */
+	public static PremiumTimeOfDailyPerformance calcPremiumTimeForSupport(
+			DailyRecordToAttendanceItemConverter dailyRecordDto,
+			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
+			PersonCostCalculation personCostCalculation) {
+		
+		//割増時間
+		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
+			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
+			.collect(Collectors.toList());
 
-		//人件費設定分ループ
-		for(PersonnelCostSettingImport premiumTime : personnelCostSettingImport) {
-			list.add(premiumTime.calcPremiumTime(dailyRecordDto));
-		}
-
-		PremiumTimeOfDailyPerformance result = new PremiumTimeOfDailyPerformance(list);
-		return result;
+		return new PremiumTimeOfDailyPerformance(times);
 	}
 
 	//指定されたNoに一致する割増時間を取得する
-	public Optional<PremiumTime> getPremiumTime(int number){
-		return this.premiumTimes.stream().filter(tc -> tc.getPremiumTimeNo() == number).findFirst();
+	public Optional<PremiumTime> getPremiumTime(ExtraTimeItemNo number){
+		return this.premiumTimes.stream().filter(tc -> tc.getPremiumTimeNo().equals(number)).findFirst();
 	}
 
 }

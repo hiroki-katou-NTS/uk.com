@@ -107,7 +107,8 @@ public class MonthlyCalculatingDailys {
 					Optional.ofNullable(specificDateAttrOfDailyMap.get(wi.getKey())),
 					Optional.empty(), Optional.ofNullable(anyItemValueOfDailyList.get(wi.getKey())),
 					new ArrayList<>(), Optional.ofNullable(temporaryTimeOfDailyMap.get(wi.getKey())),
-					new ArrayList<>(), Optional.ofNullable(snapshots.get(wi.getKey())));
+					new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+					Optional.ofNullable(snapshots.get(wi.getKey())));
 		}).collect(Collectors.toList());
 	}
 

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
@@ -37,7 +38,7 @@ public class ReflectSupportStartEnd {
 		listTimeStampApp.stream().forEach(data -> {
 
 			Optional<OuenWorkTimeSheetOfDailyAttendance> ouenOpt = dailyApp.getOuenTimeSheet().stream().filter(
-					x -> x.getWorkNo() == data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE))
+					x -> x.getWorkNo().v() == data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE))
 					.findFirst();
 
 			if (ouenOpt.isPresent()) {
@@ -88,12 +89,12 @@ public class ReflectSupportStartEnd {
 		WorkContent workContent = WorkContent.create(workplace, Optional.empty(), Optional.empty());
 		return Pair.of(
 				OuenWorkTimeSheetOfDailyAttendance.create(
-						data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE), workContent, sheet),
+						SupportFrameNo.of(data.getDestinationTimeApp().getSupportWork().orElse(Integer.MAX_VALUE)), workContent, sheet),
 				lstItemId);
 
 	}
 
-	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> update(Require require, 
+	private static Pair<OuenWorkTimeSheetOfDailyAttendance, List<Integer>> update(Require require,
 			OuenWorkTimeSheetOfDailyAttendance old,
 			TimeStampAppShare data) {
 		List<Integer> lstItemId = new ArrayList<>();
@@ -131,7 +132,7 @@ public class ReflectSupportStartEnd {
 	}
 
 	public static interface Require {
-		
+
 		public String getCId();
 	}
 }

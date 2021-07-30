@@ -18,6 +18,14 @@ public class SettingOfFlexWork extends AggregateRoot{
 		this.flexCalcMethod = flexCalcMethod;
 	}
 	
-	
+	/**
+	 * デフォルト値で作成する
+	 * @return
+	 */
+	public static SettingOfFlexWork defaultValue() {
+		return new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(
+				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
+				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay)));
+	}
 
 }

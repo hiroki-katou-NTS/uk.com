@@ -152,14 +152,13 @@ public class IntegrationOfDaily {
 	@Setter
 	private List<RemarksOfDailyAttd> remarks;
 	
-	//応援時刻: 日別勤怠の応援作業時間帯 
-	
 	/**日別実績の勤務種別*/ 
 //	private Optional<WorkTypeOfDailyPerformance> businessType;
 	
 	@Setter
 	/**日別勤怠の応援作業時間 */
 	private List<OuenWorkTimeOfDailyAttendance> ouenTime = new ArrayList<>();
+	
 	@Setter
 	/**応援時刻: 日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
@@ -187,6 +186,8 @@ public class IntegrationOfDaily {
 	 * @param anyItemValue 日別実績の任意項目
 	 * @param editState 日別実績の編集状態
 	 * @param tempTime 日別実績の臨時出退勤
+	 * @param ouenTime 日別実績の応援作業時間
+	 * @param ouenTimeSheet 日別実績の応援作業時間帯
 	 */
 	public IntegrationOfDaily(
 			WorkInfoOfDailyAttendance workInformation, 
@@ -205,6 +206,8 @@ public class IntegrationOfDaily {
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
 			List<RemarksOfDailyAttd> remarks,
+			List<OuenWorkTimeOfDailyAttendance> ouenTime,
+			List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet,
 			Optional<SnapShot> snapshot) {
 		super();
 		this.workInformation = workInformation;
@@ -228,6 +231,8 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.ouenTime = ouenTime;
+		this.ouenTimeSheet = ouenTimeSheet;
 		this.snapshot = snapshot;
 	}
 
@@ -292,6 +297,8 @@ public class IntegrationOfDaily {
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
 			List<RemarksOfDailyAttd> remarks,
+			List<OuenWorkTimeOfDailyAttendance> ouenTime,
+			List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet,
 			Optional<SnapShot> snapshot) {
 		super();
 		this.employeeId = employeeId;
@@ -317,6 +324,8 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.ouenTime = ouenTime;
+		this.ouenTimeSheet = ouenTimeSheet;
 		this.snapshot = snapshot;
 	}
 
@@ -343,8 +352,8 @@ public class IntegrationOfDaily {
 		this.editState = daily.getEditState();
 		this.tempTime = daily.getTempTime();
 		this.remarks = daily.getRemarks();
-		this.ouenTimeSheet = daily.getOuenTimeSheet();
 		this.ouenTime = daily.getOuenTime();
+		this.ouenTimeSheet = daily.getOuenTimeSheet();
 		this.snapshot = daily.getSnapshot();
 	}
 	
@@ -375,6 +384,8 @@ public class IntegrationOfDaily {
 		this.editState = daily.getEditState();
 		this.tempTime = daily.getTempTime();
 		this.remarks = daily.getRemarks();
+		this.ouenTime = daily.getOuenTime();
+		this.ouenTimeSheet = daily.getOuenTimeSheet();
 		this.snapshot = daily.getSnapshot();
 	}
 }

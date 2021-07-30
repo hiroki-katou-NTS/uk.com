@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidayprio
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.ootsuka.OotsukaStaticService;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,6 +37,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * 遅刻時間帯
  * @author keisuke_hoshina
  */
+@AllArgsConstructor
 @Getter
 public class LateTimeSheet {
 	
@@ -260,7 +263,7 @@ public class LateTimeSheet {
 		Optional<TimeSpanForDailyCalc> calcRange = LateDecisionClock.getCalcRange(
 				predetermineTimeSet, timeLeavingWork, integrationOfWorkTime,
 				predetermineTimeForSet, workType.getDailyWork().decisionNeedPredTime());
-		if (!calcRange.isPresent() || calcRange.get().isReverse()) return Optional.empty();
+		if (!calcRange.isPresent() || calcRange.get().isReverse() || calcRange.get().isEqual()) return Optional.empty();
 		TimeWithDayAttr lateStartClock = calcRange.get().getStart();
 		// 遅刻時間を計算する時間帯を判断
 		Optional<LateLeaveEarlyTimeSheet> beforeAdjustOpt = checkTimeSheetForCalcLateTime(
@@ -771,5 +774,30 @@ public class LateTimeSheet {
 				companyholidayPriorityOrder,
 				timeVacationUseTime,
 				NotUseAtr.NOT_USE));
+	}
+	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param deductionTimeSheet 控除時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 遅刻時間帯
+	 */
+	public Optional<LateTimeSheet> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, DeductionTimeSheet deductionTimeSheet, WorkTimezoneCommonSet commonSet) {
+		//計上用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> record = this.forRecordTimeSheet.flatMap(
+				r -> r.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet));
+		//控除用時間帯を変更する
+		Optional<LateLeaveEarlyTimeSheet> deducation = this.forDeducationTimeSheet.flatMap(
+				d -> d.recreateWithDuplicate(timeSpan, ActualWorkTimeSheetAtrForLate.Late, deductionTimeSheet, commonSet));
+		if(!record.isPresent() && !deducation.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(new LateTimeSheet(
+				record,
+				deducation,
+				this.workNo,
+				Optional.empty(),//相殺時間を削除する
+				this.noCoreFlexLateTime.map(n -> new AttendanceTime(n.valueAsMinutes()))));
 	}
 }

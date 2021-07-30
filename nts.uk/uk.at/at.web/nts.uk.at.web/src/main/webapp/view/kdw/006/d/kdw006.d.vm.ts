@@ -1,14 +1,19 @@
 module nts.uk.at.view.kdw006.d.viewmodel {
     import getText = nts.uk.resource.getText;
-    export class ScreenModelD {
+    export class ScreenModelD extends ko.ViewModel {
         roleItems: KnockoutObservableArray<any>;
         functionalRestriction: KnockoutObservableArray<any>;
         selectedItem: KnockoutObservable<any>;
         columns1: KnockoutObservableArray<NtsGridListColumn>;
         columns2: KnockoutObservableArray<NtsGridListColumn>;
         sideBar: KnockoutObservable<number>;
+
+        mode: KnockoutObservable<MODE>;
         constructor() {
+            super();
+
             var self = this;
+            self.mode = ko.observable(MODE.NEW);
             self.roleItems = ko.observableArray([]);
             self.functionalRestriction = ko.observableArray([]);
             self.selectedItem = ko.observable();
@@ -61,30 +66,37 @@ module nts.uk.at.view.kdw006.d.viewmodel {
 
         saveData() {
             let self = this;
-            nts.uk.ui.block.invisible();
-            service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) {
-                
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            self.$blockui("show");
+            self.$validate().then((valid: boolean) => {
+                if (valid) {
+                    self.$blockui("show");
+                    service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) { 
+                        self.$dialog.info({ messageId: "Msg_15" });
+                    }).always(() => {
+                        self.$blockui("hide");
+                    });
+                }
+            }).always(() => {
+                self.$blockui("hide");
             });
-            nts.uk.ui.block.clear();
         }
         
-        jumpTo(sidebar) {
-                let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
-            }
+        jumpTo() {
+            let self = this;
+            nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
+        }
 
 
         start(): JQueryPromise<any> {
             let self = this;
-            nts.uk.ui.block.grayout();
+            self.$blockui("grayout");
             let dfd = $.Deferred();
             service.getRoleList().done(function(res: Array<RoleItem>) {
                 self.roleItems(_.sortBy(res, ['roleCode']));
                 self.selectedItem(self.roleItems()[0].roleId);
                 self.getFuncRest(self.selectedItem()).done(function() {
                     if (self.functionalRestriction().length == 0) {
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_398" });
+                        self.$dialog.alert({ messageId: "Msg_398" });
                     }
                     self.initGrid();
                     $("#grid2").igGrid("option", "dataSource", self.functionalRestriction());
@@ -92,10 +104,10 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                 });
 
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                self.$dialog.alert(res.message);
             }).always(() => {
                 nts.uk.ui.errors.clearAll();
-                nts.uk.ui.block.clear();
+                self.$blockui("hide");
             });
             return dfd.promise();
         }
@@ -104,6 +116,12 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.findFuncRest(roleId).done(function(res: Array<FuncRestItem>) {
+                if (res.every((el: FuncRestItem) => el.availability == null)) {
+                    self.mode(MODE.NEW);
+                    res.map((el: FuncRestItem) => el.availability = false);
+                } else {
+                    self.mode(MODE.UPDATE); 
+                }
                 self.functionalRestriction(res);
                 self.initGrid();
                 dfd.resolve();
@@ -113,6 +131,49 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             return dfd.promise();
         }
 
+        copyData() {
+            let self = this;
+            self.$blockui("show");
+
+            let selectedRoleItem: RoleItem = _.find(self.roleItems(), el => el.roleId == self.selectedItem());
+
+            service.getRoleIds().done(function(res) {
+                let listRoleId: Array<string> = res;
+                let param = {
+                    code: selectedRoleItem.roleCode,
+                    name: selectedRoleItem.roleName,
+                    targetType: 8,// ロール
+                    itemListSetting: listRoleId,
+                    roleType: 3, //就業
+                };
+                console.log(param, 'param');
+
+                nts.uk.ui.windows.setShared("CDL023Input", param);
+                nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                    self.$blockui("show");
+                    let data = nts.uk.ui.windows.getShared("CDL023Output");
+                    if (!nts.uk.util.isNullOrUndefined(data)) {
+                        let command = {
+                            selectedRole: selectedRoleItem.roleId,
+                            targetRoleList: data,
+                        }
+                        service.copyDaiPerfAuth(command).done(() => {
+                            self.$dialog.info({ messageId: "Msg_15" }).then(function() {
+                                self.start();
+                                self.$blockui("hide");
+                            });
+                        }).fail(function(res: any) {
+                            self.$dialog.alert({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                                self.$blockui("hide");
+                            });
+                        }).always(() => {
+                            self.$blockui("hide");
+                        });
+                    }
+                    self.$blockui("hide");
+                });
+            });
+        }
     }
 
     class RoleItem {
@@ -137,5 +198,10 @@ module nts.uk.at.view.kdw006.d.viewmodel {
             this.availability = availability;
             this.description = description;
         }
+    }
+
+    export enum MODE {
+        NEW,
+        UPDATE
     }
 }
