@@ -11,9 +11,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistory;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.ComboBoxObject;
@@ -50,7 +50,7 @@ public class EmpMedicalWorkFinder implements PeregFinder<EmpMedicalWorkDto>{
 	public PeregDomainDto getSingleData(PeregQuery query) {
 		Optional<EmpMedicalWorkStyleHistory> emwHistOp = getEmpMedicalWorkHist(query);
 		if(!emwHistOp.isPresent()) return null;
-		Optional<EmpMedicalWorkFormHisItem> emwHistItemOp = empMedicalWorkRepo.getItemByHistId(emwHistOp.get().getListDateHistoryItem().get(0).identifier());
+		Optional<EmpMedicalWorkStyleHistoryItem> emwHistItemOp = empMedicalWorkRepo.getItemByHistId(emwHistOp.get().getListDateHistoryItem().get(0).identifier());
 		if(!emwHistItemOp.isPresent()) return null;
 		return EmpMedicalWorkDto.createEmpMedicalWorkDto(emwHistOp.get().getEmpID(), emwHistOp.get().getListDateHistoryItem().get(0), emwHistItemOp.get());
 	}
@@ -106,10 +106,10 @@ public class EmpMedicalWorkFinder implements PeregFinder<EmpMedicalWorkDto>{
 		
 		List<String> historyIds = dateHistList.values().stream().map(c -> c.identifier()).collect(Collectors.toList());
 		
-		List<EmpMedicalWorkFormHisItem> emwHistItemList = empMedicalWorkRepo.getItemByHistIdList(historyIds);
+		List<EmpMedicalWorkStyleHistoryItem> emwHistItemList = empMedicalWorkRepo.getItemByHistIdList(historyIds);
 		
 		result.stream().forEach(c -> {
-			Optional<EmpMedicalWorkFormHisItem> emwHistItemOp = emwHistItemList.stream()
+			Optional<EmpMedicalWorkStyleHistoryItem> emwHistItemOp = emwHistItemList.stream()
 					.filter(emp -> emp.getEmpID().equals(c.getEmployeeId())).findFirst();
 			if (emwHistItemOp.isPresent()) {
 				DateHistoryItem dateHistItem = dateHistList.get(c.getEmployeeId());

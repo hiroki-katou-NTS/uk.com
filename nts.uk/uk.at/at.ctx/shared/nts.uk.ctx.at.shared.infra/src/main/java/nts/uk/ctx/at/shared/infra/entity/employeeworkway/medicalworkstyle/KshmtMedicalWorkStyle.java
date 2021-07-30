@@ -80,10 +80,10 @@ public class KshmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements
 		this.concurrentPost = concurrentPost;
 	}
 
-	public static KscmtMedicalWorkStyle toEntityMedicalWorkStyle(EmpMedicalWorkStyleHistory his,
+	public static KshmtMedicalWorkStyle toEntityMedicalWorkStyle(EmpMedicalWorkStyleHistory his,
 			EmpMedicalWorkStyleHistoryItem hisItem) {
-		KscmtMedicalWorkStyle kscmtMedicalWorkStyle = new KscmtMedicalWorkStyle();
-		KscmtMedicalWorkStylePk pk = new KscmtMedicalWorkStylePk(his.getEmpID(), hisItem.getHistoryID());
+		KshmtMedicalWorkStyle kscmtMedicalWorkStyle = new KshmtMedicalWorkStyle();
+		KshmtMedicalWorkStylePk pk = new KshmtMedicalWorkStylePk(his.getEmpID(), hisItem.getHistoryID());
 		if (his.getEmpID().equals(hisItem.getEmpID())) {
 			Optional<DateHistoryItem> optional = his.getListDateHistoryItem().stream()
 					.filter(predicate -> predicate.identifier() == hisItem.getHistoryID()).findFirst();

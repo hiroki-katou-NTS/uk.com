@@ -12,8 +12,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
-import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtMedicalWorkStyle;
-import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KscmtMedicalWorkStylePk;
+import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KshmtMedicalWorkStyle;
+import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KshmtMedicalWorkStylePk;
 
 /**
  * 
@@ -48,7 +48,7 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 														 + " AND c.startDate <= :referenceDate "; 
 	@Override
 	public Optional<EmpMedicalWorkStyleHistoryItem> get(String empID, GeneralDate referenceDate) {
-		Optional<EmpMedicalWorkStyleHistoryItem> data = this.queryProxy().query(GET_BY_EMPID_AND_DATE, KscmtMedicalWorkStyle.class)
+		Optional<EmpMedicalWorkStyleHistoryItem> data = this.queryProxy().query(GET_BY_EMPID_AND_DATE, KshmtMedicalWorkStyle.class)
 														.setParameter("empId", empID)
 														.setParameter("referenceDate", referenceDate)
 														.getSingle(c ->c.toDomainHisItem());			
@@ -59,7 +59,7 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	public List<EmpMedicalWorkStyleHistoryItem> get(List<String> listEmpId, GeneralDate referenceDate) {
 		if(listEmpId.isEmpty())
 			return new ArrayList<EmpMedicalWorkStyleHistoryItem>();
-		List<EmpMedicalWorkStyleHistoryItem> data = this.queryProxy().query(GET_BY_EMPIDS_AND_DATE, KscmtMedicalWorkStyle.class)
+		List<EmpMedicalWorkStyleHistoryItem> data = this.queryProxy().query(GET_BY_EMPIDS_AND_DATE, KshmtMedicalWorkStyle.class)
 																.setParameter("listEmpId", listEmpId)
 																.setParameter("referenceDate", referenceDate)
 																.getList( c -> c.toDomainHisItem()); 
@@ -69,7 +69,7 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	@Override
 	public void insert(EmpMedicalWorkStyleHistory empMedicalWorkStyleHistory,
 			EmpMedicalWorkStyleHistoryItem empMedicalWorkStyleHistoryItem) {
-		this.commandProxy().insert(KscmtMedicalWorkStyle.toEntityMedicalWorkStyle(empMedicalWorkStyleHistory, empMedicalWorkStyleHistoryItem));
+		this.commandProxy().insert(KshmtMedicalWorkStyle.toEntityMedicalWorkStyle(empMedicalWorkStyleHistory, empMedicalWorkStyleHistoryItem));
 		
 	}
 
@@ -127,9 +127,9 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 
 	@Override
 	public void insertAll(List<EmpMedicalWorkStyleHistory> empMedicalWorkStyleHistoryList,
-			List<EmpMedicalWorkFormHisItem> empMedicalWorkFormHisItemList) {
+			List<EmpMedicalWorkStyleHistoryItem> empMedicalWorkStyleHisItemList) {
 		empMedicalWorkStyleHistoryList.forEach(emwHist -> {
-			Optional<EmpMedicalWorkFormHisItem> emwHistItemOp = empMedicalWorkFormHisItemList.stream().filter(emwHistItem -> emwHistItem.getEmpID().equals(emwHist.getEmpID())).findFirst();
+			Optional<EmpMedicalWorkStyleHistoryItem> emwHistItemOp = empMedicalWorkStyleHisItemList.stream().filter(emwHistItem -> emwHistItem.getEmpID().equals(emwHist.getEmpID())).findFirst();
 			if (emwHistItemOp.isPresent()) {
 				this.insert(emwHist, emwHistItemOp.get());
 			}		
@@ -144,8 +144,8 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	}
 
 	@Override
-	public void updateAllItem(List<EmpMedicalWorkFormHisItem> empMedicalWorkFormHisItemList) {
-		empMedicalWorkFormHisItemList.stream().forEach(emwHistItem -> {
+	public void updateAllItem(List<EmpMedicalWorkStyleHistoryItem> empMedicalWorkStyleHisItemList) {
+		empMedicalWorkStyleHisItemList.stream().forEach(emwHistItem -> {
 			this.update(emwHistItem);
 		});
 	}
@@ -168,8 +168,8 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	}
 
 	@Override
-	public Optional<EmpMedicalWorkFormHisItem> getItemByHistId(String histId) {
-		Optional<EmpMedicalWorkFormHisItem> domainHisItem = this.queryProxy().query(GET_BY_HISTID, KshmtMedicalWorkStyle.class)
+	public Optional<EmpMedicalWorkStyleHistoryItem> getItemByHistId(String histId) {
+		Optional<EmpMedicalWorkStyleHistoryItem> domainHisItem = this.queryProxy().query(GET_BY_HISTID, KshmtMedicalWorkStyle.class)
 				.setParameter("historyId", histId)
 				.getSingle(c -> c.toDomainHisItem()); 
 		return domainHisItem;
@@ -205,8 +205,8 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	}
 	
 	@Override
-	public List<EmpMedicalWorkFormHisItem> getItemByHistIdList(List<String> histIdList) {
-		List<EmpMedicalWorkFormHisItem> domainHisItemList = this.queryProxy().query(GET_BY_HISTIDLIST, KshmtMedicalWorkStyle.class)
+	public List<EmpMedicalWorkStyleHistoryItem> getItemByHistIdList(List<String> histIdList) {
+		List<EmpMedicalWorkStyleHistoryItem> domainHisItemList = this.queryProxy().query(GET_BY_HISTIDLIST, KshmtMedicalWorkStyle.class)
 				.setParameter("historyIdList", histIdList)
 				.getList( c -> c.toDomainHisItem()); 
 		return domainHisItemList;

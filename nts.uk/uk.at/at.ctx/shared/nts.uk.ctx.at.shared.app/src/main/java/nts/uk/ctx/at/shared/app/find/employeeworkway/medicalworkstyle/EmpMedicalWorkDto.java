@@ -5,7 +5,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.pereg.app.PeregEmployeeId;
 import nts.uk.shr.pereg.app.PeregItem;
@@ -68,25 +68,25 @@ public class EmpMedicalWorkDto extends PeregDomainDto{
 	}
 	
 	public static EmpMedicalWorkDto createEmpMedicalWorkDto(String employeeId, DateHistoryItem dateHistoryItem, 
-			EmpMedicalWorkFormHisItem empMedicalWorkItem) {
+			EmpMedicalWorkStyleHistoryItem empMedicalWorkItem) {
 		EmpMedicalWorkDto dto = new EmpMedicalWorkDto(dateHistoryItem.identifier());
 		dto.setSId(employeeId);
 		dto.setStartDate(dateHistoryItem.start());
 		dto.setEndDate(dateHistoryItem.end());
 		
-		dto.setIsOnlyNightShift(empMedicalWorkItem.isNightShiftFullTime() ? 1 : 0);
+		dto.setIsOnlyNightShift(empMedicalWorkItem.isOnlyNightShift() ? 1 : 0);
 		
-		dto.setIsConcurrently(empMedicalWorkItem.getOptMedicalWorkFormInfor().get().isOtherDepartmentConcurrently() ? 1 : 0);
+		dto.setIsConcurrently(empMedicalWorkItem.isConcurrently() ? 1 : 0);
 		
-		dto.setMedicalWorkStyle(empMedicalWorkItem.getOptMedicalWorkFormInfor().get().getMedicalCareWorkStyle().value);
+		dto.setMedicalWorkStyle(empMedicalWorkItem.getMedicalWorkStyle().value);
 		
-		dto.setNurseClassifiCode(empMedicalWorkItem.getOptMedicalWorkFormInfor().get().getNurseClassifiCode().v());
+		dto.setNurseClassifiCode(empMedicalWorkItem.getNurseClassifiCode().v());
 		
 		return dto;
 	}
 	
 	public static EmpMedicalWorkDto createEmpMedicalWorkDtoCps013(String employeeId, DateHistoryItem dateHistoryItem, 
-			EmpMedicalWorkFormHisItem empMedicalWorkItem, Map<String, Object> enums) {
+			EmpMedicalWorkStyleHistoryItem empMedicalWorkItem, Map<String, Object> enums) {
 		return null;
 	}
 }
