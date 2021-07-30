@@ -406,8 +406,16 @@ module nts.uk.at.kdp003.f {
 								// 		vm.$dialog.error({ messageId });
 								// 	}
 								// })
+								.fail((data: any) => {
+									if (data.msgErrorId !== null) {
+										vm.$dialog.error({ messageId: data.messageId, message: data.message });
+										showDialogError = true;
+										return;
+									}
+								})
 								.done((response: TimeStampLoginData) => {
 									dataResultLogin = response;
+									
 									if (response.msgErrorId !== null) {
 										vm.$dialog.error({ messageId: response.msgErrorId });
 										showDialogError = true;
@@ -604,6 +612,15 @@ module nts.uk.at.kdp003.f {
 							}
 							vm.$blockui('show')
 								.then(() => vm.$ajax('com', api, submitData))
+								.fail((data: TimeStampLoginData) => {
+									if (data.msgErrorId !== null) {
+										console.log(data);
+										dataResultLogin = data;
+										vm.$dialog.error({ messageId: data.messageId, message: data.message });
+										showDialogError = true;
+										return;
+									}
+								})
 								.then((response: TimeStampLoginData) => {
 									if (response.msgErrorId) {
 										return vm.$dialog.error({ messageId: response.msgErrorId });
