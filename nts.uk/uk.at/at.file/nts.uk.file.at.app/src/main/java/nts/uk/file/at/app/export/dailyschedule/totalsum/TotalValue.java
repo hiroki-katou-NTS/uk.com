@@ -62,11 +62,11 @@ public class TotalValue {
 		throw new RuntimeException("invalid type: " + this.valueType);
 	}
 	
-	public <T> void addValue(T value, ValueType valueType) {
+	public <T extends Number> void addValue(T value, ValueType valueType) {
 		if (valueType.isInteger()) {
-			this.value = String.valueOf(NumberUtils.toInt(this.value, 0) + (int) value);
+			this.value = String.valueOf(NumberUtils.toInt(this.value, 0) + value.intValue());
 		} else if (valueType.isDouble()) {
-			this.value = String.valueOf(NumberUtils.toDouble(this.value, 0) + (double) value);
+			this.value = String.valueOf(NumberUtils.toDouble(this.value, 0) + value.doubleValue());
 		}
 	}
 }
