@@ -16,6 +16,7 @@ public class Kdr004DataSource {
     private List<HolidayConfirmationTableContent> contents;
     private CompanyBsImport companyInfo;
     private Optional<ComSubstVacation> comSubstVacationSetting;
+    private boolean holidayMng;
     private boolean linking;
     private int howToPrintDate;
     private int pageBreak;

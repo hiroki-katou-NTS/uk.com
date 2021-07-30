@@ -91,24 +91,27 @@ public class HolidayConfirmationTableExportService extends ExportService<Kdr004E
         Optional<ComSubstVacation> comSubstVacation = comSubstVacationRepo.findById(companyId);
 
         // 振休確認表の表示内容を作成する
-        int mngUnit; // 管理単位(1:日数管理/2:時間管理)
-        boolean linkingMng;
+        int mngUnit = 1; // 管理単位(1:日数管理/2:時間管理) ===> only 1 for now
+        boolean linkingMng, holidayMng;
         if (comSubstVacation.isPresent()) {
             if (comSubstVacation.get().getManageDistinct() == ManageDistinct.NO) {
-                mngUnit = 1;
+//                mngUnit = 1;
                 linkingMng = false;
+                holidayMng = false;
             } else {
+                holidayMng = true;
                 if (comSubstVacation.get().getLinkingManagementATR() == ManageDistinct.YES) {
-                    mngUnit = 1;
+//                    mngUnit = 1;
                     linkingMng = true;
                 } else {
-                    mngUnit = 1;
+//                    mngUnit = 1;
                     linkingMng = false;
                 }
             }
         } else {
-            mngUnit = 1;
+//            mngUnit = 1;
             linkingMng = false;
+            holidayMng = false;
         }
         List<HolidayConfirmationTableContent> contents = contentsQuery.create(
                 closure1.getCurrentClosingPeriod().getClosureEndDate(),
@@ -121,7 +124,7 @@ public class HolidayConfirmationTableExportService extends ExportService<Kdr004E
                 lstWorkplaceInfo
         );
 
-        Kdr004DataSource dataSource = new Kdr004DataSource(contents, companyInfo, comSubstVacation, linkingMng, query.getHowToPrintDate(), query.getPageBreak());
+        Kdr004DataSource dataSource = new Kdr004DataSource(contents, companyInfo, comSubstVacation, holidayMng, linkingMng, query.getHowToPrintDate(), query.getPageBreak());
         generator.generate(exportServiceContext.getGeneratorContext(), dataSource);
     }
 }
