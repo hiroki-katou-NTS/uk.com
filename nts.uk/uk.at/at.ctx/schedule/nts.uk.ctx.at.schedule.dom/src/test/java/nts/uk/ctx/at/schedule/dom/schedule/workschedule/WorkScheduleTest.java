@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttdHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -224,7 +225,7 @@ public class WorkScheduleTest {
 			) {
 
 		TimeLeavingOfDailyAttd timeLeaving = 
-				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
+				TimeLeavingOfDailyAttdHelper.create(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
 		
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( Optional.of(timeLeaving), goStraight, backStraight );
@@ -263,7 +264,7 @@ public class WorkScheduleTest {
 			) {
 
 		TimeLeavingOfDailyAttd timeLeaving = 
-				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
+				TimeLeavingOfDailyAttdHelper.create(start1, end1, Optional.of( start2 ), Optional.of( end2 ));
 		
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( Optional.of(timeLeaving), goStraight, backStraight );
@@ -313,7 +314,7 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.create(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( 
@@ -343,7 +344,7 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.create(new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList( 
 				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.IMPRINT )
@@ -381,7 +382,7 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.create( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		WorkSchedule workSchedule = WorkScheduleHelper.createWithParams( 
 				timeLeaving, 
@@ -422,7 +423,7 @@ public class WorkScheduleTest {
 			) {
 		
 		TimeLeavingOfDailyAttd timeLeaving = 
-				TimeLeavingOfDailyAttdHelper.createTimeLeavingOfDailyAttd( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
+				TimeLeavingOfDailyAttdHelper.create( new TimeWithDayAttr(123), end1, Optional.empty(), Optional.empty());
 		
 		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList( 
 				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.IMPRINT )
