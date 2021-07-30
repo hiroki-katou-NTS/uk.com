@@ -67,11 +67,10 @@ module nts.uk.at.kha003.d {
                     vm.$window.storage('kha003CShareData').done((cData: any) => {
                         vm.cScreenData(cData);
                         vm.dateRange(cData.dateRange);
-                        vm.$window.storage('kha003AShareData').done((aData: any) => {
-                            vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate, aData.totalUnit);
+                        vm.getDateRange(vm.dateRange().startDate, vm.dateRange().endDate, aData.totalUnit).done(() => {
+                            let command = vm.getItemData(aData, bData, cData);
+                            vm.initData(command);
                         })
-                        let command = vm.getItemData(aData, bData, cData);
-                        vm.initData(command);
                     })
                 })
             })
@@ -764,8 +763,9 @@ module nts.uk.at.kha003.d {
          * @param startDate
          * @param endDate
          */
-        getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1) {
+        getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1): JQueryPromise<any> {
             let vm = this;
+            let dfd = $.Deferred<any>();
             if (displayFormat === 1) {
                 fromDate = vm.correctformat(fromDate);
                 toDate = vm.correctformat(toDate);
@@ -806,6 +806,7 @@ module nts.uk.at.kha003.d {
                     }
                     break;
             }
+            return dfd.promise();
         }
 
         mounted() {
