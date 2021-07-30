@@ -17,10 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -80,15 +77,18 @@ public class ManHourSummaryDataFinder {
         // 4.取得する(会社ID, 職場ID, 年月日)
         //4.1回目: FirstTime
         val affWkpList = workDetailList.stream().map(WorkDetailData::getAffWorkplaceId).distinct().collect(Collectors.toList());
-        List<WorkplaceInfor> affWorkplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, affWkpList, targetPeriod.end());
+        List<WorkplaceInfor> affWorkplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, affWkpList, targetPeriod.end()).stream()
+                .sorted(Comparator.comparing(WorkplaceInfor::getWorkplaceId)).collect(Collectors.toList());
 
         //4.2回目: SecondTime
         val wkpList = workDetailList.stream().map(WorkDetailData::getWorkplaceId).distinct().collect(Collectors.toList());
-        List<WorkplaceInfor> workplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, wkpList, targetPeriod.end());
+        List<WorkplaceInfor> workplaceInfors = this.workplaceAdapter.getWorkplaceInfor(cid, wkpList, targetPeriod.end())
+                .stream().sorted(Comparator.comparing(WorkplaceInfor::getWorkplaceId)).collect(Collectors.toList());
 
         // 5.取得する(社員ID)
         val sIds = workDetailList.stream().map(WorkDetailData::getEmployeeId).distinct().collect(Collectors.toList());
-        List<EmployeeInfoImport> empList = this.empAdapter.getByListSID(sIds);
+        List<EmployeeInfoImport> empList = this.empAdapter.getByListSID(sIds).stream()
+                .sorted(Comparator.comparing(EmployeeInfoImport::getSid)).collect(Collectors.toList());
 
         // 6.取得する(会社ID, 作業枠NO, 作業コード)
         val taskList1 = getTaskListBy(workDetailList, SummaryItemType.TASK1, 1);
@@ -122,7 +122,8 @@ public class ManHourSummaryDataFinder {
      */
     private List<TaskImport> getTaskListBy(List<WorkDetailData> workDetailList, SummaryItemType itemType, int frameNo) {
         val workCodes = workDetailList.stream().map(c -> c.mapSummaryItem(itemType)).distinct().collect(Collectors.toList());
-        val lstTask = this.taskAdapter.getTaskList(AppContexts.user().companyId(), frameNo, workCodes);
+        val lstTask = this.taskAdapter.getTaskList(AppContexts.user().companyId(), frameNo, workCodes).stream()
+                .sorted(Comparator.comparing(TaskImport::getCode)).collect(Collectors.toList());
 
         return !lstTask.isEmpty() ? lstTask : Collections.emptyList();
     }
