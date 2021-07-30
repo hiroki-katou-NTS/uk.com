@@ -66,19 +66,25 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 			int offset = 0, sumRowCount = 0;
 			boolean nextWorkplace;
 			boolean isFirstEmp = true;
-			for (String empId : empIds) {
-				EmployeeData emp = dataSource.getEmployees().get(empId);
+			boolean isLastEmpOfWorkplace = false;
+			for (int i = 0; i < empIds.size(); i++) {
+				EmployeeData emp = dataSource.getEmployees().get(empIds.get(i));
+				EmployeeData empNext = i < (empIds.size() - 1) ? dataSource.getEmployees().get(empIds.get(i + 1)) : null;
 				nextWorkplace = !workplaceCd.equals(emp.getEmployeeInfo().getWorkplaceCode());
+				isLastEmpOfWorkplace = empNext != null
+									? !empNext.getEmployeeInfo().getWorkplaceCode().equals(emp.getEmployeeInfo().getWorkplaceCode())
+									: true;
 
 				if (isFirstEmp) {
 					newRange = new RangeCustom(wsc.getRangeByName(ws.getName() + "!workplaceRange"), 0);
 				} else if (nextWorkplace || (sumRowCount + empRange.getRowCount() > ROW_PER_PAGE)) {
 					// check next work place or new page
 					workplaceCd = emp.getEmployeeInfo().getWorkplaceCode();
-					newRange = copyRangeDown(ws, workplaceRange, offset);
+					newRange = copyRangeDown(ws, workplaceRange, offset, isLastEmpOfWorkplace, true);
 				} else {
-					newRange = copyRangeDown(ws, empRange, offset);
+					newRange = copyRangeDown(ws, empRange, offset, isLastEmpOfWorkplace, false);
 				}
+
 				sumRowCount += newRange.range.getRowCount();
 				// break page and print
 				boolean isNewPage = sumRowCount > ROW_PER_PAGE
@@ -217,17 +223,12 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 	private void print(RangeCustom range, EmployeeData emp, boolean isPrintWorkplace,
 			List<ExportItem> itemBooks, boolean isOutNumExceedTime36Agr) {
-		Range empRange = range.worksheets.getRangeByName("employeeRange");
-		// set top border medium for first employee range 
-		empRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
 		if (isPrintWorkplace) {
 			String workplace = TextResource.localize("KWR008_50")		// D1_1
 							 + emp.getEmployeeInfo().getWorkplaceCode() // D1_3
 						   	 + "　"
 						   	 + emp.getEmployeeInfo().getWorkplaceName(); // D1_2
 			range.cell("workplace").putValue(workplace);
-			// set border top after set value for workspace
-			empRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		}
 		// print employee info
 		if (itemBooks.size() >= 1) {
@@ -310,10 +311,13 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	}
 
 
-	private RangeCustom copyRangeDown(Worksheet ws, Range range, int extra) throws Exception {
+	private RangeCustom copyRangeDown(Worksheet ws, Range range, int extra, boolean isLastEmp, boolean isWorkplace) throws Exception {
 		Range newRange = ws.getCells().createRange(range.getFirstRow() + range.getRowCount() + extra,
 				range.getFirstColumn(), range.getRowCount(), range.getColumnCount());
 		newRange.copyStyle(range);
+		newRange.setOutlineBorder(BorderType.BOTTOM_BORDER, isLastEmp || isWorkplace ? CellBorderType.MEDIUM : CellBorderType.THIN,
+				Color.getBlack());
+		newRange.setOutlineBorder(BorderType.TOP_BORDER, isWorkplace ? CellBorderType.MEDIUM : CellBorderType.THIN, Color.getBlack());
 		int offset = newRange.getFirstRow() - range.getFirstRow();
 		return new RangeCustom(newRange, offset);
 	}
