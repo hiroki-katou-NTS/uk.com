@@ -149,9 +149,9 @@ public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTyp
 		stringBuilder.append(
 				"ON c.kshmtWorkTypePK.companyId = o.kshmtWorkTypeDispOrderPk.companyId AND c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode ");
 		stringBuilder.append("WHERE c.kshmtWorkTypePK.companyId = :companyId ");
-		stringBuilder.append(" AND ((c.worktypeAtr = 0 AND (c.oneDayAtr = 3 OR c.oneDayAtr = 4))");
-		stringBuilder.append(" OR (c.worktypeAtr = 1 AND (((c.morningAtr = 3 OR c.morningAtr = 4) AND (c.afternoonAtr = 0 OR c.afternoonAtr = 7 OR c.afternoonAtr = 6 OR c.afternoonAtr = 1 OR c.afternoonAtr = 8 OR c.afternoonAtr = 4 OR c.afternoonAtr = 5 OR c.afternoonAtr = 9)) "
-				+ " OR ((c.afternoonAtr = 3 OR c.afternoonAtr = 4) AND (c.morningAtr = 0 OR c.morningAtr = 7 OR c.morningAtr = 6 OR c.morningAtr = 1 OR c.morningAtr = 8 OR c.morningAtr = 4 OR c.morningAtr = 5 OR c.morningAtr = 9)))))");
+		stringBuilder.append(" AND ((c.worktypeAtr = 0 AND (c.oneDayAtr = 5 OR c.oneDayAtr = 4))");
+		stringBuilder.append(" OR (c.worktypeAtr = 1 AND (((c.morningAtr = 5 OR c.morningAtr = 4) AND (c.afternoonAtr = 0 OR c.afternoonAtr = 7 OR c.afternoonAtr = 6 OR c.afternoonAtr = 1 OR c.afternoonAtr = 8 OR c.afternoonAtr = 4 OR c.afternoonAtr = 5 OR c.afternoonAtr = 9)) "
+				+ " OR ((c.afternoonAtr = 5 OR c.afternoonAtr = 4) AND (c.morningAtr = 0 OR c.morningAtr = 7 OR c.morningAtr = 6 OR c.morningAtr = 1 OR c.morningAtr = 8 OR c.morningAtr = 4 OR c.morningAtr = 5 OR c.morningAtr = 9)))))");
 		stringBuilder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
 		SELECT_ABSENCE_SPECIAL_KAF022 = stringBuilder.toString();
 		
