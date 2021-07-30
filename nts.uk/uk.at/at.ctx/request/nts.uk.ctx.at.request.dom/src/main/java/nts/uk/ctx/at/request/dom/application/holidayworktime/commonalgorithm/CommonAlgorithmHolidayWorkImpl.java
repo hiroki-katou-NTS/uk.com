@@ -839,18 +839,18 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 				
 			}
 			
-			// Input．勤務種類リストにOutput．初期選択勤務種類が存在するかチェックする
-			if (!output.getInitWorkTypeCd().isPresent()) {
-				output.setInitWorkTypeCd(Optional.ofNullable(!CollectionUtil.isEmpty(workTypeList) ? workTypeList.get(0).getWorkTypeCode() : null));
-			}
-			
-			// Input．就業時間帯リストにOutput．初期選択就業時間帯が存在するかチェックする
-			if (!output.getInitWorkTimeCd().isPresent()) {
-				output.setInitWorkTimeCd(Optional.ofNullable(!CollectionUtil.isEmpty(workTimeList) ? workTimeList.get(0).getWorktimeCode() : null));
-			}
 			
 			
-			
+		}
+		
+		// Input．勤務種類リストにOutput．初期選択勤務種類が存在するかチェックする
+		if (!output.getInitWorkTypeCd().isPresent()) {
+			output.setInitWorkTypeCd(Optional.ofNullable(!CollectionUtil.isEmpty(workTypeList) ? workTypeList.get(0).getWorkTypeCode() : null));
+		}
+		
+		// Input．就業時間帯リストにOutput．初期選択就業時間帯が存在するかチェックする
+		if (!output.getInitWorkTimeCd().isPresent()) {
+			output.setInitWorkTimeCd(Optional.ofNullable(!CollectionUtil.isEmpty(workTimeList) ? workTimeList.get(0).getWorktimeCode() : null));
 		}
 		
 		
