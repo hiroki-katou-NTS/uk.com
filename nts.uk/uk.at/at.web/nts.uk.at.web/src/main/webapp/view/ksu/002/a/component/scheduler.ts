@@ -591,19 +591,15 @@ module nts.uk.ui.at.ksu002.a {
                         const { dayData, context } = data;
 
 						let ischangeableWorks = false;
-						if(context.$vm.startupProcessingInformation().scheFunctionControl,  dayData.data){
+						if(context.$vm.startupProcessingInformation().scheFunctionControl && dayData.data){
 							ischangeableWorks = _.includes(context.$vm.startupProcessingInformation().scheFunctionControl.changeableWorks, dayData.data.workTimeForm());
 						}
-						if(dayData.data){
-	                        return context.$editable()
-	                            && !!dayData.data.wtime.code()
-	                            && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
-	                            && dayData.data.classification() !== WORK_STYLE.HOLIDAY
-	                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED
-								&& ischangeableWorks;
-						}else{
-							return true;
-						}
+                        return context.$editable()
+                            && !!dayData.data.wtime.code()
+                            && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
+                            && dayData.data.classification() !== WORK_STYLE.HOLIDAY
+                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED
+							&& ischangeableWorks;
                     },
                     owner: this
                 });
