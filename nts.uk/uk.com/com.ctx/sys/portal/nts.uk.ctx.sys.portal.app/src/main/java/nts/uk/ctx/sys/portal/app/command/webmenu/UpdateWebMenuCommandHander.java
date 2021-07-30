@@ -56,7 +56,7 @@ public class UpdateWebMenuCommandHander extends CommandHandler<WebMenuCommandBas
 								return domainTitleMenu;
 							}).collect(Collectors.toList());
 							
-					MenuBar domainMenuBar = MenuBar.createFromJavaType(menuBarId, mn.getMenuBarName(), mn.getSelectedAtr(), mn.getSystem(), mn.getMenuCls(),mn.getCode(), mn.getBackgroundColor(), mn.getTextColor(),mn.getDisplayOrder(), titleMenu);
+					MenuBar domainMenuBar = MenuBar.createFromJavaType(menuBarId, mn.getMenuBarName(), mn.getSelectedAtr(), mn.getSystem(), mn.getMenuCls(),mn.getCode(), mn.getDisplayOrder(), titleMenu);
 					
 					return domainMenuBar;				
 				}).collect(Collectors.toList());
