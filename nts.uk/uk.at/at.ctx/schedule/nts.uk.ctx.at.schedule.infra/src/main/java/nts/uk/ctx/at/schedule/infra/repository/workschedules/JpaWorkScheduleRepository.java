@@ -2,8 +2,10 @@ package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.EmployeeAndYmd;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
@@ -109,9 +113,28 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 
 	@Override
-	public boolean checkExits(String employeeID, GeneralDate ymd) {
+	public boolean checkExists(String employeeID, GeneralDate ymd) {
 		return this.queryProxy().query(SELECT_CHECK_UPDATE, Long.class).setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
+	}
+
+	@Override
+	public Map<EmployeeAndYmd, Boolean> checkExists(List<String> employeeIds, DatePeriod period) {
+
+		if ( employeeIds.isEmpty() ) {
+			return Collections.emptyMap();
+		}
+
+		// TODO 取得処理
+
+
+		return employeeIds.stream()
+			.flatMap( empId -> period.stream().map( ymd -> new EmployeeAndYmd( empId, ymd ) ))
+			.collect(Collectors.toMap(
+					key -> key
+				,	key -> false	// TODO 判定処理
+			));
+
 	}
 
 
@@ -784,6 +807,19 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 //				.getSingleOrNull();
 //		return Optional.ofNullable(date);
 //	}
+
+
+	@Override
+	public Map<EmployeeAndYmd, ConfirmedATR> getConfirmedStatus(List<String> employeeIds, DatePeriod period) {
+
+		if ( employeeIds.isEmpty() ) {
+			return Collections.emptyMap();
+		}
+
+		// TODO 取得処理・変換処理
+		return Collections.emptyMap();
+
+	}
 
 
 	/**

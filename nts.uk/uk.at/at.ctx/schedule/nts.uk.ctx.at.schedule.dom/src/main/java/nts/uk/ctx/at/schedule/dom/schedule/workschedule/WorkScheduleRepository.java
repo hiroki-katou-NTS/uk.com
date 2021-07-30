@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -43,9 +44,17 @@ public interface WorkScheduleRepository {
 	 * Exists
 	 * @param employeeID 社員ID
 	 * @param ymd 年月日
-	 * @return
+	 * @return true:存在する/false:存在しない
 	 */
-	boolean checkExits(String employeeID, GeneralDate ymd);
+	boolean checkExists(String employeeID, GeneralDate ymd);
+
+	/**
+	 * Exists
+	 * @param employeeIds 社員IDリスト
+	 * @param period 期間
+	 * @return 社員・年月日ごとのチェック結果(true:存在する/false:存在しない)
+	 */
+	Map<EmployeeAndYmd, Boolean> checkExists(List<String> employeeIds, DatePeriod period);
 
 
 	/**
@@ -100,5 +109,14 @@ public interface WorkScheduleRepository {
 	Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp);
 
 	//Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
+
+
+	/**
+	 * 確定区分を取得する
+	 * @param employeeIds 社員IDリスト
+	 * @param period 期間
+	 * @return 社員・年月日ごとの確定区分
+	 */
+	Map<EmployeeAndYmd, ConfirmedATR> getConfirmedStatus(List<String> employeeIds, DatePeriod period);
 
 }
