@@ -100,7 +100,7 @@ public class KSU002Finder {
 				start = start.addDays(-1);
 			}
 			GeneralDate end = period.end();
-			end.addDays(1);
+			end = end.addDays(1);
 			while (end.dayOfWeekEnum().value != startWeekDate.value) {
 				end = end.addDays(1);
 			}
