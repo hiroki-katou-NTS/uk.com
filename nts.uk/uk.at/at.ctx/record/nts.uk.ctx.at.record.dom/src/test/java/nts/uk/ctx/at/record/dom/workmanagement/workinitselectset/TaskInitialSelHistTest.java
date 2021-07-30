@@ -2,9 +2,7 @@ package nts.uk.ctx.at.record.dom.workmanagement.workinitselectset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.Test;
 
@@ -20,50 +18,6 @@ public class TaskInitialSelHistTest {
 		NtsAssert.invokeGetters(data);
 	}	
 	
-	/**
-	 * 最新履歴の履歴項目() is empty
-	 * 
-	 */
-	@Test
-	public void testaddHistory1() {
-		
-		List<TaskInitialSel> lst = new ArrayList<>();
-		TaskInitialSelHist taskInitialSelHist = new TaskInitialSelHist(
-				"000000000001",
-				lst);
-		TaskInitialSel param = new TaskInitialSel("000000000001", new DatePeriod( GeneralDate.ymd(2021, 7,15),  GeneralDate.ymd(9999, 12,31)), 
-				new TaskItem(
-						Optional.of(new TaskCode("TaskCode1") ),
-						Optional.of(new TaskCode("TaskCode2") ),
-						Optional.of(new TaskCode("TaskCode3") ),
-						Optional.of(new TaskCode("TaskCode4") ),
-						Optional.of(new TaskCode("TaskCode5") )
-						));
-		taskInitialSelHist.addHistory(param);
-		assertThat(taskInitialSelHist.getLstHistory().get(0)).isEqualToComparingFieldByField(param);
-	}
-	
-	/**
-	 * 最新履歴の履歴項目() not empty
-	 */
-	@Test
-	public void testaddHistory2() {
-		
-		TaskInitialSelHist taskInitialSelHist = TaskInitialSelHistHelper.getTaskInitialSelHistDefault();
-		
-		TaskInitialSel param = TaskInitialSelHistHelper.getParamTestaddHistory();
-		
-		taskInitialSelHist.addHistory(param);
-		assertThat( taskInitialSelHist.getLstHistory() )
-		.extracting( 
-				d -> d.getDatePeriod()
-				)
-		.containsExactly(
-				taskInitialSelHist.getLstHistory().get(0).getDatePeriod(),
-				 param.getDatePeriod(),
-				 new DatePeriod(GeneralDate.ymd(2021, 07, 01), GeneralDate.ymd(2021, 7,14)));
-	}
-	
 	/*
 	 * test Func deleteHistory
 	 * case if $直前の履歴.isPresent = true
@@ -78,6 +32,8 @@ public class TaskInitialSelHistTest {
 		taskInitialSelHist.deleteHistory(param);
 		
 		List<TaskInitialSel> lstHistoryResult = taskInitialSelHist.getLstHistory();
+		
+		assertThat(lstHistoryResult.size()).isEqualTo(1); // sau khi xóa 1 lịch sử đi rồi thì chỉ còn 1 lịch sử mà thôi
 		
 		assertThat(lstHistoryResult.get(0).getDatePeriod().start()).isEqualTo(GeneralDate.ymd(2021, 06, 01));
 		assertThat(lstHistoryResult.get(0).getDatePeriod().end()).isEqualTo(GeneralDate.ymd(9999, 12, 31));
@@ -102,7 +58,12 @@ public class TaskInitialSelHistTest {
 		taskInitialSelHist.changeHistory(taskItemParam, periodParam, dateParam);
 		
 		assertThat(taskInitialSelHist.getLstHistory().get(1).getTaskItem()).isEqualToComparingFieldByField(taskItemParam);
-	}
+		
+		assertThat(taskInitialSelHist.getLstHistory().get(0).getDatePeriod().start()).isEqualTo(GeneralDate.ymd(2021, 06, 01));// check start của lịch sử 1
+		assertThat(taskInitialSelHist.getLstHistory().get(0).getDatePeriod().end()).isEqualTo(GeneralDate.ymd(2021, 06, 30));// check end của lịch sử 1
+		assertThat(taskInitialSelHist.getLstHistory().get(1).getDatePeriod().start()).isEqualTo(GeneralDate.ymd(2021, 07, 01));// check start của lịch sử 2
+		assertThat(taskInitialSelHist.getLstHistory().get(1).getDatePeriod().end()).isEqualTo(GeneralDate.ymd(9999, 12, 31));// check end của lịch sử 2
+	} 
 	
 	/*
 	 * test Func changeHistory
