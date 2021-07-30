@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.pub.workmanagement.workmaster.WorkMasterPub;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,6 @@ public class WorkMasterAdapterImpl implements WorkMasterAdapter {
                 t.getCode(),
                 t.getTaskFrameNo(),
                 t.getDisplayInfo().getTaskName()
-        )).collect(Collectors.toList());
+        )).sorted(Comparator.comparing(TaskImport::getCode)).collect(Collectors.toList());
     }
 }

@@ -6,6 +6,7 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,6 @@ public class EmployeeDisplayNameAdapterImpl implements EmployeeDisplayNameAdapte
     @Override
     public List<EmployeeInfoImport> getByListSID(List<String> sIds) {
         return syEmployeePub.getByListSid(sIds).stream().map(x -> new EmployeeInfoImport(x.getSid(), x.getScd(), x.getBussinessName()))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(EmployeeInfoImport::getSid)).collect(Collectors.toList());
     }
 }
