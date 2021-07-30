@@ -602,7 +602,7 @@ module nts.uk.ui.at.ksu002.a {
 	                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED
 								&& ischangeableWorks;
 						}else{
-							return false;
+							return true;
 						}
                     },
                     owner: this
