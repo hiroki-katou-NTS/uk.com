@@ -768,9 +768,9 @@ module nts.uk.at.kha003.d {
          */
         getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1) {
             let vm = this;
-            if (displayFormat == 1) {
-                fromDate = this.correctformat(fromDate);
-                toDate = this.correctformat(toDate);
+            if (displayFormat === 1) {
+                fromDate = fromDate.replace('/', '-');
+                toDate = toDate.replace('/', '-');
             }
             fromDate = new Date(fromDate);
             toDate = new Date(toDate);
