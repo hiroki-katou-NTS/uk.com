@@ -21,7 +21,8 @@ module nts.uk.at.kdp003.a {
 		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
 		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
-		CREATE_DAILY: 'at/record/stamp/craeteDaily'
+		CREATE_DAILY: 'at/record/stamp/craeteDaily',
+		STAMP_SETTING_COMMON: 'at/record/stamp/settings_stamp_common'
 	};
 
 	const DIALOG = {
@@ -33,7 +34,8 @@ module nts.uk.at.kdp003.a {
 		P: '/view/kdp/003/p/index.xhtml',
 		KDP002_B: '/view/kdp/002/b/index.xhtml',
 		KDP002_C: '/view/kdp/002/c/index.xhtml',
-		KDP002_T: '/view/kdp/002/t/index.xhtml'
+		KDP002_T: '/view/kdp/002/t/index.xhtml',
+		KDP002_L: '/view/kdp/002/l/index.xhtml'
 	};
 
 	const KDP003_SAVE_DATA = 'loginKDP003';
@@ -62,6 +64,8 @@ module nts.uk.at.kdp003.a {
 		contractCd: string = '';
 
 		showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
+
+		useWork: KnockoutObservable<boolean> = ko.observable(false);
 
 		// setting for button A3
 		showClockButton: {
@@ -122,6 +126,11 @@ module nts.uk.at.kdp003.a {
 					vm.employeeData.baseDate(date);
 				});
 
+			vm.$ajax(API.STAMP_SETTING_COMMON)
+				.done((data: any) => {
+					vm.useWork(data.workUse);
+				})
+
 			// reload employee list after change baseDate
 			vm.employeeData.baseDate.subscribe((d: Date) => {
 				if (!_.isDate(d)) {
@@ -149,10 +158,10 @@ module nts.uk.at.kdp003.a {
 					if (noti) {
 						if (ko.unwrap(vm.fingerStampSetting).noticeSetDto.displayAtr == 1) {
 							result = true;
-						}else {
+						} else {
 							result = false;
 						}
-					}else {
+					} else {
 						result = false;
 					}
 
@@ -1070,7 +1079,6 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, params);
 				})
 				.then((data: f.TimeStampLoginData) => {
-
 					if (data && !data.msgErrorId && !data.errorMessage) {
 
 						if (data.em) {
@@ -1091,6 +1099,14 @@ module nts.uk.at.kdp003.a {
 							if (fingerStampSetting) {
 								vm.$window.storage(KDP003_SAVE_DATA)
 									.then((dataStorage: StorageData) => {
+										var workGroup: any;
+										var isShowViewL = false;
+										if (ko.unwrap(vm.useWork)) {
+											if (btn.taskChoiceArt && btn.taskChoiceArt == 1) {
+												isShowViewL = true;
+											}
+										}
+
 										if (dataStorage.WKPID.length > 1) {
 											if (btn.supportWplset == 1) {
 												vm.$window.modal('at', DIALOG.M, { screen: 'KDP003', employeeId: employeeId })
@@ -1098,36 +1114,222 @@ module nts.uk.at.kdp003.a {
 														if (data) {
 															if (data.notification !== null) {
 																vm.workPlaceId = data;
-																vm.$ajax(API.REGISTER, {
-																	employeeId,
-																	dateTime: moment(vm.$date.now()).format(),
-																	stampButton: {
-																		pageNo: layout.pageNo,
-																		buttonPositionNo: btn.btnPositionNo
-																	},
-																	refActualResult: {
-																		cardNumberSupport: null,
-																		workPlaceId: vm.workPlaceId,
-																		workLocationCD: vm.worklocationCode,
-																		workTimeCode: '',
-																		overtimeDeclaration: {
-																			overTime: 0,
-																			overLateNightTime: 0
+
+																if (isShowViewL) {
+																	vm.$window.modal('at', DIALOG.KDP002_L, { employeeId: employeeId })
+																		.then((data: any) => {
+																			workGroup = data;
+
+																			vm.$ajax(API.REGISTER, {
+																				employeeId,
+																				dateTime: moment(vm.$date.now()).format(),
+																				stampButton: {
+																					pageNo: layout.pageNo,
+																					buttonPositionNo: btn.btnPositionNo
+																				},
+																				refActualResult: {
+																					cardNumberSupport: null,
+																					workPlaceId: vm.workPlaceId,
+																					workLocationCD: vm.worklocationCode,
+																					workTimeCode: '',
+																					overtimeDeclaration: {
+																						overTime: 0,
+																						overLateNightTime: 0
+																					},
+																					workGroup
+																				}
+																			}).then(() => {
+																				const { stampResultDisplay } = fingerStampSetting;
+																				const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+																				const { USE } = NotUseAtr;
+
+																				vm.playAudio(btn.audioType);
+																				const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+																				const param = {
+																					sid: employeeId,
+																					date: vm.$date.now()
+																				}
+																				vm.$ajax('at', API.CREATE_DAILY, param);
+
+																				if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+
+																					return storage('KDP010_2C', displayItemId)
+																						.then(() => storage('infoEmpToScreenC', employeeInfo))
+																						.then(() => storage('screenC', { screen: "KDP003" }))
+																						.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+																				} else {
+																					const { stampSetting } = fingerStampSetting;
+																					const { resultDisplayTime } = stampSetting;
+
+																					return storage('resultDisplayTime', resultDisplayTime)
+																						.then(() => storage('infoEmpToScreenB', employeeInfo))
+																						.then(() => storage('screenB', { screen: "KDP003" }))
+																						.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																				}
+																			})
+																				.fail((message: BussinessException) => {
+																					const { messageId, parameterIds } = message;
+
+																					vm.$dialog.error({ messageId, messageParams: parameterIds });
+																				});
+																		})
+																} else {
+																	vm.$ajax(API.REGISTER, {
+																		employeeId,
+																		dateTime: moment(vm.$date.now()).format(),
+																		stampButton: {
+																			pageNo: layout.pageNo,
+																			buttonPositionNo: btn.btnPositionNo
+																		},
+																		refActualResult: {
+																			cardNumberSupport: null,
+																			workPlaceId: vm.workPlaceId,
+																			workLocationCD: vm.worklocationCode,
+																			workTimeCode: '',
+																			overtimeDeclaration: {
+																				overTime: 0,
+																				overLateNightTime: 0
+																			}
 																		}
-																	}
-																}).then(() => {
+																	}).then(() => {
+																		const { stampResultDisplay } = fingerStampSetting;
+																		const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+																		const { USE } = NotUseAtr;
+
+																		vm.playAudio(btn.audioType);
+																		const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+																		const param = {
+																			sid: employeeId,
+																			date: vm.$date.now()
+																		}
+																		vm.$ajax('at', API.CREATE_DAILY, param);
+
+																		if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+
+																			return storage('KDP010_2C', displayItemId)
+																				.then(() => storage('infoEmpToScreenC', employeeInfo))
+																				.then(() => storage('screenC', { screen: "KDP003" }))
+																				.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+																		} else {
+																			const { stampSetting } = fingerStampSetting;
+																			const { resultDisplayTime } = stampSetting;
+
+																			return storage('resultDisplayTime', resultDisplayTime)
+																				.then(() => storage('infoEmpToScreenB', employeeInfo))
+																				.then(() => storage('screenB', { screen: "KDP003" }))
+																				.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																		}
+																	})
+																		.fail((message: BussinessException) => {
+																			const { messageId, parameterIds } = message;
+
+																			vm.$dialog.error({ messageId, messageParams: parameterIds });
+																		});
+																}
+															}
+														}
+													})
+											} else {
+												vm.$blockui('invisible')
+													.then(() => {
+														vm.workPlaceId = dataStorage.WKPID[0];
+
+														if (isShowViewL) {
+															vm.$window.modal('at', DIALOG.KDP002_L, { employeeId: employeeId })
+																.then((data: any) => {
+																	workGroup = data;
+
+																	vm.$ajax(API.REGISTER, {
+																		employeeId,
+																		dateTime: moment(vm.$date.now()).format(),
+																		stampButton: {
+																			pageNo: layout.pageNo,
+																			buttonPositionNo: btn.btnPositionNo
+																		},
+																		refActualResult: {
+																			cardNumberSupport: null,
+																			workPlaceId: vm.workPlaceId,
+																			workLocationCD: vm.worklocationCode,
+																			workTimeCode: '',
+																			overtimeDeclaration: {
+																				overTime: 0,
+																				overLateNightTime: 0
+																			},
+																			workGroup
+																		}
+																	}).done(() => {
+																		vm.$blockui('clear');
+																		const { stampResultDisplay } = fingerStampSetting;
+																		const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
+																		const { USE } = NotUseAtr;
+
+																		const param = {
+																			sid: employeeId,
+																			date: vm.$date.now()
+																		}
+																		vm.$ajax('at', API.CREATE_DAILY, param);
+
+																		vm.playAudio(btn.audioType);
+																		const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
+
+																		if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
+
+																			return storage('KDP010_2C', displayItemId)
+																				.then(() => storage('infoEmpToScreenC', employeeInfo))
+																				.then(() => storage('screenC', { screen: "KDP003" }))
+																				.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
+																		} else {
+																			const { stampSetting } = fingerStampSetting;
+																			const { resultDisplayTime } = stampSetting;
+
+																			return storage('resultDisplayTime', resultDisplayTime)
+																				.then(() => storage('infoEmpToScreenB', employeeInfo))
+																				.then(() => storage('screenB', { screen: "KDP003" }))
+																				.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
+																		}
+																	})
+																		.fail((message: BussinessException) => {
+																			const { messageId, parameterIds } = message;
+
+																			vm.$dialog.error({ messageId, messageParams: parameterIds });
+																		});
+																})
+														} else {
+															vm.$ajax(API.REGISTER, {
+																employeeId,
+																dateTime: moment(vm.$date.now()).format(),
+																stampButton: {
+																	pageNo: layout.pageNo,
+																	buttonPositionNo: btn.btnPositionNo
+																},
+																refActualResult: {
+																	cardNumberSupport: null,
+																	workPlaceId: vm.workPlaceId,
+																	workLocationCD: vm.worklocationCode,
+																	workTimeCode: '',
+																	overtimeDeclaration: {
+																		overTime: 0,
+																		overLateNightTime: 0
+																	},
+																	workGroup
+																}
+															})
+																.done(() => {
+																	vm.$blockui('clear');
 																	const { stampResultDisplay } = fingerStampSetting;
 																	const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 																	const { USE } = NotUseAtr;
-
-																	vm.playAudio(btn.audioType);
-																	const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
 
 																	const param = {
 																		sid: employeeId,
 																		date: vm.$date.now()
 																	}
 																	vm.$ajax('at', API.CREATE_DAILY, param);
+
+																	vm.playAudio(btn.audioType);
+																	const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
 
 																	if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
@@ -1145,70 +1347,13 @@ module nts.uk.at.kdp003.a {
 																			.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
 																	}
 																})
-																	.fail((message: BussinessException) => {
-																		const { messageId, parameterIds } = message;
+																.fail((message: BussinessException) => {
+																	const { messageId, parameterIds } = message;
 
-																		vm.$dialog.error({ messageId, messageParams: parameterIds });
-																	});
-
-															}
+																	vm.$dialog.error({ messageId, messageParams: parameterIds });
+																});
 														}
 													})
-											} else {
-												vm.workPlaceId = dataStorage.WKPID[0];
-
-												vm.$ajax(API.REGISTER, {
-													employeeId,
-													dateTime: moment(vm.$date.now()).format(),
-													stampButton: {
-														pageNo: layout.pageNo,
-														buttonPositionNo: btn.btnPositionNo
-													},
-													refActualResult: {
-														cardNumberSupport: null,
-														workPlaceId: vm.workPlaceId,
-														workLocationCD: vm.worklocationCode,
-														workTimeCode: '',
-														overtimeDeclaration: {
-															overTime: 0,
-															overLateNightTime: 0
-														}
-													}
-												}).then(() => {
-													const { stampResultDisplay } = fingerStampSetting;
-													const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
-													const { USE } = NotUseAtr;
-
-													const param = {
-														sid: employeeId,
-														date: vm.$date.now()
-													}
-													vm.$ajax('at', API.CREATE_DAILY, param);
-
-													vm.playAudio(btn.audioType);
-													const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
-
-													if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
-
-														return storage('KDP010_2C', displayItemId)
-															.then(() => storage('infoEmpToScreenC', employeeInfo))
-															.then(() => storage('screenC', { screen: "KDP003" }))
-															.then(() => modal('at', DIALOG.KDP002_C)) as JQueryPromise<any>;
-													} else {
-														const { stampSetting } = fingerStampSetting;
-														const { resultDisplayTime } = stampSetting;
-
-														return storage('resultDisplayTime', resultDisplayTime)
-															.then(() => storage('infoEmpToScreenB', employeeInfo))
-															.then(() => storage('screenB', { screen: "KDP003" }))
-															.then(() => modal('at', DIALOG.KDP002_B)) as JQueryPromise<any>;
-													}
-												})
-													.fail((message: BussinessException) => {
-														const { messageId, parameterIds } = message;
-
-														vm.$dialog.error({ messageId, messageParams: parameterIds });
-													});
 											}
 										} else {
 

@@ -548,6 +548,7 @@ module nts.uk.at.view.kdp.share {
 		supportUse: boolean;
 		temporaryUse: boolean;
 		entranceExitUse: boolean;
+		taskChoiceArt: number;
 	}
 
 	export enum NotUseAtr {
