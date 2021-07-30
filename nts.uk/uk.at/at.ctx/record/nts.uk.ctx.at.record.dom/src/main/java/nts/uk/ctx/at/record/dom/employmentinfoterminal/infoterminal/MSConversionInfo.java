@@ -46,6 +46,7 @@ public class MSConversionInfo implements StampInfoConversion {
 		// ＄打刻先
 		Optional<StampDestination> stampDes = this.getLstMSConversion().stream()
 				.filter(x -> x.getStampClassifi() == stampClassifi).map(x -> x.getStampDestination()).findFirst();
+		
 		switch (stampDes.get()) {
 		case ATTENDANCE:
 			return new StampTypeOutput(ChangeClockArt.GOING_TO_WORK, Optional.empty());
@@ -69,6 +70,8 @@ public class MSConversionInfo implements StampInfoConversion {
 			return new StampTypeOutput(ChangeClockArt.START_OF_SUPPORT, Optional.empty());
 		case OUT_SUPPORT_END:
 			return new StampTypeOutput(ChangeClockArt.END_OF_SUPPORT, Optional.empty());
+		case GO_OUT:
+			return new StampTypeOutput(ChangeClockArt.RETURN, Optional.empty());
 
 		default:
 			return null;
