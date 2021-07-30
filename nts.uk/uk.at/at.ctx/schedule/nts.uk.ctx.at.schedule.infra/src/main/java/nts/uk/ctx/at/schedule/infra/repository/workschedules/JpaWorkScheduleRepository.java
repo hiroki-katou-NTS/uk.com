@@ -590,7 +590,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 			if (newData.schShortTimeTs.isEmpty()) {
 				// if have not ShortWorkingTimeSheet delete all old data
-				this.deleteAllShortTime(workSchedule.getEmployeeID(), workSchedule.getYmd());
+				this.deleteAllShortTimeSheets(workSchedule.getEmployeeID(), workSchedule.getYmd());
 				oldData.get().setSchShortTimeTs(newData.schShortTimeTs);
 			} else {
 
@@ -599,7 +599,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					if (!workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()) {
 						for (ShortWorkingTimeSheet ts : workSchedule.getOptSortTimeWork().get()
 								.getShortWorkingTimeSheets()) {
-							this.insert(ts, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+							this.insertShortTimeSheets(ts, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
 						}
 					}
 				} else {
@@ -626,7 +626,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							ShortWorkingTimeSheet schShortTimeTs = workSchedule.getOptSortTimeWork().get()
 									.getShortWorkingTimeSheets().stream().filter(x -> x.getShortWorkTimeFrameNo().v() == 2)
 									.findFirst().get();
-							this.insert(schShortTimeTs, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+							this.insertShortTimeSheets(schShortTimeTs, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
 						}
 					}
 				}
@@ -761,9 +761,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	}
 
 
-//	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
-//			+ " WHERE c.pk.sid IN :listEmp"
-//			+ " ORDER BY c.pk.ymd desc ";
 	private static final String GET_MAX_DATE_WORK_SCHE_BY_LIST_EMP = "SELECT c.pk.ymd FROM KscdtSchBasicInfo c "
 			+ " WHERE c.pk.sid IN :listEmp"
 			+ " ORDER BY c.pk.ymd desc ";
@@ -789,21 +786,39 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 //	}
 
 
-	@Override
-	public void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID) {
+	/**
+	 * insert - 出退勤時刻
+	 * @param leavingWork 出退勤
+	 * @param sID 社員ID
+	 * @param yMD 年月日
+	 * @param cID 会社ID
+	 */
+	private void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID) {
 		this.commandProxy().insert(KscdtSchAtdLvwTime.toEntity(leavingWork, sID, yMD, cID));
 	}
 
-	@Override
-	public void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo) {
+	/**
+	 * delete - 出退勤時刻
+	 * @param sid 社員ID
+	 * @param ymd 年月日
+	 * @param workNo 勤務No
+	 */
+	private void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo) {
 			KscdtSchAtdLvwTimePK pk = new KscdtSchAtdLvwTimePK(sid, ymd, workNo);
 			this.commandProxy().remove(KscdtSchAtdLvwTime.class, pk);
 	}
 
 
 	private static final String SELECT_BY_SHORTTIME_TS = "SELECT c FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd AND c.pk.childCareAtr = :childCareAtr AND c.pk.frameNo = :frameNo";
-	@Override
-	public Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo) {
+	/**
+	 * get - 短時間勤務時間帯
+	 * @param sid 社員ID
+	 * @param ymd 年月日
+	 * @param childCareAtr 子の看護区分
+	 * @param frameNo 枠No
+	 * @return
+	 */
+	private Optional<ShortTimeOfDailyAttd> getShortTimeSheets(String sid, GeneralDate ymd, int childCareAtr, int frameNo) {
 		Optional<ShortTimeOfDailyAttd> workSchedule = this.queryProxy()
 				.query(SELECT_BY_SHORTTIME_TS, KscdtSchShortTimeTs.class).setParameter("employeeID", sid)
 				.setParameter("ymd", ymd).setParameter("childCareAtr", childCareAtr).setParameter("frameNo", frameNo)
@@ -812,20 +827,35 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	}
 
 	private static final String SELECT_ALL_SHORTTIME_TS = "SELECT count (c) FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
-	@Override
-	public boolean checkExitsShortTime(String employeeID, GeneralDate ymd) {
+	/**
+	 * exists - 短時間勤務時間帯
+	 * @param employeeID 社員ID
+	 * @param ymd 年月日
+	 * @return true:存在する/false:存在しない
+	 */
+	private boolean checkExitsShortTimeSheets(String employeeID, GeneralDate ymd) {
 		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
 	}
 
-	@Override
-	public void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID) {
+	/**
+	 * insert - 短時間勤務時間帯
+	 * @param shortWorkingTimeSheets 短時間勤務時間帯
+	 * @param sID 社員ID
+	 * @param yMD 年月日
+	 * @param cID 会社ID
+	 */
+	private void insertShortTimeSheets(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID) {
 		this.commandProxy().insert(KscdtSchShortTimeTs.toEntity(shortWorkingTimeSheets, sID, yMD, cID));
 	}
 
-	@Override
-	public void deleteAllShortTime(String sid, GeneralDate ymd) {
-		Boolean optWorkShortTime = this.checkExitsShortTime(sid, ymd);
+	/**
+	 * delete all - 短時間勤務時間帯
+	 * @param sid 社員ID
+	 * @param ymd 年月日
+	 */
+	private void deleteAllShortTimeSheets(String sid, GeneralDate ymd) {
+		Boolean optWorkShortTime = this.checkExitsShortTimeSheets(sid, ymd);
 		if (optWorkShortTime) {
 			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd);
 			this.commandProxy().remove(KscdtSchShortTimeTs.class, pk);

@@ -5,9 +5,6 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 
 /**
  * 勤務予定Repository
@@ -42,6 +39,12 @@ public interface WorkScheduleRepository {
 	List<WorkSchedule> getListBySid(String sid, DatePeriod period);
 
 
+	/**
+	 * Exists
+	 * @param employeeID 社員ID
+	 * @param ymd 年月日
+	 * @return
+	 */
 	boolean checkExits(String employeeID, GeneralDate ymd);
 
 
@@ -97,18 +100,5 @@ public interface WorkScheduleRepository {
 	Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp);
 
 	//Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
-
-
-	Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo);
-
-	void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID);
-
-	void deleteAllShortTime(String sid, GeneralDate ymd);
-
-	boolean checkExitsShortTime(String employeeID, GeneralDate ymd);
-
-	void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID);
-
-	void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo);
 
 }
