@@ -9,10 +9,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.workschedulereflected.WorkScheduleReflected;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.EmployeeGeneralAndPeriodMaster;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
@@ -60,6 +63,20 @@ public class CreateDailyResults {
 
 	@Inject
 	private WorkScheduleReflected workScheduleReflected;
+	
+	@Inject
+	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
+	
+	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+			IntegrationOfDaily integrationOfDaily) {
+		    DatePeriod period = new DatePeriod(ymd, ymd);
+		    EmployeeGeneralAndPeriodMaster masterData = createDailyResultDomainServiceNew.getMasterData(companyId, employeeId, period);
+			 
+		return createDailyResult(companyId, employeeId, ymd, executionType, flag,
+				masterData.getEmployeeGeneralInfoImport(),
+				masterData.getPeriodInMasterList(), integrationOfDaily);
+	}
 	
 	/**
 	 * @param companyId 会社ID
@@ -114,10 +131,10 @@ public class CreateDailyResults {
 		}
 		if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE) {
 			//勤務予定反映
-			listErrorMessageInfo.addAll(workScheduleReflected.workScheduleReflected(integrationOfDaily));
+			listErrorMessageInfo.addAll(workScheduleReflected.workScheduleReflected(companyId, integrationOfDaily));
 		} else {
 			// 個人情報から勤務種類と就業時間帯を写す
-			listErrorMessageInfo.addAll(copyWorkTypeWorkTime.copyWorkTypeWorkTime(integrationOfDaily));
+			listErrorMessageInfo.addAll(copyWorkTypeWorkTime.copyWorkTypeWorkTime(companyId, integrationOfDaily));
 		}
 		if (!listErrorMessageInfo.isEmpty()) {
 			return new OutputCreateDailyOneDay(listErrorMessageInfo, integrationOfDaily, new ArrayList<>()) ;
