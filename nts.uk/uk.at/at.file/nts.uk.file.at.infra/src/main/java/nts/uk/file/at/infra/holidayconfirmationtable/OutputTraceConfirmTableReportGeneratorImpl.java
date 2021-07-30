@@ -137,7 +137,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             }
             List<DisplayContentsOfSubLeaveConfirmationTable> contents = mapData.get(wkpCode);
             contents.sort(Comparator.comparing(DisplayContentsOfSubLeaveConfirmationTable::getEmployeeCode));
-            cells.get(row, 0).setValue(TextResource.localize("KDR003_38") + wkpCode + " " + contents.get(0).getWorkplaceName());
+            cells.get(row, 0).setValue(TextResource.localize("KDR003_38") + wkpCode + "　" + contents.get(0).getWorkplaceName());
             wkpIndexes.add(row);
             row++;
             count++;
@@ -333,7 +333,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
     }
 
     private void printCommonContent(Cells cells, int row, DisplayContentsOfSubLeaveConfirmationTable content, Integer mngUnit) {
-        cells.get(row, COLUMN_EMP).setValue(content.getEmployeeCode() + " " + content.getEmployeeName());
+        cells.get(row, COLUMN_EMP).setValue(content.getEmployeeCode() + "　" + content.getEmployeeName());
         if (content.getObservationOfExitLeave().isPresent()) {
             cells.get(row, COLUMN_ER).setValue(content.getObservationOfExitLeave().get().isEr() ? TextResource.localize("KDR003_122") : null);
             Double carry = null;
@@ -342,11 +342,16 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
             Double numberOfRemaining = null;
             Double undeterminedNumber = null;
             if (content.getObservationOfExitLeave().isPresent() && mngUnit != null && mngUnit == 1) {
-                carry = content.getObservationOfExitLeave().get().getNumberCarriedForward().getLeaveRemainingDayNumber().v();
-                occ = content.getObservationOfExitLeave().get().getTotalNumberOfSubstituteHolidays().getNumberOfDate().v();
-                numofUse = content.getObservationOfExitLeave().get().getNumOfUse().getNumOfDate().v();
-                numberOfRemaining = content.getObservationOfExitLeave().get().getNumberOfRemaining().getNumberOfDate().v();
-                undeterminedNumber = content.getObservationOfExitLeave().get().getUndeterminedNumber().getNumOfDate().v();
+                carry = content.getObservationOfExitLeave().get().getNumberCarriedForward() != null ?
+                        content.getObservationOfExitLeave().get().getNumberCarriedForward().getLeaveRemainingDayNumber().v() : null;
+                occ = content.getObservationOfExitLeave().get().getTotalNumberOfSubstituteHolidays() != null ?
+                        content.getObservationOfExitLeave().get().getTotalNumberOfSubstituteHolidays().getNumberOfDate().v() : null;
+                numofUse = content.getObservationOfExitLeave().get().getNumOfUse() != null ?
+                        content.getObservationOfExitLeave().get().getNumOfUse().getNumOfDate().v() : null;
+                numberOfRemaining = content.getObservationOfExitLeave().get().getNumberOfRemaining() != null ?
+                        content.getObservationOfExitLeave().get().getNumberOfRemaining().getNumberOfDate().v() : null;
+                undeterminedNumber = content.getObservationOfExitLeave().get().getUndeterminedNumber() != null ?
+                        content.getObservationOfExitLeave().get().getUndeterminedNumber().getNumOfDate().v() : null;
             } else if (content.getObservationOfExitLeave().isPresent() && mngUnit != null && mngUnit == 2) {
                 val carryTimeOpt = content.getObservationOfExitLeave().get().getNumberCarriedForward().getTime();
                 val occOpt = content.getObservationOfExitLeave().get().getTotalNumberOfSubstituteHolidays().getTime();
@@ -376,13 +381,13 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
                 cells.get(row, COLUMN_REMAINING).setValue(numberOfRemaining == null ? "" : convertToTime(numberOfRemaining.intValue()));
                 cells.get(row, COLUMN_UNDIGESTED).setValue(undeterminedNumber == null ? "" : convertToTime(undeterminedNumber.intValue()));
             } else if (mngUnit != null && mngUnit == 1) {
-                cells.get(row, COLUMN_CARRY_FORWARD).setValue(String.format("%.1f", carry));
-                cells.get(row, COLUMN_OCCURRENCE).setValue(String.format("%.1f", occ));
+                cells.get(row, COLUMN_CARRY_FORWARD).setValue(carry == null ? "" : String.format("%.1f", carry));
+                cells.get(row, COLUMN_OCCURRENCE).setValue(occ == null ? "" : String.format("%.1f", occ));
 
-                cells.get(row, COLUMN_USED).setValue(String.format("%.1f", numofUse));
+                cells.get(row, COLUMN_USED).setValue(numofUse == null ? "" : String.format("%.1f", numofUse));
 
-                cells.get(row, COLUMN_REMAINING).setValue(String.format("%.1f", numberOfRemaining));
-                cells.get(row, COLUMN_UNDIGESTED).setValue(String.format("%.1f", undeterminedNumber));
+                cells.get(row, COLUMN_REMAINING).setValue(numberOfRemaining == null ? "" : String.format("%.1f", numberOfRemaining));
+                cells.get(row, COLUMN_UNDIGESTED).setValue(undeterminedNumber == null ? "" : String.format("%.1f", undeterminedNumber));
             }
             if (numberOfRemaining != null && numberOfRemaining < 0) {
                 Style remainingStyle = cells.get(row, COLUMN_REMAINING).getStyle();
@@ -406,7 +411,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
      * @return
      */
     private String formatDate(Integer mngUnit, OccurrenceDigClass cls, GeneralDate date, double usedNumber, int howToPrintDate, List<OccurrenceAcquisitionDetails> occurrenceAcquisitionDetails) {
-        if(date ==null)
+        if (date == null)
             return null;
         StringBuilder formattedDate = new StringBuilder();
         if (howToPrintDate == 0) {
@@ -496,7 +501,7 @@ public class OutputTraceConfirmTableReportGeneratorImpl extends AsposeCellsRepor
 
     private void setValue(Cells cells, int row, int col, String value) {
         cells.get(row, col).setValue(value);
-        if (value!=null &&!value.contains("(") && !value.contains("[") &&
+        if (value != null && !value.contains("(") && !value.contains("[") &&
                 !value.contains(TextResource.localize("KDR003_120"))) {
             Style style = cells.get(row, col).getStyle();
             style.setHorizontalAlignment(TextAlignmentType.CENTER);

@@ -125,7 +125,9 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
 
         Integer mngUnit = null; // 管理単位(1:日数管理/2:時間管理)
         boolean linkingMng = false;
+        ManageDistinct isManaged = null;
         if (comSubstVacation != null) {
+            isManaged = comSubstVacation.getIsManaged();
             if (comSubstVacation.getIsManaged() == ManageDistinct.NO) {
                 mngUnit = 1;
                 linkingMng = false;
@@ -150,6 +152,7 @@ public class OutputTraceConfirmationTableService extends ExportService<CreateTra
         val listDetail = leaveQuery.getDisplayContent(
                 referenceDate,
                 employeeInfoList,
+                isManaged,
                 mngUnit,
                 linkingMng,
                 query.isMoreSubstituteHolidaysThanHolidays(),
