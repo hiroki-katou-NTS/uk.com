@@ -241,6 +241,11 @@ public class DPLoadRowProcessor {
 				? codeNameReason.getCodeNames().stream()
 						.collect(Collectors.toMap(x -> process.mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
+		CodeNameType codeNameTask = dataDialogWithTypeProcessor.getWork(companyId);
+		Map<String, CodeName> codeNameTaskMap = codeNameTask != null
+				? codeNameTask.getCodeNames().stream()
+						.collect(Collectors.toMap(x -> process.mergeString(x.getCode(), "|", x.getId()), x -> x))
+				: Collections.emptyMap();
 
 		// No 20 get submitted application
 		// disable check box sign
@@ -323,7 +328,7 @@ public class DPLoadRowProcessor {
 								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 				dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());
-				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap,
+				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap, codeNameTaskMap,
 						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()

@@ -17,7 +17,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
 import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
@@ -27,6 +26,9 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.repository.BusinessTypesRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.AffEmploymentHistoryDto;
@@ -53,6 +55,9 @@ public class DataDialogWithTypeProcessor {
 	
 	@Inject
 	private BPSettingRepository bpSettingRepository;
+	
+	@Inject
+	private TaskingRepository taskingRepository;
 
 	// 勤務種類
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
@@ -139,9 +144,20 @@ public class DataDialogWithTypeProcessor {
 	}
 	
 	// 作業
+	public CodeNameType getWorkWithFrameNo(String companyId, Integer frameNo) {
+		List<Task> lstTask = taskingRepository.getListTask(companyId, new TaskFrameNo(frameNo));
+		List<CodeName> codeNames = lstTask.stream()
+				.map(x -> new CodeName(x.getCode().v(), x.getDisplayInfo().getTaskName().v(), String.valueOf(x.getTaskFrameNo().v())))
+				.collect(Collectors.toList());
+		return CodeNameType.create(TypeLink.WORK.value, codeNames);
+	}
+	
+	// 作業
 	public CodeNameType getWork(String companyId) {
-		// TODO
-		List<CodeName> codeNames = new ArrayList<>();
+		List<Task> lstTask = taskingRepository.getListTask(companyId);
+		List<CodeName> codeNames = lstTask.stream()
+				.map(x -> new CodeName(x.getCode().v(), x.getDisplayInfo().getTaskName().v(), String.valueOf(x.getTaskFrameNo().v())))
+				.collect(Collectors.toList());
 		return CodeNameType.create(TypeLink.WORK.value, codeNames);
 	}
 	
@@ -263,6 +279,10 @@ public class DataDialogWithTypeProcessor {
 		case 14:
 			// KCP001
 			return this.getBussinessType(companyId).getCodeNames();
+			
+		case 15:
+			// KDL012
+			return this.getWorkWithFrameNo(companyId, param.getTaskFrameNo()).getCodeNames();
 		default:
 			return null;
 		}

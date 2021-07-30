@@ -8,11 +8,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -51,7 +53,6 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusFor
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.EnumCodeName;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ReleasedAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
@@ -247,7 +248,19 @@ public class DailyPerformanceCorrectionProcessor {
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
 	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DPText.DATE_FORMAT);
+	private static final Map<Integer, List<Integer>> SUPPORT_WORK_MAP = new HashMap<Integer, List<Integer>>()
+	{
+		private static final long serialVersionUID = 1L;
 
+		{
+	        put(1, Arrays.asList(924,934,944,954,964,974,984,994,1004,1014,1024,1034,1044,1054,1064,1074,1084,1094,1104,1114));
+	        put(2, Arrays.asList(925,935,945,955,965,975,985,995,1005,1015,1025,1035,1045,1055,1065,1075,1085,1095,1105,1115));
+	        put(3, Arrays.asList(926,936,946,956,966,976,986,996,1006,1016,1026,1036,1046,1056,1066,1076,1086,1096,1106,1116));
+	        put(4, Arrays.asList(927,937,947,957,967,977,987,997,1007,1017,1027,1037,1047,1057,1067,1077,1087,1097,1107,1117));
+	        put(5, Arrays.asList(928,938,948,958,968,978,988,998,1008,1018,1028,1038,1048,1058,1068,1078,1088,1098,1108,1118));
+	    }
+	};
+	
 	/**
 	 * Get List Data include:<br/>
 	 * Employee and Date
@@ -445,6 +458,11 @@ public class DailyPerformanceCorrectionProcessor {
 				? codeNameReason.getCodeNames().stream()
 						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
+		CodeNameType codeNameTask = dataDialogWithTypeProcessor.getWork(companyId);
+		Map<String, CodeName> codeNameTaskMap = codeNameTask != null
+				? codeNameTask.getCodeNames().stream()
+						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
+				: Collections.emptyMap();
 						//get status check box 
 		List<GeneralDate> holidayDate = publicHolidayRepository
 				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
@@ -523,7 +541,7 @@ public class DailyPerformanceCorrectionProcessor {
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
 								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
-				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapGetName, codeNameReasonMap,
+				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapGetName, codeNameReasonMap, codeNameTaskMap,
 						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, objectShare);
 				lstData.add(data);
 				// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey,
@@ -627,7 +645,8 @@ public class DailyPerformanceCorrectionProcessor {
 	
 	public void processCellData(String NAME_EMPTY, String NAME_NOT_FOUND, DailyPerformanceCorrectionDto screenDto,
 			DPControlDisplayItem dPControlDisplayItem,
-			Map<Integer, Map<String, CodeName>> mapGetName,  Map<String, CodeName> mapReasonName, Map<String, ItemValue> itemValueMap, DPDataDto data,
+			Map<Integer, Map<String, CodeName>> mapGetName,  Map<String, CodeName> mapReasonName, Map<String, CodeName> codeNameTaskMap, 
+			Map<String, ItemValue> itemValueMap, DPDataDto data,
 			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share) {
 		Set<DPCellDataDto> cellDatas = data.getCellDatas();
 		String typeGroup = "";
@@ -675,8 +694,17 @@ public class DailyPerformanceCorrectionProcessor {
 									int group = DEVIATION_REASON_MAP.get(item.getId());
 									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
 									value = mapReasonName.containsKey(value+"|"+group) ? mapReasonName.get(value+"|"+group).getName() : NAME_NOT_FOUND;
-								}
-								else {
+								} else if(groupType == TypeLink.WORK.value) {
+									int frameNo = 0;
+									for(Entry<Integer, List<Integer>> entry : SUPPORT_WORK_MAP.entrySet()) {
+										if(entry.getValue().contains(item.getId())) {
+											frameNo = entry.getKey();
+											break;
+										}
+									}
+									cellDatas.add(new DPCellDataDto(codeColKey, value,attendanceAtrAsString, DPText.TYPE_LABEL));
+									value = codeNameTaskMap.containsKey(value+"|"+frameNo) ? codeNameTaskMap.get(value+"|"+frameNo).getName() : NAME_NOT_FOUND;
+								} else {
 									cellDatas.add(
 											new DPCellDataDto(codeColKey, value, attendanceAtrAsString, DPText.TYPE_LABEL));
 									value = mapGetName.get(groupType).containsKey(value)

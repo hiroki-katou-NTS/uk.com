@@ -256,6 +256,11 @@ public class DailyPerformanceErrorCodeProcessor {
 				? codeNameReason.getCodeNames().stream()
 						.collect(Collectors.toMap(x -> dailyProcessor.mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
+		CodeNameType codeNameTask = dataDialogWithTypeProcessor.getWork(companyId);
+		Map<String, CodeName> codeNameTaskMap = codeNameTask != null
+				? codeNameTask.getCodeNames().stream()
+						.collect(Collectors.toMap(x -> dailyProcessor.mergeString(x.getCode(), "|", x.getId()), x -> x))
+				: Collections.emptyMap();
 		screenDto.markLoginUser(sId);
 		screenDto.createAccessModifierCellState(mapDP);
 		screenDto.getLstFixedHeader().forEach(column -> {
@@ -355,7 +360,7 @@ public class DailyPerformanceErrorCodeProcessor {
 									"|", data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				}
 				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem,
-						mapGetName, codeNameReasonMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null);
+						mapGetName, codeNameReasonMap, codeNameTaskMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())

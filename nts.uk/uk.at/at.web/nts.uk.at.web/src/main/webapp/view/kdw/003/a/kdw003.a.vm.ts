@@ -49,6 +49,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
     var DEVIATION_REASON_MAP = { "438": 1, "443": 2, "448": 3, "453": 4, "458": 5, "801": 6, "806": 7, "811": 8, "816": 9, "821": 10 };
 
+	var SUPPORT_WORK_MAP = {
+		1: [924,934,944,954,964,974,984,994,1004,1014,1024,1034,1044,1054,1064,1074,1084,1094,1104,1114],
+		2: [925,935,945,955,965,975,985,995,1005,1015,1025,1035,1045,1055,1065,1075,1085,1095,1105,1115],
+		3: [926,936,946,956,966,976,986,996,1006,1016,1026,1036,1046,1056,1066,1076,1086,1096,1106,1116],
+		4: [927,937,947,957,967,977,987,997,1007,1017,1027,1037,1047,1057,1067,1077,1087,1097,1107,1117],
+		5: [928,938,948,958,968,978,988,998,1008,1018,1028,1038,1048,1058,1068,1078,1088,1098,1108,1118]
+	};
+
     export class ScreenModel {
         fixHeaders: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -5251,6 +5259,60 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     })
                     dfd14.promise();
+                    break;
+				case 15:
+                    //KDL012
+                    let dfd15 = $.Deferred();
+					let dateParam15: any = null;
+					let currentRow: any = _.find(selfParent.dailyPerfomanceData(), item => item.id==self.rowId().substring(1));
+					if(currentRow){
+						dateParam15 = currentRow.date;
+					};
+					let workFrameNoSelection: any = null;
+					let keyList = _.keys(SUPPORT_WORK_MAP);
+					for(let itemTaskKey in keyList) {
+						if(_.includes(_.get(SUPPORT_WORK_MAP, keyList[itemTaskKey]), parseInt(self.attendenceId))) {
+							workFrameNoSelection = parseInt(keyList[itemTaskKey]);
+							break;	
+						}
+					}
+                    nts.uk.ui.block.invisible();
+                    let paramsKDL012 = {
+						isMultiple: false,
+				        showExpireDate: true,
+				        referenceDate: dateParam15,
+				        workFrameNoSelection,
+				        selectionCodeList: self.listCode(),
+				        currentCodeList: self.selectedCode()
+                    };
+                    setShared('KDL012Params', paramsKDL012);
+                    modal("/view/kdl/012/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                        var self = this;
+                        var returnData = nts.uk.ui.windows.getShared("KDL012Output");
+                        if (returnData !== undefined && returnData != "") {
+                            let dataKDL: any;
+                            let param3 = {
+                                typeDialog: 15,
+								param: {
+							 		taskFrameNo: workFrameNoSelection
+								}
+                            };
+                            service.findAllCodeName(param3).done((data: any) => {
+                                let codeName = _.find(data, (item: any) => {
+                                    return item.code == returnData;
+                                });
+                                self.updateCodeName(self.rowId(), self.attendenceId, codeName.name, codeName.code, self.selectedCode());
+                                dfd15.resolve();
+                            });
+                        }
+                        else {
+                            if (returnData == "") self.updateCodeName(self.rowId(), self.attendenceId, getText("KDW003_82"), "", self.selectedCode());
+                            __viewContext.vm.clickCounter.clickLinkGrid = false;
+                            nts.uk.ui.block.clear();
+                            dfd15.resolve();
+                        }
+                    });
+                    dfd15.promise()
                     break;
             }
             nts.uk.ui.block.clear();
