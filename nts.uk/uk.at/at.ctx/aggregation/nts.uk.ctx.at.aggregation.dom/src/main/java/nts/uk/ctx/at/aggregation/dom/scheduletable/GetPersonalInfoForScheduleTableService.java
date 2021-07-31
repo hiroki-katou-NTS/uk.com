@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,7 +99,10 @@ public class GetPersonalInfoForScheduleTableService {
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
 		
 		if ( !personalItemList.contains(ScheduleTablePersonalInfoItem.TEAM)) {
-			return Collections.emptyList();
+			
+			return employeeIds.stream()
+					.map(id -> EmployeeTeamInfoImported.createWithEmpty(id))
+					.collect(Collectors.toList());
 		}
 		
 		return require.getEmployeeTeamInfo(employeeIds);
@@ -119,7 +121,10 @@ public class GetPersonalInfoForScheduleTableService {
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
 		
 		if ( !personalItemList.contains(ScheduleTablePersonalInfoItem.RANK) ) {
-			return Collections.emptyList();
+			
+			return employeeIds.stream()
+					.map(id -> EmployeeRankInfoImported.createWithEmpty(id))
+					.collect(Collectors.toList());
 		}
 		
 		return require.getEmployeeRankInfo(employeeIds);
@@ -142,7 +147,10 @@ public class GetPersonalInfoForScheduleTableService {
 			List<ScheduleTablePersonalInfoItem> personalItemList) {
 		
 		if ( !personalItemList.contains(ScheduleTablePersonalInfoItem.NURSE_CLASSIFICATION) ) {
-			return Collections.emptyList();
+			
+			return employeeIds.stream()
+					.map(id -> EmpLicenseClassification.empLicenseClassification(id))
+					.collect(Collectors.toList());
 		}
 		
 		return GetEmpLicenseClassificationService.get(require, baseDate, employeeIds);
