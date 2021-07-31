@@ -566,7 +566,7 @@ module nts.uk.at.view.kdp004.a {
 				var showViewL = false;
 
 				if (ko.unwrap(self.useWork)) {
-					if (button.taskChoiceArt && button.taskChoiceArt) {
+					if (button.taskChoiceArt) {
 						showViewL = true;
 					}
 				}
