@@ -1,18 +1,23 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmf001.b.viewmodel {
+	import ajax = nts.uk.request.ajax;
 	
 	@bean()
 	class ViewModel extends ko.ViewModel {
-		settingList: KnockoutObservableArray<Setting>;  
-		settingInfo: KnockoutObservable<SettingInfo>;
-
-
+		settingList: KnockoutObservableArray<Setting>; 
 		
-		importGroup: KnockoutObservableArray<any> = ko.observableArray([]);
-		importMode: KnockoutObservableArray<any> = ko.observableArray([]);
+		settingCode: KnockoutObservable<string> = ko.observable();
+		settingName: KnockoutObservable<string> = ko.observable();
+		importGroup: KnockoutObservable<number> = ko.observable();
+		importMode: KnockoutObservable<number> = ko.observable();
+		itemNameRow: KnockoutObservable<number> = ko.observable();
+		importStartRow: KnockoutObservable<number> = ko.observable();
 
-		selectedSetting: KnockoutObservable<string> = ko.observable("001");
-		selectedGroup: KnockoutObservable<number> = ko.observable(1);
+		importGroupOption: KnockoutObservableArray<any> = ko.observableArray([]);
+		importModeOption: KnockoutObservableArray<any> = ko.observableArray([]);
+
+		selectedCode: KnockoutObservable<string> = ko.observable();
+		selectedGroup: KnockoutObservable<number> = ko.observable();
 		selectedItem: KnockoutObservable<number> = ko.observable();
 		
 		layoutList: KnockoutObservableArray<Layout> = ko.observableArray([]);
@@ -22,6 +27,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			{ headerText: "名称", 					key: "name", 					width: 200 	},
 			{ headerText: "", 							key: "configured", 		width: 25 	},
 		]);
+
 		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "NO", 						key: "itemNo", 				width: 100 , hidden: true },
 			{ headerText: "名称", 					key: "name", 					width: 200 		},
@@ -35,49 +41,98 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			var self = this;
 
 			self.settingList = ko.observableArray<Setting>([]);
-			self.settingInfo = ko.observable(new SettingInfo);
 
+			self.importGroupOption.push(new comboBoxItem(100, "会社情報"));
+			self.importGroupOption.push(new comboBoxItem(200, "社員情報"));
+			self.importGroupOption.push(new comboBoxItem(300, "所属情報"));
+			self.importGroupOption.push(new comboBoxItem(400, "勤務情報"));
 
-			//self.settingInfo = ko.observable(new SettingInfo(ko.observable("001"), ko.observable("会社の受入"), ko.observable("1"), ko.observable("1"), ko.observable(1), ko.observable(2)));
+			self.importModeOption.push(new comboBoxItem("1", "おまかせモード"));
+			self.importModeOption.push(new comboBoxItem("2", "既存データが存在しないデータのみ受け入れる"));
+			self.importModeOption.push(new comboBoxItem("3", "既存データが存在するデータのみ受け入れる"));
+			self.importModeOption.push(new comboBoxItem("4", "受入対象レコードのみ削除して受け入れる"));
+			self.importModeOption.push(new comboBoxItem("5", "受入対象グループのデータをすべて削除して受け入れる"));
 
-			self.importGroup.push(new comboBoxItem("1", "会社情報"));
-			self.importGroup.push(new comboBoxItem("2", "社員情報"));
-			self.importGroup.push(new comboBoxItem("3", "所属情報"));
-			self.importGroup.push(new comboBoxItem("4", "勤務情報"));
-
-			self.importMode.push(new comboBoxItem("1", "おまかせモード"));
-			self.importMode.push(new comboBoxItem("2", "既存データが存在しないデータのみ受け入れる"));
-			self.importMode.push(new comboBoxItem("3", "既存データが存在するデータのみ受け入れる"));
-			self.importMode.push(new comboBoxItem("4", "受入対象レコードのみ削除して受け入れる"));
-			self.importMode.push(new comboBoxItem("5", "受入対象グループのデータをすべて削除して受け入れる"));
+			self.startPage();
+			self.selectedCode.subscribe((value) => {
+				if (value) {
+					self.updateMode(value);
+				} else {
+					self.newMode();
+				}
+			})
 			
-			self.layoutList.push(new Layout(1, "会社コード", "数値", "CSV", true));
-			self.layoutList.push(new Layout(2, "会社名称", "文字型", "CSV", true));
-			self.layoutList.push(new Layout(3, "会社所在地", "文字型", "CSV", true));
-			self.layoutList.push(new Layout(4, "会社創業日", "日付型", "CSV", true));
-			self.layoutList.push(new Layout(5, "会社責任者", "文字型", "CSV", true));
-			self.layoutList.push(new Layout(6, "会社の存在意義", "文字型", "CSV", true));
-			self.layoutList.push(new Layout(7, "ブラック会社区分", "文字型", "固定値", false));
 		}
 
 		mounted() {
 			const vm = this;
 		}
 
+		startPage(){
+			var self = this;
+			let dfd = $.Deferred();
+				self.getListData().done(function() {
+					if (self.settingList().length == 0) {
+						self.newMode();
+					}
+					else {
+						self.selectedCode(self.settingList()[0].code.toString());
+						self.updateMode(self.settingList()[0].code.toString());
+					}
+					dfd.resolve();
+			});
+			return dfd.promise();
+		}
+
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			nts.uk.request.ajax("exio/input/setting/find-all").done((lstData: Array<viewmodel.Setting>) => {
+			ajax("exio/input/setting/find-all").done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
 				dfd.resolve();
 			}).fail(function(error) {
 				dfd.reject();
 				alert(error.message);
-		})
+			})
 			return dfd.promise();
 		}
-	}	
+
+		newMode() {
+			let self = this;
+			self.selectedCode("");
+			self.setInfo(SettingInfo.new());
+		}
+
+		updateMode(code: string){
+			let self = this;
+			ajax("com", "exio/input/setting/find/" + code).done((infoData: viewmodel.SettingInfo) => {
+				self.setInfo(infoData);
+			});
+		}
+
+		setInfo(info: SettingInfo){
+			let self = this;
+			self.settingCode(info.code);
+			self.settingName(info.name);
+			self.importGroup(info.group);
+			self.importMode(info.mode);
+			self.itemNameRow(info.itemNameRow);
+			self.importStartRow(info.importStartRow);
+			self.layoutList(info.layouts);
+			// for (let val of info.layouts) {
+			// 	self.layoutList.push(val)
+			// }
+			// for(let i = 0; i < info.layouts.length; i++){
+			// 	self.layoutList.push(info.layouts[i])
+			// }
+		}
+	}
+
+
+
+
+
 	
 	export class Setting {
 		code: string;
@@ -90,30 +145,36 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 				this.configured = configured ? "✓" : "";
 		}
 	}
+	
+	export class SettingInfo {
+		code: string;
+		name: string;
+		group: number;
+		mode: number;
+		itemNameRow: number;
+		importStartRow: number;
+		layouts: Array<Layout>;
 
-	class SettingInfo {
-		code: KnockoutObservable<string>;
-		name: KnockoutObservable<string>;
-		group: KnockoutObservable<string>;
-		mode: KnockoutObservable<string>;
-		itemNameRow: KnockoutObservable<number>;
-		importStartRow: KnockoutObservable<number>;
-
-		constructor() {
-			this.code = ko.observable("");
-			this.name = ko.observable("");
-			this.group = ko.observable("");
-			this.mode = ko.observable("");
-			this.itemNameRow = ko.observable(1);
-			this.importStartRow = ko.observable(2);
+		constructor(code: string, name: string, group: number, mode: number, itemNameRow: number, importStartRow: number, layouts: Array<Layout>) {
+			this.code = code;
+			this.name = name;
+			this.group = group;
+			this.mode = mode;
+			this.itemNameRow = itemNameRow;
+			this.importStartRow = importStartRow;
+			this.layouts = layouts;
+		}
+		
+		static new(){
+			return new SettingInfo("", "", null, null, null, null, [])
 		}
 	}
 
 	class comboBoxItem {
-		code: string;
+		code: any;
 		name: string;
 
-		constructor(code: string, name: string) {
+		constructor(code: any, name: string) {
 				this.code = code;
 				this.name = name;
 		}
@@ -124,14 +185,15 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		name: string;
 		type: string;
 		source: string;
-		alreadyDetail: string;
+		alreadyDetail: boolean;
 
 		constructor(itemNo: number,　name: string, type: string, source: string, alreadyDetail: boolean) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.type = type;
 			this.source = source;
-			this.alreadyDetail = alreadyDetail ? "あり" : "なし";
+			this.alreadyDetail = alreadyDetail;
+			//this.alreadyDetail = alreadyDetail ? "あり" : "なし";
 		}
 	}
 }

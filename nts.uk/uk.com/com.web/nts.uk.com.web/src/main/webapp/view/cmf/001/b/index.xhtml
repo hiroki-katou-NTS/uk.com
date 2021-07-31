@@ -25,10 +25,10 @@
 						tabindex="1"
 						data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
 					></a>
-					<button
+					<button  
 						class="normal"
 						tabindex="2"
-						data-bind="text: '新規'"
+						data-bind="click: newMode, text: '新規'"
 					></button>
 					<button
 						class="proceed"
@@ -56,40 +56,44 @@
 								dataSource: settingList,
 								primaryKey: 'code',
 								columns: settingListColumns,
-								value: selectedSetting}">
+								value: selectedCode}">
 							</table>
 						</div>
 					</div>
-
+					
 					<div class="fixed-flex-layout-right" style="padding-top: 20px;">
-						<div class="group" data-bind="with: settingInfo">
+						<div class="group">
 							<div class="code">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportCode'] }">コード</div>
-								<input id="settingCode" data-bind="ntsTextEditor: { value: code}" />
+								<input id="settingCode" data-bind="ntsTextEditor: { 
+									value: settingCode,  
+									required: true}" />
 							</div>
 							<div class="name">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportName'] }">名称</div>
-								<input id="settingName" data-bind="ntsTextEditor: { value: name}" />
+								<input id="settingName" data-bind="ntsTextEditor: { 
+									value: settingName,  
+									required: true}" />
 							</div>
 							<div class="import-group">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入グループ</div>
 								<div id="importGroup" data-bind="ntsComboBox: {
-									options: $root.content.importGroup,
+									options: $root.content.importGroupOption,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: group}"></div>
+									value: importGroup}"></div>
 							</div>
 							<div class="import-mode">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入モード</div>
 								<div id="importMode" data-bind="ntsComboBox: {
-									options: $root.content.importMode,
+									options: $root.content.importModeOption,
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: mode}"></div>
+									value: importMode}"></div>
 							</div>
 						</div>
 
-						<div class="group" data-bind="with: settingInfo">
+						<div class="group">
 							<div class="divi">CSVファイルの情報</div><hr />
 							<div class="item-name-row">
 								<div data-bind="ntsFormLabel: { required: true }">項目名の行</div>

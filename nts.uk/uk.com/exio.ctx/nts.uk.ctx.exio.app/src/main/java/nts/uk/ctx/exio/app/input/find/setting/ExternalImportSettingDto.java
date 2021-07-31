@@ -1,14 +1,14 @@
 package nts.uk.ctx.exio.app.input.find.setting;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Value;
-import nts.uk.ctx.exio.app.input.find.setting.assembly.ExternalImportAssemblyMethodDto;
+import nts.uk.ctx.exio.app.input.find.setting.assembly.ExternalImportLayoutDto;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
 @Value
 public class ExternalImportSettingDto {
-	
-	/** 会社ID */
-	private String companyId;
 	
 	/** 受入設定コード */
 	private String code;
@@ -17,20 +17,34 @@ public class ExternalImportSettingDto {
 	private String name;
 	
 	/** 受入グループID */
-	private int externalImportGroupId;
+	private int group;
 	
 	/** 受入モード */
-	private int importingMode;
+	private int mode;
 	
-	/** 組立方法 */
-	//private ExternalImportAssemblyMethodDto assembly;
+	/** CSVの項目名取得行 */
+	private int itemNameRow;
 	
-	public static ExternalImportSettingDto fromDomain(ExternalImportSetting domain) {
+	/** CSVの取込開始行 */
+	private int importStartRow;
+	
+	/** レイアウト */
+	private List<ExternalImportLayoutDto> layouts;
+	
+	public static ExternalImportSettingDto fromDomain(Require require, ExternalImportSetting domain) {
+		
 		return new ExternalImportSettingDto(
-				domain.getCompanyId(), 
 				domain.getCode().toString(), 
 				domain.getName().toString(), 
-				domain.getExternalImportGroupId(), 
-				domain.getImportingMode().value);
+				domain.getExternalImportGroupId().value, 
+				domain.getImportingMode().value, 
+				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
+				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
+				domain.getAssembly().getMapping().getMappings().stream()
+				.map(m -> ExternalImportLayoutDto.fromDomain(require, domain.getExternalImportGroupId(), m))
+				.collect(Collectors.toList()));
+	}
+	
+	public static interface Require extends ExternalImportLayoutDto.Require{
 	}
 }

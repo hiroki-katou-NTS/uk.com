@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -65,7 +66,7 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 				this.pk.getCompanyId(), 
 				new ExternalImportCode(this.pk.getCode()), 
 				new ExternalImportName(this.name), 
-				this.externalImportGroupId,
+				ImportingGroupId.valueOf(this.externalImportGroupId),
 				EnumAdaptor.valueOf(importingMode, ImportingMode.class), 
 				null /* TODO */);
 	}

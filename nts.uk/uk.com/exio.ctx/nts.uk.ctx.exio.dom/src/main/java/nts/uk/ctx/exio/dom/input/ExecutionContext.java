@@ -28,7 +28,7 @@ public class ExecutionContext {
 		return new ExecutionContext(
 				source.getCompanyId(),
 				source.getCode().v(),
-				ImportingGroupId.valueOf(source.getExternalImportGroupId()),
+				source.getExternalImportGroupId(),
 				source.getImportingMode());
 	}
 	
