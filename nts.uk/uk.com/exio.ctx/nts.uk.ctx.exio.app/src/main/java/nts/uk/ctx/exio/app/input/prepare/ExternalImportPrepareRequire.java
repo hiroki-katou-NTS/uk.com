@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.app.input.prepare;
+package nts.uk.ctx.exio.app.input.prepare;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,10 +16,14 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRe
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
+import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -111,6 +115,12 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
+	
+	@Inject
+	private AffClassHistoryRepository affClassHistoryRepo;
+	
+	@Inject
+	private AffJobTitleHistoryRepository affJobTitleHistoryRepo;
 	
 	public class RequireImpl implements Require {
 		
@@ -236,6 +246,16 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public boolean existsDomainData(DomainDataId id) {
 			return domainDataRepo.exists(id);
+		}
+
+		@Override
+		public Optional<AffClassHistory> getAffClassHistory(String employeeId) {
+			return affClassHistoryRepo.getByEmployeeId(companyId, employeeId);
+		}
+
+		@Override
+		public Optional<AffJobTitleHistory> getAffJobTitleHistory(String employeeId) {
+			return affJobTitleHistoryRepo.getListBySid(companyId, employeeId);
 		}
 
 	}

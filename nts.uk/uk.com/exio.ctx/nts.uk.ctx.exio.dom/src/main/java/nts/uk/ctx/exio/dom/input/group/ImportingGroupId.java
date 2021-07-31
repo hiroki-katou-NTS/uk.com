@@ -15,6 +15,11 @@ public enum ImportingGroupId{
 	/** 作業 */
 	TASK(200),
 	
+	/** 分類 */
+	CLASSIFICATION_HISTORY(300),
+
+	/** 職位 */
+	JOBTITLE_HISTORY(400),
 	;
 	
 	public final int value;
