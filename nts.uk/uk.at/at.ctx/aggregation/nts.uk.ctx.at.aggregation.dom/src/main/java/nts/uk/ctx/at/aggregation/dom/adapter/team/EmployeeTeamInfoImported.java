@@ -26,5 +26,15 @@ public class EmployeeTeamInfoImported {
 	 * チーム名称
 	 */
 	private final Optional<String> teamName;
+	
+	/**
+	 * emptyで作る
+	 * @param employeeID 社員ID
+	 * @return
+	 */
+	public static EmployeeTeamInfoImported createWithEmpty(String employeeID) {
+		
+		return new EmployeeTeamInfoImported(employeeID, Optional.empty(), Optional.empty());
+	}
 
 }

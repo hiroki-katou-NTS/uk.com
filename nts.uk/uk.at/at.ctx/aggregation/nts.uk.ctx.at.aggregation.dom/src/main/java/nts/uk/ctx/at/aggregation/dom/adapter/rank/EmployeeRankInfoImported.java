@@ -26,5 +26,15 @@ public class EmployeeRankInfoImported {
 	 * ランク記号
 	 */
 	private final Optional<String> rankSymbol;
+	
+	/**
+	 * emptyで作る
+	 * @param employeeId 社員ID
+	 * @return
+	 */
+	public static EmployeeRankInfoImported createWithEmpty(String employeeId) {
+		
+		return new EmployeeRankInfoImported(employeeId, Optional.empty(), Optional.empty());
+	}
 
 }
