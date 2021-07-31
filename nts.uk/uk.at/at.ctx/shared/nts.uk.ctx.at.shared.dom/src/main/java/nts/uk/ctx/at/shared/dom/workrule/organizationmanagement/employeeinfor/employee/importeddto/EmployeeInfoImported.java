@@ -2,8 +2,7 @@ package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.e
 
 import java.util.Optional;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 /**
  * 社員情報Imported
@@ -11,8 +10,7 @@ import lombok.Data;
  * 
  * @author dan_pv
  */
-@Builder
-@Data
+@Value
 public class EmployeeInfoImported {
 
 	/**
