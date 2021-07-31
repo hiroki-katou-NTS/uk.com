@@ -1044,6 +1044,22 @@ module nts.uk.at.view.kdp004.a {
 
 	export interface IMessage {
 		messageNotices: IMessageNotice[];
+		stopBySystem: IStopBySystem;
+		stopByCompany: IStopByCompany;
+	}
+
+	export interface IStopBySystem {
+		systemStatusType: number;
+		stopMode: number;
+		stopMessage: String;
+		usageStopMessage: String
+	}
+
+	export interface IStopByCompany {
+		systemStatus: number;
+		stopMessage: String;
+		stopMode: number;
+		usageStopMessage: String
 	}
 
 	interface IMessageNotice {

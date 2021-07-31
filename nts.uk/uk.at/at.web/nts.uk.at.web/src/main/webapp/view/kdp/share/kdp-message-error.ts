@@ -205,6 +205,10 @@ module nts.uk.at.view.kdp.share {
             if (params) {
                 vm.messageNoti = params.messageNoti;
 
+                setTimeout(() => {
+                    console.log(ko.unwrap(params.messageNoti));
+                }, 3000);
+
                 vm.showMessage = params.showMessage;
 
                 if (ko.unwrap(params.notiSet)) {
@@ -356,8 +360,6 @@ module nts.uk.at.view.kdp.share {
                 .then(() => {
                     vm.$ajax('at', API.GET_NOTI_SYSTEM)
                         .done((data: IMessageSys) => {
-                            console.log(data);
-                            
                             vm.modeSystemNoti(data.stopSystem);
                             vm.messageSys(data.notiMessage);
                         })
@@ -432,7 +434,23 @@ module nts.uk.at.view.kdp.share {
 
     interface IMessage {
         messageNotices: IMessageNotice[];
+        stopBySystem: IStopBySystem;
+		stopByCompany: IStopByCompany;
     }
+
+    interface IStopBySystem {
+		systemStatusType: number;
+		stopMode: number;
+		stopMessage: String;
+		usageStopMessage: String
+	}
+
+	interface IStopByCompany {
+		systemStatus: number;
+		stopMessage: String;
+		stopMode: number;
+		usageStopMessage: String
+	}
 
     interface IMessageNotice {
         creatorID: string;

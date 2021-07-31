@@ -1106,7 +1106,8 @@ module nts.uk.at.kdp003.a {
 												isShowViewL = true;
 											}
 										}
-
+										console.log(btn);
+										
 										if (dataStorage.WKPID.length > 1) {
 											if (btn.supportWplset == 1) {
 												vm.$window.modal('at', DIALOG.M, { screen: 'KDP003', employeeId: employeeId })
@@ -1585,6 +1586,22 @@ module nts.uk.at.kdp003.a {
 
 	interface IMessage {
 		messageNotices: IMessageNotice[];
+		stopBySystem: IStopBySystem;
+		stopByCompany: IStopByCompany;
+	}
+
+	interface IStopBySystem {
+		systemStatusType: number;
+		stopMode: number;
+		stopMessage: String;
+		usageStopMessage: String
+	}
+
+	interface IStopByCompany {
+		systemStatus: number;
+		stopMessage: String;
+		stopMode: number;
+		usageStopMessage: String
 	}
 
 	interface IMessageNotice {
