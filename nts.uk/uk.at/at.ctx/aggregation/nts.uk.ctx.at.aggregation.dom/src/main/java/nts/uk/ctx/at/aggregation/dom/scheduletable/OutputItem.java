@@ -2,6 +2,7 @@ package nts.uk.ctx.at.aggregation.dom.scheduletable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,10 +45,10 @@ public class OutputItem implements DomainValue {
 	
 	/**
 	 * 作る
-	 * @param additionalColumnUseAtr
-	 * @param shiftBackgroundColorUseAtr
-	 * @param dailyDataDisplayAtr
-	 * @param details
+	 * @param additionalColumnUseAtr 追加列情報の利用区分
+	 * @param shiftBackgroundColorUseAtr シフト背景色の表示区分	
+	 * @param dailyDataDisplayAtr 実績表示区分
+	 * @param details 詳細リスト
 	 * @return
 	 */
 	public static OutputItem create(
@@ -125,10 +126,14 @@ public class OutputItem implements DomainValue {
 				.collect(Collectors.toList());
 		
 		// $追加列情報リスト
-		List<ScheduleTablePersonalInfoItem> additionalItemList = this.details.stream()
-				.map(item -> item.getAdditionalInfo())
-				.flatMap( OptionalUtil::stream )
-				.collect(Collectors.toList());
+		List<ScheduleTablePersonalInfoItem> additionalItemList = Collections.emptyList();
+		if ( this.additionalColumnUseAtr == NotUseAtr.USE) {
+			
+			additionalItemList = this.details.stream()
+									.map(item -> item.getAdditionalInfo())
+									.flatMap( OptionalUtil::stream )
+									.collect(Collectors.toList());
+		}
 		
 		return Stream.of(personalItemList, additionalItemList)
 				.flatMap(x -> x.stream())
