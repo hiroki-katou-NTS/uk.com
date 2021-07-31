@@ -116,7 +116,7 @@ public class OneDayEmployeeAttendanceInfo<T> {
 		if ( dailyData.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().isPresent() ) {
 			
 			codeMap.put(ScheduleTableAttendanceItem.WORK_TIME, 
-					(T) dailyData.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().get() );
+					(T) dailyData.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().get().v() );
 		}
 		
 		return codeMap;
@@ -211,7 +211,7 @@ public class OneDayEmployeeAttendanceInfo<T> {
 				Optional<PremiumTime> preniumTime = preniumTimeOfDailyPerformance.getPremiumTime(laborCostItemNumber);
 				
 				if ( preniumTime.isPresent() ) {
-					laborCostTimeMap.put(laborItem, (T) preniumTime.get() );
+					laborCostTimeMap.put(laborItem, (T) preniumTime.get().getPremitumTime() );
 				}
 				
 			});
