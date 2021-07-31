@@ -7,7 +7,8 @@ module nts.uk.at.view.kdp005.a {
 			startPage: 'at/record/stamp/ICCardStamp/get-iccard-stamp-setting',
 			addCheckCard: 'at/record/stamp/ICCardStamp/checks',
 			confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
-			loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
+			// loginAdminMode: 'ctx/sys/gateway/kdp/login/adminmode',
+			loginAdminMode: 'ctx/sys/gateway/login/password' + location.search,
 			loginEmployeeMode: 'ctx/sys/gateway/kdp/login/employeemode',
 			getError: 'at/record/stamp/employment_system/get_omission_contents',
 			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress',
@@ -37,8 +38,8 @@ module nts.uk.at.view.kdp005.a {
 			return ajax("at", url.confirmUseOfStampInput, data);
 		}
 
-		export function login(isAdmin, data) {
-			return ajax("at", isAdmin ? url.loginAdminMode : url.loginEmployeeMode, data);
+		export function login(data) {
+			return ajax("com", url.loginAdminMode, data);
 		}
 
 		export function getError(data): JQueryPromise<any> {
