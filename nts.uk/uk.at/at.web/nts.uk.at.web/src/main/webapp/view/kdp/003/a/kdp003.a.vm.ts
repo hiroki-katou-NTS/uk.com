@@ -165,6 +165,10 @@ module nts.uk.at.kdp003.a {
 						result = false;
 					}
 
+					if(mes) {
+						result = null;
+					}
+
 					vm.showMessage(result);
 				}
 			})
@@ -273,6 +277,7 @@ module nts.uk.at.kdp003.a {
 										const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
 
 										vm.$window.modal(DIALOG.R, param);
+										vm.showClockButton.setting(false);
 									}
 								});
 						}
@@ -297,6 +302,7 @@ module nts.uk.at.kdp003.a {
 									const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
 
 									vm.$window.modal(DIALOG.R, param);
+									vm.showClockButton.setting(false);
 								}
 							});
 					})
@@ -370,6 +376,8 @@ module nts.uk.at.kdp003.a {
 							}
 
 							vm.showClockButton.setting(true);
+
+							console.log(loginParams);
 
 							return vm.$ajax('com', API.LOGIN_ADMIN, loginParams)
 								.then((loginData: f.TimeStampLoginData) => ({
@@ -933,20 +941,15 @@ module nts.uk.at.kdp003.a {
 							SID
 						} = data;
 
-						const loginParams: f.ModelData = {
-							contractCode: vm.$user.contractCode,
+						const loginParams: any = {
 							companyCode: CCD,
-							companyId: CID,
 							employeeCode: SCD,
-							employeeId: SID,
 							password: PWD,
-							passwordInvalid: false,
-							isAdminMode: true,
-							runtimeEnvironmentCreate: true
+							contractCode: vm.$user.contractCode,
+							contractPassword: vm.passContract
 						};
-
-						// login again (wtf?????)
-						return vm.$ajax('at', API.LOGIN_ADMIN, loginParams)
+						
+						return vm.$ajax('com', API.LOGIN_ADMIN, loginParams)
 							.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING))
 							.then((data: FingerStampSetting) => {
 								if (data) {

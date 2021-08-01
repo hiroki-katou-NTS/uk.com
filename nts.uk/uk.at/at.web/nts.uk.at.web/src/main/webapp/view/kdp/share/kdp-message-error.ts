@@ -189,7 +189,7 @@ module nts.uk.at.view.kdp.share {
         notiSet: KnockoutObservable<FingerStampSetting> = ko.observable();
         messageSys: KnockoutObservable<String> = ko.observable('');
 
-        modeSystemNoti: KnockoutObservable<boolean | null> = ko.observable(true);
+        modeSystemNoti: KnockoutObservable<boolean | null> = ko.observable(null);
 
         showMessage: KnockoutObservable<boolean | null> = ko.observable(true);
 
