@@ -68,11 +68,12 @@
                   tabindex="7"
                   data-bind="ntsGridList: {
 										name: '#[KML001_6]', 
-										height: 300,
+										rows: 12,
 										options: gridPersonCostList,
 										optionsValue: 'dateRange',
 										columns: ko.observableArray([
-							        { headerText: '', prop: 'dateRange' }]),
+                                            { headerText: '', prop: 'dateRange' }
+                                        ]),
 										value: currentGridPersonCost }"
                 ></table>
               </div>
