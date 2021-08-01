@@ -5296,6 +5296,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (self.userInfor.disPlayFormat === 'time') {
                         self.diseableCellsTime();
                     }
+                    
+                    self.getAggregatedInfo(false, true);
+                    
                     nts.uk.ui.block.clear();
                 }
                 dfd.resolve();
