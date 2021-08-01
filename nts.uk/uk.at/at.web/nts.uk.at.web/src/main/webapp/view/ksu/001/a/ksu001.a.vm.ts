@@ -1109,7 +1109,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let columnKey = dataCellUpdated.originalEvent.detail.columnKey;
             // copy paste hiện tại đang không lấy được cell nguồn
             // nên là đang khong biết có coppy từ cell bị lỗi hay không.
-
         }
 
         saveDataGrid(data: any) {
@@ -1228,6 +1227,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listWorkTypeInfo = data.listWorkTypeInfo;
             self.listCellRetained = [];
             self.listCellError = [];
+            let changeableWorks = _.isNil(data.dataBasicDto.scheFunctionControl) ? [] : data.dataBasicDto.scheFunctionControl.changeableWorks;
+
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1266,9 +1267,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let date = moment(cell.date, 'YYYY/MM/DD');
                         
                         // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
-                        let canModifyStartDate = true;
                         if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
-                            canModifyStartDate = false;
+                            cell.conditionAa1 = false;
                         }
                         
                         let ymd = time.yearMonthDay;
@@ -1368,25 +1368,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Aa1
-                        if (canModifyStartDate == false || cell.isEdit == false) {
+                        if (cell.conditionAa1 == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             listCellNotEditBg.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             listCellNotEditColor.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
                         }
-                        // điều kiện ※Aa2
-                        if (cell.isActive == false) {}
                         
-                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        // điều kiện ※Aa2
+                        if (cell.confirmed == true) {
+                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
+                        } else if (cell.conditionAa2 == false) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
-                        } else if (cell.confirmed == true) {
-                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
                         }
-                        
-                        if (cell.confirmed == true) {
-                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
-                        }
-                        
                     };
                     detailContentDs.push(objDetailContentDs);
                     self.arrListCellLock = arrListCellLock;
@@ -1398,9 +1393,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         
                         // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
-                        let canModifyStartDate = true;
                         if (moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')) {
-                            canModifyStartDate = false;
+                            cell.conditionAbc1 = false;
                         }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -1481,24 +1475,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }
                         }
                         
-                        // điều kiện ※Abc1 dieu kien edit
-                        if (canModifyStartDate == false || cell.isEdit == false) {
+                        // điều kiện ※Abc1 editMode
+                        if (cell.conditionAbc1 == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                         }
-                        // điều kiện ※Abc2
-                        if (cell.isActive == false) {}
-                        
-                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
-                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
-                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
-                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
-                        } else if (cell.confirmed == true) {
+
+                        // điều kiện ※Abc2 confirmMode
+                        if (cell.confirmed == true) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
-                        }
-                        
-                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
+                        } else if (cell.conditionAbc2 = false) {
+                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                     });
@@ -1513,10 +1503,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set dataSource
                         
                         // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
-                        let canModifyStartDate = true;
                         if (moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')) {
-                            canModifyStartDate = false;
+                            cell.conditionAbc1 = false;
                         }
+                        
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
                         let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
@@ -1641,39 +1631,35 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }
                         }
                         
-                         // điều kiện ※Abc1
-                         // dieu kien ※Ac
-                        if (canModifyStartDate == false || cell.isEdit == false) {
+                        // điều kiện ※Abc1 editMode
+                        if (cell.conditionAbc1 == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
                         }
-                            
-                        // điều kiện ※Abc2
-                        if (cell.isActive == false) {}
-                        
-                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+
+                        // điều kiện ※Abc2 confirmMode
+                        if (cell.confirmed == true) {
+                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
+                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
+                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 2));
+                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 3));
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
+                        } else if (cell.conditionAbc2 = false) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 2));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 3));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
-                        } else if (cell.confirmed == true) {
-                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
-                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
-                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 2));
-                            detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 3));
-                        } else {
-                            // ver1.8
-                            if (cell.workHolidayCls == 0 || _.isNil(cell.workTimeCode) || cell.workTimeCode == '' ) {
-                                let obj = new TimeDisable(rowId, '_' + ymd);
-                                self.listTimeDisable.push(obj);
-                            }
                         }
                         
-                        if (cell.confirmed == true) {
-                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
+                        // dieu kien ※Ac
+                        let conditionAc = cell.conditionAbc1 == true
+                                          && ((!_.isNil(cell.workTimeCode) && cell.workTimeCode != '') || (cell.workHolidayCls != WorkStyle.ONE_DAY_REST))
+                                          && (_.includes(changeableWorks, cell.workTimeForm));
+                        if (!conditionAc) {
+                            self.listTimeDisable.push(new TimeDisable(rowId, '_' + ymd));
                         }
                         
                     });
@@ -4264,16 +4250,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                    self.enableBtnReg(true);
+                    self.confirmModeAct();
+                    self.enableBtnReg(false);
                     self.listCellError = [];
                     self.convertDataToGrid(self.dataSource, self.selectedModeDisplayInBody());
                     self.updateExTableWhenChangeMode(self.selectedModeDisplayInBody() , "determine");
-                    self.confirmModeAct();
                     self.listCellRetained = [];
                     nts.uk.ui.block.clear();
                 }).ifNo(() => {$("#A6_1").focus()});
             } else {
-                self.enableBtnReg(true);
                 self.confirmModeAct();
                 $("#extable").exTable("updateMode", "determine");
             }
@@ -4288,21 +4273,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             nts.uk.ui.block.grayout();
             self.mode('confirm');
-            // set color button
-            
-            $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
-            $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
-
             $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-
-            self.removeClass();
 
             // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
             self.enableBtnPaste(false);
             self.enableBtnCoppy(false);
             self.enableHelpBtn(false);
-
             self.enableBtnRedo(false);
             self.enableBtnUndo(false);
 
@@ -4326,7 +4303,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.selectedModeDisplayInBody() == 'time'){
                 self.enableCellsTime();    
             }
-            
             nts.uk.ui.block.clear();
         }
         
@@ -5962,20 +5938,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     interface IDataBasicDto {
         startDate: string,
         endDate: string,
-        designation: string,
-        targetOrganizationName: string,
         unit: number,
         workplaceId: string,
         workplaceGroupId: string,
+        designation: string,
+        targetOrganizationName: string,
         code: string,
         scheduleModifyStartDate: string,
         usePublicAtr: boolean,
         useWorkAvailabilityAtr: boolean,
+        scheFunctionControl: IScheFunctionControlDto,
         useCategoriesWorkplace: [],
         useCategoriesPersonal: [],
         closeDate: any,
         medicalOP: any,
         nursingCareOP: any,
+        viewModeSelected: string,
+        
+        
+    }
+    
+    interface IScheFunctionControlDto {
+        changeableWorks: [],
+        isDisplayActual: boolean,
+        displayWorkTypeControl: number,
+        displayableWorkTypeCodeList: []
     }
 
     interface IDisplayControlPersonalCond {
@@ -6065,7 +6052,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
     interface IWorkScheduleWorkInforDto {
         employeeId: string; // 社員ID
-        date: Date; // 年月日
+        date: any; // 年月日
         haveData: boolean; // データがあるか
         achievements: boolean; // 実績か
         confirmed: boolean; // 確定済みか
@@ -6089,11 +6076,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         workTimeNameIsNull: boolean;
         workTypeIsNotExit : boolean;
         workTimeIsNotExit : boolean;
+        conditionAbc1: boolean;
+        conditionAbc2: boolean;
+        workTimeForm: any;
     }
 
     interface IWorkScheduleShiftInforDto {
         employeeId: string; // 社員ID
-        date: Date; // 年月日
+        date: any; // 年月日
         haveData: boolean; // データがあるか
         achievements: boolean; // 実績か
         confirmed: boolean; // 確定済みか
@@ -6104,8 +6094,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         shiftName: string; // シフト名称
         shiftEditState: IEditStateOfDailyAttdDto; // シフトの編集状態
         workHolidayCls: number; // 出勤休日区分
-        isEdit: boolean;
-        isActive: boolean;
+        conditionAa1: boolean;
+        conditionAa2: boolean;
     }
 
     interface AggreratePersonalDto {
@@ -6128,6 +6118,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         AFTERNOON = 2, //(2, "午後出勤系"),
         HOLIDAY = 0, //(0, "１日休日系");
     }
+    
+    enum WorkStyle {
+        ONE_DAY_REST = 0, //(1日休日系),
+        MORNING_WORK = 1, //(午前出勤系),
+        AFTERNOON_WORK = 2, //(午後出勤系),
+        ONE_DAY_WORK = 3 //(1日出勤系);
+    }
+
 
     enum SupportCategory {
         NotCheering = 1, // 応援ではない

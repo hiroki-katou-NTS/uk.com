@@ -54,7 +54,7 @@ public class GetScheduleActualOfWorkInfo {
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
-			boolean isAchievement,
+			boolean getActualData,
 			TargetOrgIdenInfor targetOrg,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp
@@ -63,13 +63,13 @@ public class GetScheduleActualOfWorkInfo {
 		PlanAndActual planAndActual = screenQueryPlanAndActual.getPlanAndActual(
 				sids,
 				datePeriod,
-				isAchievement);
+				getActualData);
 		//2 取得する()
 		List<WorkScheduleWorkInforDto> workScheduleWorkInforDtos = 
 				screenQueryCreateWorkSchedule.get(
 					planAndActual.getSchedule(),
 					planAndActual.getDailySchedule(),
-					isAchievement);
+					getActualData);
 		
 		// 3 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
 		AggregateScheduleDto aggrerateSchedule =
