@@ -712,6 +712,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
                 self.saveModeGridToLocalStorege('shift');
+                self.calculateDisPlayFormatA4Popup(data);
                 self.visibleShiftPalette(true);
                 self.visibleBtnInput(false);
                 self.saveDataGrid(data);
@@ -784,6 +785,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(false);
                 self.saveModeGridToLocalStorege('shortName');
+                self.calculateDisPlayFormatA4Popup(data);
                 
                 if (setWorkTypeTime) {
                     self.setWorkTypeTime(data.listWorkTypeInfo, self.userInfor);
@@ -831,6 +833,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.visibleShiftPalette(false);
                 self.visibleBtnInput(true);
                 self.saveModeGridToLocalStorege('time');
+                self.calculateDisPlayFormatA4Popup(data);
                 if (setWorkTypeTime) {
                     self.setWorkTypeTime(data.listWorkTypeInfo, self.userInfor);
                 }
@@ -4192,10 +4195,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setUpdateMode();
             }
 
-            // ※31 ẩn hiện của btn A4 khi thay đổi giữa 2 mode edit và confirm.
-            if (self.userInfor.disPlayFormat == 'shift' && (self.visibleA4_234() == true || self.visibleA4_567() == true)) {
-                $('#A4').css('visibility', 'visible');
-            }
+            self.calculateDisPlayA48A49();
         }
         
         editModeAct() {
@@ -4263,10 +4263,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("updateMode", "determine");
             }
 
-            // ※31 ẩn hiện của btn A4 khi thay đổi giữa 2 mode edit và confirm.
-            if (self.userInfor.disPlayFormat == 'shift' && self.visibleA4_234() == false && self.visibleA4_567() == false) {
-                $('#A4').css('visibility', 'hidden');
-            }
+            self.calculateDisPlayA48A49();
         }
         
         confirmModeAct() {
@@ -5412,11 +5409,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.calculateDisPlayPopupA12(funcNo10_WorkPlace, funcNo11_WorkPlace, funcNo12_WorkPlace, medicalOP);
 
             self.calculateDisPlaySwitchA32(data);
-
+            
+            self.calculateDisPlayFormatA4Popup(data);
+            
+            self.funcNo15_WorkPlace = funcNo15_WorkPlace;
+        }
+        
+        calculateDisPlayFormatA4Popup(data){
+            let self = this;
             self.calculateDisPlayFormatA4_234(data);
 
             self.calculateDisPlayFormatA4_567(data);
 
+            self.calculateDisPlayA48A49();   
+        }
+        
+        calculateDisPlayA48A49() {
+            let self = this;
             // A4_8 ※30
             if (self.visibleA4_234() == true || self.visibleA4_567() == true) {
                 self.visibleA4_8(true);
@@ -5425,20 +5434,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             // A4_9 ※32
-            if ((self.userInfor.disPlayFormat == 'shift') && (self.visibleA4_234() == true || self.visibleA4_567() == true)) {
+            if ((self.showComboboxA4_12() == true) && (self.visibleA4_234() == true || self.visibleA4_567() == true)) {
                 self.visibleA4_9(true);
             } else {
                 self.visibleA4_9(false);
             }
 
-            // ※31 ẩn hiện của btn A4 lúc khơi động, phải check 1 lần nữa khi thay đổi giữa 2 mode edit và confirm.
-            // ở mode shift,khi khởi động thì lúc nào A4 cũng sẽ hiện thị (vì combobox change background luôn hiển thị khi khởi động)
-            // ở mode shift,khi chuyển giữa mode edit và confirm, thì khi ở mode confirm combobox change background sẽ bị ẳn đi, lúc này sẽ check lại ẩn hiển của A4
-            if (self.userInfor.disPlayFormat != 'shift' && self.visibleA4_234() == false && self.visibleA4_567() == false) {
+            // ※31
+            let condition31 = self.showComboboxA4_12() == true || self.visibleA4_567() == true || self.visibleA4_234() == true;
+            if (!condition31) {
                 $('#A4').css('visibility', 'hidden');
             }
-
-            self.funcNo15_WorkPlace = funcNo15_WorkPlace;
         }
         
         checkSettingOpenKsu003(data){
