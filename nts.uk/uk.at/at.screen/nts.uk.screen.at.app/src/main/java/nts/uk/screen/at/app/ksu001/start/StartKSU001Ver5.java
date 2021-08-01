@@ -101,7 +101,8 @@ public class StartKSU001Ver5 {
 		if (viewModeSelected == FuncCtrlDisplayFormatDto.WorkInfo.value || viewModeSelected == FuncCtrlDisplayFormatDto.AbbreviatedName.value) {
 			// step 4 || 5.2 start
 			TargetOrgIdenInforDto targetOrgIdenInforDto = new TargetOrgIdenInforDto(targetOrgIdenInfor);
-			DisplayInWorkInfoParam_New param4 = new DisplayInWorkInfoParam_New(listSid, startDate, endDate,
+			DisplayInWorkInfoParam_New param4 = new DisplayInWorkInfoParam_New(
+					listSid, startDate, endDate,
 					param.getActualData, resultStep1.closeDate, targetOrgIdenInforDto,
 					StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? (resultStep1.useCategoriesPersonal.isEmpty() ? null : resultStep1.useCategoriesPersonal.get(0).getValue()) : Integer.valueOf(param.personTotalSelected),
 					StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));
@@ -118,7 +119,7 @@ public class StartKSU001Ver5 {
 			param51.setListShiftMasterNotNeedGetNew(new ArrayList<>());
 			param51.setShiftPaletteWantGet(new ShiftPaletteWantGet(param.shiftPalletUnit, param.pageNumberCom, param.pageNumberOrg));
 			param51.setGetActualData(param.getActualData);
-			param51.setUnit(param.unit);
+			param51.setUnit(resultStep1.targetOrgIdenInfor.unit);
 			
 			param51.setPersonalCounterOp(StringUtil.isNullOrEmpty(param.personTotalSelected, true) ? (resultStep1.useCategoriesPersonal.isEmpty() ? null : resultStep1.useCategoriesPersonal.get(0).getValue()) : Integer.valueOf(param.personTotalSelected));
 			param51.setWorkplaceCounterOp(StringUtil.isNullOrEmpty(param.workplaceSelected, true) ? (resultStep1.useCategoriesWorkplace.isEmpty() ? null : resultStep1.useCategoriesWorkplace.get(0).getValue()) : Integer.valueOf(param.workplaceSelected));

@@ -183,6 +183,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showA12: KnockoutObservable<boolean>   = ko.observable(false);
         showA12_2: KnockoutObservable<boolean>   = ko.observable(false);
         funcNo15_WorkPlace: boolean = false;
+        changeableWorks = [];
         
         constructor(dataLocalStorage) {
             let self = this;
@@ -590,6 +591,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                     self.bingdingToShiftPallet(data);
                 }
+                
+                self.changeableWorks = _.isNil(data.dataBasicDto.scheFunctionControl) ? [] : data.dataBasicDto.scheFunctionControl.changeableWorks;
                 
                 // set data Header
                 self.bindingToHeader(data);
@@ -1230,8 +1233,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listWorkTypeInfo = data.listWorkTypeInfo;
             self.listCellRetained = [];
             self.listCellError = [];
-            let changeableWorks = _.isNil(data.dataBasicDto.scheFunctionControl) ? [] : data.dataBasicDto.scheFunctionControl.changeableWorks;
-
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1660,7 +1661,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // dieu kien ※Ac
                         let conditionAc = cell.conditionAbc1 == true
                                           && ((!_.isNil(cell.workTimeCode) && cell.workTimeCode != '') || (cell.workHolidayCls != WorkStyle.ONE_DAY_REST))
-                                          && (_.includes(changeableWorks, cell.workTimeForm));
+                                          && (_.includes(self.changeableWorks, cell.workTimeForm));
                         if (!conditionAc) {
                             self.listTimeDisable.push(new TimeDisable(rowId, '_' + ymd));
                         }
