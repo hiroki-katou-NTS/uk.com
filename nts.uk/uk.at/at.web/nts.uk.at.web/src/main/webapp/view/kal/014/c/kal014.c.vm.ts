@@ -211,7 +211,7 @@ module nts.uk.at.kal014.c {
              AND　開始の月数　＞　終了の月数
              */
             else if ((vm.strSelected() === StartSpecify.MONTH && vm.endSelected() === StartSpecify.MONTH)
-                && vm.modalDTO.startMonth() < vm.modalDTO.endMonth()) {
+                && vm.modalDTO.startMonth() > vm.modalDTO.endMonth()) {
                 return "Msg_812";
             }
 
