@@ -7,17 +7,17 @@ import java.math.BigDecimal;
  */
 public enum Time10BasedRounding {
 	/**
-	 * 1分未満切り捨て
+	 * 切り捨て
 	 */
-	DOWN_LESS_1_MINUTE(1, "Enum_Time10BasedRounding_DOWN_LESS_1_MINUTE"), 
+	ROUND_DOWN(1, "Enum_Time10BasedRounding_ROUND_DOWN"), 
 	/**
-	 * 1分未満切り上げ
+	 * 切り上げ
 	 */
-	UP_LESS_1_MINUTE(2, "Enum_Time10BasedRounding_UP_LESS_1_MINUTE"), 
+	ROUND_UP(2, "Enum_Time10BasedRounding_ROUND_UP"), 
 	/**
-	 * 1分未満四捨五入（小数点第1位迄）
+	 * 四捨五入
 	 */
-	HALF_UP_LESS_1_MINUTE(3, "Enum_Time10BasedRounding_OFF_TO_LESS_1_MINUTE");
+	ROUND(3, "Enum_Time10BasedRounding_ROUND");
 
 	/** The value. */
 	public final int value;
@@ -37,13 +37,13 @@ public enum Time10BasedRounding {
 	 */
 	public Long round(BigDecimal target) {
 		switch(this) {
-		case DOWN_LESS_1_MINUTE:
+		case ROUND_DOWN:
 			// 切り捨て
 			return target.setScale(0, BigDecimal.ROUND_DOWN).longValue();
-		case UP_LESS_1_MINUTE:
+		case ROUND_UP:
 			// 切り上げ
 			return target.setScale(0, BigDecimal.ROUND_UP).longValue();
-		case HALF_UP_LESS_1_MINUTE:
+		case ROUND:
 			// 四捨五入
 			return target.setScale(0, BigDecimal.ROUND_HALF_UP).longValue();
 		default:
