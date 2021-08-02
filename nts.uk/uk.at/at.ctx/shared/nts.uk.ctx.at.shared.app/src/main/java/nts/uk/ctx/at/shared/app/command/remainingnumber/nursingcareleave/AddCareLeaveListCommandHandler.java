@@ -69,7 +69,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 						c.getSId(),
 						new ChildCareNurseUsedNumber(
 								new DayNumberOfUse(c.getCareUsedDays().doubleValue())
-								, c.getCareUsedDays() == null ? Optional.empty() : Optional.of(new TimeOfUse(c.getCareUsedDays().intValue()))
+								, c.getCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(c.getCareUsedTimes().intValue()))
 						)
 				);
 				leaveCareDataInsert.add(usedNumber);

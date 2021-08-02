@@ -88,7 +88,9 @@ public class CareLeaveInfoFinder implements PeregFinder<CareLeaveInfoDto> {
 
 		result.parallelStream().forEach(c ->{
 			Optional<CareLeaveDataInfo> careInfoOpt = data.parallelStream().filter(
-					item -> item.getCareLeaveRemainingInfo().getSId().equals(c.getEmployeeId())).findFirst();
+					item -> (item.getCareLeaveRemainingInfo() != null && item.getCareLeaveRemainingInfo().getSId().equals(c.getEmployeeId())) 
+					|| (item.getChildCareLeaveRemainingInfo() != null && item.getChildCareLeaveRemainingInfo().getSId().equals(c.getEmployeeId())))
+					.findFirst();
 			if(careInfoOpt.isPresent()) {
 				CareLeaveDataInfo careInfo = careInfoOpt.get();
 				c.setPeregDomainDto(CareLeaveInfoDto.createFromDomain(
