@@ -348,11 +348,11 @@ module nts.uk.at.view.kdp.share {
                     console.log(value);
 
 
-                    if (value.stopBySystem.stopMode == 1) {
+                    if (value.stopBySystem.systemStatusType == 2) {
                         vm.modeSystemNoti(true);
                         vm.messageSys(value.stopBySystem.usageStopMessage);
                     } else {
-                        if (value.stopByCompany.stopMode == 1) {
+                        if (value.stopByCompany.systemStatus == 2) {
                             vm.modeSystemNoti(true);
                             vm.messageSys(value.stopByCompany.usageStopMessage);
                         } else {

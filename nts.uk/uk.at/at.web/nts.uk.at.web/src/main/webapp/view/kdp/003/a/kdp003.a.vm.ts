@@ -269,6 +269,11 @@ module nts.uk.at.kdp003.a {
 							vm.$ajax(API.NOTICE, param)
 								.done((data: IMessage) => {
 									vm.messageNoti(data);
+									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+										const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+
+										vm.$window.modal(DIALOG.R, param);
+									}
 								});
 						}
 					});
@@ -288,6 +293,11 @@ module nts.uk.at.kdp003.a {
 						vm.$ajax(API.NOTICE, param)
 							.done((data: IMessage) => {
 								vm.messageNoti(data);
+								if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+									const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+
+									vm.$window.modal(DIALOG.R, param);
+								}
 							});
 					})
 					.always(() => {
@@ -698,9 +708,6 @@ module nts.uk.at.kdp003.a {
 
 			return vm.$ajax('at', API.EMPLOYEE_LIST, params)
 				.then((data: Employee[]) => {
-					// console.log(data);
-					// data = _.orderBy(data, 'employeeNameKana', 'asc');
-					// console.log(data);
 					vm.employeeData.employees(data);
 				}) as JQueryPromise<any>;
 		}
@@ -1088,7 +1095,6 @@ module nts.uk.at.kdp003.a {
 												isShowViewL = true;
 											}
 										}
-										console.log(btn);
 
 										if (dataStorage.WKPID.length > 1) {
 											if (btn.supportWplset == 1) {

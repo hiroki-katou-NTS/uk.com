@@ -167,34 +167,37 @@ module nts.uk.at.kdp003.r {
                     .then((data: IMessage) => {
                         vm.messageNoti(data);
 
-                        if (data.stopBySystem.stopMode == 1) {
+                        if (data.stopBySystem.systemStatusType == 2) {
                             vm.stopBySystem(true);
                             vm.notiStopBySystem(data.stopBySystem.usageStopMessage);
                         }
 
-                        if (data.stopByCompany.stopMode == 1) {
+                        if (data.stopByCompany.systemStatus == 2) {
                             vm.stopByCompany(true);
                             vm.notiStopByCompany(data.stopByCompany.usageStopMessage);
                         }
 
-                        if (data.stopBySystem.stopMode == 2 || data.stopByCompany.stopMode == 2) {
+                        if (data.stopBySystem.systemStatusType == 3 || data.stopByCompany.systemStatus == 3) {
                             vm.notiErrorSystem(true);
-                            if (data.stopBySystem.stopMode == 2) {
+                            if (data.stopBySystem.systemStatusType == 3) {
                                 vm.notiStopBySystem(data.stopBySystem.usageStopMessage);
                             } else {
                                 vm.notiStopBySystem('');
                             }
-                            if (data.stopByCompany.stopMode == 2) {
+                            if (data.stopByCompany.systemStatus == 3) {
                                 vm.notiStopByCompany(data.stopByCompany.usageStopMessage);
                             } else {
                                 vm.notiStopByCompany('');
                             }
                         }
-
                     })
                     .fail(error => vm.$dialog.error(error))
                     .always(() => vm.$blockui('hide'));
             });
+        }
+
+        closeDialogStop() {
+            window.close();
         }
     }
 
