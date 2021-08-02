@@ -33,7 +33,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.HourlySegment
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase60Delimiter;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBaseNumber;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeRevise;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeRounding;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.Time10BasedRounding;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -135,7 +135,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 						EnumAdaptor.valueOf(hourly, HourlySegment.class),
 						EnumAdaptor.valueOf(baseNumber, TimeBaseNumber.class),
 						Optional.ofNullable(delimiter != null ? EnumAdaptor.valueOf(delimiter, TimeBase60Delimiter.class) : null),
-						EnumAdaptor.valueOf(rounding, TimeRounding.class));
+						EnumAdaptor.valueOf(rounding, Time10BasedRounding.class));
 			default:
 				throw new RuntimeException("項目型に対する実装が存在しません。:" + EnumAdaptor.valueOf(itemType, ItemType.class));
 		}
