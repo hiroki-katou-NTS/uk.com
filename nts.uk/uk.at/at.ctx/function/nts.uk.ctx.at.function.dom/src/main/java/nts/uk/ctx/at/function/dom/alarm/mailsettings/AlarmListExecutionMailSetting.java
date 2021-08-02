@@ -27,7 +27,7 @@ public class AlarmListExecutionMailSetting extends AggregateRoot {
     private Optional<MailSettings> contentMailSettings;
 
     /** 送信元アドレス */
-    private MailAddress senderAddress;     // TODO : QA      // Optional<メールアドレス>
+    private MailAddress senderAddress;
 
     /** マスタチェック結果を就業担当へ送信 */
     private boolean sendResult;

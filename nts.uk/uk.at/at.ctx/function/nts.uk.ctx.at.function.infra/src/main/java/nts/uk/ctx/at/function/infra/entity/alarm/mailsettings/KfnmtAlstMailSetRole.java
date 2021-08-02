@@ -22,10 +22,8 @@ public class KfnmtAlstMailSetRole extends ContractUkJpaEntity implements Seriali
 
     private static final long serialVersionUID = 1L;
 
-    /** 会社ID */
-    @Id
-    @Column(name = "CID")
-    public String companyID;
+    @EmbeddedId
+    public KfnmtAlstMailSetRolePK pk;
 
     /** ロール設定 */
     @Column(name = "ROLE_SET")
@@ -37,22 +35,24 @@ public class KfnmtAlstMailSetRole extends ContractUkJpaEntity implements Seriali
 
     @Override
     protected Object getKey() {
-        return companyID;
+        return this.pk;
     }
 
     @OneToMany(mappedBy = "mailSetRole", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "KFNMT_ALST_SELECT_ROLE")
     public List<KfnmtAlstSelectRole> alarmSelectRoles;
 
-    public KfnmtAlstMailSetRole(String companyID, int roleSetting, int sendResult) {
-        this.companyID = companyID;
+    public KfnmtAlstMailSetRole(KfnmtAlstMailSetRolePK pk, int roleSetting, int sendResult) {
+        this.pk = pk;
         this.roleSetting = roleSetting;
         this.sendResult = sendResult;
     }
 
     public static KfnmtAlstMailSetRole of(AlarmMailSendingRole domain) {
         return new KfnmtAlstMailSetRole(
-                AppContexts.user().companyId(),
+                new KfnmtAlstMailSetRolePK(
+                        AppContexts.user().companyId(),
+                        domain.getIndividualWkpClassify().value),
                 BooleanUtils.toInteger(domain.isRoleSetting()),
                 BooleanUtils.toInteger(domain.isSendResult())
         );
@@ -60,10 +60,10 @@ public class KfnmtAlstMailSetRole extends ContractUkJpaEntity implements Seriali
 
     public AlarmMailSendingRole toDomain() {
         return new AlarmMailSendingRole(
-                IndividualWkpClassification.of(1), //TODO
-                this.alarmSelectRoles.stream().map(r -> r.getPk().roleId).collect(Collectors.toList()),
+                IndividualWkpClassification.of(this.pk.personWkpAtr),
+                BooleanUtils.toBoolean(this.roleSetting == 1),
                 BooleanUtils.toBoolean(this.sendResult == 1),
-                BooleanUtils.toBoolean(this.roleSetting == 1)
+                this.alarmSelectRoles.stream().map(r -> r.getPk().roleId).collect(Collectors.toList())
         );
     }
 }

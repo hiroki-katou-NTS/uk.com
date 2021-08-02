@@ -19,6 +19,13 @@ public class KfnmtAlstExeMailSettingPK implements Serializable {
     @Column(name = "CID")
     public String companyID;
 
+    /** 個人職場区分
+     * 0: 個人別
+     * 1: 職場別
+     */
+    @Column(name = "PERSON_WKP_ATR")
+    public int personWkpAtr;
+
     /** 通常自動区分
      * 通常: 0
      * 自動: 1

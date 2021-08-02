@@ -62,26 +62,26 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
         return new KfnmtAlstExeMailSetting(
                 new KfnmtAlstExeMailSettingPK(
                         AppContexts.user().companyId(),
+                        domain.getIndividualWkpClassify().value,
                         domain.getNormalAutoClassify().value,
-                        domain.getPersonalManagerClassify().value
-                ),
+                        domain.getPersonalManagerClassify().value),
                 content.isPresent() && content.get().getSubject().isPresent() ? content.get().getSubject().get().v() : null,
                 content.isPresent() && content.get().getText().isPresent() ? content.get().getText().get().v() : null,
-                content.isPresent() ? content.get().getMailAddressBCC().get(0) : null,
-                content.isPresent() ? content.get().getMailAddressCC().get(0) : null,
+                content.isPresent() ? content.get().getMailAddressBCC().get(0).v() : null,
+                content.isPresent() ? content.get().getMailAddressCC().get(0).v() : null,
                 content.isPresent() && content.get().getMailRely().isPresent() ? content.get().getMailRely().get().v() : null,
                 domain.getSenderAddress().v()
         );
     }
 
     public AlarmListExecutionMailSetting toDomain() {
-        List<String> mailBccList = new ArrayList<>();
-        mailBccList.add(bcc);
-        List<String> mailCcList = new ArrayList<>();
-        mailCcList.add(cc);
+        List<MailAddress> mailBccList = new ArrayList<>();
+        mailBccList.add(new MailAddress(bcc));
+        List<MailAddress> mailCcList = new ArrayList<>();
+        mailCcList.add(new MailAddress(cc));
         return new AlarmListExecutionMailSetting(
                 this.pk.companyID,
-                IndividualWkpClassification.of(this.pk.normalAutoAtr), //TODO
+                IndividualWkpClassification.of(this.pk.personWkpAtr),
                 NormalAutoClassification.of(this.pk.normalAutoAtr),
                 PersonalManagerClassification.of(this.pk.personalManagerAtr),
                 Optional.of(new MailSettings(
@@ -92,7 +92,7 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
                         mailReply
                 )),
                 new MailAddress(senderAddress),
-                true //TODO
+                true                 //TODO
         );
     }
 }

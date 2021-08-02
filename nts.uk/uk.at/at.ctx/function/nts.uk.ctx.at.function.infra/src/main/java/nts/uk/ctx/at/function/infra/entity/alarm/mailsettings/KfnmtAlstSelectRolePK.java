@@ -19,6 +19,13 @@ public class KfnmtAlstSelectRolePK implements Serializable {
     @Column(name = "CID")
     public String companyID;
 
+    /** 個人職場区分
+     * 0: 個人別
+     * 1: 職場別
+     */
+    @Column(name = "PERSON_WKP_ATR")
+    public int personWkpAtr;
+
     /** 選択したロール */
     @Column(name = "ROLE_ID")
     public String roleId;
