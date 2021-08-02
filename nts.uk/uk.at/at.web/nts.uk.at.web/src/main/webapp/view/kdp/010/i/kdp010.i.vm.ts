@@ -597,7 +597,7 @@ module nts.uk.at.view.kdp010.i {
 		setPreClockArt: number;
 		changeClockArt: number;
 		changeCalArt: number;
-		taskChoiceArt: number;
+		taskChoiceArt: number | null;
 	}
 	__viewContext.ready(function () {
 		var screenModel = new viewmodel.ScreenModel();
