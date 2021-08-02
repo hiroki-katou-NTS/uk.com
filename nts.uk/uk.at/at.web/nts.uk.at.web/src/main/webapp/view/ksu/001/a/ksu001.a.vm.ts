@@ -2968,23 +2968,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectExternalBudget = { sid: '' }, sumExternalBudget = 0;
-                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(externalBudget).externalBudget[0], 'name'), subtitle: '' });
-                    _.set(objectExternalBudget, 'id', 'id1');
-                    _.forEach(keys, key => {
-                        if(_.includes(['employeeId', 'sid'], key)) {
-                            return; 
-                        }
-                        let findObject: any = _.find(externalBudget, item => key==moment(item.date).format('_YYYYMMDD'));
-                        if(!_.isEmpty(findObject)) {
-                            _.set(objectExternalBudget, key, findObject.externalBudget[0].value);   
-                            sumExternalBudget += findObject.externalBudget[0].value;
-                        } else {
-                            _.set(objectExternalBudget, key, '');   
-                        }
-                    });
-                    horizontalSumContentDs.push(objectExternalBudget);
-                    rightHorzContentDs.push({ id: 'id1', sum: sumExternalBudget });
+					let externalBudgetData: any = [];
+					_.forEach(externalBudget, externalBudgetItem => {
+						_.forEach(externalBudgetItem.externalBudget, externalBudgetSubItem => {
+							externalBudgetSubItem.date = externalBudgetItem.date;
+							externalBudgetData.push(externalBudgetSubItem);
+						});
+					});
+					_.forEach(_.values(_.groupBy(externalBudgetData, 'code')), (groupItem: Array<any>, index: number) => {
+						let objectExternalBudget = { sid: '' }, sumExternalBudget = 0;
+	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+	                    _.set(objectExternalBudget, 'id', 'id' + index);
+	                    _.forEach(keys, key => {
+	                        if(_.includes(['employeeId', 'sid'], key)) {
+	                            return; 
+	                        }
+	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
+	                        if(!_.isEmpty(findObject)) {
+	                            _.set(objectExternalBudget, key, findObject.value);   
+	                            sumExternalBudget += _.toNumber(findObject.value);
+	                        } else {
+	                            _.set(objectExternalBudget, key, '');   
+	                        }
+	                    });
+	                    horizontalSumContentDs.push(objectExternalBudget);
+	                    rightHorzContentDs.push({ id: 'id' + index, sum: sumExternalBudget });
+					});
                     break;
                     
                 // 回数集計
@@ -3005,23 +3014,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectTimeCount = { sid: '' }, sumTimeCount = 0;
-                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(timeCount).timeCount[0], 'totalTimesName'), subtitle: '' });
-                    _.set(objectTimeCount, 'id', 'id1');
-                    _.forEach(keys, key => {
-                        if(_.includes(['employeeId', 'sid'], key)) {
-                            return; 
-                        }
-                        let findObject: any = _.find(timeCount, item => key==moment(item.date).format('_YYYYMMDD'));
-                        if(!_.isEmpty(findObject)) {
-                            _.set(objectTimeCount, key, findObject.timeCount[0].value); 
-                            sumTimeCount += findObject.timeCount[0].value;
-                        } else {
-                            _.set(objectTimeCount, key, '');    
-                        }
-                    });
-                    horizontalSumContentDs.push(objectTimeCount);
-                    rightHorzContentDs.push({ id: 'id1', sum: sumTimeCount });
+					let timeCountData: any = [];
+					_.forEach(timeCount, timeCountItem => {
+						_.forEach(timeCountItem.timeCount, timeCountSubItem => {
+							timeCountSubItem.date = timeCountItem.date;
+							timeCountData.push(timeCountSubItem);
+						});
+					});
+					_.forEach(_.values(_.groupBy(timeCountData, 'totalCountNo')), (groupItem: Array<any>, index: number) => {
+						let objectTimeCount = { sid: '' }, sumTimeCount = 0;
+	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'totalTimesName'), subtitle: '' });
+	                    _.set(objectTimeCount, 'id', 'id' + index);
+	                    _.forEach(keys, key => {
+	                        if(_.includes(['employeeId', 'sid'], key)) {
+	                            return; 
+	                        }
+	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
+	                        if(!_.isEmpty(findObject)) {
+	                            _.set(objectTimeCount, key, findObject.value); 
+	                            sumTimeCount += findObject.value;
+	                        } else {
+	                            _.set(objectTimeCount, key, '');    
+	                        }
+	                    });
+	                    horizontalSumContentDs.push(objectTimeCount);
+	                    rightHorzContentDs.push({ id: 'id' + index, sum: sumTimeCount });
+					});
                     break;
                     
                 // 就業時間帯別の利用人数
@@ -3112,7 +3130,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 							employmentData.push(employmentSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(employmentData, 'name')), (groupItem: Array<any>, index: number) => {
+					_.forEach(_.values(_.groupBy(employmentData, 'code')), (groupItem: Array<any>, index: number) => {
 						let objectEmployment = { sid: '' }, sumEmployment = 0;
 	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
 	                    _.set(objectEmployment, 'id', 'id' + index);
@@ -3158,7 +3176,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 							classificationData.push(classificationSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(classificationData, 'name')), (groupItem: Array<any>, index: number) => {
+					_.forEach(_.values(_.groupBy(classificationData, 'code')), (groupItem: Array<any>, index: number) => {
 						let objectClassification = { sid: '' }, sumClassification = 0;
 	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
 	                    _.set(objectClassification, 'id', 'id' + index);
@@ -3204,7 +3222,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 							jobTitleInfoData.push(jobTitleInfoSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(jobTitleInfoData, 'name')), (groupItem: Array<any>, index: number) => {
+					_.forEach(_.values(_.groupBy(jobTitleInfoData, 'code')), (groupItem: Array<any>, index: number) => {
 						let objectJobTitle = { sid: '' }, sumJobTitleInfo = 0;
 	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
 	                    _.set(objectJobTitle, 'id', 'id' + index);
