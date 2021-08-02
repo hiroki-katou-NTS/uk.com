@@ -117,7 +117,7 @@
                     </div>
 
 
-                    <div class="d-inline-block">
+                    <div v-if="item.opComplementLeaveApp.complementLeaveFlg == 1" class="d-inline-block">
                       <div
                         v-bind:class="item.appDateCss"
                         class="pl-2 pt-2 pb-2 d-block pr-2"
