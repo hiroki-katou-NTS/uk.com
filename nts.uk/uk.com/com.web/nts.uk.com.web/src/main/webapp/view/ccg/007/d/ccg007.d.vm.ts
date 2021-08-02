@@ -335,7 +335,7 @@
                 });
                 nts.uk.ui.windows.sub.modal('/view/ccg/007/e/index.xhtml', {
                     width: 520,
-                    height: 450
+                    height: 360
                 }).onClosed(function (): any {
                     var changePwDone = nts.uk.ui.windows.getShared('changePwDone');
                     if (changePwDone) {
