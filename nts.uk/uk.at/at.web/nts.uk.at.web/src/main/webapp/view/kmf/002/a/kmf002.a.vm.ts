@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf003.i {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     
-    managePublicHoliday: KnockoutObservable<number> = ko.observable(null);
+    managePublicHoliday: KnockoutObservable<number> = ko.observable(0);
     publicHdCarryOverDeadline: KnockoutObservable<number> = ko.observable(null);
     carryOverNumberOfPublicHdIsNegative: KnockoutObservable<number> = ko.observable(0);
     publicHolidayPeriod: KnockoutObservable<number> = ko.observable(null);
@@ -34,26 +34,49 @@ module nts.uk.com.view.cmf003.i {
       const vm = this;
       vm.$blockui("grayout");
       vm.getAllData().always(() => vm.$blockui("clear"));
-
+     
       //Init enum
       const enums = (__viewContext as any).enums;
       vm.companyManageClassification(_.reverse(enums.ManagementDistinction));
       vm.lstCarryOverDeadline(enums.PublicHolidayCarryOverDeadline);
       vm.lstManagementPeriod(enums.PublicHolidayPeriod);
+       $("#managePubHDDiv").focus();
     }
 
     private getAllData(): JQueryPromise<any> {
-      const vm = this;
-      return vm.$ajax(API.findAll).then(data => {
-        if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
-          vm.managePublicHoliday(data.managePublicHoliday);
-          vm.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
-          vm.publicHolidayPeriod(data.publicHolidayPeriod);
-          vm.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
-        } else {
-          vm.managePublicHoliday(ManagePubHD.MANAGE);
-        }
-      });
+        const vm = this;
+        return vm.$ajax(API.findAll).then(data => {
+            //        if (!_.isUndefined(data) && !_.isNull(data) && !_.isEmpty(data)) {
+            //          vm.managePublicHoliday(data.managePublicHoliday);
+            //          vm.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+            //          vm.publicHolidayPeriod(data.publicHolidayPeriod);
+            //          vm.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
+            //        } else {
+            //          vm.managePublicHoliday(ManagePubHD.MANAGE);
+            //        }
+            if (data.managePublicHoliday == null) {
+                vm.managePublicHoliday(0);
+            } else {
+                vm.managePublicHoliday(data.managePublicHoliday)
+            }
+            if (data.carryOverNumberOfPublicHdIsNegative == null) {
+                vm.carryOverNumberOfPublicHdIsNegative(0);
+            }
+            else {
+                vm.carryOverNumberOfPublicHdIsNegative(data.carryOverNumberOfPublicHdIsNegative);
+            }
+            if (data.publicHolidayPeriod == null) {
+                vm.publicHolidayPeriod(0);
+            } else {
+                vm.publicHolidayPeriod(data.publicHolidayPeriod);
+            }
+            if (data.publicHdCarryOverDeadline == null) {
+                vm.publicHdCarryOverDeadline(0);
+            }
+            else {
+                vm.publicHdCarryOverDeadline(data.publicHdCarryOverDeadline);
+            }
+        });
     }
 
     public save() {

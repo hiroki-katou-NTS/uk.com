@@ -16,8 +16,8 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	<div id="kaf010-b">
 	<div id="contents-area" style="background-color: inherit; height: calc(100vh - 137px);">
 		<div class="two-panel" style="height: 100%; width: 1260px">
-            <div class="left-panel" style="width: calc(1260px - 388px); height: inherit">
-                <div style="height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden">
+            <div class="left-panel" style="width: calc(1260px - 388px); padding-bottom: 5px; height: inherit">
+                <div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding: 0 10px; overflow-x: hidden">
                     <div class="table" style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
                         <div class="cell" style="vertical-align: middle;">
                             <div data-bind="component: { name: 'kaf000-b-component4',
@@ -96,15 +96,15 @@ module nts.uk.at.view.kaf010.a.viewmodel {
                                             
                 </div>
             </div>
-            <div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
-                <div style="height: auto; min-height: 700px; background-color: #fff; overflow-x: hidden; overflow-y: auto">
-                    <div style="padding-top: 10px" data-bind="component: { name: 'kaf000-b-component1', 
+            <div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
+                <div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto">
+                    <div data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
-                    <div
-		data-bind="component: { name: 'kaf010-share-header',
+                    <div style="padding: 15px 15px 0"
+						data-bind="component: { name: 'kaf010-share-header',
 											params: {
 												overTimeWork: overTimeWork
 											}
@@ -847,8 +847,45 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					item.actualTime = ko.observable(otWorkHoursForApplication.currentTimeMonth.agreementTime.agreementTime);
 				}
 				
+				const currentTimeMonth = otWorkHoursForApplication.currentTimeMonth
+				
+				// 正常
+				if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
+				}
+				
+				
+				
+				
+				
 				overTimeWorks.push(item);
 			}
+			/*
+			
 			{
 				let item = new OvertimeWork();
 				item.yearMonth = ko.observable(otWorkHoursForApplication.nextMonth);
@@ -860,8 +897,38 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					item.actualTime = ko.observable(otWorkHoursForApplication.nextTimeMonth.agreementTime.agreementTime);
 				}
 				
+				const nextTimeMonth = otWorkHoursForApplication.nextTimeMonth;
+				// 正常
+				if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				}
+				
+				
+				
 				overTimeWorks.push(item);
 			}
+			 */
 			self.overTimeWork(overTimeWorks);
 		}
 
@@ -2025,6 +2092,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 			return String(formatTime("Clock_Short_HM", number));
 		}
 	}
+	
+	const COLOR_36 = {
+		// 36協定エラー
+		error: 'bg-36contract-error',
+		// 36協定アラーム
+		alarm: 'bg-36contract-alarm',
+		// 36協定特例
+		exceptions: 'bg-36contract-exception',
+		// 36協定エラー文字
+		error_letter: 'color-36contract-error',
+		// 36協定アラーム文字
+		alarm_character: 'color-36contract-alarm',
+		// 特条上限超過背景色
+		bg_upper_limit: 'bg-exceed-special-upperlimit',
+		// 特条上限超過文字色
+		color_upper_limit: 'color-exceed-special-upperlimit'
+		
+		
+	}
 
 	const API = {
 		initAppDetail: "at/request/application/holidaywork/getDetail",
@@ -2249,6 +2335,26 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		reason: string;
 		reasonRequired: number;
 		comboBoxText: string;
+	}
+	enum AgreementTimeStatusOfMonthly {
+		/** 正常 */
+		NORMAL,
+		/** 限度エラー時間超過 */
+		EXCESS_LIMIT_ERROR,
+		/** 限度アラーム時間超過 */
+		EXCESS_LIMIT_ALARM,
+		/** 特例限度エラー時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ERROR,
+		/** 特例限度アラーム時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ALARM,
+		/** 正常（特例あり） */
+		NORMAL_SPECIAL,
+		/** 限度エラー時間超過（特例あり） */
+		EXCESS_LIMIT_ERROR_SP,
+		/** 限度アラーム時間超過（特例あり） */
+		EXCESS_LIMIT_ALARM_SP,
+		/** 特別条項の上限時間超過 */
+		EXCESS_BG_GRAY
 	}
 	enum MODE {
 		NORMAL,
