@@ -3038,23 +3038,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectEmployment = { sid: '' }, sumEmployment = 0;
-                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(employment).numberPeople[0], 'name'), subtitle: '' });
-                    _.set(objectEmployment, 'id', 'id1');
-                    _.forEach(keys, key => {
-                        if(_.includes(['employeeId', 'sid'], key)) {
-                            return; 
-                        }
-                        let findObject: any = _.find(employment, item => key==moment(item.date).format('_YYYYMMDD'));
-                        if(!_.isEmpty(findObject)) {
-                            _.set(objectEmployment, key, findObject.numberPeople[0].value); 
-                            sumEmployment += findObject.numberPeople[0].value;
-                        } else {
-                            _.set(objectEmployment, key, '');   
-                        }
-                    });
-                    horizontalSumContentDs.push(objectEmployment);
-                    rightHorzContentDs.push({ id: 'id1', sum: sumEmployment });
+					let employmentData: any = [];
+					_.forEach(employment, employmentItem => {
+						_.forEach(employmentItem.numberPeople, employmentSubItem => {
+							employmentSubItem.date = employmentItem.date;
+							employmentData.push(employmentSubItem);
+						});
+					});
+					_.forEach(_.values(_.groupBy(employmentData, 'name')), (groupItem: Array<any>, index: number) => {
+						let objectEmployment = { sid: '' }, sumEmployment = 0;
+	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+	                    _.set(objectEmployment, 'id', 'id' + index);
+	                    _.forEach(keys, key => {
+	                        if(_.includes(['employeeId', 'sid'], key)) {
+	                            return; 
+	                        }
+	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
+	                        if(!_.isEmpty(findObject)) {
+	                            _.set(objectEmployment, key, findObject.value); 
+	                            sumEmployment += findObject.value;
+	                        } else {
+	                            _.set(objectEmployment, key, '');   
+	                        }
+	                    });
+	                    horizontalSumContentDs.push(objectEmployment);
+	                    rightHorzContentDs.push({ id: 'id' + index, sum: sumEmployment });
+					});
                     break;
                     
                 // 分類人数
@@ -3075,23 +3084,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectClassification = { sid: '' }, sumClassification = 0;
-                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(classification).numberPeople[0], 'name'), subtitle: '' });
-                    _.set(objectClassification, 'id', 'id1');
-                    _.forEach(keys, key => {
-                        if(_.includes(['employeeId', 'sid'], key)) {
-                            return; 
-                        }
-                        let findObject: any = _.find(classification, item => key==moment(item.date).format('_YYYYMMDD'));
-                        if(!_.isEmpty(findObject)) {
-                            _.set(objectClassification, key, findObject.numberPeople[0].value); 
-                            sumClassification += findObject.numberPeople[0].value;
-                        } else {
-                            _.set(objectClassification, key, '');   
-                        }
-                    });
-                    horizontalSumContentDs.push(objectClassification);
-                    rightHorzContentDs.push({ id: 'id1', sum: sumClassification });
+					let classificationData: any = [];
+					_.forEach(classification, classificationItem => {
+						_.forEach(classificationItem.numberPeople, classificationSubItem => {
+							classificationSubItem.date = classificationItem.date;
+							classificationData.push(classificationSubItem);
+						});
+					});
+					_.forEach(_.values(_.groupBy(classificationData, 'name')), (groupItem: Array<any>, index: number) => {
+						let objectClassification = { sid: '' }, sumClassification = 0;
+	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+	                    _.set(objectClassification, 'id', 'id' + index);
+	                    _.forEach(keys, key => {
+	                        if(_.includes(['employeeId', 'sid'], key)) {
+	                            return; 
+	                        }
+	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
+	                        if(!_.isEmpty(findObject)) {
+	                            _.set(objectClassification, key, findObject.value); 
+	                            sumClassification += findObject.value;
+	                        } else {
+	                            _.set(objectClassification, key, '');   
+	                        }
+	                    });
+	                    horizontalSumContentDs.push(objectClassification);
+	                    rightHorzContentDs.push({ id: 'id' + index, sum: sumClassification });
+					});
                     break;
                     
                 // 職位人数
@@ -3112,23 +3130,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                    rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
-                    let objectJobTitle = { sid: '' }, sumJobTitleInfo = 0;
-                    leftHorzContentDs.push({ id: 'id1', title: _.get(_.head(jobTitleInfo).numberPeople[0], 'name'), subtitle: '' });
-                    _.set(objectJobTitle, 'id', 'id1');
-                    _.forEach(keys, key => {
-                        if(_.includes(['employeeId', 'sid'], key)) {
-                            return; 
-                        }
-                        let findObject: any = _.find(jobTitleInfo, item => key==moment(item.date).format('_YYYYMMDD'));
-                        if(!_.isEmpty(findObject)) {
-                            _.set(objectJobTitle, key, findObject.numberPeople[0].value);   
-                            sumJobTitleInfo += findObject.numberPeople[0].value;
-                        } else {
-                            _.set(objectJobTitle, key, ''); 
-                        }
-                    });
-                    horizontalSumContentDs.push(objectJobTitle);
-                    rightHorzContentDs.push({ id: 'id1', sum: sumJobTitleInfo });
+					let jobTitleInfoData: any = [];
+					_.forEach(jobTitleInfo, jobTitleInfoItem => {
+						_.forEach(jobTitleInfoItem.numberPeople, jobTitleInfoSubItem => {
+							jobTitleInfoSubItem.date = jobTitleInfoItem.date;
+							jobTitleInfoData.push(jobTitleInfoSubItem);
+						});
+					});
+					_.forEach(_.values(_.groupBy(jobTitleInfoData, 'name')), (groupItem: Array<any>, index: number) => {
+						let objectJobTitle = { sid: '' }, sumJobTitleInfo = 0;
+	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+	                    _.set(objectJobTitle, 'id', 'id' + index);
+	                    _.forEach(keys, key => {
+	                        if(_.includes(['employeeId', 'sid'], key)) {
+	                            return; 
+	                        }
+	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
+	                        if(!_.isEmpty(findObject)) {
+	                            _.set(objectJobTitle, key, findObject.value);   
+	                            sumJobTitleInfo += findObject.value;
+	                        } else {
+	                            _.set(objectJobTitle, key, ''); 
+	                        }
+	                    });
+	                    horizontalSumContentDs.push(objectJobTitle);
+	                    rightHorzContentDs.push({ id: 'id' + index, sum: sumJobTitleInfo });
+					});
                     break;
                     
                 default: break;
