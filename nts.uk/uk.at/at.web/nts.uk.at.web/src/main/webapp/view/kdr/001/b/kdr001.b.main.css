@@ -42,8 +42,9 @@
 }
 
 .checkbox-wrapper{
-	width: 150px !important;
+	width: 120px !important;
 	height: 20px !important;
+
 }
 .checkbox-wrappers label{
 	margin-right: 4px;
@@ -61,4 +62,20 @@
 .fixed-checkbox-table, tr, td{
 	padding: 7px;
 	outline: none;
+}
+
+element.style {
+}
+.radio-wrapper.no-text, .radio-wrapper.without-text, .checkbox-wrapper.no-text, .checkbox-wrapper.without-text{
+	margin-left: 3px;
+	margin-right: 41px;
+}
+.radio-wrapper input[type="radio"]+span,
+.radio-wrapper input[type="checkbox"]+span,
+.checkbox-wrapper input[type="radio"]+span,
+.checkbox-wrapper input[type="checkbox"]+span{
+	white-space: nowrap;
+	overflow: hidden;
+	width: 100px;
+	text-overflow: ellipsis;
 }
