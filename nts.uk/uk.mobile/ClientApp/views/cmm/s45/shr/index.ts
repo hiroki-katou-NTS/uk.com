@@ -12,6 +12,10 @@ export class AppInfo {
     public appStatusNo: number;
     public frameStatus: boolean;
     public version: number;
+    public opComplementLeaveApp: any;
+    public opAppStartDate: Date;
+    public opAppEndDate: Date;
+
 
     constructor(params: IAppInfo) {
         this.id = params.id;
@@ -23,6 +27,9 @@ export class AppInfo {
         this.appStatusNo = params.appStatusNo;
         this.frameStatus = params.frameStatus ? params.frameStatus : false;
         this.version = params.version ? params.version : 0;
+        this.opComplementLeaveApp = params.opComplementLeaveApp;
+        this.opAppStartDate = params.opAppStartDate;
+        this.opAppEndDate = params.opAppEndDate;
     }
     
     get prePostName() {

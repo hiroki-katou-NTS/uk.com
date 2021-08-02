@@ -542,7 +542,21 @@ public class AppContentServiceImpl implements AppContentService {
 				listOfApp.setAppContent("-1");
 				break;
 			}
-		} else { // アルゴリズム「各申請データを作成（スマホ）」を実行する
+		} else { 
+			if (application.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+				
+				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+				CompLeaveAppDataOutput compLeaveAppDataOutput = appContentDetailCMM045.getContentComplementLeave(
+						application, 
+						companyID, 
+						lstWkType, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045);
+				listOfApp.setAppContent(compLeaveAppDataOutput.getContent());
+				listOfApp.setOpComplementLeaveApp(Optional.of(compLeaveAppDataOutput.getComplementLeaveAppLink()));
+			}
+			
+			// アルゴリズム「各申請データを作成（スマホ）」を実行する
 			Optional<ApplicationTypeDisplay> opAppDisplay = this.getAppDisplayByMobile(application, listOfApp);
 			listOfApp.setOpAppTypeDisplay(opAppDisplay);
 		}

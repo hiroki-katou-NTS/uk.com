@@ -73,6 +73,10 @@ export class CmmS45CComponent extends Vue {
     public reversionReason: string = '';
     public isLoadingComplete = false;
     public reasons: Array<Reason> = null;
+
+    public opAppStartDate: Date;
+    public opAppEndDate: Date;
+
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -143,6 +147,9 @@ export class CmmS45CComponent extends Vue {
                 self.appState.pastApp = appDetailScreenInfoDto.pastApp;
                 self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
                 self.appType = appDetailScreenInfoDto.application.appType;
+                self.opAppStartDate = appDetailScreenInfoDto.application.opAppStartDate;
+                self.opAppEndDate = appDetailScreenInfoDto.application.opAppEndDate;
+                
                 //self.$mask('hide');
             }).catch((res: any) => {
                 // self.$mask('hide');
