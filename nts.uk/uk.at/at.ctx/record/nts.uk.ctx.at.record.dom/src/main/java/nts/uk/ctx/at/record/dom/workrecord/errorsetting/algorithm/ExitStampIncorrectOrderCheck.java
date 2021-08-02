@@ -196,7 +196,7 @@ public class ExitStampIncorrectOrderCheck {
 			// 2回目の入門と出勤．打刻が存在するか確認する(check second stamp attendance has data or
 			// not)
 			TimeWithDayAttr secondAttendanceTime = attendanceLeavingGates.get(1).getAttendance().get().getTimeDay().getTimeWithDay().isPresent()?
-					attendanceLeavingGates.get(0).getAttendance().get().getTimeDay().getTimeWithDay().get():null;
+					attendanceLeavingGates.get(1).getAttendance().get().getTimeDay().getTimeWithDay().get():null;
 			if (secondAttendanceTime != null) {
 				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().size()>1
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
