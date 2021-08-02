@@ -20,13 +20,11 @@ public class GetStampInputSettingDto {
 	// Map<お知らせメッセージ>(List)
 	private List<MessageNoticeDto> messageNotices;
 	
+	// 会社単位の利用停止の設定
 	private StopBySystemDto stopBySystem;
 	
-	private StopByCompanyDto stopByCompany;
-
-	// 会社単位の利用停止の設定
-
 	// テナント単位の利用停止の設定
+	private StopByCompanyDto stopByCompany;
 }
 
 @AllArgsConstructor

@@ -722,6 +722,7 @@ module nts.uk.at.kdp003.a {
 					return vm.$window.modal('at', DIALOG.F, { mode, companyId });
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
+
 					$.urlParam = function (name) {
 						var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
 
@@ -767,36 +768,25 @@ module nts.uk.at.kdp003.a {
 					return loginData;
 				})
 				.then((loginData: undefined | f.TimeStampLoginData) => {
-					// var exist = false;
-					// var exist1 = false;
-					// if (loginData === undefined) {
-					// 	exist = true;
-					// 	return loginData;
-					// }
-
-					// if (loginData.result) {
-					// 	exist1 = true;
-					// }
-
-					// if (loginData.notification == null && !exist1) {
-					// 	exist = true;
-					// }
 
 					const params = { multiSelect: true };
-					// !exist && 
-					if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
-						return vm.$window.modal('at', DIALOG.K, params)
-							.then((workplaceData: undefined | k.Return) => {
-								if (workplaceData === undefined) {
-									location.reload();
-								}
 
-								openViewK = true;
-								return {
-									loginData,
-									workplaceData
-								};
-							}) as JQueryPromise<LoginData>;
+					if (loginData != undefined) {
+						// !exist && 
+						if (!ko.unwrap(vm.modeBasyo) && loginData.msgErrorId !== "Msg_1527") {
+							return vm.$window.modal('at', DIALOG.K, params)
+								.then((workplaceData: undefined | k.Return) => {
+									if (workplaceData === undefined) {
+										location.reload();
+									}
+
+									openViewK = true;
+									return {
+										loginData,
+										workplaceData
+									};
+								}) as JQueryPromise<LoginData>;
+						}
 					}
 					return loginData;
 				})
@@ -821,10 +811,6 @@ module nts.uk.at.kdp003.a {
 						return false;
 					}
 
-					// if (data.loginData) {
-					// 	exist1 = true;
-					// }
-
 					if (ko.unwrap(vm.modeBasyo)) {
 
 						if (data.notification == null) {
@@ -844,10 +830,6 @@ module nts.uk.at.kdp003.a {
 					if (!exist1 && !ko.unwrap(vm.modeBasyo)) {
 						exist = false;
 					}
-
-					// if (!exist) {	
-					// 	return false;
-					// }
 
 					if (ko.unwrap(vm.modeBasyo)) {
 						if (vm.workPlace.length <= 0) {
@@ -1107,7 +1089,7 @@ module nts.uk.at.kdp003.a {
 											}
 										}
 										console.log(btn);
-										
+
 										if (dataStorage.WKPID.length > 1) {
 											if (btn.supportWplset == 1) {
 												vm.$window.modal('at', DIALOG.M, { screen: 'KDP003', employeeId: employeeId })

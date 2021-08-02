@@ -205,10 +205,6 @@ module nts.uk.at.view.kdp.share {
             if (params) {
                 vm.messageNoti = params.messageNoti;
 
-                setTimeout(() => {
-                    console.log(ko.unwrap(params.messageNoti));
-                }, 3000);
-
                 vm.showMessage = params.showMessage;
 
                 if (ko.unwrap(params.notiSet)) {
@@ -283,7 +279,7 @@ module nts.uk.at.view.kdp.share {
         mounted() {
             const vm = this;
 
-            vm.getNotiSys();
+            // vm.getNotiSys();
 
             if (ko.unwrap(vm.messageNoti)) {
                 vm.reload();
@@ -347,26 +343,43 @@ module nts.uk.at.view.kdp.share {
                                 '');
                         }
                     }
+
+                    const value: IMessage = ko.unwrap(vm.messageNoti);
+                    console.log(value);
+
+
+                    if (value.stopBySystem.stopMode == 1) {
+                        vm.modeSystemNoti(true);
+                        vm.messageSys(value.stopBySystem.usageStopMessage);
+                    } else {
+                        if (value.stopByCompany.stopMode == 1) {
+                            vm.modeSystemNoti(true);
+                            vm.messageSys(value.stopByCompany.usageStopMessage);
+                        } else {
+                            vm.modeSystemNoti(false);
+                            vm.messageSys('');
+                        }
+                    }   
                 })
                 .then(() => {
                     vm.$blockui('clear');
                 });
         }
 
-        getNotiSys() {
-            const vm = this;
+        // getNotiSys() {
+        //     const vm = this;
 
-            vm.$blockui('invisible')
-                .then(() => {
-                    vm.$ajax('at', API.GET_NOTI_SYSTEM)
-                        .done((data: IMessageSys) => {
-                            vm.modeSystemNoti(data.stopSystem);
-                            vm.messageSys(data.notiMessage);
-                        })
-                }).then(() => {
-                    vm.$blockui('clear');
-                });
-        }
+        //     vm.$blockui('invisible')
+        //         .then(() => {
+        //             vm.$ajax('at', API.GET_NOTI_SYSTEM)
+        //                 .done((data: IMessageSys) => {
+        //                     vm.modeSystemNoti(data.stopSystem);
+        //                     vm.messageSys(data.notiMessage);
+        //                 })
+        //         }).then(() => {
+        //             vm.$blockui('clear');
+        //         });
+        // }
     }
 
     class Model {
@@ -435,22 +448,22 @@ module nts.uk.at.view.kdp.share {
     interface IMessage {
         messageNotices: IMessageNotice[];
         stopBySystem: IStopBySystem;
-		stopByCompany: IStopByCompany;
+        stopByCompany: IStopByCompany;
     }
 
     interface IStopBySystem {
-		systemStatusType: number;
-		stopMode: number;
-		stopMessage: String;
-		usageStopMessage: String
-	}
+        systemStatusType: number;
+        stopMode: number;
+        stopMessage: String;
+        usageStopMessage: String
+    }
 
-	interface IStopByCompany {
-		systemStatus: number;
-		stopMessage: String;
-		stopMode: number;
-		usageStopMessage: String
-	}
+    interface IStopByCompany {
+        systemStatus: number;
+        stopMessage: String;
+        stopMode: number;
+        usageStopMessage: String
+    }
 
     interface IMessageNotice {
         creatorID: string;

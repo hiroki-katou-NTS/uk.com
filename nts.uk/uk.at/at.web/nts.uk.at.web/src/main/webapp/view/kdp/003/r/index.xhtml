@@ -33,30 +33,39 @@
                                 <span style="color: white; font-size: 18px;" data-bind="i18n: 'KDP003_92'"></span>
                                 <div>
                                     <span style="color: white; font-size: 18px;"
-                                        data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'"></span>
+                                        data-bind="i18n: $vm.notiStopByCompany"></span>
+                                </div>
+                                <div>
+                                    <span style="color: white; font-size: 18px;"
+                                        data-bind="i18n: $vm.notiStopBySystem "></span>
                                 </div>
                             </div>
-
-                            <!--<div class= "notificationMessage" data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.comMsgColor.textColor }"></div>
-                            -->
-
                         </div>
                     </div>
                 </com:ko-if>
                 <com:ko-if bind="ko.toJS($vm.notiErrorSystem) == false">
-                    <div>
+                    <div data-bind="if: ko.toJS($vm.stopBySystem) === true">
                         <div class="notice-label" style="background-color: #FD4D4D;">
                             <div>
                                 <span style="color: white;" data-bind="i18n: 'KDP003_91'"></span>
                                 <span style="color: white;" data-bind="i18n: 'KDP003_92'"></span>
                                 <div>
                                     <span style="color: white;"
-                                        data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'"></span>
+                                        data-bind="i18n: $vm.notiStopBySystem"></span>
                                 </div>
                             </div>
-                            <!--
-                            <div class= "notificationMessage" data-bind="text: $data.displayMessageNotice.notificationMessage, style: { 'color': $parent.noticeSetting.wkpMsgColor.textColor }"></div>
-                            -->
+                        </div>
+                    </div>
+                    <div data-bind="if: ko.toJS($vm.stopByCompany) === true">
+                        <div class="notice-label" style="background-color: #FD4D4D;">
+                            <div>
+                                <span style="color: white;" data-bind="i18n: 'KDP003_91'"></span>
+                                <span style="color: white;" data-bind="i18n: 'KDP003_92'"></span>
+                                <div>
+                                    <span style="color: white;"
+                                        data-bind="i18n: $vm.notiStopByCompany"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div>
