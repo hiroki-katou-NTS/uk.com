@@ -82,10 +82,10 @@ public class RegisterStampDataCommand {
 		if (workGroup != null) {
 			if (workGroup.getWorkCode1() != null) {
 				workGroupResult = new WorkGroup(new WorkCode(workGroup.getWorkCode1()),
-						Optional.of(workGroup.getWorkCode2() == null ?  null : new WorkCode(workGroup.getWorkCode2())),
-						Optional.of(workGroup.getWorkCode3() == null ?  null : new WorkCode(workGroup.getWorkCode3())),
-						Optional.of(workGroup.getWorkCode4() == null ?  null : new WorkCode(workGroup.getWorkCode4())),
-						Optional.of(workGroup.getWorkCode5() == null ?  null : new WorkCode(workGroup.getWorkCode5())));
+						Optional.ofNullable(workGroup.getWorkCode2() == null ?  null : new WorkCode(workGroup.getWorkCode2())),
+						Optional.ofNullable(workGroup.getWorkCode3() == null ?  null : new WorkCode(workGroup.getWorkCode3())),
+						Optional.ofNullable(workGroup.getWorkCode4() == null ?  null : new WorkCode(workGroup.getWorkCode4())),
+						Optional.ofNullable(workGroup.getWorkCode5() == null ?  null : new WorkCode(workGroup.getWorkCode5())));
 			}
 		}
 		
