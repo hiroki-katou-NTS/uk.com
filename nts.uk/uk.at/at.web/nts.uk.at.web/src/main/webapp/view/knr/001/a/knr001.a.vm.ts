@@ -455,7 +455,7 @@ module nts.uk.at.view.knr001.a {
                     || !self.checkIpAddress(self.empInfoTerminalModel().ipAddress4())
                 ) {
                     if(_.isNull(self.empInfoTerminalModel().ipAddress1()) || self.empInfoTerminalModel().ipAddress1().toString() == "")  $('#IP1').ntsError('set', {messageId: 'Msg_2036'});
-                    if(_.isNull(self.empInfoTerminalModel().ipAddress2()) || self.empInfoTerminalModel().ipAddress2().toString() == ""  $('#IP2').ntsError('set', {messageId: 'Msg_2036'});
+                    if(_.isNull(self.empInfoTerminalModel().ipAddress2()) || self.empInfoTerminalModel().ipAddress2().toString() == "")  $('#IP2').ntsError('set', {messageId: 'Msg_2036'});
                     if(_.isNull(self.empInfoTerminalModel().ipAddress3()) || self.empInfoTerminalModel().ipAddress3().toString() == "")  $('#IP3').ntsError('set', {messageId: 'Msg_2036'});
                     if(_.isNull(self.empInfoTerminalModel().ipAddress4()) || self.empInfoTerminalModel().ipAddress4().toString() == "")  $('#IP4').ntsError('set', {messageId: 'Msg_2036'});
 
