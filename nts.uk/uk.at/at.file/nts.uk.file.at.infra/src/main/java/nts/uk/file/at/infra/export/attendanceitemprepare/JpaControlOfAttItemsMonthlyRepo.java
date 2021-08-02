@@ -32,13 +32,13 @@ public class JpaControlOfAttItemsMonthlyRepo extends JpaRepository implements Co
 
 	private void putRowToResult(Map<Integer, ControlOfAttMonthlyDtoExcel> listControl, Object[] x) {
 		Integer id = 0;
-		Integer unitItem = 0;
+		Float unitItem = 0f;
 		String headerBackground = (String) x[2];
 		if(x[0] !=null){
 			id = ((BigDecimal) x[0]).intValue();
 		}
 		if(x[1] !=null){
-			unitItem =((BigDecimal) x[1]).intValue();
+			unitItem =((BigDecimal) x[1]).floatValue();
 		}
 		ControlOfAttMonthlyDtoExcel control = 
 				new ControlOfAttMonthlyDtoExcel(id, headerBackground,unitItem );

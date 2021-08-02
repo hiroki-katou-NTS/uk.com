@@ -806,6 +806,8 @@ public class ProgramsManager {
             "/view/kdw/006/e/index.xhtml");
     public static final Program KDW006G = new Program(WebAppId.AT, ProgramIdConsts.KDW006G, "KDW006_71",
             "/view/kdw/006/g/index.xhtml");
+    public static final Program KDW006I = new Program(WebAppId.AT, ProgramIdConsts.KDW006I, "KDW006_232",
+            "/view/kdw/006/i/index.xhtml");
     public static final Program KDW006H = new Program(WebAppId.AT, ProgramIdConsts.KDW006H, "KDW006_305",
             "/view/kdw/006/h/index.xhtml");
 
@@ -820,6 +822,18 @@ public class ProgramsManager {
      */
     public static final Program KDW010A = new Program(WebAppId.AT, ProgramIdConsts.KDW010A, "KDW010_1",
             "/view/kdw/010/a/index.xhtml");
+
+    /**
+     * KDW013A
+     */
+    public static final Program KDW013A = new Program(WebAppId.AT, ProgramIdConsts.KDW013A, null,
+            "/view/kdw/013/a/index.xhtml");
+
+    /**
+     * KDW013D
+     */
+    public static final Program KDW013D = new Program(WebAppId.AT, ProgramIdConsts.KDW013D, "KDW013_42",
+            "/view/kdw/013/d/index.xhtml");
 
     /**
      * KSM002A
@@ -3886,6 +3900,21 @@ public class ProgramsManager {
 										    		, ProgramIdConsts.KWR008C
 										    		, "KWR008_100"
 										    		, "/view/kwr/008/c/index.xhtml");
+
+
+    /**
+     * KHA003
+     */
+    public static final Program KHA003A = new Program(WebAppId.AT, ProgramIdConsts.KHA003A, "KHA003_1",
+            "/view/kha/003/a/index.xhtml");
+    public static final Program KHA003B = new Program(WebAppId.AT, ProgramIdConsts.KHA003B, "KHA003_2",
+            "/view/kha/003/b/index.xhtml");
+    public static final Program KHA003C = new Program(WebAppId.AT, ProgramIdConsts.KHA003C, "KHA003_3",
+            "/view/kha/003/c/index.xhtml");
+    public static final Program KHA003D = new Program(WebAppId.AT, ProgramIdConsts.KHA003D, "KHA003_4",
+            "/view/kha/003/d/index.xhtml");
+    public static final Program KHA003E = new Program(WebAppId.AT, ProgramIdConsts.KHA003E, "KHA003_5",
+            "/view/kha/003/e/index.xhtml");
 
     /**
      * All programs map.

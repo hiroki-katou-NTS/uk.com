@@ -20,6 +20,6 @@ public interface WorkingTypeChangedByEmpRepo {
 
 	public void save(WorkingTypeChangedByEmployment workingType);
 	
-	void copyEmployment(String companyId, WorkingTypeChangedByEmployment sourceData, List<String> targetEmploymentCodes, boolean isOveride);
+	void copyEmployment(String companyId, WorkingTypeChangedByEmployment sourceData, List<String> targetEmploymentCodes);
 
 }

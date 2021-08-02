@@ -18,6 +18,7 @@ import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -54,19 +55,19 @@ public class GetSupportDataJudgedSameDSTest {
 	@Test
 	public void case2() {
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(5))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(1))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
@@ -76,7 +77,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(20))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(70)))));
@@ -100,19 +101,19 @@ public class GetSupportDataJudgedSameDSTest {
 	@Test
 	public void case3() {
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(5))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(1))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(60)))));
@@ -123,7 +124,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime3);
 		
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, 
+				SupportFrameNo.of(1), 
 				null, 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(1), 
@@ -149,19 +150,19 @@ public class GetSupportDataJudgedSameDSTest {
 	@Test
 	public void case4() {
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(5))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(30)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(30)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(1))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(20)))));
@@ -172,7 +173,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime3);
 		
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(5))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))))); 
@@ -196,19 +197,19 @@ public class GetSupportDataJudgedSameDSTest {
 	@Test
 	public void case5() {
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(5))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(30)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(10))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(40)))));
 		
 		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, null, TimeSheetOfAttendanceEachOuenSheet.create(
+				SupportFrameNo.of(1), null, TimeSheetOfAttendanceEachOuenSheet.create(
 							new WorkNo(1), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(1))), 
 							Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(), new TimeWithDayAttr(50)))));
@@ -219,7 +220,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime3);
 		
 		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(
-				1, 
+				SupportFrameNo.of(1), 
 				null, 
 				TimeSheetOfAttendanceEachOuenSheet.create(
 						new WorkNo(1), 
@@ -252,17 +253,17 @@ public class GetSupportDataJudgedSameDSTest {
 	 */
 	@Test
 	public void case6() {
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(15))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
 
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(5))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
 
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
@@ -272,7 +273,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		
-		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(70)))));
@@ -301,17 +302,17 @@ public class GetSupportDataJudgedSameDSTest {
 	 */
 	@Test
 	public void case7() {
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime1 = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(15))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
 
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime2 = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(5))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
 
-		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance ouenWorkTime3 = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(60)))));
@@ -321,7 +322,7 @@ public class GetSupportDataJudgedSameDSTest {
 		supportDataList.add(ouenWorkTime2);
 		supportDataList.add(ouenWorkTime3);
 		
-		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(1, null,
+		OuenWorkTimeSheetOfDailyAttendance targetSupportData = OuenWorkTimeSheetOfDailyAttendance.create(SupportFrameNo.of(1), null,
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(1),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(20))),
 						Optional.of(new WorkTimeInformation(ReasonTimeChange.createByAutomaticSet(),new TimeWithDayAttr(70)))));
