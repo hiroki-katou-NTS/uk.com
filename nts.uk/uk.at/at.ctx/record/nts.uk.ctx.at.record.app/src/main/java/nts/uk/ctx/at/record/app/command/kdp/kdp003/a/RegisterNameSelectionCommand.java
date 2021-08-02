@@ -15,7 +15,7 @@ public class RegisterNameSelectionCommand {
 
 	// note: 打刻日時
 	public GeneralDateTime getDateTime() {
-		return GeneralDateTime.now();
+		return GeneralDateTime.fromString(GeneralDateTime.now().toString(), "yyyy/MM/dd HH:mm:ss");
 	};
 
 	// note: 打刻ボタン
