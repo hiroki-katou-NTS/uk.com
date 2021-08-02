@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.mailsettings;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -26,7 +27,7 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    private KfnmtAlstExeMailSettingPK pk;
+    public KfnmtAlstExeMailSettingPK pk;
 
     /** 件名 */
     @Column(name = "SUBJECT")
@@ -54,7 +55,7 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
 
     @Override
     protected Object getKey() {
-        return pk;
+        return this.pk;
     }
 
     public static KfnmtAlstExeMailSetting of(AlarmListExecutionMailSetting domain) {
@@ -72,6 +73,15 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
                 content.isPresent() && content.get().getMailRely().isPresent() ? content.get().getMailRely().get().v() : null,
                 domain.getSenderAddress().v()
         );
+    }
+
+    public void fromEntity(KfnmtAlstExeMailSetting entity) {
+        this.subject = entity.subject;
+        this.text = entity.text;
+        this.bcc = entity.bcc;
+        this.cc = entity.cc;
+        this.mailReply = entity.mailReply;
+        this.senderAddress = entity.senderAddress;
     }
 
     public AlarmListExecutionMailSetting toDomain() {
