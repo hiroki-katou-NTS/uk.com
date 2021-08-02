@@ -2487,7 +2487,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 bodyHeightMode: bodyHeightMode,
                 windowXOccupation: windowXOccupation,
                 windowYOccupation: windowYOccupation,
-                manipulatorId: self.keyGridGrid,
+                manipulatorId: self.keyGrid,
                 manipulatorKey: "sid",
                 updateMode: updateMode,
                 pasteOverWrite: true,
