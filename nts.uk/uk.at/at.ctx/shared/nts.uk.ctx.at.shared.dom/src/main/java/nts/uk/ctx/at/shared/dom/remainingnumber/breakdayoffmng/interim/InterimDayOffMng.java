@@ -6,7 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimMngCommon;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
@@ -53,4 +60,22 @@ public class InterimDayOffMng extends InterimRemain implements InterimMngCommon{
 		this.appTimeType = appTimeType;
 	}
 	
+	// [1] 逐次発生の休暇明細に変換する
+	public AccumulationAbsenceDetail convertSeqVacationState() {
+		return new AccuVacationBuilder(this.getSID(), new CompensatoryDayoffDate(false, Optional.of(this.getYmd())),
+				OccurrenceDigClass.DIGESTION, this.getCreatorAtr().convertToMngData(false), this.getRemainManaID())
+						.numberOccurren(new NumberConsecuVacation(
+								new ManagementDataRemainUnit(this.getRequiredDay().v()), Optional.of(new AttendanceTime(this.getRequiredTime().v()))))
+						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(this.getUnOffsetDay().v()),
+								Optional.of(new AttendanceTime(this.getUnOffsetTimes().v()))))
+						.build();
+	}
+
+	// [2] 未相殺数を更新する
+	public InterimDayOffMng updateUnoffsetNum(AccumulationAbsenceDetail detail) {
+		return new InterimDayOffMng(this.getRemainManaID(), this.getSID(), this.getYmd(), this.getCreatorAtr(),
+				this.getRemainType(), requiredTime, requiredDay,
+				new UnOffsetTime(detail.getUnbalanceNumber().getTime().map(x -> x.v()).orElse(0)),
+				new UnOffsetDay(detail.getUnbalanceNumber().getDay().v()), appTimeType);
+	}
 }
