@@ -44,8 +44,7 @@ module nts.uk.at.view.knr001.a {
                 // 8_3
                 self.itemList1 = ko.observableArray([
                     new ItemModel1(0, getText('KNR001_155')),
-                    new ItemModel1(1, getText('KNR001_156')),
-                    new ItemModel1(2, getText('KNR001_157'))
+                    new ItemModel1(1, getText('KNR001_156'))
                 ]);
 
                 // 8_5
@@ -181,6 +180,8 @@ module nts.uk.at.view.knr001.a {
                             if (!_.isNil(self.empInfoTerminalModel().nRConvertInfo().entranceExit)) {
                                 if (self.empInfoTerminalModel().nRConvertInfo().entranceExit === 1) {
                                     self.entranceExit(true);
+                                } else {
+                                    self.entranceExit(false);
                                 }
                             }
                         }
