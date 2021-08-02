@@ -9,15 +9,15 @@ public enum TimeBase10Rounding {
 	/**
 	 * 切り捨て
 	 */
-	ROUND_DOWN(1, "Enum_Time10BasedRounding_ROUND_DOWN"), 
+	ROUND_DOWN(1, "Enum_TimeBase10Rounding_ROUND_DOWN"), 
 	/**
 	 * 切り上げ
 	 */
-	ROUND_UP(2, "Enum_Time10BasedRounding_ROUND_UP"), 
+	ROUND_UP(2, "Enum_TimeBase10Rounding_ROUND_UP"), 
 	/**
 	 * 四捨五入
 	 */
-	ROUND(3, "Enum_Time10BasedRounding_ROUND");
+	ROUND(3, "Enum_TimeBase10Rounding_ROUND");
 
 	/** The value. */
 	public final int value;
