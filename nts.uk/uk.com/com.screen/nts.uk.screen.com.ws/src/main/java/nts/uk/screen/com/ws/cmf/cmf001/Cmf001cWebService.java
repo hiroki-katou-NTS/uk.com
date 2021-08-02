@@ -15,12 +15,5 @@ import nts.uk.screen.com.app.cmf.cmf001.ItemMappingListItemDto;
 @Produces(MediaType.APPLICATION_JSON)
 public class Cmf001cWebService {
 
-	@Inject
-	private Cmf001cScreenQuery screenC;
 	
-	@Path("list")
-	@POST
-	public List<ItemMappingListItemDto> getList(Cmf001cScreenQuery.ParamGetList param) {
-		return screenC.getList(param);
-	}
 }
