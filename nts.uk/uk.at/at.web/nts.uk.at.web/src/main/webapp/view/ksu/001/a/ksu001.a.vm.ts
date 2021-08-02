@@ -2814,31 +2814,91 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             switch(self.useCategoriesWorkplaceValue()) {
                 // 人件費・時間
                 case WorkplaceCounterCategory.LABOR_COSTS_AND_TIME: 
-					leftHorzContentDs.push({ id: 'id1', title: getText("KSU001_50"), subtitle: getText("KSU001_59") });
-                    leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_60") });
-                    leftHorzContentDs.push({ id: 'id3', title: getText("KSU001_51"), subtitle: getText("KSU001_59") });
-                    leftHorzContentDs.push({ id: 'id4', title: '', subtitle: getText("KSU001_60") });
-                    leftHorzContentDs.push({ id: 'id5', title: getText("KSU001_58"), subtitle: getText("KSU001_59") });
-                    leftHorzContentDs.push({ id: 'id6', title: '', subtitle: getText("KSU001_60") });
-                    leftHorzContentDs.push({ id: 'id7', title: '', subtitle: getText("KSU001_61") });
                     let laborCostAndTime: Array<any> = self.dataAggrerateWorkplace.laborCostAndTime,
                         laborCostAndTimeValue = _.filter(laborCostAndTime, item => !_.isEmpty(item.laborCostAndTime));
                     if(_.isEmpty(laborCostAndTimeValue)) {
-						for(let i=1; i<=7; i++) {
-							let objectLaborCostAndTime = { sid: '' };
-                        	_.set(objectLaborCostAndTime, 'id', 'id'+i);
-							_.forEach(keys, key => {
-								if(_.includes(['employeeId', 'sid'], key)) {
-	                                return; 
-	                            }
-								_.set(objectLaborCostAndTime, key, '');
-							});
-							horizontalSumContentDs.push(objectLaborCostAndTime);    
-                        	rightHorzContentDs.push({ id: 'id'+i, sum: '' });
-						}
+						leftHorzContentDs.push({ id: 'id1', title: '', subtitle: '' });
+						let objectLaborCostAndTime = { sid: '' };
+                    	_.set(objectLaborCostAndTime, 'id', 'id1');
+						_.forEach(keys, key => {
+							if(_.includes(['employeeId', 'sid'], key)) {
+                                return; 
+                            }
+							_.set(objectLaborCostAndTime, key, '');
+						});
+						horizontalSumContentDs.push(objectLaborCostAndTime);    
+                    	rightHorzContentDs.push({ id: 'id1', sum: '' });
                         break;
                     }
+					let laborCostAndTimeData: any = [];
+					_.forEach(laborCostAndTime, laborCostAndTimeItem => {
+						_.forEach(laborCostAndTimeItem.laborCostAndTime, laborCostAndTimeSubItem => {
+							laborCostAndTimeSubItem.date = laborCostAndTimeItem.date;
+							laborCostAndTimeData.push(laborCostAndTimeSubItem);
+						});
+					});
                     for(let i=1; i<=7; i++) {
+						let findValueObjectLst: any = [];
+						switch(i) {
+							case 1: findValueObjectLst = _.find(laborCostAndTimeData, (findValueObjectItem: any) => 
+                                                            findValueObjectItem.unit==AggregationUnitOfLaborCosts.WITHIN && findValueObjectItem.itemType==LaborCostItemType.TIME);
+									if(!_.isEmpty(findValueObjectLst)) {
+										leftHorzContentDs.push({ id: 'id1', title: '', subtitle: getText("KSU001_59") });	
+									}
+                                    break;
+                            case 2: findValueObjectLst = _.find(laborCostAndTimeData, (findValueObjectItem: any) => 
+                                                    findValueObjectItem.unit==AggregationUnitOfLaborCosts.WITHIN && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
+									if(!_.isEmpty(findValueObjectLst)) {
+										leftHorzContentDs.push({ id: 'id2', title: '', subtitle: getText("KSU001_60") });
+									}
+                                    break;
+                            case 3: findValueObjectLst = _.find(laborCostAndTimeData, (findValueObjectItem: any) => 
+                                                    findValueObjectItem.unit==AggregationUnitOfLaborCosts.EXTRA && findValueObjectItem.itemType==LaborCostItemType.TIME); 
+									if(!_.isEmpty(findValueObjectLst)) {
+										leftHorzContentDs.push({ id: 'id3', title: '', subtitle: getText("KSU001_59") });
+									}
+                                    break;
+                            case 4: findValueObjectLst = _.find(laborCostAndTimeData, (findValueObjectItem: any) => 
+                                                    findValueObjectItem.unit==AggregationUnitOfLaborCosts.EXTRA && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
+									if(!_.isEmpty(findValueObjectLst)) {
+										leftHorzContentDs.push({ id: 'id4', title: '', subtitle: getText("KSU001_60") });
+									}
+                                    break;
+                            case 5: findValueObjectLst = _.find(laborCostAndTimeData, (findValueObjectItem: any) => 
+                                                    findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.TIME); 
+									if(!_.isEmpty(findValueObjectLst)) {
+										leftHorzContentDs.push({ id: 'id5', title: '', subtitle: getText("KSU001_59") });
+									}
+                                    break;
+                            case 6: findValueObjectLst = _.find(laborCostAndTimeData, (findValueObjectItem: any) => 
+                                                    findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.AMOUNT); 
+									if(!_.isEmpty(findValueObjectLst)) {
+										leftHorzContentDs.push({ id: 'id6', title: '', subtitle: getText("KSU001_60") });
+									}
+                                    break;
+                            case 7: findValueObjectLst = _.find(laborCostAndTimeData, (findValueObjectItem: any) => 
+                                                    findValueObjectItem.unit==AggregationUnitOfLaborCosts.TOTAL && findValueObjectItem.itemType==LaborCostItemType.BUDGET); 
+									if(!_.isEmpty(findValueObjectLst)) {
+										leftHorzContentDs.push({ id: 'id7', title: '', subtitle: getText("KSU001_61") });
+									}
+                                    break;
+                            default: break;		
+						}
+						if(_.isEmpty(findValueObjectLst)) {
+							continue;	
+						}
+						let withinLeft = _.head(_.filter(leftHorzContentDs, (item: any) => _.includes(['id1', 'id2'], item.id)));
+						if(!_.isEmpty(withinLeft)) {
+							withinLeft.title = getText("KSU001_50"); 	
+						}
+						let extraLeft = _.head(_.filter(leftHorzContentDs, (item: any) => _.includes(['id3', 'id4'], item.id)));
+						if(!_.isEmpty(extraLeft)) {
+							extraLeft.title = getText("KSU001_51"); 	
+						}
+						let totalLeft = _.head(_.filter(leftHorzContentDs, (item: any) => _.includes(['id5', 'id6', 'id7'], item.id)));
+						if(!_.isEmpty(totalLeft)) {
+							totalLeft.title = getText("KSU001_58"); 	
+						}
                         let objectLaborCostAndTime = { sid: '' }, sumLaborCostAndTime = 0;
                         _.set(objectLaborCostAndTime, 'id', 'id'+i);
                         _.forEach(keys, key => {
