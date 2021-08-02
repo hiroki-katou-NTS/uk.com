@@ -96,7 +96,7 @@ public class EmpMedicalWorkFinder implements PeregFinder<EmpMedicalWorkDto>{
 			result.add(new GridPeregDomainDto(c.getEmployeeId(), c.getPersonId(), null));
 		});
 		
-		List<EmpMedicalWorkStyleHistory> emwHistList = empMedicalWorkRepo.getHistBySidsAndCid(sids, query.getStandardDate(), cid);
+		List<EmpMedicalWorkStyleHistory> emwHistList = empMedicalWorkRepo.getHistBySidsAndCidAndBaseDate(sids, query.getStandardDate(), cid);
 		
 		Map<String, DateHistoryItem> dateHistList = new HashMap<>();
 

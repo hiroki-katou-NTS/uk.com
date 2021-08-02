@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.MedicalCareWorkStyle;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.excessleave.PaymentMethod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
@@ -25,7 +26,7 @@ public class InitDefaultValue {
 			"CS00037", "CS00038", "CS00039", "CS00040", "CS00041", "CS00042", "CS00043", "CS00044", "CS00045",
 			"CS00046", "CS00047", "CS00048", "CS00049", "CS00050", "CS00051", "CS00052", "CS00053", "CS00054",
 			"CS00055", "CS00056", "CS00057", "CS00058", "CS00059", "CS00060", "CS00061", "CS00062", "CS00063",
-			"CS00064", "CS00065", "CS00066", "CS00067", "CS00068");
+			"CS00064", "CS00065", "CS00066", "CS00067", "CS00068", "CS00098");
 
 	public void setDefaultValue(List<LayoutPersonInfoClsDto> classItemList) {
 
@@ -154,6 +155,8 @@ public class InitDefaultValue {
 					break;
 				// 労働条件のスケジュール管理
 				case "IS00121":
+				case "IS01093":
+				case "IS01095":
 					valueItem.setValue(String.valueOf(UseAtr.Use.value));
 					break;
 				// その他休暇情報 の 精算方法
@@ -191,6 +194,9 @@ public class InitDefaultValue {
 				case "IS00376":
 				case "IS00381":
 					valueItem.setValue(String.valueOf(UpperLimitSetting.FAMILY_INFO.value));
+					break;
+				case "IS01094":
+					valueItem.setValue(String.valueOf(MedicalCareWorkStyle.FULLTIME.value));
 					break;
 				default:
 					break;

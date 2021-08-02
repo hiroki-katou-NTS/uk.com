@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.shared.infra.repository.employeeworkway.medicalworkstyle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -9,11 +11,13 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
 import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KshmtMedicalWorkStyle;
 import nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle.KshmtMedicalWorkStylePk;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
  * 
@@ -42,10 +46,14 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 	 private static final String GET_BY_EMPIDS_AND_DATE = " SELECT c FROM KshmtMedicalWorkStyle c WHERE c.pk.sid IN :listEmpId "
 			 											 + " AND c.endDate >= :referenceDate "
                                                          + " AND c.startDate <= :referenceDate "; 
-	private static final String GET_BY_SIDS_AND_CID = " SELECT c FROM KshmtMedicalWorkStyle c WHERE c.pk.sid IN :listEmpId "
+	private static final String GET_BY_SIDS_AND_CID_AND_BASEDATE = " SELECT c FROM KshmtMedicalWorkStyle c WHERE c.pk.sid IN :listEmpId "
 														 + " AND c.companyId = :cid "
 														 + " AND c.endDate >= :referenceDate "
-														 + " AND c.startDate <= :referenceDate "; 
+														 + " AND c.startDate <= :referenceDate ";
+	
+	private static final String GET_BY_SIDS_AND_CID = " SELECT c FROM KshmtMedicalWorkStyle c WHERE c.pk.sid IN :listEmpId "
+			 											+ " AND c.companyId = :cid";
+	
 	@Override
 	public Optional<EmpMedicalWorkStyleHistoryItem> get(String empID, GeneralDate referenceDate) {
 		Optional<EmpMedicalWorkStyleHistoryItem> data = this.queryProxy().query(GET_BY_EMPID_AND_DATE, KshmtMedicalWorkStyle.class)
@@ -105,18 +113,13 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 
 	@Override
 	public void update(EmpMedicalWorkStyleHistoryItem hisItem) {
-
-		 Optional<KshmtMedicalWorkStyle> entity = this.queryProxy().find(new KshmtMedicalWorkStylePk(hisItem.getEmpID(), hisItem.getHistoryID()), KshmtMedicalWorkStyle.class);
+		Optional<KshmtMedicalWorkStyle> entity = this.queryProxy().find(new KshmtMedicalWorkStylePk(hisItem.getEmpID(), hisItem.getHistoryID()), KshmtMedicalWorkStyle.class);
 		if(entity.isPresent()){
-			//TODO
-			/*entity.get().setOnlyNightShift(hisItem.isNightShiftFullTime());
-			entity.get().setMedicalCareWorkStyle(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().getMedicalCareWorkStyle().value : hisItem.getOpyNursingWorkFormInfor().get().getMedicalCareWorkStyle().value );
-			entity.get().setNurseLicenseCd(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().getNurseClassifiCode().v() : null );
-			entity.get().setMedicalConcurrentPost(hisItem.getOptMedicalWorkFormInfor().isPresent() ? hisItem.getOptMedicalWorkFormInfor().get().isOtherDepartmentConcurrently() : null );
-			entity.get().setCareConcurrentPost(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().isAsNursingCare() : null);
-			entity.get().setCareRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getFulltimeRemarks().v() :  null);	
-			entity.get().setCareNightRptNote(hisItem.getOpyNursingWorkFormInfor().isPresent() ? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);*/
-			this.commandProxy().update(entity);
+			entity.get().setOnlyNightShift(hisItem.isOnlyNightShift());
+			entity.get().setWorkStyle(hisItem.getMedicalWorkStyle().value);
+			entity.get().setNurseLicenseCd(hisItem.getNurseClassifiCode().v());
+			entity.get().setConcurrentPost(hisItem.isConcurrently());
+			this.commandProxy().update(entity.get());
 		}
 	}
 
@@ -160,11 +163,16 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 
 	@Override
 	public Optional<EmpMedicalWorkStyleHistory> getHist(String empID, GeneralDate referenceDate) {
-		Optional<EmpMedicalWorkStyleHistory> domainHis = this.queryProxy().query(GET_BY_EMPID_AND_DATE, KshmtMedicalWorkStyle.class)
+		List<KshmtMedicalWorkStyle> listHist = this.queryProxy().query(GET_BY_EMPID_AND_DATE, KshmtMedicalWorkStyle.class)
 				.setParameter("empId", empID)
 				.setParameter("referenceDate", referenceDate)
-				.getSingle(c ->c.toDomainHis());			
-		return domainHis;
+				.getList();
+		
+		if (listHist.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toHistDomain(listHist));
 	}
 
 	@Override
@@ -177,39 +185,107 @@ public class JpaEmpMedicalWorkStyleHistoryRepository extends JpaRepository imple
 
 	@Override
 	public Optional<EmpMedicalWorkStyleHistory> getHistBySidDesc(String cid, String sid) {
-		Optional<EmpMedicalWorkStyleHistory> domainHis = this.queryProxy().query(GET_BY_SID_DESC, KshmtMedicalWorkStyle.class)
+		List<KshmtMedicalWorkStyle> listHist = this.queryProxy().query(GET_BY_SID_DESC, KshmtMedicalWorkStyle.class)
 				.setParameter("cid", cid)
 				.setParameter("empId", sid)
-				.getSingle(c ->c.toDomainHis());			
-		return domainHis;
+				.getList();
+		
+		if (listHist.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toHistDomain(listHist));
 	}
 	
 	@Override
 	public Optional<EmpMedicalWorkStyleHistory> getHistBySid(String cid, String sid) {
-		Optional<EmpMedicalWorkStyleHistory> domainHis = this.queryProxy().query(GET_BY_SID, KshmtMedicalWorkStyle.class)
+		List<KshmtMedicalWorkStyle> listHist = this.queryProxy().query(GET_BY_SID, KshmtMedicalWorkStyle.class)
 				.setParameter("cid", cid)
 				.setParameter("empId", sid)
-				.getSingle(c ->c.toDomainHis());			
-		return domainHis;
+				.getList();	
+		
+		if (listHist.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		return Optional.of(toHistDomain(listHist));
 	}
 
 	@Override
-	public List<EmpMedicalWorkStyleHistory> getHistBySidsAndCid(List<String> listEmpId, GeneralDate referenceDate,
+	public List<EmpMedicalWorkStyleHistory> getHistBySidsAndCidAndBaseDate(List<String> listEmpId, GeneralDate referenceDate,
 			String cid) {
-		List<EmpMedicalWorkStyleHistory> domainHisList = this.queryProxy().query(GET_BY_SIDS_AND_CID, KshmtMedicalWorkStyle.class)
+		if (listEmpId.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<KshmtMedicalWorkStyle> listHist = this.queryProxy().query(GET_BY_SIDS_AND_CID_AND_BASEDATE, KshmtMedicalWorkStyle.class)
 				.setParameter("listEmpId", listEmpId)
 				.setParameter("referenceDate", referenceDate)
 				.setParameter("cid", cid)
-				.getList( c -> c.toDomainHis()); 
-		return domainHisList;
+				.getList();
+		
+		if (listHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<EmpMedicalWorkStyleHistory> listHistDomain = new ArrayList<EmpMedicalWorkStyleHistory>();
+		
+		Map<String, List<KshmtMedicalWorkStyle>> listHistMapBySid = listHist.stream().collect(Collectors.groupingBy(entity -> entity.pk.getSid()));
+		
+		for (Map.Entry<String, List<KshmtMedicalWorkStyle>> entry : listHistMapBySid.entrySet()) {
+		    if (!entry.getValue().isEmpty()) {
+		    	listHistDomain.add(toHistDomain(entry.getValue()));
+		    }
+		}
+		
+		return listHistDomain;
+	}
+	
+	@Override
+	public List<EmpMedicalWorkStyleHistory> getHistBySidsAndCid(List<String> listEmpId, String cid) {
+		if (listEmpId.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<KshmtMedicalWorkStyle> listHist = this.queryProxy().query(GET_BY_SIDS_AND_CID, KshmtMedicalWorkStyle.class)
+				.setParameter("listEmpId", listEmpId)
+				.setParameter("cid", cid)
+				.getList();
+		
+		if (listHist.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		List<EmpMedicalWorkStyleHistory> listHistDomain = new ArrayList<EmpMedicalWorkStyleHistory>();
+		
+		Map<String, List<KshmtMedicalWorkStyle>> listHistMapBySid = listHist.stream().collect(Collectors.groupingBy(entity -> entity.pk.getSid()));
+		
+		for (Map.Entry<String, List<KshmtMedicalWorkStyle>> entry : listHistMapBySid.entrySet()) {
+		    if (!entry.getValue().isEmpty()) {
+		    	listHistDomain.add(toHistDomain(entry.getValue()));
+		    }
+		}
+		
+		return listHistDomain;
 	}
 	
 	@Override
 	public List<EmpMedicalWorkStyleHistoryItem> getItemByHistIdList(List<String> histIdList) {
+		if (histIdList.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
 		List<EmpMedicalWorkStyleHistoryItem> domainHisItemList = this.queryProxy().query(GET_BY_HISTIDLIST, KshmtMedicalWorkStyle.class)
 				.setParameter("historyIdList", histIdList)
 				.getList( c -> c.toDomainHisItem()); 
 		return domainHisItemList;
 	}
 
+	private EmpMedicalWorkStyleHistory toHistDomain(List<KshmtMedicalWorkStyle> entities) {
+		List<DateHistoryItem> listDateHistItem = new ArrayList<DateHistoryItem>();
+		entities.forEach(entity -> {
+			listDateHistItem.add(new DateHistoryItem(entity.pk.getHistId(), new DatePeriod(entity.startDate, entity.endDate)));
+		});
+		return new EmpMedicalWorkStyleHistory(entities.get(0).pk.getSid(), listDateHistItem);
+	}
 }

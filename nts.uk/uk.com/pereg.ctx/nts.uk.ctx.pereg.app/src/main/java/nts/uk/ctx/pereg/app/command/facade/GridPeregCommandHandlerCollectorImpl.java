@@ -16,6 +16,8 @@ import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.AddB
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.businesstype.UpdateBusinessWorkTypeOfHistoryCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.add.AddStampCardCommand;
 import nts.uk.ctx.at.record.app.command.stamp.card.stampcard.update.UpdateStampCardCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.AddEmpMedicalWorkCommand;
+import nts.uk.ctx.at.shared.app.command.employeeworkway.medicalworkstyle.UpdateEmpMedicalWorkCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annleagrtremnum.AddAnnLeaGrantRemnNumPeregCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.AddAnnuaLeaveCommand;
 import nts.uk.ctx.at.shared.app.command.remainingnumber.annualeave.UpdateAnnuaLeaveCommand;
@@ -239,7 +241,9 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			// CS00082 社員健康保険資格情報
 			new TypeLiteral<PeregAddListCommandHandler<AddEmpHealInsQualifiInfoCommand>>(){},
 			// CS00092 社員社会保険等級情報
-			new TypeLiteral<PeregAddListCommandHandler<AddEmpSocialInsGradeInforCommand>>(){}
+			new TypeLiteral<PeregAddListCommandHandler<AddEmpSocialInsGradeInforCommand>>(){},
+			// CS00098 医療
+			new TypeLiteral<PeregAddListCommandHandler<AddEmpMedicalWorkCommand>>(){}
 			);
 	/** Update handlers */
 	private static final List<TypeLiteral<?>> UPDATE_HANDLER_CLASSES = Arrays.asList(
@@ -323,8 +327,8 @@ public class GridPeregCommandHandlerCollectorImpl implements PeregListCommandHan
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpCorpHealthOffHisCommand>>(){},
 			//CS00082 社員健康保険資格情報
 			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpHealInsQualifiInfoCommand>>(){},
-			//CS00092 社員社会保険等級情報
-			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpSocialInsGradeInforCommand>>(){}
+			// CS00098 医療
+			new TypeLiteral<PeregUpdateListCommandHandler<UpdateEmpMedicalWorkCommand>>(){}
 			);
 	
 	@Override

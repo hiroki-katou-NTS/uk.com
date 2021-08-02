@@ -25,7 +25,7 @@ public interface EmpMedicalWorkStyleHistoryRepository {
 	/** [5] update(社員の医療勤務形態履歴項目)**/
 	void update(EmpMedicalWorkStyleHistoryItem empMedicalWorkStyleHistoryItem);
 	/**[6] delete(社員ID, 履歴ID)**/
-	void delete(String empId , String historyId); 
+	void delete(String empId , String historyId);
 	
 	void insertAll(List<EmpMedicalWorkStyleHistory> empMedicalWorkStyleHistoryList, List<EmpMedicalWorkStyleHistoryItem> empMedicalWorkStyleHisItemList);
 	
@@ -45,5 +45,7 @@ public interface EmpMedicalWorkStyleHistoryRepository {
 	
 	Optional<EmpMedicalWorkStyleHistory> getHistBySid(String cid, String sid);
 	
-	List<EmpMedicalWorkStyleHistory> getHistBySidsAndCid(List<String> listEmpId , GeneralDate referenceDate, String cid);
+	List<EmpMedicalWorkStyleHistory> getHistBySidsAndCid(List<String> listEmpId, String cid);
+	
+	List<EmpMedicalWorkStyleHistory> getHistBySidsAndCidAndBaseDate(List<String> listEmpId, GeneralDate referenceDate, String cid);
 }

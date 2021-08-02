@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.employeeworkway.medicalworkstyle;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +15,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.MedicalCareWorkStyle;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiCode;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
@@ -82,52 +86,39 @@ public class KshmtMedicalWorkStyle extends ContractCompanyUkJpaEntity implements
 
 	public static KshmtMedicalWorkStyle toEntityMedicalWorkStyle(EmpMedicalWorkStyleHistory his,
 			EmpMedicalWorkStyleHistoryItem hisItem) {
-		KshmtMedicalWorkStyle kscmtMedicalWorkStyle = new KshmtMedicalWorkStyle();
+		KshmtMedicalWorkStyle kshmtMedicalWorkStyle = new KshmtMedicalWorkStyle();
 		KshmtMedicalWorkStylePk pk = new KshmtMedicalWorkStylePk(his.getEmpID(), hisItem.getHistoryID());
 		if (his.getEmpID().equals(hisItem.getEmpID())) {
 			Optional<DateHistoryItem> optional = his.getListDateHistoryItem().stream()
 					.filter(predicate -> predicate.identifier() == hisItem.getHistoryID()).findFirst();
 			if (optional.isPresent()) {
-//TODO 社員の医療勤務形態履歴項目を変更したので、修正お願いいたします。
-/*				kscmtMedicalWorkStyle = new KscmtMedicalWorkStyle(pk, optional.get().span().start(),
+				kshmtMedicalWorkStyle = new KshmtMedicalWorkStyle(
+						pk, 
+						optional.get().span().start(),
 						optional.get().span().end(), 
-						hisItem.isNightShiftFullTime(),
-						hisItem.getOptMedicalWorkFormInfor().isPresent()
-								? hisItem.getOptMedicalWorkFormInfor().get().getMedicalCareWorkStyle().value
-								: hisItem.getOpyNursingWorkFormInfor().get().getMedicalCareWorkStyle().value, 
-						hisItem.getOptMedicalWorkFormInfor().isPresent()
-								? hisItem.getOptMedicalWorkFormInfor().get().getNurseClassifiCode().v() : null,
-						hisItem.getOptMedicalWorkFormInfor().isPresent()
-								? hisItem.getOptMedicalWorkFormInfor().get().isOtherDepartmentConcurrently() : null,
-										
-						hisItem.getOpyNursingWorkFormInfor().isPresent()
-								? hisItem.getOpyNursingWorkFormInfor().get().isAsNursingCare() : null,
-						hisItem.getOpyNursingWorkFormInfor().isPresent()
-								? hisItem.getOpyNursingWorkFormInfor().get().getFulltimeRemarks().v() : null,
-						hisItem.getOpyNursingWorkFormInfor().isPresent()
-								? hisItem.getOpyNursingWorkFormInfor().get().getNightShiftRemarks().v() : null);*/
+						hisItem.isOnlyNightShift(),
+						hisItem.getMedicalWorkStyle().value,
+						hisItem.getNurseClassifiCode().v(),
+						hisItem.isConcurrently());
 			}
 		}
-
-		return kscmtMedicalWorkStyle;
-
+		return kshmtMedicalWorkStyle;
 	}
 
-	public EmpMedicalWorkStyleHistoryItem toDomainHisItem() {
-//TODO 社員の医療勤務形態履歴項目を変更したので、修正お願いいたします。		
-/*		EmpMedicalWorkFormHisItem domain  = new EmpMedicalWorkFormHisItem(
+	public EmpMedicalWorkStyleHistoryItem toDomainHisItem() {	
+		EmpMedicalWorkStyleHistoryItem domain  = new EmpMedicalWorkStyleHistoryItem(
 				this.getPk().getSid(),
 				this.getPk().getHistId(),
+				new NurseClassifiCode(this.nurseLicenseCd),
 				this.isOnlyNightShift ,
-				Optional.ofNullable( new MedicalWorkFormInfor((EnumAdaptor.valueOf(this.getMedicalCareWorkStyle(), MedicalCareWorkStyle.class)) ,new NurseClassifiCode(this.getNurseLicenseCd()),this.getMedicalConcurrentPost()) ),
-				Optional.ofNullable(new NursingWorkFormInfor( (EnumAdaptor.valueOf(this.getMedicalCareWorkStyle(), MedicalCareWorkStyle.class)), this.getCareConcurrentPost() , new FulltimeRemarks(this.getCareRptNote()), new NightShiftRemarks(this.getCareNightRptNote())  ) ));
-		return domain;*/
-		return null;
+				EnumAdaptor.valueOf(this.workStyle, MedicalCareWorkStyle.class),
+				this.concurrentPost);
+		return domain;
 	}
 	
 	public  EmpMedicalWorkStyleHistory toDomainHis(){
 		DateHistoryItem dateHistoryItem = new DateHistoryItem(this.pk.getHistId(), new DatePeriod(this.startDate,this.endDate ));				
-		List<DateHistoryItem> listDateHistoryItem = Arrays.asList(dateHistoryItem);
+		List<DateHistoryItem> listDateHistoryItem = new ArrayList<DateHistoryItem>(Arrays.asList(dateHistoryItem));
 		EmpMedicalWorkStyleHistory domain =  new EmpMedicalWorkStyleHistory(this.pk.getSid(), listDateHistoryItem);
 		return domain;
 	}
