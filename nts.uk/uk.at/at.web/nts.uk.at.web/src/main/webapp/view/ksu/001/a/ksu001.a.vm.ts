@@ -2932,13 +2932,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             break;
                                     default: break;
                                 }
-                                _.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : findValueObject.value);    
+								if(_.includes([1, 3, 5], i)) {
+									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : nts.uk.time.format.byId("Time_Short_HM", findValueObject.value));	
+								} else {
+									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : findValueObject.value);	
+								}
                                 sumLaborCostAndTime += _.isEmpty(findValueObject) ? 0 : findValueObject.value;
                             } else {
                                 _.set(objectLaborCostAndTime, key, ''); 
                             }
                         });
                         horizontalSumContentDs.push(objectLaborCostAndTime);    
+						if(_.includes([1, 3, 5], i)) {
+							sumLaborCostAndTime = nts.uk.time.format.byId("Time_Short_HM", sumLaborCostAndTime);	
+						}
                         rightHorzContentDs.push({ id: 'id'+i, sum: sumLaborCostAndTime });
                     }
                     break;
