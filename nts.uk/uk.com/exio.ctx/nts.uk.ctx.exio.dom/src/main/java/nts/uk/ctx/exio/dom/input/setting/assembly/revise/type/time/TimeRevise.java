@@ -24,7 +24,7 @@ public class TimeRevise implements ReviseValue {
 	private Optional<TimeBase60Delimiter> delimiter;
 	
 	/** 端数処理 */
-	private Time10BasedRounding rounding;
+	private TimeBase10Rounding rounding;
 
 	@Override
 	public Object revise(String target) {

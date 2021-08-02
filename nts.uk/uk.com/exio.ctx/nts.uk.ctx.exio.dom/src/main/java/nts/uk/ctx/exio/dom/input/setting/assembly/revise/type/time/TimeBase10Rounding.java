@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 /**
  * 10進表記時間の1分未満の端数処理
  */
-public enum Time10BasedRounding {
+public enum TimeBase10Rounding {
 	/**
 	 * 切り捨て
 	 */
@@ -25,7 +25,7 @@ public enum Time10BasedRounding {
 	/** The name id. */
 	public final String nameId;
 
-	private Time10BasedRounding(int value, String nameId) {
+	private TimeBase10Rounding(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}
