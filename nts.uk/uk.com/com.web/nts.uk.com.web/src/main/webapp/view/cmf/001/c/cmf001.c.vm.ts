@@ -59,7 +59,7 @@ module nts.uk.com.cmf001.c {
     @bean()
     export class ViewModel extends ko.ViewModel {
 
-        settingCode = "100";
+        settingCode = "001";
 
         items: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -120,7 +120,33 @@ module nts.uk.com.cmf001.c {
             this.currentItem().def.type(selectedItem.type);
             this.currentItem().selectedMappingType(selectedItem.source);
 
+            this.loadImportableItem();
             this.loadReviseItem();
+        }
+
+        loadImportableItem() {
+
+            let path = "/screen/com/cmf/cmf001/importable-item"
+                + "/" + this.settingCode
+                + "/" + this.selectedItemNo();
+            
+            this.$ajax(path).done(res => {
+
+                this.currentItem().def.required(res.required);
+
+                if (res.constraint !== null) {
+                    __viewContext.primitiveValueConstraints[res.constraint.name] = res.constraint;
+                    let constraintText = (<any> util).getConstraintMes(res.constraint.name) + "　";
+                    if (res.constraint.domainType === "Enum") {
+                        constraintText = "整数 " + constraintText;
+                    }
+
+                    this.currentItem().def.constraint(constraintText);
+                } else {
+                    this.currentItem().def.constraint("");
+                }
+
+            });
         }
 
         loadReviseItem() {
