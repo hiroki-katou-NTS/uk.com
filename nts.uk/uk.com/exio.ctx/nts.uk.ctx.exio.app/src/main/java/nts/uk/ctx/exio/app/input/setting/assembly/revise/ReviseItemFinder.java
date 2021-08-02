@@ -27,6 +27,9 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase10Rounding;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 項目の編集を取得する
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReviseItemFinder {
