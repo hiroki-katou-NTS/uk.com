@@ -1,0 +1,18 @@
+.w-100 {
+    width: calc(100% - 16px);
+    margin: 25px 0;
+}
+
+.tab-content-1, .tab-content-2 {
+    margin-left: 35px;
+}
+
+.custom-table {
+    padding: 15px 0px 15px 0px;
+    width: 100%;
+}
+
+.buton-configure {
+    width: 80px;
+    height: 30px;
+}
