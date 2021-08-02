@@ -540,6 +540,12 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			return actualLockRepository.findById(companyId, closureId);
 		}
 
+		@Override
+		public Closure findClosureById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return closureRepository.findById(companyId, closureId).get();
+		}
+
 	}
 	
 	

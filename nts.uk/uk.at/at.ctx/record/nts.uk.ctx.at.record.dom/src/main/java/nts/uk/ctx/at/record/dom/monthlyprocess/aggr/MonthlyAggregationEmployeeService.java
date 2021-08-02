@@ -116,10 +116,8 @@ public class MonthlyAggregationEmployeeService {
 		val dataSetter = asyncContext.getDataSetter();
 
 		// 前回集計結果を初期化する
-		AggrResultOfAnnAndRsvLeave prevAggrResult = new AggrResultOfAnnAndRsvLeave();
 		Optional<AbsRecRemainMngOfInPeriod> prevAbsRecResultOpt = Optional.empty();
 		Optional<BreakDayOffRemainMngOfInPeriod> prevBreakDayOffresultOpt = Optional.empty();
-		Map<Integer, InPeriodOfSpecialLeaveResultInfor> prevSpecialLeaveResultMap = new HashMap<>();
 
 		ConcurrentStopwatches.start("11000:集計期間の判断：");
 
@@ -211,16 +209,6 @@ public class MonthlyAggregationEmployeeService {
 				continue;
 			}
 			for(DatePeriod periodNew : listPeriod) {
-				// 処理する期間が締められているかチェックする
-				if (employeeSets.checkClosedMonth(periodNew.end())){
-					continue;
-				}
-	
-				// アルゴリズム「実績ロックされているか判定する」を実行する
-				if (getDetermineActualLocked(require, companySets, periodNew.end(), closureId.value) == LockStatus.LOCK){
-					continue;
-				}
-	
 				// 再実行の場合
 				if (executionType == ExecutionType.RERUN){
 	

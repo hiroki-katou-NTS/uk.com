@@ -59,9 +59,7 @@ public class CopyWorkTypeWorkTime {
 		
 		WorkInfoOfDailyAttendance workInformation = integrationOfDaily.getWorkInformation();
 		WorkInformation recordInfo = optWorkingConditionItem.map(opt -> {
-			SingleDaySchedule sched = opt.getWorkCategory().getWorkTime().getHolidayWork();
-			
-			return new WorkInformation(optWorkingConditionItem.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode(), sched.getWorkTimeCode().orElse(null));
+			return opt.getWorkCategory().getHolidayWorkInformation();
 		}).orElse(null);
 		
 		//休日の勤務種類を勤務予定に写す

@@ -2491,5 +2491,11 @@ public class RecordDomRequireService {
 		public Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
 			return executionLogRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent);
 		}
+
+		@Override
+		public Closure findClosureById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return closureRepo.findById(companyId, closureId).get();
+		}
 	}
 }

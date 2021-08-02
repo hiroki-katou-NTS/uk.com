@@ -116,7 +116,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		//「打刻反映管理」を取得する
 		for(Stamp stamp:lstStamp) {
 			//対象日に反映できるか
-			if(stamp.getImprintReflectionStatus().isReflectedCategory() == true) {
+			if(stamp.getImprintReflectionStatus().canReflectedOnTargetDate(processingDate)) {
 				//打刻を反映する
 				List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(stamp,
 						outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt);

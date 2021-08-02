@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -178,6 +179,12 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 		public Optional<ActualLock> findById(int closureId) {
 			String companyId = AppContexts.user().companyId();
 			return actualLockRepository.findById(companyId, closureId);
+		}
+
+		@Override
+		public Closure findClosureById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return closureRepository.findById(companyId, closureId).get();
 		}
 
 	}

@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.AchievementAtr;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 /**
  * The Class ActualLock.
@@ -135,8 +135,10 @@ public class ActualLock extends AggregateRoot {
 			listPeriod.add(period);
 			return listPeriod;
 		}
-		// val $締め期間 = require.指定した年月の期間を算出する(@締めID、@期間。開始日。年月);
-		DatePeriod periodClosure = require.getClosurePeriod(this.closureId.value, period.start().yearMonth());
+		//	val $締め = require.締めを取得する(@締めID);
+		Closure closure = require.findClosureById(this.closureId.value);
+		//	val $締め期間 = require.指定した年月の期間を算出する(@締めID、$締め。当月);
+		DatePeriod periodClosure = require.getClosurePeriod(this.closureId.value, closure.getClosureMonth().getProcessingYm());
 		GeneralDate startPeriodClosure = periodClosure.start().addDays(-1);
 		GeneralDate endPeriodClosure = periodClosure.end().addDays(1);
 		
@@ -177,6 +179,8 @@ public class ActualLock extends AggregateRoot {
 		 * @return
 		 */
 		DatePeriod getClosurePeriod(int closureId, YearMonth processYm);
+		
+		Closure findClosureById(int closureId);
 	}
 
 	public ActualLock(String companyId, ClosureId closureId, LockStatus dailyLockState, LockStatus monthlyLockState) {
