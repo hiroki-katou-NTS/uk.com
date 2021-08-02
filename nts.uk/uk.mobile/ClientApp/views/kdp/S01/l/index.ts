@@ -161,23 +161,41 @@ export class KdpS01LComponent extends Vue {
         if (vm.taskNameCd == '') {
             vm.$modal.error({ messageId: 'MsgB_24' });
         } else {
-            
-            let results =_.filter(vm.tasks, function(item) {
-                return item.displayInfo.taskName.indexOf(vm.taskNameCd) > -1 || item.code.indexOf(vm.taskNameCd) > -1 ;
-                });
-            
-            // L2_1の文字を含む作業見つからなかった場合
-            if (results.length == 0) {
-                vm.$modal.error({ messageId: 'MsgB_25' });
-                vm.taskArray = _.chunk(vm.tasks, 6);
-            } else {
-                vm.tasks = results;
-                vm.taskArray = _.chunk(vm.tasks, 6);
-            }
 
-            vm.reload(0);
-            vm.framePosition = 0;
-            vm.reloadData();
+            let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo, upperFrameWorkCode: vm.selectedCode };
+
+            vm.$mask('show');
+            vm.$http.post('at', API.GET_EMPLOYEE_TASKS, param).then((result: any) => {
+                vm.$mask('hide');
+    
+                if (result) {
+                    if (result.data.taskFrameUsageSetting) {
+                        vm.setting = result.data.taskFrameUsageSetting.taskFrameSetting;
+                    }
+                    vm.tasks = result.data.task;
+                }
+
+            }).then(() => {
+            
+                let results =_.filter(vm.tasks, function(item) {
+                    return item.displayInfo.taskName.indexOf(vm.taskNameCd) > -1 || item.code.indexOf(vm.taskNameCd) > -1 ;
+                    });
+                
+                // L2_1の文字を含む作業見つからなかった場合
+                if (results.length == 0) {
+                    vm.$modal.error({ messageId: 'MsgB_25' });
+                    vm.taskArray = _.chunk(vm.tasks, 6);
+                } else {
+                    vm.tasks = results;
+                    vm.taskArray = _.chunk(vm.tasks, 6);
+                }
+
+                vm.reload(0);
+                vm.framePosition = 0;
+                vm.reloadData();
+                
+            });
+
         }
     }
 

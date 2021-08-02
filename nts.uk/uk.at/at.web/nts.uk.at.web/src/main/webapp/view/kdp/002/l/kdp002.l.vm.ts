@@ -111,7 +111,7 @@ module nts.uk.at.view.kdp002.l {
 
             setTimeout(() => {
                 vm.frameName(nts.uk.resource.getText('KDP002_65', [vm.getFrameName(1)]));
-                $('#L2_1').focus();
+                //$('#L2_1').focus();
             }, 300);
 
             vm.framePosition
