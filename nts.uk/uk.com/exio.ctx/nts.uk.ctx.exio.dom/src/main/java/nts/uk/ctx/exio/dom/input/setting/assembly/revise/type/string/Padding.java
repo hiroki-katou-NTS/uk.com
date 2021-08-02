@@ -6,7 +6,7 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 
 /**
  * 
- * 固定長編集
+ * 桁埋め
  *
  */
 @Getter
