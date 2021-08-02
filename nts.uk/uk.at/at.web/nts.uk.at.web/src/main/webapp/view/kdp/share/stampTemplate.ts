@@ -138,7 +138,7 @@ module nts.uk.at.view.kdp010 {
 					usrArt: 1,
 					buttonType: {
 						stampType: {
-							changeClockArt: 14, 
+							changeClockArt: 6, 
 							changeCalArt: 0, 
 							setPreClockArt: 0, 
 							changeHalfDay: false, 
@@ -218,7 +218,7 @@ module nts.uk.at.view.kdp010 {
 					usrArt: 1,
 					buttonType: {
 						stampType: {
-							changeClockArt: 14, 
+							changeClockArt: 6, 
 							changeCalArt: 0, 
 							setPreClockArt: 0, 
 							changeHalfDay: false, 
@@ -317,7 +317,7 @@ module nts.uk.at.view.kdp010 {
 					usrArt: 1,
 					buttonType: {
 						stampType: {
-							changeClockArt: 14, 
+							changeClockArt: 6, 
 							changeCalArt: 0, 
 							setPreClockArt: 0, 
 							changeHalfDay: false, 
