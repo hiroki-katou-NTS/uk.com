@@ -196,11 +196,11 @@
             private submitLogin(isSignOn: boolean) {
                 var self = this;
                 var submitData: any = {};
-                submitData.companyCode = _.escape(self.selectedCompanyCode());
-                submitData.employeeCode = _.escape(self.employeeCode());
-                submitData.password = _.escape(self.password());
-                submitData.contractCode = _.escape(self.contractCode());
-                submitData.contractPassword = _.escape(self.contractPassword());
+                submitData.companyCode = self.selectedCompanyCode();
+                submitData.employeeCode = self.employeeCode();
+                submitData.password = self.password();
+                submitData.contractCode = self.contractCode();
+                submitData.contractPassword = self.contractPassword();
                 blockUI.invisible();
                 service.submitLogin(submitData).done(function (messError: CheckChangePassDto) {
                     if (!nts.uk.util.isNullOrUndefined(messError.successMsg) && !nts.uk.util.isNullOrEmpty(messError.successMsg)) {
@@ -238,8 +238,8 @@
             private SamlLogin() {
                 var self = this;
                 var samlData: any = {};
-                samlData.tenantCode = _.escape(self.contractCode());
-                samlData.tenantPassword = _.escape(self.contractPassword());
+                samlData.tenantCode = self.contractCode();
+                samlData.tenantPassword = self.contractPassword();
                 samlData.issueUrl = location.href;
                 samlData.requestUrl = "";
                 
@@ -276,7 +276,7 @@
                             .ifNo(() => {
                                 nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                                 //Save LoginInfo
-                                nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function () {
+                                nts.uk.characteristics.save("form3LoginInfo", { companyCode: self.selectedCompanyCode(), employeeCode: self.employeeCode() }).done(function () {
                                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                                 });
                             });
@@ -306,7 +306,7 @@
                                 //check SaveLoginInfo
                                 if (self.isSaveLoginInfo()) {
                                     //Save LoginInfo
-                                    nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) })
+                                    nts.uk.characteristics.save("form3LoginInfo", { companyCode: self.selectedCompanyCode(), employeeCode: self.employeeCode() })
                                         .done(function () {
                                             nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                                         });
@@ -341,7 +341,7 @@
                     if (changePwDone) {
                         nts.uk.request.login.keepUsedLoginPage("/nts.uk.com.web/view/ccg/007/d/index.xhtml");
                         //Save LoginInfo
-                        nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function () {
+                        nts.uk.characteristics.save("form3LoginInfo", { companyCode: self.selectedCompanyCode(), employeeCode: self.employeeCode() }).done(function () {
                             nts.uk.request.jump("/view/ccg/008/a/index.xhtml", { screen: 'login' });
                         });
                     }
