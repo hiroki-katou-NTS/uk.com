@@ -8,7 +8,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
@@ -18,13 +17,14 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.DateRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImportDateFormat;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.Padding;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingLength;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.StringRevise;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.HourlySegment;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase10Rounding;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase60Delimiter;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBaseNumber;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeRevise;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase10Rounding;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -54,7 +54,7 @@ public class ReviseItemFinder {
 		case 1:
 			return new StringRevise(
 					true,
-					Optional.of(new Padding(new ExternalImportRowNumber(12), PaddingMethod.ZERO_BEFORE)),
+					Optional.of(new Padding(new PaddingLength(12), PaddingMethod.ZERO_BEFORE)),
 					Optional.empty());
 		case 2:
 			return new DateRevise(ExternalImportDateFormat.YYYY_MM_DD);
