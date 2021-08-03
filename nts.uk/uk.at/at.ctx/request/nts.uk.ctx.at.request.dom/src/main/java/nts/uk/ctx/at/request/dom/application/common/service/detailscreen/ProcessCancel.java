@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen;
 
+import java.util.List;
+
 import nts.uk.ctx.at.request.dom.application.Application;
 
 /**
@@ -16,5 +18,5 @@ public interface ProcessCancel {
 	 * @param appID 申請ID
 	 * @param application 申請データの内容
 	 */
-	public void detailScreenCancelProcess(String companyID, String appID, Application application);
+	public boolean detailScreenCancelProcess(List<Application> appLst);
 }

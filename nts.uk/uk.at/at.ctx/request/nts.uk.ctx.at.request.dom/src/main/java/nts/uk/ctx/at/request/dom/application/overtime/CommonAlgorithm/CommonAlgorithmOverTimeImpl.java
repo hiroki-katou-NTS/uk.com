@@ -1067,7 +1067,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				Optional.of(appOverTime),
 				Optional.empty(),
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet());
-		// ３６上限チェック not done
+		// ３６上限チェック
 		this.check36Limit(companyId, appOverTime, displayInfoOverTime);
 		
 		// 申請日の矛盾チェック

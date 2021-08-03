@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -16,13 +17,51 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 /*import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.NursingMode;
 import nts.uk.ctx.at.shared.pub.remainingnumber.nursingcareleavemanagement.interimdata.ShNursingLeaveSettingPub;*/
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
+import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
 @Stateless
 public class GetTheNumberOfVacationsLeft {
@@ -32,6 +71,58 @@ public class GetTheNumberOfVacationsLeft {
 
 	@Inject
 	private RecordDomRequireService requireService;
+
+	@Inject
+	private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+
+	@Inject
+	private PayoutSubofHDManaRepository payoutHdManaRepo;
+
+	@Inject
+    private CompensLeaveComSetRepository compensLeaveComSetRepo;
+
+    @Inject
+    private ComDayOffManaDataRepository comDayOffManaDataRepo;
+    
+    @Inject
+    private LeaveManaDataRepository leaveManaDataRepo;
+    
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
+    
+    @Inject
+    private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+    
+    @Inject
+    private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+    
+    @Inject
+    private ClosureEmploymentRepository closureEmploymentRepo;
+    
+    @Inject
+    private ClosureRepository closureRepo;
+    
+    @Inject
+    private EmpEmployeeAdapter empEmployeeAdapter;
+    
+    @Inject
+    private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
+    
+    @Inject
+    private PayoutSubofHDManaRepository payoutSubofHDManaRepo;
+    
+    @Inject
+    private PayoutManagementDataRepository payoutManagementDataRepo;
+    
+    @Inject
+    private EmpSubstVacationRepository empSubstVacationRepo;
+    
+    @Inject
+    private ComSubstVacationRepository comSubstVacationRepo;
+    
+    @Inject
+    private InterimRecAbasMngRepository interimRecAbasMngRepo;
+	
 
 	/*
 	 * @Inject private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
@@ -70,8 +161,32 @@ public class GetTheNumberOfVacationsLeft {
 	 */
 	public Double remainingNumberOfSubstituteHolidays(String employeeId, GeneralDate date) {
 		//RQ#505　BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain
+		
+	    RequireM11Imp requireM11Imp = new RequireM11Imp(
+	    		comDayOffManaDataRepo,
+	    		leaveComDayOffManaRepo,
+	    		leaveManaDataRepo,
+	    		shareEmploymentAdapter,
+	    		compensLeaveEmSetRepo,
+	    		compensLeaveComSetRepo,
+	    		interimBreakDayOffMngRepo,
+	    		closureEmploymentRepo,
+	    		closureRepo,
+	    		empEmployeeAdapter,
+	    		substitutionOfHDManaDataRepo,
+	    		payoutSubofHDManaRepo,
+	    		payoutManagementDataRepo,
+	    		empSubstVacationRepo,
+	    		comSubstVacationRepo,
+	    		interimRecAbasMngRepo,
+	    		payoutHdManaRepo);
+
 		return BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
-				requireService.createRequire(), new CacheCarrier(), employeeId, date);
+				requireM11Imp,
+				new CacheCarrier(),
+				employeeId,
+				date)
+				.getDays().v();
 	}
 
 	/**
@@ -82,8 +197,33 @@ public class GetTheNumberOfVacationsLeft {
 	 */
 	public Double vibrationResidualNumberRepresentation(String employeeId, GeneralDate date) {
 		//RQ#506 AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain
+	    RequireM11Imp requireM11Imp = new RequireM11Imp(
+	    		comDayOffManaDataRepo,
+	    		leaveComDayOffManaRepo,
+	    		leaveManaDataRepo,
+	    		shareEmploymentAdapter,
+	    		compensLeaveEmSetRepo,
+	    		compensLeaveComSetRepo,
+	    		interimBreakDayOffMngRepo,
+	    		closureEmploymentRepo,
+	    		closureRepo,
+	    		empEmployeeAdapter,
+	    		substitutionOfHDManaDataRepo,
+	    		payoutSubofHDManaRepo,
+	    		payoutManagementDataRepo,
+	    		empSubstVacationRepo,
+	    		comSubstVacationRepo,
+	    		interimRecAbasMngRepo,
+	    		payoutHdManaRepo);
+
+	    
+		
 		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
-				requireService.createRequire(), new CacheCarrier(), employeeId, date).getRemainDay().v();
+				requireM11Imp,
+				new CacheCarrier(),
+				employeeId,
+				date)
+				.v();
 	}
 
 	/**
@@ -147,4 +287,191 @@ public class GetTheNumberOfVacationsLeft {
 		}
 		return result;
 	}
+	
+	
+	@AllArgsConstructor
+    private class RequireM11Imp implements BreakDayOffMngInPeriodQuery.RequireM11, AbsenceReruitmentMngInPeriodQuery.RequireM11 {
+        private ComDayOffManaDataRepository comDayOffManaDataRepo;
+        
+        private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+        
+        private LeaveManaDataRepository leaveManaDataRepo;
+        
+        private ShareEmploymentAdapter shareEmploymentAdapter;
+        
+        private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+        
+        private CompensLeaveComSetRepository compensLeaveComSetRepo;
+        
+        private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+        
+        private ClosureEmploymentRepository closureEmploymentRepo;
+        
+        private ClosureRepository closureRepo;
+        
+        private EmpEmployeeAdapter empEmployeeAdapter;
+        
+        private SubstitutionOfHDManaDataRepository substitutionOfHDManaDataRepo;
+        
+        private PayoutSubofHDManaRepository payoutSubofHDManaRepo;
+        
+        private PayoutManagementDataRepository payoutManagementDataRepo;
+        
+        private EmpSubstVacationRepository empSubstVacationRepo;
+        
+        private ComSubstVacationRepository comSubstVacationRepo;
+        
+        private InterimRecAbasMngRepository interimRecAbasMngRepo;
+        
+        private PayoutSubofHDManaRepository payoutHdManaRepo;
+
+        @Override
+        public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId,
+                GeneralDate startDateAggr) {
+            return comDayOffManaDataRepo.getBySidYmd(companyId, employeeId, startDateAggr);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getBycomDayOffID(String sid, GeneralDate digestDate) {
+            return leaveComDayOffManaRepo.getBycomDayOffID(sid, digestDate);
+        }
+
+        @Override
+        public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
+            return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate) {
+            return leaveComDayOffManaRepo.getByLeaveID(sid, occDate);
+        }
+
+        @Override
+        public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId,
+                GeneralDate baseDate) {
+            return shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
+            return compensLeaveEmSetRepo.find(companyId, employmentCode);
+        }
+
+        @Override
+        public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
+            return compensLeaveComSetRepo.find(companyId);
+        }
+
+        @Override
+        public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
+            return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
+        }
+
+        @Override
+        public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+            return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
+        }
+
+        @Override
+        public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
+            return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+        }
+
+        @Override
+        public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+            return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+        }
+
+        @Override
+        public List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids,
+                DatePeriod datePeriod) {
+            return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
+        }
+
+        @Override
+        public List<Closure> closure(String companyId) {
+            return closureRepo.findAll(companyId);
+        }
+
+        @Override
+        public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
+            return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getPayoutSubWithDateUse(String sid, GeneralDate dateOfUse,
+                GeneralDate baseDate) {
+            return payoutHdManaRepo.getWithDateUse(sid, dateOfUse, baseDate);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getPayoutSubWithOutbreakDay(String sid, GeneralDate outbreakDay,
+                GeneralDate baseDate) {
+            return payoutHdManaRepo.getWithOutbreakDay(sid, outbreakDay, baseDate);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getLeaveComWithDateUse(String sid, GeneralDate dateOfUse,
+                GeneralDate baseDate) {
+            return leaveComDayOffManaRepo.getLeaveComWithDateUse(sid, dateOfUse, baseDate);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay,
+                GeneralDate baseDate) {
+            return leaveComDayOffManaRepo.getLeaveComWithOutbreakDay(sid, outbreakDay, baseDate);
+        }
+
+        @Override
+        public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd,
+                double unOffseDays) {
+            return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate) {
+            return payoutSubofHDManaRepo.getBySubId(sid, digestDate);
+        }
+
+        @Override
+        public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse,
+                DigestionAtr state) {
+            return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
+            return payoutSubofHDManaRepo.getByPayoutId(sid, occDate);
+        }
+
+        @Override
+        public Optional<EmpSubstVacation> findEmpById(String companyId, String contractTypeCode) {
+            return empSubstVacationRepo.findById(companyId, contractTypeCode);
+        }
+
+        @Override
+        public Optional<ComSubstVacation> findComById(String companyId) {
+            return comSubstVacationRepo.findById(companyId);
+        }
+
+        @Override
+        public List<InterimAbsMng> getAbsBySidDatePeriod(String sid, DatePeriod period) {
+            return interimRecAbasMngRepo.getAbsBySidDatePeriod(sid, period);
+        }
+
+        @Override
+        public List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period) {
+            return interimRecAbasMngRepo.getRecBySidDatePeriod(sid, period);
+        }
+
+        @Override
+        public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+            return closureRepo.findAllActive(companyId, useAtr);
+        }
+    }
+	
+	
+	
+	
+	
 }

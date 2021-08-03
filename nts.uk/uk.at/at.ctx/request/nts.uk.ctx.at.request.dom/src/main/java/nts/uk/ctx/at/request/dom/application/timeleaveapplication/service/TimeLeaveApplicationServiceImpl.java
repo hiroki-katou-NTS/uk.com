@@ -1,15 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.timeleaveapplication.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -24,6 +15,8 @@ import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday.G
 import nts.uk.ctx.at.request.dom.adapter.record.remainingnumber.specialholiday.TotalResultOfSpecialLeaveImport;
 import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.AnnualHolidayManagementAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualholidaymanagement.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -32,32 +25,33 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeDigestAppType;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.ChildNursingManagement;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.SupHolidayManagement;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeAllowanceManagement;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeAnnualLeaveManagement;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeLeaveApplicationOutput;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeSpecialLeaveManagement;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeSpecialVacationRemaining;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationManagementOutput;
-import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.TimeVacationRemainingOutput;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.output.*;
+import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
+import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSidPeriodDateEmploymentImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.*;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.NumberConsecutiveVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.*;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
@@ -73,6 +67,10 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -81,6 +79,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRep
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveManagementSetting;
 import nts.uk.ctx.at.shared.dom.workrule.vacation.specialvacation.timespecialvacation.TimeSpecialLeaveMngSetRepository;
@@ -88,6 +91,11 @@ import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrameRepository;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationService {
@@ -119,7 +127,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     private OtherCommonAlgorithm otherCommonAlgorithm;
 
     @Inject
-    private InterimRemainDataMngCheckRegister interimRemainDataMngCheckRegister;
+    private InterimRemainDataMngCheckRegisterRequest interimRemainDataMngCheckRegister;
 
     @Inject
     private SpecialHolidayRepository specialHolidayRepository;
@@ -162,6 +170,36 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
     @Inject
     private GetSpecialRemainingWithinPeriodAdapter getSpecialRemainingWithinPeriodAdapter;
+
+    @Inject
+    private AnnualHolidayManagementAdapter holidayAdapter;
+
+    @Inject
+    private ComDayOffManaDataRepository comDayOffManaDataRepo;
+
+    @Inject
+    private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+
+    @Inject
+    private LeaveManaDataRepository leaveManaDataRepo;
+
+    @Inject
+    private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+
+    @Inject
+    private CompensLeaveComSetRepository compensLeaveComSetRepo;
+
+    @Inject
+    private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+
+    @Inject
+    private ClosureEmploymentRepository closureEmploymentRepo;
+
+    @Inject
+    private ClosureRepository closureRepo;
+
+    @Inject
+    private PayoutSubofHDManaRepository payoutHdManaRepo;
 
     @Override
     public TimeLeaveApplicationReflect getTimeLeaveAppReflectSetting(String companyId) {
@@ -297,11 +335,18 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // 基準日時点の年休残数を取得する
             ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, baseDate);
             if (reNumAnnLeave != null && reNumAnnLeave.getAnnualLeaveRemainNumberExport() != null) {
-                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() != null)
-                    timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
                 if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime() != null)
                     timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime());
             }
+            // [No.210]次回年休付与日を取得する
+            List<NextAnnualLeaveGrantImport> nextGrantHolidays = holidayAdapter.acquireNextHolidayGrantDate(companyId, employeeId, baseDate);
+
+            Optional<NextAnnualLeaveGrantImport> closestFuture = nextGrantHolidays.stream()
+                    .filter(holiday -> holiday.grantDate.after(GeneralDate.today()))
+                    .min(Comparator.comparing(h -> h.grantDate));
+
+            timeLeaveRemaining.setGrantDate(closestFuture.map(NextAnnualLeaveGrantImport::getGrantDate));
+            timeLeaveRemaining.setGrantedDays(closestFuture.map(holiday -> holiday.grantDays.intValue()));
         }
 
         if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {
@@ -323,6 +368,10 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     		SubstituteHolidayAggrResult dataCheck = NumberRemainVacationLeaveRangeQuery
     				.getBreakDayOffMngInPeriod(require, inputParam);
             timeLeaveRemaining.setSubTimeLeaveRemainingTime(dataCheck.getRemainTime().v());
+            // [No.505]代休残数を取得する
+            BreakDayOffMngInPeriodQuery.RequireM11 requireM11 = new RequireM11Imp(comDayOffManaDataRepo, leaveComDayOffManaRepo, leaveManaDataRepo, shareEmploymentAdapter, compensLeaveEmSetRepo, compensLeaveComSetRepo, interimBreakDayOffMngRepo, closureEmploymentRepo, closureRepo, payoutHdManaRepo);
+            NumberConsecutiveVacation breakDay =  BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(requireM11, cache, employeeId, baseDate);
+            timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(breakDay.getRemainTime().v());
         }
 
         if (timeLeaveManagement.getSupHolidayManagement().isOverrest60HManagement()) {
@@ -452,7 +501,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         timeLeavePriorityCheck(companyId, timeLeaveType, timeLeaveApplication, output.getTimeVacationRemaining(), output.getTimeVacationManagement());
 
         //時間休暇残数チェック
-        remainingTimeVacationCheck(companyId, timeLeaveType, timeLeaveApplication);
+//        remainingTimeVacationCheck(companyId, timeLeaveType, timeLeaveApplication);
 
         //時間休暇の消化単位チェック
         Optional<TimeDigestiveUnit> super60HDigestion = Optional.ofNullable(output.getTimeVacationManagement().getSupHolidayManagement().getSuper60HDigestion());
@@ -542,15 +591,18 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
     /**
      * 時間休暇残数チェック
      */
+    /**
     private void remainingTimeVacationCheck(String companyId, TimeDigestAppType timeDigestAppType, TimeLeaveApplication timeLeaveApplication) {
         //4.社員の当月の期間を算出する
         PeriodCurrentMonth periodCurrentMonth =
             otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyId, timeLeaveApplication.getEmployeeID(), GeneralDate.today());
-
         //登録時の残数チェック
         boolean chkSixtyHOvertime = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getOvertime60H().v() > 0).collect(Collectors.toList()).size() > 0;
         boolean chkHoursOfHoliday = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getTimeAnnualLeave().v() > 0).collect(Collectors.toList()).size() > 0;
         boolean chkHoursOfSubHoliday = timeLeaveApplication.getLeaveApplicationDetails().stream().filter(x -> x.getTimeDigestApplication().getTimeOff().v() > 0).collect(Collectors.toList()).size() > 0;
+        boolean chkNursing = timeLeaveApplication.getLeaveApplicationDetails().stream().anyMatch(x -> x.getTimeDigestApplication().getNursingTime().v() > 0);
+        boolean chkChild = timeLeaveApplication.getLeaveApplicationDetails().stream().anyMatch(x -> x.getTimeDigestApplication().getChildTime().v() > 0);
+
         InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
                 companyId,
                 timeLeaveApplication.getEmployeeID(),
@@ -571,7 +623,10 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                 false,
                 false,
                 false,
-                timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkSixtyHOvertime : timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME
+                timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkSixtyHOvertime : timeDigestAppType == TimeDigestAppType.SIXTY_H_OVERTIME,
+                timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkChild: timeDigestAppType == TimeDigestAppType.CHILD_NURSING_TIME,
+                timeDigestAppType == TimeDigestAppType.USE_COMBINATION ? chkNursing : timeDigestAppType == TimeDigestAppType.NURSING_TIME
+
         );
         EarchInterimRemainCheck remainCheck = interimRemainDataMngCheckRegister.checkRegister(inputParam);
 
@@ -585,6 +640,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             throw new BusinessException("Msg_1409", timeDigestAppType.name);
         }
     }
+    */
 
     /**
      * 契約時間をチェック
@@ -633,5 +689,131 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
         }).collect(Collectors.toList());
 
         return apps;
+    }
+
+    @AllArgsConstructor
+    private class RequireM11Imp implements BreakDayOffMngInPeriodQuery.RequireM11{
+
+        private ComDayOffManaDataRepository comDayOffManaDataRepo;
+
+        private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+
+        private LeaveManaDataRepository leaveManaDataRepo;
+
+        private ShareEmploymentAdapter shareEmploymentAdapter;
+
+        private CompensLeaveEmSetRepository compensLeaveEmSetRepo;
+
+        private CompensLeaveComSetRepository compensLeaveComSetRepo;
+
+        private InterimBreakDayOffMngRepository interimBreakDayOffMngRepo;
+
+        private ClosureEmploymentRepository closureEmploymentRepo;
+
+        private ClosureRepository closureRepo;
+
+        private PayoutSubofHDManaRepository payoutHdManaRepo;
+
+        @Override
+        public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId,
+                                                            GeneralDate startDateAggr) {
+            return comDayOffManaDataRepo.getBySidYmd(companyId, employeeId, startDateAggr);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getBycomDayOffID(String sid, GeneralDate digestDate) {
+            return leaveComDayOffManaRepo.getBycomDayOffID(sid, digestDate);
+        }
+
+        @Override
+        public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
+            return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate) {
+            return leaveComDayOffManaRepo.getByLeaveID(sid, occDate);
+        }
+
+        @Override
+        public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId,
+                                                                         GeneralDate baseDate) {
+            return shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
+        }
+
+        @Override
+        public CompensatoryLeaveEmSetting findComLeavEmpSet(String companyId, String employmentCode) {
+            return compensLeaveEmSetRepo.find(companyId, employmentCode);
+        }
+
+        @Override
+        public CompensatoryLeaveComSetting findComLeavComSet(String companyId) {
+            return compensLeaveComSetRepo.find(companyId);
+        }
+
+        @Override
+        public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
+            return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
+        }
+
+        @Override
+        public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
+            return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
+        }
+
+        @Override
+        public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
+            return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+        }
+
+        @Override
+        public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+            return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+        }
+
+        @Override
+        public List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids,
+                                                                           DatePeriod datePeriod) {
+            return shareEmploymentAdapter.getEmpHistBySidAndPeriodRequire(cacheCarrier, sids, datePeriod);
+        }
+
+        @Override
+        public List<Closure> closure(String companyId) {
+            return closureRepo.findAll(companyId);
+        }
+
+        @Override
+        public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
+            return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getPayoutSubWithDateUse(String sid, GeneralDate dateOfUse,
+                                                                     GeneralDate baseDate) {
+            return payoutHdManaRepo.getWithDateUse(sid, dateOfUse, baseDate);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getPayoutSubWithOutbreakDay(String sid, GeneralDate outbreakDay,
+                                                                         GeneralDate baseDate) {
+            return payoutHdManaRepo.getWithOutbreakDay(sid, outbreakDay, baseDate);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getLeaveComWithDateUse(String sid, GeneralDate dateOfUse,
+                                                                     GeneralDate baseDate) {
+            return leaveComDayOffManaRepo.getLeaveComWithDateUse(sid, dateOfUse, baseDate);
+        }
+
+        @Override
+        public List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay,
+                                                                         GeneralDate baseDate) {
+            return leaveComDayOffManaRepo.getLeaveComWithOutbreakDay(sid, outbreakDay, baseDate);
+        }
+
+        @Override
+        public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+            return closureRepo.findAllActive(companyId, useAtr);
+        }
     }
 }

@@ -1,19 +1,39 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
  * @author thanhpv
@@ -25,17 +45,17 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 	@Inject
 	private PreRegistrationErrorCheck PreRegistrationErrorCheck;
 	
-//	@Inject
-//	private OtherCommonAlgorithm otherCommonAlgorithm;
+	@Inject
+	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
-//	@Inject
-//	private InterimRemainDataMngCheckRegister interimRemainDataMngCheckRegister;
+	@Inject
+	private InterimRemainDataMngCheckRegisterRequest interimRemainDataMngCheckRegister;
 	
 	@Inject
 	private NewBeforeRegister newBeforeRegister;
 	
-//	@Inject
-//	private HolidayApplicationSettingRepository holidayApplicationSettingRepo;
+	@Inject
+	private HolidayApplicationSettingRepository holidayApplicationSettingRepo;
 	
 	/**
 	 * 登録前のエラーチェック処理(Xử lý error check trước khi đăng ký)
@@ -58,55 +78,69 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 												Optional.empty(), 
 												Optional.empty());
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
-		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
+//		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		
 		if(rec.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, rec.get(), null, msgErrorLst, new ArrayList<>(), appDispInfoStartup);
+			this.newBeforeRegister.processBeforeRegister_New(
+			        companyId, 
+			        EmploymentRootAtr.APPLICATION, 
+			        represent, 
+			        rec.get(), 
+			        null, 
+			        msgErrorLst, 
+			        new ArrayList<>(), 
+			        appDispInfoStartup,
+			        Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
+			        Optional.empty(), 
+			        rec.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 		}
 		
 		if(abs.isPresent()) {
-			this.newBeforeRegister.processBeforeRegister_New(companyId, EmploymentRootAtr.APPLICATION, represent, abs.get(), null, msgErrorLst, new ArrayList<>(), appDispInfoStartup);
+			this.newBeforeRegister.processBeforeRegister_New(
+			        companyId, 
+			        EmploymentRootAtr.APPLICATION, 
+			        represent, 
+			        abs.get(), 
+			        null, 
+			        msgErrorLst, 
+			        new ArrayList<>(), 
+			        appDispInfoStartup,
+			        Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
+                    Optional.empty(), 
+                    abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 		}
-		//TODO
 	}
 	
 	
 	/**
 	 * 振休残数不足チェック (Check số nghỉ bù thiếu)
 	 */
+	/**
 	public void checkForInsufficientNumberOfHolidays(String companyId, String employeeId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec) {
 		//4.社員の当月の期間を算出する (Tính thời gian tháng hiện tại của nhân viên)
-		//PeriodCurrentMonth PeriodCurrentMonth = this.otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyId, employeeId, GeneralDate.today());
+		PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithm.employeePeriodCurrentMonthCalculate(companyId, employeeId, GeneralDate.today());
 		
-		//ドメインモデル「休暇申請設定」を取得する - (lấy domain 「休暇申請設定」)
-		// cần xác nhận với anh phượng domain này đang tồn tại hai cái 
-		
-		//Optional<HolidayApplicationSetting> HolidayApplicationSetting = holidayApplicationSettingRepo.findSettingByCompanyId(companyId);
-		
-		
-		
-		/** Đã trao đổi vs anh PhượngDV chỗ này tạm thời pending - 21/12/2020
-		 * 
-		 * 
 		if(abs.isPresent()) {
 			InterimRemainCheckInputParam inputParam = new InterimRemainCheckInputParam(
 					companyId, 
 					employeeId, 
-					datePeriod, 
+					new DatePeriod(periodCurrentMonth.getStartDate(), periodCurrentMonth.getStartDate().addYears(1).addDays(-1)), 
 					false, 
 					abs.get().getAppDate().getApplicationDate(), 
 					new DatePeriod(abs.get().getAppDate().getApplicationDate(), abs.get().getAppDate().getApplicationDate()), 
 					true, 
-					recordData, 
-					scheData, 
-					appData, 
+					new ArrayList<RecordRemainCreateInfor>(), 
+					new ArrayList<ScheRemainCreateInfor>(), 
+					createAppRemain(abs.get()), 
 					false, 
-					abs.get()., 
+					true, // #116616
 					false, 
 					false, 
 					true, 
 					false, 
-					true);
+					true, 
+					false, 
+					false);
 			EarchInterimRemainCheck earchInterimRemainCheck = this.interimRemainDataMngCheckRegister.checkRegister(inputParam); 
 			if(!earchInterimRemainCheck.isChkSubHoliday()) {
 				throw new BusinessException("Msg_1409", "代休不足区分");
@@ -120,11 +154,47 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 			if(!earchInterimRemainCheck.isChkFundingAnnual()) {
 				throw new BusinessException("Msg_1409", "積休不足区分");
 			}
-			if(earchInterimRemainCheck.isChkSpecial()) {
+			if(!earchInterimRemainCheck.isChkSpecial()) {
 				throw new BusinessException("Msg_1409", "特休不足区分 ");
 			}
 		}
-		*/
+	}
+	*/
+	
+	private List<AppRemainCreateInfor> createAppRemain(AbsenceLeaveApp application) {
+	    List<AppRemainCreateInfor> result = new ArrayList<AppRemainCreateInfor>();
+        String workTypeCode = null;
+        String workTimeCode = null;
+        
+        if (application.getWorkInformation() != null 
+                && application.getWorkInformation().getWorkTypeCode() != null) {
+            workTypeCode = application.getWorkInformation().getWorkTypeCode().v();
+        }
+        
+        if (application.getWorkInformation() != null 
+                && application.getWorkInformation().getWorkTimeCodeNotNull().isPresent()) {
+            workTimeCode = application.getWorkInformation().getWorkTypeCode().v();
+        }
+        
+        AppRemainCreateInfor appRemainCreateInfor = new AppRemainCreateInfor(
+                application.getEmployeeID(), 
+                application.getAppID(), 
+                application.getInputDate(), 
+                application.getAppDate().getApplicationDate(), 
+                EnumAdaptor.valueOf(application.getPrePostAtr().value, PrePostAtr.class), 
+                EnumAdaptor.valueOf(application.getAppType().value, ApplicationType.class), 
+                Optional.ofNullable(workTypeCode), 
+                Optional.ofNullable(workTimeCode),  
+                new ArrayList<VacationTimeInforNew>(), 
+                Optional.empty(), 
+                Optional.empty(), 
+                application.getOpAppStartDate().map(ApplicationDate::getApplicationDate),
+                application.getOpAppEndDate().map(ApplicationDate::getApplicationDate), 
+                new ArrayList<GeneralDate>(), 
+                null);
+        result.add(appRemainCreateInfor);
+        
+	    return result;
 	}
 }
 

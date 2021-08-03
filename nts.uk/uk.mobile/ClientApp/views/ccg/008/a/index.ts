@@ -204,6 +204,8 @@ export class Ccg008AComponent extends Vue {
     }
 
     public convertToDisplayItem(item: WidgetDisplayItemType): Array<DisplayItemType> {
+        const vm = this;
+
         let results = [];
     
         // yearlyHoliday
@@ -212,7 +214,7 @@ export class Ccg008AComponent extends Vue {
             results.push({
                 name:'KTG029_23', 
                 value: yearlyHld.nextTimeInfo.day, 
-                prefix: 'KTG029_60',
+                prefix: 'KTG029_60'
             }); 
         }
         if (item.reservedYearsRemainNo) {
@@ -226,7 +228,29 @@ export class Ccg008AComponent extends Vue {
         if (item.remainsLeft || item.remainsLeft === 0) {
             results.push({name:'振休残数', value: item.remainsLeft, prefix: 'KTG029_60'});
         }
-        
+        // 子看護管理区分
+        if (!!item.childRemainNo) {
+            const {before, after, showAfter} = item.childRemainNo;
+            results.push({
+                name: 'CCGS08_26',
+                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(after)]) : vm.$i18n('CCGS08_36', [String(before)]),
+                isFormatNew: true
+                
+            });
+        } 
+
+        // 介護管理区分
+        if (!!item.careLeaveNo) {
+            const {before, after, showAfter} = item.careLeaveNo;
+            results.push({
+                name: 'CCGS08_27',
+                value: showAfter ? vm.$i18n('CCGS08_37', [String(before), String(after)]) : vm.$i18n('CCGS08_36', [String(before)]),
+                isFormatNew: true
+                
+            });
+        }
+
+
         // sphdramainNo
         if (item.sphdramainNo && item.sphdramainNo.length > 0) {
             results.push({name:'KTG029_31', value:''});
@@ -234,6 +258,21 @@ export class Ccg008AComponent extends Vue {
                 results.push({name: sphd.name, value: sphd.before, prefix: 'KTG029_60', sub: true});
             });
         }
+
+        // ６０Ｈ超休残数
+        // todo format time
+        if (!!item.extraRest) {
+            const {hours, min} = item.extraRest;
+            results.push({
+                name: 'CCGS08_28',
+                value: vm.$i18n('CCGS08_37', [String(0), String(hours) + (min >= 10 ? min : ('0' + min))]),
+                isFormatNew: true
+                
+            });
+        }
+
+
+
         
         return results;
     }
