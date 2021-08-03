@@ -414,6 +414,7 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 								},
 								row: cpn.page > 5 ? 1 : 0
 							}
+						break;
 						}
 					}
 				}
