@@ -29,8 +29,12 @@ public class ReflectAttendance {
 	public static List<Integer> reflect(Require require, String cid, List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst,
 			ScheduleRecordClassifi classification, DailyRecordOfApplication dailyApp, Optional<Boolean> reflectAtt,
 			Optional<Boolean> reflectLeav, Optional<TimeChangeMeans> timeChangeMeanOpt) {
-
+		
 		List<Integer> lstItemId = new ArrayList<Integer>();
+		
+		if (!reflectAtt.orElse(false) && !reflectLeav.orElse(false)) {
+			return lstItemId;
+		}
 		// [input. 勤務時間帯(List）]をループ
 		for (TimeZoneWithWorkNo timeZone : timeZoneWithWorkNoLst) {
 
