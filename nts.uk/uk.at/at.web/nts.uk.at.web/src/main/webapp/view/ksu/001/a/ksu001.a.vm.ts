@@ -1404,13 +1404,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? '' : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? null : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? null : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
                         if (cell.needToWork == false) {
-                            workTypeName = '';
-                            workTimeName = '';
+                            workTypeName = null;
+                            workTimeName = null;
                         }
-                        objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName, '', '', '', '',cell.confirmed , cell.achievements, cell.workHolidayCls);
+                        objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName, null, null, null, null,cell.confirmed , cell.achievements, cell.workHolidayCls);
 
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
@@ -1535,25 +1535,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? '' : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? '' : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
-                        let startTime    = cell.startTime == null ? '' : formatById("Clock_Short_HM", cell.startTime);
-                        let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
+                        let workTypeName = ((cell.workTypeCode != null && (cell.workTypeName == '' || _.isNil(cell.workTypeName))) || cell.workTypeIsNotExit == true ) ? (cell.workTypeCode == null ? null : cell.workTypeCode) + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = ((cell.workTimeCode != null && (cell.workTimeName == '' || _.isNil(cell.workTimeName))) || cell.workTimeIsNotExit == true ) ? (cell.workTimeCode == null ? null : cell.workTimeCode) + getText("KSU001_22") : cell.workTimeName;
+                        let startTime    = cell.startTime == null ? null : formatById("Clock_Short_HM", cell.startTime);
+                        let endTime      = cell.endTime   == null ? null : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
                         let workTimeCode = cell.workTimeCode;
                         if (cell.needToWork == false) {
-                            workTypeName = '';
-                            workTimeName = '';
-                            startTime    = '';
-                            endTime      = '';
+                            workTypeName = null;
+                            workTimeName = null;
+                            startTime    = null;
+                            endTime      = null;
                         }
                         
                         if(cell.startTime == 0 && cell.endTime == 0){
-                            startTime    = '';
-                            endTime      = '';
+                            startTime    = null;
+                            endTime      = null;
                         }
                         
-                        objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, '', '', cell.confirmed , cell.achievements, cell.workHolidayCls);
+                        objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, null, null, cell.confirmed , cell.achievements, cell.workHolidayCls);
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
                         // điều kiện ※Abc1 editMode
@@ -2030,10 +2030,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         saveDataInModeConfirm(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            nts.uk.ui.block.grayout();
             let lockCells = $("#extable").exTable("lockCells");
             if (lockCells.length == 0)
                 return;
+            nts.uk.ui.block.grayout();
             let dataReg = [];
             let dataSource = $("#extable").exTable('dataSource', 'detail').body;
             _.forEach(lockCells, function(cell) {
@@ -6080,13 +6080,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
-            this.shiftName = shiftName !== null ? shiftName : '';
-            this.startTime = ( startTime == undefined || startTime == null ) ? '' : startTime;
-            this.endTime = ( endTime == undefined || endTime == null ) ? '' : endTime;
-            this.shiftCode = shiftCode !== null ? shiftCode : '';
+            this.shiftName = shiftName !== null ? shiftName : null;
+            this.startTime = ( startTime == undefined || startTime == null ) ? null : startTime;
+            this.endTime = ( endTime == undefined || endTime == null ) ? null : endTime;
+            this.shiftCode = shiftCode !== null ? shiftCode : null;
             this.confirmed = confirmed !== null ? confirmed : false;
             this.achievements = achievements !== null ? achievements : false;
-            this.workHolidayCls = workHolidayCls !== null ? workHolidayCls : '';
+            this.workHolidayCls = workHolidayCls !== null ? workHolidayCls : null;
         }
     }
 
