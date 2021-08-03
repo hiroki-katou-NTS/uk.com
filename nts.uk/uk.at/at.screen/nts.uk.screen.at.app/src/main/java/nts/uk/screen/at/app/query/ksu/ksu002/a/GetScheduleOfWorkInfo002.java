@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.ksu.ksu002.a;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
+import nts.arc.layer.app.cache.DateHistoryCache.Entry;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
@@ -259,9 +261,19 @@ public class GetScheduleOfWorkInfo002 {
 
 			List<WorkingConditionItemWithPeriod> listData = workCondRepo
 					.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), empIdList, period);
-			workCondItemWithPeriodCache = KeyDateHistoryCache
-					.loaded(listData.stream().collect(Collectors.toMap(h -> h.getWorkingConditionItem().getEmployeeId(),
-							h -> Arrays.asList(DateHistoryCache.Entry.of(h.getDatePeriod(), h)))));
+			Map<String, List<Entry<WorkingConditionItemWithPeriod>>> map = new HashMap<>();
+			listData.forEach(e -> {
+				String key = e.getWorkingConditionItem().getEmployeeId();
+				boolean m = map.containsKey(key);
+				if(m) {
+					map.get(key).add(DateHistoryCache.Entry.of(e.getDatePeriod(), e));
+				}else {
+					List<Entry<WorkingConditionItemWithPeriod>> value = new ArrayList<>();
+					value.add(DateHistoryCache.Entry.of(e.getDatePeriod(), e));
+					map.put(key, value);
+				}
+			});
+			workCondItemWithPeriodCache = KeyDateHistoryCache.loaded(map);
 		}
 
 		public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
