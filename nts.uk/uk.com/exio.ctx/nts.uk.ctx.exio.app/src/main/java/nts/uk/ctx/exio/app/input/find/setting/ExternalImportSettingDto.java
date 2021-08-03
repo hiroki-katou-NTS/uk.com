@@ -1,14 +1,23 @@
 package nts.uk.ctx.exio.app.input.find.setting;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
+import nts.uk.shr.com.context.AppContexts;
 
 @Value
 public class ExternalImportSettingDto {
@@ -55,6 +64,33 @@ public class ExternalImportSettingDto {
 						checkImportSource(m),
 						false))
 				.collect(Collectors.toList()));
+	}
+	
+	public ExternalImportSetting toDomain(Require require) {
+		return new ExternalImportSetting(
+				companyId, 
+				new ExternalImportCode(code), 
+				new ExternalImportName(name), 
+				ImportingGroupId.valueOf(group), 
+				ImportingMode.valueOf(mode), 
+				new ExternalImportAssemblyMethod(
+						new ExternalImportCsvFileInfo(
+								new ExternalImportRowNumber(itemNameRow), 
+								new ExternalImportRowNumber(importStartRow)), 
+						new ImportingMapping(createMappings(require))));
+	}
+	
+	private List<ImportingItemMapping> createMappings(Require require){
+		val optRegisteredSetting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(code));
+		if(optRegisteredSetting.isPresent()) {
+			val mappings = optRegisteredSetting.get().getAssembly().getMapping().getMappings();
+			if(mappings.size() > 0) {
+				return mappings;
+			}
+		}
+		return layouts.stream()
+				.map(l -> new ImportingItemMapping(l.itemNo, null, null))
+				.collect(Collectors.toList());
 	}
 	
 	@Value
@@ -104,5 +140,6 @@ public class ExternalImportSettingDto {
 	
 	public static interface Require {
 		List<ImportableItem> getImportableItems(ImportingGroupId groupId);
+		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }

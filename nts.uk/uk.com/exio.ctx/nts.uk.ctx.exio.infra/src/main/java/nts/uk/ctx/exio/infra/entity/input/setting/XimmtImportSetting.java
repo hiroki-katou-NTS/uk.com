@@ -1,10 +1,14 @@
 package nts.uk.ctx.exio.infra.entity.input.setting;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -13,10 +17,15 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
+import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMapping;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -54,6 +63,9 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	@Column(name = "IMPORT_START_ROW_NUMBER")
 	private int importStartRawNumber;
 	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="importSetting", orphanRemoval = true)
+	public List<XimmtItemMapping> mappings;
+	
 	@Override
 	protected Object getKey() {
 		return pk;
@@ -68,6 +80,12 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 				new ExternalImportName(this.name), 
 				ImportingGroupId.valueOf(this.externalImportGroupId),
 				EnumAdaptor.valueOf(importingMode, ImportingMode.class), 
-				null /* TODO */);
+				new ExternalImportAssemblyMethod(
+						new ExternalImportCsvFileInfo(
+								new ExternalImportRowNumber(itemNameRawNumber), 
+								new ExternalImportRowNumber(importStartRawNumber)), 
+						new ImportingMapping(mappings.stream()
+								.map(m -> m.toDomain())
+								.collect(Collectors.toList()))));
 	}
 }

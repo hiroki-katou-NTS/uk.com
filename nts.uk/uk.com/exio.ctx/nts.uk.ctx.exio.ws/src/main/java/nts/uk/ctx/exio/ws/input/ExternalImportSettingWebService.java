@@ -9,8 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.exio.app.input.command.setting.ExternalImportSettingAddCommandHandler;
-import nts.uk.ctx.exio.app.input.command.setting.ExternalImportSettingCommand;
+import nts.uk.ctx.exio.app.input.command.setting.SaveExternalImportSettingCommandHandler;
+import nts.uk.ctx.exio.app.input.command.setting.RemoveExternalImportSettingCommand;
+import nts.uk.ctx.exio.app.input.command.setting.RemoveExternalImportSettingCommandHandler;
+import nts.uk.ctx.exio.app.input.command.setting.SaveExternalImportSettingCommand;
 import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingDto;
 import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingFinder;
 import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingListItemDto;
@@ -23,7 +25,10 @@ public class ExternalImportSettingWebService extends WebService {
 	private ExternalImportSettingFinder finder;
 	
 	@Inject
-	private ExternalImportSettingAddCommandHandler addCmd;
+	private SaveExternalImportSettingCommandHandler saveCmd;
+	
+	@Inject
+	private RemoveExternalImportSettingCommandHandler removeCmd;
 	
 	@POST
 	@Path("find-all")
@@ -40,7 +45,13 @@ public class ExternalImportSettingWebService extends WebService {
 	
 	@POST
 	@Path("save")
-	public void save(ExternalImportSettingCommand command) {
-		addCmd.handle(command);
+	public void save(SaveExternalImportSettingCommand command) {
+		saveCmd.handle(command);
+	}
+	
+	@POST
+	@Path("remove")
+	public void remove(RemoveExternalImportSettingCommand command) {
+		removeCmd.handle(command);
 	}
 }
