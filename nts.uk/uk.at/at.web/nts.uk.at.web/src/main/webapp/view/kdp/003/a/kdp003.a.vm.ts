@@ -1123,7 +1123,7 @@ module nts.uk.at.kdp003.a {
 																					cardNumberSupport: null,
 																					workPlaceId: vm.workPlaceId,
 																					workLocationCD: vm.worklocationCode,
-																					workTimeCode: '',
+																					workTimeCode: null,
 																					overtimeDeclaration: {
 																						overTime: 0,
 																						overLateNightTime: 0
@@ -1178,7 +1178,7 @@ module nts.uk.at.kdp003.a {
 																			cardNumberSupport: null,
 																			workPlaceId: vm.workPlaceId,
 																			workLocationCD: vm.worklocationCode,
-																			workTimeCode: '',
+																			workTimeCode: null,
 																			overtimeDeclaration: {
 																				overTime: 0,
 																				overLateNightTime: 0
@@ -1244,7 +1244,7 @@ module nts.uk.at.kdp003.a {
 																			cardNumberSupport: null,
 																			workPlaceId: vm.workPlaceId,
 																			workLocationCD: vm.worklocationCode,
-																			workTimeCode: '',
+																			workTimeCode: null,
 																			overtimeDeclaration: {
 																				overTime: 0,
 																				overLateNightTime: 0
@@ -1300,7 +1300,7 @@ module nts.uk.at.kdp003.a {
 																	cardNumberSupport: null,
 																	workPlaceId: vm.workPlaceId,
 																	workLocationCD: vm.worklocationCode,
-																	workTimeCode: '',
+																	workTimeCode: null,
 																	overtimeDeclaration: {
 																		overTime: 0,
 																		overLateNightTime: 0
@@ -1364,7 +1364,7 @@ module nts.uk.at.kdp003.a {
 													cardNumberSupport: null,
 													workPlaceId: vm.workPlaceId,
 													workLocationCD: vm.worklocationCode,
-													workTimeCode: '',
+													workTimeCode: null,
 													overtimeDeclaration: {
 														overTime: 0,
 														overLateNightTime: 0
