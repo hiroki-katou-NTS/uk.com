@@ -140,8 +140,7 @@ public class WorkGroup implements DomainObject {
 	 */
 	private boolean checkWorkCode(Require require, TaskFrameUsageSetting taskFrameUsageSetting, TaskFrameNo taskFrameNo, Optional<WorkCode> code) {
 		//if $作業コード.isEmpty	return true	
-		if (!code.isPresent() || taskFrameUsageSetting == null)
-			return true;
+		if(!code.isPresent()) return true;
 		//$作業枠 = 作業枠利用設定.枠設定:																									
 				//filter $.利用区分 = する																							
 				//filter $.作業枠NO = 作業枠NO		
