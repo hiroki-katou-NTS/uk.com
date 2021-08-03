@@ -135,11 +135,11 @@ module nts.uk.at.view.ksm011.e {
         roleType: 3,
         multiple: false,
         isAlreadySetting: false,
-        onDialog: true
+        onDialog: false
       });
 
       vm.getDataCCG025().done(() => { });
-      vm.componentViewmodel.currentCode.subscribe((roleId) => {
+      vm.componentViewmodel.currentRoleId.subscribe((roleId: string) => {
         if (vm.listRole().length <= 0) vm.listRole(vm.componentViewmodel.listRole());
 
         vm.roleId(roleId);

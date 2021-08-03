@@ -37,7 +37,7 @@ module nts.uk.com.view.cas009.a.viewmodel {
             });
 
             _.extend(vm.selectedRole, {
-                roleId: vm.component025.currentCode,
+                roleId: vm.component025.currentRoleId,
                 assignAtr: vm.component025.roleClassification
             });
 
@@ -126,7 +126,7 @@ module nts.uk.com.view.cas009.a.viewmodel {
         getListRole(roleId?: string, roleCode?: string) {
             let vm = this, dfd = $.Deferred();
 
-            vm.component025.startPage([], roleId, roleCode).done(() => {
+            vm.component025.startPage(roleId, roleCode).done(() => {
                 let roles: Array<IRole> = ko.toJS(vm.listRole),
                     roleIds: Array<string> = _.map(roles, (x: IRole) => x.roleId);
 
