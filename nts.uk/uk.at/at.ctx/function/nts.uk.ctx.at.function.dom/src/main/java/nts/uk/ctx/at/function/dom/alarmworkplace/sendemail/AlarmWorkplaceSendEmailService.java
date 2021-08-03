@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.alarmworkplace.sendemail;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailAttachedFileItf;
@@ -164,8 +165,8 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                     senderAddressInput = senderAddress.get();
                 }
                 if(mailSetting.isPresent()) {
-                    ccList = mailSetting.get().getMailAddressCC();
-                    bccList = mailSetting.get().getMailAddressBCC();
+                    ccList = mailSetting.get().getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+                    bccList = mailSetting.get().getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
                     if(mailSetting.get().getMailRely().isPresent()) {
                         if(!mailSetting.get().getMailRely().get().v().equals("") && mailSetting.get().getMailRely().get().v() != null ) {
                             replyToList.add(mailSetting.get().getMailRely().get().v());

@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.primitive.PrimitiveValueBase;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
@@ -229,8 +230,8 @@ public class AlarmSendEmailService implements SendEmailService {
 					senderAddressInput = senderAddress.get();
 				}
 				if(mailSetting.isPresent()) {
-					ccList = mailSetting.get().getMailAddressCC();
-					bccList = mailSetting.get().getMailAddressBCC();
+					ccList = mailSetting.get().getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+					bccList = mailSetting.get().getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
 					if(mailSetting.get().getMailRely().isPresent()) {
 						if(!mailSetting.get().getMailRely().get().v().equals("") && mailSetting.get().getMailRely().get().v() != null ) {
 							replyToList.add(mailSetting.get().getMailRely().get().v());
