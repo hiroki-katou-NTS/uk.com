@@ -21,7 +21,6 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.EmployeeAndYmd;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTimePK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfoPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBonusPay;
@@ -36,10 +35,6 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchOvertim
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchPremium;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTsPK;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -864,83 +859,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		// TODO 取得処理・変換処理
 		return Collections.emptyMap();
 
-	}
-
-
-	/**
-	 * insert - 出退勤時刻
-	 * @param leavingWork 出退勤
-	 * @param sID 社員ID
-	 * @param yMD 年月日
-	 * @param cID 会社ID
-	 */
-	private void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID) {
-		this.commandProxy().insert(KscdtSchAtdLvwTime.toEntity(leavingWork, sID, yMD, cID));
-	}
-
-	/**
-	 * delete - 出退勤時刻
-	 * @param sid 社員ID
-	 * @param ymd 年月日
-	 * @param workNo 勤務No
-	 */
-	private void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo) {
-		KscdtSchAtdLvwTimePK pk = new KscdtSchAtdLvwTimePK(sid, ymd, workNo);
-		this.commandProxy().remove(KscdtSchAtdLvwTime.class, pk);
-	}
-
-
-	private static final String SELECT_BY_SHORTTIME_TS = "SELECT c FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd AND c.pk.childCareAtr = :childCareAtr AND c.pk.frameNo = :frameNo";
-	/**
-	 * get - 短時間勤務時間帯
-	 * @param sid 社員ID
-	 * @param ymd 年月日
-	 * @param childCareAtr 子の看護区分
-	 * @param frameNo 枠No
-	 * @return
-	 */
-	private Optional<ShortTimeOfDailyAttd> getShortTimeSheets(String sid, GeneralDate ymd, int childCareAtr, int frameNo) {
-		Optional<ShortTimeOfDailyAttd> workSchedule = this.queryProxy()
-				.query(SELECT_BY_SHORTTIME_TS, KscdtSchShortTimeTs.class).setParameter("employeeID", sid)
-				.setParameter("ymd", ymd).setParameter("childCareAtr", childCareAtr).setParameter("frameNo", frameNo)
-				.getSingle(c -> c.toDomain(sid, ymd, childCareAtr, frameNo));
-		return workSchedule;
-	}
-
-	private static final String SELECT_ALL_SHORTTIME_TS = "SELECT count (c) FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
-	/**
-	 * exists - 短時間勤務時間帯
-	 * @param employeeID 社員ID
-	 * @param ymd 年月日
-	 * @return true:存在する/false:存在しない
-	 */
-	private boolean checkExitsShortTimeSheets(String employeeID, GeneralDate ymd) {
-		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class).setParameter("employeeID", employeeID)
-				.setParameter("ymd", ymd).getSingle().get() > 0;
-	}
-
-	/**
-	 * insert - 短時間勤務時間帯
-	 * @param shortWorkingTimeSheets 短時間勤務時間帯
-	 * @param sID 社員ID
-	 * @param yMD 年月日
-	 * @param cID 会社ID
-	 */
-	private void insertShortTimeSheets(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID) {
-		this.commandProxy().insert(KscdtSchShortTimeTs.toEntity(shortWorkingTimeSheets, sID, yMD, cID));
-	}
-
-	/**
-	 * delete all - 短時間勤務時間帯
-	 * @param sid 社員ID
-	 * @param ymd 年月日
-	 */
-	private void deleteAllShortTimeSheets(String sid, GeneralDate ymd) {
-		Boolean optWorkShortTime = this.checkExitsShortTimeSheets(sid, ymd);
-		if (optWorkShortTime) {
-			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd);
-			this.commandProxy().remove(KscdtSchShortTimeTs.class, pk);
-		}
 	}
 
 }
