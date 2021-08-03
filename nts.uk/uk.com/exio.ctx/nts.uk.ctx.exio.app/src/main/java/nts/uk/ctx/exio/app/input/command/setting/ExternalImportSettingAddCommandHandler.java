@@ -2,6 +2,8 @@ package nts.uk.ctx.exio.app.input.command.setting;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
@@ -9,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingRequire;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ExternalImportSettingAddCommandHandler extends CommandHandler<ExternalImportSettingCommand>{
 	
 	@Inject

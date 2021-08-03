@@ -13,6 +13,11 @@
 		
 		<com:EnumScript>
 			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod
+			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImportDateFormat
+			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.HourlySegment
+			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBaseNumber
+			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase60Delimiter
+			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase10Rounding
 		</com:EnumScript>
 	</ui:define>
 
@@ -37,76 +42,144 @@
 			</div>
 			<div id="current-item" class="fixed-flex-layout-right" data-bind="with: currentItem">
 				
-				<div id="item-def" data-bind="with: def">
-					<div class="label inline" data-bind="text: name"></div>
-					<div class="inline">
-						<span data-bind="text: constraint"></span><span data-bind="if: required">、必須</span>
+				<div data-bind="if: !nts.uk.util.isNullOrEmpty($parent.selectedItemNo())">
+					<div id="item-def" data-bind="with: def">
+						<div class="label inline" data-bind="text: name"></div>
+						<div class="inline">
+							<span data-bind="text: constraint"></span><span data-bind="if: required">必須</span>
+						</div>
 					</div>
-				</div>
+	
+					<div id="select-mapping">
+						<div class="label inline">受入元</div>
+						<div class="inline">
+							<div data-bind="ntsSwitchButton: {
+								options: mappingTypes,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedMappingType,
+								required: true }"></div>
+						</div>
+						<div class="inline">
+							<input data-bind="ntsTextEditor: {value: fixedMapping, enable: selectedMappingType() == 2}" />
+						</div>
+					</div>
+					
+					<div id="csv-mapping" data-bind="with: csvMapping">
+						<div class="label">項目の編集設定</div>
+						<div id="revising" data-bind="with: revisingValue">
 
-				<div id="select-mapping">
-					<div class="label inline">受入元</div>
-					<div class="inline">
-						<div data-bind="ntsSwitchButton: {
-							options: mappingTypes,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: selectedMappingType,
-							required: true }"></div>
-					</div>
-					<div class="inline">
-						<input data-bind="ntsTextEditor: {value: fixedMapping, enable: selectedMappingType() == 2}" />
-					</div>
-				</div>
-				
-				<div id="csv-mapping" data-bind="with: csvMapping">
-					<div class="label">項目の編集設定</div>
-					<div id="revising" data-bind="with: revisingValue">
-						<div class="row">
-							<div class="inline check">
-								<div data-bind="ntsCheckBox: { checked: useSpecifyRange, text: '指定した桁で切り出す' }"></div>
-							</div>
-							<div class="inline detail" data-bind="with: rangeOfValue">
-								<input data-bind="ntsNumberEditor: {value: start, enable: $parent.useSpecifyRange }" /><!--
-								--> ～ <!--
-								--><input data-bind="ntsNumberEditor: {value: end, enable: $parent.useSpecifyRange }" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="inline check">
-								<div data-bind="ntsCheckBox: { checked: useFixedLength, text: '桁埋めする' }"></div>
-							</div>
-							<div class="inline detail" data-bind="with: fixedLength">
-								<input data-bind="ntsNumberEditor: {value: length, enable: $parent.useFixedLength}" />
-								<input data-bind="ntsComboBox: {
-									options: methods,
-									optionsValue: 'value',
-									optionsText: 'name',
-									value: reviseMethod,
-									editable: false,
-									enable: $parent.useFixedLength,
-									selectFirstIfNull: true,
-								}" />
-							</div>
-						</div>
-						<div class="row">
-							<div class="inline check">
-								<div data-bind="ntsCheckBox: { checked: useCodeConvert, text: 'コード変換する' }"></div>
-							</div>
-							<div id="code-convert" class="detail" data-bind="with: codeConvert">
-								
-								<div>変換前と変換後の文字列を半角カンマ記号 "," で区切って入力してください</div>
-								
-								<div class="inline">
-									<textarea data-bind="ntsMultilineEditor: { value: convertDetailsText, enable: $parent.useCodeConvert, }" />
+							<div class="row" data-bind="if: $root.content.currentItem().def.type() == 'STRING'">
+								<div class="inline check">
+									<div data-bind="ntsCheckBox: { checked: usePadding, text: '桁埋めする' }"></div>
 								</div>
-								
-								<div class="inline">
-									<div data-bind="ntsCheckBox: { checked: importWithoutSetting, text: '変換対象外を受け入れる', enable: $parent.useCodeConvert, }"></div>
+								<div class="inline detail">
+									<input data-bind="ntsNumberEditor: {value: paddingLength, enable: usePadding }" />
+									<input data-bind="ntsComboBox: {
+										options: __viewContext.enums.PaddingMethod,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: paddingMethod,
+										editable: false,
+										enable: usePadding,
+										selectFirstIfNull: true,
+									}" />
 								</div>
 							</div>
+
+							<div class="row" data-bind="if: $root.content.currentItem().def.type() == 'REAL'">
+								<div class="inline check">
+									<div data-bind="ntsCheckBox: { checked: isDecimalization, text: '小数点を付与する' }"></div>
+								</div>
+								<div class="inline detail">
+									<input data-bind="ntsNumberEditor: {value: decimalizationLength, enable: isDecimalization }" />
+									桁目に付与
+								</div>
+							</div>
+
+							<div class="row" data-bind="if: ['STRING', 'INT'].contains($root.content.currentItem().def.type())">
+								<div class="inline check">
+									<div data-bind="ntsCheckBox: { checked: useCodeConvert, text: 'コード変換する' }"></div>
+								</div>
+								<div id="code-convert" class="detail" data-bind="with: codeConvert">
+									
+									<div>変換前と変換後の文字列を半角カンマ記号 "," で区切って入力してください</div>
+									
+									<div class="inline">
+										<textarea data-bind="ntsMultilineEditor: { value: convertDetailsText, enable: $parent.useCodeConvert, }" />
+									</div>
+									
+									<div class="inline">
+										<div data-bind="ntsCheckBox: { checked: importWithoutSetting, text: '変換対象外を受け入れる', enable: $parent.useCodeConvert, }"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" data-bind="if: $root.content.currentItem().def.type() == 'DATE'">
+								<div class="inline label">日付形式</div>
+								<div class="inline detail">
+									<input data-bind="ntsComboBox: {
+										options: __viewContext.enums.ExternalImportDateFormat,
+										optionsValue: 'value',
+										optionsText: 'name',
+										value: dateFormat,
+										editable: false,
+										selectFirstIfNull: true,
+									}" />
+								</div>
+							</div>
+
+							<div data-bind="if: ['TIME_DURATION', 'TIME_POINT'].contains($root.content.currentItem().def.type())">
+								<div class="row">
+									<div class="inline label">時間データ形式</div>
+									<div class="inline detail">
+										<div data-bind="ntsSwitchButton: {
+											options: __viewContext.enums.HourlySegment,
+											optionsValue: 'value',
+											optionsText: 'name',
+											value: timeHourlySegment,
+											required: false }"></div>
+									</div>
+								</div>
+								<div data-bind="if: timeHourlySegment() == 0">
+									<div class="row">
+										<div class="inline label">時分の表現形式</div>
+										<div class="inline detail">
+											<div class="inline">
+												<div data-bind="ntsSwitchButton: {
+													options: __viewContext.enums.TimeBaseNumber,
+													optionsValue: 'value',
+													optionsText: 'name',
+													value: timeBaseNumber,
+													required: false }"></div>
+											</div>
+										</div>
+									</div>
+									<div class="row" data-bind="if: timeBaseNumber() == 0">
+										<div class="inline label">時分の区切り文字</div>
+										<div class="inline detail">
+											<div data-bind="ntsSwitchButton: {
+												options: __viewContext.enums.TimeBase60Delimiter,
+												optionsValue: 'value',
+												optionsText: 'name',
+												value: timeDelimiter,
+												required: false }"></div>
+										</div>
+									</div>
+									<div class="row" data-bind="if: timeBaseNumber() == 1">
+										<div class="inline label">1分未満の端数処理</div>
+										<div class="inline detail">
+											<div data-bind="ntsSwitchButton: {
+												options: __viewContext.enums.TimeBase10Rounding,
+												optionsValue: 'value',
+												optionsText: 'name',
+												value: timeRounding,
+												required: false }"></div>
+										</div>
+									</div>
+								</div> 
+							</div>
 						</div>
-						
 					</div>
 				</div>
 			</div>

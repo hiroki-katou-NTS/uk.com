@@ -3,21 +3,21 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 import java.math.BigDecimal;
 
 /**
- * 時間・時刻端数処理
+ * 10進表記時間の1分未満の端数処理
  */
-public enum TimeRounding {
+public enum TimeBase10Rounding {
 	/**
-	 * 1分未満切り捨て
+	 * 切り捨て
 	 */
-	DOWN_LESS_1_MINUTE(1, "Enum_TimeRounding_DOWN_LESS_1_MINUTE"), 
+	ROUND_DOWN(1, "Enum_TimeBase10Rounding_ROUND_DOWN"), 
 	/**
-	 * 1分未満切り上げ
+	 * 切り上げ
 	 */
-	UP_LESS_1_MINUTE(2, "Enum_TimeRounding_UP_LESS_1_MINUTE"), 
+	ROUND_UP(2, "Enum_TimeBase10Rounding_ROUND_UP"), 
 	/**
-	 * 1分未満四捨五入（小数点第1位迄）
+	 * 四捨五入
 	 */
-	HALF_UP_LESS_1_MINUTE(3, "Enum_TimeRounding_OFF_TO_LESS_1_MINUTE");
+	ROUND(3, "Enum_TimeBase10Rounding_ROUND");
 
 	/** The value. */
 	public final int value;
@@ -25,7 +25,7 @@ public enum TimeRounding {
 	/** The name id. */
 	public final String nameId;
 
-	private TimeRounding(int value, String nameId) {
+	private TimeBase10Rounding(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}
@@ -37,13 +37,13 @@ public enum TimeRounding {
 	 */
 	public Long round(BigDecimal target) {
 		switch(this) {
-		case DOWN_LESS_1_MINUTE:
+		case ROUND_DOWN:
 			// 切り捨て
 			return target.setScale(0, BigDecimal.ROUND_DOWN).longValue();
-		case UP_LESS_1_MINUTE:
+		case ROUND_UP:
 			// 切り上げ
 			return target.setScale(0, BigDecimal.ROUND_UP).longValue();
-		case HALF_UP_LESS_1_MINUTE:
+		case ROUND:
 			// 四捨五入
 			return target.setScale(0, BigDecimal.ROUND_HALF_UP).longValue();
 		default:

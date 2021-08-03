@@ -6,10 +6,10 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 public enum TimeBaseNumber {
 	
 	/** 60進数 */
-	SEXAGESIMAL(0, "60進数"), 
+	SEXAGESIMAL(0, "Enum_TimeBaseNumber_SEXAGESIMAL"), 
 	
 	/** 10進数 */
-	DECIMAL(1, "10進数");
+	DECIMAL(1, "Enum_TimeBaseNumber_DECIMAL");
 	
 	/** The value. */
 	public final int value;

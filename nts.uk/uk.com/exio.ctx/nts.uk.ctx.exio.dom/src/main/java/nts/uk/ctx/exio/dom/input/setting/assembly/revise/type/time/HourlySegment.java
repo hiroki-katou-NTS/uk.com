@@ -9,11 +9,11 @@ public enum HourlySegment {
 	/**
 	 * 時分
 	 */
-	HOUR_MINUTE(0, "時分"), 
+	HOUR_MINUTE(0, "Enum_HourlySegment_HOUR_MINUTE"), 
 	/**
 	 * 分 
 	 */
-	MINUTE(1, "分");
+	MINUTE(1, "Enum_HourlySegment_MINUTE");
 
 	/** The value. */
 	public final int value;

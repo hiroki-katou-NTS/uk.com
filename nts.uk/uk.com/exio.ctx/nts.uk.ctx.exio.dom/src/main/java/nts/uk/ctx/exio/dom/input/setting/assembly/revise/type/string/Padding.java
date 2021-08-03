@@ -2,11 +2,10 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 
 /**
  * 
- * 固定長編集
+ * 桁埋め
  *
  */
 @Getter
@@ -14,7 +13,7 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 public class Padding {
 	
 	/** 桁長 */
-	private ExternalImportRowNumber length;
+	private PaddingLength length;
 	
 	/** 編集方法 */
 	private PaddingMethod method;
