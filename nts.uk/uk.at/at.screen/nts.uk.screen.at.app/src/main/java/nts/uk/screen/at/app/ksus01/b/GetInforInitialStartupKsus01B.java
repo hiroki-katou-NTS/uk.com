@@ -29,44 +29,14 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUs
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.CriterionAmountUsageSettingRepository;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriterionAmount;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.HandlingOfCriterionAmountRepository;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.schedule.dom.adapter.classification.SClsHistImported;
-import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
-import nts.uk.ctx.at.shared.dom.adapter.employee.SClsHistImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
-import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
-import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
-import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -78,31 +48,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetInforInitialStartupKsus01B {
 	
 	@Inject
-	private WorkTypeRepository workTypeRepo;
-	@Inject
-	private WorkTimeSettingRepository workTimeSettingRepository;
-	@Inject
-	private BasicScheduleService basicScheduleService;
-	@Inject
-	private FixedWorkSettingRepository fixedWorkSettingRepository;
-	@Inject
-	private FlowWorkSettingRepository flowWorkSettingRepository;
-	@Inject
-	private FlexWorkSettingRepository flexWorkSettingRepository;
-	@Inject
-	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-	@Inject
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-	@Inject
-	private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-	@Inject
-	private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-	@Inject
-	private WorkingConditionRepository workingConditionRepo;
-	@Inject
-	private BusinessTypeEmpService businessTypeEmpService;
-	@Inject
-	private SyClassificationAdapter syClassificationAdapter;
 	@Inject
 	private WorkScheduleRepository workScheduleRepository;
 	@Inject
@@ -119,45 +65,41 @@ public class GetInforInitialStartupKsus01B {
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
 
 	public InforInitialDto handle(InforInitialInput input) {
-		
 		String employeeId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
+		
+		DatePeriod targetPeriod = new DatePeriod(GeneralDate.fromString(input.getStartDate(), DATE_TIME_FORMAT), 
+				GeneralDate.fromString(input.getEndDate(), DATE_TIME_FORMAT));
 		YearMonth baseYM = new YearMonth(input.getBaseYM());
-		DateInMonth closingDay = DateInMonth.of(input.getClosingDay());
+		DateInMonth closingDay = DateInMonth.of(input.getClosingDay()); //対象期間.終了日
 		
-		WorkScheduleRequireImpl workScheduleRequire = new WorkScheduleRequireImpl(companyId, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter, sharedAffWorkPlaceHisAdapter, workingConditionRepo, businessTypeEmpService, syClassificationAdapter);
 		EstimatedSalaryAggregationServiceRequireImpl estimatedSalaryAggregationServiceRequire = new EstimatedSalaryAggregationServiceRequireImpl(companyId, workScheduleRepository, dailyRecordShareFinder, criterionAmountUsageSettingRepository, criterionAmountForCompanyRepository, criterionAmountForEmploymentRepository, employmentHisScheduleAdapter, handlingOfCriterionAmountRepository);
+		DailyAttendanceGettingServiceRequireImpl dailyAttendanceGettingServiceRequire = new DailyAttendanceGettingServiceRequireImpl(workScheduleRepository, dailyRecordShareFinder);
 		
+		List<EmployeeId> empIds = new ArrayList<EmployeeId>();
+		EmployeeId empId = new EmployeeId(employeeId);
+		empIds.add(empId);
 		
-		//	1: *<call>: List<日別勤怠(Work)>
-		List<IntegrationOfDaily> integrationOfDailyList = input.getListWorkSchedule().stream().map(el -> {
-					//	1.1: 作る(require, 社員ID, 年月日, 勤務情報): 勤務予定
-					WorkSchedule workSchedule = WorkSchedule.create(workScheduleRequire, 
-							employeeId, 
-							GeneralDate.fromString(el.getYmd(), DATE_TIME_FORMAT), 
-							el.getWorkInfo().toDomain());
-					//	1.2: 日別勤怠Workに変換する(): 日別勤怠(Work)
-					return workSchedule.convertToIntegrationOfDaily();
-				}).collect(Collectors.toList());
+		//	1: 予定を取得する(Require, List<社員ID>, 基準年月): List<日別勤怠(Work)>
+		List<IntegrationOfDaily> integrationOfDailyList = DailyAttendanceGettingService.getSchedule(
+				dailyAttendanceGettingServiceRequire, empIds, targetPeriod);
 		
-		//	2: 月間想定給与額を集計する(基準年月, 締め日, List<日別勤怠（Work）>): Map<社員ID, 想定給与額>
+		//	2: 月間想定給与額を集計する(基準年月, 対象期間.終了日, List<日別勤怠（Work）>): Map<社員ID, 想定給与額>
 		Map<EmployeeId, EstimatedSalary> estimatedSalaryMonthlyMap = EstimatedSalaryAggregationService.aggregateByMonthly(
 				estimatedSalaryAggregationServiceRequire, 
 				baseYM, 
 				closingDay, 
 				integrationOfDailyList);
 		
-		//	3: 累計想定給与額を集計する(require, 基準年月, 締め日, 社員IDリスト): Map<社員ID, 想定給与額>
-		List<EmployeeId> empIds = new ArrayList<EmployeeId>();
-		EmployeeId empId = new EmployeeId(employeeId);
-		empIds.add(empId);
+		//	3: 累計想定給与額を集計する(require, 基準年月, 対象期間.終了日, 社員IDリスト): Map<社員ID, 想定給与額>
+		
 		Map<EmployeeId, EstimatedSalary> estimatedSalaryCumulativeMap = EstimatedSalaryAggregationService.aggregateByCumulatively(
 				estimatedSalaryAggregationServiceRequire, 
 				baseYM, 
 				closingDay, 
 				empIds);
 		
-		//	4: 集計する(社員別勤怠時間リスト): Map<社員ID, Map<集計対象の勤怠時間, BigDecimal>>
+		//	4: 集計する(日別勤怠リスト): Map<社員ID, Map<集計対象の勤怠時間, BigDecimal>>
 		Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> totalWorkingTimeMap = WorkingTimeCounterService.get(integrationOfDailyList);
 
 		AttendanceTimesForAggregation enum0 = null;
@@ -173,111 +115,23 @@ public class GetInforInitialStartupKsus01B {
 	}
 	
 	@AllArgsConstructor
-	private static class WorkScheduleRequireImpl implements WorkSchedule.Require {
+	private static class DailyAttendanceGettingServiceRequireImpl implements DailyAttendanceGettingService.Require {
 		
-		private String companyId;
-		private WorkTypeRepository workTypeRepo;
-		private WorkTimeSettingRepository workTimeSettingRepository;
-		private BasicScheduleService basicScheduleService;
-		private FixedWorkSettingRepository fixedWorkSettingRepository;
-		private FlowWorkSettingRepository flowWorkSettingRepository;
-		private FlexWorkSettingRepository flexWorkSettingRepository;
-		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-		private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-		private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-		private WorkingConditionRepository workingConditionRepo;
-		private BusinessTypeEmpService businessTypeEmpService;
-		private SyClassificationAdapter syClassificationAdapter;
-		
+		private WorkScheduleRepository workScheduleRepository;
+		private DailyRecordShareFinder dailyRecordShareFinder;
+
 		@Override
-		public Optional<WorkType> getWorkType(String workTypeCd) {
-			return workTypeRepo.findByPK(companyId, workTypeCd);
+		public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
+			return workScheduleRepository
+					.getList(empIds.stream().map(el -> el.v()).collect(Collectors.toList()), period)
+					.stream().map(el -> el.convertToIntegrationOfDaily()).collect(Collectors.toList());
 		}
 
 		@Override
-		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		public List<IntegrationOfDaily> getRecordList(List<EmployeeId> empIds, DatePeriod period) {
+			return dailyRecordShareFinder.findByListEmployeeId(empIds.stream().map(el -> el.v()).collect(Collectors.toList()), period);
 		}
 
-		@Override
-		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
-		}
-
-		@Override
-		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			return fixedWorkSettingRepository.findByKey(companyId, code.v()).orElse(new FixedWorkSetting());
-		}
-
-		@Override
-		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			return flowWorkSettingRepository.find(companyId, code.v()).orElse(new FlowWorkSetting());
-		}
-
-		@Override
-		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			return flexWorkSettingRepository.find(companyId, code.v()).orElse(new FlexWorkSetting());
-		}
-
-		@Override
-		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			return predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v()).orElse(new PredetemineTimeSetting());
-		}
-
-		@Override
-		public SharedSyEmploymentImport getAffEmploymentHistory(String employeeId, GeneralDate standardDate) {
-			List<EmploymentPeriodImported> listEmpHist = employmentHisScheduleAdapter
-					.getEmploymentPeriod(Arrays.asList(employeeId), new DatePeriod(standardDate, standardDate));
-			if(listEmpHist.isEmpty())
-				return null;
-			return new SharedSyEmploymentImport(listEmpHist.get(0).getEmpID(), listEmpHist.get(0).getEmploymentCd(), "",
-					listEmpHist.get(0).getDatePeriod());
-		}
-
-		@Override
-		public SharedAffJobTitleHisImport getAffJobTitleHistory(String employeeId, GeneralDate standardDate) {
-			List<SharedAffJobTitleHisImport> listAffJobTitleHis =  sharedAffJobtitleHisAdapter.findAffJobTitleHisByListSid(Arrays.asList(employeeId), standardDate);
-			if(listAffJobTitleHis.isEmpty())
-				return null;
-			return listAffJobTitleHis.get(0);
-		}
-
-		@Override
-		public SharedAffWorkPlaceHisImport getAffWorkplaceHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SharedAffWorkPlaceHisImport> rs = sharedAffWorkPlaceHisAdapter.getAffWorkPlaceHis(employeeId, standardDate);
-			return rs.isPresent() ? rs.get() : null;
-		}
-
-		@Override
-		public SClsHistImport getClassificationHistory(String employeeId, GeneralDate standardDate) {
-			Optional<SClsHistImported> imported = syClassificationAdapter.findSClsHistBySid(companyId, employeeId, standardDate);
-			if (!imported.isPresent()) {
-				return null;
-			}
-			return new SClsHistImport(imported.get().getPeriod(), imported.get().getEmployeeId(),
-					imported.get().getClassificationCode(), imported.get().getClassificationName());
-		}
-
-		@Override
-		public Optional<BusinessTypeOfEmployee> getBusinessType(String employeeId, GeneralDate standardDate) {
-			List<BusinessTypeOfEmployee> list = businessTypeEmpService.getData(employeeId, standardDate);
-			if (list.isEmpty()) 
-				return Optional.empty();
-			return Optional.of(list.get(0));
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> getWorkingConditionHistory(String employeeId, GeneralDate standardDate) {
-			Optional<WorkingConditionItem> rs = workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(companyId, standardDate, employeeId);
-			return rs;
-		}
-
-		@Override
-		public String getLoginEmployeeId() {
-			return AppContexts.user().employeeId();
-		}
-		
 	}
 	
 	@AllArgsConstructor

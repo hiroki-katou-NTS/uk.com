@@ -556,7 +556,7 @@ export class KSUS01AComponent extends Vue {
     public openKSUS01B() {
         let self = this;
         let params: ParamB = {
-            listWorkSchedule: self.listWorkSchedule,
+            // listWorkSchedule: self.listWorkSchedule,
             baseYM: self.yearMonth,
             targetPeriod: {
                 start: self.startDate,
@@ -668,7 +668,7 @@ export interface PeriodCommand {
 }
 
 export interface ParamB {
-    listWorkSchedule: Array<WorkScheduleDto>;
+    // listWorkSchedule: Array<WorkScheduleDto>;
     baseYM: string;
     targetPeriod: PeriodCommand;
 }

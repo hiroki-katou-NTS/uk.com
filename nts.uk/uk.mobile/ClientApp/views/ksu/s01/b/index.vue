@@ -15,6 +15,10 @@
         <span class="xxx-large blue bold">{{totalWorkingTime}}</span>
         <!-- B1_5 -->
         <span class="bold blue">{{ "KSUS01_17" | i18n }}</span>
+        <!-- B1_5_1 -->
+        <span v-if="totalWorkingTimeMinutes > 0" class="xxx-large blue bold">{{totalWorkingTimeMinutes}}</span>
+        <!-- B1_5_2 -->
+        <span v-if="totalWorkingTimeMinutes > 0" class="bold blue">{{ "KSUS01_23" | i18n }}</span>
     </div>
     <div class="left-container">
         <!-- B1_6 -->

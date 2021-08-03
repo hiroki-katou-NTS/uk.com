@@ -20,6 +20,7 @@ export class KSUS01BComponent extends Vue {
     public endDate: string = '';
 
     public totalWorkingTime: number = 0;
+    public totalWorkingTimeMinutes: number = 0;
     public estimatedSalaryMonthly: number = 0;
     public estimatedSalaryCumulative: number = 0;
 
@@ -34,7 +35,9 @@ export class KSUS01BComponent extends Vue {
         self.endDate = moment(self.params.targetPeriod.end, 'YYYY/MM/DD').format('M月D日');
         let closingDay = moment(self.params.targetPeriod.end, 'YYYY/MM/DD').format('DD');
         let command = {
-            listWorkSchedule: self.params.listWorkSchedule,
+            // listWorkSchedule: self.params.listWorkSchedule,
+            startDate: self.params.targetPeriod.start,
+            endDate : self.params.targetPeriod.end,
             baseYM: parseInt(self.params.baseYM),
             closingDay: parseInt(closingDay),
         };
@@ -42,7 +45,8 @@ export class KSUS01BComponent extends Vue {
         self.$http.post('at', API.start, command).then((res: any) => {
             let data: InforInitialDto = res.data;
 
-            self.totalWorkingTime = data.totalWorkingTime;
+            self.totalWorkingTime = Math.floor(data.totalWorkingTime / 60);
+            self.totalWorkingTimeMinutes = data.totalWorkingTime - self.totalWorkingTime * 60;
             self.estimatedSalaryMonthly = data.estimatedSalaryMonthly;
             self.estimatedSalaryCumulative = data.estimatedSalaryCumulative;
         }).catch((error: any) => {
