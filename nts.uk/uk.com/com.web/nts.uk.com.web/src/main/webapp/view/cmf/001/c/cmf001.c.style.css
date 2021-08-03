@@ -42,6 +42,10 @@ body.ko-cloak {
 	margin-bottom: 15px;
 }
 
+#padding-length {
+	width: 30px;
+}
+
 #code-convert {
 	margin-left: 40px;
 }

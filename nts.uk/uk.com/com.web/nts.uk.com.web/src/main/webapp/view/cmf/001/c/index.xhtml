@@ -11,6 +11,10 @@
 		<com:stylefile path="cmf001.c.style.css" />
 		<com:scriptfile path="cmf001.c.vm.js" />
 		
+		<com:ValidatorScript>
+			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingLength
+		</com:ValidatorScript>
+		
 		<com:EnumScript>
 			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod
 			nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImportDateFormat
@@ -74,7 +78,14 @@
 									<div data-bind="ntsCheckBox: { checked: usePadding, text: '桁埋めする' }"></div>
 								</div>
 								<div class="inline detail">
-									<input data-bind="ntsNumberEditor: {value: paddingLength, enable: usePadding }" />
+									<input id="padding-length" data-bind="ntsNumberEditor: {
+										value: paddingLength,
+										enable: usePadding,
+										constraint: 'PaddingLength',
+										option: {
+											symbolChar: '桁'
+										}
+									}" />
 									<input data-bind="ntsComboBox: {
 										options: __viewContext.enums.PaddingMethod,
 										optionsValue: 'value',
