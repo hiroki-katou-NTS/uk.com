@@ -72,15 +72,15 @@ public class ScreenQueryAggregateNumberTimePs {
 		// 2: Optional<回数集計選択>.isPresent
 		if (countInfoOp.isPresent()) {
 			
-
 			// 2.1: 社員別に集計する(Require, List<回数集計NO>, List<日別勤怠(Work)>)
 			Map<EmployeeId, Map<Integer, BigDecimal>> countTotalTime = TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(
 					require,
-					CollectionUtil.isEmpty(countInfoOp.get().getCountNumberOfTimeDtos()) ? Collections.emptyList() : 
-						Arrays.asList(new Integer[] {countInfoOp.get().getCountNumberOfTimeDtos().get(0).getNumber()})  // 集計対象の回数集計 = 1で取得した「回数集計選択」．選択した項目リスト
-						  .stream()
-						  .map(x -> (Integer)x)
-						  .collect(Collectors.toList()), 
+					// 集計対象の回数集計 = 1で取得した「回数集計選択」．選択した項目リスト
+					countInfoOp.map(x -> x.getNumberOfTimeTotalDtos())
+							   .orElse(Collections.emptyList())
+							   .stream()
+							   .map(x -> x.getNumber())
+							   .collect(Collectors.toList()),
 					aggrerateintegrationOfDaily // 日別勤怠リスト = Input．List<日別勤怠(Work)>
 					);
 			
@@ -93,15 +93,22 @@ public class ScreenQueryAggregateNumberTimePs {
 					   .collect(Collectors.toList())
 					);
 			
-			countTotalTime.entrySet()
+			countTotalTime
+				.entrySet()
 				.stream()
 				.forEach(e -> {
 					Map<TotalTimes, BigDecimal> value = new HashMap<>();
 					totalTimes.stream().forEach(item -> {
 						
-						Map<TotalTimes, BigDecimal> totalTimeMap = e.getValue().entrySet().stream().collect(Collectors.toMap(
-								x -> item,
-								x -> (BigDecimal)x.getValue()));
+						Map<TotalTimes, BigDecimal> totalTimeMap = 
+								e.getValue()
+								 .entrySet()
+								 .stream()
+								 .filter(x -> x.getKey() == item.getTotalCountNo())
+								 .collect(Collectors.toMap(
+										x -> item,
+										x -> (BigDecimal)x.getValue())
+								 );
 						value.putAll(totalTimeMap);
 						
 					});
