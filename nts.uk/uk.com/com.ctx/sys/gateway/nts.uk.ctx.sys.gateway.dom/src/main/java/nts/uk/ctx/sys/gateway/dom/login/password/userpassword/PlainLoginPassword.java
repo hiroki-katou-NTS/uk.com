@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.shared.dom.user.password;
+package nts.uk.ctx.sys.gateway.dom.login.password.userpassword;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(30)
 @StringCharType(CharType.ANY_HALF_WIDTH)
-public class RawPassword extends StringPrimitiveValue<RawPassword> {
+public class PlainLoginPassword extends StringPrimitiveValue<PlainLoginPassword> {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -17,7 +17,7 @@ public class RawPassword extends StringPrimitiveValue<RawPassword> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public RawPassword(String rawValue) {
+	public PlainLoginPassword(String rawValue) {
 		super(rawValue);
 	}
 }

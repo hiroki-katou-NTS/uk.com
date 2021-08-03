@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.login.password.authenticate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
@@ -17,12 +16,12 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.FailedPasswordAuthenticate.Require;
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordState;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockOutMessage;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 public class PasswordAuthenticateWithEmployeeCodeTest {
 	@Mocked IdentifiedEmployeeInfo idenEmpInfo;
@@ -30,7 +29,7 @@ public class PasswordAuthenticateWithEmployeeCodeTest {
 	@Mocked User user;
 	@Mocked FailedAuthenticateTask failedAuthenticateTask;
 	@Mocked PasswordPolicy passwordPolicy;
-	@Mocked PassStatus passStatus;
+	@Mocked PasswordState passStatus;
 	@Mocked ValidationResultOnLogin validationResultOnLogin;
 	@Mocked LoginPasswordOfUser userPassword;
 	
