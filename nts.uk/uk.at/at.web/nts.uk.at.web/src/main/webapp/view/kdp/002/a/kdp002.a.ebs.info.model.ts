@@ -9,16 +9,26 @@ module nts.uk.at.view.kdp002.a {
 			displayMethod: KnockoutObservable<any>;
 			displayType: any = { HIDE: 0, DISPLAY: 1, SHOW_TIME_CARD: 2 };
 			dateValue: KnockoutObservable<{ startDate: string; endDate: string; }>;
-			yearMonth: KnockoutObservable<any>;
+			yearMonth: KnockoutObservable<any> = ko.observable('');
 			workManagementMultiple: KnockoutObservable<boolean> = ko.observable(false);
+			systemDate: KnockoutObservable<any> = ko.observable('');
 
 			constructor(start: IStartPage, workManagementMultiple: boolean) {
 				let self = this;
+				let vm = new ko.ViewModel();
 				let setting = start.stampSetting;
 				
 				self.displayMethod = ko.observable(setting.historyDisplayMethod);
 				self.dateValue = ko.observable({ startDate: moment().add(-3, 'days').format('YYYY/MM/DD'), endDate: moment().format('YYYY/MM/DD') });
-				self.yearMonth = ko.observable(moment().format('YYYY/MM'));
+				
+				vm.$ajax('at', '/server/time/now')
+				.then((c) => {
+					const sysDate = moment(c).format('YYYY/MM/DD');;
+					const yearMonth = moment(c).format('YYYY/MM');
+
+					self.yearMonth(yearMonth);
+					self.systemDate(sysDate);
+				});
 				self.workManagementMultiple(workManagementMultiple);
 
 				if (self.displayMethod() == self.displayType.DISPLAY) {
@@ -106,7 +116,8 @@ module nts.uk.at.view.kdp002.a {
 						} else {
 							formatedCardTime = "<span class=''>" + formatedCardTime + "</span>";
 						}
-						let systemDate = moment().format('YYYY/MM/DD');
+						
+						let systemDate = model.systemDate();
 						
 						if (timeCard.date === systemDate && systemDate.substr(0, 7) === model.yearMonth()) {
 							model.currentCode(timeCard.code);
