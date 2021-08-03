@@ -89,7 +89,6 @@ public class VariousVacationControlService {
 
 		//ドメインモデル「60H超休管理設定」を取得する
 		val com60HourVacation = com60HourVacationRepository.findById(companyId);
-		// TODO KHONG TIM RA DOMAIN Emp60HourVacation
 		if (com60HourVacation.isPresent() && com60HourVacation.get().getSetting().getIsManage() == ManageDistinct.YES) {
 			com60HourVacationSetting = true;
 		}

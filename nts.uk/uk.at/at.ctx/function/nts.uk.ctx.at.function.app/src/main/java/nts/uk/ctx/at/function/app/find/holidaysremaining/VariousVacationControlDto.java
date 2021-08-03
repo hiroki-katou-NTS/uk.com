@@ -19,7 +19,7 @@ public class VariousVacationControlDto {
 	private boolean publicHolidaySetting ;
 	boolean halfDayYearlySetting;
 	boolean hourlyLeaveSetting;
-	boolean pauseItemHolidaySettingCompany;;
+	boolean pauseItemHolidaySettingCompany;
 
 	private List<SpecialHolidayDto> listSpecialHoliday;
 

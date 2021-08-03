@@ -88,7 +88,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
 
                 }
 
-                if (!vacationControl || vacationControl.isPauseItemHolidaySettingCompany == false) {
+                if (!vacationControl || vacationControl.pauseItemHolidaySettingCompany == false) {
                     $('#rowPauseItemHoliday').addClass("hidden");
                 }
 
@@ -198,7 +198,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                 self.currentHoliday().remainingChargeSubstitute(false);
             }
 
-            if (!vacationControl || vacationControl.isPauseItemHolidaySettingCompany == false) {
+            if (!vacationControl || vacationControl.pauseItemHolidaySettingCompany == false) {
                 self.currentHoliday().pauseItem(false);
                 self.currentHoliday().unDigestedPause(false);
                 self.currentHoliday().numberRemainingPause(false);
@@ -385,7 +385,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     self.currentHoliday().representSubstitute(false);
                     self.currentHoliday().remainingChargeSubstitute(false);
                 }
-                if (!vacationControl || vacationControl.isPauseItemHolidaySettingCompany == false) {
+                if (!vacationControl || vacationControl.pauseItemHolidaySettingCompany == false) {
                     self.currentHoliday().pauseItem(false);
                     self.currentHoliday().unDigestedPause(false);
                     self.currentHoliday().numberRemainingPause(false);
@@ -757,7 +757,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         publicHolidaySetting: boolean;
         halfDayYearlySetting:boolean;
         hourlyLeaveSetting:boolean;
-        isPauseItemHolidaySettingCompany:boolean;
+        pauseItemHolidaySettingCompany:boolean;
         listSpecialHoliday: Array<ISpecialHoliday>;
     }
 
