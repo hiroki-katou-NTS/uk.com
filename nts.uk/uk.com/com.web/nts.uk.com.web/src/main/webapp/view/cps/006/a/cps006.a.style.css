@@ -65,3 +65,16 @@ input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
 .nts-help-button-image {
 	left: 30px !important;
 }
+
+.custom-img-1, .custom-img-2{
+	display: inline;
+}
+
+.custom-img-1 .nts-help-button-image img {
+	width: 420px;
+}
+
+.custom-img-2 .nts-help-button-image img {
+	width: 340px;
+	height: 400px;
+}

@@ -52,3 +52,11 @@
 }
 
 
+.custom-img-1 .nts-help-button-image img {
+	width: 340px;
+	height: 400px;
+}
+
+.custom-img-2 .nts-help-button-image img {
+	width: 420px;
+}
