@@ -14,22 +14,34 @@ import java.util.Optional;
 public class AlarmListExecutionMailSetting extends AggregateRoot {
     private String companyId;
 
-    /** 個人職場区分 */
+    /**
+     * 個人職場区分
+     */
     private IndividualWkpClassification individualWkpClassify;
 
-    /** 通常自動区分 */
+    /**
+     * 通常自動区分
+     */
     private NormalAutoClassification normalAutoClassify;
 
-    /** 本人管理区分 */
+    /**
+     * 本人管理区分
+     */
     private PersonalManagerClassification personalManagerClassify;
 
-    /** 内容メール設定 */
+    /**
+     * 内容メール設定
+     */
     private Optional<MailSettings> contentMailSettings;
 
-    /** 送信元アドレス */
+    /**
+     * 送信元アドレス
+     */
     private MailAddress senderAddress;
 
-    /** マスタチェック結果を就業担当へ送信 */
+    /**
+     * マスタチェック結果を就業担当へ送信
+     */
     private boolean sendResult;
 
     /**
@@ -42,11 +54,10 @@ public class AlarmListExecutionMailSetting extends AggregateRoot {
      * @return 設定済
      */
     public boolean isAlreadyConfigured(String cid, int individualWkpClassification, int normalAutoClassification, int personalManagerClassification) {
-        return companyId.equals(cid) &&
-                individualWkpClassify.value == individualWkpClassification &&
-                normalAutoClassify.value == normalAutoClassification &&
-                personalManagerClassify.value == personalManagerClassification &&
-                contentMailSettings.isPresent();
+        return this.companyId.equals(cid) &&
+                this.individualWkpClassify.value == individualWkpClassification &&
+                this.normalAutoClassify.value == normalAutoClassification &&
+                this.personalManagerClassify.value == personalManagerClassification &&
+                this.contentMailSettings.isPresent();
     }
-
 }

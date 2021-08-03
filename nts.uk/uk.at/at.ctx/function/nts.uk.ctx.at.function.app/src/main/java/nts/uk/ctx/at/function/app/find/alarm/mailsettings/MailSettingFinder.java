@@ -1,31 +1,65 @@
 package nts.uk.ctx.at.function.app.find.alarm.mailsettings;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import lombok.val;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSettingRepository;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingAutomaticRepository;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormalRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 @Stateless
 public class MailSettingFinder {
 
-	@Inject
-	private MailSettingAutomaticRepository mailAutomaticRepo;
+    @Inject
+    private MailSettingAutomaticRepository mailAutomaticRepo;
 
-	@Inject
-	private MailSettingNormalRepository mailNormalRepo;
+    @Inject
+    private MailSettingNormalRepository mailNormalRepo;
 
-	public MailAutoAndNormalDto findMailSet() {
-		String companyId = AppContexts.user().companyId();
-		if (StringUtil.isNullOrEmpty(companyId, true))
-			return null;
+    @Inject
+    private AlarmMailSendingRoleRepository mailSendingRoleRepository;
 
-		MailSettingAutomaticDto mailSettingAutomaticDto = new MailSettingAutomaticDto(mailAutomaticRepo.findByCompanyId(companyId));
-		MailSettingNormalDto mailSettingNormalDto = new MailSettingNormalDto(mailNormalRepo.findByCompanyId(companyId));
+    @Inject
+    private AlarmListExecutionMailSettingRepository mailSettingRepository;
 
-		return new MailAutoAndNormalDto(mailSettingAutomaticDto, mailSettingNormalDto);
-	}
+    public MailAutoAndNormalDto findMailSet() {
+        String companyId = AppContexts.user().companyId();
+        if (StringUtil.isNullOrEmpty(companyId, true))
+            return null;
+
+        MailSettingAutomaticDto mailSettingAutomaticDto = new MailSettingAutomaticDto(mailAutomaticRepo.findByCompanyId(companyId));
+        MailSettingNormalDto mailSettingNormalDto = new MailSettingNormalDto(mailNormalRepo.findByCompanyId(companyId));
+
+        return new MailAutoAndNormalDto(mailSettingAutomaticDto, mailSettingNormalDto);
+    }
+
+    public AlarmMailSendingRoleDto getRole(int individualWkpClassify) {
+        val role = mailSendingRoleRepository.find(AppContexts.user().companyId(), individualWkpClassify);
+        if (!role.isPresent()) {
+            return null;
+        }
+        return new AlarmMailSendingRoleDto(role.get().getIndividualWkpClassify().value,
+                role.get().isRoleSetting(),
+                role.get().isSendResult(),
+                role.get().getRoleIds()
+        );
+    }
+
+    public MailSettingDto getConfigured(int personalManagerClassify) {
+        val alarmListExecutionMailSettingList = mailSettingRepository.findAll(AppContexts.user().companyId(), personalManagerClassify);
+        if (alarmListExecutionMailSettingList.isEmpty()) {
+            return new MailSettingDto(false);
+        }
+        boolean isCOnfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured(x.getCompanyId(),
+                x.getIndividualWkpClassify().value,
+                x.getIndividualWkpClassify().value,
+                x.getPersonalManagerClassify().value
+        ));
+        return new MailSettingDto(isCOnfigured);
+    }
 
 }
