@@ -15,9 +15,9 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTablePk;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTable;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionTablePk;
 
 @Stateless
 public class JpaConversionTableRepository extends JpaRepository implements ConversionTableRepository {
@@ -39,9 +39,7 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 				.map(entity -> entity.toDomain(info, info.getJoin(source)))
 				.collect(Collectors.toList());
 
-		return entities.stream()
-			.map(entity -> entity.toDomain(info, columns, source))
-			.findFirst();
+		return Optional.of(ScvmtConversionTable.toDomain(tableName, info, columns, source));
 	}
 
 	@Override

@@ -65,4 +65,6 @@ public interface ConversionPatternValue {
 
 	/** FILE_ID **/
 	String getSourceColumn_fileId();
+	String getFileType();
+	String getSourceColumn_kojinId();
 }

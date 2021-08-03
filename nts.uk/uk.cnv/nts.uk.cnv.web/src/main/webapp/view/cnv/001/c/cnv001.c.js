@@ -160,9 +160,13 @@ $(function(){
 		options = $.map(ukColumnsList, function(value, index) {
 			var registered = ($.inArray(value.name, registeredColumnList) !== -1);
 			var mark = registered ? "●" : "　";
+			var length = 25 - getLen(value.name);
+			if (length <= 0) {
+				length = 1;
+			}
 			return $('<option>', {
 					value: value.name,
-					text: mark + " " + value.name + String.fromCharCode(160).repeat(25-getLen(value.name)) + " : " + value.dataType + "(" + value.length + "," + value.scale + ")" });
+					text: mark + " " + value.name + String.fromCharCode(160).repeat(length) + " : " + value.dataType + "(" + value.length + "," + value.scale + ")" });
 		});
 
 		$('#selUkColumns > option').remove();
@@ -508,6 +512,8 @@ $(function(){
 
 		// FILE_ID
 		var sourceColumn_fileId;
+		var fileType;
+		var sourceColumn_kojinId;
 
 		switch(conversionType){
 		case "NONE":
@@ -617,7 +623,9 @@ $(function(){
 			break;
 		case "FILE_ID":
 			sourceColumn_fileId = $("#selSourceColumn_fileId option:selected").val();
-			if(sourceColumn_none === "") {
+			fileType = $("#selFileType option:selected").val();
+			sourceColumn_kojinId = $("#selSourceColumn_kojinId option:selected").val();
+			if(sourceColumn_none === "" || fileType === "") {
 				showMsg("必須項目が入力されていません");
 				return;
 			}
@@ -666,7 +674,9 @@ $(function(){
 			sourceColumn_yyyymmddhhmi: sourceColumn_yyyymmddhhmi,
 			sourceColumn_yyyymmddhhmiss: sourceColumn_yyyymmddhhmiss,
 			sourceColumn_password: sourceColumn_password,
-			sourceColumn_fileId: sourceColumn_fileId
+			sourceColumn_fileId: sourceColumn_fileId,
+			fileType: fileType,
+			sourceColumn_kojinId: sourceColumn_kojinId
 		};
 	}
 

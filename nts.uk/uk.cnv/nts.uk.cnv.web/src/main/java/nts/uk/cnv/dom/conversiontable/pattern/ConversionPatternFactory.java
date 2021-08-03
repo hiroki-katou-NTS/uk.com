@@ -122,7 +122,8 @@ public class ConversionPatternFactory {
 			case Password:
 				return new PasswordPattern(info, join, param.getSourceColumn_password());
 			case FileId:
-				return new FileIdPattern(info, join, param.getSourceColumn_fileId());
+				return new FileIdPattern(info, join, param.getSourceColumn_fileId(),
+						param.getFileType(), param.getSourceColumn_kojinId());
 		}
 		return null;
 	}
