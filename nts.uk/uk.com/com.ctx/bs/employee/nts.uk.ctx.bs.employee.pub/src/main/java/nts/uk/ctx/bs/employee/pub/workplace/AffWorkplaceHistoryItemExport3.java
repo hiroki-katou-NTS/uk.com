@@ -25,18 +25,17 @@ public class AffWorkplaceHistoryItemExport3 {
 	// 職場ID
 	private String  workplaceId;
 	
-	/** The normalWorkplaceCode. */
-	// 通常職場コード
-	private String  normalWorkplaceId;
+//	/** The normalWorkplaceCode. */
+//	// 通常職場コード
+//	private String  normalWorkplaceId;
 
 	private Optional<String> workLocationCode;
 	
 	public AffWorkplaceHistoryItemExport3(String historyId, String employeeId, String workplaceId,
-			String normalWorkplaceId, String workLocation) {
+			String workLocation) {
 		this.historyId   = historyId;
 		this.employeeId  = employeeId;
 		this.workplaceId = workplaceId;
-		this.normalWorkplaceId = normalWorkplaceId;
 		this.workLocationCode  = workLocation == null? Optional.empty(): Optional.of(workLocation);
 	}
 }

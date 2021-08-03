@@ -18,7 +18,7 @@ public class WorkplaceHistoryItemExport {
 	
 	private String  workplaceId;
 
-	private String  normalWorkplaceId;
+//	private String  normalWorkplaceId;
 
 	private Optional<String> workLocationCode;
 }

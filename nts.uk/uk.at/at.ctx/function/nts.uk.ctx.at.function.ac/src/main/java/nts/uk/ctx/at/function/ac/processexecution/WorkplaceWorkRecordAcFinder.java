@@ -93,13 +93,13 @@ public class WorkplaceWorkRecordAcFinder implements WorkplaceWorkRecordAdapter {
 //	}
 	
 	private AffWorkplaceHistoryItemImport convertToAffWorkplaceHistoryItemExport(AffWorkplaceHistoryItemExport export) {
-		return new AffWorkplaceHistoryItemImport(export.getHistoryId(),export.getWorkplaceId(),export.getNormalWorkplaceId());
+		return new AffWorkplaceHistoryItemImport(export.getHistoryId(),export.getWorkplaceId());
 	}
 	
 	public List<WorkplaceHistoryItemImport> findWorkplaceHistoryItem(List<String> empIds, GeneralDate baseDate) {
 		return workplaceHistoryItemPub.findByEmpIdsAndDate(empIds, baseDate).stream()
 			.map(w -> new WorkplaceHistoryItemImport(w.getHistoryId(), w.getEmployeeId(), w.getWorkplaceId(), 
-						w.getNormalWorkplaceId(), w.getWorkLocationCode()))
+						 w.getWorkLocationCode()))
 			.collect(Collectors.toList());
 	}
 }
