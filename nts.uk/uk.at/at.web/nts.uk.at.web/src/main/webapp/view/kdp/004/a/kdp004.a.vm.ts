@@ -59,6 +59,8 @@ module nts.uk.at.view.kdp004.a {
 			modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
 			useWork: KnockoutObservable<boolean> = ko.observable(false);
 
+			showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
+
 			// get from basyo;
 			workplace: string[] | [] = [];
 			worklocationCode: null | string = null;
@@ -80,6 +82,34 @@ module nts.uk.at.view.kdp004.a {
 				let self = this;
 				let dfd = $.Deferred<void>();
 				const vm = new ko.ViewModel;
+
+				ko.computed({
+					read: () => {
+						const mes = ko.unwrap(self.errorMessage);
+						const noti = ko.unwrap(self.fingerStampSetting).noticeSetDto;
+	
+						var result = null;
+	
+						if (mes === null) {
+							result = false;
+						}
+						if (noti) {
+							if (ko.unwrap(self.fingerStampSetting).noticeSetDto.displayAtr == 1) {
+								result = true;
+							} else {
+								result = false;
+							}
+						} else {
+							result = false;
+						}
+	
+						if(mes) {
+							result = null;
+						}
+	
+						self.showMessage(result);
+					}
+				});
 
 				vm.$ajax(API.SETTING_STAMP_COMMON)
 					.done((data: any) => {
@@ -126,9 +156,7 @@ module nts.uk.at.view.kdp004.a {
 						});
 					self.modeBasyo(false);
 				});
-
 				return dfd.promise();
-
 			}
 
 			showButton() {
@@ -182,10 +210,17 @@ module nts.uk.at.view.kdp004.a {
 							if (self.isUsed()) {
 								service.login(loginInfo).done((res) => {
 
+									console.log(res);
+
+									if (res.msgErrorId && res.msgErrorId !== '') {
+										console.log(res.msgErrorId as String);
+										
+										self.errorMessage(getMessage("Msg_302"));
+									}
+								
 									block.grayout();
 									service.startPage()
 										.done((res: any) => {
-
 											if (!res.stampSetting || !res.stampResultDisplay || !res.stampSetting.pageLayouts.length) {
 												self.errorMessage(self.getErrorNotUsed(1));
 												self.isUsed(false);
@@ -212,7 +247,7 @@ module nts.uk.at.view.kdp004.a {
 
 								}).fail((res) => {
 									self.isUsed(false);
-									self.errorMessage(getMessage(res.messageId));
+									self.errorMessage(res.errorMessage);
 									dfd.resolve();
 								}).always(() => {
 
@@ -906,6 +941,10 @@ module nts.uk.at.view.kdp004.a {
 								vm.$ajax(API.NOTICE, param)
 									.done((data: IMessage) => {
 										self.messageNoti(data);
+										
+										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+											self.shoNoti();
+										}
 									});
 							}
 						});
@@ -927,6 +966,9 @@ module nts.uk.at.view.kdp004.a {
 							vm.$ajax(API.NOTICE, param)
 								.done((data: IMessage) => {
 									self.messageNoti(data);
+									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+										self.shoNoti();
+									}
 								});
 						})
 						.always(() => {

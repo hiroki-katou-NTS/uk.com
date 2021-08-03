@@ -58,6 +58,8 @@ module nts.uk.at.view.kdp005.a {
 			messageNoti: KnockoutObservable<IMessage> = ko.observable();
 			fingerStampSetting: KnockoutObservable<FingerStampSetting> = ko.observable(DEFAULT_SETTING);
 
+			showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
+
 			//basyo mode
 			modeBasyo: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -88,6 +90,34 @@ module nts.uk.at.view.kdp005.a {
 				let self = this;
 				let dfd = $.Deferred<void>();
 				const vm = new ko.ViewModel();
+
+				ko.computed({
+					read: () => {
+						const mes = ko.unwrap(self.errorMessage);
+						const noti = ko.unwrap(self.fingerStampSetting).noticeSetDto;
+	
+						var result = null;
+	
+						if (mes === null) {
+							result = false;
+						}
+						if (noti) {
+							if (ko.unwrap(self.fingerStampSetting).noticeSetDto.displayAtr == 1) {
+								result = true;
+							} else {
+								result = false;
+							}
+						} else {
+							result = false;
+						}
+	
+						if(mes) {
+							result = null;
+						}
+	
+						self.showMessage(result);
+					}
+				});
 
 				self.getWorkPlacesInfo();
 				self.basyo().done(() => {
@@ -867,6 +897,10 @@ module nts.uk.at.view.kdp005.a {
 								vm.$ajax(API.NOTICE, param)
 									.done((data: IMessage) => {
 										self.messageNoti(data);
+
+										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+											self.shoNoti();
+										}
 									});
 							}
 						});
@@ -888,6 +922,10 @@ module nts.uk.at.view.kdp005.a {
 							vm.$ajax(API.NOTICE, param)
 								.done((data: IMessage) => {
 									self.messageNoti(data);
+
+									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
+										self.shoNoti();
+									}
 								});
 						})
 						.always(() => {
