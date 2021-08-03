@@ -164,38 +164,38 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	/*----------------------日別実績の休憩時間帯------------------------------*/
 	@Column(name = "TO_RECORD_TOTAL_TIME")
-	public Integer toRecordTotalTime;
+	public int toRecordTotalTime;
 	@Column(name ="TO_RECORD_IN_TIME")
-	public Integer toRecordInTime;
+	public int toRecordInTime;
 	@Column(name ="TO_RECORD_OUT_TIME")
-	public Integer toRecordOutTime;
+	public int toRecordOutTime;
 	
 	@Column(name ="DEDUCTION_TOTAL_TIME")
-	public Integer deductionTotalTime;
+	public int deductionTotalTime;
 	@Column(name ="DEDUCTION_IN_TIME")
-	public Integer deductionInTime;
+	public int deductionInTime;
 	@Column(name ="DEDUCTION_OUT_TIME")
-	public Integer deductionOutTime;
+	public int deductionOutTime;
 	
 	@Column(name ="CAL_TO_RECORD_TOTAL_TIME")
-	public Integer calToRecordTotalTime;
+	public int calToRecordTotalTime;
 	@Column(name ="CAL_TO_RECORD_IN_TIME")
-	public Integer calToRecordInTime;
+	public int calToRecordInTime;
 	@Column(name ="CAL_TO_RECORD_OUT_TIME")
-	public Integer calToRecordOutTime;
+	public int calToRecordOutTime;
 	
 	@Column(name ="CAL_DEDUCTION_TOTAL_TIME")
-	public Integer calDeductionTotalTime;
+	public int calDeductionTotalTime;
 	@Column(name ="CAL_DEDUCTION_IN_TIME")
-	public Integer calDeductionInTime;
+	public int calDeductionInTime;
 	@Column(name ="CAL_DEDUCTION_OUT_TIME")
-	public Integer calDeductionOutTime;
+	public int calDeductionOutTime;
 	
 	@Column(name ="DURINGWORK_TIME")
 	public int duringworkTime;
 	
 	@Column(name ="COUNT")
-	public Integer count;
+	public int count;
 	/*----------------------日別実績の休憩時間帯------------------------------*/
 	
 	/*----------------------日別実績の休出枠時間------------------------------*/
@@ -788,68 +788,6 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	@Column(name = "DIVERGENCE_TIME10")
 	public int divergenceTime10;
 	
-	/*控除時間１*/
-	@Column(name = "DEDUCTION_TIME1")
-	public int deductionTime1;
-	/*控除時間2*/
-	@Column(name = "DEDUCTION_TIME2")
-	public int deductionTime2;
-	/*控除時間3*/
-	@Column(name = "DEDUCTION_TIME3")
-	public int deductionTime3;
-	/*控除時間4*/
-	@Column(name = "DEDUCTION_TIME4")
-	public int deductionTime4;
-	/*控除時間5*/
-	@Column(name = "DEDUCTION_TIME5")
-	public int deductionTime5;
-	/*控除時間6*/
-	@Column(name = "DEDUCTION_TIME6")
-	public int deductionTime6;
-	/*控除時間7*/
-	@Column(name = "DEDUCTION_TIME7")
-	public int deductionTime7;
-	/*控除時間8*/
-	@Column(name = "DEDUCTION_TIME8")
-	public int deductionTime8;
-	/*控除時間9*/
-	@Column(name = "DEDUCTION_TIME9")
-	public int deductionTime9;
-	/*控除時間１0*/
-	@Column(name = "DEDUCTION_TIME10")
-	public int deductionTime10;
-	
-	/*控除後乖離時間１*/
-	@Column(name = "AFTER_DEDUCTION_TIME1")
-	public int afterDeductionTime1;
-	/*控除後乖離時間2*/
-	@Column(name = "AFTER_DEDUCTION_TIME2")
-	public int afterDeductionTime2;
-	/*控除後乖離時間3*/
-	@Column(name = "AFTER_DEDUCTION_TIME3")
-	public int afterDeductionTime3;
-	/*控除後乖離時間4*/
-	@Column(name = "AFTER_DEDUCTION_TIME4")
-	public int afterDeductionTime4;
-	/*控除後乖離時間5*/
-	@Column(name = "AFTER_DEDUCTION_TIME5")
-	public int afterDeductionTime5;
-	/*控除後乖離時間6*/
-	@Column(name = "AFTER_DEDUCTION_TIME6")
-	public int afterDeductionTime6;
-	/*控除後乖離時間7*/
-	@Column(name = "AFTER_DEDUCTION_TIME7")
-	public int afterDeductionTime7;
-	/*控除後乖離時間8*/
-	@Column(name = "AFTER_DEDUCTION_TIME8")
-	public int afterDeductionTime8;
-	/*控除後乖離時間9*/
-	@Column(name = "AFTER_DEDUCTION_TIME9")
-	public int afterDeductionTime9;
-	/*控除後乖離時間１0*/
-	@Column(name = "AFTER_DEDUCTION_TIME10")
-	public int afterDeductionTime10;
-	
 	/*乖離理由コード1*/
 	@Column(name = "REASON_CODE1")
 	public String reasonCode1;
@@ -916,127 +854,127 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	/*----------------------日別実績の休出時間帯------------------------------*/
 	/*休日出勤1開始時刻*/
 	@Column(name = "HOLI_WORK_1_STR_CLC")
-	public int holiWork1StrClc;
+	public Integer holiWork1StrClc;
 	/*休日出勤1終了時刻*/
 	@Column(name = "HOLI_WORK_1_END_CLC")
-	public int holiWork1EndClc;
+	public Integer holiWork1EndClc;
 	/*休日出勤2開始時刻*/
 	@Column(name = "HOLI_WORK_2_STR_CLC")
-	public int holiWork2StrClc;
+	public Integer holiWork2StrClc;
 	/*休日出勤2終了時刻*/
 	@Column(name = "HOLI_WORK_2_END_CLC")
-	public int holiWork2EndClc;
+	public Integer holiWork2EndClc;
 	/*休日出勤3開始時刻*/
 	@Column(name = "HOLI_WORK_3_STR_CLC")
-	public int holiWork3StrClc;
+	public Integer holiWork3StrClc;
 	/*休日出勤3終了時刻*/
 	@Column(name = "HOLI_WORK_3_END_CLC")
-	public int holiWork3EndClc;
+	public Integer holiWork3EndClc;
 	/*休日出勤4開始時刻*/
 	@Column(name = "HOLI_WORK_4_STR_CLC")
-	public int holiWork4StrClc;
+	public Integer holiWork4StrClc;
 	/*休日出勤4終了時刻*/
 	@Column(name = "HOLI_WORK_4_END_CLC")
-	public int holiWork4EndClc;
+	public Integer holiWork4EndClc;
 	/*休日出勤5開始時刻*/
 	@Column(name = "HOLI_WORK_5_STR_CLC")
-	public int holiWork5StrClc;
+	public Integer holiWork5StrClc;
 	/*休日出勤5終了時刻*/
 	@Column(name = "HOLI_WORK_5_END_CLC")
-	public int holiWork5EndClc;
+	public Integer holiWork5EndClc;
 	/*休日出勤6開始時刻*/
 	@Column(name = "HOLI_WORK_6_STR_CLC")
-	public int holiWork6StrClc;
+	public Integer holiWork6StrClc;
 	/*休日出勤6終了時刻*/
 	@Column(name = "HOLI_WORK_6_END_CLC")
-	public int holiWork6EndClc;
+	public Integer holiWork6EndClc;
 	/*休日出勤7開始時刻*/
 	@Column(name = "HOLI_WORK_7_STR_CLC")
-	public int holiWork7StrClc;
+	public Integer holiWork7StrClc;
 	/*休日出勤7終了時刻*/
 	@Column(name = "HOLI_WORK_7_END_CLC")
-	public int holiWork7EndClc;
+	public Integer holiWork7EndClc;
 	/*休日出勤8開始時刻*/
 	@Column(name = "HOLI_WORK_8_STR_CLC")
-	public int holiWork8StrClc;
+	public Integer holiWork8StrClc;
 	/*休日出勤8終了時刻*/
 	@Column(name = "HOLI_WORK_8_END_CLC")
-	public int holiWork8EndClc;
+	public Integer holiWork8EndClc;
 	/*休日出勤9開始時刻*/
 	@Column(name = "HOLI_WORK_9_STR_CLC")
-	public int holiWork9StrClc;
+	public Integer holiWork9StrClc;
 	/*休日出勤9終了時刻*/
 	@Column(name = "HOLI_WORK_9_END_CLC")
-	public int holiWork9EndClc;
+	public Integer holiWork9EndClc;
 	/*休日出勤10開始時刻*/
 	@Column(name = "HOLI_WORK_10_STR_CLC")
-	public int holiWork10StrClc;
+	public Integer holiWork10StrClc;
 	/*休日出勤10終了時刻*/
 	@Column(name = "HOLI_WORK_10_END_CLC")
-	public int holiWork10EndClc;
+	public Integer holiWork10EndClc;
 	/*----------------------日別実績の休出時間帯------------------------------*/
 	
 	/*----------------------日別実績の残業時間帯------------------------------*/
 	/*残業1開始時刻*/
 	@Column(name = "OVER_TIME_1_STR_CLC")
-	public int overTime1StrClc;
+	public Integer overTime1StrClc;
 	/*残業1終了時刻*/
 	@Column(name = "OVER_TIME_1_END_CLC")
-	public int overTime1EndClc;
+	public Integer overTime1EndClc;
 	/*残業2開始時刻*/
 	@Column(name = "OVER_TIME_2_STR_CLC")
-	public int overTime2StrClc;
+	public Integer overTime2StrClc;
 	/*残業2終了時刻*/
 	@Column(name = "OVER_TIME_2_END_CLC")
-	public int overTime2EndClc;
+	public Integer overTime2EndClc;
 	/*残業3開始時刻*/
 	@Column(name = "OVER_TIME_3_STR_CLC")
-	public int overTime3StrClc;
+	public Integer overTime3StrClc;
 	/*残業3終了時刻*/
 	@Column(name = "OVER_TIME_3_END_CLC")
-	public int overTime3EndClc;
+	public Integer overTime3EndClc;
 	/*残業4開始時刻*/
 	@Column(name = "OVER_TIME_4_STR_CLC")
-	public int overTime4StrClc;
+	public Integer overTime4StrClc;
 	/*残業4終了時刻*/
 	@Column(name = "OVER_TIME_4_END_CLC")
-	public int overTime4EndClc;
+	public Integer overTime4EndClc;
 	/*残業5開始時刻*/
 	@Column(name = "OVER_TIME_5_STR_CLC")
-	public int overTime5StrClc;
+	public Integer overTime5StrClc;
 	/*残業5終了時刻*/
 	@Column(name = "OVER_TIME_5_END_CLC")
-	public int overTime5EndClc;
+	public Integer overTime5EndClc;
 	/*残業6開始時刻*/
 	@Column(name = "OVER_TIME_6_STR_CLC")
-	public int overTime6StrClc;
+	public Integer overTime6StrClc;
 	/*残業6終了時刻*/
 	@Column(name = "OVER_TIME_6_END_CLC")
-	public int overTime6EndClc;
+	public Integer overTime6EndClc;
 	/*残業7開始時刻*/
 	@Column(name = "OVER_TIME_7_STR_CLC")
-	public int overTime7StrClc;
+	public Integer overTime7StrClc;
 	/*残業7終了時刻*/
 	@Column(name = "OVER_TIME_7_END_CLC")
-	public int overTime7EndClc;
+	public Integer overTime7EndClc;
 	/*残業8開始時刻*/
 	@Column(name = "OVER_TIME_8_STR_CLC")
-	public int overTime8StrClc;
+	public Integer overTime8StrClc;
 	/*残業8終了時刻*/
 	@Column(name = "OVER_TIME_8_END_CLC")
-	public int overTime8EndClc;
+	public Integer overTime8EndClc;
 	/*残業9開始時刻*/
 	@Column(name = "OVER_TIME_9_STR_CLC")
-	public int overTime9StrClc;
+	public Integer overTime9StrClc;
 	/*残業9終了時刻*/
 	@Column(name = "OVER_TIME_9_END_CLC")
-	public int overTime9EndClc;
+	public Integer overTime9EndClc;
 	/*残業10開始時刻*/
 	@Column(name = "OVER_TIME_10_STR_CLC")
-	public int overTime10StrClc;
+	public Integer overTime10StrClc;
 	/*残業10終了時刻*/
 	@Column(name = "OVER_TIME_10_END_CLC")
-	public int overTime10EndClc;
+	public Integer overTime10EndClc;
 	/*----------------------日別実績の残業時間帯------------------------------*/
 	/*----------------------日別実績の加給時間------------------------------*/
 	/*加給時間1*/
@@ -2186,15 +2124,11 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	private void setValue(Optional<DivergenceTime> frame,int number) {
 		if(frame.isPresent()) {
 			setPerData("divergenceTime",number,frame.get().getDivTime() == null ? 0 : frame.get().getDivTime().valueAsMinutes());
-			setPerData("deductionTime",number,frame.get().getDeductionTime() == null ? 0 : frame.get().getDeductionTime().valueAsMinutes());
-			setPerData("afterDeductionTime",number,frame.get().getDivTimeAfterDeduction() == null ? 0 : frame.get().getDivTimeAfterDeduction().valueAsMinutes());
 			setPerData("reasonCode",number,frame.get().getDivResonCode().map(c -> c.v()).orElse(null));
 			setPerData("reason",number,frame.get().getDivReason().map(c -> c.v()).orElse(null));
 		}
 		else {
 			setPerData("divergenceTime",number,0);
-			setPerData("deductionTime",number,0);
-			setPerData("afterDeductionTime",number,0);
 			setPerData("reasonCode",number,null);
 			setPerData("reason",number,null);
 		}
@@ -2424,9 +2358,9 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 														  vacation,
 														  IntervalTimeOfDaily.of(
 																  new AttendanceClock(entity.intervalAttendance), 
-																  new AttendanceTime(entity.intervalTime)));
-		totalTime.setVacationAddTime(new AttendanceTime(entity.vactnAddTime));
-		totalTime.setCalcDiffTime(new AttendanceTime(entity.calcDiffTime));
+																  new AttendanceTime(entity.intervalTime)),
+														  new AttendanceTime(entity.calcDiffTime),
+														  new AttendanceTime(entity.vactnAddTime));
 
 		/*日別実績の乖離時間*/
 		val divergence = createDivergence(entity);
@@ -2447,8 +2381,8 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 																					   new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(entity.aftPcLogoffTime),
 																								new AttendanceTimeOfExistMinus(entity.bfrPcLogonTime), new AttendanceTimeOfExistMinus(entity.bfrWorkTime),
 																								new AttendanceTime(entity.stayingTime), new AttendanceTimeOfExistMinus(entity.aftLeaveTime)),
-																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance),
-																					   new AttendanceTimeOfExistMinus(entity.unemployedTime)
+																					   new AttendanceTimeOfExistMinus(entity.unemployedTime),
+																					   new AttendanceTimeOfExistMinus(entity.budgetTimeVariance)
 																					   );
 		
 		return domain;
@@ -2543,64 +2477,44 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	private static DivergenceTimeOfDaily createDivergence(KrcdtDayTimeAtd entity) {
 		List<DivergenceTime> divergenceTimeList = new ArrayList<>();
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime1),
-												  new AttendanceTimeOfExistMinus(entity.deductionTime1),
-												  new AttendanceTimeOfExistMinus(entity.divergenceTime1),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime1),
 												  1,
 												  StringUtil.isNullOrEmpty(entity.reason1, true) ? null : new DivergenceReasonContent(entity.reason1),
 												  StringUtil.isNullOrEmpty(entity.reasonCode1, true) ? null : new DiverdenceReasonCode(entity.reasonCode1)));
 		
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime2),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime2),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime2),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime2),
 				  								  2,
 				  								StringUtil.isNullOrEmpty(entity.reason2, true) ? null : new DivergenceReasonContent(entity.reason2),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode2, true) ? null : new DiverdenceReasonCode(entity.reasonCode2)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime3),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime3),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime3),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime3),
 				  								  3,
 				  								StringUtil.isNullOrEmpty(entity.reason3, true) ? null : new DivergenceReasonContent(entity.reason3),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode3, true) ? null : new DiverdenceReasonCode(entity.reasonCode3)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime4),
-												  new AttendanceTimeOfExistMinus(entity.deductionTime4),
-												  new AttendanceTimeOfExistMinus(entity.divergenceTime4),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime4),
 												  4,
 												  StringUtil.isNullOrEmpty(entity.reason4, true) ? null : new DivergenceReasonContent(entity.reason4),
 												  StringUtil.isNullOrEmpty(entity.reasonCode4, true) ? null : new DiverdenceReasonCode(entity.reasonCode4)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime5),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime5),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime5),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime5),
 				  								  5,
 				  								StringUtil.isNullOrEmpty(entity.reason5, true) ? null : new DivergenceReasonContent(entity.reason5),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode5, true) ? null : new DiverdenceReasonCode(entity.reasonCode5)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime6),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime6),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime6),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime6),
 				  								  6,
 				  								StringUtil.isNullOrEmpty(entity.reason6, true) ? null : new DivergenceReasonContent(entity.reason6),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode6, true) ? null : new DiverdenceReasonCode(entity.reasonCode6)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime7),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime7),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime7),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime7),
 				  								  7,
 				  								StringUtil.isNullOrEmpty(entity.reason7, true) ? null : new DivergenceReasonContent(entity.reason7),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode7, true) ? null : new DiverdenceReasonCode(entity.reasonCode7)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime8),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime8),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime8),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime8),
 				  								  8,
 				  								StringUtil.isNullOrEmpty(entity.reason8, true) ? null : new DivergenceReasonContent(entity.reason8),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode8, true) ? null : new DiverdenceReasonCode(entity.reasonCode8)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime9),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime9),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime9),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime9),
 				  								  9,
 				  								StringUtil.isNullOrEmpty(entity.reason9, true) ? null : new DivergenceReasonContent(entity.reason9),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode9, true) ? null : new DiverdenceReasonCode(entity.reasonCode9)));
-		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.afterDeductionTime10),
-				  								  new AttendanceTimeOfExistMinus(entity.deductionTime10),
-				  								  new AttendanceTimeOfExistMinus(entity.divergenceTime10),
+		divergenceTimeList.add(new DivergenceTime(new AttendanceTimeOfExistMinus(entity.divergenceTime10),
 				  								  10,
 				  								StringUtil.isNullOrEmpty(entity.reason10, true) ? null : new DivergenceReasonContent(entity.reason10),
 		  										StringUtil.isNullOrEmpty(entity.reasonCode10, true) ? null : new DiverdenceReasonCode(entity.reasonCode10)));
@@ -2693,17 +2607,36 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	private static List<OverTimeFrameTimeSheet> createOverTimeTimeSheet(KrcdtDayTimeAtd entity) {
 		List<OverTimeFrameTimeSheet> timeSheet = new ArrayList<>();
-		
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime1StrClc),new TimeWithDayAttr(entity.overTime1EndClc)),new OverTimeFrameNo(1)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime2StrClc),new TimeWithDayAttr(entity.overTime2EndClc)),new OverTimeFrameNo(2)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime3StrClc),new TimeWithDayAttr(entity.overTime3EndClc)),new OverTimeFrameNo(3)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime4StrClc),new TimeWithDayAttr(entity.overTime4EndClc)),new OverTimeFrameNo(4)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime5StrClc),new TimeWithDayAttr(entity.overTime5EndClc)),new OverTimeFrameNo(5)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime6StrClc),new TimeWithDayAttr(entity.overTime6EndClc)),new OverTimeFrameNo(6)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime7StrClc),new TimeWithDayAttr(entity.overTime7EndClc)),new OverTimeFrameNo(7)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime8StrClc),new TimeWithDayAttr(entity.overTime8EndClc)),new OverTimeFrameNo(8)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime9StrClc),new TimeWithDayAttr(entity.overTime9EndClc)),new OverTimeFrameNo(9)));
-		timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime10StrClc),new TimeWithDayAttr(entity.overTime10EndClc)),new OverTimeFrameNo(10)));
+		if (entity.overTime1StrClc != null && entity.overTime1EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime1StrClc),new TimeWithDayAttr(entity.overTime1EndClc)),new OverTimeFrameNo(1)));
+		}
+		if (entity.overTime2StrClc != null && entity.overTime2EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime2StrClc),new TimeWithDayAttr(entity.overTime2EndClc)),new OverTimeFrameNo(2)));
+		}
+		if (entity.overTime3StrClc != null && entity.overTime3EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime3StrClc),new TimeWithDayAttr(entity.overTime3EndClc)),new OverTimeFrameNo(3)));
+		}
+		if (entity.overTime4StrClc != null && entity.overTime4EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime4StrClc),new TimeWithDayAttr(entity.overTime4EndClc)),new OverTimeFrameNo(4)));
+		}
+		if (entity.overTime5StrClc != null && entity.overTime5EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime5StrClc),new TimeWithDayAttr(entity.overTime5EndClc)),new OverTimeFrameNo(5)));
+		}
+		if (entity.overTime6StrClc != null && entity.overTime6EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime6StrClc),new TimeWithDayAttr(entity.overTime6EndClc)),new OverTimeFrameNo(6)));
+		}
+		if (entity.overTime7StrClc != null && entity.overTime7EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime7StrClc),new TimeWithDayAttr(entity.overTime7EndClc)),new OverTimeFrameNo(7)));
+		}
+		if (entity.overTime8StrClc != null && entity.overTime8EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime8StrClc),new TimeWithDayAttr(entity.overTime8EndClc)),new OverTimeFrameNo(8)));
+		}
+		if (entity.overTime9StrClc != null && entity.overTime9EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime9StrClc),new TimeWithDayAttr(entity.overTime9EndClc)),new OverTimeFrameNo(9)));
+		}
+		if (entity.overTime10StrClc != null && entity.overTime10EndClc != null) {
+			timeSheet.add(new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(new TimeWithDayAttr(entity.overTime10StrClc),new TimeWithDayAttr(entity.overTime10EndClc)),new OverTimeFrameNo(10)));
+		}
 		
 		return timeSheet;
 	}
@@ -2721,21 +2654,39 @@ public class KrcdtDayTimeAtd extends ContractUkJpaEntity implements Serializable
 	
 	private static List<HolidayWorkFrameTimeSheet> createHolidayWorkTimeSheet(KrcdtDayTimeAtd entity) {
 		List<HolidayWorkFrameTimeSheet> holidayWOrkTimeTS = new ArrayList<>();
-		
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(1)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork1StrClc),new TimeWithDayAttr(entity.holiWork1EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(2)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork2StrClc),new TimeWithDayAttr(entity.holiWork2EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(3)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork3StrClc),new TimeWithDayAttr(entity.holiWork3EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(4)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork4StrClc),new TimeWithDayAttr(entity.holiWork4EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(5)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork5StrClc),new TimeWithDayAttr(entity.holiWork5EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(6)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork6StrClc),new TimeWithDayAttr(entity.holiWork6EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(7)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork7StrClc),new TimeWithDayAttr(entity.holiWork7EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(8)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork8StrClc),new TimeWithDayAttr(entity.holiWork8EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(9)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork9StrClc),new TimeWithDayAttr(entity.holiWork9EndClc))));
-		holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(10)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork10StrClc),new TimeWithDayAttr(entity.holiWork10EndClc))));
+		if(entity.holiWork1StrClc != null && entity.holiWork1EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(1)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork1StrClc),new TimeWithDayAttr(entity.holiWork1EndClc))));
+		}
+		if(entity.holiWork2StrClc != null && entity.holiWork2EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(2)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork2StrClc),new TimeWithDayAttr(entity.holiWork2EndClc))));
+		}
+		if(entity.holiWork3StrClc != null && entity.holiWork3EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(3)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork3StrClc),new TimeWithDayAttr(entity.holiWork3EndClc))));
+		}
+		if(entity.holiWork4StrClc != null && entity.holiWork4EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(4)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork4StrClc),new TimeWithDayAttr(entity.holiWork4EndClc))));
+		}
+		if(entity.holiWork5StrClc != null && entity.holiWork5EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(5)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork5StrClc),new TimeWithDayAttr(entity.holiWork5EndClc))));
+		}
+		if(entity.holiWork6StrClc != null && entity.holiWork6EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(6)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork6StrClc),new TimeWithDayAttr(entity.holiWork6EndClc))));
+		}
+		if(entity.holiWork7StrClc != null && entity.holiWork7EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(7)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork7StrClc),new TimeWithDayAttr(entity.holiWork7EndClc))));
+		}
+		if(entity.holiWork8StrClc != null && entity.holiWork8EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(8)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork8StrClc),new TimeWithDayAttr(entity.holiWork8EndClc))));
+		}
+		if(entity.holiWork9StrClc != null && entity.holiWork9EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(9)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork9StrClc),new TimeWithDayAttr(entity.holiWork9EndClc))));
+		}
+		if(entity.holiWork10StrClc != null && entity.holiWork10EndClc != null) {
+			holidayWOrkTimeTS.add(new HolidayWorkFrameTimeSheet(new HolidayWorkFrameNo(Integer.valueOf(10)),new TimeSpanForCalc(new TimeWithDayAttr(entity.holiWork10StrClc),new TimeWithDayAttr(entity.holiWork10EndClc))));
+		}
 		
 		return holidayWOrkTimeTS;
 	}
-	
 	private static List<HolidayWorkMidNightTime> createHolidayWorkMidNightTime(KrcdtDayTimeAtd entity) {
 		List<HolidayWorkMidNightTime> holidayWorkMidNightTimeList = new ArrayList<>();
 		

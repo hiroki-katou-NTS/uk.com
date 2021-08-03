@@ -101,7 +101,7 @@ public class AnnualHolidayFinder {
 						.deadline(item.getDeadline()).grantDate(item.getGrantDate())
 						.grantNumber(item.getGrantNumber()).remainDays(item.getRemainDays())
 						.remainMinutes(item.getRemainMinutes())
-						.expiredInCurrentMonthFg(closingPeriod.end().afterOrEquals(item.getDeadline()))
+						.expiredInCurrentMonthFg(closingPeriod == null ? false : closingPeriod.end().afterOrEquals(item.getDeadline()))
 						.build();
 				})
 				.collect(Collectors.toList()))

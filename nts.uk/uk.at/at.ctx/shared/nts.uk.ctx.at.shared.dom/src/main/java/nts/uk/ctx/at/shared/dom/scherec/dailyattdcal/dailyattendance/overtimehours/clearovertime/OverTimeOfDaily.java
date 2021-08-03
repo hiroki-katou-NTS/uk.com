@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.BonusPayAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
@@ -27,12 +26,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethod;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfEachPremiumHalfWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfHalfWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.AttendanceItemDictionaryForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.CalcMethodOfNoWorkingDayForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.OutsideWorkTimeSheet;
@@ -68,7 +63,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * 日別実績の残業時間
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class OverTimeOfDaily {
@@ -215,7 +209,6 @@ public class OverTimeOfDaily {
 	 * メンバー変数の時間計算を指示するクラス
 	 * アルゴリズム：日別実績の残業時間
 	 * @param recordReGet 実績
-	 * @param calcMethod フレックス勤務の非勤務日の場合の計算方法
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
@@ -233,7 +226,6 @@ public class OverTimeOfDaily {
 	 */
 	public static OverTimeOfDaily calculationTime(
 			ManageReGetClass recordReGet,
-			CalcMethodOfNoWorkingDayForCalc calcMethod,
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
@@ -282,9 +274,8 @@ public class OverTimeOfDaily {
 				workType,
 				vacationClass,
 				statutoryDivision,
-				siftCode,
-				predetermineTimeSetByPersonInfo,
-				coreTimeSetting));
+				flexCalcMethod,
+				predetermineTimeSetByPersonInfo));
 		//変形法定内残業時間の計算
 		val irregularTime = overTimeSheet.calcIrregularTime();
 		//フレックス時間
@@ -295,16 +286,14 @@ public class OverTimeOfDaily {
 			val changeVariant = ((FlexWithinWorkTimeSheet)recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get());
 			//フレックス時間の計算
 			flexTime = changeVariant.createWithinWorkTimeSheetAsFlex(
-					calcMethod,
-					recordReGet.getHolidayCalcMethodSet(),
+					recordReGet.getIntegrationOfDaily(),
+					recordReGet.getIntegrationOfWorkTime(),
 					recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
 					workType,
-					new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
-																		new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
+					flexCalcMethod.get(),
 					recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					vacationClass,
-					recordReGet.getCalculationRangeOfOneDay().getWithinWorkingTimeSheet().get().getTimeVacationAdditionRemainingTime().get(),
-					statutoryDivision,siftCode,
+					statutoryDivision,
 					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 					recordReGet.getAddSetting(),
 					recordReGet.getHolidayAddtionSet().get(),
@@ -314,10 +303,8 @@ public class OverTimeOfDaily {
 					recordReGet.getWorkTimezoneCommonSet(),
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
-					coreTimeSetting,
 					NotUseAtr.NOT_USE,
-					Optional.of(DeductionAtr.Appropriate),
-					Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
+					Optional.of(DeductionAtr.Appropriate));
 		}
 
 		val overTimeWork = new AttendanceTime(0);
@@ -343,9 +330,8 @@ public class OverTimeOfDaily {
 	 * @param workType 勤務種類
 	 * @param vacationClass 休暇クラス
 	 * @param statutoryDivision 法定内区分
-	 * @param siftCode 就業時間帯コード
+	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
-	 * @param coreTimeSetting コアタイム時間帯設定
 	 * @return 法定外残業深夜時間
 	 */
 	private static ExcessOverTimeWorkMidNightTime calcExcessMidNightTime(
@@ -359,9 +345,8 @@ public class OverTimeOfDaily {
 			WorkType workType,
 			VacationClass vacationClass,
 			StatutoryDivision statutoryDivision,
-			Optional<WorkTimeCode> siftCode,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<CoreTimeSetting> coreTimeSetting) {
+			Optional<SettingOfFlexWork> flexCalcMethod,
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		
 		AttendanceTime flexWithoutTime = new AttendanceTime(0);
 		
@@ -375,17 +360,14 @@ public class OverTimeOfDaily {
 				}
 				if (withinWorkTimeSheetOpt.isPresent()){
 					flexWithoutTime = ((FlexWithinWorkTimeSheet)withinWorkTimeSheetOpt.get()).calcWithoutMidnightTime(
-							recordReGet.getHolidayCalcMethodSet(),
+							recordReGet.getIntegrationOfDaily(),
+							recordReGet.getIntegrationOfWorkTime(),
 							recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
 							workType,
-							new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(
-									new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half),
-									new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.Half, FlexCalcMethod.Half))),
+							flexCalcMethod.get(),
 							recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 							vacationClass,
-							withinWorkTimeSheetOpt.get().getTimeVacationAdditionRemainingTime().get(),
 							statutoryDivision,
-							siftCode,
 							recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 							recordReGet.getAddSetting(),
 							recordReGet.getHolidayAddtionSet().get(),
@@ -394,9 +376,7 @@ public class OverTimeOfDaily {
 							recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
 							conditionItem,
 							predetermineTimeSetByPersonInfo,
-							coreTimeSetting,
-							NotUseAtr.NOT_USE,
-							Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
+							NotUseAtr.NOT_USE);
 				}
 			}
 		}
