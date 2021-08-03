@@ -2159,7 +2159,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							+ query.getEndDate().toLocalDate().format(jpFormatter);
 		periodCell.setValue(periodStr);
 
-		pageSetup.setFooter(0, "&\"MS ゴシック\"" + TextResource.localize("KWR001_113"));
+		pageSetup.setFooter(0, "&\"MS ゴシック\"&7\0" + TextResource.localize("KWR001_113"));
 	}
 	
 	/**
