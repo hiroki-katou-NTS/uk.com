@@ -22,7 +22,10 @@ public class KfnmtAlstSelectRole extends ContractUkJpaEntity implements Serializ
     private KfnmtAlstSelectRolePK pk;
 
     @ManyToOne
-    @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
+    @JoinColumns({
+            @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+            @JoinColumn(name="PERSON_WKP_ATR", referencedColumnName="PERSON_WKP_ATR", insertable = false, updatable = false)
+    })
     public KfnmtAlstMailSetRole mailSetRole;
 
     @Override
