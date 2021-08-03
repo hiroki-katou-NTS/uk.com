@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.mailsettings;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
  * Entity: アラームメール送信ロール
  */
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KFNMT_ALARM_MAIL_SETROLE")
 public class KfnmtAlstMailSetRole extends ContractUkJpaEntity implements Serializable {
@@ -42,24 +45,26 @@ public class KfnmtAlstMailSetRole extends ContractUkJpaEntity implements Seriali
     @JoinTable(name = "KFNMT_ALST_SELECT_ROLE")
     public List<KfnmtAlstSelectRole> alarmSelectRoles;
 
-    public KfnmtAlstMailSetRole(KfnmtAlstMailSetRolePK pk, int roleSetting, int sendResult) {
-        this.pk = pk;
-        this.roleSetting = roleSetting;
-        this.sendResult = sendResult;
-    }
-
     public void fromEntity(KfnmtAlstMailSetRole entity){
         this.roleSetting = entity.roleSetting;
         this.sendResult = entity.sendResult;
     }
 
     public static KfnmtAlstMailSetRole of(AlarmMailSendingRole domain) {
+        val cid = AppContexts.user().companyId();
+        val selectRoles = domain.getRoleIds().stream().map(role -> new KfnmtAlstSelectRole(
+                new KfnmtAlstSelectRolePK(
+                        cid,
+                        domain.getIndividualWkpClassify().value,
+                        role)
+        )).collect(Collectors.toList());
         return new KfnmtAlstMailSetRole(
                 new KfnmtAlstMailSetRolePK(
-                        AppContexts.user().companyId(),
+                        cid,
                         domain.getIndividualWkpClassify().value),
                 BooleanUtils.toInteger(domain.isRoleSetting()),
-                BooleanUtils.toInteger(domain.isSendResult())
+                BooleanUtils.toInteger(domain.isSendResult()),
+                selectRoles
         );
     }
 

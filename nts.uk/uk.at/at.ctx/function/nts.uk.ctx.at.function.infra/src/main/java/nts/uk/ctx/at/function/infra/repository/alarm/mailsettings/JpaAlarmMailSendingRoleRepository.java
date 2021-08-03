@@ -13,11 +13,11 @@ import java.util.Optional;
 @Stateless
 public class JpaAlarmMailSendingRoleRepository extends JpaRepository implements AlarmMailSendingRoleRepository {
     @Override
-    public Optional<AlarmMailSendingRole> find(String cid, int personalManagerClassify) {
-        String query = "SELECT a FROM KfnmtAlstMailSetRole a WHERE a.pk.companyID = :cid AND a.pk.personWkpAtr = :personalManagerClassify ";
+    public Optional<AlarmMailSendingRole> find(String cid, int individualWkpClassify) {
+        String query = "SELECT a FROM KfnmtAlstMailSetRole a WHERE a.pk.companyID = :cid AND a.pk.personWkpAtr = :individualWkpClassify ";
         return this.queryProxy().query(query, KfnmtAlstMailSetRole.class)
                 .setParameter("cid", cid)
-                .setParameter("personalManagerClassify", personalManagerClassify)
+                .setParameter("individualWkpClassify", individualWkpClassify)
                 .getSingle(KfnmtAlstMailSetRole::toDomain);
     }
 

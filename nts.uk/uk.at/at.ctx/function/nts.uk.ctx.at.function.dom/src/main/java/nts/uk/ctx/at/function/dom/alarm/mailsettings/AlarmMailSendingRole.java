@@ -22,5 +22,5 @@ public class AlarmMailSendingRole extends AggregateRoot {
     private boolean sendResult;
 
     /** ロールID */
-    private List<String> roleId;
+    private List<String> roleIds;
 }
