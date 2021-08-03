@@ -30,9 +30,9 @@ export class KdpS01TComponent extends Vue {
     public goto(button) {
         let vm = this,
             url = button.screen + 's' + button.screenCd.slice(1) + button.screenId.toLowerCase(),
-            param;
+            param = { date: '2021/07/08' };
 
-        vm.$goto(url);
+        vm.$goto(url, param);
         // hien tai khong can param
         // if (button.queryString) {
         //     let value = button.queryString.split('=')[1];
