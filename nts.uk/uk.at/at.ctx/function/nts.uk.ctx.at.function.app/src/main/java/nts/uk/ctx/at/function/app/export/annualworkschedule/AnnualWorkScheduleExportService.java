@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,9 +274,9 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		header.setReportName(setOutItemsWoSc.getName().v());
 
 		if (PrintFormat.AGREEMENT_36.equals(printFormat)) {
-			if (!setOutItemsWoSc.isMultiMonthDisplay()) {
-				listItemOut = listItemOut.stream().filter(x -> x.getSortBy() != 2).collect(Collectors.toList());
-			}
+//			if (!setOutItemsWoSc.isMultiMonthDisplay()) {
+//				listItemOut = listItemOut.stream().filter(x -> x.getSortBy() != 2).collect(Collectors.toList());
+//			}
 			exportData.setOutNumExceedTime36Agr(setOutItemsWoSc.isOutNumExceedTime36Agr());
 		} else {
 			listItemOut = listItemOut.stream().filter(x -> x.getSortBy() > 2).collect(Collectors.toList());
@@ -509,7 +510,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 				headerData.setMonthPeriodLabels(periodLable);
 				headerData.setMaximumAgreementTime(true);
 				exportData.setHeader(headerData);
-			}
+			}	
 		}
 		// 36協定複数月項目の作成 end
 
@@ -545,7 +546,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					);
 				}
 
-				if (itemOut.getSortBy() == 2 && itemOut.isUseClass() && setting.isMultiMonthDisplay()) {
+				if (itemOut.getSortBy() == 2 && itemOut.isUseClass()) {
 					
 					// アルゴリズム「月平均の算出」を実行する
 					data.put(itemOut.getItemOutCd().v(),
@@ -557,7 +558,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 									, startYm
 									, 0
 									, 0
-									, exportData.getHeader().getMonthPeriodLabels()
+									, exportData.getHeader().getMonthPeriodLabels() != null ?
+											exportData.getHeader().getMonthPeriodLabels() : Collections.emptyList()
 									, true
 									, agreementTimeYearImport.get().getStatus()
 							).calc(false)
