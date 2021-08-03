@@ -43,6 +43,7 @@ public class CreateConversionCodeService {
 
 		List<String> conversionSqlList = categorys.stream()
 			.map(category -> createByCategory(require, category, info))
+			.filter(sql -> !sql.isEmpty())
 			.collect(Collectors.toList());
 
 		return this.preprocessing(require, info) + "\r\n" +
@@ -66,9 +67,10 @@ public class CreateConversionCodeService {
 		List<String> tables = require.getCategoryTables(category);
 		List<String> sqlList = tables.stream()
 			.map(table -> createByTables(require, category, table, info))
+			.filter(sql -> !sql.isEmpty())
 			.collect(Collectors.toList());
 
-		return String.join("\r\n\r\n", sqlList);
+		return String.join("\r\n", sqlList);
 	}
 
 	private String createByTables(Require require, String category, String table, ConversionInfo info) {
@@ -146,7 +148,7 @@ public class CreateConversionCodeService {
 			.map(conversionSql -> conversionSql.build(info.getDatebaseType().spec()))
 			.collect(Collectors.toList());
 
-		return String.join("\r\n\r\n", convertCodes);
+		return String.join("\r\n", convertCodes);
 	}
 
 	public static interface Require {
