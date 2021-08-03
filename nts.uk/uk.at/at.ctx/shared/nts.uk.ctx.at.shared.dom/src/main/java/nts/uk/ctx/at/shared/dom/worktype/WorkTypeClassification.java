@@ -158,6 +158,14 @@ public enum WorkTypeClassification {
 	}
 	
 	/**
+	 * 欠勤であるか判定する
+	 * @return 欠勤である
+	 */
+	public boolean isAbsence() {
+		return Absence.equals(this);
+	}
+	
+	/**
 	 * 代休であるか判定する
 	 * @return　代休である
 	 */

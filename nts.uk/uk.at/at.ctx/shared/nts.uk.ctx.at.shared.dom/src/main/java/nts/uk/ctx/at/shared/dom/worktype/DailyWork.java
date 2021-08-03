@@ -210,6 +210,20 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 	}
 
 	/**
+	 * 欠勤である
+	 * @return true：欠勤である false：欠勤ではない
+	 */
+	public boolean isAbsence() {
+		if (this.workTypeUnit.isOneDay()) {
+			return this.oneDay.isAbsence();
+		}
+		if (this.workTypeUnit.isMonringAndAfternoon()) {
+			return morning.isAbsence() || afternoon.isAbsence();
+		}
+		return false;
+	}
+
+	/**
 	 * 平日出勤or休出であるか判定する
 	 * @return 平日出勤or休出である
 	 */

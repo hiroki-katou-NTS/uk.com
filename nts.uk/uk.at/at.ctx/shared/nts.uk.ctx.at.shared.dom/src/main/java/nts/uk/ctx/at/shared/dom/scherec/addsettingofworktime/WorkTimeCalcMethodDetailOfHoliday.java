@@ -169,5 +169,13 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject implements S
 	public boolean isCalculateIncludCareTime() {
 		return this.calculateIncludCareTime.equals(NotUseAtr.USE);
 	}
+	
+	/**
+	 * 欠勤をマイナスせず所定から控除する
+	 * @return true：控除する、false：控除しない
+	 */
+	public boolean isMinusAbsenceTime() {
+		return this.minusAbsenceTime.orElse(NotUseAtr.NOT_USE).equals(NotUseAtr.USE);
+	}
 }
 
