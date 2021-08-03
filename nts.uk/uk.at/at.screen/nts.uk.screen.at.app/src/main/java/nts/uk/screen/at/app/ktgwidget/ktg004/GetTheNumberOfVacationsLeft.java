@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
@@ -62,6 +61,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GetTheNumberOfVacationsLeft {
@@ -326,27 +326,6 @@ public class GetTheNumberOfVacationsLeft {
         private PayoutSubofHDManaRepository payoutHdManaRepo;
 
         @Override
-        public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId,
-                GeneralDate startDateAggr) {
-            return comDayOffManaDataRepo.getBySidYmd(companyId, employeeId, startDateAggr);
-        }
-
-        @Override
-        public List<LeaveComDayOffManagement> getBycomDayOffID(String sid, GeneralDate digestDate) {
-            return leaveComDayOffManaRepo.getBycomDayOffID(sid, digestDate);
-        }
-
-        @Override
-        public List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state) {
-            return leaveManaDataRepo.getBySidYmd(cid, sid, ymd, state);
-        }
-
-        @Override
-        public List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate) {
-            return leaveComDayOffManaRepo.getByLeaveID(sid, occDate);
-        }
-
-        @Override
         public Optional<BsEmploymentHistoryImport> findEmploymentHistory(String companyId, String employeeId,
                 GeneralDate baseDate) {
             return shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, baseDate);
@@ -365,16 +344,6 @@ public class GetTheNumberOfVacationsLeft {
         @Override
         public List<EmploymentHistShareImport> findByEmployeeIdOrderByStartDate(String employeeId) {
             return shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(employeeId);
-        }
-
-        @Override
-        public List<InterimDayOffMng> getDayOffBySidPeriod(String sid, DatePeriod period) {
-            return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
-        }
-
-        @Override
-        public List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period) {
-            return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
         }
 
         @Override
@@ -423,28 +392,6 @@ public class GetTheNumberOfVacationsLeft {
         }
 
         @Override
-        public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd,
-                double unOffseDays) {
-            return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
-        }
-
-        @Override
-        public List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate) {
-            return payoutSubofHDManaRepo.getBySubId(sid, digestDate);
-        }
-
-        @Override
-        public List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse,
-                DigestionAtr state) {
-            return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
-        }
-
-        @Override
-        public List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate) {
-            return payoutSubofHDManaRepo.getByPayoutId(sid, occDate);
-        }
-
-        @Override
         public Optional<EmpSubstVacation> findEmpById(String companyId, String contractTypeCode) {
             return empSubstVacationRepo.findById(companyId, contractTypeCode);
         }
@@ -468,10 +415,45 @@ public class GetTheNumberOfVacationsLeft {
         public List<Closure> closureActive(String companyId, UseClassification useAtr) {
             return closureRepo.findAllActive(companyId, useAtr);
         }
+        
+        @Override
+        public List<LeaveComDayOffManagement> getDigestOccByListComId(String sid, DatePeriod period) {
+            return leaveComDayOffManaRepo.getDigestOccByListComId(sid, period);
+        }
+
+        @Override
+        public List<InterimDayOffMng> getTempDayOffBySidPeriod(String sid, DatePeriod period) {
+            return interimBreakDayOffMngRepo.getDayOffBySidPeriod(sid, period);
+        }
+
+        @Override
+        public List<CompensatoryDayOffManaData> getFixByDayOffDatePeriod(String sid) {
+            return comDayOffManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
+        }
+
+        @Override
+        public List<InterimBreakMng> getTempBreakBySidPeriod(String sid, DatePeriod period) {
+            return interimBreakDayOffMngRepo.getBySidPeriod(sid, period);
+        }
+
+        @Override
+        public List<LeaveManagementData> getFixLeavByDayOffDatePeriod(String sid) {
+            return leaveManaDataRepo.getBySid(AppContexts.user().companyId(), sid);
+        }
+
+        @Override
+        public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
+            return payoutSubofHDManaRepo.getOccDigetByListSid(sid, date);
+        }
+
+        @Override
+        public List<SubstitutionOfHDManagementData> getByYmdUnOffset(String sid) {
+            return substitutionOfHDManaDataRepo.getBysiD(AppContexts.user().companyId(), sid);
+        }
+
+        @Override
+        public List<PayoutManagementData> getPayoutMana(String sid) {
+            return payoutManagementDataRepo.getSid(AppContexts.user().companyId(), sid);
+        }
     }
-	
-	
-	
-	
-	
 }
