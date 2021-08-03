@@ -103,7 +103,7 @@ public class ReflectAttendance {
 					if (reflectAtt.orElse(false)) {
 						work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(
-										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), null),
+										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), Optional.empty()),
 												timeZone.getTimeZone().getStartTime()),
 										Optional.empty()),
 								0)));
@@ -112,7 +112,7 @@ public class ReflectAttendance {
 					if (reflectLeav.orElse(false)) {
 						work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(
-										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), null),
+										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), Optional.empty()),
 												timeZone.getTimeZone().getEndTime()),
 										Optional.empty()),
 								0)));

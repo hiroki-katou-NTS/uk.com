@@ -327,7 +327,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         vm.infoOutPut.earlyInfos = [];
         vm.infoOutPut.arrivedLateLeaveEarly.lateCancelation = [];
 
-        if (vm.time.attendanceTime != null && (vm.application.prePostAtr == 0 || !vm.check.cbCancelLate.value)) {
+        if (vm.time.attendanceTime != null && (vm.application.prePostAtr != 1 || !vm.check.cbCancelLate.value)) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
                 {
                     lateOrEarlyClassification: 0,
@@ -336,7 +336,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 }
             );
         }
-        if (vm.time.leaveTime != null && (vm.application.prePostAtr == 0 || !vm.check.cbCancelEarlyLeave.value)) {
+        if (vm.time.leaveTime != null && (vm.application.prePostAtr != 1 || !vm.check.cbCancelEarlyLeave.value)) {
             vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
                 {
                     lateOrEarlyClassification: 1,
@@ -347,7 +347,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
         }
 
         if (vm.conditionLateEarlyLeave2Show) {
-            if (vm.time.attendanceTime2 != null && (vm.application.prePostAtr == 0 || !vm.check.cbCancelLate2.value)) {
+            if (vm.time.attendanceTime2 != null && (vm.application.prePostAtr != 1 || !vm.check.cbCancelLate2.value)) {
                 vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
                     {
                         lateOrEarlyClassification: 0,
@@ -356,7 +356,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     }
                 );
             }
-            if (vm.time.leaveTime2 != null && (vm.application.prePostAtr == 0 || !vm.check.cbCancelEarlyLeave2.value)) {
+            if (vm.time.leaveTime2 != null && (vm.application.prePostAtr != 1 || !vm.check.cbCancelEarlyLeave2.value)) {
                 vm.infoOutPut.arrivedLateLeaveEarly.lateOrLeaveEarlies.push(
                     {
                         lateOrEarlyClassification: 1,
@@ -536,6 +536,9 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 vm.application.appDate = appDatesLst[0];
                 vm.application.opAppStartDate = appDatesLst[0];
                 vm.application.opAppEndDate = appDatesLst[0];
+                if (vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {
+                    vm.application.prePostAtr = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr;
+                }
                 vm.checkValidAll('kaf-s00-b');
             }
             let params = {

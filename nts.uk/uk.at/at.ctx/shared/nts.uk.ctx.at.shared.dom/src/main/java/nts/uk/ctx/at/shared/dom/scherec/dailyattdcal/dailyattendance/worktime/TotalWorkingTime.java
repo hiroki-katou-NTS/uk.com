@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
@@ -596,17 +597,39 @@ public class TotalWorkingTime {
 
 	/**
 	 * 控除合計時間の計算(手修正不就労用)
-	 * @return
+	 * @param recordReGetClass
+	 * @param premiumAtr 割増区分
+	 * @return 控除合計時間
 	 */
-	public AttendanceTime calcTotalDedTime(CalculationRangeOfOneDay oneDay,PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
-		AttendanceTime totalTime = new AttendanceTime(0);
-		if(oneDay == null) return totalTime;
+	public AttendanceTime calcTotalDedTime(ManageReGetClass recordReGetClass, PremiumAtr premiumAtr) {
 		//休憩時間
-		totalTime = BreakTimeOfDaily.calcTotalDeductBreakTime(oneDay, DeductionAtr.Deduction).getTotalTime().getCalcTime();
+		AttendanceTime breakTime = BreakTimeOfDaily.calcTotalDeductBreakTime(
+				recordReGetClass.getCalculationRangeOfOneDay(),
+				DeductionAtr.Deduction).getTotalTime().getCalcTime();
 		//外出
+		AttendanceTime privateOutTime = OutingTotalTime.calcOutingTime(
+				recordReGetClass.getCalculationRangeOfOneDay(),
+				DeductionAtr.Deduction,
+				GoingOutReason.PRIVATE,
+				recordReGetClass.getGoOutCalc()).getTotalTime().getCalcTime();
+		AttendanceTime unionOutTime = OutingTotalTime.calcOutingTime(
+				recordReGetClass.getCalculationRangeOfOneDay(),
+				DeductionAtr.Deduction,
+				GoingOutReason.UNION,
+				recordReGetClass.getGoOutCalc()).getTotalTime().getCalcTime();
 		//短時間
+		AttendanceTime shortWorkTime = ShortWorkTimeOfDaily.calcTotalShortWorkTime(
+				recordReGetClass,
+				DeductionAtr.Deduction,
+				ShortWorkTimeOfDaily.getChildCareAttributeToDaily(recordReGetClass.getIntegrationOfDaily()),
+				premiumAtr).getTotalTime().getCalcTime();
 		
-		return totalTime;
+		AttendanceTime totalTime = AttendanceTime.ZERO;
+		return totalTime
+				.addMinutes(breakTime.valueAsMinutes())
+				.addMinutes(privateOutTime.valueAsMinutes())
+				.addMinutes(unionOutTime.valueAsMinutes())
+				.addMinutes(shortWorkTime.valueAsMinutes());
 	}
 	
 	

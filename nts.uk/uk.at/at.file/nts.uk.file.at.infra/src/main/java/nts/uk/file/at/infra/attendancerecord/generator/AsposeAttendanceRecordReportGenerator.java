@@ -436,8 +436,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 					
 					// Set header value
-					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + dataSource.getData().getCompanyName());
-					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&"+ fontSize + " " + dataSource.getData().getReportName());
+					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック,Bold\"&"+ fontSize + " " + dataSource.getData().getReportName());
 					// Get current date and format it
 					DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
@@ -701,7 +701,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		// set bold for header
 		this.setFontBold(employeeInfoL.get(0, EMPL_INVIDUAL_INDEX));
 		this.setFontBold(employeeInfoL.get(0, EMPL_WORKPLACE_INDEX));
-		this.setFontBold(employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX));
 		DateFormat df = new SimpleDateFormat("yyyy/MM"); 
 		Date startDate = df.parse(employeeData.getYearMonth());
 		String yearMonth = df.format(startDate);
