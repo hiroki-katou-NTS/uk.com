@@ -270,7 +270,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isOneDay_asAnnualHoliday() {
         val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.AnnualHoliday).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(true, false, false, false, false, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createAnnualHoliday());
     }
     
     /**
@@ -286,7 +286,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isOneDay_asYearlyReserved() {
         val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.YearlyReserved).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, true, false, false, false, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createYearlyReserved());
     }
     
     /**
@@ -302,7 +302,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isOneDay_asSubstituteHoliday() {
         val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.SubstituteHoliday).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, false, true, false, false, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createSubstituteHoliday());
     }
     
     /**
@@ -318,7 +318,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isOneDay_asPause() {
         val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.Pause).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, false, false, true, false, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createPause());
     }
     
     /**
@@ -334,7 +334,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isOneDay_asHoliday() {
         val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.Holiday).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, false, false, false, true, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHoliday());
     }
     
     /**
@@ -350,7 +350,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isOneDay_asSpecialHoliday() {
         val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.SpecialHoliday).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, false, false, false, false, true, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createSpecialHoliday());
     }
     
     /**
@@ -367,7 +367,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isHalfDay_noVacation() {
         val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Closure, WorkTypeClassification.LeaveOfAbsence).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, false, false, false, false, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createDefaultHoliday());
     }
     
     /**
@@ -384,7 +384,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isHalfDay_AmPmVacation() {
         val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Holiday, WorkTypeClassification.AnnualHoliday).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(true, false, false, false, true, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHolidayAnnual());
     }
     
     /**
@@ -401,7 +401,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isHalfDay_AmHoliday() {
         val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Holiday, WorkTypeClassification.Closure).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, false, false, false, true, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHoliday());
     }
     
     /**
@@ -418,7 +418,7 @@ public class DailyWorkTest {
     public void testDetermineHolidayByWorkType_isHalfDay_PmHoliday() {
         val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Closure, WorkTypeClassification.Holiday).determineHolidayByWorkType();
         
-        assertThat(target).isEqualToComparingFieldByField(HolidayTest.Helper.createHoliday(false, false, false, false, true, false, false));
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHoliday());
     }
 
 	protected static class Helper {

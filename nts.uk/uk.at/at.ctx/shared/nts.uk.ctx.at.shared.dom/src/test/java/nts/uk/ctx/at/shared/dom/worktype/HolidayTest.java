@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import mockit.integration.junit4.JMockit;
-
 /**
  * @author anhnm
  *
@@ -22,10 +21,11 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isAnnualHoliday() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
+        Holiday result = HolidayTestHelper.createAnnualHoliday();
         target.changeValue(HolidayTypeClassification.AnnualHoliday);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(true, false, false, false, false, false, false));
+        assertThat( target ).isEqualToComparingFieldByField(result);
     }
     
     /**
@@ -36,10 +36,11 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isYearlyReserved() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
+        Holiday result = HolidayTestHelper.createYearlyReserved();
         target.changeValue(HolidayTypeClassification.YearlyReserved);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(false, true, false, false, false, false, false));
+        assertThat( target ).isEqualToComparingFieldByField(result);
     }
     
     /**
@@ -50,10 +51,11 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isSubstituteHoliday() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
+        Holiday result = HolidayTestHelper.createSubstituteHoliday();
         target.changeValue(HolidayTypeClassification.SubstituteHoliday);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(false, false, true, false, false, false, false));
+        assertThat( target ).isEqualToComparingFieldByField(result);
     }
     
     /**
@@ -64,10 +66,11 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isPause() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
+        Holiday result = HolidayTestHelper.createPause();
         target.changeValue(HolidayTypeClassification.Pause);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(false, false, false, true, false, false, false));
+        assertThat( target ).isEqualToComparingFieldByField(result);
     }
     
     /**
@@ -78,10 +81,11 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isHoliday() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
+        Holiday result = HolidayTestHelper.createHoliday();
         target.changeValue(HolidayTypeClassification.Holiday);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(false, false, false, false, true, false, false));
+        assertThat( target ).isEqualToComparingFieldByField(result);
     }
     
     /**
@@ -92,10 +96,11 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isSpecialHoliday() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
+        Holiday result = HolidayTestHelper.createSpecialHoliday();
         target.changeValue(HolidayTypeClassification.SpecialHoliday);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(false, false, false, false, false, true, false));
+        assertThat( target ).isEqualToComparingFieldByField(result);
     }
     
     /**
@@ -106,10 +111,11 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isTimeDigestVacation() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
+        Holiday result = HolidayTestHelper.createTimeDigestVacation();
         target.changeValue(HolidayTypeClassification.TimeDigestVacation);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(false, false, false, false, false, false, true));
+        assertThat( target ).isEqualToComparingFieldByField(result);
     }
     
     /**
@@ -120,28 +126,9 @@ public class HolidayTest {
      */
     @Test
     public void testChangeValue_isNoVacation() {
-        Holiday target = Helper.createHoliday(false, false, false, false, false, false, false);
+        Holiday target = new Holiday();
         target.changeValue(HolidayTypeClassification.NoVacation);
         
-        assertThat( target ).isEqualToComparingFieldByField(Helper.createHoliday(false, false, false, false, false, false, false));
-    }
-
-    public static class Helper {
-        /**
-         * 休暇種類を新規作成する
-         * @param isAnnualHoliday 年休
-         * @param isYearlyReserved 積立年休
-         * @param isSubstituteHoliday 代休
-         * @param isPause 振休
-         * @param isHoliday 休日
-         * @param isSpecialHoliday 特別休暇
-         * @param isTimeDigestVacation 時間消化休暇
-         * @return 休暇種類 Holiday
-         */
-        public static Holiday createHoliday(boolean isAnnualHoliday, boolean isYearlyReserved, boolean isSubstituteHoliday, 
-                boolean isPause, boolean isHoliday, boolean isSpecialHoliday, boolean isTimeDigestVacation) {
-            
-            return new Holiday(isAnnualHoliday, isYearlyReserved, isSubstituteHoliday, isPause, isHoliday, isSpecialHoliday, isTimeDigestVacation);
-        }
+        assertThat( target ).isEqualToComparingFieldByField(new Holiday());
     }
 }
