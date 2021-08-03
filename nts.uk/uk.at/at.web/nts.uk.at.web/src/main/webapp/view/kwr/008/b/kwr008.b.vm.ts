@@ -85,6 +85,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         }
                         self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(res));
                         self.currentSetOutputSettingCode().listItemsOutput().forEach((item, index) => {
+                            const calculationExpression = 
+                                index === 0 ? self.rule36CalculationName :
+                                index === 1 ? self.rule36CalculationAverageName :
+                                self.buildcalculationExpression(item.listOperationSetting());
                             self.outputItem()[item.sortBy() - 1].updateData(
                                 item.sortBy(),
                                 item.itemOutCd(),
@@ -92,7 +96,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                                 item.headingName(),
                                 item.valOutFormat(),
                                 item.listOperationSetting(),
-                                self.buildcalculationExpression(item.listOperationSetting())
+                                calculationExpression
                             )
                         });
                         $("#B3_3").focus();
