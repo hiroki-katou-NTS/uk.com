@@ -1422,10 +1422,10 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容＋＝<List>項目名
 			switch (x.getAppTimeType()) {
 			case ATWORK:
-				resultLoop += I18NText.getText("CMM045_294") + "1";
+				resultLoop += I18NText.getText("CMM045_294");
 				break;
 			case OFFWORK:
-				resultLoop += I18NText.getText("CMM045_295") + "1";
+				resultLoop += I18NText.getText("CMM045_295");
 				break;
 			case ATWORK2:
 				resultLoop += I18NText.getText("CMM045_294") + "2";
