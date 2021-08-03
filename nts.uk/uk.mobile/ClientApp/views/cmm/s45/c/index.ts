@@ -67,7 +67,8 @@ export class CmmS45CComponent extends Vue {
     public appType: number = 99;
     public appTransferData: any = {
         appDispInfoStartupOutput: null,
-        appDetail: null
+        appDetail: null,
+        isDetailMode: true
     };
     // 差し戻し理由
     public reversionReason: string = '';
@@ -327,6 +328,7 @@ export class CmmS45CComponent extends Vue {
     // tiến tới màn chi tiết KAF005
     public updateApp(): void {
         const self = this;
+        _.set(self.appTransferData.appDetail, 'isDetailMode', true);
         switch (self.appType) {
             case 2:
                 if (self.$router.currentRoute.name == 'kafs07a') {
