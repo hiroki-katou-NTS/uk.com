@@ -175,7 +175,7 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject implements S
 	 * @return true：控除する、false：控除しない
 	 */
 	public boolean isMinusAbsenceTime() {
-		return this.minusAbsenceTime.orElse(NotUseAtr.NOT_USE).equals(NotUseAtr.USE);
+		return this.minusAbsenceTime.orElse(NotUseAtr.NOT_USE).isUse();
 	}
 }
 

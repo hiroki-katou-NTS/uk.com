@@ -210,7 +210,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 	}
 
 	/**
-	 * 欠勤である
+	 * 欠勤であるか判定する
 	 * @return true：欠勤である false：欠勤ではない
 	 */
 	public boolean isAbsence() {
