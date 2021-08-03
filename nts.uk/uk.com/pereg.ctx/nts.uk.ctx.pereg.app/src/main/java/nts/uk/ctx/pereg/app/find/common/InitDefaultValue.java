@@ -128,6 +128,8 @@ public class InitDefaultValue {
 				case "IS00375":
 					// 子の看護・介護休暇情報 の 子の介護休暇管理
 				case "IS00380":
+				case "IS01093":
+				case "IS01095":
 					valueItem.setValue(String.valueOf(UseAtr.NotUse.value));
 					break;
 				// 特別休暇１～２０情報 の 付与設定
@@ -155,8 +157,6 @@ public class InitDefaultValue {
 					break;
 				// 労働条件のスケジュール管理
 				case "IS00121":
-				case "IS01093":
-				case "IS01095":
 					valueItem.setValue(String.valueOf(UseAtr.Use.value));
 					break;
 				// その他休暇情報 の 精算方法
