@@ -347,8 +347,8 @@ public class AppContentServiceImpl implements AppContentService {
 			result += " " + workTimeName;
 			// Input．．勤務直行1をチェック ( Check Input．．đi làm thẳng 1
 			if(goWorkAtr1 == NotUseAtr.USE) {
-				// 申請内容　+＝’　’＋#CMM045_252
-				result += " " + I18NText.getText("CMM045_252");
+				// 申請内容　+＝’　’＋#CMM045_259
+				result += " " + I18NText.getText("CMM045_259");
 			} else {
 				// 申請内容　+＝’　’
 				result += " ";
@@ -360,8 +360,8 @@ public class AppContentServiceImpl implements AppContentService {
 				result += I18NText.getText("CMM045_100");
 			}
 			if(goBackAtr1 == NotUseAtr.USE) {
-				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
-				result += I18NText.getText("CMM045_252");
+				// 申請内容　+＝　#CMM045_100　+　#CMM045_260
+				result += I18NText.getText("CMM045_260");
 			}
 			// 申請内容　+＝　Input．勤務時間終了1
 			result += workTimeEnd1 == null ? "" : workTimeEnd1.getInDayTimeWithFormat();
