@@ -236,14 +236,18 @@ module nts.uk.at.view.kdp.share {
 				});
 			}
 
-			setInterval(() => vm.time(vm.$date.now()), 100);
+			vm.$ajax('at', '/server/time/now')
+				.then((c) => {
+					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
+
+					vm.time(date);
+				});
 		}
 
 		mounted() {
 			const vm = this;
 
 			$(vm.$el).attr('id', 'stamp-header');
-
 		}
 	}
 
