@@ -63,8 +63,8 @@ public class GetAggregatedInfoFinder {
 	private AggregatedInformationRs convertData(AggregatedInformationDto dto) {
 		return new AggregatedInformationRs(
 				convertExternalBudget(dto.externalBudget), 
-				AggregatePersonalMapDto.convertMap(dto.aggrerateSchedule.aggreratePersonal), 
-				AggregateWorkplaceMapDto.convertMap(dto.aggrerateSchedule.aggrerateWorkplace));
+				dto.aggrerateSchedule.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(dto.aggrerateSchedule.aggreratePersonal), 
+				dto.aggrerateSchedule.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(dto.aggrerateSchedule.aggrerateWorkplace));
 		
 	}
 

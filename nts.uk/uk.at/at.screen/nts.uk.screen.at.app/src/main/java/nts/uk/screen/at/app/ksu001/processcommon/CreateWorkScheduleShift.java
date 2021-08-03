@@ -171,20 +171,36 @@ public class CreateWorkScheduleShift {
 						.workHolidayCls(workStyle.isPresent() ? workStyle.get().value : null)
 						.isEdit(true)
 						.isActive(true)
+						.conditionAa1(true)
+						.conditionAa2(true)
 						.build();
 
-				// ※Aa1
-				boolean isEdit = true;
+				/**※Aa1
+				勤務予定（シフト）dto．実績か == true	           achievements	        ×	
+				勤務予定（シフト）dto．確定済みか == true          confirmed		        ×	
+				勤務予定（シフト）dto．勤務予定が必要か == false	   needToWork		    ×	
+				勤務予定（シフト）dto．応援か == 時間帯応援先               supportCategory		×	
+				対象の日 < A画面パラメータ. 修正可能開始日　の場合    targetDate		    ×	=> check dưới UI
+				上記以外									   other                ○	
+				*/
 				if(dto.achievements == true || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					isEdit = false;
+					dto.setEdit(false);
+					dto.setConditionAa1(false);
 				}
-				// ※Aa2
-				boolean isActive = true;
+				
+				/**
+				 * ※Aa2			シフト確定																					
+				勤務予定（シフト）dto．実績か == true               achievements		×	
+				勤務予定（シフト）dto．勤務予定が必要か == false     needToWork	 		×	
+				勤務予定（シフト）dto．応援か == 時間帯応援先	    supportCategory		×	
+				対象の日 < A画面パラメータ. 修正可能開始日　の場合	targetDate			×	=> check dưới UI
+				上記以外										other				○	
+				 */
 				if(dto.achievements == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					isActive = false;
+					dto.setActive(false);
+					dto.setConditionAa2(false);
 				}
-				dto.setEdit(isEdit);
-				dto.setActive(isActive);
+				
 				listWorkScheduleShift.add(dto);
 
 			} else {
@@ -203,19 +219,20 @@ public class CreateWorkScheduleShift {
 						.workHolidayCls(null)
 						.isEdit(true)
 						.isActive(true)
+						.conditionAa1(true)
+						.conditionAa2(true)
 						.build();
 				// ※Aa1
-				boolean isEdit = true;
 				if(dto.achievements == true || dto.confirmed == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					isEdit = false;
+					dto.setEdit(false);
+					dto.setConditionAa1(false);
 				}
 				// ※Aa2
-				boolean isActive = true;
 				if(dto.achievements == true || dto.needToWork == false || dto.supportCategory == SupportCategory.TimeSupport.value){
-					isActive = false;
+					dto.setActive(false);
+					dto.setConditionAa2(false);
 				}
-				dto.setEdit(isEdit);
-				dto.setActive(isActive);
+				
 				listWorkScheduleShift.add(dto);
 			}
 		});

@@ -49,7 +49,7 @@ public class ScreenQueryWorkScheduleShift {
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew,
 			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
 			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> mapDataDaily,
-			Boolean isAchievement
+			Boolean getActualData
 			) {
 		WorkScheduleShiftBaseResult output = new WorkScheduleShiftBaseResult(
 				Collections.emptyList(),
@@ -63,7 +63,7 @@ public class ScreenQueryWorkScheduleShift {
 		output.setListWorkScheduleShift(workScheduleShiftResult.getListWorkScheduleShift());
 		output.setMapShiftMasterWithWorkStyle(workScheduleShiftResult.getMapShiftMasterWithWorkStyle());
 		// 2 実績も取得するか == true
-		if (isAchievement) {
+		if (getActualData) {
 			// 2.1: <call>
 			WorkScheduleShiftBaseResult workScheduleShiftBaseResult = 
 					createWorkScheduleShiftBase.getWorkScheduleShiftBase(

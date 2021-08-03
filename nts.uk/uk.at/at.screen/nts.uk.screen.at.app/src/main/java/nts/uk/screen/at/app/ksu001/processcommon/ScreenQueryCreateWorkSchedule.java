@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.ksu001.processcommon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,7 +36,7 @@ public class ScreenQueryCreateWorkSchedule {
 	public List<WorkScheduleWorkInforDto> get(
 			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
 			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map,
-			Boolean isAchievement
+			Boolean getActualData
 			) {
 		
 		// 1: 作成する(Map<社員の予定管理状態, Optional<勤務予定>>)
@@ -45,7 +44,7 @@ public class ScreenQueryCreateWorkSchedule {
 					createWorkScheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
 		
 		// 2実績も取得するか == true
-		if (isAchievement) {
+		if (getActualData) {
 			// 2.1: 作成する(Map<社員の予定管理状態, Optional<日別勤怠(Work)>>)
 			List<WorkScheduleWorkInforDto> workScheduleWorkInfor2 =
 						createWorkScheduleWorkInforBase.getDataScheduleOfWorkInfo(map);
