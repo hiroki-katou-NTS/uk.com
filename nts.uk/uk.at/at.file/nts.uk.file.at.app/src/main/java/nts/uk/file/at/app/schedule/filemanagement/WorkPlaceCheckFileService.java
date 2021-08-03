@@ -24,7 +24,6 @@ import nts.uk.ctx.at.schedule.dom.importschedule.ImportResult;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportResultDetail;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportStatus;
 import nts.uk.ctx.at.schedule.dom.importschedule.WorkScheduleImportService;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -77,70 +76,70 @@ import nts.uk.shr.com.i18n.TextResource;
  */
 @Stateless
 public class WorkPlaceCheckFileService {
-    
+
     @Inject
     private IEmployeeCESettingPub employeeSettingPub;
-    
+
     @Inject
     private CheckFileService checkfileService;
-    
+
     @Inject
     private ScheAuthModifyDeadlineRepository scheAuthModifyDeadlineRepository;
-    
+
     @Inject
     private WorkplaceGroupAdapter workplaceGroupAdapter;
-    
+
     @Inject
     private RegulationInfoEmployeeAdapter regulInfoEmpAdap;
-    
+
     @Inject
     private RegulationInfoEmployeePub regulInfoEmpPub;
-    
+
     @Inject
     private WorkingConditionRepository workingConditionRepo;
-    
+
     @Inject
     private WorkTypeRepository workTypeRepo;
-    
+
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
-    
+
     @Inject
     private BasicScheduleService basicScheduleService;
-    
+
     @Inject
     private FixedWorkSettingRepository fixedWorkSettingRepository;
-    
+
     @Inject
     private FlowWorkSettingRepository flowWorkSettingRepository;
-    
+
     @Inject
     private FlexWorkSettingRepository flexWorkSettingRepository;
-    
+
     @Inject
     private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-    
+
     @Inject
     private ShiftMasterRepository shiftMasterRepository;
-    
+
     @Inject
     private WorkScheduleRepository workScheduleRepository;
-    
+
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
-    
+
     @Inject
     private EmpComHisAdapter comHisAdapter;
-    
+
     @Inject
     private EmpLeaveHistoryAdapter empHisAdapter;
-    
+
     @Inject
     private EmpLeaveWorkHistoryAdapter leaHisAdapter;
-    
+
     @Inject
     private EmploymentHisScheduleAdapter scheAdapter;
-    
+
     @Inject
     private GetHolidaysByPeriod getHolidaysByPeriod;
 
@@ -152,47 +151,47 @@ public class WorkPlaceCheckFileService {
                 employeeCodeEditSettingExport = employeeCESettingOpt.get();
             }
             return CapturedRawDataDto.fromDomain(checkfileService.processingFile(param, employeeCodeEditSettingExport));
-            
+
         } catch (Exception e) {
             throw e;
         }
     }
-    
+
     public CaptureDataOutput getCaptureData(CapturedRawDataDto data, boolean overwrite) {
         // 1: 取り込む(Require, 取り込み内容)
         long startImport = System.currentTimeMillis();
         System.out.println("Start import");
         ImportResult importResult = WorkScheduleImportService.importFrom(
-                new RequireImp(scheAuthModifyDeadlineRepository, workplaceGroupAdapter, regulInfoEmpAdap, regulInfoEmpPub, workingConditionRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, shiftMasterRepository, workScheduleRepository, empEmployeeAdapter, comHisAdapter, empHisAdapter, leaHisAdapter, scheAdapter), 
+                new RequireImp(scheAuthModifyDeadlineRepository, workplaceGroupAdapter, regulInfoEmpAdap, regulInfoEmpPub, workingConditionRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, shiftMasterRepository, workScheduleRepository, empEmployeeAdapter, comHisAdapter, empHisAdapter, leaHisAdapter, scheAdapter),
                 data.toDomain());
         long endImport = System.currentTimeMillis();
         System.out.println("Time Import File: " + (endImport - startImport));
-        
+
         // 2: 取り込み可能な社員IDリストを取得する()
         long startGetImportaleEmp = System.currentTimeMillis();
         List<EmployeeId> employeeIds = importResult.getImportableEmployees();
         long endGetImportaleEmp = System.currentTimeMillis();
         System.out.println("Time Get Importable Emp: " + (endGetImportaleEmp - startGetImportaleEmp));
-        
+
         // 3: 取り込み可能な年月日リストを取得する()
         long startGetImportableDates = System.currentTimeMillis();
         List<GeneralDate> importableDates = importResult.getImportableDates();
         long endGetImportableDates = System.currentTimeMillis();
         System.out.println("Time Get Importable Date: " + (endGetImportableDates - startGetImportableDates));
-        
+
         // 4: 処理2の結果
         long startGetListEmp = System.currentTimeMillis();
         List<PersonEmpBasicInfoImport> listPersonEmp = this.empEmployeeAdapter.getPerEmpBasicInfo(employeeIds.stream().map(x -> x.v()).collect(Collectors.toList()));
         long endGetListEmp = System.currentTimeMillis();
         System.out.println("Time Get List Emp: " + (endGetListEmp - startGetListEmp));
-        
+
         // 5: create 取り込みエラーDto
         long startMappingError = System.currentTimeMillis();
         List<MappingErrorDto> mappingErrorList = new ArrayList<MappingErrorDto>();
         long endMappingError = System.currentTimeMillis();
         System.out.println("Time Mapping Error: " + (endMappingError - startMappingError));
         // <<create>>
-        //            取り込み結果.取り込み不可日 : 
+        //            取り込み結果.取り込み不可日 :
         //　　map 取り込みエラーDto (empty, empty, $, #Msg_2121)
         long startMap2121 = System.currentTimeMillis();
         importResult.getUnimportableDates().forEach(x -> {
@@ -216,15 +215,15 @@ public class WorkPlaceCheckFileService {
         //　　　　　return 取り込みエラーDto ($対象社員.社員コード, $対象社員.ビジネスネーム, $.年月日, $.状態.エラーメッセージ) }
         long startMapDetailErr = System.currentTimeMillis();
         List<ImportResultDetail> resultDetails1 = importResult.getResults().stream().filter(x -> x.getStatus().isUnimportable()).collect(Collectors.toList());
-        
+
         resultDetails1.forEach(x -> {
             Optional<PersonEmpBasicInfoImport> personEmpOptional = listPersonEmp.stream()
                     .filter(y -> y.getEmployeeId().equals(x.getEmployeeId().v())).findFirst();
             if (personEmpOptional.isPresent()) {
                 mappingErrorList.add(new MappingErrorDto(
-                        Optional.of(personEmpOptional.get().getEmployeeCode()), 
-                        Optional.of(personEmpOptional.get().getBusinessName()), 
-                        Optional.of(x.getYmd()), 
+                        Optional.of(personEmpOptional.get().getEmployeeCode()),
+                        Optional.of(personEmpOptional.get().getBusinessName()),
+                        Optional.of(x.getYmd()),
                         x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));
             }
         });
@@ -244,18 +243,18 @@ public class WorkPlaceCheckFileService {
                     .filter(y -> y.getEmployeeId().equals(x.getEmployeeId().v())).findFirst();
             if (personEmpOptional.isPresent()) {
                 mappingErrorList.add(new MappingErrorDto(
-                        Optional.of(personEmpOptional.get().getEmployeeCode()), 
-                        Optional.of(personEmpOptional.get().getBusinessName()), 
-                        Optional.of(x.getYmd()), 
+                        Optional.of(personEmpOptional.get().getEmployeeCode()),
+                        Optional.of(personEmpOptional.get().getBusinessName()),
+                        Optional.of(x.getYmd()),
                         x.getStatus().getMessageId().isPresent() ? TextResource.localize(x.getStatus().getMessageId().get().replace("#", "")) : ""));
             }
         });
         long endMapDetailErr2 = System.currentTimeMillis();
         System.out.println("Time Mapping Detail Error 2: " + (endMapDetailErr2 - startMapDetailErr2));
-        
+
         // 6: 曜日()
         // TODO: Use List<GeneralDate> importableDates step 3
-        
+
         //7: 取得する(期間)
         long startGetHolidays = System.currentTimeMillis();
         List<PublicHoliday> holidays = new ArrayList<PublicHoliday>();
@@ -264,67 +263,67 @@ public class WorkPlaceCheckFileService {
         }
         long endGetHolidays = System.currentTimeMillis();
         System.out.println("Time Get Holidays: " + (endGetHolidays - startGetHolidays));
-        
+
         return new CaptureDataOutput(listPersonEmp, importableDates, holidays, importResult, mappingErrorList);
     }
-    
+
     @AllArgsConstructor
     private static class RequireImp implements WorkScheduleImportService.Require {
-        
+
         @Inject
         private ScheAuthModifyDeadlineRepository scheAuthModifyDeadlineRepository;
-        
+
         @Inject
         private WorkplaceGroupAdapter workplaceGroupAdapter;
-        
+
         @Inject
         private RegulationInfoEmployeeAdapter regulInfoEmpAdap;
-        
+
         @Inject
         private RegulationInfoEmployeePub regulInfoEmpPub;
-        
+
         @Inject
         private WorkingConditionRepository workingConditionRepo;
-        
+
         @Inject
         private WorkTypeRepository workTypeRepo;
-        
+
         @Inject
         private WorkTimeSettingRepository workTimeSettingRepository;
-        
+
         @Inject
         private BasicScheduleService basicScheduleService;
-        
+
         @Inject
         private FixedWorkSettingRepository fixedWorkSettingRepository;
-        
+
         @Inject
         private FlowWorkSettingRepository flowWorkSettingRepository;
-        
+
         @Inject
         private FlexWorkSettingRepository flexWorkSettingRepository;
-        
+
         @Inject
         private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-        
+
         @Inject
         private ShiftMasterRepository shiftMasterRepository;
-        
+
         @Inject
         private WorkScheduleRepository workScheduleRepository;
-        
+
         @Inject
         private EmpEmployeeAdapter empEmployeeAdapter;
-        
+
         @Inject
         private EmpComHisAdapter comHisAdapter;
-        
+
         @Inject
         private EmpLeaveHistoryAdapter empHisAdapter;
-        
+
         @Inject
         private EmpLeaveWorkHistoryAdapter leaHisAdapter;
-        
+
         @Inject
         private EmploymentHisScheduleAdapter scheAdapter;
 
@@ -347,11 +346,11 @@ public class WorkPlaceCheckFileService {
         public List<String> sortEmployee(List<String> employeeIdList, EmployeeSearchCallSystemType systemType,
                 Integer sortOrderNo, GeneralDate date, Integer nameType) {
             return regulInfoEmpAdap.sortEmployee(
-                    AppContexts.user().companyId(), 
-                    employeeIdList, 
-                    systemType.value, 
-                    sortOrderNo, 
-                    nameType, 
+                    AppContexts.user().companyId(),
+                    employeeIdList,
+                    systemType.value,
+                    sortOrderNo,
+                    nameType,
                     GeneralDateTime.fromString(date.toString() + " " + "00:00", "yyyy/MM/dd HH:mm"));
         }
 
@@ -414,7 +413,7 @@ public class WorkPlaceCheckFileService {
                     AppContexts.user().companyId(),
                     employeeId,
                     date);
-            
+
             return workingConditionRepo.getWorkingConditionItem(workingCondition.get().getDateHistoryItem().get(0).identifier());
         }
 
@@ -495,14 +494,20 @@ public class WorkPlaceCheckFileService {
 
         @Override
         public List<ShiftMaster> getShiftMasters(List<ShiftMasterImportCode> importCodes) {
-            return shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), 
+            return shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(),
                     importCodes.stream().map(x -> x.v()).collect(Collectors.toList()));
         }
 
         @Override
-        public Optional<WorkSchedule> getWorkSchedule(EmployeeId employeeId, GeneralDate ymd) {
-            return workScheduleRepository.get(employeeId.v(), ymd);
+        public boolean isWorkScheduleExisted(EmployeeId employeeId, GeneralDate ymd) {
+        	// TODO 実装
+            return false;
         }
-        
+
+        @Override
+        public boolean isWorkScheduleComfirmed(EmployeeId employeeId, GeneralDate ymd) {
+        	// TODO 実装
+            return false;
+        }
     }
 }
