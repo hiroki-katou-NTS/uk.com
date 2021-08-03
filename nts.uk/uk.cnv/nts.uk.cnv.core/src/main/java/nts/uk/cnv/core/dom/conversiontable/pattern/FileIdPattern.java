@@ -98,6 +98,6 @@ public class FileIdPattern extends ConversionPattern  {
 	}
 
 	private String mappingAlias() {
-		return "";
+		return "fileId_" + this.sourceColumnName;
 	}
 }
