@@ -5535,7 +5535,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									let filTask = _.filter(self.lstChartTask, (tsk : any ) => {
 									return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
 								})
-									self.bindDataToTask(filTask != null ? filTask[0].code : null, end , self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end , line, id, "add");
+									self.bindDataToTask(filTask != null ? filTask[0].code : null, end , self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end , line, `pgc${util.randomId().split("-").join("")}`, "add");
 									self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
 									continue;
 								}
@@ -5581,7 +5581,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								eTimeNew = end;
 								end = sTime;
 								
-								self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null , sTimeNew , eTimeNew , line, id, "add");
+								self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null , sTimeNew , eTimeNew , line, `pgc${util.randomId().split("-").join("")}`, "add");
 							}	
 						}
 					}
@@ -5641,7 +5641,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
 								})
 								
-								self.bindDataToTask(filTask != null ? filTask[0].code : null , end , self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end , line, id, "add");
+								self.bindDataToTask(filTask != null ? filTask[0].code : null , end , self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end , line, `pgc${util.randomId().split("-").join("")}`, "add");
 								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = start;
 								continue;
 							}
