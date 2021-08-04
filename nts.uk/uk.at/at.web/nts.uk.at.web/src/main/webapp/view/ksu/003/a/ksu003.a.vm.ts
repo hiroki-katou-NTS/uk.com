@@ -1496,6 +1496,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				
 				if (self.selectedDisplayPeriod() != 1){
 					self.subFormatDate(2);
+					self.getTask();
 					__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
 					__viewContext.viewModel.viewmodelAb.taskChecked.valueHasMutated();
 				}
@@ -1510,6 +1511,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					if (self.selectedDisplayPeriod() != 1){
 						self.subFormatDate(2);
+						self.getTask();
 						__viewContext.viewModel.viewmodelAb.selectedButton.valueHasMutated();
 						__viewContext.viewModel.viewmodelAb.taskChecked.valueHasMutated();
 					} 
@@ -5448,8 +5450,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let noneChart = _.filter(noneFil, (x : any) => {
 						return x.start == start && x.end == end;
 					})
+					
+					let checkDup = _.filter(noneFil, (x : any) => {
+						return _.inRange(start,x.start,x.end) && _.inRange(end,x.start,x.end);
+					})
 					if (noneChart.length == 0) {
-						self.enableSave(false);
+						
+						if(checkDup.length > 0){
+							if (self.enableSave() != true){
+								self.enableSave(false);
+							}							
+						}
+						
 						return;	
 					}
 					self.addTaskResize(line , type , start , end, ruler.gcChart[line][noneChart[0].id].id);
