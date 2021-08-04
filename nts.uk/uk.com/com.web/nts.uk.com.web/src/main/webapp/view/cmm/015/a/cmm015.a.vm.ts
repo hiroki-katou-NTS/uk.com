@@ -798,7 +798,7 @@ module cmm015.a.viewmodel {
 
             displayData.sort((first, second) => {
                 return moment(new Date(first.startDate)).diff(moment(new Date(second.startDate)))
-                    || first.postPositionName.localeCompare(second.postPositionName)
+                    || first.order - second.order
                     || first.sCD.localeCompare(second.sCD);
             });
 
@@ -1015,6 +1015,7 @@ module cmm015.a.viewmodel {
         postPositionHID: string = ''; //後職位履歴ID
         bgPostWkp: string = '';
         css: string = '';
+        order: number = 999;
 
         constructor(prevAWH: HistoryItem, prevAJH: HistoryItem, post: HistoryItem, empInfors: any[], wkpListInfo: any[], jtInfor: any[]) {
             const self = this;
@@ -1065,6 +1066,7 @@ module cmm015.a.viewmodel {
                 }
                 self.postPositionHID = post.jtHID;
                 self.endDate = post.endDate;
+                self.order = post.order;
             }
 
             self.key = `${self.sID} ${self.startDate}`;
@@ -1080,6 +1082,7 @@ module cmm015.a.viewmodel {
         jobTitleId: string;
         wkpHID: string;
         jtHID: string;
+        order: number;
 
         constructor(init: HistoryItem) {
             $.extend(this, init);
