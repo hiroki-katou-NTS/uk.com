@@ -362,7 +362,6 @@ public class ConditionEmployeeTest {
 					0,
 					new WorkScheduleBusCal(
 							WorkScheduleMasterReferenceAtr.CLASSIFICATION,
-							WorkScheduleMasterReferenceAtr.WORK_PLACE,
 							TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE),
 					new MonthlyPatternWorkScheduleCre(1)));
 		}

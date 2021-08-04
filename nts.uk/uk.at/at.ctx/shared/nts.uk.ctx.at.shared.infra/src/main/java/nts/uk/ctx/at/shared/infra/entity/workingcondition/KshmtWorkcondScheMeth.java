@@ -103,8 +103,7 @@ public class KshmtWorkcondScheMeth extends ContractCompanyUkJpaEntity implements
 		return this.historyId;
 	}
 
-	public KshmtWorkcondScheMeth(String sid, String historyId, int basicCreateMethod, Integer refBusinessDayCalendar,
-			Integer refBasicWork, Integer refWorkingHours) {
+	public KshmtWorkcondScheMeth(String sid, String historyId, int basicCreateMethod, Integer refBusinessDayCalendar, Integer refWorkingHours) {
 		super();
 		this.sid = sid;
 		this.historyId = historyId;
@@ -118,7 +117,6 @@ public class KshmtWorkcondScheMeth extends ContractCompanyUkJpaEntity implements
 		if(this.refBusinessDayCalendar != null  &&  this.refWorkingHours != null) {
 			workScheduleBusCal = new WorkScheduleBusCal(
 					this.refBusinessDayCalendar ==null?null:WorkScheduleMasterReferenceAtr.valueOf(this.refBusinessDayCalendar),
-					null,
 					this.refWorkingHours ==null?null:TimeZoneScheduledMasterAtr.valueOf(this.refWorkingHours));
 		}
 		return new ScheduleMethod(
@@ -131,7 +129,6 @@ public class KshmtWorkcondScheMeth extends ContractCompanyUkJpaEntity implements
 	public static KshmtWorkcondScheMeth toEntity(ScheduleMethod scheduleMethod,String sid,String historyId) {
 		return new KshmtWorkcondScheMeth(sid, historyId, scheduleMethod.getBasicCreateMethod().value, 
 				scheduleMethod.getWorkScheduleBusCal().isPresent()?(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar()==null?null:scheduleMethod.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar().value):null,
-				scheduleMethod.getWorkScheduleBusCal().isPresent()?(scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork()==null?null:scheduleMethod.getWorkScheduleBusCal().get().getReferenceBasicWork().value):null,
 				scheduleMethod.getWorkScheduleBusCal().isPresent()?(scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours()==null?null:scheduleMethod.getWorkScheduleBusCal().get().getReferenceWorkingHours().value):null);
 	}
 }

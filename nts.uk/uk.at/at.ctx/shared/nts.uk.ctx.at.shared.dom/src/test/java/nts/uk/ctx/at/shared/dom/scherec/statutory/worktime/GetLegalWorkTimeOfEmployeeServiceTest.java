@@ -402,9 +402,9 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 			val workTypeByIndividualWorkDay = new WorkTypeByIndividualWorkDay( new WorkTypeCode("001WC"), new WorkTypeCode("002WC"), new WorkTypeCode("003WC"), Optional.empty(), Optional.empty(), Optional.empty());
 			val workByIndividualWorkDay =new nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay(perCate, workTypeByIndividualWorkDay);
 			val holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
-			val workScheduleBusCal = new WorkScheduleBusCal(WorkScheduleMasterReferenceAtr.WORK_PLACE
-					, WorkScheduleMasterReferenceAtr.WORK_PLACE
-					, TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK);
+			val workScheduleBusCal = new WorkScheduleBusCal(
+					WorkScheduleMasterReferenceAtr.WORK_PLACE
+					,TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK);
 			val monthlyPatter = new MonthlyPatternWorkScheduleCre(0);
 			val scheduleMethod =  new ScheduleMethod(0, workScheduleBusCal, monthlyPatter);
 			val timeApply = new BonusPaySettingCode("001");
