@@ -31,9 +31,28 @@ export class AppInfo {
         this.opAppStartDate = params.opAppStartDate;
         this.opAppEndDate = params.opAppEndDate;
     }
+
     
     get prePostName() {
         return this.prePostAtr == 0 ? '事前' : '事後';
+    }
+
+    get linkAppDateCss() {
+        let a: number = new Date(this.opComplementLeaveApp.linkAppDate).getDay();
+
+        return a == 6 ? 'uk-text-saturday' : a == 0 ? 'uk-text-sunday' : '';
+    }
+
+    get opAppStartDateCss() {
+        let a: number = new Date(this.opAppStartDate).getDay();
+
+        return a == 6 ? 'uk-text-saturday' : a == 0 ? 'uk-text-sunday' : '';
+    }
+
+    get opAppEndDateCss() {
+        let a: number = new Date(this.opAppEndDate).getDay();
+
+        return a == 6 ? 'uk-text-saturday' : a == 0 ? 'uk-text-sunday' : '';
     }
 
     get appDateCss() {
