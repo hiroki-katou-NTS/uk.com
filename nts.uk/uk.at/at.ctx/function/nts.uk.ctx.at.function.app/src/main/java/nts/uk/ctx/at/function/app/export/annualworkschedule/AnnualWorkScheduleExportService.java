@@ -773,14 +773,15 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 
 		// すべての勤怠項目の取得データをチェックする
 		if (monthlyValue.get(employeeId) != null && monthlyValue.get(employeeId).size() > 0) {
-
+			
+			// 集計可能な勤怠項目IDかどうかチェックをする
+			boolean calculable = itemOut.getListOperationSetting().stream()
+					.allMatch(data -> lstAtdCanBeAggregate.contains(data.getAttendanceItemId()));
 			// アルゴリズム「月平均の算出」を実行する
 			return AnnualWorkScheduleData.fromMonthlyAttendanceList(
 				itemOut,
 				monthlyValue.get(employeeId),
-				startYm,
-				lstAtdCanBeAggregate
-			).calc(true);
+				startYm).calc(calculable);
 		}
 
 		return new AnnualWorkScheduleData();
