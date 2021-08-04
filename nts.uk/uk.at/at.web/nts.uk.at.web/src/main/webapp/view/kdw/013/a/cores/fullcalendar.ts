@@ -424,16 +424,17 @@ module nts.uk.ui.at.kdw013.calendar {
     }
 
     export type BussinessTime = {
-        startTime: number;
-        endTime: number;
+        start: number;
+        end: number;
     };
 
-    export type BreakTime = BussinessTime & {
-        backgroundColor: string;
+    export type BreakTime = {
+        dayOfWeek: DayOfWeek;
+        breakTimes: BussinessTime[];
     };
 
     export type BussinessHour = BussinessTime & {
-        daysOfWeek: DayOfWeek[];
+        dayOfWeek: DayOfWeek;
     };
 
     export type AttendanceTime = {
@@ -467,7 +468,7 @@ module nts.uk.ui.at.kdw013.calendar {
         editable: boolean | KnockoutObservable<boolean>;
         firstDay: DayOfWeek | KnockoutObservable<DayOfWeek>;
         attendanceTimes: AttendanceTime[] | KnockoutObservableArray<AttendanceTime>;
-        breakTime: BreakTime | KnockoutObservable<undefined | BreakTime>;
+        breakTime: BreakTime | KnockoutObservableArray<BreakTime>;
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
         validRange: Partial<DatesSet> | KnockoutObservable<Partial<DatesSet>>;
         event: {
@@ -509,10 +510,14 @@ module nts.uk.ui.at.kdw013.calendar {
     const ISO_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00';
 
     const formatDate = (date: Date, format: string = ISO_DATE_FORMAT) => moment(date).format(format);
-    const formatTime = (time: number) => {
+    const formatTime = (time: number, getSecond?: boolean) => {
         const f = Math.floor;
-        const times = [f(time / 60), f(time % 60), 0]
-
+        const times;
+        if (getSecond === false) {
+            times = [f(time / 60), f(time % 60)];
+        }else{
+            times = [f(time / 60), f(time % 60), 0];
+        }
         return times
             .map((m) => m.toString())
             .map((m) => _.padStart(m, 2, '0'))
@@ -673,7 +678,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     employee: ko.observable(''),
                     confirmers: ko.observableArray([]),
                     attendanceTimes: ko.observableArray([]),
-                    breakTime: ko.observable(null),
+                    breakTime: ko.observableArray([]),
                     businessHours: ko.observableArray([]),
                     validRange: ko.observable({ start: null, end: null }),
                     event: {
@@ -760,7 +765,7 @@ module nts.uk.ui.at.kdw013.calendar {
             }
 
             if (breakTime === undefined) {
-                this.params.breakTime = ko.observable(undefined);
+                this.params.breakTime = ko.observableArray([]);
             }
 
             if (businessHours === undefined) {
@@ -2409,6 +2414,15 @@ module nts.uk.ui.at.kdw013.calendar {
                 disposeWhenNodeIsRemoved: vm.$el
             });
 
+             ko.computed({
+                read: () => {
+                    const wk = ko.unwrap<boolean>(weekends);
+
+                    vm.calendar.setOption('weekends', wk);
+                },
+                disposeWhenNodeIsRemoved: vm.$el
+            });
+
             // change view
             ko.computed({
                 read: () => {
@@ -2547,46 +2561,47 @@ module nts.uk.ui.at.kdw013.calendar {
             // set businessHours
             ko.computed({
                 read: () => {
-                    const breakTime = ko.unwrap<BreakTime>(params.breakTime);
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
 
-                    if (!breakTime) {
-                        vm.calendar.setOption('businessHours', businessHours.map((m) => ({
-                            ...m,
-                            startTime: formatTime(m.startTime),
-                            endTime: formatTime(m.endTime)
-                        })));
+                    if (!businessHours.length) {
+                        vm.calendar.setOption('businessHours', false);
 
-                        vm.updateStyle('breaktime', '');
+                        //vm.updateStyle('breaktime', '');
                     } else {
-                        const { startTime, endTime, backgroundColor } = breakTime;
+                        const breakTimes = ko.unwrap<BreakTime[]>(params.breakTime);
 
-                        if (businessHours.length) {
-                            const starts = businessHours.map((m) => ({
-                                ...m,
-                                startTime: formatTime(m.startTime),
-                                endTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(startTime) : formatTime(0)
-                            }));
-                            const ends = businessHours.map((m) => ({
-                                ...m,
-                                startTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(endTime) : formatTime(0),
-                                endTime: formatTime(m.endTime)
-                            }));
-
-                            vm.calendar.setOption('businessHours', [...starts, ...ends]);
-                        } else {
-                            vm.calendar.setOption('businessHours', [{
-                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-                                startTime: formatTime(0),
-                                endTime: formatTime(startTime)
-                            }, {
-                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-                                startTime: formatTime(endTime),
-                                endTime: formatTime(24 * 60)
-                            }]);
+                        const bhs = [];
+                        for (let i = 0; i < businessHours.length; i++) {
+                            const cbh = businessHours[i];
+                            const breakOfDay = _.find(breakTimes, { 'dayOfWeek': cbh.dayOfWeek });
+                            if (breakOfDay && breakOfDay.breakTimes.length) {
+                                for (let j = 0; j < breakOfDay.breakTimes.length; j++) {
+                                    const brTime = breakOfDay.breakTimes[j];
+                                    const brBeforeTime = breakOfDay.breakTimes[j - 1];
+                                    bhs.push({
+                                        daysOfWeek: [cbh.dayOfWeek],
+                                        startTime: !brBeforeTime ? formatTime(cbh.start, false) : formatTime(brBeforeTime.end, false),
+                                        endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
+                                    },
+                                        {
+                                            daysOfWeek: [cbh.dayOfWeek],
+                                            startTime: formatTime(brTime.end, false),
+                                            endTime: formatTime(cbh.end, false)
+                                        }
+                                    );
+                                }
+                            } else {
+                                bhs.push({
+                                     daysOfWeek: [cbh.dayOfWeek],
+                                     startTime: formatTime(cbh.start, false),
+                                     endTime: formatTime(cbh.end, false)
+                                });  
+                            }
                         }
+                        
+                        vm.calendar.setOption('businessHours', bhs );
 
-                        vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
+                        //vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
                     }
                 },
                 disposeWhenNodeIsRemoved: vm.$el
