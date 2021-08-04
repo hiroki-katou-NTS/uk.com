@@ -107,7 +107,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
 
 	@Override
-	public Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>>> convertData(String empInfoTerCode,
+	public  Optional<StampDataReflectResultExport> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
@@ -115,7 +115,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
 				dailyRecordAdUpService, dailyRecordShareFinder, getMngInfoFromEmpIDListAdapter);
 
-		Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> convertDataOpt = ConvertTimeRecordStampService
+		Optional<StampDataReflectResult> convertDataOpt = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
 						new StampReceptionData(
 								new StampDataBuilder(stampReceptData.getIdNumber(), stampReceptData.getCardCategory(),
@@ -124,11 +124,8 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 												.overTimeHours(stampReceptData.getOverTimeHours())
 												.midnightTime(stampReceptData.getMidnightTime())
 												.time(stampReceptData.getTime())));
-		return convertDataOpt.map(convertData -> Pair.of(convertData.getLeft(),
-				convertData.getRight().isPresent()
-						? Optional.of(new StampDataReflectResultExport(convertData.getRight().get().getReflectDate(),
-								convertData.getRight().get().getAtomTask()))
-						: Optional.empty()));
+		return convertDataOpt.map(x -> (new StampDataReflectResultExport(x.getReflectDate(),
+								x.getAtomTask())));
 	}
 
 	@AllArgsConstructor

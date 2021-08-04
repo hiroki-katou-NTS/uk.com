@@ -38,18 +38,23 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 public class StampDataReflectProcessService {
 
 	// [1] 反映する
-	public static StampDataReflectResult reflect(Require require, String cid, Optional<String> employeeId, StampRecord stampRecord,
+	public static StampDataReflectResult reflect(Require require, String cid, Optional<String> employeeId,
+			StampRecord stampRecord, Optional<Stamp> stamp) {
+		return new StampDataReflectResult(reflectDailyResult(require, cid, employeeId, stamp),
+				registerStamp(require, stampRecord, stamp));
+	}
+	
+	// [2] 打刻を登録する
+	public static AtomTask registerStamp(Require require, StampRecord stampRecord,
 			Optional<Stamp> stamp) {
 		
 		//	$打刻記録
 		if (require.getStampRecord(stampRecord.getContractCode(), stampRecord.getStampNumber(),
 				stampRecord.getStampDateTime()).isPresent()) {
-			return new StampDataReflectResult(Optional.empty(), AtomTask.none());
+			return AtomTask.none();
 		}
 		
-		if (employeeId.isPresent()) {
-			// $反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)
-			Optional<GeneralDate> reflectDate = reflectDailyResult(require, cid, employeeId, stamp);
+		//if (employeeId.isPresent()) {
 			// $AtomTask = AtomTask:
 			AtomTask atomTask = AtomTask.of(() -> {
 				// require.打刻記録を追加する(打刻記録)
@@ -63,20 +68,20 @@ public class StampDataReflectProcessService {
 
 			});
 			// return 打刻データ反映処理結果#打刻データ反映処理結果($反映対象日, $AtomTask)
-			return new StampDataReflectResult(reflectDate, atomTask);
-		} else {
-
-			AtomTask atomTask = AtomTask.of(() -> {
-				// require.打刻記録を追加する(打刻記録)
-				require.insert(stampRecord);
-				// if not 打刻.isEmpty
-				if (stamp.isPresent()) {
-					require.insert(stamp.get());
-				}
-
-			});
-			return new StampDataReflectResult(Optional.empty(), atomTask);
-		}
+			return atomTask;
+//		} else {
+//
+//			AtomTask atomTask = AtomTask.of(() -> {
+//				// require.打刻記録を追加する(打刻記録)
+//				require.insert(stampRecord);
+//				// if not 打刻.isEmpty
+//				if (stamp.isPresent()) {
+//					require.insert(stamp.get());
+//				}
+//
+//			});
+//			return atomTask;
+//		}
 	}
 
 	/**
@@ -157,7 +162,7 @@ public class StampDataReflectProcessService {
 	 * @param employeeId
 	 * @param stamp
 	 */
-	private static Optional<GeneralDate> reflectDailyResult(Require require, String cid, Optional<String> employeeId,
+	public static Optional<GeneralDate> reflectDailyResult(Require require, String cid, Optional<String> employeeId,
 			Optional<Stamp> stamp) {
 		// if 社員ID.isEmpty
 		// if 打刻.isEmpty

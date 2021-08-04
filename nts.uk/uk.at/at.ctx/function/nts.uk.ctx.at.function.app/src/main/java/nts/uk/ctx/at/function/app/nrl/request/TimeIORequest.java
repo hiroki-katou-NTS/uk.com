@@ -86,10 +86,9 @@ public class TimeIORequest extends NRLRequest<Frame> {
 						.build().addPayload(Frame.class, ErrorCode.PARAM.value));
 				return;
 			}
-			if (result.get().getLeft().isPresent())
-				result.get().getLeft().get().run();
-			if (result.get().getRight().isPresent())
-				result.get().getRight().get().getAtomTask().run();
+			result.ifPresent(data -> {
+				data.getAtomTask().run();
+			});
 		}
 		
 		context.responseAccept();

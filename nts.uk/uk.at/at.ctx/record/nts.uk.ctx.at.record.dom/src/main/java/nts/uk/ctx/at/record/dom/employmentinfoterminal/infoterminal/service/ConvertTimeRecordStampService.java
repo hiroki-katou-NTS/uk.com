@@ -36,7 +36,7 @@ public class ConvertTimeRecordStampService {
 	};
 
 	// 変換する
-	public static Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> convertData(Require require,
+	public static Optional<StampDataReflectResult> convertData(Require require,
 			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData) {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
@@ -47,34 +47,17 @@ public class ConvertTimeRecordStampService {
 			return Optional.empty();
 
 		// $就業情報端末.打刻(打刻受信データ)
-		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTerOpt.get().getCreateStampInfo().createStamp(contractCode, stampReceptData, empInfoTerCode);
+		Pair<Optional<Stamp>, AtomTask> stamp = createStamp(require, empInfoTerOpt, empInfoTerCode, contractCode, stampReceptData);
 		
-		if(!stamp.isPresent()) return Optional.empty();
-
-		if (!canCreateNewData(require, contractCode, stampReceptData))
-			return Optional.of(Pair.of(Optional.empty(), Optional.empty()));
-
-		Optional<StampCard> stampCard = require.getByCardNoAndContractCode(contractCode,
+		if(!stamp.getLeft().isPresent()) {
+			return Optional.empty();
+		}
+	
+		Optional<String> employeeId = getEmployeeId(require, contractCode,
 				new StampNumber(stampReceptData.getIdNumber()));
-
-		val employeeId = stampCard.map(x -> x.getEmployeeId()).orElse(null);
-		String cid = null;
-		if(employeeId != null) {
-			cid = require.getEmpData(Arrays.asList(employeeId)).stream().findFirst().map(x -> x.getCompanyId()).orElse(null);
-		}
-		StampDataReflectResult stampReflectResult = StampDataReflectProcessService.reflect(require, cid,
-				Optional.ofNullable(employeeId), stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
-		if (employeeId != null && stampReflectResult.getReflectDate().isPresent()) {
-			val domdaily = StampDataReflectProcessService.updateStampToDaily(require, cid, employeeId,
-					stampReflectResult.getReflectDate().get(), stamp.get().getLeft());
-			if (domdaily.isPresent()) {
-				AtomTask task = stampReflectResult.getAtomTask().then(() -> {
-					require.addAllDomain(domdaily.get());
-				});
-				return Optional.of(Pair.of(Optional.empty(),
-						Optional.of(new StampDataReflectResult(stampReflectResult.getReflectDate(), task))));
-			}
-		}
+		Optional<String> cid = getCompanyId(require, employeeId);
+		
+		return createDailyData(require, cid, employeeId, stamp.getLeft(), stamp.getRight());
 
 		// TODO: 処理にエラーがある場合、別の申請受信データの処理を続行
 //		if (!strampReflectResult.getReflectDate().isPresent()) {
@@ -83,8 +66,6 @@ public class ConvertTimeRecordStampService {
 //			if (alEmpTer.isPresent())
 //				require.insertLogAll(alEmpTer.get());
 //		}
-
-		return Optional.of(Pair.of(Optional.empty(), Optional.of(stampReflectResult)));
 	}
 
 	// [pvt-1] 新しいを作成することができる
@@ -95,7 +76,54 @@ public class ConvertTimeRecordStampService {
 				new StampNumber(stampReceptData.getIdNumber()), stampReceptData.getDateTime());
 		return !stampRecord.isPresent();
 	}
+	
+	private static Pair<Optional<Stamp>, AtomTask> createStamp(Require require, Optional<EmpInfoTerminal> empInfoTerOpt,
+			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData){
+		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTerOpt.get().getCreateStampInfo().createStamp(contractCode, stampReceptData, empInfoTerCode);
+		if(!stamp.isPresent()) return Pair.of(Optional.empty(), AtomTask.none());
+		
+		if (!canCreateNewData(require, contractCode, stampReceptData))
+			return Pair.of(Optional.empty(), AtomTask.none());
+		AtomTask stampReflectResult = StampDataReflectProcessService.registerStamp(require,
+				stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
+		return  Pair.of(Optional.of(stamp.get().getLeft()), stampReflectResult);
+	}
 
+	private static Optional<String> getEmployeeId(Require require, ContractCode contractCode, StampNumber stampNumber) {
+		Optional<StampCard> stampCard = require.getByCardNoAndContractCode(contractCode,
+				new StampNumber(stampNumber.v()));
+		return stampCard.map(x -> x.getEmployeeId());
+	}
+
+	private static Optional<String> getCompanyId(Require require, Optional<String> employeeId) {
+		return employeeId.map(sid -> require.getEmpData(Arrays.asList(employeeId.get())).stream().findFirst()
+				.map(x -> x.getCompanyId()).orElse(null));
+
+	}
+	
+	private static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
+			Optional<String> sid, Optional<Stamp> stamp, AtomTask atomTask) {
+
+		if (!sid.isPresent() || !cid.isPresent()) {
+			return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
+		}
+		// $反映対象日 = [prv-3] いつの日別実績に反映するか(require, 社員ID, 打刻)
+		Optional<GeneralDate> reflectDate = StampDataReflectProcessService.reflectDailyResult(require, cid.get(), sid,
+				stamp);
+		if (reflectDate.isPresent()) {
+			val domdaily = StampDataReflectProcessService.updateStampToDaily(require, cid.get(), sid.get(),
+					reflectDate.get(), stamp.get());
+
+			if (domdaily.isPresent()) {
+				AtomTask task = atomTask.then(() -> {
+					require.addAllDomain(domdaily.get());
+				});
+				return Optional.of(new StampDataReflectResult(reflectDate, task));
+			}
+		}
+		return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
+	}
+	
 	// [pvt-2] 就業情報端末通信用トップページアラームを作る
 //	private static Optional<TopPageAlarmEmpInfoTer> createLogEmpTer(Require require, String sid, String companyId,
 //			Integer terCode, String cardNumber, String message) {
