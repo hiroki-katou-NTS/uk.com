@@ -5812,7 +5812,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			} 
 			if (filTask.length > 0){
 				let taskFil = _.filter(filTask, (x : any) => {
-					return x.taskCode == filDel[0].code && x.timeSpanForCalcDto.start != filDel[0].start && x.timeSpanForCalcDto.end != filDel[0].end;
+					return x.timeSpanForCalcDto.start != filDel[0].start && x.timeSpanForCalcDto.end != filDel[0].end;
 				});
 				
 				let taskScheduleDetail : any = [];
@@ -5825,10 +5825,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 					})
 				})
-				self.taskPasteData.lstTaskScheduleDetailEmp.push({
-					empId : self.dataScreen003A().employeeInfo[index].empId,
-					taskScheduleDetail : taskScheduleDetail
-				});
+				let ind = _.findIndex(self.taskPasteData.lstTaskScheduleDetailEmp, (ind : any) => {
+							return ind.empId === self.dataScreen003A().employeeInfo[index].empId;
+				})
+				if (ind != -1){
+					
+					self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail = taskScheduleDetail;
+				} else {
+					self.taskPasteData.lstTaskScheduleDetailEmp.push({
+						empId : self.dataScreen003A().employeeInfo[index].empId,
+						taskScheduleDetail : taskScheduleDetail
+					});
+				}
 			}
 			
 			_.forEach(filDel, (x : any) => {
@@ -5837,9 +5845,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			})
 			
-			
-			let ind = _.findIndex(self.taskPasteData.lstTaskScheduleDetailEmp, (ind : any) => {
-							return ind.empId === self.dataScreen003A().employeeInfo[index].empId;
+			let ind = _.findIndex(self.taskPasteData.lstTaskScheduleDetailEmp, (x : any) => {
+							return x.empId === self.dataScreen003A().employeeInfo[index].empId;
 			})
 			
 			_.forEach(filDel, (x : any) => {
@@ -5862,12 +5869,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			}
 			
-			if (!_.isNil(self.taskData[index]) && _.isEmpty(self.taskData[index].taskScheduleDetail)){
+			if (!_.isNil(self.taskData[index]) && _.isEmpty(self.taskData[index].taskScheduleDetail) && filTask.length > 0){
 				if (ind != -1)
 				self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.length = 0;
 			}
 			// thuc hien xoa khi da co data task tu truoc
-			if (!_.isNil(self.taskData[index]) && self.taskData[index].taskScheduleDetail.length > 0){
+			if (!_.isNil(self.taskData[index]) && self.taskData[index].taskScheduleDetail.length > 0  && filTask.length > 0){
 				if (self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length > 0 ||
 				(self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length != self.taskData[index].taskScheduleDetail.length)){
 					self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length = 0;
