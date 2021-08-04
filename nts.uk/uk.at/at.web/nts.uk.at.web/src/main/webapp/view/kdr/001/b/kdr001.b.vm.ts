@@ -164,6 +164,9 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                         self.currentCode.valueHasMutated();
                     }
                 }
+                if(holidayRemainings.length == 0){
+                    this.settingCreateMode();
+                }
                 dfd.resolve(self);
             }).fail(function (res) {
                 alertError({messageId: res.messageId});
@@ -356,7 +359,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
         }
 
         setSpecialHolidayStyle() {
-            $("#rowSpecialHoliday > td > div > div > label > span.label").addClass("label-checkbox limited-label");
+            $("#rowSpecialHoliday > td > div >label > span").addClass("limited-label");
         }
 
         /**
