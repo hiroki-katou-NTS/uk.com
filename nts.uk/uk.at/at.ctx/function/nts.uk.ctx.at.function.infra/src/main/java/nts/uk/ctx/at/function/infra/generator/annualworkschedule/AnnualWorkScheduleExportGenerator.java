@@ -116,6 +116,15 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 			// focus first sheet
 			wsc.setActiveSheetIndex(0);
+			
+			// Set scaling
+			int sheetCount = wsc.getCount();
+			for (int i = 0; i < sheetCount; i++) {
+				Worksheet sheet = wsc.get(i);
+				sheet.getPageSetup().setPercentScale(true);
+				sheet.getPageSetup().setZoom(100);
+			}
+			
 			// Get current date and format it
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
 			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
