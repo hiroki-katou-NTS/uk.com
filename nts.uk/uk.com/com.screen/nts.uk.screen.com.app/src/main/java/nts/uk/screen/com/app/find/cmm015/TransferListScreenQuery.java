@@ -1,6 +1,7 @@
 package nts.uk.screen.com.app.find.cmm015;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class TransferListScreenQuery {
 				.collect(Collectors.toList());
 		
 		// [No.560]職場IDから職場の情報をすべて取得する
-		List<WorkplaceInforParam> wkpListInfo = workplaceExportService.getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), wkpList, period.start());
+		List<WorkplaceInforParam> wkpListInfo = workplaceExportService.getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), wkpList, GeneralDate.ymd(9999, 12, 31));
 		
 		// 職位名称リスト＝List<期間付き職位履歴項目>：flatmap　$．所属職位履歴項目．職位ID distinct
 		List<String> jtList = empsChangeHistory.getAjthItems().stream()
@@ -93,7 +94,7 @@ public class TransferListScreenQuery {
 				.collect(Collectors.toList());
 		
 		// 職位IDから職位を取得する
-		List<JobTitleInfoImport> jtInfor = this.getJobTitleFromIds(AppContexts.user().companyId(), jtList, period.start());
+		List<JobTitleInfoImport> jtInfor = this.getJobTitleFromIds(AppContexts.user().companyId(), jtList, GeneralDate.ymd(9999, 12, 31));
 		
 		return new TransferList
 			(
