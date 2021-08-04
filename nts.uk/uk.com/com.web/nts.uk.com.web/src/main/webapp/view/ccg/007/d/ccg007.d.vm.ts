@@ -58,17 +58,19 @@
                 }
 
                 var dfd = $.Deferred<void>();
-                let defaultContractCode: string = "000000000000";
+                let defaultContractCode: string = __viewContext.env.isOnPremise 
+                                    		? __viewContext.user.contractCode
+                                    		: "000000000000";
                 //get system config
                 blockUI.invisible();
-
+    
                 nts.uk.characteristics.restore("contractInfo").done(function (data: any) {
                     self.contractCode(data ? data.contractCode : "");
                     self.contractPassword(data ? data.contractPassword : "");
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" })
                         .done(function (showContractData: any) {
                             //check ShowContract
-                            if (showContractData.onpre) {
+                            if (__viewContext.env.isOnPremise) {
                                 nts.uk.characteristics.remove("contractInfo");
                                 nts.uk.characteristics.save("contractInfo", { contractCode:defaultContractCode, contractPassword: self.contractPassword() });
                                 self.contractCode(defaultContractCode);
