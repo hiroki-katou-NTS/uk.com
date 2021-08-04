@@ -10,9 +10,7 @@ public interface AlarmListExecutionMailSettingRepository {
     /*
     * 会社IDによってアラームリスト実行メール設定を取得する(会社ID、個人職場区分)
      * */
-    List<AlarmListExecutionMailSetting> findAll(String cid, int personalManagerClassify);
-
-    Optional<AlarmListExecutionMailSetting> find(String cid);
+    List<AlarmListExecutionMailSetting> getByCId(String cid, int individualWkpClassify);
 
     void insert(AlarmListExecutionMailSetting alarmExecMailSetting);
 

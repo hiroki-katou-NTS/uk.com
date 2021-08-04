@@ -8,7 +8,6 @@ import nts.uk.ctx.at.function.infra.entity.alarm.mailsettings.KfnmtAlstExeMailSe
 
 import javax.ejb.Stateless;
 import java.util.List;
-import java.util.Optional;
 
 @Stateless
 public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository implements AlarmListExecutionMailSettingRepository {
@@ -23,24 +22,18 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append("WHERE a.pk.companyID = :cid AND a.pk.personWkpAtr = :personalManagerClassify");
+        builderString.append("WHERE a.pk.companyID = :cid AND a.pk.personWkpAtr = :individualWkpClassify");
         SELECT_ALL_BY_CID_PM = builderString.toString();
-        SELECT_ALL_BY_CID_PM_IM = SELECT_ALL_BY_CID_PM + " AND a.pk.PERSON_WKP_ATR = :individualWRClassification";
+        SELECT_ALL_BY_CID_PM_IM = SELECT_ALL_BY_CID_PM + " AND a.pk.personalManagerAtr = :personalManagerClassify";
     }
 
     @Override
-    public List<AlarmListExecutionMailSetting> findAll(String cid, int personalManagerClassify) {
+    public List<AlarmListExecutionMailSetting> getByCId(String cid, int individualWkpClassify) {
         return this.queryProxy().query(SELECT_ALL_BY_CID_PM, KfnmtAlstExeMailSetting.class)
                 .setParameter("cid", cid)
-                .setParameter("personalManagerClassify", personalManagerClassify)
+                .setParameter("individualWkpClassify", individualWkpClassify)
                 .getList(KfnmtAlstExeMailSetting::toDomain);
     }
-
-    @Override
-    public Optional<AlarmListExecutionMailSetting> find(String cid) {
-        return Optional.empty();
-    }
-
 
     @Override
     public void insert(AlarmListExecutionMailSetting alarmExecMailSetting) {
@@ -84,8 +77,8 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
     public List<AlarmListExecutionMailSetting> getByCompanyId(String cid, int personalManagerClassify, int individualWRClassification) {
         return this.queryProxy().query(SELECT_ALL_BY_CID_PM_IM, KfnmtAlstExeMailSetting.class)
                 .setParameter("cid", cid)
+                .setParameter("individualWkpClassify", individualWRClassification)
                 .setParameter("personalManagerClassify", personalManagerClassify)
-                .setParameter("individualWRClassification", individualWRClassification)
                 .getList(KfnmtAlstExeMailSetting::toDomain);
     }
 }
