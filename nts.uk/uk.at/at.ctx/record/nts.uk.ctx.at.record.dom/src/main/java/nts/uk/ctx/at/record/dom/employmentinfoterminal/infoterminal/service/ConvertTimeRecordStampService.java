@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
@@ -56,10 +58,14 @@ public class ConvertTimeRecordStampService {
 				new StampNumber(stampReceptData.getIdNumber()));
 
 		val employeeId = stampCard.map(x -> x.getEmployeeId()).orElse(null);
-		StampDataReflectResult stampReflectResult = StampDataReflectProcessService.reflect(require, requestSetting.get().getCompanyId().v(),
+		String cid = null;
+		if(employeeId != null) {
+			cid = require.getEmpData(Arrays.asList(employeeId)).stream().findFirst().map(x -> x.getCompanyId()).orElse(null);
+		}
+		StampDataReflectResult stampReflectResult = StampDataReflectProcessService.reflect(require, cid,
 				Optional.ofNullable(employeeId), stamp.get().getRight(), Optional.of(stamp.get().getLeft()));
 		if (employeeId != null && stampReflectResult.getReflectDate().isPresent()) {
-			val domdaily = StampDataReflectProcessService.updateStampToDaily(require, requestSetting.get().getCompanyId().v(), employeeId,
+			val domdaily = StampDataReflectProcessService.updateStampToDaily(require, cid, employeeId,
 					stampReflectResult.getReflectDate().get(), stamp.get().getLeft());
 			if (domdaily.isPresent()) {
 				AtomTask task = stampReflectResult.getAtomTask().then(() -> {
@@ -134,5 +140,9 @@ public class ConvertTimeRecordStampService {
 		//[R-7] 日別実績を更新する
 		//DailyRecordAdUpService - 日別実績を登録する
 		void addAllDomain(IntegrationOfDaily domain);
+		
+		// [R-8] 社員IDListから管理情報を取得する
+		//GetMngInfoFromEmpIDListAdapter
+		List<EmpDataImport> getEmpData(List<String> empIDList); 
 	}
 }

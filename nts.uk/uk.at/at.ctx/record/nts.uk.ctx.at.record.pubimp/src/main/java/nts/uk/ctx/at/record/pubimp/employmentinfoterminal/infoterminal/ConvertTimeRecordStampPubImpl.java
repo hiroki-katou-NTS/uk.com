@@ -14,6 +14,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
@@ -100,6 +102,9 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	
 	@Inject
 	private DailyRecordShareFinder dailyRecordShareFinder;
+	
+	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
 
 	@Override
 	public Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>>> convertData(String empInfoTerCode,
@@ -108,7 +113,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
 				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
-				dailyRecordAdUpService, dailyRecordShareFinder);
+				dailyRecordAdUpService, dailyRecordShareFinder, getMngInfoFromEmpIDListAdapter);
 
 		Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> convertDataOpt = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
@@ -154,6 +159,8 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		private DailyRecordAdUpService dailyRecordAdUpService;
 		
 		private DailyRecordShareFinder dailyRecordShareFinder;
+		
+		private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
 
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -237,6 +244,11 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
 			return dailyRecordShareFinder.find(employeeId, date);
+		}
+
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
 		}
 
 	}

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.EndStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
@@ -106,6 +107,10 @@ public class StampDataReflectProcessService {
 				employeeId,
 				date,
 				dailyOneDay.getIntegrationOfDaily().getWorkInformation());
+		
+		if(forWorkinfo.getEndStatus() != EndStatus.NORMAL) {
+			return Optional.empty();
+		}
 		
 		// 	$変更区分 = 日別勤怠の何が変更されたか#日別勤怠の何が変更されたか(true, true, true, true)	
 		ChangeDailyAttendance changeDailyAtt = new  ChangeDailyAttendance(true,
