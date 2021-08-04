@@ -2,7 +2,10 @@ package nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmployeeInfoDto;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
+
+import java.util.List;
 
 @Value
 public class RoleIndividualGrantDto {
@@ -22,8 +25,14 @@ public class RoleIndividualGrantDto {
 	 private GeneralDate startValidPeriod;
 	 
 	 private GeneralDate endValidPeriod;
+
+	 private String employeeId;
+
+	 private String employeeCode;
+
+	 private String businessName;
 	 
-	 public static RoleIndividualGrantDto fromDomain(RoleIndividualGrant domain, String userName , String loginID) {
+	 public static RoleIndividualGrantDto fromDomain(RoleIndividualGrant domain ,String userName , String loginID, String employeeId, String employeeCode, String businessName) {
 		 return new RoleIndividualGrantDto(
 				 domain.getCompanyId(),
 				 domain.getRoleId(),
@@ -32,6 +41,9 @@ public class RoleIndividualGrantDto {
 				 domain.getUserId(),
 				 userName,
 				 domain.getValidPeriod().start(),
-				 domain.getValidPeriod().end());
+				 domain.getValidPeriod().end(),
+				 employeeId,
+				 employeeCode,
+				 businessName);
 	 }
 }
