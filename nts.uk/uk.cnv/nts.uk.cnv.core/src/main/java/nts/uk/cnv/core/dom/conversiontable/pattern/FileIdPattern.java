@@ -22,7 +22,6 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 public class FileIdPattern extends ConversionPattern  {
 
 	private static String MAPPING_TABLE_NAME = "SCVMT_MAPPING_FILE_ID";
-	private static String MAPPING_IN_COLUMN_NAME = "FILE_PATH";
 	private static String MAPPING_OUT_COLUMN_NAME = "FILE_ID";
 	private static String MAPPING_FILE_TYPE_COLUMN_NAME = "FILE_TYPE";
 	private static String MAPPING_KOJIN_ID_COLUMN_NAME = "kojin_id";
@@ -70,25 +69,20 @@ public class FileIdPattern extends ConversionPattern  {
 	private Join mappingJoin() {
 		List<OnSentence> onSentences = new ArrayList<>();
 		onSentences.add(new OnSentence(
-				new ColumnName(this.sourceJoin.tableName.getAlias(), this.sourceColumnName),
-				new ColumnName(mappingAlias(), MAPPING_IN_COLUMN_NAME),
-				Optional.empty()
-			));
+			new ColumnName(this.sourceJoin.tableName.getAlias(), this.kojinIdColumnName),
+			new ColumnName(mappingAlias(), MAPPING_KOJIN_ID_COLUMN_NAME),
+			Optional.empty()
+		));
 		onSentences.add(new OnSentence(
-				new ColumnName(mappingAlias(), MAPPING_FILE_TYPE_COLUMN_NAME),
-				new ColumnName("", "'" + this.fileType.getId() + "'"),
-				Optional.empty()
-			));
-		onSentences.add(new OnSentence(
-				new ColumnName(this.sourceJoin.tableName.getAlias(), this.kojinIdColumnName),
-				new ColumnName(mappingAlias(), MAPPING_KOJIN_ID_COLUMN_NAME),
-				Optional.empty()
+			new ColumnName(mappingAlias(), MAPPING_FILE_TYPE_COLUMN_NAME),
+			new ColumnName("", "'" + this.fileType.getId() + "'"),
+			Optional.empty()
 		));
 
 		return new Join(
 				new TableFullName(
-					info.getSourceDatabaseName(),
-					info.getSourceSchema(),
+					info.getWorkDatabaseName(),
+					info.getWorkSchema(),
 					MAPPING_TABLE_NAME,
 					this.mappingAlias()
 				),

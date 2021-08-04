@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.cnv.core.dom.constants.Constants;
 
 /**
  * テーブル名
@@ -33,10 +32,6 @@ public class TableFullName {
 
 	/** エイリアス */
 	protected String alias;
-
-	public static TableFullName createMainTableName(String mainTableName) {
-		return new TableFullName("", "", mainTableName, Constants.BaseTableAlias);
-	}
 
 	public String fullName() {
 		return

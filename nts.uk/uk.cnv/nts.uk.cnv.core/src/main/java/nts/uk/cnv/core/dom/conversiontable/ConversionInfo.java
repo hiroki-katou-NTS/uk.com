@@ -59,7 +59,7 @@ public class ConversionInfo {
 
 	public Join getJoin(ConversionSource source) {
 		return this.type == ConversionCodeType.INSERT
-				? source.getMainJoin()
-				: source.getInnerJoin();
+				? source.getMainJoin(sourceDatabaseName, sourceSchema)
+				: source.getInnerJoin(sourceDatabaseName, sourceSchema);
 	}
 }
