@@ -1857,7 +1857,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			detailHeaderDs = [{ empId: "" }];
 			// A8_2 TQP
 			detailColumns = [{ key: "empId", width: "0px", headerText: "ABC", visible: false }];
-
+			// Phần column middle
 			if (self.dataScreen003A().targetInfor == 1) {
 				middleColumns = [
 					{
@@ -4794,6 +4794,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				checkOpen2 = _.filter(self.lstDis, (x: any) => { return x.empId === empId && x.worktimeName == true });
 
 			if (checkOpen.length < 1 && checkOpen2.length < 1) {
+				let param = {
+					disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.disWkTypeCon,
+					disAbleWkTypeCodeLst : self.dataInitStartKsu003Dto().functionControlDto.disAbleWkTypeCodeLst
+				}
+				setShared('paramKsu003Kdl003', param);
 				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
 				model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 1);
 				model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 0);
@@ -5799,58 +5804,34 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					taskScheduleDetail : []
 			});
 			
-			if (_.isEmpty(self.taskPasteData) && filTask.length == 0){
+			if (_.isEmpty(self.taskPasteData)){
 				self.taskPasteData = ({
 					lstTaskScheduleDetailEmp : lstTaskScheduleDetailEmp,
 					ymd : self.targetDate()
 				});
-			}
-			
-			/*if (filTask.length > 0) {
-				let taskScheduleDetail : any = [];
-				_.forEach(filTask, (x : any) => {
-					taskScheduleDetail.push({
-						taskCode: x.taskCode,
-						timeSpanForCalcDto: {
-							start: x.timeSpanForCalcDto.start ,
-							end: x.timeSpanForCalcDto.end
-						}
-					})
-				})
-				
-				if (_.isEmpty(self.taskPasteData)){
-					let ind = _.findIndex(lstTaskScheduleDetailEmp, (x : any) => {
-							return x.empId === self.dataScreen003A().employeeInfo[index].empId;
-					})
-					
-					if (ind == -1) {
-						lstTaskScheduleDetailEmp.push({
-							empId : self.dataScreen003A().employeeInfo[index].empId,
-							taskScheduleDetail : taskScheduleDetail
-						});
-					} else {
-						lstTaskScheduleDetailEmp[ind].taskScheduleDetail = taskScheduleDetail;
-					}
-					
-					self.taskPasteData = ({
-						lstTaskScheduleDetailEmp : lstTaskScheduleDetailEmp,
-						ymd : self.targetDate()
+			} else {
+				if (filTask.length > 0){
+					let taskFil = _.filter(filTask, (x : any) => {
+						return x.taskCode == filDel[0].code && x.timeSpanForCalcDto.start != filDel[0].start && x.timeSpanForCalcDto.end != filDel[0].end;
 					});
-				} else {
-					let ind = _.findIndex(self.taskPasteData.lstTaskScheduleDetailEmp, (x : any) => {
-							return x.empId === self.dataScreen003A().employeeInfo[index].empId;
-					})
 					
-					if (ind == -1) {
-						self.taskPasteData.lstTaskScheduleDetailEmp.push({
-							empId : self.dataScreen003A().employeeInfo[index].empId,
-							taskScheduleDetail : taskScheduleDetail
-						});
-					} else {
-						self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail = taskScheduleDetail;
-					}
+					let taskScheduleDetail : any = [];
+					_.forEach(taskFil, (x : any ) => {
+						taskScheduleDetail.push({
+							taskCode: x.taskCode,
+							timeSpanForCalcDto: {
+								start: x.timeSpanForCalcDto.start,
+								end: x.timeSpanForCalcDto.end
+							}
+						})
+					})
+					self.taskPasteData.lstTaskScheduleDetailEmp.push({
+						empId : self.dataScreen003A().employeeInfo[index].empId,
+						taskScheduleDetail : taskScheduleDetail
+					});
 				}
-			}*/
+				
+			}
 			
 			_.forEach(filDel, (x : any) => {
 				_.remove(self.lstChartTask, (y : any) => {
@@ -5864,9 +5845,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			})
 			
 			_.forEach(filDel, (x : any) => {
-				if (!_.isEmpty(self.taskPasteData))
+				if (!_.isEmpty(self.taskPasteData) && ind != -1)
 				_.remove(self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail, (y : any) => {
-					return y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
+					return y.taskCode == x.code && y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
 				})
 				
 				if (filTask.length > 0 && !_.isNil(self.taskData[index])) {
@@ -5881,6 +5862,27 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					lstTaskScheduleDetailEmp : lstTaskScheduleDetailEmp,
 					ymd : self.targetDate()
 				});
+			}
+			
+			if (!_.isNil(self.taskData[index]) && _.isEmpty(self.taskData[index].taskScheduleDetail)){
+				if (ind != -1)
+				self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.length = 0;
+			}
+			// thuc hien xoa khi da co data task tu truoc
+			if (!_.isNil(self.taskData[index]) && self.taskData[index].taskScheduleDetail.length > 0){
+				if (self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length > 0 ||
+				(self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length != self.taskData[index].taskScheduleDetail.length)){
+					self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length = 0;
+					_.forEach(self.taskData[index].taskScheduleDetail, (x : any) => {
+						self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.push({
+							taskCode: x.taskCode,
+							timeSpanForCalcDto: {
+								start: x.timeSpanForCalcDto.start,
+								end: x.timeSpanForCalcDto.end
+							}
+						})
+					});
+				}
 			}
 			
 			self.enableSave(true);
