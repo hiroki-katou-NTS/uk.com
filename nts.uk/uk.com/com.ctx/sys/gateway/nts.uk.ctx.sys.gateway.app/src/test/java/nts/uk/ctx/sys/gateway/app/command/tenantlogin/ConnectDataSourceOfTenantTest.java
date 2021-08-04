@@ -66,56 +66,12 @@ public class ConnectDataSourceOfTenantTest {
 		
 		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
-		assertThat(result.isFailure()).isTrue();
+		assertThat(result.isSuccess()).isTrue();
 		assertThat(isCalledConnect.get()).isFalse();
 		assertThat(isCalledDisconnect.get()).isFalse();
 	}
 	
-	@Test
-	public void useTL_fail_Connect() {
-		
-		MutableValue<Boolean> isCalledConnect = new MutableValue<>(false);
-		MutableValue<Boolean> isCalledDisconnect = new MutableValue<>(false);
-		
-		new MockUp<UKServerSystemProperties>() {
-			@Mock
-			public boolean usesTenantLocator() {
-				return true;
-			}
-		};
-		assertThat(isCalledConnect.get()).isFalse();
-		new MockUp<TenantLocatorService>() {
-			@Mock
-			public void connect(String tenantCode) {
-				isCalledConnect.set(true);
-			}
-			@Mock
-			public boolean isConnected() {
-				return false;
-			}
-			@Mock
-			public void disconnect() {
-				isCalledDisconnect.set(true);
-			}
-		};
-		
-		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
-		
-		new Verifications() {{
-			require.insert((TenantAuthenticationFailureLog)any);
-			times = 0;
-		}};
-		result.getAtomTask().run();
-		new Verifications() {{
-			require.insert((TenantAuthenticationFailureLog)any);
-			times = 1;
-		}};
-		
-		assertThat(result.isFailure()).isTrue();
-		assertThat(isCalledConnect.get()).isTrue();
-		assertThat(isCalledDisconnect.get()).isFalse();
-	}
-	
+
 	@Test
 	public void useTL_fail() {
 		
@@ -153,7 +109,7 @@ public class ConnectDataSourceOfTenantTest {
 		
 		val result = ConnectDataSourceOfTenant.connect(require, Dummy.LOGIN_CLIENT, Dummy.TENANT_CODE, Dummy.PASSWORD);
 		
-		assertThat(result.isSuccess()).isTrue();
+		assertThat(result.isSuccess()).isFalse();
 		assertThat(isCalledConnect.get()).isTrue();
 		assertThat(isCalledDisconnect.get()).isTrue();
 	}
