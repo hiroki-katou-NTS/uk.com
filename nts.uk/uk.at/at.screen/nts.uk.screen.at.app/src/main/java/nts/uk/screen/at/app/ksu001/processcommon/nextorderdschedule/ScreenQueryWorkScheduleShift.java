@@ -84,13 +84,10 @@ public class ScreenQueryWorkScheduleShift {
 			
 			Map<ShiftMaster,Optional<WorkStyle>> schedulesShiftMaster = workScheduleShiftResult.getMapShiftMasterWithWorkStyle();
 			
-			List<ScheduleOfShiftDto> list1 = achievements.stream()
-									.filter(x -> !schedules.stream()
-														  .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
-									.collect(Collectors.toList());
+			List<ScheduleOfShiftDto> list1 = achievements;
 									
-			List<ScheduleOfShiftDto> list2 = achievements.stream()
-					.filter(x -> schedules.stream()
+			List<ScheduleOfShiftDto> list2 = schedules.stream()
+					.filter(x -> !achievements.stream()
 										  .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
 					.collect(Collectors.toList());
 			

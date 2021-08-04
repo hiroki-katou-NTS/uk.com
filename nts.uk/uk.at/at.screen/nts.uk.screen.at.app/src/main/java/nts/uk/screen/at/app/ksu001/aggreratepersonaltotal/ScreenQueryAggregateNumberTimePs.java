@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.ksu001.aggreratepersonaltotal;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTimesCounterService;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
