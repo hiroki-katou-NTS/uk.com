@@ -230,7 +230,7 @@ module nts.uk.at.view.kdp005.a {
 							dfd.resolve();
 							block.clear();
 						});
-						// self.getStampToSuppress();
+						
 					} else {
 						self.isUsed(false);
 						self.errorMessage(self.getErrorNotUsed(res.used));
@@ -523,11 +523,20 @@ module nts.uk.at.view.kdp005.a {
 						loginInfo.contractCode = _.escape(data ? data.contractCode : "");
 					}).then(() => {
 						service.login(loginInfo).done((res) => {
+
+							if (res.msgErrorId && res.msgErrorId !== '') {
+								self.stampSetting({});
+								self.errorMessage(getMessage(res.msgErrorId));
+								self.isUsed(false);
+							}
+
 							dfd.resolve();
 						}).fail((res) => {
 							self.stampSetting({});
+
 							self.isUsed(false);
-							self.errorMessage(getMessage(res.messageId));
+							self.errorMessage(res.errorMessage);
+							
 							dfd.reject();
 						}).always(() => {
 							block.clear();
