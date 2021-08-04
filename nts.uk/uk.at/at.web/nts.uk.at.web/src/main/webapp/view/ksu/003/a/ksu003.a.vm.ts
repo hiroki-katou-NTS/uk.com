@@ -5442,6 +5442,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					let noneChart = _.filter(noneFil, (x : any) => {
 						return x.start == start && x.end == end;
 					})
+					if (noneChart.length == 0) {
+						self.enableSave(false);
+						return;	
+					}
 					self.addTaskResize(line , type , start , end, ruler.gcChart[line][noneChart[0].id].id);
 	                console.log(`${line}-${type}-${start}-${end}`);
                 }
