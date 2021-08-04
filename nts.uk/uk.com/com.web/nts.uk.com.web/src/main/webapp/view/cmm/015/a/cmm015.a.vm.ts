@@ -343,6 +343,7 @@ module cmm015.a.viewmodel {
                 vm.enableTransferDate(true);
                 vm
                     .reloadKcp()
+                    .then(() => vm.loadDataWkp(Table.RIGHT))
                     .then(() => vm.getTransferOfDay(new Date(vm.transferDate())));
             });
             vm.$blockui('clear');
@@ -798,7 +799,7 @@ module cmm015.a.viewmodel {
 
             displayData.sort((first, second) => {
                 return moment(new Date(first.startDate)).diff(moment(new Date(second.startDate)))
-                    || first.order - second.order
+                    || first.postPositionOrder - second.postPositionOrder
                     || first.sCD.localeCompare(second.sCD);
             });
 
@@ -1007,15 +1008,14 @@ module cmm015.a.viewmodel {
         wkpHID: string = ''; //後職場履歴ID
         prevPositionID: string = ''; //前職位ID
         prevPositionName: string = ''; //前職位名称
-        prevPositionOrder: string = ''; //前職位並び順
+        prevPositionOrder: number = 999; //前職位並び順
         prevPositionHID: string = ''; //前職位履歴ID
         positionId: string = ''; //後職位ID
         postPositionName: string = ''; //後職位名称
-        postPositionOrder: string = ''; //後職位並び順
+        postPositionOrder: number = 999; //後職位並び順
         postPositionHID: string = ''; //後職位履歴ID
         bgPostWkp: string = '';
         css: string = '';
-        order: number = 999;
 
         constructor(prevAWH: HistoryItem, prevAJH: HistoryItem, post: HistoryItem, empInfors: any[], wkpListInfo: any[], jtInfor: any[]) {
             const self = this;
@@ -1066,7 +1066,7 @@ module cmm015.a.viewmodel {
                 }
                 self.postPositionHID = post.jtHID;
                 self.endDate = post.endDate;
-                self.order = post.order;
+
             }
 
             self.key = `${self.sID} ${self.startDate}`;
