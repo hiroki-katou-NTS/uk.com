@@ -250,7 +250,7 @@ export class KafS12ApplyTimeComponent extends Vue {
             }
         }
         
-        return '0:00';
+        return self.$i18n('KAF012_49', ['0']);
     }
 
     get display() {
