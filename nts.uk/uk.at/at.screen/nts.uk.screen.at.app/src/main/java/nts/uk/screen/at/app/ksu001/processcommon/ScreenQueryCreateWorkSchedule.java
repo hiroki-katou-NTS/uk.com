@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksu001.processcommon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -50,13 +52,11 @@ public class ScreenQueryCreateWorkSchedule {
 						createWorkScheduleWorkInforBase.getDataScheduleOfWorkInfo(map);
 			
 			// 2.2 
-			List<WorkScheduleWorkInforDto> list1 = workScheduleWorkInfor1.stream()
-								   .filter(x -> !workScheduleWorkInfor2.stream()
-										   .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
-								   .collect(Collectors.toList());
+			List<WorkScheduleWorkInforDto> list1 = 
+					CollectionUtil.isEmpty(workScheduleWorkInfor2) ? new ArrayList<WorkScheduleWorkInforDto>() : workScheduleWorkInfor2;
 			
-			List<WorkScheduleWorkInforDto> list2 = workScheduleWorkInfor2.stream()
-							   .filter(x -> workScheduleWorkInfor1.stream()
+			List<WorkScheduleWorkInforDto> list2 = workScheduleWorkInfor1.stream()
+							   .filter(x -> !workScheduleWorkInfor2.stream()
 									   .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
 							   .collect(Collectors.toList());
 			list1.addAll(list2);

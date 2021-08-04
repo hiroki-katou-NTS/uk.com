@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -84,7 +86,7 @@ public class ScreenQueryWorkScheduleShift {
 			
 			Map<ShiftMaster,Optional<WorkStyle>> schedulesShiftMaster = workScheduleShiftResult.getMapShiftMasterWithWorkStyle();
 			
-			List<ScheduleOfShiftDto> list1 = achievements;
+			List<ScheduleOfShiftDto> list1 = CollectionUtil.isEmpty(achievements) ? new ArrayList<ScheduleOfShiftDto>() : achievements;
 									
 			List<ScheduleOfShiftDto> list2 = schedules.stream()
 					.filter(x -> !achievements.stream()
