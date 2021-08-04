@@ -80,12 +80,6 @@ public class TimeIORequest extends NRLRequest<Frame> {
 			
 			val  result = convertTRStampAdapter
 					.convertData(empInfoTerCode, contractCode, stamData);
-			if (!result.isPresent()) {
-				context.setResponse(NRLResponse
-						.noAccept(context.getTerminal().getNrlNo(), context.getTerminal().getMacAddress(), contractCode)
-						.build().addPayload(Frame.class, ErrorCode.PARAM.value));
-				return;
-			}
 			result.ifPresent(data -> {
 				data.getAtomTask().run();
 			});
