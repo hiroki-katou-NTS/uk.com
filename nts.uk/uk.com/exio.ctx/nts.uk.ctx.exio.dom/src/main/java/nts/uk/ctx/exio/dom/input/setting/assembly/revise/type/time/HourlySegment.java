@@ -27,12 +27,12 @@ public enum HourlySegment {
 	}
 	
 	/**
-	 * 分へ変換
+	 * 分（小数を含む）へ変換
 	 * @param target
 	 * @param rounding
 	 * @return
 	 */
-	public BigDecimal toMinute(BigDecimal target) {
+	public BigDecimal toMinutesDecimal(BigDecimal target) {
 		
 		if (this == MINUTE) {
 			return target;

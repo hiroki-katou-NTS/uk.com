@@ -5,12 +5,14 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
  */
 public enum TimeBase60Delimiter {
 	
-	//区切り文字なし
-	NO_DELIMITER(0, "Enum_TimeBase60Delimiter_NO_DELIMITER", ""), 
-	//小数点で区切る
-	SEPARATE_BY_DECIMAL(1, "Enum_TimeBase60Delimiter_SEPARATE_BY_DECIMAL", "."), 
-	//コロンで区切る
-	SEPARATE_BY_COLON(2, "Enum_TimeBase60Delimiter_SEPARATE_BY_COLON", ":");
+	/** 無し */
+	NONE(0, "Enum_TimeBase60Delimiter_NO_DELIMITER", ""), 
+
+	/** 小数点 */
+	DECIMAL_POINT(1, "Enum_TimeBase60Delimiter_SEPARATE_BY_DECIMAL", "."), 
+
+	/** コロン */
+	COLON(2, "Enum_TimeBase60Delimiter_SEPARATE_BY_COLON", ":");
 
 	/** The value. */
 	public final int value;
@@ -32,12 +34,12 @@ public enum TimeBase60Delimiter {
 	 * @param target
 	 * @return
 	 */
-	public Long convert(String target) {
+	public int toMinutes(String target) {
 		switch(this) {
-		case NO_DELIMITER:
+		case NONE:
 			return convertNoDelimiter(target);
-		case SEPARATE_BY_DECIMAL:
-		case SEPARATE_BY_COLON:
+		case DECIMAL_POINT:
+		case COLON:
 			return convertDelimiter(target);
 		default:
 			throw new RuntimeException("区切り文字に対応する変換処理を実装してください。");
@@ -46,7 +48,7 @@ public enum TimeBase60Delimiter {
 	}
 	
 	// 区切り文字なし
-	private Long convertNoDelimiter(String target) {
+	private int convertNoDelimiter(String target) {
 		if (!target.matches("\\d+")) {
 			// 整数でない場合
 			throw new RuntimeException("整数でないので変換できません。");
@@ -58,7 +60,7 @@ public enum TimeBase60Delimiter {
 	}
 	
 	// 区切り文字あり
-	private Long convertDelimiter(String target) {
+	private int convertDelimiter(String target) {
 		// 区切り文字で文字列を2分割
 		String[] strParts = target.split(character, 2);
 		
@@ -71,10 +73,10 @@ public enum TimeBase60Delimiter {
 		return convert(strParts[0], strParts[1]);
 	}
 
-	private static Long convert(String hourString, String minString) {
-		Long hour = Long.parseLong(hourString);
+	private static int convert(String hourString, String minString) {
+		int hour = Integer.parseInt(hourString);
 		// 分部分の切り出し
-		Long min = Long.parseLong(minString);
+		int min = Integer.parseInt(minString);
 		
 		// 分に当たる値が59以下であることを確認
 		if(min >= 60) {

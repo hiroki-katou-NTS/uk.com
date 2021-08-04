@@ -35,17 +35,17 @@ public enum TimeBase10Rounding {
 	 * @param target
 	 * @return
 	 */
-	public Long round(BigDecimal target) {
+	public int round(BigDecimal target) {
 		switch(this) {
 		case ROUND_DOWN:
 			// 切り捨て
-			return target.setScale(0, BigDecimal.ROUND_DOWN).longValue();
+			return target.setScale(0, BigDecimal.ROUND_DOWN).intValue();
 		case ROUND_UP:
 			// 切り上げ
-			return target.setScale(0, BigDecimal.ROUND_UP).longValue();
+			return target.setScale(0, BigDecimal.ROUND_UP).intValue();
 		case ROUND:
 			// 四捨五入
-			return target.setScale(0, BigDecimal.ROUND_HALF_UP).longValue();
+			return target.setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
 		default:
 			throw new RuntimeException("存在しない端数処理が指定されました。");
 		}
