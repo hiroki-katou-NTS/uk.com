@@ -13,7 +13,8 @@ import java.util.Optional;
 @Stateless
 public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository implements AlarmListExecutionMailSettingRepository {
     private static final String SELECT;
-    private static final String SELECT_ALL_BY_CID;
+    private static final String SELECT_ALL_BY_CID_PM;
+    private static final String SELECT_ALL_BY_CID_PM_IM;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -23,12 +24,13 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
         builderString = new StringBuilder();
         builderString.append(SELECT);
         builderString.append("WHERE a.pk.companyID = :cid AND a.pk.personWkpAtr = :personalManagerClassify");
-        SELECT_ALL_BY_CID = builderString.toString();
+        SELECT_ALL_BY_CID_PM = builderString.toString();
+        SELECT_ALL_BY_CID_PM_IM = SELECT_ALL_BY_CID_PM + " AND a.pk.PERSON_WKP_ATR = :individualWRClassification";
     }
 
     @Override
     public List<AlarmListExecutionMailSetting> findAll(String cid, int personalManagerClassify) {
-        return this.queryProxy().query(SELECT_ALL_BY_CID, KfnmtAlstExeMailSetting.class)
+        return this.queryProxy().query(SELECT_ALL_BY_CID_PM, KfnmtAlstExeMailSetting.class)
                 .setParameter("cid", cid)
                 .setParameter("personalManagerClassify", personalManagerClassify)
                 .getList(KfnmtAlstExeMailSetting::toDomain);
@@ -55,5 +57,35 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
             updateEntity.fromEntity(newEntity);
             this.commandProxy().update(updateEntity);
         }
+    }
+
+    @Override
+    public void insertAll(List<AlarmListExecutionMailSetting> alarmExecMailSettings) {
+        if (alarmExecMailSettings.isEmpty()) return;
+        alarmExecMailSettings.forEach(entity -> {
+            this.commandProxy().insert(KfnmtAlstExeMailSetting.of(entity));
+        });
+    }
+
+    @Override
+    public void updateAll(List<AlarmListExecutionMailSetting> alarmExecMailSettings) {
+        if (alarmExecMailSettings.isEmpty()) return;
+        alarmExecMailSettings.forEach(entity -> {
+            val newEntity = KfnmtAlstExeMailSetting.of(entity);
+            val updateEntity = this.queryProxy().find(newEntity.pk, KfnmtAlstExeMailSetting.class).orElse(null);
+            if (updateEntity != null) {
+                updateEntity.fromEntity(newEntity);
+                this.commandProxy().update(updateEntity);
+            }
+        });
+    }
+
+    @Override
+    public List<AlarmListExecutionMailSetting> getByCompanyId(String cid, int personalManagerClassify, int individualWRClassification) {
+        return this.queryProxy().query(SELECT_ALL_BY_CID_PM_IM, KfnmtAlstExeMailSetting.class)
+                .setParameter("cid", cid)
+                .setParameter("personalManagerClassify", personalManagerClassify)
+                .setParameter("individualWRClassification", individualWRClassification)
+                .getList(KfnmtAlstExeMailSetting::toDomain);
     }
 }

@@ -54,12 +54,12 @@ public class MailSettingFinder {
         if (alarmListExecutionMailSettingList.isEmpty()) {
             return new MailSettingDto(false);
         }
-        boolean isCOnfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured(x.getCompanyId(),
+        boolean isConfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured(x.getCompanyId(),
                 x.getIndividualWkpClassify().value,
                 x.getIndividualWkpClassify().value,
                 x.getPersonalManagerClassify().value
         ));
-        return new MailSettingDto(isCOnfigured);
+        return new MailSettingDto(isConfigured);
     }
 
 }

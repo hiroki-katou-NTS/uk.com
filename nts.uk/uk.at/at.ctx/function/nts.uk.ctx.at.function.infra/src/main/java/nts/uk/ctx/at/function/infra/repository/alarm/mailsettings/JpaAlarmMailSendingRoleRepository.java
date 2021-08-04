@@ -4,7 +4,6 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
-import nts.uk.ctx.at.function.infra.entity.alarm.mailsettings.KfnmtAlstExeMailSetting;
 import nts.uk.ctx.at.function.infra.entity.alarm.mailsettings.KfnmtAlstMailSetRole;
 
 import javax.ejb.Stateless;
