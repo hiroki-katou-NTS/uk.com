@@ -96,7 +96,8 @@ module nts.uk.at.view.ksu001.a {
         
         $(window).on("mousedown.popup", function(e) {
             let control = $('#A4_1_popup');
-            let combo = $('.nts-combo-column-0');
+            //let combo = $('.nts-combo-column-0');
+            let combo = $('div.nts-column.nts-combo-column-0.name');
 
             if ($(e.target).is(combo[1]) || $(e.target).is(combo[2])) {
                 console.log('not hide');
