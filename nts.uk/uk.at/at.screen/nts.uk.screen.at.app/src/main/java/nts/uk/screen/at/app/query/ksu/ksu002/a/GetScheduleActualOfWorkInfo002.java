@@ -186,11 +186,6 @@ public class GetScheduleActualOfWorkInfo002 {
 			return MonthlyStatutoryWorkingHours.monAndWeekStatutoryTime(new Require2(), new CacheCarrier(), companyId, employmentCd, employeeId, baseDate, ym, workingSystem);
 		}
 
-		@Override
-		public Optional<GetFlexPredWorkTime> getFlexStatutoryTime() {
-			return getFlexPredWorkTimeRepository.find(companyId);
-		}
-		
 	}
 	
 	@RequiredArgsConstructor
