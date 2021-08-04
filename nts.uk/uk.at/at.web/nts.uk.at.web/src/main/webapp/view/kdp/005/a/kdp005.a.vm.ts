@@ -523,13 +523,11 @@ module nts.uk.at.view.kdp005.a {
 						loginInfo.contractCode = _.escape(data ? data.contractCode : "");
 					}).then(() => {
 						service.login(loginInfo).done((res) => {
-
 							if (res.msgErrorId && res.msgErrorId !== '') {
-								self.stampSetting({});
 								self.errorMessage(getMessage(res.msgErrorId));
 								self.isUsed(false);
+								dfd.reject();
 							}
-
 							dfd.resolve();
 						}).fail((res) => {
 							self.stampSetting({});
