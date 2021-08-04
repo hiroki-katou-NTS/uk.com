@@ -2,9 +2,14 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 
 import java.math.BigDecimal;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+
 /**
  * 10進表記時間の1分未満の端数処理
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum TimeBase10Rounding {
 	/**
 	 * 切り捨て
@@ -24,10 +29,9 @@ public enum TimeBase10Rounding {
 
 	/** The name id. */
 	public final String nameId;
-
-	private TimeBase10Rounding(int value, String nameId) {
-		this.value = value;
-		this.nameId = nameId;
+	
+	public static TimeBase10Rounding valueOf(int value) {
+		return EnumAdaptor.valueOf(value, TimeBase10Rounding.class);
 	}
 	
 	/**

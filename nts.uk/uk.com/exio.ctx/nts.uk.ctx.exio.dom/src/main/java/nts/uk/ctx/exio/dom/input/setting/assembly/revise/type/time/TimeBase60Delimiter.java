@@ -1,8 +1,13 @@
 package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+
 /**
  * 60進数表記時分データの区切り文字
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum TimeBase60Delimiter {
 	
 	/** 無し */
@@ -23,10 +28,8 @@ public enum TimeBase60Delimiter {
 	/** The character */
 	public final String character;
 	
-	private TimeBase60Delimiter(int value, String nameId, String character) {
-		this.value = value;
-		this.nameId = nameId;
-		this.character = character;
+	public static TimeBase60Delimiter valueOf(int value) {
+		return EnumAdaptor.valueOf(value, TimeBase60Delimiter.class);
 	}
 	
 	/**

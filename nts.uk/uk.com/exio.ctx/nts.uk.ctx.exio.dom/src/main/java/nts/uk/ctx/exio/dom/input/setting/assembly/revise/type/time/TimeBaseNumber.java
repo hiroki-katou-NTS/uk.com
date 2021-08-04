@@ -1,8 +1,13 @@
 package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+
 /**
  * 時間・時刻進数
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum TimeBaseNumber {
 	
 	/** 60進数 */
@@ -17,8 +22,7 @@ public enum TimeBaseNumber {
 	/** The name id. */
 	public final String nameId;
 	
-	private TimeBaseNumber(int value, String nameId) {
-		this.value = value;
-		this.nameId = nameId;
+	public static TimeBaseNumber valueOf(int value) {
+		return EnumAdaptor.valueOf(value, TimeBaseNumber.class);
 	}
 }

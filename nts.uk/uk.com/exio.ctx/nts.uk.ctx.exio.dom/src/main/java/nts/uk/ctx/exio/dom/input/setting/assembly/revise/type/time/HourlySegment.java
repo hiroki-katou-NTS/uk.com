@@ -2,9 +2,14 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 
 import java.math.BigDecimal;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+
 /**
- * 時分区分
+ * 時間データ形式
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum HourlySegment {
 	/**
 	 * 時分
@@ -21,9 +26,8 @@ public enum HourlySegment {
 	/** The name id. */
 	public final String nameId;
 
-	private HourlySegment(int value, String nameId) {
-		this.value = value;
-		this.nameId = nameId;
+	public static HourlySegment valueOf(int value) {
+		return EnumAdaptor.valueOf(value, HourlySegment.class);
 	}
 	
 	/**
