@@ -49,8 +49,11 @@ public class MailSettingFinder {
         );
     }
 
-    public MailSettingDto getConfigured(int personalManagerClassify) {
-        val alarmListExecutionMailSettingList = mailSettingRepository.findAll(AppContexts.user().companyId(), personalManagerClassify);
+    public MailSettingDto getConfigured(int personalManagerClassify, int individualWRClassification) {
+        val alarmListExecutionMailSettingList = mailSettingRepository.getByCompanyId(AppContexts.user().companyId(),
+                personalManagerClassify,
+                individualWRClassification
+        );
         if (alarmListExecutionMailSettingList.isEmpty()) {
             return new MailSettingDto(false);
         }
