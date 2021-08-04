@@ -278,6 +278,7 @@ module nts.uk.at.view.kdr001.b.viewmodel {
                     self.currentCode('');
                     self.currentHoliday(new HolidayRemaining(null));
                     self.isNewMode(true);
+                    this.settingCreateMode();
                 }
 
                 block.clear();
