@@ -6030,10 +6030,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			});
 			
 			if (filShowChart.length > 0){
+				let lstTimeSave : any = [];
 				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail, (tsk : any) => {
 					
-					let lstTimeSave : any = [],
-					start = tsk.timeSpanForCalcDto.start,
+					let start = tsk.timeSpanForCalcDto.start,
 					end = tsk.timeSpanForCalcDto.end;
 					
 					let fillAdd = _.filter(filShowChart, (z : any, y) => {
