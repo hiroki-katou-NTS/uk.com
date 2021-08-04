@@ -38,7 +38,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
     private static final String FORMAT_DATE = "yyyy/MM/dd";
-    private static final int MAX_LINE_IN_PAGE = 40;
+    private static final int MAX_LINE_IN_PAGE = 50;
     private static final Integer HIERARCHY_LENGTH = 3;
 
 
@@ -157,10 +157,8 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 isFist = false;
                             }
                             val listDisplaySid = content.getListDisplayedEmployees();
-                            val tComparator = Comparator
-                                    .comparing(DisplayedEmployee::getEmployeeCode);
                             val listDisplayedEmployees = listDisplaySid.stream()
-                                    .sorted(tComparator).collect(Collectors.toList());
+                                    .sorted(Comparator.comparing(DisplayedEmployee::getEmployeeCode)).collect(Collectors.toList());
                             cells.copyRow(cellsTemplate, 5, count);
                             itemOnePage += 1;
                             //D1_1
