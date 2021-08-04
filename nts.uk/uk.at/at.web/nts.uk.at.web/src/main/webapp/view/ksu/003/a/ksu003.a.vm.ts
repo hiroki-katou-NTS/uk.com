@@ -5788,14 +5788,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		deleteTask(index : any, id : any){
 			let self = this;
 			let filDel = _.filter(self.lstChartTask, (x : any) => {
-				return x.id === id && x.line == index;
+				return x.id === id && x.line == index; // tim task bi xoa
 			});
 			
 			if (filDel.length == 0){
 				return;
 			} 
 			let indTaskData = _.findIndex(self.taskData, (ind : any) => {
-							return ind.empID === self.lstEmpId[index].empId;
+				return ind.empID === self.lstEmpId[index].empId;
 			}) 
 			let filTask = _.isNil(self.taskData[indTaskData]) ? [] : self.taskData[indTaskData].taskScheduleDetail, lstTaskScheduleDetailEmp : any = [];
 			
@@ -5809,28 +5809,26 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					lstTaskScheduleDetailEmp : lstTaskScheduleDetailEmp,
 					ymd : self.targetDate()
 				});
-			} else {
-				if (filTask.length > 0){
-					let taskFil = _.filter(filTask, (x : any) => {
-						return x.taskCode == filDel[0].code && x.timeSpanForCalcDto.start != filDel[0].start && x.timeSpanForCalcDto.end != filDel[0].end;
-					});
-					
-					let taskScheduleDetail : any = [];
-					_.forEach(taskFil, (x : any ) => {
-						taskScheduleDetail.push({
-							taskCode: x.taskCode,
-							timeSpanForCalcDto: {
-								start: x.timeSpanForCalcDto.start,
-								end: x.timeSpanForCalcDto.end
-							}
-						})
-					})
-					self.taskPasteData.lstTaskScheduleDetailEmp.push({
-						empId : self.dataScreen003A().employeeInfo[index].empId,
-						taskScheduleDetail : taskScheduleDetail
-					});
-				}
+			} 
+			if (filTask.length > 0){
+				let taskFil = _.filter(filTask, (x : any) => {
+					return x.taskCode == filDel[0].code && x.timeSpanForCalcDto.start != filDel[0].start && x.timeSpanForCalcDto.end != filDel[0].end;
+				});
 				
+				let taskScheduleDetail : any = [];
+				_.forEach(taskFil, (x : any ) => {
+					taskScheduleDetail.push({
+						taskCode: x.taskCode,
+						timeSpanForCalcDto: {
+							start: x.timeSpanForCalcDto.start,
+							end: x.timeSpanForCalcDto.end
+						}
+					})
+				})
+				self.taskPasteData.lstTaskScheduleDetailEmp.push({
+					empId : self.dataScreen003A().employeeInfo[index].empId,
+					taskScheduleDetail : taskScheduleDetail
+				});
 			}
 			
 			_.forEach(filDel, (x : any) => {
