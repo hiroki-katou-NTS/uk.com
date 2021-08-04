@@ -195,7 +195,7 @@ public class ConversionTableService {
 						String.join(
 							",",
 							parent.getMappingJoin().onSentences.stream()
-								.map(on -> on.getLeft().getName())
+								.map(on -> on.getRight().getName())
 								.collect(Collectors.toList())
 							)
 						);

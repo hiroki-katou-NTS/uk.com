@@ -19,7 +19,7 @@ public class ParentJoinPattern extends ConversionPattern {
 	private String parentTableName;
 	private String targetTable;
 
-	public ParentJoinPattern(Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName) {
+	public ParentJoinPattern(Join sourceJoin, Join mappingJoin, String parentTableName, String parentColumn) {
 		this.sourceJoin = sourceJoin;
 		this.mappingJoin = mappingJoin;
 		this.parentColumn = parentColumn;
