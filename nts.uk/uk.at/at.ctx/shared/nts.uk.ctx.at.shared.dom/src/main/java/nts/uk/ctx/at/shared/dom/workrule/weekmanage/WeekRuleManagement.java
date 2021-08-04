@@ -49,34 +49,7 @@ public class WeekRuleManagement {
 	 */
 
 	public static WeekRuleManagement of(String cid, int weekStart) {
-		WeekStart ws = EnumAdaptor.valueOf(weekStart, WeekStart.class);
-		DayOfWeek dayOfWeek = null;
-		switch (ws) {
-			case Monday:
-				dayOfWeek = DayOfWeek.MONDAY;
-				break;
-			case Tuesday:
-				dayOfWeek = DayOfWeek.TUESDAY;
-				break;
-			case Wednesday:
-				dayOfWeek = DayOfWeek.WEDNESDAY;
-				break;
-			case Thursday:
-				dayOfWeek = DayOfWeek.THURSDAY;
-				break;
-			case Friday:
-				dayOfWeek = DayOfWeek.FRIDAY;
-				break;
-			case Saturday:
-				dayOfWeek = DayOfWeek.SATURDAY;
-				break;
-			case Sunday:
-				dayOfWeek = DayOfWeek.SUNDAY;
-				break;
-			default:
-				throw new RuntimeException("週開始: " + dayOfWeek);
-		}
-		return new WeekRuleManagement(cid, dayOfWeek);
+		return new WeekRuleManagement(cid, EnumAdaptor.valueOf(weekStart, DayOfWeek.class));
 	}
 
 	/** 週割増時間を計算する週開始を取得する */
