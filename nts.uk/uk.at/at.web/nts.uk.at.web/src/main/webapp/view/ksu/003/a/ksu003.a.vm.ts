@@ -1474,6 +1474,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			self.taskPasteData = [];
 			self.lstTaskScheduleDetailEmp = [];
 			self.lstChartTask = [];
+			self.gcShowChart = [];
 			leftDs.push({
 				empId: _.map(lstId, (x: model.IEmpidName) => { return x.empId }),
 				color: ""
@@ -6041,7 +6042,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					})
 					
 					if (fillAdd.length > 0)
-					fillAdd = _.sortBy(fillAdd, [function(o: any) { return o.startTime; }]);
+						fillAdd = _.sortBy(fillAdd, [function(o: any) { return o.startTime; }]);
+					else
+						lstTimeSave.push({
+							start : start,
+							end : end
+						});
 					
 					_.forEach(fillAdd, (sv : any, index) => {
 						if (index == 0){
@@ -6072,21 +6078,35 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							
 						}
 					});
-									
-					lstTimeSave = _.uniqWith(lstTimeSave, function(arrVal: any, othVal: any) {
-						return (arrVal.start == othVal.start && arrVal.end == othVal.end);
-					});
-					self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail = [];
-					_.forEach(lstTimeSave, (sv : any) => {
-						self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail.push({
-							taskCode: filTime[0].code,
-							timeSpanForCalcDto: {
-								start: sv.start,
-								end: sv.end
-							}
-						})
+				})	
+				
+				lstTimeSave = _.uniqWith(lstTimeSave, function(arrVal: any, othVal: any) {
+					return (arrVal.start == othVal.start && arrVal.end == othVal.end);
+				});
+				
+				self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail = [];
+				_.forEach(lstTimeSave, (sv : any) => {
+					self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail.push({
+						taskCode: filTime[0].code,
+						timeSpanForCalcDto: {
+							start: sv.start,
+							end: sv.end
+						}
 					})
-				})				
+				})			
+			} else {
+				self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail = _.uniqWith(self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail, function(arrVal: any, othVal: any) {
+					return (arrVal.start == othVal.start && arrVal.end == othVal.end);
+				});
+				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail, (tsk : any) => {
+					self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail.push({
+						taskCode: filTime[0].code,
+						timeSpanForCalcDto: {
+							start: tsk.timeSpanForCalcDto.start,
+							end: tsk.timeSpanForCalcDto.end
+						}
+					})
+				})
 			}
 			
 			self.enableSave(true);
