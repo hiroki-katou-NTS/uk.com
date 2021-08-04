@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 
 /**
- * 60進数表記時間の区切り文字
+ * 60進数表記時分データの区切り文字
  */
 public enum TimeBase60Delimiter {
 	
