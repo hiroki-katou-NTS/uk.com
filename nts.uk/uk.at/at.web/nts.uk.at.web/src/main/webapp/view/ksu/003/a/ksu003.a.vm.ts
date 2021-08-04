@@ -5868,8 +5868,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					return y.taskCode == x.code && y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
 				})
 				
-				if (filTask.length > 0 && !_.isNil(self.taskData[index])) {
-					_.remove(self.taskData[index].taskScheduleDetail, (y : any) => {
+				if (filTask.length > 0 && !_.isNil(self.taskData[indTaskData])) {
+					_.remove(self.taskData[indTaskData].taskScheduleDetail, (y : any) => {
 								return y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
 					});
 				}
@@ -5887,11 +5887,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.taskPasteData.lstTaskScheduleDetailEmp[ind].taskScheduleDetail.length = 0;
 			}
 			// thuc hien xoa khi da co data task tu truoc
-			if (!_.isNil(self.taskData[index]) && self.taskData[index].taskScheduleDetail.length > 0  && filTask.length > 0){
-				if (self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length > 0 ||
-				(self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length != self.taskData[index].taskScheduleDetail.length)){
+			if (!_.isNil(self.taskData[indTaskData]) && self.taskData[indTaskData].taskScheduleDetail.length > 0  && filTask.length > 0){
+				if (self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length > 0 &&
+				(self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length != self.taskData[indTaskData].taskScheduleDetail.length)){
 					self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.length = 0;
-					_.forEach(self.taskData[index].taskScheduleDetail, (x : any) => {
+					_.forEach(self.taskData[indTaskData].taskScheduleDetail, (x : any) => {
 						self.taskPasteData.lstTaskScheduleDetailEmp[ind == -1 ? 0 : ind].taskScheduleDetail.push({
 							taskCode: x.taskCode,
 							timeSpanForCalcDto: {
@@ -6063,7 +6063,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					_.forEach(fillAdd, (sv : any, index) => {
 						if (index == 0){
-							if (start != sv.startTime * 5)
+							if (start != sv.startTime * 5 && start < sv.startTime * 5)
 							lstTimeSave.push({
 								start : start,
 								end : sv.startTime * 5
