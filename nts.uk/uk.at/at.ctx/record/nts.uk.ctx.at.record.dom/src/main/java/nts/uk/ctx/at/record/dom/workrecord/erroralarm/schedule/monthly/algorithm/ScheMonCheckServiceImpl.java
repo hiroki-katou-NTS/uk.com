@@ -636,7 +636,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 						cid, sid, wkpId, ym, 
 						attendanceTimeOfMon, 
 						workSchedules, 
-						prepareData.getListIntegrationDai(), 
+						integrationOfDailys, 
 						scheCondMon,
 						presentClosingPeriod, 
 						prepareData.getListWorkType(), 
