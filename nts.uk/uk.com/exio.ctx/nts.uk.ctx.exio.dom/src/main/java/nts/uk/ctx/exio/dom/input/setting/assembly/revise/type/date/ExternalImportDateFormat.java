@@ -1,10 +1,14 @@
 package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 
 /**
  * 受入日付書式
  */
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ExternalImportDateFormat {
 	
 	YYYY_MM_DD(0, "Enum_ExternalImportDateFormat_YYYY_MM_DD", "yyyy/MM/dd"),
@@ -21,10 +25,8 @@ public enum ExternalImportDateFormat {
 	
 	public final String format;
 
-	private ExternalImportDateFormat(int value, String nameId, String format) {
-		this.value = value;
-		this.nameId = nameId;
-		this.format = format;
+	public static ExternalImportDateFormat valueOf(int value) {
+		return EnumAdaptor.valueOf(value, ExternalImportDateFormat.class);
 	}
 	
 	/**
