@@ -23,9 +23,7 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividual
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
-import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantDto;
-import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantMetaDto;
-import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
+import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
@@ -94,12 +92,13 @@ public class RoleIndividualWebService extends WebService {
 	public List<RoleTypeDto> GetRoleType() {
 		return this.roleIndividualFinder.getCAS013Metadata();
 	}
-	
+
 	@POST
 	@Path("getRoles/{roleType}")
 	public List<RoleDto> GetRoleByRoleType(@PathParam("roleType") int roleType){
 		return this.personInforRoleFinder.getListRoleByRoleType(roleType);
 	}
+
 	
 	@POST
 	@Path("getRoles/incharge/{roleType}")
@@ -145,4 +144,15 @@ public class RoleIndividualWebService extends WebService {
 		return this.personInforRoleFinder.find(roleId).getReferFutureDate();
 	}
 
+    @POST
+    @Path("getCompanyInfo")
+    public CompanyInfo GetEmployy() {
+	    return this.roleIndividualFinder.getCompanyInfo();
+	}
+
+	@POST
+	@Path("getWorkPlaceInfo")
+	public WorkPlaceInfo GetWorkPlaceInfo(String employeeID){
+		return this.roleIndividualFinder.GetWorkPlaceInfo(employeeID);
+	}
 }

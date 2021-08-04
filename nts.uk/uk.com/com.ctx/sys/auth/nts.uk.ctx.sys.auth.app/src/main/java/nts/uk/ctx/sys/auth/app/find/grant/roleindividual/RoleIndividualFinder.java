@@ -13,9 +13,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
-import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantDto;
-import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleIndividualGrantMetaDto;
-import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.RoleTypeDto;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
@@ -24,11 +24,8 @@ import nts.uk.ctx.sys.auth.dom.adapter.role.employment.*;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.employee.EmployeeInfoDtoImport;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.shared.dom.employee.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
+import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserName;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
@@ -61,6 +58,12 @@ public class RoleIndividualFinder {
 
     @Inject
     private EmployeeDataMngInfoRepository empDataRepo;
+
+    @Inject
+    private CompanyBsAdapter companyBsAdapter;
+
+    @Inject
+    private WorkplacePub workplacePub;
 
 
     private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
@@ -255,10 +258,34 @@ public class RoleIndividualFinder {
             String userName = "";
             if (user.get().getUserName().isPresent())
                 userName = user.get().getUserName().get().v();
-            return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(),"","","");
-        } else {
+                    return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(), rGrant.get().getUserId(), "", "");
+
+            } else {
             return null;
         }
+    }
 
+
+    public CompanyInfo getCompanyInfo() {
+        val cid = AppContexts.user().companyId();
+        if(cid == null)
+            return null;
+        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(cid);
+        CompanyInfo companyInfo1 = new CompanyInfo(companyInfo.getCompanyCode(),companyInfo.getCompanyName(), companyInfo.getCompanyId(), companyInfo.getIsAbolition());
+        return companyInfo1;
+    }
+
+    public WorkPlaceInfo GetWorkPlaceInfo(String employeeID) {
+        String cid = AppContexts.user().companyId();
+
+        GeneralDate baseDate = GeneralDate.today();
+
+        Optional<SWkpHistExport> sWkpHistExport = workplacePub.findBySidNew(cid, employeeID, baseDate);
+        if(sWkpHistExport.isPresent()){
+            SWkpHistExport export = sWkpHistExport.get();
+            WorkPlaceInfo workPlaceInfo = new WorkPlaceInfo(export.getWorkplaceCode(), export.getWorkplaceName());
+            return workPlaceInfo;
+        }
+        return null;
     }
 }
