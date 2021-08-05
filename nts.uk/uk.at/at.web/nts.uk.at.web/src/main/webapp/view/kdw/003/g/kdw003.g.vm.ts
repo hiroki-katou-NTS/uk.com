@@ -202,15 +202,20 @@ module nts.uk.at.view.kdw003.cg {
                         self.loadKcp009();
                         self.selectedEmployee(self.lstEmployee()[0].id);
                     } 
+                }).fail((res) => {
+                    self.$dialog.error({messageId: res.messageId}).then(() => {
+                        self.closeDialog();
+                    });
                 }).always(() => {
                     self.$blockui("hide");
                 });
             }).fail((res) => {
-                self.$dialog.alert({messageId: res.messagetId});
+                self.$dialog.alert({messageId: res.messageId}).then(() => {
+                    self.closeDialog();
+                });
             }).always(() => {
                 self.$blockui("hide");
-            });            
-            // $('#startDate').focus();
+            });  
         }
         
         findDetail(employeeId: string, reload: boolean): void {
