@@ -262,9 +262,9 @@ module nts.uk.ui.ktg004.a {
 											grantDay:
 												_.isNil(grantDate)
 												?
-												`${vm.$i18n('KKTG004_26')} ${vm.$i18n('KTG004_26')}`
+												`${vm.$i18n('KTG004_26')} ${vm.$i18n('KTG004_26')}`
 												:
-												`${vm.$i18n('KKTG004_26')}${moment(grantDate).format("YYYY/MM/DD")}　${grantDays}日`
+												`${vm.$i18n('KTG004_26')}${moment(grantDate).format("YYYY/MM/DD")}　${grantDays}日`
 												
 													
                                         })
