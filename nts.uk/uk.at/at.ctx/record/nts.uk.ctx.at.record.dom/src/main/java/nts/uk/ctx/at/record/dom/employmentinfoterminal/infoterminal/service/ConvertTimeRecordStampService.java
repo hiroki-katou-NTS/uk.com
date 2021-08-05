@@ -23,7 +23,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectProcessService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 /**
  * @author ThanhNX
@@ -55,7 +57,11 @@ public class ConvertTimeRecordStampService {
 	
 		Optional<String> employeeId = getEmployeeId(require, contractCode,
 				new StampNumber(stampReceptData.getIdNumber()));
-		Optional<String> cid = getCompanyId(require, employeeId);
+		
+		Optional<EmpDataImport> empData = employeeId.flatMap(sid -> require.getEmpData(Arrays.asList(sid)).stream().findFirst());
+		Optional<String> cid = getCompanyId(require, empData);
+		
+		login(require, contractCode.v(), cid, empData);
 		
 		return createDailyData(require, cid, employeeId, stamp.getLeft(), stamp.getRight());
 
@@ -89,15 +95,34 @@ public class ConvertTimeRecordStampService {
 		return  Pair.of(Optional.of(stamp.get().getLeft()), stampReflectResult);
 	}
 
+	//社員IDを取得する
 	private static Optional<String> getEmployeeId(Require require, ContractCode contractCode, StampNumber stampNumber) {
 		Optional<StampCard> stampCard = require.getByCardNoAndContractCode(contractCode,
 				new StampNumber(stampNumber.v()));
 		return stampCard.map(x -> x.getEmployeeId());
 	}
 
-	private static Optional<String> getCompanyId(Require require, Optional<String> employeeId) {
-		return employeeId.map(sid -> require.getEmpData(Arrays.asList(employeeId.get())).stream().findFirst()
-				.map(x -> x.getCompanyId()).orElse(null));
+	//会社IDを取得する
+	private static Optional<String> getCompanyId(Require require, Optional<EmpDataImport> empData) {
+		return empData.map(x -> x.getCompanyId());
+	}
+	
+	//ログイン
+	private static boolean login(Require require, String contractCode, Optional<String> cid, 
+			Optional<EmpDataImport> empData) {
+
+		if (!cid.isPresent() || !empData.isPresent()) {
+			return false;
+		}
+		Optional<String> userId = require.getUserIdFromLoginId(empData.get().getPersonId());
+		if (!userId.isPresent()) {
+			return false;
+		}
+		String companyCode = require.getCompanyInfoById(cid.get()).getCompanyCode();
+
+		require.loggedInAsEmployee(userId.get(), empData.get().getPersonId(), contractCode, cid.get(), companyCode, empData.get().getEmployeeId(),
+				empData.get().getEmployeeCode());
+		return true;
 
 	}
 	
@@ -115,8 +140,11 @@ public class ConvertTimeRecordStampService {
 					reflectDate.get(), stamp.get());
 
 			if (domdaily.isPresent()) {
+				val domAfterCalc = require.calculatePassCompanySetting(cid.get(), Arrays.asList(domdaily.get()),
+						ExecutionType.NORMAL_EXECUTION);
 				AtomTask task = atomTask.then(() -> {
-					require.addAllDomain(domdaily.get());
+					require.addAllDomain(domAfterCalc.get(0));
+					require.loggedOut();
 				});
 				return Optional.of(new StampDataReflectResult(reflectDate, task));
 			}
@@ -172,5 +200,29 @@ public class ConvertTimeRecordStampService {
 		// [R-8] 社員IDListから管理情報を取得する
 		//GetMngInfoFromEmpIDListAdapter
 		List<EmpDataImport> getEmpData(List<String> empIDList); 
+		//[R-8]会社IDを取得する
+		//CompanyAdapter
+		CompanyInfo getCompanyInfoById(String companyId);
+		//UserIDを取得する
+		//	IGetInfoForLogin
+		public Optional<String> getUserIdFromLoginId(String perId);
+		
+		//ログイン
+		//LoginUserContextManager
+		void loggedInAsEmployee(
+				String userId,
+				String personId,
+				String contractCode,
+				String companyId,
+				String companyCode,
+				String employeeId,
+				String employeeCode);
+		
+		//ログアウト
+		void loggedOut();
+		
+		//計算
+		List<IntegrationOfDaily> calculatePassCompanySetting(String cid, List<IntegrationOfDaily> integrationOfDaily,
+				ExecutionType reCalcAtr);
 	}
 }
