@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.input.setting;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -12,20 +11,18 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSettingPK;
-import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMapping;
-import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMappingPK;
 
 @Stateless
 public class JpaExternalImportSettingRepository extends JpaRepository implements ExternalImportSettingRepository {
 	
 	@Override
 	public void insert(ExternalImportSetting domain) {
-		this.commandProxy().insert(toSettingEntitiy(domain));
+		this.commandProxy().insert(XimmtImportSetting.toEntitiy(domain));
 	}
 	
 	@Override
 	public void update(ExternalImportSetting domain) {
-		this.commandProxy().update(toSettingEntitiy(domain));
+		this.commandProxy().update(XimmtImportSetting.toEntitiy(domain));
 		
 	}
 	
@@ -47,24 +44,5 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())
 				.getSingle(rec -> rec.toDomain());
-	}
-	
-	private XimmtImportSetting toSettingEntitiy(ExternalImportSetting domain) {
-		return new XimmtImportSetting(
-				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()), 
-				domain.getName().toString(), 
-				domain.getExternalImportGroupId().value, 
-				domain.getImportingMode().value, 
-				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().v(), 
-				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().v(), 
-				domain.getAssembly().getMapping().getMappings().stream()
-				.map(m -> new XimmtItemMapping(
-						new XimmtItemMappingPK(
-								domain.getCompanyId(), 
-								domain.getCode().v(), 
-								m.getItemNo()), 
-						m.getCsvColumnNo().isPresent()? m.getCsvColumnNo().get(): null, 
-						m.getFixedValue().isPresent()? m.getFixedValue().get().toString(): null))
-				.collect(Collectors.toList()));
 	}
 }

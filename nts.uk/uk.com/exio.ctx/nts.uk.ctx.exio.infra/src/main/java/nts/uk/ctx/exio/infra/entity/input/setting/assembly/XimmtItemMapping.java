@@ -11,9 +11,11 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
+import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSettingPK;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -39,13 +41,23 @@ public class XimmtItemMapping extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "FIXED_VALUE")
 	private String fixedValue;
 	
-	
 	@Override
 	protected Object getKey() {
 		return pk;
 	} 
 	
 	public static final JpaEntityMapper<XimmtItemMapping> MAPPER = new JpaEntityMapper<>(XimmtItemMapping.class);
+	
+	public static XimmtItemMapping toEntity(XimmtImportSettingPK parentPk, ImportingItemMapping domain) {
+		
+		val entity = new XimmtItemMapping();
+		
+		entity.pk = new XimmtItemMappingPK(parentPk.getCompanyId(), parentPk.getCode(), domain.getItemNo());
+		entity.csvColumnNo = domain.getCsvColumnNo().orElse(null);
+		entity.fixedValue = domain.getFixedValue().map(f -> f.getValue()).orElse(null);
+		
+		return entity;
+	}
 	
 	public ImportingItemMapping toDomain(){
 		
