@@ -345,16 +345,14 @@ module nts.uk.at.view.kdp.share {
                     }
 
                     const value: IMessage = ko.unwrap(vm.messageNoti);
-                    console.log(value);
-
 
                     if (value.stopBySystem.systemStatusType == 2) {
                         vm.modeSystemNoti(true);
-                        vm.messageSys(value.stopBySystem.usageStopMessage);
+                        vm.messageSys(value.stopBySystem.stopMessage);
                     } else {
                         if (value.stopByCompany.systemStatus == 2) {
                             vm.modeSystemNoti(true);
-                            vm.messageSys(value.stopByCompany.usageStopMessage);
+                            vm.messageSys(value.stopByCompany.stopMessage);
                         } else {
                             vm.modeSystemNoti(false);
                             vm.messageSys('');
