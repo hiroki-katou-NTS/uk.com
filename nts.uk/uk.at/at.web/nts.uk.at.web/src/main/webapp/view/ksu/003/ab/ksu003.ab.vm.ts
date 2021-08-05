@@ -386,7 +386,10 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				}
 				
 				let value : any = null 
-				if(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text != "storeNull") {
+				if(!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,"storeNull") && 
+					!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text , getText("KSU003_82")) &&
+					 !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_70")) &&
+					  !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_83"))) {
 					value = {
 						column: __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.column,
 						data: {
@@ -414,12 +417,13 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 								},
 								row: cpn.page > 5 ? 1 : 0
 							}
-						break;
+						if(!_.isEqual(cpn.text,getText("KSU003_82")) && !_.isEqual(cpn.text,getText("KSU003_70")) && !_.isEqual(cpn.text,getText("KSU003_83")))
+							break;
 						}
 					}
 				}
 				
-				if (value.data.text == getText("KSU003_70") || value.data.text == getText("KSU003_83")) {
+				if (value == null) {
 					self.selectedButton(0);
 				}
 				if (type == 0) {

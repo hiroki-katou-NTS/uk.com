@@ -115,6 +115,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		typeTask : any = [];
 		checkSaveDataMode : any = true;
 		lstChartTask : any = [];
+		taskTypeDel : any = [];
 		
 		modes = ko.observableArray([ "normal", "paste", "pasteFlex" ].map(c => ({ code: c, name: c })));
 
@@ -3132,11 +3133,21 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 					}
 				}
-				
+				if (self.selectedDisplayPeriod() == 2){
+					
+				}
 				// add Task time
 				let taskTime = datafilter[0].gcTaskTime;
 				if(taskTime != null && taskTime.length > 0){
 					for (let o = 0; o < taskTime.length; o++) {
+					let checkRuler = _.filter(ruler.definedType, (tsk : any) => {
+						return _.includes(tsk.name, taskTime[o].taskCode); 
+					})
+					
+					if (checkRuler.length == 0) {
+						self.taskTypeDel.add(taskTime[o].taskCode);
+						continue;
+					}
 					
 					let id = `lgc${i}_` + indexLeft, parent = `lgc${i}`;
 					if (taskTime[o].taskData != null && ((timeChart2 != null && taskTime[o].timeSpanForCalcDto.end / 5 < timeChart2.startTime) || (timeChart2 == null)) && 
@@ -5475,42 +5486,89 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		addTaskResize(line : any, type : any, start : any, end : any, id : any){
 			let self = this;
+			
 			start = start * 5 + self.dispStart * 5;
 			end = end * 5 + self.dispStart * 5;
+			
+			// kiem tra truong hop khong chon task nao de paste
 			let taskInfo : any = _.filter(__viewContext.viewModel.viewmodelAb.dataTaskInfo.lstTaskDto, (x : any) => {
 					return _.split(type,'TASK',1)[0] === x.code && _.includes(type, "TASK");
 			});
-				if(taskInfo == null) return;
-				
-				let filDuplicate = _.filter(self.lstChartTask, (x : any) => {
-					return x.line == line && x.start <= start && x.end >= end && taskInfo[0].code == x.code;
-				});
-				
-				if (filDuplicate.length > 0) return; // kiem tra trung code
-				
-				let arrRemoveTask : any = [], arrRemoveTaskNew : any = [];
-				let filTaskData = _.filter (self.taskData, (x : any) => {
-					return x.empID == self.lstEmpId[line].empId;
-				});
-				
-				let indexTask = _.findIndex(self.taskData, (ind : any) => {
+			
+			if(taskInfo == null) return;
+			
+			// kiem tra trung code va trung thoi gian
+			let filDuplicate = _.filter(self.lstChartTask, (x : any) => {
+				return x.line == line && x.start <= start && x.end >= end && taskInfo[0].code == x.code;
+			});
+			
+			if (filDuplicate.length > 0) return;
+			
+			let iOld = _.findIndex(self.taskData, (ind : any) => {
 						return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
-				})
-				
-				if (filTaskData.length > 0 && !_.isNil(self.taskData[indexTask])) {
-				
-				for (let i = 0; i < self.taskData[indexTask].taskScheduleDetail.length ; i++) { // kiem tra voi list task cu
-					let task : any = self.taskData[indexTask].taskScheduleDetail[i], 
-					oldS = task.timeSpanForCalcDto.start,
-					oldE = task.timeSpanForCalcDto.end;
-					if (filTaskData[0].empID !== self.lstEmpId[line].empId)
-					continue;
+				}),
+				iNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
+					return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
+				});
+			self.taskTypeDel = _.uniq(self.taskTypeDel)
+			_.forEach(self.taskTypeDel, (ru : any) => {
+				if (iOld != -1) {
+					let idxo = _.findIndex(self.taskData[iOld].taskScheduleDetail, (xx : any) => {
+					return _.isEqual(xx.taskCode, ru); 
+					})
 					
-					if (task.taskData != null) {
+					if (idxo != -1)
+					_.remove(self.taskData[iOld].taskScheduleDetail, (y : any) => {
+						return _.isEqual(y.taskCode, ru); ;
+					});
+				}
+				
+				if (iNew != -1) {
+					let idxn = _.findIndex(self.lstTaskScheduleDetailEmp[iNew].taskScheduleDetail, (xx : any) => {
+					return _.isEqual(xx.taskCode, ru);
+					})
+					
+					if (idxn != -1)
+					_.remove(self.lstTaskScheduleDetailEmp[iNew].taskScheduleDetail, (y : any) => {
+						return _.isEqual(y.taskCode, ru); ;
+					});
+				}
+			}) 
+				
+			let arrRemoveTask : any = [],
+				filTaskData = _.filter (self.taskData, (x : any) => x.empID == self.lstEmpId[line].empId),
+				indexTask = _.findIndex(self.taskData, (ind : any) => {
+					return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
+				}),
+				indexTaskNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
+					return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
+				}),
+				newLstChartTsk = _.filter (self.lstChartTask, (x : any) => x.line == line);
+				
+			if (newLstChartTsk.length > 0) {
+				for (let i = 0; i < newLstChartTsk.length ; i++) { // kiem tra voi list task cu
+					let task : any = newLstChartTsk[i], 
+					oldS = task.start, oldE = task.end, 
+					indOld = -1, indNew = -1,
+					indTask = -1;
+					
+					indTask = _.findIndex(self.lstChartTask, (indtsk : any) => {
+						return indtsk.start == task.start && indtsk.end == task.end
+					})
+					
+					if (indexTask != -1)
+					indOld = _.findIndex(self.taskData[indexTask].taskScheduleDetail, (inod : any) => {
+						return inod.timeSpanForCalcDto.start == task.start && inod.timeSpanForCalcDto.end == task.end
+					})
+					
+					if (indexTaskNew != -1)
+					indNew = _.findIndex(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail, (inw : any) => {
+						return inw.timeSpanForCalcDto.start == task.start && inw.timeSpanForCalcDto.end == task.end
+					})
+					
 					if (_.inRange(start, oldS, oldE) || _.inRange(end, oldS, oldE) || 
 						_.inRange(oldS, start, end) || _.inRange(oldE, start, end)) {
-						if (_.includes(taskInfo[0].code ,task.taskData.code) && 
-							taskInfo[0].taskDisplayInfoDto.color === task.taskData.taskDisplayInfoDto.color){
+						if (_.includes(taskInfo[0].code ,task.code)){
 								if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
 									return;
 								
@@ -5524,50 +5582,96 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									continue;
 								}
 							} else {
+								
 								if (start == oldS && end < oldE) {
-									self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.start = end;
+									if (indOld != -1)
+									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.start = end;
+									
+									if (indNew != -1)
+									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = end;
 									continue;
 								}
 								
 								if (start < oldS && end < oldE && end > oldS) {
-									self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end = end;
+									if (indOld != -1)
+									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = end;
+									
+									if (indNew != -1)
+									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = end;
+									
 									continue;
 								}
 								
 								if (start > oldS && end > oldE && start < oldE) {
-									self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
+									if (indOld != -1)
+									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = start;
+									
+									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
+									
 									continue;
 								}
 								
 								if (start > oldS && end == oldE) {
-									self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
+									if (indOld != -1)
+									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = start;
+									
+									if (indNew != -1)
+									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
 									continue;
 								}
 								
 								if (start > oldS && end < oldE) {
-									let filTask = _.filter(self.lstChartTask, (tsk : any ) => {
-									return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
-								})
-									self.bindDataToTask(filTask != null ? filTask[0].code : null, end , self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end , line, `pgc${util.randomId().split("-").join("")}`, "add");
-									self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end = start;
+									if (indOld != -1){
+										let filTask = _.filter(self.lstChartTask, (tsk : any ) => {
+											return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
+										})
+										
+										self.bindDataToTask(filTask != null ? filTask[0].code : null, end , self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end , line, `pgc${util.randomId().split("-").join("")}`, "add");
+										
+										indexTaskNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
+											return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
+										})
+										
+										indNew = _.findIndex(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail, (inw : any) => {
+											return inw.timeSpanForCalcDto.start == task.start && inw.timeSpanForCalcDto.end == task.end
+										})
+										
+										self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = start;
+										
+									}
+									
+									if (indNew != -1){
+										let filTask = _.filter(self.lstChartTask, (tsk : any ) => {
+											return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
+										})
+										
+										self.bindDataToTask(filTask != null ? filTask[0].code : null , end , self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end , line, `pgc${util.randomId().split("-").join("")}`, "add");
+										self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
+										continue;
+									}
+									
 									continue;
 								}
 							}
-						arrRemoveTask.push({
+/*						arrRemoveTask.push({
 							index : i,
 							line : indexTask,
 							start : self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.start,
 							end : self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end
-						});
+						});*/
 					} 
-				}	
 				}
+				
 				}
-				_.forEach(arrRemoveTask, x => {
-					let arr = _.remove(self.taskData[x.line].taskScheduleDetail, (y : any, index) => {
+				/*_.forEach(arrRemoveTask, x => {
+					_.remove(self.taskData[x.line].taskScheduleDetail, (y : any, index) => {
 						return x.index == index && y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
 					});
-				})
+					
+					_.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
+						return x.index == index && y.taskScheduleDetail[0].timeSpanForCalcDto.start == x.start && y.taskScheduleDetail[0].timeSpanForCalcDto.end == x.end;
+					});
+				})*/
 				
 				let filShowChart = _.filter(self.gcShowChart, (x : any) => {
 					return x.line == line;
@@ -5599,81 +5703,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 					}
 				}
-				
-				for (let i = 0; i < self.lstTaskScheduleDetailEmp.length ; i++) { // kiem tra voi list task moi
-					let task : any = self.lstTaskScheduleDetailEmp[i];
-					
-					if (task.empId !== self.lstEmpId[line].empId)
-					continue;
-					
-					let indx = _.findIndex(task.taskScheduleDetail, (x : any) => {
-						return _.inRange(start, x.timeSpanForCalcDto.start, x.timeSpanForCalcDto.end) || _.inRange(end, x.timeSpanForCalcDto.start, x.timeSpanForCalcDto.end) || 
-						_.inRange(x.timeSpanForCalcDto.start, start, end) || _.inRange(x.timeSpanForCalcDto.end, start, end);
-					});
-					
-					if (indx == -1) continue;
-					let oldS = task.taskScheduleDetail[indx].timeSpanForCalcDto.start,
-					oldE = task.taskScheduleDetail[indx].timeSpanForCalcDto.end;
-							
-					if (taskInfo[0].code === task.taskScheduleDetail.taskCode){
-							if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
-								return;
-							
-							if ((start == oldS && end < oldE) || (start < oldS && end < oldE && end > oldS)) {
-								end = oldE;
-								continue;
-							}
-							
-							if (start > oldS && end > oldE && start < oldE) {
-								start = oldS;
-								continue;
-							}
-						} else {
-							if (start == oldS && end < oldE) {
-								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = end;
-								continue;
-							}
-							
-							if (start < oldS && end < oldE && end > oldS) {
-								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = end;
-								continue;
-							}
-							
-							if (start > oldS && end > oldE && start < oldE) {
-								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = start;
-								continue;
-							}
-							
-							if (start > oldS && end == oldE) {
-								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = start;
-								continue;
-							}
-							
-							if (start > oldS && end < oldE) {
-								let filTask = _.filter(self.lstChartTask, (tsk : any ) => {
-									return tsk.line == line && _.inRange(end, tsk.start, tsk.end) && _.inRange(self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end, tsk.start, tsk.end + 1)
-								})
-								
-								self.bindDataToTask(filTask != null ? filTask[0].code : null , end , self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end , line, `pgc${util.randomId().split("-").join("")}`, "add");
-								self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[indx].timeSpanForCalcDto.end = start;
-								continue;
-							}
-						}
-					if (self.lstTaskScheduleDetailEmp[i].taskScheduleDetail.length > 0)	{
-						arrRemoveTaskNew.push({
-							index : i,
-							line : line,
-							start : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.start,
-							end : self.lstTaskScheduleDetailEmp[i].taskScheduleDetail[0].timeSpanForCalcDto.end
-						});
-					}
-				}
-				
-				_.forEach(arrRemoveTaskNew, x => {
-					let arr = _.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
-						return x.index == index && y.taskScheduleDetail[0].timeSpanForCalcDto.start == x.start && y.taskScheduleDetail[0].timeSpanForCalcDto.end == x.end;
-					});
-				});
 				
 				self.bindDataToTask(taskInfo != null ? taskInfo[0].code : null , start , end , line, id, "add");
 				self.enableSave(true);
