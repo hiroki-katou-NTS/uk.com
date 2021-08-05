@@ -5606,6 +5606,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									if (indOld != -1)
 									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = start;
 									
+									if (indNew != -1)
 									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = start;
 									
 									continue;
