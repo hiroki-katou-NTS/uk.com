@@ -38,7 +38,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
     private static final String FORMAT_DATE = "yyyy/MM/dd";
-    private static final int MAX_LINE_IN_PAGE = 44;
+    private static final int MAX_LINE_IN_PAGE = 40;
     private static final Integer HIERARCHY_LENGTH = 3;
 
 
