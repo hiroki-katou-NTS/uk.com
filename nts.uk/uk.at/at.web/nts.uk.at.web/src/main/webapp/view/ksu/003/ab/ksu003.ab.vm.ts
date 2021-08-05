@@ -374,9 +374,30 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					return;
 				}
 				if (!_.isEmpty(self.sourceCompany()[selectButtonChoice[0].page - 1])) {
-					let value = self.getColumn(selectButtonChoice[0].page - 1);
-					$("#tableButton1").ntsButtonTable("setSelectedCell",
-						selectButtonChoice[0].page > 5 ? 1 : 0, value.column);
+					let value : any = null;
+					
+					if(!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,"storeNull") && 
+					!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text , getText("KSU003_82")) &&
+					 !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_70")) &&
+					  !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_83"))) {
+						$("#tableButton1").ntsButtonTable("setSelectedCell",
+						__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.page > 5 ? 1 : 0, __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.column);
+					} else {
+						for(let i =0; i < selectButtonChoice.length; i++) {
+							if (!_.isEqual(selectButtonChoice[i].text,getText("KSU003_82")) && !_.isEqual(selectButtonChoice[i].text,getText("KSU003_70")) 
+								&& !_.isEqual(selectButtonChoice[i].text,getText("KSU003_83"))) {
+								value = self.getColumn(selectButtonChoice[i].page - 1);
+								break;
+							}
+						}
+						
+						if (value == null) {
+							self.selectedButton(0);
+						} else {
+							$("#tableButton1").ntsButtonTable("setSelectedCell",
+							value.data.page > 5 ? 1 : 0, value.column);
+						}
+					}
 					return;
 				}
 			} else {
