@@ -67,7 +67,8 @@ public class JpaConversionRecodeRepository extends JpaRepository implements Conv
 		ScvmtConversionRecord entity = new ScvmtConversionRecord(
 				pk,
 				domain.getSourceId(),
-				domain.getExplanation()
+				domain.getExplanation(),
+				domain.isRemoveDuplicate()
 			);
 
 		this.commandProxy().insert(entity);
@@ -84,7 +85,8 @@ public class JpaConversionRecodeRepository extends JpaRepository implements Conv
 		ScvmtConversionRecord entity = new ScvmtConversionRecord(
 				pk,
 				domain.getSourceId(),
-				domain.getExplanation()
+				domain.getExplanation(),
+				domain.isRemoveDuplicate()
 			);
 
 		this.commandProxy().update(entity);

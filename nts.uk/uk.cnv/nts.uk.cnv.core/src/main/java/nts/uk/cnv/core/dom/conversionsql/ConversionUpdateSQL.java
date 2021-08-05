@@ -1,5 +1,6 @@
 package nts.uk.cnv.core.dom.conversionsql;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -13,11 +14,15 @@ public class ConversionUpdateSQL implements ConversionSQL {
 	private UpdateSentence update;
 	private FromSentence from;
 	private List<WhereSentence> where;
+	private List<String> groupingColumns;
 
-	public ConversionUpdateSQL(TableFullName table, List<WhereSentence> where) {
+	public ConversionUpdateSQL(
+			TableFullName table,
+			List<WhereSentence> where) {
 		this.update = new UpdateSentence(table);
 		this.from = new FromSentence();
 		this.where = where;
+		this.groupingColumns = new ArrayList<>();
 	}
 
 	@Override
@@ -28,6 +33,11 @@ public class ConversionUpdateSQL implements ConversionSQL {
 	@Override
 	public void add(ColumnName column, ColumnExpression value, TreeMap<FormatType, String> formatTable) {
 		this.update.add(column, value);
+	}
+
+	@Override
+	public void addGroupingColumn(ColumnName columnName) {
+		groupingColumns.add(columnName.sql());
 	}
 
 	@Override
@@ -47,8 +57,11 @@ public class ConversionUpdateSQL implements ConversionSQL {
 
 	public String build(DatabaseSpec spec) {
 		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? "\r\n" + WhereSentence.join(where) : "";
+		String groupbyString = (groupingColumns.size() > 0)
+				? "GROUP BY " + String.join(",", groupingColumns) : "";
 		return this.update.sql() + "\r\n" +
 				from.sql(spec) +
+				groupbyString +
 				whereString;
 	}
 

@@ -105,7 +105,12 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 		return pk;
 	}
 
-	public static ConversionTable toDomain(String tagetTableName, ConversionInfo info, List<OneColumnConversion> columns, ConversionSource source) {
+	public static ConversionTable toDomain(
+			String tagetTableName,
+			ConversionInfo info,
+			List<OneColumnConversion> columns,
+			ConversionSource source,
+			boolean removeDuplicate) {
 		List<WhereSentence> where = createWhereSentence(tagetTableName, info, source.getCondition());
 
 		return new ConversionTable(
@@ -115,7 +120,8 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 					source.getStartDateColumnName(),
 					source.getEndDateColumnName(),
 					where,
-					columns
+					columns,
+					removeDuplicate
 				);
 	}
 

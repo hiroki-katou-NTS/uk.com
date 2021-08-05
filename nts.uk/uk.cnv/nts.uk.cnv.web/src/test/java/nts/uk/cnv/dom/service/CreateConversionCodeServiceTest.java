@@ -44,7 +44,7 @@ public class CreateConversionCodeServiceTest {
 		List<String> dummyCategories = Arrays.asList("", "2_PERSON", "3_WEBMENU");
 		List<String> dummyTables = Arrays.asList("TABLE_1", "TABLE_2");
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
-		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明"));
+		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明", true));
 
 		Optional<ConversionTable> dummyConversionTable =
 				Optional.of(ConversionTableTestHelper.create_emptyDummy());
@@ -61,7 +61,7 @@ public class CreateConversionCodeServiceTest {
 			require.getRecords((String) any, (String) any);
 			result = dummyRecords;
 
-			require.getConversionTable(info, (String) any, (String) any, 1, null);
+			require.getConversionTable(info, (String) any, (String) any, 1, null, true);
 			result = dummyConversionTable;
 
 			manager.createAdditionalConversionCode(info, (String) any, dummyConversionTable.get());
@@ -77,21 +77,21 @@ public class CreateConversionCodeServiceTest {
 			times = 1;
 			require.getRecords(dummyCategories.get(0), (String) any);
 			times = 2;
-			require.getConversionTable(info, dummyCategories.get(0), (String) any, 1, null);
+			require.getConversionTable(info, dummyCategories.get(0), (String) any, 1, null, true);
 			times = 2;
 
 			require.getCategoryTables(dummyCategories.get(1));
 			times = 1;
 			require.getRecords(dummyCategories.get(1), (String) any);
 			times = 2;
-			require.getConversionTable(info, dummyCategories.get(1), (String) any, 1, null);
+			require.getConversionTable(info, dummyCategories.get(1), (String) any, 1, null, true);
 			times = 2;
 
 			require.getCategoryTables(dummyCategories.get(2));
 			times = 1;
 			require.getRecords(dummyCategories.get(2), (String) any);
 			times = 2;
-			require.getConversionTable(info, dummyCategories.get(2), (String) any, 1, null);
+			require.getConversionTable(info, dummyCategories.get(2), (String) any, 1, null, true);
 			times = 2;
 		}};
 
@@ -105,7 +105,7 @@ public class CreateConversionCodeServiceTest {
 				"KINJIROU", "dbo", "UK", "dbo", "UK_CNV", "dbo", "000000000000",
 				ConversionCodeType.INSERT);
 		List<ConversionRecord> dummyRecords = new ArrayList<>();
-		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明"));
+		dummyRecords.add(new ConversionRecord("1_COMPANY", "TABLE_1", 1, "guidxxxxxxxxx", "レコードの説明", true));
 
 		new Expectations() {{
 			require.getCategoryPriorities();

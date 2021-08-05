@@ -74,7 +74,7 @@ public class DateTimeMergePattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		DatabaseSpec spec = this.info.getDatebaseType().spec();
 
 		List<String> datetime = new ArrayList<>();
@@ -121,6 +121,9 @@ public class DateTimeMergePattern extends ConversionPattern {
 
 		conversionSql.addJoin(sourceJoin);
 		conversionSql.add(column, new ColumnExpression(expression));
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(column);
+		}
 		return conversionSql;
 	}
 

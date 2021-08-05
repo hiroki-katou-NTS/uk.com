@@ -31,7 +31,7 @@ public class StringConcatPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 
 		String source1 = sourceJoin.tableName.getAlias() + "." + column1;
@@ -47,6 +47,9 @@ public class StringConcatPattern extends ConversionPattern {
 		conversionSql.add(
 				column,
 				new ColumnExpression(concatString));
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(column);
+		}
 
 		return conversionSql;
 	}

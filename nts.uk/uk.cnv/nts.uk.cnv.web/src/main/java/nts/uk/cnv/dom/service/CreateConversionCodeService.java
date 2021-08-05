@@ -82,7 +82,7 @@ public class CreateConversionCodeService {
 
 				ConversionSource source = require.getSource(record.getSourceId());
 
-				return require.getConversionTable(info, category, table, record.getRecordNo(), source);
+				return require.getConversionTable(info, category, table, record.getRecordNo(), source, record.isRemoveDuplicate());
 			})
 			.filter(opCt -> opCt.isPresent())
 			.map(opCt -> opCt.get())
@@ -139,7 +139,8 @@ public class CreateConversionCodeService {
 						ct.getStartDateColumnName(),
 						ct.getEndDateColumnName(),
 						ct.getWhereList(),
-						newConversionMap);
+						newConversionMap,
+						ct.isRemoveDuplicate());
 			})
 			.collect(Collectors.toList());
 
@@ -156,7 +157,7 @@ public class CreateConversionCodeService {
 		List<String> getCategoryPriorities();
 		List<String> getCategoryTables(String category);
 		List<ConversionRecord> getRecords(String category, String tableName);
-		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source);
+		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source, boolean isRemoveDuplicate);
 		ConversionSource getSource(String sourceId);
 		ConversionSQL createConversionSQL(ConversionTable ct);
 

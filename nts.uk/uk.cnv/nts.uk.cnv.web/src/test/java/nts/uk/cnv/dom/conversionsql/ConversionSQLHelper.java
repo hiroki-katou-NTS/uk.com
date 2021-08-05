@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
@@ -24,13 +25,28 @@ import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 
 public class ConversionSQLHelper {
+
+	private static final List<ColumnExpression> expressions = Arrays.asList(
+			new ColumnExpression("SID"),
+			new ColumnExpression("PID"),
+			new ColumnExpression("CID"),
+			new ColumnExpression("SCD"),
+			new ColumnExpression("DEL_STATUS_ATR"),
+			new ColumnExpression("DEL_DATE"),
+			new ColumnExpression("REMV_REASON"),
+			new ColumnExpression("EXT_CD"));
+
 	public static ConversionSQL create_emptyDummy() {
 
 		return new ConversionInsertSQL(
 				Insert.createDummy(),
 				Select.createDummy(),
 				From.createDummy(),
-				Collections.emptyList()
+				Collections.emptyList(),
+				expressions.stream()
+					.filter(ce -> !ce.sql().equals("NEWID()"))
+					.map(ce -> ce.sql())
+					.collect(Collectors.toList())
 			);
 	}
 
@@ -39,31 +55,17 @@ public class ConversionSQLHelper {
 				Insert.createDummy(),
 				Select.createDummy(),
 				From.createDummy(),
-				Collections.emptyList()
+				Collections.emptyList(),
+				expressions.stream()
+					.filter(ce -> !ce.sql().equals("NEWID()"))
+					.map(ce -> ce.sql())
+					.collect(Collectors.toList())
 			);
 	}
 
 	public static class Insert {
 		public static InsertSentence createDummy() {
 			val insert = new InsertSentence(new TableFullName("TEST", "dbo", "BSYMT_EMP_DTA_MNG_INFO", "T"));
-			val expressions = Arrays.asList(
-					new ColumnExpression("INS_DATE"),
-					new ColumnExpression("INS_CCD"),
-					new ColumnExpression("INS_SCD"),
-					new ColumnExpression("INS_PG"),
-					new ColumnExpression("UPD_DATE"),
-					new ColumnExpression("UPD_CCD"),
-					new ColumnExpression("UPD_SCD"),
-					new ColumnExpression("UPD_PG"),
-					new ColumnExpression("EXCLUS_VER"),
-					new ColumnExpression("SID"),
-					new ColumnExpression("PID"),
-					new ColumnExpression("CID"),
-					new ColumnExpression("SCD"),
-					new ColumnExpression("DEL_STATUS_ATR"),
-					new ColumnExpression("DEL_DATE"),
-					new ColumnExpression("REMV_REASON"),
-					new ColumnExpression("EXT_CD"));
 			expressions.stream().forEach(e -> insert.addExpression(e));
 			return insert;
 		}
@@ -87,15 +89,6 @@ public class ConversionSQLHelper {
 
 		private static List<SelectSentence> createDummy() {
 			List<SelectSentence> result = new ArrayList<SelectSentence>();
-			SelectSentence now = new SelectSentence(
-					new ColumnExpression("SYSDATETIME()"),
-					new TreeMap<FormatType, String>());
-			SelectSentence ccd = new SelectSentence(
-					new ColumnExpression("CIDVIEW", "CCD"),
-					new TreeMap<FormatType, String>());
-			SelectSentence insupdrecord = new SelectSentence(
-					new ColumnExpression("'CONVERT'"),
-					new TreeMap<FormatType, String>());
 			SelectSentence newid = new SelectSentence(
 					new ColumnExpression("NEWID()"),
 					new TreeMap<FormatType, String>());
@@ -106,15 +99,6 @@ public class ConversionSQLHelper {
 					new ColumnExpression("0"),
 					new TreeMap<FormatType, String>());
 
-			result.add(now);
-			result.add(ccd);
-			result.add(insupdrecord);
-			result.add(insupdrecord);
-			result.add(now);
-			result.add(ccd);
-			result.add(insupdrecord);
-			result.add(insupdrecord);
-			result.add(zeroValue);
 			result.add(newid);
 			result.add(newid);
 			result.add(new SelectSentence(

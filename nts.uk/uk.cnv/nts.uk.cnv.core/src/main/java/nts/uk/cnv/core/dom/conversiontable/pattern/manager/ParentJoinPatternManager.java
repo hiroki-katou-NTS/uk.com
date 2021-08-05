@@ -130,7 +130,7 @@ public class ParentJoinPatternManager {
 			OneColumnConversion colmnConversion = ct.getConversionMap().stream()
 				.filter(colConv -> colConv.getTargetColumn().equals(parentColumn))
 				.findFirst().get();
-			cnvSql = colmnConversion.getPattern().apply(mappingTableColumns.get(13), cnvSql);
+			cnvSql = colmnConversion.getPattern().apply(mappingTableColumns.get(13), cnvSql, ct.isRemoveDuplicate());
 
 			if (!preProcessing.isEmpty()) {
 				preProcessing += "\r\n";

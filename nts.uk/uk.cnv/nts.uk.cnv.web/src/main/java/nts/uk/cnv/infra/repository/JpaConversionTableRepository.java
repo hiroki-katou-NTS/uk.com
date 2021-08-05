@@ -23,7 +23,7 @@ import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
 public class JpaConversionTableRepository extends JpaRepository implements ConversionTableRepository {
 
 	@Override
-	public Optional<ConversionTable> get(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source) {
+	public Optional<ConversionTable> get(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source, boolean isRemoveDuplicate) {
 		String query =
 				  "SELECT c FROM ScvmtConversionTable c"
 				+ " WHERE c.pk.categoryName = :category"
@@ -39,7 +39,7 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 				.map(entity -> entity.toDomain(info, info.getJoin(source)))
 				.collect(Collectors.toList());
 
-		return Optional.of(ScvmtConversionTable.toDomain(tableName, info, columns, source));
+		return Optional.of(ScvmtConversionTable.toDomain(tableName, info, columns, source, isRemoveDuplicate));
 	}
 
 	@Override

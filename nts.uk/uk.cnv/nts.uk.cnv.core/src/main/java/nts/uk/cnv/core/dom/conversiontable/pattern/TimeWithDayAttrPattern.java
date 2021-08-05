@@ -22,7 +22,7 @@ public class TimeWithDayAttrPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql, boolean removeDuplicate) {
 		//0:当日　1:翌日　2:翌々日　9:前日
 		String caseSentence =
 			"CASE " + this.dayAttrColumn
@@ -35,6 +35,9 @@ public class TimeWithDayAttrPattern extends ConversionPattern {
 
 		conversionSql.addJoin(sourceJoin);
 		conversionSql.add(columnName, new ColumnExpression(caseSentence));
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(columnName);
+		}
 		return conversionSql;
 	}
 

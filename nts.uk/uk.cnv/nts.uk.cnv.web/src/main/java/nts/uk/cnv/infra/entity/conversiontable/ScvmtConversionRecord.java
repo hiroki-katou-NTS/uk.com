@@ -26,12 +26,16 @@ public class ScvmtConversionRecord {
 	@Column(name = "EXPLANATION")
 	private String explanation;
 
+	@Column(name = "REMOVE_DUPLICATE")
+	private boolean removeDuplicate;
+
 	public ConversionRecord toDomain() {
 		return new ConversionRecord(
 				this.pk.getCategoryName(),
 				this.pk.getTargetTableName(),
 				this.pk.getRecordNo(),
 				this.sourceId,
-				this.explanation);
+				this.explanation,
+				this.removeDuplicate);
 	}
 }

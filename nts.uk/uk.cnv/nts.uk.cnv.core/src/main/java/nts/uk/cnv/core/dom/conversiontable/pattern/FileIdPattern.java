@@ -52,7 +52,7 @@ public class FileIdPattern extends ConversionPattern  {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 
 		Join mappingTableJoin = this.mappingJoin();
@@ -62,6 +62,9 @@ public class FileIdPattern extends ConversionPattern  {
 				new ColumnExpression(
 						mappingTableJoin.tableName.getAlias(),
 						MAPPING_OUT_COLUMN_NAME));
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(column);
+		}
 
 		return conversionSql;
 	}

@@ -81,7 +81,7 @@ public class CodeToIdPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 
 		Join idConvertJoin = this.idConvertJoin();
@@ -92,6 +92,9 @@ public class CodeToIdPattern extends ConversionPattern {
 			new ColumnExpression(
 				idConvertJoin.getTableName().getAlias(),
 				this.codeToIdType.getIdColumnName()));
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(columnName);
+		}
 
 		if (this.sourceCcdColumnName.isPresent()) {
 			conversionSql.addWhere( new WhereSentence(

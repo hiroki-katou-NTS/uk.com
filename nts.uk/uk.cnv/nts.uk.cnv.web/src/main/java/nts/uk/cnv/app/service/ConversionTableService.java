@@ -98,7 +98,8 @@ public class ConversionTableService {
 						dto.getUkColumn(),
 						info.getJoin(source));
 
-		ConversionTable conversonTable = createConversionTable(onColumn, source, info, dto, info.getType().getTagetAlias());
+		ConversionTable conversonTable = createConversionTable(
+				onColumn, source, info, dto, info.getType().getTagetAlias(), record.isRemoveDuplicate());
 		ConversionSQL sql = conversonTable.createConversionSql();
 
 		return sql.build(info.getDatebaseType().spec());
@@ -119,13 +120,15 @@ public class ConversionTableService {
 						dto.getUkColumn(),
 						info.getJoin(source));
 
-		ConversionTable conversonTable = createConversionTable(onColumn, source, info, dto, info.getType().getTagetAlias());
+		ConversionTable conversonTable = createConversionTable(
+				onColumn, source, info, dto, info.getType().getTagetAlias(), record.isRemoveDuplicate());
 		ConversionSQL sql = conversonTable.createUpdateConversionSql();
 
 		return sql.build(info.getDatebaseType().spec());
 	}
 
-	private ConversionTable createConversionTable(Optional<OneColumnConversion> onColumn, ConversionSource source, ConversionInfo info, FindConversionTableDto dto, String alias) {
+	private ConversionTable createConversionTable(
+			Optional<OneColumnConversion> onColumn, ConversionSource source, ConversionInfo info, FindConversionTableDto dto, String alias, boolean isRemoveDuplicate) {
 
 		List<WhereSentence> whereList = new ArrayList<>();
 		List<OneColumnConversion> conversionMap = new ArrayList<>();
@@ -147,7 +150,8 @@ public class ConversionTableService {
 				source.getStartDateColumnName(),
 				source.getEndDateColumnName(),
 				whereList,
-				conversionMap
+				conversionMap,
+				isRemoveDuplicate
 			);
 	}
 

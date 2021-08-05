@@ -11,7 +11,7 @@ import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 
 public interface ConversionTableRepository {
 
-	Optional<ConversionTable> get(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source);
+	Optional<ConversionTable> get(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source, boolean isRemoveDuplicate);
 
 	Optional<OneColumnConversion> findColumnConversion(ConversionInfo info, String category, String table, int recordNo, String targetColumn, Join sourceJoin);
 

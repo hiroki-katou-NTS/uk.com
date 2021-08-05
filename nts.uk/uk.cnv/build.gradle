@@ -64,8 +64,8 @@ subprojects {
 	task upver (type: Copy, dependsOn: ['compileJava', 'jar']) {
         from "build/libs"
 		into "$rootDir/../uk.repo"
-        include "nts*.jar"
-        exclude "nts*web.jar"
+        include "*.jar"
+        exclude "*web.jar"
 	}
 
 	dependencies {

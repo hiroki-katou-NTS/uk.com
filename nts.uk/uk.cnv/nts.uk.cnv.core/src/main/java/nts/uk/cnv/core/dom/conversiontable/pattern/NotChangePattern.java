@@ -27,7 +27,7 @@ public class NotChangePattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 
 		conversionSql.addJoin(join);
 
@@ -39,6 +39,9 @@ public class NotChangePattern extends ConversionPattern {
 		conversionSql.add(
 				column,
 				new ColumnExpression(join.tableName.getAlias(), sourceColumn));
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(column);
+		}
 		return conversionSql;
 	}
 

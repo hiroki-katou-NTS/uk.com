@@ -47,7 +47,7 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(join);
 
 		String newExpression = (isParamater)
@@ -63,6 +63,9 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 			);
 
 		conversionSql.add(column, new ColumnExpression(newExpression), formatTable);
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(column);
+		}
 
 		return conversionSql;
 	}

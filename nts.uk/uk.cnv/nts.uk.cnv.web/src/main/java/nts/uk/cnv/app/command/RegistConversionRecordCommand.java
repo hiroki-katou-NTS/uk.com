@@ -12,4 +12,5 @@ public class RegistConversionRecordCommand {
 	int recordNo;
 	String sourceId;
 	String explanation;
+	boolean removeDuplicate;
 }

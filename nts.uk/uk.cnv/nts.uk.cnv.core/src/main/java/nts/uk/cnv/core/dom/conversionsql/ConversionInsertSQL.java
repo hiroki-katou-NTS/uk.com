@@ -12,12 +12,19 @@ public class ConversionInsertSQL implements ConversionSQL {
 	private List<SelectSentence> select;
 	private FromSentence from;
 	private List<WhereSentence> where;
+	private List<String> groupingColumns;
 
-	public ConversionInsertSQL(InsertSentence insert, List<SelectSentence> select, FromSentence from, List<WhereSentence> where) {
+	public ConversionInsertSQL(
+			InsertSentence insert,
+			List<SelectSentence> select,
+			FromSentence from,
+			List<WhereSentence> where,
+			List<String> groupingColumns) {
 		this.insert = insert;
 		this.select = select;
 		this.from = from;
 		this.where = where;
+		this.groupingColumns = groupingColumns;
 	}
 
 	public ConversionInsertSQL(TableFullName table, List<WhereSentence> whereList) {
@@ -25,6 +32,7 @@ public class ConversionInsertSQL implements ConversionSQL {
 		this.select = new ArrayList<>();
 		this.from = new FromSentence();
 		this.where = whereList;
+		this.groupingColumns = new ArrayList<>();
 	}
 
 	@Override
@@ -36,6 +44,11 @@ public class ConversionInsertSQL implements ConversionSQL {
 	public void add(ColumnName column, ColumnExpression value, TreeMap<FormatType, String> formatTable) {
 		this.insert.addExpression(new ColumnExpression(column.sql()));
 		this.select.add(new SelectSentence(value, formatTable));
+	}
+
+	@Override
+	public void addGroupingColumn(ColumnName columnName) {
+		groupingColumns.add(columnName.sql());
 	}
 
 	@Override
@@ -55,9 +68,12 @@ public class ConversionInsertSQL implements ConversionSQL {
 
 	public String build(DatabaseSpec spec) {
 		String whereString = (from.getBaseTable().isPresent() && where.size() > 0) ? "\r\n" + WhereSentence.join(where) : "";
+		String groupbyString = (groupingColumns.size() > 0)
+				? "GROUP BY " + String.join(",", groupingColumns) : "";
 		return insert.sql(
 				SelectSentence.join(select) + "\r\n" +
 				from.sql(spec) +
+				groupbyString +
 				whereString
 			);
 	}
