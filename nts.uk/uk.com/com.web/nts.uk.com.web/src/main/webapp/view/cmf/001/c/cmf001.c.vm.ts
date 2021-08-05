@@ -29,7 +29,6 @@ module nts.uk.com.cmf001.c {
                         useCodeConvert: null,
                         codeConvert: {
                             importWithoutSetting: null,
-                            details: [],
                             convertDetailsText: "",
                         },
                         isDecimalization: null,
@@ -159,6 +158,12 @@ module nts.uk.com.cmf001.c {
                 let mapping = this.currentItem().csvMapping;
 
                 (<any> ko).mapping.fromJS(res.revisingValue, {}, mapping.revisingValue);
+
+                mapping.revisingValue.codeConvert.convertDetailsText(
+                    res.revisingValue.codeConvert.details
+                        .map(d => d.before + "," + d.after)
+                        .join("\r\n")
+                );
             });
         }
     }

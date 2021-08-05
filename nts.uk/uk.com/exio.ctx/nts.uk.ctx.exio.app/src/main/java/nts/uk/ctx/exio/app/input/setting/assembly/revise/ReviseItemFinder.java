@@ -62,7 +62,7 @@ public class ReviseItemFinder {
 			return new TimeRevise(
 					HourlySegment.HOUR_MINUTE,
 					TimeBaseNumber.SEXAGESIMAL,
-					Optional.of(TimeBase60Delimiter.SEPARATE_BY_COLON),
+					Optional.of(TimeBase60Delimiter.COLON),
 					TimeBase10Rounding.ROUND);
 		case 4:
 			return new IntegerRevise(Optional.of(new ExternalImportCodeConvert(true, Arrays.asList(

@@ -36,7 +36,7 @@ public class ReviseItemDto {
 		
 		// 文字型・整数型
 		private boolean useCodeConvert;
-		private CodeConvertDto codeConvert;
+		private CodeConvertDto codeConvert = CodeConvertDto.empty();
 		
 		// 実数型
 		private Boolean isDecimalization;
@@ -60,14 +60,14 @@ public class ReviseItemDto {
 				dto.usePadding = rev.isUsePadding();
 				dto.paddingLength = rev.getPadding().get().getLength().v();
 				dto.paddingMethod = rev.getPadding().get().getMethod().value;
-				dto.codeConvert = rev.getCodeConvert().map(CodeConvertDto::of).orElse(null);
+				rev.getCodeConvert().ifPresent(c -> { dto.codeConvert = CodeConvertDto.of(c); });
 				return dto;
 			}
 			
 			if (revisingValue instanceof IntegerRevise) {
 				val rev = (IntegerRevise) revisingValue;
 				dto.useCodeConvert = rev.getCodeConvert().isPresent();
-				dto.codeConvert = rev.getCodeConvert().map(CodeConvertDto::of).orElse(null);
+				rev.getCodeConvert().ifPresent(c -> { dto.codeConvert = CodeConvertDto.of(c); });
 				return dto;
 			}
 			

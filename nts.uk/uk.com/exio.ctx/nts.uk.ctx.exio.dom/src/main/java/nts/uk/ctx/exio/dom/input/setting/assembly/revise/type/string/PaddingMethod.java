@@ -2,6 +2,11 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PaddingMethod {
 	
 	/** 0:前ゼロ */
@@ -24,9 +29,8 @@ public enum PaddingMethod {
 	/** The name id. */
 	public final String nameId;
 	
-	private PaddingMethod(int value, String nameId) {
-		this.value = value;
-		this.nameId = nameId;
+	public static PaddingMethod valueOf(int value) {
+		return EnumAdaptor.valueOf(value, PaddingMethod.class);
 	}
 	
 	public String complement(String target, int length) {
