@@ -88,7 +88,6 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employment.Emplo
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.CarryforwardSetInShortageFlex;
@@ -103,6 +102,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmetho
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingNumberInfo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
@@ -1500,18 +1500,16 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		}
 		
 		AggrResultOfAnnualLeave annualLeaveInfo = aggResult.getAnnualLeave().get();
+		AnnualLeaveRemainingNumberInfo remainingNumberInfo = annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo();
+		val remainingBeforeGrantDays = remainingNumberInfo.getRemainingNumberBeforeGrant().getTotalRemainingDays().v();
+		val remainingAfterGrantDays = remainingNumberInfo.getRemainingNumberAfterGrantOpt().isPresent() 
+						? remainingNumberInfo.getRemainingNumberAfterGrantOpt().get().getTotalRemainingDays().v()
+						: 0;
 		
 		// #117176
-		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数　！＝Empty
-		// AND
-		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数．日数　＞０　		
-		if (!annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveUndigestNumber().isPresent()) {
-			return output;
-		}
-		
-		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休未消化数
-		AnnualLeaveUndigestNumber annualLeaveUndigestNumber = annualLeaveInfo.getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveUndigestNumber().get();
-		if (annualLeaveUndigestNumber.getDays().v() <= 0) {
+		// (取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．付与前．合計残日数  
+		// + 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．付与後．合計残日数 > 0)
+		if (remainingBeforeGrantDays + remainingAfterGrantDays <= 0) {
 			return output;
 		}
 		
@@ -1521,16 +1519,10 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 		// OR
 		// 取得した年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．合計．合計残時間数　＞　０
 		Double totalRemainingDays = remainingNumber.getTotalRemainingDays().v();
-		boolean check = totalRemainingDays > 0;
 		if (remainingNumber.getTotalRemainingTime().isPresent()) {
 			Double totalRemainingTime = remainingNumber.getTotalRemainingTime().get().v().doubleValue();
 			output.totalRemainingTimes = totalRemainingTime;
-//			check = check || totalRemainingTime > 0;
 		}
-		
-//		if (!check) {
-//			return output;
-//		}
 		
 		output.totalRemainingDays = totalRemainingDays;
 		
@@ -1576,7 +1568,7 @@ public class ScheMonCheckServiceImpl implements ScheMonCheckService {
 			}
 			
 			// 勤務種類の分類が年休かチェック
-			if (isAnnualOrSpecialHoliday(workType.getDailyWork())) {
+			if (!isAnnualOrSpecialHoliday(workType.getDailyWork())) {
 				continue;
 			}
 			
