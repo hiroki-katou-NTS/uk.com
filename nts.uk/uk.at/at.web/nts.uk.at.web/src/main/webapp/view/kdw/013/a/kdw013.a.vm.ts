@@ -100,7 +100,7 @@ module nts.uk.ui.at.kdw013.a {
         dateRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({});
         initialView: KnockoutObservable<string> = ko.observable('oneDay');
         availableView: KnockoutObservableArray<calendar.InitialView> = ko.observableArray(['oneDay', 'fullWeek']);
-        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '10000-01-01'});
+        validRange: KnockoutObservable<Partial<calendar.DatesSet>> = ko.observable({end: '9999-12-32'});
 
         employee: KnockoutObservable<string> = ko.observable('');
 
@@ -551,7 +551,7 @@ module nts.uk.ui.at.kdw013.a {
                 let range = end.diff(start, 'days');
                 let dates = [] ;
                 for (let i = 0; i <= range; i++) {
-                    dates.push(start.clone().add(i, 'days').format('YYYY/MM/DD');
+                    dates.push(start.clone().add(i, 'days').format('YYYY/MM/DD'));
                 }
                 return _.indexOf(dates, date) + 1;
             }

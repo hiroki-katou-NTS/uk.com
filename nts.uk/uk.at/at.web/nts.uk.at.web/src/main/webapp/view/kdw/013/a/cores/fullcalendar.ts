@@ -1548,7 +1548,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 const sltds = vm.selectedEvents;
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
                 const data = ko.unwrap(params.$datas);
-                const startDate =  moment(_.get(data,'workCorrectionStartDate'));
+                const startDate =  moment(_.get(data,'workCorrectionStartDate'),'YYYY/MM/DD');
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
                 const isDuplicated = _.uniqBy(events, 'extendedProps.supportFrameNo').length < events.length;
@@ -1667,19 +1667,19 @@ module nts.uk.ui.at.kdw013.calendar {
                 dayHeaders: true,
                 allDaySlot: false,
                 slotEventOverlap: false,
-                eventOverlap: false,
+                eventOverlap: true,
                 selectOverlap: false,
-                eventLimit: true,
+                dayMaxEventRows: true, // for all non-TimeGrid views
                 views: {
                     timeGrid: {
-                        eventLimit: 20
-                    }
+                      dayMaxEventRows: 20
+                        }
                 },
                 // rerenderDelay: 500,
                 dateClick: (info) => {
                     const events = vm.calendar.getEvents();
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'),'YYYY/MM/DD');
                     
                     
 
@@ -1951,13 +1951,6 @@ module nts.uk.ui.at.kdw013.calendar {
                                 });
                         }
                     }
-                },
-                dayCellClassNames: (arg) => {
-                    if (arg.date > moment()) {
-                        return ['pika']
-                    } else {
-                        return ['mieo']
-                    }
                 }
                 ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
@@ -1971,7 +1964,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
                     
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate','YYYY/MM/DD'));
                     
                     if (hasEventNotSave && !noCheckSave) {
                         _.each(events, (e: EventApi) => {
@@ -2185,7 +2178,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventResize: (arg: EventResizeDoneArg) => {
                     const { event } = arg;
-                    const { start, end, title, extendedProps, id, borderColor, groupId } = event;
+                    const { start, end, title,backgroundColor, extendedProps, id, borderColor, groupId } = event;
 
                     vm.selectedEvents = [{ start, end }];
 
@@ -2204,14 +2197,77 @@ module nts.uk.ui.at.kdw013.calendar {
                                 extendedProps
                             }));
                     }
+                    
+                    //check override
+                    
+                  const oEvents =  
+                  _.chain(events())
+                  .filter((evn)=>{ return moment(start).isBefore(evn.start) && moment(evn.end).isSameOrBefore(end); })
+                  .sortBy('end')
+                  .value();
+                  
+                  if (oEvents.length) {
+                      const [first] = oEvents;
+                      //set end time for min start event
+                      const currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
+                      currentEvent.setEnd(first.start);
+
+                      const last = _.last(oEvents);
+                      //check if end > lastOverridedEvent end
+                      if (moment(last.end).isBefore(moment(end))) {
+                          
+                          vm.calendar
+                              .addEvent({
+                                  id,
+                                  backgroundColor,
+                                  title,
+                                  start: last.end,
+                                  end,
+                                  borderColor,
+                                  groupId,
+                                  extendedProps
+                              });
+                      }
+
+                      //if oEvents.length >=2, need create event between it 
+                      if (oEvents.length >= 2) {
+                          
+                        //get space between
+                          let spaces = [];
+                          for (i = 0; i < oEvents.length -1 ; i++) {
+                              const cEvent = oEvents[i];
+                              const nEvent = oEvents[i + 1];
+                              if (moment(cEvent.end).isBefore(moment(nEvent.start)))
+                                  spaces.push({ start: cEvent.end, end: nEvent.start });
+                              
+                          }
+                          
+                          //after get space, create event
+                          _.forEach(spaces, ({start,end}) => {
+                              vm.calendar
+                                  .addEvent({
+                                      id,
+                                      backgroundColor,
+                                      title,
+                                      start,
+                                      end,
+                                      borderColor,
+                                      groupId,
+                                      extendedProps
+                                  });
+                          });
+                      }
+
+                  }
+                   
                 },
                 eventResizeStop: ({ el, event }) => {
-                    console.log('stop', event.extendedProps);
+                    
                 },
                 select: ({ start, end }) => {
                     
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate','YYYY/MM/DD'));
                     
                     if (startDate.isAfter(formatDate(start))) {
                         vm.calendar.unselect();
@@ -2272,7 +2328,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         extendedProps
                     } = event;
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate','YYYY/MM/DD'));
                     
                     if (startDate.isAfter(formatDate(start))) {
                         event.remove();
@@ -2354,10 +2410,10 @@ module nts.uk.ui.at.kdw013.calendar {
                     } else {
                         $prev.removeAttr('disabled');
                     }
-
+                
                     // enable, disable next button with validRange
                     if (vre) {
-                        if (moment(end).isBefore(vre, 'day')) {
+                        if (moment(end).isBefore(vre == '9999-12-32' ? '9999-12-31' : vre, 'day')) {
                             $next.removeAttr('disabled');
                         } else {
                             $next.attr('disabled', 'disabled');
