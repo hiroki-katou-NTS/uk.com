@@ -4,7 +4,10 @@ module nts.uk.at.view.kal012.b {
     const API = {
         //TODO API path
         getAllMailSet: "at/function/alarm/mailsetting/getinformailseting",
-        addMailSet: "at/function/alarm/mailSetting/addMailSetting"
+        addMailSet: "at/function/alarm/mailSetting/addMailSetting",
+        register: "at/function/alarm/exmail/settings/register",
+        init: "at/function/alarm/exmail/settings/init",
+        GET_ROLENAME: "ctx/sys/auth/role/get/rolename/by/roleids"
     };
 
     @bean()
@@ -16,6 +19,7 @@ module nts.uk.at.view.kal012.b {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
         MailAutoAndNormalDto: MailAutoAndNormalDto;
+        exMailSettings: ExMailSettings;
 
         constructor(params: any) {
             super();
@@ -46,6 +50,7 @@ module nts.uk.at.view.kal012.b {
             vm.selectedRuleCode = ko.observable(1);
             vm.isUpdateMode = ko.observable(false);
             vm.getAllMailSet();
+            vm.init();
         }
 
         created() {
@@ -65,6 +70,13 @@ module nts.uk.at.view.kal012.b {
                     vm.model.targetRuleRequired(false)
                 }
             });
+
+            vm.model.rolesId.subscribe((value: Array<string>) => {
+                vm.$ajax("com", API.GET_ROLENAME, value)
+                    .done(function (listRole: Array<RoleDto>) {
+                        vm.model.targetRuleName(_.join(_.map(listRole, i => i.name), '、'));
+                    });
+            })
         }
 
         /**
@@ -93,6 +105,34 @@ module nts.uk.at.view.kal012.b {
             return dfd.promise();
         }
 
+        /**
+         * init screen
+         */
+        init(): JQueryPromise<any> {
+            const vm = this;
+            let dfd = $.Deferred<any>();
+            vm.$blockui("invisible");
+            vm.$ajax(API.init).done((data) => {
+                if (data) {
+                    vm.exMailSettings = data;
+                    vm.model.isMailAlreadySet(vm.exMailSettings.mailSettings.preConfigured);
+                    if (vm.exMailSettings.sendingRole.roleSetting) {
+                        vm.model.selectedRuleCode(1)
+                    } else {
+                        vm.model.selectedRuleCode(2)
+                    }
+                    vm.model.checked(vm.exMailSettings.sendingRole.sendResult);
+                    vm.model.rolesId(vm.exMailSettings.sendingRole.roleIds);
+                }
+                dfd.resolve();
+            }).fail(function (error) {
+                dfd.reject();
+            }).always(() => {
+                vm.$blockui("clear");
+            });
+            return dfd.promise();
+        }
+
         mounted() {
             const vm = this;
         }
@@ -105,23 +145,56 @@ module nts.uk.at.view.kal012.b {
         }
 
         clickRegistrationButton() {
-            alert("register")
+            let vm = this;
+            vm.$validate(".nts-input").then((valid) => {
+                if (valid) {
+                    let command = {
+                        mailSettingList: [{
+                            individualWkpClassify: 1,
+                            normalAutoClassify: 0,
+                            personalManagerClassify: 1,
+                            contentMailSettings: {
+                                subject: "test subject",
+                                text: "test text",
+                                mailAddressBCC: ["mail1@gmail.com", "mail3@gmail.com"],
+                                mailAddressCC: ["mail2@gmail.com"],
+                                mailRely: "mailss@gmail.com"
+                            },
+                            senderAddress: "mailsds@gmail.com",
+                            sendResult: false
+                        }],
+                        sendingRole: {
+                            individualWkpClassify: 1,
+                            roleSetting: true,
+                            sendResult: true,
+                            roleIds: ["120"]
+                        }
+                    }
+                    vm.$blockui("grayout");
+                    vm.$ajax(API.register, command).done((res) => {
+                        vm.$dialog.info({messageId: "Msg_15"}).then(() => {
+
+                        });
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    }).always(() => vm.$blockui("clear"));
+                }
+            });
         }
 
         openCDL025() {
-            let self = this;
+            let vm = this;
             let param = {
-                currentCode: '03',
-                roleType: 0,
+                currentCode: vm.model.rolesId(),
+                roleType: 3,
                 multiple: true
             };
             nts.uk.ui.windows.setShared("paramCdl025", param);
             nts.uk.ui.windows.sub.modal("com", "/view/cdl/025/index.xhtml").onClosed(() => {
                 let data: Array<string> = nts.uk.ui.windows.getShared("dataCdl025");
                 if (!nts.uk.util.isNullOrUndefined(data)) {
-
+                    vm.model.rolesId(data);
                 }
-                //self.listRoleID(data);
             });
         }
 
@@ -141,6 +214,22 @@ module nts.uk.at.view.kal012.b {
             });
         }
 
+        setMailManual() {
+            var vm = this;
+            nts.uk.ui.windows.setShared("sendingAddressCheck", true);
+            vm.setPara();
+            nts.uk.ui.windows.setShared("senderAddress", vm.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress)
+            nts.uk.ui.windows.setShared("MailSettings", vm.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettings);
+            nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
+                let data = nts.uk.ui.windows.getShared("MailSettings");
+                if (data != null) {
+                    vm.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettings = data;
+                    vm.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
+                    //console.log(self.MailAutoAndNormalDto);
+                }
+            });
+        }
+
         setPara() {
             nts.uk.ui.windows.setShared("SetCC", true);
             nts.uk.ui.windows.setShared("SetBCC", true);
@@ -152,6 +241,42 @@ module nts.uk.at.view.kal012.b {
         }
 
     }
+
+    interface RoleDto {
+        // Id
+        roleId: string;
+        // コード
+        roleCode: string;
+        // ロール種類
+        roleType: number;
+        // 参照範囲
+        employeeReferenceRange: number;
+        // ロール名称
+        name: string;
+        // 契約コード
+        contractCode: string;
+        // 担当区分
+        assignAtr: number;
+        // 会社ID
+        companyId: string;
+    }
+
+    export interface SendingRole {
+        individualWkpClassify?: number;
+        roleSetting?: boolean;
+        sendResult: boolean;
+        roleIds: Array<string>;
+    }
+
+    export interface MailSettings {
+        preConfigured?: boolean;
+    }
+
+    export interface ExMailSettings {
+        sendingRole?: SendingRole;
+        mailSettings?: MailSettings;
+    }
+
 
     export interface MailSettingsDto {
         subject?: string;
@@ -186,6 +311,7 @@ module nts.uk.at.view.kal012.b {
         selectedRuleCode: KnockoutObservable<any>;
         targetRuleName: KnockoutObservable<any>;
         targetRuleRequired: KnockoutObservable<boolean>;
+        rolesId: KnockoutObservableArray<any>;
 
         constructor() {
             this.isMailAlreadySet = ko.observable(false);
@@ -196,6 +322,7 @@ module nts.uk.at.view.kal012.b {
             this.selectedRuleCode = ko.observable(1);
             this.targetRuleName = ko.observable('');
             this.targetRuleRequired = ko.observable(true);
+            this.rolesId = ko.observableArray([]);
         }
     }
 }
