@@ -61,6 +61,20 @@ export class KdpS01LComponent extends Vue {
 
         vm.reloadData();
 
+        _.delay(function () {
+            let btnFunctions = vm.$refs.functionBtns as HTMLButtonElement[],
+                btnDefault = vm.$refs.functionBtn as HTMLButtonElement;
+
+            if (!!btnFunctions && btnFunctions.length) {
+                btnFunctions[0].focus();
+            } else {
+                if (!!btnDefault) {
+                    btnDefault.focus();
+                }
+            }
+
+        }, 300);
+
     }
 
     public reloadData() {
