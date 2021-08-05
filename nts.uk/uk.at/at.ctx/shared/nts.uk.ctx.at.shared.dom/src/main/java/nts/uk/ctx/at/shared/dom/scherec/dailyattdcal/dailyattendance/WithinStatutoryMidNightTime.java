@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -73,7 +72,6 @@ public class WithinStatutoryMidNightTime {
 						flexCalcMethod.get(),
 						recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 						vacationClass,
-						StatutoryDivision.Nomal,
 						recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 						recordReGet.getAddSetting(),
 						recordReGet.getHolidayAddtionSet().get(),

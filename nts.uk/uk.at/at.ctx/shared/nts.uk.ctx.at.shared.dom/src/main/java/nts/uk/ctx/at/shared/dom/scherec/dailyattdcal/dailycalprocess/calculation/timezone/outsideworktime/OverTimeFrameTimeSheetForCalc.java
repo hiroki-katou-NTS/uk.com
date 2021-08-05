@@ -35,7 +35,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -191,8 +190,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
 				afterVariableWork,
-				createdWithinWorkTimeSheet,
-				deductionTimeSheet);
+				createdWithinWorkTimeSheet);
 		
 		/*return*/
 		return afterCalcStatutoryOverTimeWork;
@@ -314,8 +312,7 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 			IntegrationOfDaily integrationOfDaily,
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
 			List<OverTimeFrameTimeSheetForCalc> overTimeWorkFrameTimeSheetList,
-			WithinWorkTimeSheet createdWithinWorkTimeSheet,
-			DeductionTimeSheet deductionTimeSheet) {
+			WithinWorkTimeSheet createdWithinWorkTimeSheet) {
 		
 		// 労働条件項目の確認
 		WorkingConditionItem conditionItem = personDailySetting.getPersonInfo();
@@ -323,7 +320,6 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 		if(integrationOfWorkTime.isLegalInternalTime()) {
 			/*振替処理   法定内基準時間を計算する*/
 			AttendanceTime workTime = new AttendanceTime(0);
-			AttendanceTime timeVacationAddTime = AttendanceTime.ZERO;
 			if(createdWithinWorkTimeSheet != null){
 				workTime = WithinStatutoryTimeOfDaily.calcActualWorkTime(
 						createdWithinWorkTimeSheet,
@@ -342,23 +338,10 @@ public class OverTimeFrameTimeSheetForCalc extends ActualWorkingTimeSheet {
 						conditionItem,
 						Optional.of(personDailySetting.getPredetermineTimeSetByPersonWeekDay()),
 						NotUseAtr.NOT_USE);
-				// 休暇の計算方法の設定を取得する
-				HolidayCalcMethodSet holidayCalcMethodSet = personDailySetting.getAddSetting().getVacationCalcMethodSet();
-				// 時間休暇相殺時間を就業時間に含めるか判断する
-				if (WithinWorkTimeFrame.checkIncludeTimeVacationOffsetTime(conditionItem.getLaborSystem(), holidayCalcMethodSet)){
-					// 時間休暇加算時間を取得する
-					timeVacationAddTime = createdWithinWorkTimeSheet.calcTimeVacationAddTime(
-							integrationOfDaily,
-							deductionTimeSheet,
-							personDailySetting.getAddSetting().getVacationCalcMethodSet(),
-							companyCommonSetting.getHolidayAdditionPerCompany(),
-							integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm());
-				}
 			}
-			// 法定内残業に出来る時間を計算する　（法定労働時間－実働労働時間＋時間休暇加算時間）
+			// 法定内残業に出来る時間を計算する　（法定労働時間－実働労働時間）
 			AttendanceTime ableRangeTime = new AttendanceTime(
-					personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes()
-					- workTime.valueAsMinutes() + timeVacationAddTime.valueAsMinutes());
+					personDailySetting.getDailyUnit().getDailyTime().valueAsMinutes() - workTime.valueAsMinutes());
 			
 			HolidayCalculation holidayCalculation = integrationOfWorkTime.getCommonSetting().getHolidayCalculation();
 			if(ableRangeTime.greaterThan(0))

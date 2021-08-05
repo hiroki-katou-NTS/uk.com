@@ -69,7 +69,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -86,6 +85,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -319,7 +319,6 @@ public class TotalWorkingTime {
 				workType,
 				flexCalcMethod,
 				vacationClass,
-				StatutoryDivision.Nomal,
 				recordWorkTimeCode,
 				workTimeDailyAtr,
 				eachCompanyTimeSet,
@@ -951,6 +950,10 @@ public class TotalWorkingTime {
 		
 		int vacationAddTime = 0;		// 休暇加算時間
 		
+		// 休暇加算するかどうか判断
+		if (recordClass.getAddSetting().getNotUseAtr(PremiumAtr.RegularWork) == NotUseAtr.NOT_USE){
+			return AttendanceTime.ZERO;
+		}
 		// 統合就業時間帯の確認
 		Optional<WorkTimezoneCommonSet> commonSetting = Optional.empty();
 		if (recordClass.getIntegrationOfWorkTime().isPresent()){
@@ -983,6 +986,7 @@ public class TotalWorkingTime {
 		vacationAddTime += withinWorkTimeSheet.getTotalAddTimeByOffset(
 				integrationOfDaily,
 				integrationOfWorkTime,
+				PremiumAtr.RegularWork,
 				vacationClass,
 				workType,
 				recordClass.getAddSetting(),

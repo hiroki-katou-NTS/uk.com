@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyl
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -55,7 +54,6 @@ public class FlexMidnightTimeSheet {
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -76,7 +74,6 @@ public class FlexMidnightTimeSheet {
 			SettingOfFlexWork flexCalcMethod,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
 			AddSetting addSetting,
 			HolidayAddtionSet holidayAddtionSet,
@@ -98,7 +95,6 @@ public class FlexMidnightTimeSheet {
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				statutoryDivision,
 				autoCalcOfLeaveEarlySetting,
 				addSetting,
 				holidayAddtionSet,

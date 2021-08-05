@@ -348,16 +348,19 @@ public class LateTimeSheet {
 	
 	/**
 	 * 遅刻控除時間の計算
-	 * @return
+	 * @param late 計算区分
+	 * @param notUseAtr 遅刻控除区分
+	 * @return 遅刻控除時間
 	 */
-	public TimeWithCalculation calcDedctionTime(
-			boolean late,//日別実績の計算区分.遅刻早退の自動計算設定.遅刻
-			NotUseAtr notUseAtr//控除区分
-			) {
+	public TimeWithCalculation calcDedctionTime(boolean late, NotUseAtr notUseAtr) {
 		TimeWithCalculation lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		if(notUseAtr==NotUseAtr.USE) {//控除する場合
-			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime():new AttendanceTime(0);
-			lateDeductionTime =  late?TimeWithCalculation.sameTime(calcDeductionTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
+			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent() ?
+					this.forDeducationTimeSheet.get().calcTotalTime(NotUseAtr.NOT_USE, NotUseAtr.USE) :
+						new AttendanceTime(0);
+			lateDeductionTime =  late ?
+					TimeWithCalculation.sameTime(calcDeductionTime) :
+						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
 		}
 		return lateDeductionTime;
 	}
