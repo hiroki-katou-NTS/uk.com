@@ -307,7 +307,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			//暫定年休管理データを取得 締め開始日 <= 対象日 < INPUT．期間．終了日
 			List<TempAnnualLeaveMngs> lstTmpAnnual = annualRepository.getBySidPeriod(sid, new DatePeriod(startDate, datePeriod.end()));
 			for (TempAnnualLeaveMngs x : lstTmpAnnual) {
-				DailyInterimRemainMngData remainMng = new DailyInterimRemainMngData();
+				DailyInterimRemainMngData remainMng = DailyInterimRemainMngData.createEmpty(null);
 				remainMng.setRecAbsData(Arrays.asList(x));
 				remainMng.getAnnualHolidayData().add(x);
 				DailyInterimRemainMngDataAndFlg outData = new DailyInterimRemainMngDataAndFlg(remainMng, false);

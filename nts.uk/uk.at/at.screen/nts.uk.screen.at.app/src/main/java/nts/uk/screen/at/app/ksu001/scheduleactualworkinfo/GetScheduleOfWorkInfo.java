@@ -3,10 +3,12 @@
  */
 package nts.uk.screen.at.app.ksu001.scheduleactualworkinfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,6 +21,7 @@ import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.TempAbsenceFrameNo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
@@ -146,8 +149,15 @@ public class GetScheduleOfWorkInfo {
 		private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
-				rs.put(k, s);
+				Set<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream()
+						.map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(
+								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
+								new EmploymentPeriodImported(
+										i.getEmpID(),
+										new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
+										i.getEmploymentCd(),
+										i.getOtpSalarySegment()))).collect(Collectors.toSet()) ;
+				rs.put(k, s.stream().collect(Collectors.toList()));
 			});
 			return rs;
 		}
@@ -155,8 +165,11 @@ public class GetScheduleOfWorkInfo {
 		private static Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>>  createEntries3(Map<String, List<EmployeeLeaveJobPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				List<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
-				rs.put(k, s);
+				Set<DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>> s = v.stream()
+						.map(i->new DateHistoryCache.Entry<EmployeeLeaveJobPeriodImport>(
+								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
+								new EmployeeLeaveJobPeriodImport(i.getEmpID(), new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end())))).collect(Collectors.toSet()) ;
+				rs.put(k, s.stream().collect(Collectors.toList()));
 			});
 			return rs;
 		}
@@ -164,8 +177,14 @@ public class GetScheduleOfWorkInfo {
 		private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
 			Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
 			data.forEach( (k,v) -> {
-				List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
-				rs.put(k, s);
+				Set<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream()
+						.map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(
+								new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end()),
+								new EmpLeaveWorkPeriodImport(
+										i.getEmpID(), 
+										i.getTempAbsenceFrNo(), 
+										new DatePeriod(i.getDatePeriod().start(), i.getDatePeriod().end())))).collect(Collectors.toSet()) ;
+				rs.put(k, s.stream().collect(Collectors.toList()));
 			});
 			return rs;
 		}

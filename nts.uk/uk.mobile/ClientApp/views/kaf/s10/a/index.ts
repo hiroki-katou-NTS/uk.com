@@ -1033,6 +1033,19 @@ export class KafS10Component extends KafS00ShrComponent {
 
         return useDirectBounceFunction == NotUseAtr.USE && timeCalUse == NotUseAtr.USE;
     }
+
+
+    //  「休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分」が利用する
+    public get c15() {
+        const self = this;
+        const {model} = self;
+        const timeCalUse = _.get(model, 'appHdWorkDispInfo.holidayWorkAppSet.applicationDetailSetting.timeCalUse');
+
+        return timeCalUse == NotUseAtr.USE;
+
+    }
+
+
 }
 
 const API = {

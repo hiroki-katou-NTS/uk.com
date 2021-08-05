@@ -45,3 +45,18 @@
 #category-list-items_container {
 	height: 377px !important;
 }
+
+.custom-btn span {
+	width: 98px !important;
+	text-align: center;
+}
+
+
+.custom-img-1 .nts-help-button-image img {
+	width: 340px;
+	height: 400px;
+}
+
+.custom-img-2 .nts-help-button-image img {
+	width: 420px;
+}

@@ -11,8 +11,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.at.view.kwr008.share.model;
     import errors = nts.uk.ui.errors;
-    const ADDITION = getText('KWR002_178');
-    const SUBTRACTION = getText('KWR002_179');
+    const ADDITION = getText('KDL048_8');
+    const SUBTRACTION = getText('KDL048_9');
 
     export class ScreenModel {
         //enum mode
@@ -400,21 +400,25 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             attendanceItemTransfer.titleLine.layoutCode = vm.currentSetOutputSettingCode().cd();
             // タイトル行.出力項目名 = B3_3
             attendanceItemTransfer.titleLine.layoutName = vm.currentSetOutputSettingCode().name();
+            // タイトル行.表示フラグ = 表示する
             attendanceItemTransfer.titleLine.displayFlag = true;
-            
             // 項目名行.名称 = B4_14
             attendanceItemTransfer.itemNameLine.name = dataNode.headingName();
-            // 属性.選択済み = B4_16
-            attendanceItemTransfer.attribute.selected = vm.convertEnumToAtdAttribute(dataNode.valOutFormat().toString());
-            attendanceItemTransfer.itemNameLine.displayFlag = true;
-            attendanceItemTransfer.itemNameLine.displayInputCategory = 2;
-            attendanceItemTransfer.columnIndex = 0;
-            attendanceItemTransfer.exportAtr = 2;
+            // 項目名行.表示入力区分 = 表示のみ
+            attendanceItemTransfer.itemNameLine.displayInputCategory = 1;
+            // 属性.選択区分 = 表示のみ
+            attendanceItemTransfer.attribute.selectionCategory = 1;
+            // 属性.List<属性> = ４：時間 ５：回数 ６：日数 7：金額
             attendanceItemTransfer.attribute.attributeList = _.map(vm.valOutFormat(), (item) => new model.AttendaceType(
                     vm.convertEnumToAtdAttribute(item.code),
                     item.name
                 )
             );
+            // 属性.選択済み = B4_16
+            attendanceItemTransfer.attribute.selected = vm.convertEnumToAtdAttribute(dataNode.valOutFormat().toString());
+            attendanceItemTransfer.itemNameLine.displayFlag = true;
+            attendanceItemTransfer.columnIndex = 0;
+            attendanceItemTransfer.exportAtr = 2;
 
             let selectedLst: any[] = [];
             if (!!dataNode.calculationExpression()) {
@@ -467,7 +471,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                     const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.itemId);
                     const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
                     if (targetItem) {
-                        if (operationName || item.operator.equals("－")) {
+                        if (operationName || item.operator.equals(getText(SUBTRACTION))) {
                             operationName = operationName + " " +  item.operator + " " + targetItem.attendanceItemName;
                         } else {
                             operationName = targetItem.attendanceItemName;

@@ -91,7 +91,7 @@
 									<!-- A3_12 A3_13 A3_14 -->
 									<div id="daterangepicker" class="a3_15" tabindex="6"
 										data-bind="ntsDateRangePicker: {
-											required: false,
+											required: ko.computed(function() { return selectedDateType() === 1; }),
 											enable: ko.computed(function() { return selectedDateType() === 1; }) ,
 											showNextPrevious: true,
 											value: period,
@@ -116,6 +116,7 @@
 												dateFormat: 'yearmonth',
 												name:'#[KDR002_8]',
 												enable: ko.computed(function() { return selectedDateType() === 2; }) ,
+                        required: ko.computed(function() { return selectedDateType() === 2; })
 												}">
 									</div>
 								</div>
