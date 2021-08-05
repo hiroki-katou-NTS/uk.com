@@ -153,7 +153,7 @@ public class KSU002Finder {
 		Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> workingTimeCounter = WorkingTimeCounterService.get(mergeToFlatList);
 		//2.1: <call>
 		//$当月の労働時間 = result.get(社員ID).get( 就業時間 )
-		Double workingHoursMonth = workingTimeCounter.isEmpty() ? 0 : workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_EXTRA).doubleValue();
+		Double workingHoursMonth = workingTimeCounter.isEmpty() ? 0 : workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN).doubleValue();
 		
 		/*3: 集計する(Require, List<日別勤怠(Work)>) */
 		Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> workdayHolidayCounter = WorkdayHolidayCounterService.count(new Require(AppContexts.user().companyId()), mergeToFlatList);
