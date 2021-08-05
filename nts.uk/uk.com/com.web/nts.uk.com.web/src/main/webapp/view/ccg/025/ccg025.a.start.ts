@@ -2,9 +2,8 @@ module nts.uk.com.view.ccg025.a {
     import ComponentModel = component.viewmodel.ComponentModel;
     __viewContext.ready(function() {
         const vm = new ViewModel();
-        vm.componentViewmodel().startPage().done(function() {
-            __viewContext.bind(vm); 
-        });        
+        __viewContext.bind(vm);
+        vm.reloadData();
     });
 
     class ViewModel {
@@ -18,6 +17,7 @@ module nts.uk.com.view.ccg025.a {
         rows: KnockoutObservable<number>;
         componentViewmodel: KnockoutObservable<ComponentModel>;
         selectedId: KnockoutObservable<string>;
+        selectedSetId: KnockoutObservable<string>;
 
         selectTypes: KnockoutObservableArray<any>;
         listRole: KnockoutObservableArray<any>;
@@ -31,9 +31,10 @@ module nts.uk.com.view.ccg025.a {
             self.onDialog = ko.observable(false);
             self.isAlreadySetting = ko.observable(false);
             self.showEmptyItem = ko.observable(false);
-            self.selectType = ko.observable(1);
+            self.selectType = ko.observable(3);
             self.rows = ko.observable(15);
             self.selectedId = ko.observable(null);
+            self.selectedSetId = ko.observable(null);
             self.listRole = ko.observableArray([]);
             self.componentViewmodel = ko.observable(new ComponentModel({
                 roleType: self.roleType(),
@@ -45,7 +46,7 @@ module nts.uk.com.view.ccg025.a {
                 showEmptyItem: self.showEmptyItem(),
                 selectType: self.selectType(),
                 hasFocus: true,
-                currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId()
             }));
 
             self.selectTypes = ko.observableArray([
@@ -67,11 +68,10 @@ module nts.uk.com.view.ccg025.a {
                     selectType: self.selectType(),
                     onDialog: self.onDialog(),
                     hasFocus: true,
-                    currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
             });
             self.roleAtr.subscribe(value => {
                 self.componentViewmodel(new ComponentModel({
@@ -85,31 +85,34 @@ module nts.uk.com.view.ccg025.a {
                     selectType: self.selectType(),
                     onDialog: self.onDialog(),
                     hasFocus: true,
-                    currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
             });
             self.multiple.subscribe(value => {
-                self.componentViewmodel(new ComponentModel({
-                    roleType: self.roleType(),
-                    roleAtr: self.roleAtr(),
-                    multiple: value,
-                    isAlreadySetting: self.isAlreadySetting(),
-                    rows: self.rows(),
-                    tabindex: 0,
-                    showEmptyItem: self.showEmptyItem(),
-                    selectType: self.selectType(),
-                    onDialog: self.onDialog(),
-                    hasFocus: true,
-                    currentCode: value ? [self.selectedId()] : self.selectedId()
-                }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                if (self.selectType() == 2 && !value) {
+                    self.selectType(3);
+                } else {
+                    self.componentViewmodel(new ComponentModel({
+                        roleType: self.roleType(),
+                        roleAtr: self.roleAtr(),
+                        multiple: value,
+                        isAlreadySetting: self.isAlreadySetting(),
+                        rows: self.rows(),
+                        tabindex: 0,
+                        showEmptyItem: self.showEmptyItem(),
+                        selectType: self.selectType(),
+                        onDialog: self.onDialog(),
+                        hasFocus: true,
+                        selectedId: value ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                        alreadySetList: [self.selectedSetId()]
+                    }));
+                    self.reloadData();
+                }
             });
             self.isAlreadySetting.subscribe(value => {
+                self.selectedSetId(null);
                 self.componentViewmodel(new ComponentModel({
                     roleType: self.roleType(),
                     roleAtr: self.roleAtr(),
@@ -121,11 +124,10 @@ module nts.uk.com.view.ccg025.a {
                     selectType: self.selectType(),
                     onDialog: self.onDialog(),
                     hasFocus: true,
-                    currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
             });
             self.rows.subscribe(value => {
                 self.componentViewmodel(new ComponentModel({
@@ -139,11 +141,10 @@ module nts.uk.com.view.ccg025.a {
                     selectType: self.selectType(),
                     onDialog: self.onDialog(),
                     hasFocus: true,
-                    currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
             });
             self.showEmptyItem.subscribe(value => {
                 self.componentViewmodel(new ComponentModel({
@@ -157,11 +158,10 @@ module nts.uk.com.view.ccg025.a {
                     selectType: self.selectType(),
                     onDialog: self.onDialog(),
                     hasFocus: true,
-                    currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
             });
             self.selectType.subscribe(value => {
                 self.componentViewmodel(new ComponentModel({
@@ -175,11 +175,10 @@ module nts.uk.com.view.ccg025.a {
                     selectType: value,
                     onDialog: self.onDialog(),
                     hasFocus: true,
-                    currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
             });
             self.onDialog.subscribe(value => {
                 self.componentViewmodel(new ComponentModel({
@@ -193,11 +192,10 @@ module nts.uk.com.view.ccg025.a {
                     selectType: self.selectType(),
                     onDialog: value,
                     hasFocus: true,
-                    currentCode: self.multiple() ? [self.selectedId()] : self.selectedId()
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
             });
             self.selectedId.subscribe(value => {
                 self.componentViewmodel(new ComponentModel({
@@ -211,35 +209,59 @@ module nts.uk.com.view.ccg025.a {
                     selectType: self.selectType(),
                     onDialog: self.onDialog(),
                     hasFocus: true,
-                    currentCode: self.multiple() ? [value] : value
+                    selectedId: self.multiple() ? [value].filter(i => !!i) : value,
+                    alreadySetList: [self.selectedSetId()]
                 }));
-                self.componentViewmodel().startPage().done(() => {
-                    self.listRole(self.componentViewmodel().listRole());
-                });
+                self.reloadData();
+            });
+
+            self.selectedSetId.subscribe(value => {
+                self.componentViewmodel(new ComponentModel({
+                    roleType: self.roleType(),
+                    roleAtr: self.roleAtr(),
+                    multiple: self.multiple(),
+                    isAlreadySetting: self.isAlreadySetting(),
+                    rows: self.rows(),
+                    tabindex: 0,
+                    showEmptyItem: self.showEmptyItem(),
+                    selectType: self.selectType(),
+                    onDialog: self.onDialog(),
+                    hasFocus: true,
+                    selectedId: self.multiple() ? [self.selectedId()].filter(i => !!i) : self.selectedId(),
+                    alreadySetList: [value]
+                }));
+                self.reloadData();
             });
 
             self.displaySelected = ko.computed(() => {
-                if (!_.isEmpty(self.componentViewmodel().currentCode())) {
-                    const roles: Array<any> = _.filter(self.componentViewmodel().listRole(), r => self.componentViewmodel().currentCode().indexOf(r.roleId) >= 0);
+                if (!_.isEmpty(self.componentViewmodel().currentRoleId())) {
+                    const roles: Array<any> = _.filter(self.componentViewmodel().listRole(), r => self.componentViewmodel().currentRoleId().indexOf(r.roleId) >= 0);
                     return ko.toJSON(roles.map(r => ({roleId: r.roleId, roleCode: r.roleCode, name: r.name})));
                 }
                 return "";
             });
         }
 
+        reloadData() {
+            const self = this;
+            self.componentViewmodel().startPage().done(() => {
+                self.listRole(self.componentViewmodel().listRole());
+            });
+        }
+
         setConfigured() {
             const self = this;
-            if (!_.isEmpty(self.componentViewmodel().currentCode())) {
+            if (!_.isEmpty(self.componentViewmodel().currentRoleId())) {
                 if (self.multiple()) {
                     self.componentViewmodel().listRole().forEach(role => {
-                        if (self.componentViewmodel().currentCode().indexOf(role.roleId) >= 0) {
+                        if (self.componentViewmodel().currentRoleId().indexOf(role.roleId) >= 0) {
                             role.configured = 1;
                         }
                     });
                     self.componentViewmodel().listRole.valueHasMutated();
                 } else {
                     self.componentViewmodel().listRole().forEach(role => {
-                        if (self.componentViewmodel().currentCode() == role.roleId) {
+                        if (self.componentViewmodel().currentRoleId() == role.roleId) {
                             role.configured = 1;
                         }
                     });
@@ -250,17 +272,17 @@ module nts.uk.com.view.ccg025.a {
 
         unSetConfigured() {
             const self = this;
-            if (!_.isEmpty(self.componentViewmodel().currentCode())) {
+            if (!_.isEmpty(self.componentViewmodel().currentRoleId())) {
                 if (self.multiple()) {
                     self.componentViewmodel().listRole().forEach(role => {
-                        if (self.componentViewmodel().currentCode().indexOf(role.roleId) >= 0) {
+                        if (self.componentViewmodel().currentRoleId().indexOf(role.roleId) >= 0) {
                             role.configured = 0;
                         }
                     });
                     self.componentViewmodel().listRole.valueHasMutated();
                 } else {
                     self.componentViewmodel().listRole().forEach(role => {
-                        if (self.componentViewmodel().currentCode() == role.roleId) {
+                        if (self.componentViewmodel().currentRoleId() == role.roleId) {
                             role.configured = 0;
                         }
                     });

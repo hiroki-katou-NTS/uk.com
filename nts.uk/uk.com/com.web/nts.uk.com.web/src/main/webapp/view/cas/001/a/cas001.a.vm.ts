@@ -51,7 +51,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
             multiple: false,
             isResize: true,
             rows: 5,
-            tabindex:4
+            tabindex: 4,
+            onDialog: true
         });
         listRole: KnockoutObservableArray<PersonRole> = ko.observableArray([]);
         ctgColumns: KnockoutObservableArray<any> = ko.observableArray([
@@ -72,11 +73,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
             ]);
             self.component.startPage().done(() =>{
                 self.personRoleList.removeAll();
-                self.personRoleList(_.map(__viewContext['screenModel'].component.listRole(), x => new nts.uk.com.view.cas001.a.viewmodel.PersonRole(x))); 
+                self.personRoleList(_.map(self.component.listRole(), (x: any) => new PersonRole(x)));
+                self.start();
+            });
+
+            self.component.listRole.subscribe(value => {
+                self.personRoleList.removeAll();
+                self.personRoleList(_.map(value, (x: any) => new PersonRole(x)));
                 self.start();
             });
             
-            self.component.currentCode.subscribe(function(newRoleId) {
+            self.component.currentRoleId.subscribe(function(newRoleId: string) {
                 if (self.personRoleList().length < 1) {
                     return;
                 }
@@ -91,15 +98,15 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 let newPersonRole = _.find(self.personRoleList(), (role) => { return role.roleId === newRoleId });
                 if (newPersonRole) {
                     self.currentRole(newPersonRole);
+                    block.grayout();
+                    newPersonRole.loadRoleCategoriesList(newRoleId, false).done(() => {
+                        if (!self.currentCategoryId()) {
+                            newPersonRole.setCtgSelectedId(self.roleCategoryList());
+                        }
+                    }).always(() => {
+                        block.clear();
+                    });
                 }
-                block.grayout();
-                newPersonRole.loadRoleCategoriesList(newRoleId, false).done(() => {
-                    if (!self.currentCategoryId()) {
-                        newPersonRole.setCtgSelectedId(self.roleCategoryList());
-                    }
-                }).always(() => {
-                    block.clear(); 
-                });
             });
 
             self.currentCategoryId.subscribe((categoryId) => {
@@ -233,7 +240,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 if (!objSetofScreenC.isCancel) {
                     self.reload().always(() => {
                         if (objSetofScreenC.id !== null && objSetofScreenC.id != undefined) {
-                            self.component.currentCode(objSetofScreenC.id);
+                            self.component.currentRoleId(objSetofScreenC.id);
                         }
                     });
                 }
@@ -271,43 +278,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             return dfd.promise();
         }
+
         start() {
             let self = this;
                 if (self.personRoleList().length > 0) {
                     let selectedId = self.currentRoleId() !== '' ? self.currentRoleId() : self.personRoleList()[0].roleId;
-
                     self.currentRoleId(selectedId);
-
-
                 } else {
-
                     dialog({ messageId: "Msg_364" }).then(function() {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     });
-
                 }
-        }
-
-        loadPersonRoleList(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-
-
-            self.component.startPage().done(() => {
-                self.personRoleList.removeAll();
-
-                _.forEach(self.component.listRole(), function(iPersonRole: IPersonRole) {
-
-                    self.personRoleList(_.map(self.component.listRole(), x => new PersonRole(x)));
-
-                });
-
-
-
-                dfd.resolve();
-
-            });
-            return dfd.promise();
         }
 
         saveData() {

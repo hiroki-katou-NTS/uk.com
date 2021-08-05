@@ -8,14 +8,19 @@
 	<ui:composition>
 		<!-- <div style="width: 350px" data-bind="ntsSearchBox: {searchMode: searchMode, targetKey: 'roleCode', comId: 'multi-list', 
 				items: listRole,  selectedKey: 'roleCode', fields: ['name', 'roleCode'], mode: 'igGrid'}" /> -->
-		<div id="ccg025-component" class="panel" style="display: inline-block;"
+		<div id="ccg025-component" style="display: inline-block;"
 			 data-bind="css: {
-					ntsPanel: !setting.onDialog
+					ntsPanel: !setting.onDialog,
+					panel: !setting.onDialog
 			  }">
-			<div class="control-group valign-center" data-bind="if: displayRoleClassification()">
-				<div data-bind="ntsFormLabel: {required: false, text: '#{i18n.getText('CCG025_2')}'}, style: {width: setting.isAlreadySetting ? '245px' : '165px'}"/>
-				<div id="ccg025-switch" style="display: inline-block"
-						data-bind="ntsSwitchButton: {
+			<div class="control-group" data-bind="if: displayRoleClassification()">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div data-bind="ntsFormLabel: {
+									required: false,
+									text: '#{i18n.getText('CCG025_2')}'
+								}"/>
+                    <div id="ccg025-switch" style="display: inline-block"
+                         data-bind="ntsSwitchButton: {
 									name: '#[CCG025_2]',
 									options: [
 										{code: 0, name: '#{i18n.getText('CCG025_3')}'},
@@ -29,6 +34,7 @@
 								},
 								attr: {tabindex: setting.tabindex},
 								hasFocus: switchFocus"/>
+                </div>
 				<hr/>
 			</div>
 			<table id="ccg025-list"
@@ -38,7 +44,7 @@
 							primaryKey: 'roleId',
 							columns: columns,
 							multiple: setting.multiple,
-							value: currentCode,
+							value: currentRoleId,
 							rows: setting.rows,
 							columnResize: setting.isResize,
 						},
