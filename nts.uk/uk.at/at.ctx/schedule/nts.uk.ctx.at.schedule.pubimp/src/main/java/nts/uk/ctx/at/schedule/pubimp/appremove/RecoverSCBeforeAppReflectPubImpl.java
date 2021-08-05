@@ -6,8 +6,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -34,12 +32,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.D
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateDailyRecordServiceCenterNew;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -54,10 +49,7 @@ public class RecoverSCBeforeAppReflectPubImpl implements RecoverSCBeforeAppRefle
 	private DailyRecordConverter dailyRecordConverter;
 
 	@Inject
-	private WorkingConditionRepository workingConditionRepository;
-
-	@Inject
-	private CorrectionAfterTimeChange correctionAfterTimeChange;
+	private ICorrectionAttendanceRule correctionAfterTimeChange;
 
 	@Inject
 	private CalculateDailyRecordServiceCenterNew calculateDailyRecordServiceCenter;
@@ -71,7 +63,7 @@ public class RecoverSCBeforeAppReflectPubImpl implements RecoverSCBeforeAppRefle
 	@Override
 	public SCRecoverAppReflectExport process(Object application, GeneralDate date,
 			SCReflectStatusResultExport reflectStatus, NotUseAtr dbRegisterClassfi) {
-		RequireImpl impl = new RequireImpl(dailyRecordConverter, workingConditionRepository, correctionAfterTimeChange,
+		RequireImpl impl = new RequireImpl(dailyRecordConverter, correctionAfterTimeChange,
 				calculateDailyRecordServiceCenter, workScheduleRepository, applicationReflectHistoryRepo);
 		val result = RecoverWorkScheduleBeforeAppReflect.process(impl, (ApplicationShare) application, date,
 				convertToShare(reflectStatus), dbRegisterClassfi);
@@ -81,42 +73,40 @@ public class RecoverSCBeforeAppReflectPubImpl implements RecoverSCBeforeAppRefle
 
 	private SCReflectStatusResult convertToShare(SCReflectStatusResultExport reflectStatus) {
 
-		return new SCReflectStatusResult(EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, SCReflectedState.class),
-				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, SCReasonNotReflectDaily.class),
-						EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, SCReasonNotReflect.class));
+		return new SCReflectStatusResult(
+				EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, SCReflectedState.class),
+				reflectStatus.getReasonNotReflectWorkRecord() == null ? null
+						: EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value,
+								SCReasonNotReflectDaily.class),
+				reflectStatus.getReasonNotReflectWorkSchedule() == null ? null
+						: EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value,
+								SCReasonNotReflect.class));
 	}
 
 	private SCReflectStatusResultExport convertToExport(SCReflectStatusResult reflectStatus) {
 
-		return new SCReflectStatusResultExport(EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, SCReflectedStateExport.class),
-				EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value, SCReasonNotReflectDailyExport.class),
-						EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value, SCReasonNotReflectExport.class));
+		return new SCReflectStatusResultExport(
+				EnumAdaptor.valueOf(reflectStatus.getReflectStatus().value, SCReflectedStateExport.class),
+				reflectStatus.getReasonNotReflectWorkRecord() == null ? null
+						: EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkRecord().value,
+								SCReasonNotReflectDailyExport.class),
+				reflectStatus.getReasonNotReflectWorkSchedule() == null ? null
+						: EnumAdaptor.valueOf(reflectStatus.getReasonNotReflectWorkSchedule().value,
+								SCReasonNotReflectExport.class));
 	}
 
 	@AllArgsConstructor
 	public class RequireImpl implements RecoverWorkScheduleBeforeAppReflect.Require {
 
 		private final DailyRecordConverter dailyRecordConverter;
-
-		private final WorkingConditionRepository workingConditionRepository;
-
-		private final CorrectionAfterTimeChange correctionAfterTimeChange;
+		
+		private final ICorrectionAttendanceRule correctionAfterTimeChange;
 
 		private final CalculateDailyRecordServiceCenterNew calculateDailyRecordServiceCenter;
 
 		private final WorkScheduleRepository workScheduleRepository;
 
 		private final ApplicationReflectHistoryRepo applicationReflectHistoryRepo;
-
-		@Override
-		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
-			return workingConditionRepository.getBySidAndStandardDate(employeeId, baseDate);
-		}
-
-		@Override
-		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-			return workingConditionRepository.getWorkingConditionItem(historyId);
-		}
 
 		@Override
 		public List<ApplicationReflectHistory> findAppReflectHistAfterMaxTime(String sid, GeneralDate baseDate,
@@ -166,9 +156,8 @@ public class RecoverSCBeforeAppReflectPubImpl implements RecoverSCBeforeAppRefle
 		}
 
 		@Override
-		public Pair<ChangeDailyAttendance, IntegrationOfDaily> corectionAfterTimeChange(IntegrationOfDaily domainDaily,
-				ChangeDailyAttendance changeAtt, Optional<WorkingConditionItem> workCondOpt) {
-			return correctionAfterTimeChange.corection(domainDaily, changeAtt, workCondOpt);
+		public IntegrationOfDaily correct(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
+			return correctionAfterTimeChange.process(domainDaily, changeAtt);
 		}
 
 	}
