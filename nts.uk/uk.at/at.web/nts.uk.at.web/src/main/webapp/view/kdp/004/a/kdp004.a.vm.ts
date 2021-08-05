@@ -209,14 +209,6 @@ module nts.uk.at.view.kdp004.a {
 							self.isUsed(res.used == 0);
 							if (self.isUsed()) {
 								service.login(loginInfo).done((res) => {
-
-									console.log(res);
-
-									if (res.msgErrorId && res.msgErrorId !== '') {
-										console.log(res.msgErrorId as String);
-										
-										self.errorMessage(getMessage("Msg_302"));
-									}
 								
 									block.grayout();
 									service.startPage()
@@ -241,7 +233,15 @@ module nts.uk.at.view.kdp004.a {
 										}).always(() => {
 											dfd.resolve();
 											block.clear();
+											
 										});
+
+										if (res.msgErrorId && res.msgErrorId !== '') {
+										
+											self.errorMessage(getMessage(res.msgErrorId));
+
+											self.isUsed(false);
+										}
 
 									self.getStampToSuppress();
 
@@ -250,7 +250,6 @@ module nts.uk.at.view.kdp004.a {
 									self.errorMessage(res.errorMessage);
 									dfd.resolve();
 								}).always(() => {
-
 									block.clear();
 								});
 							} else {
@@ -275,25 +274,11 @@ module nts.uk.at.view.kdp004.a {
 
 					const exest = false;
 
-					// if (loginResult !== undefined) {
-					// 	if (!loginResult.result) {
-					// 		loginResult = undefined;
-					// 	}
-					// } else {
-					// 	loginResult = undefined;
-					// }
-
 					if (loginResult == undefined) {
 						self.errorMessage(getMessage("Msg_1647"));
 						dfd.resolve();
 						return;
 					}
-
-					// if (!loginResult || !loginResult.result) {
-					// 	self.errorMessage(getMessage(!loginResult ? "Msg_1647" : loginResult.msgErrorId));
-					// 	dfd.resolve();
-					// 	return;
-					// }
 					self.loginInfo = loginResult.em;
 
 					self.basyo()
