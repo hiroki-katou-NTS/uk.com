@@ -105,6 +105,41 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	}
 	
 	/**
+	 * 欠勤控除時間を計算する
+	 * @param workType 勤務種類
+	 * @param predetermineTimeSet 所定時間設定
+	 * @param predetermineTimeSetByPersonInfo 所定時間設定（個人）
+	 * @param siftCode 就業時間帯コード
+	 * @param conditionItem 労働条件項目
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param addSetting 加算設定
+	 * @return 欠勤控除時間
+	 */
+	public AttendanceTime calcAbsence(
+			WorkType workType,
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
+			Optional<WorkTimeCode> siftCode,
+			WorkingConditionItem  conditionItem,
+			Optional<HolidayAddtionSet> holidayAddtionSet,
+			AddSetting addSetting) {
+		if(!addSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().isMinusAbsenceTime()) {
+			return AttendanceTime.ZERO;
+		}
+		if(!workType.getDailyWork().isAbsence()) {
+			return AttendanceTime.ZERO;
+		}
+		return VacationClass.vacationTimeOfcalcDaily(
+				workType,
+				VacationCategory.Absence,
+				predetermineTimeSet,
+				predetermineTimeSetByPersonInfo,
+				siftCode,
+				conditionItem,
+				holidayAddtionSet);
+	}
+	
+	/**
 	 * フレックス時間を計算する
 	 * アルゴリズム：フレックス時間の加算
 	 * @param integrationOfDaily 日別実績(WORK)
@@ -278,7 +313,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				siftCode,
 				conditionItem,
 				Optional.of(holidayAddtionSet),
-				predetermineTimeSetByPersonInfo);
+				predetermineTimeSetByPersonInfo,
+				addSetting);
 				
 		/*就業時間(法定内用)の計算*/
 		WorkHour zitudou = super.calcWorkTime(
@@ -358,9 +394,9 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 */
 	public StatutoryWorkingTime calcStatutoryTime(WorkType workType,SettingOfFlexWork flexCalcMethod,Optional<PredetermineTimeSetForCalc> predetermineTimeSet,
 												  Optional<WorkTimeCode> siftCode, WorkingConditionItem conditionItem,Optional<HolidayAddtionSet> holidayAddtionSet,
-												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+												  Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, AddSetting addSetting) {
 		val predetermineTime = predetermineTimeSet.isPresent()?predetermineTimeSet.get().getAdditionSet().getPredTime().getOneDay():new AttendanceTime(0);
-		StatutoryDeductionForFlex deductionTime = calcdeductTime(workType,flexCalcMethod,predetermineTimeSet,predetermineTimeSetByPersonInfo, siftCode,conditionItem,holidayAddtionSet);
+		StatutoryDeductionForFlex deductionTime = calcdeductTime(workType,flexCalcMethod,predetermineTimeSet,predetermineTimeSetByPersonInfo, siftCode,conditionItem,holidayAddtionSet, addSetting);
 		return new StatutoryWorkingTime( new AttendanceTime(predetermineTime.v() - deductionTime.getForActualWork().valueAsMinutes()) 
 										,new AttendanceTime(predetermineTime.v() - deductionTime.getForPremium().valueAsMinutes()));
 	}
@@ -372,7 +408,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 													Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
 													Optional<WorkTimeCode> siftCode,
 													WorkingConditionItem conditionItem,
-													Optional<HolidayAddtionSet> holidayAddtionSet){
+													Optional<HolidayAddtionSet> holidayAddtionSet,
+													AddSetting addSetting){
 		/*休日控除時間の計算*/
 //		AttendanceTime forHolidayTime = calcHolidayDeductionTime(workType);
 		/*代休控除時間の計算*/
@@ -381,7 +418,13 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		DeductionTime deductionTime = new DeductionTime(forCompensatoryLeaveTime,forCompensatoryLeaveTime);//(forHolidayTime,forCompensatoryLeaveTime);
 		//DeductionTime deductionTime = new DeductionTime(new AttendanceTime(0),new AttendanceTime(0));//(forHolidayTime,forCompensatoryLeaveTime);
 		//休日控除が算出できるようになったら、各代休控除時間に加算するように変える
-		return new StatutoryDeductionForFlex(deductionTime.getForCompensatoryHolidayTime(),deductionTime.getForCompensatoryHolidayTime());
+
+		//欠勤控除時間の計算
+		AttendanceTime absence = calcAbsence(workType, predetermineTimeSet, predetermineTimeSetByPersonInfo, siftCode, conditionItem, holidayAddtionSet, addSetting);
+		return new StatutoryDeductionForFlex(
+				deductionTime.getForCompensatoryHolidayTime().addMinutes(absence.valueAsMinutes()),
+				deductionTime.getForCompensatoryHolidayTime().addMinutes(absence.valueAsMinutes()));
+		
 //		return new StatutoryDeductionForFlex(deductionTime.forLackCalcPredetermineDeduction(flexCalcMethod.getFlexCalcMethod())
 //											,deductionTime.forPremiumCalcPredetermineDeduction(flexCalcMethod.getFlexCalcMethod()));
 	}
