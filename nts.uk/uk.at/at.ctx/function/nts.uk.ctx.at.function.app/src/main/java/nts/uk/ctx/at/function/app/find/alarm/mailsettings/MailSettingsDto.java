@@ -29,5 +29,13 @@ public class MailSettingsDto {
 		this.mailAddressCC = MailSettings.get().getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
 		this.mailRely = MailSettings.get().getMailRely().get().v();
 	}
+
+	public MailSettingsDto(MailSettings mailSetting) {
+		this.subject = mailSetting.getSubject().isPresent() ? mailSetting.getSubject().get().v() : null;
+		this.text = mailSetting.getText().isPresent() ? mailSetting.getText().get().v() : null;
+		this.mailAddressBCC = mailSetting.getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+		this.mailAddressCC = mailSetting.getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+		this.mailRely =  mailSetting.getMailRely().isPresent() ? mailSetting.getMailRely().get().v() : null;
+	}
 	
 }
