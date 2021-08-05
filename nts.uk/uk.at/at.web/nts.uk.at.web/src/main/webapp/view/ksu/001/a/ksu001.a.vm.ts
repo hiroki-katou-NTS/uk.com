@@ -2478,7 +2478,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             return ["workTypeName", "workTimeName", "startTime", "endTime"];
                     }
                 },
-                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode", "confirmed", "achievements"],
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode", "confirmed", "achievements", "needToWork","supportCategory","condTargetdate"],
             };
             
             let vertSumHeader = self.createVertSumHeader();
@@ -3794,7 +3794,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             return ["workTypeName", "workTimeName", "startTime", "endTime"];
                     }
                 },
-                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
+                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode", "confirmed", "achievements", "needToWork","supportCategory","condTargetdate"],
             };
 
             if (updateLeftMost) {
@@ -3814,45 +3814,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (updateDetail) {
                 $("#extable").exTable("updateTable", "detail", detailHeaderUpdate, detailContentUpdate);
             }
-        }
-        
-        // khi thay đổi combobox backgrounndMode | thay đổi mode Edit <--> Confirm
-        updateExTableWhenChangeModeBg(detailContentDecoUpdate): void {
-            let self = this;
-             
-            // update Phần Detail
-            let detailContentDeco = detailContentDecoUpdate;
-            let detailContentDs = self.detailContentDs;
-            let detailColumns = self.detailColumns;
-
-            let detailContentUpdate = {
-                columns: detailColumns,
-                dataSource: detailContentDs,
-                primaryKey: "sid",
-                //highlight: false,
-                features: [{
-                    name: "BodyCellStyle",
-                    decorator: detailContentDeco
-                }, {
-                        name: "TimeRange",
-                        ranges: []
-                    }],
-                view: function(mode) {
-                    switch (mode) {
-                        case "shift":
-                            return ["shiftName"];
-                        case "shortName":
-                            return ["workTypeName", "workTimeName"];
-                        case "time":
-                            return ["workTypeName", "workTimeName", "startTime", "endTime"];
-                    }
-                },
-                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
-            };
-
-            $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
-
-            self.setStyler();
         }
         
         setStyler() {
@@ -3996,7 +3957,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             return ["workTypeName", "workTimeName", "startTime", "endTime"];
                     }
                 },
-                fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
+                fields: ["workTypeCode","workTypeName","workTimeCode","workTimeName","shiftName","startTime", "endTime","shiftCode","confirmed","achievements","needToWork","supportCategory","condTargetdate"],
             };
 
             $("#extable").exTable("mode", viewMode, updateMode, null, [{
