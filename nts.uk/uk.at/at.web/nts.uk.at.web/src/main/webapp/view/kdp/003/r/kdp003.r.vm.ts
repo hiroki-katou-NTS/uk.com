@@ -169,12 +169,12 @@ module nts.uk.at.kdp003.r {
 
                         if (data.stopBySystem.systemStatusType == 2) {
                             vm.stopBySystem(true);
-                            vm.notiStopBySystem(data.stopBySystem.usageStopMessage);
+                            vm.notiStopBySystem(data.stopBySystem.stopMessage);
                         }
 
                         if (data.stopByCompany.systemStatus == 2) {
                             vm.stopByCompany(true);
-                            vm.notiStopByCompany(data.stopByCompany.usageStopMessage);
+                            vm.notiStopByCompany(data.stopByCompany.stopMessage);
                         }
 
                         if (data.stopBySystem.systemStatusType == 3 || data.stopByCompany.systemStatus == 3) {
