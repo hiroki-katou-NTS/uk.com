@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class MailSettingsInformationDto {
-    AlarmMailSendingRoleDto alarmMailSendingRoleDto;
-    MailSettingDto mailSettingDto;
-    List<MailExportRolesDto> roleNameList;
+    AlarmMailSendingRoleDto sendingRole;
+    MailSettingDto mailSettings;
 }

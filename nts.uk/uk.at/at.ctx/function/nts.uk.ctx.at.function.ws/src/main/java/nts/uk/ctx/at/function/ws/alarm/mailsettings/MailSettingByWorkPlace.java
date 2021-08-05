@@ -45,10 +45,7 @@ public class MailSettingByWorkPlace extends WebService {
                 IndividualWkpClassification.WORKPLACE.value
         );
         List<MailExportRolesDto> roleNameList = new ArrayList<MailExportRolesDto>();
-        if (alarmMailSendingRoleDto != null && !alarmMailSendingRoleDto.getRoleIds().isEmpty()) {
-            roleNameList = alarmMailSettingsAdapter.getRoleNameList(alarmMailSendingRoleDto.getRoleIds());
-        }
-        return new MailSettingsInformationDto(alarmMailSendingRoleDto, mailSettingDto, roleNameList);
+        return new MailSettingsInformationDto(alarmMailSendingRoleDto, mailSettingDto);
     }
 
     @POST
