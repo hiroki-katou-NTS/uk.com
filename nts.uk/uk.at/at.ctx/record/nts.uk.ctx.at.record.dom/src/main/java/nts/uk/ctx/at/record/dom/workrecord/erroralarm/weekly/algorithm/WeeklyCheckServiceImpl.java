@@ -359,7 +359,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(continuousOutput.continuousCountOpt.get().getConsecutiveYears()));
 				} else {
 					// 取得したカウン
-					param2 = String.valueOf(count);
+					param2 = String.valueOf(count) + TextResource.localize("KAL010_1311");
 					
 					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得したカウン
 					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(count));
