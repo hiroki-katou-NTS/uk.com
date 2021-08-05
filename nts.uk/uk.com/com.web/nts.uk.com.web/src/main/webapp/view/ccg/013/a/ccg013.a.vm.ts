@@ -8,8 +8,8 @@ module ccg013.a.viewmodel {
     import errors = nts.uk.ui.errors;
 
     const menuBarHTML: string = `<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
-        <a class="tab-item" data-bind="attr: {href: targetContent}, style: {'background-color': backgroundColor}">
-            <span class="tab-item-content limited-label" data-bind="style: {'color': textColor}, text: menuBarName" />
+        <a class="tab-item" data-bind="attr: {href: targetContent}" style="background-color: #127D09;">
+            <span class="tab-item-content limited-label" data-bind="text: menuBarName" style="color: #ffffff;" />
             <i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click:function() { $parent.openIdialog(menuBarId()); }"></i>
         </a></li>`;
     const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}"><span class="limited-label" data-bind="text: name"></span></li>';

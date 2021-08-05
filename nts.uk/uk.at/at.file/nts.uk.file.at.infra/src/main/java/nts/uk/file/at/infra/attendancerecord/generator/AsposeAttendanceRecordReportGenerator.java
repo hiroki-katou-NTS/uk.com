@@ -195,16 +195,16 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int EMPL_INVIDUAL_INDEX = 0;
 
 	/** The Constant EMPL_WORKPLACE_INDEX. */
-	private static final int EMPL_WORKPLACE_INDEX = 11;
+	private static final int EMPL_WORKPLACE_INDEX = 10;
 
 	/** The Constant EMPL_EMPLOYMENT_INDEX. */
 	private static final int EMPL_EMPLOYMENT_INDEX = 0;
 
 	/** The Constant EMPL_TITLE_INDEX. */
-	private static final int EMPL_TITLE_INDEX = 11;
+	private static final int EMPL_TITLE_INDEX = 10;
 
 	/** The Constant EMPL_WORKTYPE_INDEX. */
-	private static final int EMPL_WORKTYPE_INDEX = 20;
+	private static final int EMPL_WORKTYPE_INDEX = 19;
 
 	/** The Constant EMPL_YEARMONTH_INDEX. */
 	private static final int EMPL_YEARMONTH_INDEX = 0;
@@ -327,6 +327,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final String SEAL_RANGE_COPY_FS = "AT%d:BE%d";
 	
 	private static final int MONTHLY_ACTUAL_DEADLINE_START = 5;
+	
+	private static final int SIDE_HEADER_FONT_SIZE = 9;
+	
+	private static final int SIDE_HEADER_FONT_SIZE_FM = 8;
+	
+	private static final int SIDE_HEADER_FONT_SIZE_FS = 7;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -341,6 +347,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		AttendanceRecordReportData data = dataSource.getData();
 		String templateFile = TEMPLATE_FILE;
 		int fontSize = FONT_SIZE;
+		int sideHeaderFontSize = SIDE_HEADER_FONT_SIZE;
 		String reportPageAddr = REPORT_PAGE_ADDR;
 		String dailyWeekRangeTmpAddr =  DAILY_W_RANGE_TMPL_ADDR;
 		String dailyBRangeTmpAddr = DAILY_B_RANGE_TMPL_ADDR;
@@ -359,6 +366,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			fontSize = FONT_SIZE_FM;
 			
+			sideHeaderFontSize = SIDE_HEADER_FONT_SIZE_FM;
+			
 		} else if( data.getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			templateFile = TEMPLATE_FILE_SMALL;
 			
@@ -371,6 +380,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			weeklyRangeTmpAddr = WEEKLY_RANGE_TMPL_ADDR_FS;
 			
 			fontSize = FONT_SIZE_FS;
+			
+			sideHeaderFontSize = SIDE_HEADER_FONT_SIZE_FS;
 		}
 
 		try (val reportContext = this.createContext(templateFile, data.getExportDateTime())) {
@@ -436,12 +447,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 					
 					// Set header value
-					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9" + dataSource.getData().getCompanyName());
-					pageSetup.setHeader(1, "&\"ＭＳ ゴシック,Bold\"&"+ fontSize + " " + dataSource.getData().getReportName());
+					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&" + sideHeaderFontSize + "\0" + dataSource.getData().getCompanyName());
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック,Bold\"&"+ fontSize + "\0" + dataSource.getData().getReportName());
 					// Get current date and format it
 					DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
-					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
+					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&" + sideHeaderFontSize + "\0" + currentFormattedDate+"\npage&P");
 					// Delete template column
 					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
 						worksheet.getCells().deleteColumns(42, 20, true);
@@ -471,6 +482,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			String fileName = data.getReportName() + "_"
 					+ data.getExportDateTime().replaceAll(" ", "").replaceAll(":", "").replaceAll("/", "");
 
+			// Fix #119010
+			reportContext.getWorkbook().getBuiltInDocumentProperties().setAuthor("Kinjirou");
+			reportContext.getWorkbook().getBuiltInDocumentProperties().setLastSavedBy("");
+			
 			if (dataSource.getMode() == EXPORT_EXCEL) {
 				// save as excel file
 				reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
@@ -694,7 +709,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		Range employeeYearInfo = worksheet.getCells().createRange(String.format(reportLeftColAddr,
 				(startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW), (startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW)));
 
-		employeeInfoL.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 		employeeInfoL.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		employeeInfoR.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 		employeeYearInfo.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
