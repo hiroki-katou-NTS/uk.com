@@ -92,7 +92,7 @@ public class KSU002Finder {
 		
 		if(!weekRuleManagement.isPresent()) {
 			return new PeriodListPeriodDto(new ArrayList<DatePeriod>(), period);
-		}else if(weekRuleManagement.get().getWeekStart().value != startWeekDate.value){
+		}else if(weekRuleManagement.get().getDayOfWeek().value != startWeekDate.value){
 			return new PeriodListPeriodDto(new ArrayList<DatePeriod>(), period);
 		}else {
 			GeneralDate start = period.start();
