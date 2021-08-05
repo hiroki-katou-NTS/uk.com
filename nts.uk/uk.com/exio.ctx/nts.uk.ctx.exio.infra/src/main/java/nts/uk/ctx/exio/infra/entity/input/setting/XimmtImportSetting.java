@@ -73,22 +73,6 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	}
 	
 	public static final JpaEntityMapper<XimmtImportSetting> MAPPER = new JpaEntityMapper<>(XimmtImportSetting.class);
-
-	public static XimmtImportSetting toEntitiy(ExternalImportSetting domain) {
-		
-		val parentPk = new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString());
-		
-		return new XimmtImportSetting(
-				parentPk, 
-				domain.getName().toString(), 
-				domain.getExternalImportGroupId().value, 
-				domain.getImportingMode().value, 
-				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().v(), 
-				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().v(), 
-				domain.getAssembly().getMapping().getMappings().stream()
-					.map(m -> XimmtItemMapping.toEntity(parentPk, m))
-					.collect(Collectors.toList()));
-	}
 	
 	public ExternalImportSetting toDomain() {
 		return new ExternalImportSetting(

@@ -1,9 +1,12 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmf001.b.viewmodel {
 	import ajax = nts.uk.request.ajax;
+	import infor = nts.uk.ui.dialog.info;
 	
 	@bean()
 	class ViewModel extends ko.ViewModel {
+		isNewMode: boolean;
+
 		settingList: KnockoutObservableArray<Setting>; 
 		
 		settingCode: KnockoutObservable<string> = ko.observable();
@@ -17,8 +20,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		importModeOption: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		selectedCode: KnockoutObservable<string> = ko.observable();
-		selectedGroup: KnockoutObservable<number> = ko.observable();
-		selectedItem: KnockoutObservable<number> = ko.observable();
+		selectedItem: KnockoutObservable<string> = ko.observable();
 		
 		layoutList: KnockoutObservableArray<Layout> = ko.observableArray([]);
 		
@@ -56,12 +58,13 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.startPage();
 			self.selectedCode.subscribe((value) => {
 				if (value) {
-					self.updateMode(value);
+					self.updateMode();
+					console.log(value + "を選択した")
 				} else {
 					self.newMode();
+					console.log("選択解除した")
 				}
 			})
-			
 		}
 
 		mounted() {
@@ -71,17 +74,21 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		startPage(){
 			var self = this;
 			let dfd = $.Deferred();
-				self.getListData().done(function() {
-					if (self.settingList().length == 0) {
-						self.newMode();
-					}
-					else {
-						self.selectedCode(self.settingList()[0].code.toString());
-						self.updateMode(self.settingList()[0].code.toString());
-					}
-					dfd.resolve();
+			self.getListData().done(function() {
+				if (self.settingList().length !== 0) {
+					self.selectedCode(self.settingList()[0].code.toString());
+				}
+				dfd.resolve();
 			});
 			return dfd.promise();
+		}
+
+		reloadPage(){
+			var self = this;
+			let dfd = $.Deferred();
+			self.getListData().done(function() {
+				dfd.resolve();
+			});
 		}
 
 		getListData(){
@@ -102,12 +109,14 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			self.selectedCode("");
 			self.setInfo(SettingInfo.new());
+			self.isNewMode = true;
 		}
 
-		updateMode(code: string){
+		updateMode(){
 			let self = this;
-			ajax("com", "exio/input/setting/find/" + code).done((infoData: viewmodel.SettingInfo) => {
+			ajax("com", "exio/input/setting/find/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
+				self.isNewMode = false;
 			});
 		}
 
@@ -120,12 +129,33 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
 			self.layoutList(info.layouts);
-			// for (let val of info.layouts) {
-			// 	self.layoutList.push(val)
-			// }
-			// for(let i = 0; i < info.layouts.length; i++){
-			// 	self.layoutList.push(info.layouts[i])
-			// }
+		}
+
+		save(){
+			let self = this;
+			let saveContents = new SaveContents(
+				self.isNewMode, 
+				new SettingInfo(
+					__viewContext.user.companyId, 
+					self.settingCode(), 
+					self.settingName(), 
+					self.importGroup(), 
+					self.importMode(), 
+					self.itemNameRow(), 
+					self.importStartRow(), 
+					self.layoutList()));
+			ajax("exio/input/setting/save", saveContents);
+			infor(nts.uk.resource.getMessage("Msg_15", []));
+			self.reloadPage();
+			self.selectedCode(self.settingCode());
+		}
+
+		remove(){
+			let self = this;
+			let target = new RemoveTarget(self.selectedCode());
+			ajax("exio/input/setting/remove", target);
+			self.reloadPage();
+			self.selectedCode("");
 		}
 	}
 
@@ -147,6 +177,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 	}
 	
 	export class SettingInfo {
+		companyId: string;
 		code: string;
 		name: string;
 		group: number;
@@ -155,7 +186,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		importStartRow: number;
 		layouts: Array<Layout>;
 
-		constructor(code: string, name: string, group: number, mode: number, itemNameRow: number, importStartRow: number, layouts: Array<Layout>) {
+		constructor(companyId: string, code: string, name: string, group: number, mode: number, itemNameRow: number, importStartRow: number, layouts: Array<Layout>) {
+			this.companyId = companyId;
 			this.code = code;
 			this.name = name;
 			this.group = group;
@@ -166,7 +198,25 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		}
 		
 		static new(){
-			return new SettingInfo("", "", null, null, null, null, [])
+			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, null, [])
+		}
+	}
+
+	class SaveContents{
+		isCreateMode: boolean;
+		setting: SettingInfo;
+
+		constructor(isCreateMode: boolean, setting: SettingInfo) {
+			this.isCreateMode = isCreateMode;
+			this.setting = setting;
+		}
+	}
+	
+	class RemoveTarget{
+		code: string;
+
+		constructor(code: string) {
+			this.code = code;
 		}
 	}
 

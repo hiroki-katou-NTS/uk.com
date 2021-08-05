@@ -33,12 +33,12 @@
 					<button
 						class="proceed"
 						tabindex="3"
-						data-bind="text: '登録'"
+						data-bind="click: save, text: '登録'"
 					></button>
 					<button
 						class="danger"
 						tabindex="4"
-						data-bind="text: '削除'"
+						data-bind="click: remove, text: '削除'"
 					></button>
 					<button
 						id="export-button"
@@ -81,6 +81,7 @@
 									options: $root.content.importGroupOption,
 									optionsValue: 'code',
 									optionsText: 'name',
+									selectFirstIfNull: false,
 									value: importGroup}"></div>
 							</div>
 							<div class="import-mode">
@@ -89,6 +90,7 @@
 									options: $root.content.importModeOption,
 									optionsValue: 'code',
 									optionsText: 'name',
+									selectFirstIfNull: false,
 									value: importMode}"></div>
 							</div>
 						</div>

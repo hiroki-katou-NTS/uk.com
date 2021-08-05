@@ -19,6 +19,7 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class ExternalImportSettingFinder {
@@ -27,12 +28,15 @@ public class ExternalImportSettingFinder {
 	private ExternalImportSettingRequire require;
 	
 	public List<ExternalImportSettingListItemDto> findAll() {
-		return ExternalImportSettingListItemDto.fromDomain(getDummySettings());
+		val require = this.require.create();
+		val settings = require.getSettings(AppContexts.user().companyId());
+		return ExternalImportSettingListItemDto.fromDomain(settings);
 	}
 	
 	public ExternalImportSettingDto find(String settingCode) {
 		val require = this.require.create();
-		return ExternalImportSettingDto.fromDomain(require, getDummySetting());
+		val settingOpt = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode));
+		return ExternalImportSettingDto.fromDomain(require, settingOpt.get());
 	}
 	
 	
@@ -65,5 +69,10 @@ public class ExternalImportSettingFinder {
 						new ExternalImportRowNumber(1), 
 						new ExternalImportRowNumber(2)), 
 				new ImportingMapping(dummyMapping));
+	}
+	
+	public static interface Require extends ExternalImportSettingDto.Require {
+		List<ExternalImportSetting> getSettings(String companyId);
+		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }
