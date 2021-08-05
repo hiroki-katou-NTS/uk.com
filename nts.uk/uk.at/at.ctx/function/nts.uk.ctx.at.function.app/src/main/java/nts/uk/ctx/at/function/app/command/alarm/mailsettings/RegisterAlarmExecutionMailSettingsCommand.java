@@ -27,39 +27,6 @@ public class RegisterAlarmExecutionMailSettingsCommand {
 
     private AlarmMailSendingRoleCmd sendingRole;
 
-    public AlarmListExecutionMailSetting toMailSettingDomain(AlarmListExecutionMailCmd mailSetting) {
-        MailSettings contentMailSettings = new MailSettings(
-                mailSetting.getContentMailSettings().getSubject(),
-                mailSetting.getContentMailSettings().getText(),
-                mailSetting.getContentMailSettings().getMailAddressCC().stream().map(x -> {
-                    return new MailAddress(x);
-                }).collect(Collectors.toList()),
-                mailSetting.getContentMailSettings().getMailAddressBCC().stream().map(x -> {
-                    return new MailAddress(x);
-                }).collect(Collectors.toList()),
-                mailSetting.getContentMailSettings().getMailRely()
-        );
-        return new AlarmListExecutionMailSetting(
-                AppContexts.user().companyId(),
-                IndividualWkpClassification.of(mailSetting.individualWkpClassify),
-                NormalAutoClassification.of(mailSetting.normalAutoClassify),
-                PersonalManagerClassification.of(mailSetting.personalManagerClassify),
-                Optional.ofNullable(contentMailSettings),
-                new MailAddress(mailSetting.senderAddress),
-                mailSetting.isSendResult()
-        );
-    }
-
-    public AlarmMailSendingRole toRoleDomain() {
-        AlarmMailSendingRoleCmd mailSetting = this.getSendingRole();
-        return new AlarmMailSendingRole(
-                IndividualWkpClassification.of(mailSetting.getIndividualWkpClassify()),
-                mailSetting.isRoleSetting(),
-                mailSetting.isSendResult(),
-                mailSetting.getRoleIds()
-        );
-    }
-
     @Data
     static class AlarmListExecutionMailCmd {
         /**
@@ -139,5 +106,39 @@ public class RegisterAlarmExecutionMailSettingsCommand {
          * ロールID
          */
         private List<String> roleIds;
+    }
+
+
+    public AlarmListExecutionMailSetting toMailSettingDomain(AlarmListExecutionMailCmd mailSetting) {
+        MailSettings contentMailSettings = new MailSettings(
+                mailSetting.getContentMailSettings().getSubject(),
+                mailSetting.getContentMailSettings().getText(),
+                mailSetting.getContentMailSettings().getMailAddressCC().stream().map(x -> {
+                    return new MailAddress(x);
+                }).collect(Collectors.toList()),
+                mailSetting.getContentMailSettings().getMailAddressBCC().stream().map(x -> {
+                    return new MailAddress(x);
+                }).collect(Collectors.toList()),
+                mailSetting.getContentMailSettings().getMailRely()
+        );
+        return new AlarmListExecutionMailSetting(
+                AppContexts.user().companyId(),
+                IndividualWkpClassification.of(mailSetting.individualWkpClassify),
+                NormalAutoClassification.of(mailSetting.normalAutoClassify),
+                PersonalManagerClassification.of(mailSetting.personalManagerClassify),
+                Optional.ofNullable(contentMailSettings),
+                new MailAddress(mailSetting.senderAddress),
+                mailSetting.isSendResult()
+        );
+    }
+
+    public AlarmMailSendingRole toRoleDomain() {
+        AlarmMailSendingRoleCmd mailSetting = this.getSendingRole();
+        return new AlarmMailSendingRole(
+                IndividualWkpClassification.of(mailSetting.getIndividualWkpClassify()),
+                mailSetting.isRoleSetting(),
+                mailSetting.isSendResult(),
+                mailSetting.getRoleIds()
+        );
     }
 }
