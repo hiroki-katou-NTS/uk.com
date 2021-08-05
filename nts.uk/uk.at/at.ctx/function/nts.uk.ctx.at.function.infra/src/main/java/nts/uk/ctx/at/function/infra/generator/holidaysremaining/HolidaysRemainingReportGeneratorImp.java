@@ -82,7 +82,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
     private static final int NUMBER_COLUMN = 23;
     private static final int MIN_ROW_DETAILS = 4;
     private static final int TOTAL_MONTH_IN_YEAR = 12;
-    private static final int MAX_ROW_IN_PAGE = 56;
+    private static final int MAX_ROW_IN_PAGE = 42;
     private static final int MAX_ROW_IN_PAGE_TEMPLATE = 60;
 
     private static final String COLON = "：";
