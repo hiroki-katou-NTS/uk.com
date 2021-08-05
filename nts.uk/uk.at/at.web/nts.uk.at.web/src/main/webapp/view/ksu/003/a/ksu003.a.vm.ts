@@ -5604,6 +5604,39 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								}
 								
 							} else {
+								let taskOld = _.filter(self.taskData, (x : any) => {
+										return self.dataScreen003A().employeeInfo[line].empId == x.empID && x.taskScheduleDetail.length > 0;
+								});
+								
+								taskOld = _.map(taskOld, (map : any) => {
+									let taskScheduleDetails : any = [];
+									map.taskScheduleDetail.forEach((tsd : any) => {
+										taskScheduleDetails.push({
+											taskCode : tsd.taskCode,
+											timeSpanForCalcDto : {
+												start : tsd.timeSpanForCalcDto.start,
+												end : tsd.timeSpanForCalcDto.end
+											}
+										})
+								})
+									
+									return {
+										empId : map.empID,
+										taskScheduleDetail : taskScheduleDetails
+									}
+								})
+								
+								if (self.lstTaskScheduleDetailEmp.length == 0)
+								self.lstTaskScheduleDetailEmp = taskOld;
+								
+								indexTaskNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
+									return ind.empId === self.dataScreen003A().employeeInfo[line].empId;
+								});
+								
+								if (indexTaskNew != -1)
+								indNew = _.findIndex(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail, (inw : any) => {
+									return inw.timeSpanForCalcDto.start == task.start && inw.timeSpanForCalcDto.end == task.end
+								})
 								
 								if (start == oldS && end < oldE) {
 									if (indOld != -1)
@@ -5616,10 +5649,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								
 								if (start < oldS && end < oldE && end > oldS) {
 									if (indOld != -1)
-									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end = end;
+									self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.start = end;
 									
 									if (indNew != -1)
-									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.end = end;
+									self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail[indNew].timeSpanForCalcDto.start = end;
 									
 									continue;
 								}
