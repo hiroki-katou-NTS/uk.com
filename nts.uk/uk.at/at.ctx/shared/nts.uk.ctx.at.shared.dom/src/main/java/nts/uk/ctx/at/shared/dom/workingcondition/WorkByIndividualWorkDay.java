@@ -43,9 +43,9 @@ public class WorkByIndividualWorkDay extends DomainObject{
 		// val 就業時間帯コード ＝ ＠勤務時間帯。曜日別。該当の単一日勤務予定を取得する（曜日）：
 		// map $。就業時間帯コード WorkTimeCode
 		Optional<SingleDaySchedule> data = this.workTime.getDayOfWeek().getSingleDaySchedule(date);
-		if (data.isPresent()) {
+		if (data.isPresent() && data.get().getWorkTimeCode().isPresent()) {
 			return new WorkInformation(workType.getWeekdayTimeWTypeCode(),
-					data.get().getWorkTimeCode().isPresent() ? data.get().getWorkTimeCode().get() : null);
+					data.get().getWorkTimeCode().get());
 
 		} else {
 			return new WorkInformation(workType.getHolidayTimeWTypeCode(), null);

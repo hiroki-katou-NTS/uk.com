@@ -30,7 +30,6 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeBasicW
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeErrorLogHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTimeHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
-import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkTimeConvertCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByClassGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByWorkplaceGeterCommand;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
@@ -1234,17 +1233,14 @@ public class ScheduleCreatorExecutionTransaction {
 			ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
 			ScheduleCreator creator) {
 
-		WorkScheduleMasterReferenceAtr referenceBasicWork = itemDto.get().getScheduleMethod().get()
-				.getWorkScheduleBusCal().get().getReferenceBasicWork();
 		WorkScheduleMasterReferenceAtr workplaceHistItem = itemDto.get().getScheduleMethod().get()
 				.getWorkScheduleBusCal().get().getReferenceBusinessDayCalendar();
 
 		// パラメータ。作成参照先を確認する
 		if (command.getContent().getSpecifyCreation().getReferenceMaster().isPresent()) {
 			workplaceHistItem = convertEnum(command.getContent().getSpecifyCreation().getReferenceMaster().get());
-			referenceBasicWork = workplaceHistItem;
 			Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache,
-					workplaceHistItem, referenceBasicWork, dateInPeriod,
+					workplaceHistItem, dateInPeriod,
 					masterCache.getEmpGeneralInfo().getClassificationDto(),
 					masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
 			String workType = null;
@@ -1263,7 +1259,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 		// xử lý 「基本勤務設定」を取得する(lấy thông tin 「基本勤務設定」)
 		Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache, workplaceHistItem,
-				referenceBasicWork, dateInPeriod, masterCache.getEmpGeneralInfo().getClassificationDto(),
+				dateInPeriod, masterCache.getEmpGeneralInfo().getClassificationDto(),
 				masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
 		// fix bug 113909
 		if(!basicWorkSetting.isPresent())
@@ -1375,7 +1371,7 @@ public class ScheduleCreatorExecutionTransaction {
 	}
 
 	/**
-	 * 
+	 * 在職状態に対応する「就業時間帯コード」を取得する
 	 * @param command
 	 * @param masterCache
 	 * @param itemDto
@@ -1392,36 +1388,28 @@ public class ScheduleCreatorExecutionTransaction {
 		TimeZoneScheduledMasterAtr workplaceHistItem = itemDto.get().getScheduleMethod().get().getWorkScheduleBusCal()
 				.get().getReferenceWorkingHours();
 
-		// if 個人勤務日別
+		// if 平日時(new) - 個人勤務日別 (old)
 		if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.WEEKDAYS.value) {
-
-			// 個人勤務日別をもとに「就業時間帯コード」を変換する - chưa tìm được thuật toán này
-			TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()
-					.getWorkScheduleBusCal().get().getReferenceWorkingHours();
-			ScheduleErrorLogGeterCommand logGeterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
-					command.getCompanyId(), dateInPeriod);
-			WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(creator.getEmployeeId(),
-					logGeterCommand, referenceWorkingHours.value,
-					workType == null ? null : workType.getWorkTypeCode().v(),
-					workingCode == null ? null : workingCode.v());
-			workTimeCode = new WorkingCode(workTimeHandler.getWorkTimeZoneCodeInOffice(timeConvertCommand,
-					masterCache.getListWorkingConItem()));
+			//平日の就業時間帯コードを取得する
+			String worktime = itemDto.isPresent() && itemDto.get()
+					.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()
+							? itemDto.get().getWorkCategory().getWorkTime().getWeekdayTime()
+									.getWorkTimeCode().get().v()
+							: null;
+			if(worktime != null) {
+				workTimeCode = new WorkingCode(worktime);
+			}
 			return workTimeCode;
 		}
 
 		// if 個人曜日別
-		if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
-			// 個人曜日別をもとに就業時間帯コードを変換する - chưa tìm được thuật toán này
-			TimeZoneScheduledMasterAtr referenceWorkingHours = itemDto.get().getScheduleMethod().get()
-					.getWorkScheduleBusCal().get().getReferenceWorkingHours();
-			ScheduleErrorLogGeterCommand logGeterCommand = new ScheduleErrorLogGeterCommand(command.getExecutionId(),
-					command.getCompanyId(), dateInPeriod);
-			WorkTimeConvertCommand timeConvertCommand = new WorkTimeConvertCommand(creator.getEmployeeId(),
-					logGeterCommand, referenceWorkingHours.value,
-					workType == null ? null : workType.getWorkTypeCode().v(),
-					workingCode == null ? null : workingCode.v());
-			workTimeCode = new WorkingCode(workTimeHandler.getWorkTimeZoneCodeInOfficeDayOfWeek(timeConvertCommand,
-					masterCache.getListWorkingConItem()));
+		else if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
+			//個人曜日別をもとに就業時間帯コードを変換する
+			String worktime = this.getWorkTimeByWeekdays(command.toBaseCommand(dateInPeriod),
+					creator.getEmployeeId(), dateInPeriod, workType.getWorkTypeCode().v(), itemDto);
+			if(worktime != null) {
+				workTimeCode = new WorkingCode(worktime);
+			}
 			return workTimeCode;
 		}
 
@@ -1429,6 +1417,37 @@ public class ScheduleCreatorExecutionTransaction {
 		// 入力パラメータ.就業時間帯コードを使う
 		workTimeCode = workingCode;
 		return workTimeCode;
+	}
+	
+	/**
+	 * 在職の「就業時間帯コード」を返す（曜日別）
+	 * 
+	 * @param scheduleErrorLogGeterCommand
+	 * @param employeeID
+	 * @param ymd
+	 * @param workType
+	 * @param listWorkingConItem
+	 * @return
+	 */
+	public String getWorkTimeByWeekdays(ScheduleErrorLogGeterCommand scheduleErrorLogGeterCommand, String employeeID,
+			GeneralDate ymd, String workType, Optional<WorkCondItemDto> workingConItem) {
+		// 就業時間帯の必須チェック
+		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workType);
+		if (setupType == SetupType.NOT_REQUIRED) {
+			return null;
+		}
+		if (!workingConItem.isPresent()) {
+			return null;
+		}
+		Optional<SingleDaySchedule> optSingleDaySchedule = workingConItem.get().getWorkCategory()
+				.getWorkTime().getDayOfWeek().getSingleDaySchedule(ymd);
+		// 入力パラメータ「年月日」の曜日に対応する「単一日勤務時間」から、就業時間帯コードを取得する
+		if (optSingleDaySchedule.isPresent() && optSingleDaySchedule.get().getWorkTimeCode().isPresent()) {
+			return optSingleDaySchedule.get().getWorkTimeCode().get().v();
+		}
+		// エラーログを作成する
+		this.scheCreExeErrorLogHandler.addError(scheduleErrorLogGeterCommand, employeeID, "Msg_594");
+		return null;
 	}
 
 	/**
@@ -1445,7 +1464,7 @@ public class ScheduleCreatorExecutionTransaction {
 	 */
 	private Optional<BasicWorkSetting> getBasicWorkSetting(ScheduleCreatorExecutionCommand command,
 			CreateScheduleMasterCache masterSche, WorkScheduleMasterReferenceAtr workplaceHistItem,
-			WorkScheduleMasterReferenceAtr referenceBasicWork, GeneralDate dateInPeriod,
+			GeneralDate dateInPeriod,
 			List<ExClassificationHistoryImported> mapClassificationHist,
 			List<ExWorkPlaceHistoryImported> mapWorkplaceHist, ScheduleCreator creator) {
 
@@ -1521,7 +1540,7 @@ public class ScheduleCreatorExecutionTransaction {
 						
 						// 「基本勤務設定」を取得する
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
-								dateInPeriod, creator, workdayDivision, referenceBasicWork,
+								dateInPeriod, creator, workdayDivision, workplaceHistItem,
 								workdayDivisions.getWorkplaceIds(),
 								optWorkplaceHistItem.getWorkplaceItems().get(0).getWorkplaceId(), null);
 
@@ -1560,7 +1579,7 @@ public class ScheduleCreatorExecutionTransaction {
 							return Optional.empty();
 						
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
-								dateInPeriod, creator, workdayDivision, referenceBasicWork, new ArrayList<>(), null,
+								dateInPeriod, creator, workdayDivision, workplaceHistItem, new ArrayList<>(), null,
 								optClassificationHistItem.get().getClassificationItems().get(0)
 										.getClassificationCode());
 						return basicWorkSettings;
