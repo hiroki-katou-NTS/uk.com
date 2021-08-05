@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.CodeConvertDetail;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.infra.entity.input.revise.XimmtReviseItemPK;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -38,6 +39,12 @@ public class XimmtCodeConvert extends ContractUkJpaEntity implements Serializabl
 	private int importWithoutSetting;
 	
 	public static final JpaEntityMapper<XimmtCodeConvert> MAPPER = new JpaEntityMapper<>(XimmtCodeConvert.class);
+	
+	public static XimmtCodeConvert toEntity(XimmtReviseItemPK parentPk, ExternalImportCodeConvert domain) {
+		return new XimmtCodeConvert(
+				XimmtCodeConvertPK.of(parentPk),
+				domain.isImportWithoutSetting() ? 1 : 0);
+	}
 	
 	@Override
 	protected Object getKey() {

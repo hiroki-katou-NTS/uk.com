@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.infra.entity.input.revise.XimmtReviseItemPK;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,11 +22,19 @@ public class XimmtCodeConvertDetailPK implements Serializable {
 	private String companyId;
 	
 	@Column(name = "SETTING_CODE")
-	private int settingCode;
+	private String settingCode;
 	
 	@Column(name = "ITEM_NO")
 	private int itemNo;
 	
 	@Column(name = "TARGET_CODE")
 	private String targetCode;
+	
+	public static XimmtCodeConvertDetailPK of(XimmtReviseItemPK parentPk, String targetCode) {
+		return new XimmtCodeConvertDetailPK(
+				parentPk.getCompanyId(),
+				parentPk.getSettingCode(),
+				parentPk.getItemNo(),
+				targetCode);
+	}
 }

@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,4 +26,8 @@ public class XimmtReviseItemPK implements Serializable{
 	
 	@Column(name = "ITEM_NO")
 	private int itemNo;
+	
+	public static XimmtReviseItemPK of(ReviseItem domain) {
+		return new XimmtReviseItemPK(domain.getCompanyId(), domain.getSettingCode().v(), domain.getItemNo());
+	}
 }

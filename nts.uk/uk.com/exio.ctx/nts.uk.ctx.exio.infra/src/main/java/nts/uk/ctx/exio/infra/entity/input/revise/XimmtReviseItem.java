@@ -13,6 +13,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
@@ -51,7 +52,9 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	@EmbeddedId
 	private XimmtReviseItemPK pk;
 	
-	/*  */
+	/**
+	 * 項目型は本来ReviseItemには含まれていないが、ドメインへの復元時に型を区別するのに必要。
+	 */
 	@Column(name = "ITEM_TYPE")
 	private int itemType;
 	
@@ -102,6 +105,65 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 	
 	public static final JpaEntityMapper<XimmtReviseItem> MAPPER = new JpaEntityMapper<>(XimmtReviseItem.class);
 	
+	public static XimmtReviseItem toEntity(ReviseItem domain) {
+		
+		val entity = new XimmtReviseItem();
+		
+		entity.pk = XimmtReviseItemPK.of(domain);
+		toEntity(domain.getRevisingValue(), entity);
+		
+		return entity;
+	}
+	
+	private static void toEntity(ReviseValue reviseValue, XimmtReviseItem entity) {
+
+		if (reviseValue instanceof StringRevise) {
+			val r = (StringRevise) reviseValue;
+			
+			entity.itemType = ItemType.STRING.value;
+			entity.usePadding = r.isUsePadding() ? 1 : 0;
+			r.getPadding().ifPresent(p -> {
+				entity.paddingLength = p.getLength().v();
+				entity.paddingMethod = p.getMethod().value;
+			});
+		}
+		
+		else if (reviseValue instanceof IntegerRevise) {
+			entity.itemType = ItemType.INT.value;
+		}
+		
+		else if (reviseValue instanceof RealRevise) {
+			val r = (RealRevise) reviseValue;
+			
+			entity.itemType = ItemType.REAL.value;
+			entity.isDecimalization = r.isDecimalization() ? 1 : 0;
+			entity.decimalLength = r.getLength().map(l -> l.v()).orElse(null);
+		}
+		
+		else if (reviseValue instanceof DateRevise) {
+			val r = (DateRevise) reviseValue;
+			
+			entity.itemType = ItemType.DATE.value;
+			entity.dateFormat = r.getDateFormat().value;
+		}
+		
+		else if (reviseValue instanceof TimeRevise) {
+			val r = (TimeRevise) reviseValue;
+			
+			// TIME_POINTでもDURATIONでもどちらでも良い。どちらにせよTimeReviseとしてtoDomainされるので問題ない。
+			entity.itemType = ItemType.TIME_DURATION.value;
+			
+			entity.hourly = r.getHourly().value;
+			entity.baseNumber = r.getBaseNumber().map(e -> e.value).orElse(null);
+			entity.delimiter = r.getDelimiter().map(e -> e.value).orElse(null);
+			entity.rounding = r.getRounding().map(e -> e.value).orElse(null);
+		}
+		
+		else {
+			throw new RuntimeException("unknown: " + reviseValue);
+		}
+	}
+	
 	public ReviseItem toDomain(Optional<ExternalImportCodeConvert> codeConvert) {
 		return new ReviseItem(
 				pk.getCompanyId(),
@@ -133,9 +195,9 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 			case TIME_DURATION:
 				return new TimeRevise(
 						EnumAdaptor.valueOf(hourly, HourlySegment.class),
-						EnumAdaptor.valueOf(baseNumber, TimeBaseNumber.class),
-						Optional.ofNullable(delimiter != null ? EnumAdaptor.valueOf(delimiter, TimeBase60Delimiter.class) : null),
-						EnumAdaptor.valueOf(rounding, TimeBase10Rounding.class));
+						EnumAdaptor.optionalOf(baseNumber, TimeBaseNumber.class),
+						EnumAdaptor.optionalOf(delimiter, TimeBase60Delimiter.class),
+						EnumAdaptor.optionalOf(rounding, TimeBase10Rounding.class));
 			default:
 				throw new RuntimeException("項目型に対する実装が存在しません。:" + EnumAdaptor.valueOf(itemType, ItemType.class));
 		}

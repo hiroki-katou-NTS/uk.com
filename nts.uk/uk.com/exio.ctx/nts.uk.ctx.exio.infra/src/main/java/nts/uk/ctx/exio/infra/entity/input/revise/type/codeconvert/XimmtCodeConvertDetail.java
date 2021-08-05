@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.CodeConvertDetail;
+import nts.uk.ctx.exio.infra.entity.input.revise.XimmtReviseItemPK;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -34,6 +35,12 @@ public class XimmtCodeConvertDetail extends ContractUkJpaEntity implements Seria
 	private String systemCode;
 	
 	public static final JpaEntityMapper<XimmtCodeConvertDetail> MAPPER = new JpaEntityMapper<>(XimmtCodeConvertDetail.class);
+	
+	public static XimmtCodeConvertDetail toEntity(XimmtReviseItemPK parentPk, CodeConvertDetail domain) {
+		return new XimmtCodeConvertDetail(
+				XimmtCodeConvertDetailPK.of(parentPk, domain.getBefore().v()),
+				domain.getAfter().v());
+	}
 	
 	@Override
 	protected Object getKey() {

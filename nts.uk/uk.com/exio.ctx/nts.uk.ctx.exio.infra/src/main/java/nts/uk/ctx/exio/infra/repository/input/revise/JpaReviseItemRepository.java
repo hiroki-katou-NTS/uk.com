@@ -10,9 +10,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.CodeConvertDetail;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.StringRevise;
 import nts.uk.ctx.exio.infra.entity.input.revise.XimmtReviseItem;
+import nts.uk.ctx.exio.infra.entity.input.revise.XimmtReviseItemPK;
 import nts.uk.ctx.exio.infra.entity.input.revise.type.codeconvert.XimmtCodeConvert;
 import nts.uk.ctx.exio.infra.entity.input.revise.type.codeconvert.XimmtCodeConvertDetail;
 
@@ -77,5 +81,58 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 				.setParameter("settingCD", settingCode)
 				.setParameter("itemNO", importItemNumber)
 				.getList(rec -> rec.toDomain());
+	}
+
+	@Override
+	public void persist(ReviseItem reviseItem) {
+
+		delete(XimmtReviseItemPK.of(reviseItem));
+
+		val parent = XimmtReviseItem.toEntity(reviseItem);
+		commandProxy().insert(parent);
+		
+		getCodeConvert(reviseItem).ifPresent(codeConvert -> {
+			commandProxy().insert(XimmtCodeConvert.toEntity(parent.getPk(), codeConvert));
+			
+			codeConvert.getConvertDetails().forEach(detail -> {
+				commandProxy().insert(XimmtCodeConvertDetail.toEntity(parent.getPk(), detail));
+			});
+		});
+	}
+	
+	private void delete(XimmtReviseItemPK pk) {
+		
+		deleteEntity(XimmtCodeConvertDetail.class.getSimpleName(), pk);
+		deleteEntity(XimmtCodeConvert.class.getSimpleName(), pk);
+		deleteEntity(XimmtReviseItem.class.getSimpleName(), pk);
+	}
+	
+	private void deleteEntity(String entityName, XimmtReviseItemPK reviseItem) {
+		
+		String jpql = " delete from " + entityName + " f"
+				+ " where f.pk.companyId = :companyID "
+				+ " and f.pk.settingCode = :convertCd "
+				+ " and f.pk.itemNo = :itemNO ";
+		
+		this.getEntityManager().createQuery(jpql)
+				.setParameter("companyID", reviseItem.getCompanyId())
+				.setParameter("settingCD", reviseItem.getSettingCode())
+				.setParameter("itemNO", reviseItem.getItemNo())
+				.executeUpdate();
+	}
+	
+	private static Optional<ExternalImportCodeConvert> getCodeConvert(ReviseItem reviseItem) {
+		
+		ReviseValue r = reviseItem.getRevisingValue();
+		
+		if (r instanceof StringRevise) {
+			return ((StringRevise) r).getCodeConvert();
+		}
+		
+		if (r instanceof IntegerRevise) {
+			return ((IntegerRevise) r).getCodeConvert();
+		}
+		
+		return Optional.empty();
 	}
 }

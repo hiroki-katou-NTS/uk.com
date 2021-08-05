@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.existing;
 import java.math.BigDecimal;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
@@ -13,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class StringifiedValue {
 
+	@Getter
 	private final String value;
 	
 	private static final String DATE_FORMAT = "yyyyMMdd";
