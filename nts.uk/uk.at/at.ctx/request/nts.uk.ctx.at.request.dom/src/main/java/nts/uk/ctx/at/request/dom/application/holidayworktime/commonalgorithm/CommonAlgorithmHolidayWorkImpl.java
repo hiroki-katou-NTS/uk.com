@@ -807,7 +807,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 				
 				// Output．初期選択勤務種類=Input．ドメインモデル「労働条件項目」．区分別勤務．勤務種類.休日出勤時
 				WorkTypeCode holidayWorkWTypeCode = workTypeByIndividualWorkDay.getHolidayWorkWTypeCode();
-				output.setInitWorkTypeCd(Optional.of(workTypeByIndividualWorkDay.getHolidayWorkWTypeCode()));
+				output.setInitWorkTypeCd(Optional.ofNullable(workTypeByIndividualWorkDay.getHolidayWorkWTypeCode()));
 				
 				// 勤務種類の法定区分を取得
 				Optional<HolidayAtr> noneSettingHolidayAtr = 
@@ -844,15 +844,24 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 		}
 		
 		// Input．勤務種類リストにOutput．初期選択勤務種類が存在するかチェックする
-		if (!output.getInitWorkTypeCd().isPresent()) {
+		String wType = output.getInitWorkTypeCd().map(y -> y.v()).orElse(null);
+		boolean isWorkType = workTypeList.stream()
+					.anyMatch(
+							x -> x.getWorkTypeCode().v().equals(wType)
+					);
+		if (!isWorkType) {
 			output.setInitWorkTypeCd(Optional.ofNullable(!CollectionUtil.isEmpty(workTypeList) ? workTypeList.get(0).getWorkTypeCode() : null));
 		}
 		
 		// Input．就業時間帯リストにOutput．初期選択就業時間帯が存在するかチェックする
-		if (!output.getInitWorkTimeCd().isPresent()) {
+		String wTime = output.getInitWorkTimeCd().map(x -> x.v()).orElse(null);
+		boolean isWorkTime = 
+				workTimeList.stream()
+							.anyMatch(x -> x.getWorktimeCode().v().equals(wTime));
+		
+		if (!isWorkTime) {
 			output.setInitWorkTimeCd(Optional.ofNullable(!CollectionUtil.isEmpty(workTimeList) ? workTimeList.get(0).getWorktimeCode() : null));
 		}
-		
 		
 		return output;
 		
