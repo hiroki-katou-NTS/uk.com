@@ -10,9 +10,25 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.*;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.AffJobTitleHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.DateHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
@@ -31,6 +47,7 @@ import nts.uk.ctx.sys.shared.dom.user.UserName;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
 public class RoleIndividualFinder {
@@ -51,12 +68,6 @@ public class RoleIndividualFinder {
     private RoleAdapter roleAdapter;
 
     @Inject
-    private RoleEmployAdapter roleEmployAdapter;
-
-    @Inject
-    private PersonEmpBasicInfoPub personEmpBasicInfoPub;
-
-    @Inject
     private EmployeeDataMngInfoRepository empDataRepo;
 
     @Inject
@@ -64,6 +75,9 @@ public class RoleIndividualFinder {
 
     @Inject
     private WorkplacePub workplacePub;
+
+    @Inject
+    private SyJobTitlePub syJobTitlePub;
 
 
     private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
@@ -254,17 +268,19 @@ public class RoleIndividualFinder {
             return null;
         }
         Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
+        val pid = user.get().getAssociatedPersonID();
+        Optional<EmployeeDataMngInfo> employeeDataMngInfoOptional =  empDataRepo.findByCidPid(companyId, pid.get());
+
         if (user.isPresent()) {
             String userName = "";
             if (user.get().getUserName().isPresent())
                 userName = user.get().getUserName().get().v();
-                    return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(), rGrant.get().getUserId(), "", "");
+                    return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(), employeeDataMngInfoOptional.get().getEmployeeId(), "", "");
 
             } else {
             return null;
         }
     }
-
 
     public CompanyInfo getCompanyInfo() {
         val cid = AppContexts.user().companyId();
@@ -285,6 +301,18 @@ public class RoleIndividualFinder {
             SWkpHistExport export = sWkpHistExport.get();
             WorkPlaceInfo workPlaceInfo = new WorkPlaceInfo(export.getWorkplaceCode(), export.getWorkplaceName());
             return workPlaceInfo;
+        }
+        return null;
+    }
+
+    public JobTitle GetJobTitle(String employeeID) {
+        GeneralDate baseDate = GeneralDate.today();
+
+        Optional<AffJobTitleBasicExport> affJobTitleBasicExport =  syJobTitlePub.getBySidAndBaseDate(employeeID, baseDate);
+        if(affJobTitleBasicExport.isPresent()){
+            AffJobTitleBasicExport affJobTitleBasicExport1 = affJobTitleBasicExport.get();
+            JobTitle jobTitle = new JobTitle(affJobTitleBasicExport1.getJobTitleCode(), affJobTitleBasicExport1.getJobTitleName());
+            return jobTitle;
         }
         return null;
     }
