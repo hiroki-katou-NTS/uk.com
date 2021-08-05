@@ -112,7 +112,8 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 	public void updateAppReflectHist(String sid, String appId, GeneralDate baseDate,
 			ScheduleRecordClassifi classification, boolean flagRemove) {
 		this.queryProxy().query(UPDATE_FLAG, KsrdtReflectAppHist.class).setParameter("sid", sid)
-				.setParameter("appId", appId).setParameter("date", baseDate).setParameter("atr", classification.value);
+				.setParameter("appId", appId).setParameter("date", baseDate).setParameter("atr", classification.value).setParameter("deleteAtr", flagRemove ? 1: 0).getQuery().executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override

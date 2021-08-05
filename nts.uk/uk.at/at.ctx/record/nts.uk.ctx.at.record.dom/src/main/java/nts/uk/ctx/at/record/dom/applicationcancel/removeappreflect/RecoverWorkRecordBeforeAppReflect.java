@@ -65,7 +65,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 
 				// 申請反映履歴の取消区分を更新する
 				require.updateAppReflectHist(application.getEmployeeID(), application.getAppID(), date,
-						ScheduleRecordClassifi.SCHEDULE, true);
+						ScheduleRecordClassifi.RECORD, true);
 			});
 		}
 		// 反映状態を「取消済み」に更新する
