@@ -69,6 +69,8 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
             if (updateEntity != null) {
                 updateEntity.fromEntity(newEntity);
                 this.commandProxy().update(updateEntity);
+            } else {
+                this.commandProxy().insert(newEntity);
             }
         });
     }

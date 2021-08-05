@@ -9,7 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 @Getter
 public enum NormalAutoClassification {
     NORMAL(0, "通常"),
-    AUTO(0, "自動");
+    AUTO(1, "自動");
 
     public int value;
     public String nameId;
