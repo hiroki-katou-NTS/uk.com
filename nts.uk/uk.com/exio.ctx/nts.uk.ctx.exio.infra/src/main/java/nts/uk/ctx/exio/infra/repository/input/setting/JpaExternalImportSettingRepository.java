@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.infra.repository.input.setting;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,12 +21,12 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	
 	@Override
 	public void insert(ExternalImportSetting domain) {
-		this.commandProxy().insert(toSettingEntitiy(domain));
+		this.commandProxy().insert(toEntitiy(domain));
 	}
 	
 	@Override
 	public void update(ExternalImportSetting domain) {
-		this.commandProxy().update(toSettingEntitiy(domain));
+		this.commandProxy().update(toEntitiy(domain));
 		
 	}
 	
@@ -34,6 +35,17 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		val pk = new XimmtImportSettingPK(companyId, settingCode.toString());
 		this.commandProxy().remove(XimmtImportSetting.class, pk);
 		
+	}
+	
+	@Override
+	public List<ExternalImportSetting> getAll(String companyId) {
+		String sql 	= " select f "
+				+ " from XimmtImportSetting f "
+				+ " where f.pk.companyId = :companyID ";
+		
+		return this.queryProxy().query(sql, XimmtImportSetting.class)
+				.setParameter("companyID", companyId)
+				.getList(rec -> rec.toDomain());
 	}
 	
 	@Override
@@ -49,7 +61,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 				.getSingle(rec -> rec.toDomain());
 	}
 	
-	private XimmtImportSetting toSettingEntitiy(ExternalImportSetting domain) {
+	private XimmtImportSetting toEntitiy(ExternalImportSetting domain) {
 		return new XimmtImportSetting(
 				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()), 
 				domain.getName().toString(), 
