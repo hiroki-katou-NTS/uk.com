@@ -14,11 +14,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.OptimisticLockException;
 
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -358,12 +360,20 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 
 	@Override
 	public void update(ApprovalRootState root, Integer rootType) {
-		WwfdtAppInstRoute wwfdtApprovalRootState = this.queryProxy()
-				.find(root.getRootStateID(),WwfdtAppInstRoute.class).get();
-		wwfdtApprovalRootState.listWwfdtPhase = root.getListApprovalPhaseState().stream()
-				.map(x -> updateEntityWwfdtApprovalPhaseState(root.getRootStateID(), x)).collect(Collectors.toList());
-		this.commandProxy().update(wwfdtApprovalRootState);
-		this.getEntityManager().flush();
+		try {
+			WwfdtAppInstRoute wwfdtApprovalRootState = this.queryProxy()
+					.find(root.getRootStateID(),WwfdtAppInstRoute.class).get();
+			wwfdtApprovalRootState.listWwfdtPhase = root.getListApprovalPhaseState().stream()
+					.map(x -> updateEntityWwfdtApprovalPhaseState(root.getRootStateID(), x)).collect(Collectors.toList());
+			this.commandProxy().update(wwfdtApprovalRootState);
+			this.getEntityManager().flush();
+		} catch(OptimisticLockException ope) {
+			ope.printStackTrace();
+			throw new BusinessException("Msg_197");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
 	@Override
