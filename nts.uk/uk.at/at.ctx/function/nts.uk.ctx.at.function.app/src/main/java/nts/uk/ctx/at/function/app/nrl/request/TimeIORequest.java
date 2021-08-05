@@ -12,7 +12,6 @@ import nts.uk.ctx.at.function.app.nrl.data.FieldName;
 import nts.uk.ctx.at.function.app.nrl.data.checker.FormatPattern;
 import nts.uk.ctx.at.function.app.nrl.exceptions.ErrorCode;
 import nts.uk.ctx.at.function.app.nrl.exceptions.InvalidFieldDataException;
-import nts.uk.ctx.at.function.app.nrl.response.NRLResponse;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordStampAdapter;
@@ -80,16 +79,9 @@ public class TimeIORequest extends NRLRequest<Frame> {
 			
 			val  result = convertTRStampAdapter
 					.convertData(empInfoTerCode, contractCode, stamData);
-			if (!result.isPresent()) {
-				context.setResponse(NRLResponse
-						.noAccept(context.getTerminal().getNrlNo(), context.getTerminal().getMacAddress(), contractCode)
-						.build().addPayload(Frame.class, ErrorCode.PARAM.value));
-				return;
-			}
-			if (result.get().getLeft().isPresent())
-				result.get().getLeft().get().run();
-			if (result.get().getRight().isPresent())
-				result.get().getRight().get().getAtomTask().run();
+			result.ifPresent(data -> {
+				data.getAtomTask().run();
+			});
 		}
 		
 		context.responseAccept();

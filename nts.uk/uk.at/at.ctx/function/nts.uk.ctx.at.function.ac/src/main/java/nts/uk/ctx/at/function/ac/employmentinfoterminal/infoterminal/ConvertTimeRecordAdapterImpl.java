@@ -5,10 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import lombok.val;
-import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.ConvertTimeRecordStampAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampDataReflectResultImport;
 import nts.uk.ctx.at.function.dom.adapter.employmentinfoterminal.infoterminal.StampReceptionDataImport;
@@ -27,7 +24,7 @@ public class ConvertTimeRecordAdapterImpl implements ConvertTimeRecordStampAdapt
 	private ConvertTimeRecordStampPub timeRecordStampPub;
 
 	@Override
-	public Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>>> convertData(String empInfoTerCode,
+	public Optional<StampDataReflectResultImport> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataImport stampReceptData) {
 
 		val convertDataOpt = timeRecordStampPub
@@ -38,11 +35,8 @@ public class ConvertTimeRecordAdapterImpl implements ConvertTimeRecordStampAdapt
 								stampReceptData.getSupportCode()).overTimeHours(stampReceptData.getOverTimeHours())
 										.midnightTime(stampReceptData.getMidnightTime())
 										.time(stampReceptData.getTime())));
-		return convertDataOpt.map(convertData -> Pair.of(convertData.getLeft(),
-				convertData.getRight().isPresent()
-						? Optional.of(new StampDataReflectResultImport(convertData.getRight().get().getReflectDate(),
-								convertData.getRight().get().getAtomTask()))
-						: Optional.empty()));
+		return convertDataOpt.map(convertData -> new StampDataReflectResultImport(convertData.getReflectDate(),
+								convertData.getAtomTask()));
 	}
 
 }

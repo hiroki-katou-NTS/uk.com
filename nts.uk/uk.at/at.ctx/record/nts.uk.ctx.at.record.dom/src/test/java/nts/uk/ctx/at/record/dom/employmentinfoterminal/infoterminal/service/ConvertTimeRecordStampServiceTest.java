@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -38,6 +36,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -109,7 +108,7 @@ public class ConvertTimeRecordStampServiceTest {
 			}
 		};
 
-		Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> resultActual = ConvertTimeRecordStampService
+		Optional<StampDataReflectResult> resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
 		assertThat(resultActual).isEmpty();
 
@@ -123,7 +122,8 @@ public class ConvertTimeRecordStampServiceTest {
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = Optional
 				.of(new ReqSettingBuilder(empInfoTerCode, contractCode, new CompanyId("1"), null, null, null, null).build());
 
-		Optional<StampRecord> stampRecord = Optional.empty();
+		Optional<StampRecord> stampRecord = Optional
+				.of(new StampRecord(contractCode, new StampNumber("1"), GeneralDateTime.FAKED_NOW, new StampTypeDisplay("")));
 //				Optional.of(new StampRecord(new StampNumber("1"), GeneralDateTime.now(),
 //				true, ReservationArt.NONE, Optional.empty()));
 
@@ -135,7 +135,7 @@ public class ConvertTimeRecordStampServiceTest {
 				require.getTimeRecordReqSetting((EmpInfoTerminalCode) any, (ContractCode) any);
 				result = timeRecordReqSetting;
 
-				require.getStampRecord(contractCode, (StampNumber) any, (GeneralDateTime) any);
+				require.getStampRecord((ContractCode) any, (StampNumber) any, (GeneralDateTime) any);
 				result = stampRecord;
 	
 			}
@@ -143,7 +143,7 @@ public class ConvertTimeRecordStampServiceTest {
 
 		val resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.get().getLeft()).isEmpty();
+		assertThat(resultActual).isEmpty();
 
 	}
 
@@ -168,7 +168,7 @@ public class ConvertTimeRecordStampServiceTest {
 
 		val resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.get().getLeft()).isEmpty();
+		assertThat(resultActual.get().getReflectDate()).isEmpty();
 
 	}
 
@@ -199,8 +199,7 @@ public class ConvertTimeRecordStampServiceTest {
 
 		val resultActual = ConvertTimeRecordStampService
 				.convertData(require, empInfoTerCode, contractCode, dataNR);
-		assertThat(resultActual.get().getLeft()).isEqualTo(Optional.empty());
-		NtsAssert.atomTask(() -> resultActual.get().getRight().get().getAtomTask(),
+		NtsAssert.atomTask(() -> resultActual.get().getAtomTask(),
 				any -> require.insert((StampRecord) (any.get())), any -> require.insert((Stamp) (any.get())));
 	}
 }

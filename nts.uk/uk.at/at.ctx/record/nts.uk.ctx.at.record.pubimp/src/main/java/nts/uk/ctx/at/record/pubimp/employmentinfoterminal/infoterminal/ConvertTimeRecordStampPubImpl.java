@@ -6,14 +6,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import lombok.AllArgsConstructor;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.record.dom.adapter.employeemanage.EmployeeManageRCAdapter;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
+import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.GetMngInfoFromEmpIDListAdapter;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -46,6 +47,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampDataReflectResultExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
@@ -54,6 +57,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
  * @author ThanhNX
@@ -100,17 +105,33 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	
 	@Inject
 	private DailyRecordShareFinder dailyRecordShareFinder;
+	
+	@Inject
+	private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+	
+	@Inject
+	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private IGetInfoForLogin iGetInfoForLogin;
+	
+	@Inject
+	private LoginUserContextManager loginUserContextManager;
+	
+    @Inject
+    private CalculateDailyRecordServiceCenter calcService;
 
 	@Override
-	public Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResultExport>>> convertData(String empInfoTerCode,
+	public  Optional<StampDataReflectResultExport> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
 		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
 				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
-				dailyRecordAdUpService, dailyRecordShareFinder);
+				dailyRecordAdUpService, dailyRecordShareFinder, getMngInfoFromEmpIDListAdapter, companyAdapter, iGetInfoForLogin, loginUserContextManager,
+				calcService);
 
-		Optional<Pair<Optional<AtomTask>, Optional<StampDataReflectResult>>> convertDataOpt = ConvertTimeRecordStampService
+		Optional<StampDataReflectResult> convertDataOpt = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
 						new StampReceptionData(
 								new StampDataBuilder(stampReceptData.getIdNumber(), stampReceptData.getCardCategory(),
@@ -119,11 +140,8 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 												.overTimeHours(stampReceptData.getOverTimeHours())
 												.midnightTime(stampReceptData.getMidnightTime())
 												.time(stampReceptData.getTime())));
-		return convertDataOpt.map(convertData -> Pair.of(convertData.getLeft(),
-				convertData.getRight().isPresent()
-						? Optional.of(new StampDataReflectResultExport(convertData.getRight().get().getReflectDate(),
-								convertData.getRight().get().getAtomTask()))
-						: Optional.empty()));
+		return convertDataOpt.map(x -> (new StampDataReflectResultExport(x.getReflectDate(),
+								x.getAtomTask())));
 	}
 
 	@AllArgsConstructor
@@ -154,6 +172,16 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		private DailyRecordAdUpService dailyRecordAdUpService;
 		
 		private DailyRecordShareFinder dailyRecordShareFinder;
+		
+		private GetMngInfoFromEmpIDListAdapter getMngInfoFromEmpIDListAdapter;
+		
+		private CompanyAdapter companyAdapter;
+		
+		private IGetInfoForLogin iGetInfoForLogin;
+		
+		private LoginUserContextManager loginUserContextManager;
+		
+		 private CalculateDailyRecordServiceCenter calcService;
 
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -237,6 +265,38 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
 			return dailyRecordShareFinder.find(employeeId, date);
+		}
+
+		@Override
+		public List<EmpDataImport> getEmpData(List<String> empIDList) {
+			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
+		}
+
+		@Override
+		public CompanyInfo getCompanyInfoById(String companyId) {
+			return companyAdapter.getCompanyInfoById(companyId);
+		}
+
+		@Override
+		public Optional<String> getUserIdFromLoginId(String perId) {
+			return iGetInfoForLogin.getUserIdFromLoginId(perId);
+		}
+
+		@Override
+		public void loggedInAsEmployee(String userId, String personId, String contractCode, String companyId,
+				String companyCode, String employeeId, String employeeCode) {
+			loginUserContextManager.loggedInAsEmployee(userId, personId, contractCode, companyId, companyCode, employeeId, employeeCode);
+		}
+
+		@Override
+		public List<IntegrationOfDaily> calculatePassCompanySetting(String cid,
+				List<IntegrationOfDaily> integrationOfDaily, ExecutionType reCalcAtr) {
+			return calcService.calculatePassCompanySetting(integrationOfDaily, Optional.empty(), reCalcAtr);
+		}
+
+		@Override
+		public void loggedOut() {
+			loginUserContextManager.loggedOut();
 		}
 
 	}
