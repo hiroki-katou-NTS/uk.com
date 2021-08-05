@@ -330,17 +330,15 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			//就業時間(法定内用)からフレックス時間を計算
 			AttendanceTimeOfExistMinus flexTimeIncludePremium = new AttendanceTimeOfExistMinus(zitudou.getWorkTime().valueAsMinutes()).minusMinutes(houtei.getForActualWorkTime().v());
 			
-			if(flexTimeIncludePremium.lessThan(0)) {
-				//計算したフレックス時間を0：00を上限とする。
-				flexTimeIncludePremium = (flexTimeIncludePremium.greaterThan(0))
-						?new AttendanceTimeOfExistMinus(0)
-						:flexTimeIncludePremium;
-				
-				//フレックス不足時の加算時間を計算
-				int diffValue = flexTimeIncludePremium.valueAsMinutes()-flexTime.valueAsMinutes();
-				flexTime = flexTimeIncludePremium;
-				vacationAddTime = new AttendanceTime(diffValue);
-			}
+			//計算したフレックス時間を0：00を上限とする。
+			flexTimeIncludePremium = (flexTimeIncludePremium.greaterThan(0))
+					?new AttendanceTimeOfExistMinus(0)
+					:flexTimeIncludePremium;
+			
+			//フレックス不足時の加算時間を計算
+			int diffValue = flexTimeIncludePremium.valueAsMinutes()-flexTime.valueAsMinutes();
+			flexTime = flexTimeIncludePremium;
+			vacationAddTime = new AttendanceTime(diffValue);
 		}
 		// フレックス時間を作成
 		CalcFlexTime result = new CalcFlexTime(
