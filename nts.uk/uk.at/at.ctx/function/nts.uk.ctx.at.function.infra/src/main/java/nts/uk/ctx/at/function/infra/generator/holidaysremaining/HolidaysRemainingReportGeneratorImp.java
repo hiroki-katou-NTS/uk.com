@@ -3274,14 +3274,18 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (!dataSource.getVariousVacationControl().isAnnualHolidaySetting()) {
             return firstRow;
         }
-        if (!dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
+        boolean yearlyHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
+        boolean insideHours = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHours();
+        boolean insideHalfDay = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHalfDay();
+        if (!(yearlyHoliday && insideHalfDay)) {
             return firstRow;
         }
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
         if (hdRemainingInfor == null) {
             return firstRow + 2;
         }
-        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement());
+
+        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) && insideHours;
 
         int total = isTime ? 4 : 2 ;
         List<AnnLeaGrantNumberImported> listAnnLeaGrant = hdRemainingInfor.getListAnnLeaGrantNumber();
