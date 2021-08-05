@@ -115,16 +115,16 @@ module nts.uk.at.view.kwr005.a {
         showEmployeeSelection: true,
         showQuickSearchTab: true, //クイック検索
         showAdvancedSearchTab: true, //詳細検索
-        showBaseDate: true, //基準日利用
+        showBaseDate: false, //基準日利用
         showClosure: true,
-        showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）								
-        showPeriod: false, //対象期間利用
-        periodFormatYM: false,
-
+        showAllClosure: true, //氏名の種類	-> ビジネスネーム（日本語）
+        showPeriod: true, //対象期間利用
+        periodFormatYM: true,
+          maxPeriodRange: 'oneYear',
         /** Required parameter */
         baseDate: moment().toISOString(), //基準日
-        //periodStartDate: periodStartDate, //対象期間開始日
-        //periodEndDate: periodEndDate, //対象期間終了日
+        periodStartDate: vm.periodDate().startDate, //対象期間開始日
+        periodEndDate: vm.periodDate().endDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象

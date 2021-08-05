@@ -1,6 +1,3 @@
-
-
-
 package nts.uk.file.at.infra.annualworkledger;
 
 import com.aspose.cells.*;
@@ -31,7 +28,7 @@ import java.util.Locale;
 @Stateless
 public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsReportGenerator
         implements DisplayAnnualWorkLedgerReportGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR004_v2.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR004_v3.xlsx";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_PDF = 1;
@@ -116,10 +113,10 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
         // B2_1 B2_2 B2_3
         cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") +empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
-        // B3_1 B3_2 B3_3
-        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") +empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
-        // B4_1 B4_2
-        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") +empInfo.getClosureDate());
+//        // B3_1 B3_2 B3_3
+//        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") +empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
+//        // B4_1 B4_2
+//        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") +empInfo.getClosureDate());
         // B5_1 B5_2
         cells.get(firstRow, 10).setValue(TextResource.localize("KWR004_205") +
                 TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
@@ -135,7 +132,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         // Daily data
         val dailyData = empInfo.getDailyData();
         // C1_1
-        cells.get(firstRow + 3, 0).setValue(TextResource.localize("KWR004_206"));
+        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_206"));
         val lastDateInMonth = dataSource.getDatePeriod().start().lastDateInMonth();
 
         val closureDay = dataSource.getDatePeriod().start().day() == lastDateInMonth ? 0 : dataSource.getDatePeriod().start().day() - 1;
@@ -146,26 +143,26 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                     TextResource.localize("KWR004_209", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
                     TextResource.localize("KWR004_210", String.valueOf(yearMonth.month()));
             // C2_1
-            cells.get(firstRow + 4, 2 + mi * 2).setValue(yearMonthString);
+            cells.get(firstRow + 3, 2 + mi * 2).setValue(yearMonthString);
             // C2_2
-            cells.get(firstRow + 5, 2 + mi * 2).setValue(dailyData.getLeftColumnName());
+            cells.get(firstRow + 4, 2 + mi * 2).setValue(dailyData.getLeftColumnName());
             // C2_3
-            cells.get(firstRow + 5, 3 + mi * 2).setValue(dailyData.getRightColumnName());
+            cells.get(firstRow + 4, 3 + mi * 2).setValue(dailyData.getRightColumnName());
 
             // 日次項目では固定３１行であり
             for (int di = 0; di < MAX_DAY_IN_MONTH; di++) {
                 val day = (closureDay + di) % MAX_DAY_IN_MONTH + 1;
                 // D1_1
-                cells.get(firstRow + 6 + di, 0).setValue(TextResource.localize("KWR004_211", String.valueOf(day)));
+                cells.get(firstRow + 5 + di, 0).setValue(TextResource.localize("KWR004_211", String.valueOf(day)));
 
                 try {
                     val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), day);
                     val leftData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
                     if (leftData.isPresent() && dailyData.getLeftAttribute() != null) {
                         // D2_1
-                        cells.get(firstRow + 6 + di, 2 + mi * 2)
+                        cells.get(firstRow + 5 + di, 2 + mi * 2)
                                 .setValue(this.formatValue(leftData.get().getActualValue(), leftData.get().getCharacterValue(), dailyData.getLeftAttribute(), dataSource.isZeroDisplay()));
-                        Cell cell = cells.get(firstRow + 6 + di, 2 + mi * 2);
+                        Cell cell = cells.get(firstRow + 5 + di, 2 + mi * 2);
                         Style style =   cell.getStyle();
                         style.setHorizontalAlignment(checkText(dailyData.getLeftAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
                         cell.setStyle(style);
@@ -173,16 +170,16 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
 
                     val rightData = dailyData.getLstRightValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
                     if (rightData.isPresent() && dailyData.getRightAttribute() != null) {
-                        cells.get(firstRow + 6 + di, 3 + mi * 2)
+                        cells.get(firstRow + 5 + di, 3 + mi * 2)
                                 .setValue(this.formatValue(rightData.get().getActualValue(), rightData.get().getCharacterValue(), dailyData.getRightAttribute(), dataSource.isZeroDisplay()));
-                        Cell cell =  cells.get(firstRow + 6 + di, 3 + mi * 2);
+                        Cell cell =  cells.get(firstRow + 5 + di, 3 + mi * 2);
                         Style style =  cell.getStyle();
                         style.setHorizontalAlignment(checkText(dailyData.getRightAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
                         cell.setStyle(style);
                     }
                 } catch (DateTimeException ex) {
-                    cells.merge(firstRow + 6 + di, 2 + mi * 2, 1, 2);
-                    this.setLineDiagonal(cells.get(firstRow + 6 + di, 2 + mi * 2));
+                    cells.merge(firstRow + 5 + di, 2 + mi * 2, 1, 2);
+                    this.setLineDiagonal(cells.get(firstRow + 5 + di, 2 + mi * 2));
                 }
             }
 
@@ -207,10 +204,8 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                     Style style =  cell.getStyle();
                     style.setHorizontalAlignment(checkText(dataRow.getAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
                     cell.setStyle(style);
-
                 }
             }
-
         }
     }
 

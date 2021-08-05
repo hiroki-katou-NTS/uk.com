@@ -64,7 +64,6 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
             String fileName = title + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
             reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
 
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -157,10 +156,8 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                 isFist = false;
                             }
                             val listDisplaySid = content.getListDisplayedEmployees();
-                            val tComparator = Comparator
-                                    .comparing(DisplayedEmployee::getEmployeeCode);
                             val listDisplayedEmployees = listDisplaySid.stream()
-                                    .sorted(tComparator).collect(Collectors.toList());
+                                    .sorted(Comparator.comparing(DisplayedEmployee::getEmployeeCode)).collect(Collectors.toList());
                             cells.copyRow(cellsTemplate, 5, count);
                             itemOnePage += 1;
                             //D1_1
@@ -185,6 +182,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                                     }
                                     cells.copyRows(cellsTemplate, 8, count, 2);
                                 }
+                                // D2_1, D2_2
                                 cells.get(count, 0).setValue(
                                         item.getEmployeeCode() + "　" + item.getEmployeeName());
                                 itemOnePage += 2;
@@ -241,7 +239,6 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                         prinDetail(count, listValue, cells, mapIdAnAttribute, query);
                         count += 2;
                     }
-
                 }
                 if (query.isTotal()) {
                     if (!checkLine(itemOnePage, MAX_LINE_IN_PAGE)) {
@@ -258,7 +255,6 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-
     }
 
     private void toListChild(AttendanceDetailDisplayContents parent, List<AttendanceDetailDisplayContents> rs) {
@@ -269,7 +265,6 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         for (AttendanceDetailDisplayContents aSub : sub) {
             toListChild(aSub, rs);
         }
-
     }
 
     private void printInfo(Worksheet worksheetTemplate, Worksheet worksheet,
@@ -446,7 +441,6 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                             Collections.emptyList()
                     ));
                 }
-
             }
 
         List<AttendanceDetailDisplayContents> listInfoHasHierarchyCode = new ArrayList<>();
