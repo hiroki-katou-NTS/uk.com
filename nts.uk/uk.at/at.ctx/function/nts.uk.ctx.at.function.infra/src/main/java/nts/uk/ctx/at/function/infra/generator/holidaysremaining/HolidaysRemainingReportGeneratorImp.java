@@ -1483,11 +1483,20 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             firstRow += 6;
             count = 6;
         }
+        val showI = checkTakeABreak_01(dataSource.getHolidaysRemainingManagement(),employee.getEmploymentCode());
         val isShow41 = checkTakeABreak_02(dataSource.getHolidaysRemainingManagement());
         val isShow51 = checkTakeABreak_03(dataSource.getHolidaysRemainingManagement());
         val show1item = (isShow51 && !isShow41) ||(!isShow51 && isShow41);
         val checkG = checkLimitHourlyHoliday(dataSource.getHolidaysRemainingManagement());
-        cells.copyRows(cells, !checkG && show1item ?  NUMBER_ROW_OF_HEADER + 16 :65 , firstRow, 2);
+
+        boolean checkIG = false;
+        if(!checkG){
+            checkIG = !checkIG;
+        }
+        if(showI &show1item){
+            checkIG = !checkIG;
+        }
+        cells.copyRows(cells, !checkIG ?  NUMBER_ROW_OF_HEADER + 16 :65 , firstRow, 2);
         // J1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_78"));
         // J2_1
@@ -1505,14 +1514,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
         if (isUndigestedPause) {
         rowIndexUndigestedPause = firstRow + totalRows;
-        cells.copyRows(cells, show1item && !checkG ?NUMBER_ROW_OF_HEADER+18 : 67 , rowIndexUndigestedPause, 1);
+        cells.copyRows(cells, !checkIG ?NUMBER_ROW_OF_HEADER+18 : 67 , rowIndexUndigestedPause, 1);
         // J2_3
         cells.get(rowIndexUndigestedPause, 9).setValue(TextResource.localize("KDR001_11"));
         totalRows += 1;
         }
         if (isNumberRemainingPause) {
         rowIndexNumberRemainingPause = firstRow + totalRows;
-        cells.copyRows(cells, show1item && !checkG ? NUMBER_ROW_OF_HEADER + 19 :  68 , rowIndexNumberRemainingPause, 1);
+        cells.copyRows(cells, !checkIG? NUMBER_ROW_OF_HEADER + 19 :  68 , rowIndexNumberRemainingPause, 1);
         // J2_4
         cells.get(rowIndexNumberRemainingPause, 9).setValue(TextResource.localize("KDR001_18"));
         totalRows += 1;
@@ -1733,7 +1742,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.get(firstRow + 1, 9).setValue(TextResource.localize("KDR001_17"));
         if (isUndigestedPause) {
             rowIndexUndigestedPause = firstRow + totalRows;
-            cells.copyRows(cells, !checkCopyRow(dataSource,employee) ?NUMBER_ROW_OF_HEADER + 22 :  71 , rowIndexUndigestedPause, 1);
+            cells.copyRows(cells, !checkCopyRow(dataSource,employee) ? NUMBER_ROW_OF_HEADER + 22 :  71 , rowIndexUndigestedPause, 1);
             // K2_3
             cells.get(rowIndexUndigestedPause, 9).setValue(TextResource.localize("KDR001_11"));
             totalRows += 1;
