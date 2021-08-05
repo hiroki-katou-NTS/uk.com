@@ -5459,7 +5459,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					//ruler.gcChart[line][noneFil[0].id].id = index;
 					}
 					let noneChart = _.filter(noneFil, (x : any) => {
-						return x.start == start && x.end == end;
+						return (x.start == start && x.end > end) || (x.start < start && x.end == end) || (x.start == start && x.end == end);
 					})
 					
 					let checkDup = _.filter(noneFil, (x : any) => {
@@ -5535,22 +5535,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}) 
 				
-			let arrRemoveTask : any = [],
-				filTaskData = _.filter (self.taskData, (x : any) => x.empID == self.lstEmpId[line].empId),
-				indexTask = _.findIndex(self.taskData, (ind : any) => {
-					return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
-				}),
-				indexTaskNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
-					return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
-				}),
-				newLstChartTsk = _.filter (self.lstChartTask, (x : any) => x.line == line);
+			let newLstChartTsk = _.filter (self.lstChartTask, (x : any) => x.line == line);
 				
 			if (newLstChartTsk.length > 0) {
 				for (let i = 0; i < newLstChartTsk.length ; i++) { // kiem tra voi list task cu
 					let task : any = newLstChartTsk[i], 
 					oldS = task.start, oldE = task.end, 
 					indOld = -1, indNew = -1,
-					indTask = -1;
+					indTask = -1,
+					indexTask = _.findIndex(self.taskData, (ind : any) => {
+						return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
+					}),
+					indexTaskNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
+						return ind.empId === self.dataScreen003A().employeeInfo[line].empId;
+					});
 					
 					indTask = _.findIndex(self.lstChartTask, (indtsk : any) => {
 						return indtsk.start == task.start && indtsk.end == task.end
@@ -5572,6 +5570,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								if ((start > oldS && end < oldE) || (start == oldS && end == oldE))
 									return;
 								
+								if (indOld != -1)
+								_.remove(self.taskData[indexTask].taskScheduleDetail, (y : any, index) => {
+									return y.timeSpanForCalcDto.start == oldS && y.timeSpanForCalcDto.end == oldE;
+								});
+								
+								if (indNew != -1) {
+									_.remove(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail, (y : any, index) => {
+										return y.timeSpanForCalcDto.start == oldS && y.timeSpanForCalcDto.end == oldE;
+									});	
+									
+									if (self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail.length == 0) {
+										_.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
+											return y.empId == self.lstTaskScheduleDetailEmp[indexTaskNew].empId;
+										});
+									}
+								}
+								
+								
 								if ((start == oldS && end < oldE) || (start < oldS && end < oldE && end > oldS)) {
 									end = oldE;
 									continue;
@@ -5581,6 +5597,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									start = oldS;
 									continue;
 								}
+								
+								if (start == oldE){
+									start = oldS;
+									continue;
+								}
+								
 							} else {
 								
 								if (start == oldS && end < oldE) {
@@ -5630,7 +5652,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 										self.bindDataToTask(filTask != null ? filTask[0].code : null, end , self.taskData[indexTask].taskScheduleDetail[indOld].timeSpanForCalcDto.end , line, `pgc${util.randomId().split("-").join("")}`, "add");
 										
 										indexTaskNew = _.findIndex(self.lstTaskScheduleDetailEmp, (ind : any) => {
-											return ind.empID === self.dataScreen003A().employeeInfo[line].empId;
+											return ind.empId === self.dataScreen003A().employeeInfo[line].empId;
 										})
 										
 										indNew = _.findIndex(self.lstTaskScheduleDetailEmp[indexTaskNew].taskScheduleDetail, (inw : any) => {
