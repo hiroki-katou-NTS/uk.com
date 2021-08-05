@@ -2116,7 +2116,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 self.hasChangeModeBg = false;
                 self.listCellUpdatedWhenChangeModeBg = [];
-                // get lại data A11.A12 - Hưng update lai data của A11, A12 giúp anh ở đây nhá
+                // get lại data A11.A12
                 self.getAggregatedInfo(true, true);
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
@@ -5226,6 +5226,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $('#A1_7_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {});
         }
+
+        openKDL055() {
+            let self = this;
+        }
+
+        openDialogKDL055() {
+            let self = this;
+            let param = {
+                listSid: self.listSid(),
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
+            };
+            setShared('dataShareDialogKDL055', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/055/a/index.xhtml').onClosed(function(): any { });
+        }
         
         // A2_1
         openKDL046() {
@@ -5727,11 +5742,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleA4_567(isDisplayActual);
         }
         
-        openKDL055() {
-            let self = this;
-            let listCellConfirmReg = self.getCellsConfirmReg();
-        }
-
         // click btnA1_6
         openKSU005() {
             let self = this;
