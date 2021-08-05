@@ -320,28 +320,39 @@ module nts.uk.at.view.kdp002.a {
 
 }
 var paramSize = 0;
-let reCalGridWidthHeight = () => {
-    const resize = () => {
-        var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
-        var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
-        var h = bottomMasterWrapper - topStampInfo - 98;
+let resize = () => {
 
-        let stampBtnHeight = (h < 48 ? 48 : h) + 'px';
-        const $hgrid = $('#stamp-history-list');
-        const $cgrid = $('#time-card-list');
-		if (paramSize !== h) {
-			paramSize = h;
-	        if ($hgrid.data('igGrid')) {
-	            $hgrid.igGrid("option", "height", stampBtnHeight);
-	            $hgrid.data("height", stampBtnHeight);
-	        }
-	        if ($cgrid.data('igGrid')) {
-	            $cgrid.igGrid("option", "height", stampBtnHeight);
-	            $cgrid.data("height", stampBtnHeight);
-	        }
+	var bottomMasterWrapper = $('#master-wrapper')[0].getBoundingClientRect().bottom;
+	var topStampInfo = $('#stamp-info')[0].getBoundingClientRect().top;
+	var h = bottomMasterWrapper - topStampInfo - 98;
+
+	let stampBtnHeight = (h < 48 ? 48 : h) + 'px';
+	const $hgrid = $('#stamp-history-list');
+	const $cgrid = $('#time-card-list');
+	if (paramSize !== h) {
+		paramSize = h;
+		if ($hgrid.data('igGrid')) {
+			$hgrid.igGrid("option", "height", stampBtnHeight);
+			$hgrid.data("height", stampBtnHeight);
 		}
-    };
-    if ($('#stamp-info')[0]) {
-        setTimeout(resize);
-    }
+		if ($cgrid.data('igGrid')) {
+			$cgrid.igGrid("option", "height", stampBtnHeight);
+			$cgrid.data("height", stampBtnHeight);
+		}
+		return true;
+	} else {
+		return false;
+	}
+}
+
+let reCalGridWidthHeight = () => {
+	let dfd = $.Deferred<void>();
+
+	if ($('#stamp-info')[0]) {
+		setTimeout(() => {
+			dfd.resolve(resize());
+		});
+
+	}
+	return dfd.promise();
 }

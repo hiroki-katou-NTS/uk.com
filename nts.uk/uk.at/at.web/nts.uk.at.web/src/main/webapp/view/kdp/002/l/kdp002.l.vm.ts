@@ -37,7 +37,7 @@ module nts.uk.at.view.kdp002.l {
                         ko.tasks
                             .schedule(() => {
                                 focused = true;
-                                $(element).find('button:first').focus();
+								setTimeout(() => $(element).find('button:first').focus(), 200);
                             });
                     }
                 },
