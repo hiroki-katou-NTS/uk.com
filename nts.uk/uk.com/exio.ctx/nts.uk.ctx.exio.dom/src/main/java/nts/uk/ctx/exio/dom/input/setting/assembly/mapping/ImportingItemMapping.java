@@ -49,6 +49,24 @@ public class ImportingItemMapping {
 		return csvColumnNo.isPresent() || fixedValue.isPresent();
 	}
 	
+	public boolean isCsvMapping() {
+		return csvColumnNo.isPresent();
+	}
+	
+	public boolean isFixedValue() {
+		return fixedValue.isPresent();
+	}
+	
+	public void setCsvColumnNo(int columnNo) {
+		csvColumnNo = Optional.of(columnNo);
+		fixedValue = Optional.empty();
+	}
+	
+	public void setFixedValue(StringifiedValue value) {
+		fixedValue = Optional.of(value);
+		csvColumnNo = Optional.empty();
+	}
+	
 	public DataItem assemble(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
 		
 		if (!isConfigured()) {

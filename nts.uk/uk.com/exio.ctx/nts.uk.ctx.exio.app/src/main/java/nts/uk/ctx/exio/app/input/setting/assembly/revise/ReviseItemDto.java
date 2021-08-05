@@ -1,14 +1,28 @@
 package nts.uk.ctx.exio.app.input.setting.assembly.revise;
 
+import java.util.Optional;
+
 import lombok.Data;
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.DateRevise;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date.ExternalImportDateFormat;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.real.DecimalDigitNumber;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.real.RealRevise;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.Padding;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingLength;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.StringRevise;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.HourlySegment;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase10Rounding;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBase60Delimiter;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeBaseNumber;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time.TimeRevise;
 
 @Value
@@ -24,6 +38,15 @@ public class ReviseItemDto {
 				domain.getSettingCode().v(),
 				domain.getItemNo(),
 				RevisingValue.of(domain.getRevisingValue()));
+	}
+	
+	public ReviseItem toDomain(String companyId, ItemType itemType) {
+		
+		return new ReviseItem(
+				companyId,
+				new ExternalImportCode(settingCode),
+				itemNo,
+				revisingValue.toDomain(itemType));
 	}
 	
 	@Data
@@ -81,9 +104,9 @@ public class ReviseItemDto {
 			if (revisingValue instanceof TimeRevise) {
 				val rev = (TimeRevise) revisingValue;
 				dto.timeHourlySegment = rev.getHourly().value;
-				dto.timeBaseNumber = rev.getBaseNumber().value;
+				dto.timeBaseNumber = rev.getBaseNumber().map(d -> d.value).orElse(-1);
 				dto.timeDelimiter = rev.getDelimiter().map(d -> d.value).orElse(-1);
-				dto.timeRounding = rev.getRounding().value;
+				dto.timeRounding = rev.getRounding().map(d -> d.value).orElse(-1);
 				return dto;
 			}
 			
@@ -94,6 +117,58 @@ public class ReviseItemDto {
 			}
 			
 			throw new RuntimeException("unknown: " + revisingValue);
+		}
+		
+		public ReviseValue toDomain(ItemType itemType) {
+			
+			switch (itemType) {
+			case STRING:
+				return new StringRevise(usePadding, toDomainPadding(), toDomainCodeConvert());
+			case INT:
+				return new IntegerRevise(toDomainCodeConvert());
+			case REAL:
+				return new RealRevise(isDecimalization, toDomainDecimalDigitNumber());
+			case DATE:
+				return new DateRevise(ExternalImportDateFormat.valueOf(dateFormat));
+			case TIME_DURATION:
+			case TIME_POINT:
+				return new TimeRevise(
+						HourlySegment.valueOf(timeHourlySegment),
+						timeBaseNumber != -1 ? Optional.of(TimeBaseNumber.valueOf(timeBaseNumber)) : Optional.empty(),
+						timeDelimiter != -1 ? Optional.of(TimeBase60Delimiter.valueOf(timeDelimiter)) : Optional.empty(),
+						timeRounding != -1 ? Optional.of(TimeBase10Rounding.valueOf(timeRounding)) : Optional.empty());
+			default:
+				throw new RuntimeException("unknown: " + itemType);
+			}
+		}
+		
+		private Optional<Padding> toDomainPadding() {
+			
+			if (!usePadding) {
+				return Optional.empty();
+			}
+			
+			return Optional.of(new Padding(
+					new PaddingLength(paddingLength),
+					PaddingMethod.valueOf(paddingMethod)));
+		}
+		
+		private Optional<ExternalImportCodeConvert> toDomainCodeConvert() {
+			
+			if (!useCodeConvert) {
+				return Optional.empty();
+			}
+			
+			return Optional.of(codeConvert.toDomain());
+		}
+		
+		private Optional<DecimalDigitNumber> toDomainDecimalDigitNumber() {
+			
+			if (!isDecimalization) {
+				return Optional.empty();
+			}
+			
+			return Optional.of(new DecimalDigitNumber(decimalizationLength));
 		}
 	}
 }

@@ -25,6 +25,12 @@ public class CodeConvertDto {
 	public static CodeConvertDto empty() {
 		return new CodeConvertDto(null, Collections.emptyList());
 	}
+	
+	public ExternalImportCodeConvert toDomain() {
+		return new ExternalImportCodeConvert(
+				importWithoutSetting,
+				details.stream().map(Detail::toDomain).collect(toList()));
+	}
 
 	@Value
 	public static class Detail {
@@ -33,6 +39,10 @@ public class CodeConvertDto {
 		
 		public static Detail of(CodeConvertDetail domain) {
 			return new Detail(domain.getBefore().v(), domain.getAfter().v());
+		}
+		
+		public CodeConvertDetail toDomain() {
+			return new CodeConvertDetail(before, after);
 		}
 	}
 }
