@@ -391,8 +391,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (totalRowDetails < 6) {
             // Insert blank rows
             cells.copyRows(cells, 54, firstRow, 6 - totalRowDetails);
-            firstRow += (6 - totalRowDetails);
-            count += (6 - totalRowDetails);
+            firstRow += (6 - totalRowDetails) ;
+            count += (6 - totalRowDetails) ;
+        }
+        if(totalRowDetails == 0){
+            // Insert blank rows
+            cells.copyRows(cells, 54, firstRow, 6);
+            firstRow += 6 ;
+            count += 6 ;
         }
             for (int i = 0; i < NUMBER_COLUMN; i++) {
                 setBottomBorderStyle(cells.get(firstRow - 1, i));
@@ -417,11 +423,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
-        if (!dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday()) {
+        boolean yearlyHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
+        boolean insideHours = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHours();
+        boolean insideHalfDay = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHalfDay();
+        if (!(yearlyHoliday && insideHalfDay)) {
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
-        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement());
+        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) && insideHours;
         int totalAddRows = isTime ? 4 : 2 ;
         if (count >= MAX_ROW_IN_PAGE || MAX_ROW_IN_PAGE - count < totalAddRows) {
             printEmployeeInfore(cells, firstRow - (count - 6 - countEmployeeBefore), dataSource, employee);
@@ -506,6 +515,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 dataSource.getHolidaysRemainingManagement())
                 ? TextResource.localize("KDR001_15")
                 : "";
+
         cells.get(firstRow + (isTime ? 2 : 1), 9).setValue(text);
         if (listAnnLeaGrant != null) {
             for (int i = 0; i < listAnnLeaGrant.size(); i++) {
