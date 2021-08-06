@@ -1,10 +1,5 @@
 module nts.uk.com.view.cas013.a {
     import ajax = nts.uk.request.ajax;
-    import format = nts.uk.text.format;
-    // var paths1: any = {
-    //     getAppNameDisp                : "at/request/application/proxy/findName",
-    //     checkEmployee                 : "at/request/application/proxy/checkValid"
-    // }
     export module service {
         export class Service {
             paths = {
@@ -15,12 +10,12 @@ module nts.uk.com.view.cas013.a {
                 insertRoleGrant: "ctx/sys/auth/grant/roleindividual/insertRoleGrant",
                 upDateRoleGrant: "ctx/sys/auth/grant/roleindividual/upDateRoleGrant",
                 deleteRoleGrant: "ctx/sys/auth/grant/roleindividual/deleteRoleGrant",
+                getCompanyInfo: "ctx/sys/auth/grant/roleindividual/getCompanyInfo",
+                getWorkPlaceInfo:"ctx/sys/auth/grant/roleindividual/getWorkPlaceInfo",
+                getJobTitle: "ctx/sys/auth/grant/roleindividual/getJobTitle"
             }
             constructor() {}
 
-            // getAppDispName(): JQueryPromise<any> {
-            //     return ajax("at", paths1.getAppNameDisp);
-            // }
 
             saveAsExcel(languageId: string, date: string): JQueryPromise<any> {
                 let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
@@ -35,6 +30,20 @@ module nts.uk.com.view.cas013.a {
             getRoleTypes(): JQueryPromise<any> {
                 return ajax("com", this.paths.getRoleType);
             }
+
+            getCompanyInfo(): JQueryPromise<any> {
+                return ajax("com", this.paths.getCompanyInfo)
+            }
+
+            getWorkPlaceInfo(employeeID: String): JQueryPromise<any> {
+                return ajax("com", this.paths.getWorkPlaceInfo, employeeID)
+            }
+
+            getJobTitle(employyeId: string): JQueryPromise<any> {
+                return ajax("com", this.paths.getJobTitle, employyeId);
+            }
+
+
             getRole(roleType: string): JQueryPromise<any> {
                 return ajax("com", this.paths.getRole + '/' + roleType);
             }

@@ -57,11 +57,26 @@ module nts.uk.com.view.cas013.a.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         baseDate: KnockoutObservable<Date>;
 
+        // Company + Workplace + Jobtitle
+        companyCode: KnockoutObservable<string>;
+        companyName: KnockoutObservable<string>;
+        workplaceCode: KnockoutObservable<string>;
+        workplaceName: KnockoutObservable<string> ;
+        jobTitleCode: KnockoutObservable<string>;
+        jobTitleName: KnockoutObservable<string> ;
+
 
         constructor() {
             var self = this;
             //A51
             self.selectRoleCheckbox = ko.observable('');
+
+            self.workplaceCode = ko.observable('');
+            self.workplaceName = ko.observable('');
+            self.companyCode = ko.observable('');
+            self.companyName = ko.observable('');
+            self.jobTitleCode = ko.observable('');
+            self.jobTitleName = ko.observable('');
 
             self.listRoleType = ko.observableArray([]);
             self.listRole = ko.observableArray([]);
@@ -156,7 +171,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             $('#kcp005 table').attr('tabindex', '-1');
-
             // initial screen
             new service.Service().getRoleTypes().done(function(data: Array<RollType>) {
                 if(data){
@@ -249,12 +263,14 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var employeeSearchs: UnitModel[] = []; //KCP005
             if (roleId != '') {
                 self.selectedRoleIndividual('');
+
                 new service.Service().getRoleGrants(roleId).done(function(data: any) {
                     if (data != null && data.length > 0) {
                         let items = [];
                         var periodDate = '';//KCP005
+
                         for (let entry of data) {
-                            items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod))
+                            items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod));
 
                             //KCO005
                             periodDate = (entry.startValidPeriod + " ~ " + entry.endValidPeriod).toString();
@@ -263,11 +279,12 @@ module nts.uk.com.view.cas013.a.viewmodel {
                                 name: entry.userName,
                                 affiliationName: periodDate,
                             };
+
                             employeeSearchs.push(employee);
+
                         }
                         self.employeeList(employeeSearchs);
                         //End KCP005
-
                         self.listRoleIndividual(items);
                         if (nts.uk.text.isNullOrEmpty(userIdSelected)) {
                             self.selectedRoleIndividual(items[0].userId);
@@ -333,6 +350,35 @@ module nts.uk.com.view.cas013.a.viewmodel {
                             self.loginID(userSelected.code);
                             self.userName(userSelected.name);
                         }
+
+                        new service.Service().getCompanyInfo().done(function (data: any) {
+                            if(data != null) {
+                                self.companyName(data.companyName);
+                                self.companyCode(data.companyCode);
+                            } else {
+                                self.companyName('');
+                                self.companyCode('');
+                            }
+                        })
+
+                        new service.Service().getWorkPlaceInfo(data.employeeId).done(function (data: any) {
+                            if(data != null) {
+                                self.workplaceCode(data.workPlaceCode);
+                                self.workplaceName(data.workPlaceName);
+                            } else {
+                                self.workplaceCode('');
+                                self.workplaceName('');
+                            }
+                        })
+                        new service.Service().getJobTitle(data.employeeId).done(function (data: any) {
+                            if(data != null) {
+                                self.jobTitleCode(data.jobTitleCode);
+                                self.jobTitleName(data.jobTitleName);
+                            } else  {
+                                self.jobTitleCode('');
+                                self.jobTitleName('');
+                            }
+                        })
                         self.isCreateMode(false);
                         self.isSelectedUser(false);
                         self.isDelete(true);
@@ -484,6 +530,25 @@ module nts.uk.com.view.cas013.a.viewmodel {
             this.description = description;
         }
     }
+
+    class CompanyInfo {
+        compCode: string;
+        compName: string;
+
+        constructor(compCode: string, compName: string) {
+            this.compCode = compCode;
+            this.compName = compName;
+        }
+    }
+    class WorkPlaceInfo {
+        workplaceCode: string;
+        workplacepName: string;
+
+        constructor(workplaceCode: string, workplacepName: string) {
+            this.workplaceCode = workplaceCode;
+            this.workplacepName = workplacepName;
+        }
+    }
     class Role {
         roleId: string;
         roleCode: string;
@@ -495,6 +560,14 @@ module nts.uk.com.view.cas013.a.viewmodel {
             this.roleCode = roleCode;
             this.name = name;
             this.assignAtr = assignAtr;
+        }
+    }
+    class JobTitle{
+        jobTitleCode: string;
+        jobTitleName: string;
+        constructor(jobTitleCode: string, jobTitleName: string) {
+            this.jobTitleCode = jobTitleCode;
+            this.jobTitleName = jobTitleName;
         }
     }
     class RoleIndividual {
