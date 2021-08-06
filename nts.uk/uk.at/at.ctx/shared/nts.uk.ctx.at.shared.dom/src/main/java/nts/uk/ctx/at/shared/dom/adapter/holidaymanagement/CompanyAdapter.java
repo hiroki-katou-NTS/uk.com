@@ -44,6 +44,6 @@ public interface CompanyAdapter {
 	YearMonthPeriod get(String cid, int year);
 	
 	//暦の年月から年月期間を取得する
-	Optional<YearMonthPeriod> getYearMonthPeriod(String cid, YearMonth yearMonth);
+	Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String cid, YearMonth yearMonth);
 
 }

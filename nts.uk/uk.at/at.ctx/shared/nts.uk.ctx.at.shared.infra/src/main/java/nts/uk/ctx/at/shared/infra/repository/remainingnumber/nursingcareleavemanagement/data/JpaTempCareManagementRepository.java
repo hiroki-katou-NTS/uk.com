@@ -36,6 +36,11 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 	private static final String DELETE_BY_SID_YMD = "DELETE FROM KshdtInterimCareData a"
 			+ " WHERE a.pk.sid = :sid"
 			+ "	AND a.pk.ymd =  :ymd ";
+	
+	private static final String DELETE_BY_SID_PERIOD = "DELETE FROM KshdtInterimCareData a"
+			+ " WHERE a.pk.sid = :sid"
+			+ "AND a.pk.ymd >= :startYmd "
+			+ "AND a.pk.ymd <= :endYmd ";
 
 
 	/** 検索 */
@@ -118,6 +123,19 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 		this.getEntityManager().createQuery(DELETE_BY_SID_YMD)
 		.setParameter("sid", sid)
 		.setParameter("ymd", ymd)
+		.executeUpdate();
+	}
+	
+	/*
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagementRepository#deleteBySidDatePeriod(java.lang.String, nts.arc.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public void deleteBySidDatePeriod(String sid, DatePeriod period){
+		this.getEntityManager().createQuery(DELETE_BY_SID_PERIOD)
+		.setParameter("sid", sid)
+		.setParameter("startYmd", period.start())
+		.setParameter("endYmd", period.end())
 		.executeUpdate();
 	}
 

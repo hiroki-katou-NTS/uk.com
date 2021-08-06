@@ -3,12 +3,13 @@ package nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.carryForwardda
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -19,25 +20,40 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
 @Table(name = "KSHDT_HDPUB_REM")
 public class KshdtHdpubRem extends ContractUkJpaEntity {
 	
 	
 	/* 主キー */
 	@EmbeddedId
-	public KshdtHdpubRemPK pk;
+	protected KshdtHdpubRemPK pk;
 	
 	@Column(name = "DEADLINE")
-	public GeneralDate deadline;
+	private GeneralDate deadline;
 	
 	@Column(name = "REGISTER_TYPE")
-    public int registerType;
+	private int registerType;
 	
 	@Column(name = "CARRIEDFORWARD")
-    public double carriedforward;
+	private double carriedforward;
 	
 	@Override
 	protected Object getKey() {
 		return pk;
+	}
+	
+	/**
+	 * ドメインから変換　(for Update)
+	 * @param domain 公休繰越データ
+	 */
+	public void fromDomainForUpdate(PublicHolidayCarryForwardData domain){
+
+		this.pk.employeeId = domain.getEmployeeId();
+		this.pk.tagetmonth = domain.getYearMonth().v();
+		this.deadline = domain.getYmd();
+		this.registerType  = domain.getGrantRemainRegisterType().value;
+		this.carriedforward = domain.getNumberCarriedForward().v();
+
 	}
 }

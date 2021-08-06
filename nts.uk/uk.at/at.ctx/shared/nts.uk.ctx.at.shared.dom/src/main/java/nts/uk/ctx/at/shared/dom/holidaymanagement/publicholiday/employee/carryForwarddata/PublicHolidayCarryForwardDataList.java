@@ -43,7 +43,7 @@ public class PublicHolidayCarryForwardDataList {
 	public PublicHolidayCarryForwardDataList getExpiredList(GeneralDate criteriaDate){
 		
 		return new PublicHolidayCarryForwardDataList(publicHolidayCarryForwardData.stream()
-				.filter(x -> x.ymd.beforeOrEquals(criteriaDate))
+				.filter(x -> x.getYmd().beforeOrEquals(criteriaDate))
 				.collect(Collectors.toList()));
 	}
 	
@@ -53,7 +53,7 @@ public class PublicHolidayCarryForwardDataList {
 	 */
 	public LeaveRemainingDayNumber getCarryForwardData(){
 		return new LeaveRemainingDayNumber(publicHolidayCarryForwardData.stream()
-				.mapToDouble(x->x.numberCarriedForward.v())
+				.mapToDouble(x->x.getNumberCarriedForward().v())
 				.sum());
 	}
 	
@@ -66,7 +66,7 @@ public class PublicHolidayCarryForwardDataList {
 	private PublicHolidayCarryForwardDataList getNotExpiredList(GeneralDate criteriaDate){
 		
 		return new PublicHolidayCarryForwardDataList(publicHolidayCarryForwardData.stream()
-				.filter(x -> x.ymd.after(criteriaDate))
+				.filter(x -> x.getYmd().after(criteriaDate))
 				.collect(Collectors.toList()));
 	}
 	
@@ -77,7 +77,7 @@ public class PublicHolidayCarryForwardDataList {
 	private PublicHolidayCarryForwardDataList getOffsetList(){
 			
 		return new PublicHolidayCarryForwardDataList(publicHolidayCarryForwardData.stream()
-				.filter(x -> x.numberCarriedForward.v() != 0.0)
+				.filter(x -> x.getNumberCarriedForward().v() != 0.0)
 				.collect(Collectors.toList()));
 	}
 	

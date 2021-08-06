@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.GetRemainingNumberPublicHolidayService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
@@ -1218,7 +1219,8 @@ public class AggregateMonthlyRecordServiceProc {
 		this.aggregateResult.getChildHdRemainList().addAll(output.getChildHdRemainList());
 		// 介護
 		this.aggregateResult.getCareHdRemainList().addAll(output.getCareHdRemainList());
-
+		//公休
+		this.aggregateResult.getPublicRemainList().addAll(output.getPublicRemainList());
 
 		// エラー一覧
 		this.aggregateResult.getPerErrors().addAll(output.getPerErrors());
@@ -1723,7 +1725,7 @@ public class AggregateMonthlyRecordServiceProc {
 		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
 	}
 
-	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3{
+	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3, RequireM16{
 
 //		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
 //
@@ -1755,7 +1757,9 @@ public class AggregateMonthlyRecordServiceProc {
 		/* ,GetAnnAndRsvRemNumWithinPeriod.RequireM2 */ {
 	}
 
-
+	public static interface RequireM16 extends GetRemainingNumberPublicHolidayService.RequireM1{
+		
+	}
 
 	public static interface RequireM5 extends NumberCompensatoryLeavePeriodQuery.Require{
 	}

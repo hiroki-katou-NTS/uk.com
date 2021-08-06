@@ -110,7 +110,7 @@ public class CompanyAdapterImp implements CompanyAdapter {
 	
 	//暦の年月から年月期間を取得する
 	@Override
-	public Optional<YearMonthPeriod> getYearMonthPeriod(String cid, YearMonth yearMonth) {
-		return this.companyPub.createPeriod(cid, yearMonth);
+	public Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String cid, YearMonth yearMonth) {
+		return this.companyPub.getYearMonthPeriodByCalendarYearmonth(cid, yearMonth);
 	}
 }

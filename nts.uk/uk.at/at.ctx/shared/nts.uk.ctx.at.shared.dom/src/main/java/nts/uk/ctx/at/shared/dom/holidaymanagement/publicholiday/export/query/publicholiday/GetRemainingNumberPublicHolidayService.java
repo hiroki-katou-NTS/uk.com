@@ -23,8 +23,6 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pub
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
 /**
@@ -49,7 +47,7 @@ public class GetRemainingNumberPublicHolidayService {
 	 * @param Require
 	 */
 	
-	public AggrResultOfPublicHoliday getPublicHolidayRemNumWithinPeriod(
+	public static AggrResultOfPublicHoliday getPublicHolidayRemNumWithinPeriod(
 			String companyId,
 			String employeeId,
 			List<YearMonth> yearMonth,
@@ -64,14 +62,19 @@ public class GetRemainingNumberPublicHolidayService {
 			){
 		
 		//公休設定を取得する
-		PublicHolidaySetting publicHolidaySetting = require.publicHolidaySetting(companyId);
+		Optional<PublicHolidaySetting> publicHolidaySetting = require.publicHolidaySetting(companyId);
 		
 		//公休設定を確認する
-		if(publicHolidaySetting.getIsManagePublicHoliday() != 1){
+		
+		if(!publicHolidaySetting.isPresent()){
+			return new AggrResultOfPublicHoliday();
+		}
+		
+		if(publicHolidaySetting.get().getIsManagePublicHoliday() != 1){
 			return new AggrResultOfPublicHoliday();
 		}
 		//集計期間WORKを作成
-		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = publicHolidaySetting.createAggregatePeriodWork(
+		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = publicHolidaySetting.get().createAggregatePeriodWork(
 				employeeId, yearMonth,criteriaDate, cacheCarrier, require);
 		//繰越データを取得する
 		PublicHolidayCarryForwardDataList carryForwardDataList = new PublicHolidayCarryForwardDataList(
@@ -141,19 +144,19 @@ public class GetRemainingNumberPublicHolidayService {
 	 * @param require
 	 * @return TempPublicHolidayManagement
 	 */
-	public List<TempPublicHolidayManagement> getTempPublicHolidayManagement(String employeeId,DatePeriod period,
+	public static List<TempPublicHolidayManagement> getTempPublicHolidayManagement(String employeeId,DatePeriod period,
 			Optional<Boolean> isOverWrite,
 			List<TempPublicHolidayManagement> tempPublicHolidayforOverWriteList,
 			InterimRemainMngMode performReferenceAtr,
 			Optional<CreateAtr> createAtr,
 			Optional<DatePeriod> periodOverWrite,
-			RequireM6 require){
+			RequireM5 require){
 		List<TempPublicHolidayManagement> interimDate = new ArrayList<>();
 		
 		// 実績のみ参照区分を確認
 		if (performReferenceAtr == InterimRemainMngMode.OTHER) {
 			// 暫定公休管理データを取得
-			interimDate = require.tempPublicHolidayManagement(employeeId , period , RemainType.PUBLICHOLIDAY);
+			interimDate = require.tempPublicHolidayManagement(employeeId , period);
 		}
 		
 		// 上書きフラグを確認
@@ -175,39 +178,34 @@ public class GetRemainingNumberPublicHolidayService {
 	}
 	
 	
-	public static interface RequireM1 extends RequireM4, RequireM5, RequireM6,RequireM7, RequireM8{
+	public static interface RequireM1 extends RequireM3, RequireM4, RequireM5,RequireM6, RequireM7{
 		//公休設定を取得する（会社ID）
-		PublicHolidaySetting publicHolidaySetting(String companyId);
+		Optional<PublicHolidaySetting> publicHolidaySetting(String companyId);
 	}
 	
 	public static interface RequireM2 {
-		//締めを取得する（会社ID、締めID）
-		Optional<Closure> closure(String companyId, int closureId);
-	}
-	
-	public static interface RequireM3 extends RequireM2 {
 		//雇用に紐づく就業締めを取得する（会社ID、社員ID）
 		Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD);
 	}
 
-	public static interface RequireM4 extends RequireM3 {
+	public static interface RequireM3 extends RequireM2 {
 		//所属雇用履歴を取得する（会社ID、社員ID、基準日）
 		Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId, String employeeId, GeneralDate baseDate);
 	}
 	
-	public static interface RequireM5{
+	public static interface RequireM4{
 		//公休繰越データを取得する（社員ID）
 		List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData(String employeeId);
 	}
 	
-	public static interface RequireM6{
-		//暫定公休管理データ（社員ID、期間、残数種類）
-		List<TempPublicHolidayManagement> tempPublicHolidayManagement(String employeeId, DatePeriod ymd, RemainType remainType);
+	public static interface RequireM5{
+		//暫定公休管理データ（社員ID、期間）
+		List<TempPublicHolidayManagement> tempPublicHolidayManagement(String employeeId, DatePeriod Period);
 	}
 	
-	public static interface RequireM7 extends PublicHolidaySetting.RequireM1{
+	public static interface RequireM6 extends PublicHolidaySetting.RequireM1{
 	}
-	public static interface RequireM8 extends AggregatePublicHolidayWork.RequireM1{
+	public static interface RequireM7 extends AggregatePublicHolidayWork.RequireM1{
 	}
 
 }

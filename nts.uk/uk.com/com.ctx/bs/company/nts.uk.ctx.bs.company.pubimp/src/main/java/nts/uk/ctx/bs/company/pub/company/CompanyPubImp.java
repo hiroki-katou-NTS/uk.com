@@ -241,7 +241,7 @@ public class CompanyPubImp implements ICompanyPub {
 	
 	//暦の年月から年月期間を取得する
 	@Override
-	public Optional<YearMonthPeriod> createPeriod(String cid, YearMonth yearMonth){
+	public Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String cid, YearMonth yearMonth){
 		Optional<Company> company = this.repo.getComanyInfoByCid(cid);
 
 		if (!company.isPresent()) {

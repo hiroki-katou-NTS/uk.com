@@ -20,17 +20,17 @@ public class PublicHolidayDigestionInformation {
 	/*
 	 * 公休日数
 	 */
-	public LeaveGrantDayNumber publicHolidayday;
+	private LeaveGrantDayNumber publicHolidayday;
 	
 	/*
 	 * 繰越数
 	 */
-	public LeaveRemainingDayNumber carryForwardNumber;
+	private LeaveRemainingDayNumber carryForwardNumber;
 	
 	/*
 	 * 取得数
 	 */
-	public LeaveUsedDayNumber numberOfAcquisitions;
+	private LeaveUsedDayNumber numberOfAcquisitions;
 	
 	
 	

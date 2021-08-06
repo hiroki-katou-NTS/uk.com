@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
@@ -56,9 +55,9 @@ public class SubstitutionHolidayProcess {
 				 /** 振休残数更新 */
 				.then(updateRemainSubstitutionHoliday(require, output.getVacationDetails(), period, empId))
 				/** 振休逐次休暇の紐付け情報を追加する */
-				.then(addSeqVacation(require, empId, output.getLstSeqVacation()));		
+				.then(addSeqVacation(require, empId, output.getLstSeqVacation()))
 				/** 振休暫定データ削除 */
-				//.then(deleteTempSubstitutionData(require, period, empId));		
+				.then(DeleteTempSubstitution.deleteTempSubstitutionManagement(require, empId, period.getPeriod()));	
 	}
 	
 	/** 振休逐次休暇の紐付け情報を追加する */
@@ -115,17 +114,7 @@ public class SubstitutionHolidayProcess {
 				Optional.of(period.getPeriod()), remainDataMonthAgg.getMonthly());
 		
 		return NumberCompensatoryLeavePeriodQuery.process(require, param);
-	}
-	
-	/** 暫定データ削除 */
-	//private static AtomTask deleteTempSubstitutionData(RequireM3 require, AggrPeriodEachActualClosure period, String empId) {
-		
-		/** アルゴリズム「振出暫定データの削除」を実行する */
-		//return AtomTask.of(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PICKINGUP))
-				/** アルゴリズム「振休暫定データの削除」を実行する */
-				//.then(() -> require.deleteInterim(empId, period.getPeriod(), RemainType.PAUSE));
-	//}
-	
+	}		
 
 	/** 振休残数更新 */
 	private static AtomTask updateRemainSubstitutionHoliday(RequireM5 require, VacationDetails vacationDetails,
@@ -263,7 +252,7 @@ public class SubstitutionHolidayProcess {
 		void createSubstitutionOfHDManagementData(SubstitutionOfHDManagementData domain);
 	}
 
-	private static interface RequireM3 {
+	private static interface RequireM3 extends DeleteTempSubstitution.Require{
 	}
 	
 	public static interface RequireM2 extends NumberCompensatoryLeavePeriodQuery.Require {

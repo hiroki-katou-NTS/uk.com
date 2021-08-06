@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.PublicHolidayMonthSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.AggregationPeriod;
 
 /**
  * The Class EmploymentMonthDaySetting.
@@ -108,14 +108,19 @@ public class EmploymentMonthDaySetting extends AggregateRoot{
 		return true;
 	}
 	
-	//期間から雇用月間日数設定を取得する
-	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSetting(List<AggregationPeriod> periodList){
+	//年月リストから雇用月間日数設定を取得する
+	/**
+	 * 年月リストから雇用月間日数設定を取得する
+	 * @param yearMonthList 年月リスト
+	 * @return　List＜月間公休日数設定＞
+	 */
+	public List<PublicHolidayMonthSetting> getPublicHolidayMonthSetting(List<YearMonth> yearMonthList){
 		List<PublicHolidayMonthSetting> publicHolidayMonthSetting = new ArrayList<>();
 		
-		for(AggregationPeriod period : periodList){
+		for(YearMonth yearMonth : yearMonthList){
 			publicHolidayMonthSetting.addAll(this.publicHolidayMonthSettings
 					.stream()
-					.filter(x -> period.getYearMonth().equals(x.createYearMonth()))
+					.filter(x -> yearMonth.equals(x.createYearMonth()))
 					.collect(Collectors.toList())); 
 			}
 		return publicHolidayMonthSetting;

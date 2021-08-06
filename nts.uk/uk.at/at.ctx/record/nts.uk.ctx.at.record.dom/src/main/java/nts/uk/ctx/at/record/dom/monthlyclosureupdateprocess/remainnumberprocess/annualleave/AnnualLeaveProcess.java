@@ -40,9 +40,11 @@ public class AnnualLeaveProcess {
 		/** 年休残数更新 */
 		return AtomTask.of(RemainAnnualLeaveUpdating.updateRemainAnnualLeave(require, cid, output.getAnnualLeave(), period, empId))
 						/** 年休暫定データ削除 */
+						.then(DeleteTempAnnualLeave.deleteTempAnnualLeaveManagement(require, cid, period.getPeriod()))
 						/** 積立年休残数更新 */
-						.then(RemainReserveAnnualLeaveUpdating.updateReservedAnnualLeaveRemainNumber(require, output.getReserveLeave(), period, empId));
+						.then(RemainReserveAnnualLeaveUpdating.updateReservedAnnualLeaveRemainNumber(require, output.getReserveLeave(), period, empId))
 						/** 積立年休暫定データ削除 */
+						.then(DeleteTempResereLeave.deleteTempResereLeaveManagement(require, cid, period.getPeriod()));
 	}
 
 	/**
@@ -100,6 +102,7 @@ public class AnnualLeaveProcess {
 	}
 
 	public static interface Require extends RequireM1,
-		RemainAnnualLeaveUpdating.RequireM5, RemainReserveAnnualLeaveUpdating.RequireM5 {
+		RemainAnnualLeaveUpdating.RequireM5, RemainReserveAnnualLeaveUpdating.RequireM5, 
+		DeleteTempAnnualLeave.Require, DeleteTempResereLeave.Require{
 	}
 }

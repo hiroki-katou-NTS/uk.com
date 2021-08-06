@@ -50,7 +50,19 @@ public interface TempCareManagementRepository {
 	 // RequestList686
 	public List<TempCareManagement> findBySidPeriod(String employeeId, DatePeriod period);
 
+	/**
+	 * 削除
+	 * @param sid
+	 * @param ymd
+	 */
 	public void deleteBySidAndYmd(String sid, GeneralDate ymd);
+	
+	/**
+	 * 削除　期間
+	 * @param sid
+	 * @param period
+	 */
+	public void deleteBySidDatePeriod(String sid, DatePeriod period);
 
 }
 

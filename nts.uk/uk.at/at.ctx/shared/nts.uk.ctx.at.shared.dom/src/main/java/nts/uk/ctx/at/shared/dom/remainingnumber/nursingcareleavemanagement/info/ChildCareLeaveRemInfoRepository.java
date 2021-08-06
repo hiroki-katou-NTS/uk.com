@@ -3,6 +3,8 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit;
+
 public interface ChildCareLeaveRemInfoRepository {
 
 	/**
@@ -44,5 +46,11 @@ public interface ChildCareLeaveRemInfoRepository {
 	 * @param domains
 	 */
 	void updateAll(String cid, List<ChildCareLeaveRemainingInfo> domains);
+	
+	/**
+	 * 上限日数更新
+	 * @param ThisFiscalYear 本年度上限日数
+	 */
+	void updateMaxDay(String cId, ChildCareNurseUpperLimit ThisFiscalYear);
 
 }

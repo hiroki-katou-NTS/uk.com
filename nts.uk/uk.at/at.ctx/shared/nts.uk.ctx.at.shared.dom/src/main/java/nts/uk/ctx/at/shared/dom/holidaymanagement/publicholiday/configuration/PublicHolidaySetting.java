@@ -238,11 +238,15 @@ public class PublicHolidaySetting extends AggregateRoot {
 			GeneralDate criteriaDate){
 		
 		//暦の年月から年月期間を取得する
-		YearMonthPeriod period = require.getYearMonthPeriod(this.companyID, endDay.yearMonth());
+		Optional<YearMonthPeriod> period = require.getYearMonthPeriodByCalendarYearmonth(this.companyID, endDay.yearMonth());
+		
+		if(!period.isPresent()){
+			throw new RuntimeException();
+		}
 		
 		//公休管理期間 = １日～末日
 		if(this.publicHolidayPeriod == PublicHolidayPeriod.FIRST_DAY_TO_LAST_DAY){
-			return period.end().lastGeneralDate();
+			return period.get().end().lastGeneralDate();
 		}
 
 		//公休管理期間 = 締め期間
@@ -250,11 +254,11 @@ public class PublicHolidaySetting extends AggregateRoot {
 
 			//取得する
 			Optional<DatePeriod> datePeriod = GetClosurePeriodBySpecifyingTheYeatMonth.getPeriod(
-					require, employeeId, criteriaDate, period.end(), cacheCarrier);
+					require, employeeId, criteriaDate, period.get().end(), cacheCarrier);
 			
 			
 			if(!datePeriod.isPresent()){
-				return period.end().lastGeneralDate();
+				return period.get().end().lastGeneralDate();
 			}
 			
 			//取得した期間.終了日を期限日として返す
@@ -278,15 +282,21 @@ public class PublicHolidaySetting extends AggregateRoot {
 	private List<AggregatePublicHolidayWork> createAggregatePublicHolidayWork(String employeeId, 
 			List<AggregationPeriod> periodList, GeneralDate criteriaDate, CacheCarrier cacheCarrier,RequireM2 require){
 		
+		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork =  new ArrayList<>();
+		
 		//公休日数取得
-		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit =
+		Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit =
 				require.publicHolidayManagementUsageUnit(this.companyID);
 		
+		if(publicHolidayManagementUsageUnit.isPresent()){
+			return aggregatePublicHolidayWork;
+		}
+		
 		List<PublicHolidayMonthSetting> publicHolidayMonthSettings =
-				publicHolidayManagementUsageUnit.GetNumberofPublicHoliday(require, this.companyID, employeeId,periodList , criteriaDate);
+				publicHolidayManagementUsageUnit.get().GetNumberofPublicHoliday(
+						require, this.companyID, employeeId,periodList , criteriaDate);
 		
 		
-		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork =  new ArrayList<>();
 		//公休集計期間WORKを作成
 		for(AggregationPeriod period : periodList){
 			
@@ -327,9 +337,9 @@ public class PublicHolidaySetting extends AggregateRoot {
 
 	public static interface RequireM2 extends ClosureService.RequireM3, RequireM7, PublicHolidayManagementUsageUnit.RequireM1 {
 		//暦の年月から年月期間を取得する
-		YearMonthPeriod getYearMonthPeriod(String cid, YearMonth yearMonth);
+		Optional<YearMonthPeriod> getYearMonthPeriodByCalendarYearmonth(String cid, YearMonth yearMonth);
 		
 		//公休利用単位設定
-		PublicHolidayManagementUsageUnit publicHolidayManagementUsageUnit(String companyId);
+		Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit(String companyId);
 	}
 }

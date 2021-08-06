@@ -4,7 +4,15 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.pu
 import java.util.ArrayList;
 import java.util.List;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 
@@ -38,5 +46,46 @@ public class AggrResultOfPublicHoliday {
 			List<PublicHolidayCarryForwardData> publicHolidayCarryForwardData){
 		this.publicHolidayInformation = publicHolidayInformation;
 		this.publicHolidayCarryForwardData = publicHolidayCarryForwardData;
+	}
+	
+	public PublicHolidayRemNumEachMonth createPublicHolidayRemainData(
+			String employeeId,
+			YearMonth yearMonth,
+			ClosureId closureId,
+			ClosureDate closureDate){
+		
+		return new PublicHolidayRemNumEachMonth(
+				employeeId,
+				yearMonth,
+				closureId,
+				closureDate,
+				ClosureStatus.UNTREATED,
+				publicHolidayInformation.stream()
+					.filter(x ->x.getYearMonth().equals(yearMonth))
+					.findFirst()
+					.map(x -> x.getPublicHolidayDigestionInformation().getPublicHolidayday())
+					.orElse(new LeaveGrantDayNumber(0.0)),
+				publicHolidayInformation.stream()
+					.filter(x ->x.getYearMonth().equals(yearMonth))
+					.findFirst()
+					.map(x -> x.getPublicHolidayDigestionInformation().getCarryForwardNumber())
+					.orElse(new LeaveRemainingDayNumber(0.0)),				
+				publicHolidayInformation.stream()
+					.filter(x ->x.getYearMonth().equals(yearMonth))
+					.findFirst()
+					.map(x -> x.getPublicHolidayDigestionInformation().getNumberOfAcquisitions())
+					.orElse(new LeaveUsedDayNumber(0.0)),					
+				publicHolidayInformation.stream()
+					.filter(x ->x.getYearMonth().equals(yearMonth))
+					.findFirst()
+					.map(x -> x.getPublicHolidayCarryForwardInformation().getCarryForwardNumber())
+					.orElse(new LeaveRemainingDayNumber(0.0)),	
+				publicHolidayInformation.stream()
+					.filter(x ->x.getYearMonth().equals(yearMonth))
+					.findFirst()
+					.map(x -> x.getPublicHolidayCarryForwardInformation().getUnusedNumber())
+					.orElse(new LeaveRemainingDayNumber(0.0))					
+					
+				);
 	}
 }

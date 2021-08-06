@@ -21,4 +21,12 @@ public interface TempPublicHolidayManagementRepository {
 	 * @return
 	 */
 	List<TempPublicHolidayManagement> findByPeriodOrderByYmd(String sid, DatePeriod period);
+	
+	
+	/**
+	 * 削除 暫定公休管理データ（期間）
+	 * @param sid
+	 * @param period
+	 */
+	void deleteByPeriod(String sid, DatePeriod period);
 }

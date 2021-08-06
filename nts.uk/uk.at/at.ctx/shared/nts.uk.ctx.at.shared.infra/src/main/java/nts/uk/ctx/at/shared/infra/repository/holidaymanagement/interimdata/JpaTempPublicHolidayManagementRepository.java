@@ -22,6 +22,11 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 			+ "AND a.pk.ymd <= :endYmd "
 			+ "ORDER BY a.pk.ymd ";
 	
+	private static final String REMOVE_BY_SID_PERIOD = "DELETE FROM KshdtInterimHdpub a"
+			+ " WHERE a.pk.sID = :sid"
+			+ "AND a.pk.ymd >= :startYmd "
+			+ "AND a.pk.ymd <= :endYmd ";
+	
 	/** 検索 */
 	@Override
 	public List<TempPublicHolidayManagement> find(String employeeId, GeneralDate ymd){
@@ -42,4 +47,14 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 				.setParameter("endYmd", period.end())
 				.getList(c -> c.toDomain());
 	}
+	
+	/** 削除 （期間） */
+	public void deleteByPeriod(String employeeId, DatePeriod period){
+		 this.queryProxy().query(REMOVE_BY_SID_PERIOD, KshdtInterimHdpub.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("startYmd", period.start())
+				.setParameter("endYmd", period.end());
+	}
+	
+	
 }

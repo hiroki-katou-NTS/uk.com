@@ -2,6 +2,11 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryF
 
 
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -14,42 +19,37 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  *
  *	公休繰越データ
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PublicHolidayCarryForwardData implements DomainAggregate{
 
 	/*
 	 * 社員ID
 	 */
-	public String employeeId;
+	private String employeeId;
 	
 	/*
 	 * 対象月
 	 */
-	public YearMonth yearMonth;
+	private YearMonth yearMonth;
 	
 	/*
 	 * 期限日
 	 */
-	public GeneralDate ymd;
+	private GeneralDate ymd;
 	
 	/*
 	 * 繰越数
 	 */
-	public LeaveRemainingDayNumber numberCarriedForward;
+	private LeaveRemainingDayNumber numberCarriedForward;
 	
 	/*
 	 * 登録種別
 	 */
-	public GrantRemainRegisterType grantRemainRegisterType;
+	private GrantRemainRegisterType grantRemainRegisterType;
 	
-	public PublicHolidayCarryForwardData(String employeeId,YearMonth yearMonth,
-			GeneralDate ymd, LeaveRemainingDayNumber numberCarriedForward, GrantRemainRegisterType grantRemainRegisterType){
-		this.employeeId = employeeId;
-		this.yearMonth = yearMonth;
-		this.ymd = ymd;
-		this.numberCarriedForward = numberCarriedForward;
-		this.grantRemainRegisterType = grantRemainRegisterType;
-	}
-
 	
 	public PublicHolidayCarryForwardData clone(){
 		return new PublicHolidayCarryForwardData(
@@ -60,6 +60,25 @@ public class PublicHolidayCarryForwardData implements DomainAggregate{
 				this.grantRemainRegisterType);
 	}
 	
+	
+	public static PublicHolidayCarryForwardData createFromJavaType(
+			String employeeId,
+			int yearMonth,
+			GeneralDate ymd,
+			double numberCarriedForward,
+			int  grantRemainRegisterType
+			) {
+
+		PublicHolidayCarryForwardData domain = new PublicHolidayCarryForwardData();
+
+		domain.employeeId = employeeId;
+		domain.yearMonth = new YearMonth(yearMonth);
+		domain.ymd = ymd;
+		domain.numberCarriedForward = new LeaveRemainingDayNumber(numberCarriedForward);
+		domain.grantRemainRegisterType = EnumAdaptor.valueOf(grantRemainRegisterType, GrantRemainRegisterType.class);
+
+		return domain;
+	}
 	
 	/**
 	 * //繰り越されてきた取れてない日数と相殺

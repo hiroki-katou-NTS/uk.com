@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -301,9 +302,13 @@ public class AggregatePublicHolidayWork {
 		LeaveRemainingDayNumber nextMonthCarryForwardData = offsetRemainingDataOfTheMonth(remainingData,carryForwardData);
 		
 		//公休設定を取得する
-		PublicHolidaySetting publicHolidaySetting = require.publicHolidaySetting(companyId);
+		Optional<PublicHolidaySetting> publicHolidaySetting = require.publicHolidaySetting(companyId);
 		
-		return publicHolidaySetting.createPublicHolidayCarryForwardData(
+		if(!publicHolidaySetting.isPresent()){
+			return Optional.empty();
+		}
+		
+		return publicHolidaySetting.get().createPublicHolidayCarryForwardData(
 				employeeId,
 				this.yearMonth,
 				this.ymd,
@@ -316,7 +321,7 @@ public class AggregatePublicHolidayWork {
 	
 	public static interface RequireM1{
 		//公休設定を取得する（会社ID）
-		PublicHolidaySetting publicHolidaySetting(String companyId);
+		Optional<PublicHolidaySetting> publicHolidaySetting(String companyId);
 	}
 }
 

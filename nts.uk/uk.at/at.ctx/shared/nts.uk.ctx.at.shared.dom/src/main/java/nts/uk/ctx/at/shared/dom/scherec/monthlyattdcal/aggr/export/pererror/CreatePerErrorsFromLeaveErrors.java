@@ -2,9 +2,11 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.val;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param.PublicHolidayErrors;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.PauseError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.children.service.ChildCareNurseErrors;
@@ -182,7 +184,7 @@ public class CreatePerErrorsFromLeaveErrors {
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
 	 * @param closureDate 締め日
-	 * @param specialLeaveErrors 特別休暇エラー情報
+	 * @param childCareNurseErrors 子の看護休暇エラー情報
 	 * @return 社員の月別残数エラー一覧
 	 */
 
@@ -194,7 +196,7 @@ public class CreatePerErrorsFromLeaveErrors {
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (childCareNurseErrors == null) return results;
 
-		// 特別休暇エラー処理
+		// 子の看護休暇エラー処理
 		if (childCareNurseErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
 					ErrorType.CHILDCARE_HOLIDAY,
@@ -216,7 +218,7 @@ public class CreatePerErrorsFromLeaveErrors {
 	 * @param yearMonth 年月
 	 * @param closureId 締めID
 	 * @param closureDate 締め日
-	 * @param specialLeaveErrors 特別休暇エラー情報
+	 * @param childCareNurseErrors 介護休暇エラー情報
 	 * @return 社員の月別残数エラー一覧
 	 */
 
@@ -228,7 +230,7 @@ public class CreatePerErrorsFromLeaveErrors {
 		List<EmployeeMonthlyPerError> results = new ArrayList<>();
 		if (childCareNurseErrors == null) return results;
 
-		// 特別休暇エラー処理
+		// 介護休暇エラー処理
 		if (childCareNurseErrors.size() > 0){
 			results.add(new EmployeeMonthlyPerError(
 					ErrorType.CARE_HOLIDAY,
@@ -244,4 +246,36 @@ public class CreatePerErrorsFromLeaveErrors {
 		return results;
 	}
 
+	/**
+	 * 公休エラーから月別残数エラー一覧を作成する
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日
+	 * @param PublicHolidayErrors 公休エラー情報
+	 * @return 社員の月別残数エラー一覧
+	 */
+
+	/** 公休エラーから月別残数エラー一覧を作成する */
+	public static List<EmployeeMonthlyPerError> fromPublicLeave(
+			String employeeId, YearMonth yearMonth, ClosureId closureId,
+			ClosureDate closureDate, Optional<PublicHolidayErrors> publicHolidayErrors) {
+
+		List<EmployeeMonthlyPerError> results = new ArrayList<>();
+		if (!publicHolidayErrors.isPresent()) return results;
+
+		// 公休エラー処理
+		results.add(new EmployeeMonthlyPerError(
+				ErrorType.PUBLIC_HOLIDAY,
+				yearMonth,
+				employeeId,
+				closureId,
+				closureDate,
+				null,
+				null,
+				null));
+		
+
+		return results;
+	}
 }

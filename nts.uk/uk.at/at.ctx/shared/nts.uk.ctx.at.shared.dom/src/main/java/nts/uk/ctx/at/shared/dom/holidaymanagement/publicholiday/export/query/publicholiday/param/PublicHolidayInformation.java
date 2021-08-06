@@ -20,22 +20,22 @@ public class PublicHolidayInformation {
 	/*
 	 * 年月
 	 */
-	public YearMonth yearMonth; 
+	private YearMonth yearMonth; 
 	
 	/*
 	 * 公休消化情報
 	 */
-	public PublicHolidayDigestionInformation publicHolidayDigestionInformation;
+	private PublicHolidayDigestionInformation publicHolidayDigestionInformation;
 	
 	/*
 	 * 公休繰越情報
 	 */
-	public PublicHolidayCarryForwardInformation publicHolidayCarryForwardInformation;
+	private PublicHolidayCarryForwardInformation publicHolidayCarryForwardInformation;
 		
 	/*
 	 * エラーリスト
 	 */
-	public Optional<PublicHolidayErrors> publicHolidayErrors;
+	private Optional<PublicHolidayErrors> publicHolidayErrors;
 	
 	
 	

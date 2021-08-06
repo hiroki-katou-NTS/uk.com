@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
@@ -59,6 +60,8 @@ public class IntegrationOfMonthly {
 	private Optional<CareRemNumEachMonth> care;
 	/** 子の看護休暇月別残数データ*/
 	private Optional<ChildcareRemNumEachMonth> childCare;
+	/** 公休月別残数データ */
+	private Optional<PublicHolidayRemNumEachMonth> publicHolidayLeaveRemain;
 	/** 月別実績の編集状態 */
 	private List<EditStateOfMonthlyPerformance> editState;
 	

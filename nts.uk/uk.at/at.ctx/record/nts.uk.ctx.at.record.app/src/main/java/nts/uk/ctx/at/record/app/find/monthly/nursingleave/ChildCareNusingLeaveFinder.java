@@ -45,12 +45,6 @@ public class ChildCareNusingLeaveFinder {
 	private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
 	@Inject
-	private GetRemainingNumberChildCareService getRemainingNumberChildCareSevice;
-
-	@Inject
-	private GetRemainingNumberCareService getRemainingNumberCareSevice;
-
-	@Inject
 	private TempChildCareManagementRepository childCareManaRepo;
 
 	@Inject
@@ -73,7 +67,7 @@ public class ChildCareNusingLeaveFinder {
 		DatePeriod datePeriod = new DatePeriod(closureStartOpt.get(), closureStartOpt.get().addYears(1).addDays(-1));
 
 		// アルゴリズム「期間中の子の看護休暇残数を取得」を実行する。
-		AggrResultOfChildCareNurse resultOfChildCareNurse = this.getRemainingNumberChildCareSevice.getChildCareRemNumWithinPeriod(
+		AggrResultOfChildCareNurse resultOfChildCareNurse = GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
 				AppContexts.user().companyId(),
 				eId,
 				datePeriod,
@@ -171,7 +165,7 @@ public class ChildCareNusingLeaveFinder {
 		DatePeriod datePeriod = new DatePeriod(closureStartOpt.get(), closureStartOpt.get().addYears(1).addDays(-1));
 
 		// アルゴリズム「期間中の介護休暇残数を取得」を実行する。
-		AggrResultOfChildCareNurse resultOfChildCareNurse = this.getRemainingNumberCareSevice.getCareRemNumWithinPeriod(
+		AggrResultOfChildCareNurse resultOfChildCareNurse = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
 				AppContexts.user().companyId(),
 				eId, datePeriod, InterimRemainMngMode.OTHER, GeneralDate.today(),
 				Optional.empty(), new ArrayList<>(),

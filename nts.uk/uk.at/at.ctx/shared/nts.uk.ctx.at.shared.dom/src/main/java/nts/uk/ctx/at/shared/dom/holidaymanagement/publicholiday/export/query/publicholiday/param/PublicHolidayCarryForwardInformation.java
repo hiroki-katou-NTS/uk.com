@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday.param;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 
 /**
@@ -8,6 +10,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  *
  *	公休繰越情報
  */
+@Getter
+@Setter
 public class PublicHolidayCarryForwardInformation {
 
 	
