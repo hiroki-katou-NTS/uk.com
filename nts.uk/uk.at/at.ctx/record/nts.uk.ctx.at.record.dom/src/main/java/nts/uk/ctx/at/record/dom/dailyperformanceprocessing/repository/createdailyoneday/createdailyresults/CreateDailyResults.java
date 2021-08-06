@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,11 +72,16 @@ public class CreateDailyResults {
 			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 			IntegrationOfDaily integrationOfDaily) {
 		    DatePeriod period = new DatePeriod(ymd, ymd);
-		    EmployeeGeneralAndPeriodMaster masterData = createDailyResultDomainServiceNew.getMasterData(companyId, employeeId, period);
-			 
+		    Optional<EmployeeGeneralAndPeriodMaster> masterData = createDailyResultDomainServiceNew.getMasterData(companyId, employeeId, period);
+		if (!masterData.isPresent()) {
+			return new OutputCreateDailyOneDay(
+					Arrays.asList(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
+							new ErrMessageResource("020"), new ErrMessageContent(TextResource.localize("Msg_1156")))),
+					integrationOfDaily, new ArrayList<>());
+		}
 		return createDailyResult(companyId, employeeId, ymd, executionType, flag,
-				masterData.getEmployeeGeneralInfoImport(),
-				masterData.getPeriodInMasterList(), integrationOfDaily);
+				masterData.get().getEmployeeGeneralInfoImport(),
+				masterData.get().getPeriodInMasterList(), integrationOfDaily);
 	}
 	
 	/**
