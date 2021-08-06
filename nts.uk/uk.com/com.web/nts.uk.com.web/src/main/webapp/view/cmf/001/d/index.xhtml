@@ -4,208 +4,40 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../share/model.js" />
-			<com:stylefile path="cmf001.d.style.css" />
-			<com:scriptfile path="cmf001.d.service.js" />
-			<com:scriptfile path="cmf001.d.vm.js" />
-			<com:ValidatorScript>
-		        nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber
-		    </com:ValidatorScript>
-			<com:scriptfile path="cmf001.d.start.js" />
-			
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../b/index.xhtml' }">#{i18n.getText('CMF001_132')}</a>
-				<button tabindex="2" class="proceed" data-bind="click: registerData, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_130')}</button>
-				<button tabindex="3" data-bind="click: openCMF001f">#{i18n.getText('CMF001_131')}</button>
-				<!-- <button tabindex="3" class="proceed" data-bind="click: openCMF001b, enable: $root.errors.isEmpty">#{i18n.getText('CMF001_132')}</button> -->
-			</div>
-			<div id="contents-area">
-				<div class="container">
-					<div style="padding-top: 10px; padding-left: 20px">
-						<div style="display: inline-block; width: 50%">
-							<div class="valign-center control-group" data-bind="with: stdCondSet">
-								<div class="valign-center control-group" style="display: inline-block; margin-right: 10px">
-									<label class="label" style="padding-right: 10px">#{i18n.getText('CMF001_134')}</label>
-									<label class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingCode"></label>
-									<label class="label" style="padding-right: 10px" data-bind="text: dispConditionSettingName"></label>
-								</div>
-								<div class="valign-center control-group" style="display: inline-block;">
-								
-<!-- 									<label class="label" style="padding-right: 10px">#{i18n.getText('CMF001_135')}</label>
-									<label class="label" style="padding-right: 10px" data-bind="text: $parent.systemType.name"></label> -->
-									
-									<span class="label" style="padding: 0px 5px">#{i18n.getText('CMF001_35')}</span> 
-									<div tabindex="7" data-bind="ntsComboBox: {
-										options: $parent.systemTypes,
-										optionsValue: 'code',
-										visibleItemsCount: 5,
-										name: '#[CMF001_36]',
-										value: $parent.system,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										required: true,
-										columns: [
-											{ prop: 'name', length: 8 }
-										]}"></div>
-					
-								</div>
-							</div>
-							<div class="valign-center control-group">
-								<div data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_136')}</div>
-								<div tabindex="4" id="file-upload" style="display: inline-block; width: 280px" data-bind="ntsFileUpload:{
-									name: '#[CMF001_137]',
-									filename: filename,
-									accept: ['.csv'],
-									text: 'CMF001_138',
-									aslink: false,
-									enable: true,
-									onchange: onchange,
-									immediateUpload: true,
-									stereoType: 'csvfile',
-									uploadFinished: finished
-								}"></div>
-								<div data-bind="ntsComboBox: {
-										options: encodingList,
-										optionsValue: 'code',
-										value: selectedEncoding,
-										optionsText: 'name',
-										editable: false,
-										enable: true,
-										columns: [
-											{ prop: 'name', length: 5}]}" style="width: 135px;">
-								</div>
-							</div>
-							
-						</div>
-						<div class="line-number" style="display: inline-block;">
-							<div class="valign-center control-group" data-bind="with: stdCondSet">
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_139')}</div>
-								<input id="D3_2" tabindex="5" data-bind="ntsNumberEditor: {name: '#[CMF001_140]', value: csvDataItemLineNumber, required: true, constraint: 'AcceptanceLineNumber', option: {width: '20px'}}, grouplength: 2, decimallength:2" />
-								<span class="label">#{i18n.getText('CMF001_141')}</span>
-							</div>
-							<div class="valign-center control-group" data-bind="with: stdCondSet">
-								<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_142')}</div>
-								<input id="D3_5" tabindex="6" data-bind="ntsNumberEditor: {name: '#[CMF001_143]', value: csvDataStartLine, required: true, constraint: 'AcceptanceLineNumber', option: {width: '20px'}}" />
-								<span class="label">#{i18n.getText('CMF001_144')}</span>
-							</div>
-						</div>
-						<div class="valign-center control-group" style="display: inline-block; padding-left: 10px; vertical-align: text-bottom">
-							<button tabindex="7" data-bind="click: refreshCsvData, enable: !nts.uk.text.isNullOrEmpty(fileId())">#{i18n.getText('CMF001_145')}</button>
-						</div>
-					</div>
-					<div class="fixed-flex-layout">
-						<div class="fixed-flex-layout-left"  style="margin-right: 10px; padding-left: 20px">
-							<div style="padding-top: 5px" data-bind="ntsPanel:{width: '300px', height: '21px', direction: 'bottom', showIcon: false, visible: true}">
-								<div class="valign-center control-group">
-									<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMF001_150')}</div>
-									<div id="D4_3" tabindex="8" data-bind="ntsComboBox: {
-										options: listCategory,
-										optionsValue: 'categoryId',
-										visibleItemsCount: 15,
-										name: '#[CMF001_58]',
-										value: selectedCategory,
-										optionsText: 'categoryName',
-										editable: false,
-										enable: enableCategory,
-										columns: [
-											{ prop: 'categoryName', length: 14 }
-										]}"></div>
-								</div>
-							</div>
-							<div style="padding-top: 5px" data-bind="ntsPanel:{width: '300px', height: '400px', direction: 'none', showIcon: true, visible: true}">
-								<div class="valign-center control-group cf" style="margin-bottom: 0px;">
-									<div class="pull-left" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_151')}</div>
-									<div class="pull-left" tabindex="9" style="width: 300px; margin-bottom: 10px;" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'itemNo', comId: 'D5_4', 
-										items: listCategoryItem, selected: selectedCategoryItem, selectedKey: 'itemNo', fields: ['itemNo', 'itemName'], mode: 'igGrid'}" />		
-								</div>
-								<table id="D5_4" data-bind="ntsGridList: {
-										rows: 12,
-										name: '#[CMF001_39]', 
-										dataSource: listCategoryItem,
-										primaryKey: 'itemNo', 
-										columns: [
-							                { headerText: '', key: 'itemNo', width: 10, hidden: true, formatter: _.escape },
-							                { headerText: '#{i18n.getText('CMF001_153')}', key: 'itemName', width: 280, formatter: _.escape }
-							            ], 
-										multiple: false,
-										value: selectedCategoryItem
-									}"></table>
-							</div>
-						</div>
-						<div class="pull-left" style="margin-right: 10px; text-align: center; padding-top: 220px;">
-							<button style="margin-bottom: 10px" data-bind="click: btnRightClick"><i class="icon icon-button-arrow-right"></i></button>
-							<button data-bind="click: btnLeftClick"><i class="icon icon-button-arrow-left"></i></button>
-						</div>
-						<div>
-							<span class="label" style="margin-bottom: 10px; font-size: 1.25rem;">#{i18n.getText('CMF001_160')}</span>
-							<table id="fixed-table">
-								<colgroup>
-									<col width="30px"/>
-									<col width="150px"/>
-									<col width="200px"/>
-									<col width="110px"/>
-									<col width="100px"/>
-									<col width="100px"/>
-									<col width="100px"/>
-								</colgroup>
-								<thead>
-									<tr>
-										<th class="ui-widget-header"></th>
-										<th class="ui-widget-header">#{i18n.getText('CMF001_161')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CMF001_162')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CMF001_163')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CMF001_164')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CMF001_165')}</th>
-										<th class="ui-widget-header">#{i18n.getText('CMF001_166')}</th>
-									</tr>
-								</thead>
-								<tbody data-bind="foreach: listAcceptItem">
-									<tr data-bind="attr: { 'data-id': acceptItemNumber }">
-										<td style ="text-align: right;background-color: #CFF1A5;"><span class="label" data-bind="text: acceptItemNumber"></span></td>
-										<td><span class="label" data-bind="text: acceptItemName"></span></td>
-										<td class="csvItemName">
-											<div>
-												<span data-bind="text: csvItemName"></span>
-											</div>
-											<button class="small" style="height: 25px" tabindex="10" data-bind="click: function() {$parent.openCMF001e($data)}, enable: !nts.uk.text.isNullOrEmpty($parent.fileId())">#{i18n.getText('CMF001_167')}</button>
-										</td>
-										<td><span class="label" data-bind="text: sampleData"></span></td>
-										<td>
-											<div tabindex="11" style="width: 95px; height: 26px; display: block;" data-bind="ntsComboBox: {
-												options: $parent.dataTypes,
-												optionsValue: 'code',
-												visibleItemsCount: 5,
-												name: '#[CMF001_168]',
-												value: itemType,
-												optionsText: 'name',
-												option: {width: '70px'},
-												selectFirstIfNull: true,
-												columns: [
-													{ prop: 'name', length: 5 }
-												]}"></div>
-										</td>
-										<td style ="text-align: center;">
-										    <i data-bind="ntsIcon: { no: 5, width: 23, height: 23 }, click: function() {$parent.dataTypeSetting($data)}"></i>
-										</td>
-										<td style ="text-align: center;">
-											<i data-bind="ntsIcon: { no: 5, width: 23, height: 23 }, click: function() {$parent.openCMF001l($data)}"></i>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+	<body>
+		<ui:composition template="../../../../master/dialog.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:stylefile path="cmf001.d.css" />
+				<com:scriptfile path="cmf001.d.vm.js" />
+				<script>
+					var dialogSize = {
+						width : 350,
+						height : 510
+					};
+				</script>
+				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			</ui:define>
+			<ui:define name="content">
+				<div id="contents-area">
+					<div class="selectContent" tabindex="-1">
+						<div class="lableCDL">受入項目を選択する</div>
+						<table id="item-select" data-bind="ntsGridList: {
+							height: 350,
+							options: selectablItemList,
+							optionsValue: 'itemNo',
+							columns: listColumns,
+							multiple: true,
+							value: selectedItems
+						}"></table>
 					</div>
 				</div>
-			</div>
-		</ui:define>
-	</ui:composition>
-</body>
+				<div id="ruled-line" style="border: 1px solid;"></div>
+				<div id="functions-area-bottom">
+					<button class="proceed x-large" data-bind="click: decideData" tabindex="2">決定</button>
+					<button data-bind="click: closeDialog" tabindex="3">キャンセル</button>
+				</div>
+			</ui:define>
+		</ui:composition>
+	</body>
 </html>
