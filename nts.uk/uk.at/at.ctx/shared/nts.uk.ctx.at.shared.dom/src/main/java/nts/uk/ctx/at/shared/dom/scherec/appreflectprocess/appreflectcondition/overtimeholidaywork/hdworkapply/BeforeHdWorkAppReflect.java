@@ -55,7 +55,7 @@ public class BeforeHdWorkAppReflect extends DomainObject {
 
 		// 始業終業の反映
 		lstId.addAll(
-				ReflectStartEndWork.reflect(require, cid, dailyApp, holidayApp.getWorkingTimeList(), holidayApp.getPrePostAtr()));
+				ReflectStartEndWork.reflect(require, cid, dailyApp, holidayApp.getWorkingTimeList()));
 
 		// 事前休出時間の反映
 		ReflectApplicationTime.process(holidayApp.getApplicationTime().getApplicationTime(), dailyApp,
