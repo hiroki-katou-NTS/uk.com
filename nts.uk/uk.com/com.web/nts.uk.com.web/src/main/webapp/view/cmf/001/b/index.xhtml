@@ -16,6 +16,10 @@
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportCode
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportName
 				</com:ValidatorScript>
+				<com:EnumScript>
+					nts.uk.ctx.exio.dom.input.group.ImportingGroupId
+					nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode 
+				</com:EnumScript>
 			</ui:define>
 
 			<ui:define name="content">
@@ -79,7 +83,7 @@
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入グループ</div>
 								<div id="importGroup" data-bind="ntsComboBox: {
 									options: $root.content.importGroupOption,
-									optionsValue: 'code',
+									optionsValue: 'value',
 									optionsText: 'name',
 									selectFirstIfNull: false,
 									value: importGroup}"></div>
@@ -88,7 +92,7 @@
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入モード</div>
 								<div id="importMode" data-bind="ntsComboBox: {
 									options: $root.content.importModeOption,
-									optionsValue: 'code',
+									optionsValue: 'value',
 									optionsText: 'name',
 									selectFirstIfNull: false,
 									value: importMode}"></div>
@@ -109,11 +113,11 @@
 						
 						<div class="group">
 							<div class="divi">受入レイアウト</div><hr />
-							<button class="normal" data-bind="text: '項目を追加する'" ></button>
+							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
 							<button class="normal" data-bind="text: '受入項目の詳細設定'" ></button>
 							<table id="layout-list" data-bind="ntsGridList: {
 								height: '300px',
-								dataSource: layoutList,
+								dataSource: layout,
 								primaryKey: 'itemNo',
 								columns: layoutListColumns,
 								value: selectedItem}">

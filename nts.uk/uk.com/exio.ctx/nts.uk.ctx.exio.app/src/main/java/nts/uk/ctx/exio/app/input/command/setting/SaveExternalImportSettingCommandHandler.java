@@ -21,11 +21,11 @@ public class SaveExternalImportSettingCommandHandler extends CommandHandler<Save
 	@Override
 	protected void handle(CommandHandlerContext<SaveExternalImportSettingCommand> context) {
 		val require = this.require.create();
-		val setting = context.getCommand().getSetting().toDomain(require);
 		if(context.getCommand().getIsCreateMode()) {
-			require.insert(setting);
-		}else {
-			require.update(setting);
+			require.insert(context.getCommand().getSetting().toDomain(require));
+		}
+		else {
+			require.update(context.getCommand().getSetting().toDomain(require));
 		}
 	}
 	

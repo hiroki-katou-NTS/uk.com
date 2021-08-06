@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.app.input.find.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,8 +44,8 @@ public class ExternalImportSettingDto {
 	/** CSVの取込開始行 */
 	private int importStartRow;
 	
-	/** レイアウト */
-	private List<ExternalImportLayoutDto> layouts;
+	/** レイアウト項目リスト */
+	private List<Integer> itemNoList;
 	
 	public static ExternalImportSettingDto fromDomain(Require require, ExternalImportSetting domain) {
 		
@@ -57,12 +58,7 @@ public class ExternalImportSettingDto {
 				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
 				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
 				domain.getAssembly().getMapping().getMappings().stream()
-				.map(m -> new ExternalImportLayoutDto(
-						m.getItemNo(), 
-						getItemName(require, domain.getExternalImportGroupId(), m),
-						getItemType(require, domain.getExternalImportGroupId(), m),
-						checkImportSource(m),
-						false))
+				.map(m -> m.getItemNo())
 				.collect(Collectors.toList()));
 	}
 	
@@ -81,61 +77,20 @@ public class ExternalImportSettingDto {
 	}
 	
 	private List<ImportingItemMapping> createMappings(Require require){
-		val optRegisteredSetting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(code));
-		if(optRegisteredSetting.isPresent()) {
-			val mappings = optRegisteredSetting.get().getAssembly().getMapping().getMappings();
-			if(mappings.size() > 0) {
-				return mappings;
+		List<ImportingItemMapping> result = new ArrayList<>();
+		
+		for(int itemNo: itemNoList) {
+			val optRegisteredSetting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(code));
+			if(optRegisteredSetting.isPresent()) {
+				List<ImportingItemMapping> mappings = optRegisteredSetting.get().getAssembly().getMapping().getMappings();
+				val configuredItem = mappings.stream().filter(m -> m.getItemNo() == itemNo).collect(Collectors.toList());
+				if(configuredItem.size() > 0) {
+					result.addAll(configuredItem);
+				}
 			}
+			result.add(new ImportingItemMapping(itemNo, Optional.empty(), Optional.empty()));
 		}
-		return layouts.stream()
-				.map(l -> new ImportingItemMapping(l.itemNo, null, null))
-				.collect(Collectors.toList());
-	}
-	
-	@Value
-	private static class ExternalImportLayoutDto {
-		
-		/** 項目NO */
-		private int itemNo;
-		
-		/** 項目名 */
-		private String name;
-		
-		/** 項目型 */
-		private String type;
-		
-		/** 受入元 */
-		private String source;
-		
-		/** 詳細設定の有無 */
-		private boolean alreadyDetail;
-	}
-	
-	private static String getItemName(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {
-		val importableItems = require.getImportableItems(groupId);
-		return importableItems.stream()
-				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemName();
-	}
-	
-	private static String getItemType(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {
-		val importableItems = require.getImportableItems(groupId);
-		return importableItems.stream()
-				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemType().name();
-	}
-	
-	private static String checkImportSource(ImportingItemMapping mapping) {
-		val optCsvColumnNo = mapping.getCsvColumnNo();
-		val optFixedValue = mapping.getFixedValue();
-		if(optCsvColumnNo.isPresent()){
-			return "CSV";
-		}
-		else if(optFixedValue.isPresent()){
-			return "固定値";
-		}
-		else {
-			return "未設定";
-		}
+		return result;
 	}
 	
 	public static interface Require {
