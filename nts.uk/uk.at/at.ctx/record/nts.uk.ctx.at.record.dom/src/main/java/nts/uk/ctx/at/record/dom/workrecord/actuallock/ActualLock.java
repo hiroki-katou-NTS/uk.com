@@ -141,32 +141,8 @@ public class ActualLock extends AggregateRoot {
 		DatePeriod periodClosure = require.getClosurePeriod(this.closureId.value, closure.getClosureMonth().getProcessingYm());
 		GeneralDate startPeriodClosure = periodClosure.start().addDays(-1);
 		GeneralDate endPeriodClosure = periodClosure.end().addDays(1);
-		
-		// if 期間。終了 < $締め期間。終了 && 期間。開始 > $締め期間。開始
-		if (period.end().before(endPeriodClosure) && period.start().after(startPeriodClosure)) {
-			return listPeriod;
-		//	else if 期間。開始　＞＝　$締め終了日 || 期間。終了　<＝　$締め開始日															
-		} else if (period.start().afterOrEquals(endPeriodClosure)
-				|| period.end().beforeOrEquals(startPeriodClosure)) {
-			listPeriod.add(period);
-			return listPeriod;
-		//else if 期間。開始 > $締め開始日 && 期間。開始　<＝　$締め終了日 && 期間。終了　>＝　$締め終了日 
-		}else if(period.start().after(startPeriodClosure) && period.start().beforeOrEquals(endPeriodClosure)
-				&& period.end().after(endPeriodClosure)) {
-			//return new List (new 期間($締め終了日、期間。終了))
-			listPeriod.add(new DatePeriod(endPeriodClosure, period.end()));
-			return listPeriod; 
-		//else if 期間。開始 ＜＝ $締め開始日 && 期間。終了　<＝　$締め終了日 && 期間。終了　>　$締め開始日
-		}else if(period.start().beforeOrEquals(startPeriodClosure) && period.end().beforeOrEquals(endPeriodClosure)
-				&& period.end().after(startPeriodClosure)) {
-			//return new List (new 期間(期間。開始、$締め開始日))
-			listPeriod.add(new DatePeriod(period.start(), startPeriodClosure));
-			return listPeriod; 
-		}
-		
-		// return new List(new 期間(期間。開始、$締め期間。開始)、new 期間($締め期間。終了、期間。終了))
-		listPeriod.add(new DatePeriod(period.start(), startPeriodClosure));
-		listPeriod.add(new DatePeriod(endPeriodClosure, period.end()));
+		period.subtract(new DatePeriod(startPeriodClosure, endPeriodClosure));
+		listPeriod.add(period);
 		return listPeriod;
 	}
 
