@@ -187,14 +187,14 @@ public class KSU002Finder {
 			Map<EmployeeId, Map<AttendanceTimesForAggregation, BigDecimal>> workingTimeCounter = WorkingTimeCounterService.get(dailyWorks);
 			//1.2.1: <call>
 			//$労働時間 = result.get(社員ID).get( 就業時間 )
-			Double workingHoursMonth = workingTimeCounter.isEmpty() ? null : workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN).doubleValue();
+			Double workingHoursMonth = workingTimeCounter.isEmpty() ? 0 : workingTimeCounter.get(employeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN).doubleValue();
 			
 			//1.3: 集計する(Require, List<日別勤怠(Work)>)
 			Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> workdayHolidayCounter = WorkdayHolidayCounterService.count(new Require(AppContexts.user().companyId()), dailyWorks);
 			
 			//1.3.1: <call>()
 			//$休日日数 = result.get(社員ID).get (休日）
-			Double numberHolidaysCurrentMonth = workdayHolidayCounter.isEmpty() ? null : workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.HOLIDAY).doubleValue();
+			Double numberHolidaysCurrentMonth = workdayHolidayCounter.isEmpty() ? 0 : workdayHolidayCounter.get(employeeId).get(WorkClassificationAsAggregationTarget.HOLIDAY).doubleValue();
 			
 			result.add(new WeeklyDataDto( ++no, workingHoursMonth, numberHolidaysCurrentMonth));
 		}
