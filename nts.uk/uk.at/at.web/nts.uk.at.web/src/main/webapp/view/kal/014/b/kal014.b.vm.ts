@@ -108,7 +108,7 @@ module nts.uk.at.kal014.b {
             var vm = this;
             if ((vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_BASIC
                     || vm.modalDTO.categoryId() === vm.workPalceCategory.MASTER_CHECK_WORKPLACE)
-                && vm.modalDTO.startMonth() < vm.modalDTO.endMonth()) {
+                && vm.modalDTO.startMonth() > vm.modalDTO.endMonth()) {
                 vm.$dialog.error({messageId: "Msg_812"}).then(() => {
                     return false;
                 });

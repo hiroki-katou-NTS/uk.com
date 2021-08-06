@@ -196,13 +196,13 @@ public class ExtractAlarmListWorkPlaceFinder {
         Optional<MonthNo> startMonthNo = period.getStartMonth().getStrMonthNo();
         YearMonth startYm = null;
         if (startMonthNo.isPresent()) {
-            startYm = processingYm.addMonths(-startMonthNo.get().getMonthNo());
+            startYm = processingYm.addMonths(startMonthNo.get().getMonthNo());
         }
         // 「Input．当月の年月」-「Input．終了月．抽出期間(月単位)．月数」を終了月とする
         Optional<MonthNo> endMonthNo = period.getEndMonth().getEndMonthNo();
         YearMonth endYm = null;
         if (endMonthNo.isPresent()) {
-            endYm = processingYm.addMonths(-endMonthNo.get().getMonthNo());
+            endYm = processingYm.addMonths(endMonthNo.get().getMonthNo());
         }
         return new CheckConditionDto(category, startYm, endYm);
     }
@@ -289,7 +289,7 @@ public class ExtractAlarmListWorkPlaceFinder {
             // 指定した年月の期間をすべて取得する
             Optional<Closure> closureOpt = closureEmploymentService.findClosureByEmployee(AppContexts.user().employeeId(),
                     GeneralDate.today());
-            Optional<Month> startMonth = period.getStartDate().getStrMonth();
+            Optional<Month> startMonth = period.getEndDate().getEndMonth();
             if (startMonth.isPresent()) {
                 // ・年月　＝　「Input．締め．当月．当月」+「Input．抽出期間(日単位)．開始日．締め日指定．月数」
                 YearMonth ym = processingYm.addMonths(startMonth.get().getMonth());

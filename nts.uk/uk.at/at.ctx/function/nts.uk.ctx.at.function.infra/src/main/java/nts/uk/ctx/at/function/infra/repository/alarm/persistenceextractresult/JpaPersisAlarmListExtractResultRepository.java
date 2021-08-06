@@ -6,8 +6,11 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResult;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtAlarmExtracResultPK;
 import nts.uk.ctx.at.function.infra.entity.alarm.persistenceextractresult.KfndtPersisAlarmExt;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternCode;
+import nts.uk.ctx.at.shared.dom.alarmList.AlarmPatternName;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
 
 import javax.ejb.Stateless;
@@ -159,9 +162,40 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
     public List<PersistenceAlarmListExtractResult> getAlarmExtractResult(String companyId, List<String> employeeIds) {
         if (CollectionUtil.isEmpty(employeeIds)) return Collections.emptyList();
 
-        return this.queryProxy().query("select distinct a from KfndtPersisAlarmExt a join a.extractResults b " +
-                "where a.pk.cid = :companyId and b.pk.sid in :empIds", KfndtPersisAlarmExt.class)
+        List<PersistenceAlarmListExtractResult> results;
+        List<KfndtAlarmExtracResult> extractResults = this.queryProxy()
+                .query("select a from KfndtAlarmExtracResult a where a.pk.cid = :companyId and a.pk.sid in :employeeIds", KfndtAlarmExtracResult.class)
                 .setParameter("companyId", companyId)
-                .setParameter("empIds", employeeIds).getList(KfndtPersisAlarmExt::toDomain);
+                .setParameter("employeeIds", employeeIds)
+                .getList();
+
+        List<String> processIds = extractResults.stream().map(i -> i.pk.processId).distinct().collect(Collectors.toList());
+        try (PreparedStatement statement = this.connection()
+                .prepareStatement("select * from KFNDT_PERSIS_ALARM_EXT a where a.CID = ? and a.PROCESS_ID in ("
+                        + processIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
+
+            statement.setString(1, companyId);
+            for (int i = 0; i < processIds.size(); i++) {
+                statement.setString(i + 2, processIds.get(i));
+            }
+
+            results = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+                String processId = rec.getString("PROCESS_ID");
+                List<AlarmEmployeeList> alarmListExtractResults = KfndtAlarmExtracResult.toDomain(extractResults.stream()
+                        .filter(i -> i.pk.processId.equals(processId)).collect(Collectors.toList()));
+
+                return new PersistenceAlarmListExtractResult(
+                        new AlarmPatternCode(rec.getString("PATTERN_CODE")),
+                        new AlarmPatternName(rec.getString("PATTERN_NAME")),
+                        alarmListExtractResults,
+                        rec.getString("CID"),
+                        rec.getString("AUTORUN_CODE")
+                );
+            });
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return results;
     }
 }

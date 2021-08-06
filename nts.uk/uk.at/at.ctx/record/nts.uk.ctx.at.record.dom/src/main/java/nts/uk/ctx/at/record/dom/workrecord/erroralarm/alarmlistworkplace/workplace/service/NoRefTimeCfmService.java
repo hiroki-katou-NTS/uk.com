@@ -70,14 +70,14 @@ public class NoRefTimeCfmService {
 
                 if (CollectionUtil.isEmpty(monthTimeWps)) {
                     // 「アラーム値メッセージ」を作成します。
-                    String message = TextResource.localize("KAL020_200", (loopYm.year() + "/" + loopYm.month()));
+                    String message = TextResource.localize("KAL020_200", (loopYm.year() + "/" + String.format("%02d", loopYm.month())));
 
                     // ドメインオブジェクト「抽出結果」を作成してリスト「抽出結果」に追加
                     ExtractResultDto result = new ExtractResultDto(
                             new AlarmValueMessage(message),
                             new AlarmValueDate(loopYm.toString(), Optional.empty()),
                             workplaceCheckName.v(),
-                            Optional.ofNullable(TextResource.localize("KAL020_208", String.valueOf(loopYm.year()))),
+                            Optional.of(TextResource.localize(message)),
                             Optional.of(new MessageDisplay(displayMessage.v())),
                             workplaceId
                     );
