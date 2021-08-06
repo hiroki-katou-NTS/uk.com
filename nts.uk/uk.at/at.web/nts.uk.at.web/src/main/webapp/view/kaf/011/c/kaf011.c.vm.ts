@@ -13,6 +13,8 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 		appReason: KnockoutObservable<string> = ko.observable("");
 		appDispInfoStartupOutput: any = ko.observable();
 		appType: KnockoutObservable<number> = ko.observable(AppType.COMPLEMENT_LEAVE_APPLICATION);
+		indexApprover: number = 0;
+        approvalRootState: KnockoutObservableArray<any>;
 		constructor(){
 			let self = this;
 			let dataTransfer = windows.getShared('KAF011C');
@@ -20,12 +22,14 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 			let reasonTypeItemLst: any = dataTransfer.appDispInfoStartup.appDispInfoNoDateOutput.reasonTypeItemLst;
 			self.appDispInfoStartupOutput(dataTransfer.appDispInfoStartup);
 			self.appDate = ko.observable(dataTransfer.abs.application.appDate);
+			self.approvalRootState = ko.observableArray([]);
 			if(reasonTypeItemLst){
 				self.reasonTypeItemLst(reasonTypeItemLst);	
 			}
 			self.appDate.subscribe((value:any) => {
 				block.invisible();
 				ajax('at/request/application/holidayshipment/changeDateScreenC',{appDateNew: new Date(value), displayInforWhenStarting: self.displayInforWhenStarting}).then((data: any) =>{
+					self.indexApprover = 0;
 					self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
 					self.appDispInfoStartupOutput(data.appDispInfoStartup);
 				}).fail((fail: any) => {
@@ -35,7 +39,13 @@ module nts.uk.at.view.kaf011.c.viewmodel {
                 });
 			});
 			
-			
+			self.appDispInfoStartupOutput.subscribe(value => {
+                if(!_.isEmpty(value.appDispInfoWithDateOutput.opListApprovalPhaseState)) {
+                    self.approvalRootState(ko.mapping.fromJS(value.appDispInfoWithDateOutput.opListApprovalPhaseState)());
+                } else {
+                    self.approvalRootState([]);
+                }
+            });
 		}
 		
 		
@@ -51,23 +61,23 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 					if(_.isEmpty(result.autoFailMail)) {
 						dfd.resolve(true);
 					} else {
-						vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+						dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
 				        	dfd.resolve(true);
 				        });	
 					}
 				} else {
-					vm.$dialog.info({ messageId: 'Msg_392', messageParams: [_.join(result.autoSuccessMail, ',')] }).then(() => {
+					dialog.info({ messageId: 'Msg_392', messageParams: [_.join(result.autoSuccessMail, ',')] }).then(() => {
 						if(_.isEmpty(result.autoFailMail)) {
 							dfd.resolve(true);	
 						} else {
-							vm.$dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
+							dialog.error({ messageId: 'Msg_768', messageParams: [_.join(result.autoFailMail, ',')] }).then(() => {
 					        	dfd.resolve(true);
 					        });	
 						}
 			        });	
 				}	
 			} else {
-				vm.$dialog.error({ messageId: 'Msg_1057' }).then(() => {
+				dialog.error({ messageId: 'Msg_1057' }).then(() => {
 		        	dfd.resolve(true);
 		        });
 			}
@@ -105,7 +115,90 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 			windows.close();
 		}
 		
-		
+		/**
+         * Component 6
+         */
+         isFirstIndexFrame(loopPhase: any, loopFrame: any, loopApprover: any) {
+            if(_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover) == 0;
+            }
+            let firstIndex = _.chain(loopPhase.listApprovalFrame()).filter(x => _.size(x.listApprover()) > 0).orderBy(x => x.frameOrder()).first().value().frameOrder();
+            let approver: any = _.find(loopPhase.listApprovalFrame(), o => o == loopFrame);
+            if(approver) {
+                return approver.frameOrder() == firstIndex;
+            }
+            return false;
+        }
+
+        getFrameIndex(loopPhase: any, loopFrame: any, loopApprover: any) {
+            if(_.size(loopFrame.listApprover()) > 1) {
+                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);
+            }
+            return loopFrame.frameOrder();
+        }
+
+        frameCount(listFrame: any) {
+            const self = this;
+            let listExist = _.filter(listFrame, x => _.size(x.listApprover()) > 0);
+            if(_.size(listExist) > 1) {
+                return _.size(listExist);
+            }
+            return _.chain(listExist).map(o => self.approverCount(o.listApprover())).value()[0];
+        }
+
+        approverCount(listApprover: any) {
+            return _.chain(listApprover).countBy().values().value()[0];
+        }
+
+        getApproverAtr(approver: any) {
+            if(approver.approvalAtrName() !='未承認'){
+                if(approver.agentName().length > 0){
+                    if(approver.agentMail().length > 0){
+                        return approver.agentName() + '(@)';
+                    } else {
+                        return approver.agentName();
+                    }
+                } else {
+                    if(approver.approverMail().length > 0){
+                        return approver.approverName() + '(@)';
+                    } else {
+                        return approver.approverName();
+                    }
+                }
+            } else {
+                var s = '';
+                s = s + approver.approverName();
+                if(approver.approverMail().length > 0){
+                    s = s + '(@)';
+                }
+                if(approver.representerName().length > 0){
+                    if(approver.representerMail().length > 0){
+                        s = s + '(' + approver.representerName() + '(@))';
+                    } else {
+                        s = s + '(' + approver.representerName() + ')';
+                    }
+                }
+                return s;
+            }
+        }
+
+        getPhaseLabel(phaseOrder: any) {
+            const self = this;
+            switch(phaseOrder) {
+                case 1: return nts.uk.resource.getText("KAF000_4");
+                case 2: return nts.uk.resource.getText("KAF000_5");
+                case 3: return nts.uk.resource.getText("KAF000_6");
+                case 4: return nts.uk.resource.getText("KAF000_7");
+                case 5: return nts.uk.resource.getText("KAF000_8");
+                default: return "";
+            }
+        }
+
+        getApproverLabelByIndex() {
+			const self = this;
+			self.indexApprover++;
+			return nts.uk.resource.getText("KAF000_9",[self.indexApprover+'']);
+		}
 	}
 	
     __viewContext.ready(function() {
