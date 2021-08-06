@@ -1246,11 +1246,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let time = new Time(new Date(cell.date));
                         let date = moment(cell.date, 'YYYY/MM/DD');
+                        let condTargetdate = true;
                         
                         // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
                         if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
                             cell.conditionAa1 = false;
                             cell.conditionAa2 = false;
+                            condTargetdate = false;
                         }
                         
                         let ymd = time.yearMonthDay;
@@ -1258,7 +1260,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         shiftName = (cell.haveData == true && (cell.shiftName == null || cell.shiftName == '')) ? getText("KSU001_94") : cell.shiftName;
                         if (cell.needToWork == false)
                             shiftName = null;
-                        objDetailContentDs['_' + ymd] = new ExCell(null, null, null, null, null, null, shiftName, cell.shiftCode, cell.confirmed , cell.achievements, cell.workHolidayCls);
+                        objDetailContentDs['_' + ymd] = new ExCell(null, null, null, null, null, null, shiftName, cell.shiftCode, cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, condTargetdate);
 
                         // set Deco background
                         if (userInfor.backgroundColor == 1 && self.mode() == 'edit' ) {
@@ -1369,12 +1371,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
+                    let condTargetdate = true;
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         
                         // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
                         if (moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')) {
                             cell.conditionAbc1 = false;
                             cell.conditionAbc2 = false;
+                            condTargetdate = false;
                         }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -1384,7 +1388,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTypeName = null;
                             workTimeName = null;
                         }
-                        objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName, null, null, null, null,cell.confirmed , cell.achievements, cell.workHolidayCls);
+                        objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName, null, null, null, null,cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, condTargetdate);
 
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
@@ -1494,6 +1498,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
+                    let condTargetdate = true;
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         // set dataSource
                         
@@ -1501,6 +1506,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')) {
                             cell.conditionAbc1 = false;
                             cell.conditionAbc2 = false;
+                            condTargetdate = false;
                         }
                         
                         let time = new Time(new Date(cell.date));
@@ -1523,7 +1529,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             endTime      = null;
                         }
                         
-                        objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, null, null, cell.confirmed , cell.achievements, cell.workHolidayCls);
+                        objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, null, null, cell.confirmed , cell.achievements, cell.workHolidayCls, cell.needToWork, cell.supportCategory, condTargetdate);
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
                         // điều kiện ※Abc1 editMode
@@ -6015,8 +6021,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         confirmed: boolean;
         achievements: boolean;
         workHolidayCls:  number;
+        needToWork: boolean;
+        supportCategory:  number;
+        condTargetdate: boolean;
         
-        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, shiftName?: any, shiftCode? : any, confirmed? : any, achievements? : any, workHolidayCls? : number) {
+        constructor(workTypeCode: string, workTypeName: string, workTimeCode: string, workTimeName: string, startTime?: string, endTime?: string, 
+        shiftName?: any, shiftCode? : any, 
+        confirmed? : any, achievements? : any, workHolidayCls? : number, needToWork?: boolean,supportCategory?:  number, condTargetdate?: boolean) {
             this.workTypeCode = workTypeCode;
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
@@ -6028,6 +6039,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             this.confirmed = confirmed !== null ? confirmed : false;
             this.achievements = achievements !== null ? achievements : false;
             this.workHolidayCls = workHolidayCls !== null ? workHolidayCls : null;
+            this.needToWork = needToWork !== null ? needToWork : null;
+            this.supportCategory = supportCategory !== null ? supportCategory : null;
+            this.condTargetdate = condTargetdate !== null ? condTargetdate : null;
         }
     }
 
