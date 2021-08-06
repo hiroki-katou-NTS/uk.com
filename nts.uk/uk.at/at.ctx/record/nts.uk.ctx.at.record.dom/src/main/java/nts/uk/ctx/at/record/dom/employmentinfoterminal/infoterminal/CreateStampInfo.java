@@ -105,20 +105,18 @@ public class CreateStampInfo implements DomainValue {
 		// 外出理由
 		GoingOutReason goOutArt = null;
 		// if ＠設置場所コード.isPresent
-		if (this.getWorkLocationCd().isPresent()) {
-			// 置換する ＝ する && 打刻変換のタイプ = NRLの変換情報)
-			if ((this.stampInfoConver instanceof NRConvertInfo)
-					&& ((NRConvertInfo) this.stampInfoConver).getOutPlaceConvert().getReplace() == NotUseAtr.USE) {
+		// 置換する ＝ する && 打刻変換のタイプ = NRLの変換情報)
+		if ((this.stampInfoConver instanceof NRConvertInfo)) {
+			if (((NRConvertInfo) this.stampInfoConver).getOutPlaceConvert().getReplace() == NotUseAtr.USE) {
 				goOutArt = ((NRConvertInfo) this.stampInfoConver).getOutPlaceConvert().getGoOutReason()
 						.map(x -> GoingOutReason.valueOf(x.value)).orElse(null);
+			} else {
+				goOutArt = !shift.isEmpty() ? GoingOutReason.valueOf(Integer.parseInt(shift.substring(0, 1))) : null;
 			}
+		} else if ((this.stampInfoConver instanceof MSConversionInfo)) {
 			// 打刻変換のタイプ = ｍsの変換情報)
-			if ((this.stampInfoConver instanceof MSConversionInfo)) {
-				goOutArt = ((MSConversionInfo) this.stampInfoConver).convertReason(leavCategory).orElse(null);
-			}
-			// 出退区分NR.value ＝’O’
-		} else if (leavCategory == LeaveCategory.GO_OUT && !shift.isEmpty()) {
-			goOutArt = GoingOutReason.valueOf(Integer.parseInt(shift.substring(0, 1)));
+			goOutArt = ((MSConversionInfo) this.stampInfoConver).convertReason(leavCategory).orElse(null);
+
 		}
 		return Optional.ofNullable(goOutArt);
 	}
