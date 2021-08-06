@@ -125,7 +125,7 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 	
 	/**
 	 * 外出から休憩へ変換するか
-	 * @param isFlowRest 流動休憩である
+	 * @param reason 外出理由
 	 * @return true：変換する false：変換しない
 	 */
 	public boolean isConvertGoOutToBreak(GoingOutReason reason) {
