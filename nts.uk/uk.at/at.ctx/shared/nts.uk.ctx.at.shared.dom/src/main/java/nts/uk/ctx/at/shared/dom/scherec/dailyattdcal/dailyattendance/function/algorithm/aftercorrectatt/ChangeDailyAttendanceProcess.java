@@ -59,11 +59,11 @@ public class ChangeDailyAttendanceProcess {
 						workStampNew.getLocationCode());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
-				if (!timeLeavOpt.get().getAttendanceStamp().isPresent()) {
-					timeLeavOpt.get().setAttendanceStamp(
-							Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.AUTOMATIC_SET)));
-				}
 				if (newData.getAttendanceStamp().isPresent()) {
+					if (!timeLeavOpt.get().getAttendanceStamp().isPresent()) {
+						timeLeavOpt.get().setAttendanceStamp(
+								Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.AUTOMATIC_SET)));
+					}
 					timeLeavOpt.get().getAttendanceStamp().get()
 							.setStamp(newData.getAttendanceStamp().get().getStamp());
 				}
@@ -79,11 +79,11 @@ public class ChangeDailyAttendanceProcess {
 						workStampNew.getLocationCode());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
-				if (!timeLeavOpt.get().getLeaveStamp().isPresent()) {
-					timeLeavOpt.get().setLeaveStamp(
-							Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.AUTOMATIC_SET)));
-				}
 				if (newData.getLeaveStamp().isPresent()) {
+					if (!timeLeavOpt.get().getLeaveStamp().isPresent()) {
+						timeLeavOpt.get().setLeaveStamp(
+								Optional.of(TimeActualStamp.createDefaultWithReason(TimeChangeMeans.AUTOMATIC_SET)));
+					}
 					timeLeavOpt.get().getLeaveStamp().get().setStamp(newData.getLeaveStamp().get().getStamp());
 				}
 			}
