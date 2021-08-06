@@ -2,14 +2,17 @@ package nts.uk.ctx.at.function.app.find.alarm.mailsettings;
 
 import lombok.val;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmMailSettingsAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
+import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class MailSettingFinder {
@@ -60,11 +63,7 @@ public class MailSettingFinder {
         if (alarmListExecutionMailSettingList.isEmpty()) {
             return new MailSettingDto(false, Collections.emptyList());
         }
-        boolean isConfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured(x.getCompanyId(),
-                x.getIndividualWkpClassify().value,
-                x.getIndividualWkpClassify().value,
-                x.getPersonalManagerClassify().value
-        ));
+        boolean isConfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured());
         val mailSettins = alarmListExecutionMailSettingList.stream().map(x -> {
                     val mailContents = x.getContentMailSettings();
                     return new RegisterAlarmExecutionMailSettingsDTO(
@@ -78,9 +77,8 @@ public class MailSettingFinder {
                                     mailContents.get().getMailAddressCC().stream().map(cc -> cc.v()).collect(Collectors.toList()),
                                     mailContents.get().getMailRely().isPresent() ? mailContents.get().getMailRely().get().v() : ""
                             ) : null,
-                            x.getSenderAddress().v(),
+                            x.getSenderAddress().isPresent() ? x.getSenderAddress().get().v() : null,
                             x.isSendResult()
-
                     );
                 }
         ).collect(Collectors.toList());

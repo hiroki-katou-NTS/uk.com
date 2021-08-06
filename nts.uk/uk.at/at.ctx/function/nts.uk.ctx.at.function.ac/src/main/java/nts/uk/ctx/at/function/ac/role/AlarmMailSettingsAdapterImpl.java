@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.function.ac.role;
 
 import lombok.val;
-import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmMailSettingsAdapter;
 import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
+import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.shr.com.context.AppContexts;
 
