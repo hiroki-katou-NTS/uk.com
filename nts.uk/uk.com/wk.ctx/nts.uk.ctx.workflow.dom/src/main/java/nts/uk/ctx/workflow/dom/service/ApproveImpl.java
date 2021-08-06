@@ -9,9 +9,11 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
@@ -210,30 +212,38 @@ public class ApproveImpl implements ApproveService {
 
 	@Override
 	public Boolean isApproveAllComplete(ApprovalRootState approvalRootState) {
-		String companyID = AppContexts.user().companyId();
-		// 承認完了フラグ = false（初期化）(flag hoàn thành chứng nhận = false)
-		Boolean approveAllFlag = false;
-		// INPUT.「承認フェーズインスタンス」．順序を1～5の順でループする(Loop Domain[ApprovalPhaseInstance]. thứ tự theo thứ tự 1～5)
-		approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
-		for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
-			// 「承認フェーズインスタンス」．承認区分が承認済かチェックする(check xem 「承認フェーズインスタンス」．承認区分 có phải là 承認済hay không)
-			if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
-				approveAllFlag = true;
-				break;
+		try {
+			String companyID = AppContexts.user().companyId();
+			// 承認完了フラグ = false（初期化）(flag hoàn thành chứng nhận = false)
+			Boolean approveAllFlag = false;
+			// INPUT.「承認フェーズインスタンス」．順序を1～5の順でループする(Loop Domain[ApprovalPhaseInstance]. thứ tự theo thứ tự 1～5)
+			approvalRootState.getListApprovalPhaseState().sort(Comparator.comparing(ApprovalPhaseState::getPhaseOrder));
+			for(ApprovalPhaseState approvalPhaseState : approvalRootState.getListApprovalPhaseState()){
+				// 「承認フェーズインスタンス」．承認区分が承認済かチェックする(check xem 「承認フェーズインスタンス」．承認区分 có phải là 承認済hay không)
+				if(approvalPhaseState.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+					approveAllFlag = true;
+					break;
+				}
+				// アルゴリズム「承認フェーズ毎の承認者を取得する」を実行する(thực hiện thuật toán「Lấy approver của từng ApprovalPhase」)
+				List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
+				// 承認者一覧(output)に承認者がいるかチェックする(trong danh sách người xác nhận có nguoif xác nhạn hay không)
+				if(CollectionUtil.isEmpty(listApprover)){
+					continue;
+				}
+				// アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
+				ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
+				if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+					break;
+				}
 			}
-			// アルゴリズム「承認フェーズ毎の承認者を取得する」を実行する(thực hiện thuật toán「Lấy approver của từng ApprovalPhase」)
-			List<String> listApprover = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
-			// 承認者一覧(output)に承認者がいるかチェックする(trong danh sách người xác nhận có nguoif xác nhạn hay không)
-			if(CollectionUtil.isEmpty(listApprover)){
-				continue;
-			}
-			// アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)
-			ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, listApprover);
-			if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
-				break;
-			}
+			return approveAllFlag;
+		} catch(OptimisticLockException ope) {
+			ope.printStackTrace();
+			throw new BusinessException("Msg_197");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
-		return approveAllFlag;
 	}
 
 	@Override
