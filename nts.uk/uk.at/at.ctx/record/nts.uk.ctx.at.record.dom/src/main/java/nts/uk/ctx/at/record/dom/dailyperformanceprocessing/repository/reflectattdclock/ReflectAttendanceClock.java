@@ -321,7 +321,7 @@ public class ReflectAttendanceClock {
 					calAttr.getHolidayTimeSetting(), recordWorkInformation.getWorkTypeCode().v());
 			if(check) {
 				// 勤務情報を変更する
-				this.reflectWorkInformationDomainService.changeWorkInformation(integrationOfDaily.getWorkInformation(),
+				this.reflectWorkInformationDomainService.changeWorkInformation(integrationOfDaily,
 						companyId, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd());
 			}
 		}
