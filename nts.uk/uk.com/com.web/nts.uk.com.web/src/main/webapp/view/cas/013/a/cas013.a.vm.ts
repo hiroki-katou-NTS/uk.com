@@ -57,7 +57,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         baseDate: KnockoutObservable<Date>;
 
-        // Company + Workplace + Jobtitle
+        // Employye +Company + Workplace + Jobtitle
+        employyeCode: KnockoutObservable<string>;
+        employyeName: KnockoutObservable<string>;
         companyCode: KnockoutObservable<string>;
         companyName: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
@@ -71,6 +73,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
             //A51
             self.selectRoleCheckbox = ko.observable('');
 
+            self.employyeCode = ko.observable('');
+            self.employyeName = ko.observable('');
             self.workplaceCode = ko.observable('');
             self.workplaceName = ko.observable('');
             self.companyCode = ko.observable('');
@@ -270,7 +274,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         var periodDate = '';//KCP005
 
                         for (let entry of data) {
-                            items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod));
+                            items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod,
+                                entry.employeeID, entry.employeeId, entry.businessName));
 
                             //KCO005
                             periodDate = (entry.startValidPeriod + " ~ " + entry.endValidPeriod).toString();
@@ -317,7 +322,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var roleId = self.selectedRole();
             if (roleId != '' && UserId != '') {
                 var userSelected = _.find(self.listRoleIndividual(), ['userId',UserId]);
-                //self.userName(userSelected.name);
                 new service.Service().getRoleGrant(roleId, UserId).done(function(data: any) {
                     if (data != null) {
                         //self.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
@@ -350,6 +354,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                             self.loginID(userSelected.code);
                             self.userName(userSelected.name);
                         }
+                        self.employyeCode(data.employeeCode);
+                        self.employyeName(data.businessName);
 
                         new service.Service().getCompanyInfo().done(function (data: any) {
                             if(data != null) {
@@ -577,14 +583,20 @@ module nts.uk.com.view.cas013.a.viewmodel {
         start: string;
         end: string;
         datePeriod: string;
+        employeeId: string;
+        employeeCode: string;
+        businessName: string;
 
-        constructor(userId: string, loginId: string, name: string, start: string, end: string) {
+        constructor(userId: string, loginId: string, name: string, start: string, end: string, employeeId: string, employeeCode:string, businessName:string) {
             this.userId = userId;
             this.loginId = loginId;
             this.name = name;
             this.start = start;
             this.end = end;
             this.datePeriod = start + ' ~ ' + end;
+            this.employeeId = employeeId;
+            this.employeeCode = employeeCode;
+            this.businessName = businessName;
         }
     }
 

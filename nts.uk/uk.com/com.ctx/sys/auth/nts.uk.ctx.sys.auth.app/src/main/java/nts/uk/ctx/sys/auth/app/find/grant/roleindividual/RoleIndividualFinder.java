@@ -240,7 +240,7 @@ public class RoleIndividualFinder {
                 if(pid.isPresent()){
                     val employeeDataMngInfoOptional = employeeDataMngInfos.stream()
                             .filter(c -> c.getPersonId().equals(pid.get())).findFirst();
-                    val listPersonOptional = listPerson.stream().filter( c -> c.getPersonId().equals(pid.get())).findFirst();
+                    val listPersonOptional = roleExportList.stream().filter( c -> c.getPersonId().equals(pid.get())).findFirst();
                     if ( employeeDataMngInfoOptional.isPresent()){
                         val employeeDataMngInfo = employeeDataMngInfoOptional.get();
                         if( user.get().getUserName().isPresent())
@@ -271,11 +271,21 @@ public class RoleIndividualFinder {
         val pid = user.get().getAssociatedPersonID();
         Optional<EmployeeDataMngInfo> employeeDataMngInfoOptional =  empDataRepo.findByCidPid(companyId, pid.get());
 
+        List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
+        ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
+
+        List<String> uid = ListRoleGrants.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
+        List<RoleExport> roleExportList = roleAdapter.getListRole(uid);
+        val listPersonOptional = roleExportList.stream().filter( c -> c.getPersonId().equals(pid.get())).findFirst();
+
         if (user.isPresent()) {
             String userName = "";
+            String employeeName = "";
             if (user.get().getUserName().isPresent())
                 userName = user.get().getUserName().get().v();
-                    return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(), employeeDataMngInfoOptional.get().getEmployeeId(), "", "");
+                employeeName = listPersonOptional.get().getPersonName();
+                    return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(),
+                            employeeDataMngInfoOptional.get().getEmployeeId(), employeeDataMngInfoOptional.get().getEmployeeCode().v(), employeeName);
 
             } else {
             return null;
