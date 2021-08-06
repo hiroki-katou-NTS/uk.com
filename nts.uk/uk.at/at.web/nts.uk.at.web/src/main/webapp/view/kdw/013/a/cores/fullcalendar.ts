@@ -2121,6 +2121,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     });
 
                     arg.event.setProp(BORDER_COLOR, BLACK);
+                    
                 },
                 eventDragStop: (arg: EventDragStopArg) => {
                     // clear drag cache
@@ -2157,6 +2158,86 @@ module nts.uk.ui.at.kdw013.calendar {
                             vm.calendar.trigger('eventClick', { el, event, jsEvent: new MouseEvent('click'), view, noCheckSave: true});
                         }
                     }
+                    
+                    //check for resize fit with space
+                    
+                    //check override events
+                    
+                    
+                    const IEvents = _.chain(events())
+                            .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                            .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
+                            .sortBy('end')
+                            .value();
+
+                    
+                    
+                        
+                    
+                        const oEvents = [];
+                        if (IEvents.length > 1) {
+                            for (let i = 0; i < IEvents.length - 1; i++) {
+                                let cEvent = IEvents[i];
+                                let nEvent = IEvents[i + 1];
+
+                                let isEndOverrideBetween =
+                                    moment(end).isAfter(moment(nEvent.start)) &&
+                                    moment(end).isSameOrBefore(moment(nEvent.end)) &&
+                                    moment(start).isBefore(moment(nEvent.start)) &&
+                                    moment(start).isSameOrAfter(moment(cEvent.end));
+
+                                if (isEndOverrideBetween)
+                                    oEvents.push({ start: nEvent.start, end: nEvent.end });
+                            }
+                        }
+                        if (oEvents.length) {
+                            const [first] = oEvents;
+                            const currentEvent = _.find(vm.calendar.getEvents(), ['extendedProps.id', extendedProps.id]);
+                            currentEvent.setEnd(first.start);
+
+                        } else {
+                        oEvents = _.chain(IEvents)
+                            .filter((evn) => {
+                                let isStartOverride = moment(start).isSameOrAfter(moment(evn.start)) && moment(start).isBefore(moment(evn.end));
+                                let isEmbrace = moment(start).isBefore(moment(evn.start)) && moment(end).isAfter(moment(evn.end));
+                                let isEndOverride = moment(end).isAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end)) && moment(start).isBefore(moment(evn.start));
+                                return isStartOverride || isEmbrace || isEndOverride;
+
+                            })
+                            .value();
+                        
+                        if (oEvents.length) {
+                            _.each(vm.calendar.getEvents(), (e: EventApi) => {
+
+                                if (e.extendedProps.id === event.extendedProps.id) {
+                                    e.remove();
+                                }
+                            });
+
+                            const { start, end, id, title, extendedProps, borderColor, groupId, backgroundColor } = arg.oldEvent;
+
+                            vm.calendar
+                                .addEvent({
+                                    id: randomId(),
+                                    backgroundColor,
+                                    title,
+                                    start: arg.oldEvent.start,
+                                    end: arg.oldEvent.end,
+                                    borderColor,
+                                    groupId,
+                                    extendedProps
+                                });
+
+                        }
+
+
+                    }
+
+
+
+                    
+                    
+                    
                 },
                 eventResizeStart: (arg: EventResizeStartArg) => {
                     // remove new event (with no data) & background event
@@ -2218,7 +2299,7 @@ module nts.uk.ui.at.kdw013.calendar {
                           
                           vm.calendar
                               .addEvent({
-                                  id,
+                                  id: randomId(),
                                   backgroundColor,
                                   title,
                                   start: last.end,
@@ -2246,7 +2327,7 @@ module nts.uk.ui.at.kdw013.calendar {
                           _.forEach(spaces, ({start,end}) => {
                               vm.calendar
                                   .addEvent({
-                                      id,
+                                      id: randomId(),
                                       backgroundColor,
                                       title,
                                       start,
