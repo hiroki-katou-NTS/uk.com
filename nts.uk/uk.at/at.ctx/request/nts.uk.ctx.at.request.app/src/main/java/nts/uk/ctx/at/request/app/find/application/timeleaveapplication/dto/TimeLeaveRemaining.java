@@ -53,7 +53,7 @@ public class TimeLeaveRemaining {
     private GeneralDate remainingEnd;
 
     // 付与年月日
-    private GeneralDate grantDate;
+    private String grantDate;
 
     // 付与日数
     private Integer grantedDays;
@@ -70,7 +70,7 @@ public class TimeLeaveRemaining {
             dto.annualTimeLeaveRemainingTime,
             dto.specialTimeFrames,
             new DatePeriod(dto.remainingStart, dto.remainingEnd),
-            Optional.ofNullable(dto.grantDate), Optional.ofNullable(dto.grantedDays)
+            dto.grantDate == null ? Optional.empty() : Optional.ofNullable(GeneralDate.fromString(dto.grantDate, "yyyy/MM/dd")), Optional.ofNullable(dto.grantedDays)
         );
     }
 
@@ -87,7 +87,7 @@ public class TimeLeaveRemaining {
                 domain.getSpecialTimeFrames(),
                 domain.getRemainingPeriod().start(),
                 domain.getRemainingPeriod().end(),
-                domain.getGrantDate().orElse(null),
+                domain.getGrantDate().map(date -> date.toString("yyyy/MM/dd")).orElse(null),
                 domain.getGrantedDays().orElse(null)
         );
     }
