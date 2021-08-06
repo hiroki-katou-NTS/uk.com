@@ -57,12 +57,12 @@ public class ExternalImportSettingDto {
 				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
 				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
 				domain.getAssembly().getMapping().getMappings().stream()
-				.map(m -> new ExternalImportLayoutDto(
-						m.getItemNo(), 
-						getItemName(require, domain.getExternalImportGroupId(), m),
-						getItemType(require, domain.getExternalImportGroupId(), m),
-						checkImportSource(m),
-						false))
+					.map(m -> new ExternalImportLayoutDto(
+							m.getItemNo(), 
+							getItemName(require, domain.getExternalImportGroupId(), m),
+							getItemType(require, domain.getExternalImportGroupId(), m),
+							checkImportSource(m),
+							m.isConfigured()))
 				.collect(Collectors.toList()));
 	}
 	

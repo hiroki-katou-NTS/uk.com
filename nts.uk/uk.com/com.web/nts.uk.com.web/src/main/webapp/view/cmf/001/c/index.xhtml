@@ -27,8 +27,8 @@
 
 	<ui:define name="content" >
 		<div id="functions-area">
-			<button class="proceed" data-bind="enable: $root.errors.isEmpty">登録</button>
-			<button class="danger" data-bind="enable: $root.errors.isEmpty">設定を削除する</button>
+			<button class="proceed" data-bind="enable: canSave, click: save">登録</button>
+			<button class="danger">設定を削除する</button>
 		</div>
 
 		<div id="contents-area" class="fixed-flex-layout">
@@ -58,7 +58,7 @@
 						<div class="label inline">受入元</div>
 						<div class="inline">
 							<div data-bind="ntsSwitchButton: {
-								options: mappingTypes,
+								options: $parent.mappingSource,
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedMappingType,

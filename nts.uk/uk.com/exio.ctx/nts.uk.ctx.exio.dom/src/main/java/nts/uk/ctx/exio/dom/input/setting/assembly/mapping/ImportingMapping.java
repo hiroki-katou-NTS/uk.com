@@ -10,6 +10,7 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 
 /**
@@ -51,9 +52,34 @@ public class ImportingMapping {
 	}
 	
 	/**
-	 * CSV列番号を項目順に付番し直す
+	 * 指定した項目を未設定に変更する
 	 */
-	public void resetCsvColumnNoByOrder() {
+	public void setNoSetting(int itemNo) {
+		
+		getByItemNo(itemNo).get().setNoSetting();
+		resetCsvColumnNoByOrder();
+	}
+	
+	/**
+	 * 指定した項目をCSVマッピングに変更する
+	 */
+	public void setCsvMapping(int itemNo) {
+		
+		// 一旦ダミーの値を入れてCSVマッピングに切り替えた状態で順番リセット
+		getByItemNo(itemNo).get().setCsvColumnNo(-1);
+		resetCsvColumnNoByOrder();
+	}
+	
+	/**
+	 * 指定した項目を固定値に変更する
+	 */
+	public void setFixedValue(int itemNo, StringifiedValue fixedValue) {
+		
+		getByItemNo(itemNo).get().setFixedValue(fixedValue);
+		resetCsvColumnNoByOrder();
+	}
+
+	private void resetCsvColumnNoByOrder() {
 		
 		int columnNo = 1;
 		

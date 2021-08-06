@@ -47,9 +47,17 @@ module nts.uk.com.cmf001.c {
         }
     }
 
+    let ICON_CONFIGURED = nts.uk.request.resolvePath(
+        __viewContext.rootPath + "../" + (<any> nts).uk.request.WEB_APP_NAME.comjs
+         + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
+
     function renderConfiguredIcon(configured) {
         if (configured === "true") {
-            return '<i data-bind="ntsIcon: { no: 78, width: 20, height: 20 }"></i>';
+            return '<div class="icon-configured" style="text-align: center;">' 
+                + '<span id="icon-configured" style="'
+                + 'background: url(\'' + ICON_CONFIGURED + '\');'
+                + 'background-size: 20px 20px; width: 20px; height: 20px;'
+                + 'display: inline-block;"></span></div>';
         } else {
             return '';
         }
@@ -65,10 +73,24 @@ module nts.uk.com.cmf001.c {
         itemsColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: "NO", key: "itemNo", width: 0, hidden: true },
             { headerText: "名称", key: "name", width: 200 },
-            { headerText: "", key: "alreadyDetail", width: 40, formatter: renderConfiguredIcon },
+            {
+                headerText: "",
+                key: "alreadyDetail",
+                width: 40,
+                formatter: renderConfiguredIcon
+            },
         ]);
 
+        mappingSource = [
+            { code: "CSV", name: "CSV" },
+            { code: "固定値", name: "固定値" },
+        ];
+
+        hoge = 2;
+
         selectedItemNo: KnockoutObservable<number> = ko.observable(null);
+
+        isItemSelected = ko.computed(() => !util.isNullOrEmpty(this.selectedItemNo()));
 
         currentItem: any = ko.observable();
 
@@ -78,10 +100,6 @@ module nts.uk.com.cmf001.c {
             this.currentItem({
                 def: datasource.importableItem.init(),
                 selectedMappingType: ko.observable(null),
-                mappingTypes: [
-                    { code: "CSV", name: "CSV" },
-                    { code: "固定値", name: "固定値" },
-                ],
                 csvMapping: datasource.itemMapping.init(),
                 fixedMapping: ko.observable(),
             });
@@ -115,9 +133,10 @@ module nts.uk.com.cmf001.c {
 
             let selectedItem = this.items().filter(e => e.itemNo == itemNo)[0];
 
-            this.currentItem().def.name(selectedItem.name);
-            this.currentItem().def.type(selectedItem.type);
-            this.currentItem().selectedMappingType(selectedItem.source);
+            let current = this.currentItem();
+            current.def.name(selectedItem.name);
+            current.def.type(selectedItem.type);
+            current.selectedMappingType(selectedItem.source);
 
             this.loadImportableItem();
             this.loadReviseItem();
@@ -159,11 +178,35 @@ module nts.uk.com.cmf001.c {
 
                 (<any> ko).mapping.fromJS(res.revisingValue, {}, mapping.revisingValue);
 
-                mapping.revisingValue.codeConvert.convertDetailsText(
-                    res.revisingValue.codeConvert.details
-                        .map(d => d.before + "," + d.after)
-                        .join("\r\n")
-                );
+                if (res.revisingValue && res.revisingValue.codeConvert) {
+                    mapping.revisingValue.codeConvert.convertDetailsText(
+                        res.revisingValue.codeConvert.details
+                            .map(d => d.before + "," + d.after)
+                            .join("\r\n")
+                    );
+                }
+            });
+        }
+
+        canSave = ko.computed(() => this.$errors.length === 0 && this.isItemSelected());
+
+        save() {
+            let path = "/screen/com/cmf/cmf001/save";
+
+            let item = this.currentItem();
+            let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
+
+            let command = {
+                settingCode: this.settingCode,
+                itemNo: this.selectedItemNo(),
+                mappingSource: item.selectedMappingType(),
+                fixedValue: item.fixedMapping(),
+                revisingValue: revisingValue,
+            };
+
+            this.$ajax(path, command).done(res => {
+                this.$dialog.info("登録しました");
+                this.loadSetting();
             });
         }
     }

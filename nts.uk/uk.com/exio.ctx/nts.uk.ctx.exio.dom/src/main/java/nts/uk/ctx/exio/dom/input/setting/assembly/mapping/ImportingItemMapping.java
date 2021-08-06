@@ -57,6 +57,11 @@ public class ImportingItemMapping {
 		return fixedValue.isPresent();
 	}
 	
+	public void setNoSetting() {
+		csvColumnNo = Optional.empty();
+		fixedValue = Optional.empty();
+	}
+	
 	public void setCsvColumnNo(int columnNo) {
 		csvColumnNo = Optional.of(columnNo);
 		fixedValue = Optional.empty();
