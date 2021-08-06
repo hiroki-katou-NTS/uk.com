@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
@@ -47,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -83,7 +83,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	
 	//割増計算用に追加
 	@Inject
-	private PersonnelCostSettingAdapter personnelCostSettingAdapter;
+	private PersonCostCalculationRepository personCostCalculationRepository;
 	
 	//計算を動かすための会社共通設定取得
 	@Inject
@@ -396,9 +396,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			companyCommonSetting.setShareContainer(shareContainer);
 		}
 		
-		companyCommonSetting.setPersonnelCostSettings(personnelCostSettingAdapter.findAll(comanyId, getDateSpan(integrationOfDailys)));
+		companyCommonSetting.setPersonnelCostSetting(personCostCalculationRepository.getHistAnPerCost(comanyId));
 		
-
 		/***会社共通処理***/
 		List<ManageCalcStateAndResult> returnList = new ArrayList<>();
 		
@@ -507,13 +506,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				} else {
 					result = ManageCalcStateAndResult.failCalc(record, attendanceItemConvertFactory);
 				}
-				
-				if(result.isCalc()) {
-					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
-				}
-				else {
-					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.No_Calculated);
-				}
+				result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 				returnList.add(result);
 			}
 			else {

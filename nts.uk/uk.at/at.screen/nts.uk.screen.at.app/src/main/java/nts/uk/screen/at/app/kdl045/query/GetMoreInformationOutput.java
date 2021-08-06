@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDt
 @NoArgsConstructor
 public class GetMoreInformationOutput {
 	/**
-	 * 就業時間帯の共通設定
+	 *  Optional<就業時間帯の共通設定>
 	 */
 	private WorkTimezoneCommonSetDto workTimezoneCommonSet;
 	/**
@@ -18,7 +18,7 @@ public class GetMoreInformationOutput {
 	 */
 	private BreakTimeKdl045Dto breakTime;
 	/**
-	 * 勤務タイプ : 就業時間帯の勤務形態 : 
+	 * 勤務タイプ : Optional<就業時間帯の勤務形態>
 	 * return Enum WorkTimeForm 
 	 */
 	private Integer workTimeForm;
@@ -29,13 +29,26 @@ public class GetMoreInformationOutput {
 	 */
 	private Integer workStyle;
 	
+	/**
+	 * 勤務種類
+	 */
+	private WorkTypeSettingNameDto workTypeSettingName;
+	
+	/**
+	 * Optional<就業時間帯の設定>
+	 */
+	private WorkTimeSettingNameDto workTimeSettingName; 
+
 	public GetMoreInformationOutput(WorkTimezoneCommonSetDto workTimezoneCommonSet, BreakTimeKdl045Dto breakTime,
-			Integer workTimeForm,Integer workStyle) {
+			Integer workTimeForm, Integer workStyle, WorkTypeSettingNameDto workTypeSettingName,
+			WorkTimeSettingNameDto workTimeSettingName) {
 		super();
 		this.workTimezoneCommonSet = workTimezoneCommonSet;
 		this.breakTime = breakTime;
 		this.workTimeForm = workTimeForm;
 		this.workStyle = workStyle;
+		this.workTypeSettingName = workTypeSettingName;
+		this.workTimeSettingName = workTimeSettingName;
 	}
 	
 	

@@ -52,9 +52,10 @@ public interface MessageNoticeRepository {
 	 * [6] 職場IDListからメッセージを取得する
 	 * @param period 期間
 	 * @param wpIds 職場ID
+	 * @param cid 会社ID
 	 * @return List<MessageNotice> List<お知らせメッセージ>
 	 */
-	List<MessageNotice> getMsgFromWpIdList(DatePeriod period, List<String> wpIds);
+	List<MessageNotice> getMsgFromWpIdList(DatePeriod period, List<String> wpIds, String cid);
 	
 	/**
 	 * [7]期間で参照できるメッセージを取得する
@@ -94,4 +95,7 @@ public interface MessageNoticeRepository {
 	 * @return お知らせメッセージList
 	 */
 	List<MessageNotice> getByCreatorIdAndInputDate(String creatorId, GeneralDateTime inputDate);
+	
+	List<MessageNotice> getMsgInDestinationCategoryAndCid(DatePeriod period, DestinationClassification destination,
+			String cid);
 }

@@ -1,7 +1,7 @@
 module nts.uk.at.view.kdw006.g.viewmodel {
     let __viewContext: any = window["__viewContext"] || {};
 
-    export class ScreenModelG {
+    export class ScreenModelG extends ko.ViewModel{
         // declare
         fullWorkTypeList: KnockoutObservableArray<any>;
         groups1: KnockoutObservableArray<any>;
@@ -17,10 +17,14 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         employmentList: KnockoutObservableArray<UnitModel>;
 
         listSetting: KnockoutObservableArray<any>;
+
+        mode: KnockoutObservable<MODE>;
         
-        sideBar: KnockoutObservable<number>;
         constructor() {
+            super();
+
             let self = this;
+            self.mode = ko.observable(MODE.NEW);
             self.fullWorkTypeList = ko.observableArray([]);
             self.groups1 = ko.observableArray([]);
             self.groups2 = ko.observableArray([]);
@@ -49,8 +53,6 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 if (nts.uk.text.isNullOrEmpty(newValue)) return; 
                 self.getWorkType(newValue);
             });
-            
-            self.sideBar = ko.observable(1);
         }
 
         start(): JQueryPromise<any> {
@@ -61,7 +63,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 if (self.employmentList().length > 0) {
                     self.selectedCode(self.employmentList()[0].code);
                 } else {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_146" });
+                    self.$dialog.alert({ messageId: "Msg_146" });
                 }
             });
             self.getFullWorkTypeList().done(function() {
@@ -72,20 +74,20 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             return dfd.promise();
         }
         
-        jumpTo(sidebar): JQueryPromise<any> {
-                let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject: sidebar() });
-            }
+        jumpTo() {
+            let self = this;
+            nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
+        }
 
 
         getFullWorkTypeList(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             service.getAllWorkTypes().done(function(res) {
-                let availabelList = _.filter(res, function(item) {
+                let availabelList = _.filter(res, (item: any) => {
                     return item.abolishAtr == 0;
                 });
-                _.forEach(availabelList, function(item) {
+                _.forEach(availabelList, (item: any) => {
                     self.fullWorkTypeList.push({
                         workTypeCode: item.workTypeCode,
                         name: item.name,
@@ -103,83 +105,82 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         getWorkType(newValue: any): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            let array = [];
+
             let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
             service.getWorkTypes(newValue).done(function(res) {
                 self.groups1.removeAll();
                 self.groups2.removeAll();
-                _.forEach(res, function(item) {
-                    let names = _(item.workTypeList.sort()).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
+                let data = [];
+                if (_.isEmpty(res)) {
+                    self.mode(MODE.NEW);
+                    for (let i = 1; i <= 10; i++) {
+                        data.push({no: i, name: '', workTypeList: []});
+                    }
+                } else {
+                    self.mode(MODE.UPDATE);
+                    data = res;    
+                }
+                _.forEach(data, function(item) {
+                    let names = _(item.workTypeList.sort()).map((x: any) => (_.find(ko.toJS(self.fullWorkTypeList), (z: any) => z.workTypeCode == x) || {}).name).value();
                     let comment = '';
+                    if (item.no == 1) {
+                        item.name = self.$i18n('KDW006_76');
+                    }
                     if (item.no == 2) {
-                        comment = nts.uk.resource.getText("KDW006_59", ['法定内休日']);
+                        item.name = self.$i18n('KDW006_72');
+                        comment = self.$i18n("KDW006_59", ['法定内休日']);
                     }
                     if (item.no == 3) {
-                        comment = nts.uk.resource.getText("KDW006_59", ['法定外休日']);
+                        item.name = self.$i18n('KDW006_73');
+                        comment = self.$i18n("KDW006_59", ['法定外休日']);
                     }
                     if (item.no == 4) {
-                        comment = nts.uk.resource.getText("KDW006_59", ['法定外休日(祝)']);
+                        item.name = self.$i18n('KDW006_74');
+                        comment = self.$i18n("KDW006_59", ['法定外休日(祝)']);
                     }
                     let nameEnd = _.filter(names, undefined);
-                    let group = new WorkTypeGroup(item.no, item.name === " " ? '' : item.name, item.workTypeList, nameEnd.join("、　"),
-                        fullWorkTypeCodes, comment);
-                    array.push(group);
+                    let group = new WorkTypeGroup(item.no, self.$i18n('KDW006_' + (252 + item.no)), item.name === " " ? '' : item.name, 
+                        item.workTypeList, nameEnd.join("、"), fullWorkTypeCodes, comment);
                     if (group.no < 5) {
                         self.groups1.push(group);
                     } else {
                         self.groups2.push(group);
                     }
                 });
-                _.forEach(array, function(obj) {
-                    if (obj.no == 1) {
-                        obj.name(nts.uk.resource.getText('KDW006_76'));
-                    }
-                    if (obj.no == 2) {
-                        obj.name(nts.uk.resource.getText('KDW006_72'));
-                    }
-                    if (obj.no == 3) {
-                        obj.name(nts.uk.resource.getText('KDW006_73'));
-                    }
-                    if (obj.no == 4) {
-                        obj.name(nts.uk.resource.getText('KDW006_74'));
-                    }
-                });
 
                 dfd.resolve();
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                self.$dialog.alert(res.message);
             });
             return dfd.promise();
         }
 
         saveData() {
             let self = this;
-            $('.name-group').trigger('validate');
             
-            setTimeout(() => {
-                if (nts.uk.ui.errors.hasError()) {
-                    return;
-                }
-                //            if(self.validate()){
-                //               return; 
-                //            }
-                nts.uk.ui.block.invisible();
+            self.$validate().then((valid: boolean) => {
+                if (valid) {
+                self.$blockui("show");
                 service.register(self.selectedCode(), self.groups1(), self.groups2()).done(function(res) {
                     if (self.groups1.length > 0 || self.groups2.length > 0) {
                         self.listSetting.push(self.selectedCode());
                     } else {
                         self.listSetting.remove(self.selectedCode());
                     }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.$dialog.info({ messageId: "Msg_15" }).then(function() {
                         //self.selectedCode.valueHasMutated();
-                        nts.uk.ui.block.clear();
+                        location.reload();
+                        self.$blockui("hide");
                     });
                 }).fail(() => {
-                    nts.uk.ui.block.clear();
+                    self.$blockui("hide");
                 }).always(() => {
-                    nts.uk.ui.block.clear();
+                    self.$blockui("hide");
                 });
-            }, 100);
+                }
+            }).always(() => {
+                self.$blockui("hide");
+            });
         }
         
         private validate(): boolean {
@@ -190,8 +191,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
 
         copyData() {
             let self = this;
-            nts.uk.ui.block.invisible();
-            let employmentName: string;
+            self.$blockui("show");
+            let employmentName: UnitModel;
             employmentName = _.find(self.employmentList(), function(m) {
                 return m.code === self.selectedCode();
             });
@@ -207,52 +208,46 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 };
                 nts.uk.ui.windows.setShared("CDL023Input", param);
                 nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
-                    nts.uk.ui.block.invisible();
-                    let isOveride: boolean = false;
+                    self.$blockui("show");
                     let data = nts.uk.ui.windows.getShared("CDL023Output");
-                    if (data) {
-                        for (let i = 0; i < data.length; i++) {
-                            _.find(self.listSetting(), data[i]);
-                            isOveride = true;
-                            break;
-                        }
-                    }
                     if (!nts.uk.util.isNullOrUndefined(data)) {
                         let command = {
                             targetEmploymentCodes: data,
-                            overide: isOveride,
                             employmentCode: self.selectedCode()
                         };
                         service.copy(command).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            self.$dialog.info({ messageId: "Msg_15" }).then(function() {
                                 self.start();
-                                nts.uk.ui.block.clear();
+                                self.$blockui("hide");
                             });
                         }).fail(function(res: any) {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
-                                nts.uk.ui.block.clear();
+                            self.$dialog.alert({ messageId: res.messageId, messageParams: res.parameterIds }).then(function() {
+                                self.$blockui("hide");
                             });
                         }).always(() => {
-                            nts.uk.ui.block.clear();
+                            self.$blockui("hide");
                         });
                     }
-                    nts.uk.ui.block.clear();
+                    self.$blockui("hide");
                 });
             });
-
         }
     }
 
-    export class WorkTypeGroup {
+    export class WorkTypeGroup extends ko.ViewModel {
         no: number;
+        noText: string;
         name: KnockoutObservable<string>;
         workTypeCodes: string[];
         workTypeName: KnockoutObservable<string>;
         fullWorkTypeCodes: string[];
         comment: string;
 
-        constructor(no: number, name: string, workTypeCodes: string[], workTypeName: string, fullWorkTypeCodes: string[], comment: string) {
+        constructor(no: number, noText: string, name: string, workTypeCodes: string[], workTypeName: string, fullWorkTypeCodes: string[], comment: string) {
+            super();
+
             this.no = no;
+            this.noText = noText;
             this.name = ko.observable(name);
             this.workTypeCodes = workTypeCodes;
             this.workTypeName = ko.observable(workTypeName);
@@ -272,12 +267,12 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             }
             let viewG = __viewContext.viewModel;
             service.defaultValue(listWorkType).done(function(res) {
-                let workTypeCodess = _.map(res, 'workTypeCode');
+                let workTypeCodess: string[] = _.map(res, 'workTypeCode');
                 self.workTypeCodes = _.uniq(workTypeCodess);
                 let fullCodeNameList = ko.toJS(viewG.fullWorkTypeList);
-                let names = [];
+                let names: any[] = [];
                 _.forEach(self.workTypeCodes, (code) => {
-                    let foundWT = _.find(fullCodeNameList, (codeName) => {
+                    let foundWT = _.find(fullCodeNameList, (codeName: any) => {
                         return codeName.workTypeCode === code;
                     });
                     if (foundWT) {
@@ -285,29 +280,29 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     }
                 });
 
-                self.workTypeName(names.join("、　"));
+                self.workTypeName(names.join("、"));
             });
         }
 
         openKDL002Dialog() {
             let self = this;
-            nts.uk.ui.block.invisible();
+            self.$blockui("show");
 
             nts.uk.ui.windows.setShared('KDL002_Multiple', true);
             nts.uk.ui.windows.setShared('KDL002_AllItemObj', self.fullWorkTypeCodes);
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.workTypeCodes);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '' }).onClosed(function(): any {
-                nts.uk.ui.block.clear();
+                self.$blockui("hide");
                 var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                 var isCancel = nts.uk.ui.windows.getShared('KDL002_IsCancel');
                 if(isCancel != null && isCancel == true)
                 return;
-                var name = [];
+                var name: any[] = [];
                 _.forEach(data, function(item: any) {
                     name.push(item.name);
                 });
-                self.workTypeName(name.join("、　"));
+                self.workTypeName(name.join("、"));
                 self.workTypeCodes = _.map(data, function(item: any) { return item.code; });
             });
         }
@@ -371,4 +366,8 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         isAlreadySetting: boolean;
     }
 
+    export enum MODE {
+        NEW,
+        UPDATE
+    }
 }

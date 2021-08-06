@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRole;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRoleRepository;
-import nts.uk.ctx.at.auth.infra.entity.employmentrole.KacmtRoleAttendance;
 import nts.uk.ctx.at.auth.infra.entity.employmentrole.KacmtEmploymentRolePK;
+import nts.uk.ctx.at.auth.infra.entity.employmentrole.KacmtRoleAttendance;
 
 @Stateless
 public class JpaEmploymentRoleRepository extends JpaRepository implements EmploymentRoleRepository {

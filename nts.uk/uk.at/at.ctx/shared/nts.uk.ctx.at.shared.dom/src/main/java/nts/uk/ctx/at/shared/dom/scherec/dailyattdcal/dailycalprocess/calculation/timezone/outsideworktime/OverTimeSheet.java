@@ -53,6 +53,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkTimezoneSetting;
@@ -191,7 +192,7 @@ public class OverTimeSheet {
 			val beforeApp = overTimeOfDaily.getOverTimeWorkFrameTime().stream()
 					.filter(x -> x.getOverWorkFrameNo().v().intValue() == overTime.getOverWorkFrameNo().v().intValue()).findFirst()
 					.map(x -> x.getBeforeApplicationTime()).orElse(new AttendanceTime(0));
-			overTime.addBeforeTime(beforeApp);
+			overTime.setBeforeApplicationTime(beforeApp);
 		});
 		
 		//補正処理を実行する為に、日別勤怠の残業時間のインスタンスを作成
@@ -516,10 +517,10 @@ public class OverTimeSheet {
 	
 		return this.frameTimeSheets.stream().map(tc -> {
 			val mapData = tc.changeNotWorkFrameTimeSheet();
-			//B.計算残業時間←A.枠時間.残業時間.時間
-			mapData.setOverTimeCalc(tc.getFrameTime().getOverTimeWork().getTime());
-			//B.計算振替残業時間←A.枠時間.振替時間.時間
-			mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().getTime());
+			//B.計算残業時間←A.枠時間.残業時間.計算時間
+			mapData.setOverTimeCalc(tc.getFrameTime().getOverTimeWork().getCalcTime());
+			//B.計算振替残業時間←A.枠時間.振替時間.計算時間
+			mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().getCalcTime());
 			//残業枠時間帯の作成
 			return mapData;
 		}).sorted((first, second) -> first.getFrameNo().v().compareTo(second.getFrameNo().v()))
@@ -923,6 +924,7 @@ public class OverTimeSheet {
 		}
 	}
 	
+
 	/**
 	 * 残業時間帯に含まない時間帯の取得
 	 * @param timeSpan 計算用時間帯
@@ -963,5 +965,27 @@ public class OverTimeSheet {
 		
 		//WorkTypeRepository.findByPK
 		Optional<WorkType> findByPK(String companyId, String workTypeCd);
+	}
+
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return 残業時間帯
+	 */
+	public Optional<OverTimeSheet> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan, Optional<WorkTimezoneCommonSet> commonSet) {
+		List<OverTimeFrameTimeSheetForCalc> duplicate = this.frameTimeSheets.stream()
+				.filter(t -> t.getTimeSheet().checkDuplication(timeSpan).isDuplicated())
+				.collect(Collectors.toList());
+		
+		List<OverTimeFrameTimeSheetForCalc> recreated = duplicate.stream()
+				.map(f -> f.recreateWithDuplicate(timeSpan, commonSet))
+				.filter(f -> f.isPresent())
+				.map(f -> f.get())
+				.collect(Collectors.toList());
+		if(recreated.isEmpty()) {
+			Optional.empty();
+		}
+		return Optional.of(new OverTimeSheet(recreated));
 	}
 }

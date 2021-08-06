@@ -63,7 +63,7 @@ export class CmmS45CComponent extends Vue {
     public currentApp: string = '';
     // 承認ルートインスタンス
     public phaseLst: Array<Phase> = [];
-    public appState: { appStatus: number, reflectStatus: number, version: number } = { appStatus: 0, reflectStatus: 1, version: 0 };
+    public appState: { appStatus: number, reflectStatus: number, version: number, pastApp: boolean } = { appStatus: 0, reflectStatus: 1, version: 0, pastApp: false };
     public appType: number = 99;
     public appTransferData: any = {
         appDispInfoStartupOutput: null,
@@ -140,6 +140,7 @@ export class CmmS45CComponent extends Vue {
                 self.appState.appStatus = appDetailScreenInfoDto.reflectPlanState;
                 self.appState.reflectStatus = appDetailScreenInfoDto.reflectPlanState;
                 self.appState.version = appDetailScreenInfoDto.application.version;
+                self.appState.pastApp = appDetailScreenInfoDto.pastApp;
                 self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
                 self.appType = appDetailScreenInfoDto.application.appType;
                 //self.$mask('hide');

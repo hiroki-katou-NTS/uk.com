@@ -25,6 +25,8 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
@@ -128,6 +130,9 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 	@Inject
 	private OuenWorkTimeSheetOfDailyRepo ouenSheetRepo;
 	
+	@Inject
+	private OuenWorkTimeOfDailyRepo ouenWorkTimeOfDailyRepo;
+	
 	
 	/**
 	 * 日別実績(WORK)の作成
@@ -187,7 +192,9 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 			Optional<TemporaryTimeOfDailyAttd> temporaryTimeOfDailyAttd = temporaryTimeOfDailyPerformance.isPresent()?Optional.of(temporaryTimeOfDailyPerformance.get().getAttendance()):Optional.empty();
 			
 			List<RemarksOfDailyPerform> listRemarksOfDailyPerform = remarksRepository.getRemarks(employeeId, attendanceTime.getYmd());
-			
+			/** リポジトリ：日別実績の応援作業別勤怠時間 */
+			Optional<OuenWorkTimeOfDaily> ouenTime = ouenWorkTimeOfDailyRepo.find(employeeId, attendanceTime.getYmd()); 
+			/** リポジトリ：日別実績の応援作業別勤怠時間帯 */
 			OuenWorkTimeSheetOfDaily ouenSheet = ouenSheetRepo.find(employeeId, attendanceTime.getYmd());
 			
 			val snapshot = snapshotAdapter.find(employeeId, attendanceTime.getYmd());
@@ -211,10 +218,9 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 					listEditStateOfDailyPerformance.stream().map(c->c.getEditState()).collect(Collectors.toList()),
 					temporaryTimeOfDailyAttd,
 					listRemarksOfDailyPerform.stream().map(c->c.getRemarks()).collect(Collectors.toList()),
+					ouenTime.map(o -> o.getOuenTimes()).orElse(new ArrayList<>()),
+					ouenSheet != null ? ouenSheet.getOuenTimeSheet() : new ArrayList<>(),
 					snapshot.map(c -> c.getSnapshot().toDomain()));
-			
-			if(ouenSheet != null)
-			daily.setOuenTimeSheet(ouenSheet.getOuenTimeSheet());
 			
 			returnList.add(daily);
 		}

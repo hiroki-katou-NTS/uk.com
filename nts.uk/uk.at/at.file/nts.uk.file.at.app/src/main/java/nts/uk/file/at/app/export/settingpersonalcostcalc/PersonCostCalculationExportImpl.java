@@ -7,7 +7,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.premium.PersonCostCalculationFinde
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PersonCostCalDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumSettingAndNameDto;
-import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.AttendanceNamePriniumDto;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
 import nts.uk.shr.infra.file.report.masterlist.data.*;
@@ -192,10 +192,10 @@ public class PersonCostCalculationExportImpl implements MasterListData {
                 value = TextResource.localize("KML001_24");
                 break;
             case 3:
-                value = TextResource.localize("KML001_25");
+                value = TextResource.localize("KML001_26");
                 break;
             case 4:
-                value = TextResource.localize("KML001_26");
+                value = TextResource.localize("KML001_25");
                 break;
             default:
                 break;

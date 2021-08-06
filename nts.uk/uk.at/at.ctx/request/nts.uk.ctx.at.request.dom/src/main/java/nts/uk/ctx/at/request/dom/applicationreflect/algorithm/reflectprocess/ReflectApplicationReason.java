@@ -101,12 +101,11 @@ public class ReflectApplicationReason {
 									: true))
 					.collect(Collectors.toList());
 			if (application.getOpAppReason().isPresent()) {
-				result.put(conts.get(0).getItemId(), app.getReasonInfo().getOpAppReason().v());
-			} else {
-				result.put(conts.get(1).getItemId(),
-						application.getOpAppStandardReasonCD().isPresent()
-								? String.valueOf(app.getReasonInfo().getStandardReasonCode().v())
-								: "");
+				result.put(conts.get(0).getItemId(), app.getReasonInfo().getOpAppReason() == null ? null : app.getReasonInfo().getOpAppReason().v());
+			} 
+			if (application.getOpAppStandardReasonCD().isPresent()) {
+				result.put(conts.get(1).getItemId(), app.getReasonInfo().getStandardReasonCode() == null ? null
+						: String.valueOf(app.getReasonInfo().getStandardReasonCode().v()));
 			}
 		}
 		return result;

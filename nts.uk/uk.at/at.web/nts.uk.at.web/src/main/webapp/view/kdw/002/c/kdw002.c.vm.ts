@@ -5,36 +5,39 @@ module nts.uk.at.view.kdw002.c {
         import getText = nts.uk.resource.getText;
         import infor = nts.uk.ui.dialog.info;
         export class ScreenModel {
+            // A4_1
             listAttdItem: Array<any>;
             dailyServiceTypeControl: KnockoutObservable<DailyAttendanceItemAuth>;
-            columns: Array<any>;
+            columns: KnockoutObservableArray<any>;;
             //monthly
             listAttdMonthlyItem: Array<any>;
-
+            // A2_1
             bussinessCodeItems: KnockoutObservableArray<BusinessType>;
             bussinessColumn: KnockoutObservableArray<any>;
             currentRoleId: KnockoutObservable<any>;
+            // ?
             txtSearch: KnockoutObservable<string>;
             //isDaily
             isDaily :boolean;
             sideBar :  KnockoutObservable<number>;
-            //datasource
+            // A3_1
             datasources :KnockoutObservableArray<any>;
             selectedList: any;
             
             listAttFullData  : any;
             listAttFullDataClone  : any;
-            
+            // ver7
+            roleItems: KnockoutObservableArray<EmployeeRoleDto> = ko.observableArray([]);
+            // isNew mode
+            isNewMode:  KnockoutObservable<boolean> = ko.observable(false);
+
             constructor(dataShare:any) {
                 var self = this;
                 self.bussinessCodeItems = ko.observableArray([]);
                 self.listAttdItem = [];
                 self.dailyServiceTypeControl = ko.observable(null);
-                self.isDaily = dataShare.ShareObject;
+                self.isDaily = dataShare === undefined ? false : dataShare.ShareObject;
                 self.sideBar =  ko.observable(1);
-                if(!self.isDaily){
-                    self.sideBar(2);
-                } 
                 //
                 self.datasources = ko.observableArray([]);
                 self.selectedList = ko.observableArray([]);
@@ -62,6 +65,7 @@ module nts.uk.at.view.kdw002.c {
                     var useHeader = "<input  tabindex='-1' type='checkbox' id = 'useCheckAll' onclick='useHeaderChanged(this)'/> ";
                     var youCanChangeItHeader =  "<input  tabindex='-1' type='checkbox' id = 'youCanCheckAll' onclick='youCanChangeItHeaderChanged(this)'/> ";
                     var canBeChangedByOthersHeader = "<input  tabindex='-1'  type='checkbox' id = 'otherCheckAll' onclick='canBeChangedByOthersHeaderChanged(this)'/> ";
+                    // A4_2, A4_3, A4_4, A4_41, A4_8, A4_8.1, A4_9, A4_10, A4_11, A4_16, A4_18
                     self.columns = ko.observableArray([
                         { headerText: '', key: 'itemDailyID', width: 1, hidden: true },
                         { headerText: getText('KDW002_3'), key: 'displayNumber', width: 70  , formatter: _.escape },
@@ -70,7 +74,6 @@ module nts.uk.at.view.kdw002.c {
                         { headerText: youCanChangeItHeader + getText('KDW002_6'), key: 'youCanChangeIt', width: 120, template: youCanChangeItTemplate },
                         { headerText: canBeChangedByOthersHeader + getText('KDW002_7'), key: 'canBeChangedByOthers', width: 165, template: canBeChangedByOthersTemplate },
                         { headerText: '', key: 'userCanUpdateAtr', width: 1, hidden: true },
-
                     ]);
 
 
@@ -78,6 +81,7 @@ module nts.uk.at.view.kdw002.c {
                     if(roleId){
                         if(self.isDaily){
                              dfd = self.getDailyAttdItemByRoleID(roleId);
+
                         }else{
                              dfd = self.getMonthlyAttdItemByRoleID(roleId)
                         }
@@ -192,30 +196,73 @@ module nts.uk.at.view.kdw002.c {
                 self.txtSearch = ko.observable("");
             }
             
-            jumpToHome(sidebar): void {
+            jumpToHome(): void {
                 let self = this;
-                nts.uk.request.jump("/view/kdw/006/a/index.xhtml", { ShareObject : sidebar() });
+                nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
             }
             
             copy(): void {
-                var self = this;
-//                var bussinessCodeItems = self.bussinessCodeItems();
-//                var currentRoleId = self.currentRoleId();
-//                var bussinessCodeItem = _.find(self.bussinessCodeItems(), { businessTypeCode: self.currentRoleId() });
-//                var businessTypeName = bussinessCodeItem.roleName;
-//                var data = {
-//                    code: currentRoleId, name: businessTypeName, bussinessItems: bussinessCodeItems
-//                }
-//                let object: IObjectDuplication = {
-//                    code: bussinessCodeItem,
-//                    name: businessTypeName,
-//                    targetType: 1,
-//                    itemListSetting: bussinessCodeItems,
-//                    baseDate: moment(self.baseDate()).toDate()
-//                };
-//                nts.uk.ui.windows.sub.modal("com","/view/cdl/023/a/index.xhtml");
-//                
-//                nts.uk.ui.windows.setShared("KDW002_B_AUTHORITYTYPE", data);
+                let self = this
+                // ver7: get the config role
+                let empRole: EmployeeRoleDto = _.find(self.roleItems(), e => e.roleId == self.currentRoleId());
+                // isDaily
+                if(self.isDaily){
+                    service.getDailytRolesByCid().done((roleIDs: Array<any>) => {
+                        let param = {
+                            code: empRole.roleCode,
+                            name: empRole.roleName,
+                            targetType: 8,
+                            itemListSetting: roleIDs ? roleIDs : [],
+                            roleType: 3
+                        };
+                        console.log(param, 'param');        
+                        nts.uk.ui.windows.setShared("CDL023Input", param);
+                        nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                            let data: Array<string>  = nts.uk.ui.windows.getShared("CDL023Output");
+                            if(data){
+                                let command: any = {};
+                                command.roleID = self.currentRoleId();
+                                command.destinationList = data;
+                                nts.uk.ui.block.invisible();
+                                service.copyDailyAttd(command).done(() => {
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {        
+                                        
+                                    });
+                                }).always(() => {
+                                    nts.uk.ui.block.clear();
+                                });
+                            }                               
+                        });
+                    });
+                } else {
+                    service.getMonthlytRolesByCid().done((roleIDs: Array<any>) => {
+                        let param = {
+                            code: empRole.roleCode,
+                            name: empRole.roleName,
+                            targetType: 8,
+                            itemListSetting: roleIDs ? roleIDs : [],
+                            roleType: 3
+                        };
+                        console.log(param, 'param');        
+                        nts.uk.ui.windows.setShared("CDL023Input", param);
+                        nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+                            let data: Array<string>  = nts.uk.ui.windows.getShared("CDL023Output");
+                            if(data){
+                                let command: any = {};
+                                command.roleID = self.currentRoleId();
+                                command.destinationList = data;
+                                nts.uk.ui.block.invisible();
+                                service.copyMonthlyAttd(command).done(() => {
+                                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' }).then(() => {        
+
+                                    });
+                                }).always(() => {
+                                    nts.uk.ui.block.clear();
+                                });
+                            }                              
+                        });
+                    });
+                }
             }
             
 
@@ -231,8 +278,9 @@ module nts.uk.at.view.kdw002.c {
                 $.when(dtdGetNameAttItemByType).done(() => {
                     service.getEmpRole().done(empRoles => {
                         if (!nts.uk.util.isNullOrUndefined(empRoles) && empRoles.length > 0) {
-                            let bussinessCodeItems = [];
-                            empRoles.forEach(empRole => {
+                            self.roleItems(_.sortBy(empRoles, ['roleCode']));
+                            let bussinessCodeItems: Array<any> = [];
+                            empRoles.forEach((empRole: any)  => {
                                 bussinessCodeItems.push(new BusinessType(empRole));
                                 //   self.bussinessCodeItems.push(new BusinessType(businessType));
                             });
@@ -262,11 +310,18 @@ module nts.uk.at.view.kdw002.c {
             }
 
             //get Daily Attd Item By Role ID
+            // do something
             getDailyAttdItemByRoleID(roleID: string) {
                 let self = this;
                 let dfd = $.Deferred();
                 let startTime: number = performance.now();
                 service.getDailyAttItemNew(roleID).done(function(data) {
+                    if (nts.uk.util.isNullOrUndefined(data) || data.length <= 0 || data.every((att: any) => att.authority == null)){
+                        self.isNewMode(true);
+                    } else {
+                        self.isNewMode(false);
+                    }
+                    
                     console.log("get setting by role: " + (performance.now() - startTime));
                     let listDefault: Array<DisplayAndInputControl> = [];
                     self.listAttFullDataClone(_.cloneDeep(self.listAttFullData()));
@@ -277,7 +332,6 @@ module nts.uk.at.view.kdw002.c {
                                 break;
                             }    
                         }
-                            
                         listDefault.push(DisplayAndInputControl.fromApp(attFullData));
                     });
                     /*if (nts.uk.util.isNullOrUndefined(data)) {
@@ -330,6 +384,11 @@ module nts.uk.at.view.kdw002.c {
                 let self = this;
                 let dfd = $.Deferred();
                 service.getMontlyAttItemNew(roleID).done(function(data) {
+                    if (nts.uk.util.isNullOrUndefined(data) || data.length <= 0 || data.every((att: any) => att.authority == null)) {
+                        self.isNewMode(true);
+                    } else {
+                        self.isNewMode(false);
+                    }
                     let listDefault: Array<DisplayAndInputControl> = [];
 //                    _.each(data, item => {
 //                        listDefault.push(DisplayAndInputControl.fromApp(item));
@@ -552,6 +611,7 @@ module nts.uk.at.view.kdw002.c {
         interface IBusinessType {
             roleId: string;
             roleName: string;
+            roleCode: string;
         }
 
         class BusinessType {
@@ -603,6 +663,7 @@ module nts.uk.at.view.kdw002.c {
         class DisplayAndInputControl {
             itemDailyID: number;
             itemDailyName: string;
+            displayName: string;
             displayNumber: number;
             userCanUpdateAtr: number;
             toUse: boolean;
@@ -613,7 +674,11 @@ module nts.uk.at.view.kdw002.c {
             static fromApp(app) {
                 let dto = new DisplayAndInputControl();
                 dto.itemDailyID = app.attendanceItemId;
-                dto.itemDailyName = app.attendanceItemName;
+                if (!_.isNil(app.displayName)) {
+                    dto.itemDailyName = app.displayName;
+                } else {
+                    dto.itemDailyName = app.attendanceItemName;
+                }
                 dto.displayNumber = app.attendanceItemDisplayNumber;
                 dto.userCanUpdateAtr = app.userCanUpdateAtr;
                 if (app.authority != null) {
@@ -666,6 +731,17 @@ module nts.uk.at.view.kdw002.c {
 
             }
 
+        }
+            
+        class EmployeeRoleDto {
+            roleId: string;
+            roleCode: string;
+            roleName: string;
+            constructor(roleId: string, roleCode: string, roleName: string) {
+                this.roleId = roleId;
+                this.roleCode = roleCode;
+                this.roleName = roleName;
+            }
         }
 
     }

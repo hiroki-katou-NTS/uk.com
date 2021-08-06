@@ -29,7 +29,7 @@
 	margin-left: 20px;
 } */
 #messageSwaplist {
-	margin-left: 412px;
+	margin-left: 413px;
 	width: 48%;
 	margin-bottom: -10px;
 }
@@ -59,7 +59,7 @@
 }
 
 
-#swap-list2-grid1_displayContainer, #swap-list2-grid2_displayContainer,
+/* #swap-list2-grid1_displayContainer, #swap-list2-grid2_displayContainer,
 	#swap-list2-grid1_scrollContainer, #swap-list2-grid2_scrollContainer {
 	height: 242px !important;
 }
@@ -71,7 +71,7 @@
 #swap-list21-grid1_displayContainer, #swap-list21-grid2_displayContainer,
 	#swap-list21-grid1_scrollContainer, #swap-list21-grid2_scrollContainer {
 	height: 292px !important;
-}
+} */
 #tab-3 {
 	margin-bottom: 10px;
 }
@@ -101,9 +101,13 @@
 }
 
 .ntsSwapSearchRight {
-	right: -90px !important;
+	right: -94px !important;
 }
 
 .ntsMoveDataArea  {
 	padding: 0 10px; 
+}
+
+.tabs-list {
+	padding: 7px !important;
 }

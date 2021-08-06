@@ -17,9 +17,11 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback" tabindex="1"
-					data-bind="ntsLinkButton: { action: jumpTo.bind($data, sideBar) }">#{i18n.getText('KDW006_25')}</a>
+					data-bind="ntsLinkButton: { action: jumpTo }">#{i18n.getText('KDW006_25')}</a>
 				<button id="register-button" class="proceed" tabindex="2"
-					data-bind="click: saveData" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+					data-bind="click: saveData, enable: $root.errors.isEmpty" style="margin-left: 85px;">#{i18n.getText('KDW006_26')}</button>
+				<button id="copy-button" class="normal" tabindex="2"
+					data-bind="click: copyData, enable: mode() != 0" >#{i18n.getText('KDW006_52')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="screen-e">

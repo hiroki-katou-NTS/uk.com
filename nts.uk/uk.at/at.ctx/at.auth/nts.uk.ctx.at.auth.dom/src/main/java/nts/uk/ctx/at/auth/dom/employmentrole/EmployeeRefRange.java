@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.auth.dom.employmentrole;
 
+/**
+ * @author thanhpv
+ * @name 例外社員参照範囲
+ */
 public enum EmployeeRefRange {
 	/**
 	 * 全員(all)

@@ -31,6 +31,9 @@
 					<button tabindex="2" class="normal" data-bind="click : setNewMode">#{i18n.getText('KDW008_2')}</button>
 					<button tabindex="3" class="proceed"
 						data-bind="click : addOrUpdateClick , enable: $root.errors.isEmpty">#{i18n.getText('KDW008_3')}</button>
+					<button class="normal" data-bind="click: duplicate, enable: isUpdate"> 
+						#{i18n.getText('KDW008_37')}
+					</button>
 					<button tabindex="4" class="danger"
 						data-bind="click : remove, enable : isRemove">#{i18n.getText('KDW008_4')}</button>
 				</span>
@@ -81,7 +84,7 @@
 							<div data-bind="if: !isMobile">
 								<div id="tab-panel" tabindex="-1"
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-									<div tabindex="-1"  class="tab-content-1" style="height: 450px; width: 800px;">
+									<div tabindex="-1"  class="tab-content-1" style="height: 480px; width: 800px;">
 										<div tabindex="-1">
 											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDW008_23')}</div>
 											<div tabindex="-1" id="A_SEL_002"
@@ -129,7 +132,7 @@
 										</div>
 									</div>
 									
-									<div  class="tab-content-2" style="height: 400px; width: 800px;">
+									<div  class="tab-content-2" style="height: 430px; width: 800px;">
 										<div tabindex="-1" id="messageSwaplist">#{i18n.getText('KDW008_28')}</div>
 										<div tabindex="10" style="margin-top: 10px" id="swap-list"
 											data-bind="ntsSwapList: {
@@ -180,7 +183,7 @@
 										   	<button class="danger" data-bind="click : btnSheetNo ,enable : enableSheetNo">#{i18n.getText('KDW008_34')}</button>
 										</div>
 										<!-- <div style="margin-top: 10px;">#{i18n.getText('KDW008_24')}</div> -->
-										<div  tabindex="-1" style="margin-top: 10px; margin-left: 411px; margin-bottom: -10px" >#{i18n.getText('KDW008_29')}</div>
+										<div  tabindex="-1" style="margin-top: 10px; margin-left: 413px; margin-bottom: -10px" >#{i18n.getText('KDW008_29')}</div>
 										<div style="margin-top: 10px; display: inline-block;">
 											<div tabindex="12" id="swap-list3"
 												data-bind="ntsSwapList: {

@@ -92,6 +92,10 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			"b.REFLECT_PER_SCHE_REASON as bREFLECT_PER_SCHE_REASON, b.REFLECT_PER_TIME as bREFLECT_PER_TIME, " + 
 			"b.CANCEL_PLAN_SCHE_REASON as bCANCEL_PLAN_SCHE_REASON, b.CANCEL_PLAN_TIME as bCANCEL_PLAN_TIME, " + 
 			"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME ";
+	
+	private static final String SELECT_BY_SID_PRE_POST_ATR_APPTYPE = "SELECT a FROM KrqdtApplication a "
+			+ " WHERE a.employeeID = :employeeID" + " AND a.appDate = :appDate"
+			+ " AND a.prePostAtr = :prePostAtr" + " AND a.appType = :appType";
 
 	/**
 	 * @author hoatt get List Application phuc vu CMM045
@@ -884,5 +888,16 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 		return krqdtApplicationLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+	
+	//申請データを取得する
+	@Override
+	public List<Application> getAllApplicationByAppTypeAndPrePostAtr(String employeeID, int appType,
+			GeneralDate appDate, int prePostAtr) {
+		
+		return this.queryProxy().query(SELECT_BY_SID_PRE_POST_ATR_APPTYPE, KrqdtApplication.class)
+				.setParameter("employeeID", employeeID)
+				.setParameter("appDate", appDate).setParameter("appType", appType)
+				.setParameter("prePostAtr", prePostAtr).getList(c -> c.toDomain());
 	}
 }

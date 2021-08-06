@@ -9,12 +9,13 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 
 /**
  * @author laitv
@@ -26,7 +27,7 @@ public class OuenWorkTimeOfDailyHelper {
 		List<OuenWorkTimeOfDailyAttendance> ouenTimes = new ArrayList<OuenWorkTimeOfDailyAttendance>();
 		
 		OuenWorkTimeOfDailyAttendance ouenTime = OuenWorkTimeOfDailyAttendance.create(
-				1, 
+				SupportFrameNo.of(1), 
 				OuenAttendanceTimeEachTimeSheet.create(
 						new AttendanceTime(10), 
 						new AttendanceTime(12), 
@@ -39,7 +40,7 @@ public class OuenWorkTimeOfDailyHelper {
 						new AttendanceTime(14), 
 						new ArrayList<PremiumTime>()), 
 				new AttendanceAmountDaily(100), 
-				new PriceUnit(200));
+				new WorkingHoursUnitPrice(200));
 		ouenTimes.add(ouenTime);
 		return OuenWorkTimeOfDaily.create(
 				"empId", 

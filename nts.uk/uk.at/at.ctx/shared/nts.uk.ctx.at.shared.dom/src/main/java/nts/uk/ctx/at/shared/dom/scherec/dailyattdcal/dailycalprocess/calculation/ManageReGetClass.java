@@ -257,8 +257,11 @@ public class ManageReGetClass {
 	 * 「遅刻早退を控除する」を取得する
 	 * @return 遅刻早退を控除する
 	 */
-	public Optional<DeductLeaveEarly> getLeaveLateSet() {
-		return Optional.of(this.personDailySetting.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly());
+	public DeductLeaveEarly getLeaveLateSet() {
+		if(!this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent())
+			return DeductLeaveEarly.createAllTrue();
+			
+		return this.getHolidayCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().getNotDeductLateLeaveEarly();
 	}
 	
 	/**
@@ -286,5 +289,25 @@ public class ManageReGetClass {
 	 */
 	public AddSetting getAddSetting() {
 		return this.personDailySetting.getAddSetting();
+	}
+	
+	/**
+	 * 重複する時間帯で作り直す
+	 * @param timeSpan 時間帯
+	 * @param commonSet 就業時間帯の共通設定
+	 * @return ManageReGetClass
+	 */
+	public Optional<ManageReGetClass> recreateWithDuplicate(TimeSpanForDailyCalc timeSpan) {
+		Optional<CalculationRangeOfOneDay> duplicate = this.calculationRangeOfOneDay.recreateWithDuplicate(timeSpan, this.getWorkTimezoneCommonSet());
+		if(!duplicate.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(new ManageReGetClass(
+				duplicate.get(),
+				this.companyCommonSetting,
+				this.personDailySetting,
+				this.workType,
+				this.integrationOfWorkTime,
+				this.integrationOfDaily));
 	}
 }

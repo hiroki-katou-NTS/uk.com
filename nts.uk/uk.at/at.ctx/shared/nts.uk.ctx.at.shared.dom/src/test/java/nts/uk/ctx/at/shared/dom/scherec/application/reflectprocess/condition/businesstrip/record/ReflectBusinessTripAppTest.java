@@ -117,7 +117,7 @@ public class ReflectBusinessTripAppTest {
 		actualResult.addAll((new ReflectBusinessTripApp("1")).reflectRecord(require, createTripInfoWorkHour(), dailyApp,
 				GeneralDate.ymd(2020, 10, 10)));
 
-		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29, 3, 4, 5, 6, 31, 34, 41, 44, 859, 860));
+		assertThat(actualResult).isEqualTo(Arrays.asList(28, 1292, 1293, 29, 31, 34, 41, 44, 859, 860));
 
 	}
 

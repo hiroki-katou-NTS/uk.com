@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -36,6 +35,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -250,10 +251,28 @@ public class ActualWorkingTimeOfDaily {
 		
 	}
 	
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(Optional<PersonCostCalculation> personCostCalculation,
+	 																				DailyRecordToAttendanceItemConverter dailyRecordDto,
+	 																				Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory) {
+		if(!personCostCalculation.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
+		return PremiumTimeOfDailyPerformance.calcPremiumTime(dailyRecordDto, unitPriceHistory, personCostCalculation.get());
+	}
 	
-	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(List<PersonnelCostSettingImport> personnelCostSettingImport,
-	 																				Optional<DailyRecordToAttendanceItemConverter> dailyRecordDto) {
-		return PremiumTimeOfDailyPerformance.calcPremiumTime(personnelCostSettingImport, dailyRecordDto);
+	/**
+	 * 割増時間を計算する（応援用）
+	 * @param personCostCalculation 人件費計算設定
+	 * @param dailyRecordDto 日別勤怠コンバーター
+	 * @return 日別勤怠の割増時間
+	 */
+	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForSupport(Optional<PersonCostCalculation> personCostCalculation,
+																								DailyRecordToAttendanceItemConverter dailyRecordDto,
+																								Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory) {
+		if(!personCostCalculation.isPresent()) {
+			return PremiumTimeOfDailyPerformance.createEmpty();
+		}
+		return PremiumTimeOfDailyPerformance.calcPremiumTimeForSupport(dailyRecordDto, unitPriceHistory, personCostCalculation.get());
 	}
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(

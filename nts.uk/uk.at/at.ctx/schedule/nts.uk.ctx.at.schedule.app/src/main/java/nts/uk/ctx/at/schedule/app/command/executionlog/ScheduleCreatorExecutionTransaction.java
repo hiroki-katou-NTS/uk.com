@@ -374,7 +374,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 		if (listEmploymentInfo != null) {
 			optEmploymentInfo = listEmploymentInfo.stream()
-					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
+					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
 		}
 		// if 在籍してない　OR　取得できない
 		// status employment equal RETIREMENT (退職)
@@ -383,7 +383,7 @@ public class ScheduleCreatorExecutionTransaction {
 
 			// return 社員の当日在職状態＝Null, 社員の当日労働条件＝Null, エラー＝Null, 勤務予定＝Null, 処理状態＝処理終了する
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
-					ProcessingStatus.valueOf(ProcessingStatus.END_PROCESS.value), null, null, null);
+					ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY.value), null, null, null);
 			return result;
 		}
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
@@ -460,7 +460,7 @@ public class ScheduleCreatorExecutionTransaction {
 			}
 		}
 
-		// else 取得できない
+		// else 取得できない - enum chưa có cái này
 		// 空の勤務予定を作成する
 		// データ（処理状態付き）を生成して返す
 		return new DataProcessingStatusResult(CID, null,
@@ -599,7 +599,7 @@ public class ScheduleCreatorExecutionTransaction {
 					result.getWorkSchedule().getLstBreakTime(), result.getWorkSchedule().getOptAttendanceTime(),
 					result.getWorkSchedule().getOptTimeLeaving(), result.getWorkSchedule().getOptSortTimeWork(),
 					Optional.empty(), Optional.empty(), Optional.empty(), result.getWorkSchedule().getLstEditState(),
-					Optional.empty(), new ArrayList<>(), Optional.empty());
+					Optional.empty(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty());
 			// // 勤務予定。編集状態一覧から項目IDを取得する - TQP
 			List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()
 					.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
@@ -907,7 +907,7 @@ public class ScheduleCreatorExecutionTransaction {
 		Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
 		if (!masterCache.getListManaStatuTempo().isEmpty()) { // lấy dữ liệu theo ngày
 			optEmploymentInfo = masterCache.getListManaStatuTempo().stream()
-					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod)).findFirst();
+					.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
 		}
 		// データなし
 		// 社員の在職状態を確認する

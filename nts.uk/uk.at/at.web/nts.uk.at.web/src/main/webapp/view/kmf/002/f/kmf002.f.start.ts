@@ -5,7 +5,8 @@ module nts.uk.at.view.kmf002.f {
         
         mainTab.startPage().done(function(screenModel){
             __viewContext.bind(mainTab); 
-			$( "#selectUnitCheck" ).focus();
+			//$( "#selectUnitCheck" ).focus();
+            setTimeout(function(){$($("#selectUnitCheck").find("input")).focus(); }, 300);
         });
     });
 }

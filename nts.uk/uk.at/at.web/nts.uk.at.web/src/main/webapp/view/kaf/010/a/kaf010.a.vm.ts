@@ -631,7 +631,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
 					}
@@ -697,6 +697,42 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					item.limitTime = ko.observable(otWorkHoursForApplication.currentTimeMonth.agreementTime.threshold.erAlTime.error);
 					item.actualTime = ko.observable(otWorkHoursForApplication.currentTimeMonth.agreementTime.agreementTime);
 				}
+				const currentTimeMonth = otWorkHoursForApplication.currentTimeMonth
+				
+				// 正常
+				if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				}  else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
+				}
+				
+				
+				
+				
+				
+				
 				
 				overTimeWorks.push(item);
 			}
@@ -710,6 +746,38 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 					item.limitTime = ko.observable(otWorkHoursForApplication.nextTimeMonth.agreementTime.threshold.erAlTime.error);
 					item.actualTime = ko.observable(otWorkHoursForApplication.nextTimeMonth.agreementTime.agreementTime);
 				}
+				
+				
+				const nextTimeMonth = otWorkHoursForApplication.nextTimeMonth;
+				// 正常
+				if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				}   else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
+				}
+				
 				
 				overTimeWorks.push(item);
 			}
@@ -1717,6 +1785,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		
 	}
+	
+	const COLOR_36 = {
+		// 36協定エラー
+		error: 'bg-36contract-error',
+		// 36協定アラーム
+		alarm: 'bg-36contract-alarm',
+		// 36協定特例
+		exceptions: 'bg-36contract-exception',
+		// 36協定エラー文字
+		error_letter: 'color-36contract-error',
+		// 36協定アラーム文字
+		alarm_character: 'color-36contract-alarm',
+		// 特条上限超過背景色
+		bg_upper_limit: 'bg-exceed-special-upperlimit',
+		// 特条上限超過文字色
+		color_upper_limit: 'color-exceed-special-upperlimit'
+		
+		
+	}
 
 	const API = {
 		startNew: "at/request/application/holidaywork/startNew",
@@ -2002,5 +2089,25 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		employeeID: string;
 		appDate: string;
 		applicationReason: string;
+	}
+	enum AgreementTimeStatusOfMonthly {
+		/** 正常 */
+		NORMAL,
+		/** 限度エラー時間超過 */
+		EXCESS_LIMIT_ERROR,
+		/** 限度アラーム時間超過 */
+		EXCESS_LIMIT_ALARM,
+		/** 特例限度エラー時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ERROR,
+		/** 特例限度アラーム時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ALARM,
+		/** 正常（特例あり） */
+		NORMAL_SPECIAL,
+		/** 限度エラー時間超過（特例あり） */
+		EXCESS_LIMIT_ERROR_SP,
+		/** 限度アラーム時間超過（特例あり） */
+		EXCESS_LIMIT_ALARM_SP,
+		/** 特別条項の上限時間超過 */
+		EXCESS_BG_GRAY
 	}
 }

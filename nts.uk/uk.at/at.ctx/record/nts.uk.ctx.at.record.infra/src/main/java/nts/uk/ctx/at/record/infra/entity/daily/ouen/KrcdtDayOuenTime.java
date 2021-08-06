@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -11,12 +12,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -57,7 +63,7 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "MOVE_WITHIN_TIME")
 	public int moveWithinTime;
 
-	/** 移動の休憩時間 */
+	/** 移動休憩時間 */
 	@Column(name = "MOVE_BREAK_TIME")
 	public int moveBreakTime;
 
@@ -100,24 +106,64 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 	/** 割増時間10 */
 	@Column(name = "PREMIUM_TIME10")
 	public int premiumTime10;
+	
+	/** 割増金額1 */
+	@Column(name = "PREMIUM_AMOUNT1")
+	public int premiumAmount1;
 
-	/** 移動の割増時間1 */
+	/** 割増金額2 */
+	@Column(name = "PREMIUM_AMOUNT2")
+	public int premiumAmount2;
+
+	/** 割増金額3 */
+	@Column(name = "PREMIUM_AMOUNT3")
+	public int premiumAmount3;
+
+	/** 割増金額4 */
+	@Column(name = "PREMIUM_AMOUNT4")
+	public int premiumAmount4;
+
+	/** 割増金額5 */
+	@Column(name = "PREMIUM_AMOUNT5")
+	public int premiumAmount5;
+
+	/** 割増金額6 */
+	@Column(name = "PREMIUM_AMOUNT6")
+	public int premiumAmount6;
+
+	/** 割増金額7 */
+	@Column(name = "PREMIUM_AMOUNT7")
+	public int premiumAmount7;
+
+	/** 割増金額8 */
+	@Column(name = "PREMIUM_AMOUNT8")
+	public int premiumAmount8;
+
+	/** 割増金額9 */
+	@Column(name = "PREMIUM_AMOUNT9")
+	public int premiumAmount9;
+
+	/** 割増金額10 */
+	@Column(name = "PREMIUM_AMOUNT10")
+	public int premiumAmount10;
+
+	/** 移動割増時間1 */
 	@Column(name = "MOVE_PREMIUM_TIME1")
 	public int movePremiumTime1;
 
-	/** 移動の割増時間2 */
+	/** 移動割増時間2 */
 	@Column(name = "MOVE_PREMIUM_TIME2")
 	public int movePremiumTime2;
 
-	/** 移動の割増時間3 */
+	/** 移動割増時間3 */
 	@Column(name = "MOVE_PREMIUM_TIME3")
 	public int movePremiumTime3;
 
-	/** 移動の割増時間4 */
+	/** 移動割増時間4 */
 	@Column(name = "MOVE_PREMIUM_TIME4")
 	public int movePremiumTime4;
 
-	/** 移動の割増時間5 */
+	/** 移動割増時間5 */
 	@Column(name = "MOVE_PREMIUM_TIME5")
 	public int movePremiumTime5;
 
@@ -125,22 +171,22 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "MOVE_PREMIUM_TIME6")
 	public int movePremiumTime6;
 
-	/** 移動の割増時間7 */
+	/** 移動割増時間7 */
 	@Column(name = "MOVE_PREMIUM_TIME7")
 	public int movePremiumTime7;
 
-	/** 移動の割増時間8 */
+	/** 移動割増時間8 */
 	@Column(name = "MOVE_PREMIUM_TIME8")
 	public int movePremiumTime8;
 
-	/** 移動の割増時間9 */
+	/** 移動割増時間9 */
 	@Column(name = "MOVE_PREMIUM_TIME9")
 	public int movePremiumTime9;
 
-	/** 移動の割増時間10 */
+	/** 移動割増時間10 */
 	@Column(name = "MOVE_PREMIUM_TIME10")
 	public int movePremiumTime10;
-
+	
 	/** 常勤勤務時間 */
 	@Column(name = "NORMAL_WORK_TIME")
 	public int normalWorkTime;
@@ -176,7 +222,7 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 
 		for (OuenWorkTimeOfDailyAttendance oTimeOfDaily : domain.getOuenTimes()) {
 			KrcdtDayOuenTime entity = new KrcdtDayOuenTime();
-			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), domain.getYmd(), oTimeOfDaily.getWorkNo());
+			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), domain.getYmd(), oTimeOfDaily.getWorkNo().v());
 
 			entity.amount = oTimeOfDaily.getAmount().v();
 			entity.priceUnit = oTimeOfDaily.getPriceUnit().v();
@@ -193,6 +239,16 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 			entity.premiumTime8 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 8);
 			entity.premiumTime9 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 9);
 			entity.premiumTime10 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 10);
+			entity.premiumAmount1 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 1);
+			entity.premiumAmount2 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 2);
+			entity.premiumAmount3 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 3);
+			entity.premiumAmount4 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 4);
+			entity.premiumAmount5 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 5);
+			entity.premiumAmount6 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 6);
+			entity.premiumAmount7 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 7);
+			entity.premiumAmount8 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 8);
+			entity.premiumAmount9 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 9);
+			entity.premiumAmount10 = getPremiumAmount(oTimeOfDaily.getWorkTime().getPremiumTime(), 10);
 			entity.moveTotalTime = oTimeOfDaily.getMoveTime().getTotalMoveTime().valueAsMinutes();
 			entity.moveBreakTime = oTimeOfDaily.getMoveTime().getBreakTime().valueAsMinutes();
 			entity.moveWithinTime = oTimeOfDaily.getMoveTime().getWithinMoveTime().valueAsMinutes();
@@ -235,7 +291,60 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 	
 	private static int getPremiumTime(List<PremiumTime> times, int no) {
 		
-		return times.stream().filter(c -> c.getPremiumTimeNo() == no)
+		return times.stream().filter(c -> c.getPremiumTimeNo().value == no)
 				.findFirst().map(c -> c.getPremitumTime().v()).orElse(0);
 	}
+
+	private static int getPremiumAmount(List<PremiumTime> times, int no) {
+		return times.stream().filter(c -> c.getPremiumTimeNo().value == no)
+				.findFirst().map(c -> c.getPremiumAmount().v()).orElse(0);
+	}
+
+	public void update(KrcdtDayOuenTime entity) {
+		this.amount = entity.amount;
+		this.priceUnit = entity.priceUnit;
+		this.totalTime = entity.totalTime;
+		this.breakTime = entity.breakTime;
+		this.withinTime = entity.withinTime;
+		this.premiumTime1 = entity.premiumTime1;
+		this.premiumTime2 = entity.premiumTime2;
+		this.premiumTime3 = entity.premiumTime3;
+		this.premiumTime4 = entity.premiumTime4;
+		this.premiumTime5 = entity.premiumTime5;
+		this.premiumTime6 = entity.premiumTime6;
+		this.premiumTime7 = entity.premiumTime7;
+		this.premiumTime8 = entity.premiumTime8;
+		this.premiumTime9 = entity.premiumTime9;
+		this.premiumTime10 = entity.premiumTime10;
+		this.premiumAmount1 = entity.premiumAmount1;
+		this.premiumAmount2 = entity.premiumAmount2;
+		this.premiumAmount3 = entity.premiumAmount3;
+		this.premiumAmount4 = entity.premiumAmount4;
+		this.premiumAmount5 = entity.premiumAmount5;
+		this.premiumAmount6 = entity.premiumAmount6;
+		this.premiumAmount7 = entity.premiumAmount7;
+		this.premiumAmount8 = entity.premiumAmount8;
+		this.premiumAmount9 = entity.premiumAmount9;
+		this.premiumAmount10 = entity.premiumAmount10;
+		this.moveTotalTime = entity.moveTotalTime;
+		this.moveBreakTime = entity.moveBreakTime;
+		this.moveWithinTime = entity.moveWithinTime;
+		this.movePremiumTime1 = entity.movePremiumTime1;
+		this.movePremiumTime2 = entity.movePremiumTime2;
+		this.movePremiumTime3 = entity.movePremiumTime3;
+		this.movePremiumTime4 = entity.movePremiumTime4;
+		this.movePremiumTime5 = entity.movePremiumTime5;
+		this.movePremiumTime6 = entity.movePremiumTime6;
+		this.movePremiumTime7 = entity.movePremiumTime7;
+		this.movePremiumTime8 = entity.movePremiumTime8;
+		this.movePremiumTime9 = entity.movePremiumTime9;
+		this.movePremiumTime10 = entity.movePremiumTime10;
+		this.normalWorkTime = entity.normalWorkTime;
+		this.normalBreakTime = entity.normalBreakTime;
+		this.normalDeductionTime = entity.normalDeductionTime;
+		this.nightWorkTime = entity.nightWorkTime;
+		this.nightBreakTime = entity.nightBreakTime;
+		this.nightDeductionTime = entity.nightDeductionTime;
+	}
+
 }
