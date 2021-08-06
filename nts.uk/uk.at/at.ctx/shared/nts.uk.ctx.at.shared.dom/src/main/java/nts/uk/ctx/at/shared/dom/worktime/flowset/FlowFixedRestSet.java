@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -120,5 +121,17 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 			throw new RuntimeException("FlowFixedRestSet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 外出から休憩へ変換するか
+	 * @param isFlowRest 流動休憩である
+	 * @return true：変換する false：変換しない
+	 */
+	public boolean isConvertGoOutToBreak(GoingOutReason reason) {
+		if(!this.calculateMethod.isStampWithoutReference()) {
+			return false; //マスタを参照する
+		}
+		return this.calculateFromStamp.isUseAsRest(reason);
 	}
 }
