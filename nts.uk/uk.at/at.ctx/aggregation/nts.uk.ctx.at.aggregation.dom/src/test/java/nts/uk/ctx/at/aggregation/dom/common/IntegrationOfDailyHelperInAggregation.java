@@ -191,6 +191,8 @@ public class IntegrationOfDailyHelperInAggregation {
 				,	new ClassificationCode(classCode)	// 分類コード
 				,	Optional.empty()					// 勤務種別コード
 				,	Optional.empty()					// 加給コード
+				,	Optional.empty()					// 職場グループID
+				,	Optional.empty()					// 免許区分
 			);
 		}
 

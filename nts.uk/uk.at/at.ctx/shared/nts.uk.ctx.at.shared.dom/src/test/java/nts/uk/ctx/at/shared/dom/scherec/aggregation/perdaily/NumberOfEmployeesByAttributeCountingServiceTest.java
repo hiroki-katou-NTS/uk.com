@@ -133,6 +133,8 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 						,	new ClassificationCode("CLASSCD")	// 分類コード
 						,	Optional.empty()					// 勤務種別コード
 						,	Optional.empty()					// 加給コード
+						,	Optional.empty()					// 職場グループID
+						,	Optional.empty()					// 免許区分
 					);
 
 			/**
@@ -148,6 +150,8 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 							,	template.getClsCode()				// 分類コード
 							,	template.getBusinessTypeCode()		// 勤務種別コード
 							,	template.getBonusPaySettingCode()	// 加給コード
+							,	Optional.empty()					// 職場グループID
+							,	Optional.empty()					// 免許区分
 						);
 			}
 
@@ -164,6 +168,8 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 							,	clsCd								// 分類コード
 							,	template.getBusinessTypeCode()		// 勤務種別コード
 							,	template.getBonusPaySettingCode()	// 加給コード
+							,	Optional.empty()					// 職場グループID
+							,	Optional.empty()					// 免許区分
 						);
 			}
 
@@ -180,6 +186,8 @@ public class NumberOfEmployeesByAttributeCountingServiceTest {
 							,	template.getClsCode()				// 分類コード
 							,	template.getBusinessTypeCode()		// 勤務種別コード
 							,	template.getBonusPaySettingCode()	// 加給コード
+							,	Optional.empty()					// 職場グループID
+							,	Optional.empty()					// 免許区分
 						);
 			}
 

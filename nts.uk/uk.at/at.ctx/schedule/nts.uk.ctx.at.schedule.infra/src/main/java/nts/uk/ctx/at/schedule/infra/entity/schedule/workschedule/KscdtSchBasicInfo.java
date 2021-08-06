@@ -254,7 +254,9 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
 				Optional.ofNullable(new BusinessTypeCode(busTypeCd)),
-				Optional.empty());
+				Optional.empty(), // TODO implement bonusPaySettingCode
+				Optional.empty(), // TODO implement workplaceGroupId
+				Optional.empty()); // TODO implement nursingLicenseClass
 
 		// create List<BreakTimeOfDailyAttd>
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();

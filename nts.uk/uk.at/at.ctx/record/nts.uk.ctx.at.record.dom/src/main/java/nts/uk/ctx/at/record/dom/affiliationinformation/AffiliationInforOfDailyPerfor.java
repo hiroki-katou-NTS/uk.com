@@ -33,9 +33,15 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
-		this.affiliationInfor = new AffiliationInforOfDailyAttd(employmentCode, jobTitleID, wplID, clsCode,
+		this.affiliationInfor = new AffiliationInforOfDailyAttd(
+				employmentCode, 
+				jobTitleID, 
+				wplID, 
+				clsCode,
 				Optional.ofNullable(businessTypeCode),
-				Optional.ofNullable(bonusPaySettingCode));
+				Optional.ofNullable(bonusPaySettingCode),
+				Optional.empty(), // TODO team daily add
+				Optional.empty()); // TODO team daily add
 	}
 
 	public AffiliationInforOfDailyPerfor(String employeeId, GeneralDate ymd,
