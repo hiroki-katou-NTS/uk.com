@@ -770,7 +770,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 			//基準日時点の年休残数を取得する - RQ198
 			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
 			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
-			yearDayRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
+			yearDayRemain = year.getAnnualLeaveRemainNumberExport() == null ? 0 : 
 				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
 			for (int i = 0; i < year.getAnnualLeaveGrantExports().size(); i++) {
 			    yearHourRemain += year.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
