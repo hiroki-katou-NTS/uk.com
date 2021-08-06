@@ -76,7 +76,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 	};
 	
 	NtsAssert.businessException("Msg_1632",
-			() -> EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
+			() -> EnterStampFromSmartPhoneService.create(require, "", contractCode, employeeId,
 					dateTime, stampButton,
 					Optional.empty(), null));
 	
@@ -108,7 +108,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 	};
 	
 	NtsAssert.businessException("Msg_1632",
-			() -> EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
+			() -> EnterStampFromSmartPhoneService.create(require, "", contractCode, employeeId,
 					dateTime, stampButton,
 					Optional.of(geoCoordinate), null));
 	
@@ -178,7 +178,7 @@ public class EnterStampFromSmartPhoneServiceTest {
 		}
 	};
 	
-	TimeStampInputResult timeStampInputResult = EnterStampFromSmartPhoneService.create(require, contractCode, employeeId,
+	TimeStampInputResult timeStampInputResult = EnterStampFromSmartPhoneService.create(require, "", contractCode, employeeId,
 					dateTime, stampButton,
 					Optional.of(geoCoordinate), null);
 	
