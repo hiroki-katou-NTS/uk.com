@@ -72,6 +72,8 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                     self.$blockui("show");
                     service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) { 
                         self.$dialog.info({ messageId: "Msg_15" });
+                        //self.getFuncRest(self.selectedItem());
+                        self.mode(MODE.UPDATE);
                     }).always(() => {
                         self.$blockui("hide");
                     });
