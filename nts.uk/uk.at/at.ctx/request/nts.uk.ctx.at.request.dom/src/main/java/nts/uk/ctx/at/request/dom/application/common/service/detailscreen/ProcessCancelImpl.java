@@ -104,7 +104,7 @@ public class ProcessCancelImpl implements ProcessCancel {
 		boolean cancelFlg = true;
 		for(Application app : appLst) {
 			// 申請の取消処理
-			ApplicationCancellationProcess.cancelProcess(createRequire(), companyID, app, NotUseAtr.USE);
+			ApplicationCancellationProcess.cancelProcess(createRequire(), companyID, app, NotUseAtr.USE).getAtomTask().run();
 			// 反映状態を取得する
 			ReflectedState reflectedState = app.getAppReflectedState();
 			// 取消済みFlagを判断する
