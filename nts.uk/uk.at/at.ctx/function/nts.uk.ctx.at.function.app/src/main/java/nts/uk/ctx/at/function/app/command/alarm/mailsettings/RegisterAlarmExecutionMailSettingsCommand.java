@@ -122,12 +122,11 @@ public class RegisterAlarmExecutionMailSettingsCommand {
                 mailSetting.getContentMailSettings().getMailRely()
         );
         return new AlarmListExecutionMailSetting(
-                AppContexts.user().companyId(),
                 IndividualWkpClassification.of(mailSetting.individualWkpClassify),
                 NormalAutoClassification.of(mailSetting.normalAutoClassify),
                 PersonalManagerClassification.of(mailSetting.personalManagerClassify),
                 Optional.ofNullable(contentMailSettings),
-                new MailAddress(mailSetting.senderAddress),
+                Optional.ofNullable(new MailAddress(mailSetting.senderAddress)),
                 mailSetting.isSendResult()
         );
     }

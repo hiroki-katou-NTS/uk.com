@@ -3,12 +3,15 @@ package nts.uk.ctx.at.function.app.find.alarm.mailsettings;
 import lombok.val;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmMailSettingsAdapter;
+import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -60,11 +63,7 @@ public class MailSettingFinder {
         if (alarmListExecutionMailSettingList.isEmpty()) {
             return new MailSettingDto(false);
         }
-        boolean isConfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured(x.getCompanyId(),
-                x.getIndividualWkpClassify().value,
-                x.getIndividualWkpClassify().value,
-                x.getPersonalManagerClassify().value
-        ));
+        boolean isConfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured());
         return new MailSettingDto(isConfigured);
     }
 
@@ -74,16 +73,17 @@ public class MailSettingFinder {
 
         // Get AlarmListExecutionMailSetting
         val mailSettings = mailSettingRepository.getByCId(companyId, IndividualWkpClassification.INDIVIDUAL.value);
-        val mailSettingListDto = mailSettings.stream().filter(i -> i.isAlreadyConfigured(i.getCompanyId(), i.getIndividualWkpClassify().value, //TODO
-                i.getIndividualWkpClassify().value, i.getPersonalManagerClassify().value))
-                .map(item -> new AlarmExecutionMailSettingDto(
+        val mailSettingListDto = mailSettings.stream().map(item -> new AlarmExecutionMailSettingDto(
+                new MailSettingInfo(
                         item.getIndividualWkpClassify().value,
                         item.getNormalAutoClassify().value,
                         item.getPersonalManagerClassify().value,
-                        item.getContentMailSettings().isPresent() ? new MailSettingsDto(item.getContentMailSettings().get()) : null,
-                        item.getSenderAddress().v(),
-                        item.isSendResult()
-                )).collect(Collectors.toList());
+                        item.getContentMailSettings().isPresent() ? ContentMailSettingDto.create(item.getContentMailSettings().get()) : null,
+                        item.getSenderAddress().isPresent() ? item.getSenderAddress().get().v() : null,
+                        BooleanUtils.toInteger(item.isSendResult())
+                ),
+                BooleanUtils.toInteger(item.isAlreadyConfigured())
+        )).collect(Collectors.toList());
 
         // Get AlarmMailSendingRole
         val mailSendingRole = mailSendingRoleRepository.find(companyId, IndividualWkpClassification.INDIVIDUAL.value);
@@ -95,7 +95,7 @@ public class MailSettingFinder {
         )).orElse(null);
 
         // Get Role name
-        val roleNameList = mailSendingRoleDto != null ? mailSettingsAdapter.getRoleNameList(mailSendingRoleDto.getRoleIds()) : Collections.emptyList();
+        List<MailExportRolesDto> roleNameList = mailSendingRoleDto != null ? mailSettingsAdapter.getRoleNameList(mailSendingRoleDto.getRoleIds()) : Collections.emptyList();
 
         return new AlarmMailSettingDataDto(mailSettingListDto, mailSendingRoleDto, roleNameList);
     }

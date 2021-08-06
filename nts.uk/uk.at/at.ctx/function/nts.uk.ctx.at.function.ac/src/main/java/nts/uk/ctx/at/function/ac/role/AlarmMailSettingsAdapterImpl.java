@@ -25,7 +25,7 @@ public class AlarmMailSettingsAdapterImpl implements AlarmMailSettingsAdapter {
     @Override
     public List<MailExportRolesDto> getRoleNameList(List<String> lstroleId) {
         val roleList = roleExportRepo.findByListRoleId(AppContexts.user().companyId(), lstroleId);
-        if (roleList.isEmpty()) {
+        if (roleList == null || roleList.isEmpty()) {
             return Collections.emptyList();
         }
         return roleList.stream().map(x -> (new MailExportRolesDto(x.getRoleId(), x.getRoleName()))).collect(Collectors.toList());

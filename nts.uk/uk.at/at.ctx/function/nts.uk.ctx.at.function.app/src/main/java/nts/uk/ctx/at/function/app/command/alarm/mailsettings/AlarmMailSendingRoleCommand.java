@@ -14,10 +14,14 @@ public class AlarmMailSendingRoleCommand {
     /** 個人職場区分 */
     private int individualWkpClassify;
 
-    /** ロール設定 */
+    /** ロール設定
+     * 0: false, 1: true
+     * */
     private int roleSetting;
 
-    /** マスタチェック結果を就業担当へ送信 */
+    /** マスタチェック結果を就業担当へ送信
+     * 0: false, 1: true
+     * */
     private int sendResult;
 
     /** ロールID */

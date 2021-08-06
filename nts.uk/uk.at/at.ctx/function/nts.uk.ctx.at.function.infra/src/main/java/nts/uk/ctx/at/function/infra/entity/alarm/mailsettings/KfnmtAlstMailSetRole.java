@@ -48,6 +48,7 @@ public class KfnmtAlstMailSetRole extends ContractUkJpaEntity implements Seriali
     public void fromEntity(KfnmtAlstMailSetRole entity){
         this.roleSetting = entity.roleSetting;
         this.sendResult = entity.sendResult;
+        this.alarmSelectRoles = entity.alarmSelectRoles;
     }
 
     public static KfnmtAlstMailSetRole of(AlarmMailSendingRole domain) {

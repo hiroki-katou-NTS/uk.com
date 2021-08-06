@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.function.app.find.alarm.mailsettings;
 
+import lombok.Data;
+import nts.arc.primitive.PrimitiveValueBase;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import lombok.Data;
-import nts.arc.primitive.PrimitiveValueBase;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailAddress;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
 
 @Data
 public class MailSettingsDto {
@@ -30,12 +29,4 @@ public class MailSettingsDto {
 		this.mailRely = MailSettings.get().getMailRely().get().v();
 	}
 
-	public MailSettingsDto(MailSettings mailSetting) {
-		this.subject = mailSetting.getSubject().isPresent() ? mailSetting.getSubject().get().v() : null;
-		this.text = mailSetting.getText().isPresent() ? mailSetting.getText().get().v() : null;
-		this.mailAddressBCC = mailSetting.getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-		this.mailAddressCC = mailSetting.getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-		this.mailRely =  mailSetting.getMailRely().isPresent() ? mailSetting.getMailRely().get().v() : null;
-	}
-	
 }

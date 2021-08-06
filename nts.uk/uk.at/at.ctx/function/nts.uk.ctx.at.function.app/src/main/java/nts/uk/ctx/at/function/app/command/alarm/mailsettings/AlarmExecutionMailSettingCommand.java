@@ -2,12 +2,11 @@ package nts.uk.ctx.at.function.app.command.alarm.mailsettings;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.function.app.find.alarm.mailsettings.MailSettingsDto;
+import nts.uk.ctx.at.function.app.find.alarm.mailsettings.ContentMailSettingDto;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.commons.lang3.BooleanUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,27 +20,28 @@ public class AlarmExecutionMailSettingCommand {
     /** 本人管理区分 */
     private int personalManagerClassify;
     /** 内容メール設定 */
-    private MailSettingsDto contentMailSetting;
+    private ContentMailSettingDto contentMailSetting;
     /** 送信元アドレス */
     private String senderAddress;
-    /** マスタチェック結果を就業担当へ送信 */
-    private boolean sendResult;
+    /** マスタチェック結果を就業担当へ送信
+     * 0: false, 1: true
+     * */
+    private int sendResult;
 
     public AlarmListExecutionMailSetting toDomain() {
         return new AlarmListExecutionMailSetting(
-                AppContexts.user().companyId(),
                 IndividualWkpClassification.of(this.individualWkpClassify),
                 NormalAutoClassification.of(this.normalAutoClassify),
                 PersonalManagerClassification.of(this.personalManagerClassify),
                 Optional.of(new MailSettings(
-                        contentMailSetting.getSubject(),
-                        contentMailSetting.getText(),
-                        contentMailSetting.getMailAddressBCC().stream().map(MailAddress::new).collect(Collectors.toList()),
-                        contentMailSetting.getMailAddressCC().stream().map(MailAddress::new).collect(Collectors.toList()),
-                        contentMailSetting.getMailRely()
+                        this.contentMailSetting.getSubject(),
+                        this.contentMailSetting.getText(),
+                        this.contentMailSetting.getMailAddressCC().stream().map(MailAddress::new).collect(Collectors.toList()),
+                        this.contentMailSetting.getMailAddressBCC().stream().map(MailAddress::new).collect(Collectors.toList()),
+                        this.contentMailSetting.getMailRely()
                 )),
-                new MailAddress(senderAddress),
-                true                 //TODO
+                Optional.of(new MailAddress(this.senderAddress)),
+                BooleanUtils.toBoolean(this.sendResult == 1)
         );
     }
 }

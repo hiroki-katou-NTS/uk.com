@@ -12,9 +12,9 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Entity: アラームリスト実行メール設定
@@ -29,27 +29,39 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
     @EmbeddedId
     public KfnmtAlstExeMailSettingPK pk;
 
-    /** 件名 */
+    /**
+     * 件名
+     */
     @Column(name = "SUBJECT")
     public String subject;
 
-    /** 本文 */
+    /**
+     * 本文
+     */
     @Column(name = "TEXT")
     public String text;
 
-    /** BBCメールアドレス */
+    /**
+     * BBCメールアドレス
+     */
     @Column(name = "BCC")
     public String bcc;
 
-    /** CCメールアドレス */
+    /**
+     * CCメールアドレス
+     */
     @Column(name = "CC")
     public String cc;
 
-    /** 返信用メールアドレス */
+    /**
+     * 返信用メールアドレス
+     */
     @Column(name = "MAIL_REPLY")
     public String mailReply;
 
-    /** 送信元アドレス */
+    /**
+     * 送信元アドレス
+     */
     @Column(name = "SENDER_ADDRESS")
     public String senderAddress;
 
@@ -58,8 +70,9 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
         return this.pk;
     }
 
-    public static KfnmtAlstExeMailSetting of(AlarmListExecutionMailSetting domain) {
+    public static KfnmtAlstExeMailSetting of(AlarmListExecutionMailSetting domain, String bccId, String ccId) {
         Optional<MailSettings> content = domain.getContentMailSettings();
+
         return new KfnmtAlstExeMailSetting(
                 new KfnmtAlstExeMailSettingPK(
                         AppContexts.user().companyId(),
@@ -68,10 +81,10 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
                         domain.getPersonalManagerClassify().value),
                 content.isPresent() && content.get().getSubject().isPresent() ? content.get().getSubject().get().v() : null,
                 content.isPresent() && content.get().getText().isPresent() ? content.get().getText().get().v() : null,
-                content.isPresent() ? content.get().getMailAddressBCC().get(0).v() : null,
-                content.isPresent() ? content.get().getMailAddressCC().get(0).v() : null,
+                bccId,
+                ccId,
                 content.isPresent() && content.get().getMailRely().isPresent() ? content.get().getMailRely().get().v() : null,
-                domain.getSenderAddress().v()
+                domain.getSenderAddress().isPresent() ? domain.getSenderAddress().get().v() : null
         );
     }
 
@@ -84,25 +97,24 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
         this.senderAddress = entity.senderAddress;
     }
 
-    public AlarmListExecutionMailSetting toDomain() {
-        List<MailAddress> mailBccList = new ArrayList<>();
-        mailBccList.add(new MailAddress(bcc));
-        List<MailAddress> mailCcList = new ArrayList<>();
-        mailCcList.add(new MailAddress(cc));
+    public AlarmListExecutionMailSetting toDomain(List<MailAddressSet> mailSettingListCC, List<MailAddressSet> mailSettingListBCC) {
+        val mailSettingBcc = mailSettingListBCC.stream().filter(x -> x.getId().equals(this.bcc))
+                .map(MailAddressSet::getMailAddress).collect(Collectors.toList());
+        val mailSettingCc = mailSettingListCC.stream().filter(x -> x.getId().equals(this.bcc))
+                .map(MailAddressSet::getMailAddress).collect(Collectors.toList());
         return new AlarmListExecutionMailSetting(
-                this.pk.companyID,
                 IndividualWkpClassification.of(this.pk.personWkpAtr),
                 NormalAutoClassification.of(this.pk.normalAutoAtr),
                 PersonalManagerClassification.of(this.pk.personalManagerAtr),
                 Optional.of(new MailSettings(
                         subject,
                         text,
-                        mailBccList,
-                        mailCcList,
+                        mailSettingBcc,
+                        mailSettingCc,
                         mailReply
                 )),
-                new MailAddress(senderAddress),
-                true                 //TODO
+                Optional.of(new MailAddress(senderAddress)),
+                false
         );
     }
 }

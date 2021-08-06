@@ -2,11 +2,17 @@ package nts.uk.ctx.at.function.app.find.alarm.mailsettings;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
 
 @AllArgsConstructor
 @Getter
 public class AlarmExecutionMailSettingDto {
+    private MailSettingInfo mailSettingInfo;
+    private int alreadyConfigured;
+}
+
+@AllArgsConstructor
+@Getter
+class MailSettingInfo {
     private int individualWkpClassify;
 
     /**
@@ -22,7 +28,7 @@ public class AlarmExecutionMailSettingDto {
     /**
      * 内容メール設定
      */
-    private MailSettingsDto contentMailSettings;
+    private ContentMailSettingDto contentMailSettings;
 
     /**
      * 送信元アドレス
@@ -32,5 +38,5 @@ public class AlarmExecutionMailSettingDto {
     /**
      * マスタチェック結果を就業担当へ送信
      */
-    private boolean sendResult;
+    private int sendResult;
 }

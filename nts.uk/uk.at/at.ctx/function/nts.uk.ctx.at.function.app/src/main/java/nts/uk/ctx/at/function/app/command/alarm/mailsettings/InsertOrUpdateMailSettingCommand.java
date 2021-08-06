@@ -14,6 +14,6 @@ public class InsertOrUpdateMailSettingCommand {
     private AlarmMailSendingRoleCommand alarmMailSendingRoleCommand;
 
     public List<AlarmListExecutionMailSetting> toDomains() {
-        return executionMailSettingCommand.stream().map(AlarmExecutionMailSettingCommand::toDomain).collect(Collectors.toList());
+        return this.executionMailSettingCommand.stream().map(AlarmExecutionMailSettingCommand::toDomain).collect(Collectors.toList());
     }
 }

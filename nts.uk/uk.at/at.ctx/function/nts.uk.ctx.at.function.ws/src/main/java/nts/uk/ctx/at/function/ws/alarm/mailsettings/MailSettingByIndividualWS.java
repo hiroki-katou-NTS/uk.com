@@ -11,7 +11,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("at/function/alarm/mailsetting")
+@Path("at/function/alarm/kal002/emailSetting")
 @Produces("application/json")
 public class MailSettingByIndividualWS extends WebService {
     @Inject
