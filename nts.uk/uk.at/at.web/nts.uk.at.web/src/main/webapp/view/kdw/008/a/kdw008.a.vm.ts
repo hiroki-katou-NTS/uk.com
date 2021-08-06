@@ -995,7 +995,14 @@ module nts.uk.at.view.kdw008.a {
             constructor(data: IAttendanceItemDto) {
                 if (!data) return;
                 this.attendanceItemId = data.attendanceItemId;
-                this.attendanceItemName = data.attendanceItemName || "";
+                //this.attendanceItemName = data.attendanceItemName || "";
+
+                if(data.displayName && data.displayName.length > 0) {
+                    this.attendanceItemName = data.displayName;
+                }
+                else {
+                    this.attendanceItemName = data.attendanceItemName
+                }
                 this.attendanceItemDisplayNumber = data.attendanceItemDisplayNumber;
                 this.columnWidth = null;
             }
@@ -1010,6 +1017,7 @@ module nts.uk.at.view.kdw008.a {
         interface IAttendanceItemDto {
             attendanceItemId: number;
             attendanceItemName: string;
+            displayName: string;
             attendanceItemDisplayNumber: number;
         }
 
