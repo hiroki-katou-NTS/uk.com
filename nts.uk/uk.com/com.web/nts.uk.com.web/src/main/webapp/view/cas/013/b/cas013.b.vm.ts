@@ -10,6 +10,10 @@ module nts.uk.com.view.cas013.b.viewmodel {
         selectUserID: KnockoutObservable<string>;
         userName: KnockoutObservable<string>;
         roleTypeParam: number;
+        companyId: KnockoutObservable<string>;
+        companyCode: KnockoutObservable<string>;
+        companyName: KnockoutObservable<string>;
+        ListEmployyeId: Array<any>;
 
         special: KnockoutObservable<boolean>;
         multi: KnockoutObservable<boolean>;
@@ -42,7 +46,10 @@ module nts.uk.com.view.cas013.b.viewmodel {
         constructor() {
             var self = this;
             self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
-
+            self.companyId = nts.uk.ui.windows.getShared("companyId");
+            self.companyCode = nts.uk.ui.windows.getShared("companyCode");
+            self.companyName = nts.uk.ui.windows.getShared("companyName");
+            self.ListEmployyeId = nts.uk.ui.windows.getShared("ListEmployyeId")
             self.special = ko.observable(true);
             self.multi = ko.observable(true);
 
@@ -57,9 +64,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
             //B1_2
             self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給ながい文字')
+                new ItemModel(nts.uk.ui.windows.getShared("companyCode"), nts.uk.ui.windows.getShared("companyName")),
             ]);
             self.selectedCode = ko.observable('1');
             self.isEnable = ko.observable(true);
@@ -98,6 +103,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 maxRows: 15
             };
             $('#kcp005').ntsListComponent(self.listComponentOption)
+
         }
 
         search() {
@@ -121,6 +127,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
             }).always(() => {
                 nts.uk.ui.block.clear();
             });
+
         }
 
         enterPress() {
@@ -129,6 +136,13 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
         decision() {
             var self = this;
+            new service.Service().searchCompanyInfo(nts.uk.ui.windows.getShared("companyId")).done(function (data) {
+                if(data) {
+                    console.log("Haha " + data)
+                }
+            }).always(() => {
+                nts.uk.ui.block.clear();
+            })
             if (nts.uk.text.isNullOrEmpty(self.selectUserID())) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText("CAS013_19")] });
                 return;
