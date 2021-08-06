@@ -96,9 +96,12 @@ module nts.uk.at.view.knr001.a {
                                 self.selectedIndex2(3);
                                 self.selectedIndex3(6);
                                 self.selectedIndex4(10);
+                                $( "#A6_9" ).removeClass( "disable-span" );
                             }else{
                                 self.empInfoTerminalModel().enableOutingClass(true);
                                 self.goOutReason(10);
+                                self.entranceExit(false);
+                                $( "#A6_9" ).addClass( "disable-span" );
                             }
                 });
 

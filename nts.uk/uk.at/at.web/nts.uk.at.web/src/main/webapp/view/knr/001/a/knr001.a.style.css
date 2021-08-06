@@ -18,6 +18,10 @@
 	display: block;
 }
 
+.disable-span {
+	color: #a9a9a9;
+}
+
 #content-left {
 	float: left;
 	padding: 5px;
