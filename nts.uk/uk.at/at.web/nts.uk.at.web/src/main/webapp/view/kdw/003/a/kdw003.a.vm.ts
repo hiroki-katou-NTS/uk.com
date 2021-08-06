@@ -4971,12 +4971,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     }
                     service.findAllCodeName(param2).done((data) => {
+						let dateParam2: any = null;
+						let currentRow: any = _.find(selfParent.dailyPerfomanceData(), item => item.id==self.rowId().substring(1));
+						let workplaceIDParam2: any = null;
+						if(currentRow){
+							dateParam2 = currentRow.date;
+							let workplaceIDObj = _.find(currentRow.cellDatas, (item: any) => item.columnKey=='Code623')
+							if(workplaceIDObj) {
+								workplaceIDParam2 = workplaceIDObj.value;	
+							}
+						};
+						
                         self.listCode([]);
                         self.listCode(_.map(data, 'code'));
-                        setShared('kml001multiSelectMode', false);
-                        setShared('kml001selectAbleCodeList', nts.uk.util.isNullOrEmpty(self.listCode()) ? [] : self.listCode());
+                        setShared('kml001selectAbleCodeList', []);
                         setShared('kml001selectedCodeList', [self.selectedCode()]);
-                        setShared('kml001isSelection', true);
+						setShared('kml001multiSelectMode', false);
+						setShared('kdl00showNoSelectionRow', true);
+						setShared('kml001WorkPlaceId', workplaceIDParam2);
+						setShared('kml001BaseDate', dateParam2);
                         modal("/view/kdl/001/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                             let codes: any = nts.uk.ui.windows.getShared("kml001selectedCodeList");
                             if (codes) {
