@@ -4325,6 +4325,16 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				checkOpen2 = _.filter(self.lstDis, (x: any) => { return x.empId === empId && x.worktimeName == true });
 
 			if (checkOpen.length < 1 && checkOpen2.length < 1) {
+				
+				if (workTypeCode != "") {
+					self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList.push(workTypeCode);
+				}
+				
+				let param = {
+					disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.displayWorkTypeControl,
+					disAbleWkTypeCodeLst : self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList
+				}
+				setShared('paramKsu003Kdl003', param);
 				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
 				model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 1);
 				model.removeError(css.cssWorkType, css.cssWorkTime, css.cssWorkTypeName, css.cssWorkTName, css.cssStartTime1, css.cssEndTime1, css.cssStartTime2, css.cssEndTime2, 0);
