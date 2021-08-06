@@ -85,14 +85,20 @@ public class ReviseItemDto {
 				dto.usePadding = rev.isUsePadding();
 				dto.paddingLength = rev.getPadding().get().getLength().v();
 				dto.paddingMethod = rev.getPadding().get().getMethod().value;
-				rev.getCodeConvert().ifPresent(c -> { dto.codeConvert = CodeConvertDto.of(c); });
+				rev.getCodeConvert().ifPresent(c -> {
+					dto.useCodeConvert = true;
+					dto.codeConvert = CodeConvertDto.of(c);
+				});
 				return dto;
 			}
 			
 			if (revisingValue instanceof IntegerRevise) {
 				val rev = (IntegerRevise) revisingValue;
 				dto.useCodeConvert = rev.getCodeConvert().isPresent();
-				rev.getCodeConvert().ifPresent(c -> { dto.codeConvert = CodeConvertDto.of(c); });
+				rev.getCodeConvert().ifPresent(c -> {
+					dto.useCodeConvert = true;
+					dto.codeConvert = CodeConvertDto.of(c);
+				});
 				return dto;
 			}
 			

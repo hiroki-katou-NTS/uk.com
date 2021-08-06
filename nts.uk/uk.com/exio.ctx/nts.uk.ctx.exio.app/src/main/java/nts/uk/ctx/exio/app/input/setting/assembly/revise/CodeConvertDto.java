@@ -5,6 +5,8 @@ import static java.util.stream.Collectors.*;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.CodeConvertDetail;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
@@ -28,7 +30,7 @@ public class CodeConvertDto {
 	
 	public ExternalImportCodeConvert toDomain() {
 		return new ExternalImportCodeConvert(
-				importWithoutSetting,
+				BooleanUtils.isTrue(importWithoutSetting),
 				details.stream().map(Detail::toDomain).collect(toList()));
 	}
 

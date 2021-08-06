@@ -182,8 +182,10 @@ module nts.uk.com.cmf001.c {
                     mapping.revisingValue.codeConvert.convertDetailsText(
                         res.revisingValue.codeConvert.details
                             .map(d => d.before + "," + d.after)
-                            .join("\r\n")
+                            .join("\n")
                     );
+                } else {
+                    mapping.revisingValue.codeConvert.convertDetailsText("");
                 }
             });
         }
@@ -194,7 +196,16 @@ module nts.uk.com.cmf001.c {
             let path = "/screen/com/cmf/cmf001/save";
 
             let item = this.currentItem();
+
             let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
+            revisingValue.codeConvert.details = revisingValue.codeConvert.convertDetailsText
+                .split("\n")
+                .map(l => {
+                    let p = l.split(",");
+                    if (p.length !== 2) return null;
+                    return { before: p[0], after: p[1] };
+                })
+                .filter(d => d !== null);
 
             let command = {
                 settingCode: this.settingCode,

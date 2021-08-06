@@ -117,11 +117,11 @@
 									<div>変換前と変換後の文字列を半角カンマ記号 "," で区切って入力してください</div>
 									
 									<div class="inline">
-										<textarea data-bind="ntsMultilineEditor: { value: convertDetailsText, enable: $parent.useCodeConvert }" />
+										<textarea data-bind="ntsMultilineEditor: { value: convertDetailsText, enable: $parent.useCodeConvert() === true }" />
 									</div>
 									
 									<div class="inline">
-										<div data-bind="ntsCheckBox: { checked: importWithoutSetting, text: '変換対象外を受け入れる', enable: $parent.useCodeConvert }"></div>
+										<div data-bind="ntsCheckBox: { checked: importWithoutSetting, text: '変換対象外を受け入れる', enable: $parent.useCodeConvert() === true }"></div>
 									</div>
 								</div>
 							</div>
