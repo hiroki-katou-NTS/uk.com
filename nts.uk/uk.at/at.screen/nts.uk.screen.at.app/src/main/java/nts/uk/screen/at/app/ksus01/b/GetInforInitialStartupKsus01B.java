@@ -109,9 +109,12 @@ public class GetInforInitialStartupKsus01B {
 			}
 		}
 		return new InforInitialDto(
-				totalWorkingTimeMap.get(empId).get(enum0),
-				estimatedSalaryMonthlyMap.get(empId).getSalary(), 
-				estimatedSalaryCumulativeMap.get(empId).getSalary());
+				totalWorkingTimeMap != null && totalWorkingTimeMap.get(empId) != null ? 
+						totalWorkingTimeMap.get(empId).get(enum0) : new BigDecimal(0),
+				estimatedSalaryMonthlyMap != null && estimatedSalaryMonthlyMap.get(empId) != null ? 
+						estimatedSalaryMonthlyMap.get(empId).getSalary() : new BigDecimal(0), 
+				estimatedSalaryCumulativeMap != null && estimatedSalaryCumulativeMap.get(empId) != null ? 
+						estimatedSalaryCumulativeMap.get(empId).getSalary() : new BigDecimal(0));
 	}
 	
 	@AllArgsConstructor
