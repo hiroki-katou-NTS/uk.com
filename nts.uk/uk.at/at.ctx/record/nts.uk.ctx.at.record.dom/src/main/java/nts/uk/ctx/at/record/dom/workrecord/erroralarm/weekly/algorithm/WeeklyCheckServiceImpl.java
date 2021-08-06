@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.*;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -20,7 +22,9 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AddSubAttendanceItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedTarget;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
@@ -42,8 +46,10 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriod
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.converter.WeeklyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -63,6 +69,8 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	private CalCountForConsecutivePeriodChecking calCountForConsecutivePeriodChecking;
 	@Inject
 	private ConvertCompareTypeToText convertComparaToText;
+	@Inject
+	private CompanyMonthlyItemService atName;
 	
 	@Override
 	public void extractWeeklyCheck(String cid, List<String> lstSid, DatePeriod period,
@@ -115,7 +123,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					}
 					
 					// Input．期間の開始月からループする
-					for (YearMonth ym: period.yearMonthsBetween()) {						
+					for (YearMonth ym: period.yearMonthsBetween()) {
 						// ループ中の社員の月の週別実績の勤務時間を絞り込み
 						// 期間．開始日　＞＝ （Input. 期間．開始日　＞　ループ中の年月．開始日　？　Input. 期間．開始日　：　ループ中の年月．開始日）　QA#115666
 						GeneralDate startCompare = period.start().after(ym.firstGeneralDate()) ? period.start() : ym.firstGeneralDate();
@@ -330,7 +338,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 				comment = Optional.ofNullable(weeklyCond.getErrorAlarmMessage().get().v());
 			}
 			// アラーム内容
-			String param0 = getCompareOperatorText(weeklyCond.getCheckConditions(), weeklyCond.getCheckItemType());
+			String param0 = getCompareOperatorText(cid, weeklyCond.getCheckConditions(), weeklyCond.getCheckItemType(), weeklyCond.getCheckedTarget());
 			
 			// 	チェック項目の種類は連続じゃないの場合　－＞#KAL010_1308
 			String param1 = TextResource.localize("KAL010_1308");
@@ -351,7 +359,7 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(continuousOutput.continuousCountOpt.get().getConsecutiveYears()));
 				} else {
 					// 取得したカウン
-					param2 = String.valueOf(count);
+					param2 = String.valueOf(count) + TextResource.localize("KAL010_1311");
 					
 					// チェック項目の種類は連続の場合　－＞#KAL010_1313 {0}　＝　取得したカウン
 					checkTargetValue = TextResource.localize("KAL010_1313", String.valueOf(count));
@@ -468,8 +476,39 @@ public class WeeklyCheckServiceImpl implements WeeklyCheckService {
 	 * Get parameter 0 for alarm content 
 	 */
 	@SuppressWarnings({ "rawtypes" })
-	public String getCompareOperatorText(CheckedCondition checkCondition, WeeklyCheckItemType weeklyCheckType) {
+	public String getCompareOperatorText(String cid, CheckedCondition checkCondition, WeeklyCheckItemType weeklyCheckType, Optional<CheckedTarget> checkedTarget) {
 		String checkCondTypeName = weeklyCheckType.nameId;
+		
+		if (checkedTarget.isPresent()) { // #118542
+			CountableTarget countableTarget = (CountableTarget)checkedTarget.get();
+			AddSubAttendanceItems addSubAttendanceItems = countableTarget.getAddSubAttendanceItems();
+			
+			List<Integer> itemIds = new ArrayList<>();
+			if (addSubAttendanceItems.getAdditionAttendanceItems().size() > 0) {
+				itemIds.addAll(addSubAttendanceItems.getAdditionAttendanceItems());
+			}
+			if (addSubAttendanceItems.getSubstractionAttendanceItems().size() > 0) {
+				itemIds.addAll(addSubAttendanceItems.getSubstractionAttendanceItems());
+			}
+			
+			List<MonthlyAttendanceItemAtr> attrs = new ArrayList<>();
+			attrs.add(MonthlyAttendanceItemAtr.TIME);
+			attrs.add(MonthlyAttendanceItemAtr.NUMBER);
+			attrs.add(MonthlyAttendanceItemAtr.DAYS);
+			List<AttItemName> attendanceItems = atName.getMonthlyItems(cid, Optional.empty(), itemIds, attrs);
+			
+			if (addSubAttendanceItems.getAdditionAttendanceItems().size() > 0) {
+				checkCondTypeName = attendanceItems.stream()
+						.filter(x -> addSubAttendanceItems.getAdditionAttendanceItems().contains(x.getAttendanceItemId()))
+						.map(x -> x.getAttendanceItemName()).collect(Collectors.joining("+", "", ""));
+			}
+			
+			if (addSubAttendanceItems.getSubstractionAttendanceItems().size() > 0) {
+				checkCondTypeName += '-' + attendanceItems.stream()
+						.filter(x -> addSubAttendanceItems.getSubstractionAttendanceItems().contains(x.getAttendanceItemId()))
+						.map(x -> x.getAttendanceItemName()).collect(Collectors.joining("-", "", ""));
+			}
+		}
 		
 		int compare = checkCondition instanceof CompareSingleValue 
 				? ((CompareSingleValue) checkCondition).getCompareOpertor().value

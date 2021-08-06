@@ -105,6 +105,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     // change select item check
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(0);
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(0);
+                        if (itemCheck == 5) {
+                            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual(1);
+                        }
                         if (itemCheck == 6) {
                             self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().comparePlanAndActual(1); 
                         }
