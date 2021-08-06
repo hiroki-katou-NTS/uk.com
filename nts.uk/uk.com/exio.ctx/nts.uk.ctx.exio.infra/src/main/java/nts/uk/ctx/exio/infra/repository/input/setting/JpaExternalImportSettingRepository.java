@@ -76,7 +76,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 								domain.getCode().v(), 
 								m.getItemNo()), 
 						m.getCsvColumnNo().isPresent()? m.getCsvColumnNo().get(): null, 
-						m.getFixedValue().isPresent()? m.getFixedValue().get().toString(): null))
+						m.getFixedValue().isPresent()? m.getFixedValue().get().getValue(): null))
 				.collect(Collectors.toList()));
 	}
 }

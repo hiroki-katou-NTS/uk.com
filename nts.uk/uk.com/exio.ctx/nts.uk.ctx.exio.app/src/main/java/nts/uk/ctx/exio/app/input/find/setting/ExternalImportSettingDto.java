@@ -62,6 +62,7 @@ public class ExternalImportSettingDto {
 							getItemName(require, domain.getExternalImportGroupId(), m),
 							getItemType(require, domain.getExternalImportGroupId(), m),
 							checkImportSource(m),
+							m.getFixedValue().map(f -> f.asString()).orElse(""),
 							m.isConfigured()))
 				.collect(Collectors.toList()));
 	}
@@ -107,6 +108,9 @@ public class ExternalImportSettingDto {
 		
 		/** 受入元 */
 		private String source;
+		
+		/** 固定値 */
+		private String fixedValue;
 		
 		/** 詳細設定の有無 */
 		private boolean alreadyDetail;

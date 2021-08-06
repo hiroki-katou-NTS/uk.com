@@ -137,6 +137,7 @@ module nts.uk.com.cmf001.c {
             current.def.name(selectedItem.name);
             current.def.type(selectedItem.type);
             current.selectedMappingType(selectedItem.source);
+            current.fixedMapping(selectedItem.fixedValue);
 
             this.loadImportableItem();
             this.loadReviseItem();
