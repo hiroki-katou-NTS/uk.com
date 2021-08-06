@@ -12,9 +12,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
-import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -41,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 日別勤怠の早退時間
@@ -170,41 +166,36 @@ public class LeaveEarlyTimeOfDaily {
 						.collect(Collectors.toList())
 				: new ArrayList<>();
 		
-		LateLeaveEarlyTimeSheet forRecordTimeSheet = new LateLeaveEarlyTimeSheet(
-				new TimeSpanForDailyCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)),
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN));
-
-		LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
-				new TimeSpanForDailyCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)),
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN));
-		
-		if(!leaveEarlyTimeSheetList.isEmpty()) {
-			if(leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().isPresent()) {
-				//早退時間帯を１つの時間帯にする。
-				forRecordTimeSheet = new LateLeaveEarlyTimeSheet(
-						new TimeSpanForDailyCalc(
-								leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
-								leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()),
-						leaveEarlyTimeSheetList.get(0).getForRecordTimeSheet().get().getRounding());
-				
-				forRecordTimeSheet.setDeductionTimeSheet(
-						leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-				forRecordTimeSheet.setRecordedTimeSheet(
-						leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+		// 早退時間帯を１つの時間帯にする
+		LateLeaveEarlyTimeSheet forRecordTimeSheet = null;
+		LateLeaveEarlyTimeSheet forDeductTimeSheet = null;
+		for (LeaveEarlyTimeSheet srcSheet : leaveEarlyTimeSheetList){
+			if (srcSheet.getForRecordTimeSheet().isPresent()){
+				LateLeaveEarlyTimeSheet srcRecord = srcSheet.getForRecordTimeSheet().get();
+				if (forRecordTimeSheet == null){
+					forRecordTimeSheet = new LateLeaveEarlyTimeSheet(
+							new TimeSpanForDailyCalc(
+									srcRecord.getTimeSheet().getStart(),
+									srcRecord.getTimeSheet().getEnd()),
+							srcRecord.getRounding());
+				}
+				forRecordTimeSheet.addOtherSheet(srcRecord);
 			}
-			forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
-					new TimeSpanForDailyCalc(
-							leaveEarlyTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
-							leaveEarlyTimeSheetList.get(leaveEarlyTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd()),
-					leaveEarlyTimeSheetList.get(0).getForDeducationTimeSheet().get().getRounding());
-			
-			forDeductTimeSheet.setDeductionTimeSheet(
-					leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-			forDeductTimeSheet.setRecordedTimeSheet(
-					leaveEarlyTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
+			if (srcSheet.getForDeducationTimeSheet().isPresent()){
+				LateLeaveEarlyTimeSheet srcDeduct = srcSheet.getForDeducationTimeSheet().get();
+				if (forDeductTimeSheet == null){
+					forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
+							new TimeSpanForDailyCalc(
+									srcDeduct.getTimeSheet().getStart(),
+									srcDeduct.getTimeSheet().getEnd()),
+							srcDeduct.getRounding());
+				}
+				forDeductTimeSheet.addOtherSheet(srcDeduct);
+			}
 		}
 		
-		LeaveEarlyTimeSheet leaveEarlyTimeSheet = new LeaveEarlyTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v());
+		LeaveEarlyTimeSheet leaveEarlyTimeSheet = new LeaveEarlyTimeSheet(
+				Optional.ofNullable(forRecordTimeSheet), Optional.ofNullable(forDeductTimeSheet), workNo.v());
 		
 		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {

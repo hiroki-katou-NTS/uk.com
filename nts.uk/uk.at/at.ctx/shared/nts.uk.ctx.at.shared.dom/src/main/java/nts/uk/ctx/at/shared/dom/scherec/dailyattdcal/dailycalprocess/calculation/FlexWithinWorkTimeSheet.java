@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
@@ -31,8 +30,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -149,7 +146,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -171,7 +167,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			SettingOfFlexWork flexCalcMethod,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
 			AddSetting addSetting,
 			HolidayAddtionSet holidayAddtionSet,
@@ -205,7 +200,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				statutoryDivision,
 				autoCalcOfLeaveEarlySetting,
 				addSetting,
 				holidayAddtionSet,
@@ -270,7 +264,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -290,7 +283,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			SettingOfFlexWork flexCalcMethod,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
 			AddSetting addSetting,
 			HolidayAddtionSet holidayAddtionSet,
@@ -332,8 +324,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				commonSetting,
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
-				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(
-						addSetting.getCalculationByActualTimeAtr(PremiumAtr.RegularWork)),
 				lateEarlyMinusAtr);
 		
 		/*就業時間(割増含む)の計算*/
@@ -352,8 +342,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				commonSetting,
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
-				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(
-						addSetting.getCalculationByActualTimeAtr(PremiumAtr.Premium)),
 				lateEarlyMinusAtr);
 		
 		AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);
@@ -434,9 +422,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param integrationOfDaily 日別実績(WORK)
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param premiumAtr 割増区分
-	 * @param calcActualTime 実働のみで計算するしない区分
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param workType 勤務種類
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
@@ -457,9 +443,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			IntegrationOfDaily integrationOfDaily,
 			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
 			PremiumAtr premiumAtr,
-			CalcurationByActualTimeAtr calcActualTime,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			WorkType workType,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
@@ -491,7 +475,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				commonSetting,
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
-				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime),
 				lateEarlyMinusAtr).getWorkTime();
 		
 		//フレックス時間の計算
@@ -503,7 +486,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				statutoryDivision,
 				autoCalcOfLeaveEarlySetting,
 				addSetting.getWorkTimeDeductFlexTime(),
 				holidayAddtionSet,
@@ -586,9 +568,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * 実働就業時間の計算
 	 * @param integrationOfDaily 日別実績(WORK)
 	 * @param integrationOfWorkTime 統合就業時間帯
-	 * @param premiumAtr 割増区分
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param workType 勤務種類
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
@@ -608,9 +588,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	public AttendanceTime calcActualWorkTime(
 			IntegrationOfDaily integrationOfDaily,
 			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
-			PremiumAtr premiumAtr,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			WorkType workType,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
@@ -627,7 +605,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			NotUseAtr lateEarlyMinusAtr) {
 		
 		//実働のみ
-		AddSetting actualAddSetting = addSetting.createCalculationByActualTime();
 		AttendanceTime withinTime = super.calcWorkTime(
 				integrationOfDaily,
 				integrationOfWorkTime,
@@ -636,15 +613,13 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				workType,
 				predetermineTimeSet,
 				autoCalcOfLeaveEarlySetting,
-				actualAddSetting,
+				addSetting.createCalculationByActualTime(),
 				holidayAddtionSet,
 				Optional.of(flexCalcMethod),
 				dailyUnit,
 				commonSetting,
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
-				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(
-						CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME),
 				lateEarlyMinusAtr).getWorkTime();
 		//休暇加算のマスタを見る
 		FlexTime flexTime = this.createWithinWorkTimeSheetAsFlex(
@@ -655,9 +630,8 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				statutoryDivision,
 				autoCalcOfLeaveEarlySetting,
-				actualAddSetting.getWorkTimeDeductFlexTime(),
+				addSetting.getWorkTimeDeductFlexTime(),
 				holidayAddtionSet,
 				flexUpper,
 				preFlexTime,
@@ -667,14 +641,13 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				predetermineTimeSetByPersonInfo,
 				NotUseAtr.USE,
 				Optional.of(DeductionAtr.Deduction));
-		AttendanceTime result = new AttendanceTime(0);
-		if(flexTime.getFlexTime().getTime().greaterThan(0)) {
-			result = withinTime.minusMinutes(flexTime.getFlexTime().getTime().valueAsMinutes());
-		}
-		else {
-			result = withinTime;
-		}
-		return result;
+		// 実働就業時間
+		int resultMinutes = withinTime.valueAsMinutes();
+		int flexMinutes = flexTime.getFlexTime().getTime().valueAsMinutes();
+		// 実働就業時間からフレックス時間を引く
+		if (flexMinutes > 0) resultMinutes -= flexMinutes;
+		// 実働就業時間を返す
+		return new AttendanceTime(resultMinutes);
 	}
 
 	/**
@@ -686,7 +659,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -706,7 +678,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			SettingOfFlexWork flexCalcMethod,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
 			AddSetting addSetting,
 			HolidayAddtionSet holidayAddtionSet,
@@ -727,7 +698,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				statutoryDivision,
 				autoCalcOfLeaveEarlySetting,
 				addSetting,
 				holidayAddtionSet,
@@ -751,7 +721,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param vacationClass 休暇クラス
 	 * @param timevacationUseTimeOfDaily 休暇使用合計残時間未割当
-	 * @param statutoryDivision 法定内区分
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -771,7 +740,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			SettingOfFlexWork flexCalcMethod,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
 			AddSetting addSetting,
 			HolidayAddtionSet holidayAddtionSet,
@@ -792,7 +760,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				statutoryDivision,
 				autoCalcOfLeaveEarlySetting,
 				addSetting,
 				holidayAddtionSet,
@@ -815,7 +782,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -835,7 +801,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			SettingOfFlexWork flexCalcMethod,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
 			AddSetting addSetting,
 			HolidayAddtionSet holidayAddtionSet,
@@ -855,7 +820,6 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				statutoryDivision,
 				autoCalcOfLeaveEarlySetting,
 				addSetting,
 				holidayAddtionSet,

@@ -82,7 +82,7 @@ public class WorkTimeHolidayCalcMethod extends DomainObject implements Serializa
 	 * @return 「実働時間のみで計算する」に変更したインスタンス
 	 */
 	public WorkTimeHolidayCalcMethod createCalculationByActualTime() {
-		return new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, this.advancedSet);
+		return new WorkTimeHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, Optional.empty());
 	}
 	
 	/**

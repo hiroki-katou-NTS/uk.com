@@ -12,9 +12,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
-import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -35,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateLeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.LateTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -45,7 +41,6 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 日別勤怠の遅刻時間
@@ -175,41 +170,36 @@ public class LateTimeOfDaily {
 						.collect(Collectors.toList())
 				: new ArrayList<>();
 		
-		LateLeaveEarlyTimeSheet forRecordTimeSheet = new LateLeaveEarlyTimeSheet(
-				new TimeSpanForDailyCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)),
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN));
-
-		LateLeaveEarlyTimeSheet forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
-				new TimeSpanForDailyCalc(new TimeWithDayAttr(0),new TimeWithDayAttr(0)),
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN));
-		
-		if(!lateTimeSheetList.isEmpty()) {
-			if(lateTimeSheetList.get(0).getForRecordTimeSheet().isPresent()) {
-				//遅刻時間帯を１つの時間帯にする。
-				forRecordTimeSheet = new LateLeaveEarlyTimeSheet(
-						new TimeSpanForDailyCalc(
-								lateTimeSheetList.get(0).getForRecordTimeSheet().get().getTimeSheet().getStart(),
-								lateTimeSheetList.get(lateTimeSheetList.size()-1).getForRecordTimeSheet().get().getTimeSheet().getEnd()),
-						lateTimeSheetList.get(0).getForRecordTimeSheet().get().getRounding());
-				
-				forRecordTimeSheet.setDeductionTimeSheet(
-						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-				forRecordTimeSheet.setRecordedTimeSheet(
-						lateTimeSheetList.stream().flatMap(t -> t.getForRecordTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
+		// 遅刻時間帯を１つの時間帯にする
+		LateLeaveEarlyTimeSheet forRecordTimeSheet = null;
+		LateLeaveEarlyTimeSheet forDeductTimeSheet = null;
+		for (LateTimeSheet srcSheet : lateTimeSheetList){
+			if (srcSheet.getForRecordTimeSheet().isPresent()){
+				LateLeaveEarlyTimeSheet srcRecord = srcSheet.getForRecordTimeSheet().get();
+				if (forRecordTimeSheet == null){
+					forRecordTimeSheet = new LateLeaveEarlyTimeSheet(
+							new TimeSpanForDailyCalc(
+									srcRecord.getTimeSheet().getStart(),
+									srcRecord.getTimeSheet().getEnd()),
+							srcRecord.getRounding());
+				}
+				forRecordTimeSheet.addOtherSheet(srcRecord);
 			}
-			forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
-					new TimeSpanForDailyCalc(
-							lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getTimeSheet().getStart(),
-							lateTimeSheetList.get(lateTimeSheetList.size()-1).getForDeducationTimeSheet().get().getTimeSheet().getEnd()),
-					lateTimeSheetList.get(0).getForDeducationTimeSheet().get().getRounding());
-			
-			forDeductTimeSheet.setDeductionTimeSheet(
-					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getDeductionTimeSheet().stream()).collect(Collectors.toList()));
-			forDeductTimeSheet.setRecordedTimeSheet(
-					lateTimeSheetList.stream().flatMap(t -> t.getForDeducationTimeSheet().get().getRecordedTimeSheet().stream()).collect(Collectors.toList()));
+			if (srcSheet.getForDeducationTimeSheet().isPresent()){
+				LateLeaveEarlyTimeSheet srcDeduct = srcSheet.getForDeducationTimeSheet().get();
+				if (forDeductTimeSheet == null){
+					forDeductTimeSheet = new LateLeaveEarlyTimeSheet(
+							new TimeSpanForDailyCalc(
+									srcDeduct.getTimeSheet().getStart(),
+									srcDeduct.getTimeSheet().getEnd()),
+							srcDeduct.getRounding());
+				}
+				forDeductTimeSheet.addOtherSheet(srcDeduct);
+			}
 		}
 		
-		LateTimeSheet lateTimeSheet = new LateTimeSheet(Optional.of(forRecordTimeSheet), Optional.of(forDeductTimeSheet), workNo.v());
+		LateTimeSheet lateTimeSheet = new LateTimeSheet(
+				Optional.ofNullable(forRecordTimeSheet), Optional.ofNullable(forDeductTimeSheet), workNo.v());
 		
 		NotUseAtr notDeductLateLeaveEarly = NotUseAtr.NOT_USE;
 		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
@@ -264,9 +254,7 @@ public class LateTimeOfDaily {
 				recordClass.getIntegrationOfWorkTime(),
 				DeductionAtr.Appropriate, 
 				PremiumAtr.RegularWork,
-				recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 				vacationClass,
-				StatutoryDivision.Nomal,
 				workType,
 				recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 				recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
@@ -284,9 +272,7 @@ public class LateTimeOfDaily {
 				recordClass.getIntegrationOfWorkTime(),
 				DeductionAtr.Deduction,
 				PremiumAtr.RegularWork,
-				recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation(),
 				vacationClass,
-				StatutoryDivision.Nomal,
 				workType,
 				recordClass.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 				recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),

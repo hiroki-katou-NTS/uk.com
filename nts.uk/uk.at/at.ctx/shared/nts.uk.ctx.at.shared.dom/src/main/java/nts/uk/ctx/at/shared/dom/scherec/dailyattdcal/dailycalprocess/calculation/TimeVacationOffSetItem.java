@@ -45,6 +45,22 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
 	}
 
+	/**
+	 * コンストラクタ
+	 * @param timeSheet 時間帯
+	 * @param rounding 丸め設定
+	 * @param recorddeductionTimeSheets 計上用控除時間帯
+	 * @param deductionTimeSheets 控除用控除時間帯
+	 * @param deductionOffsetTime 控除相殺時間
+	 */
+	public TimeVacationOffSetItem(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets,
+			Optional<TimevacationUseTimeOfDaily> deductionOffsetTime) {
+		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
+		this.deductionOffSetTime = deductionOffsetTime;
+	}
+
 	/*
 	 * 「控除する」「丸めを行う」固定でcalcTotalTImeを呼ぶ
 	 */

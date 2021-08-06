@@ -42,7 +42,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareFrameSet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
@@ -212,7 +211,6 @@ public class OverTimeOfDaily {
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param siftCode 就業時間帯コード
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
@@ -229,7 +227,6 @@ public class OverTimeOfDaily {
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			Optional<WorkTimeCode> siftCode,
 			AttendanceTime flexPreAppTime,
 			WorkingConditionItem conditionItem,
@@ -273,7 +270,6 @@ public class OverTimeOfDaily {
 				recordReGet,
 				workType,
 				vacationClass,
-				statutoryDivision,
 				flexCalcMethod,
 				predetermineTimeSetByPersonInfo));
 		//変形法定内残業時間の計算
@@ -293,7 +289,6 @@ public class OverTimeOfDaily {
 					flexCalcMethod.get(),
 					recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 					vacationClass,
-					statutoryDivision,
 					recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 					recordReGet.getAddSetting(),
 					recordReGet.getHolidayAddtionSet().get(),
@@ -329,7 +324,6 @@ public class OverTimeOfDaily {
 	 * @param recordReGet 実績
 	 * @param workType 勤務種類
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
 	 * @return 法定外残業深夜時間
@@ -344,7 +338,6 @@ public class OverTimeOfDaily {
 			ManageReGetClass recordReGet,
 			WorkType workType,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		
@@ -367,7 +360,6 @@ public class OverTimeOfDaily {
 							flexCalcMethod.get(),
 							recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 							vacationClass,
-							statutoryDivision,
 							recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 							recordReGet.getAddSetting(),
 							recordReGet.getHolidayAddtionSet().get(),

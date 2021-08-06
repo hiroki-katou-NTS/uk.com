@@ -32,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
@@ -45,7 +44,6 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 日別実績の所定外時間
  * @author keisuke_hoshina
- *
  */
 @Getter
 public class ExcessOfStatutoryTimeOfDaily {
@@ -89,7 +87,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param siftCode 就業時間帯コード
 	 * @param workTimeDailyAtr 勤務形態区分
 	 * @param eachCompanyTimeSet 会社別代休時間設定
@@ -104,7 +101,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,
 			Optional<WorkTimeCode> siftCode,
 			Optional<WorkTimeDailyAtr> workTimeDailyAtr,
 			List<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
@@ -132,7 +128,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 				workType,
 				flexCalcMethod,
 				vacationClass,
-				statutoryDivision,
 				siftCode,
 				flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting,beforeApplicationTime,
 				declareResult);
@@ -160,7 +155,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param vacationClass 休暇クラス
-	 * @param statutoryDivision 法定内区分
 	 * @param siftCode 就業時間帯
 	 * @param eachWorkTimeSet 就業時間帯別代休時間設定
 	 * @param eachCompanyTimeSet 会社別代休時間設定
@@ -177,7 +171,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			WorkType workType,
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
-			StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
+			Optional<WorkTimeCode> siftCode,
 			AttendanceTime flexPreAppTime,
 			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
@@ -192,7 +186,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 						workType,
 						flexCalcMethod,
 						vacationClass,
-						statutoryDivision,
 						siftCode,
 						flexPreAppTime,
 						conditionItem,

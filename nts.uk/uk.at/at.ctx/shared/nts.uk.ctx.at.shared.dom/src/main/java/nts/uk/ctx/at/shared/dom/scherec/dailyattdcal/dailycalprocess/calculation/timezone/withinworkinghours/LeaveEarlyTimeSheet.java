@@ -354,16 +354,19 @@ public class LeaveEarlyTimeSheet {
 	
 	/**
 	 * 早退控除時間の計算
-	 * @return
+	 * @param leaveEarly 計算区分
+	 * @param notUseAtr 早退控除区分
+	 * @return 早退控除時間
 	 */
-	public TimeWithCalculation calcDedctionTime(
-			boolean leaveEarly, //日別実績の計算区分.遅刻早退の自動計算設定.早退
-			NotUseAtr notUseAtr //控除区分
-			) {
+	public TimeWithCalculation calcDedctionTime(boolean leaveEarly, NotUseAtr notUseAtr) {
 		TimeWithCalculation leaveEarlyDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		if(notUseAtr==NotUseAtr.USE) {//控除する場合
-			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent()?this.forDeducationTimeSheet.get().calcTotalTime():new AttendanceTime(0);
-			leaveEarlyDeductionTime =  leaveEarly?TimeWithCalculation.sameTime(calcDeductionTime):TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
+			AttendanceTime calcDeductionTime = this.forDeducationTimeSheet.isPresent() ?
+					this.forDeducationTimeSheet.get().calcTotalTime(NotUseAtr.NOT_USE, NotUseAtr.USE) :
+						new AttendanceTime(0);
+			leaveEarlyDeductionTime =  leaveEarly ?
+					TimeWithCalculation.sameTime(calcDeductionTime) :
+						TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),calcDeductionTime);
 		}
 		return leaveEarlyDeductionTime;
 	}

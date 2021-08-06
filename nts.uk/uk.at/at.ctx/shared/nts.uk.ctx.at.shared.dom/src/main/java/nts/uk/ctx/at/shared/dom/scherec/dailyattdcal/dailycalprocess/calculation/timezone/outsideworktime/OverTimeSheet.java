@@ -739,8 +739,7 @@ public class OverTimeSheet {
 				integrationOfDaily,
 				predetermineTimeSetForCalc,
 				afterVariableWork,
-				createdWithinWorkTimeSheet,
-				deductTimeSheet);
+				createdWithinWorkTimeSheet);
 		
 		return Optional.of(new OverTimeSheet(afterCalcStatutoryOverTimeWork));
 	}

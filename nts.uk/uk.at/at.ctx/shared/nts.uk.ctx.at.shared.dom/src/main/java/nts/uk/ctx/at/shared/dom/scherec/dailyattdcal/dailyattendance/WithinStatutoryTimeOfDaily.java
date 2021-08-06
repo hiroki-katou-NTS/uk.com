@@ -28,8 +28,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -255,14 +253,12 @@ public class WithinStatutoryTimeOfDaily {
 			NotUseAtr lateEarlyMinusAtr) {
 
 		// 統合就業時間帯の確認
-		Optional<WorkTimeDailyAtr> workTimeDailyAtr = Optional.empty();	// 勤務形態区分
+		boolean isFlexDay = false;										// フレックス勤務日かどうか
 		if (integrationOfWorkTime.isPresent()){
 			WorkTimeSetting workTimeSet = integrationOfWorkTime.get().getWorkTimeSetting();	// 就業時間帯の設定
-			workTimeDailyAtr = Optional.of(workTimeSet.getWorkTimeDivision().getWorkTimeDailyAtr());
+			isFlexDay = workTimeSet.getWorkTimeDivision().isFlexWorkDay(conditionItem);
 		}
-		
-		if(conditionItem.getLaborSystem().isFlexTimeWork()
-			&& (!workTimeDailyAtr.isPresent() || workTimeDailyAtr.get().isFlex())) {
+		if (isFlexDay){
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)withinTimeSheet;
 
 			//就業時間を計算
@@ -270,9 +266,7 @@ public class WithinStatutoryTimeOfDaily {
 					integrationOfDaily,
 					integrationOfWorkTime,
 					PremiumAtr.RegularWork,
-					addSetting.getCalculationByActualTimeAtr(PremiumAtr.RegularWork),
 					vacationClass,
-					StatutoryDivision.Nomal,
 					workType,
 					predetermineTimeSetForCalc,
 					autoCalcOfLeaveEarlySetting,
@@ -304,8 +298,6 @@ public class WithinStatutoryTimeOfDaily {
 					commonSetting,
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
-					HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(
-							addSetting.getCalculationByActualTimeAtr(PremiumAtr.RegularWork)),
 					lateEarlyMinusAtr).getWorkTime();
 		}
 	}
@@ -434,9 +426,7 @@ public class WithinStatutoryTimeOfDaily {
 			return changedFlexTimeSheet.calcActualWorkTime(
 					integrationOfDaily,
 					integrationOfWorkTime,
-					PremiumAtr.RegularWork,
 					vacationClass,
-					StatutoryDivision.Nomal,
 					workType,
 					predetermineTimeSetForCalc,
 					autoCalcOfLeaveEarlySetting,
@@ -473,10 +463,6 @@ public class WithinStatutoryTimeOfDaily {
 					leaveLatesetForWorkTime,
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
-					//HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(
-					//	regularAddSetting.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getCalculateActualOperation()),
-					//休暇加算するか(就業時間計算時)はここを見るようにしている
-					HolidayAdditionAtr.HolidayNotAddition,
 					lateEarlyMinusAtr).getWorkTime();
 		}
 	}
@@ -553,8 +539,6 @@ public class WithinStatutoryTimeOfDaily {
 				recordReget.getWorkTimezoneCommonSet(),
 				recordReget.getPersonDailySetting().getPersonInfo(),
 				predetermineTimeSetByPersonInfo,
-				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(
-						recordReget.getAddSetting().getCalculationByActualTimeAtr(PremiumAtr.RegularWork)),
 				NotUseAtr.NOT_USE)	// 就業時間は設定通りに処理する為、遅刻早退を常に控除するは「しない」
 				.getWithinPremiumTime();
 	}
@@ -607,7 +591,6 @@ public class WithinStatutoryTimeOfDaily {
 				recordReget.getWorkTimezoneCommonSet(),
 				recordReget.getPersonDailySetting().getPersonInfo(),
 				predetermineTimeSetByPersonInfo,
-				HolidayAdditionAtr.HolidayNotAddition,	//休暇加算はすべて「しない」で渡す
 				NotUseAtr.USE)		//遅刻早退は常に控除する
 				.getWithinPremiumTime();
 	}

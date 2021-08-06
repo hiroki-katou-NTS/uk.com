@@ -170,8 +170,8 @@ public class WorkRegularAdditionSet extends AggregateRoot implements Serializabl
 	}
 	
 	/**
-	 * 休暇加算するかを取得する
-	 * @param premiumAtr
+	 * 休暇加算するかどうか判断
+	 * @param premiumAtr 割増区分
 	 * @return 加算する：USE 加算しない：NOT_USE
 	 */
 	public NotUseAtr getNotUseAtr(PremiumAtr premiumAtr) {

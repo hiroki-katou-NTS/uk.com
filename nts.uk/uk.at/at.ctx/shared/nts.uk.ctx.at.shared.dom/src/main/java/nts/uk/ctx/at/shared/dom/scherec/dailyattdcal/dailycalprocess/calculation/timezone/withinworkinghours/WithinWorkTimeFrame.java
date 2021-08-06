@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -19,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
@@ -47,8 +44,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.ootsuka.OotsukaStaticService;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
@@ -237,7 +232,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * @param premiumAtr 割増区分
 	 * @param commonSetting 就業時間帯の共通設定
 	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
-	 * @param conditionItem 労働条件項目
 	 * @param limitAddTime 時間休暇を加算できる時間
 	 * @param parentSheet 就業時間内時間帯
 	 * @return 就業時間
@@ -250,7 +244,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			PremiumAtr premiumAtr,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			NotUseAtr lateEarlyMinusAtr,
-			WorkingConditionItem conditionItem,
 			Optional<AttendanceTime> limitAddTime,
 			WithinWorkTimeSheet parentSheet) {
 		
@@ -280,8 +273,8 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				lateDecisionClock,
 				leaveEarlyDecisionClock);
 		workTime = new AttendanceTime(workTime.valueAsMinutes() - lateEarlyDiductionTime.valueAsMinutes());
-		// 時間休暇相殺時間を就業時間に含めるか判断する
-		if (WithinWorkTimeFrame.checkIncludeTimeVacationOffsetTime(conditionItem.getLaborSystem(), holidayCalcMethodSet)){
+		// 休暇加算するかどうか判断
+		if (addSetting.getNotUseAtr(premiumAtr) == NotUseAtr.USE){
 			// 就業時間に加算する時間休暇相殺時間を取得
 			AttendanceTime timeVacationOffsetTime =
 					this.getTimeVacationOffsetTimeForAddWorkTime(limitAddTime, holidayAddtionSet);
@@ -417,33 +410,6 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		result = result.addMinutes(shortTime.valueAsMinutes());
 		result = result.addMinutes(careTime.valueAsMinutes());
 		return result;
-	}
-	
-	/**
-	 * 時間休暇相殺時間を就業時間に含めるか判断する
-	 * @param workingSystem 労働制
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
-	 * @return true=含める,false=含めない
-	 */
-	public static boolean checkIncludeTimeVacationOffsetTime(
-			WorkingSystem workingSystem,
-			HolidayCalcMethodSet holidayCalcMethodSet) {
-		
-		switch (workingSystem) {
-		case REGULAR_WORK:
-		case VARIABLE_WORKING_TIME_WORK:
-			if (holidayCalcMethodSet.getCalcurationByActualTimeAtr(PremiumAtr.RegularWork)
-					== CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) return false;
-			return holidayCalcMethodSet.getNotUseAtr(PremiumAtr.RegularWork) == NotUseAtr.USE;
-		case FLEX_TIME_WORK:
-			if (holidayCalcMethodSet.getCalcurationByActualTimeAtr(PremiumAtr.Premium)
-					== CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME) return false;
-			return holidayCalcMethodSet.getNotUseAtr(PremiumAtr.Premium) == NotUseAtr.USE;
-		case EXCLUDED_WORKING_CALCULATE:
-			return false;
-		default:
-			throw new BusinessException(new RawErrorMessage("不正な労働制です"));
-		}
 	}
 
 	/**
