@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.app.command.alarm.mailsettings;
 
 import lombok.Data;
-import lombok.Value;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSetting;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
@@ -47,7 +46,7 @@ public class RegisterAlarmExecutionMailSettingsCommand {
         /**
          * 内容メール設定
          */
-        private MailSettingsCmd contentMailSettings;
+        private MailContents mailContents;
 
         /**
          * 送信元アドレス
@@ -62,7 +61,7 @@ public class RegisterAlarmExecutionMailSettingsCommand {
     }
 
     @Data
-     static class MailSettingsCmd {
+     static class MailContents {
 
         /**
          * 件名
@@ -111,15 +110,15 @@ public class RegisterAlarmExecutionMailSettingsCommand {
 
     public AlarmListExecutionMailSetting toMailSettingDomain(AlarmListExecutionMailCmd mailSetting) {
         MailSettings contentMailSettings = new MailSettings(
-                mailSetting.getContentMailSettings().getSubject(),
-                mailSetting.getContentMailSettings().getText(),
-                mailSetting.getContentMailSettings().getMailAddressCC().stream().map(x -> {
+                mailSetting.getMailContents().getSubject(),
+                mailSetting.getMailContents().getText(),
+                mailSetting.getMailContents().getMailAddressCC().stream().map(x -> {
                     return new MailAddress(x);
                 }).collect(Collectors.toList()),
-                mailSetting.getContentMailSettings().getMailAddressBCC().stream().map(x -> {
+                mailSetting.getMailContents().getMailAddressBCC().stream().map(x -> {
                     return new MailAddress(x);
                 }).collect(Collectors.toList()),
-                mailSetting.getContentMailSettings().getMailRely()
+                mailSetting.getMailContents().getMailRely()
         );
         return new AlarmListExecutionMailSetting(
                 IndividualWkpClassification.of(mailSetting.individualWkpClassify),

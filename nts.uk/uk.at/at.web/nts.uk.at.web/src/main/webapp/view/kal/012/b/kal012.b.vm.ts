@@ -2,12 +2,9 @@
 module nts.uk.at.view.kal012.b {
 
     const API = {
-        //TODO API path
-        getAllMailSet: "at/function/alarm/mailsetting/getinformailseting",
-        addMailSet: "at/function/alarm/mailSetting/addMailSetting",
         register: "at/function/alarm/exmail/settings/register",
         init: "at/function/alarm/exmail/settings/init",
-        GET_ROLENAME: "ctx/sys/auth/role/get/rolename/by/roleids"
+        get_role_name: "ctx/sys/auth/role/get/rolename/by/roleids"
     };
 
     @bean()
@@ -17,9 +14,9 @@ module nts.uk.at.view.kal012.b {
         isUpdateMode: KnockoutObservable<boolean>;
         model: Model = new Model();
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-        MailAutoAndNormalDto: MailAutoAndNormalDto;
-        exMailSettings: ExMailSettings;
+        normal: ExMailSettingsNormalAuto;
+        auto: ExMailSettingsNormalAuto;
+        sendingRole: SendingRole;
 
         constructor(params: any) {
             super();
@@ -47,9 +44,7 @@ module nts.uk.at.view.kal012.b {
                 {code: 1, name: vm.$i18n('KAL012_19')},
                 {code: 2, name: vm.$i18n('KAL012_20')}
             ]);
-            vm.selectedRuleCode = ko.observable(1);
             vm.isUpdateMode = ko.observable(false);
-            vm.getAllMailSet();
             vm.init();
         }
 
@@ -72,37 +67,36 @@ module nts.uk.at.view.kal012.b {
             });
 
             vm.model.rolesId.subscribe((value: Array<string>) => {
-                vm.$ajax("com", API.GET_ROLENAME, value)
+                vm.$ajax("com", API.get_role_name, value)
                     .done(function (listRole: Array<RoleDto>) {
                         vm.model.targetRuleName(_.join(_.map(listRole, i => i.name), '、'));
                     });
             })
         }
 
-        /**
-         * @param command
-         */
-        getAllMailSet(): JQueryPromise<any> {
-            const vm = this;
-            let dfd = $.Deferred<any>();
-            vm.$blockui("invisible");
-            var MailSettingsDefault = ({subject: "", text: "", mailAddressCC: [], mailAddressBCC: [], mailRely: ""});
-            vm.$ajax(API.getAllMailSet).done((data) => {
-                if (data) {
-                    data.mailSettingNormalDto.mailSettings = data.mailSettingNormalDto.mailSettings == null ? MailSettingsDefault : data.mailSettingNormalDto.mailSettings;
-                    data.mailSettingNormalDto.mailSettingAdmins = data.mailSettingNormalDto.mailSettingAdmins == null ? MailSettingsDefault : data.mailSettingNormalDto.mailSettingAdmins;
-                    data.mailSettingAutomaticDto.mailSettings = data.mailSettingAutomaticDto.mailSettings == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettings;
-                    data.mailSettingAutomaticDto.mailSettingAdmins = data.mailSettingAutomaticDto.mailSettingAdmins == null ? MailSettingsDefault : data.mailSettingAutomaticDto.mailSettingAdmins;
+        setNormalAuto(normalAutoClassify: number) {
+            let vm = this;
+            let normalAuto = {
+                "individualWkpClassify": 1,
+                "normalAutoClassify": normalAutoClassify,
+                "personalManagerClassify": 1,
+                "mailContents": {
+                    "subject": "",
+                    "text": "",
+                    "mailAddressBCC": [],
+                    "mailAddressCC": [],
+                    "mailRely": ""
+                },
+                "senderAddress": "",
+                "sendResult": true
+            };
+            if (normalAutoClassify === 0) {
+                vm.normal = normalAuto;
+            }
 
-                    vm.MailAutoAndNormalDto = data;
-                }
-                dfd.resolve();
-            }).fail(function (error) {
-                dfd.reject();
-            }).always(() => {
-                vm.$blockui("clear");
-            });
-            return dfd.promise();
+            if (normalAutoClassify === 1) {
+                vm.auto = normalAuto;
+            }
         }
 
         /**
@@ -112,17 +106,32 @@ module nts.uk.at.view.kal012.b {
             const vm = this;
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
+            vm.setNormalAuto(0);// init for normal
+            vm.setNormalAuto(1); // init for auto
             vm.$ajax(API.init).done((data) => {
                 if (data) {
-                    vm.exMailSettings = data;
-                    vm.model.isMailAlreadySet(vm.exMailSettings.mailSettings.preConfigured);
-                    if (vm.exMailSettings.sendingRole.roleSetting) {
-                        vm.model.selectedRuleCode(1)
-                    } else {
-                        vm.model.selectedRuleCode(2)
+                    if (data.mailSettings.exMailSettingsList.length > 0) {
+                        for (let item of data.mailSettings.exMailSettingsList) {
+                            if (item.normalAutoClassify === 0) {
+                                vm.normal = item;
+                            }
+                            if (item.normalAutoClassify === 1) {
+                                vm.auto = item;
+                            }
+                        }
                     }
-                    vm.model.checked(vm.exMailSettings.sendingRole.sendResult);
-                    vm.model.rolesId(vm.exMailSettings.sendingRole.roleIds);
+                    vm.model.isMailAlreadySet(data.mailSettings.preConfigured);
+
+                    if (data.sendingRole) {
+                        vm.sendingRole = data.sendingRole;
+                        if (vm.sendingRole.roleSetting) {
+                            vm.model.selectedRuleCode(1)
+                        } else {
+                            vm.model.selectedRuleCode(2)
+                        }
+                        vm.model.checked(vm.sendingRole.sendResult);
+                        vm.model.rolesId(vm.sendingRole.roleIds);
+                    }
                 }
                 dfd.resolve();
             }).fail(function (error) {
@@ -144,36 +153,28 @@ module nts.uk.at.view.kal012.b {
             let vm = this;
         }
 
+        /**
+         * click register button
+         * */
         clickRegistrationButton() {
             let vm = this;
             vm.$validate(".nts-input").then((valid) => {
                 if (valid) {
+                    let mailSettingList: any = [];
                     let command = {
-                        mailSettingList: [{
-                            individualWkpClassify: 1,
-                            normalAutoClassify: 0,
-                            personalManagerClassify: 1,
-                            contentMailSettings: {
-                                subject: "test subject",
-                                text: "test text",
-                                mailAddressBCC: ["mail1@gmail.com", "mail3@gmail.com"],
-                                mailAddressCC: ["mail2@gmail.com"],
-                                mailRely: "mailss@gmail.com"
-                            },
-                            senderAddress: "mailsds@gmail.com",
-                            sendResult: false
-                        }],
+                        mailSettingList: [vm.normal, vm.auto],
                         sendingRole: {
                             individualWkpClassify: 1,
-                            roleSetting: true,
-                            sendResult: true,
-                            roleIds: ["120"]
+                            roleSetting: vm.model.targetRuleRequired(),
+                            sendResult: vm.model.checked(),
+                            roleIds: vm.model.rolesId()
                         }
                     }
                     vm.$blockui("grayout");
                     vm.$ajax(API.register, command).done((res) => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-
+                            vm.isUpdateMode(true);
+                            vm.init();
                         });
                     }).fail((err) => {
                         vm.$dialog.error(err);
@@ -182,6 +183,9 @@ module nts.uk.at.view.kal012.b {
             });
         }
 
+        /**
+         * openCDL025
+         * */
         openCDL025() {
             let vm = this;
             let param = {
@@ -198,38 +202,46 @@ module nts.uk.at.view.kal012.b {
             });
         }
 
+        /**
+         * open modal cgg027 for auto settings
+         * */
         setMailAutoAd() {
             var vm = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
             vm.setPara();
-            nts.uk.ui.windows.setShared("senderAddress", vm.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress)
-            nts.uk.ui.windows.setShared("MailSettings", vm.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettingAdmins);
+            nts.uk.ui.windows.setShared("senderAddress", vm.auto.senderAddress)
+            nts.uk.ui.windows.setShared("MailSettings", vm.auto.mailContents);
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
                 if (data != null) {
-                    vm.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettingAdmins = data;
-                    vm.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                    //console.log(self.MailAutoAndNormalDto);
+                    vm.auto.mailContents = data;
+                    vm.auto.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
                 }
             });
         }
 
+        /**
+         * open modal cgg027 for manual settings
+         * */
         setMailManual() {
             var vm = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
             vm.setPara();
-            nts.uk.ui.windows.setShared("senderAddress", vm.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress)
-            nts.uk.ui.windows.setShared("MailSettings", vm.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettings);
+            nts.uk.ui.windows.setShared("senderAddress", vm.normal.senderAddress)
+            nts.uk.ui.windows.setShared("MailSettings", vm.normal.mailContents);
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
                 let data = nts.uk.ui.windows.getShared("MailSettings");
                 if (data != null) {
-                    vm.MailAutoAndNormalDto.mailSettingAutomaticDto.mailSettings = data;
-                    vm.MailAutoAndNormalDto.mailSettingAutomaticDto.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                    //console.log(self.MailAutoAndNormalDto);
+                    vm.normal.mailContents = data;
+                    vm.normal.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
                 }
             });
         }
 
+        /**
+         * initial cgg027 modal params *
+         *
+         * */
         setPara() {
             nts.uk.ui.windows.setShared("SetCC", true);
             nts.uk.ui.windows.setShared("SetBCC", true);
@@ -237,9 +249,7 @@ module nts.uk.at.view.kal012.b {
             nts.uk.ui.windows.setShared("SetSubject", true);
             nts.uk.ui.windows.setShared("SetBody", true);
             nts.uk.ui.windows.setShared("wording", "");
-
         }
-
     }
 
     interface RoleDto {
@@ -268,38 +278,21 @@ module nts.uk.at.view.kal012.b {
         roleIds: Array<string>;
     }
 
-    export interface MailSettings {
-        preConfigured?: boolean;
+    export interface ExMailSettingsNormalAuto {
+        individualWkpClassify?: number;
+        normalAutoClassify?: number;
+        personalManagerClassify?: number;
+        mailContents?: MailSettingsDto;
+        senderAddress?: string;
+        sendResult?: boolean;
     }
-
-    export interface ExMailSettings {
-        sendingRole?: SendingRole;
-        mailSettings?: MailSettings;
-    }
-
 
     export interface MailSettingsDto {
         subject?: string;
         text?: string;
-        mailAddressCC: Array<string>;
         mailAddressBCC: Array<string>;
+        mailAddressCC: Array<string>;
         mailRely?: string;
-    }
-
-    export interface MailSettingNormalDto {
-        mailSettings?: MailSettingsDto;
-        mailSettingAdmins?: MailSettingsDto;
-    }
-
-    export interface MailSettingAutomaticDto {
-        mailSettings?: MailSettingsDto;
-        mailSettingAdmins?: MailSettingsDto;
-        senderAddress?: string;
-    }
-
-    export interface MailAutoAndNormalDto {
-        mailSettingAutomaticDto: MailSettingAutomaticDto;
-        mailSettingNormalDto: MailSettingNormalDto;
     }
 
     class Model {
