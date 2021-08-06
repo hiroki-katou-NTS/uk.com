@@ -323,7 +323,8 @@ public class HolidayServiceImpl implements HolidayService {
                 .map(x -> x.getApplicationTime().v())
                 .mapToInt(Integer::intValue)
                 .sum();
-        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
+        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() 
+                && appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ? 
                 appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
         totalOverTime += appHolidayWork.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
         TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
