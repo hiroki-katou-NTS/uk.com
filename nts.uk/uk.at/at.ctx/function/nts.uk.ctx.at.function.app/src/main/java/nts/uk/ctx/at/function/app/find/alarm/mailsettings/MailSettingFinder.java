@@ -10,6 +10,8 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Stateless
 public class MailSettingFinder {
@@ -55,14 +57,32 @@ public class MailSettingFinder {
                 individualWRClassification
         );
         if (alarmListExecutionMailSettingList.isEmpty()) {
-            return new MailSettingDto(false);
+            return new MailSettingDto(false, Collections.emptyList());
         }
         boolean isConfigured = alarmListExecutionMailSettingList.stream().anyMatch(x -> x.isAlreadyConfigured(x.getCompanyId(),
                 x.getIndividualWkpClassify().value,
                 x.getIndividualWkpClassify().value,
                 x.getPersonalManagerClassify().value
         ));
-        return new MailSettingDto(isConfigured);
-    }
+        val mailSettins = alarmListExecutionMailSettingList.stream().map(x -> {
+                    val mailContents = x.getContentMailSettings();
+                    return new RegisterAlarmExecutionMailSettingsDTO(
+                            x.getIndividualWkpClassify().value,
+                            x.getNormalAutoClassify().value,
+                            x.getPersonalManagerClassify().value,
+                            mailContents.isPresent() ? new MailSettingsContentDto(
+                                    mailContents.get().getSubject().isPresent() ? mailContents.get().getSubject().get().v() : "",
+                                    mailContents.get().getText().isPresent() ? mailContents.get().getText().get().v() : "",
+                                    mailContents.get().getMailAddressBCC().stream().map(bcc -> bcc.v()).collect(Collectors.toList()),
+                                    mailContents.get().getMailAddressCC().stream().map(cc -> cc.v()).collect(Collectors.toList()),
+                                    mailContents.get().getMailRely().isPresent() ? mailContents.get().getMailRely().get().v() : ""
+                            ) : null,
+                            x.getSenderAddress().v(),
+                            x.isSendResult()
 
+                    );
+                }
+        ).collect(Collectors.toList());
+        return new MailSettingDto(isConfigured, mailSettins);
+    }
 }

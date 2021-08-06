@@ -7,8 +7,6 @@ import nts.uk.ctx.at.function.app.find.alarm.mailsettings.AlarmMailSendingRoleDt
 import nts.uk.ctx.at.function.app.find.alarm.mailsettings.MailSettingDto;
 import nts.uk.ctx.at.function.app.find.alarm.mailsettings.MailSettingFinder;
 import nts.uk.ctx.at.function.app.find.alarm.mailsettings.MailSettingsInformationDto;
-import nts.uk.ctx.at.function.dom.adapter.alarm.AlarmMailSettingsAdapter;
-import nts.uk.ctx.at.function.dom.adapter.alarm.MailExportRolesDto;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
 
@@ -16,8 +14,6 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author rafiq
@@ -30,10 +26,6 @@ public class MailSettingByWorkPlace extends WebService {
 
     @Inject
     private MailSettingFinder finder;
-
-    @Inject
-    private AlarmMailSettingsAdapter alarmMailSettingsAdapter;
-
     @Inject
     private RegisterAlarmExecutionMailSettingsHandler registerCommand;
 
@@ -44,7 +36,6 @@ public class MailSettingByWorkPlace extends WebService {
         MailSettingDto mailSettingDto = finder.getConfigured(PersonalManagerClassification.EMAIL_SETTING_FOR_ADMIN.value,
                 IndividualWkpClassification.WORKPLACE.value
         );
-        List<MailExportRolesDto> roleNameList = new ArrayList<MailExportRolesDto>();
         return new MailSettingsInformationDto(alarmMailSendingRoleDto, mailSettingDto);
     }
 
