@@ -97,10 +97,10 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
         this.senderAddress = entity.senderAddress;
     }
 
-    public AlarmListExecutionMailSetting toDomain(List<MailAddressSet> mailSettingListCC, List<MailAddressSet> mailSettingListBCC) {
+    public AlarmListExecutionMailSetting toDomain(List<MailAddressSet> mailSettingListBCC, List<MailAddressSet> mailSettingListCC) {
         val mailSettingBcc = mailSettingListBCC.stream().filter(x -> x.getId().equals(this.bcc))
                 .map(MailAddressSet::getMailAddress).collect(Collectors.toList());
-        val mailSettingCc = mailSettingListCC.stream().filter(x -> x.getId().equals(this.bcc))
+        val mailSettingCc = mailSettingListCC.stream().filter(x -> x.getId().equals(this.cc))
                 .map(MailAddressSet::getMailAddress).collect(Collectors.toList());
         return new AlarmListExecutionMailSetting(
                 IndividualWkpClassification.of(this.pk.personWkpAtr),

@@ -117,5 +117,4 @@ public class MailSettingFinder {
 
         return new AlarmMailSettingDataDto(mailSettingListDto, mailSendingRoleDto, roleNameList);
     }
-
 }

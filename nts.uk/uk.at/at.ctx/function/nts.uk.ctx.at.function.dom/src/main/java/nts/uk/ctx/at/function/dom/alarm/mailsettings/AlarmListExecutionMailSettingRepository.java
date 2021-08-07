@@ -12,10 +12,6 @@ public interface AlarmListExecutionMailSettingRepository {
      * */
     List<AlarmListExecutionMailSetting> getByCId(String cid, int individualWkpClassify);
 
-    void insert(AlarmListExecutionMailSetting alarmExecMailSetting);
-
-    void update(AlarmListExecutionMailSetting alarmExecMailSetting);
-
     /*
      * insertAll(List<アラームリスト実行メール設定>)
      * */

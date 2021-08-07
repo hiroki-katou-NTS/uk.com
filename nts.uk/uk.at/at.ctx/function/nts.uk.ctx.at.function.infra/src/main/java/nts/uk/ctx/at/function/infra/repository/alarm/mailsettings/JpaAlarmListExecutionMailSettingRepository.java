@@ -60,43 +60,6 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
     }
 
     @Override
-    public void insert(AlarmListExecutionMailSetting domain) {
-        if (domain == null) return;
-        String bccId = IdentifierUtil.randomUniqueId();
-        String ccId = IdentifierUtil.randomUniqueId();
-
-        // Insert entity KfnmtMailSettingList (BCC & CC)
-        insertMailList(bccId, ccId, domain);
-
-        this.commandProxy().insert(KfnmtAlstExeMailSetting.of(domain, bccId, ccId));
-    }
-
-    @Override
-    public void update(AlarmListExecutionMailSetting domain) {
-        if (domain == null) return;
-        String bccId = IdentifierUtil.randomUniqueId();
-        String ccId = IdentifierUtil.randomUniqueId();
-
-        // Convert domain to entity
-        val newEntity = KfnmtAlstExeMailSetting.of(domain, bccId, ccId);
-        // Find exist
-        val updateEntity = this.queryProxy().find(newEntity.pk, KfnmtAlstExeMailSetting.class).orElse(null);
-        if (updateEntity != null) {
-            // Delete entity KfnmtMailSettingList (BCC & CC)
-            this.getEntityManager().createQuery(DELETE_MAIL_LIST)
-                    .setParameter("listBccId", updateEntity.bcc)
-                    .setParameter("listCcId", updateEntity.cc)
-                    .executeUpdate();
-            // Insert entity KfnmtMailSettingList (BCC & CC)
-            insertMailList(bccId, ccId, domain);
-
-            // Update entity KfnmtAlstExeMailSetting
-            updateEntity.fromEntity(newEntity);
-            this.commandProxy().update(updateEntity);
-        }
-    }
-
-    @Override
     public void insertAll(List<AlarmListExecutionMailSetting> domainList) {
         if (domainList.isEmpty()) return;
         domainList.forEach(domain -> {
@@ -114,10 +77,10 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
     @Override
     public void updateAll(List<AlarmListExecutionMailSetting> domainList) {
         if (domainList.isEmpty()) return;
-        String bccId = IdentifierUtil.randomUniqueId();
-        String ccId = IdentifierUtil.randomUniqueId();
 
         domainList.forEach(domain -> {
+            String bccId = IdentifierUtil.randomUniqueId();
+            String ccId = IdentifierUtil.randomUniqueId();
             // Convert domain to entity
             val newEntity = KfnmtAlstExeMailSetting.of(domain, bccId, ccId);
             // Find exist
