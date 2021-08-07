@@ -99,6 +99,13 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 			});
 		});
 	}
+
+	@Override
+	public void delete(String companyId, ExternalImportCode settingCode, int importItemNumber) {
+
+		val pk = new XimmtReviseItemPK(companyId, settingCode.v(), importItemNumber);
+		delete(pk);
+	}
 	
 	private void delete(XimmtReviseItemPK pk) {
 		

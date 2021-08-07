@@ -9,4 +9,6 @@ public interface ReviseItemRepository {
 	Optional<ReviseItem> get(String companyId, ExternalImportCode settingCode, int importItemNumber);
 
 	void persist(ReviseItem reviseItem);
+	
+	void delete(String companyId, ExternalImportCode settingCode, int importItemNumber);
 }

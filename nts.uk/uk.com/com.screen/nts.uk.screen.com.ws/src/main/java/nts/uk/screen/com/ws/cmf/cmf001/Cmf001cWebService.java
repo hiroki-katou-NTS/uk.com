@@ -9,6 +9,8 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.screen.com.app.cmf.cmf001.GetImportableItemAndConstraint;
 import nts.uk.screen.com.app.cmf.cmf001.ImportableItemDto;
+import nts.uk.screen.com.app.cmf.cmf001.delete.Cmf001cDeleteCommand;
+import nts.uk.screen.com.app.cmf.cmf001.delete.Cmf001cDeleteCommandHandler;
 import nts.uk.screen.com.app.cmf.cmf001.save.Cmf001cSaveCommand;
 import nts.uk.screen.com.app.cmf.cmf001.save.Cmf001cSaveCommandHandler;
 
@@ -35,5 +37,14 @@ public class Cmf001cWebService {
 	@Path("save")
 	public void save(Cmf001cSaveCommand command) {
 		saveHandler.handle(command);
+	}
+	
+	@Inject
+	private Cmf001cDeleteCommandHandler deleteHandler;
+	
+	@POST
+	@Path("delete")
+	public void delete(Cmf001cDeleteCommand command) {
+		deleteHandler.handle(command);
 	}
 }

@@ -28,7 +28,7 @@
 	<ui:define name="content" >
 		<div id="functions-area">
 			<button class="proceed" data-bind="enable: canSave, click: save">登録</button>
-			<button class="danger">設定を削除する</button>
+			<button class="danger" data-bind="enable: canDeleteSetting, click: deleteSetting">設定を削除する</button>
 		</div>
 
 		<div id="contents-area" class="fixed-flex-layout">

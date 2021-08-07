@@ -221,8 +221,27 @@ module nts.uk.com.cmf001.c {
             };
 
             this.$ajax(path, command).done(res => {
-                this.$dialog.info("登録しました");
+                ui.dialog.info({ messageId: "Msg_15" });
                 this.loadSetting();
+            });
+        }
+
+        canDeleteSetting = ko.computed(() => this.isItemSelected());
+
+        deleteSetting() {
+            let path = "/screen/com/cmf/cmf001/delete";
+            let itemNo = this.selectedItemNo();
+            let command = {
+                settingCode: this.settingCode,
+                itemNo: itemNo,
+            };
+
+            ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                this.$ajax(path, command).done(() => {
+                    ui.dialog.info({ messageId: "Msg_16" });
+                    this.loadSetting();
+                    this.itemSelected(itemNo);
+                });
             });
         }
     }
