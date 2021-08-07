@@ -199,14 +199,18 @@ module nts.uk.com.cmf001.c {
             let item = this.currentItem();
 
             let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
-            revisingValue.codeConvert.details = revisingValue.codeConvert.convertDetailsText
-                .split("\n")
-                .map(l => {
-                    let p = l.split(",");
-                    if (p.length !== 2) return null;
-                    return { before: p[0], after: p[1] };
-                })
-                .filter(d => d !== null);
+            if (revisingValue.codeConvert) {
+                revisingValue.codeConvert.details = revisingValue.codeConvert
+                    .convertDetailsText
+                    ?.split("\n")
+                    .map(l => {
+                        let p = l.split(",");
+                        if (p.length !== 2) return null;
+                        return { before: p[0], after: p[1] };
+                    })
+                    .filter(d => d !== null)
+                    ?? [];
+            }
 
             let command = {
                 settingCode: this.settingCode,
