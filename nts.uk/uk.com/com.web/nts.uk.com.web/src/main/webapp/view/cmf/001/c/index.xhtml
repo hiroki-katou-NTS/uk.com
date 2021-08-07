@@ -47,7 +47,7 @@
 			</div>
 			<div id="current-item" class="fixed-flex-layout-right" data-bind="with: currentItem">
 				
-				<div data-bind="if: !nts.uk.util.isNullOrEmpty($parent.selectedItemNo())">
+				<div data-bind="if: $parent.isItemSelected">
 					<div id="item-def" data-bind="with: def">
 						<div class="label inline" data-bind="text: name"></div>
 						<div class="inline">
@@ -65,8 +65,25 @@
 								value: selectedMappingType,
 								required: true }"></div>
 						</div>
-						<div class="inline">
-							<input data-bind="ntsTextEditor: {value: fixedMapping, enable: selectedMappingType() == '固定値'}" />
+						<div class="inline" data-bind="if: selectedMappingType() == '固定値'">
+							<div class="inline" data-bind="if: def.type() == 'STRING'">
+								<input data-bind="ntsTextEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName }" />
+							</div>
+							<div class="inline" data-bind="if: def.type() == 'INT'">
+								<input data-bind="ntsNumberEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName }" />
+							</div>
+							<div class="inline" data-bind="if: def.type() == 'REAL'">
+								<input data-bind="ntsNumberEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName }" />
+							</div>
+							<div class="inline" data-bind="if: def.type() == 'DATE'">
+								<div data-bind="ntsDatePicker: {value: fixedMapping, name: def.name }"></div>
+							</div>
+							<div class="inline" data-bind="if: def.type() == 'TIME_DURATION'">
+								<div data-bind="ntsTimeEditor: {value: fixedMapping, name: def.name, inputFormat: 'time' }"></div>
+							</div>
+							<div class="inline" data-bind="if: def.type() == 'TIME_POINT'">
+								<div data-bind="ntsTimeWithDayEditor: {value: fixedMapping, name: def.name }"></div>
+							</div>
 						</div>
 					</div>
 					

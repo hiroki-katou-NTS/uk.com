@@ -9,6 +9,7 @@ module nts.uk.com.cmf001.c {
                 return (<any> ko).mapping.fromJS({
                     name: null,
                     type: null,
+                    constraintName: null,
                     constraint: null,
                     required: null,
                 });
@@ -161,9 +162,10 @@ module nts.uk.com.cmf001.c {
                     if (res.constraint.domainType === "Enum") {
                         constraintText = "整数 " + constraintText;
                     }
-
+                    this.currentItem().def.constraintName(res.constraint.name);
                     this.currentItem().def.constraint(constraintText);
                 } else {
+                    this.currentItem().def.constraintName(null);
                     this.currentItem().def.constraint("");
                 }
 
@@ -200,6 +202,11 @@ module nts.uk.com.cmf001.c {
 
             let item = this.currentItem();
 
+            let fixedValue = item.fixedMapping();
+            if (item.def.type() === 'DATE' && fixedValue) {
+                fixedValue = fixedValue.split("T")[0]?.replace(/-/g, "") ?? "";
+            }
+
             let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
             if (revisingValue.codeConvert) {
                 revisingValue.codeConvert.details = revisingValue.codeConvert
@@ -218,7 +225,7 @@ module nts.uk.com.cmf001.c {
                 settingCode: this.settingCode,
                 itemNo: this.selectedItemNo(),
                 mappingSource: item.selectedMappingType(),
-                fixedValue: item.fixedMapping(),
+                fixedValue: fixedValue,
                 revisingValue: revisingValue,
             };
 
