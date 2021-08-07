@@ -157,6 +157,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.reloadPage();
 			self.selectedCode("");
 		}
+
+		gotoDetailSetting() {
+			request.jump("../c/index.xhtml", { settingCode: this.settingCode() });
+		}
 	}
 
 

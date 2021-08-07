@@ -110,7 +110,7 @@
 						<div class="group">
 							<div class="divi">受入レイアウト</div><hr />
 							<button class="normal" data-bind="text: '項目を追加する'" ></button>
-							<button class="normal" data-bind="text: '受入項目の詳細設定'" ></button>
+							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting" ></button>
 							<table id="layout-list" data-bind="ntsGridList: {
 								height: '300px',
 								dataSource: layoutList,

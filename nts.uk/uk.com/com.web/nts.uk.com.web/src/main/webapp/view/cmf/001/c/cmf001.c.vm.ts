@@ -66,7 +66,7 @@ module nts.uk.com.cmf001.c {
     @bean()
     export class ViewModel extends ko.ViewModel {
 
-        settingCode = "001";
+        settingCode: string;
 
         items: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -96,6 +96,8 @@ module nts.uk.com.cmf001.c {
 
         constructor() {
             super();
+
+            this.settingCode = __viewContext.transferred.get().settingCode;
 
             this.currentItem({
                 def: datasource.importableItem.init(),
