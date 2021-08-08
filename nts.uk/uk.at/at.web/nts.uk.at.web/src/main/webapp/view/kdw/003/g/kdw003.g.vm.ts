@@ -38,8 +38,6 @@ module nts.uk.at.view.kdw003.cg {
         startDate: KnockoutObservable<string> = ko.observable(new Date().toString());
         startDatePeriod: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('2021/12/31');
-        // endDateString: KnockoutObservable<string> = ko.observable('');
-        // dateValue: KnockoutObservable<any> = ko.observable({});
 
         enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(false); 
         isReload: KnockoutObservable<boolean> = ko.observable(false); 
@@ -49,6 +47,13 @@ module nts.uk.at.view.kdw003.cg {
         taskListFrame3: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame4: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame5: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
+
+        listTaskFrame1: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
+        listTaskFrame2: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
+        listTaskFrame3: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
+        listTaskFrame4: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
+        listTaskFrame5: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
+
         selectedTaskCode1: KnockoutObservable<string> = ko.observable("");
         selectedTaskCode2: KnockoutObservable<string> = ko.observable("");
         selectedTaskCode3: KnockoutObservable<string> = ko.observable("");
@@ -64,7 +69,7 @@ module nts.uk.at.view.kdw003.cg {
             self.endDate('2021/12/31');
             self.selectedHist.subscribe(histId => {
                 self.findTaskItemDetail(histId);
-            })
+            });
             
 
             self.columns = ko.observableArray([
@@ -74,7 +79,21 @@ module nts.uk.at.view.kdw003.cg {
 
             self.selectedEmployee.subscribe((employeeCode) => {
                 self.findDetail(employeeCode, false);
-            })
+            });
+
+            self.startDate.subscribe(value => {
+                let date = moment(value).format('YYYY/MM/DD');
+                let listTaskFrame1 = _.filter(self.taskListFrame1(), task => { return date <= task.endDate && date >= task.startDate });
+                let listTaskFrame2 = _.filter(self.taskListFrame2(), task => { return date <= task.endDate && date >= task.startDate });
+                let listTaskFrame3 = _.filter(self.taskListFrame3(), task => { return date <= task.endDate && date >= task.startDate });
+                let listTaskFrame4 = _.filter(self.taskListFrame4(), task => { return date <= task.endDate && date >= task.startDate });
+                let listTaskFrame5 = _.filter(self.taskListFrame5(), task => { return date <= task.endDate && date >= task.startDate });
+                self.listTaskFrame1(listTaskFrame1);
+                self.listTaskFrame2(listTaskFrame2);
+                self.listTaskFrame3(listTaskFrame3);
+                self.listTaskFrame4(listTaskFrame4);
+                self.listTaskFrame5(listTaskFrame5);
+            });
 
             let ccg001ComponentOption: any = {
                 /** Common properties */
@@ -169,22 +188,13 @@ module nts.uk.at.view.kdw003.cg {
                 
                 if(!_.isNull(taskList) && !_.isEmpty(taskList)){                    
                     _.each(taskList, task => {
-                        taskLst.push(new TaskModel(task.taskCode, task.taskName, task.frameNo));
+                        taskLst.push(new TaskModel(task.taskCode, task.taskName, task.frameNo, task.startDate, task.endDate));
                     })
                     taskLst1 = _.filter(taskLst, item => { return item.frameNo == 1; });
-                    // _.isEmpty(taskLst1) ? taskLst1.unshift(new TaskModel("", __viewContext.user.employeeCode + " " + getText("KDW003_81"))): taskLst1.unshift(new TaskModel("",""));
-
                     taskLst2 = _.filter(taskLst, item => { return item.frameNo == 2; });
-                    // _.isEmpty(taskLst2) ? taskLst2.unshift(new TaskModel("", __viewContext.user.employeeCode + " " + getText("KDW003_81"))): taskLst2.unshift(new TaskModel("",""));
-
                     taskLst3 = _.filter(taskLst, item => { return item.frameNo == 3; });
-                    // _.isEmpty(taskLst3) ? taskLst3.unshift(new TaskModel("", __viewContext.user.employeeCode + " " + getText("KDW003_81"))): taskLst3.unshift(new TaskModel("",""));
-
-                    taskLst4 = _.filter(taskLst, item => { return item.frameNo == 4; });
-                    // _.isEmpty(taskLst4) ? taskLst4.unshift(new TaskModel("", __viewContext.user.employeeCode + " " + getText("KDW003_81"))): taskLst4.unshift(new TaskModel("",""));
- 
-                    taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });
-                    // _.isEmpty(taskLst5) ? taskLst5.unshift(new TaskModel("", __viewContext.user.employeeCode + " " + getText("KDW003_81"))): taskLst5.unshift(new TaskModel("",""));
+                    taskLst4 = _.filter(taskLst, item => { return item.frameNo == 4; }); 
+                    taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });                   
                     
                     self.taskListFrame1(taskLst1);
                     self.taskListFrame2(taskLst2);
@@ -237,14 +247,12 @@ module nts.uk.at.view.kdw003.cg {
                         listTaskItem.push(new TaskItemModel(dataHist.ids[i], dataHist.lstStartDate[i], dataHist.lstEndDate[i], task1, task2, task3, task4, task5));                        
                     }
                     self.listTaskItemInfo(listTaskItem); 
-                    // let temp = _.orderBy(lstHist,['startDate'],['desc']);
-                    self.listHistPeriod(_.orderBy(lstHist,['startDate'],['desc']));
+                    self.listHistPeriod(lstHist);
                     if(!reload){
                         self.selectedHist(self.listHistPeriod()[0].id);
-                        self.selectedHist.valueHasMutated(); 
-                        self.findTaskItemDetail(self.selectedHist());
                     }  
-                    // self.selectedHist.valueHasMutated();
+
+                    self.selectedHist.valueHasMutated(); 
                     $('#startDate').focus();
 
                 } else {
@@ -258,22 +266,60 @@ module nts.uk.at.view.kdw003.cg {
         }
 
         findTaskItemDetail(id: string): void {     
-            let self = this, taskItem: TaskItemModel;  
+            let self = this, taskItem: TaskItemModel = null;  
+           
             if(id === "")  return; 
 
             self.enableDeleteBtn(id == self.listHistPeriod()[0].id);
             taskItem = _.filter(self.listTaskItemInfo(), itemInfo => { return itemInfo.id == id; })[0];
+            
             self.startDate(taskItem.startDate);
             self.endDate(taskItem.endDate);
             self.startDatePeriod(taskItem.startDate);
-            // self.endDateString(taskItem.endDate);
-            self.selectedTaskCode1(taskItem.task1);
-            self.selectedTaskCode2(taskItem.task2);
-            self.selectedTaskCode3(taskItem.task3);
-            self.selectedTaskCode4(taskItem.task4);
-            self.selectedTaskCode5(taskItem.task5);
-            $('#startDate').focus();
-           
+
+            let listTaskFrame1 = self.listTaskFrame1(), 
+                listTaskFrame2 = self.listTaskFrame2(), 
+                listTaskFrame3 = self.listTaskFrame3(), 
+                listTaskFrame4 = self.listTaskFrame4(), 
+                listTaskFrame5 = self.listTaskFrame5();
+            
+            if(!_.isEmpty(self.taskListFrame1()) && _.isEmpty(_.filter(self.taskListFrame1(), code => {code.taskCode === taskItem.task1})) && taskItem.task1 != ""){
+                listTaskFrame1.unshift(new TaskModel("0", taskItem.task1 + " " + getText("KDW003_81")));
+                self.listTaskFrame1(listTaskFrame1);
+                self.selectedTaskCode1("0");
+            } else {
+                self.selectedTaskCode1(taskItem.task1);
+            }
+            if(!_.isEmpty(self.taskListFrame2()) && _.isEmpty(_.filter(self.taskListFrame2(), code => {code.taskCode === taskItem.task2})) && taskItem.task2 != ""){
+                listTaskFrame2.unshift(new TaskModel("0", taskItem.task2 + " " + getText("KDW003_81")));
+                self.listTaskFrame2(listTaskFrame2);
+                self.selectedTaskCode2("0");
+            } else {
+                self.selectedTaskCode2(taskItem.task2);
+            }
+            if(!_.isEmpty(self.taskListFrame3()) && _.isEmpty(_.filter(self.taskListFrame3(), code => {code.taskCode === taskItem.task3}) && taskItem.task3 != "") ){
+                listTaskFrame3.unshift(new TaskModel("0", taskItem.task3 + " " + getText("KDW003_81")));
+                self.listTaskFrame3(listTaskFrame3);
+                self.selectedTaskCode3("0");
+            } else {
+                self.selectedTaskCode3(taskItem.task3);
+            }
+            if(!_.isEmpty(self.taskListFrame4()) && _.isEmpty(_.filter(self.taskListFrame4(), code => {code.taskCode === taskItem.task4})) && taskItem.task4 != ""){
+                listTaskFrame4.unshift(new TaskModel("0", taskItem.task4 + " " + getText("KDW003_81")));
+                self.listTaskFrame4(listTaskFrame4);
+                self.selectedTaskCode4("0");
+            } else {
+                self.selectedTaskCode1(taskItem.task4);
+            }
+            if(!_.isEmpty(self.taskListFrame5()) && _.isEmpty(_.filter(self.taskListFrame5(), code => {code.taskCode === taskItem.task5})) && taskItem.task5 != ""){
+                listTaskFrame5.unshift(new TaskModel("0", taskItem.task5 + " " + getText("KDW003_81")));
+                self.listTaskFrame5(listTaskFrame5);
+                self.selectedTaskCode5("0");
+            } else {
+                self.selectedTaskCode5(taskItem.task5);
+            }
+            
+            $('#startDate').focus();           
         }
 
         resetData(): void {
@@ -293,7 +339,7 @@ module nts.uk.at.view.kdw003.cg {
 
         registerOrUpdate(): void {
             let self = this; 
-            if(self.selectedHist() == "") {
+            if(self.selectedHist() === "") {
                 self.register();
             } else {
                 self.update();
@@ -501,10 +547,14 @@ module nts.uk.at.view.kdw003.cg {
         taskCode: string;
         taskName: string;
         frameNo: number;
-        constructor(taskCode: string, taskName: string, frameNo?: number){
+        startDate: string;
+        endDate: string;
+        constructor(taskCode: string, taskName: string, frameNo?: number, startDate?: string, endDate?: string){
             this.taskCode = taskCode;
             this.taskName = taskName; 
             this.frameNo = frameNo;          
+            this.startDate = startDate;
+            this.endDate = endDate;
         }
     }
     

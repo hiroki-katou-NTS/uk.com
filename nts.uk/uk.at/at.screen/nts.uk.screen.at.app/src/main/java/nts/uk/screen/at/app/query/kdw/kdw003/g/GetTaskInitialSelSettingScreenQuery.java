@@ -1,8 +1,10 @@
 package nts.uk.screen.at.app.query.kdw.kdw003.g;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 /**
@@ -33,7 +35,9 @@ public class GetTaskInitialSelSettingScreenQuery {
 			List<String> lstTaskItem = new ArrayList<String>();
 			List<Integer> lstId = new ArrayList<Integer>();
 			taskInitialSelSettingDto.setEmployeeId(empId);
-			listHist.stream().forEach(hist -> {	
+			
+			List<TaskInitialSel> listHistSort = listHist.stream().sorted(Comparator.comparing(TaskInitialSel::start).reversed()).collect(Collectors.toList());
+			listHistSort.stream().forEach(hist -> {	
 				lstStartDate.add(hist.getDatePeriod().start().toString());
 				lstEndDate.add(hist.getDatePeriod().end().toString());
 				lstTaskItem.add(hist.getTaskItem().getOtpWorkCode1().get().v());
