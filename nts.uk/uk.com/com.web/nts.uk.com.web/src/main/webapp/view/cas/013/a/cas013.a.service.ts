@@ -25,7 +25,7 @@ module nts.uk.com.view.cas013.a {
                     domainType = domainType + program.join(" ");
                 }
                 return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "Indivigrant", domainType: domainType, languageId: languageId, mode: 1, reportType: 0, baseDate: date});
-        }
+            }
             
             getRoleTypes(): JQueryPromise<any> {
                 return ajax("com", this.paths.getRoleType);

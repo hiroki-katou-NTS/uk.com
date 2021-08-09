@@ -34,7 +34,7 @@
 								 			width: '250px',
 											options: itemList,
 											optionsValue: 'code',
-											visibleItemsCount: 5,
+											visibleItemsCount: 20,
 											value: ko.observable(1),
 											optionsText: 'name',
 											editable: false,
@@ -67,25 +67,11 @@
 							<!--</div>-->
 						</div>
 						<div id="kcp005" class="panel panel-frame" style="width: 312px; margin-top: -15px; margin-left: 25px"></div>
-						<!--<div class="valign-center control-group">-->
-							<!--<div data-bind="ntsCheckBox: { checked: special }">#{i18n.getText('CAS013_26')}</div>-->
-						<!--</div>-->
-						<!--<div class="valign-center control-group">-->
-							<!--<div data-bind="ntsCheckBox: { checked: multi }">#{i18n.getText('CAS013_27')}</div>-->
-						<!--</div>-->
-						<!--<table id="grid_container" style="margin: auto;" tabindex="3"-->
-							<!--data-bind="ntsGridList: {-->
-											<!--rows: 15,-->
-											<!--options: dataSource,-->
-											<!--optionsValue: 'userID',-->
-											<!--columns: columns,-->
-											<!--value: selectUserID}">-->
-						<!--</table>-->
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS013_31')}</button>
+				<button class="proceed x-large" data-bind="click :search">#{i18n.getText('CAS013_31')}</button>
 				<button data-bind="click :cancel_Dialog">#{i18n.getText('CAS013_32')}</button>
 			</div>
 		</ui:define>
