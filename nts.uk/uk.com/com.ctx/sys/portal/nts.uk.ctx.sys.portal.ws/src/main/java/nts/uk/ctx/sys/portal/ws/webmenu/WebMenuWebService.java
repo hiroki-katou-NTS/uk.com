@@ -37,6 +37,7 @@ import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuSimpleDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
+import nts.uk.ctx.sys.portal.app.screenquery.roleset.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.SessionLowLayer;
 
@@ -76,6 +77,14 @@ public class WebMenuWebService extends WebService {
 	private SessionLowLayer sessionLowLayer;
 	@Context
 	private HttpServletRequest request;
+	@Inject
+	private GetListOfRoleSetScreenQuery getListOfRoleSetScreenQuery;
+
+	@Inject
+	private GetDetailedRoleSetInformationScreenQuery informationScreenQuery;
+
+	@Inject
+	private GetInitialStartupInforCas011ScreenQuery startupInforCas011ScreenQuery;
 
 	@POST
 	@Path("add")
@@ -204,6 +213,27 @@ public class WebMenuWebService extends WebService {
 	@Path("mobile/findByEmp")
 	public List<MobileMenuDto> mobileFindByEmp() {
 		return this.webMenuFinder.getMenuToDisplay();
+	}
+
+
+	// Update CAS011
+	@POST
+	@Path("cas011/get-role-set-and-default")
+	public RoleSetAndRoleDefaultDto getRoleSetAndRoleDefault() {
+		return getListOfRoleSetScreenQuery.getListRoleSet();
+	}
+
+
+	@POST
+	@Path("cas011/get-detail-role-set/{rolesetcd}")
+	public DetailedRoleSetInformationDto getDetailRoleSet(@PathParam("rolesetcd") String rolesetcd) {
+		return informationScreenQuery.getDetailRoleSet(rolesetcd);
+	}
+
+	@POST
+	@Path("cas011/get-data-init")
+	public Cas011Dto getDataForStartUp() {
+		return startupInforCas011ScreenQuery.getDataForStartUp();
 	}
 	
 }
