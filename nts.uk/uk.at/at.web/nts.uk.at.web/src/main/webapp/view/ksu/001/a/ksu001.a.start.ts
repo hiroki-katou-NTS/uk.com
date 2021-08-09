@@ -13,8 +13,12 @@ module nts.uk.at.view.ksu001.a {
 				document.getElementById("main-area").style.display = '';
                 __viewContext.bind(__viewContext.viewModel);
 
-                __viewContext.viewModel.viewA.setHeightScreen();
-                __viewContext.viewModel.viewA.setPositionButonToRightToLeft();
+                __viewContext.viewModel.viewA.setHeightMainArea();
+                __viewContext.viewModel.viewA.setPositionButonA13A14A15();
+                // fix cho truong hop khởi động ở mode height = fixed.
+                if(data && data.gridHeightSelection == 2){
+                   __viewContext.viewModel.viewA.saveHeightGridToLocal(); 
+                }
 
                 if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
                     $('.ntsButtonTableButton').addClass('nowithContent');
@@ -40,9 +44,9 @@ module nts.uk.at.view.ksu001.a {
                 }
                 
                 $(window).resize(function() {
-                    __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
-                    __viewContext.viewModel.viewA.setPositionButonToRight();
-                    __viewContext.viewModel.viewA.setHeightScreen();
+                    __viewContext.viewModel.viewA.setHeightMainArea();
+                    __viewContext.viewModel.viewA.setPositionButonA14();
+                    __viewContext.viewModel.viewA.setPositionButonA15();
                 });
 
                 nts.uk.ui.block.clear();

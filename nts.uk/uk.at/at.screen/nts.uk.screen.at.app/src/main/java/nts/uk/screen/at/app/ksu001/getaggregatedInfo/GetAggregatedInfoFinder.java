@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.ksu001.getaggregatedInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.print.attribute.HashAttributeSet;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
@@ -23,6 +25,12 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggregatedInformationDto;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggregatedInformation;
+import nts.uk.screen.at.app.ksu001.processcommon.ScreenQueryCreateWorkSchedule;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleShiftBaseResult;
+import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
+import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
+import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryPlanAndActual;
+import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.ScreenQueryWorkScheduleShift;
 import nts.uk.screen.at.app.ksu001.start.AggregatePersonalMapDto;
 import nts.uk.screen.at.app.ksu001.start.AggregateWorkplaceMapDto;
 import nts.uk.screen.at.app.ksu001.start.ExternalBudgetMapDto;
@@ -37,6 +45,15 @@ public class GetAggregatedInfoFinder {
 
 	@Inject
 	private ScreenQueryAggregatedInformation screenQAggreratedInfo;
+	
+	@Inject
+	private ScreenQueryPlanAndActual screenQueryPlanAndActual;
+	
+	@Inject
+	private ScreenQueryCreateWorkSchedule screenQueryCreateWorkSchedule;
+	
+	@Inject
+	private ScreenQueryWorkScheduleShift screenQueryWorkScheduleShift;
 	
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
@@ -54,17 +71,32 @@ public class GetAggregatedInfoFinder {
 		}
 		
 		AggregatedInformationDto dto = screenQAggreratedInfo.get(param.listSid, datePeriod, closeDate, isAchievement, targetOrgIdenInfor, personalCounterOp, workplaceCounterOp, param.isShiftMode);
-		return convertData(dto);
 		
-		
+		List<WorkScheduleWorkInforDto> workScheduleWorkInfors = new ArrayList<>();
+		WorkScheduleShiftBaseResult workScheduleShiftBaseResult = new WorkScheduleShiftBaseResult(new ArrayList<>(), new HashMap<>());
+		PlanAndActual planAndActual = screenQueryPlanAndActual.getPlanAndActual(param.listSid, datePeriod, param.getActualData);
+		if (param.getWorkschedule) {
+			if (!param.isShiftMode) {
 
+				workScheduleWorkInfors = screenQueryCreateWorkSchedule.get(planAndActual.getSchedule(),
+						planAndActual.getDailySchedule(), param.getActualData);
+			} else {
+
+				workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(new ArrayList<>(),
+						planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.getActualData);
+			}
+		}
+		return convertData(dto, workScheduleWorkInfors, workScheduleShiftBaseResult);
 	}
 	
-	private AggregatedInformationRs convertData(AggregatedInformationDto dto) {
+	private AggregatedInformationRs convertData(AggregatedInformationDto dto, List<WorkScheduleWorkInforDto> workScheduleWorkInfors, WorkScheduleShiftBaseResult workScheduleShiftBaseResult) {
 		return new AggregatedInformationRs(
 				convertExternalBudget(dto.externalBudget), 
 				dto.aggrerateSchedule.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(dto.aggrerateSchedule.aggreratePersonal), 
-				dto.aggrerateSchedule.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(dto.aggrerateSchedule.aggrerateWorkplace));
+				dto.aggrerateSchedule.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(dto.aggrerateSchedule.aggrerateWorkplace),
+				workScheduleWorkInfors,
+				workScheduleShiftBaseResult.listWorkScheduleShift,
+				workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle);
 		
 	}
 
