@@ -13,6 +13,8 @@ import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthentica
 import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
 import nts.uk.ctx.sys.gateway.dom.login.password.identification.IdentificationResult;
+import nts.uk.shr.com.system.config.SystemConfiguration;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -33,7 +35,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	
 	@Override
 	protected Require getRequire(PasswordAuthenticateCommand command) {
-		return requireProvider.createRequire(command.getContractCode());
+		return requireProvider.createRequire(getTenantCode(command));
 	}
 	
 	/**
@@ -53,7 +55,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		// 入力チェック
 		command.checkInput();
 		
-		String tenantCode = command.getTenantCode();
+		String tenantCode = getTenantCode(command);
 		String companyId = require.createCompanyId(tenantCode, command.getCompanyCode());
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
@@ -83,6 +85,17 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		}
 			
 		return AuthenticationResult.success(idenResult, passAuthResult);
+	}
+
+	
+	@Inject
+	private SystemConfiguration systemConfig;
+	
+	private String getTenantCode(PasswordAuthenticateCommand command) {
+		
+		return UKServerSystemProperties.isCloud()
+				? command.getTenantCode()
+				: systemConfig.getTenantCodeOnPremise().get();
 	}
 	
 	/**
