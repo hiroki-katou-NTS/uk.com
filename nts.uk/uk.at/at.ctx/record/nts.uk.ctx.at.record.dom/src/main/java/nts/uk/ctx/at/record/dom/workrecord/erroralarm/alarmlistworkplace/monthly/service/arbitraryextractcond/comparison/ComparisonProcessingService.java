@@ -78,12 +78,7 @@ public class ComparisonProcessingService {
             CompareRange compareRange = ((CompareRange) checkConditions);
             if (!check) return null;
 
-            message = TextResource.localize(
-                    "KAL020_403",
-                    averageTimeName,
-                    getFormula(compareRange, condition, averageTime),
-                    averageTime
-            );
+            message = getFormula(averageTimeName, compareRange, condition, averageTime);
         }
 
         // 抽出結果を作成
@@ -96,7 +91,7 @@ public class ComparisonProcessingService {
                 workplaceId);
     }
 
-    private String getFormula(CompareRange compareRange,ExtractionMonthlyCon condition, String averageTime) {
+    private String getFormula(String averageTimeName, CompareRange compareRange,ExtractionMonthlyCon condition, String averageTime) {
         String formula = "";
         String timeStart = compareRange.getStartValue().toString();
         String timeEnd = compareRange.getEndValue().toString();
@@ -108,16 +103,16 @@ public class ComparisonProcessingService {
         }
         switch (compareRange.getCompareOperator()) {
             case BETWEEN_RANGE_OPEN:
-                formula = TextResource.localize("KAL020_404", averageTime, timeStart, timeEnd);
+                formula = TextResource.localize("KAL020_404", timeStart, averageTimeName, timeEnd, averageTime);
                 break;
             case BETWEEN_RANGE_CLOSED:
-                formula = TextResource.localize("KAL020_405", averageTime, timeStart, timeEnd);
+                formula = TextResource.localize("KAL020_405", timeStart, averageTimeName, timeEnd, averageTime);
                 break;
             case OUTSIDE_RANGE_OPEN:
-                formula = TextResource.localize("KAL020_406", averageTime, timeStart, timeEnd);
+                formula = TextResource.localize("KAL020_406", timeStart, averageTimeName, timeEnd, averageTime);
                 break;
             case OUTSIDE_RANGE_CLOSED:
-                formula = TextResource.localize("KAL020_407", averageTime, timeStart, timeEnd);
+                formula = TextResource.localize("KAL020_407", timeStart, averageTimeName, timeEnd, averageTime);
                 break;
         }
 
