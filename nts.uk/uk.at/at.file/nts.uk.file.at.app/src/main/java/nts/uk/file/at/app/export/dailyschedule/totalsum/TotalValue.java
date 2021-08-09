@@ -63,6 +63,9 @@ public class TotalValue {
 	}
 	
 	public <T extends Number> void addValue(T value, ValueType valueType) {
+		if (value == null) {
+			return;
+		}
 		if (valueType.isInteger()) {
 			this.value = String.valueOf(NumberUtils.toInt(this.value, 0) + value.intValue());
 		} else if (valueType.isDouble()) {
