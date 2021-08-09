@@ -47,6 +47,8 @@ module nts.uk.at.kdp003.r {
             const vm = this;
             if (params) {
                 vm.noticeSetting = params.setting;
+                console.log(ko.unwrap(vm.noticeSetting));
+                
                 vm.screen = params.screen;
             }
 
@@ -112,8 +114,6 @@ module nts.uk.at.kdp003.r {
                 vm.$blockui('show');
                 vm.$ajax('at', API.DISPLAY_NOTICE, noticeParam)
                     .then((noticeList: Array<MsgNoticeDto>) => {
-                        console.log(noticeList);
-
                         if (noticeList) {
 
                             let headOfficeNoticeList = _.filter(noticeList, n => n.message.targetInformation.destination == DestinationClassification.ALL);

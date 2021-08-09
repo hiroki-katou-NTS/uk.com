@@ -89,9 +89,9 @@ module nts.uk.at.view.kdp004.a {
 					read: () => {
 						const mes = ko.unwrap(self.errorMessage);
 						const noti = ko.unwrap(self.fingerStampSetting).noticeSetDto;
-	
+
 						var result = null;
-	
+
 						if (mes === null) {
 							result = false;
 						}
@@ -104,12 +104,13 @@ module nts.uk.at.view.kdp004.a {
 						} else {
 							result = false;
 						}
-	
-						if(mes) {
+
+						if (mes) {
 							result = null;
 						}
-	
+
 						self.showMessage(result);
+
 					}
 				});
 
@@ -211,7 +212,7 @@ module nts.uk.at.view.kdp004.a {
 							self.isUsed(res.used == 0);
 							if (self.isUsed()) {
 								service.login(loginInfo).done((res) => {
-								
+
 									block.grayout();
 									service.startPage()
 										.done((res: any) => {
@@ -235,15 +236,15 @@ module nts.uk.at.view.kdp004.a {
 										}).always(() => {
 											dfd.resolve();
 											block.clear();
-											
+
 										});
 
-										if (res.msgErrorId && res.msgErrorId !== '') {
-										
-											self.errorMessage(getMessage(res.msgErrorId));
+									if (res.msgErrorId && res.msgErrorId !== '') {
 
-											self.isUsed(false);
-										}
+										self.errorMessage(getMessage(res.msgErrorId));
+
+										self.isUsed(false);
+									}
 
 									self.getStampToSuppress();
 
@@ -438,7 +439,7 @@ module nts.uk.at.view.kdp004.a {
 									return 'cancel';
 								})
 								.then((res) => {
-									
+
 									if (res !== 'cancel' && !!res) {
 
 										if (!res.verificationSuccess) {
@@ -460,12 +461,12 @@ module nts.uk.at.view.kdp004.a {
 			}
 
 			public clickBtn1(btn: any, layout: any) {
-				
+
 				const vm = this;
 				vm.getWorkPlacesInfo();
 				nts.uk.ui.block.invisible();
 				vm.doAuthent().done((res: IAuthResult) => {
-					
+
 					if (res.isSuccess) {
 						vm.registerData(btn, layout, res);
 					}
@@ -480,7 +481,7 @@ module nts.uk.at.view.kdp004.a {
 
 					if (res.verificationSuccess) {
 						service.confirmUseOfStampInput({ employeeId: self.loginInfo.employeeId, stampMeans: 1 }).done((res) => {
-							
+
 							self.isUsed(res.used == 0);
 							if (!self.isUsed()) {
 								self.errorMessage(getMessage(res.messageId));
@@ -871,6 +872,8 @@ module nts.uk.at.view.kdp004.a {
 				const self = this;
 				let vm = new ko.ViewModel();
 				const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
+				console.log(param);
+
 				vm.$window.modal(DIALOG.R, param);
 			}
 
@@ -928,12 +931,14 @@ module nts.uk.at.view.kdp004.a {
 								vm.$ajax(API.NOTICE, param)
 									.done((data: IMessage) => {
 										self.messageNoti(data);
-										
+
 										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 											if (self.totalOpenViewR === 0) {
-	
-												self.totalOpenViewR++;
-												self.shoNoti();
+
+												setTimeout(() => {
+													self.totalOpenViewR++;
+													self.shoNoti();
+												}, 2000);
 											}
 										}
 									});
@@ -959,9 +964,11 @@ module nts.uk.at.view.kdp004.a {
 									self.messageNoti(data);
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 										if (self.totalOpenViewR === 0) {
-	
-											self.totalOpenViewR++;
-											self.shoNoti();
+
+											setTimeout(() => {
+												self.totalOpenViewR++;
+												self.shoNoti();
+											}, 2000);
 										}
 									}
 								});

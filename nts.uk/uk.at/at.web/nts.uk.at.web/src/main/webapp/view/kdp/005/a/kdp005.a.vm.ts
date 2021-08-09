@@ -910,8 +910,10 @@ module nts.uk.at.view.kdp005.a {
 										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 											if (self.totalOpenViewR === 0) {
 	
-												self.totalOpenViewR++;
-												self.shoNoti();
+												setTimeout(() => {
+													self.totalOpenViewR++;
+													self.shoNoti();
+												}, 2000);
 											}
 										}
 									});
@@ -939,8 +941,10 @@ module nts.uk.at.view.kdp005.a {
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 										if (self.totalOpenViewR === 0) {
 	
-											self.totalOpenViewR++;
-											self.shoNoti();
+											setTimeout(() => {
+												self.totalOpenViewR++;
+												self.shoNoti();
+											}, 2000);
 										}
 									}
 								});

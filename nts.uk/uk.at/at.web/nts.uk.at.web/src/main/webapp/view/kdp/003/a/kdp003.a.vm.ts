@@ -172,6 +172,7 @@ module nts.uk.at.kdp003.a {
 					}
 
 					vm.showMessage(result);
+					
 				}
 			})
 		}
@@ -384,8 +385,6 @@ module nts.uk.at.kdp003.a {
 							}
 
 							vm.showClockButton.setting(true);
-
-							console.log(loginParams);
 
 							return vm.$ajax('com', API.LOGIN_ADMIN, loginParams)
 								.then((loginData: f.TimeStampLoginData) => ({
