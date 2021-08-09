@@ -3502,7 +3502,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let rightHorzSumContent = self.createRightHorzSumContent();
                 $("#extable").exTable("updateTable", "leftHorizontalSummaries", leftHorzSumHeader, leftHorzSumContent);
                 $("#extable").exTable("updateTable", "horizontalSummaries", horizontalSumHeader, horizontalSumContent);
-                $("#extable").exTable("updateTable", "rightHorizontalSummaries", rightHorzSumHeader, rightHorzSumContent);
+                if(self.showA11()){ // chỉ trường hợp cả A11,A12 show thì mới có cục rightHorizontalSummaries
+                     $("#extable").exTable("updateTable", "rightHorizontalSummaries", rightHorzSumHeader, rightHorzSumContent);
+                }
                 $("#horzDropDown").html(function() { return $('#horzDiv'); });
                 $('#horzDiv').css('display', '');
             
