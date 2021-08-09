@@ -6685,6 +6685,7 @@ module nts.uk.ui.exTable {
         export let MOUSEOUT_COLUMN = "extablemousoutcolumn";
         export let RENDERED = "extablerowsrendered";
         export let COMPLETED = "extablecompleted";
+        export let DETED = "extablecelldetermined";
         
         window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
         window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
@@ -7135,16 +7136,25 @@ module nts.uk.ui.exTable {
                                 }
                             });
                             if (!flaw) {
-                                let rKeys = Object.keys(indices); 
+                                let rKeys = Object.keys(indices), data = []; 
                                 _.forEach(rKeys, function(k, i) {
                                     let col = det[k].splice(indices[k], 1);
                                     if (det[k].length === 0) delete det[k];
-                                    let $c = selection.cellAt($main, k, col[0].columnKey);
+                                    let colKey = col[0].columnKey, $c = selection.cellAt($main, k, colKey);
                                     if ($c) helper.stripCellWith(DET_CLS, $c);
+                                    let rowObj = ds[k];
+                                    data.push({ rowId: rowObj[primaryKey], columnKey: colKey, data: _.cloneDeep(rowObj[colKey]), determined: false });
                                 });
+                                
+                                if (data.length > 0) {
+                                    events.trigger($tbl, events.DETED, data);
+                                }
+                                
                                 return;
                             }
                         }
+                        
+                        let data = [];
                         _.forEach(ds, function(item: any, index: number) {
                             if (index >= start && index < end) {
                                 let $c = selection.cellAt($main, index, coord.columnKey);
@@ -7169,7 +7179,11 @@ module nts.uk.ui.exTable {
                                     det[index].push({ columnKey: coord.columnKey, value: item[coord.columnKey] });
                                 }
                             }
+                            
+                            data.push({ rowId: item[primaryKey], columnKey: coord.columnKey, data: _.cloneDeep(item[coord.columnKey]), determined: true });
                         });
+                        
+                        events.trigger($tbl, events.DETED, data);
                     });
                     return false;
                 }
@@ -7187,7 +7201,7 @@ module nts.uk.ui.exTable {
                             if (updateMode !== DETERMINE) return;
                             let $main = helper.getMainTable($tbl);
                             let ds = internal.getDataSource($main);
-                            let coord = helper.getCellCoord($cell);
+                            let coord = helper.getCellCoord($cell), rowObj = ds[coord.rowIdx];
                             if (!coord) return;
                             let $targetRow = selection.rowAt($main, coord.rowIdx);
                             if ($targetRow === intan.NULL || !$targetRow) return;
@@ -7218,7 +7232,11 @@ module nts.uk.ui.exTable {
                                 helper.stripCellsWith(DET_CLS, selector.queryAll($targetRow, "td").filter(function(e) {
                                     return e.style.display !== "none";
                                 }));
-//                                det[coord.rowIdx] = [];
+                                
+                                events.trigger($tbl, events.DETED, _.map(det[coord.rowIdx], d => ({
+                                    columnKey: d.columnKey, rowId: rowObj[gen.primaryKey], data: _.cloneDeep(rowObj[d.columnKey]), determined: false   
+                                })));
+                                
                                 delete det[coord.rowIdx];
                                 return;
                             }
@@ -7250,6 +7268,10 @@ module nts.uk.ui.exTable {
                                 });
                                 
                             }
+                            
+                            events.trigger($tbl, events.DETED, _.map(detCols, d => ({
+                                columnKey: d.columnKey, rowId: rowObj[gen.primaryKey], data: _.cloneDeep(rowObj[d.columnKey]), determined: true   
+                            })));
                         });
                         return false;
                     }
@@ -7289,7 +7311,8 @@ module nts.uk.ui.exTable {
             let gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
             let opt = gen.options;
             if (!opt) return;
-            if (helper.isEmpty(helper.viewData(opt.view, opt.viewMode, ds[rowIdx][columnKey]))) return;
+            let rowObj = ds[rowIdx], cellObj = rowObj[columnKey];
+            if (helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cellObj))) return;
             let det = $.data($main, internal.DET);
             if (!det) {
                 det = {};
@@ -7310,11 +7333,13 @@ module nts.uk.ui.exTable {
                     det[rowIdx].splice(dup, 1);
                     if (det[rowIdx].length === 0) delete det[rowIdx];
                     helper.stripCellWith(DET_CLS, $cell);
+                    events.trigger($tbl, events.DETED, [{ rowId: rowObj[gen.primaryKey], columnKey, data: _.cloneDeep(cellObj), determined: false }]); 
                     return;
                 }
                 det[rowIdx].push({ columnKey: columnKey, value: ds[rowIdx][columnKey] });
             }
             helper.markCellWith(DET_CLS, $cell);
+            events.trigger($tbl, events.DETED, [{ rowId: rowObj[gen.primaryKey], columnKey, data: _.cloneDeep(cellObj), determined: true }]);
         }
     }
     
@@ -7527,7 +7552,7 @@ module nts.uk.ui.exTable {
             resize.fitWindowWidth($container[0]);
             $detailBody.css("max-width", `${parseFloat($detailBody.css("max-width")) + helper.getScrollWidth()}px`);
             scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL)[0]);
-            if ($rightHorzSumHeader.css("display") === "none") {
+            if ($rightHorzSumHeader.length > 0 && $rightHorzSumHeader.css("display") === "none") {
                 scroll.unbindVertWheel($container.find(`.${BODY_PRF + HORIZONTAL_SUM}`)[0]);
             }
         }
@@ -7553,7 +7578,7 @@ module nts.uk.ui.exTable {
             resize.fitWindowWidth($container[0]);
             $detailBody.css("max-width", `${parseFloat($detailBody.css("max-width")) - helper.getScrollWidth()}px`);
             scroll.bindVertWheel($detailBody[0]);
-            if ($rightHorzSumHeader.css("display") !== "none") {
+            if ($rightHorzSumHeader.length > 0 && $rightHorzSumHeader.css("display") !== "none") {
                 scroll.bindVertWheel($container.find(`.${BODY_PRF + HORIZONTAL_SUM}`)[0]);
             }
             
