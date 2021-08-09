@@ -938,7 +938,7 @@ module nts.uk.at.view.kdp004.a {
 												setTimeout(() => {
 													self.totalOpenViewR++;
 													self.shoNoti();
-												}, 2000);
+												}, 1000);
 											}
 										}
 									});
@@ -968,7 +968,7 @@ module nts.uk.at.view.kdp004.a {
 											setTimeout(() => {
 												self.totalOpenViewR++;
 												self.shoNoti();
-											}, 2000);
+											}, 1000);
 										}
 									}
 								});
