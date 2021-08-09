@@ -348,9 +348,6 @@ module nts.uk.at.view.kdp.share {
 
                     const value: IMessage = ko.unwrap(vm.messageNoti);
 
-                    console.log(value);
-                    
-
                     if (value.stopByCompany.systemStatus == 2) {
                         vm.messageCom(value.stopByCompany.stopMessage);
                     } else {
@@ -373,21 +370,6 @@ module nts.uk.at.view.kdp.share {
                     vm.$blockui('clear');
                 });
         }
-
-        // getNotiSys() {
-        //     const vm = this;
-
-        //     vm.$blockui('invisible')
-        //         .then(() => {
-        //             vm.$ajax('at', API.GET_NOTI_SYSTEM)
-        //                 .done((data: IMessageSys) => {
-        //                     vm.modeSystemNoti(data.stopSystem);
-        //                     vm.messageSys(data.notiMessage);
-        //                 })
-        //         }).then(() => {
-        //             vm.$blockui('clear');
-        //         });
-        // }
     }
 
     class Model {

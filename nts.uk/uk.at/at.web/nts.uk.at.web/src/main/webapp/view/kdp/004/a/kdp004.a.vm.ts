@@ -872,7 +872,6 @@ module nts.uk.at.view.kdp004.a {
 				const self = this;
 				let vm = new ko.ViewModel();
 				const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
-				console.log(param);
 
 				vm.$window.modal(DIALOG.R, param);
 			}
@@ -930,7 +929,9 @@ module nts.uk.at.view.kdp004.a {
 
 								vm.$ajax(API.NOTICE, param)
 									.done((data: IMessage) => {
+										
 										self.messageNoti(data);
+										self.messageNoti.valueHasMutated();
 
 										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 											if (self.totalOpenViewR === 0) {
@@ -961,7 +962,12 @@ module nts.uk.at.view.kdp004.a {
 						.then(() => {
 							vm.$ajax(API.NOTICE, param)
 								.done((data: IMessage) => {
+									
 									self.messageNoti(data);
+									setTimeout(() => {
+										self.messageNoti(data);
+										self.messageNoti.valueHasMutated();
+									}, 1000);
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 										if (self.totalOpenViewR === 0) {
 
