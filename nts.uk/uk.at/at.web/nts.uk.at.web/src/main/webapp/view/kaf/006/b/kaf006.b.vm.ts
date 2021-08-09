@@ -53,6 +53,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 		remainingHours: KnockoutObservable<string> = ko.observable();
 
 		over60HHourRemain: KnockoutObservable<string> = ko.observable();
+		subVacaRemain: KnockoutObservable<string> = ko.observable();
 		subVacaHourRemain: KnockoutObservable<string> = ko.observable();
 		timeYearLeave: KnockoutObservable<string> = ko.observable();
 		childNursingRemain: KnockoutObservable<string> = ko.observable();
@@ -166,7 +167,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 
 			vm.grantDaysOfYear = ko.computed(() => {
                 if (vm.grantDate()) {
-                    return vm.$i18n('KAF006_98') + moment(vm.grantDate()).format('YYYY/MM/DD') + ' ' + vm.grantDays + '日';
+                    return vm.$i18n('KAF006_98') + moment(vm.grantDate()).format('YYYY/MM/DD') + ' ' + vm.grantDays() + '日';
                 }
 
                 return vm.$i18n('KAF006_98') + vm.$i18n('KAF006_99');
@@ -922,7 +923,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             vm.over60HHourRemain(vm.formatRemainNumber(0, remainVacationInfo.over60HHourRemain));
 
             // set subVacaHourRemain
-            vm.subVacaHourRemain(vm.formatRemainNumber(remainVacationInfo.subVacaRemain, remainVacationInfo.subVacaHourRemain))
+			vm.subVacaHourRemain(vm.formatSubHdRemain(remainVacationInfo.subVacaRemain, remainVacationInfo.subVacaHourRemain, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
+
+			// set subVacaRemain
+            vm.subVacaRemain(vm.formatRemainNumber(remainVacationInfo.subVacaRemain, 0));
 
             // set yearRemain
             vm.timeYearLeave(vm.formatRemainNumber(remainVacationInfo.yearRemain, remainVacationInfo.yearHourRemain));
@@ -940,7 +944,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             vm.remainingHours(vm.formatRemainNumber(0, remainVacationInfo.remainingHours));
 
             // set subHdRemain
-            vm.subHdRemain(vm.formatRemainNumber(0, remainVacationInfo.subHdRemain));
+            vm.subHdRemain(vm.formatSubHdRemain(remainVacationInfo.subHdRemain, 0, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
         }
 
         formatRemainNumber(day: any, time: any): string {
@@ -951,6 +955,15 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             }
 
             return vm.$i18n('KAF006_46', [day.toString()]);
+        }
+
+		formatSubHdRemain(day: any, time: any, manage: any) {
+            const vm = this;
+             if (manage) {
+                 return nts.uk.time.format.byId("Clock_Short_HM", time);
+             } else {
+                 return vm.$i18n('KAF006_46', [day.toString()]);
+             }
         }
 
 		public openKDL003() {
