@@ -555,6 +555,13 @@ module nts.uk.com.view.cps005.b {
                     $('#numericItemMin, #numericItemMax').trigger('blur');
                 };
 
+            self.numericItemAmount.subscribe((val) => {
+                if (!ko.toJS(val)) {
+                    $('#numericItemMin').parent().removeClass('symbol symbol-right');
+                    $('#numericItemMax').parent().removeClass('symbol symbol-right');
+                }
+            })
+
             if (data) {
                 let currentItemData = ko.toJS(window['__viewContext']['screenModelB'].currentItemData);
 
