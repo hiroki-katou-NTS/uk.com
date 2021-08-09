@@ -1143,7 +1143,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             vm.yearRemain(vm.formatRemainNumber(remainVacationInfo.yearRemain, remainVacationInfo.yearHourRemain));
 
             // set remainingHours
-            vm.remainingHours(vm.formatRemainNumber(0, remainVacationInfo.remainingHours));
+            vm.remainingHours(vm.formatRemainNumber(remainVacationInfo.remainingHours, 0));
 
             // set subHdRemain
             vm.subHdRemain(vm.formatRemainNumber(0, remainVacationInfo.subHdRemain));
