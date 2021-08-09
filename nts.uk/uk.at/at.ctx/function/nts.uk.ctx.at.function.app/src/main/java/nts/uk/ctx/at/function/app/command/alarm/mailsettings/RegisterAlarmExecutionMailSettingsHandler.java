@@ -35,7 +35,7 @@ public class RegisterAlarmExecutionMailSettingsHandler extends CommandHandler<Re
         RegisterAlarmExecutionMailSettingsCommand command = commandContext.getCommand();
         List<RegisterAlarmExecutionMailSettingsCommand.AlarmListExecutionMailCmd> mailSettings = command.getMailSettingList();
         List<AlarmListExecutionMailSetting> exMailList = mailSettingRepository.getByCId(AppContexts.user().companyId(), IndividualWkpClassification.WORKPLACE.value);
-        List<AlarmRListExecutionMailSetting> settingList = mailSettings.stream().map(x -> {
+        List<AlarmListExecutionMailSetting> settingList = mailSettings.stream().map(x -> {
             return command.toMailSettingDomain(x);
         }).collect(Collectors.toList());
         if (!exMailList.isEmpty()) {

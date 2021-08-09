@@ -8,7 +8,6 @@ import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailAddress;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.NormalAutoClassification;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
-import nts.uk.shr.com.context.AppContexts;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class RegisterAlarmExecutionMailSettingsCommand {
     private AlarmMailSendingRoleCmd sendingRole;
 
     @Data
-    static class AlarmListExecutionMailCmd {
+    public  class AlarmListExecutionMailCmd {
         /**
          * 個人職場区分
          */
@@ -61,7 +60,7 @@ public class RegisterAlarmExecutionMailSettingsCommand {
     }
 
     @Data
-     static class MailContents {
+    public static class MailContents {
 
         /**
          * 件名
@@ -84,6 +83,7 @@ public class RegisterAlarmExecutionMailSettingsCommand {
          */
         private String mailRely;
     }
+
     @Data
     private static class AlarmMailSendingRoleCmd {
         /**
@@ -108,7 +108,7 @@ public class RegisterAlarmExecutionMailSettingsCommand {
     }
 
 
-    public AlarmListExecutionMailSetting toMailSettingDomain(AlarmListExecutionMailCmd mailSetting) {
+    public AlarmListExecutionMailSetting toMailSettingDomain(RegisterAlarmExecutionMailSettingsCommand.AlarmListExecutionMailCmd mailSetting) {
         MailSettings contentMailSettings = new MailSettings(
                 mailSetting.getMailContents().getSubject(),
                 mailSetting.getMailContents().getText(),
