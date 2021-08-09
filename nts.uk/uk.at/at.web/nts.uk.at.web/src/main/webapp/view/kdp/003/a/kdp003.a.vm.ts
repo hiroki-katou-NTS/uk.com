@@ -104,6 +104,8 @@ module nts.uk.at.kdp003.a {
 		commentColor: KnockoutObservable<string> = ko.observable('');
 		passContract: String;
 
+		totalOpenViewR: number = 0;
+
 		created() {
 			const vm = this;
 
@@ -165,7 +167,7 @@ module nts.uk.at.kdp003.a {
 						result = false;
 					}
 
-					if(mes) {
+					if (mes) {
 						result = null;
 					}
 
@@ -274,10 +276,13 @@ module nts.uk.at.kdp003.a {
 								.done((data: IMessage) => {
 									vm.messageNoti(data);
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-										const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+										if (vm.totalOpenViewR === 0) {
+											const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
 
-										vm.$window.modal(DIALOG.R, param);
-										vm.showClockButton.setting(false);
+											vm.totalOpenViewR++;
+											vm.$window.modal(DIALOG.R, param);
+											vm.showClockButton.setting(false);
+										}
 									}
 								});
 						}
@@ -299,10 +304,13 @@ module nts.uk.at.kdp003.a {
 							.done((data: IMessage) => {
 								vm.messageNoti(data);
 								if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-									const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+									if (vm.totalOpenViewR === 0) {
+										const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
 
-									vm.$window.modal(DIALOG.R, param);
-									vm.showClockButton.setting(false);
+										vm.totalOpenViewR++;
+										vm.$window.modal(DIALOG.R, param);
+										vm.showClockButton.setting(false);
+									}
 								}
 							});
 					})
@@ -948,7 +956,7 @@ module nts.uk.at.kdp003.a {
 							contractCode: vm.$user.contractCode,
 							contractPassword: vm.passContract
 						};
-						
+
 						return vm.$ajax('com', API.LOGIN_ADMIN, loginParams)
 							.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING))
 							.then((data: FingerStampSetting) => {

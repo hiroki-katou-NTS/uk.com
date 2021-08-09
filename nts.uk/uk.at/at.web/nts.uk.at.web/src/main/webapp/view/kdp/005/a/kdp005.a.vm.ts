@@ -74,6 +74,8 @@ module nts.uk.at.view.kdp005.a {
 			pageComment: KnockoutObservable<string> = ko.observable('');
 			commentColor: KnockoutObservable<string> = ko.observable('');
 
+			totalOpenViewR: number = 0;
+
 			constructor() {
 				let self = this;
 				self.isUsed.subscribe((value) => {
@@ -906,7 +908,11 @@ module nts.uk.at.view.kdp005.a {
 										self.messageNoti(data);
 
 										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-											self.shoNoti();
+											if (self.totalOpenViewR === 0) {
+	
+												self.totalOpenViewR++;
+												self.shoNoti();
+											}
 										}
 									});
 							}
@@ -931,7 +937,11 @@ module nts.uk.at.view.kdp005.a {
 									self.messageNoti(data);
 
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-										self.shoNoti();
+										if (self.totalOpenViewR === 0) {
+	
+											self.totalOpenViewR++;
+											self.shoNoti();
+										}
 									}
 								});
 						})

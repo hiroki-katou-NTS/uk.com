@@ -61,6 +61,8 @@ module nts.uk.at.view.kdp004.a {
 
 			showMessage: KnockoutObservable<boolean | null> = ko.observable(null);
 
+			totalOpenViewR: number = 0;
+
 			// get from basyo;
 			workplace: string[] | [] = [];
 			worklocationCode: null | string = null;
@@ -928,7 +930,11 @@ module nts.uk.at.view.kdp004.a {
 										self.messageNoti(data);
 										
 										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-											self.shoNoti();
+											if (self.totalOpenViewR === 0) {
+	
+												self.totalOpenViewR++;
+												self.shoNoti();
+											}
 										}
 									});
 							}
@@ -952,7 +958,11 @@ module nts.uk.at.view.kdp004.a {
 								.done((data: IMessage) => {
 									self.messageNoti(data);
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
-										self.shoNoti();
+										if (self.totalOpenViewR === 0) {
+	
+											self.totalOpenViewR++;
+											self.shoNoti();
+										}
 									}
 								});
 						})
