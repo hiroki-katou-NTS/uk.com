@@ -65,7 +65,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		lstDis: any = [];
 		lstBreakSum: any = []; // list break time xuất hiện trên màn hình
 		lstHolidayShort: any = [];
-		checkDisByDate: boolean = true;
+		checkDisByDate: boolean = true; // check modify KSCMT_AUTH_MODIFYDEADLINE
 		lstAllChildShow: any = [];// tất cả thanh gant chart con show trên màn hình
 		checkDragDrop: boolean = false; // phân biệt resize = false vs drop = true
 		holidayShort: any = [];
@@ -307,10 +307,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.checkSaveDataMode = true;
 				$("#ab1-viewModel").hide();
 				$(".ab-view").addClass('hide-pallet');
-				
+				$(".nts-ganttchart").removeClass("dis-pointer-none");
 				$(".ex-body-leftmost").removeClass("dis-pointer");
 				$(".ex-body-middle").removeClass("dis-pointer");
 				$(".ex-body-detail").removeClass("disable-css");
+				$(".ex-body-detail").removeClass("dis-pointer");
 				$(".x-button").removeClass("dis-pointer");
 				$(".xcell").removeClass("bg-color");
 			} else {
@@ -337,9 +338,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				$(".ex-body-middle").addClass("dis-pointer");
 				$(".ex-body-detail").addClass("disable-css");
 				$(".x-button").addClass("dis-pointer");
-				$(".xcell").addClass("bg-color");
-				$(".extable-header-leftmost").addClass("header-color");
-				$(".extable-header-detail").addClass("header-color");
+				if (self.checkDisByDate != false){
+					$(".xcell").addClass("bg-color");
+					$(".extable-header-leftmost").addClass("header-color");
+					$(".extable-header-detail").addClass("header-color");
+				} else {
+					//$(".nts-ganttchart").addClass("dis-pointer-none");
+					$(".ex-body-detail").addClass("dis-pointer");
+				}
 				
 				if(!_.isNil(self.localStore.workSelection)){
 					if(self.localStore.workSelection == 0){
@@ -5535,7 +5541,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}) 
 				
-			let newLstChartTsk = _.filter (self.lstChartTask, (x : any) => x.line == line);
+			let newLstChartTsk = _.filter (self.lstChartTask, (x : any) => x.line == line), arrRemoveTask : any = [];
 				
 			if (newLstChartTsk.length > 0) {
 				for (let i = 0; i < newLstChartTsk.length ; i++) { // kiem tra voi list task cu
@@ -5708,18 +5714,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									
 									continue;
 								}
+								
 							}
-/*						arrRemoveTask.push({
+						arrRemoveTask.push({
 							index : i,
 							line : indexTask,
 							start : self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.start,
 							end : self.taskData[indexTask].taskScheduleDetail[i].timeSpanForCalcDto.end
-						});*/
+						});
 					} 
 				}
 				
 				}
-				/*_.forEach(arrRemoveTask, x => {
+				_.forEach(arrRemoveTask, x => {
 					_.remove(self.taskData[x.line].taskScheduleDetail, (y : any, index) => {
 						return x.index == index && y.timeSpanForCalcDto.start == x.start && y.timeSpanForCalcDto.end == x.end;
 					});
@@ -5727,7 +5734,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					_.remove(self.lstTaskScheduleDetailEmp, (y : any, index) => {
 						return x.index == index && y.taskScheduleDetail[0].timeSpanForCalcDto.start == x.start && y.taskScheduleDetail[0].timeSpanForCalcDto.end == x.end;
 					});
-				})*/
+				})
 				
 				let filShowChart = _.filter(self.gcShowChart, (x : any) => {
 					return x.line == line;

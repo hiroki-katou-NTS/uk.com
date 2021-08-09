@@ -372,6 +372,10 @@ html {
 	background: #ddddd2 !important;
 }
 
+.dis-pointer-none {
+	pointer-events: none !important;
+}
+
 .bg-color {
 	background-color: transparent !important;
 }
