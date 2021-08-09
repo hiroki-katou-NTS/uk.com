@@ -25,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.AggregatedInformationDto;
 import nts.uk.screen.at.app.ksu001.aggreratedinformation.ScreenQueryAggregatedInformation;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
+import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 import nts.uk.screen.at.app.ksu001.processcommon.ScreenQueryCreateWorkSchedule;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleShiftBaseResult;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
@@ -73,6 +75,7 @@ public class GetAggregatedInfoFinder {
 		AggregatedInformationDto dto = screenQAggreratedInfo.get(param.listSid, datePeriod, closeDate, isAchievement, targetOrgIdenInfor, personalCounterOp, workplaceCounterOp, param.isShiftMode);
 		
 		List<WorkScheduleWorkInforDto> workScheduleWorkInfors = new ArrayList<>();
+		List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst = new ArrayList<>();
 		WorkScheduleShiftBaseResult workScheduleShiftBaseResult = new WorkScheduleShiftBaseResult(new ArrayList<>(), new HashMap<>());
 		PlanAndActual planAndActual = screenQueryPlanAndActual.getPlanAndActual(param.listSid, datePeriod, param.getActualData);
 		if (param.getWorkschedule) {
@@ -84,19 +87,28 @@ public class GetAggregatedInfoFinder {
 
 				workScheduleShiftBaseResult = screenQueryWorkScheduleShift.create(new ArrayList<>(),
 						planAndActual.getSchedule(), planAndActual.getDailySchedule(), param.getActualData);
+				
+				if(!workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.isEmpty()){
+					workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle.forEach((key, value) -> {
+						shiftMasterWithWorkStyleLst.add(new ShiftMasterMapWithWorkStyle(key, value == null ? null : String.valueOf(value)));
+					});
+				}
 			}
 		}
-		return convertData(dto, workScheduleWorkInfors, workScheduleShiftBaseResult);
+		return convertData(dto, workScheduleWorkInfors, workScheduleShiftBaseResult.listWorkScheduleShift, shiftMasterWithWorkStyleLst);
 	}
 	
-	private AggregatedInformationRs convertData(AggregatedInformationDto dto, List<WorkScheduleWorkInforDto> workScheduleWorkInfors, WorkScheduleShiftBaseResult workScheduleShiftBaseResult) {
+	private AggregatedInformationRs convertData(AggregatedInformationDto dto, 
+			List<WorkScheduleWorkInforDto> workScheduleWorkInfors, 
+			List<ScheduleOfShiftDto> listWorkScheduleShift,
+			List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst) {
 		return new AggregatedInformationRs(
 				convertExternalBudget(dto.externalBudget), 
 				dto.aggrerateSchedule.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(dto.aggrerateSchedule.aggreratePersonal), 
 				dto.aggrerateSchedule.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(dto.aggrerateSchedule.aggrerateWorkplace),
 				workScheduleWorkInfors,
-				workScheduleShiftBaseResult.listWorkScheduleShift,
-				workScheduleShiftBaseResult.mapShiftMasterWithWorkStyle);
+				listWorkScheduleShift,
+				shiftMasterWithWorkStyleLst);
 		
 	}
 

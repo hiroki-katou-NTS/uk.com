@@ -4,16 +4,12 @@
 package nts.uk.screen.at.app.ksu001.getaggregatedInfo;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
+import nts.uk.screen.at.app.ksu001.displayinshift.ShiftMasterMapWithWorkStyle;
 import nts.uk.screen.at.app.ksu001.getworkscheduleshift.ScheduleOfShiftDto;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.start.AggregatePersonalMapDto;
@@ -35,6 +31,5 @@ public class AggregatedInformationRs {
 	
 	public List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor= Collections.emptyList();
 	public List<ScheduleOfShiftDto> listWorkScheduleShift= Collections.emptyList();
-	public Map<ShiftMaster,Optional<WorkStyle>> mapShiftMasterWithWorkStyle = new HashMap<ShiftMaster, Optional<WorkStyle>>();
-
+	public List<ShiftMasterMapWithWorkStyle> shiftMasterWithWorkStyleLst = Collections.emptyList();
 }
