@@ -17,6 +17,8 @@ module nts.uk.at.view.kal012.b {
         normal: ExMailSettingsNormalAuto;
         auto: ExMailSettingsNormalAuto;
         sendingRole: SendingRole;
+        isNormalSet: KnockoutObservable<boolean>;
+        isAutoSet: KnockoutObservable<boolean>;
 
         constructor(params: any) {
             super();
@@ -46,19 +48,29 @@ module nts.uk.at.view.kal012.b {
             ]);
             vm.isUpdateMode = ko.observable(false);
             vm.init();
+            vm.isNormalSet= ko.observable(false);
+            vm.isAutoSet= ko.observable(false);
         }
 
         created() {
             const vm = this;
             _.extend(window, {vm});
-            vm.model.isMailAlreadySet.subscribe((newValue: any) => {
+            vm.isNormalSet.subscribe((newValue: any) => {
                 if (newValue) {
                     vm.model.b41(vm.$i18n('KAL012_14'))
                 } else {
                     vm.model.b41(vm.$i18n('KAL012_13'))
                 }
             });
+            vm.isAutoSet.subscribe((newValue: any) => {
+                if (newValue) {
+                    vm.model.b42(vm.$i18n('KAL012_14'))
+                } else {
+                    vm.model.b42(vm.$i18n('KAL012_13'))
+                }
+            });
             vm.model.selectedRuleCode.subscribe((newValue: any) => {
+                vm.$errors("clear");
                 if (newValue === 1) {
                     vm.model.targetRuleRequired(true)
                 } else {
@@ -114,9 +126,11 @@ module nts.uk.at.view.kal012.b {
                         for (let item of data.mailSettings.exMailSettingsList) {
                             if (item.normalAutoClassify === 0) {
                                 vm.normal = item;
+                                vm.isNormalSet(true);
                             }
                             if (item.normalAutoClassify === 1) {
                                 vm.auto = item;
+                                vm.isAutoSet(true);
                             }
                         }
                     }
