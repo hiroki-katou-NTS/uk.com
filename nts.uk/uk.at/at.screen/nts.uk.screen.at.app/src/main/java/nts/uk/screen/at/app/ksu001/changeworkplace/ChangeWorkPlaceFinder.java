@@ -174,49 +174,11 @@ public class ChangeWorkPlaceFinder {
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
 		
 		if (viewMode.equals("shift")) {
-			result.setAggreratePersonal(
-					new AggregatePersonalMapDto(
-							resultStep51.aggreratePersonal.convertEstimatedSalary(),
-							resultStep51.aggreratePersonal.convertTimeCount(),
-							resultStep51.aggreratePersonal.convertWorkhours()
-							)
-					
-					);
-			result.setAggrerateWorkplace(
-					new AggregateWorkplaceMapDto(
-							resultStep51.aggrerateWorkplace.convertLaborCostAndTime(),
-							resultStep51.aggrerateWorkplace.convertTimeCount(),
-							new AggregateNumberPeopleMapDto(
-									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertEmployment(),
-									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
-									resultStep51.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
-									),
-							resultStep51.aggrerateWorkplace.convertExternalBudget(),
-							resultStep51.aggrerateWorkplace.convertPeopleMethod()
-							)
-					
-					);
+			result.setAggreratePersonal(resultStep51.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(resultStep51.aggreratePersonal));
+			result.setAggrerateWorkplace(resultStep51.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(resultStep51.aggrerateWorkplace));
 		} else {
-			result.setAggreratePersonal(
-					new AggregatePersonalMapDto(
-							resultStep4.aggreratePersonal.convertEstimatedSalary(),
-							resultStep4.aggreratePersonal.convertTimeCount(),
-							resultStep4.aggreratePersonal.convertWorkhours()
-							)
-					);
-			result.setAggrerateWorkplace(
-					new AggregateWorkplaceMapDto(
-							resultStep4.aggrerateWorkplace.convertLaborCostAndTime(),
-							resultStep4.aggrerateWorkplace.convertTimeCount(),
-							new AggregateNumberPeopleMapDto(
-									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertEmployment(),
-									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertClassification(),
-									resultStep4.aggrerateWorkplace.getAggrerateNumberPeople().convertJobTitleInfo()
-									),
-							resultStep4.aggrerateWorkplace.convertExternalBudget(),
-							resultStep4.aggrerateWorkplace.convertPeopleMethod()
-							)
-					);
+			result.setAggreratePersonal(resultStep4.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(resultStep4.aggreratePersonal));
+			result.setAggrerateWorkplace(resultStep4.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(resultStep4.aggrerateWorkplace));
 		}
 		return result;
 	}

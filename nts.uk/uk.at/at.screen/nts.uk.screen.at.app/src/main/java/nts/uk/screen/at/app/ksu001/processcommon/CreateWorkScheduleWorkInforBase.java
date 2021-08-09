@@ -171,12 +171,13 @@ public class CreateWorkScheduleWorkInforBase {
 							.endTime(endtTime)
 							.endTimeEditState(null)
 							.workHolidayCls(null)
-							.isEdit(false) //
-							.isActive(false) //
 							.workTypeIsNotExit(workTypeIsNotExit)
 							.workTimeIsNotExit(workTimeIsNotExit)
 							.workTypeNameKsu002(workTypeInfor.map(m -> m.getAbbreviationName()).orElse(workTypeCode == null ? null : workTypeCode + "{#KSU002_31}"))
 							.workTimeNameKsu002(workTimeSetting.map(m -> m.getWorkTimeDisplayName().getWorkTimeAbName().v()).orElse(workTimeCode == null ? null : workTimeCode + "{#KSU002_31}"))
+							.workTimeForm(!workTimeSetting.isPresent() ? null : workTimeSetting.get().getWorkTimeDivision().getWorkTimeForm().value)
+							.conditionAbc1(false)
+							.conditionAbc2(false)
 							.build();
 
 					listWorkScheduleWorkInfor.add(dto);
