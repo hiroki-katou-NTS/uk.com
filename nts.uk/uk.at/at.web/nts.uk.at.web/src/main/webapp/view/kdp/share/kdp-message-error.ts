@@ -18,7 +18,8 @@ module nts.uk.at.view.kdp.share {
     <div>
         <!-- ko if: ko.toJS($component.modeSystemNoti) -->
             <div data-bind="css: { 'error1': $component.state() === 'state1' , 'error2': $component.state() === 'state2'}">
-                <span class="text-error" data-bind="i18n: $component.messageSys" style="color: white;"></span>
+                <div class="text-error" data-bind="i18n: $component.messageCom" style="color: white;"></div>
+                <div class="text-error" data-bind="i18n: $component.messageSys" style="color: white;"></div>
             </div>
         <!-- /ko -->
         <!-- ko if: $component.showCompanyNoti() -->
@@ -73,7 +74,7 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .error1 {
             padding: 5px 3px;
             height: 57px;
-            max-height: 57px;
+            max-height: 54px;
             word-break: break-all;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -188,6 +189,7 @@ module nts.uk.at.view.kdp.share {
         messageNoti: KnockoutObservable<IMessage> = ko.observable();
         notiSet: KnockoutObservable<FingerStampSetting> = ko.observable();
         messageSys: KnockoutObservable<String> = ko.observable('');
+        messageCom: KnockoutObservable<String> = ko.observable('');
 
         modeSystemNoti: KnockoutObservable<boolean | null> = ko.observable(null);
 
@@ -346,18 +348,26 @@ module nts.uk.at.view.kdp.share {
 
                     const value: IMessage = ko.unwrap(vm.messageNoti);
 
+                    console.log(value);
+                    
+
+                    if (value.stopByCompany.systemStatus == 2) {
+                        vm.messageCom(value.stopByCompany.stopMessage);
+                    } else {
+                        vm.messageCom('');
+                    }
+
                     if (value.stopBySystem.systemStatusType == 2) {
                         vm.modeSystemNoti(true);
                         vm.messageSys(value.stopBySystem.stopMessage);
                     } else {
                         if (value.stopByCompany.systemStatus == 2) {
                             vm.modeSystemNoti(true);
-                            vm.messageSys(value.stopByCompany.stopMessage);
                         } else {
                             vm.modeSystemNoti(false);
                             vm.messageSys('');
                         }
-                    }   
+                    }
                 })
                 .then(() => {
                     vm.$blockui('clear');
