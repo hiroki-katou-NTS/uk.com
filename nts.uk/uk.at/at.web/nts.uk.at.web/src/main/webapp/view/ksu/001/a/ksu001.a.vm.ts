@@ -4351,6 +4351,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         editMode() {
             let self = this;
+            if (self.mode() == 'edit')
+                return;
             if (self.getCellsConfirmReg().length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.editModeAct(true);
@@ -4424,6 +4426,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         confirmMode() {
             let self = this;
+            if (self.mode() == 'confirm')
+                return;
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
