@@ -15,10 +15,12 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
@@ -387,7 +389,7 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 //        }
         
         AppOvertimeDetail appOvertimeDetail = new AppOvertimeDetail();
-        
+        BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
         //18.３６時間の上限チェック(新規登録)_NEW
         Time36ErrorInforList time36UpperLimitCheckResult = time36UpperLimitCheck.checkRegister(companyId, 
         		appHolidayWork.getApplication().getEmployeeID(), 
@@ -401,32 +403,50 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
         	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
             	switch(error.getTime36AgreementErrorAtr()) {
     	        	case MONTH_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1535", 
+        						this.convertTime_Short_HM(error.getAgreementTime()), 
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        				
+    	        				);
     	        		break;
     	        	case YEAR_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1536", 
+        						this.convertTime_Short_HM(error.getAgreementTime()),
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
     	        		break;
     	        	case MAX_MONTH_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1537", 
+        						this.convertTime_Short_HM(error.getAgreementTime()),
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
     	        		break;
     	        	case MAX_YEAR_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
-    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_2056", 
+        						this.convertTime_Short_HM(error.getAgreementTime()),
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
     	        		break;
     	        	case MAX_MONTH_AVERAGE_ERROR:
-    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
-    	        				Arrays.asList(
-    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
-    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
-    	        						this.convertTime(error.getAgreementTime()), 
-    	        						this.convertTime(error.getThreshold()))));
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1538", 
+    	        				error.getOpYearMonthPeriod().map(x -> x.start().year() + "/" + x.start().month()).orElse(""),
+    							error.getOpYearMonthPeriod().map(x -> x.end().year() + "/" + x.end().month()).orElse(""),
+    							this.convertTime_Short_HM(error.getAgreementTime()), 
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
     	        		break;
     	        		default: break;
             	}
             });
+        }
+        
+        if (!CollectionUtil.isEmpty(bundledBusinessExceptions.getMessageId())) {
+        	throw bundledBusinessExceptions;
         }
         
     	//	申請の矛盾チェック
@@ -607,36 +627,56 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        		Optional.of(appHolidayWork),
 	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(), 
 	        		appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
+	        
+	        BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 	        if(!time36UpperLimitCheckResult.getTime36AgreementErrorLst().isEmpty()) {
 	        	time36UpperLimitCheckResult.getTime36AgreementErrorLst().forEach(error -> {
-	            	switch(error.getTime36AgreementErrorAtr()) {
-	    	        	case MONTH_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1535", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case YEAR_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1536", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case MAX_MONTH_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1537", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case MAX_YEAR_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_2056", 
-	    	        				Arrays.asList(this.convertTime(error.getAgreementTime()), this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        	case MAX_MONTH_AVERAGE_ERROR:
-	    	        		confirmMsgOutputs.add(new ConfirmMsgOutput("Msg_1538", 
-	    	        				Arrays.asList(
-	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().start().v() : null), 
-	    	        						this.convertTime(error.getOpYearMonthPeriod().isPresent() ? error.getOpYearMonthPeriod().get().end().v() : null),
-	    	        						this.convertTime(error.getAgreementTime()), 
-	    	        						this.convertTime(error.getThreshold()))));
-	    	        		break;
-	    	        		default: break;
-	            	}
+	        		switch(error.getTime36AgreementErrorAtr()) {
+    	        	case MONTH_ERROR:
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1535", 
+        						this.convertTime_Short_HM(error.getAgreementTime()), 
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        				
+    	        				);
+    	        		break;
+    	        	case YEAR_ERROR:
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1536", 
+        						this.convertTime_Short_HM(error.getAgreementTime()),
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
+    	        		break;
+    	        	case MAX_MONTH_ERROR:
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1537", 
+        						this.convertTime_Short_HM(error.getAgreementTime()),
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
+    	        		break;
+    	        	case MAX_YEAR_ERROR:
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_2056", 
+        						this.convertTime_Short_HM(error.getAgreementTime()),
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
+    	        		break;
+    	        	case MAX_MONTH_AVERAGE_ERROR:
+    	        		bundledBusinessExceptions.addMessage(
+    	        				"Msg_1538", 
+    	        				error.getOpYearMonthPeriod().map(x -> x.start().year() + "/" + x.start().month()).orElse(""),
+    							error.getOpYearMonthPeriod().map(x -> x.end().year() + "/" + x.end().month()).orElse(""),
+        						this.convertTime_Short_HM(error.getAgreementTime()), 
+        						this.convertTime_Short_HM(error.getThreshold())
+    	        		);
+    	        		break;
+    	        		default: break;
+            	}
 	            });
+	        }
+	        
+	        if (!CollectionUtil.isEmpty(bundledBusinessExceptions.getMessageId())) {
+	        	throw bundledBusinessExceptions;
 	        }
 	        
 	    	//	申請の矛盾チェック
@@ -647,6 +687,10 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        
 		});
 		return confirmMsgOutputMap;
+	}
+	
+	private String convertTime_Short_HM(int time) {
+		return (time / 60 + ":" + (time % 60 < 10 ? "0" + time % 60 : time % 60));
 	}
 	
 	private List<ConfirmMsgOutput> toMultiMessage(List<ConfirmMsgOutput> confirmMsgOutputs){
