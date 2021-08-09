@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmployeeInfoDto;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -49,14 +50,14 @@ public class RoleIndividualGrant extends AggregateRoot {
 		this.roleType = roleType;
 		this.validPeriod = validPeriod;
 	}
-	
+
 	public static RoleIndividualGrant createFromJavaType(String userId, String roleId, String companyId,int roleType, GeneralDate validPeriodStart,GeneralDate validPeriodEnd) {
 		return new RoleIndividualGrant(userId,
 			/**roleID*/
 			roleId,
 			companyId,
 			EnumAdaptor.valueOf(roleType, RoleType.class),
-			new  DatePeriod(validPeriodStart, validPeriodEnd) );
+			new  DatePeriod(validPeriodStart, validPeriodEnd));
 	}
 
 }

@@ -13,22 +13,10 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItem;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryItemRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
-import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.affiliate.*;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
-import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
-import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.AffJobTitleHistoryItemExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.DateHistoryItemExport;
-import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
@@ -47,7 +35,6 @@ import nts.uk.ctx.sys.shared.dom.user.UserName;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
 public class RoleIndividualFinder {
@@ -78,6 +65,9 @@ public class RoleIndividualFinder {
 
     @Inject
     private SyJobTitlePub syJobTitlePub;
+
+    @Inject
+    private EmployeeRequestAdapter employeeRequestAdapter;
 
 
     private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
@@ -325,5 +315,52 @@ public class RoleIndividualFinder {
             return jobTitle;
         }
         return null;
+    }
+
+    public CompanyInfoDto searchCompanyInfo(String companyId) {
+        if(companyId == null) {
+            return null;
+        }
+        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
+        CompanyInfoDto companyInfoDto = new CompanyInfoDto(companyInfo.getCompanyId(), companyInfo.getCompanyCode(), companyInfo.getCompanyName());
+        return companyInfoDto;
+    }
+    public List<EmployeeBasicInfoDto> searchEmployyeList(List<String> employyeid) {
+        String companyId = AppContexts.user().companyId();
+
+        // 社員情報リストを取得する
+        List<EmployeeBasicInfoDto> data = employeeRequestAdapter.getPerEmpBasicInfo(companyId, employyeid)
+                .stream().map(c -> EmployeeBasicInfoDto.fromDomain(c)).collect(Collectors.toList());
+
+        if(data.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return data;
+    }
+
+    public List<EmployeePosition> getSyJobTitlePub(List<String> employyeid) {
+        GeneralDate baseDate = GeneralDate.today();
+        List<EmployeeJobHistExport> listdata =  syJobTitlePub.findSJobHistByListSIdV2(employyeid, baseDate);
+        if (listdata.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return listdata.stream().map(m -> new EmployeePosition(m.getEmployeeId(), m.getJobTitleID(), m.getJobTitleCode())).collect(Collectors.toList());
+    }
+
+    public List<SWkpHistRcImported> getWorkPlacePub(List<String> employyeid) {
+        GeneralDate baseDate = GeneralDate.today();
+        List<SWkpHistRcImported> data = workplacePub.findBySId(employyeid, baseDate)
+                .stream()
+                .map(e -> new SWkpHistRcImported(
+                e.getDateRange(),
+                e.getEmployeeId(),
+                e.getWorkplaceId(),
+                e.getWorkplaceCode(),
+                e.getWorkplaceName(),
+                e.getWkpDisplayName()
+        )).collect(Collectors.toList());
+        if(data.isEmpty())
+            return Collections.emptyList();
+        return data;
     }
 }

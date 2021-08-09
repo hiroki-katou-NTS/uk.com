@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.auth.ws.grant.roleindividual;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,12 +12,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.affiliate.JobTitleHistoryExport;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.CreateRoleIndividualGrantCommandResult;
@@ -32,6 +38,7 @@ import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
+import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -166,5 +173,26 @@ public class RoleIndividualWebService extends WebService {
 	@Path("getJobTitle")
 	public JobTitle GetJobTitle(String employeeID){
 		return this.roleIndividualFinder.GetJobTitle(employeeID);
+	}
+
+	@POST
+	@Path("searchCompanyInfo")
+	public CompanyInfoDto searchCompanyInfo(String companyId) {
+		return this.roleIndividualFinder.searchCompanyInfo(companyId);
+	}
+	@POST
+	@Path("searchEmployyeList")
+	public List<EmployeeBasicInfoDto> searchEmployyeList(EiDDto employyeid) {
+		return this.roleIndividualFinder.searchEmployyeList(employyeid.getEmployyeId());
+	}
+	@POST
+	@Path("getSyJobTitlePub")
+	public List<EmployeePosition> getSyJobTitlePub(EiDDto employyeid) {
+		return this.roleIndividualFinder.getSyJobTitlePub(employyeid.getEmployyeId());
+	}
+	@POST
+	@Path("getWorkPlacePub")
+	public List<SWkpHistRcImported> getWorkPlacePub(EiDDto employyeid) {
+		return this.roleIndividualFinder.getWorkPlacePub(employyeid.getEmployyeId());
 	}
 }

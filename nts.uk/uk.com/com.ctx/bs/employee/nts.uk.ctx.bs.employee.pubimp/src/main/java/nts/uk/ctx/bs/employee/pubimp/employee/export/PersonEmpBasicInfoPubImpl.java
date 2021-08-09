@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
@@ -21,6 +22,7 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
+import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmployeeInfoDto;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -135,7 +137,20 @@ public class PersonEmpBasicInfoPubImpl implements PersonEmpBasicInfoPub {
 							person.getBirthDate(), emp.getEmployeeCode().v(), period.start(), period.end());
 				}).collect(Collectors.toList());
 	}
-	
+
+
+
+	@Override
+	public List<PersonEmployeeInfoDto> getEmployeesMatchingName(List<String> pid, String companyId) {
+		val data = empDataRepo.findEmployeesMatchingName(pid,companyId);
+		return data.stream().map(item -> new PersonEmployeeInfoDto(
+				item.getPersonId(),
+				item.getEmployeeId(),
+				item.getEmployeeCode().v(),
+                ""
+		)).collect(Collectors.toList());
+	}
+
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
 
 		Map<Object, Boolean> seen = new ConcurrentHashMap<>();

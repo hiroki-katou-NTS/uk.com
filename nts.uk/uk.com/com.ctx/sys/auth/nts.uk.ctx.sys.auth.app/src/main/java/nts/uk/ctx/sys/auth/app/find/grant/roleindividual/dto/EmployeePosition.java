@@ -7,11 +7,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class WorkPlaceInfo {
+@AllArgsConstructor
+public class EmployeePosition {
 
-    private String workPlaceCode;
+    /** 社員ID **/
+    private String empID;
+    /**	職位ID **/
+    private String jobtitleID;
 
-    private String workPlaceName;
+    private String jobtitleCode;
+
 }
