@@ -1,6 +1,9 @@
 module nts.uk.com.view.cas013.b.viewmodel {
 
 
+    import List = _.List;
+    import Employee = nts.uk.com.view.cas004.b.model.Employee;
+
     export class ScreenModel {
         dataSource: any;
         columns: Array<any>;
@@ -14,6 +17,8 @@ module nts.uk.com.view.cas013.b.viewmodel {
         companyCode: KnockoutObservable<string>;
         companyName: KnockoutObservable<string>;
         ListEmployyeId: Array<any>;
+        ListEmployye: KnockoutObservableArray<any>;
+        empListView: KnockoutObservableArray<EmployeeList>
 
         special: KnockoutObservable<boolean>;
         multi: KnockoutObservable<boolean>;
@@ -47,11 +52,13 @@ module nts.uk.com.view.cas013.b.viewmodel {
             var self = this;
             self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
             self.companyId = nts.uk.ui.windows.getShared("companyId");
-            self.companyCode = nts.uk.ui.windows.getShared("companyCode");
-            self.companyName = nts.uk.ui.windows.getShared("companyName");
-            self.ListEmployyeId = nts.uk.ui.windows.getShared("ListEmployyeId")
+            self.ListEmployyeId = nts.uk.ui.windows.getShared("ListEmployyeId");
+            self.companyCode = ko.observable('');
+            self.companyName = ko.observable('');
             self.special = ko.observable(true);
             self.multi = ko.observable(true);
+            self.ListEmployye = ko.observableArray([]);
+            self.empListView = ko.observableArray([]);
 
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
@@ -64,7 +71,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
             //B1_2
             self.itemList = ko.observableArray([
-                new ItemModel(nts.uk.ui.windows.getShared("companyCode"), nts.uk.ui.windows.getShared("companyName")),
+
             ]);
             self.selectedCode = ko.observable('1');
             self.isEnable = ko.observable(true);
@@ -106,27 +113,85 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
         }
 
+        startPage(): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred();
+            var pid = nts.uk.ui.windows.getShared("companyId");
+            var eid = nts.uk.ui.windows.getShared("ListEmployyeId");
+            var sid  = [];
+            for (let i =0; i<eid.length;i++){
+                let item = eid[i].employyeId;
+                sid.push(item);
+            }
+
+            service.searchCompanyInfo(pid).done(function(data) {
+                var items = [];
+                if(data) {
+                    items.push(data.companyCode, data.companyName);
+                    self.companyCode(data.companyCode)
+                    self.companyName(data.companyName)
+                    self.itemList = ko.observableArray([
+                        new ItemModel(data.companyCode, data.companyName),
+                    ]);
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                }
+                dfd.resolve();
+            })
+            service.searchEmployyeList(sid).done(function(data) {
+                var iteme = [];
+                if(data) {
+                    iteme.push(data.employeeId, data.employeeCode, data.employeeName)
+                    self.empListView = ko.observableArray([
+                        new EmployeeList(data.employeeId, data.employeeCode, data.employeeName),
+                    ])
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                }
+                dfd.resolve();
+            })
+            // service.getWorkPlacePub(sid).done(function(data) {
+            //     if(data) {
+            //         console.log("Haha " + data)
+            //     } else {
+            //         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+            //     }
+            //     dfd.resolve();
+            // })
+            service.getSyJobTitlePub(sid).done(function(data) {
+                if(data) {
+                    console.log("Haha " + data)
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                }
+                dfd.resolve();
+            })
+
+            return dfd.promise();
+        }
+
         search() {
             let self = this;
-            if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CAS013_33")] });
-                return;
-            }
+
             var key = self.searchValue().trim();
             if(key.length>3000){
                 return;
             }
-            var Special = self.special();
-            var Multi = self.multi();
-            var roleType =  self.roleTypeParam;
-            nts.uk.ui.block.invisible(); 
-            service.searchUser(key, Special, Multi, roleType).done(function(data) {
-                var items = [];
-                items = _.sortBy(data, ["loginID"]);
-                self.dataSource(items);
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
+            // var Special = self.special();
+            // var Multi = self.multi();
+            // var roleType =  self.roleTypeParam;
+            // nts.uk.ui.block.invisible();
+            // service.searchUser(key, Special, Multi, roleType).done(function(data) {
+            //     var items = [];
+            //     items = _.sortBy(data, ["loginID"]);
+            //     self.dataSource(items);
+            // }).always(() => {
+            //     nts.uk.ui.block.clear();
+            // });
+            // if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
+            //     nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CAS013_33")] });
+            //     return;
+            // }
 
         }
 
@@ -136,13 +201,6 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
         decision() {
             var self = this;
-            new service.Service().searchCompanyInfo(nts.uk.ui.windows.getShared("companyId")).done(function (data) {
-                if(data) {
-                    console.log("Haha " + data)
-                }
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            })
             if (nts.uk.text.isNullOrEmpty(self.selectUserID())) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_218", messageParams: [nts.uk.resource.getText("CAS013_19")] });
                 return;
@@ -183,6 +241,18 @@ module nts.uk.com.view.cas013.b.viewmodel {
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    class EmployeeList {
+        employeeId: string;
+        employeeCode: string;
+        employeeName: string;
+
+        constructor(employeeId: string, employeeCode: string, employeeName: string) {
+            this.employeeId = employeeId;
+            this.employeeCode = employeeCode;
+            this.employeeName = employeeName;
         }
     }
 
