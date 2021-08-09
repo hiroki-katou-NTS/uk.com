@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -37,7 +38,7 @@ public class ScreenQueryCreateWorkSchedule {
 	public List<WorkScheduleWorkInforDto> get(
 			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
 			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map,
-			Boolean isAchievement
+			Boolean getActualData
 			) {
 		
 		// 1: 作成する(Map<社員の予定管理状態, Optional<勤務予定>>)
@@ -45,19 +46,17 @@ public class ScreenQueryCreateWorkSchedule {
 					createWorkScheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
 		
 		// 2実績も取得するか == true
-		if (isAchievement) {
+		if (getActualData) {
 			// 2.1: 作成する(Map<社員の予定管理状態, Optional<日別勤怠(Work)>>)
 			List<WorkScheduleWorkInforDto> workScheduleWorkInfor2 =
 						createWorkScheduleWorkInforBase.getDataScheduleOfWorkInfo(map);
 			
 			// 2.2 
-			List<WorkScheduleWorkInforDto> list1 = workScheduleWorkInfor1.stream()
-								   .filter(x -> !workScheduleWorkInfor2.stream()
-										   .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
-								   .collect(Collectors.toList());
+			List<WorkScheduleWorkInforDto> list1 = 
+					CollectionUtil.isEmpty(workScheduleWorkInfor2) ? new ArrayList<WorkScheduleWorkInforDto>() : workScheduleWorkInfor2;
 			
-			List<WorkScheduleWorkInforDto> list2 = workScheduleWorkInfor2.stream()
-							   .filter(x -> workScheduleWorkInfor1.stream()
+			List<WorkScheduleWorkInforDto> list2 = workScheduleWorkInfor1.stream()
+							   .filter(x -> !workScheduleWorkInfor2.stream()
 									   .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
 							   .collect(Collectors.toList());
 			list1.addAll(list2);

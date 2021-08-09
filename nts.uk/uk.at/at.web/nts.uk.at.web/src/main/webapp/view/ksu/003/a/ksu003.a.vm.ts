@@ -4808,9 +4808,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				checkOpen2 = _.filter(self.lstDis, (x: any) => { return x.empId === empId && x.worktimeName == true });
 
 			if (checkOpen.length < 1 && checkOpen2.length < 1) {
+<<<<<<< HEAD
 				let param = {
 					disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.disWkTypeCon,
 					disAbleWkTypeCodeLst : self.dataInitStartKsu003Dto().functionControlDto.disAbleWkTypeCodeLst
+=======
+				
+				if (workTypeCode != "") {
+					self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList.push(workTypeCode);
+				}
+				
+				let param = {
+					disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.displayWorkTypeControl,
+					disAbleWkTypeCodeLst : self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList
+>>>>>>> pj/at/dev/team_C/deploy_5_3_and_1_7
 				}
 				setShared('paramKsu003Kdl003', param);
 				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
