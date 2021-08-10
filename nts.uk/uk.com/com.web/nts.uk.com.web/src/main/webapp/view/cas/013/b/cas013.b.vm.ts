@@ -1,9 +1,5 @@
 module nts.uk.com.view.cas013.b.viewmodel {
 
-
-    import List = _.List;
-    import Employee = nts.uk.com.view.cas004.b.model.Employee;
-
     export class ScreenModel {
         dataSource: any;
         columns: Array<any>;
