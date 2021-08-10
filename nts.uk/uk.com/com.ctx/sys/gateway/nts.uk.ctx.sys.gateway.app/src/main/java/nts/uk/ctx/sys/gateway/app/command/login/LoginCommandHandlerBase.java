@@ -17,6 +17,7 @@ import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
 import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
 import nts.uk.shr.com.net.Ipv4Address;
+import nts.uk.shr.com.system.property.UKServerSystemProperties;
 
 /**
  * TenantLocatorを想定したログイン処理の基底クラス
@@ -51,14 +52,16 @@ public abstract class LoginCommandHandlerBase<
 				request.getHeader("user-agent"));
 		
 		// テナント認証
-		val tenantAuthResult = ConnectDataSourceOfTenant.connect(
-				require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
-		
-		if(tenantAuthResult.isFailure()) {
-			transaction.execute(() -> {
-				tenantAuthResult.getAtomTask().run();
-			});
-			tenantAuthResult.throwBusinessException();
+		if (UKServerSystemProperties.isCloud()) {
+			val tenantAuthResult = ConnectDataSourceOfTenant.connect(
+					require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
+			
+			if(tenantAuthResult.isFailure()) {
+				transaction.execute(() -> {
+					tenantAuthResult.getAtomTask().run();
+				});
+				tenantAuthResult.throwBusinessException();
+			}
 		}
 		
 		// 認証
