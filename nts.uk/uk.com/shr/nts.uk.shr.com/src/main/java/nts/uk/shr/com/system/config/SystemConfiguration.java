@@ -29,6 +29,9 @@ public class SystemConfiguration implements InitializeWhenDeploy {
 	/** インストール形式 */
 	private InstallationType installationType;
 	
+	/** オンプレモードでのテナントコード */
+	private Optional<String> tenantCodeOnPremise;
+	
 	/** インストール製品情報 */
 	private List<InstalledProduct> installedProducts;
 	
@@ -46,6 +49,7 @@ public class SystemConfiguration implements InitializeWhenDeploy {
 		this.systemName = this.getValue("SystemName").asString().orElse("");
 		this.installationType = UKServerSystemProperties.isCloud()
 				? InstallationType.CLOUD : InstallationType.ON_PREMISES;
+		this.tenantCodeOnPremise = this.getValue("TenantCodeOnPremise").asString();
 		this.installedProducts = this.loadInstalledProducts();
 		this.pathToManual = this.getValue("PathToManual").asString().orElse("");
 		this.batchServerAddress = this.getValue("BatchServer").asString();

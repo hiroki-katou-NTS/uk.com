@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZone_NewDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -125,11 +126,11 @@ public class HolidayShipmentMobileWS extends WebService {
 				Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
 				Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()));
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
-		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
-				companyId, 
-				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
-				abs, 
-				rec);
+//		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
+//				companyId, 
+//				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+//				abs, 
+//				rec);
 		
 		if(rec.isPresent()) {
 			List<ConfirmMsgOutput> comfirmLst1 = newBeforeRegister.processBeforeRegister_New(
@@ -140,7 +141,10 @@ public class HolidayShipmentMobileWS extends WebService {
 					null, 
 					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 					new ArrayList<>(), 
-					appDispInfoStartup);
+					appDispInfoStartup, 
+					Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
+					Optional.empty(), 
+					rec.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 			result.addAll(comfirmLst1);
 		}
 		
@@ -153,7 +157,10 @@ public class HolidayShipmentMobileWS extends WebService {
 					null, 
 					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 					new ArrayList<>(), 
-					appDispInfoStartup);
+					appDispInfoStartup, 
+                    Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
+                    Optional.empty(), 
+                    abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 			result.addAll(comfirmLst2);
 		}
 		return result;

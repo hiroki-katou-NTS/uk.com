@@ -9,6 +9,8 @@ import org.junit.Test;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Mocked;
+import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
+import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 public class CheckSystemAvailabilityTest {

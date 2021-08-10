@@ -60,6 +60,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.busi
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -201,6 +202,7 @@ public class BusinessTripFinder {
                 ));
 
         BusinessTripInfoOutput output = param.getBusinessTripInfoOutput().toDomain();
+        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
@@ -211,10 +213,12 @@ public class BusinessTripFinder {
                 null,
                 output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                 Collections.emptyList(),
-                output.getAppDispInfoStartup()
+                output.getAppDispInfoStartup(), 
+                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
+                Optional.empty(), 
+                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTimeCode()).findFirst().map(WorkTimeCode::v)
         );
 
-        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
@@ -518,7 +522,10 @@ public class BusinessTripFinder {
                     null,
                     businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
-                    businessTripInfoOutput.getAppDispInfoStartup()
+                    businessTripInfoOutput.getAppDispInfoStartup(),
+                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()), 
+                    Optional.empty(), 
+                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst()
             );
 
             // アルゴリズム「申請日を変更する処理」を実行する

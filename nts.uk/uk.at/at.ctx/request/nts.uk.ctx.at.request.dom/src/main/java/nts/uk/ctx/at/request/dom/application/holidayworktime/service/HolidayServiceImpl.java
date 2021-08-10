@@ -65,6 +65,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
+import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
@@ -315,6 +318,23 @@ public class HolidayServiceImpl implements HolidayService {
 		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
 		
 		//2-1.新規画面登録前の処理
+		int totalOverTime = 0;
+        totalOverTime = appHolidayWork.getApplicationTime().getApplicationTime().stream()
+                .map(x -> x.getApplicationTime().v())
+                .mapToInt(Integer::intValue)
+                .sum();
+        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() 
+                && appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight() != null ? 
+                appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
+        totalOverTime += appHolidayWork.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
+        TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
+                0, 
+                0, 
+                0, 
+                0, 
+                0, 
+                totalOverTime, 
+                new ArrayList<TimeLeaveApplicationDetailShare>());
 		List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(companyId, 
 				EmploymentRootAtr.APPLICATION,
 				isProxy, 
@@ -322,7 +342,10 @@ public class HolidayServiceImpl implements HolidayService {
 				null,
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				Collections.emptyList(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput(), 
+				Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
+				Optional.of(timeDigestionParam), 
+				appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
 		
 		//3.個別エラーチェック
 		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 0);	//mode new = 0
@@ -505,6 +528,22 @@ public class HolidayServiceImpl implements HolidayService {
 			workTimeCode = !workTimeCode.equals(appHdWorkDispInfoOutput.getWorkInfo().get().getWorkTime()) ? workTimeCode : null;			
 		}
 		//	4-1.詳細画面登録前の処理
+	      int totalOverTime = 0;
+	        totalOverTime = appHolidayWork.getApplicationTime().getApplicationTime().stream()
+	                .map(x -> x.getApplicationTime().v())
+	                .mapToInt(Integer::intValue)
+	                .sum();
+	        totalOverTime += appHolidayWork.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
+	                appHolidayWork.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
+	        totalOverTime += appHolidayWork.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
+	        TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
+	                0, 
+	                0, 
+	                0, 
+	                0, 
+	                0, 
+	                totalOverTime, 
+	                new ArrayList<TimeLeaveApplicationDetailShare>());
 		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyId, appHolidayWork.getApplication().getEmployeeID(), 
 				appHolidayWork.getAppDate().getApplicationDate(), 
 				EmploymentRootAtr.APPLICATION.value, 
@@ -513,7 +552,9 @@ public class HolidayServiceImpl implements HolidayService {
 				appHolidayWork.getApplication().getVersion(), 
 				workTypeCode, 
 				workTimeCode, 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput(), 
+				new ArrayList<String>(), 
+				Optional.of(timeDigestionParam));
 		
 		//3.個別エラーチェック
 		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 1);	//mode update = 1

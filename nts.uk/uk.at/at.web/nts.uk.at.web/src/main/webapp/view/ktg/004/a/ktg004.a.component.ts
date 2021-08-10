@@ -59,22 +59,31 @@ module nts.uk.ui.ktg004.a {
                         </colgroup>
                         <tbody data-bind="foreach: { data: $component.itemsDisplay, as: 'row' }">
                             <tr class="row-show-ktg004">
-                                <td style="position: relative;">
-                                    <div data-bind="if: row.btn" style="float: left; position: relative;">
-                                        <!-- A2_2 -->
-                                        <button class="icon ktg004-no-border" data-bind="
-                                            click: function() { $component.openKDW003() },
-                                            ntsIcon: { no: 201, width: 25, height: 28 },
-                                            enable: row.canClick">
-                                        </button>
-                                        <!-- A2_3 -->
-                                        <i style="position: absolute; left: 13px; bottom: 0px; cursor: pointer;"
-                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.openKDW003() }">
-                                        </i>
-                                    </div>
-                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
-                                </td>
-                                <td class="text-right" data-bind="i18n: row.text"></td>
+								<td>
+									<div style="display: flex">
+		                                <div style="position: relative; width: 50%">
+		                                    <div data-bind="if: row.btn" style="float: left; position: relative;">
+		                                        <!-- A2_2 -->
+		                                        <button class="icon ktg004-no-border" data-bind="
+		                                            click: function() { $component.openKDW003() },
+		                                            ntsIcon: { no: 201, width: 25, height: 28 },
+		                                            enable: row.canClick">
+		                                        </button>
+		                                        <!-- A2_3 -->
+		                                        <i style="position: absolute; left: 13px; bottom: 0px; cursor: pointer;"
+		                                            data-bind="visible: row.canClick, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.openKDW003() }">
+		                                        </i>
+		                                    </div>
+		                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
+		                                </div>
+										<div style="width: 50%; margin-top: 5px ">
+			                                <div class="text-right" data-bind="i18n: row.text"></div>										
+										</div>
+									</div>
+									<div data-bind="if: row.name == 'KTG004_9'">
+										<div data-bind="ntsFormLabel: { required: false, text: row.grantDay }"></div>									
+									</div>
+								</td>
                             </tr>
                         </tbody>
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
@@ -174,7 +183,9 @@ module nts.uk.ui.ktg004.a {
                         numberOfSubstituteHoliday,
                         nursingRemainingNumberOfChildren,
                         remainingHolidays,
-                        specialHolidaysRemainings
+                        specialHolidaysRemainings,
+						grantDate,
+						grantDays
                     } = remainingNumberInfor;
 
                     const itemsDisplay: ItemDisplay[] = [];
@@ -242,7 +253,20 @@ module nts.uk.ui.ktg004.a {
                                     itemsDisplay
                                         .push({
                                             name: 'KTG004_9',
-                                            text: vm.$i18n('KTG004_15', [`${numberOfAnnualLeaveRemain.day}`])
+                                            text: 
+												numberOfAnnualLeaveRemain.time == ZERO_TIME
+												?
+												vm.$i18n('KTG004_15', [`${numberOfAnnualLeaveRemain.day}`])
+												:
+												vm.$i18n('KTG004_28', [`${numberOfAnnualLeaveRemain.day}`, `${numberOfAnnualLeaveRemain.time}`]),
+											grantDay:
+												_.isNil(grantDate)
+												?
+												`${vm.$i18n('KTG004_26')} ${vm.$i18n('KTG004_26')}`
+												:
+												`${vm.$i18n('KTG004_26')}${moment(grantDate).format("YYYY/MM/DD")}　${grantDays}日`
+												
+													
                                         })
                                     break;
                                 case 28:
@@ -256,7 +280,12 @@ module nts.uk.ui.ktg004.a {
                                     itemsDisplay
                                         .push({
                                             name: 'KTG004_11',
-                                            text: vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
+                                            text: 
+												numberOfSubstituteHoliday.time == ZERO_TIME
+												?
+												vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
+												:
+												vm.$i18n('KTG004_28', [`${numberOfSubstituteHoliday.day}`, `${numberOfSubstituteHoliday.time}`])
                                         })
                                     break;
                                 case 30:
@@ -270,14 +299,24 @@ module nts.uk.ui.ktg004.a {
                                     itemsDisplay
                                         .push({
                                             name: 'KTG004_13',
-                                            text: vm.$i18n('KTG004_15', [`${nursingRemainingNumberOfChildren.day}`])
+                                            text: 
+												nursingRemainingNumberOfChildren.time == ZERO_TIME
+												?
+												vm.$i18n('KTG004_15', [`${nursingRemainingNumberOfChildren.day}`])
+												:
+												vm.$i18n('KTG004_28', [`${nursingRemainingNumberOfChildren.day}`, `${nursingRemainingNumberOfChildren.time}`])
                                         })
                                     break;
                                 case 32:
                                     itemsDisplay
                                         .push({
                                             name: 'KTG004_14',
-                                            text: vm.$i18n('KTG004_15', [`${longTermCareRemainingNumber.day}`])
+                                            text:
+												longTermCareRemainingNumber.time == ZERO_TIME
+												? 
+												vm.$i18n('KTG004_15', [`${longTermCareRemainingNumber.day}`])
+												:
+												vm.$i18n('KTG004_28', [`${longTermCareRemainingNumber.day}`, `${longTermCareRemainingNumber.time}`])
                                         })
                                     break;
                             }
@@ -296,7 +335,12 @@ module nts.uk.ui.ktg004.a {
                                 .push({
                                     code,
                                     name,
-                                    specialResidualNumber: vm.$i18n('KTG004_15', [`${specialResidualNumber.day}`])
+                                    specialResidualNumber: 
+											specialResidualNumber.time == ZERO_TIME
+											?
+											vm.$i18n('KTG004_15', [`${specialResidualNumber.day}`])
+											:
+											vm.$i18n('KTG004_28', [`${specialResidualNumber.day}`, `${specialResidualNumber.time}`])
                                 });
                         })
                         .value();
@@ -336,13 +380,17 @@ module nts.uk.ui.ktg004.a {
 
             vm.$jump('at', WINDOWS.KTG003A);
         }
+
+		
     }
+	const ZERO_TIME = `0:00`;
 
     interface ItemDisplay {
         name: string;
         text: string;
         btn?: boolean;
         canClick?: boolean;
+		grantDay?: string;
     }
 
     interface SpecialHolidaysRemaining {
@@ -403,6 +451,8 @@ module nts.uk.ui.ktg004.a {
         nursingRemainingNumberOfChildren: NumberOfShift;
         remainingHolidays: number;
         specialHolidaysRemainings: SpecialHolidaysRemainings[];
+		grantDate?: string;
+		grantDays: number;
     }
 
     interface SpecialHolidaysRemainings {

@@ -3663,7 +3663,8 @@ var nts;
                 com: 'nts.uk.com.web',
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web',
-                hr: 'nts.uk.hr.web'
+                hr: 'nts.uk.hr.web',
+                cloud: 'nts.uk.cloud.web'
             };
             var QueryString = /** @class */ (function () {
                 function QueryString() {

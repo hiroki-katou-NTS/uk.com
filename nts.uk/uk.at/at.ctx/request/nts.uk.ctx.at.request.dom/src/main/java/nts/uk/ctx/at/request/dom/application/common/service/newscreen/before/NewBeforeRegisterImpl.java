@@ -2,17 +2,22 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
@@ -38,6 +43,16 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EarchInterimRemainCheck;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInputParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionUsageInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
@@ -65,6 +80,9 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
+	
+	@Inject
+	private InterimRemainDataMngCheckRegisterRequest interimRemainDataMngCheckRegisterRequest;
 	
 	// moi nguoi chi co the o mot cty vao mot thoi diem
 	// check xem nguoi xin con trong cty k
@@ -192,7 +210,8 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	@Override
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
 			Application application, OvertimeAppAtr overtimeAppAtr, List<MsgErrorOutput> msgErrorLst,
-			List<GeneralDate> lstDateHd, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+			List<GeneralDate> lstDateHd, AppDispInfoStartupOutput appDispInfoStartupOutput, List<String> workTypeCds, 
+			Optional<TimeDigestionParam> timeDigestionUsageInfor, Optional<String> workTimeCode) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		// アルゴリズム「未入社前チェック」を実施する
 		retirementCheckBeforeJoinCompany(companyID, application.getEmployeeID(), application.getAppDate().getApplicationDate());
@@ -263,6 +282,90 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				confirmationCheck(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}
 		}
+		
+		// 登録時の残数チェック
+		List<VacationTimeInforNew> vacationTimeInforNews = timeDigestionUsageInfor.isPresent() ? 
+		        timeDigestionUsageInfor.get().getTimeLeaveApplicationDetails().stream().map(x -> 
+		                new VacationTimeInforNew(
+		                        x.getAppTimeType(), 
+		                        x.getTimeDigestApplication().getTimeAnnualLeave(), 
+		                        x.getTimeDigestApplication().getTimeOff(), 
+		                        x.getTimeDigestApplication().getOvertime60H(), 
+		                        x.getTimeDigestApplication().getTimeSpecialVacation(), 
+		                        x.getTimeDigestApplication().getChildTime(), 
+		                        x.getTimeDigestApplication().getNursingTime(), 
+		                        x.getTimeDigestApplication().getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y))))
+		                        .collect(Collectors.toList()) : new ArrayList<VacationTimeInforNew>();
+		AppRemainCreateInfor appRemainCreateInfor = new AppRemainCreateInfor(
+		        application.getEmployeeID(), 
+		        application.getAppID(), 
+		        application.getInputDate(), 
+		        application.getAppDate().getApplicationDate(), 
+		        EnumAdaptor.valueOf(application.getPrePostAtr().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class), 
+		        EnumAdaptor.valueOf(application.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class), 
+		        workTypeCds.isEmpty() ? Optional.empty() : Optional.of(workTypeCds.get(0)),
+		        workTimeCode, 
+		        vacationTimeInforNews,
+		        Optional.of(application.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION) && timeDigestionUsageInfor.isPresent() 
+		            ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 
+		        Optional.of(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION) && timeDigestionUsageInfor.isPresent()
+		            ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 
+		        application.getOpAppStartDate().map(ApplicationDate::getApplicationDate), 
+		        application.getOpAppEndDate().map(ApplicationDate::getApplicationDate), 
+		        lstDateHd, 
+		        timeDigestionUsageInfor.map(TimeDigestionParam::toTimeDigestionUsageInfor));
+		InterimRemainCheckInputParam param = new InterimRemainCheckInputParam(
+		        companyID, 
+		        application.getEmployeeID(), 
+		        new DatePeriod(periodCurrentMonth.getStartDate(), periodCurrentMonth.getStartDate().addYears(1).addDays(-1)), 
+		        false, 
+		        application.getAppDate().getApplicationDate(), 
+		        new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()), 
+		        true, 
+		        new ArrayList<RecordRemainCreateInfor>(), 
+		        new ArrayList<ScheRemainCreateInfor>(), 
+		        Arrays.asList(appRemainCreateInfor), 
+		        workTypeCds, 
+		        timeDigestionUsageInfor);
+		EarchInterimRemainCheck earchInterimRemainCheck = interimRemainDataMngCheckRegisterRequest.checkRegister(param);
+		
+		// 代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分　or 超休不足区分　OR　子の看護不足区分　OR　介護不足区分 = true（残数不足）
+//		if (earchInterimRemainCheck.isChkSubHoliday() 
+//		        || earchInterimRemainCheck.isChkPause()
+//		        || earchInterimRemainCheck.isChkAnnual()
+//		        || earchInterimRemainCheck.isChkFundingAnnual()
+//		        || earchInterimRemainCheck.isChkSpecial()
+//		        || earchInterimRemainCheck.isChkSuperBreak()
+//		        || earchInterimRemainCheck.isChkChildNursing()
+//		        || earchInterimRemainCheck.isChkLongTermCare()) {
+//		    // エラーメッセージ（Msg_1409）
+//		    throw new BusinessException("Msg_1409");
+//		}
+		if (earchInterimRemainCheck.isChkSubHoliday()) {
+		    throw new BusinessException("Msg_1409", "代休不足区分");
+		}
+		if (earchInterimRemainCheck.isChkPause()) {
+		    throw new BusinessException("Msg_1409", "振休不足区分");
+		}
+		if (earchInterimRemainCheck.isChkAnnual()) {
+		    throw new BusinessException("Msg_1409", "年休不足区分");
+		}
+		if (earchInterimRemainCheck.isChkFundingAnnual()) {
+		    throw new BusinessException("Msg_1409", "積休不足区分");
+		}
+		if (earchInterimRemainCheck.isChkSpecial()) {
+		    throw new BusinessException("Msg_1409", "特休不足区分");
+		}
+		if (earchInterimRemainCheck.isChkSuperBreak()) {
+		    throw new BusinessException("Msg_1409", "超休不足区分");
+		}
+		if (earchInterimRemainCheck.isChkChildNursing()) {
+		    throw new BusinessException("Msg_1409", "子の看護不足区分");
+		}
+		if (earchInterimRemainCheck.isChkLongTermCare()) {
+		    throw new BusinessException("Msg_1409", "介護不足区分");
+		}
+		
 		return result;
 	}
 	

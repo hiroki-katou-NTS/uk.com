@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * 休暇残数情報
@@ -15,46 +16,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RemainVacationInfo {
-	
-//	/**
-//	 * 年休管理区分
-//	 */
-//	private boolean yearManage;
-//	
-//	/**
-//	 * 代休管理区分
-//	 */
-//	private boolean subHdManage;
-//	
-//	/**
-//	 * 振休管理区分
-//	 */
-//	private boolean subVacaManage;
-//	
-//	/**
-//	 * 積休管理区分
-//	 */
-//	private boolean retentionManage;
-//	
-//	/**
-//	 * 年休残数
-//	 */
-//	private Double yearRemain;
-//	
-//	/**
-//	 * 代休残数
-//	 */
-//	private Double subHdRemain;
-//	
-//	/**
-//	 * 振休残数
-//	 */
-//	private Double subVacaRemain;
-//	
-//	/**
-//	 * 積休残数
-//	 */
-//	private Double stockRemain;
 	
     // 年休管理
 	private AnualLeaveManagement annualLeaveManagement;
@@ -106,4 +67,10 @@ public class RemainVacationInfo {
     
     // 介護残時間
     private Optional<Integer> nirsingHourRemain;
+    
+    // 付与年月日
+    private Optional<GeneralDate> grantDate;
+    
+    // 付与日数
+    private Optional<Integer> grantDays;
 }

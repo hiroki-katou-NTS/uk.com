@@ -166,6 +166,15 @@ export class KafS12ApplyTimeComponent extends Vue {
         return '0:00';
     }
 
+    get grantDate() {
+        const self = this;
+        if (self.timeLeaveRemaining && self.timeLeaveRemaining.grantDate && self.timeLeaveRemaining.grantedDays) {
+            return self.$i18n('KAFS12_54') + self.timeLeaveRemaining.grantDate + '　' + self.timeLeaveRemaining.grantedDays + '日';
+        } else {
+            return self.$i18n('KAFS12_54') + self.$i18n('KAFS12_55');
+        }
+    }
+
     get substituteRemaining() {
         const self = this;
         if (self.timeLeaveRemaining) {
@@ -178,9 +187,7 @@ export class KafS12ApplyTimeComponent extends Vue {
     get annualRemaining() {
         const self = this;
         if (self.timeLeaveRemaining) {
-            if (self.timeLeaveRemaining.annualTimeLeaveRemainingDays <= 0) {
-                return TimeDuration.toString(self.timeLeaveRemaining.annualTimeLeaveRemainingTime, 'h');
-            } else if (self.timeLeaveRemaining.annualTimeLeaveRemainingTime <= 0) {
+            if (self.timeLeaveRemaining.annualTimeLeaveRemainingTime == 0) {
                 return self.$i18n('KAF012_49', self.timeLeaveRemaining.annualTimeLeaveRemainingDays.toString());
             } else {
                 return self.$i18n('KAF012_50', [
@@ -196,9 +203,7 @@ export class KafS12ApplyTimeComponent extends Vue {
     get childNursingRemaining() {
         const self = this;
         if (self.timeLeaveRemaining) {
-            if (self.timeLeaveRemaining.childCareRemainingDays <= 0) {
-                return TimeDuration.toString(self.timeLeaveRemaining.childCareRemainingTime, 'h');
-            } else if (self.timeLeaveRemaining.childCareRemainingTime <= 0) {
+            if (self.timeLeaveRemaining.childCareRemainingTime == 0) {
                 return self.$i18n('KAF012_49', self.timeLeaveRemaining.childCareRemainingDays.toString());
             } else {
                 return self.$i18n('KAF012_50', [
@@ -214,9 +219,7 @@ export class KafS12ApplyTimeComponent extends Vue {
     get nursingRemaining() {
         const self = this;
         if (self.timeLeaveRemaining) {
-            if (self.timeLeaveRemaining.careRemainingDays <= 0) {
-                return TimeDuration.toString(self.timeLeaveRemaining.careRemainingTime, 'h');
-            } else if (self.timeLeaveRemaining.careRemainingTime <= 0) {
+            if (self.timeLeaveRemaining.careRemainingTime == 0) {
                 return self.$i18n('KAF012_49', self.timeLeaveRemaining.careRemainingDays.toString());
             } else {
                 return self.$i18n('KAF012_50', [
@@ -234,9 +237,7 @@ export class KafS12ApplyTimeComponent extends Vue {
         if (self.timeLeaveRemaining && self.timeLeaveRemaining.specialTimeFrames.length > 0) {
             const tmp = _.find(self.timeLeaveRemaining.specialTimeFrames, (i) => i.specialFrameNo == self.specialLeaveFrame);
             if (tmp) {
-                if (tmp.dayOfSpecialLeave <= 0) {
-                    return TimeDuration.toString(tmp.timeOfSpecialLeave, 'h');
-                } else if (tmp.timeOfSpecialLeave <= 0) {
+                if (tmp.timeOfSpecialLeave == 0) {
                     return self.$i18n('KAF012_49', [tmp.dayOfSpecialLeave.toString()]);
                 } else {
                     return self.$i18n(
@@ -249,7 +250,7 @@ export class KafS12ApplyTimeComponent extends Vue {
             }
         }
         
-        return '0:00';
+        return self.$i18n('KAF012_49', ['0']);
     }
 
     get display() {

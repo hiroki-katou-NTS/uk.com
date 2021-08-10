@@ -9,11 +9,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataHours;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 
 /**
  * 代休管理データ
@@ -83,4 +88,14 @@ public class CompensatoryDayOffManaData extends AggregateRoot {
 		return domain;
 	}
 
+	//[1] 逐次発生の休暇明細に変換する
+	public AccumulationAbsenceDetail convertSeqVacationState() {
+		return new AccuVacationBuilder(this.sID, this.dayOffDate, OccurrenceDigClass.DIGESTION,
+				CreateAtr.FLEXCOMPEN.convertToMngData(true), this.comDayOffID)
+						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(this.requireDays.v()),
+								Optional.of(new AttendanceTime(this.requiredTimes.v()))))
+						.unbalanceNumber(new NumberConsecuVacation(this.remainDays,
+								Optional.of(new AttendanceTime(this.remainTimes.v()))))
+						.build();
+	}
 }

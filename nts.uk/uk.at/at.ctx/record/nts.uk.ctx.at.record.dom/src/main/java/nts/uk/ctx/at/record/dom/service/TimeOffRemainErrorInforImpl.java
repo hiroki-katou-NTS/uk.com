@@ -20,6 +20,11 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.InterimRemainDataMngCheckRegister;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.RemainChildCareCheck;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.RemainChildCareCheckParam;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.RemainLongTermCareCheck;
+import nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement.RemainLongTermCareCheckParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
@@ -27,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimEachData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCreateDataInputPara;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainOffPeriodCreateData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
@@ -39,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
+import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
@@ -63,6 +69,10 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	@Inject
 	private RemainCreateInforByRecordData remainCreateInforByRecordData;
+	@Inject
+	private RemainChildCareCheck remainChildCareCheck;
+	@Inject
+	private RemainLongTermCareCheck remainLongTermCareCheck;
 	@Override
 	public List<EmployeeMonthlyPerError> getErrorInfor(TimeOffRemainErrorInputParam param) {
 		val require = requireService.createRequire();
@@ -101,6 +111,8 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<InterimRemain> interimSpecial = eachData.getInterimSpecial();
 		List<TempAnnualLeaveMngs> annualHolidayData = eachData.getAnnualHolidayData();
 		List<InterimRemain> annualMng = eachData.getAnnualMng();
+		List<TempChildCareManagement> childCareData = eachData.getChildCareData();
+        List<TempCareManagement> careData = eachData.getCareData();
 		if(optDaily.isPresent()
 				&& !optDaily.get().getAnnualHolidayData().isEmpty()) {
 			TempAnnualLeaveMngs flexAnnual = optDaily.get().getAnnualHolidayData().stream().filter(c->c.getUsedNumber().isUseDay()).map(x-> x).findFirst().orElse(null);
@@ -127,6 +139,40 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		//代休残数のチェック
 		List<EmployeeMonthlyPerError> lstDayoff = this.dayoffData(param, interimMngBreakDayOff, breakMng, dayOffMng);
 		lstOuput.addAll(lstDayoff);
+		//INPUT.子の看護チェック区分＝true
+		if (param.getChkChildNursing().isPresent() && param.getChkChildNursing().get()) {
+		    RemainChildCareCheckParam remainChildCareCheckParam = new RemainChildCareCheckParam(
+		            param.getCid(), 
+		            param.getSid(), 
+		            GeneralDate.max().yearMonth(), 
+		            param.getAggDate(), 
+		            ClosureId.RegularEmployee, 
+		            new ClosureDate(1, false), 
+		            false, 
+		            true, 
+		            childCareData, 
+		            Optional.of(CreateAtr.RECORD), 
+		            Optional.of(param.getObjDate()));
+		    // 子の看護残数のチェック
+		    remainChildCareCheck.checkRemainChildCare(remainChildCareCheckParam);
+		}
+		//INPUT.介護チェック区分＝true
+		if (param.getChkLongTermCare().isPresent() && param.getChkLongTermCare().get()) {
+		    RemainLongTermCareCheckParam remainLongTermCareCheckParam = new RemainLongTermCareCheckParam(
+		            param.getCid(), 
+                    param.getSid(), 
+                    GeneralDate.max().yearMonth(), 
+                    param.getAggDate(), 
+                    ClosureId.RegularEmployee, 
+                    new ClosureDate(1, false), 
+                    false, 
+                    true, 
+		            careData, 
+		            Optional.of(CreateAtr.RECORD), 
+                    Optional.of(param.getObjDate()));
+		    // 介護残数のチェック
+		    remainLongTermCareCheck.checkRemainLongTermCare(remainLongTermCareCheckParam);
+		}
 		return lstOuput;
 	}
 
