@@ -19,9 +19,11 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.StateCount;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TerminalComStatus;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TerminalCurrentState;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TerminalProSwitchManagement;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TerminalComStatus.ComStateobject;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TerminalProSwitchManagementRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.DeterminingReqStatusTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.JudgCurrentStatusEmpInfoTerminal;
@@ -49,6 +51,9 @@ public class GetListInfoOfEmpInfoTerminal {
 	
 	@Inject
 	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
+	
+	@Inject
+	private TerminalProSwitchManagementRepository terminalProSwitchManagementRepository;
 	
 	public InfoOfEmpInfoTerminalDto getInfoOfEmpInfoTerminal() {
 		
@@ -116,12 +121,16 @@ public class GetListInfoOfEmpInfoTerminal {
 			}
 		}
 		
+		// 5: get(契約コード): 端末の本番切替管理
+		Optional<TerminalProSwitchManagement> terminalProSwitchManagement = terminalProSwitchManagementRepository.get(contractCode);
+		
 		InfoOfEmpInfoTerminalDto dto = new InfoOfEmpInfoTerminalDto(
 				terminalComStatus.getTotalNumberOfTer(),
 				numNormalState,
 				numAbnormalState,
 				numUntransmitted,
-				listEmpInfoTerminalDto);
+				listEmpInfoTerminalDto,
+				terminalProSwitchManagement.isPresent() ? terminalProSwitchManagement.get().getManagementAtr().value : 3);
 		return dto;
 	}
 	

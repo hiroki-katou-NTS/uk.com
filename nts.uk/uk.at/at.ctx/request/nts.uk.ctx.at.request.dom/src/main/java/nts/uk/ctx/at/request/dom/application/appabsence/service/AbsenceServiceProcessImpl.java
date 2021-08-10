@@ -1006,7 +1006,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		Optional<WorkType> WkTypeOpt = workTypeRepository.findByPK(companyID, workTypeCode);
 		if (WkTypeOpt.isPresent()) {
 			// アルゴリズム「1日半日出勤・1日休日系の判定」を実行する
-			WorkStyle workStyle = basicScheduleService.checkWorkDay(WkTypeOpt.get().getWorkTypeCode().toString());
+			WorkStyle workStyle = basicScheduleService.checkWorkDay(companyID, WkTypeOpt.get().getWorkTypeCode().toString());
 			if (workStyle == null) {
 				return Collections.emptyList();
 			}
@@ -1116,7 +1116,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 	    }
 
 	    // 1日半日出勤・1日休日系の判定
-	    WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCD.get());
+	    WorkStyle workStyle = basicScheduleService.checkWorkDay(companyID, workTypeCD.get());
 
 	    // 取得できたかをチェックする
 	    if (workStyle == null) {
