@@ -52,28 +52,24 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 		List<CareLeaveRemainingInfo> leaveCareInfoInsert = new ArrayList<>();
 		cmd.stream().forEach(c ->{
 			// 子の看護-使用数
-			if (c.getChildCareUsedDays() != null) {
-				ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
-						c.getSId(),
-						new ChildCareNurseUsedNumber(
-								new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
-								, c.getChildCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(c.getChildCareUsedTimes().intValue()))
-						)
-				);
-				childCareDataInsert.add(usedNumber);
-			}
+			ChildCareUsedNumberData childUsedNumber = new ChildCareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							c.getChildCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
+							, c.getChildCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(c.getChildCareUsedTimes().intValue()))
+					)
+			);
+			childCareDataInsert.add(childUsedNumber);
 
 			// 介護-使用数
-			if (c.getCareUsedDays() != null) {
-				CareUsedNumberData usedNumber = new CareUsedNumberData(
-						c.getSId(),
-						new ChildCareNurseUsedNumber(
-								new DayNumberOfUse(c.getCareUsedDays().doubleValue())
-								, c.getCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(c.getCareUsedTimes().intValue()))
-						)
-				);
-				leaveCareDataInsert.add(usedNumber);
-			}
+			CareUsedNumberData usedNumber = new CareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							c.getCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(c.getCareUsedDays().doubleValue())
+							, c.getCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(c.getCareUsedTimes().intValue()))
+					)
+			);
+			leaveCareDataInsert.add(usedNumber);
 
 			// 子の看護 - 上限情報
 			ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
@@ -82,9 +78,7 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 							: c.getChildCareUpLimSet().intValue(),
 					c.getChildCareThisFiscal() == null ? 0 : c.getChildCareThisFiscal().intValue(),
 					c.getChildCareNextFiscal() == null ? 0 : c.getChildCareNextFiscal().intValue());
-			if (c.getChildCareUsedDays() != null) {
-				childCareLeaveInfoInsert.add(childCareInfo);
-			}
+			childCareLeaveInfoInsert.add(childCareInfo);
 
 			// 介護-上限情報
 			CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(c.getSId(),
@@ -93,9 +87,8 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 							: c.getCareUpLimSet().intValue(),
 					c.getCareThisFiscal() == null ? 0 : c.getCareThisFiscal().intValue(),
 					c.getCareNextFiscal() == null ? 0 : c.getCareNextFiscal().intValue());
-			if (c.getCareUsedDays() != null) {
-				leaveCareInfoInsert.add(careInfo);
-			}
+			leaveCareInfoInsert.add(careInfo);
+			
 			result.add(new PeregAddCommandResult(c.getSId()));
 		});
 		service.addData(cid, childCareDataInsert, leaveCareDataInsert, childCareLeaveInfoInsert, leaveCareInfoInsert);

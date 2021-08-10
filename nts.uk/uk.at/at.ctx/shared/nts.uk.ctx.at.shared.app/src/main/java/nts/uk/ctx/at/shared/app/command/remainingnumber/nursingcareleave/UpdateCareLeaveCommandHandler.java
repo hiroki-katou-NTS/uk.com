@@ -56,43 +56,37 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 		UpdateCareLeaveCommand data = context.getCommand();
 
 		// 子の看護-使用数
-		if (data.getChildCareUsedDays() != null) {
-			ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
-					data.getSId(),
-					new ChildCareNurseUsedNumber(
-							new DayNumberOfUse(data.getChildCareUsedDays().doubleValue())
-							, data.getChildCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getChildCareUsedTimes().intValue()))
-					)
-			);
-	
-			Optional<ChildCareUsedNumberData> checkChildCareDataisPresent = childCareDataRepo
-					.find(data.getSId());
-			if (checkChildCareDataisPresent.isPresent()) {
-				childCareDataRepo.update(cId, usedNumber);
-			} else {
-				if (data.getChildCareUsedDays() != null)
-					childCareDataRepo.add(cId, usedNumber );
-			}
+		ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
+				data.getSId(),
+				new ChildCareNurseUsedNumber(
+						data.getChildCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(data.getChildCareUsedDays().doubleValue())
+						, data.getChildCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(data.getChildCareUsedTimes().intValue()))
+				)
+		);
+
+		Optional<ChildCareUsedNumberData> checkChildCareDataisPresent = childCareDataRepo
+				.find(data.getSId());
+		if (checkChildCareDataisPresent.isPresent()) {
+			childCareDataRepo.update(cId, usedNumber);
+		} else {
+			childCareDataRepo.add(cId, usedNumber );
 		}
 
 		// 介護-使用数
-		if (data.getCareUsedDays() != null) {
-			CareUsedNumberData careUsedNumber = new CareUsedNumberData(
-					data.getSId(),
-					new ChildCareNurseUsedNumber(
-							new DayNumberOfUse(data.getCareUsedDays().doubleValue())
-							, data.getCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getCareUsedTimes().intValue()))
-					)
-			);
-	
-			Optional<CareUsedNumberData> checkCareDataisPresent = careDataRepo
-					.find(data.getSId());
-			if (checkCareDataisPresent.isPresent()) {
-				careDataRepo.update(cId, careUsedNumber);
-			} else {
-				if (data.getCareUsedDays() != null)
-					careDataRepo.add(cId, careUsedNumber );
-			}
+		CareUsedNumberData careUsedNumber = new CareUsedNumberData(
+				data.getSId(),
+				new ChildCareNurseUsedNumber(
+						data.getCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(data.getCareUsedDays().doubleValue())
+						, data.getCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(data.getCareUsedTimes().intValue()))
+				)
+		);
+
+		Optional<CareUsedNumberData> checkCareDataisPresent = careDataRepo
+				.find(data.getSId());
+		if (checkCareDataisPresent.isPresent()) {
+			careDataRepo.update(cId, careUsedNumber);
+		} else {
+			careDataRepo.add(cId, careUsedNumber );
 		}
 
 		// 子の看護 - 上限情報
@@ -107,9 +101,7 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 		if (checkChildCareInfoisPresent.isPresent()) {
 			childCareInfoRepo.update(childCareInfo, cId);
 		} else {
-			if (data.getChildCareUsedDays() != null) {
-				childCareInfoRepo.add(childCareInfo, cId);
-			}
+			childCareInfoRepo.add(childCareInfo, cId);
 		}
 
 		// 介護-上限情報
@@ -124,9 +116,7 @@ public class UpdateCareLeaveCommandHandler extends CommandHandler<UpdateCareLeav
 		if (checkCareInfoisPresent.isPresent()) {
 			careInfoRepo.update(careInfo, cId);
 		} else {
-			if (data.getCareUsedDays() != null) {
-				careInfoRepo.add(careInfo, cId);
-			}
+			careInfoRepo.add(careInfo, cId);
 		}
 	}
 

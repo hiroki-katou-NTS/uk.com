@@ -57,28 +57,25 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 		String cId = AppContexts.user().companyId();
 		AddCareLeaveCommand data = context.getCommand();
 		// 子の看護-使用数
-		if (data.getChildCareUsedDays() != null) {
-			ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
-					data.getSId(),
-					new ChildCareNurseUsedNumber(
-							new DayNumberOfUse(data.getChildCareUsedDays().doubleValue())
-							, data.getChildCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getChildCareUsedTimes().intValue()))
-					)
-			);
-			childCareUsedNumberRepository.add(cId, usedNumber);
-		}
+		ChildCareUsedNumberData childUsedNumber = new ChildCareUsedNumberData(
+				data.getSId(),
+				new ChildCareNurseUsedNumber(
+						data.getChildCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(data.getChildCareUsedDays().doubleValue())
+						, data.getChildCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(data.getChildCareUsedTimes().intValue()))
+				)
+		);
+		childCareUsedNumberRepository.add(cId, childUsedNumber);
+		
 
 		// 介護-使用数
-		if (data.getCareUsedDays() != null) {
-			CareUsedNumberData usedNumber = new CareUsedNumberData(
-					data.getSId(),
-					new ChildCareNurseUsedNumber(
-							new DayNumberOfUse(data.getCareUsedDays().doubleValue())
-							, data.getCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(data.getCareUsedTimes().intValue()))
-					)
-			);
-			careUsedNumberRepository.add(cId, usedNumber);
-		}
+		CareUsedNumberData usedNumber = new CareUsedNumberData(
+				data.getSId(),
+				new ChildCareNurseUsedNumber(
+						data.getCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(data.getCareUsedDays().doubleValue())
+						, data.getCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(data.getCareUsedTimes().intValue()))
+				)
+		);
+		careUsedNumberRepository.add(cId, usedNumber);
 
 		// 子の看護 - 上限情報
 		ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
@@ -87,9 +84,8 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 						: data.getChildCareUpLimSet().intValue(),
 				data.getChildCareThisFiscal() == null ? 0 : data.getChildCareThisFiscal().intValue(),
 				data.getChildCareNextFiscal() == null ? 0 : data.getChildCareNextFiscal().intValue());
-		if (data.getChildCareUsedDays() != null) {
-			childCareInfoRepo.add(childCareInfo, cId);
-		}
+		childCareInfoRepo.add(childCareInfo, cId);
+		
 
 		// 介護-上限情報
 		CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(data.getSId(),
@@ -98,9 +94,7 @@ public class AddCareLeaveCommandHandler extends CommandHandlerWithResult<AddCare
 						: data.getCareUpLimSet().intValue(),
 				data.getCareThisFiscal() == null ? 0 : data.getCareThisFiscal().intValue(),
 				data.getCareNextFiscal() == null ? 0 : data.getCareNextFiscal().intValue());
-		if (data.getCareUsedDays() != null) {
-			careInfoRepo.add(careInfo, cId);
-		}
+		careInfoRepo.add(careInfo, cId);
 
 		return new PeregAddCommandResult(data.getSId());
 	}
