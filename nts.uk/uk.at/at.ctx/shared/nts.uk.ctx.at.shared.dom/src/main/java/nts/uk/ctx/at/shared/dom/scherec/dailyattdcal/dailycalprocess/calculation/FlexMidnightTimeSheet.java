@@ -8,21 +8,18 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeFrame;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -50,15 +47,13 @@ public class FlexMidnightTimeSheet {
 	/**
 	 * フレックス深夜時間帯の作成
 	 * @param flexWithinWorkTimeSheet フレックス就業時間内時間帯
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param integrationOfDaily 日別実績(WORK)
+	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param autoCalcAtr 時間外の自動計算区分
 	 * @param workType 勤務種類
 	 * @param flexCalcMethod フレックス勤務の設定
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param vacationClass 休暇クラス
-	 * @param timevacationUseTimeOfDaily 休暇使用合計残時間未割当
-	 * @param statutoryDivision 法定内区分
-	 * @param siftCode 就業時間帯コード
 	 * @param autoCalcOfLeaveEarlySetting 遅刻早退の自動計算設定
 	 * @param addSetting 加算設定
 	 * @param holidayAddtionSet 休暇加算時間設定
@@ -67,45 +62,39 @@ public class FlexMidnightTimeSheet {
 	 * @param flexUpper 時間外の上限設定
 	 * @param conditionItem 労働条件項目
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間（個人）
-	 * @param coreTimeSetting コアタイム時間帯設定
+	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return フレックス深夜時間帯
 	 */
 	public static FlexMidnightTimeSheet create(
 			FlexWithinWorkTimeSheet flexWithinWorkTimeSheet,
-			HolidayCalcMethodSet holidayCalcMethodSet,
+			IntegrationOfDaily integrationOfDaily,
+			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
 			AutoCalAtrOvertime autoCalcAtr,
 			WorkType workType,
 			SettingOfFlexWork flexCalcMethod,
 			PredetermineTimeSetForCalc predetermineTimeSet,
 			VacationClass vacationClass,
-			AttendanceTime timevacationUseTimeOfDaily,
-			StatutoryDivision statutoryDivision,
-			Optional<WorkTimeCode> siftCode,
 			AutoCalcOfLeaveEarlySetting autoCalcOfLeaveEarlySetting,
 			AddSetting addSetting,
 			HolidayAddtionSet holidayAddtionSet,
-			DailyUnit  dailyUnit,
+			DailyUnit dailyUnit,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			TimeLimitUpperLimitSetting flexUpper,//こいつは残さないとだめ,
 			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			Optional<CoreTimeSetting> coreTimeSetting,
-			NotUseAtr lateEarlyMinusAtr,
-			Optional<TimeLeavingOfDailyAttd> attendanceLeavingWork) {
+			NotUseAtr lateEarlyMinusAtr) {
 
 		// クラスを作成する
 		FlexMidnightTimeSheet domain = new FlexMidnightTimeSheet();
 		// 所定外開始時刻の計算
 		Optional<TimeWithDayAttr> withoutStartTimeOpt = flexWithinWorkTimeSheet.calcWithoutStartTime(
-				holidayCalcMethodSet,
+				integrationOfDaily,
+				integrationOfWorkTime,
 				autoCalcAtr,
 				workType,
 				flexCalcMethod,
 				predetermineTimeSet,
 				vacationClass,
-				timevacationUseTimeOfDaily,
-				statutoryDivision,
-				siftCode,
 				autoCalcOfLeaveEarlySetting,
 				addSetting,
 				holidayAddtionSet,
@@ -114,9 +103,7 @@ public class FlexMidnightTimeSheet {
 				flexUpper,
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
-				coreTimeSetting,
-				lateEarlyMinusAtr,
-				attendanceLeavingWork);
+				lateEarlyMinusAtr);
 		if (!withoutStartTimeOpt.isPresent()) return domain;
 		TimeWithDayAttr withoutStartTime = withoutStartTimeOpt.get();
 		// 就業時間内時間枠を取得

@@ -29,8 +29,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriorityRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -134,7 +132,7 @@ public class ReflectAttendanceClock {
 			if(!timeActualStamp.isPresent()) {
 				return null;
 			}
-			Optional<WorkStamp> workStamp = timeActualStamp.get().getActualStamp();
+			Optional<WorkStamp> workStamp = actualStampAtr == ActualStampAtr.STAMP_REAL ? timeActualStamp.get().getActualStamp() : timeActualStamp.get().getStamp();
 			//fixbug 115441
 //			if(actualStampAtr == ActualStampAtr.STAMP ) {
 //				workStamp = timeActualStamp.get().getStamp();
