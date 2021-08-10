@@ -29,6 +29,9 @@ public class CcgmtFlowMenu extends ContractUkJpaEntity implements Serializable {
 	@Column(name = "DEF_CLASS_ATR")
 	public int defClassAtr;
 	
+	@Column(name = "NAME")
+	public String name;
+	
 	@Override
 	protected Object getKey() {
 		return ccgmtFlowMenuPK;
