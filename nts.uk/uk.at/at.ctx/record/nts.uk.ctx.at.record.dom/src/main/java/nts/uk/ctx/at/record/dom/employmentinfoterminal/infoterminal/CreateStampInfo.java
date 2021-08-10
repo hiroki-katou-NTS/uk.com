@@ -65,7 +65,7 @@ public class CreateStampInfo implements DomainValue {
 						|| recept.getShift().isEmpty()) ? null : new WorkTimeCode(recept.getShift()),
 				(recept.getOverTimeHours().isEmpty() || recept.getMidnightTime().isEmpty()) ? null
 				: new OvertimeDeclaration(new AttendanceTime(Integer.parseInt(recept.getOverTimeHours())),
-						new AttendanceTime(Integer.parseInt(recept.getMidnightTime()))));
+						new AttendanceTime(Integer.parseInt(recept.getMidnightTime()))), null);
 		// 打刻する方法
 		Relieve relieve = new Relieve(recept.convertAuthcMethod(), StampMeans.TIME_CLOCK);
 
