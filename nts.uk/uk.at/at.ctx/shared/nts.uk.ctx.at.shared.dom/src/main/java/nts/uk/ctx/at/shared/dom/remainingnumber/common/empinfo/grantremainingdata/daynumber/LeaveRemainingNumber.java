@@ -269,11 +269,11 @@ public class LeaveRemainingNumber {
 	}
 
 	/**
-	 * 年休１日に相当する時間年休時間を取得する
+	 * １日に相当する契約時間を取得する
 	 * @param repositoriesRequiredByRemNum ロードデータ（キャッシュ）
 	 * @param employeeId 社員ID
 	 * @param baseDate 基準日
-	 * @return
+	 * @return　労働契約時間
 	 */
 	static public Optional<LaborContractTime> getContractTime(
 		RequireM3 require,

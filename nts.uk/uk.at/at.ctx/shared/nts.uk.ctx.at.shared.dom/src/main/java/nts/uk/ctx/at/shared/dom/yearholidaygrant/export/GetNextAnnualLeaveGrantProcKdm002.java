@@ -9,10 +9,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
@@ -20,10 +22,11 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantReferenceDate;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantSimultaneity;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseSimultaneousGrant;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.GetNextAnnualLeaveGrantProc.RequireM1;
 
 /**
  * Improve Performance for KDM002
- * 
+ *
  * @author HungTT
  */
 public class GetNextAnnualLeaveGrantProcKdm002 {
@@ -48,10 +51,10 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param isSingleDay 単一日フラグ
 	 * @return 次回年休付与マップ
 	 */
-	public static Map<String, List<NextAnnualLeaveGrant>> algorithm(RequireM1 require, String companyId, 
+	public static Map<String, List<NextAnnualLeaveGrant>> algorithm(RequireM1 require, String companyId,
 			List<String> employeeIds, Map<String, AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoMap,
 			Map<String, GeneralDate> entryDateMap, DatePeriod period, boolean isSingleDay) {
-		
+
 		Map<String, List<NextAnnualLeaveGrant>> result = new HashMap<>();
 		Set<String> grantTableCodeSet = annualLeaveEmpBasicInfoMap.values().stream()
 				.map(i -> i.getGrantRule().getGrantTableCode().v()).collect(Collectors.toSet());
@@ -87,8 +90,8 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 				result.put(empId, nextAnnualLeaveGrantList);
 				continue;
 			}
-			// 年休付与年月日を計算
-			calcAnnualLeaveGrantDate(entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls, period,
+			// 年休付与年月日を計算 　※要確認
+			calcAnnualLeaveGrantDate(require, companyId, entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls, period,
 					isSingleDay, nextAnnualLeaveGrantList);
 			for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList) {
 				// 付与回数をもとに年休付与テーブルを取得
@@ -119,7 +122,10 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param isSingleDay 単一日フラグ
 	 * @param nextAnnualLeaveGrantList 次回年休付与リスト
 	 */
-	public static void calcAnnualLeaveGrantDate(GeneralDate entryDate, GeneralDate criteriaDate,
+	public static void calcAnnualLeaveGrantDate(
+			GetNextAnnualLeaveGrantProc.RequireM1 require,
+			String companyId,
+			GeneralDate entryDate, GeneralDate criteriaDate,
 			Optional<Integer> simultaneousGrantMDOpt, List<LengthServiceTbl> lengthServiceTbls, DatePeriod period,
 			boolean isSingleDay, List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList) {
 
@@ -127,7 +133,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		for (val lengthServiceTbl : lengthServiceTbls) {
 
 			// 付与日を計算
-			val nextAnnualLeaveGrant = calcGrantDate(lengthServiceTbl, Optional.empty(),
+			val nextAnnualLeaveGrant = calcGrantDate(require, companyId, lengthServiceTbl, Optional.empty(),
 					entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
 
 			// 次回付与日が前回付与日を超えているかどうかチェック
@@ -138,7 +144,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 				}
 			}
 			if (isExceed == true) {
-				
+
 				// 期間中の年休付与かチェック
 				val grantDate = nextAnnualLeaveGrant.getGrantDate();
 				if (grantDate.after(period.end())) {
@@ -171,7 +177,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		while (calcYears < 100) {
 
 			// 付与日を計算
-			val nextAnnualLeaveGrant = calcGrantDate(lastLengthServiceTbl, Optional.of(calcYears),
+			val nextAnnualLeaveGrant = calcGrantDate(require, companyId, lastLengthServiceTbl, Optional.of(calcYears),
 					entryDate, criteriaDate, simultaneousGrantMDOpt, previousDate);
 
 			// 次回付与日が前回付与日を超えているかどうかチェック
@@ -223,7 +229,10 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param previousDate 前回付与日
 	 * @return 次回年休付与
 	 */
-	private static NextAnnualLeaveGrant calcGrantDate(LengthServiceTbl lengthServiceTbl,
+	private static NextAnnualLeaveGrant calcGrantDate(
+			GetNextAnnualLeaveGrantProc.RequireM1 require,
+			String companyId,
+			LengthServiceTbl lengthServiceTbl,
 			Optional<Integer> calcYears, GeneralDate entryDate, GeneralDate criteriaDate,
 			Optional<Integer> simultaneousGrantMDOpt, GeneralDate previousDate) {
 
@@ -231,7 +240,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 
 		// 勤続年数から付与日を計算
 		NextAnnualLeaveGrant calcResult = calcGrantDateFromLengthService(
-				entryDate, lengthServiceTbl.getStandGrantDay(), criteriaDate, lengthServiceTbl, calcYears);
+				require, companyId, entryDate, lengthServiceTbl.getStandGrantDay(), criteriaDate, lengthServiceTbl, calcYears);
 		GeneralDate grantDate = calcResult.getGrantDate();
 		GrantNum grantNum = new GrantNum(calcResult.getTimes().v());
 
@@ -250,7 +259,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		nextAnnualLeaveGrant.setTimes(grantNum);
 		return nextAnnualLeaveGrant;
 	}
-	
+
 	/**
 	 * 勤続年数から付与日を計算
 	 * @param entryDate 入社年月日
@@ -260,12 +269,15 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 * @param calcYears 計算年数
 	 * @return 次回年休付与
 	 */
-	private static NextAnnualLeaveGrant calcGrantDateFromLengthService(GeneralDate entryDate, 
+	private static NextAnnualLeaveGrant calcGrantDateFromLengthService(
+			GetNextAnnualLeaveGrantProc.RequireM1 require,
+			String companyId,
+			GeneralDate entryDate,
 			GrantReferenceDate grantReferenceDate, GeneralDate criteriaDate,
 			LengthServiceTbl lengthServiceTbl, Optional<Integer> calcYears){
-		
+
 		NextAnnualLeaveGrant result = new NextAnnualLeaveGrant();
-		
+
 		// 「付与基準日」をチェック → 付与計算基準日
 		GeneralDate calcCriteria = entryDate;
 		if (grantReferenceDate == GrantReferenceDate.YEAR_HD_REFERENCE_DATE) {
@@ -278,10 +290,39 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		grantDate = grantDate.addMonths(lengthServiceTbl.getMonth().v());
 		result.setGrantDate(grantDate);
 		result.setTimes(lengthServiceTbl.getGrantNum());
-		
+
+		// 付与日から期限日を計算
+		GeneralDate deadLine = calcDeadlineByGrantDate(
+				require,
+				companyId,
+				grantDate);
+
+		result.setDeadLine(deadLine);
+
 		return result;
 	}
-	
+
+	/**
+	 * 付与日から期限日を計算
+	 * @param require
+	 * @param companyId
+	 * @param grantDate　
+	 * @return
+	 */
+	private static GeneralDate calcDeadlineByGrantDate(
+			GetNextAnnualLeaveGrantProc.RequireM1 require,
+			String companyId,
+			GeneralDate grantDate) {
+
+		// 年休設定
+		AnnualPaidLeaveSetting annualPaidLeaveSet = require.annualPaidLeaveSetting(companyId);
+
+		// 付与日から期限日を計算
+		val deadLine = annualPaidLeaveSet.calcDeadline(grantDate);
+
+		return deadLine;
+	}
+
 	/**
 	 * 一斉付与の計算
 	 * @param previousDate 前回付与日
@@ -293,9 +334,9 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 	 */
 	private static NextAnnualLeaveGrant calcSimultaneousGrant(GeneralDate previousDate, GeneralDate entryDate,
 			GeneralDate lengthGrantDate, LengthServiceTbl lengthServiceTbl, Optional<Integer> simultaneousGrantMDOpt){
-		
+
 		NextAnnualLeaveGrant result = new NextAnnualLeaveGrant();
-		
+
 		// 「前回付与日」が存在するかチェック → 計算開始日を計算
 		GeneralDate calcStart = entryDate.addDays(1);
 		if (previousDate != null) {
@@ -326,16 +367,16 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		}
 		result.setGrantDate(grantDate);
 		result.setTimes(lengthServiceTbl.getGrantNum());
-		
+
 		return result;
 	}
-	
+
 	public static interface RequireM1 {
-		
+
 		Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode);
-		
+
 		List<GrantHdTblSet> grantHdTblSets(String companyId);
-		
+
 		Optional<GrantHdTbl> grantHdTbl(String companyId, int conditionNo, String yearHolidayCode, int grantNum);
 	}
 }
