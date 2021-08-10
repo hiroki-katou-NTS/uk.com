@@ -40,7 +40,7 @@ public class GetTaskItemInfoScreenQuery {
 		/** 1.Get(ログイン会社ID)*/
 		Optional<TaskOperationSetting> optTaskOperation = taskOperationSettingRepository.getTasksOperationSetting(companyId);
 		/** 2.[作業運用設定.isEmpty OR 作業運用設定.作業運用方法 <> 実績で利用]:<call>()*/
-		if(!optTaskOperation.isPresent() || optTaskOperation.get().getTaskOperationMethod().value == 2) {
+		if(!optTaskOperation.isPresent() || optTaskOperation.get().getTaskOperationMethod().value != 1) {
 			throw new BusinessException("Msg_2185");
 		}
 		
