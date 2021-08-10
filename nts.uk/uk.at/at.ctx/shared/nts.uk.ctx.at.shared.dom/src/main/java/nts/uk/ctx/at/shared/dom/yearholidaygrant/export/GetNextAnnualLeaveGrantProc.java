@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -149,21 +150,21 @@ public class GetNextAnnualLeaveGrantProc {
 		}
 		if (lengthServiceTbls.size() <= 0) return nextAnnualLeaveGrantList;
 
-		// 年休付与年月日を計算
+		// 期間内に該当する付与年月日をListで取得
 //		if ( getNextAnnualLeaveGrantProcMulti != null){
 		GetNextAnnualLeaveGrantProcKdm002.calcAnnualLeaveGrantDate(
 					entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls,
 					period, isSingleDay, nextAnnualLeaveGrantList);
 //		}
 
-		// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
-		Optional<WorkingConditionItem> workCond
-			= require.workingConditionItem(employeeId, criteriaDate);
+		// １日に相当する契約時間を取得する
+		Optional<LaborContractTime> laborContractTimeOpt
+			= LeaveRemainingNumber.getContractTime(require, companyId, employeeId, criteriaDate);
 
 		// 契約時間を取得する
 		int contractTimeTmp = 0;
-		if (workCond.isPresent()) {
-			contractTimeTmp = workCond.get().getContractTime().v();
+		if (laborContractTimeOpt.isPresent()) {
+			contractTimeTmp = laborContractTimeOpt.get().v();
 		}
 
 		final int contractTime = contractTimeTmp;
@@ -180,7 +181,7 @@ public class GetNextAnnualLeaveGrantProc {
 			nextAnnualLeaveGrant.setHalfDayAnnualLeaveMaxTimes(grantHdTbl.getLimitDayYear());
 			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxDays(grantHdTbl.getLimitTimeHd());
 
-			// 要修正　契約時間を取得する
+			// 契約時間を取得する
 			nextAnnualLeaveGrant.setTimeAnnualLeaveMaxTime(
 					grantHdTbl.getLimitTimeHd().map(c->new LimitedTimeHdTime(c.v() * contractTime)));
 		}
@@ -199,28 +200,18 @@ public class GetNextAnnualLeaveGrantProc {
 			}
 		}
 
-		// 年休設定
-		AnnualPaidLeaveSetting annualPaidLeaveSet = require.annualPaidLeaveSetting(companyId);
-
-		for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList){
-
-			// 付与日から期限日を計算
-			val deadLine = annualPaidLeaveSet.calcDeadline(
-					nextAnnualLeaveGrant.getGrantDate());
-
-			// 期限日をセットする
-			nextAnnualLeaveGrant.setDeadLine(deadLine);
-		}
-
-//		val annualLeaveGrant = aggregatePeriodWork.getAnnualLeaveGrant().get();
-//		val grantDate = annualLeaveGrant.getGrantDate();
-//		val deadline = this.annualPaidLeaveSet.calcDeadline(grantDate);
-
 		// 次回年休付与を返す
 		return nextAnnualLeaveGrantList;
 	}
 
-	public static interface RequireM1 {
+
+
+
+
+
+
+
+	public static interface RequireM1 extends LeaveRemainingNumber.RequireM3 {
 
 		Optional<GrantHdTblSet> grantHdTblSet(String companyId, String yearHolidayCode);
 
