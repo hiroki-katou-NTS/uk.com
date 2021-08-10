@@ -89,7 +89,7 @@ public class ScreenQueryAggregatePersonal {
 	private DailyRecordWorkFinder dailyRecordWorkFinder;
 	
 	@Inject
-	WorkScheduleRepository workScheduleRepository;
+	private WorkScheduleRepository workScheduleRepository;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
@@ -125,7 +125,8 @@ public class ScreenQueryAggregatePersonal {
 				criterionAmountUsageSettingRepository,
 				criterionAmountForCompanyRepository,
 				criterionAmountForEmploymentRepository,
-				handlingOfCriterionAmountRepository
+				handlingOfCriterionAmountRepository,
+				AppContexts.user().companyId()
 				);
 		
 		Require2 require2 = new Require2(workTypeRepository);
@@ -258,42 +259,31 @@ public class ScreenQueryAggregatePersonal {
 	@AllArgsConstructor
 	private static class Require implements EstimatedSalaryAggregationService.Require {
 
-		@Inject
 		private WorkScheduleRepository workScheduleRepository;
 		
-		@Inject
 		private DailyRecordWorkFinder dailyRecordWorkFinder;
 
-		@Inject
 		private EmpComHisAdapter empComHisAdapter;
 		
-		@Inject
 		private WorkingConditionRepository workCondRepo;
 		
-		@Inject
 		private EmpLeaveHistoryAdapter empLeaveHisAdapter;
 		
-		@Inject
 		private EmpLeaveWorkHistoryAdapter empLeaveWorkHisAdapter;
 		
-		@Inject
 		private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 		
-		@Inject
 		private CriterionAmountUsageSettingRepository criterionAmountUsageSettingRepository;
 		
-		@Inject
 		private CriterionAmountForCompanyRepository criterionAmountForCompanyRepository;
 		
-		@Inject
 		private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepository;
 		
-		@Inject
 		private HandlingOfCriterionAmountRepository handlingOfCriterionAmountRepository;
 		
 		
 		
-		private static String cid = AppContexts.user().companyId();
+		private String cid;
 
 		
 //		public Require(
