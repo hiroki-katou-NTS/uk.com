@@ -43,11 +43,10 @@ public class ReferencedParentPattern extends ConversionPattern {
 
 		conversionSql.addJoin(mapping);
 
-		conversionSql.add(
-				column,
-				new ColumnExpression(alias, ParentJoinPatternManager.parentValueColumnName));
+		ColumnExpression expression = new ColumnExpression(alias, ParentJoinPatternManager.parentValueColumnName);
+		conversionSql.add(column, expression);
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
+			conversionSql.addGroupingColumn(expression);
 		}
 
 		return conversionSql;

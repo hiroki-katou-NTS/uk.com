@@ -36,8 +36,8 @@ public class ConversionUpdateSQL implements ConversionSQL {
 	}
 
 	@Override
-	public void addGroupingColumn(ColumnName columnName) {
-		groupingColumns.add(columnName.sql());
+	public void addGroupingColumn(ColumnExpression expression) {
+		groupingColumns.add(expression.sql());
 	}
 
 	@Override

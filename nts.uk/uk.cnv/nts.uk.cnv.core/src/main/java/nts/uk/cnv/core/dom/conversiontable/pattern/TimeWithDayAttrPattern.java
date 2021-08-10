@@ -33,10 +33,11 @@ public class TimeWithDayAttrPattern extends ConversionPattern {
 			+ "   ELSE 0 "
 			+ " END";
 
+		ColumnExpression expression = new ColumnExpression(caseSentence);
 		conversionSql.addJoin(sourceJoin);
-		conversionSql.add(columnName, new ColumnExpression(caseSentence));
+		conversionSql.add(columnName, expression);
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(columnName);
+			conversionSql.addGroupingColumn(expression);
 		}
 		return conversionSql;
 	}

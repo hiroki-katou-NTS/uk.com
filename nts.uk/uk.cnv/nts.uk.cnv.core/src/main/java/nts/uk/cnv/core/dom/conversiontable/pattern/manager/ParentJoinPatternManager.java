@@ -1,6 +1,5 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern.manager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +15,6 @@ import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionInsertSQL;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
-import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
@@ -74,6 +71,7 @@ public class ParentJoinPatternManager {
 		String postProcessing = "";
 		Map<String, Map<String, List<String>>> referencedColumnList = new HashMap<>();
 
+		// 対象テーブルを親テーブルとして参照している子テーブルのリストを取得
 		List<ParentJoinPattern> children = repo.get(info, category, ct.getTargetTableName().getName());
 		if (children.isEmpty()) {
 			return new AdditionalConversionCode(
@@ -107,13 +105,13 @@ public class ParentJoinPatternManager {
 					mappingTableName,
 					ct.getWhereList());
 
-			ConversionSQL parentConversionSql = ct.createConversionSql();	// apply実行される
-			cnvSql.addJoin(
-				new Join(
-					parentConversionSql.getBaseTable(),
-					JoinAtr.InnerJoin,
-					new ArrayList<>()
-				));
+//			ConversionSQL parentConversionSql = ct.createConversionSql();	// apply実行される
+//			cnvSql.addJoin(
+//				new Join(
+//					parentConversionSql.getBaseTable(),
+//					JoinAtr.InnerJoin,
+//					new ArrayList<>()
+//				));
 
 			cnvSql.add(mappingTableColumns.get(0), new ColumnExpression("'" + category + "'"));
 			cnvSql.add(mappingTableColumns.get(1), new ColumnExpression("'" + ct.getTargetTableName().getName() + "'"));

@@ -38,17 +38,17 @@ public class ConversionInsertSQL implements ConversionSQL {
 	@Override
 	public void add(ColumnName column, ColumnExpression value) {
 		this.insert.addExpression(new ColumnExpression(column.sql()));
-		this.select.add(new SelectSentence(value, new TreeMap<>()));
+		this.select.add(new SelectSentence(value, new TreeMap<>(), column.getName()));
 	}
 	@Override
 	public void add(ColumnName column, ColumnExpression value, TreeMap<FormatType, String> formatTable) {
 		this.insert.addExpression(new ColumnExpression(column.sql()));
-		this.select.add(new SelectSentence(value, formatTable));
+		this.select.add(new SelectSentence(value, formatTable, column.getName()));
 	}
 
 	@Override
-	public void addGroupingColumn(ColumnName columnName) {
-		groupingColumns.add(columnName.sql());
+	public void addGroupingColumn(ColumnExpression expression) {
+		groupingColumns.add(expression.sql());
 	}
 
 	@Override
@@ -73,8 +73,8 @@ public class ConversionInsertSQL implements ConversionSQL {
 		return insert.sql(
 				SelectSentence.join(select) + "\r\n" +
 				from.sql(spec) +
-				groupbyString +
-				whereString
+				whereString +
+				groupbyString
 			);
 	}
 }

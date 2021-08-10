@@ -44,11 +44,10 @@ public class StringConcatPattern extends ConversionPattern {
 		String concatString = spec.concat(source1, source2);
 
 
-		conversionSql.add(
-				column,
-				new ColumnExpression(concatString));
+		ColumnExpression expression = new ColumnExpression(concatString);
+		conversionSql.add(column, expression);
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
+			conversionSql.addGroupingColumn(expression);
 		}
 
 		return conversionSql;

@@ -50,9 +50,9 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(join);
 
-		String newExpression = (isParamater)
-				? spec.param(expression)
-				: expression;
+		ColumnExpression newExpression = (isParamater)
+				? new ColumnExpression(spec.param(expression))
+				: new ColumnExpression(expression);
 
 		String source = join.tableName.getAlias() + "." + sourceColumn;
 		TreeMap<FormatType, String> formatTable = new TreeMap<>();
@@ -62,9 +62,9 @@ public class FixedValueWithConditionPattern extends ConversionPattern {
 				+ "THEN %s ELSE " + source + " END"
 			);
 
-		conversionSql.add(column, new ColumnExpression(newExpression), formatTable);
+		conversionSql.add(column, newExpression, formatTable);
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
+			conversionSql.addGroupingColumn(newExpression);
 		}
 
 		return conversionSql;

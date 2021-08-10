@@ -45,14 +45,13 @@ public class CodeToCodePattern extends ConversionPattern  {
 	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 
+		ColumnExpression expression = new ColumnExpression(
+				this.mappingJoin().tableName.getAlias(),
+				Constants.MAPPING_OUT_COLUMN_NAME);
 		conversionSql.addJoin(this.mappingJoin());
-		conversionSql.add(
-				columnName,
-				new ColumnExpression(
-					this.mappingJoin().tableName.getAlias(),
-					Constants.MAPPING_OUT_COLUMN_NAME));
+		conversionSql.add(columnName, expression);
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(columnName);
+			conversionSql.addGroupingColumn(expression);
 		}
 
 		return conversionSql;

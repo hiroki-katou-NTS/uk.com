@@ -35,12 +35,10 @@ public class NotChangePattern extends ConversionPattern {
 			boolean isPkColumn = join.onSentences.stream().anyMatch(on -> on.getRight().equals(column));
 			if (isPkColumn) return conversionSql;
 		}
-
-		conversionSql.add(
-				column,
-				new ColumnExpression(join.tableName.getAlias(), sourceColumn));
+		ColumnExpression expression = new ColumnExpression(join.tableName.getAlias(), sourceColumn);
+		conversionSql.add(column, expression);
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
+			conversionSql.addGroupingColumn(expression);
 		}
 		return conversionSql;
 	}

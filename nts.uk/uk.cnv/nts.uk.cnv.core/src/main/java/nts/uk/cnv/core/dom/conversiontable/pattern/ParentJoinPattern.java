@@ -40,14 +40,13 @@ public class ParentJoinPattern extends ConversionPattern {
 		conversionSql.addJoin(sourceJoin);
 		conversionSql.addJoin(mappingJoin);
 
-		conversionSql.add(
-				column,
-				new ColumnExpression(
-						mappingJoin.tableName.getAlias(),
-						ParentJoinPatternManager.parentValueColumnName)
-				);
+		ColumnExpression expression = new ColumnExpression(
+				mappingJoin.tableName.getAlias(),
+				ParentJoinPatternManager.parentValueColumnName);
+		conversionSql.add(column, expression);
+
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
+			conversionSql.addGroupingColumn(expression);
 		}
 
 		return conversionSql;

@@ -194,7 +194,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 		if (sourceCondition == null || sourceCondition.isEmpty()) return where;
 
-		String[] conditions = sourceCondition.toUpperCase().split("AND");
+		String[] conditions = sourceCondition.split(" [a|A][n|N][d|D] ");
 
 		for (String condition : conditions) {
 			RelationalOperator operator = null;
@@ -209,13 +209,16 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 			String[] expressions = condition.split(operator.getSign());
 
-			if(expressions.length < 2) throw new RuntimeException();
+			Optional<ColumnExpression> columnExpression =
+				(operator == RelationalOperator.IsNull || operator == RelationalOperator.IsNotNull)
+					? Optional.empty()
+					: Optional.of(new ColumnExpression(expressions[1]));
 
 			where.add(new WhereSentence(
-					new ColumnName(Constants.BaseTableAlias, expressions[0]),
+				new ColumnName(Constants.BaseTableAlias, expressions[0]),
 					operator,
-					Optional.of(new ColumnExpression(expressions[1]))
-				));
+					columnExpression)
+			);
 		}
 
 		return where;

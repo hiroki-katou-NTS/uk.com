@@ -117,12 +117,13 @@ public class DateTimeMergePattern extends ConversionPattern {
 			datetime.add(time);
 		}
 
-		String expression = spec.cast(spec.join(datetime), DataType.DATETIME, 0);
+		ColumnExpression expression = new ColumnExpression(
+				spec.cast(spec.join(datetime), DataType.DATETIME, 0));
 
 		conversionSql.addJoin(sourceJoin);
-		conversionSql.add(column, new ColumnExpression(expression));
+		conversionSql.add(column, expression);
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
+			conversionSql.addGroupingColumn(expression);
 		}
 		return conversionSql;
 	}

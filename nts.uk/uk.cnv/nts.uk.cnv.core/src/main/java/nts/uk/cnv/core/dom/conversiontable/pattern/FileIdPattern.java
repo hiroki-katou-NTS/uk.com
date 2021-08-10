@@ -56,14 +56,15 @@ public class FileIdPattern extends ConversionPattern  {
 		conversionSql.addJoin(sourceJoin);
 
 		Join mappingTableJoin = this.mappingJoin();
+		ColumnExpression expression = new ColumnExpression(
+				mappingTableJoin.tableName.getAlias(),
+				MAPPING_OUT_COLUMN_NAME);
+
 		conversionSql.addJoin(mappingTableJoin);
-		conversionSql.add(
-				column,
-				new ColumnExpression(
-						mappingTableJoin.tableName.getAlias(),
-						MAPPING_OUT_COLUMN_NAME));
+		conversionSql.add(column, expression);
+
 		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
+			conversionSql.addGroupingColumn(expression);
 		}
 
 		return conversionSql;

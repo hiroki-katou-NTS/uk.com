@@ -43,9 +43,6 @@ public class FixedValuePattern extends ConversionPattern {
 		else {
 			conversionSql.add(column, new ColumnExpression(newExpression));
 		}
-		if(removeDuplicate) {
-			conversionSql.addGroupingColumn(column);
-		}
 
 		return conversionSql;
 	}
