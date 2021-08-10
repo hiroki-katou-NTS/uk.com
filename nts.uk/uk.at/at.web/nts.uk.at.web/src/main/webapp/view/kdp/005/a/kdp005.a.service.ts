@@ -15,7 +15,8 @@ module nts.uk.at.view.kdp005.a {
             getEmployeeIdByICCard: 'at/record/stamp/ICCardStamp/getEmployeeIdByICCard',
             authenticateOnlyStamped: 'at/record/stamp/ICCardStamp/authenticateOnlyStamped',
             getLogginSetting: 'ctx/sys/gateway/kdp/login/getLogginSetting',
-			createDaily: 'at/record/stamp/craeteDaily'
+			createDaily: 'at/record/stamp/craeteDaily',
+			getEmployeeWorkByStamping: 'at/record/stamp/employee_work_by_stamping'
 		}
 
 		export function startPage(): JQueryPromise<any> {
@@ -54,6 +55,10 @@ module nts.uk.at.view.kdp005.a {
         }
 		export function createDaily(data): JQueryPromise<any> {
 			return ajax("at", url.createDaily, data);
+		}
+
+		export function getEmployeeWorkByStamping(param: any): JQueryPromise<any> {
+			return ajax("at", url.getEmployeeWorkByStamping, param);
 		}
 	}
 

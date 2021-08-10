@@ -97,9 +97,9 @@ module nts.uk.at.view.kdp005.a {
 					read: () => {
 						const mes = ko.unwrap(self.errorMessage);
 						const noti = ko.unwrap(self.fingerStampSetting).noticeSetDto;
-	
+
 						var result = null;
-	
+
 						if (mes === null) {
 							result = false;
 						}
@@ -112,11 +112,11 @@ module nts.uk.at.view.kdp005.a {
 						} else {
 							result = false;
 						}
-	
-						if(mes) {
+
+						if (mes) {
 							result = null;
 						}
-	
+
 						self.showMessage(result);
 					}
 				});
@@ -232,7 +232,7 @@ module nts.uk.at.view.kdp005.a {
 							dfd.resolve();
 							block.clear();
 						});
-						
+
 					} else {
 						self.isUsed(false);
 						self.errorMessage(self.getErrorNotUsed(res.used));
@@ -536,7 +536,7 @@ module nts.uk.at.view.kdp005.a {
 
 							self.isUsed(false);
 							self.errorMessage(res.errorMessage);
-							
+
 							dfd.reject();
 						}).always(() => {
 							block.clear();
@@ -595,9 +595,62 @@ module nts.uk.at.view.kdp005.a {
 										if (result.notification !== null) {
 
 											self.workPlaceId = result;
-											if (showViewL) {
-												vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
-													.then((data: any) => {
+
+											service.getEmployeeWorkByStamping({ sid: employeeId, workFrameNo: 1, upperFrameWorkCode: '' })
+												.then((data: any) => {
+													if (data.task.length === 0) {
+														if (showViewL) {
+															showViewL = false;
+														}
+													}
+
+													if (showViewL) {
+														vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
+															.then((data: any) => {
+																let registerdata = {
+																	stampedCardNumber: stampedCardNumber,
+																	datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
+																	stampButton: {
+																		pageNo: layout.pageNo,
+																		buttonPositionNo: button.btnPositionNo
+																	},
+																	refActualResult: {
+																		cardNumberSupport: null,
+																		workPlaceId: self.workPlaceId,
+																		workLocationCD: self.worklocationCode,
+																		workTimeCode: null,
+																		overtimeDeclaration: null,
+																		workGroup: data
+																	}
+																};
+																service.addCheckCard(registerdata).done((res) => {
+
+																	const param = {
+																		sid: employeeIdRegister,
+																		date: vm.$date.now()
+																	}
+
+																	service.createDaily(param);
+
+																	//phat nhac
+																	if (source) {
+																		let audio = new Audio(source);
+																		audio.play();
+																	}
+
+																	if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
+																		self.openScreenC(button, layout, employeeIdRegister);
+																	} else {
+																		self.openScreenB(button, layout, employeeIdRegister);
+																	}
+																}).fail((res) => {
+																	dialog.alertError({ messageId: res.messageId });
+																}).always(() => {
+																	//					self.getStampToSuppress();
+																	block.clear();
+																});
+															})
+													} else {
 														let registerdata = {
 															stampedCardNumber: stampedCardNumber,
 															datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
@@ -610,8 +663,7 @@ module nts.uk.at.view.kdp005.a {
 																workPlaceId: self.workPlaceId,
 																workLocationCD: self.worklocationCode,
 																workTimeCode: null,
-																overtimeDeclaration: null,
-																workGroup: data
+																overtimeDeclaration: null
 															}
 														};
 														service.addCheckCard(registerdata).done((res) => {
@@ -640,8 +692,31 @@ module nts.uk.at.view.kdp005.a {
 															//					self.getStampToSuppress();
 															block.clear();
 														});
-													})
-											} else {
+													}
+												})
+										}
+									}
+
+								});
+						} else {
+
+							if (dataStorage.selectedWP.length = 1) {
+								if (self.workPlaceId !== '') {
+									self.workPlaceId = dataStorage.selectedWP[0];
+								}
+							}
+
+							service.getEmployeeWorkByStamping({ sid: employeeId, workFrameNo: 1, upperFrameWorkCode: '' })
+								.then((data: any) => {
+									if (data.task.length === 0) {
+										if (showViewL) {
+											showViewL = false;
+										}
+									}
+
+									if (showViewL) {
+										vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
+											.then((data: any) => {
 												let registerdata = {
 													stampedCardNumber: stampedCardNumber,
 													datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
@@ -654,7 +729,8 @@ module nts.uk.at.view.kdp005.a {
 														workPlaceId: self.workPlaceId,
 														workLocationCD: self.worklocationCode,
 														workTimeCode: null,
-														overtimeDeclaration: null
+														overtimeDeclaration: null,
+														workGroup: data
 													}
 												};
 												service.addCheckCard(registerdata).done((res) => {
@@ -683,22 +759,8 @@ module nts.uk.at.view.kdp005.a {
 													//					self.getStampToSuppress();
 													block.clear();
 												});
-											}
-										}
-									}
-
-								});
-						} else {
-
-							if (dataStorage.selectedWP.length = 1) {
-								if (self.workPlaceId !== '') {
-									self.workPlaceId = dataStorage.selectedWP[0];
-								}
-							}
-
-							if (showViewL) {
-								vm.$window.modal('at', DIALOG.KDP002L, { employeeId: employeeId })
-									.then((data: any) => {
+											})
+									} else {
 										let registerdata = {
 											stampedCardNumber: stampedCardNumber,
 											datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
@@ -711,10 +773,10 @@ module nts.uk.at.view.kdp005.a {
 												workPlaceId: self.workPlaceId,
 												workLocationCD: self.worklocationCode,
 												workTimeCode: null,
-												overtimeDeclaration: null,
-												workGroup: data
+												overtimeDeclaration: null
 											}
 										};
+
 										service.addCheckCard(registerdata).done((res) => {
 
 											const param = {
@@ -741,51 +803,8 @@ module nts.uk.at.view.kdp005.a {
 											//					self.getStampToSuppress();
 											block.clear();
 										});
-									})
-							} else {
-								let registerdata = {
-									stampedCardNumber: stampedCardNumber,
-									datetime: moment(vm.$date.now()).format('YYYY/MM/DD HH:mm:ss'),
-									stampButton: {
-										pageNo: layout.pageNo,
-										buttonPositionNo: button.btnPositionNo
-									},
-									refActualResult: {
-										cardNumberSupport: null,
-										workPlaceId: self.workPlaceId,
-										workLocationCD: self.worklocationCode,
-										workTimeCode: null,
-										overtimeDeclaration: null
 									}
-								};
-
-								service.addCheckCard(registerdata).done((res) => {
-
-									const param = {
-										sid: employeeIdRegister,
-										date: vm.$date.now()
-									}
-
-									service.createDaily(param);
-
-									//phat nhac
-									if (source) {
-										let audio = new Audio(source);
-										audio.play();
-									}
-
-									if (self.stampResultDisplay().notUseAttr == 1 && button.changeClockArt == 1) {
-										self.openScreenC(button, layout, employeeIdRegister);
-									} else {
-										self.openScreenB(button, layout, employeeIdRegister);
-									}
-								}).fail((res) => {
-									dialog.alertError({ messageId: res.messageId });
-								}).always(() => {
-									//					self.getStampToSuppress();
-									block.clear();
-								});
-							}
+								})
 						}
 					});
 
@@ -909,7 +928,7 @@ module nts.uk.at.view.kdp005.a {
 
 										if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 											if (self.totalOpenViewR === 0) {
-	
+
 												setTimeout(() => {
 													self.totalOpenViewR++;
 													self.shoNoti();
@@ -940,7 +959,7 @@ module nts.uk.at.view.kdp005.a {
 
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 										if (self.totalOpenViewR === 0) {
-	
+
 											setTimeout(() => {
 												self.totalOpenViewR++;
 												self.shoNoti();
