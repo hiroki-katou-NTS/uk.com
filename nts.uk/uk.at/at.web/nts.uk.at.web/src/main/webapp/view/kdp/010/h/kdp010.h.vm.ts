@@ -147,7 +147,7 @@ module nts.uk.at.view.kdp010.h {
 							self.dataShare = totalTimeArr;
 							self.isDel(true);
 						} else {
-							self.setColor("#999", ".btn-name");
+							self.setColor("#D9D9D9", ".btn-name");
 							self.getInfoButton(null);
 							self.dataShare = null;
 							self.isDel(false);
@@ -646,16 +646,16 @@ module nts.uk.at.view.kdp010.h {
 		}
 		export class ButtonDisplay {
 			buttonName: KnockoutObservable<string> = ko.observable('');
-			buttonColor: KnockoutObservable<string> = ko.observable('#999');
-			textColor: KnockoutObservable<string> = ko.observable('#999');
+			buttonColor: KnockoutObservable<string> = ko.observable('#D9D9D9');
+			textColor: KnockoutObservable<string> = ko.observable('#D9D9D9');
 			icon: KnockoutObservable<string> = ko.observable(null);
 			usrArt: KnockoutObservable<number> = ko.observable(0);
 			constructor() {
 				let self = this;
 				self.usrArt.subscribe((v: number) => {
 					if(v == 0){
-						self.buttonColor('#999');
-						self.textColor('#999');
+						self.buttonColor('#D9D9D9');
+						self.textColor('#D9D9D9');
 					}
 				});
 			}
