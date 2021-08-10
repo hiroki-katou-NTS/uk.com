@@ -1,7 +1,9 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.groups;
 
-import static nts.uk.ctx.exio.dom.input.group.ImportingGroupId.*;
-import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.*;
+import static nts.uk.ctx.exio.dom.input.group.ImportingGroupId.CLASSIFICATION_HISTORY;
+import static nts.uk.ctx.exio.dom.input.group.ImportingGroupId.TASK;
+import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.INT;
+import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.STRING;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,13 +56,13 @@ public class CreateGroupCanonicalization {
 		});
 		
 		// 雇用履歴
-		CREATES.put(ImportingGroupId.EMPLOYMENT_HISTORY, EmploymentHistoryCanonicalization::new);
+		CREATES.put(ImportingGroupId.EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
 		
 		//分類履歴
-		CREATES.put(ImportingGroupId.CLASSIFICATION_HISTORY, AffClassHistoryCanonicalization::new);
-		
+		CREATES.put(CLASSIFICATION_HISTORY,w -> AffClassHistoryCanonicalization.create(w));
+
 		//職位履歴
-		CREATES.put(ImportingGroupId.JOBTITLE_HISTORY, AffJobTitleHistoryCanonicalization::new);
+		CREATES.put(ImportingGroupId.JOBTITLE_HISTORY, w -> AffJobTitleHistoryCanonicalization.create(w));
 	}
 	
 	public static interface Require {

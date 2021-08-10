@@ -62,6 +62,9 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 		});
 	}
 	
+	/**
+	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
+	 */
 	private static List<Object> getPrimaryKeys(RevisedDataRecord record, GroupWorkspace workspace) {
 		
 		return workspace.getItemsPk().stream()
@@ -138,7 +141,7 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 		});
 	}
 	
-	private List<DomainDataId> toDomainDataIds(AnyRecordToDelete toDelete) {
+	protected List<DomainDataId> toDomainDataIds(AnyRecordToDelete toDelete) {
 		
 		val keyValues = new KeyValues(toKeyValueObjects(toDelete));
 		
@@ -190,7 +193,7 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 		void deleteDomainData(DomainDataId id);
 	}
 	
-	private static DomainDataId createDomainDataId(String tableName, List<DomainDataColumn> keys, KeyValues keyValues) {
+	protected static DomainDataId createDomainDataId(String tableName, List<DomainDataColumn> keys, KeyValues keyValues) {
 		
 		val builder = DomainDataId.builder(tableName, keyValues);
 		keys.forEach(k -> builder.addKey(k));

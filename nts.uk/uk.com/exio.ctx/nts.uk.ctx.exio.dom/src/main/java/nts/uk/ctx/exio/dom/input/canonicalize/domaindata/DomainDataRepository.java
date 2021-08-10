@@ -3,6 +3,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.History;
+
 /**
  * ドメインのテーブルに対して直接アクセスする汎用Repository
  */

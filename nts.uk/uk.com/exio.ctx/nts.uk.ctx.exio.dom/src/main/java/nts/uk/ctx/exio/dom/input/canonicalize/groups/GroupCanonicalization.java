@@ -53,9 +53,6 @@ public interface GroupCanonicalization {
 		CanonicalizationMethodRequire,
 		IndependentCanonicalization.RequireCanonicalize,
 		EmployeeContinuousHistoryCanonicalization.RequireCanonicalize,
-		EmploymentHistoryCanonicalization.RequireGetHistory,
-		AffClassHistoryCanonicalization.RequireGetHistory,
-		AffJobTitleHistoryCanonicalization.RequireGetHistory,
 		DailyPerformanceCanonicalization.RequireCanonicalize {
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
@@ -64,8 +61,6 @@ public interface GroupCanonicalization {
 	public static interface RequireAdjsut extends
 		IndependentCanonicalization.RequireAdjust,
 		EmployeeContinuousHistoryCanonicalization.RequireAdjust,
-		AffClassHistoryCanonicalization.RequireAdjust,
-		AffJobTitleHistoryCanonicalization.RequireAdjust,
 		DailyPerformanceCanonicalization.RequireAdjust {
 		
 	}

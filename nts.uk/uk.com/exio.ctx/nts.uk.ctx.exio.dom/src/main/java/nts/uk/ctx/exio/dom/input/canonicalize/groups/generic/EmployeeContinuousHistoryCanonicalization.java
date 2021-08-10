@@ -1,10 +1,14 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.groups.generic;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
@@ -36,42 +44,31 @@ import nts.uk.shr.com.history.History;
  * 社員の履歴（連続するやつ）を正準化するための処理がまとまっている
  * 継承してgetHistoryさえ実装すれば、各履歴ドメインの処理がだいたい実現できるはず
  */
-@RequiredArgsConstructor
 @Getter
 @ToString
-public abstract class EmployeeContinuousHistoryCanonicalization implements GroupCanonicalization {
+public abstract class EmployeeContinuousHistoryCanonicalization extends IndependentCanonicalization implements GroupCanonicalization {
 	
 	/** 履歴開始日の項目No */
-	final int itemNoStartDate;
+	private final int itemNoStartDate;
 	
 	/** 履歴終了日の項目No */
-	final int itemNoEndDate;
+	private final int itemNoEndDate;
 	
 	/** 履歴IDの項目No */
-	final int itemNoHistoryId;
+	private final int itemNoHistoryId;
 	
 	/** 社員コードの正準化 */
-	final EmployeeCodeCanonicalization employeeCodeCanonicalization;
+	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	protected EmployeeContinuousHistoryCanonicalization(
-			GroupWorkspace workspace,
-			EmployeeCodeCanonicalization employeeCodeCanonicalization) {
-		
+	public EmployeeContinuousHistoryCanonicalization(GroupWorkspace workspace) {
+		super(workspace);
 		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
 		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
 		itemNoHistoryId = workspace.getItemByName("HIST_ID").getItemNo();
-		this.employeeCodeCanonicalization = employeeCodeCanonicalization;
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 
-	/**
-	 * 対象の履歴のドメインを取得する
-	 * @param require
-	 * @param employeeId
-	 * @return
-	 */
-	protected abstract History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(
-			GroupCanonicalization.RequireCanonicalize require,
-			String employeeId);
+
 	
 	@Override
 	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
@@ -107,7 +104,8 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 				.getItemByNo(itemNoEmployeeId())
 				.get().getString();
 
-		val existingHistory = getHistory(require, employeeId);
+		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
+		val existingHistory = require.getHistory(id);
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -223,8 +221,8 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 		});
 	}
 
-	public static interface RequireCanonicalize extends
-			EmploymentHistoryCanonicalization.RequireGetHistory {
+	public static interface RequireCanonicalize{
+		History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id);
 	}
 	
 	@Override
@@ -232,39 +230,81 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 			RequireAdjsut require,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
-
+		
 		return AtomTask.of(() -> {
 
-			recordsToDelete.stream()
-				.map(EmployeeHistoryItem::new)
-				.forEach(item -> adjustDeleting(require, item));
+			for (val record : recordsToDelete) {
+				toDomainDataIds(record).forEach(id -> require.delete(id));
+			}
 
-			recordsToChange.stream()
-				.map(EmployeeHistoryItem::new)
-				.forEach(item -> adjustChanging(require,  item));
+			for (val record : recordsToChange) {
+				//項目Noから何をどの値に変更するのか特定できないとここから進めない
+				val period = new DatePeriod(
+						record.getChange(this.itemNoStartDate).asGeneralDate(),
+						record.getChange(this.itemNoEndDate).asGeneralDate());
+				
+				toDomainDataIds(record).forEach(id -> require.update(id, period));
+			}
 		});
 	}
 	
-	/**
-	 * 受入の影響を受ける既存の履歴項目の期間を変更する
-	 * @param require
-	 * @param context
-	 * @param historyItem
-	 */
-	protected abstract void adjustChanging(GroupCanonicalization.RequireAdjsut require, EmployeeHistoryItem historyItem);
-	
-	/**
-	 * 受入によって削除されるべき履歴項目を削除する
-	 * @param require
-	 * @param context
-	 * @param historyItem
-	 */
-	protected abstract void adjustDeleting(GroupCanonicalization.RequireAdjsut require, EmployeeHistoryItem historyItem);
-	
-	public static interface RequireAdjust extends
-			EmploymentHistoryCanonicalization.RequireAdjust {
+	protected List<DomainDataId> toDomainDataIds(AnyRecordToChange toChange) {
 		
+		val keyValues = new KeyValues(toKeyValueObjects(toChange));
+		
+		List<String> tableNames = new ArrayList<>();
+		tableNames.add(getParentTableName());
+		tableNames.addAll(getChildTableNames());
+		
+		val keys = getDomainDataKeys();
+		return tableNames.stream()
+				.map(tn -> createDomainDataId(tn, keys, keyValues))
+				.collect(toList());
 	}
+	
+	private List<Object> toKeyValueObjects(AnyRecordToChange toChange) {
+		
+		List<Object> keyValues = new ArrayList<>();
+		
+		val dataKeys = getDomainDataKeys();
+		for (int i = 0; i < dataKeys.size(); i++) {
+			val dataKey = dataKeys.get(i);
+			val stringified = toChange.getPrimaryKeys().get(i);
+			
+			Object value;
+			switch (dataKey.getDataType()) {
+			case STRING:
+				value = stringified.asString();
+				break;
+			case INT:
+				value = stringified.asInteger();
+				break;
+			case REAL:
+				value = stringified.asBigDecimal();
+				break;
+			case DATE:
+				value = stringified.asGeneralDate();
+				break;
+			default:
+				throw new RuntimeException("unknown: " + dataKey);
+			}
+
+			keyValues.add(value);
+		}
+		
+		return keyValues;
+	}
+	
+	
+	@Inject
+	private DomainDataRepository domainDataRepo;
+	
+	public static interface RequireAdjust{
+		void delete(DomainDataId id);
+		
+		void update(DomainDataId id ,DatePeriod period) ;
+	}
+	
 	
 	@RequiredArgsConstructor
 	@Getter
@@ -321,4 +361,5 @@ public abstract class EmployeeContinuousHistoryCanonicalization implements Group
 		return employeeCodeCanonicalization.appendMeta(source)
 				.addItem("HIST_ID");
 	}
+
 }

@@ -10,20 +10,17 @@ import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -52,6 +49,8 @@ import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserConditionRepositor
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.History;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -115,12 +114,6 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
-	
-	@Inject
-	private AffClassHistoryRepository affClassHistoryRepo;
-	
-	@Inject
-	private AffJobTitleHistoryRepository affJobTitleHistoryRepo;
 	
 	public class RequireImpl implements Require {
 		
@@ -248,14 +241,10 @@ public class ExternalImportPrepareRequire {
 			return domainDataRepo.exists(id);
 		}
 
-		@Override
-		public Optional<AffClassHistory> getAffClassHistory(String employeeId) {
-			return affClassHistoryRepo.getByEmployeeId(companyId, employeeId);
-		}
 
 		@Override
-		public Optional<AffJobTitleHistory> getAffJobTitleHistory(String employeeId) {
-			return affJobTitleHistoryRepo.getListBySid(companyId, employeeId);
+		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id) {
+			return domainDataRepo.getHistory(id);
 		}
 
 	}
