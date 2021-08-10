@@ -1,13 +1,22 @@
 package nts.uk.ctx.at.function.app.command.alarmworkplace.alarmlist;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.mailserver.MailServerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
-import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSettingRepository;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.Content;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormal;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormalRepository;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.NormalAutoClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.Subject;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.MailSettingsParamDto;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.SendEmailService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.sendemail.WorkplaceSendEmailService;
@@ -17,7 +26,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +52,12 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     @Inject
     private WorkplaceSendEmailService workplaceSendEmailService;
 
+    @Inject
+    private AlarmListExecutionMailSettingRepository executionMailSettingRepository;
+
+    @Inject
+    private AlarmMailSendingRoleRepository sendingRoleRepository;
+
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     protected String handle(CommandHandlerContext<SendEmailAlarmListWorkPlaceCommand> context) {
@@ -53,11 +70,24 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             throw new BusinessException("Msg_719");
         }
 
+
         //ドメインモデル「アラームリスト通常用メール設定」を取得する
         Optional<MailSettingNormal> mailSettingNormal = mailSettingNormalRepository.findByCompanyId(companyId);
         if (isNotHaveMailSetting(mailSettingNormal)) {
             throw new BusinessException("Msg_1169");
         }
+
+        val exMailList = executionMailSettingRepository.getByCompanyId(companyId,
+                PersonalManagerClassification.EMAIL_SETTING_FOR_ADMIN.value,
+                IndividualWkpClassification.WORKPLACE.value
+        );
+        val exMailListNOrmal = exMailList.stream().filter(x -> x.getNormalAutoClassify().value == NormalAutoClassification.NORMAL.value).collect(Collectors.toList());
+
+        if (!exMailListNOrmal.isEmpty()) {
+            throw new BusinessException("Msg_1169");
+        }
+        //ドメインモデル「アラームメール送信ロール」を取得する
+        val sendingRole = sendingRoleRepository.find(companyId, IndividualWkpClassification.WORKPLACE.value);
 
         //ドメインモデル「メールサーバ」を取得する
         boolean useAuthentication = mailServerAdapter.findBy(companyId);
@@ -75,7 +105,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                 mailSettingNormal.get(),
                 command.getCurrentAlarmCode(),
                 useAuthentication
-                );
+        );
     }
 
     private boolean isNotHaveMailSetting(Optional<MailSettingNormal> mailSetting) {
