@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.adapter.application.setting;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -29,10 +28,5 @@ public class ApplicationReasonRc {
 
 	/** 理由コード - 定型理由 */
 	public List<Pair<Integer ,String>> reasonTemp;
-	
-	/**
-	 * 休暇申請の種類
-	 */
-	private Optional<Integer> opHolidayAppType;
 	
 }

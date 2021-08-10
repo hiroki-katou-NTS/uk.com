@@ -78,7 +78,7 @@ public class EnterStampFromICCardServiceTest {
 			}
 		};
 
-		NtsAssert.businessException("Msg_433", () -> EnterStampFromICCardService.create(require, "", contractCode,
+		NtsAssert.businessException("Msg_433", () -> EnterStampFromICCardService.create(require, contractCode,
 				stampNumber, dateTime, stampButton, result));
 	}
 
@@ -100,7 +100,7 @@ public class EnterStampFromICCardServiceTest {
 
 		new MockUp<EnterStampForSharedStampService>() {
 			@Mock
-			public TimeStampInputResult create(EnterStampForSharedStampService.Require require, String cid, String conteactCode,
+			public TimeStampInputResult create(EnterStampForSharedStampService.Require require, String conteactCode,
 					String employeeID, Optional<StampNumber> StampNumber, Relieve relieve,
 					GeneralDateTime stmapDateTime, StampButton stampButton, RefectActualResult refActualResult) {
 				return inputResult;
@@ -115,7 +115,7 @@ public class EnterStampFromICCardServiceTest {
 			}
 		};
 
-		StampingResultEmployeeId stampingResultEmployeeId = EnterStampFromICCardService.create(require, "", contractCode,
+		StampingResultEmployeeId stampingResultEmployeeId = EnterStampFromICCardService.create(require, contractCode,
 				stampNumber, dateTime, stampButton, result);
 
 		assertThat(stampingResultEmployeeId.employeeId).isEqualTo("eadf-adf9-adfg4");

@@ -59,36 +59,6 @@ public class SendTimeRecordSettingExport {
 	 * 申請理由名称送信要求フラグ
 	 */
 	private final boolean request11;
-	
-	/**
-	 * リモート設定送信要求フラグ
-	 */
-	private final boolean request12;
-	
-	/**
-	 * 切替日時送信要求フラグ
-	 */
-	private final boolean request13;
-	
-	/**
-	 * Request-14
-	 */
-	private final boolean request14;
-	
-	/**
-	 * Request-15
-	 */
-	private final boolean request15;
-	
-	/**
-	 * Request-16
-	 */
-	private final boolean request16;
-	
-	/**
-	 * 再起動を行う送信要求フラグ
-	 */
-	private final boolean request17;
 
 	public SendTimeRecordSettingExport(SettingExportBuilder builder) {
 		this.request1 = builder.request1;
@@ -101,12 +71,6 @@ public class SendTimeRecordSettingExport {
 		this.request9 = builder.request9;
 		this.request10 = builder.request10;
 		this.request11 = builder.request11;
-		this.request12 = builder.request12;
-		this.request13 = builder.request13;
-		this.request14 = builder.request14;
-		this.request15 = builder.request15;
-		this.request16 = builder.request16;
-		this.request17 = builder.request17;
 	}
 
 	public static class SettingExportBuilder {
@@ -160,36 +124,6 @@ public class SendTimeRecordSettingExport {
 		 * 申請理由名称送信要求フラグ
 		 */
 		private boolean request11;
-		
-		/**
-		 * リモート設定送信要求フラグ
-		 */
-		private boolean request12;
-		
-		/**
-		 * 切替日時送信要求フラグ
-		 */
-		private boolean request13;
-		
-		/**
-		 * Request-14
-		 */
-		private boolean request14;
-		
-		/**
-		 * Request-15
-		 */
-		private boolean request15;
-		
-		/**
-		 * Request-16
-		 */
-		private boolean request16;
-		
-		/**
-		 * 再起動を行う送信要求フラグ
-		 */
-		private boolean request17;
 
 		public SettingExportBuilder(boolean request1, boolean request2, boolean request3, boolean request4,
 				boolean request6) {
@@ -228,36 +162,7 @@ public class SendTimeRecordSettingExport {
 			this.request11 = request11;
 			return this;
 		}
-		
-		public SettingExportBuilder createReq12(boolean request12) {
-			this.request12 = request12;
-			return this;
-		}
 
-		public SettingExportBuilder createReq13(boolean request13) {
-			this.request13 = request13;
-			return this;
-		}
-
-		public SettingExportBuilder createReq14(boolean request14) {
-			this.request14 = request14;
-			return this;
-		}
-
-		public SettingExportBuilder createReq15(boolean request15) {
-			this.request15 = request15;
-			return this;
-		}
-
-		public SettingExportBuilder createReq16(boolean request16) {
-			this.request16 = request16;
-			return this;
-		}
-		
-		public SettingExportBuilder createReq17(boolean request17) {
-			this.request17 = request17;
-			return this;
-		}
 		public SendTimeRecordSettingExport build() {
 			return new SendTimeRecordSettingExport(this);
 		}

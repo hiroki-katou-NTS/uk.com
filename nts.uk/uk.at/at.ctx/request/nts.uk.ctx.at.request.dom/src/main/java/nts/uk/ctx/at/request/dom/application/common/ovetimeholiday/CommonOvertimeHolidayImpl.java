@@ -126,7 +126,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 			Optional<TimeWithDayAttr> opStartTime, Optional<TimeWithDayAttr> opEndTime) {
 		List<DeductionTime> result = new ArrayList<>();
 		// 1日半日出勤・1日休日系の判定
-		WorkStyle workStyle = this.basicService.checkWorkDay(companyID, workTypeCode);
+		WorkStyle workStyle = this.basicService.checkWorkDay(workTypeCode);
 		// 平日か休日か判断する
 		WeekdayHolidayClassification weekDay = checkHolidayOrNot(workTypeCode);
 		// 休憩時間帯の取得

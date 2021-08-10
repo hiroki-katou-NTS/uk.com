@@ -84,12 +84,12 @@ public class ReflectApplicationWorkRecordTest {
 				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD).getDomain());
 				
 				// 「 打刻申請（NRモード）を反映する」のテスト呼び出す
-				TimeStampApplicationNRMode.process(require, anyString, (GeneralDate) any, (AppRecordImageShare) any,
+				TimeStampApplicationNRMode.process(require, (GeneralDate) any, (AppRecordImageShare) any,
 						(DailyRecordOfApplication) any, (Optional<Stamp>) any, (ChangeDailyAttendance) any);
 				times = 1;
 
 				// 「レコーダイメージ申請の対象日を取得する」のテスト呼び出す
-				GetTargetDateRecordApplication.getTargetDate(require, anyString, (AppRecordImageShare) any);
+				GetTargetDateRecordApplication.getTargetDate(require, (AppRecordImageShare) any);
 				result = Pair.of(Optional.of(GeneralDate.ymd(2020, 01, 01)), Optional.of(createStamp()));
 				times = 1;
 

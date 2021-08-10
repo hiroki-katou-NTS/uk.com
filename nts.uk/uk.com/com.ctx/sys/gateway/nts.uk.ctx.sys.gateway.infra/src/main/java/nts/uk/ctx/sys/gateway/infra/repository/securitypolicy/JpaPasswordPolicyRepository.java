@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
@@ -34,37 +33,32 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 				domain.getComplexityRequirement().getSymbolDigits().v().intValue(),
 				domain.getComplexityRequirement().getAlphabetDigits().v().intValue());
 	}
-	
+
 	@Override
 	public void insert(PasswordPolicy domain) {
 		this.commandProxy().insert(fromDomain(domain));
 	}
-	
+
 	@Override
 	public void update(PasswordPolicy domain) {
 		this.commandProxy().update(fromDomain(domain));
 	}
 	
 	@Override
-	public PasswordPolicy getPasswordPolicy(String tenantCode) {
+	public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
 		return getPasswordPolicy(new ContractCode(tenantCode));
 	}
 	
 	@Override
-	public PasswordPolicy getPasswordPolicy(ContractCode contractCd) {
-		
+	public Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCd) {
+
 		String query = BASIC_SELECT 
 				+ "where CONTRACT_CD = @contractCd ";
-		val result = new NtsStatement(query, this.jdbcProxy())
+		return new NtsStatement(query, this.jdbcProxy())
 				.paramString("contractCd", contractCd.toString())
 				.getSingle(p -> SgwmtPasswordPolicy.MAPPER.toEntity(p).toDomain());
-		if(result.isPresent()) {
-			return result.get();
-		}
-		
-		return PasswordPolicy.createNotUse(contractCd.toString());
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository#updatePasswordPolicy(nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy)
 	 */

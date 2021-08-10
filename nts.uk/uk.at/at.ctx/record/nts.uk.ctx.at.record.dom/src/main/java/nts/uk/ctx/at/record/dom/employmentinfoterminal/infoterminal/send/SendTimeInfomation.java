@@ -14,40 +14,40 @@ public class SendTimeInfomation implements DomainValue {
 	/**
 	 * Year
 	 */
-	private final String year;
+	private final Integer year;
 
 	/**
 	 * month
 	 */
-	private final String month;
+	private final Integer month;
 
 	/**
 	 * day
 	 */
-	private final String day;
+	private final Integer day;
 
 	/**
 	 * hour
 	 */
-	private final String hour;
+	private final Integer hour;
 
 	/**
 	 * minute
 	 */
-	private final String minute;
+	private final Integer minute;
 
 	/**
 	 * second
 	 */
-	private final String second;
+	private final Integer second;
 
 	/**
 	 * week
 	 */
-	private final String week;
+	private final Integer week;
 
-	public SendTimeInfomation(String year, String month, String day, String hour, String minute, String second,
-			String week) {
+	public SendTimeInfomation(Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second,
+			Integer week) {
 		super();
 		this.year = year;
 		this.month = month;
@@ -58,5 +58,4 @@ public class SendTimeInfomation implements DomainValue {
 		this.week = week;
 	}
 
-	
 }

@@ -19,7 +19,5 @@ public class ResultOfDeletion {
 	
 	Optional<AtomTask> deleteEmpInfoTerminal;
 	
-	Optional<AtomTask> deleteTimeRecordReqSetting;
-	
 	Optional<AtomTask> deleteEmpInfoTerminalComStatus;
 }

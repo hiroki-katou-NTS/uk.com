@@ -14,7 +14,6 @@ import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUse
 import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.PasswordState;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordMinimumLength;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
 @Getter
@@ -66,18 +65,7 @@ public class PasswordPolicy extends AggregateRoot {
 		this.validityPeriod = validityPeriod;
 		this.complexityRequirement = complexityRequirement;
 	}
-	public static PasswordPolicy createNotUse(String tenantCode) {
-		return new PasswordPolicy(
-				new ContractCode(tenantCode), 
-				new NotificationPasswordChange(new BigDecimal(0)), 
-				false, 
-				false, 
-				false, 
-				new PasswordHistoryCount(new BigDecimal(0)), 
-				new PasswordValidityPeriod(new BigDecimal(0)), 
-				PasswordComplexityRequirement.createNotCheck());
-	}
-	
+
 	public static PasswordPolicy createFromJavaType(String contractCode, int notificationPasswordChange,
 			boolean loginCheck, boolean initialPasswordChange, boolean isUse, int historyCount, 
 			int validityPeriod, PasswordComplexityRequirement complexityRequirement) {

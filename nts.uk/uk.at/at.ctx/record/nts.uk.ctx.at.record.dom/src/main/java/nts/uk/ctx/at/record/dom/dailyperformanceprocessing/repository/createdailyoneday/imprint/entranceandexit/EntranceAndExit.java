@@ -19,8 +19,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 入退門反映する
@@ -36,7 +38,9 @@ public class EntranceAndExit {
 	@Inject
 	private ReflectAttendanceClock reflectAttendanceClock;
 	
-	public ReflectStampOuput entranceAndExit(String cid, Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
+	public ReflectStampOuput entranceAndExit(Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
+		String cid = AppContexts.user().companyId();
+		
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
 		//日別実績の入退門の入退門を・反映情報（Temporary）に変換する
 		List<ReflectionInformation> listReflectionInformation = new ArrayList<>();

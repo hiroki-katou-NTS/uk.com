@@ -196,7 +196,7 @@ public class ReflectShortWorkingTimeDomainServiceimpl implements ReflectShortWor
 		}
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle checkWorkDay = this.basicScheduleService
-				.checkWorkDay(companyId, WorkInfo.getRecordInfo().getWorkTypeCode().v());
+				.checkWorkDay(WorkInfo.getRecordInfo().getWorkTypeCode().v());
 		// 1日休日系
 		if (checkWorkDay.value == 0) {
 			outPut.setReflect(false);

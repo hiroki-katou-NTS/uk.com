@@ -1,10 +1,9 @@
 package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
@@ -38,13 +37,9 @@ public class SendReservationMenuService {
 
 	// [pvt-1] 予約メニュー名称送信に変換
 	private static List<SendReservationMenu> convert(List<Bento> lstBento) {
-		List<SendReservationMenu> lstResult = new ArrayList<>();
-		IntStream.range(1, 41).boxed().forEach(indx -> {
-			lstResult.add(lstBento.stream().filter(x -> x.getFrameNo() == indx).findFirst()
-					.map(x -> new SendReservationMenu(x.getName().v(), x.getUnit().v(), x.getFrameNo()))
-					.orElse(new SendReservationMenu("", "", indx)));
-		});
-		return lstResult;
+		return lstBento.stream().map(x -> {
+			return new SendReservationMenu(x.getName().v(), x.getUnit().v(), x.getFrameNo());
+		}).sorted((x, y) -> x.getFrameNumber() - y.getFrameNumber()).limit(12).collect(Collectors.toList());
 	}
 
 	public static interface Require {

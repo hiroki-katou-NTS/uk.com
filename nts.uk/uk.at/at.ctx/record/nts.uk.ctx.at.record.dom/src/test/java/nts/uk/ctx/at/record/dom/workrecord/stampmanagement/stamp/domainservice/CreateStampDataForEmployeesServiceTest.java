@@ -58,7 +58,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		};
 		
 		NtsAssert.businessException("Msg_433", () -> CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+				require, contractCd, employeeId, stampNumber, stampDateTime,
 				relieve, buttonType, refActualResults, stampLocationInfor));
 	}
 	
@@ -94,7 +94,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		};
 		
 		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+				require, contractCd, employeeId, stampNumber, stampDateTime,
 				relieve, buttonType, refActualResults, stampLocationInfor);
 		
 		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
@@ -137,7 +137,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		};
 		
 		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+				require, contractCd, employeeId, stampNumber, stampDateTime,
 				relieve, buttonType, refActualResults, stampLocationInfor);
 		
 		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
@@ -180,7 +180,7 @@ public class CreateStampDataForEmployeesServiceTest {
 		};
 		
 		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+				require, contractCd, employeeId, stampNumber, stampDateTime,
 				relieve, buttonType, refActualResults, stampLocationInfor);
 		
 		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();

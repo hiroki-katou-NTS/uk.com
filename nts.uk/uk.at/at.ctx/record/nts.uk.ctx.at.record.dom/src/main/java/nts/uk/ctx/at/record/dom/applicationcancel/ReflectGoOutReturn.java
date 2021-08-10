@@ -25,7 +25,7 @@ import nts.uk.shr.com.time.AttendanceClock;
  */
 public class ReflectGoOutReturn {
 
-	public static ReflectTimeStampResult process(Require require, String companyId, DailyRecordOfApplication dailyRecordApp,
+	public static ReflectTimeStampResult process(Require require, DailyRecordOfApplication dailyRecordApp,
 			OutputTimeReflectForWorkinfo timeReflectWork, AttendanceClock attendanceTime,
 			EngraveShareAtr appStampComAtr, Optional<Stamp> stamp, ChangeDailyAttendance changeDailyAtt) {
 		DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
@@ -44,7 +44,7 @@ public class ReflectGoOutReturn {
 		IntegrationOfDaily dailyCopy = converter.setData(dailyRecordApp.getDomain()).toDomain();
 
 		// 打刻を反映する
-		require.reflectStamp(companyId, stamp.get(), timeReflectWork.getStampReflectRangeOutput(), dailyCopy, changeDailyAtt);
+		require.reflectStamp(stamp.get(), timeReflectWork.getStampReflectRangeOutput(), dailyCopy, changeDailyAtt);
 
 		// 日別勤怠(work）に日別勤怠(計算用work）の外出時間帯をコピーする
 		converter = require.createDailyConverter();
@@ -67,7 +67,7 @@ public class ReflectGoOutReturn {
 		DailyRecordToAttendanceItemConverter createDailyConverter();
 
 		// TemporarilyReflectStampDailyAttd
-		List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+		List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt);
 	}
 }

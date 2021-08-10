@@ -9,7 +9,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.LeaveCategory;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.ReservationReceptionData;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordReservationService;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReserveService;
@@ -18,10 +20,19 @@ import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.com.net.Ipv4Address;
 
 /**
@@ -141,10 +152,19 @@ public class EmpInfoTerminal implements DomainAggregate {
 		return Pair.of(stampRecord, createReserv);
 	}
 
+	// [pvt-1] 打刻の打刻記録を作成
+	private StampRecord createStampRecord(StampReceptionData recept, Stamp stamp) {
+		// TODO: contractCode
+		ButtonType bt = new ButtonType(ReservationArt.NONE, Optional.of(stamp.getType()));
+		return new StampRecord(new ContractCode(""), new StampNumber(recept.getIdNumber()), recept.getDateTime(),
+				new StampTypeDisplay(bt.getStampTypeDisplay()));
+	}
+
 	// [pvt-2] 予約の打刻記録を作成
 	private StampRecord createStampRecord(ReservationReceptionData reservReceptData) {
+		// TODO: contractCode
 		ButtonType bt = new ButtonType(ReservationArt.RESERVATION, Optional.empty());
-		return new StampRecord(new ContractCode(contractCode.v()), new StampNumber(reservReceptData.getIdNumber()),
+		return new StampRecord(new ContractCode(""), new StampNumber(reservReceptData.getIdNumber()),
 				reservReceptData.getDateTime(), new StampTypeDisplay(bt.getStampTypeDisplay()));
 	}
 

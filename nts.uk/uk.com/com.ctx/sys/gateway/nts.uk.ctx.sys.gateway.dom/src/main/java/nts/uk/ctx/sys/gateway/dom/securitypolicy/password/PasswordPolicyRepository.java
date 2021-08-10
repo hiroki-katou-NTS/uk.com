@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.password;
 
+import java.util.Optional;
+
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 public interface PasswordPolicyRepository {
@@ -10,7 +12,7 @@ public interface PasswordPolicyRepository {
 
 	void updatePasswordPolicy(PasswordPolicy passwordPolicy);
 	
-	PasswordPolicy getPasswordPolicy(String tenantCode);
+	Optional<PasswordPolicy> getPasswordPolicy(String tenantCode);
 	
-	PasswordPolicy getPasswordPolicy(ContractCode contractCode);
+	Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCode);
 }

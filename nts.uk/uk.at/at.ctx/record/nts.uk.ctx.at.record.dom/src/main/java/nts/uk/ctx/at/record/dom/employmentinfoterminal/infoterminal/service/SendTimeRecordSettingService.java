@@ -35,14 +35,7 @@ public class SendTimeRecordSettingService {
 				setting.isReservationReceive(), setting.isApplicationReceive(), setting.isSendEmployeeId())
 						.createReq7(setting.isSendWorkType()).createReq8(setting.isSendWorkTime())
 						.createReq9(setting.isOverTimeHoliday()).createReq10(setting.isSendBentoMenu())
-						.createReq11(setting.isApplicationReason())
-						.createReq12(setting.isRemoteSetting())
-						.createReq13(setting.isSendTimeSwitchUKMode())
-						.createReq14(false)
-						.createReq15(false)
-						.createReq16(false)
-						.createReq17(setting.isReboot())
-						.build();
+						.createReq11(setting.isApplicationReason()).build();
 	}
 
 	public static interface Require {

@@ -1,13 +1,13 @@
 package nts.uk.ctx.at.function.app.nrl.request;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.app.nrl.Command;
-import nts.uk.ctx.at.function.app.nrl.NRContentList;
+import nts.uk.ctx.at.function.app.nrl.data.FrameItemArranger;
 import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
 import nts.uk.ctx.at.function.app.nrl.xml.Element;
 import nts.uk.ctx.at.function.app.nrl.xml.Frame;
@@ -29,8 +29,18 @@ public class TimeSettingInfoRequest extends NRLRequest<Frame> {
 	@Override
 	public void sketch(String empInfoTerCode, ResourceContext<Frame> context) {
 
-		List<MapItem> items = NRContentList.createDefaultField(Command.TIMESET_INFO,
-				Optional.ofNullable(responseLength()), context.getTerminal());
+		List<MapItem> items = new ArrayList<>();
+		items.add(FrameItemArranger.SOH());
+		items.add(new MapItem(Element.HDR, Command.TIMESET_INFO.Response));
+		items.add(new MapItem(Element.LENGTH, responseLength()));
+		items.add(FrameItemArranger.Version());
+		items.add(FrameItemArranger.FlagEndNoAck());
+		items.add(FrameItemArranger.NoFragment());
+		items.add(new MapItem(Element.NRL_NO, context.getTerminal().getNrlNo()));
+		items.add(new MapItem(Element.MAC_ADDR, context.getTerminal().getMacAddress()));
+		String contractCode =  context.getEntity().pickItem(Element.CONTRACT_CODE);
+		items.add(new MapItem(Element.CONTRACT_CODE, contractCode));
+		items.add(FrameItemArranger.ZeroPadding());
 		// Get flag from DB to set to request
 		SendTimeInfomationImport setting = sendNRDataAdapter.sendSystemTime();
 

@@ -19,9 +19,6 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="book-conversion">
-					<button class="x-large w-300" data-bind="click: openKNR002LDialog, visible: managementSection()">#{i18n.getText('KNR002_53')}</button>
-				</div>
 				<div class="top-container">
 					<div class="first">
 						<p>#{i18n.getText('KNR002_20')}</p>
@@ -71,8 +68,8 @@
 						</div>
 					</div>
 					<div class="third">
-						<button class="x-large w-300" data-bind="click: openKNR002EDialog">#{i18n.getText('KNR002_33')}</button>
-						<button class="x-large refresh w-300" data-bind="click: refresh">#{i18n.getText('KNR002_34')}</button>
+						<button class="x-large" data-bind="click: openKNR002EDialog">#{i18n.getText('KNR002_33')}</button>
+						<button class="x-large refresh" data-bind="click: refresh">#{i18n.getText('KNR002_34')}</button>
 					</div>
 				</div>
 				<table id="grid"></table>

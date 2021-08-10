@@ -15,8 +15,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Codryptofy.
  * 
@@ -59,10 +57,9 @@ public class Codryptofy {
 	public static String aesEncrypt(String plainText) {
 		try {
 			Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
-			byte[] encryptedBytes = cipher.doFinal(decode(plainText), 0, decode(plainText).length);
-			byte[] output = new byte[decode(plainText).length];
-				System.arraycopy(encryptedBytes, 0, output, 0, decode(plainText).length);
-			return bytesToHexString(output);
+			byte[] encryptedBytes = cipher.doFinal(decode(plainText));
+			
+			return bytesToHexString(encryptedBytes);
 		} catch (BadPaddingException | IllegalBlockSizeException e) {
 			throw new RuntimeException(e);
 		}
@@ -245,18 +242,5 @@ public class Codryptofy {
 	public static String fromHexString(String hexText) {
 		byte[] bytes = DatatypeConverter.parseHexBinary(hexText);
 		return encodeUTF8(bytes);
-	}
-	
-	public static String paddingWithByte(String text, int byteText) {
-		int sizeText = decode(text).length;
-		String emptyString = StringUtils.rightPad("", byteText-sizeText, " ");
-		return encode(decode(text + emptyString));
-	}
-	
-	public static String paddingFullBlock(String payload) {
-		int sizeText = decode(payload).length;
-		if(sizeText % 16 == 0)
-			return payload;
-		return paddingWithByte(payload, (sizeText/16+1) * 16);
 	}
 }

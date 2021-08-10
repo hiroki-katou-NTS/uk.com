@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -45,85 +44,74 @@ public class KrcmtTrRequest extends UkJpaEntity implements Serializable {
 	 * 残業・休日出勤送信
 	 */
 	@Column(name = "SEND_OVERTIME_NAME")
-	public int sendOverTime;
+	public Integer sendOverTime;
 
 	/**
 	 * 申請理由送信
 	 */
 	@Column(name = "SEND_REASON_APP")
-	public int sendReasonApp;
+	public Integer sendReasonApp;
 
 	/**
 	 * 時刻セット
 	 */
 	@Column(name = "SEND_SERVERTIME")
-	public int sendServerTime;
+	public Integer sendServerTime;
 	
 	/**
 	 * 社員ID送信
 	 */
 	@Column(name = "SEND_SID")
-	public int sendSid;
+	public Integer sendSid;
 
 	/**
 	 * 弁当メニュー枠番送信
 	 */
 	@Column(name = "SEND_RESERVATION")
-	public int sendReservation;
+	public Integer sendReservation;
 
 	/**
 	 * 	勤務種類コード送信
 	 */
 	@Column(name = "SEND_WORKTYPE")
-	public int sendWorkType;
+	public Integer sendWorkType;
 	
 	/**
 	 * 就業時間帯コード送信
 	 */
 	@Column(name = "SEND_WORKTIME")
-	public int sendWorkTime;
+	public Integer sendWorkTime;
 
 	/**
 	 * 全ての打刻データ
 	 */
 	@Column(name = "RECV_ALL_STAMP")
-	public int recvStamp;
+	public Integer recvStamp;
 
 	/**
 	 * 全ての予約データ
 	 */
 	@Column(name = "RECV_ALL_RESERVATION")
-	public int recvReservation;
+	public Integer recvReservation;
 
 	/**
 	 * 全ての申請データ
 	 */
 	@Column(name = "RECV_ALL_APPLICATION")
-	public int recbApplication;
+	public Integer recbApplication;
 	
 	/**
 	 * リモート設定
 	 */
 	@Column(name = "REMOTE_SETTING")
-	public int remoteSetting;
+	public Integer remoteSetting;
 
 	/**
 	 * 再起動を行う
 	 */
 	@Column(name = "REBOOT")
-	public int reboot;
+	public Integer reboot;
 	
-	/**
-	 * 切替日時送信		
-	 */
-	@Column(name = "SEND_SWITCH_DATE")
-	public int sendSwitchDate;
-	
-	/**
-	 * 切替日時				
-	 */
-	@Column(name = "SWITCH_DATE")
-	public GeneralDateTime switchDate;
 	
 
 	@Override

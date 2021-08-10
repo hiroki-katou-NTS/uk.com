@@ -146,10 +146,10 @@ module nts.uk.com.view.ccg022.a.screenModel {
             } else {
                 status = setting.systemStatus;
             }
-            if (status == 2) {
+            if (status == 1) {
                 return text("CCG022_33");
             }
-            if (status == 3) {
+            if (status == 2) {
                 return text("CCG022_32");
             }
             return "";

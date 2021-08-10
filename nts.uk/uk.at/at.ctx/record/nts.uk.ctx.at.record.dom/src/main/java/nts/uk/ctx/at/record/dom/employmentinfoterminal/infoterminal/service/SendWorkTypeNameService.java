@@ -45,7 +45,7 @@ public class SendWorkTypeNameService {
 			if (x.getDailyWork().isHolidayType()) {
 				daily = "1";
 			} 
-			return new SendWorkTypeName(x.getWorkTypeCode().v(), daily, x.getAbbreviationName().v());
+			return new SendWorkTypeName(x.getWorkTypeCode().v(), daily, x.getName().v());
 		}).sorted((x, y) -> x.getWorkTypeNumber().compareTo(y.getWorkTypeNumber())).collect(Collectors.toList());
 	}
 

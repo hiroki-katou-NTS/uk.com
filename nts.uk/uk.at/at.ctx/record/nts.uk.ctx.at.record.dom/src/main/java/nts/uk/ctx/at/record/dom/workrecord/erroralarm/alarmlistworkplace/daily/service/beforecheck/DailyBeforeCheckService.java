@@ -119,7 +119,8 @@ public class DailyBeforeCheckService {
                 GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
                         59, 59);
 
-                List<Stamp> stamps = stampDakokuRepo.getByDateTimeperiod(Collections.singletonList(stampCard.getValue().v()), start, end);
+                List<Stamp> stamps = stampDakokuRepo.getByDateTimeperiod(Collections.singletonList(stampCard.getValue().v()),
+                        cid, start, end);
                 stampsByEmpMap.put(stampCard.getKey(), stamps);
             }
             data.setStampsByEmpMap(stampsByEmpMap);

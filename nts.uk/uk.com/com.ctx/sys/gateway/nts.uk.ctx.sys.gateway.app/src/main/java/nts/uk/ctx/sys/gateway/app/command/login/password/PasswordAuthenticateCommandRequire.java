@@ -100,7 +100,7 @@ public class PasswordAuthenticateCommandRequire {
 
 		@Override
 		public PasswordPolicy getPasswordPolicy(String tenantCode) {
-			return passwordPolicyRepo.getPasswordPolicy(tenantCode);
+			return passwordPolicyRepo.getPasswordPolicy(tenantCode).get();
 		}
 
 		@Override

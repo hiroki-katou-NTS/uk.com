@@ -145,10 +145,10 @@ public class SendWorkTypeNameServiceTest {
 		List<SendWorkTypeName> actual = SendWorkTypeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getWorkTypeNumber(), d -> d.getDaiClassifiNum(), d -> d.getWorkName())
-				.containsExactly(Tuple.tuple("001", "0", "BB"), Tuple.tuple("002", "0", "BB"),
-						Tuple.tuple("003", "1", "BB"), Tuple.tuple("004", "1", "BB"), Tuple.tuple("005", "0", "BB"),
-						Tuple.tuple("006", "1", "BB"), Tuple.tuple("007", "1", "BB"), Tuple.tuple("008", "0", "BB"),
-						Tuple.tuple("009", "1", "BB"));
+				.containsExactly(Tuple.tuple("001", "0", "A"), Tuple.tuple("002", "0", "C"),
+						Tuple.tuple("003", "1", "A"), Tuple.tuple("004", "1", "C"), Tuple.tuple("005", "0", "A"),
+						Tuple.tuple("006", "1", "C"), Tuple.tuple("007", "1", "A"), Tuple.tuple("008", "0", "C"),
+						Tuple.tuple("009", "1", "A"));
 
 	}
 

@@ -74,7 +74,7 @@ public class EnterStampFromPersonalStampServiceTest {
 			}
 		};
 		
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, "", contractCode, employeeId, dateTime, stampButton,
+		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId, dateTime, stampButton,
 				null));
 	}
 	
@@ -106,7 +106,7 @@ public class EnterStampFromPersonalStampServiceTest {
 			}
 		};
 		
-		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, "", contractCode, employeeId, dateTime, stampButton,
+		NtsAssert.businessException("Msg_1632", () -> EnterStampFromPersonalStampService.create(require, contractCode, employeeId, dateTime, stampButton,
 				null));
 	}
 	
@@ -178,7 +178,7 @@ public class EnterStampFromPersonalStampServiceTest {
 			}
 		};
 		
-		TimeStampInputResult timeStampInputResult = EnterStampFromPersonalStampService.create(require, "", contractCode, employeeId, dateTime, stampButton,
+		TimeStampInputResult timeStampInputResult = EnterStampFromPersonalStampService.create(require, contractCode, employeeId, dateTime, stampButton,
 				null);
 		
 		assertThat(timeStampInputResult.at).isNotEmpty();

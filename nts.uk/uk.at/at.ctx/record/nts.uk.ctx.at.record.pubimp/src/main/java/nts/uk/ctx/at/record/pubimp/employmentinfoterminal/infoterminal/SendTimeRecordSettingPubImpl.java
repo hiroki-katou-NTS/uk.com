@@ -26,17 +26,12 @@ public class SendTimeRecordSettingPubImpl implements SendTimeRecordSettingPub {
 
 		RequireImpl impl = new RequireImpl(timeRecordReqSettingRepository);
 
-		return SendTimeRecordSettingService
-				.send(impl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode)).map(setting -> {
-					return new SendTimeRecordSettingExport(
-							new SettingExportBuilder(setting.isRequest1(), setting.isRequest2(), setting.isRequest3(),
-									setting.isRequest4(), setting.isRequest6()).createReq7(setting.isRequest7())
-											.createReq8(setting.isRequest8()).createReq9(setting.isRequest9())
-											.createReq10(setting.isRequest10()).createReq11(setting.isRequest11())
-											.createReq12(setting.isRequest12()).createReq13(setting.isRequest13())
-											.createReq14(setting.isRequest14()).createReq15(setting.isRequest15())
-											.createReq16(setting.isRequest16()).createReq17(setting.isRequest17()));
-				});
+		return SendTimeRecordSettingService.send(impl, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode)).map(setting -> {
+			return new SendTimeRecordSettingExport(new SettingExportBuilder(setting.isRequest1(), setting.isRequest2(),
+					setting.isRequest3(), setting.isRequest4(), setting.isRequest6()).createReq7(setting.isRequest7())
+							.createReq8(setting.isRequest8()).createReq9(setting.isRequest9())
+							.createReq10(setting.isRequest10()).createReq11(setting.isRequest11()));
+		});
 	}
 
 	@AllArgsConstructor

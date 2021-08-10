@@ -41,7 +41,7 @@ public class PasswordAuthenticateCommand implements LoginCommandHandlerBase.Tena
 			throw new BusinessException("Msg_312");
 		}
 		// パスワードが未入力でないかチェック
-		if (StringUtil.isNullOrEmpty(password, false)) {
+		if (StringUtil.isNullOrEmpty(password, true)) {
 			throw new BusinessException("Msg_310");
 		}
 	}

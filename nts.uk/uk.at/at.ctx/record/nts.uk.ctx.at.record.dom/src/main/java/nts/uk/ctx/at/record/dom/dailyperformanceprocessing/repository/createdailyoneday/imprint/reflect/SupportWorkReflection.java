@@ -55,8 +55,9 @@ public class SupportWorkReflection {
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
 
-	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
+	public ReflectionAtr supportWorkReflect(SupportParam param, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
+		String cid = AppContexts.user().companyId();
 
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
 		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);

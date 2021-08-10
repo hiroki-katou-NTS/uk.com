@@ -14,13 +14,9 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTermi
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MonitorIntervalTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.NRConvertInfo;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.OutPlaceConvert;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.net.Ipv4Address;
 
 /**
@@ -30,10 +26,6 @@ import nts.uk.shr.com.net.Ipv4Address;
 public class EmpInfoTerminalHelper {
 	
 	public static EmpInfoTerminal getEmpInfoTerminalDefault() {
-		CreateStampInfo temFix = new CreateStampInfo(
-				new NRConvertInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.of(GoingOutReason.PRIVATE)),
-						NotUseAtr.NOT_USE),
-				Optional.of(new WorkLocationCD("WCD")), Optional.of(new WorkplaceId("WID")));
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(
 				Ipv4Address.parse("192.168.50.4")), 
 				new MacAddress("AABBCCDD"),
@@ -41,7 +33,7 @@ public class EmpInfoTerminalHelper {
 				Optional.of(new EmpInfoTerSerialNo("1")), 
 				new EmpInfoTerminalName(""),
 				new ContractCode("1"))
-				.createStampInfo(temFix)
+				.createStampInfo(new CreateStampInfo(null, null, Optional.of(new WorkLocationCD("WCD")), Optional.of(new WorkplaceId("WID"))))
 				.modelEmpInfoTer(ModelEmpInfoTer.NRL_1)
 				.intervalTime((new MonitorIntervalTime(1))).build();
 		return empInfoTerminal;

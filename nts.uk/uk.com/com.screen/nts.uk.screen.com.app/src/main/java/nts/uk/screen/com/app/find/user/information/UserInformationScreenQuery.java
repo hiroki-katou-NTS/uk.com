@@ -195,9 +195,11 @@ public class UserInformationScreenQuery {
         PasswordChangeLogDto passwordChangeLogDto = optLoginPasswordOfUser.isPresent() ? PasswordChangeLogDto.toDto(optLoginPasswordOfUser.get()) : null;
 
         //SQ11 - get パスワードポリシー
-        PasswordPolicy passwordPolicy = passwordPolicyRepository
+        Optional<PasswordPolicy> passwordPolicy = passwordPolicyRepository
                 .getPasswordPolicy(new ContractCode(loginContractCode));
-        PasswordPolicyDto passwordPolicyDto = PasswordPolicyDto.toDto(passwordPolicy);
+        PasswordPolicyDto passwordPolicyDto = passwordPolicy
+                .map(PasswordPolicyDto::toDto)
+                .orElse(new PasswordPolicyDto());
 
         //SQ12 - get 社員連絡先
         Optional<EmployeeContact> employeeContact = employeeContactRepository.getByEmployeeId(loginEmployeeId);
