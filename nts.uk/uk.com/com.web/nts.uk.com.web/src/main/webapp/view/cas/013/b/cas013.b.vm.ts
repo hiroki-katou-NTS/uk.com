@@ -123,11 +123,8 @@ module nts.uk.com.view.cas013.b.viewmodel {
             }
             if (pid == "") {
                 this.snotCompany();
-                dfd.resolve();
             } else {
                 this.sCompany(pid);
-                this.searchEmp();
-                dfd.resolve();
             }
 
             service.getWorkPlacePub(sid).done(function(data) {
@@ -160,6 +157,12 @@ module nts.uk.com.view.cas013.b.viewmodel {
         }
         private sCompany(pid: string): void {
             var self = this;
+            var eid = nts.uk.ui.windows.getShared("ListEmployyeId");
+            var sid  = [];
+            for (let i =0; i<eid.length;i++){
+                let item = eid[i].employyeId;
+                sid.push(item);
+            }
             service.searchCompanyInfo(pid).done(function(data) {
                 var items = [];
                 if(data) {
@@ -172,6 +175,22 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 }
                 self.selectedType(data.companyCode)
 
+            })
+            service.searchEmployyeList(sid).done(function(data) {
+                var employeeSearchs: UnitModel[] = []; //KCP005
+                if(data) {
+                    for (let i =0; i<data.length;i++) {
+                        var employee: UnitModel = {
+                            code: data[i].employeeCode,
+                            name: data[i].businessName
+                        };
+                        employeeSearchs.push(employee);
+                    }
+                    self.multiSelectedCode.push(employeeSearchs[0].code);
+                    self.employeeList(employeeSearchs);
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                }
             })
         }
 
