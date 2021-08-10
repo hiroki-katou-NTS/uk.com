@@ -35,7 +35,7 @@ public class ChangeLoginPasswordCommandRequire {
 		
 		@Override
 		public PasswordPolicy getPasswordPolicy() {
-			return passwordPolicyRepo.getPasswordPolicy(AppContexts.user().contractCode()).get();
+			return passwordPolicyRepo.getPasswordPolicy(AppContexts.user().contractCode());
 		}
 		
 		@Override
