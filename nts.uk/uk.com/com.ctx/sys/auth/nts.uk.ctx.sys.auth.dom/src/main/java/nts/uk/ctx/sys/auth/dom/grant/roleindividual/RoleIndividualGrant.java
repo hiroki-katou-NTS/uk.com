@@ -9,7 +9,6 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmployeeInfoDto;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.arc.time.calendar.period.DatePeriod;
 

@@ -22,7 +22,6 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
 import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
-import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmployeeInfoDto;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -136,19 +135,6 @@ public class PersonEmpBasicInfoPubImpl implements PersonEmpBasicInfoPub {
 							person.getPersonNameGroup().getBusinessName().v(), person.getGender().value,
 							person.getBirthDate(), emp.getEmployeeCode().v(), period.start(), period.end());
 				}).collect(Collectors.toList());
-	}
-
-
-
-	@Override
-	public List<PersonEmployeeInfoDto> getEmployeesMatchingName(List<String> pid, String companyId) {
-		val data = empDataRepo.findEmployeesMatchingName(pid,companyId);
-		return data.stream().map(item -> new PersonEmployeeInfoDto(
-				item.getPersonId(),
-				item.getEmployeeId(),
-				item.getEmployeeCode().v(),
-                ""
-		)).collect(Collectors.toList());
 	}
 
 	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

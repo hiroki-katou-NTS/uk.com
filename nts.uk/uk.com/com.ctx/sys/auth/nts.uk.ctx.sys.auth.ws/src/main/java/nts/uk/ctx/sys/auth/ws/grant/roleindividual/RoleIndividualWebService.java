@@ -38,6 +38,7 @@ import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
 import nts.uk.ctx.sys.auth.app.find.person.role.PersonInformationRoleFinder;
 import nts.uk.ctx.sys.auth.app.find.person.role.dto.RoleDto;
+import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
 import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.shr.com.context.AppContexts;
@@ -177,7 +178,7 @@ public class RoleIndividualWebService extends WebService {
 
 	@POST
 	@Path("searchCompanyInfo")
-	public CompanyInfoDto searchCompanyInfo(String companyId) {
+	public CompanyImport searchCompanyInfo(String companyId) {
 		return this.roleIndividualFinder.searchCompanyInfo(companyId);
 	}
 	@POST

@@ -2,7 +2,7 @@ package nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PersonEmpBasicInfoImport;
+import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
 
 @Value
 public class EmployeeBasicInfoDto {
@@ -24,15 +24,8 @@ public class EmployeeBasicInfoDto {
     //社員コード
     public String employeeCode;
 
-    //入社年月日
-    public GeneralDate jobEntryDate;
-
-    //退職年月日
-    public GeneralDate retirementDate;
-
-    public static EmployeeBasicInfoDto fromDomain(PersonEmpBasicInfoImport domain) {
-        return new EmployeeBasicInfoDto(domain.getPersonId(), domain.getEmployeeId(), domain.getBusinessName(), domain.getGender(),
-                domain.getBirthday(), domain.getEmployeeCode(), domain.getJobEntryDate(),
-                domain.getRetirementDate());
+    public static EmployeeBasicInfoDto fromDomain(EmployeeBasicInforAuthImport domain) {
+        return new EmployeeBasicInfoDto(domain.getPid(), domain.getEmployeeId(), domain.getBusinessName(), domain.getGender(),
+                domain.getBirthDay(), domain.getEmployeeCode());
     }
 }

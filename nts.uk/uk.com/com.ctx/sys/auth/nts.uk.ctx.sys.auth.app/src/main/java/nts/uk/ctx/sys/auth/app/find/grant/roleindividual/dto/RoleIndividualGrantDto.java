@@ -2,10 +2,7 @@ package nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmployeeInfoDto;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
-
-import java.util.List;
 
 @Value
 public class RoleIndividualGrantDto {

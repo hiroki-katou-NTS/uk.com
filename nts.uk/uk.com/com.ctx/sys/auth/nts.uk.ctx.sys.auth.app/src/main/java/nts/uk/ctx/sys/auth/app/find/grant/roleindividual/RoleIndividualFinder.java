@@ -10,13 +10,11 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDto;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
@@ -28,8 +26,6 @@ import nts.uk.ctx.sys.auth.dom.adapter.role.employment.*;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
-import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserName;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
@@ -55,19 +51,13 @@ public class RoleIndividualFinder {
     private RoleAdapter roleAdapter;
 
     @Inject
-    private EmployeeDataMngInfoRepository empDataRepo;
-
-    @Inject
-    private CompanyBsAdapter companyBsAdapter;
-
-    @Inject
     private WorkplacePub workplacePub;
 
     @Inject
     private SyJobTitlePub syJobTitlePub;
 
     @Inject
-    private EmployeeRequestAdapter employeeRequestAdapter;
+    private EmployeeInfoPub employeeInfoPub;
 
 
     private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
@@ -219,7 +209,7 @@ public class RoleIndividualFinder {
 
         // 個人ID(List)から会社IDに一致する社員に絞り込む
         List<String> pies = roleExportList.stream().map(e -> e.getPersonId()).collect(Collectors.toList());
-        List<EmployeeDataMngInfo> employeeDataMngInfos = empDataRepo.findEmployeesMatchingName(pies, companyId);
+        List<EmployeeInfoDto> employeeDataMngInfos = employeeInfoPub.findEmployeesMatchingName(pies, companyId);
 
         for (RoleIndividualGrant rGrant : ListRoleGrants) {
             String userName = "";
@@ -237,7 +227,7 @@ public class RoleIndividualFinder {
                         userName = user.get().getUserName().get().v();
                         employeeName = listPersonOptional.get().getPersonName();
                         rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, userName, user.get().getLoginID().v(),
-                                employeeDataMngInfo.getEmployeeId(),employeeDataMngInfo.getEmployeeCode().v(),employeeName));
+                                employeeDataMngInfo.getEmployeeId(),employeeDataMngInfo.getEmployeeCode(),employeeName));
                     }
                 }
             }
@@ -259,7 +249,7 @@ public class RoleIndividualFinder {
         }
         Optional<User> user = userRepo.getByUserID(rGrant.get().getUserId());
         val pid = user.get().getAssociatedPersonID();
-        Optional<EmployeeDataMngInfo> employeeDataMngInfoOptional =  empDataRepo.findByCidPid(companyId, pid.get());
+        Optional<EmployeeInfoDto> employeeDataMngInfoOptional =  employeeInfoPub.getEmployeeInfoByCidPid(companyId, pid.get());
 
         List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
         ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
@@ -275,7 +265,7 @@ public class RoleIndividualFinder {
                 userName = user.get().getUserName().get().v();
                 employeeName = listPersonOptional.get().getPersonName();
                     return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(),
-                            employeeDataMngInfoOptional.get().getEmployeeId(), employeeDataMngInfoOptional.get().getEmployeeCode().v(), employeeName);
+                            employeeDataMngInfoOptional.get().getEmployeeId(), employeeDataMngInfoOptional.get().getEmployeeCode(), employeeName);
 
             } else {
             return null;
@@ -286,7 +276,7 @@ public class RoleIndividualFinder {
         val cid = AppContexts.user().companyId();
         if(cid == null)
             return null;
-        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(cid);
+        CompanyImport companyInfo = companyAdapter.findCompanyByCid(cid);
         CompanyInfo companyInfo1 = new CompanyInfo(companyInfo.getCompanyCode(),companyInfo.getCompanyName(), companyInfo.getCompanyId(), companyInfo.getIsAbolition());
         return companyInfo1;
     }
@@ -317,19 +307,19 @@ public class RoleIndividualFinder {
         return null;
     }
 
-    public CompanyInfoDto searchCompanyInfo(String companyId) {
-        if(companyId == null) {
+    public CompanyImport searchCompanyInfo(String cid) {
+        if(cid == null) {
             return null;
         }
-        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
-        CompanyInfoDto companyInfoDto = new CompanyInfoDto(companyInfo.getCompanyId(), companyInfo.getCompanyCode(), companyInfo.getCompanyName());
+        CompanyImport companyInfo = companyAdapter.findCompanyByCid(cid);
+        CompanyImport companyInfoDto = new CompanyImport(companyInfo.getCompanyId(), companyInfo.getCompanyCode(), companyInfo.getCompanyName(),companyInfo.getIsAbolition());
         return companyInfoDto;
     }
     public List<EmployeeBasicInfoDto> searchEmployyeList(List<String> employyeid) {
         String companyId = AppContexts.user().companyId();
 
         // 社員情報リストを取得する
-        List<EmployeeBasicInfoDto> data = employeeRequestAdapter.getPerEmpBasicInfo(companyId, employyeid)
+        List<EmployeeBasicInfoDto> data = personAdapter.listPersonInfor(employyeid)
                 .stream().map(c -> EmployeeBasicInfoDto.fromDomain(c)).collect(Collectors.toList());
 
         if(data.isEmpty()) {
