@@ -7,8 +7,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.screen.com.app.cmf.cmf001.GetImportableItemAndConstraint;
-import nts.uk.screen.com.app.cmf.cmf001.ImportableItemDto;
+import nts.uk.screen.com.app.cmf.cmf001.c.get.GetImportableItemAndConstraint;
+import nts.uk.screen.com.app.cmf.cmf001.c.get.ImportableItemDto;
 
 @Path("screen/com/cmf/cmf001")
 @Produces(MediaType.APPLICATION_JSON)

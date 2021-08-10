@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.cmf.cmf001;
+package nts.uk.screen.com.app.cmf.cmf001.c.get;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;

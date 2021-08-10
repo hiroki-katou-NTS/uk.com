@@ -1,10 +1,10 @@
-package nts.uk.ctx.exio.app.input.command.setting;
+package nts.uk.screen.com.app.cmf.cmf001.b.save;
 
 import lombok.Getter;
-import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingDto;
+import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingDto;
 
 @Getter
-public class SaveExternalImportSettingCommand {
+public class Cmf001bSaveCommand {
 	
 	/** 新規モードかどうか */
 	private Boolean isCreateMode;

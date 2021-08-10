@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.cmf.cmf001.save;
+package nts.uk.screen.com.app.cmf.cmf001.c.save;
 
 import lombok.Value;
 import nts.uk.ctx.exio.app.input.setting.assembly.revise.ReviseItemDto;
