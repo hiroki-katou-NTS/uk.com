@@ -3258,7 +3258,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}
 
-			// thay đổi giá trị khi kéo thanh chart
+			// Resize thanh chart
 			$(lgc).on("gcresize", (e: any) => {
 				self.gcResize(fixedGc, e, datafilter, i, "lgc", 0);
 			});
@@ -3266,7 +3266,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			$(rgc).on("gcresize", (e: any) => {
 				self.gcResize(fixedGc, e, datafilter, i, "rgc", 0);
 			});
-
+			// Slide thanh chart
 			$(lgc).on("gcdrop", (e: any) => {
 				self.checkDrop = true;
 				self.gcDrop(e, i, datafilter, "lgc", 0);
@@ -4814,12 +4814,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				checkOpen2 = _.filter(self.lstDis, (x: any) => { return x.empId === empId && x.worktimeName == true });
 
 			if (checkOpen.length < 1 && checkOpen2.length < 1) {
-<<<<<<< HEAD
-				let param = {
-					disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.disWkTypeCon,
-					disAbleWkTypeCodeLst : self.dataInitStartKsu003Dto().functionControlDto.disAbleWkTypeCodeLst
-=======
-				
 				if (workTypeCode != "") {
 					self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList.push(workTypeCode);
 				}
@@ -4827,7 +4821,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				let param = {
 					disWkTypeCon : self.dataInitStartKsu003Dto().functionControlDto.displayWorkTypeControl,
 					disAbleWkTypeCodeLst : self.dataInitStartKsu003Dto().functionControlDto.displayableWorkTypeCodeList
->>>>>>> pj/at/dev/team_C/deploy_5_3_and_1_7
 				}
 				setShared('paramKsu003Kdl003', param);
 				nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(() => {
