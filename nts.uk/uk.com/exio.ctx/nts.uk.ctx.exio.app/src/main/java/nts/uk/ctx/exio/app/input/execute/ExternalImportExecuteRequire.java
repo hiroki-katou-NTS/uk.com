@@ -135,16 +135,6 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void changeEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
-			employmentHistoryRepo.update(historyItem);
-		}
-
-		@Override
-		public void deleteEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
-			employmentHistoryRepo.delete(historyItem.identifier());
-		}
-
-		@Override
 		public void deleteDailyPerformance(String employeeId, GeneralDate date) {
 			workInformationRepo.delete(employeeId, date);
 		}

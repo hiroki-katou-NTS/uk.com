@@ -1,3 +1,4 @@
+package nts.uk.ctx.exio.dom.input.canonicalize.groups;
 
 import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.STRING;
 

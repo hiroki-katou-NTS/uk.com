@@ -222,11 +222,6 @@ public class ExternalImportPrepareRequire {
 			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
 		
-		@Override
-		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
-			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
-		}
-		
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
 			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
 		}
