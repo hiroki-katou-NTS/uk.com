@@ -530,6 +530,26 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		handleErrorCustom(failData: any): any {
 			const vm = this;
+			if (!_.isEmpty(failData.errors)) {
+				
+				_.forEach(_.reverse(failData.errors), item => {
+					if (vm.isAgentNew() && item.messageId == 'Msg_1535') {
+						item.messageId = 'Msg_2012'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_1536') {
+						item.messageId = 'Msg_2013'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_1537') {
+						item.messageId = 'Msg_2014'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_1538') {
+						item.messageId = 'Msg_2015'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_2056') {
+						item.messageId = 'Msg_2057'
+					}
+					vm.$dialog.error({ messageId: item.messageId, messageParams: item.parameterIds })
+					.then(() => {
+					});
+				})
+				return $.Deferred().resolve(false);	
+			}
 			if(failData.messageId == "Msg_750"
 			|| failData.messageId == "Msg_1654"
 			|| failData.messageId == "Msg_1508"

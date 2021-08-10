@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.worktype;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
@@ -47,7 +46,7 @@ public class WorkTypeClassificationTest {
                 WorkTypeClassification.HolidayWork, WorkTypeClassification.ContinuousWork, WorkTypeClassification.Shooting, 
                 WorkTypeClassification.Absence, WorkTypeClassification.Attendance).stream().map(x -> x.determineHolidayType());
 	    
-	    assertThat(targets).containsOnly(HolidayTypeClassification.NoVacation);
+	    org.assertj.core.api.Assertions.assertThat(targets).containsOnly(HolidayTypeClassification.NoVacation);
 	}
 	
 	/**
@@ -62,7 +61,7 @@ public class WorkTypeClassificationTest {
 	public void testDetermineHolidayType_Holiday() {
 	    val target = WorkTypeClassification.Holiday.determineHolidayType();
 	    
-	    assertThat(target).isEqualTo(HolidayTypeClassification.Holiday);
+	    org.assertj.core.api.Assertions.assertThat(target).isEqualTo(HolidayTypeClassification.Holiday);
 	}
 	
 	/**
@@ -77,7 +76,7 @@ public class WorkTypeClassificationTest {
     public void testDetermineHolidayType_AnnualHoliday() {
         val target = WorkTypeClassification.AnnualHoliday.determineHolidayType();
         
-        assertThat(target).isEqualTo(HolidayTypeClassification.AnnualHoliday);
+        org.assertj.core.api.Assertions.assertThat(target).isEqualTo(HolidayTypeClassification.AnnualHoliday);
     }
 	
 	/**
@@ -92,7 +91,7 @@ public class WorkTypeClassificationTest {
     public void testDetermineHolidayType_YearlyReserved() {
         val target = WorkTypeClassification.YearlyReserved.determineHolidayType();
         
-        assertThat(target).isEqualTo(HolidayTypeClassification.YearlyReserved);
+        org.assertj.core.api.Assertions.assertThat(target).isEqualTo(HolidayTypeClassification.YearlyReserved);
     }
 	
 	/**
@@ -107,7 +106,7 @@ public class WorkTypeClassificationTest {
     public void testDetermineHolidayType_SpecialHoliday() {
         val target = WorkTypeClassification.SpecialHoliday.determineHolidayType();
         
-        assertThat(target).isEqualTo(HolidayTypeClassification.SpecialHoliday);
+        org.assertj.core.api.Assertions.assertThat(target).isEqualTo(HolidayTypeClassification.SpecialHoliday);
     }
 	
 	/**
@@ -122,7 +121,7 @@ public class WorkTypeClassificationTest {
     public void testDetermineHolidayType_SubstituteHoliday() {
         val target = WorkTypeClassification.SubstituteHoliday.determineHolidayType();
         
-        assertThat(target).isEqualTo(HolidayTypeClassification.SubstituteHoliday);
+        org.assertj.core.api.Assertions.assertThat(target).isEqualTo(HolidayTypeClassification.SubstituteHoliday);
     }
 	
 	/**
@@ -137,7 +136,7 @@ public class WorkTypeClassificationTest {
     public void testDetermineHolidayType_Pause() {
         val target = WorkTypeClassification.Pause.determineHolidayType();
         
-        assertThat(target).isEqualTo(HolidayTypeClassification.Pause);
+        org.assertj.core.api.Assertions.assertThat(target).isEqualTo(HolidayTypeClassification.Pause);
     }
 	
 	/**
@@ -152,6 +151,6 @@ public class WorkTypeClassificationTest {
     public void testDetermineHolidayType_TimeDigestVacation() {
         val target = WorkTypeClassification.TimeDigestVacation.determineHolidayType();
         
-        assertThat(target).isEqualTo(HolidayTypeClassification.TimeDigestVacation);
+        org.assertj.core.api.Assertions.assertThat(target).isEqualTo(HolidayTypeClassification.TimeDigestVacation);
     }
 }
