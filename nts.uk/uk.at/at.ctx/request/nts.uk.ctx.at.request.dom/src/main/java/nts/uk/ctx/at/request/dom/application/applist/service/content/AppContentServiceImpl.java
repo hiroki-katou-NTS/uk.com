@@ -347,8 +347,8 @@ public class AppContentServiceImpl implements AppContentService {
 			result += " " + workTimeName;
 			// Input．．勤務直行1をチェック ( Check Input．．đi làm thẳng 1
 			if(goWorkAtr1 == NotUseAtr.USE) {
-				// 申請内容　+＝’　’＋#CMM045_252
-				result += " " + I18NText.getText("CMM045_252");
+				// 申請内容　+＝’　’＋#CMM045_259
+				result += " " + I18NText.getText("CMM045_259");
 			} else {
 				// 申請内容　+＝’　’
 				result += " ";
@@ -360,8 +360,8 @@ public class AppContentServiceImpl implements AppContentService {
 				result += I18NText.getText("CMM045_100");
 			}
 			if(goBackAtr1 == NotUseAtr.USE) {
-				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
-				result += I18NText.getText("CMM045_252");
+				// 申請内容　+＝　#CMM045_100　+　#CMM045_260
+				result += I18NText.getText("CMM045_260");
 			}
 			// 申請内容　+＝　Input．勤務時間終了1
 			result += workTimeEnd1 == null ? "" : workTimeEnd1.getInDayTimeWithFormat();
@@ -542,7 +542,21 @@ public class AppContentServiceImpl implements AppContentService {
 				listOfApp.setAppContent("-1");
 				break;
 			}
-		} else { // アルゴリズム「各申請データを作成（スマホ）」を実行する
+		} else { 
+			if (application.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION) {
+				
+				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+				CompLeaveAppDataOutput compLeaveAppDataOutput = appContentDetailCMM045.getContentComplementLeave(
+						application, 
+						companyID, 
+						lstWkType, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045);
+				listOfApp.setAppContent(compLeaveAppDataOutput.getContent());
+				listOfApp.setOpComplementLeaveApp(Optional.of(compLeaveAppDataOutput.getComplementLeaveAppLink()));
+			}
+			
+			// アルゴリズム「各申請データを作成（スマホ）」を実行する
 			Optional<ApplicationTypeDisplay> opAppDisplay = this.getAppDisplayByMobile(application, listOfApp);
 			listOfApp.setOpAppTypeDisplay(opAppDisplay);
 		}
@@ -1408,10 +1422,10 @@ public class AppContentServiceImpl implements AppContentService {
 			// 申請内容＋＝<List>項目名
 			switch (x.getAppTimeType()) {
 			case ATWORK:
-				resultLoop += I18NText.getText("CMM045_294") + "1";
+				resultLoop += I18NText.getText("CMM045_294");
 				break;
 			case OFFWORK:
-				resultLoop += I18NText.getText("CMM045_295") + "1";
+				resultLoop += I18NText.getText("CMM045_295");
 				break;
 			case ATWORK2:
 				resultLoop += I18NText.getText("CMM045_294") + "2";

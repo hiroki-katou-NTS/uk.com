@@ -67,12 +67,17 @@ export class CmmS45CComponent extends Vue {
     public appType: number = 99;
     public appTransferData: any = {
         appDispInfoStartupOutput: null,
-        appDetail: null
+        appDetail: null,
+        isDetailMode: true
     };
     // 差し戻し理由
     public reversionReason: string = '';
     public isLoadingComplete = false;
     public reasons: Array<Reason> = null;
+
+    public opAppStartDate: Date;
+    public opAppEndDate: Date;
+
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -143,6 +148,9 @@ export class CmmS45CComponent extends Vue {
                 self.appState.pastApp = appDetailScreenInfoDto.pastApp;
                 self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
                 self.appType = appDetailScreenInfoDto.application.appType;
+                self.opAppStartDate = appDetailScreenInfoDto.application.opAppStartDate;
+                self.opAppEndDate = appDetailScreenInfoDto.application.opAppEndDate;
+                
                 //self.$mask('hide');
             }).catch((res: any) => {
                 // self.$mask('hide');
@@ -327,6 +335,7 @@ export class CmmS45CComponent extends Vue {
     // tiến tới màn chi tiết KAF005
     public updateApp(): void {
         const self = this;
+        _.set(self.appTransferData.appDetail, 'isDetailMode', true);
         switch (self.appType) {
             case 2:
                 if (self.$router.currentRoute.name == 'kafs07a') {

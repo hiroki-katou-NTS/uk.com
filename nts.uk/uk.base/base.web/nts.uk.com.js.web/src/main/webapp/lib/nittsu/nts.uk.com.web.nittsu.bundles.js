@@ -20429,8 +20429,14 @@ var nts;
                             //         }
                             //         return k;
                             //     });
-                            //prevent other characters except ['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] and backspace/delete
-                            if ([8, 46].indexOf(dorgi.keyCode) == -1 && (_.isNil(orgi.data) || ['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(orgi.data) == -1)) {
+                            var numberKeyCodes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+                            var numberNumpadKeyCodes = [96, 97, 98, 99, 100, 101, 102, 103, 104, 105]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] numpad
+                            var backspaceKeyCode = [8];
+                            var delKeyCode = [46];
+                            var dotWithNumpadKeyCodes = [110, 190]; //'.'
+                            var minusWithNumpadKeyCodes = [109, 189]; //'-'
+                            var allowedKeyCodes = __spreadArrays(numberKeyCodes, numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
+                            if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
                                 $input.val(dval);
                                 $input.data(_kc, null);
                                 return;
