@@ -50,7 +50,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             self.employmentList = ko.observableArray<UnitModel>([]);
 
             self.selectedCode.subscribe(function(newValue) {
-                if (nts.uk.text.isNullOrEmpty(newValue)) return; 
+                if (nts.uk.text.isNullOrEmpty(newValue)) return;
                 self.getWorkType(newValue);
             });
         }
@@ -73,12 +73,11 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             });
             return dfd.promise();
         }
-        
+
         jumpTo() {
             let self = this;
             nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
         }
-
 
         getFullWorkTypeList(): JQueryPromise<any> {
             let self = this;
@@ -155,6 +154,22 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             return dfd.promise();
         }
 
+        refreshListEmployments(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+
+            $('#empt-list-setting').ntsListComponent(self.listComponentOption).done(function() {
+                self.employmentList($('#empt-list-setting').getDataList());
+                if (self.employmentList().length > 0) {
+                    self.selectedCode.valueHasMutated();
+                    dfd.resolve();
+                } else {
+                    self.$dialog.alert({ messageId: "Msg_146" });
+                }
+            });
+            return dfd.promise();
+        }
+
         saveData() {
             let self = this;
             
@@ -169,9 +184,11 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     }
                     self.$dialog.info({ messageId: "Msg_15" }).then(function() {
                         //self.selectedCode.valueHasMutated();
-                        location.reload();
+                        //location.reload();
                         self.$blockui("hide");
                     });
+                    // refresh list employments:
+                    self.refreshListEmployments();
                 }).fail(() => {
                     self.$blockui("hide");
                 }).always(() => {
