@@ -312,7 +312,17 @@ public class RoleIndividualFinder {
             return null;
         }
         CompanyImport companyInfo = companyAdapter.findCompanyByCid(cid);
-        CompanyImport companyInfoDto = new CompanyImport(companyInfo.getCompanyId(), companyInfo.getCompanyCode(), companyInfo.getCompanyName(),companyInfo.getIsAbolition());
+        CompanyImport companyInfoDto = new CompanyImport(companyInfo.getCompanyCode(), companyInfo.getCompanyName(), companyInfo.getCompanyId(),companyInfo.getIsAbolition());
+        return companyInfoDto;
+    }
+
+    public CompanyImport notComapany() {
+        val cid = AppContexts.user().companyId();
+        if(cid == null) {
+            return null;
+        }
+        CompanyImport companyInfo = companyAdapter.findCompanyByCid(cid);
+        CompanyImport companyInfoDto = new CompanyImport(companyInfo.getCompanyCode(), companyInfo.getCompanyName(), companyInfo.getCompanyId(),companyInfo.getIsAbolition());
         return companyInfoDto;
     }
     public List<EmployeeBasicInfoDto> searchEmployyeList(List<String> employyeid) {
@@ -339,18 +349,21 @@ public class RoleIndividualFinder {
 
     public List<SWkpHistRcImported> getWorkPlacePub(List<String> employyeid) {
         GeneralDate baseDate = GeneralDate.today();
-        List<SWkpHistRcImported> data = workplacePub.findBySId(employyeid, baseDate)
-                .stream()
-                .map(e -> new SWkpHistRcImported(
-                e.getDateRange(),
-                e.getEmployeeId(),
-                e.getWorkplaceId(),
-                e.getWorkplaceCode(),
-                e.getWorkplaceName(),
-                e.getWkpDisplayName()
-        )).collect(Collectors.toList());
-        if(data.isEmpty())
-            return Collections.emptyList();
+        List<SWkpHistRcImported> data = new ArrayList<>();
+        try {
+            data = workplacePub.findBySId(employyeid, baseDate)
+                    .stream()
+                    .map(e -> new SWkpHistRcImported(
+                            e.getDateRange(),
+                            e.getEmployeeId(),
+                            e.getWorkplaceId(),
+                            e.getWorkplaceCode(),
+                            e.getWorkplaceName(),
+                            e.getWkpDisplayName()
+                    )).collect(Collectors.toList());
+        }catch (Exception e){
+            return data;
+        }
         return data;
     }
 }

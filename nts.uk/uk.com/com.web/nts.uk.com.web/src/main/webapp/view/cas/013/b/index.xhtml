@@ -35,7 +35,7 @@
 											options: itemList,
 											optionsValue: 'code',
 											visibleItemsCount: 20,
-											value: ko.observable(1),
+											value: selectedType,
 											optionsText: 'name',
 											editable: false,
 											enable: isEnable,
@@ -48,30 +48,22 @@
 							]}"></div>
 						</div>
 						<div class="control-group">
-							<!--<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_22')}</div>-->
 							<div id="B3" style="margin-left: 55px;" data-bind="ntsSearchBox: {
 								  searchMode: 'highlight',
-								  targetKey: 'userID',
-								  comId: 'C6',
-								  items: dataSource,
-								  selected: selectUserID,
-								  selectedKey: 'userID',
+								  targetKey: 'code',
+								  comId: 'kcp005',
+								  items: employeeList,
+								  selectedKey: 'code',
 								  mode: 'igGrid',
-								  fields: ['userID', 'patternName']
+								  fields: ['code', 'name']
 								}"/>
-                            <!--<div class="control-group-2">-->
-								<!--<input id="search" tabindex="2"-->
-									   <!--data-bind="ntsTextEditor: {value: searchValue, enterkey: enterPress}" />-->
-								<!--<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_22')}</button>-->
-								<!--<button id="searchButton" data-bind="click: search">#{i18n.getText('CAS013_25')}</button>-->
-							<!--</div>-->
 						</div>
 						<div id="kcp005" class="panel panel-frame" style="width: 312px; margin-top: -15px; margin-left: 25px"></div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click :search">#{i18n.getText('CAS013_31')}</button>
+				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS013_31')}</button>
 				<button data-bind="click :cancel_Dialog">#{i18n.getText('CAS013_32')}</button>
 			</div>
 		</ui:define>

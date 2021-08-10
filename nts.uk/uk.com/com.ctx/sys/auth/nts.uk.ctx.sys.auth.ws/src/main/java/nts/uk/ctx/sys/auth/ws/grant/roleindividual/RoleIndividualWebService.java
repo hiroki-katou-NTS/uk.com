@@ -182,6 +182,12 @@ public class RoleIndividualWebService extends WebService {
 		return this.roleIndividualFinder.searchCompanyInfo(companyId);
 	}
 	@POST
+    @Path("notComapany")
+    public CompanyImport notComapany() {
+        return this.roleIndividualFinder.notComapany();
+    }
+
+	@POST
 	@Path("searchEmployyeList")
 	public List<EmployeeBasicInfoDto> searchEmployyeList(EiDDto employyeid) {
 		return this.roleIndividualFinder.searchEmployyeList(employyeid.getEmployyeId());

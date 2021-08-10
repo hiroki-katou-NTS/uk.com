@@ -5,6 +5,7 @@ module nts.uk.com.view.cas013.b.service {
         searchEmployyeList:"ctx/sys/auth/grant/roleindividual/searchEmployyeList",
         getWorkPlacePub: "ctx/sys/auth/grant/roleindividual/getWorkPlacePub",
         getSyJobTitlePub: "ctx/sys/auth/grant/roleindividual/getSyJobTitlePub",
+        notComapany: "ctx/sys/auth/grant/roleindividual/notComapany"
     }
 
     export function searchUser(key: string, Special: boolean, Multi: boolean, roleType: number): JQueryPromise<any> {
@@ -18,6 +19,9 @@ module nts.uk.com.view.cas013.b.service {
     }
     export function searchCompanyInfo(companyId: string): JQueryPromise<any> {
         return nts.uk.request.ajax("com", paths.searchCompanyInfo, companyId);
+    }
+    export function notComapany(): JQueryPromise<any> {
+        return nts.uk.request.ajax("com", paths.notComapany);
     }
     export function searchEmployyeList(employyeid: Array<string>): JQueryPromise<any> {
         var EiDDto = new Params(employyeid);
