@@ -108,7 +108,7 @@ public class FlexMidnightTimeSheet {
 		TimeWithDayAttr withoutStartTime = withoutStartTimeOpt.get();
 		// 就業時間内時間枠を取得
 		for (WithinWorkTimeFrame timeFrame : flexWithinWorkTimeSheet.getWithinWorkTimeFrame()){
-			if (!timeFrame.getMidNightTimeSheet().getTimeSheets().isEmpty()) continue;
+			if (timeFrame.getMidNightTimeSheet().getTimeSheets().isEmpty()) continue;
 			
 			// 自身の控除時間帯の取得
 			DeductionTimeSheet deductTimeSheet = timeFrame.getCloneDeductionTimeSheet();
