@@ -97,11 +97,11 @@ public class UpdateWorkingConditionCommandAssembler {
 			break;
 		case 3:
 			basicCreateMethod = 1;
-			referenceBusinessDayCalendar = WorkScheduleMasterReferenceAtr.COMPANY;
+			referenceBusinessDayCalendar = null;
 			break;
 		case 4:
 			basicCreateMethod = 2;
-			referenceBusinessDayCalendar = WorkScheduleMasterReferenceAtr.COMPANY;
+			referenceBusinessDayCalendar = null;
 			break;
 		case 0:
 		default:
@@ -231,11 +231,11 @@ public class UpdateWorkingConditionCommandAssembler {
 			break;
 		case 3:
 			basicCreateMethod = 1;
-			referenceBusinessDayCalendar = WorkScheduleMasterReferenceAtr.COMPANY;
+			referenceBusinessDayCalendar = null;
 			break;
 		case 4:
 			basicCreateMethod = 2;
-			referenceBusinessDayCalendar = WorkScheduleMasterReferenceAtr.COMPANY;
+			referenceBusinessDayCalendar = null;
 			break;
 		case 0:
 		default:
