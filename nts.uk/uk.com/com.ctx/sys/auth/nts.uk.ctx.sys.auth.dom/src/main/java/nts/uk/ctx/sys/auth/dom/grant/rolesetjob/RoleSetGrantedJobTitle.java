@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.dom.grant.rolesetjob;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
 
@@ -11,6 +12,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
  * @author HungTT
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class RoleSetGrantedJobTitle implements DomainAggregate {
 	
