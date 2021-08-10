@@ -38,6 +38,10 @@ public class AccountImportService {
 			for (JmKihon employee : employees) {
 
 				String plainPassword = employee.getPassword();
+				if(plainPassword == null || plainPassword.isEmpty()) {
+					continue;
+				}
+
 				// ユーザIDを新規発行
 				String userId = UUID.randomUUID().toString();
 
