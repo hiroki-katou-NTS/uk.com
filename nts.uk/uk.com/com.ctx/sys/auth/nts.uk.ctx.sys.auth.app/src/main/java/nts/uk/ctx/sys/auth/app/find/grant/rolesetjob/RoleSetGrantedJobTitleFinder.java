@@ -36,7 +36,7 @@ public class RoleSetGrantedJobTitleFinder {
 		String companyId = AppContexts.user().companyId();
 		LoginUserContext user = AppContexts.user();
 		if (!user.roles().have().companyAdmin() && !user.roles().have().systemAdmin())
-			return null;
+			throw new BusinessException("Msg_1103");
 
 		// get Job Title by date, companyId
 		List<String> listJobId = jobTitleAdapter.findAll(companyId, refDate).stream().map(item -> item.getPositionId()).collect(Collectors.toList());
