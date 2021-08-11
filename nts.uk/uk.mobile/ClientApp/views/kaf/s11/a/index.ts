@@ -140,17 +140,24 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
         vm.$mask('show');
         if (vm.mode == ScreenMode.NEW) {
+            let employeeIDLst = _.get(vm.params, 'employeeID') ? [_.get(vm.params, 'employeeID')] : [],
+                appDate = _.get(vm.params, 'date');
             vm.$auth.user.then((userData: any) => {
                 vm.user = userData;
 
-                return vm.loadCommonSetting(AppType.COMPLEMENT_LEAVE_APPLICATION);
+                return vm.loadCommonSetting(
+                    AppType.COMPLEMENT_LEAVE_APPLICATION,
+                    _.isEmpty(employeeIDLst) ? null : employeeIDLst[0], 
+                    null, 
+                    appDate ? [appDate] : [], 
+                    null);
             }).then((data: any) => {
                 if (data) {
                     vm.updateKaf000_A_Params(vm.user);
                     vm.updateKaf000_C_Params(true);
                     let newMode = vm.mode == ScreenMode.NEW ? true : false,
-                        employeeID = vm.user.employeeId,
-                        dateLst = [],
+                        employeeID = !_.isEmpty(employeeIDLst) ? employeeIDLst[0] : vm.user.employeeId,
+                        dateLst = appDate ? [appDate] : [],
                         displayInforWhenStarting = null,
                         appDispInfoStartupCmd = vm.appDispInfoStartupOutput,
                         command = { newMode, employeeID, dateLst, displayInforWhenStarting, appDispInfoStartupCmd };
@@ -170,6 +177,16 @@ export class KafS11AComponent extends KafS00ShrComponent {
             }).then((data: any) => {
                 if (data) {
                     vm.workTimeLstFullData = data.data;
+                    if (appDate) {
+                        if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE) {
+                            vm.complementDate = appDate;
+                            vm.leaveDate = appDate;
+                        } else if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+                            vm.complementDate = appDate;
+                        } else {
+                            vm.leaveDate = appDate;
+                        }
+                    }
                 }
             }).catch((error: any) => {
                 vm.handleErrorCustom(error).then((result) => {
@@ -539,11 +556,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
     get mode() {
         const vm = this;
-        if (!vm.params.appDetail) {
-            return ScreenMode.NEW;
+        if (vm.params && vm.params.appDetail && vm.params.isDetailMode) {
+            return ScreenMode.DETAIL;
         }
-        
-        return ScreenMode.DETAIL;
+
+        return ScreenMode.NEW;
     }
 
     get leaveWorkInfoTitle() {
@@ -1472,6 +1489,12 @@ export class KafS11AComponent extends KafS00ShrComponent {
 
         return cmd;
     }
+
+    @Watch('params')
+    public paramsWatcher() {
+        const vm = this;
+        vm.initFromParam();
+    }
 }
 
 const API = {
@@ -1488,6 +1511,7 @@ const API = {
 export interface KAFS11Params {
     appDispInfoStartupOutput: any;
     appDetail: any;
+    isDetailMode: boolean;
 }
 
 interface WorkInfo {

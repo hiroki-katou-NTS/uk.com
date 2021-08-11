@@ -434,12 +434,9 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 										toAttendanceTime(c.getTemporaryNightTime())))),
 				shortWorkTime == null || shortWorkTime.isEmpty() ? ShortWorkTimeDto.defaultDomain() : shortWorkTime.get(shortWorkTime.size()-1).toDomain(),
 				dailyOfHoliday == null ? HolidayDailyPerformDto.defaulDomain() : dailyOfHoliday.toDomain(),
-				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)));
-		
-		if(vacationAddTime != null) {
-			total.setVacationAddTime(new AttendanceTime(vacationAddTime));
-		}
-		total.setCalcDiffTime(new AttendanceTime(calcDiffTime));
+				IntervalTimeOfDaily.of(new AttendanceClock(intervalAttendanceClock), new AttendanceTime(intervalTime)),
+				new AttendanceTime(calcDiffTime),
+				new AttendanceTime(vacationAddTime == null ? 0 : vacationAddTime));
 		return total;
 	}
 	

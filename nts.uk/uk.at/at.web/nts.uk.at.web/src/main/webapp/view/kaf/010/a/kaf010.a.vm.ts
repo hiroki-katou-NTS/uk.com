@@ -333,11 +333,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				self.restTimeTableVisible2(false);
 			}
 			// ※6
-			if(self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet.extratimeDisplayAtr == 1){
-				self.overTimeWorkVisible(true);
-			} else {
-				self.overTimeWorkVisible(false);
-			}
+			const c6 = 
+					self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet.extratimeDisplayAtr == 1 
+						&& self.mode() != MODE.MULTiPLE_AGENT;
+			self.overTimeWorkVisible(c6);
 		}
 
 		toAppHolidayWork(){

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * refactor 4
@@ -165,7 +168,7 @@ public class Application implements DomainAggregate {
 				0,
 				IdentifierUtil.randomUniqueId(), 
 				prePostAtr, 
-				employeeID, 
+				Strings.isBlank(employeeID) ? AppContexts.user().employeeId() : employeeID, 
 				appType, 
 				appDate, 
 				enteredPerson, 

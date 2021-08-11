@@ -13,6 +13,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedger
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CreateAnualWorkLedgerDomainService;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,7 +40,7 @@ public class CreateAnualWorkledgerSettingCommandHandler extends CommandHandler<C
 
         RequireImpl require = new RequireImpl(repository);
         List<DailyOutputItemsAnnualWorkLedger> dailyOutputItems = command.getDailyOutputItems().stream().map(DailyOutputItemsCommand::toDomain).collect(Collectors.toList());
-        List<OutputItem> monthlyOutputItems = command.getMonthlyOutputItems().stream().map(MonthlyOutputItemsCommand::toDomain).collect(Collectors.toList());
+        List<OutputItemWorkLedger> monthlyOutputItems = command.getMonthlyOutputItems().stream().map(MonthlyOutputItemsCommand::toDomain).collect(Collectors.toList());
         AtomTask persist = CreateAnualWorkLedgerDomainService.createSetting(
             require, new OutputItemSettingCode(command.getCode()),
             new OutputItemSettingName(command.getName()),

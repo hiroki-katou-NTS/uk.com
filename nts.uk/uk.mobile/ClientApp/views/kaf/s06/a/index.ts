@@ -711,12 +711,14 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public fetchData() {
         const vm = this;
         vm.$mask('show');
-        if (vm.params) {
+        if (vm.params && vm.params.isDetailMode) {
             vm.modeNew = false;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
         }
         if (vm.modeNew) {
             vm.application = vm.createApplicationInsert(AppType.ABSENCE_APPLICATION);
+            vm.application.employeeIDLst = _.get(vm.params, 'employeeID') ? [_.get(vm.params, 'employeeID')] : [];
+            vm.application.appDate = _.get(vm.params, 'date');
         } else {
             vm.application = vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application;
         }
@@ -724,14 +726,19 @@ export class KafS06AComponent extends KafS00ShrComponent {
             vm.user = user;
         }).then(() => {
             if (vm.modeNew) {
-                return vm.loadCommonSetting(AppType.ABSENCE_APPLICATION);
+                return vm.loadCommonSetting(
+                    AppType.ABSENCE_APPLICATION,
+                    _.isEmpty(vm.application.employeeIDLst) ? null : vm.application.employeeIDLst[0], 
+                    null, 
+                    vm.application.appDate ? [vm.application.appDate] : [], 
+                    null);
             }
             
             return true;
         }).then((loadData: any) => {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
-                vm.updateKaf000_B_Params(vm.modeNew);
+                vm.updateKaf000_B_Params(vm.modeNew, vm.application.appDate);
                 if (!vm.modeNew) {
                     vm.updateKaf000_C_Params(vm.modeNew);
                 }
@@ -740,8 +747,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 } as StartMobileParam;
                 command.mode = vm.modeNew ? MODE_NEW : MODE_UPDATE;
                 command.companyId = vm.user.companyId;
-                command.employeeIdOp = vm.user.employeeId;
-                command.datesOp = [];
+                command.employeeIdOp = !_.isEmpty(vm.application.employeeIDLst) ? vm.application.employeeIDLst[0] : vm.user.employeeId;
+                command.datesOp = vm.application.appDate ? [vm.application.appDate] : [];
                 command.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
                 if (vm.modeNew) {
                     return vm.$http.post('at', API.start, command);  
@@ -770,7 +777,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public created() {
         const self = this;
 
-        if (self.params) {
+        if (self.params && self.params.isDetailMode) {
             self.modeNew = false;
             self.isFirstUpdate = true;
             self.appDispInfoStartupOutput = self.params.appDispInfoStartupOutput;
@@ -1999,6 +2006,23 @@ export class KafS06AComponent extends KafS00ShrComponent {
         return '0:00';
     }
 
+    @Watch('params')
+    public paramsWatcher() {
+        const vm = this;
+        if (vm.params && vm.params.isDetailMode) {
+            vm.modeNew = false;
+            vm.isFirstUpdate = true;
+            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+            vm.model = {
+                appAbsenceStartInfoDto: vm.params.appDetail.appAbsenceStartInfoDto,
+                applyForLeaveDto: vm.params.appDetail.applyForLeaveDto
+            } as Model;
+        } else {
+            vm.modeNew = true;
+            vm.selectedValueHolidayType = null;
+        }
+        vm.fetchData();
+    }
     
 }
 

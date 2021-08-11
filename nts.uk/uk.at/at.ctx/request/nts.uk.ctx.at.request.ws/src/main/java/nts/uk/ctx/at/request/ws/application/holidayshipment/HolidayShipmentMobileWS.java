@@ -90,7 +90,7 @@ public class HolidayShipmentMobileWS extends WebService {
 		return screenAFinder.startPageARefactor(
 				companyID, 
 				Arrays.asList(param.getEmployeeID()), 
-				param.getDateLst().stream().map(x -> GeneralDate.fromString(x, "YYYY/MM/DD")).collect(Collectors.toList()),
+				param.getDateLst().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()),
 				param.getAppDispInfoStartupCmd()
 			);
 	}

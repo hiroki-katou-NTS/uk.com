@@ -23,7 +23,7 @@ public class OutputItem extends ValueObject {
     // 順位
     private int rank;
 
-    // 名称-> 	帳票の出力項目名称
+    // 名称-> 	勤務状況表の出力項目名称
     private FormOutputItemName name;
 
     // 	印刷対象フラグ
