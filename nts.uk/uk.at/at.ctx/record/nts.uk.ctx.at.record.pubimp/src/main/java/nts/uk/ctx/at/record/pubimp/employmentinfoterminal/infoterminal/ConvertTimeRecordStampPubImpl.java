@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -45,6 +46,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Emp
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.ConvertTimeRecordStampPub;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampDataReflectResultExport;
 import nts.uk.ctx.at.record.pub.employmentinfoterminal.infoterminal.StampReceptionDataExport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
@@ -56,6 +59,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.shr.com.context.loginuser.LoginUserContextManager;
 
 /**
@@ -115,7 +122,16 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	
     @Inject
     private CalculateDailyRecordServiceCenter calcService;
+    
+    @Inject
+    private ClosureRepository closureRepo;
 
+    @Inject
+	 private ClosureEmploymentRepository closureEmploymentRepo;
+
+    @Inject
+    private ShareEmploymentAdapter shareEmploymentAdapter;
+    
 	@Override
 	public  Optional<StampDataReflectResultExport> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
@@ -124,7 +140,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
 				dailyRecordAdUpService, dailyRecordShareFinder, getMngInfoFromEmpIDListAdapter, companyAdapter, iGetInfoForLogin, loginUserContextManager,
-				calcService);
+				calcService, closureRepo, closureEmploymentRepo, shareEmploymentAdapter);
 
 		Optional<StampDataReflectResult> convertDataOpt = ConvertTimeRecordStampService
 				.convertData(require, new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode),
@@ -175,6 +191,12 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		private LoginUserContextManager loginUserContextManager;
 		
 		 private CalculateDailyRecordServiceCenter calcService;
+		 
+		 private ClosureRepository closureRepo;
+
+		 private ClosureEmploymentRepository closureEmploymentRepo;
+		 
+		 private ShareEmploymentAdapter shareEmploymentAdapter;
 
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -283,6 +305,22 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		@Override
 		public void loggedOut() {
 			loginUserContextManager.loggedOut();
+		}
+
+		@Override
+		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+			return closureEmploymentRepo.findByEmploymentCD(companyID, employmentCD);
+		}
+
+		@Override
+		public Optional<Closure> closure(String companyId, int closureId) {
+			return closureRepo.findById(companyId, closureId);
 		}
 
 	}
