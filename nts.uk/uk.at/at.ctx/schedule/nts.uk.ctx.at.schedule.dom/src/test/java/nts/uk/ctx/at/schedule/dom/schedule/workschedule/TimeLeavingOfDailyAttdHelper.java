@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime;
+package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class TimeLeavingOfDailyAttdHelper {
 	 * @param end2 終了時刻２
 	 * @return
 	 */
-	public static TimeLeavingOfDailyAttd create(
+	public static TimeLeavingOfDailyAttd createTimeLeavingOfDailyAttd(
 			TimeWithDayAttr start1,
 			TimeWithDayAttr end1,
 			Optional<TimeWithDayAttr> start2,
