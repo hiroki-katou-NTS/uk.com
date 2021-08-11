@@ -22,7 +22,7 @@ public class GetIndividualRollSetGrantScreenQuery {
     public RoleSetGrantedPersonDto getIndividualRollSetGrant(String employeeId){
         Optional<RoleSetGrantedPerson> optionalRoleSetGrantedPerson = this.roleSetGrantedPersonRepository.getByEmployeeId(employeeId);
         val rs = new RoleSetGrantedPersonDto();
-        if(!optionalRoleSetGrantedPerson.isPresent()){
+        if(optionalRoleSetGrantedPerson.isPresent()){
             val grandPerSon = optionalRoleSetGrantedPerson.get();
            rs.setCompanyId(grandPerSon.getCompanyId());
            rs.setEmployeeID(grandPerSon.getEmployeeID());
