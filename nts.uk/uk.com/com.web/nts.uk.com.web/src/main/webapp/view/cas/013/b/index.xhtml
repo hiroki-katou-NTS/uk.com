@@ -48,7 +48,7 @@
 							]}"></div>
 						</div>
 						<div class="control-group">
-							<div id="B3" style="margin-left: 55px;" data-bind="ntsSearchBox: {
+							<div id="B3" style="margin-left: 55px;" tabindex="2" data-bind="ntsSearchBox: {
 								  searchMode: 'highlight',
 								  targetKey: 'code',
 								  comId: 'kcp005',
@@ -59,13 +59,13 @@
 								  fields: ['code', 'name']
 								}"/>
 						</div>
-						<div id="kcp005" class="panel panel-frame" style="width: 312px; height: 385px; margin-top: -13px; margin-left: 25px; padding-right: 0px"></div>
+						<div id="kcp005" class="panel panel-frame" tabindex="3" style="width: 312px; height: 385px; margin-top: -13px; margin-left: 25px; padding-right: 0px"></div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS013_31')}</button>
-				<button data-bind="click :search">#{i18n.getText('CAS013_32')}</button>
+				<button class="proceed x-large" tabindex="4" data-bind="click :decision">#{i18n.getText('CAS013_31')}</button>
+				<button data-bind="click :search" tabindex="5">#{i18n.getText('CAS013_32')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
