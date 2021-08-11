@@ -13,7 +13,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -43,9 +42,7 @@ public class ConvertTimeRecordStampService {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
-
-		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
+		if (!empInfoTerOpt.isPresent())
 			return Optional.empty();
 
 		// $就業情報端末.打刻(打刻受信データ)
@@ -83,6 +80,7 @@ public class ConvertTimeRecordStampService {
 		return !stampRecord.isPresent();
 	}
 	
+	//打刻を作成する
 	private static Pair<Optional<Stamp>, AtomTask> createStamp(Require require, Optional<EmpInfoTerminal> empInfoTerOpt,
 			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData){
 		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTerOpt.get().getCreateStampInfo().createStamp(contractCode, stampReceptData, empInfoTerCode);
@@ -126,6 +124,7 @@ public class ConvertTimeRecordStampService {
 
 	}
 	
+	//日別実績を処理する
 	private static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
 			Optional<String> sid, Optional<Stamp> stamp, AtomTask atomTask) {
 
@@ -183,9 +182,9 @@ public class ConvertTimeRecordStampService {
 		// [R-3]打刻カードを取得する
 		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber);
 
-		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
-				ContractCode contractCode);
+//		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
+//		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
+//				ContractCode contractCode);
 
 		// [R-5] 就業情報端末通信用トップページアラームを作る
 		public void insertLogAll(TopPageAlarmEmpInfoTer alEmpInfo);
@@ -207,7 +206,7 @@ public class ConvertTimeRecordStampService {
 		//	IGetInfoForLogin
 		public Optional<String> getUserIdFromLoginId(String perId);
 		
-		//ログイン
+		// 紐従業員の役割でログインする
 		//LoginUserContextManager
 		void loggedInAsEmployee(
 				String userId,

@@ -110,6 +110,22 @@ public class SendTimeRecordSetting implements DomainValue {
 		this.request17 = builder.request17;
 	}
 
+	//[S-1] ディフォルトのデータを作成する
+	public static SendTimeRecordSetting createDefault() {
+		return new SettingBuilder(false, false, false, false, false)
+							.createReq7(false)
+							.createReq8(false)
+							.createReq9(false)
+							.createReq10(false)
+							.createReq11(false)
+							.createReq12(false)
+							.createReq13(false)
+							.createReq14(false)
+							.createReq15(false)
+							.createReq16(false)
+							.createReq17(false)
+							.build();
+	}
 	public static class SettingBuilder {
 
 		/**

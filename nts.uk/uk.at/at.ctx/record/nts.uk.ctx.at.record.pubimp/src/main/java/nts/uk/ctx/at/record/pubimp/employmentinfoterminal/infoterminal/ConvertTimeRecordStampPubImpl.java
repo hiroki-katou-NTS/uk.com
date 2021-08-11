@@ -26,13 +26,11 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCen
 import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPgAlTrRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData.StampDataBuilder;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.ConvertTimeRecordStampService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -69,9 +67,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 
 	@Inject
 	private EmpInfoTerminalRepository empInfoTerminalRepository;
-
-	@Inject
-	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 	@Inject
 	private StampDakokuRepository stampDakokuRepository;
@@ -125,7 +120,7 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	public  Optional<StampDataReflectResultExport> convertData(String empInfoTerCode,
 			String contractCode, StampReceptionDataExport stampReceptData) {
 
-		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository,
+		RequireImpl require = new RequireImpl(empInfoTerminalRepository,
 				stampDakokuRepository, createDailyResultDomainServiceNew, stampRecordRepository, stampCardRepository,
 				employeeManageRCAdapter, executionLog, createDailyResults, timeReflectFromWorkinfo, temporarilyReflectStampDailyAttd,
 				dailyRecordAdUpService, dailyRecordShareFinder, getMngInfoFromEmpIDListAdapter, companyAdapter, iGetInfoForLogin, loginUserContextManager,
@@ -148,8 +143,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 	public static class RequireImpl implements ConvertTimeRecordStampService.Require {
 
 		private final EmpInfoTerminalRepository empInfoTerminalRepository;
-
-		private final TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 
 		private final StampDakokuRepository stampDakokuRepository;
 
@@ -193,13 +186,6 @@ public class ConvertTimeRecordStampPubImpl implements ConvertTimeRecordStampPub 
 		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
 				GeneralDateTime dateTime) {
 			return stampRecordRepository.get(contractCode.v(), stampNumber.v(), dateTime);
-		}
-
-		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
-				ContractCode contractCode) {
-
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 		}
 
 		@Override
