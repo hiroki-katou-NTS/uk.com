@@ -152,6 +152,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private static final int NORMAL_FONT_SIZE = 9;
 	/** The Constant WORKPLACE_TITLE */
 	private static final String WORKPLACE_TITLE = "●職場：";
+	private static final int DATA_ROW_START = 2;
 	
 	@Inject
 	private CompanyAdapter company;
@@ -927,6 +928,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		cells.get(currentRow, 0).setValue(wpName);
 
 		Range workPlaceRange = cells.createRange(currentRow, WP_COL, 1, 9);
+		
+		if (currentRow != DATA_ROW_START) {
+			Range workPlaceRangeTemp = cells.createRange(DATA_ROW_START, WP_COL, 1, 9);
+			workPlaceRange.copyStyle(workPlaceRangeTemp);
+			workPlaceRange.setRowHeight(workPlaceRangeTemp.getRowHeight());
+		}
 		workPlaceRange.merge();
 
 		this.setWPStyle(currentRow, cells);
