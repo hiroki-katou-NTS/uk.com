@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainCheckInpu
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RecordRemainCreateInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ScheRemainCreateInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
@@ -68,7 +69,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 	 * @param appDispInfoStartupOutput 表示する実績内容 
 	 * 
 	 */
-	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, List<MsgErrorOutput> msgErrorLst, List<ActualContentDisplay> opActualContentDisplayLst, AppDispInfoStartupOutput appDispInfoStartup) {
+	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, List<MsgErrorOutput> msgErrorLst, List<ActualContentDisplay> opActualContentDisplayLst, AppDispInfoStartupOutput appDispInfoStartup, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
 		
 		//登録前エラーチェック（新規）(Check error trước khi đăng ký (New)
 		this.PreRegistrationErrorCheck.errorCheck(companyId, abs, rec, 
@@ -76,7 +77,8 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 												appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
 												appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(),
 												Optional.empty(), 
-												Optional.empty());
+												Optional.empty(),
+												payoutSubofHDManagements);
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		

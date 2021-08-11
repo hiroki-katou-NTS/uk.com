@@ -103,7 +103,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 				command.represent, 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
-				appDispInfoStartup);
+				appDispInfoStartup, 
+				command.existAbs() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>());
 		
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
 		//QA: http://192.168.50.4:3000/issues/113451 -> done

@@ -121,7 +121,8 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		errorCheckProcessingBeforeRegistrationKAF011.processing(companyId, Optional.of(abs), rec, displayInforWhenStarting.represent, 
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
-				displayInforWhenStarting.appDispInfoStartup.toDomain());
+				displayInforWhenStarting.appDispInfoStartup.toDomain(), 
+				displayInforWhenStarting.existAbs() ? displayInforWhenStarting.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>());
 		return abs;
 	}
 	

@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZone_NewDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -124,7 +125,8 @@ public class HolidayShipmentMobileWS extends WebService {
 				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0), 
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
 				Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
-				Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()));
+				Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()), 
+				command.abs != null ? command.abs.getPayoutSubofHDManagements().stream().map(x -> x.toDomain()).collect(Collectors.toList()) : new ArrayList<PayoutSubofHDManagement>());
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
 //				companyId, 
