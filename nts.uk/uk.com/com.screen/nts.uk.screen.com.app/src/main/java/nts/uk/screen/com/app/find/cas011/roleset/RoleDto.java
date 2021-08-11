@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.portal.app.screenquery.roleset;
+package nts.uk.screen.com.app.find.cas011.roleset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
