@@ -264,7 +264,7 @@ module nts.uk.ui.ktg004.a {
 											grantDay:
 												_.isNil(grantDate)
 												?
-												`${vm.$i18n('KTG004_26')} ${vm.$i18n('KTG004_26')}`
+												`${vm.$i18n('KTG004_26')} ${vm.$i18n('KTG004_27')}`
 												:
 												`${vm.$i18n('KTG004_26')}${moment(grantDate).format("YYYY/MM/DD")}　${grantDays}日`
 												
@@ -283,11 +283,11 @@ module nts.uk.ui.ktg004.a {
                                         .push({
                                             name: 'KTG004_11',
                                             text: 
-												numberOfSubstituteHoliday.time == ZERO_TIME
+												numberOfSubstituteHoliday.day <= 0
 												?
-												vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
+												`${numberOfSubstituteHoliday.time}`
 												:
-												vm.$i18n('KTG004_28', [`${numberOfSubstituteHoliday.day}`, `${numberOfSubstituteHoliday.time}`])
+												vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
                                         })
                                     break;
                                 case 30:
