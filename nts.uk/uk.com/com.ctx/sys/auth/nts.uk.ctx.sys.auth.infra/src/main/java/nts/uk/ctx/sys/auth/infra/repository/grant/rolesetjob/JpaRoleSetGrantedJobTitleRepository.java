@@ -57,7 +57,6 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		return upEntity;
 	}
 	@Override
-	// TODO implement please
 	public List<RoleSetGrantedJobTitle> getByCompanyId(String companyId) {
 		return this.queryProxy().query(FIND_BY_CID_JOBTITLES, SacmtRoleSetGrantedJobTitleDetail.class)
 				.setParameter("companyId", companyId)
@@ -65,20 +64,17 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 	}
 	
 	@Override
-	// TODO implement please
 	public Optional<RoleSetGrantedJobTitle> getByJobTitleId(String companyId, String jobTitleId) {
 		SacmtRoleSetGrantedJobTitleDetailPK pk = new SacmtRoleSetGrantedJobTitleDetailPK(companyId, jobTitleId);
 		return this.queryProxy().find(pk, SacmtRoleSetGrantedJobTitleDetail.class).map(c -> toDomain(c));
 	}
 
 	@Override
-	// TODO implement please
 	public void insert(RoleSetGrantedJobTitle domain) {
 		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
-	// TODO implement please
 	public void update(RoleSetGrantedJobTitle domain) {
 		Optional<SacmtRoleSetGrantedJobTitleDetail> upEntity = this.queryProxy().find(
 				new SacmtRoleSetGrantedJobTitleDetailPK(domain.getJobTitleId(), domain.getCompanyId()),
@@ -89,7 +85,6 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 	}
 
 	@Override
-	// TODO implement please
 	public boolean checkRoleSetCdExist(String companyId, RoleSetCode roleSetCd) {
 		val listItemByCid = this.getByCompanyId(companyId);
 		return listItemByCid.stream().anyMatch(e->e.getRoleSetCd().equals(roleSetCd));
