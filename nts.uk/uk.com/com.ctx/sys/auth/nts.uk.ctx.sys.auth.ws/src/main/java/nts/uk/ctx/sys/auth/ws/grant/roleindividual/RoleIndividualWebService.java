@@ -33,6 +33,7 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.RoleIndividualComman
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommand;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateSysRoleIndividualGrantCommandHandler;
+import nts.uk.ctx.sys.auth.app.find.company.CompanyDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
@@ -182,10 +183,10 @@ public class RoleIndividualWebService extends WebService {
 		return this.roleIndividualFinder.searchCompanyInfo(companyId);
 	}
 	@POST
-    @Path("notComapany")
-    public CompanyImport notComapany() {
-        return this.roleIndividualFinder.notComapany();
-    }
+	@Path("getCompanyList")
+	public List<CompanyDto> getCompanyList() {
+		return this.roleIndividualFinder.getCompanyList();
+	}
 
 	@POST
 	@Path("searchEmployyeList")

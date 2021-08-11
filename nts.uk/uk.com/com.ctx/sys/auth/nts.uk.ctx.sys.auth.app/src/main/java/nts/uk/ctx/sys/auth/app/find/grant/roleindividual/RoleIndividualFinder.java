@@ -17,6 +17,7 @@ import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.ctx.sys.auth.app.find.company.CompanyDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
@@ -316,14 +317,21 @@ public class RoleIndividualFinder {
         return companyInfoDto;
     }
 
-    public CompanyImport notComapany() {
-        val cid = AppContexts.user().companyId();
-        if(cid == null) {
-            return null;
+    public List<CompanyDto> getCompanyList() {
+        List<CompanyImport> listCompany = new ArrayList<>();
+        List<CompanyDto> listCompanyDTO = new ArrayList<CompanyDto>();
+        LoginUserContext user = AppContexts.user();
+        if (user.roles().forSystemAdmin() != null) {
+            listCompany.addAll(companyAdapter.findAllCompanyImport());
+        } else {
+            // get company by cid
+            listCompany.add(companyAdapter.findCompanyByCid(AppContexts.user().companyId()));
         }
-        CompanyImport companyInfo = companyAdapter.findCompanyByCid(cid);
-        CompanyImport companyInfoDto = new CompanyImport(companyInfo.getCompanyCode(), companyInfo.getCompanyName(), companyInfo.getCompanyId(),companyInfo.getIsAbolition());
-        return companyInfoDto;
+        listCompany.stream().map(c -> {
+            return listCompanyDTO.add(new CompanyDto(c.getCompanyCode(), c.getCompanyName(), c.getCompanyId()));
+        }).collect(Collectors.toList());
+
+        return listCompanyDTO;
     }
     public List<EmployeeBasicInfoDto> searchEmployyeList(List<String> employyeid) {
         String companyId = AppContexts.user().companyId();
@@ -361,7 +369,7 @@ public class RoleIndividualFinder {
                             e.getWorkplaceName(),
                             e.getWkpDisplayName()
                     )).collect(Collectors.toList());
-        }catch (Exception e){
+        } catch (Exception e){
             return data;
         }
         return data;
