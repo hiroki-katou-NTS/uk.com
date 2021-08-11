@@ -268,9 +268,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
         private selectRole(roleId: string, userIdSelected: string): void {
             var self = this;
             var employeeSearchs: UnitModel[] = []; //KCP005
-            if (roleId != '') {
+            if (roleId != '' ) {
                 self.selectedRoleIndividual('');
-                self.employeeList([]);
+                self.multiSelectedCode([]);
                 new service.Service().getRoleGrants(roleId).done(function(data: any) {
                     if (data != null && data.length > 0) {
                         let items = [];
@@ -294,9 +294,14 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         }
                         self.EmployeeIDList(leids);
                         //Select First Employye
-                        self.multiSelectedCode.push(employeeSearchs[0].code)
-                        self.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
-                        self.selectRoleEmployee(employeeSearchs[0].code);
+                        if(employeeSearchs != null) {
+                            self.multiSelectedCode.push(employeeSearchs[0].code)
+                            self.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
+                            self.selectRoleEmployee(employeeSearchs[0].code);
+                        } else {
+                            self.multiSelectedCode([]);
+                            self.dateValue({});
+                        }
                         self.employeeList(employeeSearchs);
                         //End KCP005
                         self.listRoleIndividual(items);
@@ -475,6 +480,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     self.selectedRoleIndividual("");
                     self.selectRole(roleId, data);
+                    //self.refreshAfterDelete(self.selectedRole());
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.isCreateMode(false);
                 } else {
