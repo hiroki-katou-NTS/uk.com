@@ -186,7 +186,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     }else{
                         //A41
                         self.listRoleType(self.listNewRole);
-                        self.selectedRoleType(data[0].value);
+                        self.selectedRoleType(0);
                     }
                 }else{
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
