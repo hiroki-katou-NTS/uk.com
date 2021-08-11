@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
@@ -15,6 +16,7 @@ import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitle;
 import nts.uk.ctx.sys.auth.dom.grant.rolesetjob.RoleSetGrantedJobTitleRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetCode;
 import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitleDetail;
+import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobTitleDetailPK;
 
 /**
  * 
@@ -29,33 +31,68 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 	private static final String FIND_BY_CID_JOBTITLES = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
 			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
 			+ " AND c.roleSetCd IN :roleCDLst";
-	
+
+	private RoleSetGrantedJobTitle toDomain(SacmtRoleSetGrantedJobTitleDetail entity) {
+
+		return new RoleSetGrantedJobTitle(
+				entity.roleSetGrantedJobTitleDetailPK.companyId,
+				entity.roleSetGrantedJobTitleDetailPK.jobTitleId,
+				new RoleSetCode(entity.roleSetCd)
+		);
+	}
+	private SacmtRoleSetGrantedJobTitleDetail toEntity(RoleSetGrantedJobTitle domain) {
+		SacmtRoleSetGrantedJobTitleDetailPK key = new SacmtRoleSetGrantedJobTitleDetailPK(domain.getJobTitleId(), domain.getCompanyId());
+		return new SacmtRoleSetGrantedJobTitleDetail(
+				key.jobTitleId,
+				key.companyId,
+				domain.getRoleSetCd().v()
+		);
+	}
+	private SacmtRoleSetGrantedJobTitleDetail toEntiryForUpdate(SacmtRoleSetGrantedJobTitleDetail upEntity) {
+		upEntity.upEntity(
+				upEntity.roleSetGrantedJobTitleDetailPK.jobTitleId,
+				upEntity.roleSetGrantedJobTitleDetailPK.companyId,
+				upEntity.roleSetCd
+		);
+		return upEntity;
+	}
 	@Override
 	// TODO implement please
 	public List<RoleSetGrantedJobTitle> getByCompanyId(String companyId) {
-		return Collections.emptyList();
+		return this.queryProxy().query(FIND_BY_CID_JOBTITLES, SacmtRoleSetGrantedJobTitleDetail.class)
+				.setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 	}
 	
 	@Override
 	// TODO implement please
 	public Optional<RoleSetGrantedJobTitle> getByJobTitleId(String companyId, String jobTitleId) {
-		return Optional.empty();
+		SacmtRoleSetGrantedJobTitleDetailPK pk = new SacmtRoleSetGrantedJobTitleDetailPK(companyId, jobTitleId);
+		return this.queryProxy().find(pk, SacmtRoleSetGrantedJobTitleDetail.class).map(c -> toDomain(c));
 	}
 
 	@Override
 	// TODO implement please
 	public void insert(RoleSetGrantedJobTitle domain) {
+		this.commandProxy().insert(toEntity(domain));
 	}
 
 	@Override
 	// TODO implement please
 	public void update(RoleSetGrantedJobTitle domain) {
+		Optional<SacmtRoleSetGrantedJobTitleDetail> upEntity = this.queryProxy().find(
+				new SacmtRoleSetGrantedJobTitleDetailPK(domain.getJobTitleId(), domain.getCompanyId()),
+				SacmtRoleSetGrantedJobTitleDetail.class);
+		if (upEntity.isPresent()) {
+			this.commandProxy().update(toEntiryForUpdate(upEntity.get()));
+		}
 	}
 
 	@Override
 	// TODO implement please
 	public boolean checkRoleSetCdExist(String companyId, RoleSetCode roleSetCd) {
-		return false;
+		val listItemByCid = this.getByCompanyId(companyId);
+		return listItemByCid.stream().anyMatch(e->e.getRoleSetCd().equals(roleSetCd));
 	}
 
 	@Override

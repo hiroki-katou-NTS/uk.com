@@ -46,5 +46,9 @@ public class SacmtRoleSetGrantedJobTitleDetail extends ContractUkJpaEntity imple
 		this.roleSetGrantedJobTitleDetailPK = new SacmtRoleSetGrantedJobTitleDetailPK(jobTitleId, companyId);
 		this.roleSetCd = roleSetCd;
 	}
-	
+
+	public void upEntity(String roleSetCd, String jobTitleId, String companyId) {
+		this.roleSetGrantedJobTitleDetailPK = new SacmtRoleSetGrantedJobTitleDetailPK(jobTitleId, companyId);
+		this.roleSetCd = roleSetCd;
+	}
 }
