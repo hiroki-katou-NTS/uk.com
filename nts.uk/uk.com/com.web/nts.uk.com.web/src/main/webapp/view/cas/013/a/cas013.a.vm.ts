@@ -270,7 +270,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var employeeSearchs: UnitModel[] = []; //KCP005
             if (roleId != '') {
                 self.selectedRoleIndividual('');
-
+                self.employeeList([]);
                 new service.Service().getRoleGrants(roleId).done(function(data: any) {
                     if (data != null && data.length > 0) {
                         let items = [];
@@ -286,10 +286,17 @@ module nts.uk.com.view.cas013.a.viewmodel {
                                 code: entry.userID,
                                 name: entry.userName,
                                 affiliationName: periodDate,
+                                startValidPeriod: entry.startValidPeriod,
+                                endValidPeriod: entry.endValidPeriod
                             };
                             employeeSearchs.push(employee);
+
                         }
                         self.EmployeeIDList(leids);
+                        //Select First Employye
+                        self.multiSelectedCode.push(employeeSearchs[0].code)
+                        self.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
+                        self.selectRoleEmployee(employeeSearchs[0].code);
                         self.employeeList(employeeSearchs);
                         //End KCP005
                         self.listRoleIndividual(items);
@@ -315,6 +322,15 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 self.loginID('');
                 self.userName('');
                 self.dateValue({});
+                self.companyId('');
+                self.companyName('');
+                self.companyCode('');
+                self.workplaceCode('');
+                self.workplaceName('');
+                self.jobTitleCode('');
+                self.jobTitleName('');
+                self.employyeCode('');
+                self.employyeName('');
             }
         }
 
@@ -350,7 +366,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         ){
                             self.loginID('');
                             self.userName('');
-                            self.dateValue('');
                         } else {
                             self.dateValue(new datePeriod(userEmployee.start, userEmployee.end));
                             self.loginID(userSelected.code);
@@ -394,7 +409,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         self.isDelete(true);
                     }
                 });
-            }else{
+            } else {
                 self.isDelete(false);
             }
         }
@@ -405,7 +420,9 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.isDelete(false);
             self.isSelectedUser(false);
             self.selectedRoleIndividual('');
+            self.employeeList([]);
             self.loginID('');
+            self.dateValue({});
             self.userName('');
             nts.uk.ui.errors.clearAll();
         }
@@ -634,6 +651,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
         code: string;
         name?: string;
         affiliationName?: string;
+        startValidPeriod?: string;
+        endValidPeriod?: string;
     }
 
     export class SelectType {
