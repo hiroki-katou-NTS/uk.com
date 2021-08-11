@@ -56,12 +56,12 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
 			new RoleSetCode(entity.roleSetPK.roleSetCd),
 			new RoleSetName(entity.roleSetName),
 			EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class),
-			Optional.of(entity.officeHelperRole),
-			Optional.of(entity.myNumberRole),
-			Optional.of(entity.hRRole),
-			Optional.of(entity.personInfRole),
-			Optional.of(entity.employmentRole),
-			Optional.of(entity.salaryRole)
+			Optional.ofNullable(entity.officeHelperRole),
+			Optional.ofNullable(entity.myNumberRole),
+			Optional.ofNullable(entity.hRRole),
+			Optional.ofNullable(entity.personInfRole),
+			Optional.ofNullable(entity.employmentRole),
+			Optional.ofNullable(entity.salaryRole)
 		);
 	}
 
