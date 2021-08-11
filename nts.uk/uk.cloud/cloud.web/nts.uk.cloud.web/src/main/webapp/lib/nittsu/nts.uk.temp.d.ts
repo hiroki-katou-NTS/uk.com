@@ -24,7 +24,7 @@ declare module nts.uk.request {
         function getInfo(id: string): JQueryPromise<any>;
         function requestToCancel(id: string): void;
     }
-    function liveView(fileId: string): string;
+    function liveView(fileId: string): void;
     const WEB_APP_NAME: any;
 }
 
@@ -80,7 +80,11 @@ interface JQuery {
      */
     ntsCalendar(action: string, option: any);
     
-    delegate(selector: string, eventName: string, handler: (evt: any, ui: any) => void)
+    ntsSwitchMasterLanguage(): void;
+    ntsFixedTable(option: any): void;
+    ntsGrid(option: any): void;
+    ntsGrid(method: string, option: any, data: any): void;
+    
     /**
      * Go to full view mode KCP004.
      */

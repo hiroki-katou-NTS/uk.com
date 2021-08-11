@@ -131,18 +131,18 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 
 	// 社員認証失敗時の処理
 	@Override
-	protected ValidateInfo authenticationFailed(Require require, AuthenResult state) {
+	protected ValidateInfo employeeAuthenticationFailed(Require require, AuthenResult state) {
 		return ValidateInfo.failedToValidSaml(state.errorMessage);
 	}
 	
 	// ログイン成功時の処理
 	@Override
-	protected ValidateInfo loginCompleted(Require require, AuthenResult state, Optional<String> msg) {
-		return ValidateInfo.successToValidSaml(state.requestUrl, msg);
+	protected ValidateInfo loginCompleted(Require require, AuthenResult state) {
+		return ValidateInfo.successToValidSaml(state.requestUrl);
 	}
 	
 	@Value
-	static class AuthenResult implements LoginCommandHandlerBase.AuthenticationResultBase{
+	static class AuthenResult implements LoginCommandHandlerBase.AuthenticationResult{
 		
 		private boolean isSuccess;
 		private IdentifiedEmployeeInfo identified;

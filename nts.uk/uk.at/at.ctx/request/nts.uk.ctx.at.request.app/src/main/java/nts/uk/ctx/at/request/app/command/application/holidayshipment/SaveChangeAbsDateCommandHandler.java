@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.workrecord.remainmanagement.InterimRemainDataMngCheckRegisterRequest;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -37,7 +37,7 @@ public class SaveChangeAbsDateCommandHandler
 	@Inject
 	private HolidayApplicationSettingRepository repoHdAppSet;
 	@Inject
-	private InterimRemainDataMngCheckRegisterRequest checkRegister;
+	private InterimRemainDataMngCheckRegister checkRegister;
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
 	@Inject

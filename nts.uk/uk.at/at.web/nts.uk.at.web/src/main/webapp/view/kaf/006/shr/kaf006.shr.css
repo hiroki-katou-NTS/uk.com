@@ -67,21 +67,20 @@ button.nts-switch-button {
 	border-radius: 7px;
 }
 
-#kaf006-shr-component1 .space-between-table .row-underline {
+.space-between-table .row-underline {
 	border-bottom: solid #B1B1B1 1px;
-	height: auto;
+	height: 35px;
 	padding-top: 5px;
-    padding-bottom: 5px;
 }
 
-#kaf006-shr-component1 .space-between-table .row-underline:last-child {
+.space-between-table .row-underline:last-child {
 	border-bottom: none;
 }
 
-#kaf006-shr-component1 .space-between-table .row-underline .form-label, a {
+.space-between-table .row-underline .form-label, a {
 	height: 25px;
 }
 
-#kaf006-shr-component1 .space-between-table .row-underline  a {
+.space-between-table .row-underline  a {
 	margin-top: 5px;
 }

@@ -53,12 +53,6 @@ public interface EmployeeDataMngInfoRepository {
 
 	List<EmployeeDataMngInfo> getListEmpToDelete(String cid);
 
-	/**
-	 * 削除されていない社員を取得
-	 * @param empcode
-	 * @param cid
-	 * @return
-	 */
 	Optional<EmployeeDataMngInfo> findByEmployeCD(String empcode, String cid);
 
 	// add by duongtv

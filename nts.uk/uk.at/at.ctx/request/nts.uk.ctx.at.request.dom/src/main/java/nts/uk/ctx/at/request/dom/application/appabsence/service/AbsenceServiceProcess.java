@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationC
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationLinkManageInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 public interface AbsenceServiceProcess {
@@ -204,7 +206,7 @@ public interface AbsenceServiceProcess {
 	 * @param appAbsenceStartInfoOutput 休暇申請起動時の表示情報
 	 */
 	public List<ConfirmMsgOutput> holidayCommonCheck(String companyID, GeneralDate closureStartDate, ApplyForLeave appAbsence,
-			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate, Optional<TimeDigestApplication> timeDigestApplication);
+			AppAbsenceStartInfoOutput appAbsenceStartInfoOutput, List<GeneralDate> lstHolidayDate);
 
 	/**
 	 * 年休のチェック処理
@@ -464,13 +466,4 @@ public interface AbsenceServiceProcess {
      * @param requiredVacationTime 必要休暇時間
      */
     public void checkVacationTimeRequire(TimeDigestApplication timeDigestApplication, AttendanceTime requiredVacationTime);
-    
-    /**
-     * UKDesign.UniversalK.就業.KAF_申請.KAF006_休暇申請.アルゴリズム.休暇申請登録時チェック処理.休暇種類共通エラーチェック.休暇残数チェック
-     * @param companyID
-     * @param application
-     * @param datePeriod
-     * @param vacationType
-     */
-//    public void checkRemainVacation(String companyID, ApplyForLeave application, GeneralDate date, HolidayAppType vacationType, Optional<TimeDigestApplication> timeDigestApplication);
 }

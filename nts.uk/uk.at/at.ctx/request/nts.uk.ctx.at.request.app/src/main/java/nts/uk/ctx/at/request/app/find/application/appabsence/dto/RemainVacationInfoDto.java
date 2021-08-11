@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 
 @Data
@@ -61,12 +60,6 @@ public class RemainVacationInfoDto {
 
     // 介護残時間
     private Integer nirsingHourRemain;
-    
-    // 付与年月日
-    private String grantDate;
-    
-    // 付与日数
-    private Integer grantDays;
 
     public static RemainVacationInfoDto fromDomain(RemainVacationInfo remainVacationInfo) {
         return new RemainVacationInfoDto(
@@ -95,9 +88,7 @@ public class RemainVacationInfoDto {
                         : null,
                 remainVacationInfo.getNursingRemain().isPresent() ? remainVacationInfo.getNursingRemain().get() : null,
                 remainVacationInfo.getNirsingHourRemain().isPresent() ? remainVacationInfo.getNirsingHourRemain().get()
-                        : null, 
-                remainVacationInfo.getGrantDate().isPresent() ? remainVacationInfo.getGrantDate().get().toString("yyyy/MM/dd") : null, 
-                remainVacationInfo.getGrantDays().isPresent() ? remainVacationInfo.getGrantDays().get() : 0);
+                        : null);
     }
 
     public RemainVacationInfo toDomain() {
@@ -108,8 +99,6 @@ public class RemainVacationInfoDto {
                 Optional.ofNullable(subVacaRemain), Optional.ofNullable(subVacaHourRemain),
                 Optional.ofNullable(remainingHours), Optional.ofNullable(over60HHourRemain),
                 Optional.ofNullable(childNursingRemain), Optional.ofNullable(childNursingHourRemain),
-                Optional.ofNullable(nursingRemain), Optional.ofNullable(nirsingHourRemain), 
-                grantDate != null ? Optional.ofNullable(GeneralDate.fromString(grantDate, "yyyy/MM/dd")) : Optional.empty(), 
-                Optional.ofNullable(grantDays));
+                Optional.ofNullable(nursingRemain), Optional.ofNullable(nirsingHourRemain));
     }
 }

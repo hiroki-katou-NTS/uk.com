@@ -71,17 +71,6 @@ public class WorkTypeProcessor {
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeQueryRepository.findAbsenceKaf022(companyId, oneDayAtr, morningAtr, afternoonAtr);
 	}
-
-	/**
-	 * Find work type by company for KAF022
-	 * @param companyId
-	 * @return
-	 * @author hieunm
-	 */
-	public List<WorkTypeDto> findAbsenceSpecialKaf022(){
-		String companyId = AppContexts.user().companyId();
-		return this.workTypeQueryRepository.findAbsenceSpecialKaf022(companyId);
-	}
 	
 	/**
 	 * Find work type by company for KAF022

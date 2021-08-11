@@ -7,7 +7,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import lombok.val;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.gateway.app.command.stopsetting.SaveStopSettingCommand;
@@ -28,8 +27,7 @@ public class StopSettingWebService extends WebService {
 	@POST
 	@Path("find/{isSystem}")
 	public StopSettingDto find(@PathParam("isSystem") int isSystem) {
-		val stopSettingDto = this.finder.find(isSystem);
-		return stopSettingDto;
+		return this.finder.find(isSystem);
 	}
 
 	@POST

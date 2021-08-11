@@ -42,7 +42,7 @@ public class UserPublisherImpl implements UserPublisher {
 						user.getAssociatedPersonID().isPresent() ? user.getAssociatedPersonID().get() : "" ) 
 				: null;
 	}
-	
+
 	@Override
 	public Optional<UserExport> getUserByContractAndLoginId(String contractCode, String loginId) {
 		Optional<User> optUser = userRepo.getByContractAndLoginId(contractCode, loginId);
@@ -50,7 +50,7 @@ public class UserPublisherImpl implements UserPublisher {
 			return Optional.of(fromDomain(optUser.get()));
 		return Optional.empty();
 	}
-	
+
 	@Override
 	public Optional<UserExport> getUserByAssociateId(String associatePersonId) {
 		Optional<User> optUser = userRepo.getByAssociatedPersonId(associatePersonId);
@@ -58,15 +58,17 @@ public class UserPublisherImpl implements UserPublisher {
 			return Optional.of(fromDomain(optUser.get()));
 		return Optional.empty();
 	}
-	
+
 	private UserExport fromDomain(User domain) {
 		return new UserExport(domain.getUserID(), domain.getLoginID().v(), domain.getContractCode().v(),
 				domain.getUserName().isPresent() ? domain.getUserName().get().v() : "",
+				domain.getPassword().v(),
 				domain.getMailAddress().isPresent() ? domain.getMailAddress().get().v() : "",
 				domain.getAssociatedPersonID().isPresent() ? domain.getAssociatedPersonID().get() : "",
-				domain.getExpirationDate());
+				domain.getExpirationDate(),
+				domain.getPassStatus().value);
 	}
-	
+
 	@Override
 	public List<UserExport> getListUserByListAsId(List<String> listAssociatePersonId) {
 		List<UserExport> listUser = userRepo.getListUserByListAsID(listAssociatePersonId).stream()
@@ -75,7 +77,7 @@ public class UserPublisherImpl implements UserPublisher {
 			return Collections.emptyList();
 		return listUser;
 	}
-	
+
 	@Override
 	public Optional<UserExport> getByUserId(String userId) {
 		Optional<User> optUser = userRepo.getByUserID(userId);
@@ -84,7 +86,8 @@ public class UserPublisherImpl implements UserPublisher {
 		}
 		return Optional.empty();
 	}
-	
+
+
 	@Override
 	public Optional<UserInforEx> getByEmpID(String empID) {
 		// Lay RequestList No.1
@@ -93,19 +96,19 @@ public class UserPublisherImpl implements UserPublisher {
 			return Optional.empty();
 		}
 		else{
-			Optional<User> user = userRepo.getByAssociatedPersonId(exportData.getPid());
-			if(!user.isPresent()){
-				return Optional.empty();
-			}
-			return Optional.of( new UserInforEx(
-					user.get().getUserID(),
-					user.get().getLoginID().v(),
-					exportData.getEmployeeId(),
-					exportData.getEmployeeCode()));
+	      Optional<User> user = userRepo.getByAssociatedPersonId(exportData.getPid());
+	      if(!user.isPresent()){
+	    	  return Optional.empty();
+	      }
+	      return Optional.of( new UserInforEx(
+	    		  user.get().getUserID(),
+	    		  user.get().getLoginID().v(),
+	    		  exportData.getEmployeeId(),
+	    		  exportData.getEmployeeCode()));
 		}
 		
 	}
-	
+
 	@Override
 	public Optional<UserExport> getByUserIDandDate(String userID, GeneralDate systemDate) {
 		Optional<User> optUser = userRepo.getByUserIDAndDate(userID, systemDate);
@@ -115,7 +118,7 @@ public class UserPublisherImpl implements UserPublisher {
 			return Optional.of(fromDomain(optUser.get()));
 		}
 	}
-	
+
 	@Override
 	public Optional<UserExport> getBySid(String sid) {
 		// Lay RequestList No.1
@@ -131,7 +134,7 @@ public class UserPublisherImpl implements UserPublisher {
 			return Optional.of(this.fromDomain(user));
 		}
 	}
-	
+
 	@Override
 	public Optional<String> getUserIDByEmpID(String employeeID) {
 		return getUserIDFromEmpIDService.getUserIDByEmpID(employeeID);

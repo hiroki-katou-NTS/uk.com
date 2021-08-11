@@ -22,14 +22,19 @@ public class GetUserDto {
 	private Optional<String> associatedPersonID;
 	
 	private Optional<String> mailAddress;
+	
+	private String password;
 
 	public GetUserDto(String userId, String loginId, String userName, String associatedPersonID,
-			String mailAddress) {
+			String mailAddress, String password) {
 		super();
 		this.userId = userId;
 		this.loginId = loginId;
 		this.userName = Optional.ofNullable(userName == null ? null : userName);
 		this.associatedPersonID = Optional.ofNullable(associatedPersonID== null ? null :associatedPersonID);
 		this.mailAddress = Optional.ofNullable(mailAddress == null ? null : mailAddress);
+		this.password = password;
 	}
+
+	
 }

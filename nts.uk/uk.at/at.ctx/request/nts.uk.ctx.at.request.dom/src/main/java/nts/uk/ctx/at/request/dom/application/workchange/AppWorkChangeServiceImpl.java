@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -280,10 +279,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				null, 
 				msgErrorLst, 
 				lstDateHd,
-				appDispInfoStartupOutput, 
-				appWorkChange.getOpWorkTypeCD().isPresent() ? Arrays.asList(appWorkChange.getOpWorkTypeCD().get().v()) : new ArrayList<String>(), 
-		        Optional.empty(), 
-		        appWorkChange.getOpWorkTimeCD().map(WorkTimeCode::v));
+				appDispInfoStartupOutput);
 		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
 		output.setConfirmMsgLst(confirmMsgLst);
 		output.setHolidayDateLst(lstDateHd);
@@ -478,9 +474,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				application.getVersion(), 
 				workTypeCD , 
 				workTimeCD,
-				appDispInfoStartupOutput, 
-				appWorkChange.getOpWorkTypeCD().isPresent() ? Arrays.asList(appWorkChange.getOpWorkTypeCD().get().v()) : new ArrayList<String>(), 
-				Optional.empty());
+				appDispInfoStartupOutput);
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;

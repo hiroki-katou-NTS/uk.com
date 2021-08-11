@@ -1,10 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.algorithm;
 
 import java.util.List;
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,7 +11,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 @NoArgsConstructor
 @Setter
 @Getter
-@Builder
 public class InterimRemainCheckInputParam {
 	/**	会社ID */
 	private String cid;
@@ -36,26 +32,19 @@ public class InterimRemainCheckInputParam {
 	private List<ScheRemainCreateInfor> scheData;
 	/** ・登録対象一覧 :	申請(List) */
 	private List<AppRemainCreateInfor> appData;
-	/** 勤務種類コード(List) */
-	private List<String> workTypeCds;
-	/** 時間消化(Optional） */
-	private Optional<TimeDigestionParam> timeDigestionUsageInfor;
-//	/**	・代休チェック区分 */
-//	private boolean chkSubHoliday;
-//	/**	・振休チェック区分 */
-//	private boolean chkPause;
-//	/**	・年休チェック区分 */
-//	private boolean chkAnnual;
-//	/**	・積休チェック区分 */
-//	private boolean chkFundingAnnual;
-//	/**	・特休チェック区分 */
-//	private boolean chkSpecial;
-//	/**	・公休チェック区分 */
-//	private boolean chkPublicHoliday;
-//	/**	・超休チェック区分 */
-//	private boolean chkSuperBreak;
-//	/** 子の看護チェック区分 */
-//	private boolean chkChildNursing;
-//	/** 介護チェック区分 */
-//	private boolean chkLongTermCare;
+	/**	・代休チェック区分 */
+	private boolean chkSubHoliday;
+	/**	・振休チェック区分 */
+	private boolean chkPause;
+	/**	・年休チェック区分 */
+	private boolean chkAnnual;
+	/**	・積休チェック区分 */
+	private boolean chkFundingAnnual;
+	/**	・特休チェック区分 */
+	private boolean chkSpecial;
+	/**	・公休チェック区分 */
+	private boolean chkPublicHoliday;
+	/**	・超休チェック区分 */
+	private boolean chkSuperBreak;
+	
 }

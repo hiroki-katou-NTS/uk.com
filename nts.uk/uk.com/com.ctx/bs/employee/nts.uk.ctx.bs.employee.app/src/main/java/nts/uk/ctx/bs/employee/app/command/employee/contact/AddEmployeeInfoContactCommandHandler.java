@@ -22,12 +22,12 @@ public class AddEmployeeInfoContactCommandHandler extends CommandHandlerWithResu
 	public String targetCategoryCd() {
 		return "CS00023";
 	}
-	
+
 	@Override
 	public Class<?> commandClass() {
 		return AddEmployeeInfoContactCommand.class;
 	}
-	
+
 	@Override
 	protected PeregAddCommandResult handle(CommandHandlerContext<AddEmployeeInfoContactCommand> context) {
 		val command = context.getCommand();
@@ -44,4 +44,5 @@ public class AddEmployeeInfoContactCommandHandler extends CommandHandlerWithResu
 		
 		return new PeregAddCommandResult(command.getSid());
 	}
+
 }

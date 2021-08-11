@@ -68,10 +68,10 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		String msgSys = "";
 		String msgCom = "";
 		if(sys.isPresent()){
-			msgSys = sys.get().getStopMessage().v();
+			msgSys = sys.get().getUsageStopMessage().v();
 		}
 		if(com.isPresent()){
-			msgCom = com.get().getStopMessage().v();
+			msgCom = com.get().getUsageStopMessage().v();
 		}
 		String msgFull = msgSys + msgCom;
 		if (!msgSys.isEmpty() && !msgCom.isEmpty()) {

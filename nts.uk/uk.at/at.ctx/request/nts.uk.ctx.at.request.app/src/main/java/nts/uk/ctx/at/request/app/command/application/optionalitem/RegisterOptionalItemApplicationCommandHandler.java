@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.optionalitem;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -97,10 +96,7 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
                 null,
                 appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                 Collections.emptyList(),
-                appDispInfoStartup, 
-                new ArrayList<String>(), 
-                Optional.empty(), 
-                Optional.empty());
+                appDispInfoStartup);
         /**
          * ドメインモデル「申請」の新規登録をする
          * */

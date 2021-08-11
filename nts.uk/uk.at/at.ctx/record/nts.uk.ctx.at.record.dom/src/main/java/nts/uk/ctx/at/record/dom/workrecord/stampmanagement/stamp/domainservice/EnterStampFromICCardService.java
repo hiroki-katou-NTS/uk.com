@@ -38,7 +38,7 @@ public class EnterStampFromICCardService {
 	 *            refectActualResult
 	 * @return 打刻結果（社員ID込み）
 	 */
-	public static StampingResultEmployeeId create(Require require, String cid, ContractCode contractCode, StampNumber stampNumber,
+	public static StampingResultEmployeeId create(Require require, ContractCode contractCode, StampNumber stampNumber,
 			GeneralDateTime stampDatetime, StampButton stampButton, RefectActualResult refectActualResult) {
 		
 		// $打刻カード = require.打刻カードを取得する(契約コード, 打刻カード番号)
@@ -55,7 +55,6 @@ public class EnterStampFromICCardService {
 		// $打刻する方法, 打刻日時, 打刻ボタン, 実績への反映内容)
 		
 		TimeStampInputResult timeStampInputResult = EnterStampForSharedStampService.create(require,
-				cid,
 				contractCode.v(),
 				stampCardOpt.get().getEmployeeId(),
 				Optional.of(stampNumber),

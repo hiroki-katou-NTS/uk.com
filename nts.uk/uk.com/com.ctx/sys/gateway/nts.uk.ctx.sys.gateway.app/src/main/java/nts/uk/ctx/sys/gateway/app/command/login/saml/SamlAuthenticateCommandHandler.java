@@ -40,7 +40,7 @@ public class SamlAuthenticateCommandHandler extends CommandHandlerWithResult<Sam
 		val tenant = tenantAuthenticationRepository.find(tenantCode)
 				.orElseThrow(() -> new BusinessException("Msg_314"));
 
-		if(!tenant.verifyPassword(password)) {
+		if(!tenant.verify(password)) {
 			// テナントパスワードが間違っている
 			throw new BusinessException("Msg_302");
 		}

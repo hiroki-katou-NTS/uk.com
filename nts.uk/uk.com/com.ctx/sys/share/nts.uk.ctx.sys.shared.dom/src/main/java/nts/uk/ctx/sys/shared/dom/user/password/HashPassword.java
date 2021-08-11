@@ -5,12 +5,7 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-/**
- * @deprecated
- * Use "HashedLoginPassword" instead of this.
- * Ask to designer.
- *
- */
+
 @StringMaxLength(66)
 @StringCharType(CharType.ANY_HALF_WIDTH)
 public class HashPassword extends StringPrimitiveValue<HashPassword> {

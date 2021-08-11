@@ -69,7 +69,7 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 		builder = new StringBuilder();
 		builder.append(FIND);
 		builder.append(
-				"WHERE  hist.SID =  @SID AND hist.YMD =  @YMD  AND hist.ATR =  @ATR AND hist.DELETE_ATR =  @DELETE_ATR AND hist.REFLECT_TIME = @REFLECT_TIME ");
+				"WHERE  hist.SID =  @SID AND hist.YMD =  @YMD  AND hist.ATR =  @ATR AND hist.DELETE_ATR =  @DELETE_ATR AND hist.REFLECT_TIME = @REFLECT_TIME");
 		builder.append(
 				"ORDER BY hist.DELETE_ATR DESC ");
 		FIND_APP_REF = builder.toString();
@@ -111,9 +111,8 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 	@Override
 	public void updateAppReflectHist(String sid, String appId, GeneralDate baseDate,
 			ScheduleRecordClassifi classification, boolean flagRemove) {
-		this.queryProxy().query(UPDATE_FLAG, KsrdtReflectAppHist.class).setParameter("sid", sid)
-				.setParameter("appId", appId).setParameter("date", baseDate).setParameter("atr", classification.value).setParameter("deleteAtr", flagRemove ? 1: 0).getQuery().executeUpdate();
-		this.getEntityManager().flush();
+		this.queryProxy().namedQuery(UPDATE_FLAG, KsrdtReflectAppHist.class).setParameter("sid", sid)
+				.setParameter("appId", appId).setParameter("date", baseDate).setParameter("atr", classification.value);
 	}
 
 	@Override

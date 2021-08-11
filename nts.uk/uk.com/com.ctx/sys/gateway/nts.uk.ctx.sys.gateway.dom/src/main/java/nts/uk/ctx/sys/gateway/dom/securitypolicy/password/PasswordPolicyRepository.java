@@ -1,16 +1,11 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.password;
 
+import java.util.Optional;
+
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 public interface PasswordPolicyRepository {
-
-	void insert(PasswordPolicy domain);
-
-	void update(PasswordPolicy domain);
+	Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCode);
 
 	void updatePasswordPolicy(PasswordPolicy passwordPolicy);
-	
-	PasswordPolicy getPasswordPolicy(String tenantCode);
-	
-	PasswordPolicy getPasswordPolicy(ContractCode contractCode);
 }

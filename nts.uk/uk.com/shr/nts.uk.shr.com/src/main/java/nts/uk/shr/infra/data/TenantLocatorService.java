@@ -29,12 +29,4 @@ public class TenantLocatorService {
 	public static String getDataSourceFor(String tenantCode) {
 		return TenantLocatorClient.getDataSource(tenantCode).get().getDatasourceName();
 	}
-	
-	public static boolean isConnected() {
-		val dataSourse = SessionContextProvider.get().get(SESSION_DATASOURCE);
-		if(dataSourse == null) {
-			return false;
-		}
-		return !dataSourse.toString().equals("");
-	}
 }

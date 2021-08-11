@@ -1,20 +1,18 @@
 package nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata;
 
 import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -60,7 +58,7 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 				.lockType(LockType.ENFORCEMENT_LOCK.value)
 				.loginMethod(LoginMethod.NORMAL_LOGIN.value)
 				.build();
-		LockoutData lockOutData = new LockoutData(dto);
+		LockOutData lockOutData = new LockOutData(dto);
 		this.lockOutDataRepository.add(lockOutData);
 		}
 	}
@@ -71,7 +69,7 @@ public class AddLockOutDataCommandHandler extends CommandHandler<AddLockOutDataC
 	 * @return boolean
 	 */
 	private boolean checkDuplicateLocking(String userId,String contractCd) {
-		Optional<LockoutData> otp = lockOutDataRepository.find(userId);
+		Optional<LockOutData> otp = lockOutDataRepository.findByUserIdAndContractCode(userId, contractCd);
 		return otp.isPresent();
 	}
 

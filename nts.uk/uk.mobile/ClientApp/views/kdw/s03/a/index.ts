@@ -672,8 +672,7 @@ export class Kdws03AComponent extends Vue {
                     restReferButtonDis: this.dPCorrectionMenuDto.restReferButtonDis,
                     monthActualReferButtonDis: this.dPCorrectionMenuDto.monthActualReferButtonDis,
                     timeExcessReferButtonDis: this.dPCorrectionMenuDto.timeExcessReferButtonDis,
-                    selfConfirm: this.paramData.showPrincipal,
-                    closureDate: self.dateRanger.startDate
+                    selfConfirm: this.paramData.showPrincipal
                 }).then((param: any) => {
                     if (param != undefined && param.openB) {
                         //open B

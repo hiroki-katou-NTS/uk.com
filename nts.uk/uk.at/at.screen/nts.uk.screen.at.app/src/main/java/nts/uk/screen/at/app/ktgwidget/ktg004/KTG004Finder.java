@@ -316,23 +316,10 @@ public class KTG004Finder {
 				childNursingManagement ? ManageDistinct.YES : ManageDistinct.NO, 
 				longTermCareManagement ? ManageDistinct.YES : ManageDistinct.NO);
 		if(numberOfRemain != null) {
-			//積立年休残日数
-			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearDayRemain(), new AttendanceTime(numberOfRemain.getYearHourRemain())));
-			//代休残数
-			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubDayRemain(), new AttendanceTime(numberOfRemain.getSubHdHourRemain())));
-			//年休残数
-			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getLastYearRemain());
-			//振休残日数
-			result.setRemainingHolidays(numberOfRemain.getVacaRemain());
-			//子の看護残数
-			result.setNursingRemainingNumberOfChildren(new RemainingDaysAndTimeDto(numberOfRemain.getChildNursingDayRemain(), new AttendanceTime(numberOfRemain.getChildNursingHourRemain())));
-			//介護残数
-			result.setLongTermCareRemainingNumber(new RemainingDaysAndTimeDto(numberOfRemain.getNursingRemain(), new AttendanceTime(numberOfRemain.getNursingHourRemain())));
-			// 付与年月日
-			result.setGrantDate(numberOfRemain.getGrantDate());
-			// 付与日数
-			result.setGrantDays(numberOfRemain.getGrantDays());
-			
+			result.setNumberOfAnnualLeaveRemain(new RemainingDaysAndTimeDto(numberOfRemain.getYearRemain(), new AttendanceTime(0)));
+			result.setNumberOfSubstituteHoliday(new RemainingDaysAndTimeDto(numberOfRemain.getSubHdRemain(), new AttendanceTime(0)));
+			result.setNumberAccumulatedAnnualLeave(numberOfRemain.getSubVacaRemain());
+			result.setRemainingHolidays(numberOfRemain.getSubVacaRemain());
 		}
 		
 		//アルゴリズム「23.特休残数表示」を実行する(Thực thi xử lý [23:hiển thị số phép đặc biệt còn lại])

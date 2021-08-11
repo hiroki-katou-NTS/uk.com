@@ -1,13 +1,14 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.CarryForwardDayTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.RemainUnDigestedDayTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TotalRemainUndigestNumber.RemainUndigestResult;
@@ -16,8 +17,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.CalcNumCarryAtBeginMonthFromDaikyu;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.GetSequentialVacationDetailDaikyu;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 /**
@@ -38,17 +37,38 @@ public class NumberRemainVacationLeaveRangeQuery {
 			BreakDayOffRemainMngRefactParam inputParam) {
 
 		SubstituteHolidayAggrResult result = new SubstituteHolidayAggrResult();
-		// 逐次発生の休暇明細一覧を取得
-		val sequentialVacaDetail = GetSequentialVacationDetailDaikyu.process(require, inputParam.getCid(),
-				inputParam.getSid(), inputParam.getDateData(), inputParam.getFixManaDataMonth(),
-				inputParam.getInterimMng(), inputParam.getProcessDate(), inputParam.getOptBeforeResult());
-		List<AccumulationAbsenceDetail> lstAccTemp = sequentialVacaDetail.getLstAcctAbsenDetail();
+		CarryForwardDayTimes calcCarryForwardDays = new CarryForwardDayTimes(0.0, 0);
 
-		// 代休、休出から月初の繰越数を計算
-		val calcNumCarry = CalcNumCarryAtBeginMonthFromDaikyu.calculate(require, inputParam.getCid(), inputParam.getSid(),
-				inputParam.getDateData(), sequentialVacaDetail, inputParam.isMode());
-		result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcNumCarry.getCarryForwardDays()));
-		result.setCarryoverTime(new RemainingMinutes(calcNumCarry.getCarryForwardTime()));
+		// パラメータ「前回代休の集計結果」をチェックする (Check param 「前回代休の集計結果」)
+		List<AccumulationAbsenceDetail> lstAccTemp = new ArrayList<>();
+		if (!inputParam.getOptBeforeResult().isPresent()
+				|| (inputParam.getOptBeforeResult().get().getNextDay().isPresent() && !inputParam.getOptBeforeResult()
+						.get().getNextDay().get().equals(inputParam.getDateData().start()))) {
+			// 月初時点の情報を整える
+			calcCarryForwardDays = AcquisitionRemainNumAtStartCount.acquisition(require, inputParam.getCid(),
+					inputParam.getSid(), inputParam.getDateData().start(), inputParam.getDateData().end(),
+					inputParam.isMode(), lstAccTemp, inputParam.getFixManaDataMonth());
+			result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
+			result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
+		} else {
+			// 繰越日数」と「繰越時間」に前回の修正結果の残数を格納
+			SubstituteHolidayAggrResult beforeResult = inputParam.getOptBeforeResult().get();
+			// 「繰越日数」と「繰越時間」に前回の修正結果の残数を格納
+			if (beforeResult.getNextDay().isPresent()
+					&& beforeResult.getNextDay().get().equals(inputParam.getDateData().start())) {
+				calcCarryForwardDays.setCarryForwardDays(beforeResult.getCarryoverDay().v());
+				calcCarryForwardDays.setCarryForwardTime(beforeResult.getCarryoverTime().v());
+				// result.setVacationDetails(beforeResult.getVacationDetails());
+				lstAccTemp.addAll(beforeResult.getVacationDetails().getLstAcctAbsenDetail());
+				result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
+				result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
+
+			}
+		}
+		
+
+		// 今から処理が必要な代休、休出を全て集める
+		lstAccTemp.addAll(GetTemporaryData.process(require, inputParam));
 
 		// 「休出代休明細」をソートする(sort 「休出代休明細」)
 		lstAccTemp.sort(new AccumulationAbsenceDetailComparator());
@@ -79,8 +99,8 @@ public class NumberRemainVacationLeaveRangeQuery {
 		return result;
 	}
 
-	public static interface Require extends GetSequentialVacationDetailDaikyu.Require,
-			CalcNumCarryAtBeginMonthFromDaikyu.Require, OffsetProcessing.Require {
+	public static interface Require
+			extends AcquisitionRemainNumAtStartCount.Require, GetTemporaryData.Require, OffsetProcessing.Require {
 
 	}
 

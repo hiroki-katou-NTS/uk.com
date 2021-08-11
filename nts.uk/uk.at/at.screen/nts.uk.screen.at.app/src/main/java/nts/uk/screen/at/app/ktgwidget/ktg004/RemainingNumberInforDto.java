@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 
 /**
  * @author thanhpv
@@ -37,11 +36,4 @@ public class RemainingNumberInforDto {
 	
 	//特休残数情報
 	private List<SpecialHolidaysRemainingDto> specialHolidaysRemainings = new ArrayList<>();
-	
-	// 付与年月日
-	private GeneralDate grantDate;
-		
-	// 付与日数
-	private int grantDays;
-	
 }

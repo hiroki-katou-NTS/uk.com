@@ -2,9 +2,9 @@ package nts.uk.ctx.sys.shared.ac;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;

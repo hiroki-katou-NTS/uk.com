@@ -243,7 +243,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				GeneralDate.ymd(2019, 12, 01));// 前回集計期間の翌日
 
 		assertData(resultActual, resultExpected);
-		assertThat(resultActual.getCarryoverDay().v()).isEqualTo(0.0);
+		assertThat(resultActual.getCarryoverDay().v()).isEqualTo(12.0);
 	}
 
 	public static void assertData(SubstituteHolidayAggrResult resultActual,

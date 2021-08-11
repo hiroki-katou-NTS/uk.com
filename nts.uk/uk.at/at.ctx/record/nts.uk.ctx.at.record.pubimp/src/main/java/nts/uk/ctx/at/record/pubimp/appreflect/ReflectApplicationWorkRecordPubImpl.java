@@ -42,10 +42,12 @@ import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetti
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
 import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -367,9 +369,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
-			return temporarilyReflectStampDailyAttd.reflectStamp(companyId, stamp, stampReflectRangeOutput,
+			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput,
 					integrationOfDaily, changeDailyAtt);
 		}
 
@@ -457,16 +459,17 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 		}
 
 		@Override
-		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
+		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
 		}
 
 		@Override
-		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
+		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
-			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
 		}
 
 		@Override

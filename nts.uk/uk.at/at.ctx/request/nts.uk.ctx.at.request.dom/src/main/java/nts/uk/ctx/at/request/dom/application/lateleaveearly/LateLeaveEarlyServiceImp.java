@@ -417,24 +417,17 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 		if (isNew) {
 			// 2-1.新規画面登録前の処理
-			listMsg = this.newBeforeRegister.processBeforeRegister_New(
-			        companyID, 
-			        EmploymentRootAtr.APPLICATION,
-					agentAtr, 
-					application, 
-					null,
+			listMsg = this.newBeforeRegister.processBeforeRegister_New(companyID, EmploymentRootAtr.APPLICATION,
+					agentAtr, application, null,
 					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 					null,
-					infoOutput.getAppDispInfoStartupOutput(), 
-					new ArrayList<String>(), 
-					Optional.empty(),
-					Optional.empty());
+					infoOutput.getAppDispInfoStartupOutput());
 		} else {
 			// 4-1.詳細画面登録前の処理
 			this.updateService.processBeforeDetailScreenRegistration(companyID, application.getEmployeeID(),
 					application.getAppDate().getApplicationDate(), EmploymentRootAtr.APPLICATION.value,
 					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null,
-					infoOutput.getAppDispInfoStartupOutput(), new ArrayList<String>(), Optional.empty());
+					infoOutput.getAppDispInfoStartupOutput());
 		}
 
 		return listMsg;

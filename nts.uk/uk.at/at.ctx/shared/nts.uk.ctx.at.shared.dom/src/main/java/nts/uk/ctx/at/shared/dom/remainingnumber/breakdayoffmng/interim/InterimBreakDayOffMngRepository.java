@@ -3,9 +3,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 
 public interface InterimBreakDayOffMngRepository {
 	
@@ -145,16 +145,4 @@ public interface InterimBreakDayOffMngRepository {
 	
 	void deleteInterimDayOffMngBySidAndYmd(String sid, GeneralDate ymd);
 	void deleteInterimBreakMngBySidAndYmd(String sid, GeneralDate ymd);
-	
-	// [4] 削除する 暫定休出管理データ
-	void deleteBreakoffWithPeriod(String sid, DatePeriod period);
-
-	// [5] Insert(List<暫定休出管理データ>) 暫定休出管理データ
-	void insertBreakoffList(List<InterimBreakMng> lstDomain);
-	
-	// [4] 削除する 	暫定代休管理データ
-	void deleteDayoffWithPeriod(String sid, DatePeriod period);
-	
-	// [5] Insert(List<暫定休出管理データ>) 	暫定代休管理データ
-	void insertDayoffList(List<InterimDayOffMng> lstDomain);
 }

@@ -8,8 +8,6 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveAppli
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
-import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeDigestApplicationShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,20 +57,5 @@ public class TimeLeaveAppDetailDto {
                         domain.getTimeDigestApplication().getSpecialVacationFrameNO().orElse(null)
                 )
         );
-    }
-    
-    public TimeLeaveApplicationDetailShare toShare() {
-        return new TimeLeaveApplicationDetailShare(
-                EnumAdaptor.valueOf(appTimeType, AppTimeType.class), 
-                timeZones.stream().map(i -> new TimeZoneWithWorkNo(i.getWorkNo(), i.getStartTime(), i.getEndTime())).collect(Collectors.toList()),
-                new TimeDigestApplicationShare(
-                        new AttendanceTime(applyTime.getSuper60AppTime()),
-                        new AttendanceTime(applyTime.getCareAppTime()),
-                        new AttendanceTime(applyTime.getChildCareAppTime()),
-                        new AttendanceTime(applyTime.getSubstituteAppTime()),
-                        new AttendanceTime(applyTime.getSpecialAppTime()),
-                        new AttendanceTime(applyTime.getAnnualAppTime()),
-                        Optional.ofNullable(applyTime.getSpecialLeaveFrameNo())
-                ));
     }
 }

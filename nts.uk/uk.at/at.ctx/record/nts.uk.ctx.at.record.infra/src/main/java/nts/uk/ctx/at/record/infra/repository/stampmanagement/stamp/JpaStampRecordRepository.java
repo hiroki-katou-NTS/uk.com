@@ -43,7 +43,6 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 	@Override
 	public void insert(StampRecord stampRecord) {
 		this.commandProxy().insert(toEntity(stampRecord));
-		this.getEntityManager().flush();
 	}
 
 	// [2] delete(打刻記録)

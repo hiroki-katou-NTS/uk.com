@@ -66,11 +66,11 @@ public class CancellationOfApplication {
 			DailyRecordToAttendanceItemConverter converter = require.createDailyConverter();
 			List<ItemValue> lstCurrent = converter.setData(domainDaily).convert(Arrays.asList(hist.getAttendanceId()));
 			lstCurrent.stream().map(x -> {
-				x.value(hist.getValue().orElse(null));
+				x.value(hist.getValue());
 				return x;
 			}).collect(Collectors.toList());
 			DailyRecordToAttendanceItemConverter converterNew = require.createDailyConverter().setData(domainDaily);
-			converterNew.merge(lstCurrent);
+			converter.merge(lstCurrent);
 			domainDaily = converterNew.toDomain();
 
 			// 処理中の反映前.編集状態をチェック

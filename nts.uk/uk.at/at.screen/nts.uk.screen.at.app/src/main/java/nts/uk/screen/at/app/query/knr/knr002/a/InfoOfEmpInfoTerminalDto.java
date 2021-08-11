@@ -27,7 +27,4 @@ public class InfoOfEmpInfoTerminalDto {
 	private int numUntransmitted;
 	
 	private List<EmpInfoTerminalDto> listEmpInfoTerminalDto;
-	
-	private int managementSection;
-	
 }

@@ -20,9 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.GetNumberOfVacaLeavObtainBaseDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.GetNumberOfVacaLeavObtainBaseDate.Require;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.procwithbasedate.NumberConsecutiveVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -706,12 +703,24 @@ public class BreakDayOffMngInPeriodQuery {
 	 * @param date
 	 * @return
 	 */
-	public static NumberConsecutiveVacation getBreakDayOffMngRemain(RequireM11 require, CacheCarrier cacheCarrier,
+	public static double getBreakDayOffMngRemain(RequireM2 require, CacheCarrier cacheCarrier,
 			String employeeID, GeneralDate date) {
 		String companyID = AppContexts.user().companyId();
-		// 基準日時点で取得可能な代休日数を取得する
-		NumberConsecutiveVacation numberConsecutiveVacation = GetNumberOfVacaLeavObtainBaseDate.process(require, companyID, employeeID, date);
-		return numberConsecutiveVacation;
+		//社員に対応する締め期間を取得する
+		DatePeriod period = ClosureService.findClosurePeriod(require, cacheCarrier, employeeID, date);
+		BreakDayOffRemainMngRefactParam inputRefactor = new BreakDayOffRemainMngRefactParam(
+				companyID, employeeID,
+				new DatePeriod(period.start(), period.start().addYears(1).addDays(-1)),
+				false,
+				date,
+				false,
+				Collections.emptyList(),
+				Optional.empty(),
+				Optional.empty(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Optional.empty(), new FixedManagementDataMonth());
+		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputRefactor).getRemainDay().v();
 	}
 
 
@@ -874,7 +883,4 @@ public class BreakDayOffMngInPeriodQuery {
 		Map<GeneralDate, DailyInterimRemainMngData> monthInterimRemainData(String cid, String sid, DatePeriod dateData);
 	}
 
-	public static interface RequireM11 extends GetNumberOfVacaLeavObtainBaseDate.Require{
-	    
-	}
 }

@@ -108,7 +108,7 @@ public class TimeReflectFromWorkinfo {
 						public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
 							return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 						}
-					}, companyId, employeeId, ymd);
+					}, employeeId, ymd);
 			if(!workingConditionItem.isPresent()) {
 				outputTimeReflectForWorkinfo.setEndStatus(EndStatus.NO_WORK_CONDITION);
 				return outputTimeReflectForWorkinfo;
@@ -238,7 +238,7 @@ public class TimeReflectFromWorkinfo {
 		}
 
 		// 1日半日出勤・1日休日系の判定
-		WorkStyle workStyle = basicScheduleService.checkWorkDay(companyID, workTypeCode);
+		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode);
 
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
 			outPut.setAtWork(false);
@@ -404,7 +404,7 @@ public class TimeReflectFromWorkinfo {
 		// 1日半日出勤・1日休日系の判定
 		// 打刻反映時の出勤休日扱いチェック
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(companyID, scheduleWorkInfor.get().getWorkType());
+				.checkWorkDay(scheduleWorkInfor.get().getWorkType());
 		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {

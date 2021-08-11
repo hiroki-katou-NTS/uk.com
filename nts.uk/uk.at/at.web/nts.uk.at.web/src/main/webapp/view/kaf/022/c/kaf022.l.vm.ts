@@ -605,21 +605,6 @@ module nts.uk.at.view.kaf022.l.viewmodel {
             return dfd.promise();
         }
 
-        //special
-        findAbsenceSpecialKaf022(): JQueryPromise<any> {
-            let self = this;
-            var dfd = $.Deferred();
-            service.findAbsenceSpecialKaf022().done(data => {
-                //Find already setting list
-                self.listWTShareKDL002(data || []);
-                dfd.resolve();
-            }).fail(error => {
-                dfd.reject();
-                nts.uk.ui.dialog.alertError(error);
-            });
-            return dfd.promise();
-        }
-
         // get work type if app type = 2
         findWkChangeKaf022(): JQueryPromise<any> {
             let self = this;
@@ -757,11 +742,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                         default:
                             break;
                     }
-                    if (holidayOrPauseType == HolidayAppType.SPECIAL_HOLIDAY) {
-                        return self.findAbsenceSpecialKaf022();
-                    } else {
-                        return self.findAbsenceKaf022(absenceKAF022);
-                    }
+                    return self.findAbsenceKaf022(absenceKAF022);
                 case ApplicationType.WORK_CHANGE_APPLICATION:
                     return self.findWkChangeKaf022();
                 case ApplicationType.BUSINESS_TRIP_APPLICATION:

@@ -342,8 +342,8 @@ public class ApplicationWebservice extends WebService {
 	
 	@POST
 	@Path("cancelapp")
-	public Boolean cancelApp(AppDispInfoStartupDto command){
-		return cancelApp.handle(command);
+	public void cancelApp(AppDispInfoStartupDto command){
+		cancelApp.handle(command);
 	}
 	
 	@POST

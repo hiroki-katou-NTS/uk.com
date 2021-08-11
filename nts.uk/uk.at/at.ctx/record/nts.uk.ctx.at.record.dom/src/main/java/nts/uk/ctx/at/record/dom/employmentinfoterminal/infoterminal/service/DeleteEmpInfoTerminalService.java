@@ -7,7 +7,6 @@ import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpI
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ResultOfDeletion;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 /**
  * 
@@ -21,25 +20,14 @@ public class DeleteEmpInfoTerminalService {
 	
 		// 1: get(契約コード、就業情報端末コード): Optional<就業情報端末>
 		Optional<EmpInfoTerminal> empInfoTerminal = require.getEmpInfoTerminal(new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode));
-		
-		// 3: get(契約コード、就業情報端末コード): Optional<就業情報端末のリクエスト一覧>
-		Optional<TimeRecordReqSetting> timeRecordReqSetting = require.getTimeRecordReqSetting(new EmpInfoTerminalCode(empInfoTerCode), new ContractCode(contractCode));
 		Optional<EmpInfoTerminalComStatusImport> empInfoTerminalComStatusImport = require.get(new ContractCode(contractCode), new EmpInfoTerminalCode(empInfoTerCode));
 		boolean isError = !empInfoTerminal.isPresent();
 		Optional<AtomTask> deleteEmpInfoTerminal = Optional.empty();
-		Optional<AtomTask> deleteTimeRecordReqSetting = Optional.empty();
 		
 		if (empInfoTerminal.isPresent()) {
 			deleteEmpInfoTerminal = Optional.of(AtomTask.of(() -> {
 				// 2: [データがある]:delete(取得した「就業情報端末」)
 				require.delete(empInfoTerminal.get());
-			}));
-		}
-		
-		if (timeRecordReqSetting.isPresent()) {
-			deleteTimeRecordReqSetting = Optional.of(AtomTask.of(() -> {
-				// 4: [データがある]:delete(就業情報端末のリクエスト一覧)
-				require.delete(timeRecordReqSetting.get());
 			}));
 		}
 		
@@ -52,7 +40,7 @@ public class DeleteEmpInfoTerminalService {
 			}));
 		}
 		// 4: create()
-		return new ResultOfDeletion(isError, deleteEmpInfoTerminal, deleteTimeRecordReqSetting, deleteEmpInfoTerminalComStatus);
+		return new ResultOfDeletion(isError, deleteEmpInfoTerminal, deleteEmpInfoTerminalComStatus);
 	}
 
 	public static interface Require {
@@ -63,14 +51,7 @@ public class DeleteEmpInfoTerminalService {
 		// 	[R-2] 就業情報端末を削除する(就業情報端末)
 		void delete(EmpInfoTerminal empInfoTerminal);
 		
-		// [R-3]
-		Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
-				ContractCode contractCode);
-		
-		// [R-4]
-		void delete(TimeRecordReqSetting reqSetting);
-		
-		// 	[R-5] 就業情報端末通信状況を取得する(契約コード,就業情報端末コード)
+		// 	[R-3] 就業情報端末通信状況を取得する(契約コード,就業情報端末コード)
 		Optional<EmpInfoTerminalComStatusImport> get(ContractCode contractCode, EmpInfoTerminalCode empInfoTerCode);
 		
 		// [R-4] 就業情報端末通信状況を削除する(就業情報端末通信状況)

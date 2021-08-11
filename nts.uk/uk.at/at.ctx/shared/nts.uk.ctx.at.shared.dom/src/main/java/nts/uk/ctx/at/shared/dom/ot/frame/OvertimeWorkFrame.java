@@ -117,8 +117,4 @@ public class OvertimeWorkFrame extends AggregateRoot{
 		
 		return true;
 	}
-	
-	public boolean isUse() {
-		return useClassification == NotUseAtr.USE;
-	}
 }

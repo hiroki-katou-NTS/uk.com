@@ -5,6 +5,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
 
 /**
  * @author ThanhNX
@@ -16,37 +17,38 @@ public class UpdateUnbalancedNumber {
 	private UpdateUnbalancedNumber() {
 	};
 
-	public static void updateUnbalanced(boolean timeLap, AccumulationAbsenceDetail accdigest,
+	public static void updateUnbalanced(TimeLapseVacationSetting timeLap, AccumulationAbsenceDetail accdigest,
 			AccumulationAbsenceDetail occur, TypeOffsetJudgment typeJudgment) {
 
 		// 代休の場合
 		if (typeJudgment == TypeOffsetJudgment.REAMAIN) {
-			if (timeLap&& (!occur.getUnbalanceNumber().getTime().isPresent()
-							|| !accdigest.getUnbalanceNumber().getTime().isPresent())) {
+			if (!timeLap.getManagerTimeCate().isPresent()
+					|| (timeLap.getManagerTimeCate().get() && (!occur.getUnbalanceNumber().getTime().isPresent()
+							|| !accdigest.getUnbalanceNumber().getTime().isPresent()))) {
 				return;
 			}
 
-			if (!timeLap
+			if (!timeLap.getManagerTimeCate().get()
 					&& accdigest.getUnbalanceNumber().getDay().v() >= occur.getUnbalanceNumber().getDay().v()) {
 				updateValueAcc(accdigest, occur, false);
 				updateValueAcc(accdigest, occur, true);
 				return;
 			}
 
-			if (!timeLap
+			if (!timeLap.getManagerTimeCate().get()
 					&& accdigest.getUnbalanceNumber().getDay().v() < occur.getUnbalanceNumber().getDay().v()) {
 				updateValueAcc(occur, accdigest, false);
 				updateValueAcc(occur, accdigest, true);
 				return;
 			}
 
-			if (timeLap && accdigest.getUnbalanceNumber().getTime().get().v() >= occur
+			if (timeLap.getManagerTimeCate().get() && accdigest.getUnbalanceNumber().getTime().get().v() >= occur
 					.getUnbalanceNumber().getTime().get().v()) {
 				updateValueAcc(accdigest, occur, true);
 				return;
 			}
 
-			if (timeLap && accdigest.getUnbalanceNumber().getTime().get().v() < occur
+			if (timeLap.getManagerTimeCate().get() && accdigest.getUnbalanceNumber().getTime().get().v() < occur
 					.getUnbalanceNumber().getTime().get().v()) {
 				updateValueAcc(occur, accdigest, true);
 				return;

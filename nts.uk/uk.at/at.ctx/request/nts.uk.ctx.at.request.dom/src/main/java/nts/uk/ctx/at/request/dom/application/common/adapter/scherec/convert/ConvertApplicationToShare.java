@@ -71,7 +71,8 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 
 public class ConvertApplicationToShare {
 
-	public static ApplicationShare toOnlyAppliction(Application application) {
+	public static ApplicationShare toAppliction(Application application) {
+
 		ApplicationShare appShare = new ApplicationShare(application.getVersion(), application.getAppID(),
 				PrePostAtrShare.valueOf(application.getPrePostAtr().value), application.getEmployeeID(),
 				ApplicationTypeShare.valueOf(application.getAppType().value),
@@ -85,13 +86,6 @@ public class ConvertApplicationToShare {
 
 		appShare.setOpAppEndDate(
 				application.getOpAppEndDate().map(x -> new ApplicationDateShare(x.getApplicationDate())));
-
-		return appShare;
-	}
-	
-	public static ApplicationShare toAppliction(Application application) {
-
-		ApplicationShare appShare = toOnlyAppliction(application);
 
 		return appDetail(appShare, application);
 	}
@@ -147,10 +141,14 @@ public class ConvertApplicationToShare {
 			// AppHolidayWorkShare
 			AppHolidayWork appHolWork = (AppHolidayWork) application;
 
-			return new AppHolidayWorkShare(appShare, appHolWork.getWorkInformation(),
-					converAppTime(appHolWork.getApplicationTime()), appHolWork.getBackHomeAtr() == NotUseAtr.USE,
-					appHolWork.getGoWorkAtr() == NotUseAtr.USE, appHolWork.getBreakTimeList().orElse(new ArrayList<>()),
-					appHolWork.getWorkingTimeList().orElse(new ArrayList<>()));
+			return new AppHolidayWorkShare(appShare, 
+					appHolWork.getWorkInformation(), 
+					converAppTime(appHolWork.getApplicationTime()),
+					appHolWork.getBackHomeAtr() == NotUseAtr.USE, 
+					appHolWork.getGoWorkAtr() == NotUseAtr.USE,
+					appHolWork.getBreakTimeList().orElse(new ArrayList<>()), 
+					appHolWork.getWorkingTimeList().orElse(new ArrayList<>())
+					);
 
 		case STAMP_APPLICATION:
 			if (!application.getOpStampRequestMode().isPresent()
@@ -159,8 +157,7 @@ public class ConvertApplicationToShare {
 				AppStamp appStamp = (AppStamp) application;
 				return new AppStampShare(appStamp.getListTimeStampApp().stream().map(x -> {
 					return new TimeStampAppShare(converDesTimeApp(x.getDestinationTimeApp()), x.getTimeOfDay(),
-							x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr(),
-							Optional.empty());// TODO: domain sinsei hasn't workplaceId
+							x.getWorkLocationCd().map(y -> new WorkLocationCD(y.v())), x.getAppStampGoOutAtr(), Optional.empty());//TODO: domain sinsei hasn't workplaceId
 				}).collect(Collectors.toList()), // 時刻
 
 						appStamp.getListDestinationTimeApp().stream().map(y -> converDesTimeApp(y))
@@ -229,7 +226,7 @@ public class ConvertApplicationToShare {
 			return new OptionalItemApplicationShare(optionalApp.getOptionalItems(), appShare);
 
 		default:
-			return appShare;
+			return null;
 		}
 	}
 

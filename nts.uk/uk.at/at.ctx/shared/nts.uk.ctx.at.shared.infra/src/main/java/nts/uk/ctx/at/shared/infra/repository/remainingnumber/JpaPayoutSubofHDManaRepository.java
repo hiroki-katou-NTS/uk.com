@@ -201,12 +201,6 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 				.setParameter("baseDate", baseDate).getList().stream()
 				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
-	
-	
-	private static final String QUERY_OCC_DIGEST_BY_SID_PERIOD = String.join(" ", QUERY,
-			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid ",
-			"and ( ps.krcmtPayoutSubOfHDManaPK.occDate between :startDate and :endDate ",
-			"or ps.krcmtPayoutSubOfHDManaPK.digestDate  between :startDate and :endDate  )");
 
 	@Override
     public void deleteByDigestTarget(String sid, GeneralDate digestDate, TargetSelectionAtr target) {
@@ -217,27 +211,4 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	        .executeUpdate();
 	    this.getEntityManager().flush();
     }
-	
-	@Override
-	public List<PayoutSubofHDManagement> getOccDigetByListSid(String sid, DatePeriod date) {
-		return this.queryProxy().query(QUERY_OCC_DIGEST_BY_SID_PERIOD, KrcmtPayoutSubOfHDMana.class)
-				.setParameter("sid", sid).setParameter("startDate", date.start()).setParameter("endDate", date.end())
-				.getList().stream().map(item -> toDomain(item)).collect(Collectors.toList());
-	}
-
-	private static final String DELETE_LINK = "DELETE FROM KrcmtPayoutSubOfHDMana ps"
-			+ " WHERE (ps.krcmtPayoutSubOfHDManaPK.sid = :sid)"
-			+ "and ( ps.krcmtPayoutSubOfHDManaPK.occDate between :startDate and :endDate "
-			+ "or ps.krcmtPayoutSubOfHDManaPK.digestDate  between :startDate and :endDate  )";
-
-	@Override
-	public void deletePayoutWithPeriod(String sid, DatePeriod period) {
-		this.getEntityManager().createQuery(DELETE_LINK).setParameter("sid", sid)
-				.setParameter("startDate", period.start()).setParameter("endDate", period.end()).executeUpdate();
-	}
-
-	@Override
-	public void insertPayoutList(List<PayoutSubofHDManagement> lstDomain) {
-		this.commandProxy().insertAll(lstDomain.stream().map(x -> toEntity(x)).collect(Collectors.toList()));
-	}
 }

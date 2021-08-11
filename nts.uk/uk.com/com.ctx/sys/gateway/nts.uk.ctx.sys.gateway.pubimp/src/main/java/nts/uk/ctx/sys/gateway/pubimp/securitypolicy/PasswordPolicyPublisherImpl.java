@@ -18,19 +18,23 @@ public class PasswordPolicyPublisherImpl implements PasswordPolicyPublisher{
 	private PasswordPolicyRepository PasswordPolicyRepo;
 	@Override
 	public Optional<PasswordPolicyDto> getPasswordPolicy(String contractCode) {
-		PasswordPolicy passwordPolicy = this.PasswordPolicyRepo.getPasswordPolicy(new ContractCode(contractCode));
-		return Optional.ofNullable(new PasswordPolicyDto(
-				contractCode,
-				passwordPolicy.getNotificationPasswordChange().v().signum(),
-				passwordPolicy.isLoginCheck(),
-				passwordPolicy.isInitialPasswordChange(),
-				passwordPolicy.isUse(),
-				passwordPolicy.getHistoryCount().v().intValue(),
-				passwordPolicy.getComplexityRequirement().getMinimumLength().v(),
-				passwordPolicy.getValidityPeriod().v().intValue(),
-				passwordPolicy.getComplexityRequirement().getNumeralDigits().v(),
-				passwordPolicy.getComplexityRequirement().getSymbolDigits().v(),
-				passwordPolicy.getComplexityRequirement().getAlphabetDigits().v())); 
+		Optional<PasswordPolicy> passwordPolicyOpt = this.PasswordPolicyRepo.getPasswordPolicy(new ContractCode(contractCode));
+		if(passwordPolicyOpt.isPresent()){
+			PasswordPolicy passwordPolicy = passwordPolicyOpt.get();
+			return Optional.ofNullable(new PasswordPolicyDto(
+					contractCode,
+					passwordPolicy.getNotificationPasswordChange().v().signum(),
+					passwordPolicy.isLoginCheck(),
+					passwordPolicy.isInitialPasswordChange(),
+					passwordPolicy.isUse(),
+					passwordPolicy.getHistoryCount().v().intValue(),
+					passwordPolicy.getComplexityRequirement().getMinimumLength().v(),
+					passwordPolicy.getValidityPeriod().v().intValue(),
+					passwordPolicy.getComplexityRequirement().getNumeralDigits().v(),
+					passwordPolicy.getComplexityRequirement().getSymbolDigits().v(),
+					passwordPolicy.getComplexityRequirement().getAlphabetDigits().v())); 
+		}
+		return Optional.empty();
 	}
 
 	@Override

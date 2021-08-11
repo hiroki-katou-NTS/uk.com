@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -15,7 +14,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 
 /**
  * 
@@ -86,8 +84,7 @@ public interface NewBeforeRegister {
 	 */
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
 			Application application, OvertimeAppAtr overtimeAppAtr, List<MsgErrorOutput> msgErrorLst, List<GeneralDate> lstDateHd,
-			AppDispInfoStartupOutput appDispInfoStartupOutput, List<String> workTypeCds, 
-			Optional<TimeDigestionParam> timeDigestionUsageInfor, Optional<String> workTimeCode);
+			AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム."2-1.新規画面登録前の処理(複数人)".2-1.新規画面登録前の処理(複数人)

@@ -8,7 +8,11 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.security.hash.password.PasswordHash;
+import nts.gul.security.hash.password.PasswordHash.Verifier;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.shared.dom.user.password.HashPassword;
+import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
 @Setter
@@ -21,30 +25,26 @@ public class User extends AggregateRoot {
 	// ID
 	/** The user id. */
 	private String userID;
-	
 	// デフォルトユーザ
 	private boolean defaultUser;
-	
+	// パスワード
+	/** The password. */
+	private HashPassword password;
 	// ログインID
 	/** The login id. */
 	private LoginID loginID;
-	
 	// 契約コード
 	/** The contract code. */
 	private ContractCode contractCode;
-	
 	// 有効期限
 	/** The expiration date. */
 	private GeneralDate expirationDate;
-	
 	// 特別利用者
 	/** The special user. */
 	private DisabledSegment specialUser;
-	
 	// 複数会社を兼務する
 	/** The multi company concurrent. */
 	private DisabledSegment multiCompanyConcurrent;
-	
 	// メールアドレス
 	/** The mail address. */
 	private Optional<MailAddress> mailAddress;
@@ -56,31 +56,31 @@ public class User extends AggregateRoot {
 	// 紐付け先個人ID
 	/** The associated employee id. */
 	private Optional<String> associatedPersonID;
+	@Getter
+	// パスワード状態
+	/** PasswordStatus **/
+	private PassStatus passStatus;
 	
 
-	public static User createFromJavatype(String userID, Boolean defaultUser, String loginID,
+	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,
-			String mailAddress, String userName, String associatedPersonID) {
+			String mailAddress, String userName, String associatedPersonID, int passStatus) {
 
-		return new User(userID, defaultUser, new LoginID(loginID.trim()),
+		return new User(userID, defaultUser, new HashPassword(password), new LoginID(loginID.trim()),
 				new ContractCode(contractCode), expirationDate, EnumAdaptor.valueOf(specialUser, DisabledSegment.class),
 				EnumAdaptor.valueOf(multiCompanyConcurrent, DisabledSegment.class),
 				Optional.ofNullable(mailAddress == null ? null : new MailAddress(mailAddress)),
 				Optional.ofNullable(userName == null ? null : new UserName(userName)),
-				Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID));
+				Optional.ofNullable(associatedPersonID == null ? null : associatedPersonID),
+				EnumAdaptor.valueOf(passStatus, PassStatus.class));
 	}
 
 	public boolean hasAssociatedPersonID() {
 		return !StringUtil.isNullOrEmpty(this.associatedPersonID.get(), false);
 	}
 	
-	/**
-	 * 有効期限をチェックする
-	 * @param GeneralDate
-	 * @return
-	 */
-	public boolean isAvailableAt(GeneralDate date) {
-		return this.expirationDate.afterOrEquals(date);
-	} 
-	
+	public boolean isCorrectPassword(String password) {
+		Verifier salt = PasswordHash.verifyThat(password, this.getUserID());
+		return salt.isEqualTo(this.getPassword().toString());
+	}
 }

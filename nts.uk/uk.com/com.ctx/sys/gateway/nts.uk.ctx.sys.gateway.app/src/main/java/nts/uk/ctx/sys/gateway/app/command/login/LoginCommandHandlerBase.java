@@ -4,33 +4,32 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
-import nts.gul.web.HttpClientIpAddress;
-import nts.uk.ctx.sys.gateway.app.command.tenantlogin.ConnectDataSourceOfTenant;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.login.LoginClient;
-import nts.uk.ctx.sys.gateway.dom.tenantlogin.AuthenticateTenant;
-import nts.uk.shr.com.net.Ipv4Address;
+import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.shr.com.system.property.UKServerSystemProperties;
+import nts.uk.shr.infra.data.TenantLocatorService;
 
 /**
  * TenantLocatorを想定したログイン処理の基底クラス
  *
  * @param <Command> Command
  * @param <Authen> 認証処理の結果
+ * @param <Author> 認可処理の結果
  * @param <Result> ログイン全体の結果、CommandHandlerの戻り値
  * @param <Req> Require
  */
 @Stateless
 public abstract class LoginCommandHandlerBase<
 		Command extends LoginCommandHandlerBase.TenantAuth,
-		Authen extends LoginCommandHandlerBase.AuthenticationResultBase,
+		Authen extends LoginCommandHandlerBase.AuthenticationResult,
 		Result,
 		Req extends LoginCommandHandlerBase.Require>
 		extends CommandHandlerWithResult<Command, Result> {
@@ -43,38 +42,52 @@ public abstract class LoginCommandHandlerBase<
 	protected Result handle(CommandHandlerContext<Command> context) {
 		
 		Command command = context.getCommand();
-		Req require = getRequire(command);
-		val request = command.getRequest();
 		
-		// ログインクライアントの生成
-		val loginClient = new LoginClient(
-				Ipv4Address.parse(HttpClientIpAddress.get(request)), 
-				request.getHeader("user-agent"));
-		
-		// テナント認証
-		if (UKServerSystemProperties.isCloud()) {
-			val tenantAuthResult = ConnectDataSourceOfTenant.connect(
-					require, loginClient, command.getTenantCode(), command.getTenantPasswordPlainText());
-			
-			if(tenantAuthResult.isFailure()) {
-				transaction.execute(() -> {
-					tenantAuthResult.getAtomTask().run();
-				});
-				tenantAuthResult.throwBusinessException();
-			}
+		/* テナントロケーター処理 */
+		if (UKServerSystemProperties.usesTenantLocator()) {
+			TenantLocatorService.connect(command.getTenantCode());
 		}
 		
-		// 認証
+		Req require = getRequire(command);
+
+		// テナント認証
+		val opTenant = require.getTenantAuthentication(command.getTenantCode());
+		if(!opTenant.isPresent()) {
+			return tenantAuthencationFailed();
+		}
+		val tenant = opTenant.get();
+		
+		val passwordVerify = tenant.verify(command.getTenantPasswordPlainText());		
+		val available = tenant.isAvailableAt(GeneralDate.today());
+		
+		if(!passwordVerify || !available) {
+			// テナント認証失敗
+			if (UKServerSystemProperties.usesTenantLocator()) {
+				TenantLocatorService.disconnect();
+			}
+			
+			return tenantAuthencationFailed();
+		}
+		
 		Authen authen = authenticate(require, command);
+		
 		if (!authen.isSuccess()) {
-			return authenticationFailed(require, authen);
+			authen.getAtomTask().ifPresent(t -> transaction.execute(t));
+			return employeeAuthenticationFailed(require, authen);
 		}
 		
 		// 認可
-		Optional<String> msg = authorize(require, authen);
-
-		// ログイン成功
-		return loginCompleted(require, authen, msg);
+		AtomTask authorTask = authorize(require, authen);
+		
+		/* ログインログ */
+		
+		
+		transaction.execute(() -> {
+			authen.getAtomTask().ifPresent(t -> t.run());
+			authorTask.run();
+		});
+		
+		return loginCompleted(require, authen);
 	}
 	
 	/**
@@ -84,15 +97,14 @@ public abstract class LoginCommandHandlerBase<
 	 * @param authen
 	 * @return
 	 */
-	protected Optional<String> authorize(Req require, Authen authen) {
+	protected AtomTask authorize(Req require, Authen authen) {
 		
-		// ログインできるかチェックする
-		Optional<String> msg = CheckIfCanLogin.check(require, authen.getIdentified());
+		//val result = CheckIfCanLogin.check(require, authen.getIdentified());
 		
 		// セッション構築
 		require.authorizeLoginSession(authen.getIdentified());
 		
-		return msg;
+		return AtomTask.none();
 	}
 	
 	/**
@@ -111,18 +123,18 @@ public abstract class LoginCommandHandlerBase<
 	protected abstract Authen authenticate(Req require, Command command);
 
 	/**
-	 * 認証失敗時の処理
+	 * 社員認証失敗時の処理
 	 * @param authen
 	 * @return
 	 */
-	protected abstract Result authenticationFailed(Req require, Authen authen);
+	protected abstract Result employeeAuthenticationFailed(Req require, Authen authen);
 	
 	/**
 	 * ログイン成功時の処理
 	 * @param authen
 	 * @return
 	 */
-	protected abstract Result loginCompleted(Req require, Authen authen, Optional<String> msg);
+	protected abstract Result loginCompleted(Req require, Authen authen);
 	
 	
 	public static interface TenantAuth {
@@ -133,22 +145,30 @@ public abstract class LoginCommandHandlerBase<
 		/** テナント認証パスワードの平文 */
 		String getTenantPasswordPlainText();
 		
-		/** リクエスト */
-		HttpServletRequest getRequest();
-		
 	}
 	
-	public static interface AuthenticationResultBase {
-		/** 認証成功したか */
+	public static interface AuthenticationResult {
+		
 		boolean isSuccess();
-		/** 識別された社員 */
+		
 		IdentifiedEmployeeInfo getIdentified();
+		
+		Optional<AtomTask> getAtomTask();
+	}
+	
+	public static interface AuthorizationResult<R> {
+
+		Optional<AtomTask> getAtomTask();
+		
+		R getLoginResult();
 	}
 	
 	protected abstract Req getRequire(Command command);
 	
-	public static interface Require extends CheckIfCanLogin.Require, 
-											AuthenticateTenant.Require{
+	public static interface Require extends
+		CheckIfCanLogin.Require {
+		
+		Optional<TenantAuthentication> getTenantAuthentication(String tenantCode);
 		
 		void authorizeLoginSession(IdentifiedEmployeeInfo identified);
 	}	

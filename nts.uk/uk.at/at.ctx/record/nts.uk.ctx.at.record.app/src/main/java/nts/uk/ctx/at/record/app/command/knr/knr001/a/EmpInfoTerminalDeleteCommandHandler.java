@@ -18,9 +18,7 @@ import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpI
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ResultOfDeletion;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfoTerminalRepository;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.TimeRecordReqSettingRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.DeleteEmpInfoTerminalService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.shr.com.context.AppContexts;
@@ -39,16 +37,13 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 	private EmpInfoTerminalRepository empInfoTerminalRepository;
 	
 	@Inject
-	private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
-	
-	@Inject
 	private EmpInfoTerminalComStatusAdapter empInfoTerminalComStatusAdapter;
 	@Override
 	protected void handle(CommandHandlerContext<EmpInfoTerminalDeleteCommand> context) {
 		
 		EmpInfoTerminalDeleteCommand command = context.getCommand();
 		String contractCode = AppContexts.user().contractCode();
-		RequireImpl require = new RequireImpl(empInfoTerminalRepository, timeRecordReqSettingRepository, empInfoTerminalComStatusAdapter);
+		RequireImpl require = new RequireImpl(empInfoTerminalRepository, empInfoTerminalComStatusAdapter);
 		ResultOfDeletion result = DeleteEmpInfoTerminalService.create(require, contractCode, command.getEmpInfoTerCode());
 		
 		if (result.isError()) {
@@ -58,7 +53,6 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 		transaction.execute(() -> {
 			// [データがある]:delete(取得した「就業情報端末」)
 			result.getDeleteEmpInfoTerminal().get().run();
-			result.getDeleteTimeRecordReqSetting().get().run();
 			// 就業情報端末通信状況削除の永続化処理　AtomTask Not Empty
 			if (result.getDeleteEmpInfoTerminalComStatus().isPresent()) {
 				// [データが取得できる]:delete(就業情報端末通信状況)
@@ -71,8 +65,6 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 	private static class RequireImpl implements DeleteEmpInfoTerminalService.Require {
 		
 		private EmpInfoTerminalRepository empInfoTerminalRepository;
-		
-		private TimeRecordReqSettingRepository timeRecordReqSettingRepository;
 	
 		private EmpInfoTerminalComStatusAdapter empInfoTerminalComStatusAdapter;
 		
@@ -96,17 +88,6 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 		@Override
 		public void delete(EmpInfoTerminalComStatusImport empInfoTerminalComStatusImport) {
 			empInfoTerminalComStatusAdapter.delete(empInfoTerminalComStatusImport);
-		}
-
-		@Override
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
-				ContractCode contractCode) {
-			return timeRecordReqSettingRepository.getTimeRecordReqSetting(empInfoTerCode, contractCode);
-		}
-
-		@Override
-		public void delete(TimeRecordReqSetting reqSetting) {
-			timeRecordReqSettingRepository.delete(reqSetting);
 		}
 	}
 }

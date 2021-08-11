@@ -1,17 +1,13 @@
 package nts.uk.ctx.sys.shared.dom.employee;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDataMngInfoExport;
 
-/**
- * 
- * 社員データ管理情報 <Imported>
- *
- */
+//社員データ管理情報 <imported>
 @Data
-@AllArgsConstructor
+@Builder
 public class EmployeeDataMngInfoImport {
 
 	/** 会社ID */
@@ -50,12 +46,7 @@ public class EmployeeDataMngInfoImport {
 				export.getExternalCode());
 	}
 	
-	/**
-	 * 削除されているか
-	 * @return
-	 */
 	public boolean isDeleted() {
 		return deletedStatus == SDelAtr.DELETED;
 	}
-	
 }

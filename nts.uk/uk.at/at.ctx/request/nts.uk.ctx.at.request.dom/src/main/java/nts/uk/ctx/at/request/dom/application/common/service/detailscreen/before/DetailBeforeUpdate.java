@@ -1,12 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before;
 
-import java.util.List;
-import java.util.Optional;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 
 /**
  * 
@@ -28,8 +24,7 @@ public interface DetailBeforeUpdate {
 	 * @param appDispInfoStartupOutput
 	 */
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, 
-			PrePostAtr postAtr, int version,String wkTypeCD, String wkTimeCd, AppDispInfoStartupOutput appDispInfoStartupOutput, List<String> workTypeCds, 
-            Optional<TimeDigestionParam> timeDigestionUsageInfo);
+			PrePostAtr postAtr, int version,String wkTypeCD, String wkTimeCd, AppDispInfoStartupOutput appDispInfoStartupOutput);
 	
 	/**
 	 * 1.排他チェック

@@ -12,29 +12,17 @@ import { storage } from '@app/utils';
 })
 export class KdwS03GComponent extends Vue {
     @Prop({ default: () => ({ remainDisplay: true }) })
-    public readonly params: { 
-        remainDisplay: boolean, //0: 休暇残数; 1: 時間外超過
-        closureDate: any 
-    };
+    public readonly params: { remainDisplay: boolean };//0: 休暇残数; 1: 時間外超過
     public remainNumber: IRemainNumber = {
         manageYear: false,
         yearRemain: 0,
-        yearRemainTime: 0,
         manageReserve: false,
         reserveRemain: 0,
         manageCompensatory: false,
         compensatoryRemain: 0,
-        compensatoryRemainTime: 0,
         manageSubStitute: false,
         substituteRemain: 0,
-        nextGrantDate: null,
-        manageChildCare: false,
-        childCareDay: 0,
-        childCareTime: 0,
-        manageLongTermCare: false,
-        longTermCareDay: 0,
-        longTermCareTime: 0,
-        grantDays: 0
+        nextGrantDate: null
     };
     public time36: ITime36 = {
         time36: 0,
@@ -54,33 +42,20 @@ export class KdwS03GComponent extends Vue {
         self.empName = (_.find(cache.lstEmployee, (c) => c.id == employeeIdSel) || { businessName: '' }).businessName;
         self.time36Display = cache.dPCorrectionMenuDto.timeExcessReferButtonDis;
         //休暇残数
-        self.$http.post('at', servicePath.getRemain, {
-            employeeId: employeeIdSel,
-            closureDate: self.params.closureDate
-        }).then((result: any) => {
+        self.$http.post('at', servicePath.getRemain + employeeIdSel).then((result: any) => {
             self.$mask('hide');
             let data = result.data;
             self.remainNumber = {
                 manageYear: data.annualLeave.manageYearOff,
-                yearRemain: _.isNull(data.annualLeave.annualLeaveRemain) ? 0 : data.annualLeave.annualLeaveRemain,
-                yearRemainTime: _.isNull(data.annualLeave.timeRemain) ? 0 : data.annualLeave.timeRemain,
+                yearRemain: data.annualLeave.annualLeaveRemain,
                 manageReserve: data.reserveLeave.manageRemainNumber,
                 reserveRemain: data.reserveLeave.remainNumber,
                 manageCompensatory: data.compensatoryLeave.manageCompenLeave,
-                compensatoryRemain: _.isNull(data.compensatoryLeave.compenLeaveRemain) ? 0 : data.compensatoryLeave.compenLeaveRemain,
-                compensatoryRemainTime: _.isNull(data.compensatoryLeave.timeRemain) ? 0 : data.compensatoryLeave.timeRemain,
+                compensatoryRemain: data.compensatoryLeave.compenLeaveRemain,
                 manageSubStitute: data.substitutionLeave.manageAtr,
                 substituteRemain: data.substitutionLeave.holidayRemain,
-                nextGrantDate: data.nextGrantDate,
-                manageChildCare: data.childCareVacation.manageNursing,
-                childCareDay: _.isNull(data.childCareVacation.remainDays) ? 0 : data.childCareVacation.remainDays,
-                childCareTime: data.childCareVacation.remainTime,
-                manageLongTermCare: data.longTermCareVacation.manageNursing,
-                longTermCareDay: _.isNull(data.longTermCareVacation.remainDays) ? 0 : data.longTermCareVacation.remainDays,
-                longTermCareTime: data.longTermCareVacation.remainTime,
-                grantDays: data.grantDays
+                nextGrantDate: data.nextGrantDate
             };
-            console.log(self.remainNumber);
         }).catch(() => {
             self.$mask('hide');
         });
@@ -107,37 +82,21 @@ export class KdwS03GComponent extends Vue {
             });
         }
     }
-
-    get nextGrantDateStr() {
-        const vm = this;
-
-        return (_.isNull(vm.remainNumber.nextGrantDate) ? '' : vm.$dt(vm.remainNumber.nextGrantDate, 'YYYY/MM/DD')) + 
-                (_.isNull(vm.remainNumber.grantDays) ? 0 : vm.remainNumber.grantDays) + '日';
-    }
 }
 const servicePath = {
-    getRemain: 'screen/at/correctionofdailyperformance/getRemainNum',
+    getRemain: 'screen/at/correctionofdailyperformance/getRemainNum/',
     get36AgreementInfo: 'screen/at/dailyperformance/36AgreementInfo'
 };
 interface IRemainNumber {
     manageYear: boolean;//年休管理する
     yearRemain: number;//年休残数	
-    yearRemainTime: number; // 時間年休残数
     manageReserve: boolean;//積休管理する		
     reserveRemain: number;//積立年休残数						
     manageCompensatory: boolean;//代休管理する
-    compensatoryRemain: number;//代休残数
-    compensatoryRemainTime: number; // 時間代休残数				
+    compensatoryRemain: number;//代休残数						
     manageSubStitute: boolean;//振休管理する
     substituteRemain: number;//振休残数						
-    nextGrantDate: Date;//次回付与日
-    manageChildCare: boolean; // 子の育児管理する
-    childCareDay: number; // 子の看護残数
-    childCareTime: number; // 時間子の看護残数
-    manageLongTermCare: boolean; // 介護管理する
-    longTermCareDay: number; // 介護残数
-    longTermCareTime: number; // 時間介護残数 	 
-    grantDays: number; // 次回年休付与日数			
+    nextGrantDate: Date;//次回付与日						
 }
 interface ITime36 {
     time36: number;//超過時間						

@@ -7,25 +7,21 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.task.tran.TransactionService;
+import lombok.Value;
+import lombok.val;
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticateWithEmployeeCode;
-import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationResult;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.EmployeeIdentify;
-import nts.uk.ctx.sys.gateway.dom.login.password.identification.IdentificationResult;
-import nts.uk.shr.com.system.config.SystemConfiguration;
-import nts.uk.shr.com.system.property.UKServerSystemProperties;
+import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
+import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePassword;
+import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePasswordResult;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 															PasswordAuthenticateCommand, 
-															AuthenticationResult,
+															PasswordAuthenticateCommandHandler.Authentication,
 															CheckChangePassDto, 
 															PasswordAuthenticateCommandHandler.Require> {
-	
-	@Inject
-	private TransactionService transaction;
 	
 	@Inject
 	private PasswordAuthenticateCommandRequire requireProvider;
@@ -35,7 +31,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	
 	@Override
 	protected Require getRequire(PasswordAuthenticateCommand command) {
-		return requireProvider.createRequire(getTenantCode(command));
+		return requireProvider.createRequire(command.getContractCode());
 	}
 	
 	/**
@@ -50,100 +46,105 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	 * 認証処理本体
 	 */
 	@Override
-	protected AuthenticationResult authenticate(Require require, PasswordAuthenticateCommand command) {
+	protected Authentication authenticate(Require require, PasswordAuthenticateCommand command) {
 		
 		// 入力チェック
 		command.checkInput();
-		
-		String tenantCode = getTenantCode(command);
+
+		String tenantCode = command.getTenantCode();
 		String companyId = require.createCompanyId(tenantCode, command.getCompanyCode());
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
 		
-		// ビルトインユーザはこちらへ
+		// ビルトインユーザ
 		if (require.getBuiltInUser(tenantCode, companyId).authenticate(employeeCode, password)) {
-			return AuthenticationResult.asBuiltInUser(tenantCode, companyId);
-		}
-		
-		// ログイン社員の識別
-		IdentificationResult idenResult = EmployeeIdentify.identifyByEmployeeCode(require, companyId, employeeCode);
-		
-		if(idenResult.isFailure()) {
-			transaction.execute(idenResult.getAtomTask());
-			return AuthenticationResult.identificationFailure(idenResult);
+			return Authentication.asBuiltInUser(tenantCode, companyId);
 		}
 		
 		// パスワード認証
-		PasswordAuthenticationResult passAuthResult = PasswordAuthenticateWithEmployeeCode.authenticate(
-				require, 
-				idenResult.getEmployeeInfo(), 
-				password);
-				
-		if(passAuthResult.isFailure()) {
-			transaction.execute(passAuthResult.getAtomTask());
-			return AuthenticationResult.passAuthenticateFailure(idenResult, passAuthResult);
-		}
-			
-		return AuthenticationResult.success(idenResult, passAuthResult);
-	}
-
-	
-	@Inject
-	private SystemConfiguration systemConfig;
-	
-	private String getTenantCode(PasswordAuthenticateCommand command) {
+		val authenticationResult = AuthenticateEmployeePassword.authenticate(
+				require, tenantCode, companyId, employeeCode, password);
 		
-		return UKServerSystemProperties.isCloud()
-				? command.getTenantCode()
-				: systemConfig.getTenantCodeOnPremise().get();
+		return Authentication.of(authenticationResult);
 	}
 	
 	/**
 	 * ビルトインユーザのための処理を組み込むためにoverride
 	 */
 	@Override
-	protected Optional<String> authorize(Require require, AuthenticationResult authen) {
+	protected AtomTask authorize(Require require, Authentication authen) {
 		
 		if (authen.isBuiltInUser()) {
 			loginBuiltInUser.login(
 					require,
 					authen.getTenantCodeForBuiltInUser(),
 					authen.getCompanyIdForBuiltInUser());
-			return Optional.empty();
+			
+			return AtomTask.none();
 		}
-		
+
 		// 通常はsuper側に任せる
 		return super.authorize(require, authen);
 	}
-	
+
 	/**
-	 * 認証失敗時の処理
+	 * 社員認証失敗時の処理
 	 */
 	@Override
-	protected CheckChangePassDto authenticationFailed(Require require, AuthenticationResult authen) {
-		
-		if(!authen.getEmployeeInfo().isPresent()) {
-			// 識別失敗
-			return CheckChangePassDto.failedToIdentificate();
-		}
-		else {
-			// 認証失敗
-			return CheckChangePassDto.failedToAuthPassword();
-		}
+	protected CheckChangePassDto employeeAuthenticationFailed(Require require, Authentication authen) {
+		return CheckChangePassDto.failedToAuthPassword();
 	}
 
 	/**
 	 * ログイン成功時の処理
 	 */
 	@Override
-	protected CheckChangePassDto loginCompleted(Require require, AuthenticationResult authen, Optional<String> msg) {
-		return CheckChangePassDto.successToAuthPassword(authen, msg);
+	protected CheckChangePassDto loginCompleted(Require require, Authentication authen) {
+		return CheckChangePassDto.successToAuthPassword();
 	}
 
-	public static interface Require extends PasswordAuthenticateWithEmployeeCode.Require,
-											LoginCommandHandlerBase.Require,
-											LoginBuiltInUser.RequireLogin {
+	@Value
+	static class Authentication implements LoginCommandHandlerBase.AuthenticationResult {
+		
+		private boolean isBuiltInUser;
+		private String tenantCodeForBuiltInUser;
+		private String companyIdForBuiltInUser;
+		private AuthenticateEmployeePasswordResult authenResult;
+		
+		public static Authentication of(AuthenticateEmployeePasswordResult authenResult) {
+			return new Authentication(false, null, null, authenResult);
+		}
+		
+		public static Authentication asBuiltInUser(String tenantCode, String companyId) {
+			return new Authentication(true, tenantCode, companyId, null);
+		}
+
+		@Override
+		public boolean isSuccess() {
+			return isBuiltInUser || authenResult.isSuccess();
+		}
+
+		@Override
+		public IdentifiedEmployeeInfo getIdentified() {
+			return authenResult.getIdentified().get();
+		}
+
+		@Override
+		public Optional<AtomTask> getAtomTask() {
+			if (isBuiltInUser) {
+				return Optional.empty();
+			}
+			
+			return Optional.of(authenResult.getAtomTask());
+		}
+	}
+	
+	public static interface Require extends
+			AuthenticateEmployeePassword.Require,
+			LoginCommandHandlerBase.Require,
+			LoginBuiltInUser.RequireLogin {
 		
 		String createCompanyId(String tenantCode, String companyCode);
 	}
+	
 }

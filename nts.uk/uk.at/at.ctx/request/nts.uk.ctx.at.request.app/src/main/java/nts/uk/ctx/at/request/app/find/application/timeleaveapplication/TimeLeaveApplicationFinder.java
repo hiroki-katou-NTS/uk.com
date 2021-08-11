@@ -47,7 +47,6 @@ import nts.uk.ctx.at.request.dom.application.timeleaveapplication.service.TimeLe
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.app.find.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -400,10 +399,7 @@ public class TimeLeaveApplicationFinder {
                     null,
                     output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
-                    output.getAppDispInfoStartup(), 
-                    new ArrayList<String>(), 
-                    Optional.of(new TimeDigestionParam(0, 0, 0, 0, 0, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
-                    Optional.empty()
+                    output.getAppDispInfoStartup()
             );
         } else {
             application = params.getApplicationUpdate().toDomain(params.getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
@@ -418,9 +414,7 @@ public class TimeLeaveApplicationFinder {
                     application.getVersion(),
                     null,
                     null,
-                    output.getAppDispInfoStartup(), 
-                    new ArrayList<String>(), 
-                    Optional.of(new TimeDigestionParam(0, 0, 0, 0, 0, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList())))
+                    output.getAppDispInfoStartup()
             );
             confirmMsgOutputs = new ArrayList<>();
         }

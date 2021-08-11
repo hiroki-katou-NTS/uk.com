@@ -25,7 +25,6 @@ public interface SyEmploymentPub {
 	 * @return the optional
 	 */
 	// RequestList31
-	Optional<SEmpHistExport> findSEmpHistBySid(String employeeId, GeneralDate baseDate);
 	Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId, GeneralDate baseDate);
 	Optional<SEmpHistExport> findSEmpHistBySidRequire(CacheCarrier cacheCarrier, String companyId, String employeeId,GeneralDate baseDate);
 

@@ -80,17 +80,6 @@ public class Kmk007WebService {
 	public List<WorkTypeDto> findAbsenceKaf022(AbsenceKAF022 param){
 		return workTypeProcessor.findAbsenceKaf022(param.getOneDayAtr(), param.getMorningAtr(), param.getAfternoonAtr());
 	}
-
-	/**
-	 * Find special.
-	 *
-	 * @return the list
-	 */
-	@POST
-	@Path("find-absence-special-kaf022")
-	public List<WorkTypeDto> findAbsenceSpecialKaf022(){
-		return workTypeProcessor.findAbsenceSpecialKaf022();
-	}
 	
 	/**
 	 * Find all.

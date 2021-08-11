@@ -21,7 +21,7 @@ public class AddEmployeeCommand {
 	// パスワード
 	/** The password. */
 	private String password;
-	
+
 	// ログインID
 	/** The login id. */
 	private String loginId;
@@ -46,5 +46,7 @@ public class AddEmployeeCommand {
 			}
 		}
 		return null;
+
 	}
+
 }

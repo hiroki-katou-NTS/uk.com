@@ -6,7 +6,7 @@ module nts.uk.com.view.cmm048.a {
     find: "query/cmm048userinformation/find",
     updateEmployeeContact: "ctx/bs/employee/data/management/contact/update",
     updatePersonInformation: "ctx/bs/person/personal/information/update",
-    changeOwnLoginPassword: "ctx/sys/gateway/login/password/userpassword/changeOwn"
+    updateUserChange: "ctx/sys/auth/user/information/update"
   };
 
   const ID_AVATAR_CHANGE = 'avatar-change';
@@ -594,16 +594,16 @@ module nts.uk.com.view.cmm048.a {
             employeeContact: employeeContact,
             useOfProfile: vm.isUseOfProfile()
           });
-          const changeOwnLoginPasswordCommand = new ChangeOwnLoginPasswordCommand({
-            currentPassword: vm.currentPassword(),
-            newPassword: vm.newPassword(),
-            confirmPassword: vm.confirmPassword(),
+          const userChangeCommand = new UserChangeCommand({
+            userChange: userChange,
+            useOfPassword: vm.isUseOfPassword(),
+            useOfLanguage: vm.isUseOfLanguage(),
           });
           vm.$blockui('grayout');
           $.when(
             vm.$ajax(API.updateEmployeeContact, contactCommand),
             vm.$ajax(API.updatePersonInformation, personalCommand),
-            vm.$ajax(API.changeOwnLoginPassword, changeOwnLoginPasswordCommand)
+            vm.$ajax(API.updateUserChange, userChangeCommand)
           ).then(() => {
             vm.$blockui('clear');
             vm.$dialog.info({ messageId: 'Msg_15' });
@@ -804,27 +804,23 @@ module nts.uk.com.view.cmm048.a {
     }
   }
 
- /**
-   * Command ユーザーのログインパスワードを変更する
+  /**
+   * Command アカウント情報を登録する
    */
-  class ChangeOwnLoginPasswordCommand {
+  class UserChangeCommand {
 
     /**
-     * 現行のパスワード
+     * ユーザを変更する
      */
-    currentPassword: string;
+    userChange: UserCommand;
 
-    /**
-     * 新しいパスワード
-     */
-    newPassword: string;
+    //fix bug #113902
+    useOfPassword: boolean;
 
-    /**
-     * 新しいパスワード（確認）
-     */
-    confirmPassword: string;
+    //fix bug #113902
+    useOfLanguage: boolean;
 
-    constructor(init?: Partial<ChangeOwnLoginPasswordCommand>) {
+    constructor(init?: Partial<UserChangeCommand>) {
       $.extend(this, init);
     }
   }

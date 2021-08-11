@@ -27,12 +27,12 @@ public class TimeDigestApplicationDto {
 
     public TimeDigestApplication toDomain() {
         return new TimeDigestApplication(
-                overtime60H == null ? new AttendanceTime(0) : new AttendanceTime(overtime60H), 
-                nursingTime == null ? new AttendanceTime(0) : new AttendanceTime(nursingTime), 
-                childTime == null ? new AttendanceTime(0) : new AttendanceTime(childTime),
-                timeOff == null ? new AttendanceTime(0) : new AttendanceTime(timeOff), 
-                timeSpecialVacation == null ? new AttendanceTime(0) : new AttendanceTime(timeSpecialVacation), 
-                timeAnualLeave == null ? new AttendanceTime(0) : new AttendanceTime(timeAnualLeave), 
+                overtime60H == null ? null : new AttendanceTime(overtime60H), 
+                nursingTime == null ? null : new AttendanceTime(nursingTime), 
+                childTime == null ? null : new AttendanceTime(childTime),
+                timeOff == null ? null : new AttendanceTime(timeOff), 
+                timeSpecialVacation == null ? null : new AttendanceTime(timeSpecialVacation), 
+                timeAnualLeave == null ? null : new AttendanceTime(timeAnualLeave), 
                 Optional.ofNullable(specialVacationFrameNO));
     }
     

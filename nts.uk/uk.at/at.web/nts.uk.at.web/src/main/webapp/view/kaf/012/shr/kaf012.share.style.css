@@ -132,7 +132,7 @@
 	border-bottom: none;
 }
 
-.space-between-table .row-underline  a {
+.space-between-table .row-underline .form-label, a {
 	height: 25px;
 }
 

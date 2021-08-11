@@ -14,10 +14,10 @@ import nts.uk.ctx.sys.auth.app.find.user.UserKeyDto;
 @Path("ctx/sys/auth/user")
 @Produces("application/json")
 public class UserWebService extends WebService {
-	
+
 	@Inject
 	private UserFinder userFinder;
-	
+
 	@POST
 	@Path("searchUser")
 	public List<UserDto> searchUser(String userNameID) {
@@ -35,4 +35,5 @@ public class UserWebService extends WebService {
 	public List<UserDto> FindByKey(UserKeyDto userKeyDto) {
 		return this.userFinder.findByKey(userKeyDto);
 	}
+	
 }

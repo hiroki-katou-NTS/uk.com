@@ -3,64 +3,45 @@ package nts.uk.ctx.sys.gateway.dom.login;
 import java.util.Optional;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.sys.gateway.dom.outage.CheckSystemAvailability;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
+import nts.uk.ctx.sys.shared.dom.user.FindUser;
 
 /**
  * ログインできるかチェックする
  */
 public class CheckIfCanLogin {
 
-	public static Optional<String> check(Require require, IdentifiedEmployeeInfo identified) {
+	public static Result check(Require require, IdentifiedEmployeeInfo identified) {
+
+		String tenantCode = identified.getTenantCode();
+		String companyId = identified.getCompanyId();
+		String userId = identified.getUserId();
 		
-		// 会社が廃止されていないかチェックする
-		checkAboloshCompany(require, identified);
-		
-		// システムが利用できるかチェックする
-		Optional<String> msg = checkAbailableSystem(require, identified);
-		
-		// ログインできる社員かチェックする
-		CheckEmployeeAvailability.check(require, identified);
-		
-		return msg;
-	}
-	
-	/**
-	 * 会社が廃止されていないかチェックする
-	 * @param require
-	 * @param identified
-	 */
-	private static void checkAboloshCompany(Require require, IdentifiedEmployeeInfo identified) {
-		val company = require.getCompanyInforImport(identified.getCompanyId());
-		
+		// 会社の廃止
+		val company = require.getCompanyInforImport(companyId);
 		if (company.isAbolished()) {
-			throw new BusinessException("Msg_281");
+			
 		}
+		
+		// システム利用停止
+		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, userId);
+		if (!status.isAvailable()) {
+			
+		}
+		
+		return null;
 	}
 	
-	/**
-	 * システムが利用できるかチェックする
-	 * @param require
-	 * @param identified
-	 */
-	private static Optional<String> checkAbailableSystem(Require require, IdentifiedEmployeeInfo identified) {
-		val status = CheckSystemAvailability.isAvailable(require, 
-				identified.getTenantCode(), 
-				identified.getCompanyId(), 
-				identified.getUserId());
+	public static class Result {
 		
-		if (!status.isAvailable()) {
-			throw new BusinessException(new RawErrorMessage(status.getMessage().get()));
-		}
-		
-		return status.getMessage();
 	}
 	
 	public static interface Require extends
-			CheckSystemAvailability.Require,
-			CheckEmployeeAvailability.Require{
+			CheckSystemAvailability.Require {
+		
 		CompanyInforImport getCompanyInforImport(String companyId);
+		
 	}
 }

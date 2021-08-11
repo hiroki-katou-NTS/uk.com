@@ -25,11 +25,7 @@ public class WorkingConditionService {
 	 */
 	public static Optional<WorkingConditionItem> findWorkConditionByEmployee(RequireM1 require, 
 			String employeeId, GeneralDate baseDate) {
-		return findWorkConditionByEmployee(require, AppContexts.user().companyId(), employeeId, baseDate);
-	}
-	
-	public static Optional<WorkingConditionItem> findWorkConditionByEmployee(RequireM1 require,  String companyId, 
-			String employeeId, GeneralDate baseDate) {
+		String companyId = AppContexts.user().companyId();
 		Optional<WorkingCondition> workConditionOpt = require.workingCondition(companyId, employeeId, baseDate);
 		if (!workConditionOpt.isPresent()) {
 			return Optional.empty();

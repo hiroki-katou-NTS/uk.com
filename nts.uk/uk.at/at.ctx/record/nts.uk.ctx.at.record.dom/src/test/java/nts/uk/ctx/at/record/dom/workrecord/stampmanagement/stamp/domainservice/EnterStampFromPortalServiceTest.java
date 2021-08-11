@@ -68,7 +68,7 @@ public class EnterStampFromPortalServiceTest {
 		};
 		
 		NtsAssert.businessException("Msg_1632",
-				() -> EnterStampFromPortalService.create(require,"",  contractCode, employeeId,
+				() -> EnterStampFromPortalService.create(require, contractCode, employeeId,
 						dateTime, buttonPositionNo, null));
 	}
 	
@@ -97,7 +97,7 @@ public class EnterStampFromPortalServiceTest {
 		};
 		
 		NtsAssert.businessException("Msg_1632",
-				() -> EnterStampFromPortalService.create(require, "", contractCode, employeeId,
+				() -> EnterStampFromPortalService.create(require, contractCode, employeeId,
 						dateTime, buttonPositionNo, null));
 	}
 	
@@ -143,7 +143,7 @@ public class EnterStampFromPortalServiceTest {
 			}
 		};
 		
-		TimeStampInputResult timeStampInputResult = EnterStampFromPortalService.create(require, "", contractCode,
+		TimeStampInputResult timeStampInputResult = EnterStampFromPortalService.create(require, contractCode,
 				employeeId, dateTime, buttonPositionNo, null);
 		
 		assertThat(timeStampInputResult.at).isNotEmpty();

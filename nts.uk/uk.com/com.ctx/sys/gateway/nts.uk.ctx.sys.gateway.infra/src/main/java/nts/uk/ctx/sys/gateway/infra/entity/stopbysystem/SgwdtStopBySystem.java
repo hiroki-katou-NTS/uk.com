@@ -11,13 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.sys.gateway.dom.outage.OutageMode;
-import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageState;
-import nts.uk.ctx.sys.gateway.dom.outage.SystemAvailability;
-import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
-import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopMessage;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -55,21 +48,9 @@ public class SgwdtStopBySystem extends UkJpaEntity implements Serializable {
 	/** 利用停止のメッセージ */
 	@Column(name = "USAGE_STOP_MESSAGE")
 	public String usageStopMessage;
-	
-	public static final JpaEntityMapper<SgwdtStopBySystem> MAPPER = new JpaEntityMapper<>(SgwdtStopBySystem.class);
 
 	@Override
 	protected Object getKey() {
 		return this.contractCd;
-	}
-	
-	public PlannedOutageByTenant toDomain() {
-		return new PlannedOutageByTenant(
-				contractCd, 
-				new PlannedOutageState(
-						EnumAdaptor.valueOf(systemStatus, SystemAvailability.class), 
-						EnumAdaptor.valueOf(stopMode, OutageMode.class), 
-						new StopMessage(stopMessage), 
-						new StopMessage(usageStopMessage)));
 	}
 }

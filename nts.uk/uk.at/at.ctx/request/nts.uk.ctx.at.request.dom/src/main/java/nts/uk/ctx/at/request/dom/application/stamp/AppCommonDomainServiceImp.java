@@ -267,10 +267,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				null,
 				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				null,
-				appStampOutput.getAppDispInfoStartupOutput(), 
-				new ArrayList<String>(), 
-				Optional.empty(), 
-				Optional.empty());
+				appStampOutput.getAppDispInfoStartupOutput());
 		
 		
 		return listConfirmMs;
@@ -295,9 +292,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				application.getVersion(),
 				null,
 				null,
-				appStampOutput.getAppDispInfoStartupOutput(), 
-				new ArrayList<String>(), 
-				Optional.empty());
+				appStampOutput.getAppDispInfoStartupOutput());
 		
 		return listConfirmMs;
 	}

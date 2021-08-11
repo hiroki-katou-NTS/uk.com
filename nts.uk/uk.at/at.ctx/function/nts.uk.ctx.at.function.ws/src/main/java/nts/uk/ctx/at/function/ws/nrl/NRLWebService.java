@@ -5,8 +5,6 @@ import java.io.InputStream;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import nts.uk.ctx.at.function.app.nrl.Command;
 import nts.uk.ctx.at.function.app.nrl.data.RequestData;
@@ -45,12 +43,10 @@ public class NRLWebService extends RequestDispatcher {
 
 	@POST
 	@Path("masterCollect")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@RequestData({ Command.PERSONAL_INFO, Command.OVERTIME_INFO, Command.RESERVATION_INFO, 
-			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.APPLICATION_INFO, Command.TR_REMOTE, Command.UK_SWITCH_MODE })
-	public Response requestMasterDatas(InputStream is) {
+			Command.WORKTIME_INFO, Command.WORKTYPE_INFO, Command.APPLICATION_INFO, Command.TR_REMOTE })
+	public Frame requestMasterDatas(InputStream is) {
 		NRLResponse response = ignite(is);
-		Frame frame = response.getEntity(Frame.class);
-		return Response.ok().type(MediaType.APPLICATION_OCTET_STREAM).entity(frame.createFormatFrom()).build();
+		return response.getEntity(Frame.class);
 	}
 }

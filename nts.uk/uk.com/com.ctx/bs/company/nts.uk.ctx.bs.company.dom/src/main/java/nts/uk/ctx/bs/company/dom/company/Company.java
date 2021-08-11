@@ -1,7 +1,5 @@
 package nts.uk.ctx.bs.company.dom.company;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,42 +46,42 @@ public class Company extends AggregateRoot {
 	private AbolitionAtr isAbolition;
 
 	/** 代表者名 */
-	private Optional<RepName> repname;
+	private RepName repname;
 
 	/** 代表者職位 */
-	private Optional<RepJob> repjob;
+	private RepJob repjob;
 
 	/** 会社名カナ */
-	private Optional<KNName> comNameKana;
+	private KNName comNameKana;
 
 	/** 会社略名 */
-	private Optional<ABName> shortComName;
+	private ABName shortComName;
 
 	/** 契約コード */
 	private ContractCd contractCd;
 
 	/** 法人マイナンバー */
-	private Optional<TaxNo> taxNo;
+	private TaxNo taxNo;
 	
 	/** 住所情報 */
-	private Optional<AddInfor> addInfor;
+	private AddInfor addInfor;
 
-	public Company(CompanyCode companyCode, Name companyName, MonthStr startMonth,
-			AbolitionAtr isAbolition, Optional<RepName> repname, Optional<RepJob> repjob, Optional<KNName> comNameKana,
-			Optional<ABName> shortComName, ContractCd contractCd, Optional<TaxNo> taxNo, Optional<AddInfor> addInfor) {
+	public Company(CompanyCode companyCode, Name companyName, MonthStr startMonth, AbolitionAtr isAbolition,
+			RepName repname, RepJob repjob, KNName comNameKana, ABName shortComName, ContractCd contractCd, TaxNo taxNo,
+			AddInfor addInfor) {
 		super();
-		this.contractCd = contractCd;
 		this.companyCode = companyCode;
 		this.companyName = companyName;
-		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
 		this.startMonth = startMonth;
 		this.isAbolition = isAbolition;
 		this.repname = repname;
 		this.repjob = repjob;
 		this.comNameKana = comNameKana;
 		this.shortComName = shortComName;
+		this.contractCd = contractCd;
 		this.taxNo = taxNo;
 		this.addInfor = addInfor;
+		this.companyId = createCompanyId(this.companyCode.v(), this.contractCd.v());
 	}
 	
 	public static Company createFromJavaType(String companyCode, String companyName, int startMonth,
@@ -92,13 +90,12 @@ public class Company extends AggregateRoot {
 		return new Company(new CompanyCode(companyCode), new Name(companyName),
 				EnumAdaptor.valueOf(startMonth, MonthStr.class),
 				EnumAdaptor.valueOf(isAbolition, AbolitionAtr.class), 
-				!StringUtil.isNullOrEmpty(repname, true) ? Optional.of(new RepName(repname)) : Optional.of(new RepName("")), 
-				!StringUtil.isNullOrEmpty(repjob, true) ? Optional.of(new RepJob(repjob)) : Optional.of(new RepJob("")),
-				Optional.of(new KNName(comNameKana)), 
-				Optional.of(new ABName(shortComName)),
-				new ContractCd(contractCd), 
-				taxNo != null ? Optional.of(new TaxNo(taxNo)) : Optional.empty(),
-				addInfor != null ? Optional.of(addInfor) : Optional.empty());
+				!StringUtil.isNullOrEmpty(repname, true) ? new RepName(repname) : new RepName(""), 
+				!StringUtil.isNullOrEmpty(repjob, true) ? new RepJob(repjob) : new RepJob(""),
+				new KNName(comNameKana), 
+				new ABName(shortComName), new ContractCd(contractCd), 
+				taxNo != null ? new TaxNo(taxNo) : null,
+				addInfor != null ? addInfor : null);
 	}
 
 	/**

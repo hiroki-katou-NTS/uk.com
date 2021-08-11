@@ -24,12 +24,6 @@ public class HolidayRemainNumberDto {
 	
 	private Com60HVacationDto com60HVacation;
 	
-    private NursingVacationDto childCareVacation;
-    
-    private NursingVacationDto longTermCareVacation;
-	
 	private GeneralDate nextGrantDate;
-	
-	private Double grantDays;
 	
 }

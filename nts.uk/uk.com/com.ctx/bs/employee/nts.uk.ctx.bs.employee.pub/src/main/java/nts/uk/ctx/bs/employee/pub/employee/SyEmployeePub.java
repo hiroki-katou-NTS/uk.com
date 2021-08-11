@@ -87,7 +87,7 @@ public interface SyEmployeePub {
 	
 	/**
 	 * 
-	 * 削除されていない社員を取得
+	 * Gets the sdata mng info.
 	 * 
 	 * @param companyId
 	 * @param employeeCode

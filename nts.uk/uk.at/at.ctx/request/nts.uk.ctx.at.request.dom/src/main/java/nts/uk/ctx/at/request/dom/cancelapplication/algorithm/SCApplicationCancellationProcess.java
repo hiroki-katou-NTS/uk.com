@@ -57,7 +57,7 @@ public class SCApplicationCancellationProcess {
 		}
 
 		// 勤務予定の取消
-		RQRecoverAppReflectImport result = require.process(ConvertApplicationToShare.toOnlyAppliction(app), date,
+		RQRecoverAppReflectImport result = require.process(ConvertApplicationToShare.toAppliction(app), date,
 				statusWorkSchedule, dbRegisterClassfi);
 		return new SCCancelProcessOneDayOutput(result.getReflectStatus(), result.getWorkRecord(),
 				result.getAtomTask());

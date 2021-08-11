@@ -39,7 +39,6 @@ import nts.uk.screen.at.app.dailymodify.command.PersonalTightCommandFacade;
 import nts.uk.screen.at.app.dailyperformance.correction.DPUpdateColWidthCommandHandler;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DisplayRemainingHolidayNumber;
-import nts.uk.screen.at.app.dailyperformance.correction.HolidayRemainParam;
 import nts.uk.screen.at.app.dailyperformance.correction.InfomationInitScreenProcess;
 import nts.uk.screen.at.app.dailyperformance.correction.UpdateColWidthCommand;
 import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
@@ -492,9 +491,9 @@ public class DailyPerformanceCorrectionWebService {
 	}
 	
 	@POST
-	@Path("getRemainNum")
-	public HolidayRemainNumberDto getRemainNumb(HolidayRemainParam param) {
-		return remainNumberService.getRemainingHolidayNumber(param.getEmployeeId(), param.getClosureDate());
+	@Path("getRemainNum/{employeeId}")
+	public HolidayRemainNumberDto getRemainNumb(@PathParam(value = "employeeId") String employeeId) {
+		return remainNumberService.getRemainingHolidayNumber(employeeId);
 	}
 
 	@POST

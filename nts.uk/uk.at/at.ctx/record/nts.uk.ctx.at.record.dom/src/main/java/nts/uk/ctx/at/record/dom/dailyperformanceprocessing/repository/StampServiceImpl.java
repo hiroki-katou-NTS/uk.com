@@ -141,9 +141,9 @@ public class StampServiceImpl implements StampDomainService {
 				.addMinutes(timeEnd);
 		// ドメインモデル「打刻」を取得する (Lấy dữ liệu)
 		if (flag == EmbossingExecutionFlag.ALL) {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()), start, end);
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end);
 		} else {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()), start, end)
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end)
 					.stream()
 					.filter(c -> !c.isReflectedCategory()).collect(Collectors.toList());
 		}

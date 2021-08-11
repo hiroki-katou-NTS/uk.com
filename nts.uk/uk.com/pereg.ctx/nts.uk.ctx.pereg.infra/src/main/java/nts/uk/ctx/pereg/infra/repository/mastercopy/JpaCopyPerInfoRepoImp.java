@@ -55,7 +55,7 @@ public class JpaCopyPerInfoRepoImp extends JpaRepository implements CopyPerInfoR
 		// copyMethodは、新規テナント作成時なのでどれでもいいはず
 		val copyContext = createCopyContext(copyContract, copyCompanyId, 1);
 		
-		CopyBases.execute(copyContext);
+		CopyBases.execute(copyContext, newTenantCode);
 		copyCompanyTables(copyContext);
 	}
 

@@ -138,48 +138,13 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 				
 		update(param: any){
 			if(param){
-				const self = this;
-				
-				self.numberOfAnnualLeaveRemain(
-					param.numberOfAnnualLeaveRemain.time == ZERO_TIME
-					?
-					getText('KTG004_15', [param.numberOfAnnualLeaveRemain.day])
-					:
-					getText('KTG004_28', [param.numberOfAnnualLeaveRemain.day, param.numberOfAnnualLeaveRemain.time])
-					);
-					
-				self.numberAccumulatedAnnualLeave(
-					getText('KTG004_15', [param.numberAccumulatedAnnualLeave])
-					);
-					
-				self.numberOfSubstituteHoliday(
-					param.numberOfSubstituteHoliday.time == ZERO_TIME
-					?
-					getText('KTG004_15', [param.numberOfSubstituteHoliday.day])
-					:
-					getText('KTG004_28', [param.numberOfSubstituteHoliday.day, param.numberOfSubstituteHoliday.time])
-					);
-					
+				let self = this;
+				self.numberOfAnnualLeaveRemain(getText('KTG004_15', [param.numberOfAnnualLeaveRemain.day]));
+				self.numberAccumulatedAnnualLeave(getText('KTG004_15', [param.numberAccumulatedAnnualLeave]));
+				self.numberOfSubstituteHoliday(getText('KTG004_15', [param.numberOfSubstituteHoliday.day]));
 				self.remainingHolidays(getText('KTG004_15', [param.remainingHolidays]));
-				
-				self.nursingRemainingNumberOfChildren(
-					param.nursingRemainingNumberOfChildren.time = ZERO_TIME
-					?
-					getText('KTG004_15', [param.nursingRemainingNumberOfChildren.day])
-					:
-					getText('KTG004_29', [param.nursingRemainingNumberOfChildren.day, param.nursingRemainingNumberOfChildren.time])
-					);
-				
-				
-				self.longTermCareRemainingNumber(
-					param.longTermCareRemainingNumber.time = ZERO_TIME
-					?
-					getText('KTG004_15', [param.longTermCareRemainingNumber.day])
-					:
-					getText('KTG004_28', [param.longTermCareRemainingNumber.day, param.longTermCareRemainingNumber.time])
-					);
-					
-				
+				self.nursingRemainingNumberOfChildren(getText('KTG004_15', [param.nursingRemainingNumberOfChildren.day]));
+				self.longTermCareRemainingNumber(getText('KTG004_15', [param.longTermCareRemainingNumber.day]));
 			}
 		}
 	}
@@ -195,18 +160,11 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 				let self = this;
 				self.code = param.code;
 				self.name = param. name;
-				self.specialResidualNumber = 
-						param.specialResidualNumber.time == '0:00'
-						?
-						getText('KTG004_15', [param.specialResidualNumber.day])
-						:
-						getText('KTG004_28', [param.specialResidualNumber.day, param.specialResidualNumber.time])
+				self.specialResidualNumber = getText('KTG004_15', [param.specialResidualNumber.day]);
 			}
 		}
 				
 	}
-	
-	const ZERO_TIME = "0:00";
 	
 }
 module nts.uk.at.view.ktg004.a {

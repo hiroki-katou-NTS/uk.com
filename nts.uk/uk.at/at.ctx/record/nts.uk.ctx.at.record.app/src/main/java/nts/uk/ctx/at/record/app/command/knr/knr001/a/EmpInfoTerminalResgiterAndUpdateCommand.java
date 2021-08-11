@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.app.command.knr.knr001.a;
 
-import java.util.List;
-
 import lombok.Value;
 
 @Value
@@ -31,13 +29,28 @@ public class EmpInfoTerminalResgiterAndUpdateCommand {
 	
 	private String memo;
 	
-	private String workplaceId;
+	/**
+	 * 外出を応援に変換
+	 */
+	private int outSupport;
 	
-	private List<MSConversionCommand> lstMSConversion;
+	/**
+	 * 置換する
+	 */
+	private int replace;
 	
-	private NRConvertInfoCommand nrconvertInfo;
+	/**
+	 * 外出理由
+	 */
+	private Integer goOutReason;
+	
+	/**
+	 * 出退勤を入退門に変換
+	 */
+	private int entranceExit;
 	
 	public String getIpAddress() {
 		return this.ipAddress1 + '.' + this.ipAddress2 + '.' + this.ipAddress3 + '.' + this.ipAddress4;
 	}
+	
 }

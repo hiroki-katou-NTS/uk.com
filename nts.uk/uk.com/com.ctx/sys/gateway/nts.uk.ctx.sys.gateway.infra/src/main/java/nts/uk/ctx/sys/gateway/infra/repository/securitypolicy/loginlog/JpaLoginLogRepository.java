@@ -96,4 +96,16 @@ public class JpaLoginLogRepository extends JpaRepository implements LoginLogRepo
 				.setParameter("operation", operation)
 				.executeUpdate();
 	}
+
+	@Override
+	public void deleteLstLoginLog(List<String> lstUserId, int successOrFail, int operation) {
+		if(lstUserId.isEmpty()){
+			return;
+		}
+		this.getEntityManager().createQuery(DELETE_LIST_LOG)
+				.setParameter("lstUserId", lstUserId)
+				.setParameter("successOrFail", successOrFail)
+				.setParameter("operation", operation)
+				.executeUpdate();
+	}
 }

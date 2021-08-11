@@ -27,8 +27,6 @@ public interface EditStateOfDailyPerformanceRepository {
 	
 	void deleteExclude(List<EditStateOfDailyPerformance> editStates);
 	
-	void deleteExclude(String employeeId, GeneralDate ymd, List<EditStateOfDailyPerformance> editStates);
-	
 	void addAndUpdate(List<EditStateOfDailyPerformance> editStates);
 	
 	Optional<EditStateOfDailyPerformance> findByKeyId(String employeeId, GeneralDate ymd, Integer id);

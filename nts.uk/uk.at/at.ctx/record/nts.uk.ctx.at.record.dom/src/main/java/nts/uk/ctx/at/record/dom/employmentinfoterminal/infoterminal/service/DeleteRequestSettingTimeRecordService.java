@@ -31,9 +31,7 @@ public class DeleteRequestSettingTimeRecordService {
 							.workTime(setting.get().getWorkTimeCodes()).overTimeHoliday(false).applicationReason(false)
 							.stampReceive(false).reservationReceive(false).applicationReceive(false).timeSetting(false)
 							.sendBentoMenu(false).sendWorkType(false).sendWorkTime(false)
-							.remoteSetting(false).reboot(false)
-							.timeSwitchUKMode(setting.get().getTimeSwitchUKMode())
-							.sendTimeSwitchUKMode(false).build();
+							.remoteSetting(setting.get().isRemoteSetting()).reboot(setting.get().isReboot()).build();
 
 			require.updateSetting(domainUpdate);
 		});

@@ -63,7 +63,7 @@ export class CmmS45CComponent extends Vue {
     public currentApp: string = '';
     // 承認ルートインスタンス
     public phaseLst: Array<Phase> = [];
-    public appState: { appStatus: number, reflectStatus: number, version: number, pastApp: boolean } = { appStatus: null, reflectStatus: null, version: null, pastApp: null };
+    public appState: { appStatus: number, reflectStatus: number, version: number, pastApp: boolean } = { appStatus: 0, reflectStatus: 1, version: 0, pastApp: false };
     public appType: number = 99;
     public appTransferData: any = {
         appDispInfoStartupOutput: null,
@@ -314,9 +314,6 @@ export class CmmS45CComponent extends Vue {
     // hiển thị nút xóa đơn
     public get displayDeleteButton() {
         let self = this;
-        if (self.appState.reflectStatus == null) {
-            return true;
-        }
 
         return self.appState.reflectStatus == ReflectedState.NOTREFLECTED || self.appState.reflectStatus == ReflectedState.REMAND;
     }
@@ -324,9 +321,6 @@ export class CmmS45CComponent extends Vue {
     // hiển thị nút cập nhật đơn
     public get displayUpdateButton() {
         let self = this;
-        if (self.appState.reflectStatus == null) {
-            return true;
-        }
 
         return self.appState.reflectStatus == ReflectedState.NOTREFLECTED || self.appState.reflectStatus == ReflectedState.REMAND;
     }
@@ -334,11 +328,8 @@ export class CmmS45CComponent extends Vue {
     // hiển thị menu chỉnh sửa đơn
     public get displayEditFloat() {
         let self = this;
-        if (self.appState.pastApp) {
-            return false;        
-        }
 
-        return self.displayDeleteButton || self.displayUpdateButton || self.displayCancelButton;
+        return self.displayDeleteButton || self.displayUpdateButton;
     }
 
     // tiến tới màn chi tiết KAF005
@@ -442,47 +433,6 @@ export class CmmS45CComponent extends Vue {
         // } else {
         //     self.$goto('kafS05b', { appID: self.currentApp }); 
         // }
-    }
-
-    public cancelApp() {
-        const self = this;
-        self.$modal.confirm('Msg_249')
-            .then((v) => {
-                if (v == 'yes') {
-                    self.$mask('show');
-                    self.$http.post('at', API.cancel, self.appTransferData.appDispInfoStartupOutput)
-                    .then((resCancel: any) => {
-                        self.$mask('hide');
-                        if (resCancel.data) {
-                            self.$modal.info('Msg_224').then(() => { self.initData(); });
-                        } else {
-                            self.$modal.info('Msg_2188').then(() => { self.initData(); });
-                        }
-                    }).catch((failCancel: any) => {
-                        self.$mask('hide');
-                        if (failCancel.messageId == 'Msg_197') {
-                            self.$modal.error(failCancel.messageId)
-                                .then(() => {
-                                    self.initData();
-                                });
-                        } else {
-                            self.$modal.error(failCancel.messageId)
-                                .then(() => {
-                                    self.back();
-                                });
-                        }
-                    });           
-                }
-            });
-    }
-
-    get displayCancelButton() {
-        const vm = this;
-        if (vm.appState.reflectStatus == null) {
-            return true;
-        }
-
-        return vm.appState.reflectStatus != ReflectedState.CANCELED;
     }
 
     get applicant() {
@@ -666,6 +616,5 @@ export enum ReflectedState {
 
 const API = {
     delete: 'at/request/application/deleteapp',
-    getDetailMob: 'at/request/app/smartphone/getDetailMob',
-    cancel: 'at/request/application/cancelapp'
+    getDetailMob: 'at/request/app/smartphone/getDetailMob'
 };

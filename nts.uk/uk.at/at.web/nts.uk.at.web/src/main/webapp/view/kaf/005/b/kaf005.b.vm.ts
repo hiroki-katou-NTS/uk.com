@@ -550,15 +550,6 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 
 		handleErrorCustom(failData: any): any {
 			const vm = this;
-			if (!_.isEmpty(failData.errors)) {
-				
-				_.forEach(_.reverse(failData.errors), item => {
-					vm.$dialog.error({ messageId: item.messageId, messageParams: item.parameterIds })
-					.then(() => {
-					});
-				})
-				return $.Deferred().resolve(false);	
-			}
 			if(
 				failData.messageId == "Msg_750"
 			||	failData.messageId == "Msg_1654"

@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * 残数不足区分
- */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -27,8 +24,4 @@ public class EarchInterimRemainCheck {
 	private boolean chkPublicHoliday;
 	/**	・超休不足区分 */
 	private boolean chkSuperBreak;
-	/** 子の看護チェック区分 */
-    private boolean chkChildNursing;
-    /** 介護チェック区分 */
-    private boolean chkLongTermCare;
 }

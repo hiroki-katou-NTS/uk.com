@@ -25,8 +25,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
@@ -49,9 +47,6 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 	@Inject 
 	NewAfterRegister newAfterRegister;
 	
-	@Inject
-    private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-	
 	@Override
 	public ProcessResult register(
 			String companyId,
@@ -68,11 +63,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		appOverTimeRepository.add(appOverTime);
 		
 		// 暫定データの登録(pendding)
-		this.interimRemainDataMngRegisterDateChange.registerDateChange(
-                AppContexts.user().companyId(),
-                application.getEmployeeID(),
-                Arrays.asList(application.getAppDate().getApplicationDate())
-        );
+		
 		
 		// 2-3.新規画面登録後の処理を実行 #112628
 		ProcessResult processResult = newAfterRegister.processAfterRegister(
@@ -98,11 +89,6 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		appOverTimeRepository.update(appOverTime);
 		
 		// 暫定データの登録
-		this.interimRemainDataMngRegisterDateChange.registerDateChange(
-                AppContexts.user().companyId(),
-                application.getEmployeeID(),
-                Arrays.asList(application.getAppDate().getApplicationDate())
-        );
 		
 		// アルゴリズム「4-2.詳細画面登録後の処理」を実行する
 		return detailAfterUpdate.processAfterDetailScreenRegistration(
@@ -170,11 +156,6 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			appOverTimeRepository.add(appOverTime);
 			
 			// 暫定データの登録(pendding)
-			this.interimRemainDataMngRegisterDateChange.registerDateChange(
-	                AppContexts.user().companyId(),
-	                application.getEmployeeID(),
-	                Arrays.asList(application.getAppDate().getApplicationDate())
-	        );
 		}
 		// List＜申請ID＞をループする
 		// 2-3.新規画面登録後の処理を実行 #112628

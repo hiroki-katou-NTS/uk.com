@@ -172,15 +172,8 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	 */
 	@Override
 	public WorkStyle checkWorkDay(String workTypeCode) {
-		return checkWorkDay(AppContexts.user().companyId(), workTypeCode);
-	}
-	
-	/**
-	 * 1日半日出勤・1日休日系の判定
-	 */
-	@Override
-	public WorkStyle checkWorkDay(String cid, String workTypeCode) {
-		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(cid, workTypeCode);
+		String companyId = AppContexts.user().companyId();
+		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
 
 		if (!workTypeOpt.isPresent()) {
 			return null;

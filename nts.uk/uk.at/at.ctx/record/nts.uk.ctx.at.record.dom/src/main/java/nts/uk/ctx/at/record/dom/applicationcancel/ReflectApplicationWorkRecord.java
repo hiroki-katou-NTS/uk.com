@@ -47,7 +47,7 @@ public class ReflectApplicationWorkRecord {
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			// レコーダイメージ申請の対象日を取得する
-			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require, require.getCId(), 
+			Pair<Optional<GeneralDate>, Optional<Stamp>> dateOpt = GetTargetDateRecordApplication.getTargetDate(require,
 					(AppRecordImageShare) application);
 			if (dateOpt.getLeft().isPresent()) {
 				dateTarget = dateOpt.getLeft().get();
@@ -73,7 +73,7 @@ public class ReflectApplicationWorkRecord {
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
 			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD, true);
 			/// 打刻申請（NRモード）を反映する -- itemId
-			TimeStampApplicationNRMode.process(require, require.getCId(), dateTarget,
+			TimeStampApplicationNRMode.process(require, dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
 		} else {
 			/// 申請の反映（勤務実績） in process

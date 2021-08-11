@@ -75,12 +75,13 @@ public class ReflectAttendanceClock {
 	 * @param workNo 1~2	
 	 * @param integrationOfDaily 1~2
 	 */
-	public ReflectStampOuput reflect(String companyId, Stamp stamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
+	public ReflectStampOuput reflect(Stamp stamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
+		String companyId  = AppContexts.user().companyId();
 		//反映先を取得する
 		TimePrintDestinationOutput timePrintDestinationOutput = getDestination(attendanceAtr, actualStampAtr, workNo, integrationOfDaily);
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
 		//通常打刻の出退勤の反映条件を判断する
-		reflectStampOuput = reflectAttd(companyId, stamp, attendanceAtr, timePrintDestinationOutput,
+		reflectStampOuput = reflectAttd(stamp, attendanceAtr, timePrintDestinationOutput,
 				actualStampAtr, integrationOfDaily,workNo);
 		if(reflectStampOuput == ReflectStampOuput.REFLECT ) {
 			//休日打刻時に勤務種類を変更する
@@ -182,8 +183,9 @@ public class ReflectAttendanceClock {
 	 * @param actualStampAtr
 	 * @return
 	 */
-	public ReflectStampOuput reflectAttd(String cid, Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,ActualStampAtr actualStampAtr,
+	public ReflectStampOuput reflectAttd(Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,ActualStampAtr actualStampAtr,
 			IntegrationOfDaily integrationOfDaily,int workNo) {
+		String cid = AppContexts.user().companyId();
 		Optional<WorkStamp> workStamp = getWorkStamp(attendanceAtr, actualStampAtr, integrationOfDaily, workNo);
 		
 		//出退勤打刻反映先がNullか確認する 
@@ -202,7 +204,7 @@ public class ReflectAttendanceClock {
 			}
 		}
 		//前優先後優先を見て反映するか確認する
-		return checkReflectByLookPriority(cid, stamp, attendanceAtr, timePrintDestinationOutput, integrationOfDaily);
+		return checkReflectByLookPriority(stamp, attendanceAtr, timePrintDestinationOutput, integrationOfDaily);
 	}
 	
 	/**
@@ -213,8 +215,9 @@ public class ReflectAttendanceClock {
 	 * @param integrationOfDaily
 	 * @return
 	 */
-	public ReflectStampOuput checkReflectByLookPriority(String companyId, Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,
+	public ReflectStampOuput checkReflectByLookPriority(Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,
 			IntegrationOfDaily integrationOfDaily) {
+		String companyId = AppContexts.user().companyId();
 		if (integrationOfDaily.getWorkInformation() != null) {
 			//打刻設定を取得する
 			WorkTimezoneStampSet stampSet = this.getStampSetting(companyId,
@@ -318,7 +321,7 @@ public class ReflectAttendanceClock {
 			// Xác định phân loại 1日半日出勤・1日休日
 			// 1日半日出勤・1日休日系の判定
 			WorkStyle checkWorkDay = this.basicScheduleService
-					.checkWorkDay(companyId, recordWorkInformation.getWorkTypeCode().v());
+					.checkWorkDay(recordWorkInformation.getWorkTypeCode().v());
 			// 休日系
 			if (checkWorkDay.value == 0) {
 				// 勤務情報を変更する

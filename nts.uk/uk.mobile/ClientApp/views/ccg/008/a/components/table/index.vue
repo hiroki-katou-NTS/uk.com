@@ -49,7 +49,7 @@
           <td :class="{ 'pl-3': item.sub }" style="width:50%" class="p1 pl-2">
             <span>{{item.name | i18n}}</span>
           </td>
-          <td class="p1 pl-2" v-if="!item['isFormatNew']">
+          <td class="p1 pl-2">
             <span v-if="item['profix']">{{item['profix'] | i18n}}</span>
             <span v-html="item.value"></span>
             <span v-if="item['prefix']">{{item['prefix'] | i18n}}</span>
@@ -57,11 +57,6 @@
             <span v-if="item['profix2']">{{item['profix2'] | i18n}}</span>
             <span v-html="item.value2"></span>
             <span v-if="item['prefix2']">{{item['prefix2'] | i18n}}</span>
-          </td>
-          <td class="p1 pl-2" v-if="item['isFormatNew']">
-              <span v-if="item['profix']">{{item['profix'] | i18n}}</span>
-              <span v-html="item.value"></span>
-              <span v-if="item['prefix']">{{item['prefix'] | i18n}}</span>
           </td>
         </tr>
       </tbody>

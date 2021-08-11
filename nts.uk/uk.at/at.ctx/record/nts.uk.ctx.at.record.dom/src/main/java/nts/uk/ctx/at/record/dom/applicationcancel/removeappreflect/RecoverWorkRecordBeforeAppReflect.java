@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.cancelreflectapp.CancellationOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -36,15 +40,15 @@ public class RecoverWorkRecordBeforeAppReflect {
 				ScheduleRecordClassifi.RECORD, domainDaily);
 		domainDaily = cancellationResult.getDomainDaily().getDomain();
 
-//		// 労働条件項目を取得
-//		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(require,
-//				domainDaily.getEmployeeId(), domainDaily.getYmd());
+		// 労働条件項目を取得
+		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(require,
+				domainDaily.getEmployeeId(), domainDaily.getYmd());
 
 		// 変更された項目を確認
 		ChangeDailyAttendance changeAtt = createChangeDailyAtt(cancellationResult.getLstItemId());
 
 		// 勤怠変更後の補正（日別実績の補正処理）
-		domainDaily = require.correct(domainDaily, changeAtt);
+		domainDaily = require.corectionAfterTimeChange(domainDaily, changeAtt, workCondOpt).getRight();
 
 		// 日別実績の修正からの計算
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForRecord(Arrays.asList(domainDaily),
@@ -65,7 +69,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 
 				// 申請反映履歴の取消区分を更新する
 				require.updateAppReflectHist(application.getEmployeeID(), application.getAppID(), date,
-						ScheduleRecordClassifi.RECORD, true);
+						ScheduleRecordClassifi.SCHEDULE, true);
 			});
 		}
 		// 反映状態を「取消済み」に更新する
@@ -83,16 +87,17 @@ public class RecoverWorkRecordBeforeAppReflect {
 		boolean directBounceClassifi = lstItemId.stream()
 				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD, directBounceClassifi);
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi);
 	}
 
-	public static interface Require extends CancellationOfApplication.Require{
+	public static interface Require extends CancellationOfApplication.Require, WorkingConditionService.RequireM1 {
 
 		// DailyRecordShareFinder
 		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date);
 
-		// ICorrectionAttendanceRule
-		public IntegrationOfDaily correct(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt);
+		// CorrectionAfterTimeChange
+		public Pair<ChangeDailyAttendance, IntegrationOfDaily> corectionAfterTimeChange(IntegrationOfDaily domainDaily,
+				ChangeDailyAttendance changeAtt, Optional<WorkingConditionItem> workCondOpt);
 
 		// CalculateDailyRecordServiceCenter
 		public List<IntegrationOfDaily> calculateForRecord(List<IntegrationOfDaily> integrationOfDaily,

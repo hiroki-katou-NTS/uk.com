@@ -8,15 +8,15 @@ public enum SystemStatusType {
 	/**
 	 * 業務運用中
 	 */
-	RUNNING(1),
+	RUNNING(0),
 	/**
 	 * 利用停止前段階
 	 */
-	IN_PROGRESS(2),
+	IN_PROGRESS(1),
 	/**
 	 * 利用停止中
 	 */
-	STOP(3);
+	STOP(2);
 
 	public final int value;
 

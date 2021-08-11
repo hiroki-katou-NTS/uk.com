@@ -194,16 +194,6 @@ export class KafS06AComponent extends KafS00ShrComponent {
     //     }
     // }
 
-    public get grantDays(): string {
-        const self = this;
-        let model = self.model as Model;
-        
-        if (!model.appAbsenceStartInfoDto.remainVacationInfo.grantDate) {
-            return self.$i18n('KAFS06_56') + self.$i18n('KAFS06_57');
-        }
-
-        return self.$i18n('KAFS06_56') + model.appAbsenceStartInfoDto.remainVacationInfo.grantDate + ' ' + model.appAbsenceStartInfoDto.remainVacationInfo.grantDays;
-    }
 
     public get remainDays(): Array<RemainDaysHoliday> {
         const self = this;
@@ -214,14 +204,12 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
             return [];
         }
-        const {subHdRemain, subVacaRemain, yearRemain, remainingHours, subVacaHourRemain, yearHourRemain} = remainVacationInfo;
+        const {subHdRemain, subVacaRemain, yearRemain, remainingHours} = remainVacationInfo;
         const remainDaysHoliday = {
             subHdRemain,
             subVacaRemain, 
             yearRemain,
-            remainingHours,
-            subVacaHourRemain, 
-            yearHourRemain
+            remainingHours
         } as RemainDaysHoliday;
 
         return [remainDaysHoliday];
@@ -257,7 +245,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.over60HHourRemain') || 0;
 
-        return self.getFormatTime(0, time);
+        return self.$dt.timedr(time);
     }
     // 休暇残数情報．代休残時間
     public get A9_7() {
@@ -265,7 +253,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let model = self.model as Model;
         let time = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.subVacaHourRemain') || 0;
 
-        return self.getFormatTime(0, time);
+        return self.$dt.timedr(time);
     }
     // 休暇残数情報．年休残数
     // 休暇残数情報．年休残時間
@@ -325,14 +313,6 @@ export class KafS06AComponent extends KafS00ShrComponent {
         
         return c2;
     }
-    // 休暇申請起動時の表示情報．休暇残数情報．代休管理．時間代休管理区分　＝　管理する
-    public get c2_1() {
-        const self = this;
-        let model = self.model as Model;
-        let c2_1 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement') == ManageDistinct.YES;
-
-        return c2_1;
-    }
     // 休暇申請起動時の表示情報．休暇残数情報．振休管理. 振休管理区分　＝　管理する
     public get c3() {
         const self = this;
@@ -348,14 +328,6 @@ export class KafS06AComponent extends KafS00ShrComponent {
         let c4 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct') == ManageDistinct.YES;
 
         return c4;
-    }
-    // 休暇申請起動時の表示情報．休暇残数情報．年休管理．時間年休管理区分　＝　管理する
-    public get c4_1() {
-        const self = this;
-        let model = self.model as Model;
-        let c4_1 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.timeAnnualLeaveManage') == ManageDistinct.YES;
-
-        return c4_1;
     }
     // 休暇申請起動時の表示情報．休暇残数情報．積休管理. 積休管理区分　＝　管理する
     public get c5() {
@@ -646,12 +618,11 @@ export class KafS06AComponent extends KafS00ShrComponent {
     }
     // 休暇申請起動時の表示情報. 休暇残数情報．振休管理．紐づけ管理区分」= 管理する
     public get c22_1() {
-        // const self = this;
-        // let model = self.model as Model;
-        // let c22_1 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.holidayManagement.linkingManagement') == ManageDistinct.YES;
+        const self = this;
+        let model = self.model as Model;
+        let c22_1 = _.get(model, 'appAbsenceStartInfoDto.remainVacationInfo.holidayManagement.linkingManagement') == ManageDistinct.YES;
         
-        // return c22_1;
-        return true;
+        return c22_1;
     }
     public get c22_2() {
         const self = this;
@@ -1971,39 +1942,19 @@ export class KafS06AComponent extends KafS00ShrComponent {
     public getFormatTime(timeRemain: number, timeHourRemain: number) {
         const self = this;
 
-        // let time;
+        let time;
 
-        // if (timeRemain > 0) {
-        //     if (timeHourRemain > 0) {
-        //         time = timeRemain.toString().concat('日と').concat(self.$dt.timedr(timeHourRemain));
-        //     } else {
-        //         time = timeRemain.toString().concat('日');
-        //     }
-        // } else {
-        //     time = self.$dt.timedr(timeHourRemain);
-        // } 
-
-        // return time;
-        if (!timeHourRemain) {
-            return self.$i18n('KAFS06_40', [timeRemain.toString()]);
-        }
-
-        return self.$i18n('KAFS06_58', [timeRemain.toString(), self.formatTimeFromMinute(timeHourRemain)]);
-    }
-
-    public formatTimeFromMinute(time: number) {
-        const self = this;
-
-        if (time) {
-            let timeStr: string = self.$dt.timedr(time);
-            if (timeStr.startsWith('0')) {
-                return timeStr.substr(1, timeStr.length);
+        if (timeRemain > 0) {
+            if (timeHourRemain > 0) {
+                time = timeRemain.toString().concat('日と').concat(self.$dt.timedr(timeHourRemain));
             } else {
-                return timeStr;
+                time = timeRemain.toString().concat('日');
             }
-        }
+        } else {
+            time = self.$dt.timedr(timeHourRemain);
+        } 
 
-        return '0:00';
+        return time;
     }
 
     @Watch('params')

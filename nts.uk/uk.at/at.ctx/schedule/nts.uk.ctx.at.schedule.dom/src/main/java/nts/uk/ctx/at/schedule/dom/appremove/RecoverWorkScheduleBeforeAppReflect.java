@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectStatusResult;
@@ -17,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.cancelreflectapp.Cance
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -46,15 +50,15 @@ public class RecoverWorkScheduleBeforeAppReflect {
 				ScheduleRecordClassifi.SCHEDULE, domainDaily);
 		domainDaily = cancellationResult.getDomainDaily().getDomain();
 
-//		// 労働条件項目を取得
-//		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(require,
-//				domainDaily.getEmployeeId(), domainDaily.getYmd());
+		// 労働条件項目を取得
+		Optional<WorkingConditionItem> workCondOpt = WorkingConditionService.findWorkConditionByEmployee(require,
+				domainDaily.getEmployeeId(), domainDaily.getYmd());
 
 		// 変更された項目を確認
 		ChangeDailyAttendance changeAtt = createChangeDailyAtt(cancellationResult.getLstItemId());
 
 		// 勤怠変更後の補正（日別実績の補正処理）
-		domainDaily = require.correct(domainDaily, changeAtt);
+		domainDaily = require.corectionAfterTimeChange(domainDaily, changeAtt, workCondOpt).getRight();
 
 		// 日別実績の修正からの計算
 		List<IntegrationOfDaily> lstAfterCalc = require.calculateForSchedule(ExecutionType.NORMAL_EXECUTION,
@@ -102,7 +106,7 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi);
 	}
 
-	public static interface Require extends CancellationOfApplication.Require {
+	public static interface Require extends WorkingConditionService.RequireM1, CancellationOfApplication.Require {
 
 		// WorkScheduleRepository
 		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd);
@@ -117,7 +121,8 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		public void updateAppReflectHist(String sid, String appId, GeneralDate baseDate,
 				ScheduleRecordClassifi classification, boolean flagRemove);
 
-		// ICorrectionAttendanceRule
-		public IntegrationOfDaily correct(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt);
+		// CorrectionAfterTimeChange
+		public Pair<ChangeDailyAttendance, IntegrationOfDaily> corectionAfterTimeChange(IntegrationOfDaily domainDaily,
+				ChangeDailyAttendance changeAtt, Optional<WorkingConditionItem> workCondOpt);
 	}
 }

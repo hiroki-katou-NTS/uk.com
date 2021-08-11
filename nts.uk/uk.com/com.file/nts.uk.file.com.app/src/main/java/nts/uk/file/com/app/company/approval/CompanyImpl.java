@@ -95,21 +95,23 @@ public class CompanyImpl implements MasterListData{
 					
 					data.put("会社代表者職位", company.getRepjob());
 					
-					company.getAddInfor().ifPresent(value ->{
-						data.put("郵便番号", ""+value.getPostCd());
+					AddInfor addInFor = company.getAddInfor();
+					
+					if(addInFor != null){
+						data.put("郵便番号", ""+addInFor.getPostCd());
 						
-						data.put("住所 市区町村・番地", ""+value.getAdd_1());
+						data.put("住所 市区町村・番地", ""+addInFor.getAdd_1());
 						
-						data.put("住所 建物名など", value.getAdd_2());
+						data.put("住所 建物名など", addInFor.getAdd_2());
 						
-						data.put("住所カナ 市区町村・番地", value.getAddKana_1());
+						data.put("住所カナ 市区町村・番地", addInFor.getAddKana_1());
 						
-						data.put("住所カナ 建物名など", value.getAddKana_2());
+						data.put("住所カナ 建物名など", addInFor.getAddKana_2());
 						
-						data.put("電話番号", ""+value.getPhoneNum());
+						data.put("電話番号", ""+addInFor.getPhoneNum());
 						
-						data.put("FAX", ""+value.getFaxNum());
-					});
+						data.put("FAX", ""+addInFor.getFaxNum());
+					}
 				}
 				
 				if(findUsageSets.get().getJinji()== 1){

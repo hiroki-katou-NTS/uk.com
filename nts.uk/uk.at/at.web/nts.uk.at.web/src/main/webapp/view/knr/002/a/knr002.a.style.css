@@ -85,12 +85,3 @@
 .ui-iggrid-tablebody {
 	white-space: nowrap;
 }
-
-.book-conversion {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.w-300 {
-    width: 300px !important;
-}

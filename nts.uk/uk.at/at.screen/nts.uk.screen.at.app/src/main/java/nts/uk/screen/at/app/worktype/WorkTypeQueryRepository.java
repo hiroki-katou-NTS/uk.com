@@ -43,14 +43,7 @@ public interface WorkTypeQueryRepository {
 	 * @author yennth
 	 */
 	List<WorkTypeDto> findAbsenceKaf022(String companyId, Integer oneDayAtr, Integer morningAtr, Integer afternoonAtr);
-
-	/**
-	 * Find work type by company for kaf022 special
-	 * @param companyId
-	 * @return
-	 * @author hieunm
-	 */
-	List<WorkTypeDto> findAbsenceSpecialKaf022(String companyId);
+	
 	
 	/**
 	 * Find work type by company for kaf022

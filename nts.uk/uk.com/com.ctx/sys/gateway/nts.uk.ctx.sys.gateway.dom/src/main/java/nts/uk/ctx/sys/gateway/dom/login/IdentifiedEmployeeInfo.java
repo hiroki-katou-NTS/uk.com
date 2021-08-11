@@ -5,7 +5,7 @@ import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
 
 /**
- * 識別された社員
+ * なんらかのキーにより識別された社員
  */
 @Value
 public class IdentifiedEmployeeInfo {

@@ -49,7 +49,7 @@ public class RCApplicationCancellationProcess {
 		}
 
 		// 勤務実績の取消
-		val result = require.processRecover(ConvertApplicationToShare.toOnlyAppliction(app), date, statusWorkRecord,
+		val result = require.processRecover(ConvertApplicationToShare.toAppliction(app), date, statusWorkRecord,
 				dbRegisterClassfi);
 		return new RCCancelProcessOneDayOutput(result.getReflectStatus(), result.getWorkRecord(),
 				result.getAtomTask());

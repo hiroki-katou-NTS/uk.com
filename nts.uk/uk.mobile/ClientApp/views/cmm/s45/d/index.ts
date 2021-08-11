@@ -572,12 +572,6 @@ export class CmmS45DComponent extends Vue {
         return false;
     }
 
-    get displayCancelLabel() {
-        const vm = this;
-
-        return vm.appState.reflectStatus == ReflectedState.CANCELED;
-    }
-
     get applicant() {
         const vm = this;
         if (!vm.appTransferData.appDispInfoStartupOutput) {

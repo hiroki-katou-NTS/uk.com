@@ -16,7 +16,7 @@
             </div>
             <div class="collapse">
               <!--A2_2-->
-              <table class="table mt-2" style="width: 97%; margin: auto; border: 1px solid #dee2e6;">
+              <table class="table mt-2">
                   <thead>
                     <tr>
                       <!--A2_3-->
@@ -35,26 +35,14 @@
                       v-bind:key="index"
                       :value="index"
                     >
-                      <td class="text-center" v-if="c2" style="padding-bottom: 0">{{'KAFS06_40' | i18n([item.subHdRemain])}}</td>
-                      <td class="text-center" v-if="c3" style="padding-bottom: 0">{{'KAFS06_40' | i18n([item.subVacaRemain])}}</td>
-                      <td class="text-center" v-if="c4" style="padding-bottom: 0">{{'KAFS06_40' | i18n([item.yearRemain])}}</td>
-                      <td class="text-center" v-if="c5" style="padding-bottom: 0">{{'KAFS06_40' | i18n([item.remainingHours])}}</td>
+                      <td class="text-center" v-if="c2">{{'KAFS06_40' | i18n([item.subHdRemain])}}</td>
+                      <td class="text-center" v-if="c3">{{'KAFS06_40' | i18n([item.subVacaRemain])}}</td>
+                      <td class="text-center" v-if="c4">{{'KAFS06_40' | i18n([item.yearRemain])}}</td>
+                      <td class="text-center" v-if="c5">{{'KAFS06_40' | i18n([item.remainingHours])}}</td>
                     </tr>
-                    <tr 
-                      v-for="(item, index) in remainDays"
-                      v-bind:key="index + 1"
-                      :value="index"
-                    >
-                      <!-- A2_12 -->
-                      <td class="text-center" v-if="c2 && c2_1" style="border-top: none; padding-top: 5px;">{{formatTimeFromMinute(item.subVacaHourRemain)}}</td>
-                      <td class="text-center" v-if="c3" style="border-top: none; padding-top: 5px;">{{''}}</td>
-                      <!-- A2_13 -->
-                      <td class="text-center" v-if="c4 && c4_1" style="border-top: none; padding-top: 5px;">{{formatTimeFromMinute(item.yearHourRemain)}}</td>
-                      <td class="text-center" v-if="c5" style="border-top: none; padding-top: 5px;">{{''}}</td>
-                    </tr>
+                    
                   </tbody>
-              </table>   
-              <div v-if="c4" style="margin: 5px 15px; font-size: 80%">{{grantDays}}</div> 
+              </table>    
             </div>
           </div>
     </div>
@@ -220,8 +208,6 @@
                 <div class="float_left col text-left textSize">{{'KAFS06_21' | i18n}}</div>
                 <div class="float_right col text-right textSize colorHours">{{'KAFS06_22' | i18n([A9_9])}}</div>
             </div>
-            <!-- A9_14 -->
-            <div class="row" style="margin: 0 15px; font-size: 80%">{{grantDays}}</div> 
             <!--A9_8-->
             <div class="card-body">
                 <nts-time-editor

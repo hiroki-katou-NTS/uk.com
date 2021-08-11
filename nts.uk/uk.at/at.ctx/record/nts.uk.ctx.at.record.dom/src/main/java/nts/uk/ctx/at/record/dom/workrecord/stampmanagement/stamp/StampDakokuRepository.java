@@ -59,7 +59,7 @@ public interface StampDakokuRepository {
 	
 	public List<Stamp> getByCardAndPeriod(String companyId,List<String> listCard,DatePeriod period);
 
-	public List<Stamp> getByDateTimeperiod(List<String> listCard, GeneralDateTime startDate, GeneralDateTime endDate);
+	public List<Stamp> getByDateTimeperiod(List<String> listCard,String companyId,GeneralDateTime startDate, GeneralDateTime endDate);
 
 	public Optional<Stamp> get(String contractCode, StampNumber stampNumber);
 

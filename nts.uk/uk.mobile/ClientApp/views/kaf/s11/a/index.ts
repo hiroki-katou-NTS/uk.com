@@ -819,7 +819,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (workType.workAtr == 0) {
             return false;
         }
-        if (workType.morningCls == 8 || workType.afternoonCls == 8) {
+        if ((workType.morningCls == 8 && vm.displayInforWhenStarting.holidayManage == 1) ||
+            (workType.afternoonCls == 8 && vm.displayInforWhenStarting.holidayManage == 1)) {
             return true;
         }
 

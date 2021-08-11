@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
@@ -27,7 +26,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -40,9 +38,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.T
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
@@ -97,9 +96,6 @@ public class RegisterSmartPhoneStampCommandHandler
 	
 	@Inject
 	private WorkLocationRepository workLocationRepository;
-	
-	@Inject
-	private DailyRecordShareFinder dailyRecordShareFinder;
 
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterSmartPhoneStampCommand> context) {
@@ -110,10 +106,9 @@ public class RegisterSmartPhoneStampCommandHandler
 		EnterStampFromSmartPhoneServiceImpl require = new EnterStampFromSmartPhoneServiceImpl(stampCardRepo,
 				stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
 				createDailyResultDomainServiceNew, getSettingRepo, createDailyResults, timeReflectFromWorkinfo, 
-				temporarilyReflectStampDailyAttd, workLocationRepository, dailyRecordShareFinder);
+				temporarilyReflectStampDailyAttd, workLocationRepository);
 
 		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(require,
-				AppContexts.user().companyId(),
 				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
 				cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
 				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue());
@@ -175,8 +170,6 @@ public class RegisterSmartPhoneStampCommandHandler
 		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 		
 		private WorkLocationRepository workLocationRepository;
-		
-		private DailyRecordShareFinder dailyRecordShareFinder;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -233,22 +226,23 @@ public class RegisterSmartPhoneStampCommandHandler
 		}
 
 		@Override
-		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
+		public OutputCreateDailyOneDay createDailyResult(String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
 				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag, integrationOfDaily);
+			return this.createDailyResults.createDailyResult(AppContexts.user().companyId(), employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
 		}
 
 		@Override
-		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
+		public OutputTimeReflectForWorkinfo get(String employeeId, GeneralDate ymd,
 				WorkInfoOfDailyAttendance workInformation) {
-			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+			return this.timeReflectFromWorkinfo.get(AppContexts.user().companyId(), employeeId, ymd, workInformation);
 		}
 
 		@Override
-		public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
-			return this.temporarilyReflectStampDailyAttd.reflectStamp(companyId, stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
+			return this.temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 
 		@Override
@@ -262,16 +256,6 @@ public class RegisterSmartPhoneStampCommandHandler
 			return workLocationRepository.findAll(AppContexts.user().contractCode());
 		}
 
-		@Override
-		public Optional<StampRecord> getStampRecord(ContractCode contractCode, StampNumber stampNumber,
-				GeneralDateTime dateTime) {
-			return stampRecordRepo.get(contractCode.v(), stampNumber.v(), dateTime);
-		}
-		
-		@Override
-		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date) {
-			return dailyRecordShareFinder.find(employeeId, date);
-		}
 	}
 
 }

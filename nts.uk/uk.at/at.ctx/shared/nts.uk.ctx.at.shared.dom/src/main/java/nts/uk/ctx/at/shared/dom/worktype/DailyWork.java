@@ -488,29 +488,4 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 		
 		return HalfDayWorkTypeClassification.createByAmAndPm(this.morning, this.afternoon);
 	}
-	
-	/**
-	 * [2] 勤務種類からどんな休暇種類を含むか判断する
-	 * @return
-	 */
-	public Holiday determineHolidayByWorkType() {
-	    // $休暇種類　＝　休暇種類#初期作成する()   
-	    Holiday holiday = new Holiday();
-	    
-	    // if @勤務区分.1日であるか判定する()　//1日  
-	    if (this.workTypeUnit.isOneDay()) {
-	        // return $休暇種類.変更する(@1日.どんな休暇種類か判断する()）   
-	        holiday.changeValue(this.oneDay.determineHolidayType());
-	        return holiday;
-	    }
-	    
-	    // $休暇種類.変更する(@午前.どんな休暇種類か判断する()）
-	    holiday.changeValue(this.morning.determineHolidayType());
-	    
-	    // $休暇種類.変更する(@午後.どんな休暇種類か判断する()）  
-	    holiday.changeValue(this.afternoon.determineHolidayType());
-	    
-	    // return $休暇種類    
-	    return holiday;
-	}
 }

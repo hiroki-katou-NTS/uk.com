@@ -135,7 +135,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
-        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null, null, null));
+        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -444,16 +444,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').show();
                 else
                     $('#fixed-table td:nth-child(4), #fixed-table th:nth-child(4)').hide();
-
-				if (val.dispChildCare)
-                    $('#fixed-table td:nth-child(5), #fixed-table th:nth-child(5)').show();
-                else
-                    $('#fixed-table td:nth-child(5), #fixed-table th:nth-child(5)').hide();
-
-				if (val.dispLongTermCare)
-                    $('#fixed-table td:nth-child(6), #fixed-table th:nth-child(6)').show();
-                else
-                    $('#fixed-table td:nth-child(6), #fixed-table th:nth-child(6)').hide();
             });
             $(window).on('resize', function() {
                 var win = $(this); //this = window
@@ -910,12 +900,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         loadRemainNumberTable() {
             let self = this;
-            let param = {
-                employeeId: self.selectedEmployee(),
-                closureDate: self.dateRanger().startDate
-            }
-            service.getRemainNum(param).done((data: any) => {
-                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate, data.childCareVacation, data.longTermCareVacation));
+            service.getRemainNum(self.selectedEmployee()).done((data: any) => {
+                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
                 self.referenceVacation(
                     new ReferenceVacation(
                         data.annualLeave == null ? false : data.annualLeave.manageYearOff,
@@ -5341,21 +5327,17 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dispAnnualDay: boolean;
         dispAnnualTime: boolean;
         dispReserve: boolean;
-		dispChildCare: string;
-		dispLongTermCare: string;
         compensationDay: string;
         compensationTime: string;
         substitute: string;
         annualDay: string;
         annualTime: string;
         reserve: string;
-		childCareValue: string;
-		longTermCareValue: string;
 
         dispSysDate: string = getText("KDW003_121", [moment(new Date()).format("YYYY/MM/DD")]);
         dispNextGrantDate: string;
 
-        constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any, childCareVacation: any, longTermCareVacation: any) {
+        constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any) {
             this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate]) : getText("KDW003_123");
             this.dispCompensationDay = compensatoryLeave == null ? false : compensatoryLeave.manageCompenLeave;
             this.dispCompensationTime = compensatoryLeave == null ? false : compensatoryLeave.manageTimeOff;
@@ -5363,8 +5345,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.dispAnnualDay = annualLeave == null ? false : annualLeave.manageYearOff;
             this.dispAnnualTime = annualLeave == null ? false : annualLeave.manageTimeOff;
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
-			this.dispChildCare = childCareVacation == null ? false : childCareVacation.manageNursing;
-			this.dispLongTermCare = longTermCareVacation == null ? false : longTermCareVacation.manageNursing;
             if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
                 this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
                 if (compensatoryLeave.compenLeaveRemain < 0)
@@ -5413,34 +5393,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-reserve-day").css("color", "");
             } else
                 this.reserve = "";
-
-			if (this.dispChildCare) {
-				if (_.isNull(childCareVacation.remainDays)) childCareVacation.remainDays = 0;
-				if (childCareVacation.remainTime != 0) {
-					this.childCareValue = getText("KDW003_132", [childCareVacation.remainDays, nts.uk.time.format.byId("Time_Short_HM", childCareVacation.remainTime)]);	
-				} else {
-					this.childCareValue = getText("KDW003_8", [childCareVacation.remainDays]);	
-				}
-                if (childCareVacation.remainDays < 0 || (childCareVacation.remainDays == 0 && childCareVacation.remainTime < 0))
-                    $("#fixed-table td.remain-childCare-day").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-childCare-day").css("color", "");
-            } else
-                this.childCareValue = "";
-
-			if (this.dispLongTermCare) {
-				if (_.isNull(longTermCareVacation.remainDays)) longTermCareVacation.remainDays = 0;
-				if (longTermCareVacation.remainTime != 0) {
-					this.longTermCareValue = getText("KDW003_132", [longTermCareVacation.remainDays, nts.uk.time.format.byId("Time_Short_HM", longTermCareVacation.remainTime)]);	
-				} else {
-					this.longTermCareValue = getText("KDW003_8", [longTermCareVacation.remainDays]);	
-				}
-                if (longTermCareVacation.remainDays < 0 || (longTermCareVacation.remainDays == 0 && longTermCareVacation.remainTime < 0))
-                    $("#fixed-table td.remain-longTermCare-day").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-longTermCare-day").css("color", "");
-            } else
-                this.longTermCareValue = "";
         }
     }
 

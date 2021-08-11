@@ -25,7 +25,6 @@ import javax.ejb.TransactionAttributeType;
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.SneakyThrows;
-import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -396,9 +395,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	}
 
 	public Optional<EmployeeDataMngInfo> findByEmployeCD(String empcode, String cid) {
-		val result = queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployeeDataMngInfo.class).setParameter("empcode", empcode)
+		return queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployeeDataMngInfo.class).setParameter("empcode", empcode)
 				.setParameter("cid", cid).getSingle().map(m -> toDomain(m));
-		return result;
+
 	}
 
 	// duong tv start code

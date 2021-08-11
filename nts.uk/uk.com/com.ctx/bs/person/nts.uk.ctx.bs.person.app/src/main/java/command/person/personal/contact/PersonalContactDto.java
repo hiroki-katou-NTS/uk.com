@@ -1,27 +1,17 @@
 package command.person.personal.contact;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.ContactName;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.OtherContact;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.OtherContactAddress;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.PhoneNumber;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.Remark;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Command dto 個人連絡先
  */
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class PersonalContactDto implements PersonalContact.MementoSetter, PersonalContact.MementoGetter {
 
     /**

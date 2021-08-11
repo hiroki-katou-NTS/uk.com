@@ -59,7 +59,7 @@ public class TemporarilyReflectStampDailyAttd {
 	/**
 	 * 打刻を反映する
 	 */
-	public List<ErrorMessageInfo> reflectStamp(String companyId, Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+	public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
 			IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
 		
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
@@ -69,7 +69,7 @@ public class TemporarilyReflectStampDailyAttd {
 			// 組み合わせ区分＝直行？
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.DIRECT) {
 				// 出勤を反映する (Phản ánh 出勤)
-				reflectWork.reflectWork(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+				reflectWork.reflectWork(stamp, stampReflectRangeOutput, integrationOfDaily);
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
@@ -87,7 +87,7 @@ public class TemporarilyReflectStampDailyAttd {
 			// 組み合わせ区分＝直帰？
 			if (stamp.getType().getSetPreClockArt() != SetPreClockArt.BOUNCE) {
 				// 退勤を反映する （Phản ánh 退勤）
-				reflectLeavingWork.reflectLeaving(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+				reflectLeavingWork.reflectLeaving(stamp, stampReflectRangeOutput, integrationOfDaily);
 				if (!stamp.isReflectedCategory()) {
 					return listErrorMessageInfo;
 				}
@@ -104,21 +104,21 @@ public class TemporarilyReflectStampDailyAttd {
 		case GO_OUT://外出 or 戻り
 		case RETURN:
 			//外出・戻りを反映する (Phản ánh 外出・戻り)
-			reflectGoingOutAndReturn.reflect(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+			reflectGoingOutAndReturn.reflect(stamp, stampReflectRangeOutput, integrationOfDaily);
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
 			break;
 		case TEMPORARY_WORK://臨時開始 or 臨時終了
 		case TEMPORARY_LEAVING:
-			reflectTemporaryStartEnd.reflect(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+			reflectTemporaryStartEnd.reflect(stamp, stampReflectRangeOutput, integrationOfDaily);
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
 			break;
 		case BRARK: //退門Or入門
 		case OVER_TIME:
-			entranceAndExit.entranceAndExit(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+			entranceAndExit.entranceAndExit(stamp, stampReflectRangeOutput, integrationOfDaily);
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
@@ -126,15 +126,17 @@ public class TemporarilyReflectStampDailyAttd {
 		case PC_LOG_ON: //PCログオフOrPcログオン
 		case PC_LOG_OFF:
 			//PCログオン情報反映す
-			reflectPcLogonInfo.reflect(companyId, stamp, stampReflectRangeOutput, integrationOfDaily);
+			reflectPcLogonInfo.reflect(stamp, stampReflectRangeOutput, integrationOfDaily);
 			if (!stamp.isReflectedCategory()) {
 				return listErrorMessageInfo;
 			}
 			break;
 		case START_OF_SUPPORT:
 		case END_OF_SUPPORT:	
+		case SUPPORT:
+		case TEMPORARY_SUPPORT_WORK:
 			//応援開始 OR 応援終了　OR　応援出勤　OR 臨時+応援出勤
-		reflectStampSupport.reflect(companyId, stamp, integrationOfDaily, stampReflectRangeOutput);
+		reflectStampSupport.reflect(stamp, integrationOfDaily, stampReflectRangeOutput);
 			return listErrorMessageInfo;
 		default :
 			return listErrorMessageInfo;

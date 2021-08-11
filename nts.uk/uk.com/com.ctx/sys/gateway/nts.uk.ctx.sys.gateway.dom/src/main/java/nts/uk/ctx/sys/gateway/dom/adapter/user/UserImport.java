@@ -20,6 +20,9 @@ public class UserImport {
 	/** The user id. */
 	private String userId;
 	
+	/** The password. */
+	private String password;
+	
 	/** The login id. */
 	private String loginId;
 	

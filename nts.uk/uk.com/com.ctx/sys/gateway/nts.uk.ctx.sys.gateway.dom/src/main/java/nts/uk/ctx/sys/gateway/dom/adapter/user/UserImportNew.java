@@ -20,6 +20,9 @@ public class UserImportNew {
 	/** The user id. */
 	private String userId;
 
+	/** The password. */
+	private String password;
+
 	/** The login id. */
 	private String loginId;
 
@@ -38,21 +41,20 @@ public class UserImportNew {
 	/** The expiration date. */
 	private GeneralDate expirationDate;
 
-	public UserImportNew(
-			String userId, 
-			Optional<String> userName, 
-			Optional<String> mailAddress, 
-			String loginId, 
-			Optional<String> associatePersonId, 
-			String contractCode, 
-			GeneralDate expirationDate) {
+	/** The pass status. */
+	private int passStatus;
+
+	public UserImportNew(String userId, Optional<String> userName, Optional<String> mailAddress, String loginId, Optional<String> associatePersonId, String password,
+			 String contractCode, GeneralDate expirationDate, Integer passStatus) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.mailAddress = mailAddress;
 		this.loginId = loginId;
 		this.associatePersonId = associatePersonId ;
+		this.password = password;
 		this.contractCode = contractCode;
 		this.expirationDate = expirationDate;
+		this.passStatus = passStatus;
 	}
 }

@@ -5,22 +5,16 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataHours;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 
 /**
  * 休出管理データ
@@ -150,18 +144,5 @@ public class LeaveManagementData extends AggregateRoot {
 		domain.update(in);
 		
 		return domain;
-	}
-	
-	//[1] 休出の未相殺に変換する
-	public AccumulationAbsenceDetail convertSeqVacationState() {
-		val common = new AccuVacationBuilder(this.sID, this.comDayOffDate, OccurrenceDigClass.OCCURRENCE,
-				CreateAtr.FLEXCOMPEN.convertToMngData(true), this.getID())
-						.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(this.occurredDays.v()),
-								Optional.of(new AttendanceTime(this.occurredTimes.v()))))
-						.unbalanceNumber(new NumberConsecuVacation(this.unUsedDays,
-								Optional.of(new AttendanceTime(this.unUsedTimes.v()))))
-						.build();
-		return new UnbalanceVacation(this.expiredDate, this.subHDAtr, this.disapearDate, common, this.fullDayTime,
-				this.halfDayTime);
 	}
 }

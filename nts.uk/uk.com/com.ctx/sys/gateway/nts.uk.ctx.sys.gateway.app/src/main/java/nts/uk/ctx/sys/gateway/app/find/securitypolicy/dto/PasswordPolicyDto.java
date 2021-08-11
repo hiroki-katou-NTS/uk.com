@@ -15,8 +15,8 @@ public class PasswordPolicyDto {
 	public int historyCount;
 	public int lowestDigits;
 	public int validityPeriod;
-	public int alphabetDigit;
 	public int numberOfDigits;
 	public int symbolCharacters;
+	public int alphabetDigit;
 
 }

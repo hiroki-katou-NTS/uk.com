@@ -89,6 +89,11 @@
 							</div>
 
 						</div>
+
+						<com:ko-if
+							bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">
+									<span style="margin-left: -8px" data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
+						</com:ko-if>
 					</div>
 
 

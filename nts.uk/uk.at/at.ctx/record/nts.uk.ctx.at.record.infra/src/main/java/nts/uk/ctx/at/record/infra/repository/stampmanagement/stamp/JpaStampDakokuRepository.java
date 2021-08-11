@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.record.infra.entity.stamp.stampcard.KrcmtStampCard;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStamp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -88,6 +89,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " INNER JOIN KrcmtStampCard e ON e.cardNo = s.pk.cardNumber AND e.contractCd = s.pk.contractCode "
 			+ " where s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
+			+ " and s.cid = :cid"
 			+ " and s.pk.cardNumber in :listCard"
 			+ " AND s.pk.contractCode = :contractCode "
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
@@ -312,11 +314,12 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	}
 	
 	@Override
-	public List<Stamp> getByDateTimeperiod(List<String> listCard, GeneralDateTime startDate, GeneralDateTime endDate) {
+	public List<Stamp> getByDateTimeperiod(List<String> listCard,String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
 		String contractCode = AppContexts.user().contractCode();
 		List<Stamp> data =  this.queryProxy().query(GET_STAMP_BY_DATEPERIOD_AND_CARDS_2, KrcdtStamp.class)
 				.setParameter("startStampDate", startDate)
 				.setParameter("endStampDate", endDate)
+				.setParameter("cid", companyId)
 				.setParameter("listCard", listCard)
 				.setParameter("contractCode", contractCode)
 				.getList(x -> toDomain(x));

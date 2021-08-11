@@ -50,7 +50,7 @@ public class SamlWs extends WebService {
 	 * 
 	 * @param request
 	 * 
-	 * ※Idpから叩いてもらう
+	 *                ※Idpから叩いてもらう
 	 */
 	@POST
 	@Path("validateandlogin")

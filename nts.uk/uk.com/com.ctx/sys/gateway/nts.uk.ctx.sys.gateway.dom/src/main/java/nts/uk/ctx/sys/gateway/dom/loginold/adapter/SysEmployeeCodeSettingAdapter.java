@@ -6,7 +6,7 @@ package nts.uk.ctx.sys.gateway.dom.loginold.adapter;
 
 import java.util.Optional;
 
-import nts.uk.ctx.sys.gateway.dom.login.password.EmployeeCodeSettingImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeCodeSettingImport;
 
 /**
  * The Interface EmployeeCodeSettingAdapter.

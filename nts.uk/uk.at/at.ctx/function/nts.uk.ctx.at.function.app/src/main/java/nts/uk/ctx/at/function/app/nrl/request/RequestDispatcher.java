@@ -67,7 +67,6 @@ public class RequestDispatcher {
 		RequestMapper.put(Command.WORKTYPE_INFO.Request, WorkTypeInfoRequest.class);
 		RequestMapper.put(Command.TR_REMOTE.Request, SendToNRLRemote.class);
 		RequestMapper.put(Command.APPLICATION_INFO.Request, ApplicationReasonRequest.class);
-		RequestMapper.put(Command.UK_SWITCH_MODE.Request, DateTimeSwitchUKModeRequest.class);
 	}
 	
 	/**
@@ -108,7 +107,7 @@ public class RequestDispatcher {
 			
 			String soh = frame.pickItem(Element.SOH);
 			if (!DefaultValue.SOH.equals(soh)) throw new InvalidFrameException();
-			String hdr = (frame.pickItem(Element.HDR)).toUpperCase();
+			String hdr = frame.pickItem(Element.HDR);
 
 			String nrlNo = frame.pickItem(Element.NRL_NO);
 			String macAddr = frame.pickItem(Element.MAC_ADDR);

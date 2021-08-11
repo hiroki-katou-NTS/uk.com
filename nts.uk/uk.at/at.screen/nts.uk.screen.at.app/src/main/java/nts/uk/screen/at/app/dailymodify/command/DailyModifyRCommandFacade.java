@@ -763,12 +763,6 @@ public class DailyModifyRCommandFacade {
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
 		boolean onlyErrorOld = true;
-		boolean chkChildNursing = lstItemEdits.stream()
-		    .filter(x -> (x.getItemId() == 759 || x.getItemId() == 760 || x.getItemId() == 761 || x.getItemId() == 762))
-		    .findFirst().isPresent();
-		boolean chkLongTermCare = lstItemEdits.stream()
-	            .filter(x -> (x.getItemId() == 763 || x.getItemId() == 764 || x.getItemId() == 765 || x.getItemId() == 766))
-	            .findFirst().isPresent();
 		for (String emp : employeeIds) {
 			// employeeIds.stream().forEach(emp -> {
 			List<IntegrationOfDaily> domainDailyEditAll = dailyDtoEditAll.stream()
@@ -794,8 +788,7 @@ public class DailyModifyRCommandFacade {
 					TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 							new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
 							new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false,
-							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime(), 
-							Optional.of(chkChildNursing), Optional.of(chkLongTermCare));
+							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime());
 					// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 					lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				}
@@ -807,7 +800,7 @@ public class DailyModifyRCommandFacade {
 				TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 						new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
 						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false, lstAttendanceTimeData,
-						lstWorkInfor, optMonthlyData, Optional.of(chkChildNursing), Optional.of(chkLongTermCare));
+						lstWorkInfor, optMonthlyData);
 				lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 			}

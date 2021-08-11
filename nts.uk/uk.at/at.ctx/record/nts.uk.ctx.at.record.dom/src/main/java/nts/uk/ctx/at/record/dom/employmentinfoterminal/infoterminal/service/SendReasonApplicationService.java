@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.val;
 import nts.uk.ctx.at.record.dom.adapter.application.setting.ApplicationReasonRc;
-import nts.uk.ctx.at.record.dom.adapter.application.setting.HolidayAppTypeRC;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.NRHelper;
@@ -31,7 +29,7 @@ public class SendReasonApplicationService {
 
 		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
 
-		if (!requestSetting.isPresent())
+		if (!requestSetting.isPresent() || requestSetting.get().isApplicationReason())
 			return Collections.emptyList();
 
 		List<ApplicationReasonRc> lstAppReason = require.getReasonByAppType(requestSetting.get().getCompanyId().v(),
@@ -45,48 +43,46 @@ public class SendReasonApplicationService {
 	}
 
 	private static List<SendReasonApplication> createAppReasonNo(ApplicationReasonRc appType) {
-		
-		val reasonTemp = appType.reasonTemp.stream().filter(x -> x.getLeft() <=10 && x.getLeft() >= 1).collect(Collectors.toList());
+
 		switch (appType.appType) {
 		case OVER_TIME_APPLICATION:
-			return reasonTemp.stream()
+			return appType.reasonTemp.stream()
 					.map(x -> new SendReasonApplication(String.valueOf(10 + x.getLeft()), x.getRight()))
 					.collect(Collectors.toList());
 
 		case ABSENCE_APPLICATION:
-			if (appType.getOpHolidayAppType().get() == HolidayAppTypeRC.ANNUAL_PAID_LEAVE.value)
-				return reasonTemp.stream()
-						.map(x -> new SendReasonApplication(String.valueOf(20 + x.getLeft()), x.getRight()))
-						.collect(Collectors.toList());
-			else return new ArrayList<>();
+
+			return appType.reasonTemp.stream()
+					.map(x -> new SendReasonApplication(String.valueOf(20 + x.getLeft()), x.getRight()))
+					.collect(Collectors.toList());
 
 		case WORK_CHANGE_APPLICATION:
 
-			return reasonTemp.stream()
+			return appType.reasonTemp.stream()
 					.map(x -> new SendReasonApplication(String.valueOf(30 + x.getLeft()), x.getRight()))
 					.collect(Collectors.toList());
 
 		case BREAK_TIME_APPLICATION:
 
-			return reasonTemp.stream()
+			return appType.reasonTemp.stream()
 					.map(x -> new SendReasonApplication(String.valueOf(40 + x.getLeft()), x.getRight()))
 					.collect(Collectors.toList());
 
 		case STAMP_APPLICATION:
 
-			return reasonTemp.stream()
+			return appType.reasonTemp.stream()
 					.map(x -> new SendReasonApplication(String.format("%02d", x.getLeft()), x.getRight()))
 					.collect(Collectors.toList());
 
 		case ANNUAL_HOLIDAY_APPLICATION:
 
-			return reasonTemp.stream()
+			return appType.reasonTemp.stream()
 					.map(x -> new SendReasonApplication(String.valueOf(60 + x.getLeft()), x.getRight()))
 					.collect(Collectors.toList());
 
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 
-			return reasonTemp.stream()
+			return appType.reasonTemp.stream()
 					.map(x -> new SendReasonApplication(String.valueOf(50 + x.getLeft()), x.getRight()))
 					.collect(Collectors.toList());
 		default:

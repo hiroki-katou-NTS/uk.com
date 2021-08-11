@@ -3,8 +3,6 @@ package nts.uk.ctx.sys.gateway.dom.outage;
 import java.util.Optional;
 
 import lombok.val;
-import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
-import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 /**

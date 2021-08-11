@@ -54,7 +54,7 @@ public class FrameItemArranger extends ItemSequence<Frame> {
 				add(new Content(DefaultValue.DATA_TYPE, dataItems));
 			}
 		}; 
-		return new Frame(String.format("%02d", Integer.parseInt(command.Response)), contents);
+		return new Frame(Integer.parseInt(command.Response, 16) + "", contents);
 	}
 	
 	/**

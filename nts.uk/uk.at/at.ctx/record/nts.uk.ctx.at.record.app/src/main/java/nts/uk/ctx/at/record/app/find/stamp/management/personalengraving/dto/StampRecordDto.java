@@ -266,10 +266,10 @@ public class StampRecordDto {
 			return ContentsStampType.END_SUPPORT.value;
 		}
 		// 16 出勤+応援 None None False => 退勤系
-//		if (changeClockArt == ChangeClockArt.SUPPORT.value && changeCalArt == ChangeCalArt.NONE.value
-//				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
-//			return ContentsStampType.WORK_SUPPORT.value;
-//		}
+		if (changeClockArt == ChangeClockArt.SUPPORT.value && changeCalArt == ChangeCalArt.NONE.value
+				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
+			return ContentsStampType.WORK_SUPPORT.value;
+		}
 		// 17 応援開始 早出 NONE False => 出勤系
 		if (changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {

@@ -53,13 +53,13 @@ public class SendWorkTimeNameService {
 		return lstWorkTime.stream().map(x -> {
 			PredetemineTimeSetting setting = mapPreTimeSet.getOrDefault(x.getWorktimeCode().v(), null);
 			if (setting == null || setting.getPrescribedTimezoneSetting().getLstTimezone().isEmpty())
-				return new SendWorkTimeName(x.getWorktimeCode().v(), x.getWorkTimeDisplayName().getWorkTimeAbName().v(),
+				return new SendWorkTimeName(x.getWorktimeCode().v(), x.getWorkTimeDisplayName().getWorkTimeName().v(),
 						"");
 			Integer startTime = setting.getPrescribedTimezoneSetting().getLstTimezone().get(0).getStart().v();
 
 			Integer endTime = setting.getPrescribedTimezoneSetting().getLstTimezone().get(0).getEnd().v();
 
-			return new SendWorkTimeName(x.getWorktimeCode().v(), x.getWorkTimeDisplayName().getWorkTimeAbName().v(),
+			return new SendWorkTimeName(x.getWorktimeCode().v(), x.getWorkTimeDisplayName().getWorkTimeName().v(),
 					NRHelper.toStringNR(startTime, endTime));
 		}).sorted((x, y) -> x.getWorkTimeNumber().compareTo(y.getWorkTimeNumber())).collect(Collectors.toList());
 	}

@@ -92,15 +92,15 @@ public class SysSharedEmployeeAdapterImple implements SysEmployeeAdapter {
 		
 		EmployeeDataMngInfoExport infoExport = optEmployeeDataMngInfoExport.get();
 		
-		return Optional.of(new EmployeeDataMngInfoImport(
-				infoExport.getCompanyId(),
-				infoExport.getPersonId(),
-				infoExport.getEmployeeId(),
-				infoExport.getEmployeeCode(),
-				this.convertToDelAtr(infoExport.getDeletedStatus()),
-				infoExport.getDeleteDateTemporary(),
-				infoExport.getRemoveReason(),
-				infoExport.getExternalCode()));
+		return Optional.of(EmployeeDataMngInfoImport.builder()
+				.companyId(infoExport.getCompanyId())
+				.personId(infoExport.getPersonId()).employeeId(infoExport.getEmployeeId())
+				.employeeCode(infoExport.getEmployeeCode())
+				.deletedStatus(this.convertToDelAtr(infoExport.getDeletedStatus()))
+				.deleteDateTemporary(infoExport.getDeleteDateTemporary())
+				.removeReason(infoExport.getRemoveReason())
+				.externalCode(infoExport.getExternalCode())
+				.build());
 	}
 	
 	/**

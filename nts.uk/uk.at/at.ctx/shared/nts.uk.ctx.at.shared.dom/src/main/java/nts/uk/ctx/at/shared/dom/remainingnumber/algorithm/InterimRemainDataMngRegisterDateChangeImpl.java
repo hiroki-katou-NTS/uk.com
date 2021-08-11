@@ -16,10 +16,15 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.interim.InterimHolidayMng;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.interim.InterimHolidayMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.linkdatareg.LinkDataRegister;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.interim.TmpHolidayOver60hMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
@@ -54,6 +59,10 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	@Inject
 	private TmpResereLeaveMngRepository tmpResereLeave;
 	@Inject
+	private InterimRecAbasMngRepository recAbsRepos;
+	@Inject
+	private InterimBreakDayOffMngRepository breakDayOffRepos;
+	@Inject
 	private InterimSpecialHolidayMngRepository specialHoliday;
 	@Inject
 	private RemainNumberTempRequireService requireService;
@@ -69,8 +78,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private CompensLeaveComSetRepository leaveSetRepos;
 	@Inject
 	private ComSubstVacationRepository subRepos;
-	@Inject
-	private LinkDataRegisterImpl linkDataRegisterImpl;
 
 	@Override
 	public void registerDateChange(String cid, String sid, List<GeneralDate> lstDate) {
@@ -133,30 +140,14 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	private void regisInterimDataProcess(String cid, String sid,
 			List<InterimRemain> interimRemains, List<GeneralDate> lstDate) {
 
-		//逐次発生の休暇以外の登録処理
-		registProcOtherVacationDetail(cid, sid, interimRemains, lstDate);
-		
-		lstDate.sort((x, y) -> x.compareTo(y));
-		//逐次発生の休暇の登録処理
-		LinkDataRegister.process(linkDataRegisterImpl.createImpl(), sid, lstDate,
-				new DatePeriod(lstDate.get(0), lstDate.get(lstDate.size() - 1)), interimRemains).run();;
-
-	}
-
-	//逐次発生の休暇以外の登録処理
-	public void registProcOtherVacationDetail(String cid, String sid,
-			List<InterimRemain> interimRemains, List<GeneralDate> lstDate) {
-		//List<年月日>の「暫定残数管理データ」を全て削除
+		//対象年月日の「暫定残数管理データ」を全て削除
 		deleteAllData(cid, sid, lstDate);
-		
-		//input.暫定データをループ
+
 		interimRemains.forEach(x -> {
-			//暫定データの登録処理
 			updateInterimData(cid, sid, x);
 		});
-		
 	}
-	
+
 	/**
 	 *
 	 * @param cid
@@ -182,6 +173,26 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 			InterimSpecialHolidayMng special = (InterimSpecialHolidayMng) interimRemain;
 			this.specialHoliday.persistAndUpdateInterimSpecialHoliday(special);
 			break;
+		case PAUSE:
+			//暫定振休データの登録
+			InterimAbsMng abs = (InterimAbsMng) interimRemain;
+			this.recAbsRepos.persistAndUpdateInterimAbsMng(abs);
+			break;
+		case PICKINGUP:
+			//暫定振出データの登録
+			InterimRecMng rec = (InterimRecMng) interimRemain;
+			this.recAbsRepos.persistAndUpdateInterimRecMng(rec);
+			break;
+		case SUBHOLIDAY:
+			//暫定代休データの登録
+			InterimDayOffMng dayOff = (InterimDayOffMng) interimRemain;
+			this.breakDayOffRepos.persistAndUpdateInterimDayOffMng(dayOff);
+			break;
+		case BREAK:
+			// 暫定休出データの登録
+			InterimBreakMng breakMng = (InterimBreakMng) interimRemain;
+			this.breakDayOffRepos.persistAndUpdateInterimBreakMng(breakMng);
+			break;
 		case SIXTYHOUR:
 			// 暫定60H超休データの登録
 			TmpHolidayOver60hMng dataMng = (TmpHolidayOver60hMng) interimRemain;
@@ -202,8 +213,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 			TempCareManagement tempCareManagement = (TempCareManagement) interimRemain;
 			this.careManagementRepo.persistAndUpdate(tempCareManagement);
 			break;
-		default:
-			break;
 			}
 		}
 
@@ -222,6 +231,14 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 			this.tmpResereLeave.deleteSidPeriod(sid, new DatePeriod(day, day));
 			// 特別休暇暫定データをDeleteする
 			this.specialHoliday.deleteSpecialHolidayBySidAndYmd(sid, day);
+			// 暫定振休管理データをDeleteする
+			this.recAbsRepos.deleteInterimAbsMngBySidAndYmd(sid, day);
+			// 暫定振出管理データをDeleteする
+			this.recAbsRepos.deleteInterimRecMngBySidAndYmd(sid, day);
+			// 暫定代休管理データをDeleteする
+			this.breakDayOffRepos.deleteInterimDayOffMngBySidAndYmd(sid, day);
+			// 暫定休出管理データをDeleteする
+			this.breakDayOffRepos.deleteInterimBreakMngBySidAndYmd(sid, day);
 			// 暫定60H超休管理データをDelete
 			this.over60hMngRepository.deleteBySidAndYmd(sid, day);
 			// 暫定公休管理データをDeleteする

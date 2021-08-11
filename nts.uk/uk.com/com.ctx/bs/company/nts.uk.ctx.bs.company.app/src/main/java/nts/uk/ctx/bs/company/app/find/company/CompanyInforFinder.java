@@ -1,7 +1,6 @@
 package nts.uk.ctx.bs.company.app.find.company;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -26,19 +25,20 @@ public class CompanyInforFinder {
 	 * @return
 	 * author Hoang Yen
 	 */
-	private AddInforDto fromDomainAdd(Optional<AddInfor> add){
+	private AddInforDto fromDomainAdd(AddInfor add){
 		AddInforDto adddto = new AddInforDto();
-		if(!add.isPresent()){
-			return null;
+		if(add == null){
+			adddto = null;
+			return adddto;
 		}
-		adddto.setCompanyId(add.get().getCompanyId());
-		adddto.setFaxNum(add.get().getFaxNum().v());
-		adddto.setAdd_1(add.get().getAdd_1().v());
-		adddto.setAdd_2(add.get().getAdd_2().v());
-		adddto.setAddKana_1(add.get().getAddKana_1().v());
-		adddto.setAddKana_2(add.get().getAddKana_2().v());
-		adddto.setPostCd(add.get().getPostCd().v());
-		adddto.setPhoneNum(add.get().getPhoneNum().v());
+		adddto.setCompanyId(add.getCompanyId());
+		adddto.setFaxNum(add.getFaxNum().v());
+		adddto.setAdd_1(add.getAdd_1().v());
+		adddto.setAdd_2(add.getAdd_2().v());
+		adddto.setAddKana_1(add.getAddKana_1().v());
+		adddto.setAddKana_2(add.getAddKana_2().v());
+		adddto.setPostCd(add.getPostCd().v());
+		adddto.setPhoneNum(add.getPhoneNum().v());
 		return adddto;
 	}
 	
@@ -52,18 +52,12 @@ public class CompanyInforFinder {
 		return this.comRep.findAll(contractCd)
 							.stream()
 							.map(x -> {
-								return new CompanyInforDto( x.getCompanyCode().v(),
-																				   x.getCompanyName().v(),
-																				   x.getCompanyId(),
-																				   x.getStartMonth().value,
-																				   x.getIsAbolition().value,
-																				   x.getRepname().isPresent() ? x.getRepname().get().v() : null,
-																				   x.getRepjob().isPresent() ? x.getRepjob().get().v() : null,
-																				   x.getComNameKana().get().v(),
-																				   x.getShortComName().get().v(),
-																				   contractCd, 
-																				   x.getTaxNo().isPresent() ? x.getTaxNo().get().v() : null,
-																				   fromDomainAdd(x.getAddInfor()));
+								return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
+															x.getCompanyId(), x.getStartMonth().value,
+															x.getIsAbolition().value, x.getRepname() != null ? x.getRepname().v() : null,
+															x.getRepjob() != null ? x.getRepjob().v() : null, x.getComNameKana().v(),
+															x.getShortComName().v(), contractCd, 
+															x.getTaxNo() != null ? x.getTaxNo().v() : null, fromDomainAdd(x.getAddInfor()));
 							}).collect(Collectors.toList());
 	}
 	
@@ -76,13 +70,12 @@ public class CompanyInforFinder {
 		return this.comRep.find(companyId).map(x -> {
 			return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),
 					x.getCompanyId(), x.getStartMonth().value,
-					x.getIsAbolition().value,
-					x.getRepname().isPresent() ? x.getRepname().get().v() : null,
-					x.getRepjob().isPresent() ? x.getRepjob().get().v() : null, 
-					x.getComNameKana().isPresent( )? x.getComNameKana().get().v():null,
-					x.getShortComName().isPresent() ? x.getShortComName().get().v() : null, 
+					x.getIsAbolition().value, x.getRepname() != null ? x.getRepname().v() : null,
+					x.getRepjob() != null ? x.getRepjob().v() : null, 
+					x.getComNameKana() != null? x.getComNameKana().v():null,
+					x.getShortComName() != null ? x.getShortComName().v() : null, 
 					x.getContractCd().v(), 
-					x.getTaxNo().isPresent() ? x.getTaxNo().get().v() : null, 
+					x.getTaxNo() != null ? x.getTaxNo().v() : null, 
 					fromDomainAdd(x.getAddInfor()));
 		}).orElse(null);
 	}

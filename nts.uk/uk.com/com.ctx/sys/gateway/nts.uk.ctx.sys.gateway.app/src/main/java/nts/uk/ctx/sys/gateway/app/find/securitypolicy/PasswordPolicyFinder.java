@@ -22,22 +22,23 @@ public class PasswordPolicyFinder {
 	}
 	
 	public PasswordPolicyDto getPasswordPolicy(String contractCode) {
-		PasswordPolicy passwordPolicy = this.passwordPolicyRepository
+		Optional<PasswordPolicy> passwordPolicyOptional = this.passwordPolicyRepository
 				.getPasswordPolicy(new ContractCode(contractCode));
-		
-		return this.toDto(passwordPolicy);
+		if (passwordPolicyOptional.isPresent()) {
+			return this.toDto(passwordPolicyOptional.get());
+		} else {
+			return null;
+		}
 	}
 
 	private PasswordPolicyDto toDto(PasswordPolicy passwordPolicy) {
 		return new PasswordPolicyDto(
 				passwordPolicy.getNotificationPasswordChange().v().intValue(), passwordPolicy.isLoginCheck(),
 				passwordPolicy.isInitialPasswordChange(), passwordPolicy.isUse(),
-				passwordPolicy.getHistoryCount().v().intValue(), 
-				passwordPolicy.getComplexityRequirement().getMinimumLength().v(),
-				passwordPolicy.getValidityPeriod().v().intValue(), 
-				passwordPolicy.getComplexityRequirement().getAlphabetDigits().v(),
-				passwordPolicy.getComplexityRequirement().getNumeralDigits().v(),
-				passwordPolicy.getComplexityRequirement().getSymbolDigits().v());
+				passwordPolicy.getHistoryCount().v().intValue(), passwordPolicy.getComplexityRequirement().getMinimumLength().v(),
+				passwordPolicy.getValidityPeriod().v().intValue(), passwordPolicy.getComplexityRequirement().getNumeralDigits().v(),
+				passwordPolicy.getComplexityRequirement().getSymbolDigits().v(),
+				passwordPolicy.getComplexityRequirement().getNumeralDigits().v());
 	}
 
 }

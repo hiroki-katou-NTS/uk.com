@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
  */
 public class GetTargetDateRecordApplication {
 
-	public static Pair<Optional<GeneralDate>, Optional<Stamp>> getTargetDate(Require require, String cid, 
+	public static Pair<Optional<GeneralDate>, Optional<Stamp>> getTargetDate(Require require,
 			AppRecordImageShare applicaton) {
 		// 打刻カード番号を取得する
 		List<StampCard> lstCard = require.getLstStampCardBySidAndContractCd(applicaton.getEmployeeID());
@@ -52,7 +52,7 @@ public class GetTargetDateRecordApplication {
 						SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
 				new RefectActualResult(null, null, null), Optional.empty());
 
-		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, cid, applicaton.getEmployeeID(),
+		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, applicaton.getEmployeeID(),
 				stamp);
 		return Pair.of(date, Optional.of(stamp));
 

@@ -68,7 +68,7 @@ public class CorrectSupportDataWork {
 			
 			// 取得できる
 			if(leavingWork.isPresent()) {
-				ReflectionAtr reflectionAtr = this.supportCorrectWork(companyId, leavingWork, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
+				ReflectionAtr reflectionAtr = this.supportCorrectWork(leavingWork, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
 				// 反映状態を確認する - 反映済みの場合
 				if(reflectionAtr == ReflectionAtr.REFLECTED) {
 					return new SupportDataWork(integrationOfDaily, null);
@@ -84,7 +84,7 @@ public class CorrectSupportDataWork {
 			leavingWork2 = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
 			
 			if(leavingWork2.isPresent()) {
-				this.supportCorrectWork(companyId, leavingWork2, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
+				this.supportCorrectWork(leavingWork2, workinfo.getStampReflectRangeOutput(), integrationOfDaily);
 			}
 			
 		}
@@ -92,7 +92,7 @@ public class CorrectSupportDataWork {
 	}
 	
 	// 出退勤で応援補正する
-	public ReflectionAtr supportCorrectWork(String cid, Optional<TimeLeavingWork> leavingWork,
+	public ReflectionAtr supportCorrectWork(Optional<TimeLeavingWork> leavingWork,
 			StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily) {
 		// 出退勤の出勤を確認する
 		// Nullじゃない場合
@@ -104,7 +104,7 @@ public class CorrectSupportDataWork {
 							leavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() : null, 
 					Optional.empty(),
 					Optional.empty());
-			workReflection.supportWorkReflect(cid, param, integrationOfDaily, stampReflectRangeOutput);
+			workReflection.supportWorkReflect(param, integrationOfDaily, stampReflectRangeOutput);
 			// 「反映状態＝反映済み」を返す
 			return ReflectionAtr.REFLECTED;
 			// Nullの場合
@@ -118,7 +118,7 @@ public class CorrectSupportDataWork {
 						leavingWork.get().getLeaveStamp().get().getStamp().isPresent() ? 
 								leavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() : null,
 						Optional.empty(), Optional.empty()); // TODO
-				workReflection.supportWorkReflect(cid, param, integrationOfDaily, stampReflectRangeOutput);
+				workReflection.supportWorkReflect(param, integrationOfDaily, stampReflectRangeOutput);
 				// 「反映状態＝反映済み」を返す
 				return ReflectionAtr.REFLECTED;
 				// Nullの場合

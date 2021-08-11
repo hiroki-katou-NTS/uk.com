@@ -13,8 +13,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 @Setter
@@ -50,12 +48,4 @@ public class InterimEachData {
 	List<InterimRemain> resereMng = new ArrayList<>();
 	List<TmpResereLeaveMng> resereLeaveData = new ArrayList<>();
 	
-	/**
-     * 暫定子の看護休暇データ
-     */
-    List<TempChildCareManagement> childCareData = new ArrayList<TempChildCareManagement>();
-    /**
-     * 暫定介護休暇データ
-     */
-    List<TempCareManagement> careData = new ArrayList<TempCareManagement>();
 }

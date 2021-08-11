@@ -54,7 +54,7 @@ public class SendPerInfoNameService {
 				.collect(Collectors.toMap(x -> x.getSid(), x -> x, (x, y) -> x));
 		return stampCards.stream().map(x -> {
 			EmployeeDto emp = mapEmpDto.getOrDefault(x.getEmployeeId(), null);
-			return new SendPerInfoName(x.getStampNumber().v(),
+			return new SendPerInfoName(x.getStampCardId(),
 					emp == null ? ""
 							: emp.getBussinessName().length() > 20 ? emp.getBussinessName().substring(0, 20)
 									: emp.getBussinessName(),

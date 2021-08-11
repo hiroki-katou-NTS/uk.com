@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,7 +70,7 @@ public class PreUpdateErrorCheck {
 						.getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
 
 		//振休残数不足チェック
-//		 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
+		 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
 	 
 		 if(rec.isPresent()) {
 
@@ -85,9 +84,7 @@ public class PreUpdateErrorCheck {
 					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
 					 null,
 					 null,
-					 displayInforWhenStarting.appDispInfoStartup.toDomain(), 
-					 Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
-					 Optional.empty());
+					 displayInforWhenStarting.appDispInfoStartup.toDomain());
 		 }
 		 if(abs.isPresent()) {
 			 //アルゴリズム「登録前共通処理（更新）」を実行する
@@ -100,9 +97,7 @@ public class PreUpdateErrorCheck {
 					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
 					 null,
 					 null,
-					 displayInforWhenStarting.appDispInfoStartup.toDomain(), 
-					 Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
-					 Optional.empty());
+					 displayInforWhenStarting.appDispInfoStartup.toDomain());
 		 }
 		
 	}

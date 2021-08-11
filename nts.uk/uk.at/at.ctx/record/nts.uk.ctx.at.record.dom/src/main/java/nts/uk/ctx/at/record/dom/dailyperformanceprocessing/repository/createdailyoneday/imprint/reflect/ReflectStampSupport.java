@@ -16,6 +16,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * alg : 打刻応援反映する
@@ -39,7 +40,7 @@ public class ReflectStampSupport {
 	 * @param integrationOfDaily-日別勤怠(Work)
 	 * @param stampReflectRangeOutput-打刻反映範囲
 	 */
-	public void reflect(String cid, Stamp stamp, IntegrationOfDaily integrationOfDaily,
+	public void reflect(Stamp stamp, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
 		
 		// 勤怠打刻を取得する
@@ -50,6 +51,7 @@ public class ReflectStampSupport {
 		
 		// 勤務場所と職場を取得する
 		WorkInformationTemporary workInfoStampTempo = null;
+		String cid = AppContexts.user().companyId();
 		if(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent()){
 			workInfoStampTempo = stamp.getRefActualResults().getWorkInforStamp().get().getWorkInformation(supportCardRepo, empInfoTerminalRepo, cid);
 		}
@@ -61,7 +63,7 @@ public class ReflectStampSupport {
 		param.setLocationCode(workInfoStampTempo == null ? Optional.empty() : workInfoStampTempo.getWorkLocationCD()); // 場所コード＝勤務先情報Temporary。場所コード		
 		param.setWorkplaceId(workInfoStampTempo  == null ? Optional.empty() : workInfoStampTempo.getWorkplaceID()); // 職場ID＝勤務先情報Temporary。職場ID
 		param.setStartAtr(startAtr); // 開始区分＝取得した開始区分
-		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(cid, param, integrationOfDaily, stampReflectRangeOutput);
+		ReflectionAtr reflectionAtr = supportWorkReflec.supportWorkReflect(param, integrationOfDaily, stampReflectRangeOutput);
 		
 		// 反映状態を確認する
 		if (reflectionAtr == ReflectionAtr.REFLECTED) {
