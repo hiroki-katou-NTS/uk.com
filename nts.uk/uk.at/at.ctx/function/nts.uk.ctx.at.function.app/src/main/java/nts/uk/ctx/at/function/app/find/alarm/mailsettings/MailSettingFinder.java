@@ -98,9 +98,9 @@ public class MailSettingFinder {
                         item.getPersonalManagerClassify().value,
                         item.getContentMailSettings().isPresent() ? ContentMailSettingDto.create(item.getContentMailSettings().get()) : null,
                         item.getSenderAddress().isPresent() ? item.getSenderAddress().get().v() : null,
-                        BooleanUtils.toInteger(item.isSendResult())
+                        item.isSendResult()
                 ),
-                BooleanUtils.toInteger(item.isAlreadyConfigured())
+                item.isAlreadyConfigured()
         )).collect(Collectors.toList());
 
         // Get AlarmMailSendingRole

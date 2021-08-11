@@ -17,12 +17,12 @@ public class AlarmMailSendingRoleCommand {
     /** ロール設定
      * 0: false, 1: true
      * */
-    private int roleSetting;
+    private boolean roleSetting;
 
     /** マスタチェック結果を就業担当へ送信
      * 0: false, 1: true
      * */
-    private int sendResult;
+    private boolean sendResult;
 
     /** ロールID */
     private List<String> roleIds;
@@ -30,8 +30,8 @@ public class AlarmMailSendingRoleCommand {
     public AlarmMailSendingRole toDomain() {
         return new AlarmMailSendingRole(
                 IndividualWkpClassification.of(this.individualWkpClassify),
-                BooleanUtils.toBoolean(this.roleSetting == 1),
-                BooleanUtils.toBoolean(this.sendResult == 1),
+                this.roleSetting,
+                this.sendResult,
                 roleIds
         );
     }

@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class AlarmExecutionMailSettingDto {
     private MailSettingInfo mailSettingInfo;
-    private int alreadyConfigured;
+    private boolean alreadyConfigured;
 }
 
 @AllArgsConstructor
@@ -38,5 +38,5 @@ class MailSettingInfo {
     /**
      * マスタチェック結果を就業担当へ送信
      */
-    private int sendResult;
+    private boolean sendResult;
 }
