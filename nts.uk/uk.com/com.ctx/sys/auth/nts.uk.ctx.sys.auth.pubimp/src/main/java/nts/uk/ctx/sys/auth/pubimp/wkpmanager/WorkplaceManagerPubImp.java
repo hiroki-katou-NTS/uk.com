@@ -44,4 +44,16 @@ public class WorkplaceManagerPubImp implements WorkplaceManagerPub {
             x.getHistoryPeriod()
         )).collect(Collectors.toList());
     }
+
+    @Override
+    public List<WorkplaceManagerExport> getWkpManagerListByWkpId(String workplaceId) {
+        List<WorkplaceManager> workplaceManagers = repository.getWkpManagerListByWkpId(workplaceId);
+
+        return workplaceManagers.stream().map(x -> new WorkplaceManagerExport(
+                x.getWorkplaceManagerId(),
+                x.getEmployeeId(),
+                x.getWorkplaceId(),
+                x.getHistoryPeriod()
+        )).collect(Collectors.toList());
+    }
 }

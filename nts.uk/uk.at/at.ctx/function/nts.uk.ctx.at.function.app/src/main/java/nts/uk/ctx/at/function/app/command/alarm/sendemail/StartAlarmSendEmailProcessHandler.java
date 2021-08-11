@@ -28,10 +28,10 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 
 	@Inject
 	private SendEmailService sendEmailService;
-	
+
 	@Inject
 	private MailSettingNormalRepository mailSettingNormalRepository;
-	
+
 	@Inject
 	private MailServerAdapter mailServerAdapter;
 

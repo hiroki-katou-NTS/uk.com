@@ -30,4 +30,19 @@ public class AlarmMailSettingsAdapterImpl implements AlarmMailSettingsAdapter {
         }
         return roleList.stream().map(x -> (new MailExportRolesDto(x.getRoleId(), x.getRoleName()))).collect(Collectors.toList());
     }
+
+    /**
+     * find by company
+     *
+     * @param companyId
+     * @return Role
+     */
+    @Override
+    public List<MailExportRolesDto> findByCompanyId(String companyId) {
+        val roleList = roleExportRepo.findByCompanyId(companyId);
+        if (roleList == null || roleList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return roleList.stream().map(x -> (new MailExportRolesDto(x.getRoleId(), x.getRoleName()))).collect(Collectors.toList());
+    }
 }

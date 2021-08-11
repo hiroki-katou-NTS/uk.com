@@ -6,4 +6,11 @@ import java.util.List;
 
 public interface AlarmMailSettingsAdapter {
     List<MailExportRolesDto> getRoleNameList(List<String> lstRoleId);
+    /**
+     * find by company
+     *
+     * @param companyId
+     * @return Role
+     */
+    List<MailExportRolesDto> findByCompanyId(String companyId);
 }
