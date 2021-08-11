@@ -9,10 +9,19 @@
 
 .custom-table {
     padding: 15px 0px 15px 0px;
-    width: 100%;
+    width: 71%;
 }
 
 .buton-configure {
     width: 80px;
     height: 30px;
+}
+
+.tabs-panel.has-content {
+    width: 100%;
+    overflow: hidden;
+}
+
+.width-70 {
+width: 70px;
 }
