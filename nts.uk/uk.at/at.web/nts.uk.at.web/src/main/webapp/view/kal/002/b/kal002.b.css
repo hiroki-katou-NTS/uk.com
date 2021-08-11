@@ -1,0 +1,57 @@
+.title {
+    margin-top: 6px;
+    margin-bottom: 20px;
+    margin-left: 35px;
+}
+
+.setMail {
+    margin: 0 0 30px 36px;
+}
+
+.setMail .left {
+    float: left;
+    width: 240px;
+}
+
+.setMail .right {
+    float: left;
+}
+
+.setMail .option .person-admin {
+    margin-right: 30px;
+}
+
+.setMail .option .configured {
+    margin-left: 48px;
+}
+
+.setMail .option {
+    margin-bottom: 20px;
+}
+
+.setMail .option span {
+    width: 70px;
+    display: inline-block;
+}
+
+.setMail .option button {
+    padding: 4px 25px;
+}
+
+.custom-table {
+    padding: 15px 0px 15px 0px;
+    width: 100%;
+}
+
+.custom-cell {
+    width: 17%;
+}
+
+.custom-btn {
+    width: 80px;
+    height: 29px;
+}
+
+.tab-2 {
+    margin-left: 36px;
+}
