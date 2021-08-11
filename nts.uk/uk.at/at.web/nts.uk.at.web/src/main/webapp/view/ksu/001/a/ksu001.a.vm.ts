@@ -486,7 +486,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 
                 // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, viewMode, true);
+                let dataBindGrid = self.convertDataToGrid(data, viewMode);
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
@@ -637,7 +637,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, ViewMode.SHIFT, true);
+                let dataBindGrid = self.convertDataToGrid(data, ViewMode.SHIFT);
                 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, ViewMode.SHIFT);
@@ -689,7 +689,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart(ViewMode.SHORTNAME,false);
                 // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, ViewMode.SHORTNAME, true);
+                let dataBindGrid = self.convertDataToGrid(data, ViewMode.SHORTNAME);
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, ViewMode.SHORTNAME);
                 
@@ -736,7 +736,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart(ViewMode.TIME, false);
                 // set data Grid
-                let dataBindGrid = self.convertDataToGrid(data, ViewMode.TIME, true);
+                let dataBindGrid = self.convertDataToGrid(data, ViewMode.TIME);
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, ViewMode.TIME);
 
@@ -1027,6 +1027,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listPersonalConditions = data.listPersonalConditions;
             self.displayControlPersonalCond = data.displayControlPersonalCond;
             self.listDateInfo = data.listDateInfo;
+            
+            self.cloneDataSource();
         }
 
         // binding ket qua cua <<ScreenQuery>> 初期起動の情報取得 
@@ -1101,7 +1103,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         // convert data lấy từ server để đẩy vào Grid
-        private convertDataToGrid(data: any, viewMode: string, cloneDs : boolean) {
+        private convertDataToGrid(data: any, viewMode: string) {
             let self = this;
             let result = {};
             let leftmostDs        = [];
@@ -1825,9 +1827,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.keyGrid = '0';
                 self.rowIndexOfEmpLogin = 0;
-            }
-            if(cloneDs){
-                self.cloneDataSource();    
             }
             return result;
         }
@@ -4276,7 +4275,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     aggreratePersonal: data.aggreratePersonal,
                     aggrerateWorkplace: data.aggrerateWorkplace
                 }
-                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody(), true);
+                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
                 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
@@ -4339,7 +4338,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     aggreratePersonal: data.aggreratePersonal,
                     aggrerateWorkplace: data.aggrerateWorkplace
                 }
-                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody(), true);
+                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
                 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
@@ -4499,7 +4498,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 aggreratePersonal: self.dataAggreratePersonal,
                 aggrerateWorkplace: self.dataAggrerateWorkplace
             }
-            self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody(), false);
+            self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
         }
         
         updateDataBindGridBase() {
@@ -4514,7 +4513,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 aggreratePersonal: self.dataAggreratePersonal,
                 aggrerateWorkplace: self.dataAggrerateWorkplace
             }
-            self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody(), true);
+            self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
         }
         
         shiftPalletControlEnable() {
@@ -5391,7 +5390,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                   
                 self.saveDataGrid(data);
                 
-                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody(), true);
+                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
                 // updatelaiA1112
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
@@ -5513,7 +5512,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.enableCellsTime();
                     }
 
-                    let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody(), true);
+                    let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
 
                     self.updateExTableAfterSortEmp(dataBindGrid, self.selectedModeDisplayInBody(), self.userInfor.updateMode, true, true, true);
 
@@ -5902,8 +5901,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (self.userInfor.disPlayFormat == ViewMode.SHIFT) {
                         self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                     }
-                    self.updateDataBindGrid();
                     self.cloneDataSource();
+                    self.updateDataBindGrid();
                 }
 
                 nts.uk.ui.block.clear();
@@ -6006,7 +6005,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     aggreratePersonal: data.aggreratePersonal,
                     aggrerateWorkplace: data.aggrerateWorkplace
                 }
-                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody(), true);
+                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
@@ -6024,8 +6023,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         cloneDataSource() {
             let self = this;
-            self.listWorkScheduleWorkInforBase = _.clone(self.listWorkScheduleWorkInfor); 
-            self.listWorkScheduleShiftBase = _.clone(self.listWorkScheduleShift);    
+            self.listWorkScheduleWorkInforBase = _.cloneDeep(self.listWorkScheduleWorkInfor); 
+            self.listWorkScheduleShiftBase = _.cloneDeep(self.listWorkScheduleShift);    
         }
     }
 
