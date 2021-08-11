@@ -233,7 +233,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 maxWidth: 580,
-                maxRows: 15
+                maxRows: 10
             };
             //Fixing
             self.multiSelectedCode.subscribe((e) => {
