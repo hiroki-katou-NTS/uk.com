@@ -36,6 +36,7 @@ public class CareProcess {
 		
 		//介護情報更新
 		return AtomTask.of(RemainCareUpdating.updateRemainCare(require, employeeId, output))
+				//介護休暇暫定データ削除
 				.then(DeleteTempCare.deleteTempCareManagement(require, employeeId, period.getPeriod()));
 	}
 	

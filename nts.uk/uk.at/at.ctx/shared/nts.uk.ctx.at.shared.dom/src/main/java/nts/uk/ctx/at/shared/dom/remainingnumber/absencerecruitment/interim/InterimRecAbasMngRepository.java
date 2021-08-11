@@ -183,13 +183,13 @@ public interface InterimRecAbasMngRepository {
 	 * @param sId
 	 * @param period
 	 */
-	void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period);
+	void deleteInterimAbsMngBySidDatePeriod(String sid, DatePeriod period);
 	
 	/**
 	 * 暫定振出管理データ 削除　期間
 	 * @param sId
 	 * @param period
 	 */
-	void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period);
+	void deleteInterimRecMngBySidDatePeriod(String sid, DatePeriod period);
 	
 }

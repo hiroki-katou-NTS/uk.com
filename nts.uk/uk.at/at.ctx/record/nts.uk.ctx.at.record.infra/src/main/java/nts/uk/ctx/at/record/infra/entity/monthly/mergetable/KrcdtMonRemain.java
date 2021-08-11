@@ -29,6 +29,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
@@ -70,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.D
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.DayOffRemainDayAndTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.RemainDataTimesMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
@@ -1733,6 +1737,23 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	public Integer careRemainMinutesAfter;
 
 
+	/* KRCDT_MON_PUBLIC_REMAIN */
+	/** 公休日数 */
+	@Column(name ="PU_GRANT_DAYS")
+	public double puGrantDays;
+	/** 繰越数 */
+	@Column(name ="PU_CARRYFORWARD_DAYS")
+	public double puCarryforwardDays;
+	/** 取得数 */
+	@Column(name ="PU_USED_DAYS")
+	public double puUsedDays;
+	/** 翌月繰越数 */
+	@Column(name ="PU_NEXTMONTH_CARRYFORWARD_DAYS")
+	public double puNextmonthCarryforwardDays;
+	/** 未消化数 */
+	@Column(name ="PU_UNUSED_DAYS")
+	public double puUnusedDays;
+
 
 	@Override
 	protected Object getKey() {
@@ -1778,6 +1799,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		domains.setAbsenceLeaveRemainData(this.toDomainAbsenceLeaveRemainData());
 		domains.setMonCareHdRemain(this.toDomainMonCareHdRemain());
 		domains.setMonChildHdRemain(this.toDomainMonChildHdRemain());
+		domains.setMonPublicHoliday(this.toDomainMonPublicHolidayRemain());
 		return domains;
 	}
 
@@ -4547,5 +4569,24 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				careRemNumEachMonth
 				);
 
+	}
+	/**
+	 * 公休月別残数データ
+	 * @return
+	 */
+	public PublicHolidayRemNumEachMonth toDomainMonPublicHolidayRemain(){
+		return new PublicHolidayRemNumEachMonth(
+				this.krcdtMonRemainPk.getEmployeeId(),
+				new YearMonth(this.krcdtMonRemainPk.getYearMonth()),
+				EnumAdaptor.valueOf(this.krcdtMonRemainPk.getClosureId(), ClosureId.class),
+				new ClosureDate(
+						this.krcdtMonRemainPk.getClosureDay(),
+						this.krcdtMonRemainPk.getIsLastDay()==1),
+				EnumAdaptor.valueOf(this.closureStatus, ClosureStatus.class),
+				new LeaveGrantDayNumber(this.puGrantDays),
+				new LeaveRemainingDayNumber(this.puCarryforwardDays),
+				new LeaveUsedDayNumber(this.puUsedDays),
+				new LeaveRemainingDayNumber(this.puNextmonthCarryforwardDays),
+				new LeaveRemainingDayNumber(this.puUnusedDays));
 	}
 }

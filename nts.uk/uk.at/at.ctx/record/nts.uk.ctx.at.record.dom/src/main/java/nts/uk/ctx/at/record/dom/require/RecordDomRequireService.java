@@ -2793,5 +2793,17 @@ public class RecordDomRequireService {
 		public void deleteTempCareByPeriod(String sid, DatePeriod period){
 			this.tempCareManagementRepo.deleteBySidDatePeriod(sid, period);	
 		}
+		
+		public	void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period){
+			this.interimBreakDayOffMngRepo.deleteInterimDayOffMngBySidDatePeriod(sid, period);
+		}
+		
+		public void deleteInterimBreakMngBySidDatePeriod(String sid, DatePeriod period){
+			this.interimBreakDayOffMngRepo.deleteInterimBreakMngBySidDatePeriod(sid, period);
+		}
+		
+		public void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period){
+			this.interimSpecialHolidayMngRepo.deleteSpecialHolidayBySidAndPeriod(sid, specialCode, period);
+		}
 	}
 }

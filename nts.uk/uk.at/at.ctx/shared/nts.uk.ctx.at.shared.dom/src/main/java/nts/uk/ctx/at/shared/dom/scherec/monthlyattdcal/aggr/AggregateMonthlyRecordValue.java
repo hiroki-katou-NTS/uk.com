@@ -108,7 +108,8 @@ public class AggregateMonthlyRecordValue {
 		this.specialLeaveRemainList = new ArrayList<>();
 		this.careHdRemainList = new ArrayList<>();
 		this.childHdRemainList = new ArrayList<>();
-
+		this.publicRemainList = new ArrayList<>();
+		
 //		this.aggrResultOfAnnAndRsvLeave = new AggrResultOfAnnAndRsvLeave();
 //		this.absRecRemainMngOfInPeriodOpt = Optional.empty();
 //		this.breakDayOffRemainMngOfInPeriodOpt = Optional.empty();
@@ -253,6 +254,10 @@ public class AggregateMonthlyRecordValue {
 		ChildcareRemNumEachMonth childCareRemain = null;
 		if (this.childHdRemainList.size() > 0) childCareRemain = this.childHdRemainList.get(0);
 		result.setChildCare(Optional.ofNullable(childCareRemain));
+		PublicHolidayRemNumEachMonth publicHolidayRemain = null;
+		if (this.publicRemainList.size() > 0) publicHolidayRemain = this.publicRemainList.get(0);
+		result.setPublicHolidayLeaveRemain(Optional.ofNullable(publicHolidayRemain));
+		
 		return result;
 	}
 }

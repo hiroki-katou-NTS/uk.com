@@ -11,6 +11,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngD
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 子の看護休暇処理
+ * @author hayata_maekawa
+ *
+ */
 public class ChildCareProcess {
 
 	public static AtomTask childCareProcess(Require require, CacheCarrier cacheCarrier,

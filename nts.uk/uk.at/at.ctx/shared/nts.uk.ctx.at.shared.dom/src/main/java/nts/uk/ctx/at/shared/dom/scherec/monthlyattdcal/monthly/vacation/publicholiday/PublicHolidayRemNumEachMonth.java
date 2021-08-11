@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publich
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
@@ -17,8 +19,10 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
  * @author hayata_maekawa
  *
  */
+@Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class PublicHolidayRemNumEachMonth extends AggregateRoot{
 
 	/** 社員ID */

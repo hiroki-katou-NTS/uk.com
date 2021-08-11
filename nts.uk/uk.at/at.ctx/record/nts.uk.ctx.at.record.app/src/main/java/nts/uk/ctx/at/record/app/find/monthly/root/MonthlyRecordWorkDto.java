@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.publicholiday.PublicHolidayRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -95,7 +96,9 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	/** 子の看護月別残数データ: 子の看護月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_CHILD_CARE_HD_REMAIN_NAME, layout = MONTHLY_CHILD_CARE_HD_REMAIN_CODE)
 	private MonthlyChildCareHdRemainDto childCare;
-
+	/** 公休月別残数データ*/
+	private MonthlyPublicHolidayRemainDto publicHoliday;
+	
 	/** 管理期間の36協定時間: 管理期間の36協定時間 */
 	@AttendanceItemLayout(jpPropertyName = AGREEMENT_TIME_OF_MANAGE_PERIOD_NAME, layout = AGREEMENT_TIME_OF_MANAGE_PERIOD_CODE)
 	private AgreementTimeOfManagePeriodDto agreementTime;
@@ -242,6 +245,10 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this.childCare == null ? null :  this.childCare.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
 	
+	public PublicHolidayRemNumEachMonth toMonPublicHpliday(){
+		return this.publicHoliday == null ? null : this.publicHoliday.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
+	}
+	
 	
 
 	@Override
@@ -260,7 +267,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 						: this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
 				this.remarks == null ? new ArrayList<>(): this.remarks.toDomain(employeeId, ym, closureID, closureDate),
 				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
-				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
+				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)),
+				Optional.ofNullable(this.publicHoliday == null ? null : this.publicHoliday.toDomain(employeeId, ym, closureID, closureDate)));
 	}
 	
 	public static MonthlyRecordWorkDto fromOnlyAttTime(IntegrationOfMonthly domain) {
@@ -281,6 +289,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
 			dto.setSpecialHoliday(SpecialHolidayRemainDataDtoWrap.from(domain.getSpecialLeaveRemain()));
+			dto.setPublicHoliday(MonthlyPublicHolidayRemainDto.from(domain.getPublicHolidayLeaveRemain().orElse(null)));
 			domain.getAffiliationInfo().ifPresent(aff -> {
 				dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
 				dto.setYearMonth(aff.getYearMonth());

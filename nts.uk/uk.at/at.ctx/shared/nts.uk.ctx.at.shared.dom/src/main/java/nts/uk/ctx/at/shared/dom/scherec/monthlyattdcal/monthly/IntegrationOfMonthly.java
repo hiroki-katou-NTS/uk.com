@@ -80,6 +80,7 @@ public class IntegrationOfMonthly {
 		this.remarks = new ArrayList<>();
 		this.care = Optional.empty();
 		this.childCare = Optional.empty();
+		this.publicHolidayLeaveRemain = Optional.empty();
 		this.editState = new ArrayList<>();
 	}
 	
@@ -110,7 +111,8 @@ public class IntegrationOfMonthly {
 			List<SpecialHolidayRemainData> specialLeaveRemainList,
 			List<RemarksMonthlyRecord> remarks,
 			Optional<CareRemNumEachMonth> care,
-			Optional<ChildcareRemNumEachMonth> childCare){
+			Optional<ChildcareRemNumEachMonth> childCare,
+			Optional<PublicHolidayRemNumEachMonth> publicHoliday){
 	
 		this.attendanceTime = attendanceTime;
 		this.affiliationInfo = affiliationInfo;
@@ -124,6 +126,7 @@ public class IntegrationOfMonthly {
 		this.remarks = remarks;
 		this.care = care;
 		this.childCare = childCare;
+		this.publicHolidayLeaveRemain = publicHoliday;
 		this.editState = new ArrayList<>();
 	}
 }

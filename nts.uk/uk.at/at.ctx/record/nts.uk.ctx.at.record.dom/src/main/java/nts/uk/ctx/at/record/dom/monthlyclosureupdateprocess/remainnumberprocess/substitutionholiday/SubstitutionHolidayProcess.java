@@ -57,7 +57,7 @@ public class SubstitutionHolidayProcess {
 				/** 振休逐次休暇の紐付け情報を追加する */
 				.then(addSeqVacation(require, empId, output.getLstSeqVacation()))
 				/** 振休暫定データ削除 */
-				.then(DeleteTempSubstitution.deleteTempSubstitutionManagement(require, empId, period.getPeriod()));	
+				.then(deleteTempSubstitutionManagement(require, empId, period.getPeriod()));	
 	}
 	
 	/** 振休逐次休暇の紐付け情報を追加する */
@@ -131,6 +131,20 @@ public class SubstitutionHolidayProcess {
 				/**　アルゴリズム「振休管理データの更新」を実行する　*/
 				.then(updateSubstitutionHolidayMngData(require, companyId, vacationDetails.getLstAcctAbsenDetail()));
 	}
+	
+	
+	/**
+	 * 振休暫定データ削除
+	 * @param require
+	 * @param employeeId
+	 * @param period
+	 * @return
+	 */
+	public static AtomTask deleteTempSubstitutionManagement(Require require, String employeeId, DatePeriod period){
+		return AtomTask.of(() -> require.deleteInterimAbsMngBySidDatePeriod(employeeId, period))
+				.then(AtomTask.of(() -> require.deleteInterimRecMngBySidDatePeriod(employeeId, period)));
+	}
+	
 	
 	/**　当月以降の振出管理データを削除　*/
 	private static AtomTask deletePayoutManaData(RequireM4 require, DatePeriod period, String empId){
@@ -252,7 +266,9 @@ public class SubstitutionHolidayProcess {
 		void createSubstitutionOfHDManagementData(SubstitutionOfHDManagementData domain);
 	}
 
-	private static interface RequireM3 extends DeleteTempSubstitution.Require{
+	private static interface RequireM3{
+		void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period);
+		void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period);
 	}
 	
 	public static interface RequireM2 extends NumberCompensatoryLeavePeriodQuery.Require {
