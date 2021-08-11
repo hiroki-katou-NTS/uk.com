@@ -1966,6 +1966,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
             });
             service.changeConfirmedState(dataReg).done((rs) => {
+                self.enableBtnReg(false);
                 self.updateDataSource(listCellConfirmReg);
                 //self.updateListCellLock(listCellConfirmReg);
                 self.updateDataBindGrid();
@@ -4375,6 +4376,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.removeClass();
 
             // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
+            self.enableBtnReg(false);
             self.enableBtnPaste(true);
             self.enableBtnCoppy(true);
             self.enableHelpBtn(true);
