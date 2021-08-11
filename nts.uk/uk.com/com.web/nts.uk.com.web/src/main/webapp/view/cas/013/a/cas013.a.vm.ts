@@ -233,7 +233,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 maxWidth: 580,
-                maxRows: 10
+                maxHeight:250,
+                maxRows: 11
             };
             //Fixing
             self.multiSelectedCode.subscribe((e) => {
@@ -425,9 +426,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             self.isDelete(false);
             self.isSelectedUser(false);
             self.selectedRoleIndividual('');
-            self.employeeList([]);
             self.loginID('');
-            self.dateValue({});
             self.userName('');
             nts.uk.ui.errors.clearAll();
         }

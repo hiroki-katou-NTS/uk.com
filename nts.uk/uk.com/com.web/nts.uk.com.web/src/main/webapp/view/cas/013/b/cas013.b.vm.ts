@@ -15,6 +15,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
         ListEmployyeId: Array<any>;
         ListEmployye: KnockoutObservableArray<any>;
         empListView: KnockoutObservableArray<UnitModel>
+        currentCode: KnockoutObservable<any>;
 
         special: KnockoutObservable<boolean>;
         multi: KnockoutObservable<boolean>;
@@ -57,7 +58,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
             self.ListEmployye = ko.observableArray([]);
             self.empListView = ko.observableArray([]);
             self.selectedType = ko.observable('');
-
+            self.currentCode = ko.observable();
             self.searchValue = ko.observable('');
             self.dataSource = ko.observableArray([]);
             self.columns = [
@@ -105,7 +106,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 alreadySettingList: self.alreadySettingPersonal,
                 isShowSelectAllButton: false,
                 maxWidth: 310,
-                maxRows: 15
+                maxRows: 16
             };
             $('#kcp005').ntsListComponent(self.listComponentOption)
 
@@ -142,7 +143,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
         private snotCompany(): void {
             var self = this;
-            service.notComapany().done(function(data) {
+            service.getCompanyList().done(function(data) {
                 var items = [];
                 if(data) {
                     items.push(data.companyCode, data.companyName);
@@ -222,25 +223,30 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
         search() {
             let self = this;
-            if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CAS013_33")] });
-                return;
+            if(self.currentCode() != null) {
+                let employ = _.find(self.employeeList(), function (e) { return e.code == self.currentCode()
+                })
+                console.log("Haha " + employ.code + employ.name);
             }
-            var key = self.searchValue().trim();
-            if(key.length>3000){
-                return;
-            }
-            var Special = self.special();
-            var Multi = self.multi();
-            var roleType =  self.roleTypeParam;
-            nts.uk.ui.block.invisible();
-            service.searchUser(key, Special, Multi, roleType).done(function(data) {
-                var items = [];
-                items = _.sortBy(data, ["loginID"]);
-                self.dataSource(items);
-            }).always(() => {
-                nts.uk.ui.block.clear();
-            });
+            // if (nts.uk.text.isNullOrEmpty(self.searchValue())) {
+            //     nts.uk.ui.dialog.alertError({ messageId: "Msg_438", messageParams: [nts.uk.resource.getText("CAS013_33")] });
+            //     return;
+            // }
+            // var key = self.searchValue().trim();
+            // if(key.length>3000){
+            //     return;
+            // }
+            // var Special = self.special();
+            // var Multi = self.multi();
+            // var roleType =  self.roleTypeParam;
+            // nts.uk.ui.block.invisible();
+            // service.searchUser(key, Special, Multi, roleType).done(function(data) {
+            //     var items = [];
+            //     items = _.sortBy(data, ["loginID"]);
+            //     self.dataSource(items);
+            // }).always(() => {
+            //     nts.uk.ui.block.clear();
+            // });
 
         }
 
