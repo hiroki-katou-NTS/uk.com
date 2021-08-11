@@ -1,7 +1,9 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cmf001.b.viewmodel {
 	import ajax = nts.uk.request.ajax;
-	import infor = nts.uk.ui.dialog.info;
+	import info = nts.uk.ui.dialog.info;
+	import setShared = nts.uk.ui.windows.setShared;
+	import getShared = nts.uk.ui.windows.getShared;
 	
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -15,15 +17,16 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		importMode: KnockoutObservable<number> = ko.observable();
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
+		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
 
 		importGroupOption: KnockoutObservableArray<any> = ko.observableArray([]);
 		importModeOption: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		selectedCode: KnockoutObservable<string> = ko.observable();
+		
+		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
 		selectedItem: KnockoutObservable<string> = ko.observable();
-		
-		layoutList: KnockoutObservableArray<Layout> = ko.observableArray([]);
-		
+
 		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "コード", 				key: "code", 					width: 50 	},
 			{ headerText: "名称", 					key: "name", 					width: 200 	},
@@ -43,17 +46,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			var self = this;
 
 			self.settingList = ko.observableArray<Setting>([]);
-
-			self.importGroupOption.push(new comboBoxItem(100, "会社情報"));
-			self.importGroupOption.push(new comboBoxItem(200, "社員情報"));
-			self.importGroupOption.push(new comboBoxItem(300, "所属情報"));
-			self.importGroupOption.push(new comboBoxItem(400, "勤務情報"));
-
-			self.importModeOption.push(new comboBoxItem("1", "おまかせモード"));
-			self.importModeOption.push(new comboBoxItem("2", "既存データが存在しないデータのみ受け入れる"));
-			self.importModeOption.push(new comboBoxItem("3", "既存データが存在するデータのみ受け入れる"));
-			self.importModeOption.push(new comboBoxItem("4", "受入対象レコードのみ削除して受け入れる"));
-			self.importModeOption.push(new comboBoxItem("5", "受入対象グループのデータをすべて削除して受け入れる"));
+			self.importGroupOption = ko.observableArray(__viewContext.enums.ImportingGroupId);
+			self.importModeOption = ko.observableArray(__viewContext.enums.ImportingMode);
 
 			self.startPage();
 			self.selectedCode.subscribe((value) => {
@@ -64,6 +58,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					self.newMode();
 					console.log("選択解除した")
 				}
+			})
+			self.importGroup.subscribe(() => {
+				self.layout([]);
+				console.log("受入グループを変更したのでレイアウトをリセット")
 			})
 		}
 
@@ -128,8 +126,30 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
-			self.layoutList(info.layouts);
+			self.layoutItemNoList(info.itemNoList);
+
+			let condition = new LayoutGetCondition(self.settingCode(), self.layoutItemNoList());
+			ajax("exio/input/setting/find/layout", condition).done((layouItems: Array<viewmodel.Layout>) => {
+				self.layout(layouItems);
+
+			});
 		}
+
+		selectLayout() {
+            let self = this;
+            setShared('CMF001DParams', {
+                groupId: self.importGroup(),
+                selectedItems: self.layoutItemNoList()
+            }, true);
+
+            nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
+                // var output = getShared('CMF001DOutput');
+                // if (output) {
+                //     output.sort();layoutGetCondition
+                //     self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(output);
+                // }
+            });
+        }
 
 		save(){
 			let self = this;
@@ -143,9 +163,9 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					self.importMode(), 
 					self.itemNameRow(), 
 					self.importStartRow(), 
-					self.layoutList()));
+					self.layoutItemNoList()));
 			ajax("exio/input/setting/save", saveContents);
-			infor(nts.uk.resource.getMessage("Msg_15", []));
+			info(nts.uk.resource.getMessage("Msg_15", []));
 			self.reloadPage();
 			self.selectedCode(self.settingCode());
 		}
@@ -154,6 +174,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			let target = new RemoveTarget(self.selectedCode());
 			ajax("exio/input/setting/remove", target);
+			info(nts.uk.resource.getMessage("Msg_16", []));
 			self.reloadPage();
 			self.selectedCode("");
 		}
@@ -188,9 +209,9 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		mode: number;
 		itemNameRow: number;
 		importStartRow: number;
-		layouts: Array<Layout>;
+		itemNoList: Array<number>;
 
-		constructor(companyId: string, code: string, name: string, group: number, mode: number, itemNameRow: number, importStartRow: number, layouts: Array<Layout>) {
+		constructor(companyId: string, code: string, name: string, group: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
 			this.companyId = companyId;
 			this.code = code;
 			this.name = name;
@@ -198,11 +219,21 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			this.mode = mode;
 			this.itemNameRow = itemNameRow;
 			this.importStartRow = importStartRow;
-			this.layouts = layouts;
+			this.itemNoList = itemNoList;
 		}
 		
 		static new(){
 			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, null, [])
+		}
+	}
+
+	class LayoutGetCondition{
+		settingCode: string;
+		itemNoList: Array<number>;
+
+		constructor(settingCode: string, itemNoList: Array<number>) {
+			this.settingCode = settingCode;
+			this.itemNoList = itemNoList;
 		}
 	}
 
@@ -234,20 +265,21 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		}
 	}
 	
-	class Layout {
+	export class Layout {
 		itemNo: number;
 		name: string;
+		required: boolean;
 		type: string;
 		source: string;
 		alreadyDetail: boolean;
 
-		constructor(itemNo: number,　name: string, type: string, source: string, alreadyDetail: boolean) {
+		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string, alreadyDetail: boolean) {
 			this.itemNo = itemNo;
 			this.name = name;
+			this.required = required;
 			this.type = type;
 			this.source = source;
 			this.alreadyDetail = alreadyDetail;
-			//this.alreadyDetail = alreadyDetail ? "あり" : "なし";
 		}
 	}
 }
