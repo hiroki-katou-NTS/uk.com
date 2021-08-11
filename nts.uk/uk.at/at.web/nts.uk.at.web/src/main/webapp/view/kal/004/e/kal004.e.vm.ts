@@ -203,17 +203,18 @@ module nts.uk.com.view.kal004.e.viewmodel {
                 let startMonthly = null;
                 let endMonthly = null;
                 let sysDate = moment();
-                let targetDate = sysDate;
-                targetDate.set({'month': self.strSpecifyMonth(), 'date': 1});
                 
                 if (self.strYearSpecifiedType() == share.YearSpecifiedType.FISCAL_YEAR) {
-                   startMonthly = targetDate;
+                   startMonthly = moment().set({'year': sysDate.year(), 'month': self.strSpecifyMonth()});
                 } else {
                    startMonthly = moment(self.getParam.processingYm, "YYYYMM").set('month', self.strSpecifyMonth());
                 }
                 
                 endMonthly = moment(self.getParam.processingYm, "YYYYMM").add(self.endMonth(), 'months');
-                if (startMonthly > endMonthly) {
+                
+                var strYearMonth = startMonthly.format('YYYY-MM');
+                var endYearMonth = endMonthly.format('YYYY-MM');
+                if (strYearMonth > endYearMonth) {
                     return "Msg_812";
                 }
             }
