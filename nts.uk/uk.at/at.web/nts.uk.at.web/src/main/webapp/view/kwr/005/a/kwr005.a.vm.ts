@@ -156,6 +156,11 @@ module nts.uk.at.view.kwr005.a {
         returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
           vm.closureId(data.closureId);
           vm.getListEmployees(data);
+
+            vm.periodDate({
+                startDate: data.periodStart,
+                endDate: data.periodEnd
+            });
         }
       }
       // Start component

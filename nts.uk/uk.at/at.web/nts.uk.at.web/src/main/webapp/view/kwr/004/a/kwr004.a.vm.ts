@@ -111,7 +111,7 @@ module nts.uk.at.view.kwr004.a {
         /** Required parameter */
         baseDate: moment().toISOString(), //基準日
         periodStartDate: vm.periodDate().startDate, //対象期間開始日
-        periodEndDate: vm.periodDate().endDate, //対象期間終了日
+        periodEndDate: vm.periodDate().startDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
@@ -143,8 +143,12 @@ module nts.uk.at.view.kwr004.a {
         returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
           vm.closureId(data.closureId);
           vm.getListEmployees(data);
+            vm.periodDate({
+                startDate: data.periodStart,
+                endDate: data.periodEnd
+            });
         }
-      }
+      };
       // Start component
       $('#CCG001').ntsGroupComponent(vm.ccg001ComponentOption);
     }

@@ -93,7 +93,7 @@ module nts.uk.at.view.kwr003.a {
             date = date +'01';
         }
         let startDate = moment(date,"YYYY/MM/DD").toDate();
-        let endDate = moment(date).add(1, 'month').toDate();
+        let endDate = startDate;
       vm.ccg001ComponentOption = {
         /** Common properties */
         systemType: 2,
@@ -142,6 +142,8 @@ module nts.uk.at.view.kwr003.a {
         returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
           vm.closureId(data.closureId);
           vm.getListEmployees(data);
+          let date  = moment(data.periodStart).format('YYYYMM')
+          vm.dpkYearMonth(date)
         }
       }
       // Start component
