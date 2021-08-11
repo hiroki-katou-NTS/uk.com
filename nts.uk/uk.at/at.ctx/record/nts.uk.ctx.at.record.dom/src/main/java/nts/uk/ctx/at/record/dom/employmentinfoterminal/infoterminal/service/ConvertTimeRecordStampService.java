@@ -160,7 +160,7 @@ public class ConvertTimeRecordStampService {
     //[pvt-5] チェック日が当月かどうかを確認する
 	private static boolean checkInClosurePeriod(Require require, String sid, GeneralDate date) {
 		DatePeriod period = ClosureService.findClosurePeriod(require, new CacheCarrier(), sid, date);
-		return period.contains(date);
+		return period == null ? false : period.contains(date);
 	}
 	
 	// [pvt-2] 就業情報端末通信用トップページアラームを作る
