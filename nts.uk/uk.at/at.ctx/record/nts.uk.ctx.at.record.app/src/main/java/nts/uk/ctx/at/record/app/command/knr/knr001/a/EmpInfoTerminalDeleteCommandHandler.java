@@ -57,8 +57,14 @@ public class EmpInfoTerminalDeleteCommandHandler extends CommandHandler<EmpInfoT
 		
 		transaction.execute(() -> {
 			// [データがある]:delete(取得した「就業情報端末」)
-			result.getDeleteEmpInfoTerminal().get().run();
-			result.getDeleteTimeRecordReqSetting().get().run();
+			if(result.getDeleteEmpInfoTerminal().isPresent()) {
+				result.getDeleteEmpInfoTerminal().get().run();	
+			}
+			
+			if(result.getDeleteTimeRecordReqSetting().isPresent()) {
+				result.getDeleteTimeRecordReqSetting().get().run();
+			}
+			
 			// 就業情報端末通信状況削除の永続化処理　AtomTask Not Empty
 			if (result.getDeleteEmpInfoTerminalComStatus().isPresent()) {
 				// [データが取得できる]:delete(就業情報端末通信状況)
