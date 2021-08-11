@@ -5,7 +5,10 @@ import java.util.Optional;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 
 public interface AccountLockPolicyRepository {
-	Optional<AccountLockPolicy> getAccountLockPolicy(ContractCode contractCode);
 
-	void updateAccountLockPolicy(AccountLockPolicy accountLockPolicy);
+	void update(AccountLockPolicy domain);
+	
+	Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
+	
+	Optional<AccountLockPolicy> getAccountLockPolicy(ContractCode contractCode);
 }

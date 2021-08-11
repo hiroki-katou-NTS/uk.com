@@ -174,7 +174,7 @@
 		                            </div>
                             </div>
                             <div id="holiday-agree" class="agree-row" >
-	                            <div id="numberHoliday" style="float: left; margin-right: 5px ; max-width: 225px">
+	                            <div id="numberHoliday" style="float: left; margin-right: 5px ; max-width: 375px">
 		                            <table id="fixed-table">
 		                                <thead>
 		                                    <tr>
@@ -182,6 +182,8 @@
 		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_SubstituteHoliday"])}</th>
 		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_PaidHoliday"])}</th>
 		                                        <th class="ui-widget-header">#{i18n.getText('KDW003_7',["#Com_FundedPaidHoliday"])}</th>
+		                                        <th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_7',["#Com_ChildNurseHoliday"])}</th>
+		                                        <th class="ui-widget-header" style="width: 75px">#{i18n.getText('KDW003_7',["#Com_CareHoliday"])}</th>
 		                                    </tr>
 		                                </thead>
 		                                <tbody>
@@ -197,6 +199,12 @@
 		                                        </td>
 		                                        <td class="ui-widget-body remain-reserve-day">
 		                                        	<span class="text-holiday" data-bind="text: dataHoliday().reserve"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body remain-childCare-day">
+		                                        	<span class="text-holiday" style="color: inherit;" data-bind="text: dataHoliday().childCareValue"></span>
+		                                        </td>
+		                                        <td class="ui-widget-body remain-longTermCare-day">
+		                                        	<span class="text-holiday" style="color: inherit;" data-bind="text: dataHoliday().longTermCareValue"></span>
 		                                        </td>
 		                                    </tr>
 		                                    <!-- <tr>

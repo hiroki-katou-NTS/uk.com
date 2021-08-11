@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsDaysRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.AccumulationAbsenceDetailComparator;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 
 /**
@@ -19,7 +20,7 @@ public class PrepareInfoBeginOfMonth {
 	};
 
 	// 月初時点の情報を整える
-	public static AbsDaysRemain prepare(Require require, String companyId, String employeeId, GeneralDate startDate,
+	public static ReserveLeaveRemainingDayNumber prepare(Require require, String companyId, String employeeId, GeneralDate startDate,
 			GeneralDate endDate, boolean isMode, List<AccumulationAbsenceDetail> result,
 			FixedManagementDataMonth fixManaDataMonth) {
 

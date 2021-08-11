@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInfo
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
@@ -941,6 +943,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(),
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
 		// ある場合
+		BundledBusinessException bundledBusinessExceptions = BundledBusinessException.newInstance();
 		if (!CollectionUtil.isEmpty(time36ErrorInforList.getTime36AgreementErrorLst())) {
 			/**
 			 * 	・エラー情報一覧に「月間エラー」がある場合：
@@ -967,30 +970,58 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			 */
 			for (Time36AgreementError el : time36ErrorInforList.getTime36AgreementErrorLst()) {
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MONTH_ERROR) {
-					throw new BusinessException("Msg_1535", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					bundledBusinessExceptions.addMessage(
+							"Msg_1535",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+							);
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.YEAR_ERROR) {
-					throw new BusinessException("Msg_1536", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					
+					bundledBusinessExceptions.addMessage(
+							"Msg_1536",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+							);
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MAX_MONTH_ERROR) {
-					throw new BusinessException("Msg_1537", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					bundledBusinessExceptions.addMessage(
+							"Msg_1537",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+									
+							);
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MAX_YEAR_ERROR) {
-					throw new BusinessException("Msg_2056", this.convertTime_Short_HM(el.getAgreementTime()), this.convertTime_Short_HM(el.getThreshold()));
+					bundledBusinessExceptions.addMessage(
+							"Msg_2056",
+							this.convertTime_Short_HM(el.getAgreementTime()),
+							this.convertTime_Short_HM(el.getThreshold())
+									
+							);
+					
 				}
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MAX_MONTH_AVERAGE_ERROR) {
-					throw new BusinessException(
-							"Msg_1538", 
+					bundledBusinessExceptions.addMessage(
+							"Msg_1538",
 							el.getOpYearMonthPeriod().map(x -> x.start().year() + "/" + x.start().month()).orElse(""),
 							el.getOpYearMonthPeriod().map(x -> x.end().year() + "/" + x.end().month()).orElse(""),
 							this.convertTime_Short_HM(el.getAgreementTime()),
 							this.convertTime_Short_HM(el.getThreshold())
+									
 							);
+					
 				}
 			}
 			
 			
 		}
+		if (!CollectionUtil.isEmpty(bundledBusinessExceptions.getMessageId())) {
+			
+			throw bundledBusinessExceptions;
+		}
+		
+		
 		
 	}
 	
@@ -1067,7 +1098,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				Optional.of(appOverTime),
 				Optional.empty(),
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getOvertimeLeaveAppCommonSet());
-		// ３６上限チェック not done
+		// ３６上限チェック
 		this.check36Limit(companyId, appOverTime, displayInfoOverTime);
 		
 		// 申請日の矛盾チェック
