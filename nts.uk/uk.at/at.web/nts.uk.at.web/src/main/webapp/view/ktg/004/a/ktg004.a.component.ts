@@ -89,9 +89,11 @@ module nts.uk.ui.ktg004.a {
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
                             <tr class="row-show-ktg004">
                                 <td>
-                                    <div data-bind="ntsFormLabel: { required: false, text: row.name }"></div>
+									<div style="display: flex">
+	                                    <div style="position: relative; width: 50%" data-bind=" ntsFormLabel: { required: false, text: row.name }"></div>
+		                                <div style="width: 50%; margin-top: 5px " class="text-right" data-bind="i18n: row.specialResidualNumber"></div>									
+									</div>
                                 </td>
-                                <td class="text-right" data-bind="i18n: row.specialResidualNumber"></td>
                             </tr>
                         </tbody>
                     </table>	
@@ -262,7 +264,7 @@ module nts.uk.ui.ktg004.a {
 											grantDay:
 												_.isNil(grantDate)
 												?
-												`${vm.$i18n('KTG004_26')} ${vm.$i18n('KTG004_26')}`
+												`${vm.$i18n('KTG004_26')} ${vm.$i18n('KTG004_27')}`
 												:
 												`${vm.$i18n('KTG004_26')}${moment(grantDate).format("YYYY/MM/DD")}　${grantDays}日`
 												
@@ -281,11 +283,11 @@ module nts.uk.ui.ktg004.a {
                                         .push({
                                             name: 'KTG004_11',
                                             text: 
-												numberOfSubstituteHoliday.time == ZERO_TIME
+												numberOfSubstituteHoliday.day <= 0
 												?
-												vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
+												`${numberOfSubstituteHoliday.time}`
 												:
-												vm.$i18n('KTG004_28', [`${numberOfSubstituteHoliday.day}`, `${numberOfSubstituteHoliday.time}`])
+												vm.$i18n('KTG004_15', [`${numberOfSubstituteHoliday.day}`])
                                         })
                                     break;
                                 case 30:
