@@ -55,7 +55,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 				NotUseAtr.NOT_USE);
 		
 		assertThat(result.getWorkRecord()).isEmpty();
-		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
+		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(RCReflectedState.CANCELED);
 
 	}
 
@@ -90,7 +90,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 		result.getAtomTask().run();
 		new Verifications() {
 			{
-				require.addAllDomain((IntegrationOfDaily) any);
+				require.addAllDomain((IntegrationOfDaily) any, anyBoolean);
 				times = 0;
 
 				require.updateAppReflectHist(anyString, anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
@@ -134,7 +134,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 		result.getAtomTask().run();
 		new Verifications() {
 			{
-				require.addAllDomain((IntegrationOfDaily) any);
+				require.addAllDomain((IntegrationOfDaily) any, anyBoolean);
 				times = 1;
 
 				require.updateAppReflectHist(anyString, anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,

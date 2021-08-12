@@ -28,6 +28,7 @@ public class RCApplicationCancellationProcess {
 
 		// [input.反映状態.反映状態]をチェック
 		if (statusWorkRecord.getReflectStatus() != ReflectedState.REFLECTED) {
+			statusWorkRecord.setReflectStatus(ReflectedState.CANCELED);
 			return new RCCancelProcessOneDayOutput(statusWorkRecord, Optional.empty(), AtomTask.none());
 		}
 
