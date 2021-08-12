@@ -121,7 +121,12 @@ public class ScreenQueryAggregateSchedule {
 									targetOrg,
 									datePeriod,
 									integrationOfDailySchedules,
-									aggrerateintegrationOfDaily,
+									integrationOfDailys.entrySet()
+													.stream()
+													.map(x -> x.getValue())
+													.filter(x -> x.isPresent())
+													.map(x -> x.get())
+													.collect(Collectors.toList()),
 									isShiftDisplay);
 				aggrerateWorkplace.setPeopleMethod(peopleMethod);
 				
