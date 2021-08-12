@@ -126,7 +126,7 @@ public class HolidayShipmentMobileWS extends WebService {
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
 				Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
 				Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()), 
-				command.abs != null ? command.abs.getPayoutSubofHDManagements().stream().map(x -> x.toDomain()).collect(Collectors.toList()) : new ArrayList<PayoutSubofHDManagement>());
+				command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
 //				companyId, 
