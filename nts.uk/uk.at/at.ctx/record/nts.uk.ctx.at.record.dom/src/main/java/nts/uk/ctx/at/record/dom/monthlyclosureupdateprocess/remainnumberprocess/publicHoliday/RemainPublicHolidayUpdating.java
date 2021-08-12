@@ -26,13 +26,12 @@ public class RemainPublicHolidayUpdating {
 	 * 公休繰越データ更新
 	 * @param require
 	 * @param cacheCarrier
-	 * @param companyId 会社ID
 	 * @param period 実締め毎集計期間
 	 * @param employeeId 社員ID
 	 * @param output 公休の集計結果
 	 * @return
 	 */
-	public static AtomTask updateRemainPublicHoliday(Require require, CacheCarrier cacheCarrier, String companyId,
+	public static AtomTask updateRemainPublicHoliday(Require require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String employeeId,AggrResultOfPublicHoliday output){
 		List<AtomTask> atomTask = new ArrayList<>();
 		

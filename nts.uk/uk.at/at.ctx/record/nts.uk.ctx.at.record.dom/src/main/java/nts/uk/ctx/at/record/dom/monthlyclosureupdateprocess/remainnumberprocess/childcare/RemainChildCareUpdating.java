@@ -55,6 +55,13 @@ public class RemainChildCareUpdating {
 
 	}
 	
+	/**
+	 * 子の看護上限数更新
+	 * @param require
+	 * @param employeeId
+	 * @param output
+	 * @return
+	 */
 	private static Optional<AtomTask> updateMaxDayChildCare(Require require, String employeeId,AggrResultOfChildCareNurse output){
 	
 		//起算日を含む期間かどうかを確認

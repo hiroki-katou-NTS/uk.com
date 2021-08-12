@@ -43,7 +43,7 @@ public class RemainMerge {
 		if (this.absenceLeaveRemainData != null) return false;
 		if (this.monChildHdRemain != null) return false;
 		if (this.monCareHdRemain != null) return false;
-		if (this.monCareHdRemain != null) return false;
+		if (this.monPublicHoliday != null) return false;
 		return true;
 	}
 }

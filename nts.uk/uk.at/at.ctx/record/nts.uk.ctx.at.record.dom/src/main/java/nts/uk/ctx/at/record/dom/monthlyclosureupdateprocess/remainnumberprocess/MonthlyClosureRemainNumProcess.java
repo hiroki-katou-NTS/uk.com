@@ -43,7 +43,7 @@ public class MonthlyClosureRemainNumProcess {
 												attTimeMonthly.getYearMonth(), period.getClosureId(), period.getClosureDate());
 		
 		/** 年休処理 */
-		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, cid, period, empId, interimRemainMng.getDaily(), attTimeMonthly)
+		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, cid, period, empId, interimRemainMng.getDaily())
 				/** 振休処理 */
 				.then(SubstitutionHolidayProcess.substitutionHolidayProcess(require, cacheCarrier, period, empId, interimRemainMng))
 				/** 代休処理 */

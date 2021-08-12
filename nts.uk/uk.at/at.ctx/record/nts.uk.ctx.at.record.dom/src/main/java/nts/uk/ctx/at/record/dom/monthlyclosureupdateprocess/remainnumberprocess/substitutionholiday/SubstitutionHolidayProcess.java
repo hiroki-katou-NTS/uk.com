@@ -141,7 +141,9 @@ public class SubstitutionHolidayProcess {
 	 * @return
 	 */
 	public static AtomTask deleteTempSubstitutionManagement(Require require, String employeeId, DatePeriod period){
+		//暫定振休管理データ 削除
 		return AtomTask.of(() -> require.deleteInterimAbsMngBySidDatePeriod(employeeId, period))
+				//暫定振出管理データ 削除
 				.then(AtomTask.of(() -> require.deleteInterimRecMngBySidDatePeriod(employeeId, period)));
 	}
 	

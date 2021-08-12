@@ -185,8 +185,10 @@ public class CompensatoryHolidayProcess {
 	 * @return
 	 */
 	public static AtomTask deleteTempSubstitutionManagement(Require require, String employeeId, DatePeriod period){
-		return AtomTask.of(() -> require.deleteInterimDayOffMngBySidDatePeriod(employeeId, period))
-				.then(AtomTask.of(() -> require.deleteInterimBreakMngBySidDatePeriod(employeeId, period)));
+		//暫定休出管理データの削除
+		return AtomTask.of(() -> require.deleteInterimBreakMngBySidDatePeriod(employeeId, period))
+				//暫定代休管理データの削除
+				.then(AtomTask.of(() -> require.deleteInterimDayOffMngBySidDatePeriod(employeeId, period)));
 	}
 	
 

@@ -40,7 +40,13 @@ public class RemainCareUpdating {
 		
 	}
 	
-	
+	/**
+	 * 介護使用数更新
+	 * @param require
+	 * @param employeeId
+	 * @param output
+	 * @return
+	 */
 	private static AtomTask updateUseCare(Require require, String employeeId,AggrResultOfChildCareNurse output){
 		
 		return AtomTask.of(() -> require.persistAndUpdateUseCare(employeeId,
@@ -48,6 +54,13 @@ public class RemainCareUpdating {
 
 	}
 	
+	/**
+	 * 介護上限日数更新
+	 * @param require
+	 * @param employeeId
+	 * @param output
+	 * @return
+	 */
 	private static Optional<AtomTask> updateMaxDayCare(Require require, String employeeId,AggrResultOfChildCareNurse output){
 		
 		//起算日を含む期間かどうかを確認

@@ -32,5 +32,5 @@ public class SysWorkplaceAdapterImpl implements SysWorkplaceAdapter{
 		}
 		return Optional.empty();
 	}
-	
+
 }

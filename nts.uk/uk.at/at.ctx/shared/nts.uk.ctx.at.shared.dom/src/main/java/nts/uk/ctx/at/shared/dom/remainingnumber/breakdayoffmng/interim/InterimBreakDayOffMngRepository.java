@@ -155,7 +155,7 @@ public interface InterimBreakDayOffMngRepository {
 	void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period);
 	
 	/**
-	 * 暫定代休管理データ 削除　期間
+	 * 暫定休出管理データ 削除　期間
 	 * @param sId
 	 * @param period
 	 */

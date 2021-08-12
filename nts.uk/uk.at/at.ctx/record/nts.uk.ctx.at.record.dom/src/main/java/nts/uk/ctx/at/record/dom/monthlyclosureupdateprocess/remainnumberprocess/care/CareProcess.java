@@ -17,6 +17,16 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 public class CareProcess {
+	
+	/**
+	 * 介護休暇処理
+	 * @param require
+	 * @param cacheCarrier
+	 * @param period
+	 * @param employeeId
+	 * @param interimRemainMngMap
+	 * @return
+	 */
 	public static AtomTask careProcess(Require require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String employeeId, List<DailyInterimRemainMngData> interimRemainMngMap){
 		
