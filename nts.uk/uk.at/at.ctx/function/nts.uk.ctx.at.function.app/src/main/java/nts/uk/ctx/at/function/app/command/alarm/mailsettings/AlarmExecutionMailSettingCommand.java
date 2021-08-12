@@ -28,7 +28,7 @@ public class AlarmExecutionMailSettingCommand {
     /**
      * 内容メール設定
      */
-    private ContentMailSettingDto contentMailSetting;
+    private ContentMailSettingDto contentMailSettings;
     /**
      * 送信元アドレス
      */
@@ -44,13 +44,13 @@ public class AlarmExecutionMailSettingCommand {
                 IndividualWkpClassification.of(this.individualWkpClassify),
                 NormalAutoClassification.of(this.normalAutoClassify),
                 PersonalManagerClassification.of(this.personalManagerClassify),
-                Optional.ofNullable(this.contentMailSetting != null ?
+                Optional.ofNullable(this.contentMailSettings != null ?
                         new MailSettings(
-                                this.contentMailSetting.getSubject(),
-                                this.contentMailSetting.getText(),
-                                this.contentMailSetting.getMailAddressCC().stream().map(MailAddress::new).collect(Collectors.toList()),
-                                this.contentMailSetting.getMailAddressBCC().stream().map(MailAddress::new).collect(Collectors.toList()),
-                                this.contentMailSetting.getMailRely())
+                                this.contentMailSettings.getSubject(),
+                                this.contentMailSettings.getText(),
+                                this.contentMailSettings.getMailAddressCC().stream().map(MailAddress::new).collect(Collectors.toList()),
+                                this.contentMailSettings.getMailAddressBCC().stream().map(MailAddress::new).collect(Collectors.toList()),
+                                this.contentMailSettings.getMailRely())
                         : null),
                 Optional.ofNullable(this.senderAddress != null ? new MailAddress(this.senderAddress) : null),
                 this.sendResult

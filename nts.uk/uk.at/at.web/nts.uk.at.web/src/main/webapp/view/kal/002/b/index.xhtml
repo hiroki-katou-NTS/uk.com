@@ -54,7 +54,7 @@
                                     #{i18n.getText('KAL002_9')}
                                 </button>
                                 <!--B4_1-->
-                                <span class="lable configured" data-bind="text: configuredManualPerson"></span>
+                                <span class="lable configured" data-bind="text: statusConfigManualPerson"></span>
                             </div>
                             <div class="option">
                                 <!--B2_5-->
@@ -64,7 +64,7 @@
                                     #{i18n.getText('KAL002_9')}
                                 </button>
                                 <!--B4_2-->
-                                <span class="lable configured" data-bind="text: configuredManualAdmin"></span>
+                                <span class="lable configured" data-bind="text: statusConfigManualAdmin"></span>
                             </div>
                         </div>
                         <div class="cf"></div>
@@ -84,7 +84,7 @@
                                     #{i18n.getText('KAL002_9')}
                                 </button>
                                 <!--B4_3-->
-                                <span class="lable configured" data-bind="text: configuredAutoPerson"></span>
+                                <span class="lable configured" data-bind="text: statusConfigAutoPerson"></span>
                             </div>
                             <div class="option">
                                 <!--B3_4-->
@@ -94,7 +94,7 @@
                                     #{i18n.getText('KAL002_9')}
                                 </button>
                                 <!--B4_4-->
-                                <span class="label configured" data-bind="text: configuredAutoAdmin"></span>
+                                <span class="label configured" data-bind="text: statusConfigAutoAdmin"></span>
                             </div>
                         </div>
                         <div class="cf"></div>
@@ -126,7 +126,7 @@
                         </div>
                         <div class="cell valign-top custom-cell">
                             <!--B8_5-->
-                            <input data-bind="ntsTextEditor: {
+                            <input tabindex="8" data-bind="ntsTextEditor: {
                                 name: $i18n('KAL002_18'),
                                 value: roleName,
                                 required: enableRoleSetting,
