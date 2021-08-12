@@ -45,7 +45,8 @@ module nts.uk.com.view.cas013.b.viewmodel {
         employeeList: KnockoutObservableArray<UnitModel>;
         baseDate: KnockoutObservable<Date>;
         // end KCP005
-
+        workplaceList: KnockoutObservableArray<UnitModel>;
+        syjobList: KnockoutObservableArray<UnitModel>;
         constructor() {
             var self = this;
             self.roleTypeParam = nts.uk.ui.windows.getShared("roleType");
@@ -91,7 +92,20 @@ module nts.uk.com.view.cas013.b.viewmodel {
             self.isShowSelectAllButton = ko.observable(false);
             self.disableSelection = ko.observable(false);
             self.employeeList = ko.observableArray<UnitModel>([]);
-
+            self.workplaceList = ko.observableArray<UnitModel>([]);
+            self.syjobList = ko.observableArray<UnitModel>([]);
+            var pid = nts.uk.ui.windows.getShared("companyId");
+            var eid = nts.uk.ui.windows.getShared("ListEmployyeId");
+            var sid  = [];
+            for (let i =0; i<eid.length;i++){
+                let item = eid[i].employyeId;
+                sid.push(item);
+            }
+            if (pid == "") {
+                this.snotCompany();
+            } else {
+                this.sCompany(pid);
+            }
 
             // KCP005
             self.listComponentOption = {
@@ -108,6 +122,9 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 maxWidth: 310,
                 maxRows: 16
             };
+            self.multiSelectedCode.subscribe((e) => {
+                self.selectRoleEmployee(e.toString());
+            });
             $('#kcp005').ntsListComponent(self.listComponentOption)
 
         }
@@ -122,20 +139,36 @@ module nts.uk.com.view.cas013.b.viewmodel {
                 let item = eid[i].employyeId;
                 sid.push(item);
             }
-            if (pid == "") {
-                this.snotCompany();
-            } else {
-                this.sCompany(pid);
-            }
-
             service.getWorkPlacePub(sid).done(function(data) {
+                var workplaceSearchs: UnitModel[] = []; //KCP005
                 if(data) {
+                    for (let i =0; i<data.length;i++) {
+                        var workplace: UnitModel = {
+                            code: data[i].workplaceCode,
+                            name: data[i].workplaceName
+                        };
+                        workplaceSearchs.push(workplace);
+                    }
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                 }
+                self.workplaceList(workplaceSearchs);
                 dfd.resolve();
             })
             service.getSyJobTitlePub(sid).done(function(data) {
+                var syjobSearchs: UnitModel[] = []; //KCP005
                 if(data) {
+                    for (let i =0; i<data.length;i++) {
+                        var syjob: UnitModel = {
+                            code: data[i].jobtitleCode,
+                            name: data[i].empID
+                        };
+                        syjobSearchs.push(syjob);
+                    }
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                 }
+                self.syjobList(syjobSearchs);
                 dfd.resolve();
             })
             return dfd.promise();
@@ -143,17 +176,42 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
         private snotCompany(): void {
             var self = this;
+            var eid = nts.uk.ui.windows.getShared("ListEmployyeId");
+            var sid  = [];
+            for (let i =0; i<eid.length;i++){
+                let item = eid[i].employyeId;
+                sid.push(item);
+            }
             service.getCompanyList().done(function(data) {
-                var items = [];
+                var items: ItemModel[] = [];
                 if(data) {
-                    items.push(data.companyCode, data.companyName);
-                    self.companyCode(data.companyCode)
-                    self.companyName(data.companyName)
-                    self.itemList = ko.observableArray([
-                        new ItemModel(data.companyCode, data.companyName, data.companyId),
-                    ]);
+                    for(let i =0; i<data.length; i++) {
+                        var company: ItemModel = {
+                            code: data[i].companyCode,
+                            name: data[i].companyName
+                        };
+                        items.push(company)
+                    }
+                    self.itemList(items)
                 }
                 self.selectedType('');
+            })
+            service.searchEmployyeList(sid).done(function(data) {
+                var employeeSearchs: UnitModel[] = []; //KCP005
+                if(data) {
+                    for (let i =0; i<data.length;i++) {
+                        var employee: UnitModel = {
+                            code: data[i].employeeCode,
+                            name: data[i].businessName,
+                            id: data[i].employeeId
+                        };
+                        employeeSearchs.push(employee);
+                    }
+                    self.multiSelectedCode.push(employeeSearchs[0].code);
+                    self.employeeList(employeeSearchs);
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                }
             })
         }
         private sCompany(pid: string): void {
@@ -183,7 +241,8 @@ module nts.uk.com.view.cas013.b.viewmodel {
                     for (let i =0; i<data.length;i++) {
                         var employee: UnitModel = {
                             code: data[i].employeeCode,
-                            name: data[i].businessName
+                            name: data[i].businessName,
+                            id: data[i].employeeId
                         };
                         employeeSearchs.push(employee);
                     }
@@ -195,6 +254,33 @@ module nts.uk.com.view.cas013.b.viewmodel {
             })
         }
 
+        private selectRoleEmployee(employyeID: string) {
+            var self = this;
+            var setShareCompanyID: any = _.find(self.itemList(), (item: any) => {
+                let dataSetShareC = {
+                    cid: item.id,
+                    ccode: item.code,
+                    cname: item.name
+                }
+                nts.uk.ui.windows.setShared("CompanyInfo", dataSetShareC);
+            });
+            var setShareEmployye: any = _.find(self.employeeList(), (item: any) => {
+                let dataSetShareE = {
+                    eid: item.id,
+                    ecode: item.code,
+                    ename: item.name
+                }
+                if(dataSetShareE.ecode == employyeID) {
+                    nts.uk.ui.windows.setShared("EmployyeList", dataSetShareE);
+                }
+            });
+            var setShareWorkplace: any = _.find(self.workplaceList(), function(o) { return o.code + o.name
+            });
+            nts.uk.ui.windows.setShared("workplaceList", setShareWorkplace);
+            var setShareSyjob: any = _.find(self.workplaceList(), function(o) { return o.code + o.name
+            });
+            nts.uk.ui.windows.setShared("syjobList", setShareSyjob);
+        }
         private searchEmp(): void {
             var self = this;
             var eid = nts.uk.ui.windows.getShared("ListEmployyeId");
@@ -256,27 +342,11 @@ module nts.uk.com.view.cas013.b.viewmodel {
 
         decision() {
             var self = this;
-            // Share data B1_2 B1_3 B1_4 (CompanyId, CompanyCode, CompanyName)
-            var setShareCompanyID: any = _.find(self.itemList(), (item: any) => {
-                let dataSetShareC = {
-                    cid: item.id,
-                    ccode: item.code,
-                    cname: item.name
-                }
-                nts.uk.ui.windows.setShared("CompanyInfo", dataSetShareC);
-            });
-            // Share data B3 (EmployyeCode, EmployyeName)
-            var setShareEmployye: any = _.find(self.employeeList(), (item: any) => {
-                let dataSetShareE = {
-                    ecode: item.code,
-                    ename: item.name
-                }
-                nts.uk.ui.windows.setShared("EmployyeList", dataSetShareE);
-            });
             self.cancel_Dialog();
         }
 
         cancel_Dialog(): any {
+            nts.uk.ui.windows.setShared("CompanyInfo", "");
             nts.uk.ui.windows.close();
         }
 
@@ -302,7 +372,7 @@ module nts.uk.com.view.cas013.b.viewmodel {
     export interface UnitModel {
         code: string;
         name?: string;
-        affiliationName?: string;
+        id?: string;
     }
 
     export class SelectType {
