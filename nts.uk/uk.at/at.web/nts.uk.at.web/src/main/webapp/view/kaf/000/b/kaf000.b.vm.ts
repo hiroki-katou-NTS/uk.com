@@ -462,11 +462,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 					vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
 	                    vm.loadData();
 	                });
-				} else {
-					vm.$dialog.info({ messageId: "Msg_2188" }).then(() => {
-	                    vm.loadData();
-	                });
-				}
+				} 
+				// else {
+				// 	vm.$dialog.info({ messageId: "Msg_2188" }).then(() => {
+	            //         vm.loadData();
+	            //     });
+				// }
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
