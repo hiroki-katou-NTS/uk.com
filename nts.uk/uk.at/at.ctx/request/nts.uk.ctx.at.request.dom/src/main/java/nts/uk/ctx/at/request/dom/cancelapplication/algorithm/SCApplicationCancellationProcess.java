@@ -27,14 +27,10 @@ public class SCApplicationCancellationProcess {
 			GeneralDate date, int closureId, ReflectStatusResult statusWorkSchedule, NotUseAtr dbRegisterClassfi) {
 
 		// [input. 処理中の申請. 事前事後区分]をチェック
-		if (app.getPrePostAtr() == PrePostAtr.POSTERIOR) {
+		// [input.反映状態.反映状態]をチェック
+		if (app.getPrePostAtr() == PrePostAtr.POSTERIOR  || statusWorkSchedule.getReflectStatus() != ReflectedState.REFLECTED) {
 			// [input.勤務予定の反映状態.反映状態]を「取消済」にする
 			statusWorkSchedule.setReflectStatus(ReflectedState.CANCELED);
-			return new SCCancelProcessOneDayOutput(statusWorkSchedule, Optional.empty(), AtomTask.none());
-		}
-
-		// [input.反映状態.反映状態]をチェック
-		if (statusWorkSchedule.getReflectStatus() != ReflectedState.REFLECTED) {
 			return new SCCancelProcessOneDayOutput(statusWorkSchedule, Optional.empty(), AtomTask.none());
 		}
 

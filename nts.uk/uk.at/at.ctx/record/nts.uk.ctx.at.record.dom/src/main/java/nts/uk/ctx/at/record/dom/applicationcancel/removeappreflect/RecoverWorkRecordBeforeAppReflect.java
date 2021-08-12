@@ -29,6 +29,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 		// 勤務実績から日別実績(work）を取得する
 		IntegrationOfDaily domainDaily = require.findDaily(application.getEmployeeID(), date).orElse(null);
 		if (domainDaily == null) {
+			reflectStatus.setReflectStatus(RCReflectedState.CANCELED);
 			return new RCRecoverAppReflectOutput(reflectStatus, Optional.empty(), AtomTask.none());
 		}
 		// 申請の取消
