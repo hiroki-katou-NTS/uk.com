@@ -265,7 +265,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					//・ループ中のスケジュール年間の任意抽出条件．日数の種類　＝＝　公休日数　OR　年休使用数　OR　積立年休使用数
 					if (checkNumberOfDaysUsed(condScheYear)) {
 						DayCheckCond dayCheckCond = (DayCheckCond)condScheYear.getScheCheckConditions();
-						
+						checkCondTypeName = dayCheckCond.getTypeOfDays().nameId;
 						cloure = null;
 						presentClosingPeriod = null;
 						// ＃117291 日数使用数を計算
@@ -320,16 +320,16 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 							// チェック項目をチェック
 							switch (condScheYear.getCheckItemType()) {
 							case TIME:
-								TimeCheckCond dayCheckCond = (TimeCheckCond) condScheYear.getScheCheckConditions();
-								checkCondTypeName = dayCheckCond.getTypeOfTime().nameId;
+								TimeCheckCond timeCheckCond = (TimeCheckCond) condScheYear.getScheCheckConditions();
+								checkCondTypeName = timeCheckCond.getTypeOfTime().nameId;
 								// 総取得結果　+＝　取得結果
 								totalTime += checkItemTime(
 										cid, sid, ym, condScheYear, attendanceTimeOfMonthly, 
 										prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 								break;
 							case DAY_NUMBER:
-								DayCheckCond timeCheckCond = (DayCheckCond) condScheYear.getScheCheckConditions();
-								checkCondTypeName = timeCheckCond.getTypeOfDays().nameId;
+								DayCheckCond dayCheckCond = (DayCheckCond) condScheYear.getScheCheckConditions();
+								checkCondTypeName = dayCheckCond.getTypeOfDays().nameId;
 								// 総取得結果　+＝　取得結果
 								totalTime += checkItemDay(
 										cid, sid, ym, condScheYear, attendanceTimeOfMonthly, 
