@@ -186,7 +186,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     }else{
                         //A41
                         self.listRoleType(self.listNewRole);
-                        self.selectedRoleType(0);
+                        self.selectedRoleType('0');
                     }
                 }else{
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
@@ -518,11 +518,11 @@ module nts.uk.com.view.cas013.a.viewmodel {
                     block.invisible();
                     new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
                         self.selectedRoleIndividual('');
-                        self.selectRole(self.selectedRole(), '');
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                     }).always(() => {
                         block.clear();
                     });
+                    self.selectRole(self.selectedRole(), '');
                 });
             }
         }
