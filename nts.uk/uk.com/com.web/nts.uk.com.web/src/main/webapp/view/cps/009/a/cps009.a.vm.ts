@@ -864,8 +864,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || params.initValue);
 
-            self.intValue = ko.observable(params.intValue || params.initValue);
-            self.dateWithDay = ko.observable(params.dateWithDay || params.initValue);
+            self.intValue = ko.observable(params.intValue || (params.intValue === 0 ? 0 : params.initValue));
+            self.dateWithDay = ko.observable(params.dateWithDay || (params.dateWithDay === 0 ? 0 : params.initValue));
             self.timePoint = ko.observable(params.timePoint || params.initValue);
 
             self.timeItemMin = params.timeItemMin || undefined;
@@ -902,7 +902,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
                         self.numbereditor = {
-                            value: ko.observable(params.intValue || params.initValue),
+                            value: ko.observable(params.intValue || (params.intValue === 0 ? 0 : params.initValue)),
                             constraint: params.itemCode,
                             option: new nts.uk.ui.option.NumberEditorOption({
                                 grouplength: params.numberItemMinus && 3,
@@ -916,7 +916,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     } else {
 
                         self.numbereditor = {
-                            value: ko.observable(params.intValue || params.initValue),
+                            value: ko.observable(params.intValue || (params.intValue === 0 ? 0 : params.initValue)),
                             constraint: params.itemCode,
                             option: new nts.uk.ui.option.NumberEditorOption({
                                 grouplength: params.numberItemMinus && 3,
