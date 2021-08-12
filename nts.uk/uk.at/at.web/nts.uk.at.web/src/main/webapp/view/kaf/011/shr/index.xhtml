@@ -93,7 +93,7 @@
 			        							<tbody data-bind="foreach: leaveComDayOffMana">
 													<tr>
 														<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-														<td data-bind="text: dayNumberUsed"></td>
+														<td data-bind="text: dayNumberUsed + '日'"></td>
 													</tr>
 												</tbody>
 											</table>
@@ -210,7 +210,7 @@
 				        							<tbody data-bind="foreach: leaveComDayOffMana">
 														<tr>
 															<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-															<td data-bind="text: dayNumberUsed"></td>
+															<td data-bind="text: dayNumberUsed + '日'"></td>
 														</tr>
 													</tbody>
 												</table>
@@ -239,7 +239,7 @@
 				        							<tbody data-bind="foreach: payoutSubofHDManagements">
 														<tr>
 															<td data-bind="text: moment(outbreakDay).format('YYYY/MM/DD')"></td>
-															<td data-bind="text: dayNumberUsed"></td>
+															<td data-bind="text: dayNumberUsed + '日'"></td>
 														</tr>
 													</tbody>
 												</table>
