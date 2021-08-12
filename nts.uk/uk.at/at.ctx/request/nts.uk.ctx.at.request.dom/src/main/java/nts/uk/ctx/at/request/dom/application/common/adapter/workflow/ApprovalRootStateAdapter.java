@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AppRoot
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproveResultImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApproveImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverApprovedImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverPersonImport;
@@ -80,9 +81,9 @@ public interface ApprovalRootStateAdapter {
 	
 	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
-	public Integer doApprove(String rootStateID, String employeeID, String memo);
+	public ApproveResultImport doApprove(String rootStateID, String employeeID, String memo);
 	
-	public Boolean isApproveAllComplete(String rootStateID);
+	public Boolean isApproveAllComplete(ApprovalRootStateImport_New approvalRootState);
 	
 	public void doReleaseAllAtOnce(String companyID, String rootStateID);
 	

@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class KrcctMonEdiAttenItemPK.
+ * The Class KrcctMonCalAttenItemPK.
  *
  * @author LienPTK
  */
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class KrcctMonEdiAttenItemPK implements Serializable {
+public class KrcctMonCalAttenItemPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -36,7 +36,7 @@ module nts.uk.at.kdp003.p {
 
 		mounted() {
 			$(document).ready(() => {
-				$('#P2_2 .start').focus();
+				$('#P2_2 .nts-input').first().focus();
 			});
 		}
 

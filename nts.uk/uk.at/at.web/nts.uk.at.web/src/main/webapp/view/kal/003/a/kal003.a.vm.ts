@@ -129,6 +129,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.selectedCategory.subscribe((data) => {
                 self.switchCategory(data);
                 self.tabScheUniqueCheckCondition.initData(data);
+                self.checkCurrentTab();
             });
 
             self.selectedAlarmCheckCondition = ko.observable(new model.AlarmCheckConditionByCategory('', '', new model.ItemModel(0, ""), [], new model.AlarmCheckTargetCondition(false, false, false, false, [], [], [], [])));
@@ -855,6 +856,14 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
             //console.log(vm.tabScheduleCheckConditions());
             //console.log(vm.tabScheduleFixedCheckConditions());
+        }
+
+        private checkCurrentTab() {
+          const vm = this;
+          const currentTab = _.find(vm.tabs(), { 'id': vm.selectedTab() });
+          if (!currentTab.enable()) {
+            vm.selectedTab('tab-1');
+          }
         }
     }
 }

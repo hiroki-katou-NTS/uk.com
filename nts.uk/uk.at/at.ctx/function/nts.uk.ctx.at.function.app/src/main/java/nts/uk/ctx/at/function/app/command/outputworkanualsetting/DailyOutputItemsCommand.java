@@ -7,6 +7,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.DailyOutputItemsAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedgerDaily;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
@@ -44,7 +45,7 @@ public class DailyOutputItemsCommand {
 
     public static DailyOutputItemsAnnualWorkLedger toDomain(DailyOutputItemsCommand command){
         return new DailyOutputItemsAnnualWorkLedger(
-            command.rank,new OutputItemNameOfAnnualWorkLedger(command.name),
+            command.rank,new OutputItemNameOfAnnualWorkLedgerDaily(command.name),
             command.printTargetFlag,
             EnumAdaptor.valueOf(command.independentCalcClassic, IndependentCalcClassic.class),
             EnumAdaptor.valueOf(command.dailyMonthlyClassification, DailyMonthlyClassification.class),

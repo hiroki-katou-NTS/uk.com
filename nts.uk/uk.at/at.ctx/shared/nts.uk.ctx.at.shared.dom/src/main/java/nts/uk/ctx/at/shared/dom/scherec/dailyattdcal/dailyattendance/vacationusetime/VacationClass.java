@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
@@ -227,7 +228,7 @@ public class VacationClass {
 				);
 			}
         } else {
-            if (siftCode.isPresent()) {
+            if (!siftCode.isPresent()) {
                 return predetermineTimeSet.isPresent() ? predetermineTimeSet.get().getAdditionSet().getAddTime()
 						: new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
             } else {
@@ -268,35 +269,38 @@ public class VacationClass {
 	 * @param workType 勤務種類
 	 * @param siftCode 就業時間帯コード
 	 * @param conditionItem 労働条件項目
+	 * @param addSetting 加算設定
 	 * @param holidayAdditionSet 休暇加算時間設定
-	 * @param holidayCalcMethodSet 休暇の計算方法の設定
 	 * @param predTimeSettingForCalc 計算用所定時間設定
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
 	 * @return 休暇加算時間
 	 */
 	public VacationAddTime calcVacationAddTime(
-			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+			PremiumAtr premiumAtr,
 			WorkType workType,
 			Optional<WorkTimeCode> siftCode,
 			WorkingConditionItem conditionItem,
+			AddSetting addSetting,
 			Optional<HolidayAddtionSet> holidayAdditionSet,
-			HolidayCalcMethodSet holidayCalcMethodSet,
 			Optional<PredetermineTimeSetForCalc> predTimeSettingForCalc,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 		
-		VacationAddTime vacationAddTime;
-		if (holidayAdditionSet.isPresent() && holidayCalcMethodSet.getCalcurationByActualTimeAtr(
-				premiumAtr) == CalcurationByActualTimeAtr.CALCULATION_OTHER_THAN_ACTUAL_TIME) {// 実働時間以外も含めて計算する 場合
-			// 加算時間の設定を取得
-			BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predTimeSettingForCalc, siftCode,
-					holidayAdditionSet.get(), conditionItem, predetermineTimeSetByPersonInfo);
-			// 休暇加算時間を加算するかどうか判断
-			vacationAddTime = judgeVacationAddTime(breakdownTimeDay, premiumAtr,
-					holidayAdditionSet.get(), workType, holidayCalcMethodSet);
-		} else {// 実働時間のみで計算する 場合
-				// 休暇加算時間を全て 0 で返す
-			vacationAddTime = new VacationAddTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
+		VacationAddTime vacationAddTime =
+				new VacationAddTime(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO);
+		// 休暇加算するかどうか判断
+		if (addSetting.getNotUseAtr(premiumAtr) == NotUseAtr.NOT_USE){
+			// 加算しない時、休暇加算時間を全て0で返す
+			return vacationAddTime;
 		}
+		// 加算時間の設定を取得
+		BreakDownTimeDay breakdownTimeDay = getVacationAddSet(predTimeSettingForCalc, siftCode,
+				holidayAdditionSet.get(), conditionItem, predetermineTimeSetByPersonInfo);
+		// 休暇の計算方法の設定を確認する
+		HolidayCalcMethodSet holidayCalcMethodSet = addSetting.getVacationCalcMethodSet();
+		// 休暇加算時間を加算するかどうか判断
+		vacationAddTime = judgeVacationAddTime(breakdownTimeDay, premiumAtr,
+				holidayAdditionSet.get(), workType, holidayCalcMethodSet);
+		// 休暇加算時間を返す
 		return vacationAddTime;
 	}
 
@@ -312,7 +316,7 @@ public class VacationClass {
 	 */
 	public VacationAddTime judgeVacationAddTime(
 			BreakDownTimeDay breakdownTimeDay,
-			nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+			PremiumAtr premiumAtr,
 			HolidayAddtionSet holidayAddtionSet,
 			WorkType workType,
 			HolidayCalcMethodSet holidayCalcMethodSet) {
@@ -339,7 +343,7 @@ public class VacationClass {
 	 * @author ken_takasu
 	 * @return
 	 */
-	public LeaveSetAdded getAddVacationSet(nts.uk.ctx.at.shared.dom.PremiumAtr premiumAtr,
+	public LeaveSetAdded getAddVacationSet(PremiumAtr premiumAtr,
 			HolidayAddtionSet holidayAddtionSet, HolidayCalcMethodSet holidayCalcMethodSet) {
 		LeaveSetAdded leaveSetAdded = new LeaveSetAdded(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);// 下のif文に入らない場合は全てしないを返す
 		// 休暇加算設定の取得

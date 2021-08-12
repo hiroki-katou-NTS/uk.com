@@ -4,29 +4,23 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.HolidayPriorityOrder;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 時間休暇相殺項目
- * 
  * @author daiki_ichioka
- * 
  */
 @Getter
 public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 
 	/** 控除相殺時間 */
-	@Setter
-	protected Optional<DeductionOffSetTime> deductionOffSetTime = Optional.empty();
+	protected Optional<TimevacationUseTimeOfDaily> deductionOffSetTime = Optional.empty();
 
 	/**
 	 * Constructor
@@ -49,6 +43,22 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
 			List<TimeSheetOfDeductionItem> deductionTimeSheets) {
 		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
+	}
+
+	/**
+	 * コンストラクタ
+	 * @param timeSheet 時間帯
+	 * @param rounding 丸め設定
+	 * @param recorddeductionTimeSheets 計上用控除時間帯
+	 * @param deductionTimeSheets 控除用控除時間帯
+	 * @param deductionOffsetTime 控除相殺時間
+	 */
+	public TimeVacationOffSetItem(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding,
+			List<TimeSheetOfDeductionItem> recorddeductionTimeSheets,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets,
+			Optional<TimevacationUseTimeOfDaily> deductionOffsetTime) {
+		super(timeSheet, rounding, recorddeductionTimeSheets, deductionTimeSheets);
+		this.deductionOffSetTime = deductionOffsetTime;
 	}
 
 	/*
@@ -76,7 +86,7 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 		
 		// 相殺時間を控除する
 		if (deductionOffSetTimeAtr == NotUseAtr.USE && this.deductionOffSetTime.isPresent()) {
-			calcTime -= this.deductionOffSetTime.get().getTotalOffSetTime();
+			calcTime -= this.deductionOffSetTime.get().totalVacationAddTime();
 		}
 		
 		// 丸め処理
@@ -89,14 +99,19 @@ public abstract class TimeVacationOffSetItem extends CalculationTimeSheet {
 	/**
 	 * 相殺する
 	 * @param priorityOrder 時間休暇相殺優先順位
-	 * @param useTime 日別勤怠の時間休暇使用時間
-	 * @param deductionOffSetTimeAtr 相殺された時間を控除する
-	 * @return 控除相殺時間
+	 * @param useTime 時間休暇使用時間
+	 * @param deductionOffSetTimeAtr 相殺時間控除区分
 	 */
-	public DeductionOffSetTime offsetProcess(CompanyHolidayPriorityOrder priorityOrder,
-			TimevacationUseTimeOfDaily useTime, NotUseAtr deductionOffSetTimeAtr) {
-		//残時間
-		AttendanceTime remainingTime = this.calcTotalTime(deductionOffSetTimeAtr, NotUseAtr.NOT_USE);
-		return DeductionOffSetTime.create(priorityOrder, useTime, remainingTime);
+	public TimevacationUseTimeOfDaily offsetProcess(
+			CompanyHolidayPriorityOrder priorityOrder,
+			TimevacationUseTimeOfDaily useTime,
+			NotUseAtr deductionOffSetTimeAtr) {
+		
+		// 時間休暇残時間
+		AttendanceTime remain = this.calcTotalTime(deductionOffSetTimeAtr, NotUseAtr.NOT_USE);
+		// 控除相殺時間を作る
+		this.deductionOffSetTime = Optional.of(useTime.create(priorityOrder, remain));
+		// 時間休暇使用時間（相殺後）を返す
+		return useTime.minus(this.deductionOffSetTime.get());
 	}
 }

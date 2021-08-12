@@ -19,7 +19,6 @@ module nts.uk.at.view.kaf000.a.component7.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.checkBoxValue = params.checkBoxValue;
             vm.dispCheckBox = ko.observable(true);
-
             vm.appDispInfoStartupOutput.subscribe(value => {
 				let appTypeSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting, (o: any) => o.appType == vm.appType());
                 vm.dispCheckBox(!appTypeSetting.sendMailWhenRegister && value.appDispInfoNoDateOutput.mailServerSet);

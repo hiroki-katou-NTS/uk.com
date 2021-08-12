@@ -357,8 +357,15 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		}));
 		for(StampAppOutputTmp itemTmp : listTmp) {
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.ATTEENDENCE_OR_RETIREMENT.value) {
-				// 項目名＝#KAF002_65（勤務時間）：枠NO
-				itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_65", itemTmp.getStampFrameNo().v().toString())));
+				// 枠NO
+				if(itemTmp.getStampFrameNo().v()==1) {
+					// 項目名＝#KAF002_103（勤務時間）
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_103", itemTmp.getStampFrameNo().v().toString())));
+				}
+				if(itemTmp.getStampFrameNo().v()==2) {
+					// 項目名＝#KAF002_65（勤務時間２）
+					itemTmp.setOpItemName(Optional.of(I18NText.getText("KAF002_65", itemTmp.getStampFrameNo().v().toString())));
+				}
 			}
 			if(itemTmp.getTimeItem() == 0 && itemTmp.getStampAtr() == TimeStampAppEnum.EXTRAORDINARY.value) {
 				// 項目名＝#KAF002_66（臨時時間）：枠NO

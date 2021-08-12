@@ -7,10 +7,10 @@ module ccg013.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import errors = nts.uk.ui.errors;
 
-    const menuBarHTML: string = `<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}">
-        <a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}">
-            <span class="tab-item-content" data-bind=" text: menuBarName" />
-            <img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: function() { $vm.openIdialog(menuBarId()); }" />
+    const menuBarHTML: string = `<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
+        <a class="tab-item" data-bind="attr: {href: targetContent}" style="background-color: #127D09;">
+            <span class="tab-item-content limited-label" data-bind="text: menuBarName" style="color: #ffffff;" />
+            <i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click:function() { $parent.openIdialog(menuBarId()); }"></i>
         </a></li>`;
     const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}"><span class="limited-label" data-bind="text: name"></span></li>';
 
@@ -396,7 +396,7 @@ module ccg013.a.viewmodel {
             $(".menubar-navigation").html(menuBarHTML);
             ko.applyBindingsToNode($(".menubar-navigation")[0], {
                 foreach: self.currentWebMenu().menuBars
-            });
+            }, self);
             self.setupMenuBar();
         }
 

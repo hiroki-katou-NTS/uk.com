@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingGetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.DayOfWeek;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
@@ -53,6 +55,8 @@ public class AttendanceRecordExportSettingAddCommand implements AttendanceRecord
 	/** The layout id. */
 	String layoutId;
 	
+	Integer startOfWeek;
+	
 	/**
 	 * Instantiates a new attendance record export setting add command.
 	 */
@@ -90,6 +94,11 @@ public class AttendanceRecordExportSettingAddCommand implements AttendanceRecord
 		return MonthlyConfirmedDisplay.valueOf(this.monthlyDisplay);
 	}
 
+	@Override
+	public DayOfWeek getStartOfWeek() {
+		return EnumAdaptor.valueOf(startOfWeek, DayOfWeek.class);
+	}
+	
 	@Override
 	public List<SealColumnName> getSealStamp() {
 		return this.sealStamp != null

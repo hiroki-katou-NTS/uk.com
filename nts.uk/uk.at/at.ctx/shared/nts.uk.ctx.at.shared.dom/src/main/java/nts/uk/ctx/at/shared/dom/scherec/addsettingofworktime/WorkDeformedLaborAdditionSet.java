@@ -175,8 +175,8 @@ public class WorkDeformedLaborAdditionSet extends AggregateRoot implements Seria
 	}
 	
 	/**
-	 * 休暇加算するかを取得する
-	 * @param premiumAtr
+	 * 休暇加算するかどうか判断
+	 * @param premiumAtr 割増区分
 	 * @return 加算する：USE 加算しない：NOT_USE
 	 */
 	public NotUseAtr getNotUseAtr(PremiumAtr premiumAtr) {
@@ -224,5 +224,13 @@ public class WorkDeformedLaborAdditionSet extends AggregateRoot implements Seria
 	 */
 	public WorkDeformedLaborAdditionSet getWorkTimeDeductFlexTime() {
 		return new WorkDeformedLaborAdditionSet(this.companyId, this.vacationCalcMethodSet.getWorkTimeDeductFlexTime());
+	}
+
+	/**
+	 * 遅刻、早退の控除設定を「控除する」に変更して作成する
+	 * @return 遅刻、早退の控除設定を「控除する」に変更したインスタンス
+	 */
+	public WorkDeformedLaborAdditionSet createNewDeductLateEarly() {
+		return new WorkDeformedLaborAdditionSet(this.companyId, this.vacationCalcMethodSet.createNewDeductLateEarly());
 	}
 }

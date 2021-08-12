@@ -150,6 +150,8 @@ public class AnnualWorkScheduleData {
 					.add(this.getItemValueByNullOrZero(this.month11th))
 					.add(this.getItemValueByNullOrZero(this.month12th));
 			this.sum = new ItemData(sum, null, false);
+		} else {
+			this.sum = new ItemData(new BigDecimal(0), null, false);
 		}
 		if (this.numMonth == 0) {
 			return this;
@@ -202,6 +204,10 @@ public class AnnualWorkScheduleData {
 		/*if (valOutFormat.equals(ValueOuputFormat.TIMES)) {
 			return String.valueOf(value.longValue());
 		}*/
+		if (valOutFormat.equals(ValueOuputFormat.AMOUNT)) {
+			final long MAX_VALUE = 999999999;
+			return String.format("%,d", Math.min(value.longValue(), MAX_VALUE)) + "円";
+		}
 		return String.valueOf(value.floatValue());
 	}
 
@@ -438,10 +444,8 @@ public class AnnualWorkScheduleData {
 
 	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemsOutputToBookTable itemOut
 																 , List<MonthlyRecordValueImport> monthlyAttendanceResult
-																 , YearMonth startYm
-																 , List<Integer> lstAtdCanBeAggregate) {
+																 , YearMonth startYm) {
 		final Map<Integer, Integer> operationMap = itemOut.getListOperationSetting().stream()
-				.filter(t -> lstAtdCanBeAggregate.contains(t.getAttendanceItemId())) // 集計可能な勤怠項目IDかどうかチェックをする
 				.collect(Collectors.toMap(CalculationFormulaOfItem::getAttendanceItemId, CalculationFormulaOfItem::getOperation));
 
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();

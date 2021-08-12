@@ -412,7 +412,7 @@ export class CmmS45BComponent extends Vue {
     private convertLstApp(lstApp: Array<ListOfApplication>) {
         const self = this;
         let lst = [];
-        lstApp.forEach((app: ListOfApplication) => {
+        lstApp.forEach((app: any) => {
             if (self.arrayAppType.indexOf(app.appType) >= 0) {
                 lst.push(new AppInfo({
                     id: app.appID,
@@ -423,12 +423,23 @@ export class CmmS45BComponent extends Vue {
                     reflectStatus: app.reflectionStatus,
                     appStatusNo: self.convertReflectToInt(app.reflectionStatus),
                     frameStatus: null,//this.getFrameStatus(app.appID),
-                    version: null
+                    version: null,
+                    opComplementLeaveApp: app.opComplementLeaveApp,
+                    opAppStartDate: app.opAppStartDate,
+                    opAppEndDate: app.opAppEndDate
+                    
                 }));
             }
         });
 
         return lst;
+    }
+
+    public isLinkApp(opComplementLeaveApp: any) {
+
+        const isLinkApp = _.get(opComplementLeaveApp, 'linkAppID');
+
+        return !_.isNil(isLinkApp);
     }
     public convertReflectToInt(value: string) {
         const self = this;
@@ -594,7 +605,13 @@ export class CmmS45BComponent extends Vue {
         if (self.modeAppr && self.lstAppr.length > 0) {
             lstAppID = self.lstAppr;
         } else {
-            lstAppID = this.findLstIdDisplay();
+            self.filterByAppType.forEach((app) => {
+                app.lstApp.forEach((item) => {
+                    if (item.appStatusNo == 5) {
+                        lstAppID.push(item.id);
+                    }
+                });
+            });
         }
         let lstAppr = [];
         let lstApplicationTemp = self.data.appListInfoDto.appLst as ListOfApplication;
@@ -616,6 +633,8 @@ export class CmmS45BComponent extends Vue {
         self.$modal.confirm({ messageId: 'Msg_1551' }).then((value) => {
             if (value == 'yes') {
                 self.$http.post('at', servicePath.approvalBatchApp, paramCmd).then((result) => {
+                    return self.$http.post('at', servicePath.approverAfterConfirm, paramCmd.listOfApplicationCmds);
+                }).then((result) => {
                     self.$mask('hide');
                     self.$modal.info({ messageId: 'Msg_220' }).then(() => {
                         self.$mask('hide');
@@ -809,5 +828,6 @@ const servicePath = {
     getApplicationList: 'at/request/application/applist/getapplistMobile',
     getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList',
     filterByDate: 'at/request/application/applist/getapplistFilterMobile',
-    approvalBatchApp: 'at/request/application/applist/approve'
+    approvalBatchApp: 'at/request/application/applist/approve',
+    approverAfterConfirm: 'at/request/application/applist/approverAfterConfirm'
 };

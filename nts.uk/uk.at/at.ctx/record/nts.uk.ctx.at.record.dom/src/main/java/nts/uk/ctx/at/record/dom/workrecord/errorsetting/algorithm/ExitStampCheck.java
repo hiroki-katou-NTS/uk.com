@@ -72,7 +72,8 @@ public class ExitStampCheck {
 									&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()
 									&& (!attendanceLeavingGate.getLeaving().isPresent()
 											|| (attendanceLeavingGate.getLeaving().isPresent()
-													&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay() == null))) {
+													&& !attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent()
+															))) {
 								if (attendanceLeavingGate.getWorkNo().v() == 1) {
 									attendanceItemIDList.add(77);
 								} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
@@ -82,7 +83,7 @@ public class ExitStampCheck {
 							// 入門のみ存在している(only has leaving time)
 							else if ((!attendanceLeavingGate.getAttendance().isPresent()
 									|| (attendanceLeavingGate.getAttendance().isPresent()
-											&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()))
+											&& !attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()))
 									&& (attendanceLeavingGate.getLeaving().isPresent()
 											&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent())) {
 								if (attendanceLeavingGate.getWorkNo().v() == 1) {

@@ -57,6 +57,9 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	//	月次確認済表示区分
 	private MonthlyConfirmedDisplay monthlyConfirmedDisplay;
 	
+	// 週開始
+	private DayOfWeek startOfWeek;
+	
 	/**
 	 * Instantiates a new attendance record export setting.
 	 */
@@ -80,7 +83,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		this.nameUseAtr =  NameUseAtr.valueOf(memento.getNameUseAtr());
 		this.exportFontSize = memento.getExportFontSize();
 		this.monthlyConfirmedDisplay = memento.getMonthlyConfirmedDisplay();
-
+		this.startOfWeek = memento.getStartOfWeek();
 	}
 
 	/**
@@ -102,6 +105,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		}
 		memento.setExportFontSize(this.exportFontSize);
 		memento.setMonthlyConfirmedDisplay(this.monthlyConfirmedDisplay);
+		memento.setStartOfWeek(this.startOfWeek);
 	}
 
 	/**
