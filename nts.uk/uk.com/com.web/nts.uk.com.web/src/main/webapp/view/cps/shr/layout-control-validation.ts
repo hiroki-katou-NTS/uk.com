@@ -96,6 +96,9 @@ module nts.layout {
                     }
 
                     if (element && !!x.editable) {
+                        if ((x.itemCode == 'IS00379' || x.itemCode == 'IS01101' || x.itemCode == 'IS00384' || x.itemCode == 'IS01102') && !!x.readonly) {
+                            return;
+                        }
                         if (element.tagName.toUpperCase() == "INPUT") {
                             $element
                                 .trigger('blur')
