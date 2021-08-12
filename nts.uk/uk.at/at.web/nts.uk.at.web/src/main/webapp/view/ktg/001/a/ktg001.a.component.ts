@@ -10,12 +10,20 @@ module nts.uk.ui.ktg001.a {
         haveParticipant: Boolean; //勤怠担当者である
         topPagePartName: string; //名称
         appDisplayAtr: Boolean; //承認すべき申請データ
-        dayDisplayAtr: Boolean; //承認すべき日の実績が存在する
-        monthDisplayAtr: Boolean; //承認すべき月の実績が存在する
+       	dayDisplayAtrList: Array<IApprovedDataDetail>; //承認すべき日の実績が存在する
+		monthDisplayAtrList: Array<IApprovedDataDetail>; //承認すべき月の実績が存在する
         agrDisplayAtr: Boolean; //承認すべき36協定が存在する
         approvedAppStatusDetailedSettings: Array<IApprovedAppStatusDetailedSetting>; //承認すべき申請状況の詳細設定
         closingPeriods: Array<IClosureIdPresentClosingPeriod>; //締めID, 現在の締め期間
     }
+
+	//承認すべきデータの実行詳細
+	export interface IApprovedDataDetail {
+		displayAtr: Boolean; //存在する
+		yearMonth: number; //年月
+		closureId: number; //締めID
+		name: string; //締名
+	}
 
     //承認すべき申請状況の詳細設定
     export interface IApprovedAppStatusDetailedSetting {
@@ -48,11 +56,6 @@ module nts.uk.ui.ktg001.a {
     export interface IApprovalProcessingUseSetting {
         useDayApproverConfirm: Boolean; //日の承認者確認を利用する
         useMonthApproverConfirm: Boolean; //月の承認者確認を利用する
-    }
-
-    interface IParam {
-        //ym: number, //表示期間
-        closureId: number //締めID
     }
 
     @component({
@@ -91,7 +94,7 @@ module nts.uk.ui.ktg001.a {
                             <col width="99%" />
                         </colgroup>
                         <tbody>
-                            <tr data-bind="css: $component.appRowVisible() ? 'row-show' : '', visible: $component.appRowVisible">
+                            <tr class='row-header' data-bind="css: $component.appRowVisible() ? 'row-show' : '', visible: $component.appRowVisible">
                                 <td class="text-center" style="position: relative;">
                                     <!-- A2_2 -->
                                     <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
@@ -106,43 +109,72 @@ module nts.uk.ui.ktg001.a {
                                     <!-- A2_1 -->
                                     <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_1') }"></div>
                                 </td>
-                            </tr>
-
-                            <tr data-bind="css: $component.dayRowVisible() ? 'row-show' : '', visible: $component.dayRowVisible">
-                                <td class="text-center" style="position: relative;">
-                                    <!-- A3_2 -->
-                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
-                                        click: $component.dayPerformanceConfirm,
-                                        enable: $component.dayIconVisible">
-                                    </button>
-                                    <!-- A3_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
-                                        data-bind="visible: $component.dayIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.dayPerformanceConfirm"></i>
-                                </td>
                                 <td style="padding-left: 5px;">
-                                    <!-- A3_1 -->
-                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_2') }"></div>
+                                    <div data-bind="text: ''"></div>
                                 </td>
                             </tr>
+                            <!-- ko foreach: { data: $component.dayDisplayAtrList, as: 'day' } -->
+                                <tr class='row-day' data-bind="css: $component.dayRowVisible() ? 'row-show' : '', visible: $component.dayRowVisible">
+                                    <td class="" style="position: relative;">
+                                        <!-- A3_2 -->
+                                        <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
+                                            click: function() { $component.dayPerformanceConfirm(day.closureId, day.yearMonth) },
+                                            enable: day.displayAtr">
+                                        </button>
+                                        <!-- A3_3 -->
+                                        <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                            data-bind="visible: day.displayAtr, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.dayPerformanceConfirm(day.closureId, day.yearMonth) }"></i>
+                                    </td>
+                                    <!-- ko if: day.closureId == 1 -->
+                                        <td style="padding-left: 5px;">
+                                            <!-- A3_1 -->
+											<div class="ktg001-form-label" data-bind= "i18n: 'KTG001_2'"></div>
+                                        </td>
+                                    <!-- /ko -->
+                                    <!-- ko if: day.closureId != 1 -->
+                                        <td style="padding-left: 5px;">
+                                            <!-- A3_1 -->
+                                            <div data-bind="text: ''"></div>
+                                        </td>
+                                    <!-- /ko -->
+                                    <td>
+                                        <!-- A3_5 -->
+                                        <div style="width: 37px;" data-bind="text: day.name"></div>
+                                    </td>
+                                </tr>
+                            <!-- /ko -->
+                            <!-- ko foreach: { data: $component.monthDisplayAtrList, as: 'month' } -->
+                                <tr class='row-month' data-bind="css: $component.monRowVisible() ? 'row-show' : '', visible: $component.monRowVisible">
+                                    <td class="text-center" style="position: relative;">
+                                        <!-- A4_2 -->
+                                        <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
+                                            click: function() { $component.monPerformanceConfirm(month.closureId, month.yearMonth) },
+                                            enable: month.displayAtr">
+                                        </button>
+                                        <!-- A4_3 -->
+                                        <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
+                                            data-bind="visible: month.displayAtr, ntsIcon: { no: 165, width: 13, height: 13 }, click: function() { $component.monPerformanceConfirm(month.closureId, month.yearMonth) }"></i>
+                                    </td>
+                                    <!-- ko if: month.closureId == 1 -->
+                                        <td style="padding-left: 5px;">
+                                            <!-- A4_1 -->
+                                            <div class="ktg001-form-label" data-bind="i18n: 'KTG001_3'"></div>
+                                         </td>
+                                    <!-- /ko -->
+                                    <!-- ko if: month.closureId != 1 -->
+                                        <td style="padding-left: 5px;">
+											 <!-- A4_1 -->
+                                            <div data-bind="text: ''"></div>
+                                        </td>
+                                    <!-- /ko -->
+                                    <td>
+                                        <!-- A4_5 -->
+                                        <div style="width: 37px;" data-bind="text: month.name"></div>
+                                 	</td>
+                                </tr>
+                            <!-- /ko -->
 
-                            <tr data-bind="css: $component.monRowVisible() ? 'row-show' : '', visible: $component.monRowVisible">
-                                <td class="text-center" style="position: relative;">
-                                    <!-- A4_2 -->
-                                    <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
-                                        click: $component.monPerformanceConfirm,
-                                        enable: monIconVisible">
-                                    </button>
-                                    <!-- A4_3 -->
-                                    <i style="position: absolute; bottom: 5px; left: 15px; cursor: pointer;"
-                                        data-bind="visible: monIconVisible, ntsIcon: { no: 165, width: 13, height: 13 }, click: $component.monPerformanceConfirm"></i>
-                                </td>
-                                <td style="padding-left: 5px;">
-                                    <!-- A4_1 -->
-                                    <div data-bind="ntsFormLabel: { required: false, text: $i18n('KTG001_3') }"></div>
-                                </td>
-                            </tr>
-
-                            <tr data-bind="css: $component.aggrRowVisible() ? 'row-show' : '', visible: $component.aggrRowVisible">
+                            <tr class='row-approval' data-bind="css: $component.aggrRowVisible() ? 'row-show' : '', visible: $component.aggrRowVisible">
                                 <td class="text-center" style="position: relative;;">
                                     <!-- A5_2 -->
                                     <button class="ktg001-no-border" data-bind="ntsIcon: { no: 200, width: 28, height: 28 },
@@ -184,8 +216,15 @@ module nts.uk.ui.ktg001.a {
                 .ktg001-border table tr td,
 			    .ktg001-border table tr th {
                     border-width: 0px;
-                    border-bottom: 1px solid #BFBFBF;
+                    border-bottom: none;
 			    }
+				.row-show button {
+				    box-shadow: none;
+				}
+				.ktg001-form-label {
+					color: #808080;
+    				font-weight: 500;
+				}
             </style>
         `
     })
@@ -193,10 +232,6 @@ module nts.uk.ui.ktg001.a {
         widget: string = 'KTG001A';
 
         title: KnockoutObservable<string> = ko.observable('');
-        appText: KnockoutObservable<string> = ko.observable('');
-        dayText: KnockoutObservable<string> = ko.observable('');
-        monText: KnockoutObservable<string> = ko.observable('');
-        aggrText: KnockoutObservable<string> = ko.observable('');
 
         appRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
         dayRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
@@ -204,11 +239,11 @@ module nts.uk.ui.ktg001.a {
         aggrRowVisible: KnockoutObservable<Boolean> = ko.observable(false);
 
         appIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
-        dayIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
-        monIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
         aggrIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
 
         settingIconVisible: KnockoutObservable<Boolean> = ko.observable(false);
+		dayDisplayAtrList: KnockoutObservableArray<IApprovedDataDetail> = ko.observableArray([]);
+		monthDisplayAtrList: KnockoutObservableArray<IApprovedDataDetail> = ko.observableArray([]);
 
         constructor(private params: { currentOrNextMonth: 1 | 2; }) {
             super();
@@ -263,11 +298,10 @@ module nts.uk.ui.ktg001.a {
                         let agreementOperationSetting = data.agreementOperationSetting;
 
                         vm.title(approvedDataExecution.topPagePartName);
-                        vm.appText(approvedDataExecution.appDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-                        vm.dayText(approvedDataExecution.dayDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-                        vm.monText(approvedDataExecution.monthDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
-                        vm.aggrText(approvedDataExecution.agrDisplayAtr == true ? vm.$i18n('KTG001_5') : vm.$i18n('KTG001_6'));
+
                         vm.settingIconVisible(approvedDataExecution.haveParticipant);
+						vm.dayDisplayAtrList(approvedDataExecution.dayDisplayAtrList);
+						vm.monthDisplayAtrList(approvedDataExecution.monthDisplayAtrList);
 
                         if (approvedDataExecution.approvedAppStatusDetailedSettings) {
                             approvedDataExecution.approvedAppStatusDetailedSettings.forEach(i => {
@@ -278,12 +312,10 @@ module nts.uk.ui.ktg001.a {
 
                                 if (i.item == DAY) {
                                     vm.dayRowVisible(i.displayType == USE && approvalProcessingUse.useDayApproverConfirm == true);
-                                    vm.dayIconVisible(i.displayType == USE && approvalProcessingUse.useDayApproverConfirm == true && approvedDataExecution.dayDisplayAtr == true ? true : false);
                                 }
 
                                 if (i.item == MON) {
                                     vm.monRowVisible(i.displayType == USE && approvalProcessingUse.useMonthApproverConfirm == true);
-                                    vm.monIconVisible(i.displayType == USE && approvalProcessingUse.useMonthApproverConfirm == true && approvedDataExecution.monthDisplayAtr == true ? true : false);
                                 }
 
                                 if (i.item == AGG) {
@@ -302,6 +334,10 @@ module nts.uk.ui.ktg001.a {
                             .removeAttr('data-bind');
                         _.forEach($(".row-show td"), element => $(element).removeClass("ktg001-no-border"));    
                         _.forEach($($(".row-show").last().children()), element => $(element).addClass("ktg001-no-border"));
+						$(".row-header").last().children().css('border-bottom', '1px solid #BFBFBF');
+						$(".row-day").last().children().css('border-bottom', '1px solid #BFBFBF');
+						$(".row-month").last().children().css('border-bottom', '1px solid #BFBFBF');
+						$(".row-approval").last().children().css('border-bottom', '1px solid #BFBFBF');
                     });
                 })
                 .always(() => vm.$blockui("clearView"));
@@ -313,16 +349,18 @@ module nts.uk.ui.ktg001.a {
             vm.$jump('at', '/view/cmm/045/a/index.xhtml?a=1');
         }
 
-        dayPerformanceConfirm() {
+        dayPerformanceConfirm(clsId: number, ym: number) {
             const vm = this;
+			const param = {closureId: clsId, yearMonth: ym};
 
-            vm.$jump('at', '/view/kdw/004/a/index.xhtml');
+            vm.$jump('at', '/view/kdw/004/a/index.xhtml', param);
         }
 
-        monPerformanceConfirm() {
+        monPerformanceConfirm(clsId: number, ym: number) {
             const vm = this;
+			const param = {closureId: clsId, yearMonth: ym};
 
-            vm.$jump('at', '/view/kmw/003/a/index.xhtml?initmode=2');
+            vm.$jump('at', '/view/kmw/003/a/index.xhtml?initmode=2', param);
         }
 
         aggrementApproval() {
