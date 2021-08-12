@@ -1938,7 +1938,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			// update cell extable
 			$("#extable-ksu003").on("extablecellupdated", (e: any) => {
-				recharge(e.detail);
+				//recharge(e.detail);
 			});
 
 			// update cell khi trở về giá trị cũ
@@ -2849,13 +2849,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 			$(lgc).on("gcdrop", (e: any) => {
 				self.checkDrop = true;
-				self.gcDrop(e, i, datafilter, "lgc", 0);
+				//self.gcDrop(e, i, datafilter, "lgc", 0);
 				self.checkDrop = false;
 			});
 
 			$(rgc).on("gcdrop", (e: any) => {
 				self.checkDrop = true;
-				self.gcDrop(e, i, datafilter, "rgc", 0);
+				//self.gcDrop(e, i, datafilter, "rgc", 0);
 				self.checkDrop = false;
 			});
 
@@ -2981,7 +2981,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		}
 
 		gcDrop(e: any, i: any, datafilter: any, type: string, checkType: number) {
-			let param = checkType == 0 ? e.detail : e, self = this,
+			/*let param = checkType == 0 ? e.detail : e, self = this,
 			cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(10)" :
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(8)";
 			if (param[0] * 5 == 0) return;
@@ -3059,7 +3059,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (i + 2).toString() + ")" + " > td:nth-child(7)";
 			$(cssTotalTime).css("background-color", "#ffffff");
 
-			self.checkDragDrop = false;
+			self.checkDragDrop = false;*/
 		}
 
 		dropBreakTime(i: any, indexBrks: any, b: any, e: any, slide: any, fixed: any, id: any) {
