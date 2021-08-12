@@ -368,11 +368,9 @@ public class HolidayShipmentScreenBFinder {
 		// get form this.getLinkingManagementRec()
 		
 		//INPUT．「勤務種類」が振休の勤務種類かチェックする
-		if(holidayManage && (
-				(workType.getDailyWork().getWorkTypeUnit().isOneDay() && workType.getDailyWork().getOneDay() == WorkTypeClassification.Pause) || 
+		if((workType.getDailyWork().getWorkTypeUnit().isOneDay() && workType.getDailyWork().getOneDay() == WorkTypeClassification.Pause) || 
 				(workType.getDailyWork().getWorkTypeUnit().isMonringAndAfternoon() && (workType.getDailyWork().getMorning() == WorkTypeClassification.Pause || workType.getDailyWork().getAfternoon() == WorkTypeClassification.Pause))
-				)
-		){
+				){
 			return payoutSubofHDManaRepository.getByListDate(employeeID, Arrays.asList(applicationDate))
 					.stream().filter(c-> { 
 						return c.getAssocialInfo().getTargetSelectionAtr() == TargetSelectionAtr.REQUEST 
