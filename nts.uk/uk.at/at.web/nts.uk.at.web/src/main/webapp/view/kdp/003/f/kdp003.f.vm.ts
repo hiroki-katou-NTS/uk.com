@@ -631,6 +631,11 @@ module nts.uk.at.kdp003.f {
 									if (response.msgErrorId) {
 										return vm.$dialog.error({ messageId: response.msgErrorId });
 									}
+									if (response.successMsg === 'Msg_1475') {
+										return vm.$dialog
+												.info({ messageId: 'Msg_1475' })
+												.then(() => dataResultLogin = response);
+									}
 									dataResultLogin = response;
 								})
 								.then(() => {
