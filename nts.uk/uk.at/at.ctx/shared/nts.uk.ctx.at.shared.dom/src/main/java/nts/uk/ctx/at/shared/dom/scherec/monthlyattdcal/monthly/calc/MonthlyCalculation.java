@@ -365,11 +365,11 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 休出枠の役割
 		for (val holidayWorkFrame : companySets.getWorkDayoffFrameList()) {
 			this.settingsByReg.getRoleHolidayWorkFrameMap()
-					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
 			this.settingsByDefo.getRoleHolidayWorkFrameMap()
-					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
 			this.settingsByFlex.getRoleHolidayWorkFrameMap()
-					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame.getRole());
+					.putIfAbsent(holidayWorkFrame.getWorkdayoffFrNo().v().intValue(), holidayWorkFrame);
 
 			// 自動的に除く休出枠
 			if (holidayWorkFrame.getRole() != WorkdayoffFrameRole.MIX_WITHIN_OUTSIDE_STATUTORY)
@@ -861,7 +861,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 				}
 
 				// 履歴ごとに月別実績を集計する
-				calcWork.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, annualLeaveDeductDays,
+				calcWork.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS, annualLeaveDeductDays,
 						absenceDeductTime, flexSettleTime);
 			}
 

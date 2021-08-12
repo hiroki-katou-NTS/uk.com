@@ -108,10 +108,10 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 			
 			// 「週割増・月割増を求める」を取得する
 			boolean isAskPremium = false;
-			if (aggregateAtr == MonthlyAggregateAtr.MONTHLY){
+			if (aggregateAtr == MonthlyAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS){
 				isAskPremium = settingsByReg.getRegularAggrSet().getAggregateTimeSet().isSurchargeWeekMonth();
 			}
-			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
+			if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
 				isAskPremium = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet().isSurchargeWeekMonth();
 			}
 			if (isAskPremium){

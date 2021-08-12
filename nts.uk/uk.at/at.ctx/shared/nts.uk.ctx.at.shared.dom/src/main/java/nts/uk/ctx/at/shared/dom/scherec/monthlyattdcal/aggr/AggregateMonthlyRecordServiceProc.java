@@ -656,7 +656,7 @@ public class AggregateMonthlyRecordServiceProc {
 		ConcurrentStopwatches.start("12220:月の計算：");
 
 		// 月の計算
-		monthlyCalculation.aggregate(require, cacheCarrier, datePeriod, MonthlyAggregateAtr.MONTHLY, Optional.empty(),
+		monthlyCalculation.aggregate(require, cacheCarrier, datePeriod, MonthlyAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS, Optional.empty(),
 				Optional.empty(), Optional.empty());
 
 		ConcurrentStopwatches.stop("12220:月の計算：");

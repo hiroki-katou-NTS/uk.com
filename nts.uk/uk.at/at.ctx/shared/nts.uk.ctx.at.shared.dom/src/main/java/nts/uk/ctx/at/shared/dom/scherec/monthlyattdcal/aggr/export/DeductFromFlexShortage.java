@@ -84,7 +84,7 @@ public class DeductFromFlexShortage {
 		if (monthlyCalculation.getErrorInfos().size() > 0){
 			return returnValue;
 		}
-		monthlyCalculation.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.MONTHLY,
+		monthlyCalculation.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS,
 				Optional.of(annualLeaveDeductDays), Optional.of(absenceDeductTime),
 				Optional.empty());
 		returnValue.getErrorInfos().addAll(monthlyCalculation.getErrorInfos());
