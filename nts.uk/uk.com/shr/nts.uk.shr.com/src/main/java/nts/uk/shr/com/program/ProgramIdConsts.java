@@ -999,6 +999,7 @@ public class ProgramIdConsts {
 	public static final String KAL014C = "KAL014C";
 
 	public static final String KAL012A = "KAL012A";
+	public static final String KAL012B = "KAL012B";
 
 	public static final String KAL013A = "KAL013A";
 	public static final String KAL013B = "KAL013B";
