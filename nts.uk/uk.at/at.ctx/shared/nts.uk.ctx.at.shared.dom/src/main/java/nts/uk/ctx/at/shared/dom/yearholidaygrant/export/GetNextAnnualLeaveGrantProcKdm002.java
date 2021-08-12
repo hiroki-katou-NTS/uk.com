@@ -371,7 +371,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		return result;
 	}
 
-	public static interface RequireM1 {
+	public static interface RequireM1 extends GetNextAnnualLeaveGrantProc.RequireM1 {
 
 		Map<String, List<LengthServiceTbl>> lengthServiceTbl(String companyId, List<String> yearHolidayCode);
 
