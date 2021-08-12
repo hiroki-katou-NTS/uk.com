@@ -547,20 +547,26 @@ module nts.uk.at.kdp003.f {
 										return vm.$dialog.error({ messageId: 'Msg_176' });
 									})
 									.done((data: any) => {
-										var dataConvent = {
-											showChangePass: false,
-											msgErrorId: '',
-											showContract: false,
-											result: true,
-											em: data,
-											successMsg: '',
-											errorMessage: '',
+										if(data.employeeId == null) {
+											vm.$dialog.error({ messageId: 'Msg_176' });
+										} else {
+											var dataConvent = {
+												showChangePass: false,
+												msgErrorId: '',
+												showContract: false,
+												result: true,
+												em: data,
+												successMsg: '',
+												errorMessage: '',
+											}
+											dataResultLogin = dataConvent;
+
+											vm.$window.close(dataResultLogin);
 										}
-										dataResultLogin = dataConvent;
 									})
-									.then(() => {
-										vm.$window.close(dataResultLogin);
-									})
+									//.then(() => {
+									//	vm.$window.close(dataResultLogin);
+									//})
 									.always(() => vm.$blockui('clear'));
 							})
 					});
