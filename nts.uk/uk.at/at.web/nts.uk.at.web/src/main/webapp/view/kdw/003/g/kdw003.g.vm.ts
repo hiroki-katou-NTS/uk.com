@@ -68,8 +68,9 @@ module nts.uk.at.view.kdw003.cg {
             self.isDisplayOrganizationName = ko.observable(true);
             self.selectedItem = ko.observable(null);
             self.endDate('2021/12/31');
-            self.selectedHist.subscribe(histId => {
+            self.selectedHist.subscribe(histId => {                
                 self.findTaskItemDetail(histId);
+                self.enableNewBtn(true);
             });
             
 
