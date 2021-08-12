@@ -151,8 +151,8 @@ public class RecoverWorkRecordBeforeAppReflectPubImpl implements RecoverWorkReco
 		}
 
 		@Override
-		public void addAllDomain(IntegrationOfDaily domain) {
-			dailyRecordAdUpService.addAllDomain(domain);
+		public void addAllDomain(IntegrationOfDaily domain, boolean remove) {
+			dailyRecordAdUpService.addAllDomain(domain, remove);
 		}
 
 		@Override

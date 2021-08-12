@@ -62,7 +62,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 		if (dbRegisterClassfi == NotUseAtr.USE) {
 			atomTask = AtomTask.of(() -> {
 				// 勤務実績のDB更新
-				require.addAllDomain(domainDailyUpdate);
+				require.addAllDomain(domainDailyUpdate, true);
 
 				// 申請反映履歴の取消区分を更新する
 				require.updateAppReflectHist(application.getEmployeeID(), application.getAppID(), date,
@@ -100,7 +100,7 @@ public class RecoverWorkRecordBeforeAppReflect {
 				ExecutionType reCalcAtr);
 
 		// DailyRecordAdUpService
-		public void addAllDomain(IntegrationOfDaily domain);
+		public void addAllDomain(IntegrationOfDaily domain, boolean remove);
 
 		public void updateAppReflectHist(String sid, String appId, GeneralDate baseDate,
 				ScheduleRecordClassifi classification, boolean flagRemove);

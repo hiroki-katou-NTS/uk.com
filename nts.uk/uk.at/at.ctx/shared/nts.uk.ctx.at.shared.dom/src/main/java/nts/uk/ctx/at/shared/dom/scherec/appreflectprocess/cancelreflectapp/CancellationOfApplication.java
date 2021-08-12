@@ -40,7 +40,7 @@ public class CancellationOfApplication {
 
 		List<Integer> lstId = new ArrayList<>();
 		// 取得した[元に戻すための申請反映履歴].反映前（List）でループ
-		for (AttendanceBeforeApplicationReflect hist : appHist.get().getAppHistPrev().getLstAttBeforeAppReflect()) {
+		for (AttendanceBeforeApplicationReflect hist : appHist.get().getLstAttBeforeAppReflect()) {
 
 			// 処理中の勤怠項目IDの編集状態が[申請反映]かチェック
 			Optional<EditStateOfDailyAttd> editStateInDom = domainDaily.getEditState().stream()
@@ -52,8 +52,12 @@ public class CancellationOfApplication {
 			}
 
 			// 取消す申請より後の申請反映履歴があるかチェックする
-			val checkAgain = require.findAppReflectHistAfterMaxTime(app.getEmployeeID(), baseDate, classification,
-					false, appHist.get().getAppHistLastest().getReflectionTime());
+			val checkAgain = require
+					.findAppReflectHistAfterMaxTime(app.getEmployeeID(), baseDate, classification, false,
+							appHist.get().getReflectionTime())
+					.stream()
+					.filter(x -> !x.getApplicationId().equals(appHist.get().getApplicationId()))
+					.collect(Collectors.toList());
 			// 取得した[反映前（List）]に、対象の勤怠項目があるかチェック
 			if (!checkAgain.isEmpty() && checkAgain.stream().flatMap(x -> x.getLstAttBeforeAppReflect().stream())
 					.filter(x -> x.getAttendanceId() == hist.getAttendanceId()).findFirst().isPresent()) {
@@ -93,6 +97,10 @@ public class CancellationOfApplication {
 
 	public static interface Require extends AcquireAppReflectHistForCancel.Require {
 
+		/**
+		 * 申請反映履歴.社員ID＝input.申請.申請者 申請反映履歴.年月日＝input.対象日 申請反映履歴.予定実績区分＝input.予定実績区分
+		 * 申請反映履歴.反映時刻 > 取得した[反映前の情報を持つ申請反映履歴].反映時刻 申請反映履歴.取消区分＝false
+		 */
 		public List<ApplicationReflectHistory> findAppReflectHistAfterMaxTime(String sid, GeneralDate baseDate,
 				ScheduleRecordClassifi classification, boolean flgRemove, GeneralDateTime reflectionTime);
 

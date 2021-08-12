@@ -55,7 +55,7 @@ public class RecoverWorkScheduleBeforeAppReflectTest {
 		SCRecoverAppReflectOutput result = RecoverWorkScheduleBeforeAppReflect.process(require, app,
 				GeneralDate.ymd(2021, 04, 21), createStatus(SCReflectedState.REFLECTED), NotUseAtr.NOT_USE);
 		assertThat(result.getSchedule()).isEmpty();
-		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(SCReflectedState.REFLECTED);
+		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(SCReflectedState.CANCELED);
 		new Verifications() {
 			{
 				require.insertSchedule((WorkSchedule) any);
