@@ -63,15 +63,15 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 		builder.append(
 				"WHERE  hist.SID =  @SID AND hist.APP_ID =  @APP_ID AND hist.YMD =  @YMD  AND hist.ATR =  @ATR AND hist.DELETE_ATR =  @DELETE_ATR ");
 		builder.append(
-				"ORDER BY hist.DELETE_ATR DESC ");
+				"ORDER BY hist.REFLECT_TIME DESC ");
 		FIND_APP_NOT_REF = builder.toString();
 
 		builder = new StringBuilder();
 		builder.append(FIND);
 		builder.append(
-				"WHERE  hist.SID =  @SID AND hist.YMD =  @YMD  AND hist.ATR =  @ATR AND hist.DELETE_ATR =  @DELETE_ATR AND hist.REFLECT_TIME = @REFLECT_TIME ");
+				"WHERE  hist.SID =  @SID AND hist.YMD =  @YMD  AND hist.ATR =  @ATR AND hist.DELETE_ATR =  @DELETE_ATR AND hist.REFLECT_TIME <= @REFLECT_TIME ");
 		builder.append(
-				"ORDER BY hist.DELETE_ATR DESC ");
+				"ORDER BY hist.REFLECT_TIME DESC ");
 		FIND_APP_REF = builder.toString();
 
 	}
