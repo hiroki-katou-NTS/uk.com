@@ -29,4 +29,17 @@ public interface TempPublicHolidayManagementRepository {
 	 * @param period
 	 */
 	void deleteByPeriod(String sid, DatePeriod period);
+	
+	/**
+	 * 削除　（年月日）
+	 * @param employeeId
+	 * @param date
+	 */
+	public void deleteByDate(String employeeId, GeneralDate date);
+	
+	/**
+	 * 登録もしくは更新
+	 * @param domain
+	 */
+	public void persistAndUpdate(TempPublicHolidayManagement domain);
 }

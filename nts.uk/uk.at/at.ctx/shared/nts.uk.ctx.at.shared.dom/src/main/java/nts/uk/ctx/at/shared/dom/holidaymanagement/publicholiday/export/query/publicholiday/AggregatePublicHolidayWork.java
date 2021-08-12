@@ -253,7 +253,7 @@ public class AggregatePublicHolidayWork {
 		
 		return new LeaveUsedDayNumber(tempPublicHolidayManagement.stream()
 				.filter(x -> this.period.contains(x.getYmd()))
-				.mapToDouble(x->x.getPublicHolidayUseNumber().v())
+				.mapToDouble(x->x.getUseDays().v())
 				.sum());		
 	}
 	

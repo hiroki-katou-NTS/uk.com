@@ -8,6 +8,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagementRepository;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.interimdata.KshdtInterimHdpub;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.interimdata.KshdtInterimHdpubPK;
+import nts.uk.shr.com.context.AppContexts;
 
 public class JpaTempPublicHolidayManagementRepository  extends JpaRepository implements TempPublicHolidayManagementRepository{
 
@@ -54,6 +56,41 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 				.setParameter("employeeId", employeeId)
 				.setParameter("startYmd", period.start())
 				.setParameter("endYmd", period.end());
+	}
+	
+	/** 削除 （年月日） */
+	public void deleteByDate(String employeeId, GeneralDate date){
+		 this.deleteByPeriod(employeeId, new DatePeriod(date,date));
+	}
+	
+	
+	/**登録もしくは更新 */
+	@Override
+	public void persistAndUpdate(TempPublicHolidayManagement domain) {
+
+		KshdtInterimHdpubPK pk = new KshdtInterimHdpubPK(AppContexts.user().companyId(), domain.getSID(),
+				domain.getYmd());
+
+		KshdtInterimHdpub entity = this.getEntityManager().find(KshdtInterimHdpub.class, pk);
+
+		if (entity == null) {
+			entity = new KshdtInterimHdpub();
+			entity.pk = pk;
+			entity.creatorAtr = domain.getCreatorAtr().value;
+			entity.useDays = domain.getUseDays().v();
+			entity.remainMngId = domain.getRemainManaID();
+
+			this.getEntityManager().persist(entity);
+
+		} else {
+			entity.remainMngId = domain.getRemainManaID();
+			entity.creatorAtr = domain.getCreatorAtr().value;
+			entity.useDays = domain.getUseDays().v();
+			this.commandProxy().update(entity);
+		}
+
+		this.getEntityManager().flush();
+
 	}
 	
 	

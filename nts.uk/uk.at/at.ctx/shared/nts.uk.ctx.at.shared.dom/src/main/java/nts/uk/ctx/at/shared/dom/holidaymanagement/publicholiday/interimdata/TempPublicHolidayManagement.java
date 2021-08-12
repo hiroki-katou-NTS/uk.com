@@ -24,7 +24,7 @@ public class TempPublicHolidayManagement extends InterimRemain implements Domain
 	/**
 	 * 公休使用日数
 	 */
-	private DayOfVacationUse publicHolidayUseNumber;
+	private DayOfVacationUse useDays;
 	
 	
 	/**
@@ -33,13 +33,13 @@ public class TempPublicHolidayManagement extends InterimRemain implements Domain
 	public TempPublicHolidayManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, 
 			RemainType remainType){
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
-		this.publicHolidayUseNumber = new DayOfVacationUse(0.0);
+		this.useDays = new DayOfVacationUse(0.0);
 	}
 	
 	public TempPublicHolidayManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, 
 			RemainType remainType,DayOfVacationUse publicHolidayUseNumber){
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
-		this.publicHolidayUseNumber = publicHolidayUseNumber;
+		this.useDays = publicHolidayUseNumber;
 	}
 
 }

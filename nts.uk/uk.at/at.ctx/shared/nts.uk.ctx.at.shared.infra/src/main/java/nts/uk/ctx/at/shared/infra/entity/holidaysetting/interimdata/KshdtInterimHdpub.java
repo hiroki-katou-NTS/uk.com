@@ -34,11 +34,11 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 	
 	/** 作成元区分	 */
 	@Column(name ="CREATOR_ATR")
-	public int createAtr;
+	public int creatorAtr;
 	
 	/** 使用日数 */
 	@Column(name ="USE_DAYS")
-	public Double usedDays;
+	public Double useDays;
 	
 	@Override
 	protected Object getKey() {
@@ -50,8 +50,8 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 				remainMngId, 
 				pk.sid,  
 				pk.ymd,
-				EnumAdaptor.valueOf(createAtr, CreateAtr.class),
+				EnumAdaptor.valueOf(creatorAtr, CreateAtr.class),
 				RemainType.PUBLICHOLIDAY,
-				new DayOfVacationUse(usedDays));
+				new DayOfVacationUse(useDays));
 	}
 }
