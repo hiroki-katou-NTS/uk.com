@@ -5,6 +5,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.DefaultRoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
+import nts.uk.ctx.sys.portal.dom.adapter.role.DefaultRoleSetDto;
 import nts.uk.ctx.sys.portal.dom.adapter.roleset.RoleSetDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,12 +43,16 @@ public class GetListOfRoleSetScreenQuery {
         List<RoleSet> lstRoleSet = this.roleSetRepository.findByCompanyId(cid);
         if (!lstRoleSet.isEmpty()) {
             // get 既定のロールセット
-            Optional<DefaultRoleSet> DefaultRoleSet = this.defaultRoleSetRepository.findByCompanyId(cid);
+            Optional<DefaultRoleSet> defaultRoleSetOptional = this.defaultRoleSetRepository.findByCompanyId(cid);
             List<RoleSetDto> roleSetDtos = lstRoleSet.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
-
-            DefaultRoleSet defaultRoleSet = DefaultRoleSet.orElse(null);
+            DefaultRoleSetDto defaultRoleSet = new DefaultRoleSetDto();
+            if (defaultRoleSetOptional.isPresent()){
+             val   roleSetDefault = defaultRoleSetOptional.get();
+                defaultRoleSet.setCompanyId(roleSetDefault.getCompanyId());
+                defaultRoleSet.setRoleSetCd(roleSetDefault.getRoleSetCd().v());
+            }
             rs.setRoleSetDtos(roleSetDtos);
             rs.setDefaultRoleSet(defaultRoleSet);
         }
