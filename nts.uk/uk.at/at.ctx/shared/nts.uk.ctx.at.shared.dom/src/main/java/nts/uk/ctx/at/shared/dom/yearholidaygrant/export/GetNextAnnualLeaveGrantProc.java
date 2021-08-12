@@ -75,6 +75,7 @@ public class GetNextAnnualLeaveGrantProc {
 
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 
+		// 期間の開始、終了どちらかがNULLの場合期間がNULLであったことを退避しておく
 		boolean isPeriodNull = false;
 
 //		パラメータ「期間」がNULLの場合
@@ -84,8 +85,7 @@ public class GetNextAnnualLeaveGrantProc {
 //		※パラメータ「期間.終了日」がNULLの場合
 //		期間．終了日←パラメータ「期間.開始日」の2年後
 
-		// ooooo 期間がNullかつ締め日がNullのときはどうするか？
-
+		// パラメータ「期間」の開始、終了のどちらかがNULLの場合は2年後までの期間にする
 		if ( period.start() == null && period.end() == null ){
 			isPeriodNull = true;
 
@@ -151,11 +151,10 @@ public class GetNextAnnualLeaveGrantProc {
 		if (lengthServiceTbls.size() <= 0) return nextAnnualLeaveGrantList;
 
 		// 期間内に該当する付与年月日をListで取得
-//		if ( getNextAnnualLeaveGrantProcMulti != null){
 		GetNextAnnualLeaveGrantProcKdm002.calcAnnualLeaveGrantDate(
-					entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls,
-					period, isSingleDay, nextAnnualLeaveGrantList);
-//		}
+				require, companyId,
+				entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls,
+				period, isSingleDay, nextAnnualLeaveGrantList);
 
 		// １日に相当する契約時間を取得する
 		Optional<LaborContractTime> laborContractTimeOpt
@@ -203,13 +202,6 @@ public class GetNextAnnualLeaveGrantProc {
 		// 次回年休付与を返す
 		return nextAnnualLeaveGrantList;
 	}
-
-
-
-
-
-
-
 
 	public static interface RequireM1 extends LeaveRemainingNumber.RequireM3 {
 
