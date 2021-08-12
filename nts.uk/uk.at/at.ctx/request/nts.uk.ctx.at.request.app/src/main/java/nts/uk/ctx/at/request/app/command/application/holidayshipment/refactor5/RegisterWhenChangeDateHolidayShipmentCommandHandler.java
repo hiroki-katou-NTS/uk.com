@@ -201,7 +201,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 				}
 			}
 		}
-		if(holidayManage == 1) {
+//		if(holidayManage == 1) {
 			if(payoutSubofHDManagements != null) {
 				for (PayoutSubofHDManagementDto item : payoutSubofHDManagements) {
 					//ドメインモデル「休出代休紐付け管理」を削除する
@@ -210,7 +210,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 					item.setDateOfUse(absDate);
 				}
 			}
-		}
+//		}
 		return new LinkingManagementInforDto(new ArrayList<>(), leaveComDayOffMana, payoutSubofHDManagements);
 	}
 	
