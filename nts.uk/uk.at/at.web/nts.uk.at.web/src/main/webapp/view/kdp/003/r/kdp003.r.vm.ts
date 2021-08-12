@@ -239,8 +239,8 @@ module nts.uk.at.kdp003.r {
         textColor: string; //文字色
         backGroundColor: string //背景色
         constructor() {
-            this.textColor = '';
-            this.backGroundColor = '';
+            this.textColor = '#FFF';
+            this.backGroundColor = '#FFF';
         }
     }
 
