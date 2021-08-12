@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime;
+package nts.uk.ctx.at.aggregation.dom.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,12 +42,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TimeDigestOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 
-public class TotalWorkingTimeHelper {
+public class TotalWorkingTimeHelperInAggregation {
 	
 	/**
 	 * 労働時間と実働時間と就業時間を使って総労働時間を作る

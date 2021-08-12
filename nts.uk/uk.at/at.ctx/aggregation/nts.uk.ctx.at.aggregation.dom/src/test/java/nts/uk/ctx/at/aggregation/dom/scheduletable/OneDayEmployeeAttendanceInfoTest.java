@@ -14,15 +14,15 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.aggregation.dom.common.ActualWorkingTimeHelperInAgregation;
+import nts.uk.ctx.at.aggregation.dom.common.AttendanceTimeHelperInAggregation;
+import nts.uk.ctx.at.aggregation.dom.common.IntegrationOfDailyHelperInAggregation;
+import nts.uk.ctx.at.aggregation.dom.common.PremiumTimeHelperInAggregation;
+import nts.uk.ctx.at.aggregation.dom.common.TimeLeavingOfDailyAttdHelperInAggregation;
+import nts.uk.ctx.at.aggregation.dom.common.TotalWorkingTimeHelperInAggregation;
+import nts.uk.ctx.at.aggregation.dom.common.WorkInfoOfDailyAttdHelperInAggregation;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendanceHelper;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.IntegrationOfDailyHelperInScheRec;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttdHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDailyHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendanceHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.PremiumTimeOfDailyPerformanceHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTimeHelper;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -58,10 +58,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	public void testCreate_DayOff() {
 		
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), null ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -84,22 +84,22 @@ public class OneDayEmployeeAttendanceInfoTest {
 	public void testCreate_WorkDay_workOneTime() {
 		
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
-		val attendanceLeave = TimeLeavingOfDailyAttdHelper.create(
+		val attendanceLeave = TimeLeavingOfDailyAttdHelperInAggregation.create(
 				startTime1,
 				endTime1,
 				Optional.empty(),
 				Optional.empty());
-		val attendanceTime = AttendanceTimeOfDailyAttendanceHelper.createWithActualWorkingTimeOfDaily(
-								ActualWorkingTimeOfDailyHelper.create(
-										TotalWorkingTimeHelper.create(
+		val attendanceTime = AttendanceTimeHelperInAggregation.createWithActualWorkingTimeOfDaily(
+								ActualWorkingTimeHelperInAgregation.create(
+										TotalWorkingTimeHelperInAggregation.create(
 												totalTime, 
 												actualTime, 
 												workTime),
-										PremiumTimeOfDailyPerformanceHelper.create(premiumTimeMap)));
+										PremiumTimeHelperInAggregation.create(premiumTimeMap)));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -145,22 +145,22 @@ public class OneDayEmployeeAttendanceInfoTest {
 	public void testCreate_WorkDay_workTwoTimes() {
 		
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
-		val attendanceLeave = TimeLeavingOfDailyAttdHelper.create(
+		val attendanceLeave = TimeLeavingOfDailyAttdHelperInAggregation.create(
 				startTime1,
 				endTime1,
 				Optional.of(startTime2),
 				Optional.of(endTime2));
-		val attendanceTime = AttendanceTimeOfDailyAttendanceHelper.createWithActualWorkingTimeOfDaily(
-								ActualWorkingTimeOfDailyHelper.create(
-										TotalWorkingTimeHelper.create(
+		val attendanceTime = AttendanceTimeHelperInAggregation.createWithActualWorkingTimeOfDaily(
+								ActualWorkingTimeHelperInAgregation.create(
+										TotalWorkingTimeHelperInAggregation.create(
 												totalTime, 
 												actualTime, 
 												workTime),
-										PremiumTimeOfDailyPerformanceHelper.create(premiumTimeMap)));
+										PremiumTimeHelperInAggregation.create(premiumTimeMap)));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -209,10 +209,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetShiftMaster_DayOff(@Injectable ShiftMaster shiftMaster) {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), null ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -236,10 +236,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetShiftMaster_WorkDay_ShiftMasterNotExist() {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -263,10 +263,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetShiftMaster_WorkDay_ShiftMasterExist(@Injectable ShiftMaster shiftMaster) {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -290,10 +290,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetWorkType_notExist() {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -317,10 +317,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetWorkType_exist(@Injectable WorkType workType) {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -344,10 +344,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetWorkTime_DayOff() {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), null ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -366,10 +366,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetWorkTime_WorkDay_WorkTimeNotExist() {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報
@@ -393,10 +393,10 @@ public class OneDayEmployeeAttendanceInfoTest {
 	@Test
 	public void testGetWorkTime_WorkDay_WorkTimeExist(@Injectable WorkTimeSetting workTimeSetting) {
 		// Arrange
-		val workInfo = WorkInfoOfDailyAttendanceHelper.createByWorkInformation(
+		val workInfo = WorkInfoOfDailyAttdHelperInAggregation.createByWorkInformation(
 				new WorkInformation(new WorkTypeCode("work-type-code"), new WorkTimeCode("work-time-code") ));
 		
-		val dailyData = IntegrationOfDailyHelperInScheRec.create(
+		val dailyData = IntegrationOfDailyHelperInAggregation.create(
 				"employeeId", 
 				GeneralDate.ymd(2021, 07, 01), 
 				workInfo, // 日別勤怠の勤務情報

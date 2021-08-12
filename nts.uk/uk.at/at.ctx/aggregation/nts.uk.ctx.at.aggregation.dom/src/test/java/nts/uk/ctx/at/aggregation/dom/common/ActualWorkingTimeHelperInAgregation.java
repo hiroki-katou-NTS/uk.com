@@ -1,12 +1,15 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime;
+package nts.uk.ctx.at.aggregation.dom.common;
 
 import java.util.ArrayList;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ConstraintTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 
-public class ActualWorkingTimeOfDailyHelper {
+public class ActualWorkingTimeHelperInAgregation {
 	
 	/**
 	 * 総労働時間と割増時間を使って日別勤怠の勤務時間を作成する

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime;
+package nts.uk.ctx.at.aggregation.dom.common;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 
-public class PremiumTimeOfDailyPerformanceHelper {
+public class PremiumTimeHelperInAggregation {
 	
 	/**
 	 * 日別勤怠の割増時間を作成する
