@@ -496,6 +496,10 @@ public class ToppageStartupProcessMobFinder {
 		String companyId = AppContexts.user().companyId();
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
 		OptionalWidgetInfoMobileDto dataKTG029 = new OptionalWidgetInfoMobileDto();
+		// set visible for 3 type
+		dataKTG029.setChildRemainNo(null);
+		dataKTG029.setCareLeaveNo(null);
+		dataKTG029.setExtraRest(null);
 		Optional<TimeStatusDetailsSet> optTimeStatusDetailsSet = sPTopPageSetRepository
 				.getTimeStatusDetailsSet(companyId, Type.TIME_STATUS.value);
 		

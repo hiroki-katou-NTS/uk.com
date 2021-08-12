@@ -218,7 +218,9 @@ export class Ccg008AComponent extends Vue {
             }); 
         }
         if (item.reservedYearsRemainNo) {
-            results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
+            if (item.reservedYearsRemainNo.showAfter) {
+                results.push({name:'積立年休残数', value: item.reservedYearsRemainNo.before, prefix: 'KTG029_60'});
+            }
         }
         //setRemainAlternationNoDay
         if (item.remainAlternationNoDay || item.remainAlternationNoDay === 0) {
