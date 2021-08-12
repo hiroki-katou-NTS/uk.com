@@ -590,8 +590,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		KscdtSchPremium kscdtSchPremium = new KscdtSchPremium();
 		PremiumTimeOfDailyPerformance premiumTime = new PremiumTimeOfDailyPerformance(
 				kscdtSchPremium.toDomain(premiums),
-				new AttendanceAmountDaily(this.premiumWorkTimeTotal), //ver5
-				new AttendanceTime(this.premiumAmountTotal)); //ver5
+				new AttendanceAmountDaily(this.premiumAmountTotal), //ver5
+				new AttendanceTime(this.premiumWorkTimeTotal)
+				); //ver5
 
 		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
 				timeDiff, totalWorkingTime, divTime, premiumTime);
