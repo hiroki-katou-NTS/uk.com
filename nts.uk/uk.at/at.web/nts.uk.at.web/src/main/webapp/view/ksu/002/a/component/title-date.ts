@@ -291,7 +291,7 @@ module nts.uk.ui.at.ksu002.a {
 						}
 					}
 				});
-
+			let fistLoad = true;
 			vm.selectedRangeIndex
 				.subscribe(c => {
 					if ([null, undefined].indexOf(c) > -1) {
@@ -308,8 +308,7 @@ module nts.uk.ui.at.ksu002.a {
 								cache.dateRange = c;
 
 								const { finish, begin, wpId } = exist;
-
-								vm.params.workplaceId(wpId);
+								fistLoad ? setTimeout(() => {vm.params.workplaceId(wpId); fistLoad = false}, 100): vm.params.workplaceId(wpId);
 								vm.params.dateRange({ finish, begin });
 							} else if (cache.dateRange !== c) {
 								if (hasChange) {
@@ -322,7 +321,7 @@ module nts.uk.ui.at.ksu002.a {
 
 												const { finish, begin, wpId } = exist;
 
-												vm.params.workplaceId(wpId);
+												fistLoad ? setTimeout(() => {vm.params.workplaceId(wpId); fistLoad = false}, 100): vm.params.workplaceId(wpId);
 												vm.params.dateRange({ finish, begin });
 											} else {
 												// rollback data
@@ -334,7 +333,7 @@ module nts.uk.ui.at.ksu002.a {
 
 									const { finish, begin, wpId } = exist;
 
-									vm.params.workplaceId(wpId);
+									fistLoad ? setTimeout(() => {vm.params.workplaceId(wpId); fistLoad = false}, 100): vm.params.workplaceId(wpId);
 									vm.params.dateRange({ finish, begin });
 								}
 							}

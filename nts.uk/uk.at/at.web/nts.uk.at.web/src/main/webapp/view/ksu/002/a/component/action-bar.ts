@@ -76,7 +76,7 @@ module nts.uk.ui.at.ksu002.a {
 					value: $component.workTypeData.selected,
 					options: $component.workTypeData.dataSources,
 					optionsValue: 'workTypeCode',
-					enable: ko.unwrap($component.data.mode) === 'copy' && $component.data.workplaceId() != null,
+					enable: workTypeEnable,
 					editable: false,
 					selectFirstIfNull: true,
 					visibleItemsCount: 10,
@@ -219,12 +219,13 @@ module nts.uk.ui.at.ksu002.a {
 			dataSources: KnockoutObservableArray<k.WorkTimeModel>;
 			disabled: KnockoutComputed<boolean>;
 		};
+		workTypeEnable: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor(private data: Parameter) {
 			super();
 
 			const vm = this;
-
+			
 			if (!data) {
 				vm.data = {
 					tabIndex: "1",
@@ -234,10 +235,17 @@ module nts.uk.ui.at.ksu002.a {
 						undo: ko.computed(() => true)
 					},
 					mode: ko.observable('copy'),
-					workplaceId: ko.observable(''),
+					workplaceId: ko.observable(null),
 					selected: ko.observable(null)
 				};
 			}
+			vm.data.workplaceId.subscribe((v) => {
+				vm.workTypeEnable(data.mode() === 'copy' &&  v != null);
+			});
+			
+			vm.data.mode.subscribe((v) => {
+				vm.workTypeEnable(data.workplaceId() != null &&  v === 'copy');
+			});
 
 			const { selected, clickable, clickBtn, mode, workplaceId } = vm.data;
 
@@ -261,7 +269,7 @@ module nts.uk.ui.at.ksu002.a {
 			}
 
 			if (workplaceId === undefined) {
-				vm.data.workplaceId = ko.observable('');
+				vm.data.workplaceId = ko.observable(null);
 			}
 
 			const { redo, undo } = vm.data.clickable;
