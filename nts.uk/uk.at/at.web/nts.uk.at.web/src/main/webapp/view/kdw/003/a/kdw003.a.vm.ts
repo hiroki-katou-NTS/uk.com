@@ -4135,7 +4135,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                         case 14:
                             //KAF011-振休振出申請
-                            nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
+                             nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml?a=1");
+                         //   nts.uk.request.jump("view/cmm/045/a/index.xhtml?a=1", transfer);
                             break;
                         default:
                             break;
