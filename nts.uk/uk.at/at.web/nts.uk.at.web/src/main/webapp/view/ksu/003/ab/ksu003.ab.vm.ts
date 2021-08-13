@@ -375,11 +375,15 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 				}
 				if (!_.isEmpty(self.sourceCompany()[selectButtonChoice[0].page - 1])) {
 					let value : any = null;
+					let checkCell = _.filter(self.sourceCompany(), (x : any) => {
+							return __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.page == x.page;
+					});
 					
-					if(!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,"storeNull") && 
+					if(checkCell.length > 0 && !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,"storeNull") && 
 					!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text , getText("KSU003_82")) &&
 					 !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_70")) &&
 					  !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_83"))) {
+						
 						$("#tableButton1").ntsButtonTable("setSelectedCell",
 						__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.page > 5 ? 1 : 0, __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.column);
 					} else {

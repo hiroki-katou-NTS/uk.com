@@ -2018,6 +2018,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                         handler: function(ui : any) {
 							if (self.selectedDisplayPeriod() == 1) return;
 							if (!_.includes(ui.id, "_") && ui.id.length < 10 ) return;
+						 	if (ui.target.innerText == "") return;
                             let items = [
                                 { id: "終日に拡大", text: "終日に拡大", selectHandler: function(id : any) {
 									self.pasteAll(ui.rowIndex, ui.id);
@@ -6204,17 +6205,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				})			
 			} else {
 				self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail = _.uniqWith(self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail, function(arrVal: any, othVal: any) {
-					return (arrVal.start == othVal.start && arrVal.end == othVal.end);
+					return (arrVal.timeSpanForCalcDto.start == othVal.timeSpanForCalcDto.start && arrVal.timeSpanForCalcDto.end == othVal.timeSpanForCalcDto.end);
 				});
-				_.forEach(self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail, (tsk : any) => {
-					self.taskPasteData.lstTaskScheduleDetailEmp[indx].taskScheduleDetail.push({
-						taskCode: filTime[0].code,
-						timeSpanForCalcDto: {
-							start: tsk.timeSpanForCalcDto.start,
-							end: tsk.timeSpanForCalcDto.end
-						}
-					})
-				})
 			}
 			
 			self.enableSave(true);
