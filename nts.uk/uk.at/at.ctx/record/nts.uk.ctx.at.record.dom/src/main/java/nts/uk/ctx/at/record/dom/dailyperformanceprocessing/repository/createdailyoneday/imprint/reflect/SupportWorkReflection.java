@@ -55,9 +55,8 @@ public class SupportWorkReflection {
 	@Inject
 	private JudCriteriaSameStampOfSupportRepo ofSupportRepo;
 
-	public ReflectionAtr supportWorkReflect(SupportParam param, IntegrationOfDaily integrationOfDaily,
+	public ReflectionAtr supportWorkReflect(String cid, SupportParam param, IntegrationOfDaily integrationOfDaily,
 			StampReflectRangeOutput stampReflectRangeOutput) {
-		String cid = AppContexts.user().companyId();
 
 		// 打刻データが応援開始・終了反映時間内かの確認を行う
 		boolean startAtr = this.checkStarEndSupport(param.getTimeDay(), stampReflectRangeOutput);
@@ -122,7 +121,7 @@ public class SupportWorkReflection {
 	public boolean checkStarEndSupport(WorkTimeInformation timeDay, StampReflectRangeOutput stampReflectRangeOutput) {
 		// パラメータ。勤怠打刻を反映範囲ないか確認する
 		// 打刻反映範囲。外出。開始＜＝勤怠打刻。時刻。時刻＜＝打刻反映範囲。外出。終了
-		if (timeDay != null && stampReflectRangeOutput.getGoOut().getStart().v() <= timeDay.getTimeWithDay().get().v()
+        if (timeDay != null && timeDay.getTimeWithDay().isPresent() && stampReflectRangeOutput.getGoOut().getStart().v() <= timeDay.getTimeWithDay().get().v()
 				&& timeDay.getTimeWithDay().get().v() <= stampReflectRangeOutput.getGoOut().getEnd().v()) {
 			return true;
 		}

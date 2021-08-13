@@ -29,9 +29,9 @@ public class AttendanceAtrServiceImpl implements AttendanceAtrService {
 	@Override
 	public void updateAttendanceAtr(OptionalItemAtrExport domainEvent) {
 		String companyId = AppContexts.user().companyId();
-		PerformanceAtr performanceAtr = domainEvent.getPerformanceAtr();
+//		PerformanceAtr performanceAtr = domainEvent.getPerformanceAtr();
 		// ドメインモデル「日次の勤怠項目」を更新する
-		if (performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
+//		if (performanceAtr.equals(PerformanceAtr.DAILY_PERFORMANCE)) {
 		    int dailyAttId = this.getDailyAttId(domainEvent.getOptionalItemNo().v());
 		    Optional<DailyAttendanceItem> dailyItemOtp = dailyAttendanceItemRepository.getDailyAttendanceItem(companyId,
 		            dailyAttId);
@@ -41,7 +41,8 @@ public class AttendanceAtrServiceImpl implements AttendanceAtrService {
 		        dailyItem.setPrimitiveValue(this.getDailyPrimitiveValue(domainEvent.getOptionalItemAtr()));
 		        dailyAttendanceItemRepository.update(dailyItem);
 		    }
-		} else {
+//		} else {
+		/** ドメインモデル「月次の勤怠項目」を更新する */
 		    int monthlyAttId = this.getMonthlyAttId(domainEvent.getOptionalItemNo().v());
 		    Optional<MonthlyAttendanceItem> monthlyItemOtp = monthlyAttendanceItemRepository
 		            .findByAttendanceItemId(companyId, monthlyAttId);
@@ -51,7 +52,7 @@ public class AttendanceAtrServiceImpl implements AttendanceAtrService {
 		        monthlyItem.setPrimitiveValue(this.getMonthlyPrimitiveValue(domainEvent.getOptionalItemAtr()));
 		        monthlyAttendanceItemRepository.update(monthlyItem);
 		    }
-		}
+//		}
 	}
 
 	private DailyAttendanceAtr getDailyAttendanceAtr(OptionalItemAtr optionalItemAtr) {
