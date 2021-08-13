@@ -93,7 +93,7 @@ public class GetDayDisplayAtr {
 				approvedData.setClosureId(closingPeriod.getClosureId());
 				approvedData.setDisplayAtr(check);
 				approvedData.setName(closureName);
-				approvedData.setYearMonth(yearMonth);
+				approvedData.setYearMonth(checkTarget.getYearMonth().v());
 				
 				approvedDataDetailList.add(approvedData);
 			}
