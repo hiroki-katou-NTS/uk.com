@@ -8,34 +8,34 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class NumberOfRemainOutput {
 	//年休残数
-	private int yearDayRemain;
+	private double yearDayRemain;
 
 	// 年休残時間
 	private int yearHourRemain;
 	
 	// 積休残数
-	private int lastYearRemain;
+	private double lastYearRemain;
 	
 	// 代休残数
-	private int subDayRemain;
+	private double subDayRemain;
 	
 	// 代休残時間
 	private int subHdHourRemain;
 	
 	// 振休残数
-	private int vacaRemain;	
+	private double vacaRemain;	
 	
 	// 60H超休残時間
 	private int over60HHourRemain;
 	
 	// 子看護残数
-	private int childNursingDayRemain;
+	private double childNursingDayRemain;
 	
 	// 子看護残時間
 	private int childNursingHourRemain;
 	
 	// 介護残数
-	private int nursingRemain;
+	private double nursingRemain;
 	
 	// 介護残時間
 	private int nursingHourRemain;
@@ -44,5 +44,5 @@ public class NumberOfRemainOutput {
 	private GeneralDate grantDate;
 	
 	// 付与日数
-	private int grantDays;
+	private double grantDays;
 }

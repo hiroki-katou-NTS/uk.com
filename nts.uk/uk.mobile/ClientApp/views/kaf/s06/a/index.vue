@@ -46,10 +46,10 @@
                       :value="index"
                     >
                       <!-- A2_12 -->
-                      <td class="text-center" v-if="c2 && c2_1" style="border-top: none; padding-top: 5px;">{{formatTimeFromMinute(item.subVacaHourRemain)}}</td>
+                      <td style="border-top: none; padding-top: 5px;"><div class="text-center" v-if="c2 && c2_1" >{{formatTimeFromMinute(item.subVacaHourRemain)}}</div></td>
                       <td class="text-center" v-if="c3" style="border-top: none; padding-top: 5px;">{{''}}</td>
                       <!-- A2_13 -->
-                      <td class="text-center" v-if="c4 && c4_1" style="border-top: none; padding-top: 5px;">{{formatTimeFromMinute(item.yearHourRemain)}}</td>
+                      <td style="border-top: none; padding-top: 5px;"><div class="text-center" v-if="c4 && c4_1" >{{formatTimeFromMinute(item.yearHourRemain)}}</div></td>
                       <td class="text-center" v-if="c5" style="border-top: none; padding-top: 5px;">{{''}}</td>
                     </tr>
                   </tbody>

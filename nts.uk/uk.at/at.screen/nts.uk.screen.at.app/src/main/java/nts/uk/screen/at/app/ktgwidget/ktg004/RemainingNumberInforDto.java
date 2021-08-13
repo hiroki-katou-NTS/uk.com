@@ -42,6 +42,6 @@ public class RemainingNumberInforDto {
 	private GeneralDate grantDate;
 		
 	// 付与日数
-	private int grantDays;
+	private double grantDays;
 	
 }

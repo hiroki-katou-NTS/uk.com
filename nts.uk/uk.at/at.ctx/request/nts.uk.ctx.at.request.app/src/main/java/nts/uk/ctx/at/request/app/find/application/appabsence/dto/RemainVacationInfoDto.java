@@ -30,34 +30,34 @@ public class RemainVacationInfoDto {
     private NursingCareLeaveManagementDto nursingCareLeaveManagement;
 
     // 年休残数
-    private Integer yearRemain;
+    private double yearRemain;
 
     // 年休残時間
     private Integer yearHourRemain;
 
     // 代休残数
-    private Integer subHdRemain;
+    private double subHdRemain;
 
     // 振休残数
-    private Integer subVacaRemain;
+    private double subVacaRemain;
 
     // 代休残時間
     private Integer subVacaHourRemain;
 
     // 積休残数
-    private Integer remainingHours;
+    private double remainingHours;
 
     // 60H超休残時間
     private Integer over60HHourRemain;
 
     // 子看護残数
-    private Integer childNursingRemain;
+    private double childNursingRemain;
 
     // 子看護残時間
     private Integer childNursingHourRemain;
 
     // 介護残数
-    private Integer nursingRemain;
+    private double nursingRemain;
 
     // 介護残時間
     private Integer nirsingHourRemain;
@@ -66,7 +66,7 @@ public class RemainVacationInfoDto {
     private String grantDate;
     
     // 付与日数
-    private Integer grantDays;
+    private double grantDays;
 
     public static RemainVacationInfoDto fromDomain(RemainVacationInfo remainVacationInfo) {
         return new RemainVacationInfoDto(

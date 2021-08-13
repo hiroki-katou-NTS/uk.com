@@ -845,16 +845,16 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		}
 //        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
 		return new NumberOfRemainOutput(
-		        yearDayRemain.intValue(), 
+		        yearDayRemain, 
 		        yearHourRemain, 
-		        lastYearRemain.intValue(), 
-		        subDayRemain.intValue(), 
+		        lastYearRemain, 
+		        subDayRemain, 
 		        subHdHourRemain, 
-		        vacaRemain.intValue(), 
+		        vacaRemain, 
 		        over60HHourRemain, 
-		        childNursingDayRemain.intValue(), 
+		        childNursingDayRemain, 
 		        childNursingHourRemain, 
-		        nursingRemain.intValue(), 
+		        nursingRemain, 
 		        nursingHourRemain,
 		        grantDate, 
 		        grantDays);
@@ -1496,7 +1496,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 		    // 時間休暇の優先順をチェックする
 		    acqRule.get().checkVacationPriority(timeDigestApplicationShares,
 		            remainVacationInfo.getOver60HHourRemain().isPresent() ? remainVacationInfo.getOver60HHourRemain().get() : null,
-		            remainVacationInfo.getSubHdRemain().isPresent() ? remainVacationInfo.getSubHdRemain().get() : null,
+		            remainVacationInfo.getSubHdRemain().isPresent() ? remainVacationInfo.getSubHdRemain().get().intValue() : null,
 		            remainVacationInfo.getSubstituteLeaveManagement().getTimeAllowanceManagement(),
 		            remainVacationInfo.getOvertime60hManagement().getOverrest60HManagement());
 		}

@@ -36,34 +36,34 @@ public class RemainVacationInfo {
 	private NursingCareLeaveManagement nursingCareLeaveManagement;
 	
 	//年休残数
-    private Optional<Integer> yearRemain;
+    private Optional<Double> yearRemain;
 
     // 年休残時間
     private Optional<Integer> yearHourRemain;
     
     //代休残数
-    private Optional<Integer> subHdRemain;
+    private Optional<Double> subHdRemain;
     
     //振休残数
-    private Optional<Integer> subVacaRemain;
+    private Optional<Double> subVacaRemain;
     
     // 代休残時間
     private Optional<Integer> subVacaHourRemain;
     
     // 積休残数
-    private Optional<Integer> remainingHours;
+    private Optional<Double> remainingHours;
     
     // 60H超休残時間
     private Optional<Integer> over60HHourRemain;
     
     // 子看護残数
-    private Optional<Integer> childNursingRemain;
+    private Optional<Double> childNursingRemain;
     
     // 子看護残時間
     private Optional<Integer> childNursingHourRemain;
     
     // 介護残数
-    private Optional<Integer> nursingRemain;
+    private Optional<Double> nursingRemain;
     
     // 介護残時間
     private Optional<Integer> nirsingHourRemain;
@@ -72,5 +72,5 @@ public class RemainVacationInfo {
     private Optional<GeneralDate> grantDate;
     
     // 付与日数
-    private Optional<Integer> grantDays;
+    private Optional<Double> grantDays;
 }
