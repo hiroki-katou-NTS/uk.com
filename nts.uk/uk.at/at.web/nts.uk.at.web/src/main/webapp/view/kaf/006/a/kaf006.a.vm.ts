@@ -211,7 +211,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             vm.grantDaysOfYear = ko.computed(() => {
                 if (vm.grantDate()) {
-                    return vm.$i18n('KAF006_98') + moment(vm.grantDate()).format('YYYY/MM/DD') + ' ' + vm.grantDays() + '日';
+                    return vm.$i18n('KAF006_98') + moment(vm.grantDate()).format('YYYY/MM/DD') + '　' + vm.grantDays() + '日';
                 }
 
                 return vm.$i18n('KAF006_98') + vm.$i18n('KAF006_99');

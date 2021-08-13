@@ -202,7 +202,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             return self.$i18n('KAFS06_56') + self.$i18n('KAFS06_57');
         }
 
-        return self.$i18n('KAFS06_56') + model.appAbsenceStartInfoDto.remainVacationInfo.grantDate + ' ' + model.appAbsenceStartInfoDto.remainVacationInfo.grantDays;
+        return self.$i18n('KAFS06_56') + model.appAbsenceStartInfoDto.remainVacationInfo.grantDate + '　' + model.appAbsenceStartInfoDto.remainVacationInfo.grantDays + '日';
     }
 
     public get remainDays(): Array<RemainDaysHoliday> {
