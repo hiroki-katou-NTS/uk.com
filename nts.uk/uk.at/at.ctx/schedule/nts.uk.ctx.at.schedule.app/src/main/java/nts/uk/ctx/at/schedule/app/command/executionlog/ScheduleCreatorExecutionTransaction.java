@@ -32,7 +32,9 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheCreExeWorkTi
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.ScheduleErrorLogGeterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByClassGetterCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.internal.WorkdayAttrByWorkplaceGeterCommand;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScEmploymentStatusAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.EmploymentStatusDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortChildCareFrameDto;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.ShortWorkTimeDto;
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.classification.ExClassificationHistoryImported;
@@ -85,6 +87,7 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomai
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
@@ -110,8 +113,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalDayOfWeek;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkTypeByIndividualWorkDay;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -132,6 +137,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -232,6 +238,9 @@ public class ScheduleCreatorExecutionTransaction {
 
 	@Inject
 	private PredetemineTimeSettingRepository predetemineTimeSet;
+	
+	@Inject
+	private ScEmploymentStatusAdapter scEmploymentStatusAdapter;
 
 	public void execute(ScheduleCreatorExecutionCommand command, ScheduleExecutionLog scheduleExecutionLog,
 			CommandHandlerContext<ScheduleCreatorExecutionCommand> context, String companyId, String exeId,
@@ -914,70 +923,11 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 休職中
 		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE || 
 				optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) {
-		this.getWorkInfoLeave(command, creator, domain, context,
+		prepareWorkOutput = this.getWorkInfoLeave(command, creator, domain, context,
 			 targetPeriod, dateInPeriod, masterCache, listBasicSchedule, dateRegistedEmpSche, carrier);
+		return prepareWorkOutput;
 		}
 		
-		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE) {
-			// 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
-			// Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休職, 勤務の単位 = 1日
-			List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(cid,
-					DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-					WorkTypeClassification.LeaveOfAbsence.value);
-			// Filter by 勤務の単位 = 1日
-			lstWorkType = lstWorkType.stream()
-					.map(x -> new WorkType(cid, x.getWorkTypeCode(), x.getWorkTypeSetList().stream()
-							.filter(y -> y.getWorkAtr().value == WorkAtr.OneDay.value).collect(Collectors.toList())))
-					.collect(Collectors.toList());
-			if (lstWorkType.isEmpty()) {
-				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, creator.getExecutionId(), dateInPeriod,
-						creator.getEmployeeId());
-				// ドメインモデル「スケジュール作成エラーログ」を返す
-				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
-			} else {
-				// 勤務情報を返す
-				// ・勤務種類コード＝取得した勤務種類コード
-				// ・就業時間帯コード＝Null
-				WorkInformation workInformation = lstWorkType.stream().findFirst()
-						.map(m -> new WorkInformation(m.getWorkTypeCode(), null)).orElse(null);
-
-				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
-			}
-
-		}
-
-		// if 休業中
-		if (optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.CLOSED) {
-			// 休業区分の勤務種類コードを取得する(lấy dữ liệu worktype của 休業区分)
-			// Input 会社ID, 廃止区分=廃止しない, 勤務種類の分類＝休業, 勤務の単位 = 1日
-			List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
-					DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
-					WorkTypeClassification.Closure.value);
-			// Filter by 勤務の単位 = 1日
-			lstWorkType = lstWorkType.stream()
-					.map(x -> new WorkType(cid, x.getWorkTypeCode(), x.getWorkTypeSetList().stream()
-							.filter(y -> y.getCloseAtr().value == CloseAtr.PRENATAL.value
-									&& y.getWorkAtr().value == WorkAtr.OneDay.value)
-							.collect(Collectors.toList())))
-					.collect(Collectors.toList());
-
-			if (lstWorkType.isEmpty()) {
-				String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
-						creator.getEmployeeId());
-				// ドメインモデル「スケジュール作成エラーログ」を返す
-				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
-			} else {
-				// 勤務情報を返す
-				// ・勤務種類コード＝取得した勤務種類コード
-				// ・就業時間帯コード＝Null
-				WorkInformation workInformation = lstWorkType.stream().findFirst()
-						.map(m -> new WorkInformation(m.getWorkTypeCode(), null)).orElse(null);
-
-				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
-			}
-		}
 
 		// if 予定管理する
 		PrepareWorkOutput workOutput = new PrepareWorkOutput(null, null, null, Optional.empty());
@@ -987,8 +937,11 @@ public class ScheduleCreatorExecutionTransaction {
 			// if 個人スケジュールコピー
 			if (command.getContent().getSpecifyCreation()
 					.getCreationMethod().value == CreationMethod.SCHEDULE_COPY.value) {
-				prepareWorkOutput = this.copyPastSchedule(command, carrier, targetPeriod, dateInPeriod, masterCache,
-						prepareWorkOutput, creator);
+				int daysToAdd = targetPeriod.datesBetween().size() - 1;
+				// 
+				DatePeriod copyDate = new DatePeriod(command.getContent().getSpecifyCreation().getCopyStartDate().get(),
+						command.getContent().getSpecifyCreation().getCopyStartDate().get().addDays(daysToAdd));
+				prepareWorkOutput = this.copyAndCreateWorkSchedule(creator.getEmployeeId(),command.getExecutionId(),copyDate, carrier, dateInPeriod, targetPeriod);
 			}
 
 			// if 作成方法（参照先）
@@ -1091,8 +1044,8 @@ public class ScheduleCreatorExecutionTransaction {
 			// 
 			DatePeriod copyDate = new DatePeriod(command.getContent().getSpecifyCreation().getCopyStartDate().get(),
 					command.getContent().getSpecifyCreation().getCopyStartDate().get().addDays(daysToAdd));
-			this.copyAndCreateWorkSchedule(creator.getEmployeeId(),command.getExecutionId(),copyDate, carrier, dateInPeriod);
-			
+			PrepareWorkOutput preWork = this.copyAndCreateWorkSchedule(creator.getEmployeeId(),command.getExecutionId(),copyDate, carrier, dateInPeriod, targetPeriod);
+			return preWork;
 		// if 以外
 		} else {
 			Optional<WorkCondItemDto> itemDto = masterCache.getListWorkingConItem().stream()
@@ -1104,13 +1057,66 @@ public class ScheduleCreatorExecutionTransaction {
 				return preWork;
 			} else {
 				// 取得した勤務情報の稼働日区分を確認する
+				Optional<WorkType> workType = workTypeRepo.findByPK(command.getCompanyId(), preWork.getInformation().getWorkTypeCode().v());
+				boolean isHoliday = workType.get().isHoliday();
+				boolean isHolidayWork = workType.get().isHolidayWork();
+				
+				// １日休日の場合
+				if (isHoliday == true) {
+					return preWork;
+				}
+				
+				// 休出の場合
+				if (isHolidayWork == true) {
+					WorkByIndividualWorkDay workDay = new WorkByIndividualWorkDay(null, new WorkTypeByIndividualWorkDay(
+							null, null, null, Optional.empty(), Optional.empty(), Optional.of(preWork.getWorkType().get().getWorkTypeCode())));
+					WorkInformation information = workDay.getHolidayWorkInformation();
+					preWork.setInformation(information);
+					return preWork;
+				}
+				
+				List<ScheManaStatuTempo> listEmploymentInfo = masterCache.getListManaStatuTempo();
+				Optional<ScheManaStatuTempo> optEmploymentInfo = Optional.empty();
+
+				if (listEmploymentInfo != null) {
+					optEmploymentInfo = listEmploymentInfo.stream()
+							.filter(employmentInfo -> employmentInfo.getDate().equals(dateInPeriod) && employmentInfo.getEmployeeID().equals(creator.getEmployeeId())).findFirst();
+				}
+				
+				List<WorkType> lstWorkType = workTypeRepository.findWorkOneDay(command.getCompanyId(),
+						DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
+						optEmploymentInfo.get().getScheManaStatus().value);
+				
+				if (optEmploymentInfo.get().getOptTempAbsenceFrameNo().isPresent()) {
+					lstWorkType = workTypeRepository.findHolidayWorkType(command.getCompanyId(),
+							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
+							optEmploymentInfo.get().getScheManaStatus().value, // WorkTypeClassification
+							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue()); // HolidayAtr
+				}
+				
+				if (lstWorkType.isEmpty()) {
+					String errorContent = this.internationalization.localize("Msg_601", "#Msg_601").get();
+					ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
+							creator.getEmployeeId());
+					// ドメインモデル「スケジュール作成エラーログ」を返す
+					preWork.setExecutionLog(Optional.of(scheExeLog));
+					return preWork;
+				} else {
+					// 勤務情報を返す
+					// ・勤務種類コード＝取得した勤務種類コード
+					// ・就業時間帯コード＝Null
+					WorkInformation workInformation = lstWorkType.stream().findFirst()
+							.map(m -> new WorkInformation(m.getWorkTypeCode(), null)).orElse(null);
+
+					preWork.setInformation(workInformation);
+					return preWork;
+				}
 			}
 		}
 		
-		return null;
 	}
 	
-	public PrepareWorkOutput copyAndCreateWorkSchedule(String empId, String excId, DatePeriod copyDate, CacheCarrier carrier, GeneralDate dateInPeriod) {
+	public PrepareWorkOutput copyAndCreateWorkSchedule(String empId, String excId, DatePeriod copyDate, CacheCarrier carrier, GeneralDate dateInPeriod, DatePeriod targetPeriod) {
 		List<WorkSchedule> workScheduleRepo = new ArrayList<>();
 		List<WorkSchedule> workSchedules = new ArrayList<>();
 		
@@ -1140,72 +1146,17 @@ public class ScheduleCreatorExecutionTransaction {
 		}
 		
 		// コピー元対象日を計算する
-		GeneralDate copyTargetDate = null;
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param command
-	 * @param carrier
-	 * @param targetPeriod
-	 * @param dateInPeriod
-	 * @param masterCache
-	 * @param prepareWorkOutput
-	 * @return
-	 */
-	private PrepareWorkOutput copyPastSchedule(ScheduleCreatorExecutionCommand command, CacheCarrier carrier,
-			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache,
-			PrepareWorkOutput prepareWorkOutput, ScheduleCreator creator) {
-
-		List<WorkSchedule> workScheduleRepo = new ArrayList<>();
-		List<WorkSchedule> workSchedules = new ArrayList<>();
-		// 勤務予定をコピーして作成する
-		// コピー元勤務予定一覧キャッシュを確認する
-
-		// データなし - hiện tại đang lúc nào cũng rơi vào case này
-		if (workSchedules.isEmpty()) {
-
-			int daysToAdd = targetPeriod.datesBetween().size() - 1;
-
-			// 勤務予定一覧を取得する
-			// コピー日数は、「入力パラメータ. 対象開始日、対象終了日」から求める
-			DatePeriod dateCopy = new DatePeriod(command.getContent().getSpecifyCreation().getCopyStartDate().get(),
-					command.getContent().getSpecifyCreation().getCopyStartDate().get().addDays(daysToAdd));
-			for (GeneralDate date : dateCopy.datesBetween()) {
-				Optional<WorkSchedule> schedule = workScheduleRepository.get(creator.getEmployeeId(), date);
-				if (schedule.isPresent()) {
-					workScheduleRepo.add(schedule.get());
-				}
-			}
-
-			if (workScheduleRepo.isEmpty()) {
-				// ドメインモデル「スケジュール作成エラーログ」を作成する
-				String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
-				ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
-						creator.getEmployeeId());
-				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
-			} else {
-
-				// 取得した勤務予定一覧をメモリにキャッシュする
-				workSchedules = carrier.get("勤務予定", () -> workScheduleRepo);
-				if(workSchedules.isEmpty()) {
-					workSchedules = workScheduleRepo;
-				}
-			}
-		}
-		// コピー元対象日を計算する
 		DatePeriod targetPeriodCopy = new DatePeriod(targetPeriod.start(), dateInPeriod);
-		GeneralDate dateTargetCopy = command.getContent().getSpecifyCreation().getCopyStartDate().get()
-				.addDays(targetPeriodCopy.datesBetween().size() - 1);
+		int addDay = (targetPeriodCopy.datesBetween().size() - 1);
+		GeneralDate dateTargetCopy = copyDate.start().addDays(addDay);
 		workSchedules = workSchedules.stream().filter(x -> x.getYmd().equals(dateTargetCopy))
 				.collect(Collectors.toList());
 
 		if (workSchedules.isEmpty()) {
 			// ドメインモデル「スケジュール作成エラーログ」を作成する
-			String errorContent = this.internationalization.localize("Msg_602", "#KSC001_87").get();
-			ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, command.getExecutionId(), dateInPeriod,
-					creator.getEmployeeId());
+			String errorContent = this.internationalization.localize("Msg_614", "#KSC001_87").get();
+			ScheduleErrorLog scheExeLog = new ScheduleErrorLog(errorContent, excId, dateInPeriod,
+					empId);
 			return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 		} else {
 			WorkInformation workInformation = workSchedules.stream().findFirst()
