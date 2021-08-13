@@ -122,16 +122,12 @@ module nts.uk.at.kdp003.a {
 					vm.passContract = _.escape(data ? data.contractPassword : "");
 				});
 
-			// vm.$ajax('at', API.NOW)
-			// 	.then((c) => {
-			// 		const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
+			vm.$ajax('at', API.NOW)
+				.then((c) => {
+					const date = moment(c, 'YYYY-MM-DDTHH:mm:ss').toDate();
 
-			// 		vm.employeeData.baseDate(date);
-			// 	});
-
-			setTimeout(() => {
-				vm.employeeData.baseDate(vm.$date.now());
-			}, 1000);
+					vm.employeeData.baseDate(date);
+				});
 
 			vm.$ajax(API.STAMP_SETTING_COMMON)
 				.done((data: any) => {
