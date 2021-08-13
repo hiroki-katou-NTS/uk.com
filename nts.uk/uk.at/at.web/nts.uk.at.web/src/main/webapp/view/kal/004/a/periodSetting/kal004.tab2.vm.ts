@@ -222,7 +222,8 @@ module nts.uk.at.view.kal004.tab2.viewModel {
                 endPreviousMonth: paramDaily.endPreviousMonth,
                 endCurrentMonth: paramDaily.endCurrentMonth,
                 endMonth: paramDaily.endMonth,
-                endFromStrMonth: paramDaily.endFromStrMonth
+                endFromStrMonth: paramDaily.endFromStrMonth,
+                processingYm: paramDaily.processingYm
             };
             nts.uk.ui.windows.setShared("extractionScheYearDto", extractionScheYearDto);
             nts.uk.ui.windows.setShared("categoryId", categoryId);
