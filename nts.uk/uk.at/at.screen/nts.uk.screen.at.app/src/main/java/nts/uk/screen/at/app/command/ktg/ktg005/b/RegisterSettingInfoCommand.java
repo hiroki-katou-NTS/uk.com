@@ -26,13 +26,13 @@ public class RegisterSettingInfoCommand {
 	List<ApplicationStatusDetailedSettingDto> appSettings;
 
 	public StandardWidget toDomain(String companyId) {
-		StandardWidget widget = new StandardWidget(companyId, null, null, null, null, null);
+		StandardWidget widget = new StandardWidget(companyId);
 
 		List<ApplicationStatusDetailedSetting> appStatus = appSettings.stream()
 				.map(x -> new ApplicationStatusDetailedSetting(EnumAdaptor.valueOf(x.getDisplayType(), NotUseAtr.class),
 						EnumAdaptor.valueOf(x.getItem(), ApplicationStatusWidgetItem.class)))
 				.collect(Collectors.toList());
-		widget.setName(this.topPagePartName);
+//		widget.setName(this.topPagePartName);
 		widget.setAppStatusDetailedSettingList(appStatus);
 
 		return widget;

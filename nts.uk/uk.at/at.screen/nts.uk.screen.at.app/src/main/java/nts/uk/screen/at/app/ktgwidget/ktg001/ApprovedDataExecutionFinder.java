@@ -97,7 +97,7 @@ public class ApprovedDataExecutionFinder {
 				.collect(Collectors.toList());
 
 		approvedDataExecutionResultDto.setHaveParticipant(haveParticipant);
-		approvedDataExecutionResultDto.setTopPagePartName(standardWidgetOpt.isPresent() ? standardWidgetOpt.get().getName().v() : I18NText.getText("KTG001_12") );
+		approvedDataExecutionResultDto.setTopPagePartName(standardWidgetOpt.isPresent() ? "" : I18NText.getText("KTG001_12") );
 		approvedDataExecutionResultDto.setClosingPeriods(closingPeriodDtos);
 
 		approvedDataExecutionResultDto
