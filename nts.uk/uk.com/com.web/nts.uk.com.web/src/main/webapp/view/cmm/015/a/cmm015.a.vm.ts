@@ -699,6 +699,7 @@ module cmm015.a.viewmodel {
                     vm.tableDatasHistory.removeAll();
                     vm.$dialog.error(err);
                     dfd.reject();
+                    vm.$blockui('clear');
                 })
 
             return dfd.promise();
