@@ -202,6 +202,12 @@ module nts.uk.at.view.kdp010.i {
 				if (nts.uk.ui.errors.hasError() && self.selectedHighlight() == 1) {
 					return;
 				}
+
+				var taskChoiceArt = null;
+				if (ko.unwrap(self.isUseWork)) {
+					taskChoiceArt = ko.unwrap(self.supportWorkPlaceEnable) ? ko.unwrap(self.assignmentMethod) : null
+				}
+
 				self.dataStampPage = ({
 					buttonPositionNo: self.buttonPositionNo(),
 					buttonDisSet: ({
@@ -223,7 +229,7 @@ module nts.uk.at.view.kdp010.i {
 					}),
 					usrArt: self.selectedHighlight(),
 					audioType: self.selectedAudio(),
-					taskChoiceArt: ko.unwrap(self.supportWorkPlaceEnable) ? ko.unwrap(self.assignmentMethod) : null,
+					taskChoiceArt: taskChoiceArt,
 					supportWplSet: self.supportWplSetEnable() ? self.supportWplSet() : null
 				});
 
