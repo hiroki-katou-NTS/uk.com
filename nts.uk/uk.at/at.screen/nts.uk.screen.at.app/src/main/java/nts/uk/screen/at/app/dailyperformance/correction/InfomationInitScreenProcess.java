@@ -21,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.confirmemployment.RestrictConfirmEmployment;
 import nts.uk.ctx.at.record.dom.confirmemployment.RestrictConfirmEmploymentRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationMethod;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.operationsettings.TaskOperationSettingRepository;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ApprovalUseSettingDto;
@@ -45,6 +46,7 @@ import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 import nts.uk.screen.at.app.dailyperformance.correction.month.asynctask.ParamCommonAsync;
 import nts.uk.screen.at.app.dailyperformance.correction.searchemployee.FindAllEmployee;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.license.option.OptionLicense;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -119,7 +121,9 @@ public class InfomationInitScreenProcess {
 		
 		// 作業運用設定を取得する
 		Optional<TaskOperationSetting> opTaskOperationSetting = taskOperationSettingRepository.getTasksOperationSetting(companyId);
-		screenDto.setTaskOperationMethod(opTaskOperationSetting.map(x -> x.getTaskOperationMethod().value).orElse(null));
+		
+		screenDto.setShowWorkLoad(opTaskOperationSetting.map(x -> x.getTaskOperationMethod()==TaskOperationMethod.USED_IN_ACHIEVENTS).orElse(false)
+				&& AppContexts.optionLicense().attendance().workload());
 		
 		// アルゴリズム「休暇の管理状況をチェックする」を実行する | Get holiday setting data --休暇の管理状況をチェックする
 //		getHolidaySettingData(screenDto);

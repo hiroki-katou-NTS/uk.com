@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -297,7 +298,7 @@ public class ValidatorDataDailyRes {
 							: itemCheckMap.get(itemId2);
 					 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
 								: itemCheckMap.get(itemId2);
-					if (valueItemIdStart!= null && valueItemIdEnd != null && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+					if (Strings.isNotBlank(valueItemIdStart) && Strings.isNotBlank(valueItemIdEnd) && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
 						x.setMessage("Msg_1400");
 						result.add(x);
 					}
@@ -322,7 +323,7 @@ public class ValidatorDataDailyRes {
 				 String valueItemIdEnd = (itemId1 > itemId2) ? x.getValue()
 							: itemCheckMap.containsKey(itemId2) ? itemCheckMap.get(itemId2)
 									: valueGetFromDBMap.get(itemId2);
-				if (valueItemIdStart!= null && valueItemIdEnd != null && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
+				if (Strings.isNotBlank(valueItemIdStart) && Strings.isNotBlank(valueItemIdEnd) && Integer.parseInt(valueItemIdStart) > Integer.parseInt(valueItemIdEnd)) {
 					x.setMessage("Msg_1400");
 					result.add(x);
 				}

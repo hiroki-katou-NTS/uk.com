@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -59,6 +60,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCR
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSel;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHist;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskItem;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
@@ -463,6 +467,7 @@ public class DailyPerformanceCorrectionProcessor {
 				? codeNameTask.getCodeNames().stream()
 						.collect(Collectors.toMap(x -> mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
+		List<TaskInitialSelHist> taskInitialSelHistLst = dataDialogWithTypeProcessor.getTaskInitialSel(companyId);
 						//get status check box 
 		List<GeneralDate> holidayDate = publicHolidayRepository
 				.getpHolidayWhileDate(companyId, dateRange.getStartDate(), dateRange.getEndDate()).stream()
@@ -541,8 +546,10 @@ public class DailyPerformanceCorrectionProcessor {
 				itemValueMap = resultOfOneRow.getItems().stream()
 						.collect(Collectors.toMap(x -> mergeString(String.valueOf(x.getItemId()), "|",
 								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
+				Optional<TaskItem> opTaskItem = getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
 				processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem, mapGetName, codeNameReasonMap, codeNameTaskMap,
-						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, objectShare);
+						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, objectShare, opTaskItem);
+				data.setCellDatas(data.getCellDatas().stream().sorted(Comparator.comparing(DPCellDataDto::getColumnKey)).collect(Collectors.toSet()));
 				lstData.add(data);
 				// DPCellDataDto bPCellDataDto = new DPCellDataDto(columnKey,
 				// value,
@@ -647,7 +654,7 @@ public class DailyPerformanceCorrectionProcessor {
 			DPControlDisplayItem dPControlDisplayItem,
 			Map<Integer, Map<String, CodeName>> mapGetName,  Map<String, CodeName> mapReasonName, Map<String, CodeName> codeNameTaskMap, 
 			Map<String, ItemValue> itemValueMap, DPDataDto data,
-			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share) {
+			boolean lock, Map<String, Integer> dailyRecEditSetsMap, ObjectShare share, Optional<TaskItem> opTaskItem) {
 		Set<DPCellDataDto> cellDatas = data.getCellDatas();
 		String typeGroup = "";
 		Integer cellEdit;
@@ -677,9 +684,48 @@ public class DailyPerformanceCorrectionProcessor {
 							screenDto.setCellSate(data.getId(), nameColKey, DPText.STATE_DISABLE, true);
 						}
 						if (value.isEmpty() || value.equals("null")) {
-							cellDatas.add(new DPCellDataDto(mergeString(DPText.CODE, itemIdAsString), "",
-									attendanceAtrAsString, DPText.TYPE_LABEL));
-							value = NAME_EMPTY;
+							String initValue = "";
+							if (groupType != null) {
+								if(groupType == TypeLink.WORK.value) {
+									if(opTaskItem.isPresent()) {
+										int frameNo = 0;
+										for(Entry<Integer, List<Integer>> entry : SUPPORT_WORK_MAP.entrySet()) {
+											if(entry.getValue().contains(item.getId())) {
+												frameNo = entry.getKey();
+												break;
+											}
+										}
+										switch (frameNo) {
+											case 1:
+												initValue = opTaskItem.get().getOtpWorkCode1().map(x -> x.v()).orElse("");
+												break;
+											case 2:
+												initValue = opTaskItem.get().getOtpWorkCode2().map(x -> x.v()).orElse("");
+												break;
+											case 3:
+												initValue = opTaskItem.get().getOtpWorkCode3().map(x -> x.v()).orElse("");
+												break;
+											case 4:
+												initValue = opTaskItem.get().getOtpWorkCode4().map(x -> x.v()).orElse("");
+												break;
+											case 5:
+												initValue = opTaskItem.get().getOtpWorkCode5().map(x -> x.v()).orElse("");
+												break;
+											default:
+												break;
+										}
+										if(Strings.isNotBlank(initValue)) {
+											cellDatas.add(new DPCellDataDto(codeColKey, initValue,attendanceAtrAsString, DPText.TYPE_LABEL));
+											value = codeNameTaskMap.containsKey(initValue+"|"+frameNo) ? codeNameTaskMap.get(initValue+"|"+frameNo).getName() : NAME_NOT_FOUND;
+										}
+									}
+								}
+							}
+							if(Strings.isBlank(initValue)) {
+								cellDatas.add(new DPCellDataDto(mergeString(DPText.CODE, itemIdAsString), "",
+										attendanceAtrAsString, DPText.TYPE_LABEL));
+								value = NAME_EMPTY;
+							}
 						} else {
 							if (groupType != null) {
 								if (groupType == TypeLink.WORKPLACE.value || groupType == TypeLink.POSSITION.value) {
@@ -828,6 +874,12 @@ public class DailyPerformanceCorrectionProcessor {
 	}
     
 	public void cellEditColor(DailyPerformanceCorrectionDto screenDto, String rowId, String columnKey, Integer cellEdit ){
+		// 日別実績の編集状態:
+		// 0: 手修正（本人）
+		// 1: 手修正（他人）
+		// 2: 申請反映
+		// 3: 打刻反映
+		// 4: 申告反映
 		// set color edit
 		if(cellEdit != null){
 			if(cellEdit == 0){
@@ -1394,8 +1446,8 @@ public class DailyPerformanceCorrectionProcessor {
 									x.getAttendanceItemId(), x.getSheetNo().toString(), x.getDisplayOrder(),
 									x.getColumnWidth().intValue()))
 							.collect(Collectors.toList());
-					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList());
-					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().collect(Collectors.toList());
+					lstAtdItem = lstFormat.stream().map(f -> f.getAttendanceItemId()).sorted().collect(Collectors.toList());
+					lstAtdItemUnique = new HashSet<Integer>(lstAtdItem).stream().sorted().collect(Collectors.toList());
 
 				}
 			} else {
@@ -1454,7 +1506,7 @@ public class DailyPerformanceCorrectionProcessor {
 					                              )
 					                      .collect(Collectors.toList()); 
 			result.setLstBusinessTypeCode(lstDPBusinessTypeControl);
-			result.setLstFormat(lstFormat);
+			result.setLstFormat(lstFormat.stream().sorted(Comparator.comparing(FormatDPCorrectionDto::getAttendanceItemId)).collect(Collectors.toList()));
 			result.setLstSheet(lstSheet);
 			result.setLstAtdItemUnique(lstAtdItemUnique);
 			result.setBussiness(dailyPerformanceDto.getSettingUnit().value);
@@ -1504,7 +1556,7 @@ public class DailyPerformanceCorrectionProcessor {
 		setOptionalItemAtr(lstAttendanceItem, optionalItemOpt, optionalItemAtrOpt);
 		
 		result.createSheets(disItem.getLstSheet());
-		Map<Integer, DPAttendanceItem> mapDP = lstAttendanceItem.stream().filter(x -> x.getAttendanceAtr().intValue() != DailyAttendanceAtr.ReferToMaster.value).collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
+		Map<Integer, DPAttendanceItem> mapDP = lstAttendanceItem.stream().collect(Collectors.toMap(DPAttendanceItem::getId, x -> x));
 		result.setMapDPAttendance(mapDP);
 		result.setLstAttendanceItem(new ArrayList<>(mapDP.values()));
 		lstFormat = lstFormat.stream().distinct().filter(x -> mapDP.containsKey(x.getAttendanceItemId())).collect(Collectors.toList());
@@ -1522,7 +1574,6 @@ public class DailyPerformanceCorrectionProcessor {
 		if (showButton) {
 			lstHeader.add(DPHeaderDto.addHeaderApplication());
 		}
-		lstHeader.add(DPHeaderDto.addHeaderApplicationList());
 		result.setLstHeader(lstHeader);
 		//if (!disItem.isSettingUnit()) {
 			if (disItem.getLstBusinessTypeCode().size() > 0) {
@@ -2010,6 +2061,18 @@ public class DailyPerformanceCorrectionProcessor {
 			rangeTemp = dateRange;
 		}
 		return Pair.of(closureIdResult, rangeTemp);
+	}
+	
+	public Optional<TaskItem> getTaskItemByEmpDate(List<TaskInitialSelHist> taskInitialSelHistLst, String empID, GeneralDate date) {
+		Optional<TaskItem> opTaskItem = Optional.empty();
+		Optional<TaskInitialSelHist> opTaskInitialSelHist = taskInitialSelHistLst.stream().filter(x -> x.getEmpId().equals(empID)).findAny();
+		if(opTaskInitialSelHist.isPresent()) {
+			Optional<TaskInitialSel> opTaskInitialSel = opTaskInitialSelHist.get().getLstHistory().stream().filter(x -> x.getDatePeriod().contains(date)).findAny();
+			if(opTaskInitialSel.isPresent()) {
+				opTaskItem = Optional.of(opTaskInitialSel.get().getTaskItem());
+			}
+		}
+		return opTaskItem;
 	}
 }
  

@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.dailyfix.IAppliCalDaiCorrecRepository;
 import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHist;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHistRepo;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppWithDetailExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.BusinessType;
@@ -58,6 +60,9 @@ public class DataDialogWithTypeProcessor {
 	
 	@Inject
 	private TaskingRepository taskingRepository;
+	
+	@Inject
+	private TaskInitialSelHistRepo taskInitialSelHistRepo;
 
 	// 勤務種類
 	public CodeNameType getDutyType(String companyId, String workTypeCode, String employmentCode) {
@@ -480,6 +485,10 @@ public class DataDialogWithTypeProcessor {
 	private Map<String, CodeNameInfo> toMapIDMaster(List<CodeName> codeNames) {
 		return codeNames.stream().filter(distinctByKey(x -> x.getId()))
 				.collect(Collectors.toMap(x -> x.getId(), x ->  new CodeNameInfo(x.getCode(), x.getName(), x.getId())));
+	}
+	
+	public List<TaskInitialSelHist> getTaskInitialSel(String companyID) {
+		return taskInitialSelHistRepo.getByCid(companyID);
 	}
 	
 }

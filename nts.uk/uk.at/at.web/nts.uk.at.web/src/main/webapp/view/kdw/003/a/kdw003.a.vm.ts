@@ -16,7 +16,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     var LIST_FIX_HEADER = [
         { headerText: 'ID', key: 'id', dataType: 'String', width: '30px', ntsControl: 'Label' },
         { headerText: '状<br/>態', key: 'state', dataType: 'String', width: '30px', ntsControl: 'Label' },
-        { headerText: 'ER/AL', key: 'error', dataType: 'String', width: '60px', ntsControl: 'Label' },
+        { headerText: getText("KDW003_129"), key: 'error', dataType: 'String', width: '60px', ntsControl: 'Label' },
         { headerText: getText("KDW003_41"), key: 'date', dataType: 'String', width: '90px', ntsControl: 'Label' },
         { headerText: getText("KDW003_42"), key: 'sign', dataType: 'boolean', width: '35px', ntsControl: 'Checkbox' },
         { headerText: getText("KDW003_32"), key: 'employeeCode', dataType: 'String', width: '87px', ntsControl: 'Label' },
@@ -279,6 +279,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         dateReferCCg: KnockoutObservable<any> = ko.observable(0);
         changeConditionExtract:  KnockoutObservable<boolean> = ko.observable(false);
+		showWorkLoad: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(dataShare: any) {
             var self = this;
@@ -803,6 +804,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             let showCheckbox = _.isEmpty(self.shareObject()) ? data.showPrincipal : data.showSupervisor;
 			let confirmEmployment = data.confirmEmployment ? data.confirmEmployment : false;
             self.showButton(new AuthorityDetailModel(data.authorityDto, data.lstControlDisplayItem.settingUnit, showCheckbox, confirmEmployment));
+			self.showWorkLoad(data.showWorkLoad);
             self.hideLock(self.showButton().available12());
             self.showLock(true);
             self.unLock(false);
@@ -1105,11 +1107,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         }
 
         proceed() {
-            var self = this;
-            this.insertUpdate();
-        }
-
-        proceedSave() {
             var self = this;
             this.insertUpdate();
         }
@@ -3185,6 +3182,29 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.clear();
         }
 
+		showSupportWorkDialog() {
+			let self = this;
+            if (!self.hasEmployee || self.hasErrorBuss) return;
+            if (!nts.uk.ui.errors.hasError()) {
+				let dataShare: any = {}, lstEmployee = [];
+                if (self.displayFormat() === 0) {
+                    lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
+                        return employee.id === self.selectedEmployee();
+                    }));
+                } else {
+                    lstEmployee = self.lstEmployee();
+                }
+				dataShare.baseDate = moment(self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString()).format("YYYY/MM/DD");
+				dataShare.employeeIds = _.map(lstEmployee, item => item.id);
+	
+				setShared('dataShareKdw003g', dataShare);
+                nts.uk.ui.block.grayout();
+                modal("/view/kdw/003/g/index.xhtml").onClosed(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }	
+		}
+
         proceedLock() {
             let self = this;
             //Msg_984
@@ -3793,7 +3813,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return ids[2] + "-" + ids[3] + "-" + ids[4];
                 },
                 features: [
-                    //{ name: 'Paging', pageSize: 31, currentPageIndex: 0 },
+                    { name: 'Paging', pageSize: 31, currentPageIndex: 0 },
                     { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
                     { name: 'Resizing', columnSettings: [{ columnKey: 'id', allowResizing: false, minimumWidth: 0 }] },
                     { name: 'MultiColumnHeaders' },
@@ -4386,7 +4406,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (header.headerText != "提出済みの申請" && header.headerText != "申請" && header.headerText != "申請一覧") {
                     if (header.group == undefined && header.group == null) {
                         if (self.showHeaderNumber()) {
-                            headerText = "[" + header.key.substring(1, header.key.length) + "]" + " " + header.headerText ;
+                            headerText = "[" + header.key.substring(1, header.key.length) + "]" + " " + header.attendanceName ;
                             $("#dpGrid").mGrid("headerText", header.key, headerText, false);
                         } else {
                            // headerText = header.headerText.split(" ")[0];
@@ -4394,12 +4414,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }
                     } else {
                         if (self.showHeaderNumber()) {
-                            headerText =  "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.headerText;
+                            headerText =  "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + header.attendanceName;
                             $("#dpGrid").mGrid("headerText", header.headerText, headerText, true);
                         } else {
                           //  headerText = header.headerText.split(" ")[0];
-                            headerText = header.headerText;
-                            $("#dpGrid").mGrid("headerText", "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + headerText, headerText, true);
+                            headerText = header.attendanceName;
+                            $("#dpGrid").mGrid("headerText", "[" + header.group[1].key.substring(4, header.group[1].key.length) + "]" + " " + headerText, header.headerText, true);
                         }
                     }
                 }
@@ -5293,7 +5313,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     nts.uk.ui.block.invisible();
                     let paramsKDL012 = {
 						isMultiple: false,
-				        showExpireDate: true,
+				        showExpireDate: false,
 				        referenceDate: dateParam15,
 				        workFrameNoSelection,
 				        selectionCodeList: self.listCode(),
@@ -5423,31 +5443,49 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.dispAnnualDay = annualLeave == null ? false : annualLeave.manageYearOff;
             this.dispAnnualTime = annualLeave == null ? false : annualLeave.manageTimeOff;
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
-            if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
-                this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
-                if (compensatoryLeave.compenLeaveRemain < 0)
-                    $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-compen-day").css("color", "");
-            } else
-                this.compensationDay = "";
-            if (this.dispCompensationTime && compensatoryLeave.timeRemain != null) {
-                this.compensationTime = nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain);
-                if (compensatoryLeave.timeRemain < 0)
-                    $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-compen-time").css("color", "");
-            } else
-                this.compensationTime = "";
-            if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
+			if (this.dispCompensationDay && (!_.isNull(compensatoryLeave.compenLeaveRemain) || !_.isNull(compensatoryLeave.timeRemain))) {
+				if (_.isNull(compensatoryLeave.compenLeaveRemain)) compensatoryLeave.compenLeaveRemain = 0;
+				if (_.isNull(compensatoryLeave.timeRemain)) compensatoryLeave.timeRemain = 0;
+				if (compensatoryLeave.timeRemain != 0) {
+					this.compensationDay = getText("KDW003_132", [compensatoryLeave.compenLeaveRemain, nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain)]);	
+				} else {
+					this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);	
+				}
+				if (compensatoryLeave.compenLeaveRemain < 0 || (compensatoryLeave.compenLeaveRemain == 0  && compensatoryLeave.timeRemain < 0)) {
+					$("#fixed-table td.remain-compen-day").css("color", "#ff0000");	
+				} else {
+					$("#fixed-table td.remain-compen-day").css("color", "#06c");
+				}
+			} else {
+				this.compensationDay = "";
+			}
+			if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
                 this.substitute = getText("KDW003_8", [substitutionLeave.holidayRemain]);
                 if (substitutionLeave.holidayRemain < 0)
                     $("#fixed-table td.remain-subst-day").css("color", "#ff0000");
                 else
-                    $("#fixed-table td.remain-subst-day").css("color", "");
+                    $("#fixed-table td.remain-subst-day").css("color", "#06c");
             } else
                 this.substitute = "";
-            if (this.dispAnnualDay && annualLeave.annualLeaveRemain != null) {
+			if (this.dispAnnualDay && (!_.isNull(annualLeave.annualLeaveRemain) || !_.isNull(annualLeave.timeRemain))) {
+				if (_.isNull(annualLeave.annualLeaveRemain)) annualLeave.annualLeaveRemain = 0;
+				if (_.isNull(annualLeave.timeRemain)) annualLeave.timeRemain = 0;
+				if (annualLeave.annualLeaveRemain != 0) {
+					this.annualDay = getText("KDW003_132", [annualLeave.annualLeaveRemain, nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain)]);	
+				} else {
+					this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);	
+				}
+				if (annualLeave.annualLeaveRemain < 0 || (annualLeave.annualLeaveRemain == 0  && annualLeave.timeRemain < 0)) {
+					$("#fixed-table td.remain-annual-day").css("color", "#ff0000");
+				} else {
+					$("#fixed-table td.remain-annual-day").css("color", "#06c");
+				}
+			} else {
+				this.annualDay = "";
+			}
+
+
+            /*if (this.dispAnnualDay && annualLeave.annualLeaveRemain != null) {
                 this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);
                 if (annualLeave.annualLeaveRemain < 0)
                     $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
@@ -5462,13 +5500,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 else
                     $("#fixed-table td.remain-annual-time").css("color", "");
             } else
-                this.annualTime = "";
+                this.annualTime = "";*/
             if (this.dispReserve && reserveLeave.remainNumber != null) {
                 this.reserve = getText("KDW003_8", [reserveLeave.remainNumber]);
                 if (reserveLeave.remainNumber < 0)
                     $("#fixed-table td.remain-reserve-day").css("color", "#ff0000");
                 else
-                    $("#fixed-table td.remain-reserve-day").css("color", "");
+                    $("#fixed-table td.remain-reserve-day").css("color", "#06c");
             } else
                 this.reserve = "";
         }

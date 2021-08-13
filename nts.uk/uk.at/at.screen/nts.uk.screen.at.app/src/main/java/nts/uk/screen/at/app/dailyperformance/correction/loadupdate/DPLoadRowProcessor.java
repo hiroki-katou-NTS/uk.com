@@ -30,6 +30,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ch
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskInitialSelHist;
+import nts.uk.ctx.at.record.dom.workmanagement.workinitselectset.TaskItem;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
@@ -246,7 +248,7 @@ public class DPLoadRowProcessor {
 				? codeNameTask.getCodeNames().stream()
 						.collect(Collectors.toMap(x -> process.mergeString(x.getCode(), "|", x.getId()), x -> x))
 				: Collections.emptyMap();
-
+		List<TaskInitialSelHist> taskInitialSelHistLst = dataDialogWithTypeProcessor.getTaskInitialSel(companyId);				
 		// No 20 get submitted application
 		// disable check box sign
 		Map<String, Boolean> disableSignMap = new HashMap<>();
@@ -328,8 +330,9 @@ public class DPLoadRowProcessor {
 								data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 				dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());
+				Optional<TaskItem> opTaskItem = process.getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
 				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap, codeNameTaskMap,
-						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null);
+						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())
