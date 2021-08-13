@@ -30,18 +30,13 @@ import nts.uk.shr.com.net.Ipv4Address;
 public class EmpInfoTerminalHelper {
 	
 	public static EmpInfoTerminal getEmpInfoTerminalDefault() {
-<<<<<<< HEAD
 
-		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(
-				Optional.of(Ipv4Address.parse("192.168.50.4")), 
-=======
 		CreateStampInfo temFix = new CreateStampInfo(
 				new NRConvertInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.of(GoingOutReason.PRIVATE)),
 						NotUseAtr.NOT_USE),
 				Optional.of(new WorkLocationCD("WCD")), Optional.of(new WorkplaceId("WID")));
 		EmpInfoTerminal empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(
 				Ipv4Address.parse("192.168.50.4")), 
->>>>>>> pj/at/release_ver4
 				new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode("1"), 
 				Optional.of(new EmpInfoTerSerialNo("1")), 

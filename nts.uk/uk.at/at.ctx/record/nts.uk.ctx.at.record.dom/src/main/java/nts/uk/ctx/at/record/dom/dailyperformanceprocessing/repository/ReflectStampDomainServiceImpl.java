@@ -116,11 +116,10 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		
 		//「打刻反映管理」を取得する
 		for(Stamp stamp:lstStamp) {
-<<<<<<< HEAD
 			//対象日に反映できるか
 			if(stamp.getImprintReflectionStatus().canReflectedOnTargetDate(processingDate)) {
 				//打刻を反映する
-				List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(stamp,
+				List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(companyID,stamp,
 						outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt);
 				//do thuật toán スケジュール管理しない場合勤務情報を更新 có thể tạo ra nhiều lỗi giống nhau, nên cần bỏ những lỗi giống nhau trong 1 ngày.
 				listE = listE.stream().distinct().collect(Collectors.toList());
@@ -128,10 +127,6 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				//反映された年月日を更新する
 				stamp.getImprintReflectionStatus().setReflectedDate(Optional.of(GeneralDate.today()));
 			}
-=======
-			listErrorMessageInfo.addAll(temporarilyReflectStampDailyAttd.reflectStamp(companyID, stamp,
-					outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt));
->>>>>>> pj/at/release_ver4
 		}
 		//手修正がある勤怠項目ID一覧を取得する
 		List<Integer> attendanceItemIdList = integrationOfDaily.getEditState().stream()

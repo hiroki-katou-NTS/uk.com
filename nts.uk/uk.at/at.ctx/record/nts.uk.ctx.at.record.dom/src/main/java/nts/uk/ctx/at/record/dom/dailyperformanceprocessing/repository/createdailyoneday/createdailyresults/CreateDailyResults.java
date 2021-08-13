@@ -68,7 +68,7 @@ public class CreateDailyResults {
 	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
 	
 	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
-			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+			ExecutionTypeDaily executionType,
 			IntegrationOfDaily integrationOfDaily) {
 		    DatePeriod period = new DatePeriod(ymd, ymd);
 		    Optional<EmployeeGeneralAndPeriodMaster> masterData = createDailyResultDomainServiceNew.getMasterData(companyId, employeeId, period);
@@ -78,7 +78,7 @@ public class CreateDailyResults {
 							new ErrMessageResource("020"), new ErrMessageContent(TextResource.localize("Msg_1156")))),
 					integrationOfDaily, new ArrayList<>());
 		}
-		return createDailyResult(companyId, employeeId, ymd, executionType, flag,
+		return createDailyResult(companyId, employeeId, ymd, executionType,
 				masterData.get().getEmployeeGeneralInfoImport(),
 				masterData.get().getPeriodInMasterList(), integrationOfDaily);
 	}

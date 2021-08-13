@@ -307,7 +307,6 @@ public class ReflectAttendanceClock {
 	 * @param companyId
 	 * @return
 	 */
-<<<<<<< HEAD
 	private void checkHolidayChange(IntegrationOfDaily integrationOfDaily, String companyId,Stamp stamp) {
 		if (integrationOfDaily.getWorkInformation() != null) {
 			//ドメインモデル「日別実績の勤務情報．勤務情報」を取得する
@@ -318,17 +317,6 @@ public class ReflectAttendanceClock {
 			boolean check = stamp.getType().changeWorkOnHolidays(new RequireStampTypeImpl(),
 					calAttr.getHolidayTimeSetting(), recordWorkInformation.getWorkTypeCode().v());
 			if(check) {
-=======
-	private ReflectStampOuput checkHolidayChange(WorkInfoOfDailyPerformance WorkInfo, String companyId) {
-		if (WorkInfo != null) {
-			WorkInformation recordWorkInformation = WorkInfo.getWorkInformation().getRecordInfo();
-			// Xác định phân loại 1日半日出勤・1日休日
-			// 1日半日出勤・1日休日系の判定
-			WorkStyle checkWorkDay = this.basicScheduleService
-					.checkWorkDay(companyId, recordWorkInformation.getWorkTypeCode().v());
-			// 休日系
-			if (checkWorkDay.value == 0) {
->>>>>>> pj/at/release_ver4
 				// 勤務情報を変更する
 				this.reflectWorkInformationDomainService.changeWorkInformation(integrationOfDaily,
 						companyId, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd());
