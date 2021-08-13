@@ -143,11 +143,15 @@ module nts.uk.at.kha003.c {
                 vm.c34Items(this.getItemData(vm.c31Params().type, data));
                 vm.c44Items(this.getItemData(vm.c41Params().type, data));
                 vm.c54Items(this.getItemData(vm.c51Params().type, data));
+                window.setTimeout(function () {
+                    document.getElementById('multi-list-c2_4_container').focus();
+                }, 0);
             });
             // $(document).ready(function () {
             //     vm.gridRows((12 * $(window).height()) / 768);
             // });
         }
+
 
         /**
          * function for get item data to map with UI

@@ -64,6 +64,9 @@ module nts.uk.at.kha003.b {
                 vm.isCsvOutPut(data.isCsvOutPut);
                 vm.totalUnit(data.totalUnit);
                 vm.code = data.code;
+                window.setTimeout(function () {
+                    document.getElementById('btn-f-close').focus();
+                }, 0);
             })
         }
 

@@ -71,6 +71,9 @@ module nts.uk.at.kha003.d {
                             let command = vm.getItemData(aData, bData, cData);
                             vm.initData(command);
                         })
+                        window.setTimeout(function () {
+                            document.getElementById('D1_1').focus();
+                        }, 0);
                     })
                 })
             })
