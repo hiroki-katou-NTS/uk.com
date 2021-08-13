@@ -609,7 +609,7 @@ module nts.uk.at.view.kdp.share {
 				element.style.fontSize = '20px';
 			}
 
-			if ($(element).parentsUntil($('.btn-layout-type-1')).length == 1) {
+			if ($(element).parentsUntil($('.btn-layout-type-1')).length >= 1) {
 				element.style.fontSize = '20px';
 			}
 			return;
