@@ -3,9 +3,11 @@ package nts.uk.ctx.at.function.infra.entity.alarm.mailsettings;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -106,14 +108,15 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
                 IndividualWkpClassification.of(this.pk.personWkpAtr),
                 NormalAutoClassification.of(this.pk.normalAutoAtr),
                 PersonalManagerClassification.of(this.pk.personalManagerAtr),
-                Optional.of(new MailSettings(
+                Optional.ofNullable((StringUtils.isNotEmpty(this.subject) || StringUtils.isNotEmpty(this.text) || !CollectionUtil.isEmpty(mailSettingBcc) || !CollectionUtil.isEmpty(mailSettingCc) || StringUtils.isNotEmpty(this.mailReply))
+                        ? new MailSettings(
                         subject,
                         text,
                         mailSettingBcc,
                         mailSettingCc,
-                        mailReply
-                )),
-                Optional.of(new MailAddress(senderAddress)),
+                        mailReply)
+                        : null),
+                Optional.ofNullable(this.senderAddress != null ? new MailAddress(senderAddress) : null),
                 false
         );
     }

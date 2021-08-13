@@ -26,4 +26,6 @@ public interface AlarmListExecutionMailSettingRepository {
      * 会社IDと本人管理区分によってアラームリスト実行メール設定を取得する(会社ID、個人職場区分、本人管理区分)
      * */
     List<AlarmListExecutionMailSetting> getByCompanyId(String cid, int personalManagerClassify, int individualWRClassification);
+
+    List<AlarmListExecutionMailSetting> findBy(String cid, int individualWkpClassify, int normalAutoClassify);
 }

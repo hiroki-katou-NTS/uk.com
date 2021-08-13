@@ -19,6 +19,7 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
     private static final String SELECT;
     private static final String SELECT_ALL_BY_CID_PM;
     private static final String SELECT_ALL_BY_CID_PM_IM;
+    private static final String SELECT_ALL_BY_CID_IW_NA;
 
     static {
         StringBuilder builderString = new StringBuilder();
@@ -29,6 +30,7 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
         builderString.append(SELECT);
         builderString.append("WHERE a.pk.companyID = :cid AND a.pk.personWkpAtr = :individualWkpClassify");
         SELECT_ALL_BY_CID_PM = builderString.toString();
+        SELECT_ALL_BY_CID_IW_NA = SELECT_ALL_BY_CID_PM + " AND a.pk.normalAutoAtr = :normalAutoClassify";
         SELECT_ALL_BY_CID_PM_IM = SELECT_ALL_BY_CID_PM + " AND a.pk.personalManagerAtr = :personalManagerClassify";
     }
 
@@ -109,6 +111,25 @@ public class JpaAlarmListExecutionMailSettingRepository extends JpaRepository im
                 .setParameter("cid", cid)
                 .setParameter("individualWkpClassify", individualWRClassification)
                 .setParameter("personalManagerClassify", personalManagerClassify)
+                .getList();
+        if (mailSet.isEmpty()) return Collections.emptyList();
+
+        val bccIds = mailSet.stream().map(x -> x.bcc).collect(Collectors.toList());
+        val mailSettingListBCC = this.queryProxy().query(FIND_MAIL_LIST, KfnmtMailSettingList.class)
+                .setParameter("listMailIds", bccIds).getList(this::toAddress);
+        val ccIds = mailSet.stream().map(x -> x.cc).collect(Collectors.toList());
+        val mailSettingListCC = this.queryProxy().query(FIND_MAIL_LIST, KfnmtMailSettingList.class)
+                .setParameter("listMailIds", ccIds).getList(this::toAddress);
+
+        return mailSet.stream().map(x -> x.toDomain(mailSettingListBCC, mailSettingListCC)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AlarmListExecutionMailSetting> findBy(String cid, int individualWkpClassify, int normalAutoClassify) {
+        val mailSet = this.queryProxy().query(SELECT_ALL_BY_CID_IW_NA, KfnmtAlstExeMailSetting.class)
+                .setParameter("cid", cid)
+                .setParameter("individualWkpClassify", individualWkpClassify)
+                .setParameter("normalAutoClassify", normalAutoClassify)
                 .getList();
         if (mailSet.isEmpty()) return Collections.emptyList();
 

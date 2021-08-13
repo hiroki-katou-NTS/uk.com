@@ -15,7 +15,7 @@ module nts.uk.at.view.kal002.c {
         roundingRules: KnockoutObservableArray<any>;
         selectedRoleSetting: any;
         // Mode
-        isUpdateMode: KnockoutObservable<boolean>;
+        isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
         // Declare object
         alarmMailSendingRole: IAlarmMailSendingRole;
         manualPerson: IAlarmListExecutionMailSetting;
@@ -23,10 +23,14 @@ module nts.uk.at.view.kal002.c {
         autoPerson: IAlarmListExecutionMailSetting;
         autoAdmin: IAlarmListExecutionMailSetting;
         // Flag check already configured for each type
-        configuredManualPerson: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
-        configuredManualAdmin: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
-        configuredAutoPerson: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
-        configuredAutoAdmin: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
+        isConfiguredManualPerson: KnockoutObservable<boolean> = ko.observable(false);
+        isConfiguredManualAdmin: KnockoutObservable<boolean> = ko.observable(false);
+        isConfiguredAutoPerson: KnockoutObservable<boolean> = ko.observable(false);
+        isConfiguredAutoAdmin: KnockoutObservable<boolean> = ko.observable(false);
+        statusConfigManualPerson: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
+        statusConfigManualAdmin: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
+        statusConfigAutoPerson: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
+        statusConfigAutoAdmin: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
         // Role setting
         enableRoleSetting: KnockoutObservable<boolean> = ko.observable(false);
         roles: KnockoutObservableArray<IRole> = ko.observableArray([]);
@@ -60,8 +64,6 @@ module nts.uk.at.view.kal002.c {
                 {code: 1, name: vm.$i18n('KAL002_20')}
             ]);
             vm.selectedRoleSetting = ko.observable(1);
-            // Mode
-            vm.isUpdateMode = ko.observable(false);
             //Init object mail setting
             vm.manualPerson = ExecutionMailSetting.create(0, 0);
             vm.manualAdmin = ExecutionMailSetting.create(0, 1);
@@ -83,11 +85,30 @@ module nts.uk.at.view.kal002.c {
                     .done(function (listRole: Array<IRole>) {
                         vm.roleName(_.join(_.map(listRole, i => i.name), '、'));
                     });
-
                 // let nameList = _.filter(vm.roles(), (v) => _.includes(newValues, v.roleId));
                 // if(_.isNil(nameList)){
                 //     vm.roleName(_.join(nameList, '、'));
                 // }
+            });
+            vm.isConfiguredManualPerson.subscribe((newValue: any) => {
+                if (newValue && vm.isAlreadyConfigured(vm.manualPerson.contentMailSettings)) {
+                    vm.statusConfigManualPerson(vm.$i18n('KAL002_14'));
+                }
+            });
+            vm.isConfiguredManualAdmin.subscribe((newValue: any) => {
+                if (newValue && vm.isAlreadyConfigured(vm.manualAdmin.contentMailSettings)) {
+                    vm.statusConfigManualAdmin(vm.$i18n('KAL002_14'));
+                }
+            });
+            vm.isConfiguredAutoPerson.subscribe((newValue: any) => {
+                if (newValue && vm.isAlreadyConfigured(vm.autoPerson.contentMailSettings)) {
+                    vm.statusConfigAutoPerson(vm.$i18n('KAL002_14'));
+                }
+            });
+            vm.isConfiguredAutoAdmin.subscribe((newValue: any) => {
+                if (newValue && vm.isAlreadyConfigured(vm.autoAdmin.contentMailSettings)) {
+                    vm.statusConfigAutoAdmin(vm.$i18n('KAL002_14'));
+                }
             });
         }
 
@@ -96,23 +117,13 @@ module nts.uk.at.view.kal002.c {
         }
 
         /**
-         * init object mail setting
+         * Check already configured mail setting
+         * @param {nts.uk.at.view.kal002.c.IMailSetting} mailSetting
+         * @returns {boolean}
          */
-        initObjectMailSetting(normalAutoClassify: number, personManagerClassify: number) {
-            return new ExecutionMailSetting(
-                0,
-                normalAutoClassify,
-                personManagerClassify,
-                new ContentMailSetting(
-                    null,
-                    null,
-                    [],
-                    [],
-                    null
-                ),
-                null,
-                false
-            );
+        isAlreadyConfigured(mailSetting: IMailSetting): boolean {
+            return !_.isNil(mailSetting.subject) || !_.isNil(mailSetting.text) || !_.isNil(mailSetting.mailRely)
+                || !_.isEmpty(mailSetting.mailAddressBCC) || !_.isEmpty(mailSetting.mailAddressCC);
         }
 
         /**
@@ -130,19 +141,19 @@ module nts.uk.at.view.kal002.c {
                             if (item.mailSettingInfo.normalAutoClassify === 0 && item.mailSettingInfo.personalManagerClassify === 0) {
                                 vm.manualPerson = item.mailSettingInfo;
                                 if (item.alreadyConfigured)
-                                    vm.configuredManualPerson(vm.$i18n('KAL002_14'));
+                                    vm.isConfiguredManualPerson(true);
                             } else if (item.mailSettingInfo.normalAutoClassify === 0 && item.mailSettingInfo.personalManagerClassify === 1) {
                                 vm.manualAdmin = item.mailSettingInfo;
                                 if (item.alreadyConfigured)
-                                    vm.configuredManualAdmin(vm.$i18n('KAL002_14'));
+                                    vm.isConfiguredManualAdmin(true);
                             } else if (item.mailSettingInfo.normalAutoClassify === 1 && item.mailSettingInfo.personalManagerClassify === 0) {
                                 vm.autoPerson = item.mailSettingInfo;
                                 if (item.alreadyConfigured)
-                                    vm.configuredAutoPerson(vm.$i18n('KAL002_14'));
+                                    vm.isConfiguredAutoPerson(true);
                             } else if (item.mailSettingInfo.normalAutoClassify === 1 && item.mailSettingInfo.personalManagerClassify === 1) {
                                 vm.autoAdmin = item.mailSettingInfo;
                                 if (item.alreadyConfigured)
-                                    vm.configuredAutoAdmin(vm.$i18n('KAL002_14'));
+                                    vm.isConfiguredAutoAdmin(true);
                             }
                         }
                     }
@@ -200,7 +211,7 @@ module nts.uk.at.view.kal002.c {
          * Manual mail setting for personal
          */
         manualMailSettingForPersonal() {
-            var vm = this;
+            let vm = this;
             vm.setParamCCG027();
             nts.uk.ui.windows.setShared("senderAddress", vm.manualPerson.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.manualPerson.contentMailSettings);
@@ -210,6 +221,7 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.manualPerson.contentMailSettings = mailSettingContent;
                     vm.manualPerson.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
+                    vm.isConfiguredManualPerson(true);
                 }
             });
         }
@@ -218,7 +230,7 @@ module nts.uk.at.view.kal002.c {
          * Manual mail setting for manager
          */
         manualMailSettingForManager() {
-            var vm = this;
+            let vm = this;
             vm.setParamCCG027();
             nts.uk.ui.windows.setShared("senderAddress", vm.manualAdmin.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.manualAdmin.contentMailSettings);
@@ -228,6 +240,7 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.manualAdmin.contentMailSettings = mailSettingContent;
                     vm.manualAdmin.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
+                    vm.isConfiguredManualAdmin(true);
                 }
             });
         }
@@ -236,7 +249,7 @@ module nts.uk.at.view.kal002.c {
          * Automatic mail setting for personal
          */
         automaticMailSettingForPersonal() {
-            var vm = this;
+            let vm = this;
             vm.setParamCCG027();
             nts.uk.ui.windows.setShared("senderAddress", vm.autoPerson.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.autoPerson.contentMailSettings);
@@ -246,6 +259,7 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.autoPerson.contentMailSettings = mailSettingContent;
                     vm.autoPerson.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
+                    vm.isConfiguredAutoPerson(true);
                 }
             });
         }
@@ -254,7 +268,7 @@ module nts.uk.at.view.kal002.c {
          * Automatic mail setting for manager
          */
         automaticMailSettingForManager() {
-            var vm = this;
+            let vm = this;
             vm.setParamCCG027();
             nts.uk.ui.windows.setShared("senderAddress", vm.autoAdmin.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.autoAdmin.contentMailSettings);
@@ -264,6 +278,7 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.autoAdmin.contentMailSettings = mailSettingContent;
                     vm.autoAdmin.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
+                    vm.isConfiguredAutoAdmin(true);
                 }
             });
         }
@@ -285,7 +300,7 @@ module nts.uk.at.view.kal002.c {
          * open Dialog CDL025 RoleList
          */
         openDialogRoleList() {
-            var vm = this;
+            let vm = this;
             let param = {
                 roleType: 3,
                 multiple: true,
@@ -346,7 +361,7 @@ module nts.uk.at.view.kal002.c {
             this.sendResult = sendResult;
         }
 
-        static create(normalAutoClassify: number, personManagerClassify: number){
+        static create(normalAutoClassify: number, personManagerClassify: number) {
             return new ExecutionMailSetting(
                 0,
                 normalAutoClassify,
