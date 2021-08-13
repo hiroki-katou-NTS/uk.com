@@ -2179,27 +2179,27 @@ module nts.uk.ui.exTable {
             rollTo(cell: any) {
                 let self = this;
                 if (self.startIndex <= cell.rowIndex && self.endIndex >= cell.rowIndex) {
-                    let $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                    let tdIndex = selector.index($cell);
-                    let tdPosLeft = 0, tdPosTop = 0;
-                    selector.siblingsLt($cell, tdIndex).forEach(function(e) {
-                        if (e.style.display !== "none") {
-                            tdPosLeft += e.offsetWidth;
-                        }
-                    });
-                    let $tr = $cell.parentElement;
-                    let trIndex = selector.index($tr);
-                    selector.siblingsLt($tr, trIndex).forEach(function(e) {
-                        tdPosTop += e.offsetHeight;
-                    });
-                    if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop + 100)
-                        || self.$container.scrollTop > tdPosTop) {
-                        self.$container.scrollTop = tdPosTop;
-                    }
-                    if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft + 100)
-                        || self.$container.scrollLeft > tdPosLeft) {
-                        self.$container.scrollLeft = tdPosLeft;
-                    }
+//                    let $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
+//                    let tdIndex = selector.index($cell);
+//                    let tdPosLeft = 0, tdPosTop = 0;
+//                    selector.siblingsLt($cell, tdIndex).forEach(function(e) {
+//                        if (e.style.display !== "none") {
+//                            tdPosLeft += e.offsetWidth;
+//                        }
+//                    });
+//                    let $tr = $cell.parentElement;
+//                    let trIndex = selector.index($tr);
+//                    selector.siblingsLt($tr, trIndex).forEach(function(e) {
+//                        tdPosTop += e.offsetHeight;
+//                    });
+//                    if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop + 100)
+//                        || self.$container.scrollTop > tdPosTop) {
+//                        self.$container.scrollTop = tdPosTop;
+//                    }
+//                    if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft + 100)
+//                        || self.$container.scrollLeft > tdPosLeft) {
+//                        self.$container.scrollLeft = tdPosLeft;
+//                    }
                 } else {
                     self.$container.scrollTop = cell.rowIndex * self.rowHeight;
                     let $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
