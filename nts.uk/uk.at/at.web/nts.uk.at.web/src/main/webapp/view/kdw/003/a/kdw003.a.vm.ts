@@ -2858,7 +2858,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         startDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().startDate).utc().toISOString(),
                         endDate: self.displayFormat() === 1 ? moment(self.selectedDate()) : moment(self.dateRanger().endDate).utc().toISOString()
                     },
-                    lstEmployee: lstEmployee
+                    lstEmployee: lstEmployee,
+                    selectFormat:  self.formatCodes()
                 };
                 setShared("paramToGetError", param);
                 setShared("errorValidate", errorValidateScreeen);
