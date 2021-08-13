@@ -17,7 +17,7 @@ module nts.uk.at.view.kwr003.a {
     closureId: KnockoutObservable<number> = ko.observable(null);
     // end variable of CCG001
     //panel left
-    dpkYearMonth: KnockoutObservable<string> = ko.observable(null);
+    dpkYearMonth: KnockoutObservable<any> = ko.observable(moment());
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
     standardSelectedCode: KnockoutObservable<string> = ko.observable(null);
@@ -48,7 +48,7 @@ module nts.uk.at.view.kwr003.a {
 
     employeeList: KnockoutObservableArray<common.UnitModel>;
     baseDate: KnockoutObservable<Date>;
-    // end KCP005
+    // end KCP005 =
     mode: KnockoutObservable<common.UserSpecificInformation> = ko.observable(null);
     isPermission51: KnockoutObservable<boolean> = ko.observable(false);
     itemSelection: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -58,8 +58,9 @@ module nts.uk.at.view.kwr003.a {
         vm.$ajax(PATH.getInitDateLoginEmployee).done((data) => {
           if(!_.isNil(data))
             vm.dpkYearMonth(data);
-            vm.CCG001_load(data);
+            vm.CCG001_load();
         });
+
       //パラメータ.就業担当者であるか = true || false
       vm.isWorker(vm.$user.role.isInCharge.attendance);
       vm.getItemSelection();
@@ -84,16 +85,8 @@ module nts.uk.at.view.kwr003.a {
       $('#kcp005 table').attr('tabindex', '-1');
       $('#btnExportExcel').focus();
     }
-    CCG001_load(date:any) {
+    CCG001_load() {
       const vm = this;
-      // Set component option
-        if(nts.uk.util.isNullOrUndefined(date)){
-          date =  moment().toISOString();
-        }else {
-            date = date +'01';
-        }
-        let startDate = moment(date,"YYYY/MM/DD").toDate();
-        let endDate = startDate;
       vm.ccg001ComponentOption = {
         /** Common properties */
         systemType: 2,
@@ -109,9 +102,9 @@ module nts.uk.at.view.kwr003.a {
         /** Required parameter */
         //baseDate: moment().toISOString(), //基準日
         //対象期間開始日
-        periodStartDate: ko.observable(startDate),
+        periodStartDate: vm.dpkYearMonth,
         //対象期間終了日
-        periodEndDate: ko.observable(endDate),
+        periodEndDate: vm.dpkYearMonth,
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象

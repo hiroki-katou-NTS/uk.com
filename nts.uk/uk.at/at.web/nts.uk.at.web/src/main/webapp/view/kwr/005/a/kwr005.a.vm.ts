@@ -65,6 +65,8 @@ module nts.uk.at.view.kwr005.a {
 
     periodDate: KnockoutObservable<any> = ko.observable(null);
 
+      startDate: KnockoutObservable<any> = ko.observable(moment());
+      endDate: KnockoutObservable<any> = ko.observable(moment());
     constructor(params: any) {
       super();
       const vm = this;
@@ -101,7 +103,10 @@ module nts.uk.at.view.kwr005.a {
 
     mounted() {
       const vm = this;
-
+        vm.periodDate.subscribe((data)=>{
+            vm.startDate(vm.periodDate().startDate);
+            vm.endDate(vm.periodDate().endDate)
+        });
       $('#kcp005 table').attr('tabindex', '-1');
       $('#btnExportExcel').focus();
     }
@@ -123,8 +128,8 @@ module nts.uk.at.view.kwr005.a {
           maxPeriodRange: 'oneYear',
         /** Required parameter */
         baseDate: moment().toISOString(), //基準日
-        periodStartDate: vm.periodDate().startDate, //対象期間開始日
-        periodEndDate: vm.periodDate().endDate, //対象期間終了日
+        periodStartDate:  vm.startDate, //対象期間開始日
+        periodEndDate:  vm.endDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
@@ -420,7 +425,6 @@ module nts.uk.at.view.kwr005.a {
       });
       //create an excel file and redirect to download
     }
-
     saveWorkScheduleOutputConditions(): JQueryPromise<void> {
       let vm = this,
         dfd = $.Deferred<void>(),
@@ -512,6 +516,8 @@ module nts.uk.at.view.kwr005.a {
                       startDate: startDate,
                       endDate: endDate
                   });
+                  vm.startDate(vm.periodDate().startDate);
+                  vm.endDate(vm.periodDate().endDate)
                   vm.CCG001_load();
               });
 

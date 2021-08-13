@@ -56,9 +56,11 @@ module nts.uk.at.view.kwr004.a {
     itemListSetting: KnockoutObservableArray<any> = ko.observableArray([]);
     hasPermission51: KnockoutObservable<boolean> = ko.observable(false);
     closureId: KnockoutObservable<number> = ko.observable(0);
-
     enum: Array<any> = [];
     storageKey: KnockoutObservable<string> = ko.observable(null);
+
+      startDate: KnockoutObservable<any> = ko.observable(moment());
+      endDate: KnockoutObservable<any> = ko.observable(moment());
 
     constructor(params: any) {
       super();
@@ -88,7 +90,10 @@ module nts.uk.at.view.kwr004.a {
 
     mounted() {
       const vm = this;
-
+      vm.periodDate.subscribe((data)=>{
+          vm.startDate(vm.periodDate().startDate);
+          vm.endDate(vm.periodDate().endDate)
+      });
       $('#kcp005 table').attr('tabindex', '-1');
       $('#btnExportExcel').focus();
     }
@@ -110,8 +115,8 @@ module nts.uk.at.view.kwr004.a {
           maxPeriodRange: 'oneYear',
         /** Required parameter */
         baseDate: moment().toISOString(), //基準日
-        periodStartDate: vm.periodDate().startDate, //対象期間開始日
-        periodEndDate: vm.periodDate().endDate, //対象期間終了日
+        periodStartDate: vm.startDate, //対象期間開始日
+        periodEndDate: vm.endDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
@@ -308,6 +313,8 @@ module nts.uk.at.view.kwr004.a {
                       startDate: startDate,
                       endDate: endDate
                   });
+                  vm.startDate(vm.periodDate().startDate);
+                  vm.endDate(vm.periodDate().endDate);
                   vm.CCG001_load();
               });
           }
