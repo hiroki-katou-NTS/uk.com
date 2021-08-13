@@ -20,7 +20,7 @@ public enum TimeZoneScheduledMasterAtr {
 
 	/** The personal work daily. */
 	//平日時  (個人勤務日別 old)
-	WEEKDAYS(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily", "個人勤務日別");
+	WEEKDAYS(1, "Enum_TimeZoneScheduledMasterAtr_PersonalWorkDaily", "平日時");
 
 	/** The value. */
 	public final int value;

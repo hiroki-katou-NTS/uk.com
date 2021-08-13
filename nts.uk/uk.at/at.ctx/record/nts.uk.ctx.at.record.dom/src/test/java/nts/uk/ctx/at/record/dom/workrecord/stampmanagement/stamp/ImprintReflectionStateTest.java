@@ -44,18 +44,19 @@ public class ImprintReflectionStateTest {
 	
 	// test function [1] 対象日に反映できるか
 	// case2: 反映済み区分 (reflectedCategory) = true
-	//        反映された年月日(reflectedDate) = Optional.empty()
+	//        反映された年月日(reflectedDate) = GeneralDate.today()
 	@Test
 	public void testFuncCanReflectedOnTargetDate_Case2() {
-		ImprintReflectionState imprintReflecState = new ImprintReflectionState(true, Optional.empty());
+		ImprintReflectionState imprintReflecState = new ImprintReflectionState(true, Optional.of(GeneralDate.today()));
 		GeneralDate baseDate = GeneralDate.today();
-		assertThat(imprintReflecState.canReflectedOnTargetDate(baseDate)).isFalse();
+		assertThat(imprintReflecState.canReflectedOnTargetDate(baseDate)).isTrue();
 	}
 	
 	// test function [1] 対象日に反映できるか
 	// case3: 反映済み区分 (reflectedCategory) = true
 	//        反映された年月日(reflectedDate) = GeneralDate.ymd(2021, 6, 6)
 	//        baseDate = GeneralDate.ymd(2021, 8, 8)
+	//        baseDate > reflectedDate
 	@Test
 	public void testFuncCanReflectedOnTargetDate_Case3() {
 		ImprintReflectionState imprintReflecState = new ImprintReflectionState(true, Optional.of(GeneralDate.ymd(2021, 6, 6)));
@@ -67,6 +68,7 @@ public class ImprintReflectionStateTest {
 	// case4: 反映済み区分 (reflectedCategory) = true
 	//        反映された年月日(reflectedDate) = GeneralDate.ymd(2021, 6, 6)
 	//        baseDate = GeneralDate.ymd(2021, 6, 6)
+	//        baseDate = reflectedDate
 	@Test
 	public void testFuncCanReflectedOnTargetDate_Case4() {
 		ImprintReflectionState imprintReflecState = new ImprintReflectionState(true, Optional.of(GeneralDate.ymd(2021, 6, 6)));
@@ -74,16 +76,28 @@ public class ImprintReflectionStateTest {
 		assertThat(imprintReflecState.canReflectedOnTargetDate(baseDate)).isTrue();
 	}
 	
+	// test function [1] 対象日に反映できるか
+	// case4: 反映済み区分 (reflectedCategory) = true
+	//        反映された年月日(reflectedDate) = GeneralDate.ymd(2021, 6, 6)
+	//        baseDate = GeneralDate.ymd(2021, 5, 5)
+	//        baseDate < reflectedDate
+	@Test
+	public void testFuncCanReflectedOnTargetDate_Case41() {
+		ImprintReflectionState imprintReflecState = new ImprintReflectionState(true, Optional.of(GeneralDate.ymd(2021, 6, 6)));
+		GeneralDate baseDate = GeneralDate.ymd(2021, 5, 5);
+		assertThat(imprintReflecState.canReflectedOnTargetDate(baseDate)).isTrue();
+	}
+	
 	// test function [2] 反映された年月日を更新する
 	// case1: 反映済み区分 (reflectedCategory) = false
-	//        反映された年月日(reflectedDate) = GeneralDate.ymd(2021, 6, 6)
+	//        反映された年月日(reflectedDate) = Optional.empty()
 	//        baseDate = GeneralDate.ymd(2021, 8, 8)
 	@Test
 	public void testFuncUpdateReflectedDate_Case1() {
-		ImprintReflectionState imprintReflecState = new ImprintReflectionState(false, Optional.of(GeneralDate.ymd(2021, 6, 6)));
+		ImprintReflectionState imprintReflecState = new ImprintReflectionState(false, Optional.empty());
 		GeneralDate baseDate = GeneralDate.ymd(2021, 6, 6);
 		imprintReflecState.updateReflectedDate(baseDate);
-		assertThat(imprintReflecState.getReflectedDate().get()).isEqualTo(GeneralDate.ymd(2021, 6, 6));
+		assertThat(imprintReflecState.getReflectedDate()).isEqualTo(Optional.empty());
 	}
 
 	// test function [2] 反映された年月日を更新する
@@ -93,7 +107,7 @@ public class ImprintReflectionStateTest {
 	@Test
 	public void testFuncUpdateReflectedDate_Case2() {
 		ImprintReflectionState imprintReflecState = new ImprintReflectionState(true,Optional.of(GeneralDate.ymd(2021, 6, 6)));
-		GeneralDate baseDate = GeneralDate.ymd(2021, 6, 6);
+		GeneralDate baseDate = GeneralDate.ymd(2021, 8, 8);
 		imprintReflecState.updateReflectedDate(baseDate);
 		assertThat(imprintReflecState.getReflectedDate().get()).isEqualTo(baseDate);
 	}

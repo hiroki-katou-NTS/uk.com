@@ -175,7 +175,6 @@ public class AddWorkingConditionCommandAssembler {
 		}
 		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
 						referenceBusinessDayCalendar,
-						EnumAdaptor.valueOf(0, WorkScheduleMasterReferenceAtr.class),
 						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),TimeZoneScheduledMasterAtr.class) : EnumAdaptor.valueOf(0,TimeZoneScheduledMasterAtr.class));
 		// MonthlyPatternWorkScheduleCre
 		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(
@@ -415,7 +414,6 @@ public class AddWorkingConditionCommandAssembler {
 		}
 		WorkScheduleBusCal busCal = new WorkScheduleBusCal(
 						referenceBusinessDayCalendar,
-						EnumAdaptor.valueOf(0, WorkScheduleMasterReferenceAtr.class),
 						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),TimeZoneScheduledMasterAtr.class) : EnumAdaptor.valueOf(0,TimeZoneScheduledMasterAtr.class));
 		// MonthlyPatternWorkScheduleCre
 		MonthlyPatternWorkScheduleCre monthlySchedule = new MonthlyPatternWorkScheduleCre(

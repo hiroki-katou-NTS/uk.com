@@ -111,7 +111,6 @@ public class UpdateWorkingConditionCommandAssembler {
 		}
 		WorkScheduleBusCal businessCal = new WorkScheduleBusCal(
 						referenceBusinessDayCalendar,
-						null,
 						// 予定作成方法.営業日カレンダーによる勤務予定作成.就業時間帯の参照先（基本作成方法＝営業部カレンダーの場合）
 						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);
@@ -245,7 +244,6 @@ public class UpdateWorkingConditionCommandAssembler {
 		}
 		WorkScheduleBusCal businessCal = new WorkScheduleBusCal(
 						referenceBusinessDayCalendar,
-						null,
 						// 予定作成方法.営業日カレンダーによる勤務予定作成.就業時間帯の参照先（基本作成方法＝営業部カレンダーの場合）
 						command.getReferenceType() != null ? EnumAdaptor.valueOf(command.getReferenceType().intValue(),
 						TimeZoneScheduledMasterAtr.class) : null);

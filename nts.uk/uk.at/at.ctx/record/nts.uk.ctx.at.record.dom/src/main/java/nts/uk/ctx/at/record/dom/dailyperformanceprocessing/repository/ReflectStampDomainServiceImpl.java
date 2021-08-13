@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
@@ -60,7 +61,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	@Override
 	public OutputAcquireReflectEmbossingNew acquireReflectEmbossingNew(String companyID, String employeeID,
 			GeneralDate processingDate, ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-			IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+			IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt,CacheCarrier carrier) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		
 		//勤務情報から打刻反映時間帯を取得する
@@ -103,7 +104,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		
 		//打刻を取得する
 		List<Stamp> lstStamp = this.stampDomainService.handleDataNew(outputTimeReflectForWorkinfo.getStampReflectRangeOutput(),
-                processingDate, employeeID, companyID,flag);
+                processingDate, employeeID, companyID,flag, carrier);
 		if(lstStamp.isEmpty()) {
 			//取得した打刻の件数　＜＝　0
 			return new OutputAcquireReflectEmbossingNew(listErrorMessageInfo, new ArrayList<>(), integrationOfDaily, changeDailyAtt);
@@ -116,9 +117,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		//「打刻反映管理」を取得する
 		for(Stamp stamp:lstStamp) {
 			//対象日に反映できるか
-			if(stamp.getImprintReflectionStatus().isReflectedCategory() == true) {
+			if(stamp.getImprintReflectionStatus().canReflectedOnTargetDate(processingDate)) {
 				//打刻を反映する
-				List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(stamp,
+				List<ErrorMessageInfo> listE = temporarilyReflectStampDailyAttd.reflectStamp(companyID,stamp,
 						outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt);
 				//do thuật toán スケジュール管理しない場合勤務情報を更新 có thể tạo ra nhiều lỗi giống nhau, nên cần bỏ những lỗi giống nhau trong 1 ngày.
 				listE = listE.stream().distinct().collect(Collectors.toList());

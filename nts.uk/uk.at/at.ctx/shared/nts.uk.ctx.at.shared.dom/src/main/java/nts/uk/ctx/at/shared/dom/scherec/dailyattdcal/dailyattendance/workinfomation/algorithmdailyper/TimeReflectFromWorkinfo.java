@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.workschedule.WorkScheWorkInforSharedAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workschedule.WorkScheduleWorkSharedImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
@@ -103,7 +102,7 @@ public class TimeReflectFromWorkinfo {
 						public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
 							return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 						}
-					}, employeeId, ymd);
+					}, companyId, employeeId, ymd);
 			if(!workingConditionItem.isPresent()) {
 				outputTimeReflectForWorkinfo.setEndStatus(EndStatus.NO_WORK_CONDITION);
 				return outputTimeReflectForWorkinfo;
@@ -117,7 +116,6 @@ public class TimeReflectFromWorkinfo {
 			// ⇒勤務種類．１日の勤務．1日 = 休日、振休、休日出勤
 			// ・勤務種類．１日の勤務．勤務区分 = 午前と午後
 			// ⇒勤務種類．１日の勤務．午前 = 休日、振休、休日出勤 OR 勤務種類．１日の勤務．午後 = 休日、振休、休日出勤
-			Optional<WorkInformation> optWorkInfo = Optional.empty();
 			if (typeOneDay.checkHolidayNew() && (typeMorning.checkHolidayNew() || typeAfternoon.checkHolidayNew())) {
 				// 出勤時の就業時間帯コードを取得する
 				//Tin bảo méo thể null dc
@@ -127,7 +125,6 @@ public class TimeReflectFromWorkinfo {
 				//Tin bảo méo thể null dc
 				workTimeCode = workingConditionItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode().get();
 			}
-			workTimeCode = optWorkInfo.get().getWorkTimeCode();
 		}
 		// ドメインモデル「就業時間帯の設定」を取得する
 		Optional<WorkTimeSetting> workTimeOpt = this.workTimeSettingRepository.findByCodeAndAbolishCondition(companyId,
@@ -225,7 +222,7 @@ public class TimeReflectFromWorkinfo {
 		}
 
 		// 1日半日出勤・1日休日系の判定
-		WorkStyle workStyle = basicScheduleService.checkWorkDay(workTypeCode);
+		WorkStyle workStyle = basicScheduleService.checkWorkDay(companyID, workTypeCode);
 
 		if (workStyle == WorkStyle.ONE_DAY_REST) {
 			outPut.setAtWork(false);
@@ -387,7 +384,7 @@ public class TimeReflectFromWorkinfo {
 		// 1日半日出勤・1日休日系の判定
 		// 打刻反映時の出勤休日扱いチェック
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(scheduleWorkInfor.get().getWorkType());
+				.checkWorkDay(companyID, scheduleWorkInfor.get().getWorkType());
 		StampReflectRangeOutput stampReflectRangeOutput = null;
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {

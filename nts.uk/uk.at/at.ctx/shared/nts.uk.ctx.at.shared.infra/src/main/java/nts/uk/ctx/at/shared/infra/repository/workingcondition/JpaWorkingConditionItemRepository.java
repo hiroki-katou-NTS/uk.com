@@ -1257,9 +1257,6 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				referenceBusinessDayCalendar = WorkScheduleMasterReferenceAtr.WORK_PLACE;
 			}
 
-			// referenceBasicWork
-			WorkScheduleMasterReferenceAtr referenceBasicWork = WorkScheduleMasterReferenceAtr.WORK_PLACE;
-
 			// referenceWorkingHours
 			TimeZoneScheduledMasterAtr referenceWorkingHours = TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
 			try {
@@ -1267,8 +1264,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 			} catch (Exception ex) {
 				referenceWorkingHours = TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
 			}
-
-			workScheduleBusCal = new WorkScheduleBusCal(referenceBusinessDayCalendar, referenceBasicWork, referenceWorkingHours);
+			workScheduleBusCal = new WorkScheduleBusCal(referenceBusinessDayCalendar, referenceWorkingHours);
 		} else {
 			// referenceWorkingHours
 			TimeZoneScheduledMasterAtr referenceWorkingHours = TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
@@ -1278,7 +1274,7 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 				referenceWorkingHours = TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE;
 			}
 						
-			workScheduleBusCal = new WorkScheduleBusCal(null, null, referenceWorkingHours);
+			workScheduleBusCal = new WorkScheduleBusCal(null, referenceWorkingHours);
 		}
 		
 		// monthlyPatternWorkScheduleCre

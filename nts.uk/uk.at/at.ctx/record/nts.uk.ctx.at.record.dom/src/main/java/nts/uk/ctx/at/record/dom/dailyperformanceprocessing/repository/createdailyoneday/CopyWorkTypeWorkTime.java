@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -40,9 +39,8 @@ public class CopyWorkTypeWorkTime {
 	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
 
-	public List<ErrorMessageInfo> copyWorkTypeWorkTime(IntegrationOfDaily integrationOfDaily) {
+	public List<ErrorMessageInfo> copyWorkTypeWorkTime(String companyId, IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getEmployeeId();
 		GeneralDate ymd = integrationOfDaily.getYmd();
 		//個人情報の休日の勤務種類を取得する
@@ -59,9 +57,7 @@ public class CopyWorkTypeWorkTime {
 		
 		WorkInfoOfDailyAttendance workInformation = integrationOfDaily.getWorkInformation();
 		WorkInformation recordInfo = optWorkingConditionItem.map(opt -> {
-			SingleDaySchedule sched = opt.getWorkCategory().getWorkTime().getHolidayWork();
-			
-			return new WorkInformation(optWorkingConditionItem.get().getWorkCategory().getWorkType().getWeekdayTimeWTypeCode(), sched.getWorkTimeCode().orElse(null));
+			return opt.getWorkCategory().getHolidayWorkInformation();
 		}).orElse(null);
 		
 		//休日の勤務種類を勤務予定に写す
