@@ -76,8 +76,7 @@ public class RegisterStampDataCommand {
 		
 		return new RefectActualResult(workInformationStamp,
 				workTimeCode != null ? new WorkTimeCode(workTimeCode) : null,
-				overTime != null && overLateNightTime != null ? new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)) : null,
-				null);
+				overTime != null && overLateNightTime != null ? new OvertimeDeclaration(new AttendanceTime(overTime), new AttendanceTime(overLateNightTime)) : null);
 	}
 	
 	public GeoCoordinate toGeoCoordinate() {

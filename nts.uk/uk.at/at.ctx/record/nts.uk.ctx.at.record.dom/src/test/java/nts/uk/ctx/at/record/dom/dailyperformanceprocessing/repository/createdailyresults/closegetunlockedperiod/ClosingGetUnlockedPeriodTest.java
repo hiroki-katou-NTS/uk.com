@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,16 +10,14 @@ import org.junit.runner.RunWith;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mock;
-import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.AchievementAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.GetPeriodCanProcesse;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.IgnoreFlagDuringLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
-import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock.Require;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -107,24 +104,14 @@ public class ClosingGetUnlockedPeriodTest {
 	 */
 	@Test
 	public void test_get_4() {
-		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 1)); // dummy
+		DatePeriod period = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 2, 15)); // dummy
 		String employmentCode = "employmentCode";// dummy
 		IgnoreFlagDuringLock ignoreFlagDuringLock = IgnoreFlagDuringLock.CANNOT_CAL_LOCK;
 		AchievementAtr achievementAtr = AchievementAtr.DAILY;// dummy
 		ClosureEmployment closureEmployment = new ClosureEmployment("companyId", employmentCode, 1);
 		
-		List<DatePeriod> listP = new ArrayList<>();
-		listP.add(new DatePeriod(GeneralDate.ymd(2021, 1, 15), GeneralDate.ymd(2021, 2, 1)));
-		
 		ActualLock actualLock = new ActualLock("companyId", ClosureId.RegularEmployee, LockStatus.LOCK, LockStatus.LOCK);
-
-		new MockUp<ActualLock>() {
-			@Mock
-			public List<DatePeriod> askForUnlockedPeriod(Require require, DatePeriod period,
-					AchievementAtr achievementAtr) {
-				return listP;
-			}
-		};
+		DatePeriod periodClosure = new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 31));
 
 		new Expectations() {
 			{
@@ -133,13 +120,16 @@ public class ClosingGetUnlockedPeriodTest {
 
 				require.findById(anyInt);
 				result = Optional.of(actualLock);
+				
+				require.getClosurePeriod(anyInt, (YearMonth)any);
+				result = periodClosure;
 			}
 		};
 		List<DatePeriod> result = ClosingGetUnlockedPeriod.get(require, period, employmentCode, ignoreFlagDuringLock,
 				achievementAtr);
-
-		assertThat(result.get(0).start()).isEqualTo(listP.get(0).start());
-		assertThat(result.get(0).end()).isEqualTo(listP.get(0).end());
+	
+		assertThat(result.get(0).start()).isEqualTo(periodClosure.end().addDays(1));
+		assertThat(result.get(0).end()).isEqualTo(period.end());
 
 	}
 

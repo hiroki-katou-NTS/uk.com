@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 期間で反映状態をクリアする
@@ -37,7 +36,6 @@ public class ClearReflectStatusPeriod {
 	private StampCardRepository stampCardRepository;
 
 	public void clear(List<IntegrationOfDaily> listIntegrationOfDaily) {
-		String companyId = AppContexts.user().companyId();
 		// 最初の日別実績の反映範囲を取得する
 		GetFirstReflectOutput getFirstReflect = getFirstReflectFromListDaily.get(listIntegrationOfDaily, true);
 		if (getFirstReflect.getStampReflectRangeOutput().isPresent()) {
@@ -70,7 +68,7 @@ public class ClearReflectStatusPeriod {
 					.addMinutes(timeEnd);
 			// ドメインモデル「打刻カード」を取得する (Lấy từ domain)
 			List<Stamp> listStamp = stampDakokuRepository.getByDateTimeperiod(
-					lstStampCard.stream().map(c -> c.getStampNumber().v()).collect(Collectors.toList()), companyId,
+					lstStampCard.stream().map(c -> c.getStampNumber().v()).collect(Collectors.toList()),
 					start, end);
 
 			// 打刻の反映状態をクリアする

@@ -169,7 +169,7 @@ public class StampType implements DomainValue {
 		if (!workType.isPresent())
 			return false;
 		//一日休日かを確認する
-		if(!workType.get().isHolidayWork()) {
+		if(!workType.get().isHoliday()) {
 			return false;
 		}
 		//日別勤怠の計算区分の休出時間の計算区分を確認する

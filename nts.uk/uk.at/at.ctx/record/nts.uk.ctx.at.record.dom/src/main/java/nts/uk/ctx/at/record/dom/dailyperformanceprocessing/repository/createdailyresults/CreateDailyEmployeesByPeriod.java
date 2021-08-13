@@ -83,10 +83,12 @@ public class CreateDailyEmployeesByPeriod {
 			OutputCreateDailyOneDay outputCreateDailyOneDay = createDailyOneDay.createDailyOneDay(companyId, employeeId,
 					date, executionType, employeeGeneralInfoImport, periodInMasterList);
 			
-			//日別実績一覧、エラー一覧、日別勤怠の何が変更されたか一覧に入れる
-			listIntegrationOfDaily.add(outputCreateDailyOneDay.getIntegrationOfDaily());
+			if(outputCreateDailyOneDay.getListErrorMessageInfo().isEmpty()) {
+				//日別実績一覧、エラー一覧、日別勤怠の何が変更されたか一覧に入れる
+				listIntegrationOfDaily.add(outputCreateDailyOneDay.getIntegrationOfDaily());
+				changedDailyAttendance.put(date, outputCreateDailyOneDay.getChangeDailyAttendance());
+			}
 			listError.addAll(outputCreateDailyOneDay.getListErrorMessageInfo());
-			changedDailyAttendance.put(date, outputCreateDailyOneDay.getChangeDailyAttendance());
 		}
 		return new CreateDailyOuput(listIntegrationOfDaily, ReflectedAtr.NORMAL, listError, changedDailyAttendance);
 	}

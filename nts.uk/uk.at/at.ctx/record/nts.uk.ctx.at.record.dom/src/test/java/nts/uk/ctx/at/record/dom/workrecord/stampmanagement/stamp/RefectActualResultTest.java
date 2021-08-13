@@ -35,7 +35,7 @@ public class RefectActualResultTest {
 				Optional.of(workLocationCD), 
 				Optional.of(new SupportCardNumber(cardNumberSupport)));
 		WorkGroup work = WorkGroup.create("workCd1", "workCd2", "workCd3", "workCd4", "workCd5");
-		RefectActualResult data = new RefectActualResult(workInformationStamp, workTimeCode, overtimeDeclaration, work);
+		RefectActualResult data = new RefectActualResult(workInformationStamp, workTimeCode, overtimeDeclaration);
 		NtsAssert.invokeGetters(data);
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
@@ -65,6 +66,8 @@ public class ReflectedPeriod {
 		}
 		//日別実績一覧の分をループする
 		for(int index = 0;index<listIntegrationOfDaily.size();index++) {
+			CacheCarrier carrier = new CacheCarrier();
+			carrier.preload("listStamp", listStamp);
 			IntegrationOfDaily integrationOfDaily = listIntegrationOfDaily.get(index);
 			//実行状態を確認します
 			if(empCalAndSumExecLogId.isPresent()) {
@@ -82,7 +85,7 @@ public class ReflectedPeriod {
 			//打刻を取得して反映する (Lấy phản ánh 打刻)
 			OutputAcquireReflectEmbossingNew outputAcquireReflectEmbossingNew = reflectStampDomainServiceImpl
 					.acquireReflectEmbossingNew(companyId, employeeId, integrationOfDaily.getYmd(), executionTypeDaily, flag,
-							integrationOfDaily, changeDailyAtt);
+							integrationOfDaily, changeDailyAtt, carrier);
 			listStamp.addAll(outputAcquireReflectEmbossingNew.getListStamp());
 			if(!outputAcquireReflectEmbossingNew.getListErrorMessageInfo().isEmpty()) {
 				//エラー一覧に追加する

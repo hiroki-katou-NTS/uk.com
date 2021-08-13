@@ -11,7 +11,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.T
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS: 共有打刻から打刻を入力する
@@ -44,7 +43,7 @@ public class EnterStampForSharedStampService {
 	 * 	ページNOとボタン位置NOから作成する打刻種類を判断する
 	 * 
 	 */
-	public static TimeStampInputResult create(Require require ,String contractCode, String employeeID, Optional<StampNumber> StampNumber,
+	public static TimeStampInputResult create(Require require , String cid, String contractCode, String employeeID, Optional<StampNumber> StampNumber,
 			Relieve relieve,GeneralDateTime stmapDateTime, StampButton stampButton , RefectActualResult refActualResult) {
 		
 		//	$共有打刻の打刻設定 = require.共有打刻の打刻設定を取得する()
@@ -62,7 +61,7 @@ public class EnterStampForSharedStampService {
 		}
 		
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, 打刻カード番号, 打刻日時, 打刻する方法, $ボタン詳細設定.ボタン種類, 実績への反映内容, empty)
-		return CreateStampDataForEmployeesService.create(require, new ContractCode(contractCode), employeeID,
+		return CreateStampDataForEmployeesService.create(require, cid, new ContractCode(contractCode), employeeID,
 				StampNumber, stmapDateTime, relieve, buttonSetting.get().getButtonType(), refActualResult, Optional.ofNullable(null));
 	
 	}

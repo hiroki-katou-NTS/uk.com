@@ -19,6 +19,8 @@ import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionMan
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -103,6 +105,17 @@ public class UpdateIfNotManaged {
 							integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(optData.get().getWorkTypeCode());
 							integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTimeCode(optData.get().getWorkTimeCode());
 							
+							//日別勤怠の編集状態を追加する
+							Optional<EditStateOfDailyAttd> editState28 = integrationOfDaily.getEditState().stream()
+									.filter(c->c.getAttendanceItemId() == 28).findFirst();
+							Optional<EditStateOfDailyAttd> editState29 = integrationOfDaily.getEditState().stream()
+									.filter(c->c.getAttendanceItemId() == 29).findFirst();
+							if(!editState28.isPresent()) {
+								integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(28, EditStateSetting.IMPRINT));
+							}
+							if(!editState29.isPresent()) {
+								integrationOfDaily.getEditState().add(new EditStateOfDailyAttd(29, EditStateSetting.IMPRINT));
+							}
 							return new UpdateIfNotManagedOutput(true, listError);
 						}
 					}else {

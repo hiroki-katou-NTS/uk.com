@@ -28,8 +28,8 @@ public class EmployeeUnitPriceHistoryItem extends AggregateRoot {
 	}
 	
 	// 社員時間単価を取得する()
-	public Optional<WorkingHoursUnitPrice> getEmployeeHourlyUnitPrice(int unitPriceNo){
-		Optional<UnitPricePerNumber> unitPrice = this.unitPrices.stream().filter(i -> i.getUnitPriceNo().value == unitPriceNo).findFirst();
+	public Optional<WorkingHoursUnitPrice> getEmployeeHourlyUnitPrice(UnitPrice unitPriceNo){
+		Optional<UnitPricePerNumber> unitPrice = this.unitPrices.stream().filter(i -> i.getUnitPriceNo().value == unitPriceNo.value).findFirst();
 		return unitPrice.isPresent() ? Optional.of(unitPrice.get().getUnitPrice()) : Optional.empty();
 	}
 }

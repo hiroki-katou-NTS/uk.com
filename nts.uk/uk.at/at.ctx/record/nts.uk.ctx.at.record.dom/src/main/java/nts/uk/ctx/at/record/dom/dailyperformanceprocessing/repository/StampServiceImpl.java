@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
@@ -125,7 +126,8 @@ public class StampServiceImpl implements StampDomainService {
 
 	@Override
 	public List<Stamp> handleDataNew(StampReflectRangeOutput s, GeneralDate date,
-			String employeeId, String companyId, EmbossingExecutionFlag flag) {
+			String employeeId, String companyId, EmbossingExecutionFlag flag,CacheCarrier carrier) {
+		List<Stamp> listStampHasReflected = carrier.get("listStamp");
 		List<Stamp> listStamp = new ArrayList<>();
 		// ドメインモデル「打刻カード」を取得する
 		List<StampCard> lstStampCard = stampCardRepository.getListStampCard(employeeId);
@@ -141,13 +143,24 @@ public class StampServiceImpl implements StampDomainService {
 				.addMinutes(timeEnd);
 		// ドメインモデル「打刻」を取得する (Lấy dữ liệu)
 		if (flag == EmbossingExecutionFlag.ALL) {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end);
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()), start, end);
 		} else {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end)
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()), start, end)
 					.stream()
 					.filter(c -> !c.getImprintReflectionStatus().isReflectedCategory()).collect(Collectors.toList());
 		}
 		listStamp.stream().sorted(Comparator.comparing(Stamp::getStampDateTime)).collect(Collectors.toList());
+		List<Stamp> listRemove = new ArrayList<>();
+		for(Stamp stamp :listStamp) {
+			for(Stamp stampRf :listStampHasReflected) {
+				if(stamp.getStampDateTime().equals(stampRf.getStampDateTime()) && 
+						stampRf.getType().getChangeClockArt()== stamp.getType().getChangeClockArt()
+						&& stampRf.getCardNumber().equals(stamp.getCardNumber())) {
+					listRemove.add(stamp);
+				}
+			}
+		}
+		listStamp.removeAll(listRemove);
 		return listStamp;
 	}
 }
