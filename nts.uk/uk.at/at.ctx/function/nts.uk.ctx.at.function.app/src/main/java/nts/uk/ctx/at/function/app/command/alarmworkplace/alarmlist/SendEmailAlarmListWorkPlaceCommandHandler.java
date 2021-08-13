@@ -81,9 +81,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     private SyWorkplaceAdapter syWorkplaceAdapter;
 
     @Inject
-    private GetListOfWorkplacesService.Require require;
-
-    @Inject
     private RoleAdaptor roleAdaptor;
 
     @Inject

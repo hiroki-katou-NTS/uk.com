@@ -48,8 +48,8 @@ module nts.uk.at.view.kal012.b {
             ]);
             vm.isUpdateMode = ko.observable(false);
             vm.init();
-            vm.isNormalSet= ko.observable(false);
-            vm.isAutoSet= ko.observable(false);
+            vm.isNormalSet = ko.observable(false);
+            vm.isAutoSet = ko.observable(false);
         }
 
         created() {
@@ -223,6 +223,15 @@ module nts.uk.at.view.kal012.b {
             var vm = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
             vm.setPara();
+            if (vm.auto.mailContents == null) {
+                vm.auto.mailContents = {
+                    "subject": "",
+                    "text": "",
+                    "mailAddressBCC": [],
+                    "mailAddressCC": [],
+                    "mailRely": ""
+                };
+            }
             nts.uk.ui.windows.setShared("senderAddress", vm.auto.senderAddress)
             nts.uk.ui.windows.setShared("MailSettings", vm.auto.mailContents);
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
@@ -241,6 +250,15 @@ module nts.uk.at.view.kal012.b {
             var vm = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
             vm.setPara();
+            if (vm.normal.mailContents == null) {
+                vm.normal.mailContents = {
+                    "subject": "",
+                    "text": "",
+                    "mailAddressBCC": [],
+                    "mailAddressCC": [],
+                    "mailRely": ""
+                };
+            }
             nts.uk.ui.windows.setShared("senderAddress", vm.normal.senderAddress)
             nts.uk.ui.windows.setShared("MailSettings", vm.normal.mailContents);
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {

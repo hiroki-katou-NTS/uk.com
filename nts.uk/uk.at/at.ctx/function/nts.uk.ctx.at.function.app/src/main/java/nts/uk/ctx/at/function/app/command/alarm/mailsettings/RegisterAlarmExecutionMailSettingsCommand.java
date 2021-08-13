@@ -26,7 +26,7 @@ public class RegisterAlarmExecutionMailSettingsCommand {
     private AlarmMailSendingRoleCmd sendingRole;
 
     @Data
-    public  class AlarmListExecutionMailCmd {
+    public static class AlarmListExecutionMailCmd {
         /**
          * 個人職場区分
          */
@@ -109,17 +109,20 @@ public class RegisterAlarmExecutionMailSettingsCommand {
 
 
     public AlarmListExecutionMailSetting toMailSettingDomain(RegisterAlarmExecutionMailSettingsCommand.AlarmListExecutionMailCmd mailSetting) {
-        MailSettings contentMailSettings = new MailSettings(
-                mailSetting.getMailContents().getSubject(),
-                mailSetting.getMailContents().getText(),
-                mailSetting.getMailContents().getMailAddressCC().stream().map(x -> {
-                    return new MailAddress(x);
-                }).collect(Collectors.toList()),
-                mailSetting.getMailContents().getMailAddressBCC().stream().map(x -> {
-                    return new MailAddress(x);
-                }).collect(Collectors.toList()),
-                mailSetting.getMailContents().getMailRely()
-        );
+        MailSettings contentMailSettings = null;
+        if (mailSetting.getMailContents() != null) {
+            contentMailSettings = new MailSettings(
+                    mailSetting.getMailContents().getSubject(),
+                    mailSetting.getMailContents().getText(),
+                    mailSetting.getMailContents().getMailAddressCC().stream().map(x -> {
+                        return new MailAddress(x);
+                    }).collect(Collectors.toList()),
+                    mailSetting.getMailContents().getMailAddressBCC().stream().map(x -> {
+                        return new MailAddress(x);
+                    }).collect(Collectors.toList()),
+                    mailSetting.getMailContents().getMailRely()
+            );
+        }
         return new AlarmListExecutionMailSetting(
                 IndividualWkpClassification.of(mailSetting.individualWkpClassify),
                 NormalAutoClassification.of(mailSetting.normalAutoClassify),
