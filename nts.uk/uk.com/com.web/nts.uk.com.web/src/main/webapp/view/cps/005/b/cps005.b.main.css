@@ -112,9 +112,9 @@ td {
 	border: 1px solid #ccc;
 }
 
-#timePointItemMin, #timePointItemMax{
+#timePointItemMin, #timePointItemMax,
+#timeItemMin, #timeItemMax {
 	width: 90px !important;
-	text-align: center !important;
 }
 
 .custom-btn span{
