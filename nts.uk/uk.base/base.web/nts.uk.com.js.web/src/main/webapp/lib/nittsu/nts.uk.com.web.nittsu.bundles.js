@@ -9245,38 +9245,38 @@ var nts;
                         Cloud.prototype.rollTo = function (cell) {
                             var self = this;
                             if (self.startIndex <= cell.rowIndex && self.endIndex >= cell.rowIndex) {
-                                var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdIndex = selector.index($cell);
-                                var tdPosLeft_1 = 0, tdPosTop_1 = 0;
-                                selector.siblingsLt($cell, tdIndex).forEach(function (e) {
-                                    if (e.style.display !== "none") {
-                                        tdPosLeft_1 += e.offsetWidth;
-                                    }
-                                });
-                                var $tr = $cell.parentElement;
-                                var trIndex = selector.index($tr);
-                                selector.siblingsLt($tr, trIndex).forEach(function (e) {
-                                    tdPosTop_1 += e.offsetHeight;
-                                });
-                                if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop_1 + 100)
-                                    || self.$container.scrollTop > tdPosTop_1) {
-                                    self.$container.scrollTop = tdPosTop_1;
-                                }
-                                if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft_1 + 100)
-                                    || self.$container.scrollLeft > tdPosLeft_1) {
-                                    self.$container.scrollLeft = tdPosLeft_1;
-                                }
+                                //                    let $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
+                                //                    let tdIndex = selector.index($cell);
+                                //                    let tdPosLeft = 0, tdPosTop = 0;
+                                //                    selector.siblingsLt($cell, tdIndex).forEach(function(e) {
+                                //                        if (e.style.display !== "none") {
+                                //                            tdPosLeft += e.offsetWidth;
+                                //                        }
+                                //                    });
+                                //                    let $tr = $cell.parentElement;
+                                //                    let trIndex = selector.index($tr);
+                                //                    selector.siblingsLt($tr, trIndex).forEach(function(e) {
+                                //                        tdPosTop += e.offsetHeight;
+                                //                    });
+                                //                    if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop + 100)
+                                //                        || self.$container.scrollTop > tdPosTop) {
+                                //                        self.$container.scrollTop = tdPosTop;
+                                //                    }
+                                //                    if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft + 100)
+                                //                        || self.$container.scrollLeft > tdPosLeft) {
+                                //                        self.$container.scrollLeft = tdPosLeft;
+                                //                    }
                             }
                             else {
                                 self.$container.scrollTop = cell.rowIndex * self.rowHeight;
                                 var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdPosLeft_2 = 0;
+                                var tdPosLeft_1 = 0;
                                 selector.siblingsLt($cell, selector.index($cell)).forEach(function (e) {
                                     if (e.style.display !== "none") {
-                                        tdPosLeft_2 += e.offsetWidth;
+                                        tdPosLeft_1 += e.offsetWidth;
                                     }
                                 });
-                                self.$container.scrollLeft = tdPosLeft_2;
+                                self.$container.scrollLeft = tdPosLeft_1;
                             }
                         };
                         /**
