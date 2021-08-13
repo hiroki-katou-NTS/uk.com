@@ -89,21 +89,21 @@ module nts.uk.at.view.kaf011.c.viewmodel {
 			if(self.triggerValidate()){
 				if(self.displayInforWhenStarting.rec){
 					self.displayInforWhenStarting.rec.applicationInsert = self.displayInforWhenStarting.rec.applicationUpdate = self.displayInforWhenStarting.rec.application;	
-					self.displayInforWhenStarting.rec.payoutSubofHDManagements.forEach(element => {
-						element.dateOfUse = new Date(self.appDate());
-					});
-					self.displayInforWhenStarting.rec.leaveComDayOffMana.forEach(element => {
-						element.dateOfUse = new Date(self.appDate());
-					});
+					// self.displayInforWhenStarting.rec.payoutSubofHDManagements.forEach(element => {
+					// 	element.dateOfUse = new Date(self.appDate());
+					// });
+					// self.displayInforWhenStarting.rec.leaveComDayOffMana.forEach(element => {
+					// 	element.dateOfUse = new Date(self.appDate());
+					// });
 				}
 				if(self.displayInforWhenStarting.abs){
 					self.displayInforWhenStarting.abs.applicationInsert = self.displayInforWhenStarting.abs.applicationUpdate = self.displayInforWhenStarting.abs.application;
-					self.displayInforWhenStarting.abs.payoutSubofHDManagements.forEach(element => {
-						element.dateOfUse = new Date(self.appDate());
-					});
-					self.displayInforWhenStarting.abs.leaveComDayOffMana.forEach(element => {
-						element.dateOfUse = new Date(self.appDate());
-					});
+					// self.displayInforWhenStarting.abs.payoutSubofHDManagements.forEach(element => {
+					// 	element.dateOfUse = new Date(self.appDate());
+					// });
+					// self.displayInforWhenStarting.abs.leaveComDayOffMana.forEach(element => {
+					// 	element.dateOfUse = new Date(self.appDate());
+					// });
 				}
 				block.invisible();
 				ajax('at/request/application/holidayshipment/saveChangeDateScreenC',{appDateNew: new Date(self.appDate()), displayInforWhenStarting: self.displayInforWhenStarting, appReason: self.appReason(), appStandardReasonCD: self.appStandardReasonCD()}).then((data: any) =>{
