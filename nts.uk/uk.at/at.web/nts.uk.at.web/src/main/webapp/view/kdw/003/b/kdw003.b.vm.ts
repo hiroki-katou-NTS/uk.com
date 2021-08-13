@@ -12,7 +12,7 @@ module nts.uk.at.view.kdw003.b {
             isDisableExportCSV: KnockoutObservable<boolean> = ko.observable(false);
             messageAlert: KnockoutObservable<any> =  ko.observable(nts.uk.resource.getText('KDW003_63'));
             showMessage: KnockoutObservable<any> = ko.observable(false);
-            errName: : KnockoutObservable<any> = ko.observable('');
+            errName: KnockoutObservable<any> = ko.observable('');
             constructor() {
                 
             }
