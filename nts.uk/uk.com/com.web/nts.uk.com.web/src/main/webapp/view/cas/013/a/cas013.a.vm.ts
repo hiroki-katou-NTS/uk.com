@@ -135,6 +135,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 { id: 'tab-3', title: nts.uk.resource.getText("CAS013_15"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
             ]);
             self.selectedTab = ko.observable('tab-1');
+
             //Load KCP005
             self.KCP005_load();
 
@@ -217,6 +218,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 self.selectRoleEmployee(e.toString());
             });
             $('#kcp005').ntsListComponent(self.listComponentOption)
+
         }
 
         private getRoles(roleType: string): void {
@@ -531,7 +533,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     var self = this;
                     var roleTpye = self.selectedRoleType();
-                    var userId = self.selectedRoleIndividual();
+                    var userId = self.selectedUserID();
                     block.invisible();
                     new service.Service().deleteRoleGrant(roleTpye, userId).done(function() {
                         self.selectedRoleIndividual('');
