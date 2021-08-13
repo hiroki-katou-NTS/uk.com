@@ -135,7 +135,6 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 { id: 'tab-3', title: nts.uk.resource.getText("CAS013_15"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
             ]);
             self.selectedTab = ko.observable('tab-1');
-
             //Load KCP005
             self.KCP005_load();
 
@@ -211,7 +210,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 isShowSelectAllButton: false,
                 maxWidth: 580,
                 maxHeight:250,
-                maxRows: 11
+                maxRows: 10.5
             };
             //Fixing
             self.multiSelectedCode.subscribe((e) => {
@@ -279,6 +278,15 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         } else {
                             self.multiSelectedCode([]);
                             self.dateValue({});
+                            self.companyId('');
+                            self.companyName('');
+                            self.companyCode('');
+                            self.workplaceCode('');
+                            self.workplaceName('');
+                            self.jobTitleCode('');
+                            self.jobTitleName('');
+                            self.employyeCode('');
+                            self.employyeName('');
                         }
                         self.employeeList(employeeSearchs);
                         //End KCP005
