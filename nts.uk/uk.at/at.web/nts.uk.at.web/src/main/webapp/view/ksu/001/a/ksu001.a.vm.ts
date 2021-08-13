@@ -821,7 +821,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $("#extable").on("extablecellupdated", (dataCell) => {
                 if (self.userInfor.disPlayFormat == ViewMode.TIME && self.userInfor.updateMode == UpdateMode.EDIT) {
-                    self.validTimeInEditMode(dataCell, self.userInfor, false);
+                    //self.validTimeInEditMode(dataCell, self.userInfor, false);
                 } else if (self.userInfor.disPlayFormat == ViewMode.TIME && self.userInfor.updateMode == UpdateMode.STICK) {
                     // check xem cell vừa được stick data có nằm trong list cell lỗi do edit time hay không, nếu nằm trong list đấy thì rmove cell đó khỏi list lỗi đi.
                     self.validTimeStickMode(dataCell);
@@ -836,7 +836,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").on("extablecellretained", (dataCell) => {
                 if (self.userInfor.disPlayFormat == ViewMode.TIME && self.userInfor.updateMode == UpdateMode.EDIT) {
                     self.addCellRetaine(dataCell);
-                    self.validTimeInEditMode(dataCell, self.userInfor, true);
+                    //self.validTimeInEditMode(dataCell, self.userInfor, true);
                 }
             });
 
@@ -1697,7 +1697,115 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     document.getElementById('A13').remove();
                 }
             }
-            
+
+            let ajaxValidateTime = {
+                request: (rowIdx, columnKey, innerIdx, value) => {
+                    let dfd = $.Deferred();
+                    let time = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+                    if (value === '' || _.isNaN(time)) {
+                        return dfd.reject();
+                    }
+
+                    let startTime, endTime, workTypeCode, workTimeCode;
+                    let dataSource = $("#extable").exTable('dataSource', 'detail').body;
+                    let cellData = dataSource[rowIdx][columnKey];
+                    console.log(cellData);
+                    workTypeCode = cellData.workTypeCode;
+                    workTimeCode = cellData.workTimeCode;
+                    if (innerIdx == 3) {
+                        startTime = nts.uk.time.minutesBased.duration.parseString(cellData.startTime).toValue();
+                        endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+                        if (endTime == '' || _.isNaN(endTime)) return dfd.reject();
+
+                    } else if (innerIdx == 2) {
+                        startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+                        endTime = nts.uk.time.minutesBased.duration.parseString(cellData.endTime).toValue();
+                        if (startTime == '' || _.isNaN(startTime)) return dfd.reject();
+
+                    }
+
+                    if (startTime < 0 && endTime < 0) {
+                        startTime = startTime * -1;
+                        endTime = endTime * -1;
+                    }
+
+                    if (startTime >= endTime) {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
+                        return dfd.reject();
+                    }
+
+                    let param = {
+                        workType: workTypeCode,
+                        workTime: workTimeCode,
+                        workTime1: {
+                            startTime: {
+                                time: startTime,
+                                dayDivision: 0
+                            },
+                            endTime: {
+                                time: endTime,
+                                dayDivision: 0
+                            }
+                        },
+                        workTime2: null
+                    }
+
+                    // call alg : <<Query>> 時刻が不正かチェックする
+                    nts.uk.ui.block.invisible();
+                    service.checkTimeIsIncorrect(param).done((result) => {
+                        let errors = [];
+                        for (let i = 0; i < result.length; i++) {
+                            if (!result[i].check) {
+                                if (result[i].timeSpan == null) {
+                                    errors.push({
+                                        message: nts.uk.resource.getMessage('Msg_439', getText('KDL045_12')),
+                                        messageId: "Msg_439",
+                                        supplements: {}
+                                    });
+                                } else {
+                                    if (result[i].timeSpan.startTime == result[i].timeSpan.endTime) {
+                                        errors.push({
+                                            message: nts.uk.resource.getMessage('Msg_2058', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime)]),
+                                            messageId: "Msg_2058",
+                                            supplements: {}
+                                        });
+                                    } else {
+                                        errors.push({
+                                            message: nts.uk.resource.getMessage('Msg_1772', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime), formatById("Clock_Short_HM", result[i].timeSpan.endTime)]),
+                                            messageId: "Msg_1772",
+                                            supplements: {}
+                                        });
+                                    }
+                                }
+                            }
+                        }
+
+                        if (errors.length > 0) {
+                            self.enableBtnReg(false);
+                            let errorsInfo = _.uniqBy(errors, x => { return x.message });
+                            bundledErrors({ errors: errorsInfo }).then(() => {
+                                nts.uk.ui.block.clear();
+                                self.checkExitCellUpdated();
+                            });
+                            dfd.reject();
+                        } else {
+                            self.checkExitCellUpdated();
+                            nts.uk.ui.block.clear();
+                            dfd.resolve();
+                        }
+                    }).fail(function(error) {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.alertError(error);
+                        return dfd.reject();
+                    });
+                    return dfd.promise();
+                }, onValid: (a, b) => {
+                    //alert(b);
+                }, onFailed: (a, b) => {
+                    //alert(b);
+                }
+            };
+
             detailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
             horizontalDetailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
             objDetailHeaderDs['sid'] = "";
@@ -1706,7 +1814,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.arrDay.push(new Time(new Date(dateInfo.ymd)));
                 let time = new Time(new Date(dateInfo.ymd));
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr", headerControl: "link"
+                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/time/time", primitiveValue: "TimeWithDayAttr", headerControl: "link", ajaxValidate: ajaxValidateTime
                 });
                 horizontalDetailColumns.push({
                     key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr"
@@ -2148,27 +2256,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
                     self.listCellRetained = [];
-                    if (isKsu003) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            self.openKsu003(ui, detailContentDs);
-                        });
-                    } else {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }
-
-                    nts.uk.ui.block.clear();
+                    self.getAggregatedInfo(true, true, true, true).done(()=>{
+                        nts.uk.ui.block.clear();
+                        if (isKsu003) {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                                self.openKsu003(ui, detailContentDs);
+                            });
+                        } else {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        }
+                    });
                 } else {
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
                     self.listCellRetained = [];
-                    if (rs.listErrorInfo.length > 0) {
-                        self.openKDL053(rs);
-                    }
+                    // get lại data A11.A12
+                    self.getAggregatedInfo(true, true, true, true).done(() => {
+                        if (rs.listErrorInfo.length > 0) {
+                            self.openKDL053(rs);
+                        }
+                    });
                 }
                 self.hasChangeModeBg = false;
                 self.listCellUpdatedWhenChangeModeBg = [];
-                // get lại data A11.A12
-                self.getAggregatedInfo(true, true, true);
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError(error);
@@ -2554,26 +2664,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let startTime, endTime;
                 if (innerIdx === 2) {
                     startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
-                    endTime = nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue();
+                    endTime = !_.isNil(obj.endTime) ? nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue() : 0;
                 } else if (innerIdx === 3) {
-                    startTime = nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue();
+                    startTime = !_.isNil(obj.startTime) ? nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue() : 0;
                     endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
                 }
                 
-                if (startTime < 0 && endTime < 0) {
-                    startTime = startTime * -1;
-                    endTime = endTime * -1;
-                }
-
-                if (startTime >= endTime) {
-                    let messInfo = nts.uk.resource.getMessage('Msg_54');
-                    return { isValid: false, message: messInfo };
-                }
-                
-                if (innerIdx === 2 && value == '') {
-                    return { isValid: false };
-                } else if (innerIdx === 3 && value == '') {
-                    return { isValid: false };
+                if (startTime > endTime) {
+                    return { isValid: false, message: "開始時刻と終了時刻の入力が不正です" };
                 }
 
                 if (innerIdx === 2) {
@@ -5856,9 +5954,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         // get lại data A11, A12
-        getAggregatedInfo(updateA11, updateA12, getWorkschedule?) {
+        getAggregatedInfo(updateA11, updateA12, getWorkschedule?,blockScreen?) {
             let self = this;
-            nts.uk.ui.block.grayout();
+            let dfd = $.Deferred();
+            if(_.isNil(blockScreen))
+                nts.uk.ui.block.grayout();
             let param = {
                 listSid: self.listSid(),
                 startDate: self.dateTimePrev(),
@@ -5874,29 +5974,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 personTotalSelected: self.useCategoriesPersonalValue(), // A11_1
                 workplaceSelected: self.useCategoriesWorkplaceValue() // A12_1
             };
-            
+
             service.getAggregatedInfo(param).done((data: any) => {
-                let aggreratePersonal  = data.aggreratePersonal; // Data A11
+                let aggreratePersonal = data.aggreratePersonal; // Data A11
                 let aggrerateWorkplace = data.aggrerateWorkplace; // Data A12
-                let externalBudget     = data.externalBudget; 
-                
-				if(data.aggreratePersonal) {
-					self.dataAggreratePersonal = data.aggreratePersonal;	
-				}
-				if(data.aggrerateWorkplace) {
-					self.dataAggrerateWorkplace = data.aggrerateWorkplace;	
-				}
-                
-                if(updateA11){
+                let externalBudget = data.externalBudget;
+
+                if (data.aggreratePersonal) {
+                    self.dataAggreratePersonal = data.aggreratePersonal;
+                }
+                if (data.aggrerateWorkplace) {
+                    self.dataAggrerateWorkplace = data.aggrerateWorkplace;
+                }
+
+                if (updateA11) {
                     self.createVertSumData();
                     self.updateVertSumGrid();
                 }
-                
-                if(updateA12){
+
+                if (updateA12) {
                     self.createHorzSumData();
                     self.updateHorzSumGrid();
                 }
-                
+
                 if (getWorkschedule) {
                     self.listWorkScheduleWorkInfor = data.listWorkScheduleWorkInfor;
                     self.listWorkScheduleShift = data.listWorkScheduleShift;
@@ -5906,13 +6006,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.cloneDataSource();
                     self.updateDataBindGrid();
                 }
-
+                dfd.resolve();
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alertError(error);
             });
+            return dfd.promise();
         }
+        
         // select A3-2-1
         getDataInModeA3_2_1() {
             let self = this;
