@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -95,6 +96,9 @@ public class KTG027QueryProcessor {
 	
 	@Inject
 	private SyEmployeeFnAdapter syEmployeeFnAdapter;
+	
+	 @Inject
+	private ManagedParallelWithContext parallel;
 
 	public GeneralDate checkSysDateOrCloseEndDate() {
 		// EA luôn trả v�Systemdate
@@ -445,7 +449,8 @@ public class KTG027QueryProcessor {
 		val cacheCarrier = new CacheCarrier();
 		GeneralDate baseDate = GeneralDate.today();
 		List<AgreementTimeOfManagePeriod> listAgreementTimeDetail = new ArrayList<AgreementTimeOfManagePeriod>();
-		for (String empCode : lstEmployeeId) {
+		
+		this.parallel.forEach(lstEmployeeId, empCode -> {
 			// 社員に対応する処理締めを取得する
 			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, empCode, baseDate);
 			// [取得したドメインモデル「締め」．当月<=INPUT．対象年月]がtrue
@@ -461,17 +466,14 @@ public class KTG027QueryProcessor {
 							, ScheRecAtr.SCHEDULE);
 					listAgreementTimeDetail.add(AgreementTimeDetail);
 				} else {
-					listAgreementTimeDetail = GetAgreementTimeOfMngPeriod.get(
-							require
-							, lstEmployeeId
-							, new YearMonthPeriod(
-								datePeriod.get().start().yearMonth(),
-								datePeriod.get().end().yearMonth()
-							)
-					);
+					listAgreementTimeDetail.clear();
+					listAgreementTimeDetail
+							.addAll(GetAgreementTimeOfMngPeriod.get(require, lstEmployeeId, new YearMonthPeriod(
+									datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth())));
 				}
 			}
-		}
+			
+		});
 
 		return listAgreementTimeDetail.stream()
 				.map(item -> AgreementTimeOfManagePeriodDto.from(item))
