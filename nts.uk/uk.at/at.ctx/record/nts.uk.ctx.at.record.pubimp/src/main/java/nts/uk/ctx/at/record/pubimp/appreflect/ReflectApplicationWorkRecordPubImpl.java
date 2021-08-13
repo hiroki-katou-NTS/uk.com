@@ -521,7 +521,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily) {
-			dailyRecordAdUpService.removeConfirmApproval(domainDaily, Optional.empty(), Optional.empty());
+			dailyRecordAdUpService.removeConfirmApproval(domainDaily);
 		}
 
 		@Override

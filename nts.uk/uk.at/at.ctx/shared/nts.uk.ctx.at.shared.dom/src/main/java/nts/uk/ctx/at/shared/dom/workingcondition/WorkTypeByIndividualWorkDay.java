@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * 個人勤務日区分別勤務種類
  */
 
-@Getter
+	@Getter
 public class WorkTypeByIndividualWorkDay extends DomainObject {
 
 	//出勤時: 勤務種類コード

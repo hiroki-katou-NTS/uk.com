@@ -226,34 +226,36 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 		Optional<SingleDaySchedule> saturday = Optional.empty();
 		Optional<SingleDaySchedule> sunday = Optional.empty();
 		
+		KshmtWorkcondWorkInfo kshmtWorkcondWorkInfo = this.kshmtWorkcondWorkInfo;
+		
 		for(KshmtWorkcondWorkTs entity : this.listKshmtWorkcondWorkTs) {
 			switch(entity.pk.getPerWorkDayAtr()) {
 			case 0:
-				weekdays = Optional.of(entity.toDomain());
+				weekdays = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 1:
-				holidayWork = Optional.of(entity.toDomain());
+				holidayWork = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 2:
-				monday = Optional.of(entity.toDomain());
+				monday = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 3:
-				tuesday = Optional.of(entity.toDomain());
+				tuesday = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 4:
-				wednesday = Optional.of(entity.toDomain());
+				wednesday = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 5:
-				thursday = Optional.of(entity.toDomain());
+				thursday = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 6:
-				friday = Optional.of(entity.toDomain());
+				friday = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 7:
-				saturday = Optional.of(entity.toDomain());
+				saturday = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			case 8:
-				sunday = Optional.of(entity.toDomain());
+				sunday = Optional.of(entity.toDomain(kshmtWorkcondWorkInfo));
 				break;
 			default:
 				break;
@@ -261,12 +263,12 @@ public class KshmtWorkcondHistItem extends ContractCompanyUkJpaEntity implements
 		}
 		
 		// set worktype
-		WorkTypeCode weekdayTimeWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getWorkingDayWorktype());
-		WorkTypeCode holidayWorkWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getHolidayWorkWorktype());
-		WorkTypeCode holidayTimeWTypeCode = new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getHolidayWorktype());
-		Optional<WorkTypeCode> inLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getLegalHolidayWorkWorktype()));
-		Optional<WorkTypeCode> outsideLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getILegalHolidayWorkWorktype()));
-		Optional<WorkTypeCode> holidayAttendanceTimeWTypeCode = Optional.of(new WorkTypeCode(this.kshmtWorkcondWorkInfo == null ? null : this.kshmtWorkcondWorkInfo.getPublicHolidayWorkWorktype()));
+		WorkTypeCode weekdayTimeWTypeCode = new WorkTypeCode(kshmtWorkcondWorkInfo == null ? null : kshmtWorkcondWorkInfo.getWorkingDayWorktype());
+		WorkTypeCode holidayWorkWTypeCode = new WorkTypeCode(kshmtWorkcondWorkInfo == null ? null : kshmtWorkcondWorkInfo.getHolidayWorkWorktype());
+		WorkTypeCode holidayTimeWTypeCode = new WorkTypeCode(kshmtWorkcondWorkInfo == null ? null : kshmtWorkcondWorkInfo.getHolidayWorktype());
+		Optional<WorkTypeCode> inLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(kshmtWorkcondWorkInfo == null ? null : kshmtWorkcondWorkInfo.getLegalHolidayWorkWorktype()));
+		Optional<WorkTypeCode> outsideLawBreakTimeWTypeCode = Optional.of(new WorkTypeCode(kshmtWorkcondWorkInfo == null ? null : kshmtWorkcondWorkInfo.getILegalHolidayWorkWorktype()));
+		Optional<WorkTypeCode> holidayAttendanceTimeWTypeCode = Optional.of(new WorkTypeCode(kshmtWorkcondWorkInfo == null ? null : kshmtWorkcondWorkInfo.getPublicHolidayWorkWorktype()));
 		
 		//set 曜日別勤務
 		PersonalDayOfWeek workDayOfWeek = new PersonalDayOfWeek(monday, tuesday, wednesday, thursday, friday, saturday, sunday);
