@@ -151,9 +151,9 @@ public class AnnualWorkScheduleData {
 					.add(this.getItemValueByNullOrZero(this.month12th));
 			this.sum = new ItemData(sum, null, false);
 		} else {
-			this.sum = new ItemData(new BigDecimal(0), null, false);
+			this.sum = new ItemData(null, null, false);
 		}
-		if (this.numMonth == 0) {
+		if (this.numMonth == 0 || this.sum.getValue() == null) {
 			return this;
 		}
 		// 月平均を算出する
