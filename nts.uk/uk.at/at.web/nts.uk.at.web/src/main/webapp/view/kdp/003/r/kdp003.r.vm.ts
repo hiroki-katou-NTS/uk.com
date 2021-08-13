@@ -39,7 +39,7 @@ module nts.uk.at.kdp003.r {
         // stoppingNotice: KnockoutObservable<string> = ko.observable('現在システムはメンテナンスの為、停止されいています。メンテナンス終了予定は１５：００となります。');
 
         noticeSetting: NoticeSet = new NoticeSet();
-        screen: String = '';
+        screen: String = 'KDP003';
 
         constructor(private params: IParam) {
             super();
@@ -47,22 +47,19 @@ module nts.uk.at.kdp003.r {
             const vm = this;
             if (params) {
                 vm.noticeSetting = params.setting;
-                
+
                 vm.screen = params.screen;
             }
 
         }
 
         created() {
-
+            const vm = this;
+            vm.loader();
         }
 
-        mounted() {
+        loader() {
             const vm = this;
-
-            $(document).ready(() => {
-                $('#closeBtn').focus();
-            });
 
             if (vm.screen === 'KDP003') {
                 vm.displayNotice('loginKDP003');
@@ -78,7 +75,16 @@ module nts.uk.at.kdp003.r {
                 vm.displayNotice('loginKDP005');
                 vm.loadStopMessage('loginKDP005');
             }
+        }
 
+        mounted() {
+            const vm = this;
+
+            $(document).ready(() => {
+                $('#closeBtn').focus();
+            });
+
+            vm.loader();
         }
 
         closeDialog() {
@@ -180,14 +186,19 @@ module nts.uk.at.kdp003.r {
                             vm.notiErrorSystem(true);
                             if (data.stopBySystem.systemStatusType == 3) {
                                 vm.notiStopBySystem(data.stopBySystem.usageStopMessage);
+                                vm.notiErrorSystem(true);
                             } else {
                                 vm.notiStopBySystem('');
+                                vm.notiErrorSystem(true);
                             }
                             if (data.stopByCompany.systemStatus == 3) {
+                                vm.notiErrorSystem(true);
                                 vm.notiStopByCompany(data.stopByCompany.usageStopMessage);
                             } else {
                                 vm.notiStopByCompany('');
+                                vm.notiErrorSystem(true);
                             }
+                            vm.notiErrorSystem(true);
                         }
                     })
                     .fail(error => vm.$dialog.error(error))

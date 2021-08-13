@@ -283,11 +283,13 @@ module nts.uk.at.kdp003.a {
 									vm.messageNoti(data);
 									if (data.stopByCompany.systemStatus == 3 || data.stopBySystem.systemStatusType == 3) {
 										if (vm.totalOpenViewR === 0) {
-											const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
+											setTimeout(() => {
+												const param = { setting: ko.unwrap(vm.fingerStampSetting).noticeSetDto, screen: 'KDP003' };
 
-											vm.totalOpenViewR++;
-											vm.$window.modal(DIALOG.R, param);
-											vm.showClockButton.setting(false);
+												vm.totalOpenViewR++;
+												vm.$window.modal(DIALOG.R, param);
+												vm.showClockButton.setting(false);
+											}, 1000);
 										}
 									}
 								});

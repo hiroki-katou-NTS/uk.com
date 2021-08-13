@@ -956,7 +956,9 @@ module nts.uk.at.view.kdp004.a {
 
 												setTimeout(() => {
 													self.totalOpenViewR++;
-													self.shoNoti();
+													const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
+
+													vm.$window.modal(DIALOG.R, param);
 												}, 1000);
 											}
 										}
@@ -991,7 +993,9 @@ module nts.uk.at.view.kdp004.a {
 
 											setTimeout(() => {
 												self.totalOpenViewR++;
-												self.shoNoti();
+												const param = { setting: ko.unwrap(self.fingerStampSetting).noticeSetDto, screen: 'KDP004' };
+
+												vm.$window.modal(DIALOG.R, param);
 											}, 1000);
 										}
 									}
