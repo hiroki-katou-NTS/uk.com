@@ -29,6 +29,9 @@ import nts.uk.ctx.sys.auth.infra.entity.grant.rolesetjob.SacmtRoleSetGrantedJobT
 public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implements RoleSetGrantedJobTitleRepository {
 
 	private static final String FIND_BY_CID_JOBTITLES = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
+			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId";
+
+	private static final String FIND_BY_CID_JOBTITLES_AND_LISTCD = "SELECT c FROM SacmtRoleSetGrantedJobTitleDetail c "
 			+ " WHERE c.roleSetGrantedJobTitleDetailPK.companyId = :companyId"
 			+ " AND c.roleSetCd IN :roleCDLst";
 
@@ -86,8 +89,9 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 
 	@Override
 	public boolean checkRoleSetCdExist(String companyId, RoleSetCode roleSetCd) {
-		val listItemByCid = this.getByCompanyId(companyId);
-		return listItemByCid.stream().anyMatch(e->e.getRoleSetCd().equals(roleSetCd));
+		List<String> listCd = Collections.singletonList(roleSetCd.v());
+		val listItem = this.findJobTitleByRoleCDLst(companyId,listCd);
+		return !listItem.isEmpty();
 	}
 
 	@Override
@@ -97,7 +101,7 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 		}
 		List<String> resultList = new ArrayList<>();
 		CollectionUtil.split(roleCDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_CID_JOBTITLES ,SacmtRoleSetGrantedJobTitleDetail.class )
+			resultList.addAll(this.queryProxy().query(FIND_BY_CID_JOBTITLES_AND_LISTCD ,SacmtRoleSetGrantedJobTitleDetail.class )
 				.setParameter("companyId", companyID)
 				.setParameter("roleCDLst", subList)
 				.getList( c -> c.roleSetGrantedJobTitleDetailPK.jobTitleId));

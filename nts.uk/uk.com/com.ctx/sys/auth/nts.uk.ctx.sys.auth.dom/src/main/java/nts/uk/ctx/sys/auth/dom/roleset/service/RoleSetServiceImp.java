@@ -123,7 +123,7 @@ public class RoleSetServiceImp implements RoleSetService{
         }
 
         // ドメインモデル「既定のロールセット」を取得する
-        if (isDefault(roleSetDom.getCompanyId())) {
+        if (isDefault(roleSetDom.getCompanyId(),roleSetCd)) {
             throw new BusinessException("Msg_585");
         }
 
@@ -135,8 +135,10 @@ public class RoleSetServiceImp implements RoleSetService{
      * Check setting default of Role set
      * @return
      */
-    private boolean isDefault(String companyId) {
-        return defaultRoleSetRepository.find(companyId).isPresent();
+    private boolean isDefault(String companyId,String roleSetCd ) {
+        val defaultRoleSet = defaultRoleSetRepository.find(companyId);
+        return defaultRoleSet.map(defaultRoleSet1 -> defaultRoleSet1.getRoleSetCd().v().equals(roleSetCd)).orElse(false);
+
     }
 
     /**

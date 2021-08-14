@@ -26,9 +26,9 @@
                     data-bind="click: deleteRoleSet,
                         enable: !isNewMode()">#{i18n.getText('CAS011_6')}</button>
         </div>
-        <div class="container">
-            <div id="contents-area " class="fixed-flex-layout">
-                <div id="content-left" class="fixed-flex-layout-left">
+        <div id="contents-area" >
+            <div class="container">
+                <div id="content-left"  class="fixed-flex-layout-left">
                     <!--A2_001 -->
                     <div>#{i18n.getText('CAS011_8')}</div>
                     <div>
@@ -37,6 +37,7 @@
 	                                            name:'#[CAS011_8]',
 	                                            height: 430,
 	                                            width: 330,
+	                                            rows: 20,
 	                                            options: listRoleSets,
 	                                            optionsValue: selectedRoleSetCd,
 	                                            primaryKey: 'roleSetCd',
@@ -86,7 +87,7 @@
                             </td>
                             <td>
                                 <!-- A3_4 -->
-                                <div data-bind="ntsCheckBox: {checked: isCheck}"
+                                <div data-bind="ntsCheckBox: {checked: currentRoleSet().defaultRoleSet}"
                                      class="checkbox-item">#{i18n.getText('CAS011_45')}</div>
                             </td>
                         </tr>
@@ -127,28 +128,29 @@
                         </tr>
 
                     </table>
-                    <div>
-                        <table>
-                            <colgroup>
-                                <col width="325px"/>
-                                <col width="*"/>
-                            </colgroup>
-                            <tr>
-                                <td class="pad_left_10px">
-                                    <!-- A3_26:  list of menus that can selection -->
-                                    <div>#{i18n.getText('CAS011_24')}</div>
-                                </td>
-
-                                <td class="pad_left_5px">
-                                    <!-- A3_26:  list of selected menus -->
-                                    <div>#{i18n.getText('CAS011_25')}</div>
-                                </td>
-                            </tr>
-
-                        </table>
-                    </div>
-                    <div id="swap-list" class="pad_left_5px"
-                         data-bind="ntsSwapList: {
+                    <table>
+                        <colgroup>
+                            <col width="125px"/>
+                            <col width="310px"/>
+                            <col width="200px"/>
+                        </colgroup>
+                        <tr class="row">
+                            <td>
+                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_48')}</div>
+                            </td>
+                            <td class="pad_left_5px">
+                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_24')}</div>
+                            </td>
+                            <td class="pad_left_10px">
+                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_25')}</div>
+                            </td>
+                        </tr>
+                        <tr class="row">
+                            <td>
+                            </td>
+                            <td class="pad_left_5px">
+                                <div id="swap-list"
+                                     data-bind="ntsSwapList: {
                             name: '#[CAS011_24]',
                             height: 235,
                             width: 280,
@@ -161,9 +163,13 @@
                             enableRowNumbering: false,
                             multipleDrag: { left: true, right: false },
                             innerDrag: { left: false, right: true },
-                            outerDrag: { left: true, right: true }
-                        }">
-                    </div>
+                            outerDrag: { left: true, right: true }},
+                            itemsLimit: { right: 10}">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
                 </div>
 
             </div>

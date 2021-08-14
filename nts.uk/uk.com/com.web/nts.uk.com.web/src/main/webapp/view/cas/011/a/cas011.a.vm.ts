@@ -69,11 +69,9 @@ module nts.uk.com.view.cas011.a {
                 {headerText: resource.getText('CAS011_10'), key: 'roleSetName',
                     headerCssClass: 'text-center',columnCssClass: 'text-center',formatter: _.escape, width: 180},
                 {
-                    headerText: resource.getText('CAS011_44'), key: 'defaultRoleSet', width: 35,
-                    template: '{{if ${defaultRoleSet} }}<div class="cssDiv"><i  class="icon icon icon-78 cssI"></i></div>{{/if}}'
+                    headerText: resource.getText('CAS011_44'), key: 'check', width: 35,
+                    template: '{{if ${check} == 1 }}<div class="cssDiv"><i  class="icon icon icon-78 cssI"></i></div>{{/if}}'
                 }
-
-
             ]);
 
             vm.swapColumns = ko.observableArray([
@@ -129,14 +127,14 @@ module nts.uk.com.view.cas011.a {
                             let listWebMenuValue : IWebMenu[] = [];
                             let _roleSet = roleSetDtos;
                             if (_roleSet && _roleSet.roleSetCd) {
-                                vm.createCurrentRoleSet(_roleSet);
                                 vm.settingUpdateMode(_roleSet.roleSetCd);
                                 if(!isNullOrUndefined(defaultRoleSet) &&_roleSet.roleSetCd == defaultRoleSet.roleSetCd){
-                                    vm.isCheck(true);
+                                    _roleSet.defaultRoleSet = true;
+                                    _roleSet.check = 1;
                                 }else {
-                                    vm.isCheck(false);
+                                    _roleSet.defaultRoleSet = false;
                                 }
-
+                                vm.createCurrentRoleSet(_roleSet);
                                 if(linkWebMenuImportList && linkWebMenuImportList.length>=0){
                                     for (let i =0; i< linkWebMenuImportList.length; i++ ){
                                         let item = linkWebMenuImportList[i];
@@ -166,6 +164,7 @@ module nts.uk.com.view.cas011.a {
                     vm.settingCreateMode();
                 }
         }
+
         created(params: any) {
             let vm = this;
             vm.selectedRoleSetCd.subscribe((roleSetCd) => {
@@ -222,7 +221,9 @@ module nts.uk.com.view.cas011.a {
                             let item = itemList[i];
                             if(item.roleSetCd == defaultRoleSet.roleSetCd){
                                 item.defaultRoleSet = true;
-                                vm.isCheck(true);
+                                item.check = 1;
+                            }else {
+                                item.defaultRoleSet = false;
                             }
                         }
                         vm.listRoleSets(itemList);
@@ -519,6 +520,7 @@ module nts.uk.com.view.cas011.a {
         employmentRoleId: string;
         webMenus: Array<IWebMenu>;
         defaultRoleSet: boolean;
+        check?: number
     }
 
     export interface IRoleSetDto {
