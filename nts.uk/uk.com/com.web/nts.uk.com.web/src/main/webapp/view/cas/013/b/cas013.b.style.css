@@ -15,6 +15,11 @@ div#grid_container_container.ui-widget.ui-helper-clearfix.ui-corner-all.ui-iggri
 	vertical-align: middle;
 }
 
+.control-group {
+	margin-top: -5px;
+	margin-bottom: 9px;
+}
+
 #searchButton {
 	vertical-align: top;
 }
@@ -24,5 +29,5 @@ div.control-group-2 {
 }
 
 .caret-background:not(.deprecate).caret-bottom, .caret-background:not(.deprecate).caret-top, .caret-background:not(.deprecate).caret-left, .caret-background:not(.deprecate).caret-right {
-	margin: -20px;
+	margin: -25px;
 }

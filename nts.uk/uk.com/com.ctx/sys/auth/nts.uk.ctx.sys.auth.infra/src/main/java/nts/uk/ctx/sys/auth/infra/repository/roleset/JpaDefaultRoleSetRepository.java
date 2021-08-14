@@ -23,7 +23,7 @@ import nts.uk.ctx.sys.auth.infra.entity.roleset.SacmtDefaultRoleSetPK;
 public class JpaDefaultRoleSetRepository extends JpaRepository implements DefaultRoleSetRepository {
     
     private static final String SELECT_DEFAULT_ROLE_SET_BY_COMPANY_ID_ROLE_SET_CD = "SELECT rs FROM SacmtRolesetDefault rs"
-            + " WHERE rs.defaultRoleSetPK.companyId = :companyId ";
+            + " WHERE rs.companyId = :companyId ";
 
     /**
      * Build Domain from Entity

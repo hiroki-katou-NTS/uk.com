@@ -25,7 +25,7 @@
 			<div id="contents-area">
 				<div class="cf">
 					<div style="float: left; margin: 5px 16px;">
-						<div class="control-group" style="margin-top: -5px">
+						<div class="control-group" style="margin-top: -10px">
 							<!--B1_1-->
 							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_21')}</div>
 							<!--B1_2-->
@@ -48,23 +48,24 @@
 							]}"></div>
 						</div>
 						<div class="control-group">
-							<div id="B3" style="margin-left: 55px;" data-bind="ntsSearchBox: {
+							<div id="B3" style="margin-left: 55px;" tabindex="2" data-bind="ntsSearchBox: {
 								  searchMode: 'highlight',
 								  targetKey: 'code',
 								  comId: 'kcp005',
 								  items: employeeList,
+								  selected: currentCode,
 								  selectedKey: 'code',
 								  mode: 'igGrid',
 								  fields: ['code', 'name']
 								}"/>
 						</div>
-						<div id="kcp005" class="panel panel-frame" style="width: 312px; margin-top: -15px; margin-left: 25px"></div>
+						<div id="kcp005" class="panel panel-frame" tabindex="3" style="width: 312px; height: 385px; margin-top: -13px; margin-left: 25px; padding-right: 0px"></div>
 					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click :decision">#{i18n.getText('CAS013_31')}</button>
-				<button data-bind="click :cancel_Dialog">#{i18n.getText('CAS013_32')}</button>
+				<button class="proceed x-large" tabindex="4" data-bind="click :decision">#{i18n.getText('CAS013_31')}</button>
+				<button data-bind="click :cancel_Dialog" tabindex="5">#{i18n.getText('CAS013_32')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
