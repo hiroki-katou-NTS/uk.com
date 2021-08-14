@@ -8,6 +8,7 @@ import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuAdapter;
 import nts.uk.ctx.sys.auth.dom.roleset.webmenu.webmenulinking.RoleSetLinkWebMenuImport;
+import nts.uk.ctx.sys.portal.dom.adapter.role.DefaultRoleSetDto;
 import nts.uk.ctx.sys.portal.dom.adapter.roleset.RoleSetDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,9 +42,15 @@ public class GetDetailedRoleSetInformationScreenQuery {
             RoleSet roleSet = optionalRoleSet.get();
             String roleSetCd = roleSet.getRoleSetCd().v();
             List<RoleSetLinkWebMenuImport> linkWebMenuImportList = roleSetLinkWebMenuAdapter.findAllWebMenuByRoleSetCd(roleSetCd);
-            Optional<DefaultRoleSet> optionalDefaultRoleSet = defaultRoleSetRepository.find(cid);
+            Optional<DefaultRoleSet> optionalDefaultRoleSet = defaultRoleSetRepository.findByCompanyId(cid);
             rs.setRoleSetDtos(convertToDto(roleSet));
-            rs.setDefaultRoleSet(optionalDefaultRoleSet.orElse(null));
+            DefaultRoleSetDto defaultRoleSet = new DefaultRoleSetDto();
+            if (optionalDefaultRoleSet.isPresent()){
+                val   roleSetDefault = optionalDefaultRoleSet.get();
+                defaultRoleSet.setCompanyId(roleSetDefault.getCompanyId());
+                defaultRoleSet.setRoleSetCd(roleSetDefault.getRoleSetCd().v());
+            }
+            rs.setDefaultRoleSet(defaultRoleSet);
             rs.setLinkWebMenuImportList(linkWebMenuImportList);
         }
         return rs;

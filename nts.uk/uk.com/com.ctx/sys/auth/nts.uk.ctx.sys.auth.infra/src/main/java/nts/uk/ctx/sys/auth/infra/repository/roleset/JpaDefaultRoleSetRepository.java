@@ -88,7 +88,7 @@ public class JpaDefaultRoleSetRepository extends JpaRepository implements Defaul
 
     @Override
     public void addOrUpdate(DefaultRoleSet domain) {
-        Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(new SacmtDefaultRoleSetPK(domain.getCompanyId()),
+        Optional<SacmtRolesetDefault> upEntity = this.queryProxy().find(domain.getCompanyId(),
                  SacmtRolesetDefault.class);
         if (upEntity.isPresent()) {
             this.commandProxy().update(toEntityForUpdate(domain, upEntity.get()));

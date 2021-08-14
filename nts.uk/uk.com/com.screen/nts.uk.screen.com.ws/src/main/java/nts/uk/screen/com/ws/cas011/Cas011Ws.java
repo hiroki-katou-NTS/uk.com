@@ -22,20 +22,20 @@ public class Cas011Ws {
 
     // Update CAS011
     @POST
-    @Path("cas011/get-role-set-and-default")
+    @Path("get-role-set-and-default")
     public RoleSetAndRoleDefaultDto getRoleSetAndRoleDefault() {
         return getListOfRoleSetScreenQuery.getListRoleSet();
     }
 
 
     @POST
-    @Path("cas011/get-detail-role-set/{rolesetcd}")
+    @Path("get-detail-role-set/{rolesetcd}")
     public DetailedRoleSetInformationDto getDetailRoleSet(@PathParam("rolesetcd") String rolesetcd) {
         return informationScreenQuery.getDetailRoleSet(rolesetcd);
     }
 
     @POST
-    @Path("cas011/get-data-init")
+    @Path("get-data-init")
     public Cas011Dto getDataForStartUp() {
         return startupInforCas011ScreenQuery.getDataForStartUp();
     }
