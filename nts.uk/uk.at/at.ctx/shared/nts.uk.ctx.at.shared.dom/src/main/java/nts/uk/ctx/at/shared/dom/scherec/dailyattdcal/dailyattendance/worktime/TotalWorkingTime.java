@@ -981,7 +981,8 @@ public class TotalWorkingTime {
 				recordClass.getDailyUnit(),
 				commonSetting,
 				conditionItem,
-				predetermineTimeSetByPersonInfo).valueAsMinutes();
+				predetermineTimeSetByPersonInfo,
+				NotUseAtr.NOT_USE).valueAsMinutes();
 		// 時間枠毎の相殺による加算時間の合計を取得
 		vacationAddTime += withinWorkTimeSheet.getTotalAddTimeByOffset(
 				integrationOfDaily,
@@ -996,7 +997,8 @@ public class TotalWorkingTime {
 				recordClass.getDailyUnit(),
 				commonSetting,
 				conditionItem,
-				predetermineTimeSetByPersonInfo).valueAsMinutes();
+				predetermineTimeSetByPersonInfo,
+				NotUseAtr.NOT_USE).valueAsMinutes();
 		// 休暇加算時間を返す
 		return new AttendanceTime(vacationAddTime);
 	}
