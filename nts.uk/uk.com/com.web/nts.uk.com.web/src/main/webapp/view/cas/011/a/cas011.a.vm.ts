@@ -136,6 +136,10 @@ module nts.uk.com.view.cas011.a {
             let vm = this;
             vm.selectedRoleSetCd.subscribe((roleSetCd) => {
                 vm.getDetail(roleSetCd)
+            });
+
+            vm.currentRoleSet().employmentRoleId.subscribe((roleSetCd) => {
+               console.log(roleSetCd);
             })
         }
         mounted() {
@@ -161,6 +165,7 @@ module nts.uk.com.view.cas011.a {
                     let employmentRole  = data.rolesEmployment;
                     let personRole  = data.rolesPersonalInfo;
                     if(!isNullOrUndefined(employmentRole)){
+                        dataA41.push({id : null, code : null, display : ''});
                         for (let i = 0; i< employmentRole.length; i ++){
                             let item = employmentRole[i];
                             let display = item.roleCode + " " + item.name;
@@ -170,6 +175,7 @@ module nts.uk.com.view.cas011.a {
                         vm.dataA41(dataA41);
                     }
                     if(!isNullOrUndefined(personRole)){
+                        dataA51.push({id : null, code : null, display : ''});
                         for (let i = 0; i< personRole.length; i ++){
                             let item = personRole[i];
                             let display = item.roleCode + " " + item.name;
@@ -230,6 +236,17 @@ module nts.uk.com.view.cas011.a {
             let vm = this,
                 currentRoleSet: RoleSet = vm.currentRoleSet();
             $('.nts-input').trigger("validate");
+
+            if(currentRoleSet.employmentRoleId() == ""){
+                $('#employmentRoleId').ntsError('set', { messageId: "Msg_218" });
+                $('#employmentRoleId').focus();
+            }
+
+            if(currentRoleSet.personInfRoleId() == ""){
+                $('#personInfRoleId').ntsError('set', { messageId: "Msg_218" });
+                $('#personInfRoleId').focus();
+            }
+
             if (errors.hasError() === false) {
                 block.invisible();
                 if (vm.isNewMode()) {
@@ -350,10 +367,10 @@ module nts.uk.com.view.cas011.a {
             if (currentRoleSet.roleSetCd() === '') {
                 return;
             }
-            currentRoleSet.roleSetCd('');
-            currentRoleSet.roleSetName('');
-            currentRoleSet.personInfRoleId('');
-            currentRoleSet.employmentRoleId('');
+            currentRoleSet.roleSetCd(null);
+            currentRoleSet.roleSetName(null);
+            currentRoleSet.personInfRoleId(null);
+            currentRoleSet.employmentRoleId(null);
 
             currentRoleSet.defaultRoleSet(false);
             currentRoleSet.webMenus([]);
@@ -456,21 +473,21 @@ module nts.uk.com.view.cas011.a {
     }
 
     export class RoleSet {
-        companyId: KnockoutObservable<string> = ko.observable('');
-        roleSetCd: KnockoutObservable<string> = ko.observable('');
-        roleSetName: KnockoutObservable<string> = ko.observable('');
-        personInfRoleId: KnockoutObservable<string> = ko.observable('');
-        employmentRoleId: KnockoutObservable<string> = ko.observable('');
+        companyId: KnockoutObservable<string> = ko.observable(null);
+        roleSetCd: KnockoutObservable<string> = ko.observable(null);
+        roleSetName: KnockoutObservable<string> = ko.observable(null);
+        personInfRoleId: KnockoutObservable<string> = ko.observable(null);
+        employmentRoleId: KnockoutObservable<string> = ko.observable(null);
         defaultRoleSet: KnockoutObservable<boolean> = ko.observable(false);
         webMenus: KnockoutObservableArray<IWebMenu> = ko.observableArray([]);
         constructor(param: IRoleSet) {
             let vm = this;
             vm.companyId(param.companyId);
-            vm.roleSetCd(param.roleSetCd || '');
-            vm.roleSetName(param.roleSetName || '');
+            vm.roleSetCd(param.roleSetCd || null);
+            vm.roleSetName(param.roleSetName || null);
             vm.webMenus(param.webMenus || []);
-            vm.personInfRoleId(param.personInfRoleId || '');
-            vm.employmentRoleId(param.employmentRoleId || '');
+            vm.personInfRoleId(param.personInfRoleId || null);
+            vm.employmentRoleId(param.employmentRoleId || null);
             vm.defaultRoleSet(param.defaultRoleSet);
         }
     }

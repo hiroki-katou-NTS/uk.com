@@ -94,11 +94,11 @@
                         <tr class="row">
                             <td>
                                 <!--A4_1-->
-                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_14')}</div>
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS011_14')}</div>
                             </td>
 
                             <td class="pad_left_5px">
-                                <div class="nts-input lab_txt_width" data-bind="ntsComboBox: {
+                                <div id = "employmentRoleId" class="nts-input lab_txt_width" data-bind="ntsComboBox: {
 										options: dataA41,
 										optionsValue: 'id',
 										optionsText: 'display',
@@ -112,10 +112,10 @@
                         <tr class="row">
                             <td>
                                 <!--A5_1-->
-                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_18')}</div>
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS011_18')}</div>
                             </td>
                             <td class="pad_left_5px">
-                                <div class="nts-input lab_txt_width" data-bind="ntsComboBox: {
+                                <div  id = "personInfRoleId" class="nts-input lab_txt_width" data-bind="ntsComboBox: {
 										options: dataA51,
 										optionsValue: 'id',
 										optionsText: 'display',
