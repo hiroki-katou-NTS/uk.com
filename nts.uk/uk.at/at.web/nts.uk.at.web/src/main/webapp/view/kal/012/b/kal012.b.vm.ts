@@ -83,6 +83,7 @@ module nts.uk.at.view.kal012.b {
             });
 
             vm.model.rolesId.subscribe((value: Array<string>) => {
+                vm.$errors("clear");
                 vm.$ajax("com", API.get_role_name, value)
                     .done(function (listRole: Array<RoleDto>) {
                         vm.model.targetRuleName(_.join(_.map(listRole, i => i.name), '、'));
