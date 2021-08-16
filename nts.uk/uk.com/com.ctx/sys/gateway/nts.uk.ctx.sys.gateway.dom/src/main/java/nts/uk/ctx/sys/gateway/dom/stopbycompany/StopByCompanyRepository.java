@@ -12,6 +12,7 @@ public interface StopByCompanyRepository {
 	public Optional<StopByCompany> findByKey(String contractCd, String companyCd);
 
 	public List<StopByCompany> findByContractCodeAndState(String contractCd, int value);
+	
 	/**
 	 * @author hoatt
 	 * get 会社単位の利用停止
@@ -19,6 +20,7 @@ public interface StopByCompanyRepository {
 	 * @return
 	 */
 	public List<StopByCompany> getListComByContractCD(String contractCd);
+	
 	/**
 	  * ドメインモデル「会社単位の利用停止」を取得する
 	  * @param 契約コード contractCd
@@ -26,6 +28,7 @@ public interface StopByCompanyRepository {
 	  * @return
 	  */
 	public List<StopByCompany>findByCdStatus(String contractCd, int systemStatus);
+	
 	/**
 	  * ドメインモデル「会社単位の利用停止」を取得する
 	  * @param 契約コード contractCd

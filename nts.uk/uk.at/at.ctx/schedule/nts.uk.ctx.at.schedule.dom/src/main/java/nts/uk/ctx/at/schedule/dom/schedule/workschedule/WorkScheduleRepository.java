@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.AffInfoForWorkSchedule;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
@@ -82,5 +83,11 @@ public interface WorkScheduleRepository {
 	Optional<GeneralDate> getMaxDateWorkSche(List<String> listEmp);
 
 	Optional<GeneralDate> getMaxDate(List<String> employeeIDs, GeneralDate ymd);
+	
+	/**
+	 * [8] 所属情報を取得する																							
+	 */
+	List<AffInfoForWorkSchedule> getAffiliationInfor(String sid, DatePeriod period);
+
 }
 

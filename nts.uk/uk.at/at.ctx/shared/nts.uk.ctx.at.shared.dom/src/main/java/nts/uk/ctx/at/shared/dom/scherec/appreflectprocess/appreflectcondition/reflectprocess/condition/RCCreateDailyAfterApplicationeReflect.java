@@ -34,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.ti
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
  * @author thanh_nx
@@ -45,10 +46,16 @@ public class RCCreateDailyAfterApplicationeReflect {
 	public static DailyAfterAppReflectResult process(Require require, ApplicationShare application,
 			DailyRecordOfApplication dailyApp, GeneralDate date) {
 		String companyId = require.getCId();
-		// TODO: typeDaikyu chua co domain
+		//各申請反映条件のドメインモデルを取得する
 		Object domainSetReflect = GetDomainReflectModelApp.process(require, companyId, application.getAppType(),
 				application.getAppType() != ApplicationTypeShare.COMPLEMENT_LEAVE_APPLICATION ? Optional.empty()
 						: Optional.of(((ApplicationForHolidaysShare) application).getTypeApplicationHolidays()));
+		
+		//勤怠時間を存在しない場合は、全て0の値でインスタンスを作成する
+		if(!dailyApp.getAttendanceTimeOfDailyPerformance().isPresent()) {
+			dailyApp.setAttendanceTimeOfDailyPerformance(Optional.of(AttendanceTimeOfDailyAttendance.createDefault()));
+		}
+		
 		List<Integer> itemIds = new ArrayList<Integer>();
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:

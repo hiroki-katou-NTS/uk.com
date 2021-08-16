@@ -671,10 +671,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 } else {
                     // 振休申請
                     Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(appId);
-                    wkTypeCd = Optional.of(absAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
-                    wkTimeCd = absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().get().v() : null;
-                    opWorkTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getStartTime().v());
-                    opLeaveTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getEndTime().v());
+                    if (absAppOpt.isPresent()) {
+                        wkTypeCd = absAppOpt.get().getWorkInformation().getWorkTypeCode().v();
+                        wkTimeCd = absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().get().v() : null;
+                        opWorkTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getStartTime().v());
+                        opLeaveTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getEndTime().v());
+                    }
                 }
                 break;
         }

@@ -1,3 +1,8 @@
+.nts-grid-wrapper *:focus,
+.nts-grid *:focus {
+	outline: none;
+}
+
 .nts-grid-wrapper table .ui-ig-altrecord,
 .nts-grid .ui-ig-altrecord {
   background-color: #FFF;

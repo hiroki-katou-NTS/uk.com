@@ -74,7 +74,8 @@
 											</com:ko-if>
 											<com:ko-if bind="$index() !==  undefined">
 												<td style="width: 78px; text-align: left;" class="bg-green">
-									            	<span data-bind="text: $vm.getApproverLabelNew(loopPhase.listApprovalFrame, loopApprover, $parentContext.$index(), $index())">
+<!--									            	<span data-bind="text: $vm.getApproverLabelNew(loopPhase.listApprovalFrame, loopApprover, $parentContext.$index(), $index())">-->
+									            	<span data-bind="text: $vm.getApproverLabel()">
 									            	</span>
 												</td>
 											
@@ -98,7 +99,7 @@
 								            ]),   
 	  										optionsValue: 'dispCode',  
 	  										optionsText: 'dispName',  
-	  										value: handleSendMail }">
+	  										value: loopApprover.handleSendMail }">
 													</div>
 												</div>
 												<div data-bind="ifnot: loopApprover.approverMail"

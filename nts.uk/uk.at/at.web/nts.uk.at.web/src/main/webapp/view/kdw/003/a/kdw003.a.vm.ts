@@ -2663,7 +2663,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.flagCalculation = false;
             self.listErrorMonth = [];
-            self.shareObject(new ShareObject())
+
+          //  self.shareObject(new ShareObject());
             character.restore("characterKdw003a").done((obj: Characteristics) => {
                 self.characteristics.employeeId = __viewContext.user.employeeId;
                 self.characteristics.companyId = __viewContext.user.companyId;
@@ -3748,6 +3749,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             //console.log(self.formatDate(self.dailyPerfomanceData()));
             self.createNtsMControl();
             self.lstDataSourceLoad = self.formatDate(_.cloneDeep(self.dailyPerfomanceData()));
+            
             let startTime = performance.now();
             let subWidth = "50px";
             if (self.displayFormat() === 0) {
@@ -3778,7 +3780,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 hideZero: !self.displayWhenZero(),
                 getUserId: function(primaryKey) {
                     let ids = primaryKey.split("_");
-                    return ids[2] + "-" + ids[3] + "-" + ids[4] + "-" + ids[5] + "-" + ids[6];
+                    return ids[2] + "-" + ids[3] + "-" + ids[4];
                 },
                 features: [
                     //{ name: 'Paging', pageSize: 31, currentPageIndex: 0 },
@@ -3840,6 +3842,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         createNtsMControl(): void {
             let self = this;
+
+            let isConfirmMonth: boolean = true;
+            _.each(self.dailyPerfomanceData(), item => {
+                if(item.state == ''){
+                    isConfirmMonth = false;
+                }
+            })
+
 			let comboDoWork: any = _.filter(self.headersGrid, (h : any) => {
 				return _.includes(h.group && h.group[1].ntsControl,"ComboboxDoWork");
 			});
@@ -3881,6 +3891,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                                 if (lock[i] == "H") tempD += getText("KDW003_70") + '<br/>';
                                 if (lock[i] == "A") tempD += getText("KDW003_69") + '<br/>';
                             }
+                            if(isConfirmMonth){
+                                tempD += getText("KDW003_68") + '<br/>';
+                            } 
                             tempD += '</span>'
                             $('#textLock').html(tempD);
                         }
@@ -3903,7 +3916,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 			
 			_.forEach(comboDoWork, (c, i) => {
 				self.ntsMControl.push({ name: 'ComboboxDoWork' + c.group[1].key, options: self.comboItemsDoWork(), optionsValue: 'code', optionsText: 'name', columns: self.comboColumns(), editable: false, displayMode: 'codeName', controlType: 'ComboBox', enable: true, spaceSize: 'small', 
-					inputProcess: (value, id, obj) => { self.inputProcess(id, c.group[1].key, value); }});
+					onChange: self.inputProcess });
 			});
         }
 

@@ -477,8 +477,8 @@ module nts.layout {
                         radioCode: 'IS00623',
                         relateCode: ['IS00624', 'IS00625', 'IS00626', 'IS00627', 'IS00628']
                     }],
-                comboboxs = ["IS00297", "IS00304", "IS00311", "IS00318", "IS00325", "IS00332", "IS00339", "IS00346", "IS00353", "IS00360",
-                    "IS00561", "IS00568", "IS00575", "IS00582", "IS00589", "IS00596", "IS00603", "IS00610", "IS00617", "IS00624"],
+                comboboxs = ["IS00297", "IS00304", "IS00311", "IS00318", "IS00325", "IS00332", "IS00339", "IS00346", "IS00353", "IS00360", "IS00372",
+                    		 "IS00561", "IS00568", "IS00575", "IS00582", "IS00589", "IS00596", "IS00603", "IS00610", "IS00617", "IS00624"],
                 validation = (radio: IGrandRadio) => {
                     let rd: IFindData = finder.find(radio.rdctCode || radio.ctgCode, radio.radioCode),
                         ctrls: Array<IFindData> = _.map(radio.relateCode, x => finder.find(radio.ctgCode, x));
@@ -493,17 +493,9 @@ module nts.layout {
                                         if (cb) {
                                             c.data.editable(true);
                                         } else {
-                                            if (ctrls[0] && ctrls[0].data.value() == 1) {
-                                                c.data.editable(true);
-                                            } else {
-                                                //itemCode: "IS00376"
-                                                if( ctrls[0] && (ctrls[0].data.itemCode == "IS00376" || ctrls[0].data.itemCode == "IS00381")){
-                                                    c.data.editable(true);
-                                                }else{
-                                                    c.data.editable(false);
-                                                }
-
-                                            }
+                                             if (c && c.data) {
+			                                    c.data.editable(true);
+			                                }
                                         }
                                     }
                                 }

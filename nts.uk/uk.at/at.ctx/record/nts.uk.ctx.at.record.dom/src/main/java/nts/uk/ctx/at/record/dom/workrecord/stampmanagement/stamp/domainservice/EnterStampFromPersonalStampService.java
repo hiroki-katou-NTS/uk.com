@@ -33,7 +33,7 @@ public class EnterStampFromPersonalStampService {
 	 * @return 打刻入力結果
 	 */
 	
-	public static TimeStampInputResult create(Require require, String contractCode, String employeeId, GeneralDateTime stmapDateTime, StampButton stampButton,
+	public static TimeStampInputResult create(Require require, String cid, String contractCode, String employeeId, GeneralDateTime stmapDateTime, StampButton stampButton,
 			RefectActualResult refActualResults) {
 
 		// $個人利用の打刻設定 = require.個人利用の打刻設定を取得する()
@@ -52,7 +52,7 @@ public class EnterStampFromPersonalStampService {
 		Relieve relieve = new Relieve(AuthcMethod.ID_AUTHC, StampMeans.INDIVITION);
 		
 		// return 社員の打刻データを作成する#作成する(require, 契約コード, 社員ID, empty, 打刻日時, $打刻する方法, $ボタン詳細設定.ボタン種類, 実績への反映内容, empty)	
-		return CreateStampDataForEmployeesService.create(require, new ContractCode(contractCode), employeeId, null, stmapDateTime,
+		return CreateStampDataForEmployeesService.create(require, cid, new ContractCode(contractCode), employeeId, null, stmapDateTime,
 				relieve, buttonSet.get().getButtonType(), refActualResults, null);
 	}
 

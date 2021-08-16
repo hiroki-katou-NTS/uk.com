@@ -1,18 +1,10 @@
-.dialog-content{
-	width:470px; 
-	height:450px;
-	margin-left:20px;
-}
-.dialog-title{
-	padding-top: 25px;
-}
 .div-table {
   display: table;         
   width: 470px; 
   border: 0,
   background-color: #eee;          
   border-spacing: 5px; 
-  margin-left: 20px; 
+  margin-left: 10px; 
   margin-top: 15px;
 }
 .div-table-row {
