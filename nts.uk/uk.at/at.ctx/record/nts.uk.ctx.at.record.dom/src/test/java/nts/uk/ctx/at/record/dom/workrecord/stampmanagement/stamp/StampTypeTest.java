@@ -509,7 +509,7 @@ public class StampTypeTest {
 		
 		new MockUp<WorkType>() {
 			@Mock
-			public boolean isHolidayWork(){
+			public boolean isHoliday(){
 				return false;
 			}
 		};
@@ -544,7 +544,7 @@ public class StampTypeTest {
 		
 		new MockUp<WorkType>() {
 			@Mock
-			public boolean isHolidayWork(){
+			public boolean isHoliday(){
 				return true;
 			}
 		};
@@ -579,7 +579,7 @@ public class StampTypeTest {
 		
 		new MockUp<WorkType>() {
 			@Mock
-			public boolean isHolidayWork(){
+			public boolean isHoliday(){
 				return true;
 			}
 		};
@@ -620,7 +620,7 @@ public class StampTypeTest {
 		
 		new MockUp<WorkType>() {
 			@Mock
-			public boolean isHolidayWork(){
+			public boolean isHoliday(){
 				return true;
 			}
 		};
@@ -661,7 +661,7 @@ public class StampTypeTest {
 		
 		new MockUp<WorkType>() {
 			@Mock
-			public boolean isHolidayWork(){
+			public boolean isHoliday(){
 				return true;
 			}
 		};

@@ -129,7 +129,7 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
 		assertThat(shortRemNum.getShortageRemNum().getRemainTimes()).isEqualTo(expect.getShortageRemNum().getRemainTimes());
 		assertThat(shortRemNum.getAvailable().getUsedDay()).isEqualTo(expect.getAvailable().getUsedDay());
-		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(expect.getAvailable().getUsedTimes());
+		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(Optional.empty());
 	}
 
 	// 子の看護介護残数
