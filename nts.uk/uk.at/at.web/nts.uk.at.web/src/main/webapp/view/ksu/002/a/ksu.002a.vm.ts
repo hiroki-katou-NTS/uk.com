@@ -254,7 +254,7 @@ module nts.uk.ui.at.ksu002.a {
 						vm.baseDateKCP015(null);
 						vm.dr.begin = null;
 						vm.dr.finish = null;
-						vm.getPlansResultsData();	
+						vm.getPlansResultsData(false);	
 						// reset memento
 						vm.schedules.reset();
 
@@ -267,7 +267,7 @@ module nts.uk.ui.at.ksu002.a {
 						vm.baseDateKCP015(null);
 						vm.dr.begin = null;
 						vm.dr.finish = null;
-						vm.getPlansResultsData();
+						vm.getPlansResultsData(false);
 						// reset memento
 						vm.schedules.reset();
 
@@ -293,100 +293,99 @@ module nts.uk.ui.at.ksu002.a {
 			vm.achievement
 				.subscribe((arch) => {
 					const { IMPRINT } = EDIT_STATE;
-					const { begin, finish } = vm.baseDate();
+//					const { begin, finish } = vm.baseDate();
 					
-					const command = {
-						listSid: [vm.$user.employeeId],
-						startDate: moment(begin).format('YYYY/MM/DD'),
-						endDate: moment(finish).format('YYYY/MM/DD')
-					};
+//					const command = {
+//						listSid: [vm.$user.employeeId],
+//						startDate: moment(begin).format('YYYY/MM/DD'),
+//						endDate: moment(finish).format('YYYY/MM/DD')
+//					};
 					
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-					if (arch === ACHIEVEMENT.NO) {
+//					if (arch === ACHIEVEMENT.NO) {
 						vm.loadData();
 						return;
-					}
-					vm.getPlansResultsData();
-					$.Deferred()
-						.resolve(true)
-						.then(() => vm.$blockui('grayout'))
-						// fc
-						.then(() => vm.$ajax('at', API.GSCHER, command))
-						.then((response: Achievement[]) => {
-							if (response.length === 0) {
-								return;
-							}
-
-							_.each(schedules, (sc) => {
-								const { data } = sc;
-								const { $raw } = data;
-								const exist = _.find(response, (d: Achievement & { date: string; }) => moment(d.date, 'YYYY/MM/DD').isSame(sc.date, 'date'));
-
-								if (!exist) {
-									$raw.achievements = null;
-								} else {
-									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
-
-									$raw.achievements = {
-										endTime,
-										startTime,
-										workTimeCode,
-										workTimeName,
-										workTypeCode,
-										workTypeName
-									};
-								}
-							});
-						})
-						.then(() => {
-							// reset data
-							_.each(schedules, (sc) => {
-								const { data } = sc;
-								const { $raw, wtype, wtime, value } = data;
-								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
-
-								// UI-4-1 実績表示を「する」に選択する
-								// UI-4-2 実績表示を「しない」に選択する
-								if (!!$raw.achievements) {
-									const {
-										workTypeCode,
-										workTypeName,
-										workTimeCode,
-										workTimeName,
-										startTime,
-										endTime,
-									} = $raw.achievements;
-									
-									wtype.code(workTypeCode || null);
-									wtype.name(workTypeName || null);
-
-									wtime.code(workTimeCode || null);
-									wtime.name(workTimeName || null);
-
-									value.begin(startTime);
-									value.finish(endTime);
-
-									data.confirmed($raw.confirmed);
-									data.achievement(null);
-									data.classification($raw.workHolidayCls);
-									data.need2Work($raw.needToWork);
-
-									data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
-									data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
-
-									data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
-									data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
-								}
-
-								// state of achievement (both data & switch select)
-								data.achievement(!!$raw.achievements);
-							});
-
-							// reset state of memento
-							vm.schedules.reset();
-						})
-						.always(() => vm.$blockui('clear'));
+//					}
+//					$.Deferred()
+//						.resolve(true)
+//						.then(() => vm.$blockui('grayout'))
+//						// fc
+//						.then(() => vm.getPlansResultsData(true))
+//						.then((response: Achievement[]) => {
+//							if (response.length === 0) {
+//								return;
+//							}
+//
+//							_.each(schedules, (sc) => {
+//								const { data } = sc;
+//								const { $raw } = data;
+//								const exist = _.find(response, (d: Achievement & { date: string; }) => moment(d.date, 'YYYY/MM/DD').isSame(sc.date, 'date'));
+//
+//								if (!exist) {
+//									$raw.achievements = null;
+//								} else {
+//									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
+//
+//									$raw.achievements = {
+//										endTime,
+//										startTime,
+//										workTimeCode,
+//										workTimeName,
+//										workTypeCode,
+//										workTypeName
+//									};
+//								}
+//							});
+//						})
+//						.then(() => {
+//							// reset data
+//							_.each(schedules, (sc) => {
+//								const { data } = sc;
+//								const { $raw, wtype, wtime, value } = data;
+//								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
+//
+//								// UI-4-1 実績表示を「する」に選択する
+//								// UI-4-2 実績表示を「しない」に選択する
+//								if (!!$raw.achievements) {
+//									const {
+//										workTypeCode,
+//										workTypeName,
+//										workTimeCode,
+//										workTimeName,
+//										startTime,
+//										endTime,
+//									} = $raw.achievements;
+//									
+//									wtype.code(workTypeCode || null);
+//									wtype.name(workTypeName || null);
+//
+//									wtime.code(workTimeCode || null);
+//									wtime.name(workTimeName || null);
+//
+//									value.begin(startTime);
+//									value.finish(endTime);
+//
+//									data.confirmed($raw.confirmed);
+//									data.achievement(null);
+//									data.classification($raw.workHolidayCls);
+//									data.need2Work($raw.needToWork);
+//
+//									data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
+//									data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
+//
+//									data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
+//									data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
+//								}
+//
+//								// state of achievement (both data & switch select)
+//								data.achievement(!!$raw.achievements);
+//							});
+//
+//							// reset state of memento
+//							vm.schedules.reset();
+//						})
+//						.always(() => vm.$blockui('clear'));
 				});
 		}
 		
@@ -403,16 +402,21 @@ module nts.uk.ui.at.ksu002.a {
 			let vm = this;	
 			//vm.getPlansResultsData();
 			
-			const command = {
-				listSid: [vm.$user.employeeId],
-				startDate: moment(vm.dr.begin).format('YYYY/MM/DD'),
-				endDate: moment(vm.dr.finish).format('YYYY/MM/DD'),
-				actualData: vm.achievement() === ACHIEVEMENT.YES
-			};
+//			const command = {
+//				listSid: [vm.$user.employeeId],
+//				startDate: moment(vm.dr.begin).format('YYYY/MM/DD'),
+//				endDate: moment(vm.dr.finish).format('YYYY/MM/DD'),
+//				actualData: vm.achievement() === ACHIEVEMENT.YES
+//			};
 
+//			if(vm.achievement() === ACHIEVEMENT.YES){
+//				vm.achievement(vm.achievement());
+//				return;
+//			}
+			
 			vm.$errors('clear')
 				.then(() => vm.$blockui('grayout'))
-				.then(() => vm.getPlansResultsData())
+				.then(() => vm.getPlansResultsData(false))
 				.then((response: WorkSchedule<string>[]) => _.chain(response)
 					.orderBy(['date'])
 					.map(m => ({
@@ -583,7 +587,7 @@ module nts.uk.ui.at.ksu002.a {
 			});
 		}
 		
-		getPlansResultsData(): JQueryPromise<any>{
+		getPlansResultsData(getDaily: boolean): JQueryPromise<any>{
 			let vm = this;
 			let dfd = $.Deferred<void>();
 			const { begin, finish } = vm.baseDate();
@@ -600,7 +604,11 @@ module nts.uk.ui.at.ksu002.a {
 			};
 			
 			let sv1 = vm.$ajax('at','screen/ksu/ksu002/getPlansResults', command).done((data:any) => {
-				dfd.resolve(data.workScheduleWorkInfor2);
+				if(getDaily){
+					dfd.resolve(data.workScheduleWorkDaily);
+				}else{
+					dfd.resolve(data.workScheduleWorkInfor2);					
+				}
 			});
 			let sv2 = vm.$ajax('at','screen/ksu/ksu002/getlegalworkinghours', command);
 			$.when(sv1, sv2).done((data1: any, data2: any) => {

@@ -106,12 +106,13 @@ public class KSU002Finder {
 		
 		PlansResultsDto result = new PlansResultsDto(personalSchedulesData, workScheduleWorkInfor);
 		
+		List<DateInformation> dateInformation = this.getDateInformation(param.listSid.stream().map(e -> new EmployeeId(e)).collect(Collectors.toList()), periodListPeriod.datePeriod);
+		result.setWorkScheduleWorkInfor2(dateInformation, param.actualData);
+		
 		if(param.actualData) {
 			result.setWorkScheduleWorkDaily(workScheduleWorkInfor);
-		}else {
-			List<DateInformation> dateInformation = this.getDateInformation(param.listSid.stream().map(e -> new EmployeeId(e)).collect(Collectors.toList()), periodListPeriod.datePeriod);
-			result.setWorkScheduleWorkInfor2(dateInformation);
 		}
+		
 		
 		return result;
 	}

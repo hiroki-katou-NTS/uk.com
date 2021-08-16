@@ -31,7 +31,7 @@ public class PlansResultsDto extends PersonalSchedulesDataDto{
 		this.workScheduleWorkInfor = workScheduleWorkInfor;
 	}
 
-	public void setWorkScheduleWorkInfor2(List<DateInformation> dateInformation) {
+	public void setWorkScheduleWorkInfor2(List<DateInformation> dateInformation, boolean actualData) {
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = this.workScheduleWorkInfor
 				.stream()
 				.map(m -> {
@@ -97,7 +97,27 @@ public class PlansResultsDto extends PersonalSchedulesDataDto{
 							.build();
 					return dto;
 				}).collect(Collectors.toList());
-
+		
+		if (actualData) {
+			
+			for (WorkScheduleWorkInforDto ds : listWorkScheduleWorkInfor) {
+				this.workScheduleWorkInfor.stream().filter(c -> c.employeeId.equals(ds.employeeId) && c.date.equals(ds.date) && c.achievements).findFirst()
+					.ifPresent(c -> {
+						WorkScheduleWorkInforDto.Achievement arch = WorkScheduleWorkInforDto
+								.Achievement
+								.builder()
+								.workTypeCode(c.getWorkTypeCode())
+								.workTypeName(c.getWorkTypeName())
+								.workTimeCode(c.getWorkTimeCode())
+								.workTimeName(c.getWorkTimeName())
+								.startTime(c.getStartTime())
+								.endTime(c.getEndTime())
+								.build();
+						
+						ds.setAchievements(arch);
+					});
+			}
+		}
 		this.workScheduleWorkInfor2 = listWorkScheduleWorkInfor;
 	}
 
