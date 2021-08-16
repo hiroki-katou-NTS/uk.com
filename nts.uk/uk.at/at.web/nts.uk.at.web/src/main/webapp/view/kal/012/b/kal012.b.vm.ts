@@ -47,7 +47,6 @@ module nts.uk.at.view.kal012.b {
                 {code: 2, name: vm.$i18n('KAL012_20')}
             ]);
             vm.isUpdateMode = ko.observable(false);
-            vm.init();
             vm.isNormalSet = ko.observable(false);
             vm.isAutoSet = ko.observable(false);
         }
@@ -55,6 +54,11 @@ module nts.uk.at.view.kal012.b {
         created() {
             const vm = this;
             _.extend(window, {vm});
+            vm.init().done(() => {
+                window.setTimeout(function () {
+                    document.getElementById('B1_2').focus();
+                }, 0);
+            });
             vm.isNormalSet.subscribe((newValue: any) => {
                 if (newValue) {
                     vm.model.b41(vm.$i18n('KAL012_14'))
