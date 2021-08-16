@@ -226,7 +226,7 @@
       <ul>
         <li class="uk-bg-white" v-on:click="cancelApp" v-if="displayCancelButton">
           <span class="uk-text-dark-gray">{{'CMMS45_92' | i18n}}</span>
-          <i class="fas fa-trash-alt uk-text-dark-gray"></i>
+          <i class="far fa-times-circle uk-text-dark-gray"></i>
         </li>
         <li class="uk-bg-white" v-on:click="deleteApp" v-if="displayDeleteButton">
           <span class="uk-text-dark-gray">{{'CMMS45_60' | i18n}}</span>
