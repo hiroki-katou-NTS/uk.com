@@ -66,13 +66,9 @@ module nts.uk.at.view.kdp010.e {
 
                 param.buttonSettings = _.remove(param.buttonSettings, ((value) => {
                     return value.usrArt == 1;
-                }))
+                }));
                 
-                console.log(ko.toJS(self.portalStampSettings));
-                console.log(param);
-                
-                
-                ajax("at", paths.save, ko.toJS(self.portalStampSettings)).done(function() {
+                ajax("at", paths.save, param).done(function() {
                     info({ messageId: "Msg_15"});
                 }).fail(function (res: any) {
                     error({ messageId: res.messageId });
