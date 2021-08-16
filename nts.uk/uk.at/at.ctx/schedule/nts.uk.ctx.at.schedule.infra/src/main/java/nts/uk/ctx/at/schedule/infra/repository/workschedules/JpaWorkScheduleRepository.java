@@ -804,7 +804,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			entity.get().confirmedATR = workSchedule.getConfirmedATR().value == 1 ? true : false;
 			this.commandProxy().update(entity.get());
 		}
-
+	}
+	
 	@Override	
 	public List<AffInfoForWorkSchedule> getAffiliationInfor(String sid, DatePeriod period) {
 		List<WorkSchedule>  data = this.getListBySid(sid, period);
