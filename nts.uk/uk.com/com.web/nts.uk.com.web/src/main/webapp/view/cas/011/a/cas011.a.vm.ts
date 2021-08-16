@@ -233,7 +233,6 @@ module nts.uk.com.view.cas011.a {
             if (errors.hasError() === false) {
                 block.invisible();
                 if (vm.isNewMode()) {
-                    currentRoleSet.defaultRoleSet(vm.isCheck());
                     // create new role set
                     vm.$ajax('com', API.addRoleSet, ko.toJS(currentRoleSet)).done((roleSetCd) => {
                         dialog.info({messageId: "Msg_15"});
