@@ -1959,7 +1959,7 @@ public class DailyPerformanceCorrectionProcessor {
 			InitSwitchSetDto initSwitch = initSwitchSetAdapter.targetDateFromLogin();
 			if (initSwitch != null && !CollectionUtil.isEmpty(initSwitch.getListDateProcessed())) {
 				Optional<DateProcessedRecord> dateRecordOpt = initSwitch.getListDateProcessed().stream()
-						.filter(x -> x.getClosureID() == closureIdResult).findFirst();
+						.filter(x -> x.getClosureID().equals(closureIdResult)).findFirst();
 				if (dateRecordOpt.isPresent() && dateRecordOpt.get().getDatePeriod() != null) {
 					rangeTemp = new DateRange(dateRecordOpt.get().getDatePeriod().start(),
 							dateRecordOpt.get().getDatePeriod().end());
