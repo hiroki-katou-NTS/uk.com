@@ -43,8 +43,8 @@ module nts.uk.at.view.kal012.b {
             vm.model.b42(vm.$i18n('KAL012_13'));
             vm.model.b41(vm.$i18n('KAL012_13'));
             vm.roundingRules = ko.observableArray([
-                {code: 1, name: vm.$i18n('KAL012_19')},
-                {code: 2, name: vm.$i18n('KAL012_20')}
+                {code: true, name: vm.$i18n('KAL012_19')},
+                {code: false, name: vm.$i18n('KAL012_20')}
             ]);
             vm.isUpdateMode = ko.observable(false);
             vm.isNormalSet = ko.observable(false);
@@ -75,11 +75,6 @@ module nts.uk.at.view.kal012.b {
             });
             vm.model.selectedRuleCode.subscribe((newValue: any) => {
                 vm.$errors("clear");
-                if (newValue === 1) {
-                    vm.model.targetRuleRequired(true)
-                } else {
-                    vm.model.targetRuleRequired(false)
-                }
             });
 
             vm.model.rolesId.subscribe((value: Array<string>) => {
@@ -129,11 +124,11 @@ module nts.uk.at.view.kal012.b {
                 if (data) {
                     if (data.mailSettings.exMailSettingsList.length > 0) {
                         for (let item of data.mailSettings.exMailSettingsList) {
-                            if (item.normalAutoClassify === 0) {
+                            if (item.normalAutoClassify === 0 && item.mailContents != null) {
                                 vm.normal = item;
                                 vm.isNormalSet(true);
                             }
-                            if (item.normalAutoClassify === 1) {
+                            if (item.normalAutoClassify === 1 && item.mailContents != null) {
                                 vm.auto = item;
                                 vm.isAutoSet(true);
                             }
@@ -143,11 +138,7 @@ module nts.uk.at.view.kal012.b {
 
                     if (data.sendingRole) {
                         vm.sendingRole = data.sendingRole;
-                        if (vm.sendingRole.roleSetting) {
-                            vm.model.selectedRuleCode(1)
-                        } else {
-                            vm.model.selectedRuleCode(2)
-                        }
+                        vm.model.selectedRuleCode(vm.sendingRole.roleSetting)
                         vm.model.checked(vm.sendingRole.sendResult);
                         vm.model.rolesId(vm.sendingRole.roleIds);
                     }
@@ -177,14 +168,14 @@ module nts.uk.at.view.kal012.b {
          * */
         clickRegistrationButton() {
             let vm = this;
-            vm.$validate(".nts-input").then((valid) => {
+            vm.$validate("#B7_5").then((valid) => {
                 if (valid) {
                     let mailSettingList: any = [];
                     let command = {
                         mailSettingList: [vm.normal, vm.auto],
                         sendingRole: {
                             individualWkpClassify: 1,
-                            roleSetting: vm.model.targetRuleRequired(),
+                            roleSetting: vm.model.selectedRuleCode(),
                             sendResult: vm.model.checked(),
                             roleIds: vm.model.rolesId()
                         }
@@ -338,9 +329,8 @@ module nts.uk.at.view.kal012.b {
         b41: KnockoutObservable<any>;
         b42: KnockoutObservable<any>;
         checked: KnockoutObservable<any>;
-        selectedRuleCode: KnockoutObservable<any>;
+        selectedRuleCode: KnockoutObservable<boolean>;
         targetRuleName: KnockoutObservable<any>;
-        targetRuleRequired: KnockoutObservable<boolean>;
         rolesId: KnockoutObservableArray<any>;
 
         constructor() {
@@ -349,9 +339,8 @@ module nts.uk.at.view.kal012.b {
             this.b41 = ko.observable("");
             this.b42 = ko.observable("");
             this.checked = ko.observable(false);
-            this.selectedRuleCode = ko.observable(2);
+            this.selectedRuleCode = ko.observable(false);
             this.targetRuleName = ko.observable('');
-            this.targetRuleRequired = ko.observable(true);
             this.rolesId = ko.observableArray([]);
         }
     }
