@@ -23,5 +23,10 @@
 }
 
 .width-70 {
-width: 70px;
+    width: 70px;
+}
+
+.switchbox-wrappers.radio-wrappers label input + span {
+    width: 65px;
+    text-align: center;
 }
