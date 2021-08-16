@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
+import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -21,14 +22,33 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personco
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkingTimeCounterService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.company.CompanySpecificDateRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateItemNo;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
+import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.screen.at.app.ksu001.processcommon.ScreenQueryCreateWorkSchedule;
 import nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule.PlanAndActual;
@@ -38,6 +58,7 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodListPeriodDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PersonalSchedulesDataDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PlansResultsDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WeeklyDataDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkplaceHistoryWorkplaceHistoryItem;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -60,6 +81,12 @@ public class KSU002Finder {
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
+	@Inject
+	private AffWorkplaceHistoryRepository affWorkplaceHistoryRepo;
+	
+	@Inject
+	private AffWorkplaceHistoryItemRepository affWorkplaceHistoryItemRepo;
+	
 	/**
 	 * @name 予定・実績を取得する
 	 */
@@ -77,7 +104,16 @@ public class KSU002Finder {
 		//4:集計する(社員ID, 期間, List<期間>, int, int)
 		PersonalSchedulesDataDto personalSchedulesData = this.getPersonalSchedules(new EmployeeId(param.listSid.get(0)), param.getPeriod(), periodListPeriod.datePeriodList, planAndActual.getSchedule(), planAndActual.getDailySchedule());
 		
-		return new PlansResultsDto(personalSchedulesData, workScheduleWorkInfor);
+		PlansResultsDto result = new PlansResultsDto(personalSchedulesData, workScheduleWorkInfor);
+		
+		if(param.actualData) {
+			result.setWorkScheduleWorkDaily(workScheduleWorkInfor);
+		}else {
+			List<DateInformation> dateInformation = this.getDateInformation(param.listSid.stream().map(e -> new EmployeeId(e)).collect(Collectors.toList()), periodListPeriod.datePeriod);
+			result.setWorkScheduleWorkInfor2(dateInformation);
+		}
+		
+		return result;
 	}
 	
 	
@@ -202,6 +238,56 @@ public class KSU002Finder {
 		return result;
 	}
 	
+	//期間中の年月日情報を取得する
+	public List<DateInformation> getDateInformation(List<EmployeeId> employeeId, DatePeriod period) {
+		
+		//1: <call>(List<社員ID>, 期間)
+		WorkplaceHistoryWorkplaceHistoryItem workplaceHistoryWorkplaceHistoryItem = this.getWorkplaceHistoryWorkplaceHistoryItem(employeeId, period);
+				
+		//2: create(所属職場履歴項目(List))
+		List<DateHistoryCache.Entry<AffWorkplaceHistoryItem>> list = new ArrayList<DateHistoryCache.Entry<AffWorkplaceHistoryItem>>();
+		workplaceHistoryWorkplaceHistoryItem.getWorkplaceHistory().forEach(h ->{
+			h.getHistoryItems().forEach(e ->{
+				Optional<AffWorkplaceHistoryItem> affWorkplaceHistoryItem = workplaceHistoryWorkplaceHistoryItem.getWorkplaceHistoryItem().stream().filter(c -> c.getHistoryId().equals(e.identifier())).findFirst();
+				if(affWorkplaceHistoryItem.isPresent()) {
+					list.add(DateHistoryCache.Entry.of(e.span(), affWorkplaceHistoryItem.get()));
+				}
+			});
+		});
+		DateHistoryCache<AffWorkplaceHistoryItem> dateHistoryCache = new DateHistoryCache<AffWorkplaceHistoryItem>(list);
+		
+		RequireImpl require = new RequireImpl();
+		
+		List<DateInformation> result = new ArrayList<DateInformation>();
+		period.datesBetween().forEach(date ->{
+			Optional<AffWorkplaceHistoryItem> affWorkplaceHistoryItem = dateHistoryCache.get(date);
+			if(affWorkplaceHistoryItem.isPresent()) {
+				TargetOrgIdenInfor idenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(affWorkplaceHistoryItem.get().getWorkplaceId());
+
+				result.add(DateInformation.create(require, date, idenInfor));
+			}
+		});
+		
+		return result;
+	}
+	
+	//社員（List）と期間から職場履歴を取得する
+	public WorkplaceHistoryWorkplaceHistoryItem getWorkplaceHistoryWorkplaceHistoryItem(List<EmployeeId> employeeId, DatePeriod period) {
+		
+		//ドメインモデル「所属職場履歴」を全て取得する 
+		//パラメータ．期間を含む履歴項目の履歴IDを取得する
+		List<AffWorkplaceHistory> workplaceHistory = affWorkplaceHistoryRepo.findByEmployeesWithPeriod(employeeId.stream().map(c->c.v()).collect(Collectors.toList()), period);
+		
+		List<String> historyIds = new ArrayList<>();
+		workplaceHistory.forEach(wh -> historyIds.addAll(wh.getHistoryIds()));
+		
+		//ドメインモデル「所属職場履歴項目」を全て取得する 
+		List<AffWorkplaceHistoryItem> workplaceHistoryItem = affWorkplaceHistoryItemRepo.findByHistIds(historyIds);
+		
+		return new WorkplaceHistoryWorkplaceHistoryItem(workplaceHistory, workplaceHistoryItem);
+	}
+	
+	
 	@RequiredArgsConstructor
 	class Require implements WorkdayHolidayCounterService.Require{
 		
@@ -212,5 +298,67 @@ public class KSU002Finder {
 			return workTypeRepository.findByPK(companyId, workTypeCd.v());
 		}
 		
+	}
+	
+	@Inject
+	private WorkplaceSpecificDateRepository workplaceSpecificDateRepo;
+	@Inject
+	private CompanySpecificDateRepository companySpecificDateRepo;
+	@Inject
+	private WorkplaceEventRepository workplaceEventRepo;
+	@Inject
+	private CompanyEventRepository companyEventRepo;
+	@Inject
+	private PublicHolidayRepository publicHolidayRepo;
+	@Inject
+	private SpecificDateItemRepository specificDateItemRepo;
+	
+	@RequiredArgsConstructor
+	class RequireImpl implements DateInformation.Require {
+
+		@Override
+		public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
+			List<WorkplaceSpecificDateItem> data = workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId,
+					specificDate);
+			return data;
+		}
+
+		@Override
+		public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
+			List<CompanySpecificDateItem> data = companySpecificDateRepo
+					.getComSpecByDate(AppContexts.user().companyId(), specificDate);
+			return data;
+		}
+
+		@Override
+		public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
+			Optional<WorkplaceEvent> data = workplaceEventRepo.findByPK(workplaceId, date);
+			return data;
+		}
+
+		@Override
+		public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date) {
+			Optional<CompanyEvent> data = companyEventRepo.findByPK(AppContexts.user().companyId(), date);
+			return data;
+		}
+
+		@Override
+		public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
+			Optional<PublicHoliday> data = publicHolidayRepo.getHolidaysByDate(AppContexts.user().companyId(), date);
+			return data;
+		}
+
+		@Override
+		public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
+			if (lstSpecificDateItemNo.isEmpty()) {
+				return new ArrayList<>();
+			}
+
+			List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(mapper -> mapper.v())
+					.collect(Collectors.toList());
+			List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(AppContexts.user().companyId(),
+					_lstSpecificDateItemNo);
+			return data;
+		}
 	}
 }

@@ -24,12 +24,14 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -49,6 +51,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.screen.at.app.ksu001.processcommon.CreateWorkScheduleWorkInfor;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.DateInfoDuringThePeriodDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.EditStateOfDailyAttdDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.WorkScheduleWorkInforDto;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.input.DisplayInWorkInfoInput;
@@ -80,6 +83,8 @@ public class GetScheduleOfWorkInfo002 {
 	@Inject
 	private CreateWorkScheduleWorkInfor scheduleWorkInfor;
 	
+	@Inject KSU002Finder kSU002Finder;
+	
 	public List<WorkScheduleWorkInforDto> getDataScheduleOfWorkInfo(DisplayInWorkInfoInput param) {
 
 		// step 1 start
@@ -94,6 +99,8 @@ public class GetScheduleOfWorkInfo002 {
 
 
 		List<nts.uk.screen.at.app.ksu001.processcommon.WorkScheduleWorkInforDto> listDtoCommon = scheduleWorkInfor.getDataScheduleOfWorkInfo(mngStatusAndWScheMap);
+		
+		List<DateInformation> dateInformation = kSU002Finder.getDateInformation(param.listSid.stream().map(e -> new EmployeeId(e)).collect(Collectors.toList()), period);
 		
 		List<WorkScheduleWorkInforDto> listWorkScheduleWorkInfor = listDtoCommon
 				.stream()
@@ -155,7 +162,7 @@ public class GetScheduleOfWorkInfo002 {
 							.endTime(endTime)
 							.endTimeEditState(endTimeEditState)
 							.workHolidayCls(m.workHolidayCls)
-							.dateInfoDuringThePeriod(this.getDateInfoDuringThePeriod.get(param1))
+							.dateInfoDuringThePeriod(dateInformation.stream().filter(c -> c.getYmd().equals(m.getDate())).findFirst().map(e -> new DateInfoDuringThePeriodDto(e)).orElse(new DateInfoDuringThePeriodDto()))
 							.workTimeForm(m.workTimeForm)
 							.build();
 					return dto;

@@ -401,7 +401,7 @@ module nts.uk.ui.at.ksu002.a {
 		
 		loadData(){
 			let vm = this;	
-			vm.getPlansResultsData();
+			//vm.getPlansResultsData();
 			
 			const command = {
 				listSid: [vm.$user.employeeId],
@@ -412,7 +412,7 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.$errors('clear')
 				.then(() => vm.$blockui('grayout'))
-				.then(() => vm.$ajax('at', API.GSCHE, command))
+				.then(() => vm.getPlansResultsData())
 				.then((response: WorkSchedule<string>[]) => _.chain(response)
 					.orderBy(['date'])
 					.map(m => ({
@@ -583,12 +583,13 @@ module nts.uk.ui.at.ksu002.a {
 			});
 		}
 		
-		getPlansResultsData(){
+		getPlansResultsData(): JQueryPromise<any>{
 			let vm = this;
+			let dfd = $.Deferred<void>();
 			const { begin, finish } = vm.baseDate();
+			vm.legalworkinghours(null);
+			vm.plansResultsData(null);
 			if(!begin || !finish){
-				vm.legalworkinghours(null);
-				vm.plansResultsData(null);
 				return;
 			}
 			const command = {
@@ -598,13 +599,16 @@ module nts.uk.ui.at.ksu002.a {
 				actualData: vm.achievement() === ACHIEVEMENT.YES
 			};
 			
-			let sv1 = vm.$ajax('at','screen/ksu/ksu002/getPlansResults', command);
+			let sv1 = vm.$ajax('at','screen/ksu/ksu002/getPlansResults', command).done((data:any) => {
+				dfd.resolve(data.workScheduleWorkInfor2);
+			});
 			let sv2 = vm.$ajax('at','screen/ksu/ksu002/getlegalworkinghours', command);
 			$.when(sv1, sv2).done((data1: any, data2: any) => {
 				vm.legalworkinghours(data2);
 				vm.plansResultsData(data1);
 				vm.plansResultsData.valueHasMutated();
 			});
+			return dfd.promise();
 		}
 		
 		
