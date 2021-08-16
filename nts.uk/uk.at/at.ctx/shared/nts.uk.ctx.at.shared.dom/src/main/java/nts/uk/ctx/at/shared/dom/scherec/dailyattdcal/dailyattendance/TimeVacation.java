@@ -1,14 +1,13 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance;
 
 import java.util.List;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 
 /**
  * 時間休暇
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定.勤務予定.時間休暇
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.時間休暇
  * @author lan_lt
  *
  */
