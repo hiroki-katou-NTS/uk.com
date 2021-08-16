@@ -76,26 +76,26 @@ public class RemainVacationInfoDto {
                 HolidayManagementDto.fromDomain(remainVacationInfo.getHolidayManagement()),
                 Overtime60HManagementDto.fromDomain(remainVacationInfo.getOvertime60hManagement()),
                 NursingCareLeaveManagementDto.fromDomain(remainVacationInfo.getNursingCareLeaveManagement()),
-                remainVacationInfo.getYearRemain().isPresent() ? remainVacationInfo.getYearRemain().get() : null,
+                remainVacationInfo.getYearRemain().isPresent() ? remainVacationInfo.getYearRemain().get() : 0d,
                 remainVacationInfo.getYearHourRemain().isPresent() ? remainVacationInfo.getYearHourRemain().get()
-                        : null,
-                remainVacationInfo.getSubHdRemain().isPresent() ? remainVacationInfo.getSubHdRemain().get() : null,
-                remainVacationInfo.getSubVacaRemain().isPresent() ? remainVacationInfo.getSubVacaRemain().get() : null,
+                        : 0,
+                remainVacationInfo.getSubHdRemain().isPresent() ? remainVacationInfo.getSubHdRemain().get() : 0d,
+                remainVacationInfo.getSubVacaRemain().isPresent() ? remainVacationInfo.getSubVacaRemain().get() : 0d,
                 remainVacationInfo.getSubVacaHourRemain().isPresent() ? remainVacationInfo.getSubVacaHourRemain().get()
-                        : null,
+                        : 0,
                 remainVacationInfo.getRemainingHours().isPresent() ? remainVacationInfo.getRemainingHours().get()
-                        : null,
+                        : 0d,
                 remainVacationInfo.getOver60HHourRemain().isPresent() ? remainVacationInfo.getOver60HHourRemain().get()
-                        : null,
+                        : 0,
                 remainVacationInfo.getChildNursingRemain().isPresent()
                         ? remainVacationInfo.getChildNursingRemain().get()
-                        : null,
+                        : 0d,
                 remainVacationInfo.getChildNursingHourRemain().isPresent()
                         ? remainVacationInfo.getChildNursingHourRemain().get()
-                        : null,
-                remainVacationInfo.getNursingRemain().isPresent() ? remainVacationInfo.getNursingRemain().get() : null,
+                        : 0,
+                remainVacationInfo.getNursingRemain().isPresent() ? remainVacationInfo.getNursingRemain().get() : 0d,
                 remainVacationInfo.getNirsingHourRemain().isPresent() ? remainVacationInfo.getNirsingHourRemain().get()
-                        : null, 
+                        : 0, 
                 remainVacationInfo.getGrantDate().isPresent() ? remainVacationInfo.getGrantDate().get().toString("yyyy/MM/dd") : null, 
                 remainVacationInfo.getGrantDays().isPresent() ? remainVacationInfo.getGrantDays().get() : 0);
     }
