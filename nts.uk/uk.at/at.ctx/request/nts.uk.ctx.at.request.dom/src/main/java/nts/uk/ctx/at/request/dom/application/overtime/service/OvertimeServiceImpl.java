@@ -1679,6 +1679,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					case "Msg_324": confirmMsg.setMsgID("Msg_2008"); break;
 					case "Msg_237": confirmMsg.setMsgID("Msg_2009"); break;
 					case "Msg_238": confirmMsg.setMsgID("Msg_2010"); break;
+					case "Msg_1508": confirmMsg.setMsgID("Msg_2019"); break;
 					default:
 						confirmMsg.setMsgID(confirmMsg.getMsgID());
 						break;

@@ -785,7 +785,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			if (overStateOutput.getIsExistApp()) {
 				// メッセージ（Msg_1508）をOUTPUT「確認メッセージリスト」に追加する
 				output.add(new ConfirmMsgOutput(
-										"Msg_2019",
+										"Msg_1508",
 										displayInfoOverTime
 											.getAppDispInfoStartup()
 										    .getAppDispInfoNoDateOutput()
