@@ -128,7 +128,7 @@ public class ClosingGetUnlockedPeriodTest {
 		List<DatePeriod> result = ClosingGetUnlockedPeriod.get(require, period, employmentCode, ignoreFlagDuringLock,
 				achievementAtr);
 	
-		assertThat(result.get(0).start()).isEqualTo(periodClosure.end().addDays(1));
+		assertThat(result.get(0).start()).isEqualTo(periodClosure.start());
 		assertThat(result.get(0).end()).isEqualTo(period.end());
 
 	}
