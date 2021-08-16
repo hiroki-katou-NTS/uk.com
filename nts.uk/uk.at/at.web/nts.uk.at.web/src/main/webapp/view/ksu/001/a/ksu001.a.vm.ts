@@ -3140,9 +3140,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     default: break;
                                 }
 								if(_.includes([1, 3, 5], i)) {
-									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : nts.uk.time.format.byId("Time_Short_HM", findValueObject.value));	
+									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' :
+										nts.uk.time.format.byId("Time_Short_HM", findValueObject.value));	
 								} else {
-									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' : findValueObject.value);	
+									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' :
+										nts.uk.ntsNumber.formatNumber(findValueObject.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));	
 								}
                                 sumLaborCostAndTime += _.isEmpty(findValueObject) ? 0 : findValueObject.value;
                             } else {
@@ -3152,6 +3154,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         horizontalSumContentDs.push(objectLaborCostAndTime);    
 						if(_.includes([1, 3, 5], i)) {
 							sumLaborCostAndTime = nts.uk.time.format.byId("Time_Short_HM", sumLaborCostAndTime);	
+						} else {
+							sumLaborCostAndTime = nts.uk.ntsNumber.formatNumber(sumLaborCostAndTime, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));	
 						}
                         rightHorzContentDs.push({ id: 'id'+i, sum: sumLaborCostAndTime });
                     }
