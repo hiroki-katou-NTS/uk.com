@@ -50,18 +50,17 @@ public class JpaRoleSetRepository extends JpaRepository implements RoleSetReposi
      * @return
      */
 	private RoleSet toDomain(SacmtRoleSet entity) {
-
 		return new RoleSet(
 			entity.roleSetPK.companyId,
 			new RoleSetCode(entity.roleSetPK.roleSetCd),
 			new RoleSetName(entity.roleSetName),
 			EnumAdaptor.valueOf(entity.approvalAuthority, ApprovalAuthority.class),
-			Optional.ofNullable(entity.officeHelperRole),
-			Optional.ofNullable(entity.myNumberRole),
-			Optional.ofNullable(entity.hRRole),
-			Optional.ofNullable(entity.personInfRole),
 			Optional.ofNullable(entity.employmentRole),
-			Optional.ofNullable(entity.salaryRole)
+			Optional.ofNullable(entity.personInfRole),
+			Optional.ofNullable(entity.salaryRole),
+			Optional.ofNullable(entity.hRRole),
+			Optional.ofNullable(entity.myNumberRole),
+			Optional.ofNullable(entity.officeHelperRole)
 		);
 	}
 

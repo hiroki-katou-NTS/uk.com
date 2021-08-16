@@ -35,8 +35,8 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
         RoleSet roleSetDom = RoleSet.create(companyId
                 , command.getRoleSetCd()
                 , command.getRoleSetName()
-                , Optional.ofNullable(command.getPersonInfRoleId())
-                , Optional.ofNullable(command.getEmploymentRoleId()));
+                , Optional.ofNullable(command.getEmploymentRoleId())
+                , Optional.ofNullable(command.getPersonInfRoleId()));
 
         //アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
         Optional<RoleSet> optionalRoleSet = roleSetRepository.findByRoleSetCdAndCompanyId(command.getRoleSetCd(), companyId);

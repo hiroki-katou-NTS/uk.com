@@ -83,6 +83,7 @@ module nts.uk.com.view.cas011.a {
                 dfd = $.Deferred();
                 errors.clearAll();
                 let listRoleSet = vm.listRoleSets();
+                block.invisible();
                 if (roleSetCd && listRoleSet && listRoleSet.length > 0) {
                     var _path = format(API.getRoleSetByRoleSetCd, roleSetCd);
                     vm.$ajax('com',_path).done((data)=>{
@@ -122,6 +123,8 @@ module nts.uk.com.view.cas011.a {
                     }).fail(error => {
                         vm.backToTopPage();
                         dfd.resolve();
+                    }).always(()=>{
+                        block.clear();
                     });
 
                 } else {
@@ -148,6 +151,7 @@ module nts.uk.com.view.cas011.a {
             listRoleSets.removeAll();
             errors.clearAll();
             // initial screen
+            block.invisible();
             vm.$ajax('com', API.getDtaInit).done((data)=>{
                 if(data){
                     let itemList : IRoleSet[] = data.roleDefaultDto.roleSetDtos;
@@ -216,6 +220,7 @@ module nts.uk.com.view.cas011.a {
                 if (deferred) {
                     deferred.resolve();
                 }
+                block.invisible();
             });
         }
         backToTopPage() {
@@ -316,7 +321,9 @@ module nts.uk.com.view.cas011.a {
             errors.clearAll();
         }
         settingCreateMode() {
+            block.invisible();
             let vm = this,
+
                 currentRoleSet: RoleSet = vm.currentRoleSet();
             // clear selected role set
             vm.createNewCurrentRoleSet();
@@ -325,6 +332,8 @@ module nts.uk.com.view.cas011.a {
             vm.isNewMode(true);
             //focus
             vm.setFocus();
+            block.clear();
+
         }
         settingUpdateMode(selectedRoleSetCd: any) {
             let vm = this;
@@ -346,6 +355,8 @@ module nts.uk.com.view.cas011.a {
             currentRoleSet.roleSetName('');
             currentRoleSet.personInfRoleId('');
             currentRoleSet.employmentRoleId('');
+
+            currentRoleSet.defaultRoleSet(false);
             currentRoleSet.webMenus([]);
             // build swap web menu
             vm.buildSwapWebMenu();
