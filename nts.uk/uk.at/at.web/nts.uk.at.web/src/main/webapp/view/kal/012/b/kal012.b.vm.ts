@@ -40,8 +40,8 @@ module nts.uk.at.view.kal012.b {
                 },
             ]);
             vm.selectedTab = ko.observable('tab-1');
-            vm.model.b42(vm.$i18n('KAL012_14'));
-            vm.model.b41(vm.$i18n('KAL012_14'));
+            vm.model.b42(vm.$i18n('KAL012_13'));
+            vm.model.b41(vm.$i18n('KAL012_13'));
             vm.roundingRules = ko.observableArray([
                 {code: 1, name: vm.$i18n('KAL012_19')},
                 {code: 2, name: vm.$i18n('KAL012_20')}
@@ -348,8 +348,8 @@ module nts.uk.at.view.kal012.b {
             this.isMailSet = ko.observable(false);
             this.b41 = ko.observable("");
             this.b42 = ko.observable("");
-            this.checked = ko.observable(true);
-            this.selectedRuleCode = ko.observable(1);
+            this.checked = ko.observable(false);
+            this.selectedRuleCode = ko.observable(2);
             this.targetRuleName = ko.observable('');
             this.targetRuleRequired = ko.observable(true);
             this.rolesId = ko.observableArray([]);
