@@ -237,13 +237,13 @@ module nts.uk.com.view.cas011.a {
                 currentRoleSet: RoleSet = vm.currentRoleSet();
             $('.nts-input').trigger("validate");
 
-            if(currentRoleSet.employmentRoleId() == ""){
-                $('#employmentRoleId').ntsError('set', { messageId: "Msg_218" });
+            if(currentRoleSet.employmentRoleId() == null ||currentRoleSet.employmentRoleId() == ""){
+                $('#employmentRoleId').ntsError('set', { messageId: "Msg_218", messageParams:resource.getText('CAS011_14') });
                 $('#employmentRoleId').focus();
             }
 
-            if(currentRoleSet.personInfRoleId() == ""){
-                $('#personInfRoleId').ntsError('set', { messageId: "Msg_218" });
+            if(currentRoleSet.personInfRoleId() == null || currentRoleSet.personInfRoleId() == ""){
+                $('#personInfRoleId').ntsError('set', { messageId: "Msg_218", messageParams:resource.getText('CAS011_18') });
                 $('#personInfRoleId').focus();
             }
 
