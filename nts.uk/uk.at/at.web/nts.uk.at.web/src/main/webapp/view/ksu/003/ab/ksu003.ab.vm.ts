@@ -410,8 +410,13 @@ module nts.uk.at.view.ksu003.ab.viewmodel {
 					return;
 				}
 				
+				let checkCell = _.filter(self.sourceCompany(), (x : any) => {
+						return __viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.page == x.page;
+				});
+				
 				let value : any = null 
-				if(!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,"storeNull") && 
+				if(checkCell.length > 0 && checkCell[0].text != getText("KSU003_70") && checkCell[0].text != getText("KSU003_82") && checkCell[0].text != getText("KSU003_83") &&
+				!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text,"storeNull") && 
 					!_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text , getText("KSU003_82")) &&
 					 !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_70")) &&
 					  !_.isEqual(__viewContext.viewModel.viewmodelA.localStore.workPalletDetails.data.text ,getText("KSU003_83"))) {
