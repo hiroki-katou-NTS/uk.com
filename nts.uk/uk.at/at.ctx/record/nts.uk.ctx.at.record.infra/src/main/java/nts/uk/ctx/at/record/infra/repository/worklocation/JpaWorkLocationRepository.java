@@ -12,10 +12,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
-import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkLocation;
-import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocationPK;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtIP4Address;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtIP4AddressPK;
+import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkLocation;
+import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkplacePossible;
+import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkplacePossiblePK;
+import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocationPK;
 import nts.uk.shr.com.net.Ipv4Address;
 
 @Stateless
@@ -48,6 +50,16 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " WHERE c.krcmtIP4AddressPK.contractCode = :contractCode " + " AND c.krcmtIP4AddressPK.net1 = :net1 "
 			+ " AND c.krcmtIP4AddressPK.net2 = :net2 " + " AND c.krcmtIP4AddressPK.host1 = :host1 "
 			+ " AND c.krcmtIP4AddressPK.host2 = :host2 ";
+	
+	private static final String SELECT_BY_WORKPLACES = SELECT
+			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
+			+ " AND c.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid = :cid"
+			+ " AND c.krcmtWorkplacePossible.workplaceId = :workplaceId";
+	
+	private static final String SELECT_BY_WORKPLACE = SELECT
+			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
+			+ " AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD"
+			+ " AND c.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid = :cid";
 
 	@Override
 	public List<WorkLocation> findAll(String contractCode) {
@@ -59,7 +71,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	@Override
 	public Optional<WorkLocation> findByCode(String contractCode, String workPlaceCD) {
 		Optional<WorkLocation> test = this.queryProxy().query(SELECT_SINGLE, KrcmtWorkLocation.class)
-				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workPlaceCD)
+				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workPlaceCD)          
 				.getSingle(c -> c.toDomain());
 		return test;
 	}
@@ -109,22 +121,21 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			oldData.get().radius = newData.radius;
 			oldData.get().latitude = newData.latitude;
 			oldData.get().longitude = newData.longitude;
-			List<String> wkids = newData.krcmtWorkplacePossible.stream()
-					.map(i -> i.krcmtWorkplacePossiblePK.workplaceId).collect(Collectors.toList());
+			oldData.get().krcmtWorkplacePossible = newData.krcmtWorkplacePossible;
 			oldData.get().krcmtIP4Address = newData.krcmtIP4Address;
 			this.commandProxy().update(oldData.get());
 
-			if (!wkids.isEmpty()) {
-				String toDeleteData = "DELETE FROM KrcmtWorkplacePossible e" + " WHERE "
-						+ "e.krcmtWorkplacePossiblePK.contractCode = :contractCode "
-						+ " AND e.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD "
-						+ " AND e.krcmtWorkplacePossiblePK.cid = :cid ";
-				this.getEntityManager().createQuery(toDeleteData).setParameter("contractCode", oldData.get().kwlmtWorkLocationPK.contractCode)
-						.setParameter("workLocationCD", oldData.get().kwlmtWorkLocationPK.workLocationCD)
-						.setParameter("cid", newData.krcmtWorkplacePossible.get(0).krcmtWorkplacePossiblePK.cid).executeUpdate();
-				this.commandProxy().insertAll(newData.krcmtWorkplacePossible);
-				
-			}
+//			if (!wkids.isEmpty()) {
+//				String toDeleteData = "DELETE FROM KrcmtWorkplacePossible e" + " WHERE "
+//						+ "e.krcmtWorkplacePossiblePK.contractCode = :contractCode "
+//						+ " AND e.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD "
+//						+ " AND e.krcmtWorkplacePossiblePK.cid = :cid ";
+//				this.getEntityManager().createQuery(toDeleteData).setParameter("contractCode", oldData.get().kwlmtWorkLocationPK.contractCode)
+//						.setParameter("workLocationCD", oldData.get().kwlmtWorkLocationPK.workLocationCD)
+//						.setParameter("cid", newData.krcmtWorkplacePossible.get(0).krcmtWorkplacePossiblePK.cid).executeUpdate();
+//				this.commandProxy().insertAll(newData.krcmtWorkplacePossible);
+//				
+//			}
 		}
 
 	}
@@ -176,6 +187,32 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 					.map(c -> KrcmtIP4Address.toEntity(contractCode, workLocationCD, c)).collect(Collectors.toList()));
 		}
 
+	}
+
+	@Override
+	public List<WorkLocation> findByWorkPlace(String contractCode, String cid, String workPlaceId) {
+		List<WorkLocation> result = this.queryProxy().query(SELECT_BY_WORKPLACES, KrcmtWorkLocation.class)
+				.setParameter("contractCode", contractCode)
+				.setParameter("cid", cid)
+				.setParameter("workplaceId", workPlaceId)
+				.getList(c -> c.toDomain());
+		
+		return result;
+	}
+
+	@Override
+	public void deleteByWorkLocationCd(String contractCode, String workLocationCD, String cid) {
+		this.commandProxy().remove(KrcmtWorkplacePossible.class, new KrcmtWorkplacePossiblePK(contractCode, workLocationCD, cid));
+	}
+
+	@Override
+	public Optional<WorkLocation> findByWorkLocationCd(String contractCode, String cid, String workLocationCD) {
+		Optional<WorkLocation> result = this.queryProxy().query(SELECT_BY_WORKPLACE, KrcmtWorkLocation.class)
+				.setParameter("contractCode", contractCode)
+				.setParameter("workLocationCD", workLocationCD)
+				.setParameter("cid", cid)
+				.getSingle(c -> c.toDomain());
+		return result;
 	}
 
 }
