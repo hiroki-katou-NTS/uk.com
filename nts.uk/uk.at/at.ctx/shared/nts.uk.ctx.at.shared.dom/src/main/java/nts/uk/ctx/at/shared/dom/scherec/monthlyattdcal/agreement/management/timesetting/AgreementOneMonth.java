@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 public class AgreementOneMonth {
 
 	/** 基本設定 */
+	@Setter
 	private OneMonthTime basic;
 	/** 特例条項による上限 */
 	private OneMonthTime specConditionLimit;

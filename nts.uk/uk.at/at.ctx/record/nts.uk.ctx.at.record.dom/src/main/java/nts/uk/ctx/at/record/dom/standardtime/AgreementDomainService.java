@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enum
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.limitrule.AgreementMultiMonthAvg;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
@@ -89,7 +90,8 @@ public class AgreementDomainService {
 		personYMSetting.ifPresent(pys -> {
 			
 			/** 取得した36協定基本設定。１ヶ月を上書きする */
-			basicSetting.getOneMonth().getBasic().setErAlTime(pys.getOneMonthTime());
+			basicSetting.getOneMonth().setBasic(OneMonthTime.of(pys.getOneMonthTime(),
+							basicSetting.getOneMonth().getSpecConditionLimit().getUpperLimit()));
 			basicSetForCalc.personAgreementSetted();
 		});
 		
