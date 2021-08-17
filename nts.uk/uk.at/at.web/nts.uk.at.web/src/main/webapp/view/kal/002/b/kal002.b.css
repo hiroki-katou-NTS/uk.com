@@ -4,13 +4,18 @@
     margin-left: 35px;
 }
 
+.switchbox-wrappers.radio-wrappers label input+span {
+    text-align: center;
+    width: 62px;
+}
+
 .setMail {
     margin: 0 0 30px 36px;
 }
 
 .setMail .left {
     float: left;
-    width: 240px;
+    width: 190px;
 }
 
 .setMail .right {
@@ -48,10 +53,19 @@
 }
 
 .custom-btn {
+    margin-left: 30px;
     width: 80px;
-    height: 29px;
+    height: 30px;
 }
 
 .tab-2 {
     margin-left: 36px;
 }
+
+.tabs-panel.has-content {
+    width: 42%;
+    overflow: hidden;
+    padding-left: 40px;
+}
+
+
