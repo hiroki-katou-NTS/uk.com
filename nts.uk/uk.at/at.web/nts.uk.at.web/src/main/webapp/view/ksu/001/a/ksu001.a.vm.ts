@@ -4279,6 +4279,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/g/index.xhtml").onClosed(() => {});
         }
 
+        openDialogK() {
+            let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor : IUserInfor = JSON.parse(item.get());
+            setShared('dataShareDialogK', {
+                orgUnit: userInfor.unit,
+                orgId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                startDate: moment(self.dtPrev()).toISOString(),
+                endDate: moment(self.dtAft()).toISOString(),
+                employeeIds : self.sids(),
+            });
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/ka/index.xhtml");
+        }
+
         // A2_1
         openKDL046() {
             let self = this;

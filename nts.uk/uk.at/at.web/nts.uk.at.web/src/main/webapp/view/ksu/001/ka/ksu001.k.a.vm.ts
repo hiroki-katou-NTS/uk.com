@@ -1,10 +1,11 @@
-module nts.uk.at.view.ksu005.a {
+module nts.uk.at.view.ksu001.k.a {
     import setShare = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import character = nts.uk.characteristics;
 
     const Paths = {
-        GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID:"ctx/at/schedule/scheduletable/getall"
+        GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID:"ctx/at/schedule/scheduletable/getall",
+        EXPORT: "ctx/at/schedule/personal/by-workplace/export"
     };
     @bean()
     class Ksu005aViewModel extends ko.ViewModel {
@@ -14,10 +15,14 @@ module nts.uk.at.view.ksu005.a {
         enableSetting: KnockoutObservable<boolean> = ko.observable(true);
         name: KnockoutObservable<string> = ko.observable('');
         comments: KnockoutObservable<string>;
-        characteristics: Characteristics = {};
-        constructor() {
-            super();
-            const self = this; 
+        characteristics: Characteristics = {code: null, name: null, comments: null};
+        params: any;
+
+        created(params?: any) {
+            const self = this;
+            self.$window.shared("dataShareDialogK").done(data => {
+                self.params = data;
+            });
             self.comments = ko.observable("");
 
             self.selectedCode.subscribe((code: string) => { 
@@ -83,7 +88,7 @@ module nts.uk.at.view.ksu005.a {
             let self = this;
             let code = self.selectedCode();
             setShare('dataShareKSU005a', code);
-            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/b/index.xhtml').onClosed(() => {
+            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/001/kb/index.xhtml').onClosed(() => {
                 let dataList: Array<ItemModel> = [];
                 let res = getShared('dataShareCloseKSU005b');
                 self.$blockui("invisible");
@@ -100,7 +105,8 @@ module nts.uk.at.view.ksu005.a {
                             self.loadScheduleOutputSetting();
                         } else if (data[0].isAttendance) {                            
                             self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
-                                self.openDialog();
+                                // self.openDialog();
+                                $("#A2_3").focus();
                             });
                         } else {
                             self.$dialog.error({ messageId: 'Msg_1970' }).then(() => {                                
@@ -115,6 +121,42 @@ module nts.uk.at.view.ksu005.a {
                 });
             });
             $('#exportExcel').focus();
+        }
+
+        exportExcel() {
+            const vm = this;
+            const query: any = {
+                orgUnit: vm.params.orgUnit,
+                orgId: vm.params.orgId,
+                periodStart: vm.params.startDate,
+                periodEnd: vm.params.endDate,
+                employeeIds: vm.params.employeeIds,
+                outputSettingCode: vm.selectedCode(),
+                comment: vm.comments(),
+                excel: true,
+                closureDate: null
+            };
+            nts.uk.request.exportFile(Paths.EXPORT, query);
+        }
+
+        exportPdf() {
+            const vm = this;
+            const query: any = {
+                orgUnit: vm.params.orgUnit,
+                orgId: vm.params.orgId,
+                periodStart: vm.params.startDate,
+                periodEnd: vm.params.endDate,
+                employeeIds: vm.params.employeeIds,
+                outputSettingCode: vm.selectedCode(),
+                comment: vm.comments(),
+                excel: false,
+                closureDate: null
+            };
+            nts.uk.request.exportFile(Paths.EXPORT, query);
+        }
+
+        previewOutput() {
+
         }
     }
 

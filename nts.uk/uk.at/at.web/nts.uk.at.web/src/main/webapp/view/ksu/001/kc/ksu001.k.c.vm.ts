@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu005.c {
+module nts.uk.at.view.ksu001.k.c {
     import getText = nts.uk.resource.getText;
     import setShare = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;

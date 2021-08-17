@@ -1,4 +1,4 @@
-module nts.uk.at.view.ksu005.b {
+module nts.uk.at.view.ksu001.k.b {
     import getText = nts.uk.resource.getText;
     import setShare = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
@@ -16,11 +16,11 @@ module nts.uk.at.view.ksu005.b {
         currentScreen: any = null;
         items: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
         persons: KnockoutObservableArray<any> = ko.observableArray([]);
-        columns: KnockoutObservableArray<NtsGridListColumn>;
-        columns3: KnockoutObservableArray<NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
+        columns3: KnockoutObservableArray<any>;
         selectedCode: KnockoutObservable<string>= ko.observable('');
         selectedPerson: KnockoutObservable<any> = ko.observable();
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
         addSelected: any;        
         lstAddColInfo: KnockoutObservableArray<any>;
@@ -28,14 +28,13 @@ module nts.uk.at.view.ksu005.b {
         enableDelete: KnockoutObservable<boolean> = ko.observable(true);
 
         itemsSwap: KnockoutObservableArray<any> = ko.observableArray([]);
-        columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedCodeListSwap: KnockoutObservableArray<any> = ko.observableArray([]);
 
         lstWorkInfo: KnockoutObservableArray<any>;
         workSelected: any;
         checked: KnockoutObservable<boolean>;
-        isShiftBackgroundColor: KnockoutObservable<boolean> = ko.observable(false);
+        displayShiftBackgroundColor: KnockoutObservable<number> = ko.observable(0);
 
         itemList: KnockoutObservableArray<ScreenItem> = ko.observableArray([]);
 
@@ -69,32 +68,26 @@ module nts.uk.at.view.ksu005.b {
             self.personalCounterCategory.splice(0, 0, {value: -1 , name:getText('KSU005_68')});
 
             self.columns = ko.observableArray([
-                { headerText: getText('KSU005_18'), key: 'code', width: 60 },
-                { headerText: getText('KSU005_19'), key: 'name', width: 150}
-            ]);
-
-            self.columns2 = ko.observableArray([
-                { headerText: getText('KSU005_43'), key: 'name', width: 160 },
-                { headerText: 'No', key: 'value', width: 50, hidden: true }, 
+                { headerText: getText('KSU001_4093'), key: 'code', width: 60 },
+                { headerText: getText('KSU001_4094'), key: 'name', width: 150}
             ]);
  
             self.columns3 = ko.observableArray([     
-                { headerText: "", key: 'value', width: 30, hidden: true},          
-                { headerText: getText('KSU005_48'), key: 'name', width: 150}
+                { headerText: "", key: 'value', width: 0, hidden: true},
+                { headerText: getText('KSU001_4122'), key: 'name', width: 150}
             ]);
 
             self.tabs = ko.observableArray([
-                {id: 'tab-1', title: getText('KSU005_23'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-2', title: getText('KSU005_24'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
-                {id: 'tab-3', title: getText('KSU005_25'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)}
-            
+                {id: 'tab-1', title: getText('KSU001_4098'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'tab-2', title: getText('KSU001_4099'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true)},
+                {id: 'tab-3', title: getText('KSU001_4100'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true)}
             ]);
 
             self.selectedTab = ko.observable('tab-1');
 
             self.lstAddColInfo = ko.observableArray([
-                { code: '1', name: getText('KSU005_27') },
-                { code: '0', name: getText('KSU005_28') }
+                { code: 1, name: getText('KSU001_4102') },
+                { code: 0, name: getText('KSU001_4103') }
             ]);
 
             self.addSelected = ko.observable(0);
@@ -102,26 +95,22 @@ module nts.uk.at.view.ksu005.b {
             self.checked = ko.observable(false);
 
             self.lstWorkInfo = ko.observableArray([
-                { code: '0', name: getText('KSU005_73') },
-                { code: '1', name: getText('KSU005_74') }
+                { code: 0, name: getText('KSU001_4142') },
+                { code: 1, name: getText('KSU001_4143') }
             ]);
             self.workSelected = ko.observable(0);
 
-            $("#fixed-table").ntsFixedTable({ height: 400, width: 660 }); 
+            $("#fixed-table").ntsFixedTable({ height: 178 });
 
             self.scheduleTableOutputSetting().shiftBackgroundColor.subscribe((value)=>{
-                if(value ==1 ){
-                    self.isShiftBackgroundColor(true);
-                } else {
-                    self.isShiftBackgroundColor(false);
-                }
+                self.displayShiftBackgroundColor(value);
             });
-            self.isShiftBackgroundColor.subscribe((value) => {     
+            self.displayShiftBackgroundColor.subscribe((value) => {     
                 if(self.isReload()) {
                     self.isReload(false);
                     return;
                 } else {
-                    if (value) {
+                    if (value == 1) {
                         self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, true);
                         self.isEnableDelBtn(false);
                         self.isEnableAttendanceItem(false);
@@ -132,7 +121,7 @@ module nts.uk.at.view.ksu005.b {
                         self.isEnableAddBtn(true);
                     }
                     if(self.countNumberRow < 10){
-                        value ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
+                        value == 1 ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
                     } else {
                         self.isEnableAddBtn(false)
                     }      
@@ -232,11 +221,11 @@ module nts.uk.at.view.ksu005.b {
                         
                         self.scheduleTableOutputSetting().isEnableCode(false);
                         self.isEnableAddBtn(data.shiftBackgroundColor == 0);
-                        if(self.isShiftBackgroundColor() != (data.shiftBackgroundColor ==1)){                               
+                        if(self.displayShiftBackgroundColor() != data.shiftBackgroundColor){                               
                             self.isReload(true);            
-                            self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
+                            self.displayShiftBackgroundColor(data.shiftBackgroundColor);
                         }                        
-                        self.isEnableAttendanceItem(!self.isShiftBackgroundColor());
+                        self.isEnableAttendanceItem(self.displayShiftBackgroundColor() == 0);
     
                         datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
                             data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
@@ -351,7 +340,7 @@ module nts.uk.at.view.ksu005.b {
                 code: self.scheduleTableOutputSetting().code(),
                 name: self.scheduleTableOutputSetting().name(),
                 additionalColumn: self.scheduleTableOutputSetting().additionalColumn(),
-                shiftBackgroundColor: self.isShiftBackgroundColor() ? 1 : 0,
+                shiftBackgroundColor: self.displayShiftBackgroundColor(),
                 dailyDataDisplay: self.scheduleTableOutputSetting().dailyDataDisplay(),
                 workplaceCounterCategories: self.selectedCodeListSwap(),
             }
@@ -396,7 +385,7 @@ module nts.uk.at.view.ksu005.b {
                     if(!command.shiftBackgroundColor || command.shiftBackgroundColor == self.scheduleTableOutputSetting().shiftBackgroundColor()){
                         self.reloadData(command.code);
                     } else {
-                        self.loadDetail(command.code, command.additionalColumn == 1, self.isShiftBackgroundColor());
+                        self.loadDetail(command.code, command.additionalColumn == 1, self.displayShiftBackgroundColor() == 1);
                     } 
                     self.$dialog.info({messageId: "Msg_15"}).then(function() {
                         $('#outputSettingName').focus();
@@ -536,7 +525,7 @@ module nts.uk.at.view.ksu005.b {
             self.isEnableDelBtn(false);
             self.isEnableAddBtn(true);
             self.isEnableAttendanceItem(true);
-            self.isShiftBackgroundColor(false);
+            self.displayShiftBackgroundColor(0);
             self.initialData();
             self.clearError();
             self.checkAll(false);
@@ -648,15 +637,11 @@ module nts.uk.at.view.ksu005.b {
             request.copySourceName = self.scheduleTableOutputSetting().name();
 
             setShare('dataShareKSU005b', request);
-            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/c/index.xhtml').onClosed(() =>{
+            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/001/kc/index.xhtml').onClosed(() =>{
                 let newCode = getShared('dataShareKSU005c');
                 newCode ? self.reloadData(newCode) : self.reloadData(self.scheduleTableOutputSetting().code());
                 newCode ? self.exitStatus('Update') : self.exitStatus('Cancel');
             });
-        }
-
-        mounted(){
-            $("#swap-list-grid2_name").html(getText('KSU005_45'));
         }
     }
 
