@@ -4783,6 +4783,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
         }
 
+		openKDL051Dialog() {
+            let self = this;
+            let param = {
+                employeeIds: [self.selectedEmployee()],
+                baseDate: new Date()
+            }
+            setShared('KDL051A_PARAM', param);
+            modal("/view/kdl/051/single.xhtml");
+        }
+
+		openKDL052Dialog() {
+            let self = this;
+            let param = {
+                employeeIds: [self.selectedEmployee()],
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
+            }
+			setShared('OPEN_WINDOWS_DATA', param);// nts.uk.characteristics.OPEN_WINDOWS_DATA
+            modal('/view/kdl/052/single.xhtml');
+        }
+
     }
 
     export class AuthorityDetailModel {
@@ -5424,7 +5444,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (childCareVacation.remainDays < 0 || (childCareVacation.remainDays == 0 && childCareVacation.remainTime < 0))
                     $("#fixed-table td.remain-childCare-day").css("color", "#ff0000");
                 else
-                    $("#fixed-table td.remain-childCare-day").css("color", "");
+                    $("#fixed-table td.remain-childCare-day").css("color", "#06c");
             } else
                 this.childCareValue = "";
 
@@ -5438,7 +5458,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 if (longTermCareVacation.remainDays < 0 || (longTermCareVacation.remainDays == 0 && longTermCareVacation.remainTime < 0))
                     $("#fixed-table td.remain-longTermCare-day").css("color", "#ff0000");
                 else
-                    $("#fixed-table td.remain-longTermCare-day").css("color", "");
+                    $("#fixed-table td.remain-longTermCare-day").css("color", "#06c");
             } else
                 this.longTermCareValue = "";
         }
