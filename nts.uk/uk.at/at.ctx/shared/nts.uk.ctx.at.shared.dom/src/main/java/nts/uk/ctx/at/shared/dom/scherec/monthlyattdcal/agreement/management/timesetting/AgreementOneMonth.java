@@ -4,12 +4,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
 
 /** 36協定1ヶ月 */
@@ -18,7 +18,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 public class AgreementOneMonth {
 
 	/** 基本設定 */
-	@Setter
 	private OneMonthTime basic;
 	/** 特例条項による上限 */
 	private OneMonthTime specConditionLimit;
@@ -26,6 +25,12 @@ public class AgreementOneMonth {
 	public AgreementOneMonth() {
 		this.basic = new OneMonthTime();
 		this.specConditionLimit = new OneMonthTime();
+	}
+	
+	/** 社員の３６協定年月設定を取り込む　*/
+	public void updateWithEmpSet(OneMonthErrorAlarmTime erAlTime) {
+		
+		this.basic = OneMonthTime.of(erAlTime, this.specConditionLimit.getUpperLimit());
 	}
 	
 	/** エラーチェック */
