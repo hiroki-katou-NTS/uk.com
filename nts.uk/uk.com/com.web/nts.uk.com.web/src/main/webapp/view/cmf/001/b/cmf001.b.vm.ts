@@ -271,16 +271,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			this.code = code;
 		}
 	}
-
-	class comboBoxItem {
-		code: any;
-		name: string;
-
-		constructor(code: any, name: string) {
-				this.code = code;
-				this.name = name;
-		}
-	}
 	
 	export class Layout {
 		itemNo: number;
