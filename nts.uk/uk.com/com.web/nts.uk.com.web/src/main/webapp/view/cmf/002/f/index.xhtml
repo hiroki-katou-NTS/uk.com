@@ -29,14 +29,14 @@
 			</div>
 			<div id="contents-area" class="fixed-flex-layout">
 				<div class="container cf">
-					<div class="flex div-line">
+					<div class="flex div-line valign-center">
 						<!--F2 条件コード/名称-->
 						<div id="F2" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_78')}</div>
 						<!--F2_1 条件設定名--> 
 						<span id="F2_1" class="label ellipsis" style = "margin-right: 15px;" data-bind="text: condSetCd"></span>
 						<span id="F2_1" class="label ellipsis" data-bind="text: conditionSetName"></span>
 					</div>
-					<div class="flex div-line">
+					<div class="flex div-line valign-center">
 						<!--F3 カテゴリ名(ラベル)--> 
 						<div id="F2" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_79')}</div>
 						<!--F3_1 カテゴリ名--> 
@@ -74,7 +74,7 @@
 							</div>
 							<div class="div-line">
 								<!--F5_1_1 項目型-->
-								<div id="F5_1_1" style="width: 100px;"
+								<div id="F5_1_1" style="width: 95px;"
 										data-bind="ntsComboBox: {
 														name: '#{i18n.getText('CMF002_84')}',
 														options: itemTypeItems,
@@ -125,7 +125,7 @@
 								</button>
 							</div>
 						</div>
-						<div style="margin-top: 50px;">
+						<div style="margin-top: 33px;">
 							<div class="div-line">
 								<!--F6 選択項目一覧(ラベル)--> 
 								<div id="F6" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMF002_94')}</div>

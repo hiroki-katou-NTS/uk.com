@@ -100,7 +100,46 @@ public class SendReservationMenuServiceTest {
 		List<SendReservationMenu> actual = SendReservationMenuService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getBentoMenu(), d -> d.getUnit(), d -> d.getFrameNumber())
-				.containsExactly(Tuple.tuple("A", "1", 1), Tuple.tuple("B", "1", 2));
+				.contains(Tuple.tuple("A", "1", 1), Tuple.tuple("B", "1", 2),
+						Tuple.tuple("", "", 3),
+						Tuple.tuple("", "", 4),
+						Tuple.tuple("", "", 5),
+						Tuple.tuple("", "", 6),
+						Tuple.tuple("", "", 7),
+						Tuple.tuple("", "", 8),
+						Tuple.tuple("", "", 9),
+						Tuple.tuple("", "", 10),
+						Tuple.tuple("", "", 11),
+						Tuple.tuple("", "", 12),
+						Tuple.tuple("", "", 13),
+						Tuple.tuple("", "", 14),
+						Tuple.tuple("", "", 15),
+						Tuple.tuple("", "", 16),
+						Tuple.tuple("", "", 17),
+						Tuple.tuple("", "", 18),
+						Tuple.tuple("", "", 19),
+						Tuple.tuple("", "", 20),
+						Tuple.tuple("", "", 21),
+						Tuple.tuple("", "", 22),
+						Tuple.tuple("", "", 23),
+						Tuple.tuple("", "", 24),
+						Tuple.tuple("", "", 25),
+						Tuple.tuple("", "", 26),
+						Tuple.tuple("", "", 27),
+						Tuple.tuple("", "", 28),
+						Tuple.tuple("", "", 29),
+						Tuple.tuple("", "", 30),
+						Tuple.tuple("", "", 31),
+						Tuple.tuple("", "", 32),
+						Tuple.tuple("", "", 33),
+						Tuple.tuple("", "", 34),
+						Tuple.tuple("", "", 35),
+						Tuple.tuple("", "", 36),
+						Tuple.tuple("", "", 37),
+						Tuple.tuple("", "", 38),
+						Tuple.tuple("", "", 39),
+						Tuple.tuple("", "", 40)
+						);
 	}
 
 }

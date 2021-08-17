@@ -46,13 +46,7 @@ public enum ChangeClockArt {
 	PC_LOG_ON(10,"PCログオン"),
 
 	/** PCログオフ */
-	PC_LOG_OFF(11,"PCログオフ"),
-
-	/** 応援出勤 */
-	SUPPORT(12,"応援出勤"),
-
-	/** 臨時+応援出勤 */
-	TEMPORARY_SUPPORT_WORK(13,"臨時+応援出勤");
+	PC_LOG_OFF(11,"PCログオフ");
 
 	/** The value. */
 	public int value;

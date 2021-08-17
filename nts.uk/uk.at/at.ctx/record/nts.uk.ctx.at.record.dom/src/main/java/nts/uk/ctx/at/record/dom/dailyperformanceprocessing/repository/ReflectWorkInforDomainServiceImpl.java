@@ -1000,7 +1000,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						Optional<WorkType> workTypeOptional = this.workTypeRepository.findByPK(companyId,
 								workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTypeCode().v());
 						WorkStyle workStyle = this.basicScheduleService
-								.checkWorkDay(workTypeOptional.get().getWorkTypeCode().v());
+								.checkWorkDay(companyId, workTypeOptional.get().getWorkTypeCode().v());
 						if (!(workStyle == WorkStyle.ONE_DAY_REST)) {
 
 							// 所定時間帯を取得する

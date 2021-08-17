@@ -173,6 +173,10 @@ div.form-label.broken {
 	overflow: hidden;		
 }
 
+.headerKAF010 {
+	background-color: #CFF1A5;
+}
+
 .scroll-header{
 	height: 24px !important;
 }
