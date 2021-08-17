@@ -18,8 +18,9 @@
 }
 
 .tabs-panel.has-content {
-    width: 100%;
+    width: 90%;
     overflow: hidden;
+    padding-left: 39px;
 }
 
 .width-70 {
