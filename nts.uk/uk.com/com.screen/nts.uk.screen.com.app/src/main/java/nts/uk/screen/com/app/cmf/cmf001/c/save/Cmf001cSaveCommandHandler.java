@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.cmf.cmf001.save;
+package nts.uk.screen.com.app.cmf.cmf001.c.save;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -12,7 +12,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
-import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -45,32 +44,27 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 	private void updateSetting(String companyId, Cmf001cSaveCommand command, ExternalImportSetting setting) {
 		
 		val mapping = setting.getAssembly().getMapping();
-		val item = mapping.getByItemNo(command.getItemNo()).get();
+		int itemNo = command.getItemNo();
 		
 		if (command.isFixedValue()) {
-			item.setFixedValue(StringifiedValue.of(command.getFixedValue()));
+			mapping.setFixedValue(itemNo, StringifiedValue.of(command.getFixedValue()));
+		} else if (command.isCsvMapping()) {
+			mapping.setCsvMapping(itemNo);
+		} else {
+			mapping.setNoSetting(itemNo);
 		}
-		
-		mapping.resetCsvColumnNoByOrder();
 		
 		settingRepo.update(setting);
 	}
 
 	private void updateReviseItem(String companyId, Cmf001cSaveCommand command, ExternalImportSetting setting) {
-		
-		if (!command.isCsvMapping()) {
-			return;
-		}
-		
+
 		val importableItem = importableItemRepo.get(setting.getExternalImportGroupId(), command.getItemNo())
 				.orElseThrow(() -> new RuntimeException("not found: " + command.getSettingCode() + ", " + command.getItemNo()));
-		
-		val reviseItem = new ReviseItem(
-				companyId,
-				command.getExternalImportCode(),
-				command.getItemNo(),
-				command.getRevisingValue().toDomain(importableItem.getItemType()));
-		
-		reviseItemRepo.persist(reviseItem);
+
+		command.toDomainReviseItem(companyId, importableItem.getItemType())
+			.ifPresent(reviseItem -> {
+				reviseItemRepo.persist(reviseItem);
+			});
 	}
 }
