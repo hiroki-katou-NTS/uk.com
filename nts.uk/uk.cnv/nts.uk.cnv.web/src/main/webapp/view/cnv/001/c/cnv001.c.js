@@ -57,7 +57,8 @@ var TabMap = {
 	"DATETIME_MERGE": "#datetimeMerge",
 	"GUID": "#guid",
 	"PASSWORD": "#password",
-	"FILE_ID": "#fileId"
+	"FILE_ID": "#fileId",
+	"SOURCE_JOIN": "#sourceJoin"
 };
 
 class columnData {
@@ -281,20 +282,36 @@ $(function(){
 	}
 
 	$("#btnLoadParent").click(function () {
-		loadParent(function () {});
+
+		$(".selSourceParentColumn > option").remove();
+		$(".selSourceParentColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
+
+		var parentTable = $("#txtParentTblName").val();
+		loadTableDesignByOruta(parentTable, function (options) {
+			$(".selSourceParentColumn > option").remove();
+			$(".selSourceParentColumn").append(options);
+		});
 	});
 
-	function loadParent(setDataFunc) {
-		var parentTable = $("#txtParentTblName").val();
+	$("#btnLoadSourceTbl").click(function () {
 
-		if(parentTable === null) {
-			$(".selSourceParentColumn > option").remove();
-			$(".selSourceParentColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
+		$(".selJoinSourceColumn > option").remove();
+		$(".selJoinSourceColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
+		var sourceTable = $("#txtSourceTblName").val();
+		loadTableDesignByErp(sourceTable, function (options) {
+			$(".selJoinSourceColumn > option").remove();
+			$(".selJoinSourceColumn").append(options);
+		});
+	});
+
+	function loadTableDesignByOruta(targetTable, setDataFunc) {
+
+		if(targetTable === null) {
 			return;
 		}
 
 		$.ajax(
-				$.extend({url:server + servicePath.getukcolumns_oruta + '/' + parentTable + '/not-accepted'}, {type: "GET"})
+				$.extend({url:server + servicePath.getukcolumns_oruta + '/' + targetTable + '/not-accepted'}, {type: "GET"})
 		).done(function (res) {
 			var options = $.map(res.columns, function (value, index) {
 				return $('<option>', {
@@ -307,14 +324,30 @@ $(function(){
 						+ value.type.length
 						+ ","
 						+ value.type.scale
-						+")"
+						+ ")"
 					});
 			});
 
-			$(".selSourceParentColumn > option").remove();
-			$(".selSourceParentColumn").append(options);
+			setDataFunc(options);
+		}).fail(function(rej){
+			console.log(rej);
+		});
+	}
 
-			setDataFunc();
+	function loadTableDesignByErp(targetTable, setDataFunc) {
+
+		if(targetTable === null) {
+			return;
+		}
+
+		$.ajax(ajaxOption.build(servicePath.geterpcolumns, {
+			tableName: targetTable
+		})).done(function (res) {
+			var options = $.map(res, function (value, index) {
+				return $('<option>', {value: value.columnName, text: value.columnName + String.fromCharCode(160).repeat(25-getLen(value.columnName)) + " : " + value.dataType});
+			});
+
+			setDataFunc(options);
 		}).fail(function(rej){
 			console.log(rej);
 		});
@@ -515,6 +548,11 @@ $(function(){
 		var fileType;
 		var sourceColumn_kojinId;
 
+		// SOURCE_JOIN
+		var joinSourceTable;
+		var sourceColumn_sourceJoin;
+		var joinSourcePKs;
+
 		switch(conversionType){
 		case "NONE":
 			sourceColumn_none = $("#selSourceColumn_none option:selected").val();
@@ -575,7 +613,7 @@ $(function(){
 				return $(elem).val();
 			}).join(',');
 
-			if(codeToIdType === "" || sourceColumn_codeToId === "" || joinPKs === "") {
+			if(parentTable === "" || sourceColumn_parent === "" || joinPKs === "") {
 				showMsg("必須項目が入力されていません");
 				return;
 			}
@@ -616,7 +654,7 @@ $(function(){
 			break;
 		case "PASSWORD":
 			sourceColumn_password = $("#selSourceColumn_password option:selected").val();
-			if(sourceColumn_none === "") {
+			if(sourceColumn_password === "") {
 				showMsg("必須項目が入力されていません");
 				return;
 			}
@@ -625,7 +663,26 @@ $(function(){
 			sourceColumn_fileId = $("#selSourceColumn_fileId option:selected").val();
 			fileType = $("#selFileType option:selected").val();
 			sourceColumn_kojinId = $("#selSourceColumn_kojinId option:selected").val();
-			if(sourceColumn_none === "" || fileType === "") {
+			if(sourceColumn_fileId === "" || fileType === "") {
+				showMsg("必須項目が入力されていません");
+				return;
+			}
+			break;
+		case "SOURCE_JOIN":
+			joinSourceTable = $("#txtSourceTblName").val();
+			sourceColumn_sourceJoin = $("#selSourceColumn_source option:selected").val();
+
+			var elems = $(".selSourceJoinPK:not(:disabled)").sort(function(a,b){
+				    if($(a).attr("id") < $(b).attr("id")) return -1;
+				    if($(a).attr("id") > $(b).attr("id")) return 1;
+				    return 0;
+				});
+
+			joinSourcePKs = $.map(elems, function (elem, index) {
+				return $(elem).val();
+			}).join(',');
+
+			if(joinSourceTable === "" || sourceColumn_sourceJoin === "" || joinSourcePKs === "") {
 				showMsg("必須項目が入力されていません");
 				return;
 			}
@@ -676,7 +733,10 @@ $(function(){
 			sourceColumn_password: sourceColumn_password,
 			sourceColumn_fileId: sourceColumn_fileId,
 			fileType: fileType,
-			sourceColumn_kojinId: sourceColumn_kojinId
+			sourceColumn_kojinId: sourceColumn_kojinId,
+			joinSourceTable: joinSourceTable,
+			sourceColumn_sourceJoin: sourceColumn_sourceJoin,
+			joinSourcePKs: joinSourcePKs
 		};
 	}
 
@@ -765,6 +825,23 @@ $(function(){
 			break;
 		case "FILE_ID":
 			$("#selSourceColumn_fileId").val(data.sourceColumn_fileId);
+			break;
+		case "SOURCE_JOIN":
+			$("#txtSourceTblName").val(data.sourceTable);
+
+			if(typeof data.parentTable !== "undefined" ) {
+				loadParent( function() {
+
+					$("#selSourceColumn_source").val(data.sourceColumn_sourceJoin);
+
+					$("#parent input[type='checkbox']").prop("checked", false);
+					$.each(data.joinSourcePKs.split(","), function (index, value) {
+						$("#chkSourceJoin" + (index + 1)).prop("checked", true);
+						$("#selSourceJoinPK"+ (index + 1)).prop('disabled', false);
+						$("#selSourceJoinPK" + (index + 1)).val(value)
+					});
+				});
+			}
 			break;
 		}
 	}

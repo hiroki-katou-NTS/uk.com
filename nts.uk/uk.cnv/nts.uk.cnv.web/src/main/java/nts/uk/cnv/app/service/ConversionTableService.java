@@ -32,6 +32,7 @@ import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValueWithConditionPatter
 import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.SourceJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.StringConcatPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.TimeWithDayAttrPattern;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
@@ -239,6 +240,12 @@ public class ConversionTableService {
 		case FileId:
 			FileIdPattern fileId = (FileIdPattern) domain.getPattern();
 			result.setSourceColumn_fileId(fileId.getSourceColumnName());
+			return result;
+		case SourceJoin:
+			SourceJoinPattern sourceJoin = (SourceJoinPattern) domain.getPattern();
+			result.setSourceTable(sourceJoin.getSourceJoin().getTableName().getName());
+			result.setSourceColumn_sourceJoin(sourceJoin.getSourceColumn());
+			result.setJoinSourcePKs(sourceJoin.sourceJoinColumns());
 			return result;
 		}
 

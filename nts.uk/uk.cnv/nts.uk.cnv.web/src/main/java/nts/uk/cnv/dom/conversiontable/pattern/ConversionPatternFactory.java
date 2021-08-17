@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
+import nts.uk.cnv.core.dom.constants.Constants;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
@@ -26,6 +27,7 @@ import nts.uk.cnv.core.dom.conversiontable.pattern.GuidPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.SourceJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.StringConcatPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.TimeWithDayAttrPattern;
 
@@ -124,6 +126,27 @@ public class ConversionPatternFactory {
 			case FileId:
 				return new FileIdPattern(info, join, param.getSourceColumn_fileId(),
 						param.getFileType(), param.getSourceColumn_kojinId());
+			case SourceJoin:
+				List<OnSentence> onSentencesForSourceJoin = new ArrayList<>();
+				for (String pk : param.getJoinSourcePKs().split(",")) {
+					onSentencesForSourceJoin.add(
+						new OnSentence(
+							new ColumnName("source_" + param.getJoinSourceTable(), pk),
+							new ColumnName(Constants.BaseTableAlias, pk),
+							Optional.empty()
+						)
+					);
+				}
+
+				return new SourceJoinPattern(
+						info,
+						new Join(
+								info.getSourceTable(param.getJoinSourceTable(), "source_" + param.getJoinSourceTable()),
+								JoinAtr.OuterJoin,
+								onSentencesForSourceJoin),
+						param.getSourceColumn_sourceJoin());
+			default:
+				break;
 		}
 		return null;
 	}

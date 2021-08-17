@@ -75,4 +75,9 @@ public class RegistConversionTableCommand implements ConversionPatternValue {
 	String sourceColumn_fileId;
 	String fileType;
 	String sourceColumn_kojinId;
+
+	/** SOURCE_JOIN **/
+	String joinSourceTable;
+	String sourceColumn_sourceJoin;
+	String joinSourcePKs;
 }

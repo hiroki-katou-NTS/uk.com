@@ -39,6 +39,7 @@ import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeG
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeNone;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeParent;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypePassword;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeSourceJoin;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeStringConcat;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeTimeWithDayAttr;
 
@@ -99,6 +100,9 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeFileId typeFileId;
 
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
+	public ScvmtConversionTypeSourceJoin typeSourceJoin;
+
 
 	@Override
 	protected Object getKey() {
@@ -152,40 +156,13 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 			.typeGuid(ScvmtConversionTypeGuid.toEntity(pk, conversionPattern))
 			.typePassword(ScvmtConversionTypePassword.toEntity(pk, conversionPattern))
 			.typeFileId(ScvmtConversionTypeFileId.toEntity(pk, conversionPattern))
+			.typeSourceJoin(ScvmtConversionTypeSourceJoin.toEntity(pk, conversionPattern))
 			.build();
 	}
 
 	private ConversionPattern createConversionPattern(ConversionInfo info, Join sourceJoin) {
 		ConversionType type = ConversionType.parse(this.conversionType);
-
-		switch(type) {
-			case None:
-				return typeNone.toDomain(info, sourceJoin);
-			case CodeToId:
-				return typeCodeToId.toDomain(info, sourceJoin);
-			case CodeToCode:
-				return typeCodeToCode.toDomain(info, sourceJoin);
-			case FixedValue:
-				return typeFixedValue.toDomain(info, sourceJoin);
-			case FixedValueWithCondition:
-				return typeFixedValueWithCondition.toDomain(info.getDatebaseType().spec(), sourceJoin);
-			case Parent:
-				return typeParent.toDomain(info, sourceJoin);
-			case StringConcat:
-				return typeStringConcat.toDomain(info.getDatebaseType().spec(), sourceJoin);
-			case TimeWithDayAttr:
-				return typeTimeWithDayAttr.toDomain(sourceJoin);
-			case DateTimeMerge:
-				return typeDateTimeMerge.toDomain(info, sourceJoin);
-			case Guid:
-				return typeGuid.toDomain(info.getDatebaseType().spec());
-			case Password:
-				return typePassword.toDomain(info, sourceJoin);
-			case FileId:
-				return typeFileId.toDomain(info, sourceJoin);
-		}
-
-		throw new RuntimeException("ConversionPatternが不正です");
+		return type.toPattern(this, info, sourceJoin);
 	}
 
 	private static List<WhereSentence> createWhereSentence(String tagetTableName, ConversionInfo info, String sourceCondition) {

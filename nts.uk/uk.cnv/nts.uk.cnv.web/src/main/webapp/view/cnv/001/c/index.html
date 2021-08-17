@@ -95,6 +95,7 @@
 										<option value="GUID">GUID発行</option>
 										<option value="PASSWORD">暗号化パスワード</option>
 										<option value="FILE_ID">ファイルID</option>
+										<option value="SOURCE_JOIN">移行元テーブル結合</option>
 									</select>
 								</span>
 							</td>
@@ -116,6 +117,7 @@
 										<li><a href="#guid">GUID発行</a></li>
 										<li><a href="#password">暗号化パスワード</a></li>
 										<li><a href="#fileId">ファイルID</a></li>
+										<li><a href="#sourceJoin">移行元テーブル結合</a></li>
 									</ul>
 									
 									<div id="null">
@@ -842,7 +844,121 @@
 											</tr>
 										</table>
 									</div>
-								</div>
+									
+									<div id="sourceJoin">
+										<!-- 移行元テーブル結合 -->
+										<table>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移行元テーブル名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td colspan="2">
+													<span class="nts-editor-wrapped ntsControl">
+														<input type="text" id="txtSourceTblName" style="width: 250px;" class="nts-editor nts-input reset-element">
+														<button id="btnLoadSourceTbl" class="normal">列情報取得</button>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required broken">
+														<label>移送元列名：</label>
+														<i>全角25文字</i>
+													</div>
+												</td>
+												<td colspan="2">
+													<span class="nts-editor-wrapped ntsControl">
+														<select id="selSourceColumn_source" class="selJoinSourceColumn">
+															<option>-- 未選択 --</option>
+														</select>
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="form-label required">
+														<label>結合条件：</label>
+													</div>
+												</td>
+												<td colspan="2">
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK1:
+													<input type="checkbox" id="chkSourceJoin1" class="nts-editor nts-input reset-element" checked="checked"></input>
+													<select id="selSourceJoinPK1" class="selSourceColumn selSourceJoinPK">
+														<option>-- 未選択 --</option>
+													</select>
+													PK6 :
+													<input type="checkbox" id="chkSourceJoin6" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK6" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK2:
+													<input type="checkbox" id="chkSourceJoin2" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK2" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK7 :
+													<input type="checkbox" id="chkSourceJoin7" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK7" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK3:
+													<input type="checkbox" id="chkSourceJoin3" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK3" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK8 :
+													<input type="checkbox" id="chkSourceJoin8" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK8" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK4:
+													<input type="checkbox" id="chkSourceJoin4" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK4" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK9 :
+													<input type="checkbox" id="chkSourceJoin9" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK9" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="3">
+													PK5:
+													<input type="checkbox" id="chkSourceJoin5" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK5" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+													PK10:
+													<input type="checkbox" id="chkSourceJoin10" class="nts-editor nts-input reset-element"></input>
+													<select id="selSourceJoinPK10" class="selSourceColumn selSourceJoinPK" disabled="disabled">
+														<option>-- 未選択 --</option>
+													</select>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div><!-- end tabs -->
 							</td>
 						</tr>
 					</table>

@@ -74,39 +74,47 @@ public class ConversionSQLHelper {
 	public static class Select {
 		public static SelectSentence CASE_DUMMY = new SelectSentence(
 				new ColumnExpression("SOURCE_ALIAS", "SOURCE_COL2"),
-				caseDummy()
+				caseDummy(),
+				""
 			);
 
 		public static SelectSentence CONVERT_DUMMY = new SelectSentence(
 				new ColumnExpression("SOURCE_ALIAS", "SOURCE_COL3"),
-				convertDummy()
+				convertDummy(),
+				""
 			);
 
 		public static SelectSentence FUNCTION_DUMMY = new SelectSentence(
 				new ColumnExpression("SOURCE_ALIAS", "SOURCE_COL4"),
-				functionDummy()
+				functionDummy(),
+				""
 			);
 
 		private static List<SelectSentence> createDummy() {
 			List<SelectSentence> result = new ArrayList<SelectSentence>();
 			SelectSentence newid = new SelectSentence(
 					new ColumnExpression("NEWID()"),
-					new TreeMap<FormatType, String>());
+					new TreeMap<FormatType, String>(),
+					"");
 			SelectSentence nullValue = new SelectSentence(
 					new ColumnExpression("NULL"),
-					new TreeMap<FormatType, String>());
+					new TreeMap<FormatType, String>(),
+					"");
 			SelectSentence zeroValue = new SelectSentence(
 					new ColumnExpression("0"),
-					new TreeMap<FormatType, String>());
+					new TreeMap<FormatType, String>(),
+					"");
 
 			result.add(newid);
 			result.add(newid);
 			result.add(new SelectSentence(
 					new ColumnExpression("CIDVIEW", "CID"),
-					new TreeMap<FormatType, String>()));
+					new TreeMap<FormatType, String>(),
+					""));
 			result.add(new SelectSentence(
 					new ColumnExpression("SOURCE", "社員CD"),
-					new TreeMap<FormatType, String>()));
+					new TreeMap<FormatType, String>(),
+					""));
 			result.add(zeroValue);
 			result.add(nullValue);
 			result.add(nullValue);

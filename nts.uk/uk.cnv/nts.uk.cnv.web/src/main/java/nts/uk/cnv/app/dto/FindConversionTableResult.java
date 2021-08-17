@@ -71,4 +71,9 @@ public class FindConversionTableResult {
 
 	/** FILE_ID **/
 	String sourceColumn_fileId;
+
+	/** SOURCE_JOIN **/
+	String sourceTable;
+	String sourceColumn_sourceJoin;
+	String joinSourcePKs;
 }
