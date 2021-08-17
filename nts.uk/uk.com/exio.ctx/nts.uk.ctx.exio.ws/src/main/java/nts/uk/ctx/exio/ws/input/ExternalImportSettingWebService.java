@@ -1,17 +1,19 @@
 package nts.uk.ctx.exio.ws.input;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.input.command.setting.RemoveExternalImportSettingCommand;
 import nts.uk.ctx.exio.app.input.command.setting.RemoveExternalImportSettingCommandHandler;
 import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingDto;
-import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingFinder;
 import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingListItemDto;
-import nts.uk.ctx.exio.app.input.find.setting.FindExternalImportSettingLayoutQuery;
+import nts.uk.ctx.exio.app.input.find.setting.GetExternalImportSetting;
 
 @Path("exio/input/setting")
 @Produces("application/json")
