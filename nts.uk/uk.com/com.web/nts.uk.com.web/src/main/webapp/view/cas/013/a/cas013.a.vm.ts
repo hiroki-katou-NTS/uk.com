@@ -5,6 +5,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import dialog = nts.uk.ui.dialog;
+    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     export class ScreenModel {
         //A51
         selectRoleCheckbox: KnockoutObservable<string>;
@@ -210,12 +211,16 @@ module nts.uk.com.view.cas013.a.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 maxWidth: 580,
-                maxHeight:250,
-                maxRows: 10.5
+                maxRows: 10,
             };
+
             //Fixing
             self.multiSelectedCode.subscribe((e) => {
-                self.selectRoleEmployee(e.toString());
+                let item = _.find(self.employeeList(),(i)=>i.code == e.toString());
+                if(!isNullOrUndefined(item)){
+                    let id = item.id.toString()
+                    self.selectRoleEmployee(id);
+                }
             });
             $('#kcp005').ntsListComponent(self.listComponentOption)
 
@@ -262,7 +267,8 @@ module nts.uk.com.view.cas013.a.viewmodel {
                             //KCO005
                             periodDate = (entry.startValidPeriod + " ~ " + entry.endValidPeriod).toString();
                             var employee: UnitModel = {
-                                code: entry.userID,
+                                id : entry.userID,
+                                code: entry.employeeCode,
                                 name: entry.userName,
                                 affiliationName: periodDate,
                                 startValidPeriod: entry.startValidPeriod,
@@ -276,7 +282,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
                         if(employeeSearchs != null) {
                             self.multiSelectedCode.push(employeeSearchs[0].code)
                             self.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
-                            self.selectRoleEmployee(employeeSearchs[0].code);
+                            self.selectRoleEmployee(employeeSearchs[0].id);
                         } else {
                             self.multiSelectedCode([]);
                             self.dateValue({});
@@ -351,7 +357,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
             var roleId = self.selectedRole();
             self.selectedUserID(UserId);
             if (roleId != '' && UserId != '') {
-                var userSelected = _.find(self.employeeList(), ['code',UserId]);
+                var userSelected = _.find(self.employeeList(), (e)=>e.id == UserId);
                 var userEmployee = _.find(self.listRoleIndividual(), ['userId',UserId]);
                 new service.Service().getRoleGrant(roleId, UserId).done(function(data: any) {
                     if (data != null) {
@@ -672,6 +678,7 @@ module nts.uk.com.view.cas013.a.viewmodel {
     }
 
     export interface UnitModel {
+        id?: string;
         code: string;
         name?: string;
         affiliationName?: string;

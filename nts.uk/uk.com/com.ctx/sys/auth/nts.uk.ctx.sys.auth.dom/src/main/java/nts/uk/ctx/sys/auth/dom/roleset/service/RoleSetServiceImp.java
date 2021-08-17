@@ -199,7 +199,8 @@ public class RoleSetServiceImp implements RoleSetService{
 		}
 		
     	// Get Default RoleSet
-    	String defaultRoleSetCD = defaultRoleSetRepository.findByCompanyId(companyId).get().getRoleSetCd().v();
+        val defaultOpt  = defaultRoleSetRepository.findByCompanyId(companyId);
+    	String defaultRoleSetCD = defaultOpt.isPresent()? defaultOpt.get().getRoleSetCd().v() : null;
     	return roleSetRepository.findByRoleSetCdAndCompanyId(defaultRoleSetCD, companyId);
 	}
 }

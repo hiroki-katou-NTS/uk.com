@@ -37,7 +37,7 @@ module nts.uk.com.view.cas011.a {
         }));
         selectedRoleSetCd: KnockoutObservable<string> = ko.observable('');
         isNewMode: KnockoutObservable<boolean>;
-        isCheck: KnockoutObservable<boolean> = ko.observable(false);
+        enableCheckDefault: KnockoutObservable<boolean> = ko.observable(true);
         roleSetCount: KnockoutObservable<number> = ko.observable(0);
         gridColumns: KnockoutObservableArray<NtsGridListColumn>;
         swapColumns: KnockoutObservableArray<NtsGridListColumn>;
@@ -212,25 +212,26 @@ module nts.uk.com.view.cas011.a {
                         //vm.createCurrentRoleSet(_roleSet);
                         vm.settingUpdateMode(_roleSet.roleSetCd);
                     } else { //in case number of RoleSet is zero
-                        vm.createNewCurrentRoleSet();
-                        vm.settingCreateMode();
+
+                        vm.createMode();
                     }
                 }else {
-                    vm.createNewCurrentRoleSet();
-                    vm.settingCreateMode();
+
+                    vm.createMode();
                 }
             }).fail((error) => {
-                dialog.alertError({messageId: error.messageId});
+                dialog.alertError({messageId: error.messageId}).then(()=>{
+                vm.backToTopPage();
+                });
             }).always(() => {
                 vm.roleSetCount(vm.listRoleSets().length);
                 if (deferred) {
                     deferred.resolve();
                 }
-                block.invisible();
             });
         }
         backToTopPage() {
-            windows.sub.modeless("/view/ccg/008/a/index.xhtml");
+            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
         }
         saveRoleSet() {
             let vm = this,
@@ -349,7 +350,19 @@ module nts.uk.com.view.cas011.a {
             //focus
             vm.setFocus();
             block.clear();
+        }
+        createMode() {
 
+            let vm = this,
+                currentRoleSet: RoleSet = vm.currentRoleSet();
+            // clear selected role set
+            vm.createNewRoleSet();
+            vm.selectedRoleSetCd('');
+            // Set new mode
+            vm.isNewMode(true);
+            vm.enableCheckDefault(false);
+            //focus
+            vm.setFocus();
         }
         settingUpdateMode(selectedRoleSetCd: any) {
             let vm = this;
@@ -377,6 +390,23 @@ module nts.uk.com.view.cas011.a {
             // build swap web menu
             vm.buildSwapWebMenu();
             vm.listCurrentRoleIds = [];
+
+        }
+        createNewRoleSet() {
+
+            let vm = this,
+                currentRoleSet: RoleSet = vm.currentRoleSet();
+            currentRoleSet.roleSetCd(null);
+            currentRoleSet.roleSetName(null);
+            currentRoleSet.personInfRoleId(null);
+            currentRoleSet.employmentRoleId(null);
+
+            currentRoleSet.defaultRoleSet(true);
+            currentRoleSet.webMenus([]);
+            // build swap web menu
+            vm.buildSwapWebMenu();
+            vm.listCurrentRoleIds = [];
+            block.clear();
 
         }
         createCurrentRoleSet(_roleSet: IRoleSet) {
