@@ -1,8 +1,7 @@
 #left-content{
 	margin-top: 0px;
-    height: 300px;
     margin-left: 10px;
-	width: 440px;
+	width: 420px;
 }
 
 #app-type{
@@ -12,10 +11,6 @@
 #disp-order{
 	margin-top: 5px;
 	margin-left: 15px;
-}
-
-#grid-up-down{
-	margin-left: 20px;
 }
 
 #right-content{
@@ -34,7 +29,8 @@
 	text-align: center !important;
 }
 
-#grid-test-single_scrollContainer {
-	height: 361px !important;
+#grid-up-down {
+	margin-left: 2px;
 }
+
 

@@ -75,7 +75,7 @@ public class ChangeWorkToHalfdayLeave {
 		}
 		//取得できた勤務種類を確認する
 		integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(workType.get().getWorkTypeCode());
-		changeDailyAtt.setFixBreakCorrect(true);
+		changeDailyAtt.setCorrectValCopyFromSche(true);
 		changeDailyAtt.setWorkInfo(true);
 		
 		return listErrorMessageInfo;

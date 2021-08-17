@@ -51,7 +51,7 @@ public class ReflectWorkInformation {
 			boolean updated = updateIfNotManaged.update(AppContexts.user().companyId(), integrationOfDaily.getEmployeeId(), 
 														integrationOfDaily.getYmd(), integrationOfDaily);
 			if (updated) {
-				changeDailyAtt.setFixBreakCorrect(true);
+				changeDailyAtt.setCorrectValCopyFromSche(true);
 				changeDailyAtt.setWorkInfo(true);
 			}
 		}
@@ -64,7 +64,7 @@ public class ReflectWorkInformation {
 		if (stamp.getRefActualResults().getWorkTimeCode().isPresent()) {
 			// 打刻の就業時間帯を反映
 			reflectWorkTimeStamp.reflectStamp(stamp.getRefActualResults().getWorkTimeCode().get(), integrationOfDaily);
-			changeDailyAtt.setFixBreakCorrect(true);
+			changeDailyAtt.setCorrectValCopyFromSche(true);
 			changeDailyAtt.setWorkInfo(true);
 		}
 		// 計算区分に反映する

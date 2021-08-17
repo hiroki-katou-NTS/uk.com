@@ -4303,7 +4303,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				self.checkDialogErr();
 				return;	
 			}
-			
+			self.index045 = lineNo;
 			block.grayout();
 			nts.uk.ui.windows.setShared('parentCodes', {
 				workTypeCodes: [],

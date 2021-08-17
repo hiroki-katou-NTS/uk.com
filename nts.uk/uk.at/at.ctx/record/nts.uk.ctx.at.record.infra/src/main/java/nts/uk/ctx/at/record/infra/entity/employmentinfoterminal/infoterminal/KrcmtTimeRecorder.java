@@ -88,19 +88,13 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	 * 置換する
 	 */
 	@Column(name = "REPLACE_GOOUT")
-	public int replaceGoOut;
+	public Integer replaceGoOut;
 
 	/**
-	 * 換退勤を入退門に変換
+	 * 出退勤を入退門に変換
 	 */
 	@Column(name = "REPLACE_LEAVINGGATE")
-	public int replaceLeave;
-
-	/**
-	 * 換を応援に変換
-	 */
-	@Column(name = "REPLACE_SUPPORTWORK")
-	public int replaceSupport;
+	public Integer replaceLeave;
 
 	/**
 	 * 監視間隔時間
@@ -119,6 +113,30 @@ public class KrcmtTimeRecorder extends UkJpaEntity implements Serializable {
 	 */
 	@Column(name = "WORKPLACE_ID")
 	public String workPlaceId;
+	
+	/**
+	 * 打刻分類1
+	 */
+	@Column(name = "MS_CHANGE_ATR_ATD")
+	public Integer msChangeAtrAtd;
+	
+	/**
+	 * 打刻分類2
+	 */
+	@Column(name = "MS_CHANGE_ATR_LVW")
+	public Integer msChangeAtrLvw;
+	
+	/**
+	 * 打刻分類3
+	 */
+	@Column(name = "MS_CHANGE_ATR_GO")
+	public Integer msChangeAtrGo;
+	
+	/**
+	 * 打刻分類4
+	 */
+	@Column(name = "MS_CHANGE_ATR_BACK")
+	public Integer msChangeAtrBack;
 
 	@Override
 	protected Object getKey() {

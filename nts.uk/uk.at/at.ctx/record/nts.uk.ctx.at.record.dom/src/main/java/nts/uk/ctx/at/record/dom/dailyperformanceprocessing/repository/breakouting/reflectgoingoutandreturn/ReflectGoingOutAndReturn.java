@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -26,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeZoneOutput;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -42,9 +40,8 @@ public class ReflectGoingOutAndReturn {
 	@Inject
 	private ReflectTimeOfDay reflectTimeOfDay;
 	
-	public ReflectStampOuput reflect(Stamp stamp,StampReflectRangeOutput s,IntegrationOfDaily integrationOfDaily) {
+	public ReflectStampOuput reflect(String companyID, Stamp stamp,StampReflectRangeOutput s,IntegrationOfDaily integrationOfDaily) {
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
-		String companyID = AppContexts.user().companyId();
 		//処理中打刻の時刻を処理中年月日に対応する時刻に変換する 
 		TimeWithDayAttr timeWithDayAttr = TimeWithDayAttr.convertToTimeWithDayAttr(integrationOfDaily.getYmd(),
 				stamp.getStampDateTime().toDate(), stamp.getStampDateTime().clockHourMinute().v());
@@ -81,7 +78,7 @@ public class ReflectGoingOutAndReturn {
 			OutingTimeSheet timeSheet = new OutingTimeSheet(new OutingFrameNo(
 					tf.getFrameNo()),
 					tf.getStart().isPresent()?tf.getStart().get().getStamp():Optional.empty(),
-					tf.getGoOutReason().isPresent() ? tf.getGoOutReason().get()  : null,
+					tf.getGoOutReason().isPresent() ? tf.getGoOutReason().get()  : outManage.get().getInitValueReasonGoOut(),
 					tf.getEnd().isPresent()?tf.getEnd().get().getStamp():Optional.empty());
 			outingTimeSheets.add(timeSheet);
 		}

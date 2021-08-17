@@ -42,6 +42,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService;
 
 public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNurseService.Require{
@@ -123,6 +124,11 @@ public class ChildCareNurseRequireImpl implements GetRemainingNumberChildCareNur
 	@Override
 	public List<Closure> closure(String companyId) {
 		return closureRepo.findAll(companyId);
+	}
+	
+	@Override
+	public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+		return closureRepo.findAllActive(companyId, useAtr);
 	}
 
 	@Override

@@ -110,7 +110,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		
 		//打刻を反映する (TKT)
 		for(Stamp stamp:lstStamp) {
-			listErrorMessageInfo.addAll(temporarilyReflectStampDailyAttd.reflectStamp(stamp,
+			listErrorMessageInfo.addAll(temporarilyReflectStampDailyAttd.reflectStamp(companyID, stamp,
 					outputTimeReflectForWorkinfo.getStampReflectRangeOutput(), integrationOfDaily, changeDailyAtt));
 		}
 		//手修正がある勤怠項目ID一覧を取得する
