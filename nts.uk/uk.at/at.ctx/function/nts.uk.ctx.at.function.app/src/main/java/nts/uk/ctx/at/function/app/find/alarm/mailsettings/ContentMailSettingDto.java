@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.app.find.alarm.mailsettings;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class ContentMailSettingDto {
     private String subject;
