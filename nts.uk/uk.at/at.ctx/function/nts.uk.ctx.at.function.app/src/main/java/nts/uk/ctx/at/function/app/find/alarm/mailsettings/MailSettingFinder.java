@@ -96,8 +96,9 @@ public class MailSettingFinder {
                         item.getIndividualWkpClassify().value,
                         item.getNormalAutoClassify().value,
                         item.getPersonalManagerClassify().value,
-                        item.getContentMailSettings().isPresent() ? ContentMailSettingDto.create(item.getContentMailSettings().get()) : null,
-                        item.getSenderAddress().isPresent() ? item.getSenderAddress().get().v() : null,
+                        item.getContentMailSettings().isPresent() ? ContentMailSettingDto.create(item.getContentMailSettings().get())
+                                : new ContentMailSettingDto("", "", Collections.emptyList(), Collections.emptyList(), ""),
+                        item.getSenderAddress().isPresent() ? item.getSenderAddress().get().v() : "",
                         item.isSendResult()
                 ),
                 item.isAlreadyConfigured()

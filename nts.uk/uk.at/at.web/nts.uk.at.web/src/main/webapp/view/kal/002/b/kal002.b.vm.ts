@@ -84,7 +84,10 @@ module nts.uk.at.view.kal002.c {
                 vm.$ajax("com", PATH_API.get_role_name, newValue)
                     .done(function (listRole: Array<IRole>) {
                         vm.roleName(_.join(_.map(listRole, i => i.name), '、'));
-                    });
+                        vm.$errors("clear");
+                    }).fail(function (err) {
+                    console.log(err);
+                });
                 // let nameList = _.filter(vm.roles(), (v) => _.includes(newValues, v.roleId));
                 // if(_.isNil(nameList)){
                 //     vm.roleName(_.join(nameList, '、'));
@@ -197,7 +200,6 @@ module nts.uk.at.view.kal002.c {
                     vm.$blockui("grayout");
                     vm.$ajax(PATH_API.register, command).done((res) => {
                         vm.$dialog.info({messageId: "Msg_15"}).then(() => {
-                            vm.isUpdateMode(true);
                             vm.init();
                         });
                     }).fail((err) => {

@@ -90,7 +90,7 @@
                                 <!--B3_4-->
                                 <span class="lable person-admin">#{i18n.getText('KAL002_11')}</span>
                                 <!--B3_5-->
-                                <button class="medium custom-btn" tabindex="6" data-bind="click : automaticMailSettingForManager">
+                                <button class="medium" tabindex="6" data-bind="click : automaticMailSettingForManager">
                                     #{i18n.getText('KAL002_9')}
                                 </button>
                                 <!--B4_4-->
@@ -102,11 +102,11 @@
                 </div>
                 <div class="tab-content-2 tab-2">
                     <div class="table custom-table">
-                        <div class="cell valign-top custom-cell">
+                        <div class="cell valign-center custom-cell">
                             <!--B8_1-->
                             <div data-bind="ntsFormLabel: {inline: true, required: true, enable: true}">#{i18n.getText('KAL012_17')}</div>
                         </div>
-                        <div class="cell valign-top">
+                        <div class="cell valign-center">
                             <!--B8_2, B8_3-->
                             <div tabindex="7" class="cf" data-bind="ntsSwitchButton: {
                             name: $i18n('KAL012_17'),
@@ -120,19 +120,20 @@
                         </div>
                     </div>
                     <div class="table custom-table">
-                        <div class="cell valign-top custom-cell">
+                        <div class="cell valign-center custom-cell">
                             <!--B8_4-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL002_18')}</div>
                         </div>
-                        <div class="cell valign-top custom-cell">
+                        <div class="cell valign-center custom-cell">
                             <!--B8_5-->
                             <input tabindex="8" data-bind="ntsTextEditor: {
                                 name: $i18n('KAL002_18'),
                                 value: roleName,
                                 required: enableRoleSetting,
-                                enable: enableRoleSetting}"/>
+                                enable: enableRoleSetting,
+                                readonly: enableRoleSetting}"/>
                         </div>
-                        <div class="cell valign-top">
+                        <div class="cell valign-center">
                             <!--B8_6-->
                             <button class="medium custom-btn" tabindex="9"
                                     data-bind="enable: enableRoleSetting, click:openDialogRoleList">
@@ -141,8 +142,8 @@
                         </div>
                     </div>
                     <div class="table custom-table">
-                        <div class="cell valign-top custom-cell"></div>
-                        <div class="cell valign-top">
+                        <div class="cell valign-center custom-cell"></div>
+                        <div class="cell valign-center">
                             <!--B8_7-->
                             <div class="label">#{i18n.getText('KAL002_21')}</div>
                         </div>
