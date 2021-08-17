@@ -8,15 +8,15 @@ module nts.uk.com.view.cmf001.d {
 	export module viewmodel {
 		@bean()
 		export class ScreenModel {
-			selectablItemList: KnockoutObservableArray<SelectableItem>;
-			selectedItems: KnockoutObservableArray<string>;
+			selectablItemList: KnockoutObservableArray<SelectableItem> = ko.observableArray([]);
+			selectedItems: KnockoutObservableArray<string> = ko.observableArray([]);
 
 
 			listColumns: KnockoutObservableArray<any> = ko.observableArray([
 				{ headerText: "NO", 				key: "itemNo",		 		width: 50, hidden: true	},
-				{ headerText: "名称", 			key: "itemName", 			width: 50 	},
-				{ headerText: "項目型", 		key: "itemType", 			width: 200 	},
-				{ headerText: "必須", 			key: "required", 			width: 25 	},
+				{ headerText: "名称", 			key: "itemName", 			width: 200 	},
+				{ headerText: "項目型", 		key: "itemType", 			width: 75 	},
+				{ headerText: "必須", 			key: "required", 			width: 25, hidden: true	},
 			]);
 
 			constructor() {
@@ -26,14 +26,14 @@ module nts.uk.com.view.cmf001.d {
 				console.log("パラメータ受け取った")
 				self.selectablItemList = ko.observableArray<SelectableItem>([]);
 				self.getSelectableItem(params.groupId);
-				self.selectedItems(params.selectedCodes ? params.selectedItems : []);
+				self.selectedItems(params.selectedItems ? params.selectedItems : []);
 
 			}	
 
 			getSelectableItem(groupId: string){
 				let self = this;
 				let dfd = $.Deferred<any>();
-				ajax('com', "exio/input/importableitem/find/" + groupId).done((lstData: Array<viewmodel.SelectableItem>) => {
+				ajax('com', "screen/com/cmf/cmf001/b/get/importableitem/" + groupId).done((lstData: Array<viewmodel.SelectableItem>) => {
 					let sortedData = _.orderBy(lstData, ['itemNo'], ['asc']);
 					self.selectablItemList(sortedData);
 				});
@@ -49,7 +49,7 @@ module nts.uk.com.view.cmf001.d {
 				setShared('CMF001DOutput', self.selectedItems());
 				close();
 			}
- 
+
 			cancel(): void {
 				setShared('CMF001DCancel', true);
 				close();
@@ -61,7 +61,7 @@ module nts.uk.com.view.cmf001.d {
 			itemName: string;
 			required: boolean;
 			itemType: string;
-	
+
 			constructor(itemNo: number, itemName: string, itemType: string, required: boolean) {
 					this.itemNo = itemNo;
 					this.itemName = itemName;

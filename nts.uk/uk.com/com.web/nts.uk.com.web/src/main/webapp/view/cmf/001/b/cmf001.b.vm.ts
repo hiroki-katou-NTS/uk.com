@@ -50,23 +50,29 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importModeOption = ko.observableArray(__viewContext.enums.ImportingMode);
 
 			self.startPage();
+
 			self.selectedCode.subscribe((value) => {
 				if (value) {
 					self.updateMode();
-					console.log(value + "を選択した")
 				} else {
 					self.newMode();
-					console.log("選択解除した")
 				}
 			})
-			self.importGroup.subscribe(() => {
-				self.layout([]);
-				console.log("受入グループを変更したのでレイアウトをリセット")
-			})
-		}
 
-		mounted() {
-			const vm = this;
+			self.importGroup.subscribe((value) => {
+				if (value) {
+					let condition = new LayoutGetCondition(self.settingCode(), self.importGroup(), []);
+					ajax("com", "screen/com/cmf/cmf001/get/layout", condition).done((itemNoList: number[]) => {
+						self.layoutItemNoList(itemNoList);
+					});
+				}else{
+					self.layoutItemNoList([]);
+				}
+			})
+
+			self.layoutItemNoList.subscribe((value) => {
+				self.setLayout(value);
+			})
 		}
 
 		startPage(){
@@ -92,7 +98,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			ajax("exio/input/setting/find-all").done((lstData: Array<viewmodel.Setting>) => {
+			ajax("screen/com/cmf/cmf001/get/setting/all").done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
 				dfd.resolve();
@@ -112,7 +118,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 		updateMode(){
 			let self = this;
-			ajax("com", "exio/input/setting/find/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
+			ajax("com", "screen/com/cmf/cmf001/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
 				self.isNewMode = false;
 			});
@@ -127,29 +133,38 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
 			self.layoutItemNoList(info.itemNoList);
-
-			let condition = new LayoutGetCondition(self.settingCode(), self.layoutItemNoList());
-			ajax("exio/input/setting/find/layout", condition).done((layouItems: Array<viewmodel.Layout>) => {
-				self.layout(layouItems);
-
-			});
 		}
 
-		selectLayout() {
-            let self = this;
-            setShared('CMF001DParams', {
-                groupId: self.importGroup(),
-                selectedItems: self.layoutItemNoList()
-            }, true);
+		setLayout(itemNoList: number[]){
+			let self = this;
+			if(itemNoList.length > 0){
+				let condition = new LayoutGetCondition(self.settingCode(), self.importGroup(), itemNoList);
+				ajax("screen/com/cmf/cmf001/get/layout/detail", condition).done((layouItems: Array<viewmodel.Layout>) => {
+					self.layout(layouItems);
+				});
+			}else{
+				self.layout([]);
+			}
+		}
 
-            nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
-                // var output = getShared('CMF001DOutput');
-                // if (output) {
-                //     output.sort();layoutGetCondition
-                //     self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(output);
-                // }
-            });
-        }
+
+
+		selectLayout() {
+			let self = this;
+			setShared('CMF001DParams', {
+					groupId: self.importGroup(),
+					selectedItems: self.layoutItemNoList()
+			}, true);
+
+			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
+				// ダイアログを閉じたときの処理
+				if(!getShared('CMF001DCancel')){
+					let ItemNoList = getShared('CMF001DOutput')
+
+					self.layoutItemNoList(ItemNoList);
+				}
+			});
+		}
 
 		save(){
 			let self = this;
@@ -164,7 +179,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					self.itemNameRow(), 
 					self.importStartRow(), 
 					self.layoutItemNoList()));
-			ajax("exio/input/setting/save", saveContents);
+			ajax("screen/com/cmf/cmf001/save", saveContents);
 			info(nts.uk.resource.getMessage("Msg_15", []));
 			self.reloadPage();
 			self.selectedCode(self.settingCode());
@@ -225,10 +240,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 	class LayoutGetCondition{
 		settingCode: string;
+		importingGroupId: number;
 		itemNoList: Array<number>;
 
-		constructor(settingCode: string, itemNoList: Array<number>) {
+		constructor(settingCode: string, importingGroupId: number, itemNoList: Array<number>) {
 			this.settingCode = settingCode;
+			this.importingGroupId = importingGroupId;
 			this.itemNoList = itemNoList;
 		}
 	}
@@ -267,7 +284,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		required: boolean;
 		type: string;
 		source: string;
-		alreadyDetail: boolean;
+		alreadyDetail: string;
 
 		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string, alreadyDetail: boolean) {
 			this.itemNo = itemNo;
@@ -275,7 +292,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			this.required = required;
 			this.type = type;
 			this.source = source;
-			this.alreadyDetail = alreadyDetail;
+			this.alreadyDetail = alreadyDetail ? "✓" : "";
 		}
 	}
 }

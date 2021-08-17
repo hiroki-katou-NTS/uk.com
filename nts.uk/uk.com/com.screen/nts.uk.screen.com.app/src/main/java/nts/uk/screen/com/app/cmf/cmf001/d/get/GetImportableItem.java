@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.input.find.importableitem;
+package nts.uk.screen.com.app.cmf.cmf001.d.get;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,12 +11,12 @@ import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 
 @Stateless
-public class ImportableItemFinder {
+public class GetImportableItem {
 	
 	@Inject
-	private ImportableItemRequire require;
+	private GetImportableItemRequire require;
 	
-	public List<ImportableItemDto> find(int importingGroupId) {
+	public List<ImportableItemDto> get(int importingGroupId) {
 		val require = this.require.create();
 		val importableItems = require.getImportableItems(ImportingGroupId.valueOf(importingGroupId));
 		return importableItems.stream().map(d -> ImportableItemDto.fromDomain(d)).collect(Collectors.toList());
