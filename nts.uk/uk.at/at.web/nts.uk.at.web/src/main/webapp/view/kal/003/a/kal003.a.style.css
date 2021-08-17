@@ -110,7 +110,7 @@ label.label4w4d {
 	height: 386px ! important;
 }
 .tab-content-4 .nts-fixed-body-wrapper{
-	overflow-x: hidden;
+	/*overflow-x: hidden;*/
 	border-bottom: hidden;
 }
 .tab-content-4 .nts-fixed-body-container{
@@ -118,7 +118,7 @@ label.label4w4d {
 	border-bottom: hidden;
 }
 .tab-content-11 .nts-fixed-body-wrapper{
-	overflow-x: hidden;
+	/*overflow-x: hidden;*/
 	border-bottom: hidden;
 }
 .tab-content-11 .nts-fixed-body-container{
