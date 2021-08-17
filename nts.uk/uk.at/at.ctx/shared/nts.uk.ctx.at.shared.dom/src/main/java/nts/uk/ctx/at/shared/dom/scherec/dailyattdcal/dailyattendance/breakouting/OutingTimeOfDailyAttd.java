@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
@@ -51,12 +50,11 @@ public class OutingTimeOfDailyAttd {
 			Optional<FlowWorkRestSettingDetail> flowDetail,
 			RoundingTime roundingTime) {
 		
-		outingTimeSheets = outingTimeSheets.stream().filter(f -> f.getReasonForGoOut() != null).collect(Collectors.toList());
-		
 		/** △外出を取得 */
 		List<OutingTimeSheet> outtingTimeSheetreturnList = (dedAtr.isDeduction())?
 														//控除用の時は、外出理由 = 私用or組合のみの時間帯に絞る(他の2つは消す)
 														this.outingTimeSheets.stream()
+																			 .filter(f -> f.getReasonForGoOut() != null)
 																			 .filter(tc->tc.getReasonForGoOut().isPrivateOrUnion())
 																			 .filter(ts -> ts.isCalcState())
 																			 .collect(Collectors.toList()):
