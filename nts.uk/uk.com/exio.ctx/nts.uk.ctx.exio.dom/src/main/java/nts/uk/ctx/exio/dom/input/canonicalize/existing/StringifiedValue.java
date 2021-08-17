@@ -86,6 +86,11 @@ public class StringifiedValue {
 		throw new RuntimeException("not supported: " + value);
 	}
 	
+	@Override
+	public String toString() {
+		return value;
+	}
+	
 	public String asString() {
 		return value;
 	}

@@ -2,6 +2,8 @@ package nts.uk.ctx.exio.app.input.setting.assembly.revise;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.Data;
 import lombok.Value;
 import lombok.val;
@@ -58,7 +60,7 @@ public class ReviseItemDto {
 		private int paddingMethod = -1;
 		
 		// 文字型・整数型
-		private boolean useCodeConvert;
+		private Boolean useCodeConvert;
 		private CodeConvertDto codeConvert = CodeConvertDto.empty();
 		
 		// 実数型
@@ -83,14 +85,20 @@ public class ReviseItemDto {
 				dto.usePadding = rev.isUsePadding();
 				dto.paddingLength = rev.getPadding().get().getLength().v();
 				dto.paddingMethod = rev.getPadding().get().getMethod().value;
-				rev.getCodeConvert().ifPresent(c -> { dto.codeConvert = CodeConvertDto.of(c); });
+				rev.getCodeConvert().ifPresent(c -> {
+					dto.useCodeConvert = true;
+					dto.codeConvert = CodeConvertDto.of(c);
+				});
 				return dto;
 			}
 			
 			if (revisingValue instanceof IntegerRevise) {
 				val rev = (IntegerRevise) revisingValue;
 				dto.useCodeConvert = rev.getCodeConvert().isPresent();
-				rev.getCodeConvert().ifPresent(c -> { dto.codeConvert = CodeConvertDto.of(c); });
+				rev.getCodeConvert().ifPresent(c -> {
+					dto.useCodeConvert = true;
+					dto.codeConvert = CodeConvertDto.of(c);
+				});
 				return dto;
 			}
 			
@@ -123,23 +131,64 @@ public class ReviseItemDto {
 			
 			switch (itemType) {
 			case STRING:
-				return new StringRevise(usePadding, toDomainPadding(), toDomainCodeConvert());
+				return toDomainStringRevise();
 			case INT:
-				return new IntegerRevise(toDomainCodeConvert());
+				return toDomainIntegerRevise();
 			case REAL:
-				return new RealRevise(isDecimalization, toDomainDecimalDigitNumber());
+				return toDomainRealRevise();
 			case DATE:
-				return new DateRevise(ExternalImportDateFormat.valueOf(dateFormat));
+				return toDomainDateRevise();
 			case TIME_DURATION:
 			case TIME_POINT:
-				return new TimeRevise(
-						HourlySegment.valueOf(timeHourlySegment),
-						timeBaseNumber != -1 ? Optional.of(TimeBaseNumber.valueOf(timeBaseNumber)) : Optional.empty(),
-						timeDelimiter != -1 ? Optional.of(TimeBase60Delimiter.valueOf(timeDelimiter)) : Optional.empty(),
-						timeRounding != -1 ? Optional.of(TimeBase10Rounding.valueOf(timeRounding)) : Optional.empty());
+				return toDomainTimeRevise();
 			default:
 				throw new RuntimeException("unknown: " + itemType);
 			}
+		}
+		
+		private StringRevise toDomainStringRevise() {
+			
+			if (usePadding == null || paddingLength == null || paddingMethod == -1) {
+				return null;
+			}
+			
+			return new StringRevise(usePadding, toDomainPadding(), toDomainCodeConvert());
+		}
+		
+		private IntegerRevise toDomainIntegerRevise() {
+			
+			return new IntegerRevise(toDomainCodeConvert());
+		}
+
+		private RealRevise toDomainRealRevise() {
+			
+			if (isDecimalization == null || decimalizationLength == null) {
+				return null;
+			}
+			
+			return new RealRevise(isDecimalization, toDomainDecimalDigitNumber());
+		}
+
+		private DateRevise toDomainDateRevise() {
+			
+			if (dateFormat == -1) {
+				return null;
+			}
+			
+			return new DateRevise(ExternalImportDateFormat.valueOf(dateFormat));
+		}
+
+		private TimeRevise toDomainTimeRevise() {
+			
+			if (timeHourlySegment == -1) {
+				return null;
+			}
+			
+			return new TimeRevise(
+					HourlySegment.valueOf(timeHourlySegment),
+					timeBaseNumber != -1 ? Optional.of(TimeBaseNumber.valueOf(timeBaseNumber)) : Optional.empty(),
+					timeDelimiter != -1 ? Optional.of(TimeBase60Delimiter.valueOf(timeDelimiter)) : Optional.empty(),
+					timeRounding != -1 ? Optional.of(TimeBase10Rounding.valueOf(timeRounding)) : Optional.empty());
 		}
 		
 		private Optional<Padding> toDomainPadding() {
@@ -155,7 +204,7 @@ public class ReviseItemDto {
 		
 		private Optional<ExternalImportCodeConvert> toDomainCodeConvert() {
 			
-			if (!useCodeConvert) {
+			if (BooleanUtils.isNotTrue(useCodeConvert)) {
 				return Optional.empty();
 			}
 			
@@ -164,7 +213,7 @@ public class ReviseItemDto {
 		
 		private Optional<DecimalDigitNumber> toDomainDecimalDigitNumber() {
 			
-			if (!isDecimalization) {
+			if (BooleanUtils.isNotTrue(isDecimalization)) {
 				return Optional.empty();
 			}
 			

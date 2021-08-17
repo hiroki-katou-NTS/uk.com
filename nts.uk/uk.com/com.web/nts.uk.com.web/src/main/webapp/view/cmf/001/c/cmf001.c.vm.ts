@@ -9,6 +9,7 @@ module nts.uk.com.cmf001.c {
                 return (<any> ko).mapping.fromJS({
                     name: null,
                     type: null,
+                    constraintName: null,
                     constraint: null,
                     required: null,
                 });
@@ -47,9 +48,17 @@ module nts.uk.com.cmf001.c {
         }
     }
 
+    let ICON_CONFIGURED = nts.uk.request.resolvePath(
+        __viewContext.rootPath + "../" + (<any> nts).uk.request.WEB_APP_NAME.comjs
+         + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
+
     function renderConfiguredIcon(configured) {
         if (configured === "true") {
-            return '<i data-bind="ntsIcon: { no: 78, width: 20, height: 20 }"></i>';
+            return '<div class="icon-configured" style="text-align: center;">' 
+                + '<span id="icon-configured" style="'
+                + 'background: url(\'' + ICON_CONFIGURED + '\');'
+                + 'background-size: 20px 20px; width: 20px; height: 20px;'
+                + 'display: inline-block;"></span></div>';
         } else {
             return '';
         }
@@ -58,30 +67,42 @@ module nts.uk.com.cmf001.c {
     @bean()
     export class ViewModel extends ko.ViewModel {
 
-        settingCode = "001";
+        settingCode: string;
 
         items: KnockoutObservableArray<any> = ko.observableArray([]);
 
         itemsColumns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: "NO", key: "itemNo", width: 0, hidden: true },
             { headerText: "名称", key: "name", width: 200 },
-            { headerText: "", key: "alreadyDetail", width: 40, formatter: renderConfiguredIcon },
+            {
+                headerText: "",
+                key: "alreadyDetail",
+                width: 40,
+                formatter: renderConfiguredIcon
+            },
         ]);
 
+        mappingSource = [
+            { code: "CSV", name: "CSV" },
+            { code: "固定値", name: "固定値" },
+        ];
+
+        hoge = 2;
+
         selectedItemNo: KnockoutObservable<number> = ko.observable(null);
+
+        isItemSelected = ko.computed(() => !util.isNullOrEmpty(this.selectedItemNo()));
 
         currentItem: any = ko.observable();
 
         constructor() {
             super();
 
+            this.settingCode = __viewContext.transferred.get().settingCode;
+
             this.currentItem({
                 def: datasource.importableItem.init(),
                 selectedMappingType: ko.observable(null),
-                mappingTypes: [
-                    { code: "CSV", name: "CSV" },
-                    { code: "固定値", name: "固定値" },
-                ],
                 csvMapping: datasource.itemMapping.init(),
                 fixedMapping: ko.observable(),
             });
@@ -115,9 +136,11 @@ module nts.uk.com.cmf001.c {
 
             let selectedItem = this.items().filter(e => e.itemNo == itemNo)[0];
 
-            this.currentItem().def.name(selectedItem.name);
-            this.currentItem().def.type(selectedItem.type);
-            this.currentItem().selectedMappingType(selectedItem.source);
+            let current = this.currentItem();
+            current.def.name(selectedItem.name);
+            current.def.type(selectedItem.type);
+            current.selectedMappingType(selectedItem.source);
+            current.fixedMapping(selectedItem.fixedValue);
 
             this.loadImportableItem();
             this.loadReviseItem();
@@ -139,9 +162,10 @@ module nts.uk.com.cmf001.c {
                     if (res.constraint.domainType === "Enum") {
                         constraintText = "整数 " + constraintText;
                     }
-
+                    this.currentItem().def.constraintName(res.constraint.name);
                     this.currentItem().def.constraint(constraintText);
                 } else {
+                    this.currentItem().def.constraintName(null);
                     this.currentItem().def.constraint("");
                 }
 
@@ -159,11 +183,74 @@ module nts.uk.com.cmf001.c {
 
                 (<any> ko).mapping.fromJS(res.revisingValue, {}, mapping.revisingValue);
 
-                mapping.revisingValue.codeConvert.convertDetailsText(
-                    res.revisingValue.codeConvert.details
-                        .map(d => d.before + "," + d.after)
-                        .join("\r\n")
-                );
+                if (res.revisingValue && res.revisingValue.codeConvert) {
+                    mapping.revisingValue.codeConvert.convertDetailsText(
+                        res.revisingValue.codeConvert.details
+                            .map(d => d.before + "," + d.after)
+                            .join("\n")
+                    );
+                } else {
+                    mapping.revisingValue.codeConvert.convertDetailsText("");
+                }
+            });
+        }
+
+        canSave = ko.computed(() => this.$errors.length === 0 && this.isItemSelected());
+
+        save() {
+            let path = "/screen/com/cmf/cmf001/save";
+
+            let item = this.currentItem();
+
+            let fixedValue = item.fixedMapping();
+            if (item.def.type() === 'DATE' && fixedValue) {
+                fixedValue = fixedValue.split("T")[0]?.replace(/-/g, "") ?? "";
+            }
+
+            let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
+            if (revisingValue.codeConvert) {
+                revisingValue.codeConvert.details = revisingValue.codeConvert
+                    .convertDetailsText
+                    ?.split("\n")
+                    .map(l => {
+                        let p = l.split(",");
+                        if (p.length !== 2) return null;
+                        return { before: p[0], after: p[1] };
+                    })
+                    .filter(d => d !== null)
+                    ?? [];
+            }
+
+            let command = {
+                settingCode: this.settingCode,
+                itemNo: this.selectedItemNo(),
+                mappingSource: item.selectedMappingType(),
+                fixedValue: fixedValue,
+                revisingValue: revisingValue,
+            };
+
+            this.$ajax(path, command).done(res => {
+                ui.dialog.info({ messageId: "Msg_15" });
+                this.loadSetting();
+            });
+        }
+
+        canDeleteSetting = ko.computed(() => this.isItemSelected());
+
+        deleteSetting() {
+            let path = "/screen/com/cmf/cmf001/delete";
+            let itemNo = this.selectedItemNo();
+            let command = {
+                settingCode: this.settingCode,
+                itemNo: itemNo,
+            };
+
+            ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                this.$ajax(path, command).done(() => {
+                    ui.dialog.info({ messageId: "Msg_16" });
+                    this.loadSetting();
+                    this.itemSelected(itemNo);
+                });
             });
         }
     }

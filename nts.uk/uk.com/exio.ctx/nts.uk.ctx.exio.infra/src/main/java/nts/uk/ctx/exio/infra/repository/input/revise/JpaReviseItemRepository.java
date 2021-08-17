@@ -51,14 +51,14 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 		
 		String sql = " select f "
 				+ " from XimmtCodeConvert f"
-				+ " where f.pk.companyId =:companyID "
-				+ " and f.pk.settingCode =:convertCd "
-				+ " and f.pk.itemNo =:itemNO ";
+				+ " where f.pk.companyId =:companyId "
+				+ " and f.pk.settingCode =:settingCode "
+				+ " and f.pk.itemNo =:itemNo ";
 		
 		val entities = this.queryProxy().query(sql, XimmtCodeConvert.class)
-				.setParameter("companyID", companyId)
-				.setParameter("settingCD", settingCode)
-				.setParameter("itemNO", importItemNumber)
+				.setParameter("companyId", companyId)
+				.setParameter("settingCode", settingCode)
+				.setParameter("itemNo", importItemNumber)
 				.getSingle();
 		if(!entities.isPresent()) {
 			return Optional.empty();
@@ -72,14 +72,14 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 		
 		String sql = " select f "
 				+ " from XimmtCodeConvertDetail f"
-				+ " where f.pk.companyId =:companyID "
-				+ " and f.pk.settingCode =:convertCd "
-				+ " and f.pk.itemNo =:itemNO ";
+				+ " where f.pk.companyId =:companyId "
+				+ " and f.pk.settingCode =:settingCode "
+				+ " and f.pk.itemNo =:itemNo ";
 		
 		return this.queryProxy().query(sql, XimmtCodeConvertDetail.class)
-				.setParameter("companyID", companyId)
-				.setParameter("settingCD", settingCode)
-				.setParameter("itemNO", importItemNumber)
+				.setParameter("companyId", companyId)
+				.setParameter("settingCode", settingCode)
+				.setParameter("itemNo", importItemNumber)
 				.getList(rec -> rec.toDomain());
 	}
 
@@ -99,6 +99,13 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 			});
 		});
 	}
+
+	@Override
+	public void delete(String companyId, ExternalImportCode settingCode, int importItemNumber) {
+
+		val pk = new XimmtReviseItemPK(companyId, settingCode.v(), importItemNumber);
+		delete(pk);
+	}
 	
 	private void delete(XimmtReviseItemPK pk) {
 		
@@ -110,14 +117,14 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 	private void deleteEntity(String entityName, XimmtReviseItemPK reviseItem) {
 		
 		String jpql = " delete from " + entityName + " f"
-				+ " where f.pk.companyId = :companyID "
-				+ " and f.pk.settingCode = :convertCd "
-				+ " and f.pk.itemNo = :itemNO ";
+				+ " where f.pk.companyId = :companyId "
+				+ " and f.pk.settingCode = :settingCode "
+				+ " and f.pk.itemNo = :itemNo ";
 		
 		this.getEntityManager().createQuery(jpql)
-				.setParameter("companyID", reviseItem.getCompanyId())
-				.setParameter("settingCD", reviseItem.getSettingCode())
-				.setParameter("itemNO", reviseItem.getItemNo())
+				.setParameter("companyId", reviseItem.getCompanyId())
+				.setParameter("settingCode", reviseItem.getSettingCode())
+				.setParameter("itemNo", reviseItem.getItemNo())
 				.executeUpdate();
 	}
 	
