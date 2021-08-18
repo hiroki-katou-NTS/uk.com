@@ -18,7 +18,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
 		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
-		deletableItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
 
 		importGroupOption: KnockoutObservableArray<any> = ko.observableArray([]);
 		importModeOption: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -35,11 +34,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		]);
 
 		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
-			{ headerText: "NO", 						key: "itemNo", 				width: 100 , hidden: true },
+			{ headerText: "NO", 						key: "itemNo", 				width: 100 , 	hidden: true },
 			{ headerText: "名称", 					key: "name", 					width: 200 		},
 			{ headerText: "型", 						key: "type", 					width: 75 		},
 			{ headerText: "受入元", 				key: "source", 				width: 50 		},
-			{ headerText: "詳細設定の有無", key: "alreadyDetail", width: 120 		},
+			{ headerText: "詳細設定", 			key: "alreadyDetail", width: 75 ,		formatter: renderConfiguredIcon },
+			{ headerText: "削除可否", 			key: "deletable", 		width: 75 , 	hidden: true },
 		]);
 
 		constructor() {
@@ -134,15 +134,14 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
 			self.layoutItemNoList(info.itemNoList);
-			self.deletableItemNoList(info.itemNoList);
 		}
 
 		setLayout(itemNoList: number[]){
 			let self = this;
 			if(itemNoList.length > 0){
 				let condition = new LayoutGetCondition(self.settingCode(), self.importGroup(), itemNoList);
-				ajax("screen/com/cmf/cmf001/get/layout/detail", condition).done((layouItems: Array<viewmodel.Layout>) => {
-					self.layout(layouItems);
+				ajax("screen/com/cmf/cmf001/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
+					self.layout(layoutItems);
 				});
 			}else{
 				self.layout([]);
@@ -202,6 +201,22 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			request.jump("../c/index.xhtml", { settingCode: this.settingCode() });
 		}
 	}
+
+	let ICON_CONFIGURED = nts.uk.request.resolvePath(
+		__viewContext.rootPath + "../" + (<any> nts).uk.request.WEB_APP_NAME.comjs
+		 + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
+
+	function renderConfiguredIcon(configured) {
+		if (configured === "true") {
+				return '<div class="icon-configured" style="text-align: center;">' 
+						+ '<span id="icon-configured" style="'
+						+ 'background: url(\'' + ICON_CONFIGURED + '\');'
+						+ 'background-size: 20px 20px; width: 20px; height: 20px;'
+						+ 'display: inline-block;"></span></div>';
+		} else {
+				return '';
+		}
+}
 
 
 
@@ -280,17 +295,19 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		itemNo: number;
 		name: string;
 		required: boolean;
+		deletable: boolean;
 		type: string;
 		source: string;
-		alreadyDetail: string;
+		alreadyDetail: boolean;
 
-		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string, alreadyDetail: boolean) {
+		constructor(itemNo: number,　name: string, required: boolean, deletable: boolean, type: string, source: string, alreadyDetail: boolean) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
+			this.deletable = deletable;
 			this.type = type;
 			this.source = source;
-			this.alreadyDetail = alreadyDetail ? "✓" : "";
+			this.alreadyDetail = alreadyDetail;
 		}
 	}
 }
