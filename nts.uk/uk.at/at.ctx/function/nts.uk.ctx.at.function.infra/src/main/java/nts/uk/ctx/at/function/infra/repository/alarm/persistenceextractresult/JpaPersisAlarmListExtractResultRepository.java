@@ -85,8 +85,10 @@ public class JpaPersisAlarmListExtractResultRepository extends JpaRepository imp
             }
 
             if (processId.isPresent()) {
+            	KfndtPersisAlarmExt oldEntity = KfndtPersisAlarmExt.of(data.get(), processId.get());
                 KfndtPersisAlarmExt updateEntity = KfndtPersisAlarmExt.of(domain, processId.get());
-                this.commandProxy().insertAll(updateEntity.extractResults);
+                oldEntity.extractResults.addAll(updateEntity.extractResults);
+                this.commandProxy().update(oldEntity);
             }
         }
     }
