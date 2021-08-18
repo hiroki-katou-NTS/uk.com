@@ -6134,6 +6134,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listWorkScheduleWorkInforBase = _.cloneDeep(self.listWorkScheduleWorkInfor); 
             self.listWorkScheduleShiftBase = _.cloneDeep(self.listWorkScheduleShift);    
         }
+        
+        setExAreaAgency() {
+            let self = this;
+            let widthA8 = document.getElementsByClassName('ex-header-leftmost')[0].offsetWidth;
+            if (self.showA9 && self.showA11()) {
+                let widthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
+                let widthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
+                $(document.getElementsByClassName('ex-area-line')[1]).css('left', widthA8 + widthA9 - 1 + 'px');
+                $(document.getElementsByClassName('ex-area-line')[2]).css('left', widthA8 + widthA9 + widthA10 - 2 + 'px');
+            } else if (self.showA9 && !self.showA11()) {
+                let widthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
+                $(document.getElementsByClassName('ex-area-line')[1]).css('left', widthA8 + widthA9 - 1 + 'px');
+            } else if (!self.showA9 && self.showA11()) {
+                let widthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
+                $(document.getElementsByClassName('ex-area-line')[1]).css('left', widthA8 + widthA10 - 1 + 'px');
+            }
+        }
     }
 
     export enum ViewMode {
