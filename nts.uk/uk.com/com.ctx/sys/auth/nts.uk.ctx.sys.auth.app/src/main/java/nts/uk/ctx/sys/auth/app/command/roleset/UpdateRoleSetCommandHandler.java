@@ -51,7 +51,6 @@ public class UpdateRoleSetCommandHandler extends CommandHandlerWithResult<RoleSe
                 Optional.ofNullable(personInfoRoleId));
 
         Optional<RoleSet> optionalRoleSet = roleSetRepository.findByRoleSetCdAndCompanyId(roleSetCd,companyId);
-
         if(!optionalRoleSet.isPresent()){
             roleSetService.registerRoleSet(roleSetDom);
         }else {

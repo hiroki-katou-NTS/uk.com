@@ -23,7 +23,6 @@ import nts.uk.ctx.sys.portal.app.command.webmenu.WebMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.AddRoleSetLinkWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.webmenulinking.RoleSetLinkWebMenuCommand;
 import nts.uk.shr.com.context.AppContexts;
-import org.omg.CORBA.PRIVATE_MEMBER;
 
 /**
 * The Class RegisterRoleSetCommandBaseHandler.

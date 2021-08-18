@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.sys.auth.app.command.roleset;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
@@ -25,9 +26,6 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
 
     @Inject
     private RoleSetService roleSetService;
-    @Inject
-    private RoleSetRepository roleSetRepository;
-
     @Override
     protected String handle(CommandHandlerContext<RoleSetCommand> context) {
         RoleSetCommand command = context.getCommand();
@@ -39,12 +37,7 @@ public class AddRoleSetCommandHandler extends CommandHandlerWithResult<RoleSetCo
                 , Optional.ofNullable(command.getPersonInfRoleId()));
 
         //アルゴリズム「新規登録」を実行する - Execute the algorithm "new registration"
-        Optional<RoleSet> optionalRoleSet = roleSetRepository.findByRoleSetCdAndCompanyId(command.getRoleSetCd(), companyId);
-        if (!optionalRoleSet.isPresent()) {
-            roleSetService.registerRoleSet(roleSetDom);
-        } else {
-            roleSetService.updateRoleSet(roleSetDom);
-        }
+        roleSetService.registerRoleSet(roleSetDom);
         return command.getRoleSetCd();
     }
 }
