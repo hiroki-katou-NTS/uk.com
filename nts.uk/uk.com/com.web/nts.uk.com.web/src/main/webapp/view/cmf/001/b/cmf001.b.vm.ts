@@ -164,7 +164,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
-			self.layoutItemNoList(info.itemNoList);
+			// importGroupの変更にトリガして自動でセットされるため不要
+			// self.layoutItemNoList(info.itemNoList);
 		}
 
 		setLayout(itemNoList: number[]){
