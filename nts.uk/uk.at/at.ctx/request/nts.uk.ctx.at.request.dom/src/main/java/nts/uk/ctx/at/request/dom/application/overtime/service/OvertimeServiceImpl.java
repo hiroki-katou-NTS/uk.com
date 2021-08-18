@@ -628,8 +628,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		        .map(x -> x.getApplicationTime().v())
 		        .mapToInt(Integer::intValue)
 		        .sum();
-		totalOverTime += appOverTime.getApplicationTime().getOverTimeShiftNight().isPresent() ? 
-		        appOverTime.getApplicationTime().getOverTimeShiftNight().get().getOverTimeMidNight().v() : 0;
+		totalOverTime +=
+		        appOverTime.getApplicationTime().getOverTimeShiftNight().flatMap(x -> Optional.ofNullable(x.getOverTimeMidNight())).map(x -> x.v()).orElse(0);
 		totalOverTime += appOverTime.getApplicationTime().getFlexOverTime().map(AttendanceTimeOfExistMinus::v).orElse(0);
 		TimeDigestionParam timeDigestionParam = new TimeDigestionParam(
 		        0, 
