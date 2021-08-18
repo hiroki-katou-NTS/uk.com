@@ -73,7 +73,7 @@ public class ConversionInsertSQL implements ConversionSQL {
 		return insert.sql(
 				SelectSentence.join(select) + "\r\n" +
 				from.sql(spec) +
-				whereString +
+				whereString + "\r\n" +
 				groupbyString
 			);
 	}

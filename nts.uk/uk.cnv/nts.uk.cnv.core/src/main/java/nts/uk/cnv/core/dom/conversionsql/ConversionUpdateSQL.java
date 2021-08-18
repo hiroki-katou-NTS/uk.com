@@ -61,7 +61,7 @@ public class ConversionUpdateSQL implements ConversionSQL {
 				? "GROUP BY " + String.join(",", groupingColumns) : "";
 		return this.update.sql() + "\r\n" +
 				from.sql(spec) +
-				groupbyString +
+				groupbyString + "\r\n" +
 				whereString;
 	}
 
