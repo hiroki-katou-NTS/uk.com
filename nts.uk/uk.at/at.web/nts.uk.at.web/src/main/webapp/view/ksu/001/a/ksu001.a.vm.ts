@@ -3155,7 +3155,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						if(_.includes([1, 3, 5], i)) {
 							sumLaborCostAndTime = nts.uk.time.format.byId("Time_Short_HM", sumLaborCostAndTime);	
 						} else {
-							sumLaborCostAndTime = nts.uk.ntsNumber.formatNumber(sumLaborCostAndTime, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));	
+							sumLaborCostAndTime = nts.uk.ntsNumber.formatNumber(sumLaborCostAndTime, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0}));	
 						}
                         rightHorzContentDs.push({ id: 'id'+i, sum: sumLaborCostAndTime });
                     }
@@ -3196,14 +3196,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-	                            _.set(objectExternalBudget, key, findObject.value);   
+	                            _.set(objectExternalBudget, key, nts.uk.ntsNumber.formatNumber(findObject.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));   
 	                            sumExternalBudget += _.toNumber(findObject.value);
 	                        } else {
 	                            _.set(objectExternalBudget, key, '');   
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectExternalBudget);
-	                    rightHorzContentDs.push({ id: 'id' + index, sum: sumExternalBudget });
+	                    rightHorzContentDs.push({ id: 'id' + index, sum: nts.uk.ntsNumber.formatNumber(sumExternalBudget, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) });
 					});
                     break;
                     
