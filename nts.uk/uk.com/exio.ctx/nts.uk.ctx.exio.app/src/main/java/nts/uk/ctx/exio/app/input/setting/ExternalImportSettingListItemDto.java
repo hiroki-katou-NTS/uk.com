@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.input.find.setting;
+package nts.uk.ctx.exio.app.input.setting;
 
 import java.util.List;
 import java.util.stream.Collectors;

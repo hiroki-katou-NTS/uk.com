@@ -11,9 +11,9 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.exio.app.input.command.setting.RemoveExternalImportSettingCommand;
 import nts.uk.ctx.exio.app.input.command.setting.RemoveExternalImportSettingCommandHandler;
-import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingDto;
-import nts.uk.ctx.exio.app.input.find.setting.ExternalImportSettingListItemDto;
-import nts.uk.ctx.exio.app.input.find.setting.FindExternalImportSetting;
+import nts.uk.ctx.exio.app.input.setting.ExternalImportSettingDto;
+import nts.uk.ctx.exio.app.input.setting.ExternalImportSettingListItemDto;
+import nts.uk.ctx.exio.app.input.setting.FindExternalImportSetting;
 
 @Path("exio/input/setting")
 @Produces("application/json")
