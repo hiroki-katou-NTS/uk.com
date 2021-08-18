@@ -4,6 +4,37 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 	import info = nts.uk.ui.dialog.info;
 	import setShared = nts.uk.ui.windows.setShared;
 	import getShared = nts.uk.ui.windows.getShared;
+
+	let ICON_CONFIGURED = nts.uk.request.resolvePath(
+		__viewContext.rootPath + "../" + (<any> nts).uk.request.WEB_APP_NAME.comjs
+		 + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
+
+	function renderConfiguredIcon(configured) {
+		if (configured === "true") {
+				return '<div class="icon-configured" style="text-align: center;">' 
+						+ '<span id="icon-configured" style="'
+						+ 'background: url(\'' + ICON_CONFIGURED + '\');'
+						+ 'background-size: 20px 20px; width: 20px; height: 20px;'
+						+ 'display: inline-block;"></span></div>';
+		} else {
+				return '';
+		}
+	}
+	function deleteButton(deletable, data) {
+		if (deletable === "true") {
+				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">delete</button>';
+		} else {
+				return '';
+		}
+	}
+
+	$(function() {
+		$("#layout-list").on("click",".delete-button",function(){
+			let vm = nts.uk.ui._viewModel.content;
+			console.log("さくじょ1"+ $(this).data("target"));
+			vm.removeItem($(this).data("target"));
+		});
+	})
 	
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -34,12 +65,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		]);
 
 		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
+			{ headerText: "削除", 					key: "deletable", 		width: 75 , 	formatter: deleteButton },
 			{ headerText: "NO", 						key: "itemNo", 				width: 100 , 	hidden: true },
 			{ headerText: "名称", 					key: "name", 					width: 200 		},
 			{ headerText: "型", 						key: "type", 					width: 75 		},
 			{ headerText: "受入元", 				key: "source", 				width: 50 		},
 			{ headerText: "詳細設定", 			key: "alreadyDetail", width: 75 ,		formatter: renderConfiguredIcon },
-			{ headerText: "削除可否", 			key: "deletable", 		width: 75 , 	hidden: true },
 		]);
 
 		constructor() {
@@ -148,8 +179,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			}
 		}
 
-
-
 		selectLayout() {
 			let self = this;
 			setShared('CMF001DParams', {
@@ -200,26 +229,15 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		gotoDetailSetting() {
 			request.jump("../c/index.xhtml", { settingCode: this.settingCode() });
 		}
-	}
 
-	let ICON_CONFIGURED = nts.uk.request.resolvePath(
-		__viewContext.rootPath + "../" + (<any> nts).uk.request.WEB_APP_NAME.comjs
-		 + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
-
-	function renderConfiguredIcon(configured) {
-		if (configured === "true") {
-				return '<div class="icon-configured" style="text-align: center;">' 
-						+ '<span id="icon-configured" style="'
-						+ 'background: url(\'' + ICON_CONFIGURED + '\');'
-						+ 'background-size: 20px 20px; width: 20px; height: 20px;'
-						+ 'display: inline-block;"></span></div>';
-		} else {
-				return '';
+		removeItem(target){
+			let self = this;
+			self.layoutItemNoList(self.layoutItemNoList().filter(function(itemNo){
+				return itemNo !== target;
+			}))
 		}
-}
-
-
-
+	}
+	
 
 
 	

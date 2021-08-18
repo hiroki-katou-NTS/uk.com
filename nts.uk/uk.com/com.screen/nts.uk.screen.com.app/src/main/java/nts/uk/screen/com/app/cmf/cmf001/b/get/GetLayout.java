@@ -49,36 +49,67 @@ public class GetLayout {
 		
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), query.getSettingCode());
 		if(settingOpt.isPresent()) {
+			// 設定あり（更新モード）
 			val setting = settingOpt.get();
 			if(query.getImportingGroupId() == setting.getExternalImportGroupId()) {
-				return getSavedAndAddings(require, query, setting);
+				// グループIDがマスタと一致
+				if(query.isAllItem()) {
+					// 登録済みのレイアウトを取得
+					return getSaved(require, query, setting);
+				}else {
+					// 指定した項目のレイアウトを取得
+					return getSpecified(require, query, setting);
+				}
+			}else {
+				// グループIDがマスタと不一致
+				if(query.isAllItem()) {
+					// 受入可能項目をすべて取得
+					return getAllImportables(require, query);
+				}else {
+					// 指定した項目のレイアウトを取得
+					return getSpecified(require, query, setting);
+				}
 			}
 		}
-		
+		// 設定なし（新規モード）
 		return getAllImportables(require, query);
 	}
-
-	private List<ExternalImportLayoutDto> getSavedAndAddings(
+	
+	// 登録済みのレイアウトを取得する
+	private List<ExternalImportLayoutDto> getSaved(
+			GetLayout.Require require,
+			GetLayoutQuery query, 
+			ExternalImportSetting setting) {
+		return toLayouts(require, query, setting.getAssembly().getMapping().getMappings());
+	}
+	
+	// 指定した項目のレイアウトを取得する
+	private List<ExternalImportLayoutDto> getSpecified(
 			GetLayout.Require require,
 			GetLayoutQuery query, 
 			ExternalImportSetting setting) {
 		
-		// 設定されている項目
-		val savedLayouts = toLayouts(require, query, setting.getAssembly().getMapping().getMappings());
+		
+		val savedMapping = setting.getAssembly().getMapping().getMappings().stream()
+				.filter(m -> query.getItemNoList().contains(m.getItemNo()))
+				.collect(toList());
+		
+		// 指定した項目のうち登録済みの項目
+		val savedLayouts = toLayouts(require, query, savedMapping);
 		
 		val savedItemNos = savedLayouts.stream().map(l -> l.getItemNo()).collect(Collectors.toSet());
-		val addingItemNos = query.getItemNoList().stream()
+		val unservedItemNos = query.getItemNoList().stream()
 				.filter(n -> !savedItemNos.contains(n))
 				.collect(Collectors.toSet());
 		
-		// 画面上で追加された項目
-		val addings = getAllImportables(require, query).stream()
-				.filter(l -> addingItemNos.contains(l.getItemNo()))
+		// 指定した項目のうち未登録の項目		
+		val unservedLayouts = getAllImportables(require, query).stream()
+				.filter(l -> unservedItemNos.contains(l.getItemNo()))
 				.collect(toList());
 		
 		val results = new ArrayList<ExternalImportLayoutDto>();
 		results.addAll(savedLayouts);
-		results.addAll(addings);
+		results.addAll(unservedLayouts);
 		
 		return results;
 	}
