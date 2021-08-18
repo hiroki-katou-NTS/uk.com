@@ -57,15 +57,10 @@ public class ExternalImportSettingDto {
 				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
 				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
 				domain.getAssembly().getMapping().getMappings().stream()
-					.map(m -> new ExternalImportLayoutDto(
-							m.getItemNo(), 
-							getItemName(require, domain.getExternalImportGroupId(), m),
-							getItemType(require, domain.getExternalImportGroupId(), m),
-							checkImportSource(m),
-							m.getFixedValue().map(f -> f.asString()).orElse(""),
-							m.isConfigured()))
+					.map(m -> ExternalImportLayoutDto.fromDomain(require, domain.getExternalImportGroupId(), m))
 				.collect(Collectors.toList()));
 	}
+
 	
 	public ExternalImportSetting toDomain(Require require) {
 		return new ExternalImportSetting(
@@ -114,18 +109,19 @@ public class ExternalImportSettingDto {
 		
 		/** 詳細設定の有無 */
 		private boolean alreadyDetail;
-	}
-	
-	private static String getItemName(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {
-		val importableItems = require.getImportableItems(groupId);
-		return importableItems.stream()
-				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemName();
-	}
-	
-	private static String getItemType(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {
-		val importableItems = require.getImportableItems(groupId);
-		return importableItems.stream()
-				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemType().name();
+
+		static ExternalImportLayoutDto fromDomain(
+				Require require,
+				ImportingGroupId groupId,
+				ImportingItemMapping domain) {
+			return new ExternalImportLayoutDto(
+					domain.getItemNo(), 
+					require.getImportableItems(groupId, domain.getItemNo()).getItemName(),
+					require.getImportableItems(groupId, domain.getItemNo()).getItemType().name(),
+					checkImportSource(domain),
+					domain.getFixedValue().map(f -> f.asString()).orElse(""),
+					domain.isConfigured());
+		}
 	}
 	
 	private static String checkImportSource(ImportingItemMapping mapping) {
@@ -143,7 +139,7 @@ public class ExternalImportSettingDto {
 	}
 	
 	public static interface Require {
-		List<ImportableItem> getImportableItems(ImportingGroupId groupId);
+		ImportableItem getImportableItems(ImportingGroupId groupId, int itemNo);
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }

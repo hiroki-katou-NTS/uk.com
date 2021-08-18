@@ -33,7 +33,7 @@ module nts.uk.com.view.cmf001.d {
 				console.log("パラメータ受け取った")
 				self.selectablItemList = ko.observableArray<SelectableItem>([]);
 				self.getSelectableItem(params.groupId);
-				self.selectedItems(params.selectedItems?.map(n => Number(n)) ?? []);
+				self.selectedItems(params.selectedItems.map(n => Number(n)));
 			}	
 
 			getSelectableItem(groupId: string){
