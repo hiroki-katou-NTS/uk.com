@@ -143,7 +143,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
-        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null));
+        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null, null));
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -912,7 +912,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         loadRemainNumberTable() {
             let self = this;
             service.getRemainNum(self.selectedEmployee()).done((data: any) => {
-                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate));
+                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate, data.grantDays));
                 self.referenceVacation(
                     new ReferenceVacation(
                         data.annualLeave == null ? false : data.annualLeave.manageYearOff,
@@ -5436,8 +5436,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dispSysDate: string = getText("KDW003_121", [moment(new Date()).format("YYYY/MM/DD")]);
         dispNextGrantDate: string;
 
-        constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any) {
-            this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate]) : getText("KDW003_123");
+        constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any, grantDays: any) {
+            this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate, grantDays]) : getText("KDW003_123");
             this.dispCompensationDay = compensatoryLeave == null ? false : compensatoryLeave.manageCompenLeave;
             this.dispCompensationTime = compensatoryLeave == null ? false : compensatoryLeave.manageTimeOff;
             this.dispSubstitute = substitutionLeave == null ? false : substitutionLeave.manageAtr;

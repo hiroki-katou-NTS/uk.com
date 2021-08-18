@@ -26,4 +26,7 @@ public class HolidayRemainNumberDto {
 	
 	private GeneralDate nextGrantDate;
 	
+	/** 付与日数 */
+	public Double grantDays;
+	
 }
