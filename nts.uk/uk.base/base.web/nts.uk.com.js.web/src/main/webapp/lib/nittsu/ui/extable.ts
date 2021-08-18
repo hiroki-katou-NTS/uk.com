@@ -2368,7 +2368,7 @@ module nts.uk.ui.exTable {
                 let disable = $.data(self.$container, internal.DISABLE);
                 if (!disable) return;
                 self.eachKey(disable, obj => obj.columnKey, obj => !obj.uiReflected, ($cell, obj) => {
-                    helper.markCellWith(style.SEAL_CLS, $cell);
+                    helper.markCellWith(style.SEAL_CLS, $cell, obj.innerIdx);
                     obj.uiReflected = true;
                 });
             }
@@ -3166,6 +3166,8 @@ module nts.uk.ui.exTable {
                 exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                 return { updateTarget: updateTarget, value: oldVal };
             }
+            
+            exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
             return null;
         }
         
