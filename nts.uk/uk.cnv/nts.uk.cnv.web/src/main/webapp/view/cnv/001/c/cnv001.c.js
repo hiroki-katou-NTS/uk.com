@@ -353,94 +353,10 @@ $(function(){
 		});
 	}
 
-	$("#chkParentJoin1").change(function() {
-		if($("#chkParentJoin1").prop('checked')) {
-			$("#selJoinPK1").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK1").prop('disabled', true);
-		}
-	});
+	$(".chkJoin").change(function() {
+		var targetId = '#' + $(this).data('target');
 
-	$("#chkParentJoin2").change(function() {
-		if($("#chkParentJoin2").prop('checked')) {
-			$("#selJoinPK2").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK2").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin3").change(function() {
-		if($("#chkParentJoin3").prop('checked')) {
-			$("#selJoinPK3").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK3").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin4").change(function() {
-		if($("#chkParentJoin4").prop('checked')) {
-			$("#selJoinPK4").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK4").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin5").change(function() {
-		if($("#chkParentJoin5").prop('checked')) {
-			$("#selJoinPK5").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK5").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin6").change(function() {
-		if($("#chkParentJoin6").prop('checked')) {
-			$("#selJoinPK6").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK6").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin7").change(function() {
-		if($("#chkParentJoin7").prop('checked')) {
-			$("#selJoinPK7").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK7").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin8").change(function() {
-		if($("#chkParentJoin8").prop('checked')) {
-			$("#selJoinPK8").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK8").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin9").change(function() {
-		if($("#chkParentJoin9").prop('checked')) {
-			$("#selJoinPK9").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK9").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin10").change(function() {
-		if($("#chkParentJoin10").prop('checked')) {
-			$("#selJoinPK10").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK10").prop('disabled', true);
-		}
+		$(targetId).prop('disabled', ($(this).prop('checked') == false));
 	});
 
 	function loadPage() {
