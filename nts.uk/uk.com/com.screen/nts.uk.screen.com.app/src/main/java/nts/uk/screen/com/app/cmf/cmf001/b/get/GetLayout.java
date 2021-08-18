@@ -50,14 +50,22 @@ public class GetLayout {
 			if(query.getImportingGroupId() == setting.getExternalImportGroupId()) {
 				// 設定されている項目
 				return setting.getAssembly().getMapping().getMappings().stream()
-						.map(i -> ExternalImportLayoutDto.fromDomain(require, query.getSettingCode(), query.getImportingGroupId(), new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue())))
+						.map(i -> ExternalImportLayoutDto.fromDomain(
+								require,
+								query.getSettingCode(),
+								query.getImportingGroupId(),
+								new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue())))
 						.collect(Collectors.toList());
 			}
 		}
 		
 		val importableItems = require.getImportableItems(query.getImportingGroupId());
 		return importableItems.stream()
-				.map(i -> ExternalImportLayoutDto.fromDomain(require, query.getSettingCode(), query.getImportingGroupId(), new ImportingItemMapping(i.getItemNo(), Optional.empty(), Optional.empty())))
+				.map(i -> ExternalImportLayoutDto.fromDomain(
+						require,
+						query.getSettingCode(),
+						query.getImportingGroupId(),
+						ImportingItemMapping.noSetting(i.getItemNo())))
 				.collect(Collectors.toList());
 	}
 	
