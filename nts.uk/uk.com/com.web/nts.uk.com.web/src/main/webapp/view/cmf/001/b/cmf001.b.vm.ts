@@ -191,9 +191,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 				if(!getShared('CMF001DCancel')){
 					let ItemNoList: string[] = getShared('CMF001DOutput')
 					console.log("closed: " + ItemNoList)
-					ItemNoList.map(n => Number(n)).forEach(n => {
-						self.layoutItemNoList.push(n);
-					});
+					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
 				}
 			});
 		}
