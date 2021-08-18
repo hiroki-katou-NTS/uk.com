@@ -25,6 +25,9 @@ public class ExternalImportLayoutDto {
 	/** 必須項目 */
 	private boolean required;
 	
+	/** 削除可否 */
+	private boolean deletable;
+	
 	/** 項目型 */
 	private String type;
 	
@@ -39,6 +42,7 @@ public class ExternalImportLayoutDto {
 				domain.getItemNo(), 
 				getItemName(require, groupId, domain),
 				checkRequired(require, groupId, domain), 
+				checkDeletable(require, groupId, domain), 
 				getItemType(require, groupId, domain),
 				checkImportSource(domain),
 				checkAlreadyDetail(require, settingCode, domain));
@@ -60,6 +64,10 @@ public class ExternalImportLayoutDto {
 		val importableItems = require.getImportableItems(groupId);
 		return importableItems.stream()
 				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).isRequired();
+	}
+	
+	private static boolean checkDeletable(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {
+		return !checkRequired(require, groupId, mapping);
 	}
 	
 	private static String checkImportSource(ImportingItemMapping mapping) {
