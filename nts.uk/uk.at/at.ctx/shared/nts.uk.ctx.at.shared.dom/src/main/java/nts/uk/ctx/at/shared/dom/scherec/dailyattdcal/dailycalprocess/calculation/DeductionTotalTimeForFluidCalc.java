@@ -303,7 +303,7 @@ public class DeductionTotalTimeForFluidCalc {
 		val offsetTime = flowBreakDeductInfo.deductionTotal.goOutTimeOffsetRemainingTime.lessThan(breakTime) 
 							? flowBreakDeductInfo.deductionTotal.goOutTimeOffsetRemainingTime : breakTime;
 		
-		Optional<TimeSpanForDailyCalc> afterShrinkingTimeSheet = Optional.empty();
+		Optional<TimeSpanForDailyCalc> afterShrinkingTimeSheet = Optional.of(timeSheetOfDeductionItem.getTimeSheet());
 		
 		if(offsetTime.greaterThan(0)) {
 			/** △休憩時間帯を相殺時間分縮める */
