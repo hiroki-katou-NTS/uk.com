@@ -42,6 +42,8 @@ module nts.uk.com.view.cas011.a {
         gridColumns: KnockoutObservableArray<NtsGridListColumn>;
         swapColumns: KnockoutObservableArray<NtsGridListColumn>;
 
+        defaultRoleSetCode :KnockoutObservable<string> = ko.observable(null);
+
         constructor(params: any) {
             super();
             const vm = this;
@@ -98,6 +100,7 @@ module nts.uk.com.view.cas011.a {
                                 if(!isNullOrUndefined(defaultRoleSet) &&_roleSet.roleSetCd == defaultRoleSet.roleSetCd){
                                     _roleSet.defaultRoleSet = true;
                                     _roleSet.check = 1;
+                                    vm.defaultRoleSetCode(defaultRoleSet.roleSetCd);
                                 }else {
                                     _roleSet.defaultRoleSet = false;
                                 }
@@ -228,6 +231,7 @@ module nts.uk.com.view.cas011.a {
                 if (deferred) {
                     deferred.resolve();
                 }
+                vm.setFocus();
             });
         }
         backToTopPage() {
@@ -247,15 +251,16 @@ module nts.uk.com.view.cas011.a {
                 $('#personInfRoleId').ntsError('set', { messageId: "Msg_218", messageParams:resource.getText('CAS011_18') });
                 $('#personInfRoleId').focus();
             }
-
             if (errors.hasError() === false) {
                 block.invisible();
                 if (vm.isNewMode()) {
                     // create new role set
                     vm.$ajax('com', API.addRoleSet, ko.toJS(currentRoleSet)).done((roleSetCd) => {
-                        dialog.info({messageId: "Msg_15"});
-                        // refresh - initial screen
-                        vm.initialScreen(null, currentRoleSet.roleSetCd());
+                        dialog.info({messageId: "Msg_15"}).then(()=>
+                            {
+                                vm.initialScreen(null, currentRoleSet.roleSetCd());
+                            }
+                        );
                     }).fail(function (error) {
 
                         if (error.messageId == 'Msg_583') {
@@ -272,22 +277,38 @@ module nts.uk.com.view.cas011.a {
                     });
                 } else {
                     // update
-                    vm.$ajax('com', API.updateRoleSet, ko.toJS(currentRoleSet)).done((roleSetCd) => {
-                        dialog.info({messageId: "Msg_15"});
-                        // refresh - initial screen
-                        vm.initialScreen(null, currentRoleSet.roleSetCd());
-
-                    }).fail(function (error) {
-                        if (error.messageId == 'Msg_583') {
-                            dialog.alertError({messageId: error.messageId, messageParams: ["メニュー"]});
-                        } else {
-                            dialog.alertError({messageId: error.messageId});
+                    if(vm.defaultRoleSetCode() == currentRoleSet.roleSetCd() ){
+                        if(currentRoleSet.defaultRoleSet() == false){
+                            dialog.alertError({messageId: "Msg_2200"}).then(()=>{
+                                $('#defaultRoleSet').focus();
+                                block.clear();
+                            });
+                        }else {
+                            vm.update(currentRoleSet)
                         }
-                    }).always(function () {
-                        block.clear();
-                    });
+                    }else {
+                        vm.update(currentRoleSet)
+                    }
                 }
             }
+        }
+        update(currentRoleSet:any){
+            let vm = this;
+            vm.$ajax('com', API.updateRoleSet, ko.toJS(currentRoleSet)).done((roleSetCd) => {
+                dialog.info({messageId: "Msg_15"}).then(()=>{
+                    // refresh - initial screen
+                    vm.initialScreen(null, currentRoleSet.roleSetCd());
+                });
+
+            }).fail(function (error) {
+                if (error.messageId == 'Msg_583') {
+                    dialog.alertError({messageId: error.messageId, messageParams: ["メニュー"]});
+                } else {
+                    dialog.alertError({messageId: error.messageId});
+                }
+            }).always(function () {
+                block.clear();
+            });
         }
         deleteRoleSet() {
             let vm = this,

@@ -18,8 +18,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <button id="A1_001"
-                    data-bind="click: settingCreateMode,
-                        enable: !isNewMode()">#{i18n.getText('CAS011_4')}</button>
+                    data-bind="click: settingCreateMode">#{i18n.getText('CAS011_4')}</button>
             <button id="A1_002" class="proceed"
                     data-bind="click: saveRoleSet, enable: $root.errors.isEmpty">#{i18n.getText('CAS011_5')}</button>
             <button id="A1_003" class="danger"
@@ -87,7 +86,7 @@
                             </td>
                             <td>
                                 <!-- A3_4 -->
-                                <div data-bind="ntsCheckBox: {checked: currentRoleSet().defaultRoleSet}"
+                                <div id = "defaultRoleSet" data-bind="ntsCheckBox: {checked: currentRoleSet().defaultRoleSet}"
                                      class="checkbox-item">#{i18n.getText('CAS011_45')}</div>
                             </td>
                         </tr>
