@@ -35,6 +35,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
@@ -94,7 +96,10 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
     private GetSpecifyPeriod getSpecifyPeriod;
 
     @Inject
-    private GetMaterData getMaterData;
+    private WorkTypeRepository workTypeRepository;
+
+    @Inject
+    private WorkTimeSettingRepository workTimeSettingRepository;
 
     private static final int WORK_TYPE = 1;
 
@@ -180,7 +185,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
 
         // 6 Call 年間勤務台帳の表示内容を作成する
         RequireCreateAnnualWorkLedgerContentService require2 = new RequireCreateAnnualWorkLedgerContentService(
-                affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter, getMaterData);
+                affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter);
         List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentQuery.getData(
                 require2,
                 datePeriod,
@@ -232,7 +237,6 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         private AffComHistAdapter affComHistAdapter;
         private AttendanceItemServiceAdapter itemServiceAdapter;
         private ActualMultipleMonthAdapter actualMultipleMonthAdapter;
-        private GetMaterData getMaterData;
 
         @Override
         public EmpAffInfoExportDto getAffiliationPeriod(List<String> listSid, YearMonthPeriod YMPeriod, GeneralDate baseDate) {
@@ -251,20 +255,26 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         }
 
         @Override
-        public Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference, List<Integer> lstDivNO) {
-            Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
-            val data = getMaterData.getAllDataMaster(companyId, dateReference, lstDivNO);
-            Map<Integer, Map<String, CodeNameInfo>> listItem = new HashMap<>();
-            listItem.put(WORK_TYPE, data.getOrDefault(WORK_TYPE, null));
-            listItem.put(WORKING_HOURS, data.getOrDefault(WORKING_HOURS, null));
+        public Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId) {
 
-            listItem.forEach((k, e) -> {
-                Map<String, CodeNameInfoDto> item = new HashMap<>();
-                e.forEach((key, value) -> {
-                    item.put(key, new CodeNameInfoDto(value.getCode(), value.getName(), value.getId()));
-                });
-                rs.put(k, item);
-            });
+            val workTypeData = workTypeRepository.findByCompanyId(companyId);
+
+            Map<String, CodeNameInfoDto> mapWorkTypeData = workTypeData.stream()
+                    .collect(Collectors.toMap(e -> e.getWorkTypeCode().v(), j -> new CodeNameInfoDto(
+                            j.getWorkTypeCode().v(),
+                            j.getAbbreviationName().v(),
+                            null
+                    )));
+            val workHourData = workTimeSettingRepository.findByCompanyId(companyId);
+            Map<String, CodeNameInfoDto> mapWorkHourData = workHourData.stream()
+                    .collect(Collectors.toMap(e -> e.getWorktimeCode().v(), j -> new CodeNameInfoDto(
+                            j.getWorktimeCode().v(),
+                            j.getWorkTimeDisplayName().getWorkTimeName().v(),
+                            null
+                    )));
+            Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
+            rs.put(WORK_TYPE, mapWorkTypeData);
+            rs.put(WORKING_HOURS, mapWorkHourData);
             return rs;
         }
     }

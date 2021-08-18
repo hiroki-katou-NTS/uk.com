@@ -18,15 +18,14 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputS
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.*;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
-import nts.uk.ctx.at.record.dom.algorithm.masterinfo.GetMaterData;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
@@ -71,8 +70,12 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     @Inject
     private GetSpecifyPeriod getSpecifyPeriod;
 
+
     @Inject
-    private GetMaterData getMaterData;
+    private WorkTypeRepository workTypeRepository;
+
+    @Inject
+    private WorkTimeSettingRepository workTimeSettingRepository;
 
     private static final int WORK_TYPE = 1;
 
@@ -120,9 +123,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter
                 .getWorkplaceInforByWkpIds(cid, listWorkplaceId, baseDate);
         List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream()
-                .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName(),e.getHierarchyCode()))
+                .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName(), e.getHierarchyCode()))
                 .collect(Collectors.toList());
-        RequireImpl require = new RequireImpl(itemServiceAdapter, affComHistAdapter, getMaterData);
+        RequireImpl require = new RequireImpl(itemServiceAdapter, affComHistAdapter);
         // 5 ⑤ <call>. 勤務状況表の出力設定の詳細を取得する.
         WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery
                 .getDetail(query.getSettingId());
@@ -165,7 +168,6 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     public class RequireImpl implements CreateDisplayContentWorkStatusQuery.Require {
         private AttendanceItemServiceAdapter itemServiceAdapter;
         private AffComHistAdapter affComHistAdapter;
-        private GetMaterData getMaterData;
 
         @Override
         public List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod) {
@@ -178,19 +180,26 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         }
 
         @Override
-        public Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference, List<Integer> lstDivNO) {
-            val data = getMaterData.getAllDataMaster(companyId, dateReference, lstDivNO);
-            Map<Integer, Map<String, CodeNameInfo>> listItem = new HashMap<>();
-            listItem.put(WORK_TYPE, data.getOrDefault(WORK_TYPE, null));
-            listItem.put(WORKING_HOURS, data.getOrDefault(WORKING_HOURS, null));
+        public Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId) {
+            val workTypeData = workTypeRepository.findByCompanyId(companyId);
+            val workHourData = workTimeSettingRepository.findByCompanyId(companyId);
+
+            Map<String, CodeNameInfoDto> mapWorkTypeData = workTypeData.stream()
+                    .collect(Collectors.toMap(e -> e.getWorkTypeCode().v(), j -> new CodeNameInfoDto(
+                            j.getWorkTypeCode().v(),
+                            j.getAbbreviationName().v(),
+                            null
+                    )));
+            Map<String, CodeNameInfoDto> mapWorkHourData = workHourData.stream()
+                    .collect(Collectors.toMap(e -> e.getWorktimeCode().v(), j -> new CodeNameInfoDto(
+                            j.getWorktimeCode().v(),
+                            j.getWorkTimeDisplayName().getWorkTimeName().v(),
+                            null
+                    )));
+
             Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
-            listItem.forEach((Integer k, Map<String, CodeNameInfo> e) -> {
-                Map<String, CodeNameInfoDto> item = new HashMap<>();
-                e.forEach((key, value) -> {
-                    item.put(key, new CodeNameInfoDto(value.getCode(), value.getName(), value.getId()));
-                });
-                rs.put(k, item);
-            });
+            rs.put(WORK_TYPE, mapWorkTypeData);
+            rs.put(WORKING_HOURS, mapWorkHourData);
             return rs;
         }
 
