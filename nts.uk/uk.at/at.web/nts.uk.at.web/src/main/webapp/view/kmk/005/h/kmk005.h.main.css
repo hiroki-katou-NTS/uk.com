@@ -30,3 +30,6 @@ div[class^=screen-h] {
 .screen-h .ntsSearchBox {
 	min-width: 300px;
 }
+.screen-h .information{
+	width: 800px;
+}

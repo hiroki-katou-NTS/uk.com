@@ -73,61 +73,61 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class ScheduleRegisterCommandHandler {
-    
+
     @Inject
     private WorkTypeRepository workTypeRepo;
-    
+
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
-    
+
     @Inject
     private BasicScheduleService basicScheduleService;
-    
+
     @Inject
     private FixedWorkSettingRepository fixedWorkSettingRepository;
-    
+
     @Inject
     private FlowWorkSettingRepository flowWorkSettingRepository;
-    
+
     @Inject
     private FlexWorkSettingRepository flexWorkSettingRepository;
-    
+
     @Inject
     private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
-    
+
     @Inject
     private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
-    
+
     @Inject
     private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-    
+
     @Inject
     private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
-    
+
     @Inject
     private SyClassificationAdapter syClassificationAdapter;
-    
+
     @Inject
     private BusinessTypeEmpService businessTypeEmpService;
-    
+
     @Inject
     private WorkingConditionRepository workingConditionRepo;
-    
+
     @Inject
     private WorkScheduleRepository workScheduleRepo;
-    
+
     @Inject
     private ShiftMasterRepository shiftMasterRepository;
-    
+
     @Inject
     private CorrectWorkSchedule correctWorkSchedule;
-    
+
     @Inject
     private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-    
+
     @Inject
     private CreateWorkScheduleService createWorkScheduleService;
-    
+
     @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
 
@@ -143,7 +143,7 @@ public class ScheduleRegisterCommandHandler {
         RequireImp requireImp = new RequireImp(workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter, sharedAffWorkPlaceHisAdapter, syClassificationAdapter, businessTypeEmpService, workingConditionRepo, workScheduleRepo, shiftMasterRepository, correctWorkSchedule, interimRemainDataMngRegisterDateChange, importCodes, employeeList, period);
         // 1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
         List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = createWorkScheduleService.register(requireImp, command.toDomain());
-        
+
         // 2: List<勤務予定の登録処理結果> : anyMatch $.エラーがあるか == true 社員IDを指定して社員を取得する(List<社員ID>)
         List<String> employeeIds = new ArrayList<String>();
         resultOfRegisteringWorkSchedule.stream().forEach(x -> {
@@ -156,27 +156,27 @@ public class ScheduleRegisterCommandHandler {
             ResultOfRegisteringWorkSchedule result = resultOfRegisteringWorkSchedule.stream()
                     .filter(y -> y.isHasError() ? y.getErrorInformation().get(0).getEmployeeId().equals(x.getEmployeeId()) : y.isHasError()).findFirst().get();
             RegisterWorkScheduleOutput output = new RegisterWorkScheduleOutput(
-                    x.getEmployeeCode(), 
-                    x.getEmployeeName(), 
-                    result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"), 
-                    result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0, 
+                    x.getEmployeeCode(),
+                    x.getEmployeeName(),
+                    result.getErrorInformation().get(0).getDate().toString("yyyy/MM/dd"),
+                    result.getErrorInformation().get(0).getAttendanceItemId().isPresent() ? result.getErrorInformation().get(0).getAttendanceItemId().get() : 0,
                     result.getErrorInformation().get(0).getErrorMessage());
-            
+
             outputs.add(output);
         });
-        
+
         if (outputs.size() > 0) {
             return outputs;
         }
         // 3: <<call>>
         resultOfRegisteringWorkSchedule.forEach(result -> {
             Optional<AtomTask> atomTaskOpt = result.getAtomTask();
-            
+
             if (atomTaskOpt.isPresent()) {
                 atomTaskOpt.get().run();
             }
         });
-        
+
         return outputs;
     }
     
@@ -224,7 +224,7 @@ public class ScheduleRegisterCommandHandler {
         private final Map<String, ShiftMaster> shiftMasterCache;
         
         private CorrectWorkSchedule correctWorkSchedule;
-        
+
         private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
         
         public RequireImp(WorkTypeRepository workTypeRepo, WorkTimeSettingRepository workTimeSettingRepository, 
@@ -397,7 +397,7 @@ public class ScheduleRegisterCommandHandler {
         @Override
         public Optional<BusinessTypeOfEmployee> getBusinessType(String employeeId, GeneralDate standardDate) {
             List<BusinessTypeOfEmployee> list = businessTypeEmpService.getData(employeeId, standardDate);
-            if (list.isEmpty()) 
+            if (list.isEmpty())
                 return Optional.empty();
             return Optional.of(list.get(0));
         }
@@ -416,9 +416,9 @@ public class ScheduleRegisterCommandHandler {
         }
 
         @Override
-        public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
-            Optional<WorkSchedule> rs = workScheduleRepo.get(employeeId, date);
-            return rs;
+        public boolean isWorkScheduleExisted(String employeeId, GeneralDate date) {
+            // TODO 実装
+            return false;
         }
 
         @Override

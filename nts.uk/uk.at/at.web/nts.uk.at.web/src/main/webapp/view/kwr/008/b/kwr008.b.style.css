@@ -30,7 +30,7 @@
 }
 
 .nts-fixed-body-wrapper {
-	height:310px !important;
+	height:100% !important;
 }
 
 #listStandardImportSetting_headers_v {
@@ -58,4 +58,8 @@
 }
 .label36{
     margin-left: 20px;
+}
+
+.ui-igcombo-buttonicon {
+	line-height: 20px !important;
 }

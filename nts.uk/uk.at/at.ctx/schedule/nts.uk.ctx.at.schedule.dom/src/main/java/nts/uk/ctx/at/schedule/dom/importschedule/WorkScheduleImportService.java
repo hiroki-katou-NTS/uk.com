@@ -4,16 +4,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -265,14 +262,22 @@ public class WorkScheduleImportService {
 		 */
 		List<ShiftMaster> getShiftMasters(List<ShiftMasterImportCode> importCodes);
 		/**
-		 * 勤務予定を取得する
+		 * 勤務予定が登録されているか
 		 * @param employeeId 社員ID
 		 * @param ymd 年月日
-		 * @return 勤務予定
+		 * @return true:登録されている/false:登録されていない
+		 */
+		boolean isWorkScheduleExisted(EmployeeId employeeId, GeneralDate ymd);
+		/**
+		 * 勤務予定が確定されているか
+		 * @param employeeId 社員ID
+		 * @param ymd 年月日
+		 * @return true:確定されている/false:確定されていない
 		 */
 		Optional<WorkSchedule> getWorkSchedule(EmployeeId employeeId, GeneralDate ymd);
 		
 		Optional<Boolean> getScheduleConfirmAtr(EmployeeId employeeId, GeneralDate ymd);
+		boolean isWorkScheduleComfirmed(EmployeeId employeeId, GeneralDate ymd);
 	}
 
 }

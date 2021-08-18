@@ -26,16 +26,11 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheModifyStartDateService;
-import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatus;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.GetEmpCanReferService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ColorCodeChar6;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -459,10 +454,13 @@ public class WorkScheduleImportServiceTest {
 		importSeeds.entrySet().stream()
 			.filter( seed -> seed.getValue().isPresent() )
 			.forEach( seed -> {
-				val schedule = Helper.createDummyWorkSchedule( seed.getKey().getEmployeeId().v(), seed.getKey().getYmd(), seed.getValue().get() );
 				new Expectations() {{
-					require.getWorkSchedule( seed.getKey().getEmployeeId(), seed.getKey().getYmd() );
-					result = Optional.of(schedule);
+					// 勤務予定が登録されているか
+					require.isWorkScheduleExisted( seed.getKey().getEmployeeId(), seed.getKey().getYmd() );
+					result = true;
+					// 勤務予定が確定されているか
+					require.isWorkScheduleComfirmed( seed.getKey().getEmployeeId(), seed.getKey().getYmd() );
+					result = ( seed.getValue().get() == ConfirmedATR.CONFIRMED );
 				}};
 			} );
 
@@ -659,14 +657,22 @@ public class WorkScheduleImportServiceTest {
 			.collect(Collectors.groupingBy( seed -> seed.getEmployeeId().get() ));
 		orderedEmployeeIds.stream().forEach( employeeId -> {
 			importSeedsByEmpId.getOrDefault( employeeId, Collections.emptyList() ).forEach( seed -> {
-				val schedule = seed.getConfirmedStatus().isPresent()
-						? Optional.of( Helper.createDummyWorkSchedule(seed.getEmployeeId().get().v(), seed.getYmd(), seed.getConfirmedStatus().get()) )
-						: Optional.empty();
+
+				val isScheduleExisted = seed.getConfirmedStatus().isPresent();
 				new Expectations() {{
-					// 勤務予定を取得する
-					require.getWorkSchedule(seed.getEmployeeId().get(), seed.getYmd());
-					result = schedule;
+					// 勤務予定が登録されているか
+					require.isWorkScheduleExisted(seed.getEmployeeId().get(), seed.getYmd());
+					result = isScheduleExisted;
 				}};
+
+				if ( isScheduleExisted ) {
+					new Expectations() {{
+						// 勤務予定が確定されているか
+						require.isWorkScheduleComfirmed(seed.getEmployeeId().get(), seed.getYmd());
+						result = seed.getConfirmedStatus().map( e -> e == ConfirmedATR.CONFIRMED ).orElse(false);
+					}};
+				}
+
 			} );
 		} );
 
@@ -741,28 +747,6 @@ public class WorkScheduleImportServiceTest {
 					,	new WorkTypeCode("workTypeCode"), Optional.of(new WorkTimeCode("workTimeCode"))
 					,	Optional.of(new ShiftMasterImportCode(importCode))
 				);
-		}
-
-		/**
-		 * 確定区分を指定して勤務予定を作成する
-		 * @param employeeId 社員ID
-		 * @param ymd 年月日
-		 * @param comfirmedState 確定区分
-		 * @return 勤務予定(dummy)
-		 */
-		public static WorkSchedule createDummyWorkSchedule(String employeeId, GeneralDate ymd, ConfirmedATR comfirmedState) {
-			return new WorkSchedule(
-					employeeId, ymd, comfirmedState
-				,	new WorkInfoOfDailyAttendance()		// 勤務情報
-				,	new AffiliationInforOfDailyAttd()	// 所属情報
-				,	new BreakTimeOfDailyAttd()			// 休憩時間帯
-				,	new ArrayList<>()					// 編集状態
-				,	TaskSchedule.createWithEmptyList()	// 作業予定
-				,	Optional.empty()					// 出退勤
-				,	Optional.empty()					// 勤怠時間
-				,	Optional.empty()					// 短時間勤務
-				,	Optional.empty()					// 外出時間帯
-			);
 		}
 
 	}

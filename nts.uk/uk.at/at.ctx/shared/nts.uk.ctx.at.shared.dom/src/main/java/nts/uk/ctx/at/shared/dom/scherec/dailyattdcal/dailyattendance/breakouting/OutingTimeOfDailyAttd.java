@@ -51,6 +51,8 @@ public class OutingTimeOfDailyAttd {
 			Optional<FlowWorkRestSettingDetail> flowDetail,
 			RoundingTime roundingTime) {
 		
+		outingTimeSheets = outingTimeSheets.stream().filter(f -> f.getReasonForGoOut() != null).collect(Collectors.toList());
+		
 		/** △外出を取得 */
 		List<OutingTimeSheet> outtingTimeSheetreturnList = (dedAtr.isDeduction())?
 														//控除用の時は、外出理由 = 私用or組合のみの時間帯に絞る(他の2つは消す)
