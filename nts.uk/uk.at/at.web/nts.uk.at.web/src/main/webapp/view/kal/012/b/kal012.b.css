@@ -9,7 +9,7 @@
 
 .custom-table {
     padding: 15px 0px 15px 0px;
-    width: 71%;
+    width: 100%;
 }
 
 .buton-configure {
@@ -18,7 +18,7 @@
 }
 
 .tabs-panel.has-content {
-    width: 50%;
+    width: 44%;
     overflow: hidden;
     padding-left: 39px;
 }
@@ -30,4 +30,8 @@
 .switchbox-wrappers.radio-wrappers label input + span {
     width: 65px;
     text-align: center;
+}
+
+.top-button {
+    top: -5px;
 }
