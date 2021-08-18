@@ -1,5 +1,8 @@
 package nts.uk.screen.com.app.cmf.cmf001.b.get;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,18 +51,53 @@ public class GetLayout {
 		if(settingOpt.isPresent()) {
 			val setting = settingOpt.get();
 			if(query.getImportingGroupId() == setting.getExternalImportGroupId()) {
-				// 設定されている項目
-				return setting.getAssembly().getMapping().getMappings().stream()
-						.map(i -> ExternalImportLayoutDto.fromDomain(
-								require,
-								query.getSettingCode(),
-								query.getImportingGroupId(),
-								new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue())))
-						.collect(Collectors.toList());
+				return getSavedAndAddings(require, query, setting);
 			}
 		}
 		
+		return getAllImportables(require, query);
+	}
+
+	private List<ExternalImportLayoutDto> getSavedAndAddings(
+			GetLayout.Require require,
+			GetLayoutQuery query, 
+			ExternalImportSetting setting) {
+		
+		// 設定されている項目
+		val savedLayouts = toLayouts(require, query, setting.getAssembly().getMapping().getMappings());
+		
+		val savedItemNos = savedLayouts.stream().map(l -> l.getItemNo()).collect(Collectors.toSet());
+		val addingItemNos = query.getItemNoList().stream()
+				.filter(n -> !savedItemNos.contains(n))
+				.collect(Collectors.toSet());
+		
+		// 画面上で追加された項目
+		val addings = getAllImportables(require, query).stream()
+				.filter(l -> addingItemNos.contains(l.getItemNo()))
+				.collect(toList());
+		
+		val results = new ArrayList<ExternalImportLayoutDto>();
+		results.addAll(savedLayouts);
+		results.addAll(addings);
+		
+		return results;
+	}
+
+	private List<ExternalImportLayoutDto> toLayouts(GetLayout.Require require, GetLayoutQuery query, List<ImportingItemMapping> mappings) {
+		
+		return mappings.stream()
+				.map(i -> ExternalImportLayoutDto.fromDomain(
+						require,
+						query.getSettingCode(),
+						query.getImportingGroupId(),
+						new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue())))
+				.collect(Collectors.toList());
+	}
+
+	private static List<ExternalImportLayoutDto> getAllImportables(GetLayout.Require require, GetLayoutQuery query) {
+		
 		val importableItems = require.getImportableItems(query.getImportingGroupId());
+		
 		return importableItems.stream()
 				.map(i -> ExternalImportLayoutDto.fromDomain(
 						require,
