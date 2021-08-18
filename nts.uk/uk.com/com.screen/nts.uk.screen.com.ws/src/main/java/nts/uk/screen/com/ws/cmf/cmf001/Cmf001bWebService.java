@@ -23,10 +23,10 @@ import nts.uk.screen.com.app.cmf.cmf001.b.save.Cmf001bSaveCommandHandler;
 public class Cmf001bWebService {
 	
 	@Inject
-	private GetLayout layout;
+	private GetExternalImportSetting setting;
 	
 	@Inject
-	private GetExternalImportSetting setting;
+	private GetLayout layout;
 	
 	@Inject
 	private Cmf001bSaveCommandHandler saveCmd;

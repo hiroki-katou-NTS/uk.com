@@ -18,6 +18,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
 		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
+		deletableItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
 
 		importGroupOption: KnockoutObservableArray<any> = ko.observableArray([]);
 		importModeOption: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -133,6 +134,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
 			self.layoutItemNoList(info.itemNoList);
+			self.deletableItemNoList(info.itemNoList);
 		}
 
 		setLayout(itemNoList: number[]){

@@ -9,8 +9,9 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
+import nts.uk.shr.com.context.AppContexts;
 
 @Value
 public class ExternalImportLayoutDto {
@@ -33,15 +34,14 @@ public class ExternalImportLayoutDto {
 	/** 詳細設定の有無 */
 	private boolean alreadyDetail;
 	
-	public static ExternalImportLayoutDto fromDomain(Require require, ImportingGroupId groupId, ImportingItemMapping domain) {
+	public static ExternalImportLayoutDto fromDomain(Require require, ExternalImportCode settingCode, ImportingGroupId groupId, ImportingItemMapping domain) {
 		return new ExternalImportLayoutDto(
 				domain.getItemNo(), 
 				getItemName(require, groupId, domain),
 				checkRequired(require, groupId, domain), 
 				getItemType(require, groupId, domain),
 				checkImportSource(domain),
-				// TODO:設定の有無チェック
-				false);
+				checkAlreadyDetail(require, settingCode, domain));
 	}
 	
 	private static String getItemName(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {
@@ -60,7 +60,6 @@ public class ExternalImportLayoutDto {
 		val importableItems = require.getImportableItems(groupId);
 		return importableItems.stream()
 				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).isRequired();
-
 	}
 	
 	private static String checkImportSource(ImportingItemMapping mapping) {
@@ -77,8 +76,12 @@ public class ExternalImportLayoutDto {
 		}
 	}
 	
+	private static boolean checkAlreadyDetail(Require require, ExternalImportCode settingCode, ImportingItemMapping mapping) {
+		return require.getRevise(AppContexts.user().companyId(), settingCode, mapping.getItemNo()).isPresent();
+	}
+	
 	public static interface Require {
 		List<ImportableItem> getImportableItems(ImportingGroupId groupId);
-		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
+		Optional<ReviseItem> getRevise(String companyId, ExternalImportCode settingCode, int itemNo);
 	}
 }

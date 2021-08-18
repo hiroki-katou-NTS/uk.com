@@ -16,6 +16,8 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetExternalImportSetting.Require;
 
 @Stateless
@@ -27,6 +29,9 @@ public class GetExternalImportSettingRequire {
 	
 	@Inject
 	private ExternalImportSettingRepository externalImportSettingRepo;
+	
+	@Inject
+	private ReviseItemRepository reviseItemRepo;
 	
 	public Require create() {
 		
@@ -49,6 +54,11 @@ public class GetExternalImportSettingRequire {
 		@Override
 		public Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode) {
 			return externalImportSettingRepo.get(companyId, settingCode);
+		}
+		
+		@Override
+		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode settingCode, int itemNo) {
+			return reviseItemRepo.get(companyId, settingCode, itemNo);
 		}
 	}
 }
