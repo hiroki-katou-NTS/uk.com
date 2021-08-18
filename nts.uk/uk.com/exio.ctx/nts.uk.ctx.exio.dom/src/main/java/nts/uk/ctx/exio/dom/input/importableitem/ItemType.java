@@ -14,27 +14,27 @@ public enum ItemType {
 	/**
 	 * 0: 文字型
 	 */
-	STRING(0, "Enum_ItemType_CHARACTER"),
+	STRING(0, "Enum_ExternalImportItemType_CHARACTER"),
 	/**
 	 * 1: 整数型
 	 */
-	INT(1, "Enum_ItemType_INT"),
+	INT(1, "Enum_ExternalImportItemType_INT"),
 	/**
 	 * 2: 実数型
 	 */
-	REAL(2, "Enum_ItemType_REAL"),
+	REAL(2, "Enum_ExternalImportItemType_REAL"),
 	/**
 	 * 3: 日付型
 	 */
-	DATE(3, "Enum_ItemType_DATE"),
+	DATE(3, "Enum_ExternalImportItemType_DATE"),
 	/**
 	 * 4: 時間型
 	 */
-	TIME_DURATION(4, "Enum_ItemType_TIME_DURATION"),
+	TIME_DURATION(4, "Enum_ExternalImportItemType_TIME_DURATION"),
 	/**
 	 * 5: 時刻型
 	 */
-	TIME_POINT(5, "Enum_ItemType_TIME_POINT");
+	TIME_POINT(5, "Enum_ExternalImportItemType_TIME_POINT");
 
 	
 	/** The value. */
