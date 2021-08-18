@@ -595,11 +595,11 @@ module nts.uk.ui.at.ksu002.a {
 							ischangeableWorks = _.includes(context.$vm.startupProcessingInformation().scheFunctionControl.changeableWorks, dayData.data.workTimeForm());
 						}
                         return context.$editable()
+							&& ischangeableWorks
                             && !!dayData.data.wtime.code()
                             && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
                             && dayData.data.classification() !== WORK_STYLE.HOLIDAY
-                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED
-							&& ischangeableWorks;
+                            && dayData.data.value.required() === WORKTIME_SETTING.REQUIRED;
                     },
                     owner: this
                 });
