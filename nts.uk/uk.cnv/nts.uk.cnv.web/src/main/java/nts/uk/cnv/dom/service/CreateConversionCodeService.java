@@ -77,36 +77,36 @@ public class CreateConversionCodeService {
 
 		List<ConversionRecord> records = require.getRecords(category, table);
 
+		// 親テーブル参照関連の処理 - マッピングテーブルへの事前insertの追加など
+		Map<String, Map<String, List<String>>> referencedColumnList = new HashMap<>();
 		List<ConversionTable> conversionTables = records.stream()
 			.map(record -> {
 
 				ConversionSource source = require.getSource(record.getSourceId());
 
-				return require.getConversionTable(info, category, table, record.getRecordNo(), source, record.isRemoveDuplicate());
+				Optional<ConversionTable> ct = require.getConversionTable(info, category, table, record.getRecordNo(), source, record.isRemoveDuplicate());
+
+				if(ct.isPresent()) {
+					AdditionalConversionCode additional = manager.createAdditionalConversionCode(info, category, ct.get(), info.getJoin(source));
+					require.addPreProcessing(additional.getPreProcessing());
+					require.addPostProcessing(additional.getPostProcessing());
+					additional.getReferencedColumnList().keySet().stream()
+						.forEach(key -> {
+							Map<String, List<String>> value = new HashMap<>();
+							value = additional.getReferencedColumnList().get(key);
+							if(referencedColumnList.isEmpty() || !referencedColumnList.containsKey(key)) {
+								referencedColumnList.put(key, value);
+							}
+							else {
+								referencedColumnList.get(key).putAll(value);
+							}
+						});
+				}
+				return ct;
 			})
 			.filter(opCt -> opCt.isPresent())
 			.map(opCt -> opCt.get())
 			.collect(Collectors.toList());
-
-		// 親テーブル参照関連の処理 - マッピングテーブルへの事前insertの追加など
-		Map<String, Map<String, List<String>>> referencedColumnList = new HashMap<>();
-		conversionTables.stream()
-			.forEach(ct -> {
-				AdditionalConversionCode additional = manager.createAdditionalConversionCode(info, category, ct);
-				require.addPreProcessing(additional.getPreProcessing());
-				require.addPostProcessing(additional.getPostProcessing());
-				additional.getReferencedColumnList().keySet().stream()
-					.forEach(key -> {
-						Map<String, List<String>> value = new HashMap<>();
-						value = additional.getReferencedColumnList().get(key);
-						if(referencedColumnList.isEmpty() || !referencedColumnList.containsKey(key)) {
-							referencedColumnList.put(key, value);
-						}
-						else {
-							referencedColumnList.get(key).putAll(value);
-						}
-					});
-			});
 
 		// 親テーブル参照前処理 - 被参照側の該当列は、親テーブル参照のマッピングテーブルより取得する必要があるためフラグを立てておく
 		conversionTables = conversionTables.stream()

@@ -15,6 +15,7 @@ import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionInsertSQL;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
+import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
@@ -65,7 +66,7 @@ public class ParentJoinPatternManager {
 			);
 	}
 
-	public AdditionalConversionCode createAdditionalConversionCode(ConversionInfo info, String category, ConversionTable ct) {
+	public AdditionalConversionCode createAdditionalConversionCode(ConversionInfo info, String category, ConversionTable ct, Join join) {
 
 		String preProcessing = "";
 		String postProcessing = "";
@@ -105,13 +106,7 @@ public class ParentJoinPatternManager {
 					mappingTableName,
 					ct.getWhereList());
 
-//			ConversionSQL parentConversionSql = ct.createConversionSql();	// apply実行される
-//			cnvSql.addJoin(
-//				new Join(
-//					parentConversionSql.getBaseTable(),
-//					JoinAtr.InnerJoin,
-//					new ArrayList<>()
-//				));
+			cnvSql.addJoin(join);
 
 			cnvSql.add(mappingTableColumns.get(0), new ColumnExpression("'" + category + "'"));
 			cnvSql.add(mappingTableColumns.get(1), new ColumnExpression("'" + ct.getTargetTableName().getName() + "'"));
