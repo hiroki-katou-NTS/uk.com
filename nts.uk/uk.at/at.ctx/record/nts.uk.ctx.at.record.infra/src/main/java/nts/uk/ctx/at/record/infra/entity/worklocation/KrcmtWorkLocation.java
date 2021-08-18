@@ -102,6 +102,6 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 						RadiusAtr.toEnum(this.radius), 
 						new GeoCoordinate(this.latitude, this.longitude)),
 				this.krcmtIP4Address.stream().map(c->c.toDomain()).collect(Collectors.toList()),
-				Optional.ofNullable(this.krcmtWorkplacePossible.toDomain()));
+				Optional.ofNullable(this.krcmtWorkplacePossible == null ? null : this.krcmtWorkplacePossible.toDomain()));
 	}
 }

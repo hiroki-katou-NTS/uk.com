@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -27,6 +28,7 @@ import nts.uk.ctx.at.record.dom.stampmanagement.workplace.RadiusAtr;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
+import nts.uk.screen.at.app.cmm040.worklocation.CheckWorkplace;
 import nts.uk.screen.at.app.cmm040.worklocation.CompanyAndWorkInfoOutput;
 import nts.uk.screen.at.app.cmm040.worklocation.GetCompanyAndWorkInfo;
 import nts.uk.screen.at.app.cmm040.worklocation.GetIPSettings;
@@ -64,6 +66,9 @@ public class WorkLocationWS extends WebService {
 
 	@Inject
 	private GetCompanyAndWorkInfo getCompanyAndWorkInfo;
+	
+	@Inject
+	private CheckWorkplace checkWorkplace;
 
 	@POST
 	@Path("start")
@@ -129,6 +134,12 @@ public class WorkLocationWS extends WebService {
 	@Path("enum")
 	public List<EnumConstant> getVacationExpirationEnum() {
 		return EnumAdaptor.convertToValueNameList(RadiusAtr.class);
+	}
+	
+	@POST
+	@Path("checkWorkplace")
+	public void checkWorkplace(@PathParam("workplaceID") String workplaceID) {
+		this.checkWorkplace.checkWorkPlace(workplaceID);
 	}
 
 }
