@@ -59,6 +59,9 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
         } else {
             // ドメイン「勤務種類」を取得する
             List<WorkType> workTypeLst = workTypeRepository.findNotDeprecatedByListCode(cId, workTypeCodes);
+            if (timeDigest.isPresent() && timeDigest.get().getOverHolidayTime() > 0) {
+                remainNumberClassification.setChkSuperBreak(true);
+            }
             
             // 取得した「勤務種類」ListをLoopする
             workTypeLst.forEach(workType -> {
@@ -66,7 +69,7 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
                 Holiday holiday = workType.getDailyWork().determineHolidayByWorkType();
                 
                 // 時間消化休暇か判断する
-                if (holiday.isTimeDigestVacation()) {
+                if (holiday.isTimeDigestVacation() && timeDigest.isPresent()) {
                     // 時間消化から各残数種類がチェックか判断する
                     // ①時間消化.時間年休　＞　０：残数チェック区分.年休チェック区分　＝　true
                     if (timeDigest.get().getAnnualTime() > 0) {
@@ -92,6 +95,19 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
                     if (timeDigest.get().getOverHolidayTime() > 0) {
                         remainNumberClassification.setChkSuperBreak(true);
                     }
+                } 
+                
+                if (holiday.isAnnualHoliday()) {
+                    remainNumberClassification.setChkAnnual(true);
+                }
+                if (holiday.isSubstituteHoliday()) {
+                    remainNumberClassification.setChkSubHoliday(true);
+                }
+                if (holiday.isPause()) {
+                    remainNumberClassification.setChkPause(true);
+                }
+                if (holiday.isSpecialHoliday()) {
+                    remainNumberClassification.setChkSpecial(true);
                 }
             });
         }
