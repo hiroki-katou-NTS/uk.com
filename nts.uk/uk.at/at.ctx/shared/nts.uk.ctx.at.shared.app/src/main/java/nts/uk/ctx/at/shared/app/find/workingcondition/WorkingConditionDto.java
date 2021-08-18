@@ -467,7 +467,7 @@ public class WorkingConditionDto extends PeregDomainDto {
 	private static void setWeekDay(WorkingConditionDto dto, WorkTypeCode weekdayTimeWTypeCode, PersonalWorkCategory workTime) {
 			dto.setWeekdayWorkTypeCode(weekdayTimeWTypeCode == null ? null : weekdayTimeWTypeCode.v());
 
-			workTime.getHolidayWork().getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
+			workTime.getWeekdayTime().getWorkTimeCode().ifPresent(wt -> dto.setWeekdayWorkTimeCode(wt.v()));
 
 //			Optional<TimeZone> timeZone1 = workTime.getHolidayWork().getWorkingHours().stream().filter(timeZone -> timeZone.getCnt() == 1)
 //					.findFirst();

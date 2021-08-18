@@ -98,43 +98,35 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 		cmd.stream().forEach(c ->{
 
 			// 子の看護-使用数
-			if (c.getChildCareUsedDays() != null) {
-				ChildCareUsedNumberData childUsedNumberData = new ChildCareUsedNumberData(
-						c.getSId(),
-						new ChildCareNurseUsedNumber(
-								new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
-								, c.getChildCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(c.getChildCareUsedTimes().intValue()))
-						)
-				);
-	
-				Optional<ChildCareUsedNumberData> childCareUsedOpt= checkChildCareDatailsLst.stream().filter(item -> item.getEmployeeId().equals(c.getSId())).findFirst();
-				if (childCareUsedOpt.isPresent()) {
-					childCareDataUpdate.add(childUsedNumberData);
-				} else {
-					if (c.getChildCareUsedDays() != null) {
-						childCareDataInsert.add(childUsedNumberData);
-					}
-				}
+			ChildCareUsedNumberData childUsedNumberData = new ChildCareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							c.getChildCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
+							, c.getChildCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(c.getChildCareUsedTimes().intValue()))
+					)
+			);
+
+			Optional<ChildCareUsedNumberData> childCareUsedOpt= checkChildCareDatailsLst.stream().filter(item -> item.getEmployeeId().equals(c.getSId())).findFirst();
+			if (childCareUsedOpt.isPresent()) {
+				childCareDataUpdate.add(childUsedNumberData);
+			} else {
+				childCareDataInsert.add(childUsedNumberData);
 			}
 
 			// 介護-使用数
-			if (c.getCareUsedDays() != null) {
-				CareUsedNumberData careUsedNumberData = new CareUsedNumberData(
-						c.getSId(),
-						new ChildCareNurseUsedNumber(
-								new DayNumberOfUse(c.getCareUsedDays().doubleValue())
-								, c.getCareUsedTimes() == null ? Optional.empty() : Optional.of(new TimeOfUse(c.getCareUsedTimes().intValue()))
-						)
-				);
-	
-				Optional<CareUsedNumberData> careUsedOpt= checkCareDatailsLst.stream().filter(item -> item.getEmployeeId().equals(c.getSId())).findFirst();
-				if (careUsedOpt.isPresent()) {
-					leaveCareDataUpdate.add(careUsedNumberData);
-				} else {
-					if (c.getCareUsedDays() != null) {
-						leaveCareDataInsert.add(careUsedNumberData);
-					}
-				}
+			CareUsedNumberData careUsedNumberData = new CareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							c.getCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(c.getCareUsedDays().doubleValue())
+							, c.getCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(c.getCareUsedTimes().intValue()))
+					)
+			);
+
+			Optional<CareUsedNumberData> careUsedOpt= checkCareDatailsLst.stream().filter(item -> item.getEmployeeId().equals(c.getSId())).findFirst();
+			if (careUsedOpt.isPresent()) {
+				leaveCareDataUpdate.add(careUsedNumberData);
+			} else {
+				leaveCareDataInsert.add(careUsedNumberData);
 			}
 
 			// 子の看護 - 上限情報
@@ -148,9 +140,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 			if (childCareInfoOpt.isPresent()) {
 				childCareLeaveInfoUpdate.add(childCareInfo);
 			} else {
-				if (c.getChildCareUsedDays() != null) {
-					childCareLeaveInfoInsert.add(childCareInfo);
-				}
+				childCareLeaveInfoInsert.add(childCareInfo);
 			}
 
 			// 介護-上限情報
@@ -164,9 +154,7 @@ implements PeregUpdateListCommandHandler<UpdateCareLeaveCommand>{
 			if (careInfoOpt.isPresent()) {
 				leaveCareInfoUpdate.add(careInfo);
 			} else {
-				if (c.getCareUsedDays() != null) {
-					leaveCareInfoInsert.add(careInfo);
-				}
+				leaveCareInfoInsert.add(careInfo);			
 			}
 		});
 	}

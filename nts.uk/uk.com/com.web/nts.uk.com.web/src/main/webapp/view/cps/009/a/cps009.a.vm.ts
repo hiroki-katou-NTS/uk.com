@@ -510,7 +510,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                                     vm[index].selection.valueHasMutated();
                                     if (item.dataType === ITEM_SINGLE_TYPE.SEL_BUTTON) {
                                         let objSel: any =  _.find(vm[index].selection(), function(c) { if (c.optionValue == vm[index].selectedCode()) { return c } });
-                                        vm[index].selectionName(objSel == undefined ? (vm[index].selectedCode()=="" || vm[index].selectedCode()== undefined? "":(vm[index].ctgCode() === "CS00016" || vm[index].ctgCode() === "CS00017") ? text("CPS001_107") : (vm[index].selectedCode() + " " + text("CPS001_107"))) : objSel.optionText);
+                                        vm[index].selectionName(objSel == undefined ? (vm[index].selectedCode()=="" || vm[index].selectedCode()== undefined? "":(vm[index].ctgCode() === "CS00016" || vm[index].ctgCode() === "CS00017") ? text("CPS001_107") : (vm[index].selectedCode() + "　" + text("CPS001_107"))) : objSel.optionText);
                                         vm[index].selectionName.valueHasMutated();
                                     }else{
                                         let value: string = vm[index].stringValue();
@@ -864,8 +864,8 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.saveDataType = ko.observable(params.saveDataType || 0);
             self.stringValue = ko.observable(params.stringValue || params.initValue);
 
-            self.intValue = ko.observable(params.intValue || params.initValue);
-            self.dateWithDay = ko.observable(params.dateWithDay || params.initValue);
+            self.intValue = ko.observable(params.intValue || (params.intValue === 0 ? 0 : params.initValue));
+            self.dateWithDay = ko.observable(params.dateWithDay || (params.dateWithDay === 0 ? 0 : params.initValue));
             self.timePoint = ko.observable(params.timePoint || params.initValue);
 
             self.timeItemMin = params.timeItemMin || undefined;
@@ -902,7 +902,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
                     if (params.numberDecimalPart === 0 && (params.numberIntegerPart === 0 || params.numberIntegerPart === null)) {
                         self.numbereditor = {
-                            value: ko.observable(params.intValue || params.initValue),
+                            value: ko.observable(params.intValue || (params.intValue === 0 ? 0 : params.initValue)),
                             constraint: params.itemCode,
                             option: new nts.uk.ui.option.NumberEditorOption({
                                 grouplength: params.numberItemMinus && 3,
@@ -916,7 +916,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     } else {
 
                         self.numbereditor = {
-                            value: ko.observable(params.intValue || params.initValue),
+                            value: ko.observable(params.intValue || (params.intValue === 0 ? 0 : params.initValue)),
                             constraint: params.itemCode,
                             option: new nts.uk.ui.option.NumberEditorOption({
                                 grouplength: params.numberItemMinus && 3,
@@ -977,7 +977,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selection = ko.observableArray(params.selection || []);
                     self.selectedCode = ko.observable(params.stringValue == null ? (params.initValue== null? undefined : params.initValue) : params.stringValue);
                     let objSel: any = _.find(params.selection, function(c) { if (c.optionValue == self.selectedCode()) { return c } });
-                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? ((self.ctgCode() === "CS00016" || self.ctgCode() === "CS00017") ? text("CPS001_107"): (self.selectedCode() + " "+text("CPS001_107"))) : objSel.optionText));
+                    self.selectionName = ko.observable(params.stringValue == null? "": (objSel == undefined ? ((self.ctgCode() === "CS00016" || self.ctgCode() === "CS00017") ? text("CPS001_107"): (self.selectedCode() + "　" + text("CPS001_107"))) : objSel.optionText));
                     break;
             }
             
@@ -1242,7 +1242,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                         let childData: Array<any> = getShared('KDL002_SelectedNewItem');
 
                         if (childData[0]) {
-                            self.selectionName(childData[0].code + " " + childData[0].name);
+                            self.selectionName(childData[0].code + "　" + childData[0].name);
                             self.selectedCode(childData[0].code);
                         }
                     });
@@ -1336,7 +1336,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
                     self.selectionName(undefined);
                    
                 } else {
-                    self.selectionName(childData.selectedWorkTypeCode + childData.selectedWorkTypeName);
+                    self.selectionName(childData.selectedWorkTypeCode + "　" + childData.selectedWorkTypeName);
                     self.selectedCode(childData.selectedWorkTypeCode);
                 }
                 
