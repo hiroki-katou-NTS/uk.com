@@ -1,21 +1,17 @@
-.title {
-    margin-top: 6px;
-    margin-bottom: 20px;
-    margin-left: 35px;
-}
+.tab-content-1 .title {padding:70px 0 40px 70px;}
 
 .switchbox-wrappers.radio-wrappers label input+span {
     text-align: center;
-    width: 62px;
+    width: 60px;
 }
 
 .setMail {
-    margin: 0 0 30px 36px;
+    margin: 0 0 30px 70px;
 }
 
 .setMail .left {
     float: left;
-    width: 190px;
+    width: 400px;
 }
 
 .setMail .right {
@@ -23,11 +19,11 @@
 }
 
 .setMail .option .person-admin {
-    margin-right: 30px;
+    margin-right: 3px;
 }
 
 .setMail .option .configured {
-    margin-left: 48px;
+    margin-left: 26px;
 }
 
 .setMail .option {
@@ -40,7 +36,7 @@
 }
 
 .setMail .option button {
-    padding: 4px 25px;
+    padding: 3px 18px;
 }
 
 .custom-table {
@@ -52,20 +48,17 @@
     width: 17%;
 }
 
-.custom-btn {
-    margin-left: 30px;
-    width: 80px;
-    height: 30px;
-}
-
 .tab-2 {
-    margin-left: 36px;
+    margin: 0 0 30px 70px;
 }
 
 .tabs-panel.has-content {
-    width: 42%;
-    overflow: hidden;
-    padding-left: 40px;
+    width: 57%;
+}
+
+.tab-content-2 .custom-table button {
+    padding: 3px 18px;
+    margin-left: 30px;
 }
 
 

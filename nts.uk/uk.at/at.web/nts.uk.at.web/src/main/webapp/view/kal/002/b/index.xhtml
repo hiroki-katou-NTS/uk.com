@@ -25,7 +25,7 @@
             <a class="goback link-button" tabindex="1"
                data-bind="ntsLinkButton: {jump: '../a/index.xhtml'}">#{i18n.getText('KAL002_4')}</a>
             <!--B1_2-->
-            <button class="proceed" tabindex="2" data-bind="enable: $root.errors.isEmpty(), click: $vm.registration">
+            <button id="B1_2" class="proceed" tabindex="2" data-bind="enable: $root.errors.isEmpty(), click: $vm.registration">
                 #{i18n.getText('KAL002_5')}
             </button>
         </div>
@@ -34,8 +34,8 @@
             <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
                 <div class="tab-content-1">
                     <!--B2_1-->
-                    <div class="label title">
-                        <span class="lable">#{i18n.getText('KAL002_6')}</span>
+                    <div class="title">
+                        <span>#{i18n.getText('KAL002_6')}</span>
                     </div>
                     <!--Normal mail setting-->
                     <div class="setMail">
@@ -135,7 +135,7 @@
                         </div>
                         <div class="cell valign-center">
                             <!--B8_6-->
-                            <button class="medium custom-btn" tabindex="9"
+                            <button tabindex="9"
                                     data-bind="enable: enableRoleSetting, click:openDialogRoleList">
                                 #{i18n.getText('KAL002_9')}
                             </button>
