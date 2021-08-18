@@ -124,11 +124,11 @@ module nts.uk.at.view.kal012.b {
                 if (data) {
                     if (data.mailSettings.exMailSettingsList.length > 0) {
                         for (let item of data.mailSettings.exMailSettingsList) {
-                            if (item.normalAutoClassify === 0 && item.mailContents != null) {
+                            if (item.normalAutoClassify === 0 && (item.mailContents != null || item.senderAddress.length > 0)) {
                                 vm.normal = item;
                                 vm.isNormalSet(true);
                             }
-                            if (item.normalAutoClassify === 1 && item.mailContents != null) {
+                            if (item.normalAutoClassify === 1 && (item.mailContents != null || item.senderAddress.length > 0)) {
                                 vm.auto = item;
                                 vm.isAutoSet(true);
                             }

@@ -7,10 +7,8 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
-import nts.uk.ctx.at.auth.dom.employmentrole.GetListOfWorkplacesService;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.mailserver.MailServerAdapter;
-import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
@@ -27,10 +25,8 @@ import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassificati
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.Subject;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.MailSettingsParamDto;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.SendEmailService;
+import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.sendemail.WorkplaceSendEmailService;
-import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
-import nts.uk.ctx.at.shared.dom.alarmList.persistenceextractresult.PersisAlarmListExtractResultRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -75,16 +71,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     private AlarmMailSendingRoleRepository sendingRoleRepository;
 
     @Inject
-    private AlarmMailSettingsAdapter alarmMailSettingsAdapter;
-
-    @Inject
-    private SyWorkplaceAdapter syWorkplaceAdapter;
-
-    @Inject
     private RoleAdaptor roleAdaptor;
-
-    @Inject
-    private PersisAlarmListExtractResultRepository extractResultRepository;
 
     @Inject
     private EmployeeManageAdapter employeeManageAdapter;
@@ -129,9 +116,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         //ドメインモデル「アラームメール送信ロール」を取得する
         val sendingRole = sendingRoleRepository.find(companyId, IndividualWkpClassification.WORKPLACE.value);
 
-        //ドメインモデル「ロール」を取得
-        val roleListByCompany = alarmMailSettingsAdapter.findByCompanyId(companyId);
-
         List<String> empIdList = new ArrayList<>();
         //[ロール設定=true]
         if (sendingRole.isPresent() && sendingRole.get().isRoleSetting()) {
@@ -154,7 +138,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             //取得したアラームメール送信ロール．マスタチェック結果を就業担当へ送信をチェックする
             if (sendingRole.isPresent() && sendingRole.get().isSendResult()) {
                 //アラームリスト抽出結果にカテゴリ「マスタチェック（基本）のデータがあるかチェック
-                boolean isExtractData = command.listValueExtractAlarmDto.stream().anyMatch(x -> x.getCategory() == AlarmCategory.MASTER_CHECK.value);
+                boolean isExtractData = command.listValueExtractAlarmDto
+                        .stream()
+                        .anyMatch(x -> x.getCategory() == WorkplaceCategory.MASTER_CHECK_BASIC.value);
 
                 if (isExtractData) {
                     //担当者を取得する。
@@ -180,18 +166,17 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                     command.getCurrentAlarmCode(),
                     useAuthentication
             );
-        } else {
-            //取得したList<メール送信社員ID>　！＝　Empty
-            if (!empIdList.isEmpty()) {
-                personError = workplaceSendEmailService.alarmWorkplacesendEmail(empIdList,
-                        command.listValueExtractAlarmDto,
-                        exMailListNOrmal.get(),
-                        command.getCurrentAlarmCode(),
-                        useAuthentication);
-            }
+        }
+        //取得したList<メール送信社員ID>　！＝　Empty
+        if (!empIdList.isEmpty()) {
+            personError = workplaceSendEmailService.alarmWorkplacesendEmail(empIdList,
+                    command.listValueExtractAlarmDto,
+                    exMailListNOrmal.get(),
+                    command.getCurrentAlarmCode(),
+                    useAuthentication);
         }
 
-        if (personError.isEmpty() && managerErrorList.isEmpty()) {
+        if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
             return TextResource.localize("Msg_965");
         }
 
@@ -261,17 +246,6 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         return new MailSettingsParamDto(subject, text, subjectAdmin, textAdmin);
     }
 
-   /* private Map<String, List<String>> getManagerIdMap(List<String> worplaceIdList) {
-        Map<String, List<String>> managerMap = new HashMap<>();
-        for (String worlPlaceId : worplaceIdList) {
-            List<WorkplaceManagerImport> managerList = wkpManagerAdapter.getWkpManagerListByWkpId(worlPlaceId);
-            if (!managerList.isEmpty()) {
-                managerMap.put(worlPlaceId, managerList.stream().map(x -> x.getWorkplaceManagerId()).collect(Collectors.toList()));
-            }
-        }
-        return managerMap;
-    }*/
-
     private Map<String, List<String>> angAnAdministrator(List<String> worplaceIdList) {
         Map<String, List<String>> managerMap = new HashMap<>();
         for (String worlPlaceId : worplaceIdList) {
@@ -291,5 +265,4 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         }
         return map;
     }
-
 }

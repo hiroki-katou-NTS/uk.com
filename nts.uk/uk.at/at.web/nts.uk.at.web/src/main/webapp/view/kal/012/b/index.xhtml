@@ -26,45 +26,50 @@
             <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
                 <div class="tab-content-1">
                     <!--B2_1-->
-                    <span class="label">#{i18n.getText('KAL012_7')}</span>
-                    <div class="table custom-table">
-                        <div class="cell valign-top" style="width: 50%">
+                    <span class="label" style="padding-bottom: 30px">#{i18n.getText('KAL012_7')}</span>
+                    <!--Normal mail setting-->
+                    <div class="setMail">
+                        <div class="left">
                             <!--B2_2-->
-                            <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL012_8')}</div>
+                            <div data-bind="ntsFormLabel: {}">
+                                #{i18n.getText('KAL012_8')}
+                            </div>
                         </div>
-                        <div class="cell valign-top width-70">
-                            <!--B2_5-->
-                            <span class="label">#{i18n.getText('KAL012_11')}</span>
+                        <div class="right">
+                            <div class="option">
+                                <!--B2_5-->
+                                <span class="lable person-admin">#{i18n.getText('KAL012_11')}</span>
+                                <!--B2_6-->
+                                <button class="medium" tabindex="3" data-bind="click : setMailManual">
+                                    #{i18n.getText('KAL012_10')}
+                                </button>
+                                <!--B4_1-->
+                                <span class="lable configured" data-bind="text: vm.model.b41"></span>
+                            </div>
                         </div>
-                        <div class="cell valign-top" style="width: 100px">
-                            <!--B2_6-->
-                            <button class="medium buton-configure" tabindex="3"
-                                    data-bind="enable: true,click:setMailManual">#{i18n.getText('KAL012_10')}</button>
-                        </div>
-                        <div class="cell valign-top">
-                            <!--B4_1-->
-                            <span class="label" data-bind="text:vm.model.b41"></span>
-                        </div>
+                        <div class="cf"></div>
                     </div>
-                    <div class="table custom-table">
-                        <div class="cell valign-top" style="width: 50%">
+                    <!--Auto mail setting-->
+                    <div class="setMail">
+                        <div class="left">
                             <!--B3_1-->
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('KAL012_12')}</div>
                         </div>
-                        <div class="cell valign-top width-70">
-                            <!--B3_4-->
-                            <span class="label">#{i18n.getText('KAL012_11')}</span>
+                        <div class="right">
+                            <div class="option">
+                                <!--B3_4-->
+                                <span class="lable person-admin">#{i18n.getText('KAL012_11')}</span>
+                                <!--B3_5-->
+                                <button tabindex="5" data-bind="click : setMailAutoAd">
+                                    #{i18n.getText('KAL012_10')}
+                                </button>
+                                <!--B4_2-->
+                                <span class="lable configured" data-bind="text: vm.model.b42"></span>
+                            </div>
                         </div>
-                        <div class="cell valign-top" style="width: 100px">
-                            <!--B3_5-->
-                            <button class="medium buton-configure" tabindex="4"
-                                    data-bind="enable: true,click:setMailAutoAd">#{i18n.getText('KAL012_10')}</button>
-                        </div>
-                        <div class="cell valign-top">
-                            <!--B4_2-->
-                            <span class="label" data-bind="{text:vm.model.b42}"></span>
-                        </div>
+                        <div class="cf"></div>
                     </div>
+
                     <!--B5_1-->
                     <div tabindex="5"
                          data-bind="ntsCheckBox: { checked: model.checked, enable: true}">#{i18n.getText('KAL012_15')}</div>
@@ -97,8 +102,8 @@
                             <input id="B7_5" tabindex="8" data-bind="ntsTextEditor: {
                             value: model.targetRuleName,
                             required:model.selectedRuleCode,
-                            enable:model.selectedRuleCode,
-                            name: '#[KHA003_22]'
+                            enable:false,
+                            name: '#[KAL012_18]'
                             }"/>
                         </div>
                         <div class="cell valign-top">
