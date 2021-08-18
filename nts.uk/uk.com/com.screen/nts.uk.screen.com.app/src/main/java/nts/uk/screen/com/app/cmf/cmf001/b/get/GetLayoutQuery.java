@@ -27,4 +27,8 @@ public class GetLayoutQuery {
 		return EnumAdaptor.valueOf(importingGroupId, ImportingGroupId.class);
 	}
 	
+	public boolean isAllItem() {
+		return this.itemNoList.isEmpty();
+	}
+	
 }

@@ -57,7 +57,7 @@ public class ExternalImportLayoutDto {
 	private static String getItemType(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {
 		val importableItems = require.getImportableItems(groupId);
 		return importableItems.stream()
-				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemType().name();
+				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemType().getResourceText();
 	}
 	
 	private static boolean checkRequired(Require require, ImportingGroupId groupId, ImportingItemMapping mapping) {

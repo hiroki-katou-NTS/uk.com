@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.input.importableitem;
 
 import java.math.BigDecimal;
 
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -64,5 +65,9 @@ public enum ItemType {
 		default:
 			throw new RuntimeException("unknown: " + this);
 		}
+	}
+	
+	public String getResourceText() {
+		return I18NText.getText(this.nameId);
 	}
 }
