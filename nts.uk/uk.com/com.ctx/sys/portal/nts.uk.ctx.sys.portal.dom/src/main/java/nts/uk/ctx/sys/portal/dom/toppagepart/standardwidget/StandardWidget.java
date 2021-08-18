@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -10,6 +11,7 @@ import nts.uk.ctx.sys.portal.dom.enums.TopPagePartType;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartCode;
 import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.標準ウィジェット.標準ウィジェット
  *
@@ -19,6 +21,8 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
 public class StandardWidget extends AggregateRoot {
 	
 	private String companyID;
+	
+	private TopPagePartName name;
 	
 	// 勤務状況の詳細設定
 	private List<DetailedWorkStatusSetting> detailedWorkStatusSettingList;
@@ -35,7 +39,7 @@ public class StandardWidget extends AggregateRoot {
 	public StandardWidget(String companyID) {
 		this.companyID = companyID;
 	}
-
+	
 	public static StandardWidget createFromJavaType(String companyID, String toppagePartID, String code, String name, int type, int width, int height) {
        return new StandardWidget(companyID);
 	}
@@ -45,11 +49,12 @@ public class StandardWidget extends AggregateRoot {
 			List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
 			StandardWidgetType standardWidgetType,
 			List<ApplicationStatusDetailedSetting> appStatusDetailedSettingList) {
-		
+		this.companyID = companyID;
 		this.detailedWorkStatusSettingList = new ArrayList<>();
 		this.approvedAppStatusDetailedSettingList = new ArrayList<>();
 		this.appStatusDetailedSettingList = new ArrayList<>();
-		
+		this.name = name;
+		this.detailSettingStandardWidgetTypes = Arrays.asList(new DetailStandardWidgetTypeSetting(NotUseAtr.NOT_USE, standardWidgetType));
 		if(standardWidgetType == StandardWidgetType.WORK_STATUS) {
 			this.detailedWorkStatusSettingList = detailedWorkStatusSettingList;
 		}else if(standardWidgetType == StandardWidgetType.APPROVE_STATUS) {
