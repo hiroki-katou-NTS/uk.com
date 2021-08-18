@@ -47,6 +47,6 @@ public class AlarmListExecutionMailSetting extends AggregateRoot {
      * @return 設定済
      */
     public boolean isAlreadyConfigured() {
-        return this.contentMailSettings.isPresent();
+        return this.contentMailSettings.isPresent() || this.senderAddress.isPresent();
     }
 }
