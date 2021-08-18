@@ -160,9 +160,11 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
 				// ダイアログを閉じたときの処理
 				if(!getShared('CMF001DCancel')){
-					let ItemNoList = getShared('CMF001DOutput')
-
-					self.layoutItemNoList(ItemNoList);
+					let ItemNoList: string[] = getShared('CMF001DOutput')
+					console.log("closed: " + ItemNoList)
+					ItemNoList.map(n => Number(n)).forEach(n => {
+						self.layoutItemNoList.push(n);
+					});
 				}
 			});
 		}

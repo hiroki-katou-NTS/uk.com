@@ -3,8 +3,10 @@ package nts.uk.screen.com.app.cmf.cmf001.b.get;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 
-@Getter
 public class GetLayoutQuery {
 	
 	/** 受入設定コード */
@@ -14,6 +16,15 @@ public class GetLayoutQuery {
 	private int importingGroupId;
 	
 	/** 項目NO一覧 */
+	@Getter
 	private List<Integer> itemNoList;
+	
+	public ExternalImportCode getSettingCode() {
+		return new ExternalImportCode(settingCode);
+	}
+	
+	public ImportingGroupId getImportingGroupId() {
+		return EnumAdaptor.valueOf(importingGroupId, ImportingGroupId.class);
+	}
 	
 }
