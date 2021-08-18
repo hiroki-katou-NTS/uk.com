@@ -257,15 +257,14 @@ public class CreatePerErrorsFromLeaveErrors {
 	 */
 
 	/** 公休エラーから月別残数エラー一覧を作成する */
-	public static List<EmployeeMonthlyPerError> fromPublicLeave(
+	public static Optional<EmployeeMonthlyPerError> fromPublicLeave(
 			String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate, Optional<PublicHolidayErrors> publicHolidayErrors) {
 
-		List<EmployeeMonthlyPerError> results = new ArrayList<>();
-		if (!publicHolidayErrors.isPresent()) return results;
+		if (!publicHolidayErrors.isPresent()) return Optional.empty();
 
 		// 公休エラー処理
-		results.add(new EmployeeMonthlyPerError(
+		return Optional.of((new EmployeeMonthlyPerError(
 				ErrorType.PUBLIC_HOLIDAY,
 				yearMonth,
 				employeeId,
@@ -273,9 +272,6 @@ public class CreatePerErrorsFromLeaveErrors {
 				closureDate,
 				null,
 				null,
-				null));
-		
-
-		return results;
+				null)));
 	}
 }

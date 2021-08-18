@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanyS
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AttendanceDaysMonthToTal;
@@ -663,16 +664,15 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 						cacheCarrier, 
 						require);
 		
-		// 月別残数データを更新
+		// 月別残数データを作成
 		PublicHolidayRemNumEachMonth publicLeaRemNum = result.createPublicHolidayRemainData(
 				this.employeeId, this.yearMonth,
 				this.closureId, this.closureDate);
-		
+		// 月別残数データを更新
 		this.aggregateResult.getPublicRemainList().add(publicLeaRemNum);
 		
 		// 月別残数エラー一覧を作成する
-		this.aggregateResult.getPerErrors()
-		.addAll(CreatePerErrorsFromLeaveErrors.fromPublicLeave(
+		Optional<EmployeeMonthlyPerError> error = CreatePerErrorsFromLeaveErrors.fromPublicLeave(
 				this.employeeId, 
 				this.yearMonth,
 				this.closureId, 
@@ -681,7 +681,10 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					.filter(x ->x.getYearMonth().equals(yearMonth))
 					.findFirst()
 					.flatMap(x -> x.getPublicHolidayErrors())
-				));
+				);
+		if(error.isPresent()){
+			this.aggregateResult.getPerErrors().add(error.get());
+		}
 	}
 
 	/**

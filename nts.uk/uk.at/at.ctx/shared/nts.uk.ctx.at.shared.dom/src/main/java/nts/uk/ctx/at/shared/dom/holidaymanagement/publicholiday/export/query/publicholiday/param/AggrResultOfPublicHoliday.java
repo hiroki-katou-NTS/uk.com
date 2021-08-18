@@ -48,6 +48,14 @@ public class AggrResultOfPublicHoliday {
 		this.publicHolidayCarryForwardData = publicHolidayCarryForwardData;
 	}
 	
+	/**
+	 * 月別残数データを作成
+	 * @param employeeId
+	 * @param yearMonth
+	 * @param closureId
+	 * @param closureDate
+	 * @return
+	 */
 	public PublicHolidayRemNumEachMonth createPublicHolidayRemainData(
 			String employeeId,
 			YearMonth yearMonth,
