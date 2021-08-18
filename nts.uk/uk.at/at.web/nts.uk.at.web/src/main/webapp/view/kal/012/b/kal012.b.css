@@ -18,7 +18,7 @@
 }
 
 .tabs-panel.has-content {
-    width: 44%;
+    width: 60%;
     overflow: hidden;
     padding-left: 39px;
 }
@@ -34,4 +34,39 @@
 
 .top-button {
     top: -5px;
+}
+
+
+.setMail {
+    margin: 0 0 30px 36px;
+}
+
+.setMail .left {
+    float: left;
+    width: 50%;
+}
+
+.setMail .right {
+    float: left;
+}
+
+.setMail .option .person-admin {
+    margin-right: 0px;
+}
+
+.setMail .option .configured {
+    margin-left: 20px;
+}
+
+.setMail .option {
+    margin-bottom: 20px;
+}
+
+.setMail .option span {
+    width: 70px;
+    display: inline-block;
+}
+
+.setMail .option button {
+    padding: 3px 18px;
 }
