@@ -48,8 +48,8 @@ public class FindExternalImportSetting {
 	public class RequireImpl implements Require {
 		
 		@Override
-		public List<ImportableItem> getImportableItems(ImportingGroupId groupId) {
-			return importableItemsRepo.get(groupId);
+		public ImportableItem getImportableItems(ImportingGroupId groupId, int itemNo) {
+			return importableItemsRepo.get(groupId, itemNo).get();
 		}
 		
 		@Override
