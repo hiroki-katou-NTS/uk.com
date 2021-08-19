@@ -1430,6 +1430,11 @@ public class ScheduleCreatorExecutionTransaction {
 		// if 平日時(new) - 個人勤務日別 (old)
 		if (workplaceHistItem.value == TimeZoneScheduledMasterAtr.WEEKDAYS.value) {
 			//平日の就業時間帯コードを取得する
+			SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workType.getWorkTypeCode().v());
+			
+			if (setupType == SetupType.NOT_REQUIRED) {
+				return null;
+			}
 			String worktime = itemDto.isPresent() && itemDto.get()
 					.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()
 							? itemDto.get().getWorkCategory().getWorkTime().getWeekdayTime()
@@ -1469,9 +1474,9 @@ public class ScheduleCreatorExecutionTransaction {
 	 * @return
 	 */
 	public String getWorkTimeByWeekdays(ScheduleErrorLogGeterCommand scheduleErrorLogGeterCommand, String employeeID,
-			GeneralDate ymd, String workType, Optional<WorkCondItemDto> workingConItem) {
+			GeneralDate ymd, String workTypeCode, Optional<WorkCondItemDto> workingConItem) {
 		// 就業時間帯の必須チェック
-		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workType);
+		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		if (setupType == SetupType.NOT_REQUIRED) {
 			return null;
 		}
