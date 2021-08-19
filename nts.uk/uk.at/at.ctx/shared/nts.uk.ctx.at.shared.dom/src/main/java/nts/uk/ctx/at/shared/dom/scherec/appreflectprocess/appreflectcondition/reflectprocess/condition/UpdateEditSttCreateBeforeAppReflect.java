@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.a
  */
 public class UpdateEditSttCreateBeforeAppReflect {
 
+	//作成する
 	public static void update(DailyRecordOfApplication dailyApp, List<Integer> lstItemId) {
 
 		// 申請反映状態にする
