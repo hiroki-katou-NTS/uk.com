@@ -75,24 +75,28 @@ module nts.uk.at.view.kal002.c {
             const vm = this;
             vm.init();
             vm.isConfiguredManualPerson.subscribe((newValue: any) => {
-                if (newValue) {
+                if (newValue)
                     vm.statusConfigManualPerson(vm.$i18n('KAL002_14'));
-                }
+                else
+                    vm.statusConfigManualPerson(vm.$i18n('KAL002_13'));
             });
             vm.isConfiguredManualAdmin.subscribe((newValue: any) => {
-                if (newValue) {
+                if (newValue)
                     vm.statusConfigManualAdmin(vm.$i18n('KAL002_14'));
-                }
+                else
+                    vm.statusConfigManualAdmin(vm.$i18n('KAL002_13'));
             });
             vm.isConfiguredAutoPerson.subscribe((newValue: any) => {
-                if (newValue) {
+                if (newValue)
                     vm.statusConfigAutoPerson(vm.$i18n('KAL002_14'));
-                }
+                else
+                    vm.statusConfigAutoPerson(vm.$i18n('KAL002_13'));
             });
             vm.isConfiguredAutoAdmin.subscribe((newValue: any) => {
-                if (newValue) {
+                if (newValue)
                     vm.statusConfigAutoAdmin(vm.$i18n('KAL002_14'));
-                }
+                else
+                    vm.statusConfigAutoAdmin(vm.$i18n('KAL002_13'));
             });
             vm.selectedRoleSetting.subscribe(function (newValue: any) {
                 vm.$errors("clear");
@@ -137,20 +141,16 @@ module nts.uk.at.view.kal002.c {
                         for (let item of data.alarmExecutionMailSetting) {
                             if (item.mailSettingInfo.normalAutoClassify === 0 && item.mailSettingInfo.personalManagerClassify === 0) {
                                 vm.manualPerson = item.mailSettingInfo;
-                                if (item.alreadyConfigured)
-                                    vm.isConfiguredManualPerson(true);
+                                item.alreadyConfigured ? vm.isConfiguredManualPerson(true) : vm.isConfiguredManualPerson(false);
                             } else if (item.mailSettingInfo.normalAutoClassify === 0 && item.mailSettingInfo.personalManagerClassify === 1) {
                                 vm.manualAdmin = item.mailSettingInfo;
-                                if (item.alreadyConfigured)
-                                    vm.isConfiguredManualAdmin(true);
+                                item.alreadyConfigured ? vm.isConfiguredManualAdmin(true): vm.isConfiguredManualAdmin(false);
                             } else if (item.mailSettingInfo.normalAutoClassify === 1 && item.mailSettingInfo.personalManagerClassify === 0) {
                                 vm.autoPerson = item.mailSettingInfo;
-                                if (item.alreadyConfigured)
-                                    vm.isConfiguredAutoPerson(true);
+                                item.alreadyConfigured? vm.isConfiguredAutoPerson(true): vm.isConfiguredAutoPerson(false);
                             } else if (item.mailSettingInfo.normalAutoClassify === 1 && item.mailSettingInfo.personalManagerClassify === 1) {
                                 vm.autoAdmin = item.mailSettingInfo;
-                                if (item.alreadyConfigured)
-                                    vm.isConfiguredAutoAdmin(true);
+                                item.alreadyConfigured ? vm.isConfiguredAutoAdmin(true) : vm.isConfiguredAutoAdmin(false);
                             }
                         }
                     }
@@ -214,10 +214,11 @@ module nts.uk.at.view.kal002.c {
 
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
                 let mailSettingContent = nts.uk.ui.windows.getShared("MailSettings");
-                if (!_.isNil(mailSettingContent)) {
+                if (!_.isNil(mailSettingContent))
                     vm.manualPerson.contentMailSettings = mailSettingContent;
-                    vm.manualPerson.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                }
+                let sender = nts.uk.ui.windows.getShared("senderAddress");
+                if (!_.isNil(sender))
+                    vm.manualPerson.senderAddress = sender === "" ? null : sender;
             });
         }
 
@@ -232,10 +233,11 @@ module nts.uk.at.view.kal002.c {
 
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
                 let mailSettingContent = nts.uk.ui.windows.getShared("MailSettings");
-                if (!_.isNil(mailSettingContent)) {
+                if (!_.isNil(mailSettingContent))
                     vm.manualAdmin.contentMailSettings = mailSettingContent;
-                    vm.manualAdmin.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                }
+                let sender = nts.uk.ui.windows.getShared("senderAddress");
+                if (!_.isNil(sender))
+                    vm.manualAdmin.senderAddress = sender === "" ? null : sender;
             });
         }
 
@@ -250,10 +252,11 @@ module nts.uk.at.view.kal002.c {
 
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
                 let mailSettingContent = nts.uk.ui.windows.getShared("MailSettings");
-                if (!_.isNil(mailSettingContent)) {
+                if (!_.isNil(mailSettingContent))
                     vm.autoPerson.contentMailSettings = mailSettingContent;
-                    vm.autoPerson.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                }
+                let sender = nts.uk.ui.windows.getShared("senderAddress");
+                if (!_.isNil(sender))
+                    vm.autoPerson.senderAddress = sender === "" ? null : sender;
             });
         }
 
@@ -268,10 +271,11 @@ module nts.uk.at.view.kal002.c {
 
             nts.uk.ui.windows.sub.modal("com", "view/ccg/027/a/index.xhtml").onClosed(() => {
                 let mailSettingContent = nts.uk.ui.windows.getShared("MailSettings");
-                if (!_.isNil(mailSettingContent)) {
+                if (!_.isNil(mailSettingContent))
                     vm.autoAdmin.contentMailSettings = mailSettingContent;
-                    vm.autoAdmin.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                }
+                let sender = nts.uk.ui.windows.getShared("senderAddress");
+                if (!_.isNil(sender))
+                    vm.autoAdmin.senderAddress = sender === "" ? null : sender;
             });
         }
 

@@ -116,7 +116,7 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
                         mailSettingCc,
                         mailReply)
                         : null),
-                Optional.ofNullable(this.senderAddress != null ? new MailAddress(senderAddress) : null),
+                Optional.ofNullable(StringUtils.isNotEmpty(this.senderAddress) ? new MailAddress(senderAddress) : null),
                 false
         );
     }
