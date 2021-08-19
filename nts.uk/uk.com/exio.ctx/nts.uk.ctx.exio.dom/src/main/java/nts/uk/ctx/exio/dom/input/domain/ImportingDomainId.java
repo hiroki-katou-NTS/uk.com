@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.group;
+package nts.uk.ctx.exio.dom.input.domain;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
  * 受入グループID
  */
 @RequiredArgsConstructor
-public enum ImportingGroupId{
+public enum ImportingDomainId{
 
 	/** 雇用履歴 */
 	EMPLOYMENT_HISTORY(100),
@@ -24,8 +24,8 @@ public enum ImportingGroupId{
 	
 	public final int value;
 	
-	public static ImportingGroupId valueOf(int value) {
-		return EnumAdaptor.valueOf(value, ImportingGroupId.class);
+	public static ImportingDomainId valueOf(int value) {
+		return EnumAdaptor.valueOf(value, ImportingDomainId.class);
 	}
 	
 }

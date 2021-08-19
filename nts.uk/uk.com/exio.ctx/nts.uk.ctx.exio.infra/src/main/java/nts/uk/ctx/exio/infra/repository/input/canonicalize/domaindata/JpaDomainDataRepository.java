@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.generic.HistoryClass;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.HistoryClass;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 

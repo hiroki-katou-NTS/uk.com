@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 
 /**
  * 受入可能項目
@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 @AllArgsConstructor
 public class ImportableItem implements DomainAggregate{
 
-	private ImportingGroupId groupId;
+	private ImportingDomainId groupId;
 	private int itemNo;
 	private String itemName;
 	private ItemType itemType;

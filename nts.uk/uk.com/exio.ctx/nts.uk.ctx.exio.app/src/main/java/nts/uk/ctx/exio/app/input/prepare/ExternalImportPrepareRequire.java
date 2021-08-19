@@ -30,9 +30,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -47,8 +47,8 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -75,10 +75,10 @@ public class ExternalImportPrepareRequire {
 	private ImportableItemsRepository importableItemsRepo;
 	
 	@Inject
-	private ImportingGroupRepository importingGroupRepo;
+	private ImportingDomainRepository importingGroupRepo;
 	
 	@Inject
-	private GroupWorkspaceRepository groupWorkspaceRepo;
+	private DomainWorkspaceRepository groupWorkspaceRepo;
 	
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
@@ -132,12 +132,12 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
+		public ImportingDomain getImportingGroup(ImportingDomainId groupId) {
 			return importingGroupRepo.find(groupId);
 		}
 		
 		@Override
-		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
+		public DomainWorkspace getGroupWorkspace(ImportingDomainId groupId) {
 			return groupWorkspaceRepo.get(groupId);
 		}
 		
@@ -147,7 +147,7 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
+		public ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo) {
 			return importableItemsRepo.get(groupId, itemNo)
 					.orElseThrow(() -> new RuntimeException("not found: " + groupId + ", " + itemNo));
 		}

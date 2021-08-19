@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.CreateGroupCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.CreateDomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 
 /**
  * 受入の影響を受ける既存データを補正する
@@ -21,7 +21,7 @@ public class AdjustExistingData {
 	 */
 	public static AtomTask adjust(RequireAll require, ExecutionContext context) {
 		
-		val canonicalization = CreateGroupCanonicalization.create(require, context.getGroupId());
+		val canonicalization = CreateDomainCanonicalization.create(require, context.getGroupId());
 		
 		return canonicalization.adjust(
 				require,
@@ -45,7 +45,7 @@ public class AdjustExistingData {
 	 */
 	public static AtomTask adjust(RequireEmployee require, ExecutionContext context, String employeeId) {
 
-		val canonicalization = CreateGroupCanonicalization.create(require, context.getGroupId());
+		val canonicalization = CreateDomainCanonicalization.create(require, context.getGroupId());
 		
 		int itemNoEmployeeId = canonicalization.getItemNoOfEmployeeId();
 		
@@ -63,8 +63,8 @@ public class AdjustExistingData {
 	}
 	
 	public static interface RequireCommon extends
-			CreateGroupCanonicalization.Require,
-			GroupCanonicalization.RequireAdjsut {
+			CreateDomainCanonicalization.Require,
+			DomainCanonicalization.RequireAdjsut {
 		
 	}
 }

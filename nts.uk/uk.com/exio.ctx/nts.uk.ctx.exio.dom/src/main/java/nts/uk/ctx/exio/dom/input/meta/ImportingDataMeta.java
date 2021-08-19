@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 
 /**
@@ -42,6 +42,6 @@ public class ImportingDataMeta {
 	
 	public static interface Require {
 		
-		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo);
 	}
 }

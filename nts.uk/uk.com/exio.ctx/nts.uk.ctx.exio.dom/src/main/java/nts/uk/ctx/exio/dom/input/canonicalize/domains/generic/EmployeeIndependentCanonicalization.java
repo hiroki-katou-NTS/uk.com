@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups.generic;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
 import static java.util.stream.Collectors.*;
 
@@ -10,10 +10,10 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * IndependentCanonicalizationで処理できるが社員コードが加わったパターン
@@ -22,13 +22,13 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public EmployeeIndependentCanonicalization(GroupWorkspace workspace) {
+	public EmployeeIndependentCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 
 	@Override
-	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
+	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
 		// 受入データ内の重複チェック
 		Set<List<Object>> importingKeys = new HashSet<>();
@@ -49,7 +49,7 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 		});
 	}
 	
-	private static List<Object> getPrimaryKeys(IntermediateResult record, GroupWorkspace workspace) {
+	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
 		
 		return workspace.getItemsPk().stream()
 				.map(k -> record.getItemByNo(k.getItemNo()).get())

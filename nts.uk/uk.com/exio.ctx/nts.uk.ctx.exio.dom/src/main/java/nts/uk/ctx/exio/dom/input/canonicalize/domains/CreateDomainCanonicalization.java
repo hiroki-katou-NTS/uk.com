@@ -1,7 +1,6 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
-import static nts.uk.ctx.exio.dom.input.group.ImportingGroupId.CLASSIFICATION_HISTORY;
-import static nts.uk.ctx.exio.dom.input.group.ImportingGroupId.TASK;
+import static nts.uk.ctx.exio.dom.input.domain.ImportingDomainId.*;
 import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.INT;
 import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.STRING;
 
@@ -14,23 +13,23 @@ import java.util.function.Function;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.generic.IndependentCanonicalization;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 受入グループ別の正準化インスタンスを作る
  */
-public class CreateGroupCanonicalization {
+public class CreateDomainCanonicalization {
 
-	public static GroupCanonicalization create(Require require, ImportingGroupId groupId) {
+	public static DomainCanonicalization create(Require require, ImportingDomainId groupId) {
 
 		val groupWorkspace = require.getGroupWorkspace(groupId);
 		
 		return CREATES.get(groupId).apply(groupWorkspace);
 	}
 
-	private static final Map<ImportingGroupId, Function<GroupWorkspace, GroupCanonicalization>> CREATES;
+	private static final Map<ImportingDomainId, Function<DomainWorkspace, DomainCanonicalization>> CREATES;
 	static {
 		CREATES = new HashMap<>();
 
@@ -56,17 +55,17 @@ public class CreateGroupCanonicalization {
 		});
 		
 		// 雇用履歴
-		CREATES.put(ImportingGroupId.EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
 		
 		//分類履歴
 		CREATES.put(CLASSIFICATION_HISTORY,w -> AffClassHistoryCanonicalization.create(w));
 
 		//職位履歴
-		CREATES.put(ImportingGroupId.JOBTITLE_HISTORY, w -> AffJobTitleHistoryCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.JOBTITLE_HISTORY, w -> AffJobTitleHistoryCanonicalization.create(w));
 	}
 	
 	public static interface Require {
 		
-		GroupWorkspace getGroupWorkspace(ImportingGroupId groupId);
+		DomainWorkspace getGroupWorkspace(ImportingDomainId groupId);
 	}
 }

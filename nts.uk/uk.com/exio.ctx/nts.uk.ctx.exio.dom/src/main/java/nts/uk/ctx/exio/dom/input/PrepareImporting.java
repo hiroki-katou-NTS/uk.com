@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeRevisedData;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -44,6 +44,6 @@ public class PrepareImporting {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 
-		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo);
 	}
 }

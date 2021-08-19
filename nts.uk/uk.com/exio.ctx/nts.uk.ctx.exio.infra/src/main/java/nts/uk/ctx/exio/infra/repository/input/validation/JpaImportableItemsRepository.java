@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.infra.entity.input.validation.XimctImportableItem;
@@ -16,7 +16,7 @@ import nts.uk.ctx.exio.infra.entity.input.validation.XimctImportableItem;
 public class JpaImportableItemsRepository extends JpaRepository implements ImportableItemsRepository{
 
 	@Override
-	public Optional<ImportableItem> get(ImportingGroupId groupId, int itemNo) {
+	public Optional<ImportableItem> get(ImportingDomainId groupId, int itemNo) {
 		
 		String sql = "select * from XIMCT_IMPORTABLE_ITEM"
 						+ " where GROUP_ID = @group"
@@ -29,7 +29,7 @@ public class JpaImportableItemsRepository extends JpaRepository implements Impor
 	}
 
 	@Override
-	public List<ImportableItem> get(ImportingGroupId groupId) {
+	public List<ImportableItem> get(ImportingDomainId groupId) {
 		
 		String sql = "select * "
 						+ "from XIMCT_IMPORTABLE_ITEM "

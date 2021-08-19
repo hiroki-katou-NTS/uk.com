@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.workspace.group;
+package nts.uk.ctx.exio.dom.input.workspace.domain;
 
 import static java.util.stream.Collectors.*;
 
@@ -8,17 +8,17 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 
 /**
  * 受入グループのワークスペース
  */
 @Value
-public class GroupWorkspace {
+public class DomainWorkspace {
 	
 	/** 受入グループID */
-	private final ImportingGroupId groupId;
+	private final ImportingDomainId groupId;
 	
 	/** 主キーの項目一覧 */
 	private final List<WorkspaceItem> itemsPk;

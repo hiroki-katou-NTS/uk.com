@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
 import static nts.arc.time.GeneralDate.*;
 import static org.assertj.core.api.Assertions.*;
@@ -23,6 +23,8 @@ import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.Helper;
 import nts.uk.ctx.exio.dom.input.canonicalize.Helper.Dummy;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.EmploymentHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
@@ -32,7 +34,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
 public class EmployementHistoryCanonicalizationTest {
 
 	@Injectable
-	GroupCanonicalization.RequireCanonicalize require;
+	DomainCanonicalization.RequireCanonicalize require;
 	
 	
 	static class ItemNo {

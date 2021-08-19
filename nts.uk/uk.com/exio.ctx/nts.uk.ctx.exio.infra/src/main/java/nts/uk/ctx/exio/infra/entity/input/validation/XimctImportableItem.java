@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.CheckMethod;
 import nts.uk.ctx.exio.dom.input.importableitem.DomainConstraint;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
@@ -68,7 +68,7 @@ public class XimctImportableItem extends UkJpaEntity implements Serializable{
 		}
 		
 		return new ImportableItem(
-				ImportingGroupId.valueOf(pk.getGroupdId()),
+				ImportingDomainId.valueOf(pk.getGroupdId()),
 				pk.getItemNo(),
 				itemName,
 				EnumAdaptor.valueOf(itemType, ItemType.class),

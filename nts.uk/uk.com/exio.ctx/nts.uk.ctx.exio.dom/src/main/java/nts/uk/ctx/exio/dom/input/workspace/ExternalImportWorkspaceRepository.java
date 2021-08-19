@@ -1,9 +1,9 @@
 package nts.uk.ctx.exio.dom.input.workspace;
 
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 外部受入のワークスペースに対する入出力を担当するRepository
@@ -14,8 +14,8 @@ public interface ExternalImportWorkspaceRepository {
 	
 	public static interface Require {
 		
-		ImportingGroup getImportingGroup(ImportingGroupId groupId);
+		ImportingDomain getImportingGroup(ImportingDomainId groupId);
 		
-		GroupWorkspace getGroupWorkspace(ImportingGroupId groupId);
+		DomainWorkspace getGroupWorkspace(ImportingDomainId groupId);
 	}
 }

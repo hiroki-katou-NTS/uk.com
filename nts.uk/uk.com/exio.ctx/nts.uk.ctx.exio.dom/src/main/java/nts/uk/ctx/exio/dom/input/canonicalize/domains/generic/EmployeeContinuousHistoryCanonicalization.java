@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups.generic;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,15 +28,15 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.UkImpotingItems;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -47,7 +47,7 @@ import nts.uk.shr.com.history.History;
  */
 @Getter
 @ToString
-public abstract class EmployeeContinuousHistoryCanonicalization extends IndependentCanonicalization implements GroupCanonicalization {
+public abstract class EmployeeContinuousHistoryCanonicalization extends IndependentCanonicalization implements DomainCanonicalization {
 	
 	/** 履歴開始日の項目No */
 	private final int itemNoStartDate;
@@ -61,7 +61,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	/** 社員コードの正準化 */
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public EmployeeContinuousHistoryCanonicalization(GroupWorkspace workspace) {
+	public EmployeeContinuousHistoryCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
 		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
@@ -70,7 +70,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	}
 
 	@Override
-	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
+	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interm -> {
 			
@@ -90,7 +90,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	 * @return
 	 */
 	private List<IntermediateResult> canonicalizeHistory(
-			GroupCanonicalization.RequireCanonicalize require,
+			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			List<IntermediateResult> employeeCanonicalized) {
 		

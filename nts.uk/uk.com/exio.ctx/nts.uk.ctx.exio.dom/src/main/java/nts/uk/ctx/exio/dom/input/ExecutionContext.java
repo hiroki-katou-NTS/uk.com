@@ -2,7 +2,7 @@ package nts.uk.ctx.exio.dom.input;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
@@ -19,7 +19,7 @@ public class ExecutionContext {
 	String settingCode;
 	
 	/** 受入グループID */
-	ImportingGroupId groupId;
+	ImportingDomainId groupId;
 	
 	/** 受入モード */
 	ImportingMode mode;

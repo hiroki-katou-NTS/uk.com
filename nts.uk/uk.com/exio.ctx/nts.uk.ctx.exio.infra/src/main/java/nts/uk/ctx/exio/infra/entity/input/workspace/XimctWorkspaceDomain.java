@@ -17,7 +17,7 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 @Table(name = "XIMCT_WORKSPACE_GROUP")
 @AllArgsConstructor
 @NoArgsConstructor
-public class XimctWorkspaceGroup extends JpaEntity{
+public class XimctWorkspaceDomain extends JpaEntity{
 	
 	@Id
 	@Column(name = "GROUP_ID")
@@ -29,7 +29,7 @@ public class XimctWorkspaceGroup extends JpaEntity{
 	@Column(name = "PRIMARY_KEYS")
 	public String primaryKeys;
 	
-	public static final JpaEntityMapper<XimctWorkspaceGroup> MAPPER = new JpaEntityMapper<>(XimctWorkspaceGroup.class);
+	public static final JpaEntityMapper<XimctWorkspaceDomain> MAPPER = new JpaEntityMapper<>(XimctWorkspaceDomain.class);
 	
 	@Override
 	protected Object getKey() {

@@ -10,7 +10,7 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
@@ -67,7 +67,7 @@ public class ExternalImportSettingDto {
 				companyId, 
 				new ExternalImportCode(code), 
 				new ExternalImportName(name), 
-				ImportingGroupId.valueOf(group), 
+				ImportingDomainId.valueOf(group), 
 				ImportingMode.valueOf(mode), 
 				new ExternalImportAssemblyMethod(
 						new ExternalImportCsvFileInfo(
@@ -94,7 +94,7 @@ public class ExternalImportSettingDto {
 	}
 	
 	public static interface Require {
-		List<ImportableItem> getImportableItems(ImportingGroupId groupId);
+		List<ImportableItem> getImportableItems(ImportingDomainId groupId);
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
 import static org.assertj.core.api.Assertions.*;
 

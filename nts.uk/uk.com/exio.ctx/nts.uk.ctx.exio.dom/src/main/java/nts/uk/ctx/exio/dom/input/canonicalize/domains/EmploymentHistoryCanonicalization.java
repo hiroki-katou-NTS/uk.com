@@ -1,16 +1,16 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.generic.EmployeeContinuousHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeContinuousHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 public class EmploymentHistoryCanonicalization {
-	protected static EmployeeContinuousHistoryCanonicalization create(GroupWorkspace w) {
+	protected static EmployeeContinuousHistoryCanonicalization create(DomainWorkspace w) {
 		return new EmployeeContinuousHistoryCanonicalization(w) {
 			
 			@Override

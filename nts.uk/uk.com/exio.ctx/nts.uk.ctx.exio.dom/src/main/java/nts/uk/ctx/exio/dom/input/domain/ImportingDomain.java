@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.group;
+package nts.uk.ctx.exio.dom.input.domain;
 
 import java.util.Set;
 
@@ -9,10 +9,10 @@ import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
  * 受入グループ
  */
 @Value
-public class ImportingGroup {
+public class ImportingDomain {
 
 	/** 受入グループID */
-	ImportingGroupId groupId;
+	ImportingDomainId groupId;
 	
 	/** 名称 */
 	String name;

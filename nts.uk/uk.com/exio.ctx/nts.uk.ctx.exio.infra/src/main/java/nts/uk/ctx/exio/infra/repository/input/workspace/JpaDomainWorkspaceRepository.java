@@ -8,24 +8,24 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
-import nts.uk.ctx.exio.infra.entity.input.workspace.XimctWorkspaceGroup;
+import nts.uk.ctx.exio.infra.entity.input.workspace.XimctWorkspaceDomain;
 import nts.uk.ctx.exio.infra.entity.input.workspace.XimctWorkspaceItem;
 
 @Stateless
-public class JpaGroupWorkspaceRepository extends JpaRepository implements GroupWorkspaceRepository {
+public class JpaDomainWorkspaceRepository extends JpaRepository implements DomainWorkspaceRepository {
 
 	@Override
-	public GroupWorkspace get(ImportingGroupId groupId) {
+	public DomainWorkspace get(ImportingDomainId groupId) {
 		
 		String query = " select f "
 					+ " from XimctWorkspaceGroup f"
 					+ " where f.groupId =:groupID ";
 		
-		val entities = this.queryProxy().query(query, XimctWorkspaceGroup.class)
+		val entities = this.queryProxy().query(query, XimctWorkspaceDomain.class)
 				.setParameter("groupID", groupId.value)
 				.getSingle();
 		
@@ -34,7 +34,7 @@ public class JpaGroupWorkspaceRepository extends JpaRepository implements GroupW
 		return toDomain(entities.get(), items);
 	}
 	
-	private List<WorkspaceItem> getWorkspaceItemList(ImportingGroupId groupId){
+	private List<WorkspaceItem> getWorkspaceItemList(ImportingDomainId groupId){
 		
 		String query = " select f "
 					+ " from XimctWorkspaceItem f"
@@ -45,7 +45,7 @@ public class JpaGroupWorkspaceRepository extends JpaRepository implements GroupW
 				.getList(rec -> rec.toDomain());
 	}
 	
-	private GroupWorkspace toDomain(XimctWorkspaceGroup entity, List<WorkspaceItem> items) {
+	private DomainWorkspace toDomain(XimctWorkspaceDomain entity, List<WorkspaceItem> items) {
 		
 		List<String> primaryKeys = Arrays.asList(entity.primaryKeys.split(","));
 		
@@ -60,6 +60,6 @@ public class JpaGroupWorkspaceRepository extends JpaRepository implements GroupW
 			}
 		});
 		
-		return new GroupWorkspace(ImportingGroupId.valueOf(entity.groupId), itemsPk, itemsNotPk);
+		return new DomainWorkspace(ImportingDomainId.valueOf(entity.groupId), itemsPk, itemsNotPk);
 	}
 }

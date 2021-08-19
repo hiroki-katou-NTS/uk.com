@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.group;
+package nts.uk.ctx.exio.dom.input.domain;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;

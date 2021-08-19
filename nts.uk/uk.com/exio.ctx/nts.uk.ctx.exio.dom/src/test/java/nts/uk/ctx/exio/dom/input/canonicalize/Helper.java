@@ -10,7 +10,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 public class Helper {
@@ -22,7 +22,7 @@ public class Helper {
 	}
 	
 	public static ExecutionContext context(ImportingMode mode) {
-		return new ExecutionContext("companyId", "settingCode", ImportingGroupId.TASK, mode);
+		return new ExecutionContext("companyId", "settingCode", ImportingDomainId.TASK, mode);
 	}
 	
 	public static class Revised {

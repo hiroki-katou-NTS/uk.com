@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups.generic;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
 import java.util.List;
 

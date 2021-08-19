@@ -8,7 +8,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
@@ -118,6 +118,6 @@ public class ImportingItemMapping {
 		
 		Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode settingCode, int itemNo);
 		
-		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo);
 	}
 }

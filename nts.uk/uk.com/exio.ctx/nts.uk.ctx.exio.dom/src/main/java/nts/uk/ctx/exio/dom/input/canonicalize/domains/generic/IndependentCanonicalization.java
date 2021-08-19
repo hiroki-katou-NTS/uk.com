@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups.generic;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
 import static java.util.stream.Collectors.*;
 import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
@@ -16,22 +16,22 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 1レコードずつ完全に独立しているドメインの正準化
  */
 @RequiredArgsConstructor
-public abstract class IndependentCanonicalization implements GroupCanonicalization {
+public abstract class IndependentCanonicalization implements DomainCanonicalization {
 	
-	protected final GroupWorkspace workspace;
+	protected final DomainWorkspace workspace;
 	
 	protected abstract String getParentTableName();
 	
@@ -41,7 +41,7 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 
 	@Override
 	public void canonicalize(
-			GroupCanonicalization.RequireCanonicalize require,
+			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context) {
 		
 		// 受入データ内の重複チェック
@@ -65,7 +65,7 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 	/**
 	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
 	 */
-	private static List<Object> getPrimaryKeys(RevisedDataRecord record, GroupWorkspace workspace) {
+	private static List<Object> getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
 		
 		return workspace.getItemsPk().stream()
 				.map(k -> record.getItemByNo(k.getItemNo()).get())
@@ -74,7 +74,7 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 	}
 
 	protected void canonicalize(
-			GroupCanonicalization.RequireCanonicalize require,
+			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			IntermediateResult intermResult,
 			KeyValues keyValues) {
@@ -97,7 +97,7 @@ public abstract class IndependentCanonicalization implements GroupCanonicalizati
 	
 	private static AnyRecordToDelete toDelete(
 			ExecutionContext context,
-			GroupWorkspace workspace,
+			DomainWorkspace workspace,
 			KeyValues keyValues) {
 		
 		val toDelete = AnyRecordToDelete.create(context); 

@@ -27,9 +27,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -38,8 +38,8 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
@@ -59,7 +59,7 @@ public class ExternalImportExecuteRequire {
 	private ExternalImportSettingRepository settingRepo;
 	
 	@Inject
-	private ImportingGroupRepository importingGroupRepo;
+	private ImportingDomainRepository importingGroupRepo;
 	
 	@Inject
 	private ConversionTableRepository conversionTableRepo;
@@ -68,7 +68,7 @@ public class ExternalImportExecuteRequire {
 	private TransferCanonicalDataRepository transferCanonicalDataRepo;
 	
 	@Inject
-	private GroupWorkspaceRepository groupWorkspaceRepo;
+	private DomainWorkspaceRepository groupWorkspaceRepo;
 	
 	@Inject
 	private CanonicalizedDataRecordRepository canonicalizedDataRecordRepo;
@@ -100,12 +100,12 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
+		public ImportingDomain getImportingGroup(ImportingDomainId groupId) {
 			return importingGroupRepo.find(groupId);
 		}
 		
 		@Override
-		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
+		public DomainWorkspace getGroupWorkspace(ImportingDomainId groupId) {
 			return groupWorkspaceRepo.get(groupId);
 		}
 

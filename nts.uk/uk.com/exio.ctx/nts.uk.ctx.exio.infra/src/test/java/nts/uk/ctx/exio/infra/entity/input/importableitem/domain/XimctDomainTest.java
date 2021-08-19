@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.importableitem.group;
+package nts.uk.ctx.exio.infra.entity.input.importableitem.domain;
 
 import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
 import static org.assertj.core.api.Assertions.*;
@@ -12,25 +12,26 @@ import org.junit.runner.RunWith;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.group.TransactionUnit;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.domain.TransactionUnit;
+import nts.uk.ctx.exio.infra.entity.input.importableitem.domain.XimctDomain;
 
 @RunWith(Enclosed.class)
-public class XimctGroupTest {
+public class XimctDomainTest {
 	
 	public static class ToDomain {
 		
 		@Test
 		public void test() {
 			
-			val source = new ImportingGroup(
-					ImportingGroupId.TASK,
+			val source = new ImportingDomain(
+					ImportingDomainId.TASK,
 					"name",
 					new HashSet<>(Arrays.asList(UPDATE_ONLY, DELETE_RECORD_BEFOREHAND)),
 					TransactionUnit.ALL);
 			
-			val entity = XimctGroup.toEntity(source);
+			val entity = XimctDomain.toEntity(source);
 			val restored = entity.toDomain();
 			
 			assertThat(source).isEqualTo(restored);
@@ -58,7 +59,7 @@ public class XimctGroupTest {
 		
 		private static void test(int bits, ImportingMode... modes) {
 			
-			int actual = XimctGroup.AvailableModes.toBits(new HashSet<>(Arrays.asList(modes)));
+			int actual = XimctDomain.AvailableModes.toBits(new HashSet<>(Arrays.asList(modes)));
 			assertThat(actual).isEqualTo(bits);
 		}
 	}

@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -48,7 +48,7 @@ public class FindExternalImportSetting {
 	public class RequireImpl implements Require {
 		
 		@Override
-		public ImportableItem getImportableItems(ImportingGroupId groupId, int itemNo) {
+		public ImportableItem getImportableItems(ImportingDomainId groupId, int itemNo) {
 			return importableItemsRepo.get(groupId, itemNo).get();
 		}
 		

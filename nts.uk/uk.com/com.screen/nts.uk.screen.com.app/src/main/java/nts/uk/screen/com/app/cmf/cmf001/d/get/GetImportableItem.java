@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 
 @Stateless
@@ -18,11 +18,11 @@ public class GetImportableItem {
 	
 	public List<ImportableItemDto> get(int importingGroupId) {
 		val require = this.require.create();
-		val importableItems = require.getImportableItems(ImportingGroupId.valueOf(importingGroupId));
+		val importableItems = require.getImportableItems(ImportingDomainId.valueOf(importingGroupId));
 		return importableItems.stream().map(d -> ImportableItemDto.fromDomain(d)).collect(Collectors.toList());
 	}
 	
 	public static interface Require {
-		List<ImportableItem> getImportableItems(ImportingGroupId groupId);
+		List<ImportableItem> getImportableItems(ImportingDomainId groupId);
 	}
 }

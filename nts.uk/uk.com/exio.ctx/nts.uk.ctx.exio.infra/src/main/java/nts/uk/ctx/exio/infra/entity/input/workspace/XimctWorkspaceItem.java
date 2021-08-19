@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
@@ -57,7 +57,7 @@ public class XimctWorkspaceItem extends JpaEntity {
 	
 	public WorkspaceItem toDomain() {
 		return new WorkspaceItem(
-				ImportingGroupId.valueOf(pk.groupId),
+				ImportingDomainId.valueOf(pk.groupId),
 				pk.itemNo,
 				name,
 				new DataTypeConfiguration(DataType.valueOf(dataType), length, scale));

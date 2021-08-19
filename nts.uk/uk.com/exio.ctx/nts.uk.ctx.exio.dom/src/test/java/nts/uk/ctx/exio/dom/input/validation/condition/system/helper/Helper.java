@@ -8,7 +8,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
@@ -40,7 +40,7 @@ public class Helper {
 	public static class DUMMY{
 		public static String COMPANY_ID = "company";
 		public static String SETTING_CODE = "settingCode";
-		public static ImportingGroupId GROUP_ID = ImportingGroupId.TASK;
+		public static ImportingDomainId GROUP_ID = ImportingDomainId.TASK;
 		public static int ROW_NO = 999; 
 		public static boolean REQUIRED = true; 
 		public static Object VALUE = 999;

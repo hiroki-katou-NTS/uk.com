@@ -9,7 +9,7 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
@@ -67,7 +67,7 @@ public class ExternalImportSettingDto {
 				companyId, 
 				new ExternalImportCode(code), 
 				new ExternalImportName(name), 
-				ImportingGroupId.valueOf(group), 
+				ImportingDomainId.valueOf(group), 
 				ImportingMode.valueOf(mode), 
 				new ExternalImportAssemblyMethod(
 						new ExternalImportCsvFileInfo(
@@ -112,7 +112,7 @@ public class ExternalImportSettingDto {
 
 		static ExternalImportLayoutDto fromDomain(
 				Require require,
-				ImportingGroupId groupId,
+				ImportingDomainId groupId,
 				ImportingItemMapping domain) {
 			return new ExternalImportLayoutDto(
 					domain.getItemNo(), 
@@ -139,7 +139,7 @@ public class ExternalImportSettingDto {
 	}
 	
 	public static interface Require {
-		ImportableItem getImportableItems(ImportingGroupId groupId, int itemNo);
+		ImportableItem getImportableItems(ImportingDomainId groupId, int itemNo);
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }

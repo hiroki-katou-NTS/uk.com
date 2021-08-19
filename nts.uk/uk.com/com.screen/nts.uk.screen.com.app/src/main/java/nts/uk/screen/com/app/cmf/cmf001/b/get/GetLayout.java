@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -140,6 +140,6 @@ public class GetLayout {
 	
 	public static interface Require extends ExternalImportLayoutDto.Require {
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
-		List<ImportableItem> getImportableItems(ImportingGroupId groupId);
+		List<ImportableItem> getImportableItems(ImportingDomainId groupId);
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.importableitem.group;
+package nts.uk.ctx.exio.infra.entity.input.importableitem.domain;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,17 +13,17 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.group.TransactionUnit;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.domain.TransactionUnit;
 
 @Entity
 @Table(name = "XIMCT_GROUP")
 @AllArgsConstructor
 @NoArgsConstructor
-public class XimctGroup {
+public class XimctDomain {
 	
-	public static final JpaEntityMapper<XimctGroup> MAPPER = new JpaEntityMapper<>(XimctGroup.class);
+	public static final JpaEntityMapper<XimctDomain> MAPPER = new JpaEntityMapper<>(XimctDomain.class);
 
 	@Id
 	@Column(name = "GROUP_ID")
@@ -38,17 +38,17 @@ public class XimctGroup {
 	@Column(name = "TRANSACTION_UNIT")
 	public int transactionUnit;
 	
-	public ImportingGroup toDomain() {
+	public ImportingDomain toDomain() {
 		
-		return new ImportingGroup(
-				ImportingGroupId.valueOf(groupId),
+		return new ImportingDomain(
+				ImportingDomainId.valueOf(groupId),
 				name,
 				AvailableModes.restore(availableModes),
 				TransactionUnit.valueOf(transactionUnit));
 	}
 	
-	public static XimctGroup toEntity(ImportingGroup domain) {
-		return new XimctGroup(
+	public static XimctDomain toEntity(ImportingDomain domain) {
+		return new XimctDomain(
 				domain.getGroupId().value,
 				domain.getName(),
 				AvailableModes.toBits(domain.getAvailableModes()),

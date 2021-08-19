@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.groups;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
 import static nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode.*;
 
@@ -29,7 +29,7 @@ import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 @RequiredArgsConstructor
 @Getter
 @ToString
-public class DailyPerformanceCanonicalization implements GroupCanonicalization {
+public class DailyPerformanceCanonicalization implements DomainCanonicalization {
 
 	/** 社員コードの正準化 */
 	final EmployeeCodeCanonicalization employeeCodeCanonicalization;
@@ -41,7 +41,7 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	 * 正準化する
 	 */
 	@Override
-	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
+	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
 		List<String> employeeCodes = require.getStringsOfRevisedData(
 				context,
@@ -67,7 +67,7 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	}
 	
 	private void canonicalize(
-			GroupCanonicalization.RequireCanonicalize require,
+			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			IntermediateResult intermResult) {
 		
@@ -100,7 +100,7 @@ public class DailyPerformanceCanonicalization implements GroupCanonicalization {
 	 */
 	@Override
 	public AtomTask adjust(
-			GroupCanonicalization.RequireAdjsut require,
+			DomainCanonicalization.RequireAdjsut require,
 			List<AnyRecordToChange> recordsToChange,
 			List<AnyRecordToDelete> recordsToDelete) {
 
