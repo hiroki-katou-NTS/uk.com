@@ -3139,16 +3139,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             break;
                                     default: break;
                                 }
-								if(_.includes([1, 3, 5], i)) {
-									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' :
-										nts.uk.time.format.byId("Time_Short_HM", findValueObject.value));	
-								} else {
-									_.set(objectLaborCostAndTime, key, _.isEmpty(findValueObject) ? '' :
-										nts.uk.ntsNumber.formatNumber(findValueObject.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));	
+								let value = 0;
+								if(!_.isEmpty(findValueObject)) {
+									value = _.isEmpty(findValueObject.value) ? 0 : findValueObject.value;
 								}
-                                sumLaborCostAndTime += _.isEmpty(findValueObject) ? 0 : findValueObject.value;
+								if(_.includes([1, 3, 5], i)) {
+									_.set(objectLaborCostAndTime, key, nts.uk.time.format.byId("Time_Short_HM", value));	
+								} else {
+									_.set(objectLaborCostAndTime, key, nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));	
+								}
+                                sumLaborCostAndTime += value;
                             } else {
-                                _.set(objectLaborCostAndTime, key, ''); 
+                                _.set(objectLaborCostAndTime, key, 0); 
                             }
                         });
                         horizontalSumContentDs.push(objectLaborCostAndTime);    
@@ -3196,10 +3198,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-	                            _.set(objectExternalBudget, key, nts.uk.ntsNumber.formatNumber(findObject.value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));   
-	                            sumExternalBudget += _.toNumber(findObject.value);
+								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+	                            _.set(objectExternalBudget, key, nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));   
+	                            sumExternalBudget += _.toNumber(value);
 	                        } else {
-	                            _.set(objectExternalBudget, key, '');   
+	                            _.set(objectExternalBudget, key, 0);   
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectExternalBudget);
@@ -3242,10 +3245,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-	                            _.set(objectTimeCount, key, findObject.value); 
-	                            sumTimeCount += findObject.value;
+								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+	                            _.set(objectTimeCount, key, value); 
+	                            sumTimeCount += value;
 	                        } else {
-	                            _.set(objectTimeCount, key, '');    
+	                            _.set(objectTimeCount, key, 0);    
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectTimeCount);
@@ -3295,19 +3299,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                            }
 	                            let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                            if(!_.isEmpty(findObject)) {
+									let value = 0;
 	                                switch(i) {
-	                                    case 1: _.set(objectPeopleMethod, key, _.get(findObject, 'planNumber'));
+	                                    case 1: value = _.get(findObject, 'planNumber');
 	                                            break;
-	                                    case 2: _.set(objectPeopleMethod, key, _.get(findObject, 'scheduleNumber'));
+	                                    case 2: value = _.get(findObject, 'scheduleNumber');
 	                                            break;
-	                                    case 3: _.set(objectPeopleMethod, key, _.get(findObject, 'actualNumber'));
+	                                    case 3: value = _.get(findObject, 'actualNumber');
 	                                            break;
 	                                    default: break;
 	                                }
-	                                let subValue: number = _.get(objectPeopleMethod, key);
-	                                sumPeopleMethod += subValue;
+									value = _.isEmpty(value) ? 0 : value;
+									_.set(objectPeopleMethod, key, value);
+	                                sumPeopleMethod += value;
 	                            } else {
-	                                _.set(objectPeopleMethod, key, ''); 
+	                                _.set(objectPeopleMethod, key, 0); 
 	                            }
 	                        });
 	                        horizontalSumContentDs.push(objectPeopleMethod);    
@@ -3351,10 +3357,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-	                            _.set(objectEmployment, key, findObject.value); 
-	                            sumEmployment += findObject.value;
+								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+	                            _.set(objectEmployment, key, value); 
+	                            sumEmployment += value;
 	                        } else {
-	                            _.set(objectEmployment, key, '');   
+	                            _.set(objectEmployment, key, 0);   
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectEmployment);
@@ -3397,10 +3404,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-	                            _.set(objectClassification, key, findObject.value); 
-	                            sumClassification += findObject.value;
+								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+	                            _.set(objectClassification, key, value); 
+	                            sumClassification += value;
 	                        } else {
-	                            _.set(objectClassification, key, '');   
+	                            _.set(objectClassification, key, 0);   
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectClassification);
@@ -3443,10 +3451,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-	                            _.set(objectJobTitle, key, findObject.value);   
-	                            sumJobTitleInfo += findObject.value;
+								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+	                            _.set(objectJobTitle, key, value);   
+	                            sumJobTitleInfo += value;
 	                        } else {
-	                            _.set(objectJobTitle, key, ''); 
+	                            _.set(objectJobTitle, key, 0); 
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectJobTitle);
