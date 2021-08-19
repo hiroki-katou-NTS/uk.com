@@ -31,7 +31,7 @@ public class EmployeeWorkingStatus {
 	/** 年月日 **/
 	private final GeneralDate date;
 
-	/** 予定管理状態 **/
+	/** 状態 **/
 	private final WorkingStatus workingStatus;
 
 	/** 休業枠NO **/
