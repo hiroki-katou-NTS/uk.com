@@ -151,7 +151,7 @@ public class SptmtWidgetWork extends UkJpaEntity implements Serializable {
 
 	public SptmtWidgetWork(StandardWidget domain) {
 
-		this.topPagePartName = "";
+		this.topPagePartName = domain.getName().v();
 		this.companyId = domain.getCompanyID();
 		this.hdsp1DisplayAtr = 0;
 		this.hdsp2DisplayAtr = 0;
