@@ -50,12 +50,12 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " WHERE c.krcmtIP4AddressPK.contractCode = :contractCode " + " AND c.krcmtIP4AddressPK.net1 = :net1 "
 			+ " AND c.krcmtIP4AddressPK.net2 = :net2 " + " AND c.krcmtIP4AddressPK.host1 = :host1 "
 			+ " AND c.krcmtIP4AddressPK.host2 = :host2 ";
-	
+
 	private static final String SELECT_BY_WORKPLACES = SELECT
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
 			+ " AND c.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid = :cid"
 			+ " AND c.krcmtWorkplacePossible.workplaceId = :workplaceId";
-	
+
 	private static final String SELECT_BY_WORKPLACE = SELECT
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
 			+ " AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD"
@@ -71,7 +71,7 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	@Override
 	public Optional<WorkLocation> findByCode(String contractCode, String workPlaceCD) {
 		Optional<WorkLocation> test = this.queryProxy().query(SELECT_SINGLE, KrcmtWorkLocation.class)
-				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workPlaceCD)          
+				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workPlaceCD)
 				.getSingle(c -> c.toDomain());
 		return test;
 	}
@@ -121,21 +121,23 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			oldData.get().radius = newData.radius;
 			oldData.get().latitude = newData.latitude;
 			oldData.get().longitude = newData.longitude;
-			oldData.get().krcmtWorkplacePossible = newData.krcmtWorkplacePossible;
+			oldData.get().krcmtWorkplacePossible = new KrcmtWorkplacePossible(
+					new KrcmtWorkplacePossiblePK(newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.contractCode,
+							newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.workLocationCD,
+							newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid),
+					workLocation.getWorkplace().map(m -> m.getWorkpalceId()).orElse(null));
 			oldData.get().krcmtIP4Address = newData.krcmtIP4Address;
 			this.commandProxy().update(oldData.get());
 
-//			if (!wkids.isEmpty()) {
-//				String toDeleteData = "DELETE FROM KrcmtWorkplacePossible e" + " WHERE "
-//						+ "e.krcmtWorkplacePossiblePK.contractCode = :contractCode "
-//						+ " AND e.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD "
-//						+ " AND e.krcmtWorkplacePossiblePK.cid = :cid ";
-//				this.getEntityManager().createQuery(toDeleteData).setParameter("contractCode", oldData.get().kwlmtWorkLocationPK.contractCode)
-//						.setParameter("workLocationCD", oldData.get().kwlmtWorkLocationPK.workLocationCD)
-//						.setParameter("cid", newData.krcmtWorkplacePossible.get(0).krcmtWorkplacePossiblePK.cid).executeUpdate();
-//				this.commandProxy().insertAll(newData.krcmtWorkplacePossible);
-//				
-//			}
+			String toDeleteData = "DELETE FROM KrcmtWorkplacePossible e" + " WHERE "
+					+ "e.krcmtWorkplacePossiblePK.contractCode = :contractCode "
+					+ " AND e.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD "
+					+ " AND e.krcmtWorkplacePossiblePK.cid = :cid ";
+			this.getEntityManager().createQuery(toDeleteData)
+					.setParameter("contractCode", oldData.get().kwlmtWorkLocationPK.contractCode)
+					.setParameter("workLocationCD", oldData.get().kwlmtWorkLocationPK.workLocationCD)
+					.setParameter("cid", newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid).executeUpdate();
+			this.commandProxy().insert(newData.krcmtWorkplacePossible);
 		}
 
 	}
@@ -192,26 +194,23 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 	@Override
 	public List<WorkLocation> findByWorkPlace(String contractCode, String cid, String workPlaceId) {
 		List<WorkLocation> result = this.queryProxy().query(SELECT_BY_WORKPLACES, KrcmtWorkLocation.class)
-				.setParameter("contractCode", contractCode)
-				.setParameter("cid", cid)
-				.setParameter("workplaceId", workPlaceId)
-				.getList(c -> c.toDomain());
-		
+				.setParameter("contractCode", contractCode).setParameter("cid", cid)
+				.setParameter("workplaceId", workPlaceId).getList(c -> c.toDomain());
+
 		return result;
 	}
 
 	@Override
 	public void deleteByWorkLocationCd(String contractCode, String workLocationCD, String cid) {
-		this.commandProxy().remove(KrcmtWorkplacePossible.class, new KrcmtWorkplacePossiblePK(contractCode, workLocationCD, cid));
+		this.commandProxy().remove(KrcmtWorkplacePossible.class,
+				new KrcmtWorkplacePossiblePK(contractCode, workLocationCD, cid));
 	}
 
 	@Override
 	public Optional<WorkLocation> findByWorkLocationCd(String contractCode, String cid, String workLocationCD) {
 		Optional<WorkLocation> result = this.queryProxy().query(SELECT_BY_WORKPLACE, KrcmtWorkLocation.class)
-				.setParameter("contractCode", contractCode)
-				.setParameter("workLocationCD", workLocationCD)
-				.setParameter("cid", cid)
-				.getSingle(c -> c.toDomain());
+				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workLocationCD)
+				.setParameter("cid", cid).getSingle(c -> c.toDomain());
 		return result;
 	}
 

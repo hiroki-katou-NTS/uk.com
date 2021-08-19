@@ -101,9 +101,11 @@
 									style="height: 2px; border-width: 0; color: gray; background-color: gray"></hr>
 								<table>
 									<tr>
-										<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM040_30')}
+										<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM040_42')}
 											</div></td>
-										<td><button style = "margin-left: 30px;" data-bind=" click : openB,enable: !isCreate()">#{i18n.getText('CMM040_30')}</button></td>
+										<td><button style = "margin-left: 30px;" data-bind=" click : openDialogCDL008,enable: !isCreate()">#{i18n.getText('CMM040_30')}</button></td>
+										<td><div style = "margin-left: 30px;" data-bind="text: $vm.workplaceCode"></div></td>
+										<td><div style = "margin-left: 30px;" data-bind="text: $vm.workplaceDisplayName"></div></td>
 									</tr>
 								</table>
 							</div>

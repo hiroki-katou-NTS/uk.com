@@ -82,10 +82,10 @@ public class KrcmtWorkLocation extends UkJpaEntity implements Serializable {
 				workLocation.getStampRange().getRadius().value,
 				workLocation.getStampRange().getGeoCoordinate().getLatitude(),
 				workLocation.getStampRange().getGeoCoordinate().getLongitude(),
-				KrcmtWorkplacePossible.toEntiy(
+				workLocation.getWorkplace().isPresent() ? KrcmtWorkplacePossible.toEntiy(
 						workLocation.getContractCode().v(),
 						workLocation.getWorkLocationCD().v(),
-						workLocation.getWorkplace().map(m -> m).orElse(null)),
+						workLocation.getWorkplace().get()) : null,
 				workLocation
 						.getListIPAddress().stream().map(c -> KrcmtIP4Address
 								.toEntity(workLocation.getContractCode().v(), workLocation.getWorkLocationCD().v(), c))

@@ -6,7 +6,8 @@ module nts.uk.com.view.cmm040.a.service {
      deleteWorkLocation:"at/screen/cmm040/deleteScreenA",
      getWorkPlace : "at/screen/cmm040/getWorkPlace", 
      radiusEnum: 'at/screen/cmm040/enum',
-     insert:"at/screen/cmm040/insert"
+     insert:"at/screen/cmm040/insert",
+     checkWorkplace: "at/screen/checkWorkplace"
      
     }
     
