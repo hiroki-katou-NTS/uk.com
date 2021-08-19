@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.ws.input;
+package nts.uk.ctx.exio.ws.input.setting;
 
 import java.util.List;
 
