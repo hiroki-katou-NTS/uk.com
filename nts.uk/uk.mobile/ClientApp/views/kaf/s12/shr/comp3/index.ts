@@ -168,7 +168,7 @@ export class KafS12ApplyTimeComponent extends Vue {
 
     get grantDate() {
         const self = this;
-        if (self.timeLeaveRemaining && self.timeLeaveRemaining.grantDate && self.timeLeaveRemaining.grantedDays) {
+        if (self.timeLeaveRemaining && self.timeLeaveRemaining.grantDate) {
             return self.$i18n('KAFS12_54') + self.timeLeaveRemaining.grantDate + '　' + self.timeLeaveRemaining.grantedDays + '日';
         } else {
             return self.$i18n('KAFS12_54') + self.$i18n('KAFS12_55');
