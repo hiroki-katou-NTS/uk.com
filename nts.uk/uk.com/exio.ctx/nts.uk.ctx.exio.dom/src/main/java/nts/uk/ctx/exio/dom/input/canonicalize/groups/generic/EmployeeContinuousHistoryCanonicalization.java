@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -25,10 +27,10 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.UkImpotingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
-import nts.uk.ctx.exio.dom.input.canonicalize.groups.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.groups.GroupCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
@@ -42,7 +44,6 @@ import nts.uk.shr.com.history.History;
  * 社員の履歴（連続）の正準化
  * 
  * 社員の履歴（連続するやつ）を正準化するための処理がまとまっている
- * 継承してgetHistoryさえ実装すれば、各履歴ドメインの処理がだいたい実現できるはず
  */
 @Getter
 @ToString
@@ -68,8 +69,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 
-
-	
 	@Override
 	public void canonicalize(GroupCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		
@@ -105,7 +104,8 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 				.get().getString();
 
 		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
-		val existingHistory = require.getHistory(id);
+		//既存履歴
+		History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory = require.getHistory(id);
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -122,12 +122,20 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
+
+		//受入れようとしてるデータで補正
 		
-		return containers.stream()
-				// 受入する期間を既存の履歴に繋がるように補正する
-				.peek(c -> adjustAdding(require, context, employeeId, c.addingHistoryItem, existingHistory))
-				.map(c -> c.complete())
-				.collect(toList());
+		
+		//既存データと受入れようとしてるデータで補正
+		//既存データの一番未来のやつと受入れようとしてる一番過去のやつを見て、補正すればいい
+//		adjustImportingHistory(require, context, existingHistory, containers.stream().findFirst());
+		
+//		return containers.stream()
+//				// 受入する期間を既存の履歴に繋がるように補正する
+//				.peek(c -> adjustExistingHistoryAdding(require, context, employeeId, c.addingHistoryItem, existingHistory))
+//				.map(c -> c.complete())
+//				.collect(toList());
+		return null;
 	}
 
 	
@@ -191,7 +199,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 			
 			existingHistory.removeForcively(item);
 			
-			AnyRecordToDelete toDelete = new EmployeeHistoryItem(employeeId, item).toDelete(context);
+			AnyRecordToDelete toDelete = new EmployeeHistoryItem(item).toDelete(context);
 			require.save(context, toDelete);
 		});
 	}
@@ -202,21 +210,19 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	 * @param employeeId
 	 * @param importingPeriod
 	 * @param existingHistory
-	 * @return 追加する履歴項目
 	 */
 	private void adjustAdding(
 			CanonicalizationMethodRequire require,
 			ExecutionContext context,
-			String employeeId,
 			DateHistoryItem addingItem,
 			History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory) {
 		
 		// addすることで重複している履歴があれば（最新履歴のはず）、それも補正される
 		val latestExistingItemOpt = existingHistory.latestStartItem();
-		existingHistory.add(addingItem);
 		
 		latestExistingItemOpt.ifPresent(existing -> {
-			AnyRecordToChange toChange = new EmployeeHistoryItem(employeeId, existing).toChange(context);
+			existing.shortenEndToAccept(addingItem);
+			AnyRecordToChange toChange = new EmployeeHistoryItem(existing).toChange(context);
 			require.save(context, toChange);
 		});
 	}
@@ -269,7 +275,11 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		val dataKeys = getDomainDataKeys();
 		for (int i = 0; i < dataKeys.size(); i++) {
 			val dataKey = dataKeys.get(i);
-			val stringified = toChange.getPrimaryKeys().get(i);
+			
+			StringifiedValue stringified = 
+					(UkImpotingItems.map.containsKey(dataKey.getColumnName()))
+					? toChange.getPrimaryKeys().get(UkImpotingItems.map.get(dataKey.getColumnName()))
+					: toChange.getPrimaryKeys().get(i);
 			
 			Object value;
 			switch (dataKey.getDataType()) {
@@ -309,39 +319,32 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	@RequiredArgsConstructor
 	@Getter
 	protected class EmployeeHistoryItem {
-		final String employeeId;
 		final String historyId;
 		final DatePeriod period;
 		
-		EmployeeHistoryItem(String employeeId, DateHistoryItem item) {
-			this(employeeId, item.identifier(), item.span());
+		EmployeeHistoryItem(DateHistoryItem item) {
+			this(item.identifier(), item.span());
 		}
 		
 		EmployeeHistoryItem(AnyRecordToChange record) {
-			this(
-					record.getKey(itemNoEmployeeId()).asString(),
-					record.getKey(itemNoHistoryId).asString(),
+			this(record.getKey(itemNoHistoryId).asString(),
 					new DatePeriod(
 							record.getChange(itemNoStartDate).asGeneralDate(),
 							record.getChange(itemNoEndDate).asGeneralDate()));
 		}
 		
 		EmployeeHistoryItem(AnyRecordToDelete record) {
-			this(
-					record.getKey(itemNoEmployeeId()).asString(),
-					record.getKey(itemNoHistoryId).asString(),
+			this(record.getKey(itemNoHistoryId).asString(),
 					null);
 		}
 		
 		AnyRecordToDelete toDelete(ExecutionContext context) {
 			return AnyRecordToDelete.create(context)
-				.addKey(itemNoEmployeeId(), StringifiedValue.of(employeeId))
 				.addKey(itemNoHistoryId, StringifiedValue.of(historyId));
 		}
 		
 		AnyRecordToChange toChange(ExecutionContext context) {
 			return AnyRecordToChange.create(context)
-					.addKey(itemNoEmployeeId(), StringifiedValue.of(employeeId))
 					.addKey(itemNoHistoryId, StringifiedValue.of(historyId))
 					.addChange(itemNoStartDate, StringifiedValue.of(period.start()))
 					.addChange(itemNoEndDate, StringifiedValue.of(period.end()));

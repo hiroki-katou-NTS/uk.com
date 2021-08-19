@@ -80,8 +80,9 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 				
 		//履歴更新=START_ENDの更新だろうという
 		// + 開始日＝START_DATE、終了日＝END_DATEって名前だろうという前提
-		sql.append("START_DATE").append(" = @startDate");
-		sql.append("END_DATE").append(" = @endDate");
+		sql.append("START_DATE").append(" = @startDate ");
+		sql.append(",");
+		sql.append("END_DATE").append(" = @endDate ");
 				
 		
 		sql = sql.append(" where ");

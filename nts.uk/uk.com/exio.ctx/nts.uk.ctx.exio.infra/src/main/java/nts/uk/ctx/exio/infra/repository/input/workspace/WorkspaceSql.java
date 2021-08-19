@@ -262,7 +262,7 @@ public class WorkspaceSql {
 	
 	public List<String> getStringsOfRevisedData(String columnName) {
 		String sql = "select " + columnName + " from " + tableName().asRevised();
-		return jdbcProxy.query(sql).getList(rec -> rec.getString(1));
+		return jdbcProxy.query(sql).getList(rec -> rec.getString(1)).stream().distinct().collect(Collectors.toList());
 	}
 	
 	public Optional<RevisedDataRecord> findRevisedByRowNo(int rowNo) {
