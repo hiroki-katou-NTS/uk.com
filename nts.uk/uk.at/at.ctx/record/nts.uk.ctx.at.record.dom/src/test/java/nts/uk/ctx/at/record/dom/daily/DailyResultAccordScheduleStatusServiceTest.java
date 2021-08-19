@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.domainservice;
+package nts.uk.ctx.at.record.dom.daily;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -19,7 +19,8 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DailyResultAccordScheduleStatusService.Require;
+import nts.uk.ctx.at.record.dom.daily.DailyResultAccordScheduleStatusService;
+import nts.uk.ctx.at.record.dom.daily.DailyResultAccordScheduleStatusService.Require;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;

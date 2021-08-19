@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.domainservice;
+package nts.uk.ctx.at.record.dom.daily;
 
 import java.util.HashMap;
 import java.util.List;
