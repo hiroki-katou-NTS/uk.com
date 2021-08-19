@@ -766,7 +766,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 
 		//INPUT．「年休管理区分」がTRUE
 		GeneralDate grantDate = null;
-		int grantDays = 0;
+		double grantDays = 0;
 		if(annualLeaveManageDistinct.equals(ManageDistinct.YES)){//output．年休管理区分が管理する
 			//基準日時点の年休残数を取得する - RQ198
 			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
@@ -783,7 +783,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                     .min(Comparator.comparing(h -> h.grantDate));
 			if (futureGrant.isPresent()) {
 			    grantDate = futureGrant.get().getGrantDate();
-			    grantDays = futureGrant.get().getGrantDays().intValue();
+			    grantDays = futureGrant.get().getGrantDays();
 			}
 		}
 		
