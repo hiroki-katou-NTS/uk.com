@@ -146,6 +146,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.selectedCode("");
 			self.setInfo(SettingInfo.new());
 			self.isNewMode = true;
+			self.checkError();
 		}
 
 		updateMode(){
@@ -153,7 +154,13 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			ajax("com", "screen/com/cmf/cmf001/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
 				self.isNewMode = false;
+				self.checkError();
 			});
+		}
+
+		checkError(){
+			nts.uk.ui.errors.clearAll()
+			$('.check-target').ntsError('check');
 		}
 
 		setInfo(info: SettingInfo){
@@ -197,8 +204,11 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			});
 		}
 
+		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
+
 		save(){
 			let self = this;
+			self.checkError();
 			let saveContents = new SaveContents(
 				self.isNewMode, 
 				new SettingInfo(
@@ -216,6 +226,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.selectedCode(self.settingCode());
 		}
 
+    canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+		
 		remove(){
 			let self = this;
 			let target = new RemoveTarget(self.selectedCode());
