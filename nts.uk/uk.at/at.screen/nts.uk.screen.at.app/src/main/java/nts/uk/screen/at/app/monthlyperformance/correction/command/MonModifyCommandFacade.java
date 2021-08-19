@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.RegisterConfirmationMonth;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.algorithm.SelfConfirm;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentityProcessUseSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -47,6 +48,7 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemCheckBox;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemDetail;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPItemParent;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
+import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 /**
@@ -90,6 +92,9 @@ public class MonModifyCommandFacade {
 	@Inject
 	private OptionalItemRepository optionalMasterRepo;
 	
+	private final static List<Integer> ITEM_ID_ALL = AttendanceItemIdContainer.getIds(AttendanceItemType.MONTHLY_ITEM)
+			.stream().map(x -> x.getItemId()).collect(Collectors.toList());
+	
 	public Map<Integer, List<MPItemParent>> insertItemDomain(MPItemParent dataParent) {
 		YearMonth ym = new YearMonth(dataParent.getYearMonth());
 		
@@ -130,9 +135,25 @@ public class MonModifyCommandFacade {
 			MonthlyRecordWorkDto dto = MonthlyRecordWorkDto.fromDtoWithOptional(integrationOfMonthly, optionalMaster);
 			oldDtosClone.add(dto);
 		});
+		List<MonthlyModifyResult> dataOld = AttendanceItemUtil.toItemValues(oldDtos, ITEM_ID_ALL, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM)
+				.entrySet().stream().map(record -> {
+					return MonthlyModifyResult.builder().items(record.getValue())
+							.employeeId(record.getKey().getEmployeeId()).yearMonth(record.getKey().getYearMonth().v())
+							.closureId(record.getKey().getClosureID()).closureDate(record.getKey().getClosureDate())
+							.workDatePeriod(record.getKey().getAttendanceTime().getDatePeriod().toDomain())
+							.version(record.getKey().getAffiliation().getVersion()).completed();
+				}).collect(Collectors.toList());
 		
 		monthModifyCommandFacade.handleUpdate(listQuery, oldDtosClone);
-
+		
+		List<MonthlyModifyResult> dataNew = AttendanceItemUtil.toItemValues(oldDtosClone, ITEM_ID_ALL, AttendanceItemUtil.AttendanceItemType.MONTHLY_ITEM)
+				.entrySet().stream().map(record -> {
+					return MonthlyModifyResult.builder().items(record.getValue())
+							.employeeId(record.getKey().getEmployeeId()).yearMonth(record.getKey().getYearMonth().v())
+							.closureId(record.getKey().getClosureID()).closureDate(record.getKey().getClosureDate())
+							.workDatePeriod(record.getKey().getAttendanceTime().getDatePeriod().toDomain())
+							.version(record.getKey().getAffiliation().getVersion()).completed();
+				}).collect(Collectors.toList());
 		// insert edit state
 		dataParent.getMPItemDetails().forEach(item -> {
 			ClosureDateDto closureDate = dataParent.getClosureDate();

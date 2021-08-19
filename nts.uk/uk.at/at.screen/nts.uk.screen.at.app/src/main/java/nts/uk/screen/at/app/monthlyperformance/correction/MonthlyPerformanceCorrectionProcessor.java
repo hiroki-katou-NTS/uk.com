@@ -41,6 +41,8 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootOfEmpMonthImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
+import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
+import nts.uk.ctx.at.record.dom.application.realitystatus.output.UseSetingOutput;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
@@ -187,6 +189,8 @@ public class MonthlyPerformanceCorrectionProcessor {
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
 
+	@Inject
+	private RealityStatusService realityStatusService;
 	
 	private static final String STATE_DISABLE = "mgrid-disable";
 	private static final String HAND_CORRECTION_MYSELF = "mgrid-manual-edit-target";
@@ -207,6 +211,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 //		String rollId = AppContexts.user().roles().forAttendance();
 		AppContexts.user().roles();
 		MonthlyPerformanceCorrectionDto screenDto = new MonthlyPerformanceCorrectionDto();
+		
+		UseSetingOutput useSetingOutput = realityStatusService.getUseSetting(companyId);
+		screenDto.setUseSetingOutput(useSetingOutput);
 		screenDto.setParam(param);
 		// 1. 起動に必要な情報の取得
 		// ドメインモデル「実績修正画面で利用するフォーマット」を取得する
@@ -844,7 +851,13 @@ public class MonthlyPerformanceCorrectionProcessor {
 		CodeNameType classificationCN = dataDialogWithTypeProcessor.getClassification(companyId);
 		CodeNameType employmentCN = dataDialogWithTypeProcessor.getEmployment(companyId);
 		CodeNameType businessTypeCN = dataDialogWithTypeProcessor.getBussinessType(companyId);
-		
+
+		//get histtory into company
+		List<AffCompanyHistImport> listAffCompanyHistImport = screenDto.getLstAffComHist();
+		List<CheckEmpEralOuput> listCheckEmpEralOuput = checkDailyPerError.checkDailyPerError(employeeIds,
+				new DatePeriod(screenDto.getSelectedActualTime().getStartDate(),
+						screenDto.getSelectedActualTime().getEndDate()),
+				listAffCompanyHistImport, monthlyResults);
 		for (int i = 0; i < screenDto.getLstEmployee().size(); i++) {
 			MonthlyPerformanceEmployeeDto employee = screenDto.getLstEmployee().get(i);
 			String employeeId = employee.getId();
@@ -882,6 +895,12 @@ public class MonthlyPerformanceCorrectionProcessor {
 			boolean approve = false;
 			
 			boolean hasDataApproval = false, disabled = false;
+			
+			boolean hasErrorDaily = false;
+			Optional<CheckEmpEralOuput> error = listCheckEmpEralOuput.stream().filter(c->c.getEmployId().equals(employee.getId())).findFirst();
+			if(error.isPresent() && ( error.get().getTypeAtr() == TypeErrorAlarm.ERROR ||  error.get().getTypeAtr() == TypeErrorAlarm.ERROR_ALARM)) {
+				hasErrorDaily = true;
+			}
 			// set state approval
 			if (param.getInitMenuMode() == 2) { // mode approve disable cot approve theo data lay duoc tu no.534
 				if(approvalStatusMonth.isPresent()) {
@@ -893,12 +912,20 @@ public class MonthlyPerformanceCorrectionProcessor {
 							// *5 check disable mode approval 
 							if(!approve) {
 								if(approvalStatusResult.getImplementaPropriety() == AvailabilityAtr.CAN_NOT_RELEASE) {
-									lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+									if(hasErrorDaily) {
+										lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+									} else {
+										lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+									}
 									disabled = true;
 								}
 							}else {
 								if(approvalStatusResult.getWhetherToRelease() == ReleasedAtr.CAN_NOT_RELEASE) {
-									lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+									if(hasErrorDaily) {
+										lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+									} else {
+										lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+									}
 									disabled = true;
 								}
 							}
@@ -908,13 +935,22 @@ public class MonthlyPerformanceCorrectionProcessor {
 					}
 					
 					if (!disabled) {
-						performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
-							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
-						});
+						if(hasErrorDaily) {
+							lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+						} else {
+							performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
+								lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+							});
+						}
 					}
 				}
 			}else {
-				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+				if(hasErrorDaily) {
+					lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+				} else {
+					lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE)));
+				}
+				
 				if(approvalStatusMonth.isPresent()) {	
 					for (ApprovalStatusResult approvalStatusResult : approvalStatusMonth.get().getApprovalStatusResult()) {
 						//*6 : set value approval mode 0,1
@@ -933,7 +969,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			if(!hasDataApproval) {
 				mPSateCellHideControls.add(new MPSateCellHideControl(employee.getId(), "approval"));
-				lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_ERROR)));
+				if(hasErrorDaily) {
+					lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+				} else {
+					lstCellState.add(new MPCellStateDto(employeeId, "approval", Arrays.asList(STATE_ERROR)));
+				}
 			}
 			// set state identify
 			if(statusConfirmMonthDto.isPresent()) {
@@ -946,7 +986,11 @@ public class MonthlyPerformanceCorrectionProcessor {
 			
 			disabled = false;
 			if (param.getInitMenuMode() == 2 || !employee.getId().equals(employeeIdLogin)) {
-				lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+				if(hasErrorDaily) {
+					lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+				} else {
+					lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+				}		
 			} else {
 				boolean checkExist = false;
 				if(statusConfirmMonthDto.isPresent()) {
@@ -956,13 +1000,21 @@ public class MonthlyPerformanceCorrectionProcessor {
 							if(identify) {
 								//解除可否
 								if(confirmStatusResult.getWhetherToRelease() == ReleasedAtr.CAN_NOT_RELEASE) {
-									lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+									if(hasErrorDaily) {
+										lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+									} else {
+										lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+									}
 									disabled = true;
 								}
 							}else {
 								//実施可否
 								if(confirmStatusResult.getImplementaPropriety() == AvailabilityAtr.CAN_NOT_RELEASE) {
-									lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+									if(hasErrorDaily) {
+										lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+									} else {
+										lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+									}
 									disabled = true;
 								}
 							}
@@ -970,14 +1022,22 @@ public class MonthlyPerformanceCorrectionProcessor {
 						}
 					}
 					
-					if (!disabled) {
-						performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
-							lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
-						});
+					if (!disabled) {//※2 ※2-1 ※12 sheet グリッド項目制御
+						if(hasErrorDaily) {
+							lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+						} else {
+							performanceLockStatus.stream().filter(p -> p.getEmployeeId().equals(employee.getId()) && (p.getPastPerformaceLock() == LockStatus.LOCK || p.getMonthlyResultLock() == LockStatus.LOCK)).forEach(p -> {
+								lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+							});
+						}
 					}
 				}
 				if(!checkExist) {
-					lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+					if(hasErrorDaily) {
+						lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE,STATE_ERROR)));
+					} else {
+						lstCellState.add(new MPCellStateDto(employeeId, "identify", Arrays.asList(STATE_DISABLE)));
+					}
 				}
 			}	
 			   
@@ -1176,12 +1236,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 		
 		// set state hide control
 		screenDto.setMPSateCellHideControl(mPSateCellHideControls);
-		//get histtory into company
-		List<AffCompanyHistImport> listAffCompanyHistImport = screenDto.getLstAffComHist();
-		List<CheckEmpEralOuput> listCheckEmpEralOuput = checkDailyPerError.checkDailyPerError(employeeIds,
-				new DatePeriod(screenDto.getSelectedActualTime().getStartDate(),
-						screenDto.getSelectedActualTime().getEndDate()),
-				listAffCompanyHistImport, monthlyResults);
 		//取得した情報を元に月別実績を画面に表示する
 		//NOTE: ※取得した「会社所属履歴」をもとに、菜食していない期間の実績は表示しないでください
 		List<MPDataDto> listData =  new ArrayList<>();

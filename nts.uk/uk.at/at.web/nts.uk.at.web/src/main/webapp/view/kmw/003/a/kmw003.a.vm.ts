@@ -115,6 +115,8 @@ module nts.uk.at.view.kmw003.a.viewmodel {
         clickCounter: CLickCount = new CLickCount();
         workTypeNotFound: any = [];
         flagSelectEmployee: boolean = false;
+		// 就業確定を利用する ← 就業確定の機能制限.就業確定を行う
+		employmentConfirm: boolean = false;
         
         constructor(value:boolean) {
             let self = this;
@@ -405,6 +407,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             __viewContext.transferred.value = false;
             nts.uk.characteristics.save("cacheKMW003",self.monthlyParam());
             service.startScreen(self.monthlyParam()).done((data) => {
+				self.employmentConfirm = data.useSetingOutput.employmentConfirm;
                 if (data.selectedClosure) {
                     let closureInfoArray = []
                     closureInfoArray = _.map(data.lstclosureInfoOuput, function(item: any) {
@@ -684,6 +687,10 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 items: [
                     { colorCode: '#94B7FE', labelText: '手修正（本人）' },
                     { colorCode: '#CEE6FF', labelText: '手修正（他人）' },
+					{ colorCode: '#F69164', labelText: getText("KMW003_42") },
+					{ colorCode: '#FFFF99', labelText: getText("KMW003_43") },
+					{ colorCode: '#FF99CC', labelText: getText("KMW003_44") },
+					{ colorCode: '#eb9152', labelText: getText("KMW003_45") },
                     { colorCode: '#DDDDD2', labelText: getText("KMW003_33") },
                 ]
             };
@@ -1777,6 +1784,13 @@ module nts.uk.at.view.kmw003.a.viewmodel {
             nts.uk.ui.windows.setShared("CDL027Params", param);
             nts.uk.ui.windows.sub.modal('com',"/view/cdl/027/a/index.xhtml");
         }
+
+		openKDL006(){
+		 	nts.uk.ui.block.grayout();
+	        modal("/view/kdl/006/a/index.xhtml").onClosed(() => {
+	            nts.uk.ui.block.clear();
+	        });
+		}
         
         search(columnKey, rowId, val, valOld) {
             let dfd = $.Deferred();
