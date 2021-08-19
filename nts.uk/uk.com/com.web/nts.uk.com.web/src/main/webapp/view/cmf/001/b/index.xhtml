@@ -1,11 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
->
+<html	xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:com="http://xmlns.jcp.org/jsf/component"
+			xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<body>
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
@@ -27,7 +25,7 @@
 					<a
 						class="goback"
 						tabindex="1"
-						data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
+						data-bind="ntsLinkButton: { jump: '/view/cmf/001/a/index.xhtml' }, text: '戻る'"
 					></a>
 					<button  
 						class="normal"
@@ -37,12 +35,12 @@
 					<button
 						class="proceed"
 						tabindex="3"
-						data-bind="click: save, text: '登録'"
+						data-bind="enable: canSave, click: save, text: '登録'"
 					></button>
 					<button
 						class="danger"
 						tabindex="4"
-						data-bind="click: remove, text: '削除'"
+						data-bind="enable: canRemove, click: remove, text: '削除'"
 					></button>
 					<button
 						id="export-button"
@@ -69,33 +67,39 @@
 						<div class="group">
 							<div class="code">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportCode'] }">コード</div>
-								<input id="settingCode" data-bind="ntsTextEditor: { 
+								<input class="check-target" id="settingCode" data-bind="ntsTextEditor: { 
+									name: 'コード',
 									value: settingCode,  
 									required: true}" />
 							</div>
 							<div class="name">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportName'] }">名称</div>
-								<input id="settingName" data-bind="ntsTextEditor: { 
+								<input class="check-target" id="settingName" data-bind="ntsTextEditor: { 
+									name: '名称',
 									value: settingName,  
 									required: true}" />
 							</div>
 							<div class="import-group">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入グループ</div>
-								<div id="importGroup" data-bind="ntsComboBox: {
+								<div class="check-target" id="importGroup" data-bind="ntsComboBox: {
+									name: '受入グループ', 
 									options: $root.content.importGroupOption,
 									optionsValue: 'value',
 									optionsText: 'name',
 									selectFirstIfNull: false,
-									value: importGroup}"></div>
+									value: importGroup,  
+									required: true}"></div>
 							</div>
 							<div class="import-mode">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入モード</div>
-								<div id="importMode" data-bind="ntsComboBox: {
+								<div class="check-target" id="importMode" data-bind="ntsComboBox: {
+									name: '受入モード', 
 									options: $root.content.importModeOption,
 									optionsValue: 'value',
 									optionsText: 'name',
 									selectFirstIfNull: false,
-									value: importMode}"></div>
+									value: importMode,  
+									required: true}"></div>
 							</div>
 						</div>
 
@@ -103,11 +107,17 @@
 							<div class="divi">CSVファイルの情報</div><hr />
 							<div class="item-name-row">
 								<div data-bind="ntsFormLabel: { required: true }">項目名の行</div>
-								<input id="itemNameRow" data-bind="ntsTextEditor: { value: itemNameRow}" />
+								<input class="check-target" id="itemNameRow" data-bind="ntsTextEditor: {
+									name: '項目名の行', 
+									value: itemNameRow,  
+									required: true}" />
 							</div>
 							<div class="import-start-row">
 								<div data-bind="ntsFormLabel: { required: true }">受入開始行</div>
-								<input id="importStartRow" data-bind="ntsTextEditor: { value: importStartRow}" />
+								<input class="check-target" id="importStartRow" data-bind="ntsTextEditor: {
+									name: '受入開始行', 
+									value: importStartRow,  
+									required: true}" />
 							</div>
 						</div>
 						
@@ -115,7 +125,7 @@
 							<div class="divi">受入レイアウト</div><hr />
 							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
 							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting" ></button>
-							<table id="layout-list" data-bind="ntsGridList: {
+							<table class="check-target" id="layout-list" data-bind="ntsGridList: {
 								height: '300px',
 								dataSource: layout,
 								primaryKey: 'itemNo',

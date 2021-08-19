@@ -8,15 +8,22 @@ module nts.uk.com.view.cmf001.d {
 	export module viewmodel {
 		@bean()
 		export class ScreenModel {
-			selectablItemList: KnockoutObservableArray<SelectableItem>;
-			selectedItems: KnockoutObservableArray<string>;
+
+			// リストに表示する選択可能な項目
+			selectablItemList: KnockoutObservableArray<SelectableItem> = ko.observableArray([]);
+
+			// リストで選択中の項目
+			selectingItems: KnockoutObservableArray<number> = ko.observableArray([]);
+
+			// 既に選択済みの項目（親画面から渡される）
+			selectedItems: KnockoutObservableArray<number> = ko.observableArray([]);
 
 
 			listColumns: KnockoutObservableArray<any> = ko.observableArray([
 				{ headerText: "NO", 				key: "itemNo",		 		width: 50, hidden: true	},
-				{ headerText: "名称", 			key: "itemName", 			width: 50 	},
-				{ headerText: "項目型", 		key: "itemType", 			width: 200 	},
-				{ headerText: "必須", 			key: "required", 			width: 25 	},
+				{ headerText: "名称", 			key: "itemName", 			width: 200 	},
+				{ headerText: "項目型", 		key: "itemType", 			width: 75 	},
+				{ headerText: "必須", 			key: "required", 			width: 25, hidden: true	},
 			]);
 
 			constructor() {
@@ -26,30 +33,34 @@ module nts.uk.com.view.cmf001.d {
 				console.log("パラメータ受け取った")
 				self.selectablItemList = ko.observableArray<SelectableItem>([]);
 				self.getSelectableItem(params.groupId);
-				self.selectedItems(params.selectedCodes ? params.selectedItems : []);
-
+				self.selectedItems(params.selectedItems.map(n => Number(n)));
 			}	
 
 			getSelectableItem(groupId: string){
 				let self = this;
 				let dfd = $.Deferred<any>();
-				ajax('com', "exio/input/importableitem/find/" + groupId).done((lstData: Array<viewmodel.SelectableItem>) => {
-					let sortedData = _.orderBy(lstData, ['itemNo'], ['asc']);
-					self.selectablItemList(sortedData);
-				});
+				ajax('com', "screen/com/cmf/cmf001/b/get/importableitem/" + groupId)
+					.done((lstData: Array<viewmodel.SelectableItem>) => {
+						let selecteds: any[] = self.selectedItems();
+						let selectables = _(lstData)
+							.filter(e => selecteds.indexOf(e.itemNo) === -1)  // selectedsに存在しない項目のみ
+							.orderBy(['itemNo'], ['asc'])
+							.value();
+						self.selectablItemList(selectables);
+					});
 				return dfd.promise();
 			}
 
 			decide(): void {
 				let self = this;
-				if(self.selectedItems().length == 0) {
+				if(self.selectingItems().length == 0) {
 					alertError({ messageId: "項目が選択されていません。" });
 					return;
 				}
-				setShared('CMF001DOutput', self.selectedItems());
+				setShared('CMF001DOutput', self.selectingItems());
 				close();
 			}
- 
+
 			cancel(): void {
 				setShared('CMF001DCancel', true);
 				close();
@@ -61,7 +72,7 @@ module nts.uk.com.view.cmf001.d {
 			itemName: string;
 			required: boolean;
 			itemType: string;
-	
+
 			constructor(itemNo: number, itemName: string, itemType: string, required: boolean) {
 					this.itemNo = itemNo;
 					this.itemName = itemName;

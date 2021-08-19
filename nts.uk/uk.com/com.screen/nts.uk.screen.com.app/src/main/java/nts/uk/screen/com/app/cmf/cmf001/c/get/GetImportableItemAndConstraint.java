@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class GetImportableItemAndConstraint {
-
+	
 	@Inject
 	private ExternalImportSettingRepository settingRepo;
 	

@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.mapping;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -17,7 +16,6 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 /**
  * 項目マッピング
  */
-@RequiredArgsConstructor
 @Getter
 public class ImportingItemMapping {
 
@@ -29,6 +27,10 @@ public class ImportingItemMapping {
 	
 	/** 固定値 */
 	private Optional<StringifiedValue> fixedValue;
+	
+	public static ImportingItemMapping noSetting(int itemNo) {
+		return new ImportingItemMapping(itemNo, Optional.empty(), Optional.empty());
+	}
 
 	public ImportingItemMapping(int itemNo, Optional<Integer> csvColumnNo, Optional<StringifiedValue> fixedValue) {
 		

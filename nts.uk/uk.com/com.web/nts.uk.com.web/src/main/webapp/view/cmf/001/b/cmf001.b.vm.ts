@@ -4,6 +4,37 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 	import info = nts.uk.ui.dialog.info;
 	import setShared = nts.uk.ui.windows.setShared;
 	import getShared = nts.uk.ui.windows.getShared;
+
+	let ICON_CONFIGURED = nts.uk.request.resolvePath(
+		__viewContext.rootPath + "../" + (<any> nts).uk.request.WEB_APP_NAME.comjs
+		 + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
+
+	function renderConfiguredIcon(configured) {
+		if (configured === "true") {
+				return '<div class="icon-configured" style="text-align: center;">' 
+						+ '<span id="icon-configured" style="'
+						+ 'background: url(\'' + ICON_CONFIGURED + '\');'
+						+ 'background-size: 20px 20px; width: 20px; height: 20px;'
+						+ 'display: inline-block;"></span></div>';
+		} else {
+				return '';
+		}
+	}
+	function deleteButton(deletable, data) {
+		if (deletable === "true") {
+				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">delete</button>';
+		} else {
+				return '';
+		}
+	}
+
+	$(function() {
+		$("#layout-list").on("click",".delete-button",function(){
+			let vm = nts.uk.ui._viewModel.content;
+			console.log("さくじょ1"+ $(this).data("target"));
+			vm.removeItem($(this).data("target"));
+		});
+	})
 	
 	@bean()
 	class ViewModel extends ko.ViewModel {
@@ -34,11 +65,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		]);
 
 		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
-			{ headerText: "NO", 						key: "itemNo", 				width: 100 , hidden: true },
+			{ headerText: "削除", 					key: "deletable", 		width: 75 , 	formatter: deleteButton },
+			{ headerText: "NO", 						key: "itemNo", 				width: 100 , 	hidden: true },
 			{ headerText: "名称", 					key: "name", 					width: 200 		},
 			{ headerText: "型", 						key: "type", 					width: 75 		},
 			{ headerText: "受入元", 				key: "source", 				width: 50 		},
-			{ headerText: "詳細設定の有無", key: "alreadyDetail", width: 120 		},
+			{ headerText: "詳細設定", 			key: "alreadyDetail", width: 75 ,		formatter: renderConfiguredIcon },
 		]);
 
 		constructor() {
@@ -50,23 +82,29 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importModeOption = ko.observableArray(__viewContext.enums.ImportingMode);
 
 			self.startPage();
+
 			self.selectedCode.subscribe((value) => {
 				if (value) {
 					self.updateMode();
-					console.log(value + "を選択した")
 				} else {
 					self.newMode();
-					console.log("選択解除した")
 				}
 			})
-			self.importGroup.subscribe(() => {
-				self.layout([]);
-				console.log("受入グループを変更したのでレイアウトをリセット")
-			})
-		}
 
-		mounted() {
-			const vm = this;
+			self.importGroup.subscribe((value) => {
+				if (value) {
+					let condition = new LayoutGetCondition(self.settingCode(), self.importGroup(), []);
+					ajax("com", "screen/com/cmf/cmf001/get/layout", condition).done((itemNoList: number[]) => {
+						self.layoutItemNoList(itemNoList);
+					});
+				}else{
+					self.layoutItemNoList([]);
+				}
+			})
+
+			self.layoutItemNoList.subscribe((value) => {
+				self.setLayout(value);
+			})
 		}
 
 		startPage(){
@@ -92,7 +130,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			ajax("exio/input/setting/find-all").done((lstData: Array<viewmodel.Setting>) => {
+			ajax("screen/com/cmf/cmf001/get/setting/all").done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
 				dfd.resolve();
@@ -108,14 +146,21 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.selectedCode("");
 			self.setInfo(SettingInfo.new());
 			self.isNewMode = true;
+			self.checkError();
 		}
 
 		updateMode(){
 			let self = this;
-			ajax("com", "exio/input/setting/find/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
+			ajax("com", "screen/com/cmf/cmf001/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
 				self.isNewMode = false;
+				self.checkError();
 			});
+		}
+
+		checkError(){
+			nts.uk.ui.errors.clearAll()
+			$('.check-target').ntsError('check');
 		}
 
 		setInfo(info: SettingInfo){
@@ -126,33 +171,44 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
-			self.layoutItemNoList(info.itemNoList);
+			// importGroupの変更にトリガして自動でセットされるため不要
+			// self.layoutItemNoList(info.itemNoList);
+		}
 
-			let condition = new LayoutGetCondition(self.settingCode(), self.layoutItemNoList());
-			ajax("exio/input/setting/find/layout", condition).done((layouItems: Array<viewmodel.Layout>) => {
-				self.layout(layouItems);
-
-			});
+		setLayout(itemNoList: number[]){
+			let self = this;
+			if(itemNoList.length > 0){
+				let condition = new LayoutGetCondition(self.settingCode(), self.importGroup(), itemNoList);
+				ajax("screen/com/cmf/cmf001/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
+					self.layout(layoutItems);
+				});
+			}else{
+				self.layout([]);
+			}
 		}
 
 		selectLayout() {
-            let self = this;
-            setShared('CMF001DParams', {
-                groupId: self.importGroup(),
-                selectedItems: self.layoutItemNoList()
-            }, true);
+			let self = this;
+			setShared('CMF001DParams', {
+					groupId: self.importGroup(),
+					selectedItems: self.layoutItemNoList()
+			}, true);
 
-            nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
-                // var output = getShared('CMF001DOutput');
-                // if (output) {
-                //     output.sort();layoutGetCondition
-                //     self.selectedErrorAlarm().alCheckTargetCondition.lstEmployment(output);
-                // }
-            });
-        }
+			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
+				// ダイアログを閉じたときの処理
+				if(!getShared('CMF001DCancel')){
+					let ItemNoList: string[] = getShared('CMF001DOutput')
+					console.log("closed: " + ItemNoList)
+					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
+				}
+			});
+		}
+
+		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
 
 		save(){
 			let self = this;
+			self.checkError();
 			let saveContents = new SaveContents(
 				self.isNewMode, 
 				new SettingInfo(
@@ -164,12 +220,14 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					self.itemNameRow(), 
 					self.importStartRow(), 
 					self.layoutItemNoList()));
-			ajax("exio/input/setting/save", saveContents);
+			ajax("screen/com/cmf/cmf001/save", saveContents);
 			info(nts.uk.resource.getMessage("Msg_15", []));
 			self.reloadPage();
 			self.selectedCode(self.settingCode());
 		}
 
+    canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+		
 		remove(){
 			let self = this;
 			let target = new RemoveTarget(self.selectedCode());
@@ -182,10 +240,15 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		gotoDetailSetting() {
 			request.jump("../c/index.xhtml", { settingCode: this.settingCode() });
 		}
+
+		removeItem(target){
+			let self = this;
+			self.layoutItemNoList(self.layoutItemNoList().filter(function(itemNo){
+				return itemNo !== target;
+			}))
+		}
 	}
-
-
-
+	
 
 
 	
@@ -229,10 +292,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 	class LayoutGetCondition{
 		settingCode: string;
+		importingGroupId: number;
 		itemNoList: Array<number>;
 
-		constructor(settingCode: string, itemNoList: Array<number>) {
+		constructor(settingCode: string, importingGroupId: number, itemNoList: Array<number>) {
 			this.settingCode = settingCode;
+			this.importingGroupId = importingGroupId;
 			this.itemNoList = itemNoList;
 		}
 	}
@@ -254,29 +319,21 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			this.code = code;
 		}
 	}
-
-	class comboBoxItem {
-		code: any;
-		name: string;
-
-		constructor(code: any, name: string) {
-				this.code = code;
-				this.name = name;
-		}
-	}
 	
 	export class Layout {
 		itemNo: number;
 		name: string;
 		required: boolean;
+		deletable: boolean;
 		type: string;
 		source: string;
 		alreadyDetail: boolean;
 
-		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string, alreadyDetail: boolean) {
+		constructor(itemNo: number,　name: string, required: boolean, deletable: boolean, type: string, source: string, alreadyDetail: boolean) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
+			this.deletable = deletable;
 			this.type = type;
 			this.source = source;
 			this.alreadyDetail = alreadyDetail;
