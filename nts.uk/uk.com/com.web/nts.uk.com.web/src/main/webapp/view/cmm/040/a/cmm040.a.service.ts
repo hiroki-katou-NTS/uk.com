@@ -7,7 +7,8 @@ module nts.uk.com.view.cmm040.a.service {
         getWorkPlace: "at/screen/cmm040/getWorkPlace",
         radiusEnum: 'at/screen/cmm040/enum',
         insert: "at/screen/cmm040/insert",
-        checkWorkplace: "at/screen/cmm040/checkWorkplace"
+        checkWorkplace: "at/screen/cmm040/checkWorkplace",
+        checkDelete: "at/screen/cmm040/checkDelete"
     }
 
     export function getDataStart(): any {
@@ -37,5 +38,9 @@ module nts.uk.com.view.cmm040.a.service {
 
     export function checkWorkplace(param: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.checkWorkplace, param);
+    }
+
+    export function checkDelete(): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkDelete);
     }
 }

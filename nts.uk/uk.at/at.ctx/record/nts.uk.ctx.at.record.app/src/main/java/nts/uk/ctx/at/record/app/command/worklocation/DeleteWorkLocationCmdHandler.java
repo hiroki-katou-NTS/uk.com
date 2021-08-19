@@ -36,7 +36,7 @@ public class DeleteWorkLocationCmdHandler  extends CommandHandler<String>{
 			throw new BusinessException("Msg_1969");
 		}
 		
-		if(!AppContexts.user().roles().isInChargeAttendance()) {
+		if(!AppContexts.user().roles().have().systemAdmin()) {
 			throw new BusinessException("Msg_2214");
 		}
 		//3:

@@ -621,26 +621,19 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 }
                 // let select = 
                 if (self.isCreate() === true) {
-                    service.insert(param).done((result) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.reloadData().done(() => {
-                            self.selectedWorkLocation(self.workLocationCD());
-                            self.isCreate(false);
-                        });
-                        $("#focusName").focus();
-                    }).fail((res: any) => {
 
-                        //                        nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
-                        //                            self.startPage();
-                        //                            if (self.workPlacesList().length > 0) {
-                        //                                self.findByIndex(0);
-                        //                            }
-                        //                        });
-                        nts.uk.ui.dialog.alert({ messageId: res.messageId });
-                        $("#focusName").focus();
-                    }).always(() => {
-                        block.clear();
-                    });
+                    service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
+                        .done((data: any) => {
+                            self.insert(param);
+                        })
+                        .fail((data: any) => {
+                            nts.uk.ui.dialog
+                                .confirm({ messageId: data.messageId })
+                                .ifYes(() => {
+                                    self.insert(param);
+                                })
+                        })
+                    
                 }
                 else {
                     service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
@@ -656,6 +649,30 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                         })
                 }
             }
+        }
+
+        insert(param: any) {
+            const self = this;
+            service.insert(param).done((result) => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.reloadData().done(() => {
+                    self.selectedWorkLocation(self.workLocationCD());
+                    self.isCreate(false);
+                });
+                $("#focusName").focus();
+            }).fail((res: any) => {
+
+                //                        nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
+                //                            self.startPage();
+                //                            if (self.workPlacesList().length > 0) {
+                //                                self.findByIndex(0);
+                //                            }
+                //                        });
+                nts.uk.ui.dialog.alert({ messageId: res.messageId });
+                $("#focusName").focus();
+            }).always(() => {
+                block.clear();
+            });
         }
 
         update(param: any) {
@@ -690,34 +707,71 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             const vm = new ko.ViewModel();
             let self = this;
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                service.deleteWorkLocation(self.workLocationCD()).done((result) => {
-                    let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
-                    index = _.min([self.workPlacesList().length - 2, index]);
-                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function () {
-                        self.reloadData().done(() => {
-                            if (index == -1) {
-                                self.selectedWorkLocation(null);
-                                self.workPlacesList([]);
-                                errors.clearAll();
-                                self.newMode();
-                            }
-                            else {
-                                self.findByIndex(index);
-                            }
-                        });
-                    });
 
-                }).fail((res: any) => {
-                    nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
-                        let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
-                        index = _.min([self.workPlacesList().length - 2, index]);
-                        self.reloadData().done(() => {
-                            self.findByIndex(0);
+                service.checkDelete().done((isSystem: boolean) => {
+                    if (isSystem) {
+                        nts.uk.ui.dialog.confirm({ messageId: "Msg_2215" })
+                            .ifYes(() => {
+                                service.deleteWorkLocation(self.workLocationCD()).done((result) => {
+                                    let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
+                                    index = _.min([self.workPlacesList().length - 2, index]);
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function () {
+                                        self.reloadData().done(() => {
+                                            if (index == -1) {
+                                                self.selectedWorkLocation(null);
+                                                self.workPlacesList([]);
+                                                errors.clearAll();
+                                                self.newMode();
+                                            }
+                                            else {
+                                                self.findByIndex(index);
+                                            }
+                                        });
+                                    });
+
+                                }).fail((res: any) => {
+                                    nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
+                                        let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
+                                        index = _.min([self.workPlacesList().length - 2, index]);
+                                        self.reloadData().done(() => {
+                                            self.findByIndex(0);
+                                        });
+                                    });
+                                }).always(() => {
+                                    block.clear();
+                                });
+                            })
+                    } else {
+                        service.deleteWorkLocation(self.workLocationCD()).done((result) => {
+                            let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
+                            index = _.min([self.workPlacesList().length - 2, index]);
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function () {
+                                self.reloadData().done(() => {
+                                    if (index == -1) {
+                                        self.selectedWorkLocation(null);
+                                        self.workPlacesList([]);
+                                        errors.clearAll();
+                                        self.newMode();
+                                    }
+                                    else {
+                                        self.findByIndex(index);
+                                    }
+                                });
+                            });
+
+                        }).fail((res: any) => {
+                            nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
+                                let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
+                                index = _.min([self.workPlacesList().length - 2, index]);
+                                self.reloadData().done(() => {
+                                    self.findByIndex(0);
+                                });
+                            });
+                        }).always(() => {
+                            block.clear();
                         });
-                    });
-                }).always(() => {
-                    block.clear();
-                });
+                    }
+                })
 
             });
         }

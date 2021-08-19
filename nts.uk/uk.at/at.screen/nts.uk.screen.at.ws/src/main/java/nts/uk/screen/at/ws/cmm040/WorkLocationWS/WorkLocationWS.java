@@ -136,5 +136,11 @@ public class WorkLocationWS extends WebService {
 	public void checkWorkplace(CheckWorkplaceParam param) {
 		this.checkWorkplace.checkWorkPlace(param.workplaceID);
 	}
+	
+	@POST
+	@Path("checkDelete")
+	public boolean checkDelete() {
+		return AppContexts.user().roles().have().systemAdmin();
+	}
 
 }
