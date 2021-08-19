@@ -258,7 +258,8 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 
 	private List<IntegrationOfDaily> getDailyRecords(MonthlyCalculation monthlyCalculation) {
 		return monthlyCalculation.getMonthlyCalculatingDailys().getDailyWorks(monthlyCalculation.getEmployeeId())
-				.stream().filter(c -> monthlyCalculation.getProcPeriod().contains(c.getYmd())).collect(Collectors.toList());
+				.stream().filter(c -> monthlyCalculation.getProcPeriod().contains(c.getYmd()))
+				.collect(Collectors.toList());
 	}
 	
 	/** 休出枠一覧を取得する */

@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.workdayoff.frame;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  * The Class WorkdayoffFrame.
  */
 //休出枠
+@AllArgsConstructor
 public class WorkdayoffFrame extends AggregateRoot{
 	
 	/** The company id. */
