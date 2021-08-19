@@ -53,6 +53,48 @@ public class CalcNextAnnualLeaveGrantDate {
 
 		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
 
+		// パラメータ．期間の日付を１日後ろにずらす。
+		Optional<DatePeriod> targetPeriod = Optional.empty();
+		if (period.isPresent()){
+			val paramPeriod = period.get();
+			int addEnd = 0;
+			if (paramPeriod.end().before(GeneralDate.max())) addEnd = 1;
+			targetPeriod = Optional.of(new DatePeriod(paramPeriod.start().addDays(1), paramPeriod.end().addDays(addEnd)));
+		}
+
+		// 次回年休付与を計算(期間の開始日を含む)
+		nextAnnualLeaveGrantList = algorithmContainPeriodStartDate(
+				require, cacheCarrier,
+				companyId,
+				employeeId,
+				targetPeriod,
+				employeeOpt,
+				annualLeaveEmpBasicInfoOpt,
+				grantHdTblSetOpt,
+				lengthServiceTblsOpt);
+
+		// 次回年休付与を返す
+		return nextAnnualLeaveGrantList;
+	}
+
+	/**
+	 * 次回年休付与を計算（期間の開始日を含む）
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param period 期間
+	 * @param employee 社員
+	 * @param annualLeaveEmpBasicInfo 年休社員基本情報
+	 * @param grantHdTblSet 年休付与テーブル設定
+	 * @param lengthServiceTbls 勤続年数テーブルリスト
+	 * @return 次回年休付与リスト
+	 */
+	public static List<NextAnnualLeaveGrant> algorithmContainPeriodStartDate(RequireM2 require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId, Optional<DatePeriod> period,
+			Optional<EmployeeImport> employeeOpt, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfoOpt,
+			Optional<GrantHdTblSet> grantHdTblSetOpt, Optional<List<LengthServiceTbl>> lengthServiceTblsOpt) {
+
+		List<NextAnnualLeaveGrant> nextAnnualLeaveGrantList = new ArrayList<>();
+
 		// 「年休社員基本情報」を取得
 		Optional<AnnualLeaveEmpBasicInfo> empBasicInfoOpt = Optional.empty();
 		if (annualLeaveEmpBasicInfoOpt.isPresent()){
@@ -77,15 +119,11 @@ public class CalcNextAnnualLeaveGrantDate {
 		// 「期間」をチェック
 		DatePeriod targetPeriod = null;
 		boolean isSingleDay = false;	// 単一日フラグ=false
-		if (period.isPresent()){
 
-			// 開始日、終了日を１日後にずらした期間
-			val paramPeriod = period.get();
-			int addEnd = 0;
-			if (paramPeriod.end().before(GeneralDate.max())) addEnd = 1;
-			targetPeriod = new DatePeriod(paramPeriod.start().addDays(1), paramPeriod.end().addDays(addEnd));
-		}
-		else {
+		if (period.isPresent()){ // Null以外
+			targetPeriod = new DatePeriod(period.get().start(), period.get().end());
+
+		} else { // Nullのとき
 
 			// 社員に対応する締め開始日を取得する
 			val closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
