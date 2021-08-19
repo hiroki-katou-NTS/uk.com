@@ -135,6 +135,8 @@ module nts.uk.at.view.kaf011 {
 			self.workTypeList(workTypeList);
 			if (_.filter(self.workTypeList(), {'workTypeCode': param.workInformation.workType}).length == 0) {
 				self.workTypeList().push({ workTypeCode: param.workInformation.workType, name: 'マスタ未登録' });
+			} else {
+				self.workTypeSelected.update(_.filter(self.workTypeList(), {'workTypeCode': param.workInformation.workType})[0]);
 			}
 			self.workTypeList(_.sortBy(self.workTypeList(), [ 'workTypeCode' ]));
 			self.workInformation.update(param.workInformation);

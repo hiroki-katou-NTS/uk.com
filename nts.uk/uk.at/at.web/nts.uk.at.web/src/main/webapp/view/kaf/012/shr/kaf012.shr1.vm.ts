@@ -125,7 +125,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             });
 
             vm.maxGrantDate = ko.computed(() => {
-                if (vm.timeLeaveRemaining() && vm.timeLeaveRemaining().grantDate && vm.timeLeaveRemaining().grantedDays){
+                if (vm.timeLeaveRemaining() && vm.timeLeaveRemaining().grantDate){
                     return nts.uk.resource.getText('KAF012_53') + vm.timeLeaveRemaining().grantDate + "　" + vm.timeLeaveRemaining().grantedDays + "日";
                 } else {
                     return nts.uk.resource.getText('KAF012_53') + nts.uk.resource.getText('KAF012_54');
