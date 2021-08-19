@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
@@ -28,15 +28,15 @@ public class DailyResultAccordScheduleStatusService {
 	 * @return Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> --- Map<社員の予定管理状態, Optional<日別勤怠(Work)>>
 	 */
 	//IntegrationOfDaily
-	public static Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> get(Require require, List<String> lstempID , DatePeriod datePeriod ){
-		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map = new HashMap<>();
+	public static Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> get(Require require, List<String> lstempID , DatePeriod datePeriod ){
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map = new HashMap<>();
 		lstempID.stream().forEach( x ->{
 			/*return 社員IDリスト:																												
 			map [prv-1] 社員別に取得する( require, $, 期間 )																		
 			flatMap	*/	
 			long startTime = System.nanoTime();
 			
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.getByEmp(require, x, datePeriod);
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.getByEmp(require, x, datePeriod);
 			map.putAll(data);
 			
 			long endTime = System.nanoTime();
@@ -52,12 +52,12 @@ public class DailyResultAccordScheduleStatusService {
 	 * @param datePeriod
 	 * @return Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> --- Map<社員の予定管理状態, Optional<日別勤怠(Work)>>
 	 */
-	private static Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> getByEmp(Require require, String employeeID , DatePeriod datePeriod){
-		Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map = new HashMap<>();
+	private static Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> getByEmp(Require require, String employeeID , DatePeriod datePeriod){
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map = new HashMap<>();
 		datePeriod.stream().forEach(x-> {
 			//$社員の予定管理状態 = 社員の予定管理状態#作成する( require, 社員ID, $ )
-			ScheManaStatuTempo data = ScheManaStatuTempo.create(require, employeeID, x);
-			if(!(data.getScheManaStatus().needCreateWorkSchedule())){
+			EmployeeWorkingStatus data = EmployeeWorkingStatus.create(require, employeeID, x);
+			if(!(data.getWorkingStatus().needCreateWorkSchedule())){
 				//return Key: $社員の予定管理状態, Value: Optional.empty			
 				 map.put(data,Optional.empty());
 			}
@@ -68,7 +68,7 @@ public class DailyResultAccordScheduleStatusService {
 		return map;
 	}
 
-	public static interface Require extends ScheManaStatuTempo.Require {
+	public static interface Require extends EmployeeWorkingStatus.Require {
 		// 社員と日付を指定して日別勤怠(Work)を取得するアルゴリズムを利用する（1次の処理に存在するはず） --- http://192.168.50.4:3000/issues/110713
 		// Tài liệu chưa chỉ rõ thuật toán 
 		Optional<IntegrationOfDaily> getDailyResults(String empId , GeneralDate date);

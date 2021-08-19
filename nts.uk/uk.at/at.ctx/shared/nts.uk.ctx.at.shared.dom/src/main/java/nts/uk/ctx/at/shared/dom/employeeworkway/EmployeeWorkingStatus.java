@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.shared.dom.employeeworkway;
 
 import java.util.Optional;
 
@@ -16,15 +16,14 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 
 /**
- * 社員の予定管理状態 TP
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定
- *
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.社員の働き方.社員の就業状態
+ * 社員の就業状態
  * @author HieuLt
  *
  */
 @Getter
 @RequiredArgsConstructor
-public class ScheManaStatuTempo {
+public class EmployeeWorkingStatus {
 
 	/** 社員ID **/
 	private final String employeeID;
@@ -33,7 +32,7 @@ public class ScheManaStatuTempo {
 	private final GeneralDate date;
 
 	/** 予定管理状態 **/
-	private final ScheManaStatus scheManaStatus;
+	private final WorkingStatus workingStatus;
 
 	/** 休業枠NO **/
 	private final Optional<TempAbsenceFrameNo> optTempAbsenceFrameNo;
@@ -48,7 +47,7 @@ public class ScheManaStatuTempo {
 	 * @param date
 	 * @return
 	 */
-	public static ScheManaStatuTempo create(Require require, String employeeID, GeneralDate date) {
+	public static EmployeeWorkingStatus create(Require require, String employeeID, GeneralDate date) {
 
 		// 休業枠
 		Optional<TempAbsenceFrameNo> frameNo = Optional.empty();
@@ -60,16 +59,16 @@ public class ScheManaStatuTempo {
 		if (!enrolled(require, employeeID, date)) {
 			// 在籍中ではない
 			// 予定管理状態 -> 在籍していない
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.NOT_ENROLLED, frameNo, employmentCd);
+			return new EmployeeWorkingStatus(employeeID, date, WorkingStatus.NOT_ENROLLED, frameNo, employmentCd);
 		}
 
 
 		// 雇用コード取得
-		employmentCd = ScheManaStatuTempo.getEmplomentCd(require, employeeID, date);
+		employmentCd = EmployeeWorkingStatus.getEmplomentCd(require, employeeID, date);
 		if (!employmentCd.isPresent()) {
 			// 雇用コードがない
 			// 予定管理状態 -> データ不正
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, frameNo, employmentCd);
+			return new EmployeeWorkingStatus(employeeID, date, WorkingStatus.INVALID_DATA, frameNo, employmentCd);
 		}
 
 
@@ -78,11 +77,11 @@ public class ScheManaStatuTempo {
 		if (!scheManegedAtr.isPresent()) {
 			// 予定管理区分がない
 			// 予定管理状態 -> データ不正
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, frameNo, employmentCd);
+			return new EmployeeWorkingStatus(employeeID, date, WorkingStatus.INVALID_DATA, frameNo, employmentCd);
 		} else if (scheManegedAtr.get() == ManageAtr.NOTUSE) {
 			// 予定管理区分 == 管理しない
 			// 予定管理状態 -> 予定管理しない
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE, frameNo, employmentCd);
+			return new EmployeeWorkingStatus(employeeID, date, WorkingStatus.DO_NOT_MANAGE_SCHEDULE, frameNo, employmentCd);
 		}
 
 
@@ -90,7 +89,7 @@ public class ScheManaStatuTempo {
 		if (onLeave(require, employeeID, date)) {
 			// 休職中である
 			// 予定管理状態 -> 休職中
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.ON_LEAVE, frameNo, employmentCd);
+			return new EmployeeWorkingStatus(employeeID, date, WorkingStatus.ON_LEAVE, frameNo, employmentCd);
 		}
 
 
@@ -99,13 +98,13 @@ public class ScheManaStatuTempo {
 		if (frameNo.isPresent()) {
 			// 休業枠NOがある⇒休業中である
 			// 予定管理状態 -> 休業中
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.CLOSED, frameNo, employmentCd);
+			return new EmployeeWorkingStatus(employeeID, date, WorkingStatus.CLOSED, frameNo, employmentCd);
 
 		}
 
 
 		// 予定管理状態 -> 予定管理する
-		return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.SCHEDULE_MANAGEMENT, frameNo, employmentCd);
+		return new EmployeeWorkingStatus(employeeID, date, WorkingStatus.SCHEDULE_MANAGEMENT, frameNo, employmentCd);
 
 	}
 

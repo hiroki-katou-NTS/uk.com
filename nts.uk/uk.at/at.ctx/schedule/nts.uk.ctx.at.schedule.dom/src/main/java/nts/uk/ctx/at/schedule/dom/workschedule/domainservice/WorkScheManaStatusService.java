@@ -7,8 +7,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 
 
 /**
@@ -26,12 +26,12 @@ public class WorkScheManaStatusService {
 	 * @param lstEmployeeID
 	 * @return Map<社員の予定管理状態, Optional<勤務予定>>
 	 */
-	public static Map<ScheManaStatuTempo, Optional<WorkSchedule>> getScheduleManagement(Require require,
+	public static Map<EmployeeWorkingStatus, Optional<WorkSchedule>> getScheduleManagement(Require require,
 			List<String> lstEmployeeID, DatePeriod period) {
 		/*	return 社員IDリスト:																										
 			map [prv-1] 社員別に取得する( require, $, 期間 )																
 			flatMap		*/												
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> map = new HashMap<>();
 		for (int i = 0; i < lstEmployeeID.size(); i++) {
 			long start = System.nanoTime();
 			
@@ -50,15 +50,15 @@ public class WorkScheManaStatusService {
 	 * @param datePeriod
 	 * @return Map<社員の予定管理状態, Optional<勤務予定>>
 	 */
-	private static Map<ScheManaStatuTempo, Optional<WorkSchedule>> getByEmployee(Require require,String employeeID, DatePeriod datePeriod) {
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
+	private static Map<EmployeeWorkingStatus, Optional<WorkSchedule>> getByEmployee(Require require,String employeeID, DatePeriod datePeriod) {
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> map = new HashMap<>();
 		
 		//期間.stream():
 		datePeriod.datesBetween().stream().forEach(x->{
 			//	map		$社員の予定管理状態 = 社員の予定管理状態#作成する( require, 社員ID, $ )
-			ScheManaStatuTempo zScheManaStatuTempo =  ScheManaStatuTempo.create(require, employeeID, x);
+			EmployeeWorkingStatus zScheManaStatuTempo =  EmployeeWorkingStatus.create(require, employeeID, x);
 			
-			if(!zScheManaStatuTempo.getScheManaStatus().needCreateWorkSchedule()){
+			if(!zScheManaStatuTempo.getWorkingStatus().needCreateWorkSchedule()){
 				 map.put(zScheManaStatuTempo, Optional.empty());
 				 return;
 			}
@@ -70,7 +70,7 @@ public class WorkScheManaStatusService {
 		return map;
 	}
 
-	public static interface Require extends ScheManaStatuTempo.Require{
+	public static interface Require extends EmployeeWorkingStatus.Require{
 		/**
 		 * R-1] 勤務予定を取得する
 		 * @param employeeID

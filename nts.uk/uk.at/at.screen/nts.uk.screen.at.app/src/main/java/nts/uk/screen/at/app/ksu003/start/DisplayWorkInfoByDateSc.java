@@ -18,7 +18,6 @@ import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.TimeVacation;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
@@ -28,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeave
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
@@ -91,7 +91,7 @@ public class DisplayWorkInfoByDateSc {
 				employmentHisScheduleAdapter);
 		
 		// 1 .取得する(Require, List<社員ID>, 期間):Map<社員の予定管理状態, Optional<勤務予定>>
-		Map<ScheManaStatuTempo, Optional<WorkSchedule>> mapScheMana = WorkScheManaStatusService
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mapScheMana = WorkScheManaStatusService
 				.getScheduleManagement(requireImpl, param.getLstEmpId(), period);
 		List<ScheWorkDto> workDtos = mapScheMana.entrySet().stream().map(mapper-> new ScheWorkDto(mapper.getKey().getEmployeeID(), mapper.getKey(), mapper.getValue())).collect(Collectors.toList());
 		workDtos = workDtos.stream().sorted((a, b) -> param.getLstEmpId().indexOf(a.getEmpId()) - param.getLstEmpId().indexOf(b.getEmpId())).collect(Collectors.toList());
@@ -126,10 +126,10 @@ public class DisplayWorkInfoByDateSc {
 			Optional<EditStateOfDailyAttd> editStateSet6 = null;
 			Integer endTime2Status = null;
 			
-			ScheManaStatuTempo key = action.getManaStatuTempo(); // 予定管理状態
+			EmployeeWorkingStatus key = action.getManaStatuTempo(); // 予定管理状態
 			Optional<WorkSchedule> value = Optional.ofNullable(action.getSchedule()); // 勤務予定
 			// 2.1
-			boolean checkScheStatus = key.getScheManaStatus().needCreateWorkSchedule();
+			boolean checkScheStatus = key.getWorkingStatus().needCreateWorkSchedule();
 
 			// 2.3
 			if (value.isPresent()) {

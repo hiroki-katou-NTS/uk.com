@@ -52,11 +52,11 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHis;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -514,15 +514,15 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// ToDo
 		// 社員一覧のループ
 		// 「パラメータ」・社員ID一覧・期間
-		List<ScheManaStatuTempo> lstStatuTempos = new ArrayList<>();
+		List<EmployeeWorkingStatus> lstStatuTempos = new ArrayList<>();
 		for (val id : employeeIds) {
 			// 期間のループ
 			for (val date : period.datesBetween()) {
 				// 「社員の予定管理状態」を取得する
 				// 「Output」・社員の予定管理状態一覧
-				ScheManaStatuTempo.Require require = new ScheManaStatuTempoImpl(companyId, comHisAdapter,
+				EmployeeWorkingStatus.Require require = new ScheManaStatuTempoImpl(companyId, comHisAdapter,
 						conditionRespo, empHisAdapter, leaHisAdapter, scheAdapter);
-				ScheManaStatuTempo manaStatuTempo = ScheManaStatuTempo.create(require, id, date);
+				EmployeeWorkingStatus manaStatuTempo = EmployeeWorkingStatus.create(require, id, date);
 				lstStatuTempos.add(manaStatuTempo);
 			}
 		}
@@ -728,7 +728,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	}
 
 	@AllArgsConstructor
-	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require {
+	public static class ScheManaStatuTempoImpl implements EmployeeWorkingStatus.Require {
 		String companyId = AppContexts.user().companyId();
 		@Inject
 		private EmpComHisAdapter comHisAdapter;
