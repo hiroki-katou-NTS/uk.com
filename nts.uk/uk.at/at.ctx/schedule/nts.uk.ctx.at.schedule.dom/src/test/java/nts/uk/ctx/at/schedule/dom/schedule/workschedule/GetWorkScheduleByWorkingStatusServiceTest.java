@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.workschedule.domainservice;
+package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -21,20 +21,21 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByWorkingStatusService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.WorkScheManaStatusService.Require;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByWorkingStatusService.Require;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 
 @RunWith(JMockit.class)
-public class WorkScheManaStatusServiceTest {
+public class GetWorkScheduleByWorkingStatusServiceTest {
 
 	@Injectable
 	private Require require;
 
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is false
+	 * $社員の就業状態.勤務予定が必要か() is false
 	 */
 	@Test
 	public void testGetScheduleManagement() {
@@ -57,7 +58,7 @@ public class WorkScheManaStatusServiceTest {
 			}
 		};
 		
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByWorkingStatusService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -65,7 +66,7 @@ public class WorkScheManaStatusServiceTest {
 	}
 	
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is true
+	 * $社員の就業状態.勤務予定が必要か() is true
 	 * require.勤務予定を取得する( 社員ID, $ ) is empty
 	 */
 	@Test
@@ -93,7 +94,7 @@ public class WorkScheManaStatusServiceTest {
 				return true;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByWorkingStatusService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -101,7 +102,7 @@ public class WorkScheManaStatusServiceTest {
 	}
 	
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is true
+	 * $社員の就業状態.勤務予定が必要か() is true
 	 * require.勤務予定を取得する( 社員ID, $ ) not empty
 	 * 
 	 */
@@ -137,7 +138,7 @@ public class WorkScheManaStatusServiceTest {
 			}
 		};
 		
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = WorkScheManaStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByWorkingStatusService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.of(workSchedule)));
