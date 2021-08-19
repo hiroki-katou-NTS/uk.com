@@ -24,7 +24,7 @@
     <nts-dropdown class="mt-3"
       v-model="selectedValue"
       name="CMMS45_5"
-      v-bind:columns="{title: 'col-3 col-md-3 pr-0', input: 'col-5 col-md-5 pl-2'}">
+      v-bind:columns="{title: 'col-3 col-md-3 pr-0', input: 'col-9 col-md-5 pl-2 p_dropdown'}">
       <option v-for="item in lstAppType" v-bind:key="item.code" :value="item.code">{{item.appName}}</option>
     </nts-dropdown>
 
