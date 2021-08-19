@@ -193,7 +193,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
             Map<String, CodeNameInfoDto> mapWorkHourData = workHourData.stream()
                     .collect(Collectors.toMap(e -> e.getWorktimeCode().v(), j -> new CodeNameInfoDto(
                             j.getWorktimeCode().v(),
-                            j.getWorkTimeDisplayName().getWorkTimeName().v(),
+                            j.getWorkTimeDisplayName().getWorkTimeAbName().v(),
                             null
                     )));
 

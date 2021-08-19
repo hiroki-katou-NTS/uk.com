@@ -269,7 +269,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
             Map<String, CodeNameInfoDto> mapWorkHourData = workHourData.stream()
                     .collect(Collectors.toMap(e -> e.getWorktimeCode().v(), j -> new CodeNameInfoDto(
                             j.getWorktimeCode().v(),
-                            j.getWorkTimeDisplayName().getWorkTimeName().v(),
+                            j.getWorkTimeDisplayName().getWorkTimeAbName().v(),
                             null
                     )));
             Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
