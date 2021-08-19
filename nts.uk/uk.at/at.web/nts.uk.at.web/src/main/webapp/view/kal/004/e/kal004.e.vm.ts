@@ -203,18 +203,20 @@ module nts.uk.com.view.kal004.e.viewmodel {
                 let startMonthly = null;
                 let endMonthly = null;
                 let sysDate = moment();
+                let numberStrMonth = self.strSpecifyMonth() - 1;
                 
                 if (self.strYearSpecifiedType() == share.YearSpecifiedType.FISCAL_YEAR) {
-                   startMonthly = moment().set({'year': sysDate.year(), 'month': self.strSpecifyMonth(), 'date': 1});
+                   startMonthly = moment().set({'year': sysDate.year(), 'month': numberStrMonth, 'date': 1});
                 } else {
-                   startMonthly = moment(self.getParam.processingYm, "YYYYMM").set({'month': self.strSpecifyMonth(), 'date': 1});
+                   startMonthly = moment(self.getParam.processingYm, "YYYYMM").set({'month': numberStrMonth, 'date': 1});
                 }
                 
-                endMonthly = moment(self.getParam.processingYm, "YYYYMM").add(self.endMonth(), 'months').set('date', 1);
+                let numberEndMonth = self.endMonth() > 0 ? self.endMonth() - 1 : 0;
+                endMonthly = moment(self.getParam.processingYm, "YYYYMM").add(numberEndMonth, 'months').set('date', 1);
                 
                 var strYearMonth = startMonthly.format('YYYY-MM-01');
                 var endYearMonth = endMonthly.format('YYYY-MM-01');
-                if (moment(strYearMonth).isAfter(endYearMonth)) {
+                if (startMonthly.isAfter(endMonthly)) {
                     return "Msg_812";
                 }
             }
