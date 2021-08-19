@@ -575,7 +575,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
 
                 }).fail(function (res) {
-                    nts.uk.ui.dialog.alertError(res);
+                    nts.uk.ui.dialog.alertError(res).then(() => {
+                        if (res.messageId == "Msg_2217") {
+                            $("#inpAlarmTime").focus();
+                        }
+                    });
                 }).always(function () {
                     nts.uk.ui.block.clear();
                 });
@@ -801,7 +805,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             if (self.selectUse() == SelectUseConst.Use && _.isNumber(self.attendanceModel.attendanceItemId())) { //(self.enableUnder() == true || self.enableUpper() == true) 
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             } else {
-                saveData.totalCondition.attendanceItemId(SelectUseConst.NO_SELECT);
+                // saveData.totalCondition.attendanceItemId(SelectUseConst.NO_SELECT);
             }
         }
 
@@ -1018,7 +1022,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             this.lowerLimitSettingAtr(dto.lowerLimitSettingAtr);
             this.thresoldUpperLimit(dto.thresoldUpperLimit);
             this.thresoldLowerLimit(dto.thresoldLowerLimit);
-            this.attendanceItemId = ko.observable(dto.attendanceItemId);
+            this.attendanceItemId(dto.attendanceItemId);
         }
 
         toDto(): TotalConditionDto {
