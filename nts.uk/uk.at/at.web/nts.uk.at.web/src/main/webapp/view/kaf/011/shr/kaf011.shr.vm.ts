@@ -135,6 +135,8 @@ module nts.uk.at.view.kaf011 {
 			self.workTypeList(workTypeList);
 			if (_.filter(self.workTypeList(), {'workTypeCode': param.workInformation.workType}).length == 0) {
 				self.workTypeList().push({ workTypeCode: param.workInformation.workType, name: 'マスタ未登録' });
+			} else {
+				self.workTypeSelected.update(_.filter(self.workTypeList(), {'workTypeCode': param.workInformation.workType})[0]);
 			}
 			self.workTypeList(_.sortBy(self.workTypeList(), [ 'workTypeCode' ]));
 			self.workInformation.update(param.workInformation);
@@ -292,7 +294,6 @@ module nts.uk.at.view.kaf011 {
 				if(data && self.appType == 1 && !self.isInit() && self.started){
 					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
 					let workTypeBefore = _.find(self.workTypeList(), {'workTypeCode': self.displayInforWhenStarting.applicationForHoliday.workType});
-					self.workTypeSelected.update(workTypeAfter);
 					let command = {
 						workTypeBefore: workTypeBefore,
 						workTypeAfter: workTypeAfter,
