@@ -18,7 +18,7 @@ import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 public class DomainWorkspace {
 	
 	/** 受入グループID */
-	private final ImportingDomainId groupId;
+	private final ImportingDomainId domainId;
 	
 	/** 主キーの項目一覧 */
 	private final List<WorkspaceItem> itemsPk;

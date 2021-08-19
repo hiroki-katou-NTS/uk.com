@@ -44,6 +44,6 @@ public class PrepareImporting {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 
-		ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}
 }

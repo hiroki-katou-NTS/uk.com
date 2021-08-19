@@ -68,7 +68,7 @@ public class XimctImportableItem extends UkJpaEntity implements Serializable{
 		}
 		
 		return new ImportableItem(
-				ImportingDomainId.valueOf(pk.getGroupdId()),
+				ImportingDomainId.valueOf(pk.getDomaindId()),
 				pk.getItemNo(),
 				itemName,
 				EnumAdaptor.valueOf(itemType, ItemType.class),
@@ -78,7 +78,7 @@ public class XimctImportableItem extends UkJpaEntity implements Serializable{
 	
 	public static XimctImportableItem fromDomain(ImportableItem target) {
 		val pk = new XimctImportableItemPK(
-					target.getGroupId().value,
+					target.getDomainId().value,
 					target.getItemNo()
 				);
 		

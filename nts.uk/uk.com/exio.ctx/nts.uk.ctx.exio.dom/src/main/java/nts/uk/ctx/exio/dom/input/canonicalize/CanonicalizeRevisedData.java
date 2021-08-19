@@ -21,7 +21,7 @@ public class CanonicalizeRevisedData {
 	 */
 	public static void canonicalize(Require require, ExecutionContext context, ImportingDataMeta meta) {
 
-		val canonicalization = CreateDomainCanonicalization.create(require, context.getGroupId());
+		val canonicalization = CreateDomainCanonicalization.create(require, context.getDomainId());
 
 		canonicalization.canonicalize(require, context);
 		val metaCanonicalized = canonicalization.appendMeta(meta);

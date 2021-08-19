@@ -26,7 +26,7 @@ public class GetImportableItemAndConstraint {
 		String companyId = AppContexts.user().companyId();
 		val setting = settingRepo.get(companyId, new ExternalImportCode(settingCode)).get();
 		
-		val item = itemRepo.get(setting.getExternalImportGroupId(), itemNo).get();
+		val item = itemRepo.get(setting.getExternalImportDomainId(), itemNo).get();
 		
 		return ImportableItemDto.of(item);
 		

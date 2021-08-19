@@ -16,13 +16,13 @@ public class GetImportableItem {
 	@Inject
 	private GetImportableItemRequire require;
 	
-	public List<ImportableItemDto> get(int importingGroupId) {
+	public List<ImportableItemDto> get(int importingDomainId) {
 		val require = this.require.create();
-		val importableItems = require.getImportableItems(ImportingDomainId.valueOf(importingGroupId));
+		val importableItems = require.getImportableItems(ImportingDomainId.valueOf(importingDomainId));
 		return importableItems.stream().map(d -> ImportableItemDto.fromDomain(d)).collect(Collectors.toList());
 	}
 	
 	public static interface Require {
-		List<ImportableItem> getImportableItems(ImportingDomainId groupId);
+		List<ImportableItem> getImportableItems(ImportingDomainId domainId);
 	}
 }

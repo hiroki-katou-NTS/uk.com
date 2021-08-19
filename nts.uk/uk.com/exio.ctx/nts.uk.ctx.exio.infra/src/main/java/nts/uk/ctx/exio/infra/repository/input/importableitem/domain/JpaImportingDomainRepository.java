@@ -14,13 +14,13 @@ import nts.uk.ctx.exio.infra.entity.input.importableitem.domain.XimctDomain;
 public class JpaImportingDomainRepository extends JpaRepository implements ImportingDomainRepository {
 
 	@Override
-	public ImportingDomain find(ImportingDomainId groupId) {
+	public ImportingDomain find(ImportingDomainId domainId) {
 		
-		String sql = "select * from XIMCT_GROUP"
-				+ " where GROUP_ID = @id";
+		String sql = "select * from XIMCT_DOMAIN"
+				+ " where DOMAIN_ID = @id";
 		
 		return this.jdbcProxy().query(sql)
-				.paramInt("id", groupId.value)
+				.paramInt("id", domainId.value)
 				.getSingle(rec -> XimctDomain.MAPPER.toEntity(rec))
 				.map(e -> e.toDomain())
 				.get();

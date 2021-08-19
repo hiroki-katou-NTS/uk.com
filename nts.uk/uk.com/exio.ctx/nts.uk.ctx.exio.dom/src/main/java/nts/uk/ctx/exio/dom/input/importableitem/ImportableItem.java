@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 @AllArgsConstructor
 public class ImportableItem implements DomainAggregate{
 
-	private ImportingDomainId groupId;
+	private ImportingDomainId domainId;
 	private int itemNo;
 	private String itemName;
 	private ItemType itemType;

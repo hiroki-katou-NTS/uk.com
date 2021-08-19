@@ -19,29 +19,29 @@ import nts.uk.ctx.exio.infra.entity.input.workspace.XimctWorkspaceItem;
 public class JpaDomainWorkspaceRepository extends JpaRepository implements DomainWorkspaceRepository {
 
 	@Override
-	public DomainWorkspace get(ImportingDomainId groupId) {
+	public DomainWorkspace get(ImportingDomainId domainId) {
 		
 		String query = " select f "
-					+ " from XimctWorkspaceGroup f"
-					+ " where f.groupId =:groupID ";
+					+ " from XimctWorkspaceDomain f"
+					+ " where f.domainId =:domainID ";
 		
 		val entities = this.queryProxy().query(query, XimctWorkspaceDomain.class)
-				.setParameter("groupID", groupId.value)
+				.setParameter("domainID", domainId.value)
 				.getSingle();
 		
-		val items = getWorkspaceItemList(groupId);
+		val items = getWorkspaceItemList(domainId);
 		
 		return toDomain(entities.get(), items);
 	}
 	
-	private List<WorkspaceItem> getWorkspaceItemList(ImportingDomainId groupId){
+	private List<WorkspaceItem> getWorkspaceItemList(ImportingDomainId domainId){
 		
 		String query = " select f "
 					+ " from XimctWorkspaceItem f"
-					+ " where f.pk.groupId =:groupID ";
+					+ " where f.pk.domainId =:domainID ";
 		
 		return this.queryProxy().query(query, XimctWorkspaceItem.class)
-				.setParameter("groupID", groupId.value)
+				.setParameter("domainID", domainId.value)
 				.getList(rec -> rec.toDomain());
 	}
 	
@@ -60,6 +60,6 @@ public class JpaDomainWorkspaceRepository extends JpaRepository implements Domai
 			}
 		});
 		
-		return new DomainWorkspace(ImportingDomainId.valueOf(entity.groupId), itemsPk, itemsNotPk);
+		return new DomainWorkspace(ImportingDomainId.valueOf(entity.domainId), itemsPk, itemsNotPk);
 	}
 }

@@ -18,7 +18,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.TransactionUnit;
 
 @Entity
-@Table(name = "XIMCT_GROUP")
+@Table(name = "XIMCT_DOMAIN")
 @AllArgsConstructor
 @NoArgsConstructor
 public class XimctDomain {
@@ -26,8 +26,8 @@ public class XimctDomain {
 	public static final JpaEntityMapper<XimctDomain> MAPPER = new JpaEntityMapper<>(XimctDomain.class);
 
 	@Id
-	@Column(name = "GROUP_ID")
-	public int groupId;
+	@Column(name = "DOMAIN_ID")
+	public int domainId;
 
 	@Column(name = "NAME")
 	public String name;
@@ -41,7 +41,7 @@ public class XimctDomain {
 	public ImportingDomain toDomain() {
 		
 		return new ImportingDomain(
-				ImportingDomainId.valueOf(groupId),
+				ImportingDomainId.valueOf(domainId),
 				name,
 				AvailableModes.restore(availableModes),
 				TransactionUnit.valueOf(transactionUnit));
@@ -49,7 +49,7 @@ public class XimctDomain {
 	
 	public static XimctDomain toEntity(ImportingDomain domain) {
 		return new XimctDomain(
-				domain.getGroupId().value,
+				domain.getDomainId().value,
 				domain.getName(),
 				AvailableModes.toBits(domain.getAvailableModes()),
 				domain.getTransactionUnit().value);

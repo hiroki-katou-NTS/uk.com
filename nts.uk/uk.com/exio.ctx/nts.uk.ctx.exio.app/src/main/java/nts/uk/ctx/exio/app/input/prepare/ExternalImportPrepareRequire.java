@@ -75,10 +75,10 @@ public class ExternalImportPrepareRequire {
 	private ImportableItemsRepository importableItemsRepo;
 	
 	@Inject
-	private ImportingDomainRepository importingGroupRepo;
+	private ImportingDomainRepository importingDomainRepo;
 	
 	@Inject
-	private DomainWorkspaceRepository groupWorkspaceRepo;
+	private DomainWorkspaceRepository domainWorkspaceRepo;
 	
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
@@ -132,13 +132,13 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ImportingDomain getImportingGroup(ImportingDomainId groupId) {
-			return importingGroupRepo.find(groupId);
+		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
+			return importingDomainRepo.find(domainId);
 		}
 		
 		@Override
-		public DomainWorkspace getGroupWorkspace(ImportingDomainId groupId) {
-			return groupWorkspaceRepo.get(groupId);
+		public DomainWorkspace getDomainWorkspace(ImportingDomainId domainId) {
+			return domainWorkspaceRepo.get(domainId);
 		}
 		
 		@Override
@@ -147,9 +147,9 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo) {
-			return importableItemsRepo.get(groupId, itemNo)
-					.orElseThrow(() -> new RuntimeException("not found: " + groupId + ", " + itemNo));
+		public ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo) {
+			return importableItemsRepo.get(domainId, itemNo)
+					.orElseThrow(() -> new RuntimeException("not found: " + domainId + ", " + itemNo));
 		}
 		
 		@Override

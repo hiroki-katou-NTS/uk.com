@@ -30,7 +30,7 @@ public class GetLayout {
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), query.getSettingCode());
 		if(settingOpt.isPresent()) {
 			val setting = settingOpt.get();
-			if(query.getImportingGroupId() == setting.getExternalImportGroupId()) {
+			if(query.getImportingDomainId() == setting.getExternalImportDomainId()) {
 				// 設定されている項目
 				return setting.getAssembly().getMapping().getMappings().stream()
 						.map(m -> m.getItemNo())
@@ -38,7 +38,7 @@ public class GetLayout {
 			}
 		}
 		// デフォルトで全項目
-		val importableItems = require.getImportableItems(query.getImportingGroupId());
+		val importableItems = require.getImportableItems(query.getImportingDomainId());
 		return importableItems.stream()
 				.map(i -> i.getItemNo())
 				.collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class GetLayout {
 		if(settingOpt.isPresent()) {
 			// 設定あり（更新モード）
 			val setting = settingOpt.get();
-			if(query.getImportingGroupId() == setting.getExternalImportGroupId()) {
+			if(query.getImportingDomainId() == setting.getExternalImportDomainId()) {
 				// グループIDがマスタと一致
 				if(query.isAllItem()) {
 					// 登録済みのレイアウトを取得
@@ -120,26 +120,26 @@ public class GetLayout {
 				.map(i -> ExternalImportLayoutDto.fromDomain(
 						require,
 						query.getSettingCode(),
-						query.getImportingGroupId(),
+						query.getImportingDomainId(),
 						new ImportingItemMapping(i.getItemNo(), i.getCsvColumnNo(), i.getFixedValue())))
 				.collect(Collectors.toList());
 	}
 
 	private static List<ExternalImportLayoutDto> getAllImportables(GetLayout.Require require, GetLayoutQuery query) {
 		
-		val importableItems = require.getImportableItems(query.getImportingGroupId());
+		val importableItems = require.getImportableItems(query.getImportingDomainId());
 		
 		return importableItems.stream()
 				.map(i -> ExternalImportLayoutDto.fromDomain(
 						require,
 						query.getSettingCode(),
-						query.getImportingGroupId(),
+						query.getImportingDomainId(),
 						ImportingItemMapping.noSetting(i.getItemNo())))
 				.collect(Collectors.toList());
 	}
 	
 	public static interface Require extends ExternalImportLayoutDto.Require {
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
-		List<ImportableItem> getImportableItems(ImportingDomainId groupId);
+		List<ImportableItem> getImportableItems(ImportingDomainId domainId);
 	}
 }

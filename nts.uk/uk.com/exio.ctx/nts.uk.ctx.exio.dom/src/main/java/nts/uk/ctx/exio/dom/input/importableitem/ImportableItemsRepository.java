@@ -7,7 +7,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 
 public interface ImportableItemsRepository {
 	
-	Optional<ImportableItem> get(ImportingDomainId groupId, int itemNo);
+	Optional<ImportableItem> get(ImportingDomainId domainId, int itemNo);
 	
 	public List<ImportableItem> get(ImportingDomainId categoryId);
 }

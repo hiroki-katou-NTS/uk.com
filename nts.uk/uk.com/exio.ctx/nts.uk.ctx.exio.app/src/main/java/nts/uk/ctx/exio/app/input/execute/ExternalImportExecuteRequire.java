@@ -59,7 +59,7 @@ public class ExternalImportExecuteRequire {
 	private ExternalImportSettingRepository settingRepo;
 	
 	@Inject
-	private ImportingDomainRepository importingGroupRepo;
+	private ImportingDomainRepository importingDomainRepo;
 	
 	@Inject
 	private ConversionTableRepository conversionTableRepo;
@@ -68,7 +68,7 @@ public class ExternalImportExecuteRequire {
 	private TransferCanonicalDataRepository transferCanonicalDataRepo;
 	
 	@Inject
-	private DomainWorkspaceRepository groupWorkspaceRepo;
+	private DomainWorkspaceRepository domainWorkspaceRepo;
 	
 	@Inject
 	private CanonicalizedDataRecordRepository canonicalizedDataRecordRepo;
@@ -100,13 +100,13 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public ImportingDomain getImportingGroup(ImportingDomainId groupId) {
-			return importingGroupRepo.find(groupId);
+		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
+			return importingDomainRepo.find(domainId);
 		}
 		
 		@Override
-		public DomainWorkspace getGroupWorkspace(ImportingDomainId groupId) {
-			return groupWorkspaceRepo.get(groupId);
+		public DomainWorkspace getDomainWorkspace(ImportingDomainId domainId) {
+			return domainWorkspaceRepo.get(domainId);
 		}
 
 		@Override
@@ -140,13 +140,13 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public ConversionSource getConversionSource(String groupName) {
-			return conversionTableRepo.getSource(groupName);
+		public ConversionSource getConversionSource(String domainName) {
+			return conversionTableRepo.getSource(domainName);
 		}
 		
 		@Override
-		public List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct) {
-			return conversionTableRepo.get(groupName, source, cct);
+		public List<ConversionTable> getConversionTable(ConversionSource source, String domainName, ConversionCodeType cct) {
+			return conversionTableRepo.get(domainName, source, cct);
 		}
 
 		@Override

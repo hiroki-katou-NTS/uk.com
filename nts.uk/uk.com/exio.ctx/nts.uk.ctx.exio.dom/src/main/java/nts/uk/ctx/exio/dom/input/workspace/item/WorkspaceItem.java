@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 public class WorkspaceItem {
 
 	/** グループID */
-	private final ImportingDomainId groupId;
+	private final ImportingDomainId domainId;
 	
 	/** 項目No */
 	private final int itemNo;

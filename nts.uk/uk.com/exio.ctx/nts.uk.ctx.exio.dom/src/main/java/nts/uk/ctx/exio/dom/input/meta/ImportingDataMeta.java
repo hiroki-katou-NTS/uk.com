@@ -26,7 +26,7 @@ public class ImportingDataMeta {
 	public static ImportingDataMeta create(Require require, ExecutionContext context, List<Integer> itemNos) {
 		
 		val itemNames = itemNos.stream()
-				.map(itemNo -> require.getImportableItem(context.getGroupId(), itemNo))
+				.map(itemNo -> require.getImportableItem(context.getDomainId(), itemNo))
 				.map(item -> item.getItemName())
 				.collect(toList());
 		
@@ -42,6 +42,6 @@ public class ImportingDataMeta {
 	
 	public static interface Require {
 		
-		ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}
 }

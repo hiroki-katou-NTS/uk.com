@@ -34,7 +34,7 @@ public class ValidateData{
 			RevisedDataRecord record ) {
 
 		for (val recordItem : record.getItems()) {
-			if(!require.getImportableItem(context.getGroupId(), recordItem.getItemNo())
+			if(!require.getImportableItem(context.getDomainId(), recordItem.getItemNo())
 					.validate(recordItem)) {
 
 				return false;
@@ -68,7 +68,7 @@ public class ValidateData{
 
 	public static interface ValidateRequire{
 
-		ImportableItem getImportableItem(ImportingDomainId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 
 		Optional<ImportingUserCondition> getImportingUserCondition(String settingCode, int itemNo);
 	}

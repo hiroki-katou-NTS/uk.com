@@ -35,7 +35,7 @@ public class JpaRevisedDataRecordRepository extends JpaRepository implements Rev
 	@Override
 	public List<String> getStrings(Require require, ExecutionContext context, int itemNo) {
 		
-		val workspace = require.getGroupWorkspace(context.getGroupId());
+		val workspace = require.getDomainWorkspace(context.getDomainId());
 		String columnName = workspace.getItem(itemNo).get().getName();
 		
 		return WorkspaceSql.create(require, context, jdbcProxy())

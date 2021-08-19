@@ -16,26 +16,26 @@ import nts.uk.ctx.exio.infra.entity.input.validation.XimctImportableItem;
 public class JpaImportableItemsRepository extends JpaRepository implements ImportableItemsRepository{
 
 	@Override
-	public Optional<ImportableItem> get(ImportingDomainId groupId, int itemNo) {
+	public Optional<ImportableItem> get(ImportingDomainId domainId, int itemNo) {
 		
 		String sql = "select * from XIMCT_IMPORTABLE_ITEM"
-						+ " where GROUP_ID = @group"
+						+ " where DOMAIN_ID = @domain"
 						+ " and ITEM_NO = @item";
 		
 		return new NtsStatement(sql, this.jdbcProxy())
-				.paramInt("group", groupId.value)
+				.paramInt("domain", domainId.value)
 				.paramInt("item", itemNo)
 				.getSingle(rec -> XimctImportableItem.MAPPER.toEntity(rec).toDomain());
 	}
 
 	@Override
-	public List<ImportableItem> get(ImportingDomainId groupId) {
+	public List<ImportableItem> get(ImportingDomainId domainId) {
 		
 		String sql = "select * "
 						+ "from XIMCT_IMPORTABLE_ITEM "
-						+ "where GROUP_ID = @groupId";
+						+ "where DOMAIN_ID = @domainId";
 		return new NtsStatement(sql, this.jdbcProxy())
-				.paramInt("groupId", groupId.value)
+				.paramInt("domainId", domainId.value)
 				.getList(rec -> XimctImportableItem.MAPPER.toEntity(rec).toDomain());
 	}
 

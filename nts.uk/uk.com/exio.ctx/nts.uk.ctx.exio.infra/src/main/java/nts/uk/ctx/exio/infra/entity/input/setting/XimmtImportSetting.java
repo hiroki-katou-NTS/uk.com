@@ -49,8 +49,8 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	private String name;
 	
 	/* 受入グループID */
-	@Column(name = "GROUP_ID")
-	private int externalImportGroupId;
+	@Column(name = "DOMAIN_ID")
+	private int externalImportDomainId;
 	
 	/* 受入モード */
 	@Column(name = "IMPORTING_MODE")
@@ -79,7 +79,7 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 				this.pk.getCompanyId(), 
 				new ExternalImportCode(this.pk.getCode()), 
 				new ExternalImportName(this.name), 
-				ImportingDomainId.valueOf(this.externalImportGroupId),
+				ImportingDomainId.valueOf(this.externalImportDomainId),
 				EnumAdaptor.valueOf(importingMode, ImportingMode.class), 
 				new ExternalImportAssemblyMethod(
 						new ExternalImportCsvFileInfo(

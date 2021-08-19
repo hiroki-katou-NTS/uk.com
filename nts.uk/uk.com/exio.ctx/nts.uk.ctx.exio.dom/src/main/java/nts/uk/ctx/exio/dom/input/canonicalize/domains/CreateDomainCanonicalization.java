@@ -22,11 +22,11 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
  */
 public class CreateDomainCanonicalization {
 
-	public static DomainCanonicalization create(Require require, ImportingDomainId groupId) {
+	public static DomainCanonicalization create(Require require, ImportingDomainId domainId) {
 
-		val groupWorkspace = require.getGroupWorkspace(groupId);
+		val domainWorkspace = require.getDomainWorkspace(domainId);
 		
-		return CREATES.get(groupId).apply(groupWorkspace);
+		return CREATES.get(domainId).apply(domainWorkspace);
 	}
 
 	private static final Map<ImportingDomainId, Function<DomainWorkspace, DomainCanonicalization>> CREATES;
@@ -66,6 +66,6 @@ public class CreateDomainCanonicalization {
 	
 	public static interface Require {
 		
-		DomainWorkspace getGroupWorkspace(ImportingDomainId groupId);
+		DomainWorkspace getDomainWorkspace(ImportingDomainId domainId);
 	}
 }

@@ -8,7 +8,7 @@
 }
 
 
-#contents-area .group {
+#contents-area .domain {
   margin-left: 25px;
   margin-bottom: 5px;
   /* max-width: 1000px; */
@@ -22,7 +22,7 @@
   padding-left: 15px;
 }
 
-.table .group .cell-left {
+.table .domain .cell-left {
   width: 180px;
 } 
 .sidebar-content {

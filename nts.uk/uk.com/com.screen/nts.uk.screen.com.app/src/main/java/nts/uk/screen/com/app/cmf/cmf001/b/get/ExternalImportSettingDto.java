@@ -33,7 +33,7 @@ public class ExternalImportSettingDto {
 	private String name;
 	
 	/** 受入グループID */
-	private int group;
+	private int domain;
 	
 	/** 受入モード */
 	private int mode;
@@ -53,7 +53,7 @@ public class ExternalImportSettingDto {
 				domain.getCompanyId(), 
 				domain.getCode().toString(), 
 				domain.getName().toString(), 
-				domain.getExternalImportGroupId().value, 
+				domain.getExternalImportDomainId().value, 
 				domain.getImportingMode().value, 
 				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
 				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
@@ -67,7 +67,7 @@ public class ExternalImportSettingDto {
 				companyId, 
 				new ExternalImportCode(code), 
 				new ExternalImportName(name), 
-				ImportingDomainId.valueOf(group), 
+				ImportingDomainId.valueOf(domain), 
 				ImportingMode.valueOf(mode), 
 				new ExternalImportAssemblyMethod(
 						new ExternalImportCsvFileInfo(
@@ -94,7 +94,7 @@ public class ExternalImportSettingDto {
 	}
 	
 	public static interface Require {
-		List<ImportableItem> getImportableItems(ImportingDomainId groupId);
+		List<ImportableItem> getImportableItems(ImportingDomainId domainId);
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }

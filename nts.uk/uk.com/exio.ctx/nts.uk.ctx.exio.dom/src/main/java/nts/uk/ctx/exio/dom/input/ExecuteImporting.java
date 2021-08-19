@@ -23,7 +23,7 @@ public class ExecuteImporting {
 				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
 		
-		val transactionUnit = require.getImportingGroup(context.getGroupId())
+		val transactionUnit = require.getImportingDomain(context.getDomainId())
 				.getTransactionUnit();
 		
 		switch (transactionUnit) {
@@ -81,7 +81,7 @@ public class ExecuteImporting {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 
-		ImportingDomain getImportingGroup(ImportingDomainId groupId);
+		ImportingDomain getImportingDomain(ImportingDomainId domainId);
 		
 		List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context);
 	}

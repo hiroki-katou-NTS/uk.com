@@ -30,8 +30,8 @@ public class GetImportableItemRequire {
 	public class RequireImpl implements Require {
 		
 		@Override
-		public List<ImportableItem> getImportableItems(ImportingDomainId groupId) {
-			return importableItemsRepo.get(groupId);
+		public List<ImportableItem> getImportableItems(ImportingDomainId domainId) {
+			return importableItemsRepo.get(domainId);
 		}
 	}
 }

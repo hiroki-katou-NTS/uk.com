@@ -31,7 +31,7 @@ public class ExternalImportSetting implements DomainAggregate {
 	private ExternalImportName name;
 	
 	/** 受入グループID */
-	private ImportingDomainId externalImportGroupId;
+	private ImportingDomainId externalImportDomainId;
 	
 	/** 受入モード */
 	private ImportingMode importingMode;

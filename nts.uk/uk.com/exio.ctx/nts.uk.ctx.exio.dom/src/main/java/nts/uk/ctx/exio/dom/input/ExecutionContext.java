@@ -19,7 +19,7 @@ public class ExecutionContext {
 	String settingCode;
 	
 	/** 受入グループID */
-	ImportingDomainId groupId;
+	ImportingDomainId domainId;
 	
 	/** 受入モード */
 	ImportingMode mode;
@@ -28,7 +28,7 @@ public class ExecutionContext {
 		return new ExecutionContext(
 				source.getCompanyId(),
 				source.getCode().v(),
-				source.getExternalImportGroupId(),
+				source.getExternalImportDomainId(),
 				source.getImportingMode());
 	}
 	

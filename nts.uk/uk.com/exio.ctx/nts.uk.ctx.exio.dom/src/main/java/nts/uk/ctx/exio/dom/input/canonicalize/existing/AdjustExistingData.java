@@ -21,7 +21,7 @@ public class AdjustExistingData {
 	 */
 	public static AtomTask adjust(RequireAll require, ExecutionContext context) {
 		
-		val canonicalization = CreateDomainCanonicalization.create(require, context.getGroupId());
+		val canonicalization = CreateDomainCanonicalization.create(require, context.getDomainId());
 		
 		return canonicalization.adjust(
 				require,
@@ -45,7 +45,7 @@ public class AdjustExistingData {
 	 */
 	public static AtomTask adjust(RequireEmployee require, ExecutionContext context, String employeeId) {
 
-		val canonicalization = CreateDomainCanonicalization.create(require, context.getGroupId());
+		val canonicalization = CreateDomainCanonicalization.create(require, context.getDomainId());
 		
 		int itemNoEmployeeId = canonicalization.getItemNoOfEmployeeId();
 		

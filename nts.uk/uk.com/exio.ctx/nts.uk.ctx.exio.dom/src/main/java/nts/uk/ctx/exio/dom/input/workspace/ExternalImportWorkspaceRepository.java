@@ -14,8 +14,8 @@ public interface ExternalImportWorkspaceRepository {
 	
 	public static interface Require {
 		
-		ImportingDomain getImportingGroup(ImportingDomainId groupId);
+		ImportingDomain getImportingDomain(ImportingDomainId domainId);
 		
-		DomainWorkspace getGroupWorkspace(ImportingDomainId groupId);
+		DomainWorkspace getDomainWorkspace(ImportingDomainId domainId);
 	}
 }

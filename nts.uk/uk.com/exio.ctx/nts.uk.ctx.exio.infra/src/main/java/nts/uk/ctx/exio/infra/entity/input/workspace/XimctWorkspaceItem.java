@@ -47,7 +47,7 @@ public class XimctWorkspaceItem extends JpaEntity {
 	public static XimctWorkspaceItem toEntity(WorkspaceItem domain) {
 		return new XimctWorkspaceItem(
 				new XimctWorkspaceItemPK(
-					domain.getGroupId().value,
+					domain.getDomainId().value,
 					domain.getItemNo()),
 				domain.getName(),
 				domain.getDataTypeConfig().getType().value,
@@ -57,7 +57,7 @@ public class XimctWorkspaceItem extends JpaEntity {
 	
 	public WorkspaceItem toDomain() {
 		return new WorkspaceItem(
-				ImportingDomainId.valueOf(pk.groupId),
+				ImportingDomainId.valueOf(pk.domainId),
 				pk.itemNo,
 				name,
 				new DataTypeConfiguration(DataType.valueOf(dataType), length, scale));

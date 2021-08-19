@@ -13,7 +13,7 @@ public class GetLayoutQuery {
 	private String settingCode;
 	
 	/** 受入グループID */
-	private int importingGroupId;
+	private int importingDomainId;
 	
 	/** 項目NO一覧 */
 	@Getter
@@ -23,8 +23,8 @@ public class GetLayoutQuery {
 		return new ExternalImportCode(settingCode);
 	}
 	
-	public ImportingDomainId getImportingGroupId() {
-		return EnumAdaptor.valueOf(importingGroupId, ImportingDomainId.class);
+	public ImportingDomainId getImportingDomainId() {
+		return EnumAdaptor.valueOf(importingDomainId, ImportingDomainId.class);
 	}
 	
 	public boolean isAllItem() {

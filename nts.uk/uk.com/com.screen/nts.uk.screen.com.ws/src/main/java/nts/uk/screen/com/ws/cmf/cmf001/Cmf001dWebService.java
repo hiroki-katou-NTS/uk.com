@@ -20,9 +20,9 @@ public class Cmf001dWebService extends WebService {
 	private GetImportableItem importableItem;
 	
 	@POST
-	@Path("get/importableitem/{importingGroupId}")
-	public List<ImportableItemDto> get(@PathParam("importingGroupId") int importingGroupId) {
-		List<ImportableItemDto> result = importableItem.get(importingGroupId);
+	@Path("get/importableitem/{importingDomainId}")
+	public List<ImportableItemDto> get(@PathParam("importingDomainId") int importingDomainId) {
+		List<ImportableItemDto> result = importableItem.get(importingDomainId);
 		return result;
 	}
 }

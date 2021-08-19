@@ -14,14 +14,14 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
  *  受入グループのワークスペース
  */
 @Entity
-@Table(name = "XIMCT_WORKSPACE_GROUP")
+@Table(name = "XIMCT_WORKSPACE_DOMAIN")
 @AllArgsConstructor
 @NoArgsConstructor
 public class XimctWorkspaceDomain extends JpaEntity{
 	
 	@Id
-	@Column(name = "GROUP_ID")
-	public int groupId;
+	@Column(name = "DOMAIN_ID")
+	public int domainId;
 	
 	@Column(name = "NAME")
 	public String name;
@@ -33,6 +33,6 @@ public class XimctWorkspaceDomain extends JpaEntity{
 	
 	@Override
 	protected Object getKey() {
-		return groupId;
+		return domainId;
 	}
 }

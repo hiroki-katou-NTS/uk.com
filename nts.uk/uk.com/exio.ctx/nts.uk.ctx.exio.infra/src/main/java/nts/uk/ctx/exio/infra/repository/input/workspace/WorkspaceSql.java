@@ -33,16 +33,16 @@ import nts.uk.shr.com.company.CompanyId;
 public class WorkspaceSql {
 
 	private final ExecutionContext context;
-	private final ImportingDomain group;
+	private final ImportingDomain domain;
 	private final DomainWorkspace workspace;
 	private final JdbcProxy jdbcProxy;
 	
 	public static WorkspaceSql create(Require require, ExecutionContext context, JdbcProxy jdbcProxy) {
 
-		val group = require.getImportingGroup(context.getGroupId());
-		val workspace = require.getGroupWorkspace(context.getGroupId());
+		val domain = require.getImportingDomain(context.getDomainId());
+		val workspace = require.getDomainWorkspace(context.getDomainId());
 		
-		return new WorkspaceSql(context, group, workspace, jdbcProxy);
+		return new WorkspaceSql(context, domain, workspace, jdbcProxy);
 	}
 	
 	/**
@@ -329,6 +329,6 @@ public class WorkspaceSql {
 	}
 	
 	private WorkspaceTableName tableName() {
-		return new WorkspaceTableName(context, group.getName());
+		return new WorkspaceTableName(context, domain.getName());
 	}
 }

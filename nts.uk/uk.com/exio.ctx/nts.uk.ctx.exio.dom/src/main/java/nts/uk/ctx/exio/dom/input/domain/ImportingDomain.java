@@ -12,7 +12,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 public class ImportingDomain {
 
 	/** 受入グループID */
-	ImportingDomainId groupId;
+	ImportingDomainId domainId;
 	
 	/** 名称 */
 	String name;
