@@ -24,7 +24,7 @@ public class GetLayout {
 	@Inject
 	private GetLayoutRequire require;
 	
-	public List<Integer> get(GetLayoutQuery query) {
+	public List<Integer> get(GetLayoutParam query) {
 		val require = this.require.create();
 		
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), query.getSettingCode());
@@ -44,7 +44,7 @@ public class GetLayout {
 				.collect(Collectors.toList());
 	}
 	
-	public List<ExternalImportLayoutDto> getDetail(GetLayoutQuery query) {
+	public List<ExternalImportLayoutDto> getDetail(GetLayoutParam query) {
 		val require = this.require.create();
 		
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), query.getSettingCode());
@@ -78,7 +78,7 @@ public class GetLayout {
 	// 登録済みのレイアウトを取得する
 	private List<ExternalImportLayoutDto> getSaved(
 			GetLayout.Require require,
-			GetLayoutQuery query, 
+			GetLayoutParam query, 
 			ExternalImportSetting setting) {
 		return toLayouts(require, query, setting.getAssembly().getMapping().getMappings());
 	}
@@ -86,7 +86,7 @@ public class GetLayout {
 	// 指定した項目のレイアウトを取得する
 	private List<ExternalImportLayoutDto> getSpecified(
 			GetLayout.Require require,
-			GetLayoutQuery query, 
+			GetLayoutParam query, 
 			ExternalImportSetting setting) {
 		
 		
@@ -114,7 +114,7 @@ public class GetLayout {
 		return results;
 	}
 
-	private List<ExternalImportLayoutDto> toLayouts(GetLayout.Require require, GetLayoutQuery query, List<ImportingItemMapping> mappings) {
+	private List<ExternalImportLayoutDto> toLayouts(GetLayout.Require require, GetLayoutParam query, List<ImportingItemMapping> mappings) {
 		
 		return mappings.stream()
 				.map(i -> ExternalImportLayoutDto.fromDomain(
@@ -125,7 +125,7 @@ public class GetLayout {
 				.collect(Collectors.toList());
 	}
 
-	private static List<ExternalImportLayoutDto> getAllImportables(GetLayout.Require require, GetLayoutQuery query) {
+	private static List<ExternalImportLayoutDto> getAllImportables(GetLayout.Require require, GetLayoutParam query) {
 		
 		val importableItems = require.getImportableItems(query.getImportingGroupId());
 		

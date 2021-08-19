@@ -7,7 +7,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 
-public class GetLayoutQuery {
+public class GetLayoutParam {
 	
 	/** 受入設定コード */
 	private String settingCode;
