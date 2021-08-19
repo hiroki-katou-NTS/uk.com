@@ -840,6 +840,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				// vm.subHdRemain(data.remainVacationInfo.subHdRemain);
 				// vm.subVacaRemain(data.remainVacationInfo.subVacaRemain);
 				// vm.remainingHours(data.remainVacationInfo.remainingHours);
+				vm.grantDate(data.remainVacationInfo.grantDate);
+                vm.grantDays(data.remainVacationInfo.grantDays);
 				vm.fetchRemainTime(data.remainVacationInfo);
 			}
 
