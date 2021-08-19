@@ -69,8 +69,9 @@ export class CmmS45DComponent extends Vue {
         version: number,
         authorizableFlags: boolean,
         approvalATR: number,
-        alternateExpiration: boolean 
-    } = { appStatus: 0, reflectStatus: 1, version: 0, authorizableFlags: false, approvalATR: 0, alternateExpiration: false };
+        alternateExpiration: boolean,
+        pastApp: boolean
+    } = { appStatus: 0, reflectStatus: 1, version: 0, authorizableFlags: false, approvalATR: 0, alternateExpiration: false, pastApp: false };
     public authorComment: string = '';
     public appType: number = 99;
     public appTransferData: any = {
@@ -85,6 +86,9 @@ export class CmmS45DComponent extends Vue {
     public commentColor: string = '';
     public isLoadingComplete = false;
     public reasons: Array<Reason> = null;
+
+    public opAppStartDate: Date;
+    public opAppEndDate: Date;
 
     public created() {
         let self = this;
@@ -164,16 +168,23 @@ export class CmmS45DComponent extends Vue {
             self.appState.authorizableFlags = appDetailScreenInfoDto.authorizableFlags;
             self.appState.approvalATR = appDetailScreenInfoDto.approvalATR;
             self.appState.alternateExpiration = appDetailScreenInfoDto.alternateExpiration;
+            self.appState.pastApp = appDetailScreenInfoDto.pastApp;
             self.authorComment = appDetailScreenInfoDto.authorComment;
             self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
             self.appType = appDetailScreenInfoDto.application.appType;
+            self.opAppStartDate = appDetailScreenInfoDto.application.opAppStartDate;
+            self.opAppEndDate = appDetailScreenInfoDto.application.opAppEndDate;
             self.memo = '';
             if (!_.isEmpty(self.authorComment)) {
-                self.commentDis = true;
+                self.commentDis = true ;
             } else {
                 self.commentDis = false;
             }
             self.setCommentColor(self.phaseLst);
+
+
+
+
             // self.$mask('hide');
         }).catch((res: any) => {
             // self.$mask('hide');
@@ -516,6 +527,12 @@ export class CmmS45DComponent extends Vue {
     // hiển thị ô nhập lý do approve
     public displayApproveReasonInput(): boolean {
         let self = this;
+
+        const {appState} = self;
+        if (appState.pastApp) {
+
+            return false;
+        }
         if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
             return !self.isModify();
         }
@@ -526,16 +543,28 @@ export class CmmS45DComponent extends Vue {
     // hiển thị nút giải phóng
     public displayReleaseLock(): boolean {
         let self = this;
+
+        const {appState} = self;
+        if (appState.pastApp) {
+
+            return false;
+        }
         if (self.canChangeStatus() && self.appState.authorizableFlags) {
             return self.isModify();
         }
-        
+
         return false;
     }
 
     // hiển thị nút chấp nhận, từ chối, trả về
     public displayReleaseOpen(): boolean {
         let self = this;
+
+        const {appState} = self;
+        if (appState.pastApp) {
+
+            return false;
+        }
         if (self.canChangeStatus() && self.appState.authorizableFlags && !self.appState.alternateExpiration) {
             return !self.isModify();
         }
@@ -731,9 +760,9 @@ export enum ApprovalBehaviorAtr {
 
 const API = {
     getDetailMob: 'at/request/app/smartphone/getDetailMob',
-    approve: 'at/request/app/smartphone/approveapp',
-    deny: 'at/request/app/smartphone/denyapp',
-    release: 'at/request/app/smartphone/releaseapp',
+    approve: 'at/request/application/approveapp',
+    deny: 'at/request/application/denyapp',
+    release: 'at/request/application/releaseapp',
     reflectApp: 'at/request/application/reflect-app',
     checkVersion: 'at/request/application/checkVersion'
 };

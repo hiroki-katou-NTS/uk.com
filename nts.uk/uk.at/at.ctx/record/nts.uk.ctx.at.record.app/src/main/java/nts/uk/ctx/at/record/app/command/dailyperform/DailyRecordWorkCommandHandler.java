@@ -710,6 +710,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 		case DAILY_SUPPORT_TIMESHEET_NAME:
 			return isUpdate ? this.supportUpdateHandler : this.supportAddHandler;
+		case DAILY_SNAPSHOT_NAME:
+			return isUpdate ? this.snapshotUpdateHandler : this.snapshotAddHandler;
 		default:
 			return null;
 		}

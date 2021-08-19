@@ -19,6 +19,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -518,13 +519,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 				}
 			}
 			if(Strings.isNotBlank(errorMessage)) {
-				throw new BusinessException(errorMessage);
+				throw new BusinessException(new RawErrorMessage(errorMessage));
 			}
 		}
-		if(Strings.isBlank(errorMessage) && reasonDissociation.isPresent()) {
-			// エラーメッセージ（Msg_1298）を表示する
-			throw new BusinessException("Msg_1298");
-		}
+//		if(Strings.isBlank(errorMessage) && reasonDissociation.isPresent()) {
+//			// エラーメッセージ（Msg_1298）を表示する
+//			throw new BusinessException("Msg_1298");
+//		}
 	}
 	
 	private ObtainAppReflectResultProcess.Require createObtainAppReflectResultProcessRequire() {
@@ -625,7 +626,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				false,
 				appOverTime.getApplication(),
 				appOverTime.getOverTimeClf(),
-				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 				Collections.emptyList(), 
 				displayInfoOverTime.getAppDispInfoStartup());
 		// 残業申請の個別登録前チェッ処理
@@ -1227,7 +1228,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					false,
 					appOverTime.getApplication(),
 					appOverTime.getOverTimeClf(),
-					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+					displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
 					Collections.emptyList(), 
 					displayInfoOverTime.getAppDispInfoStartup());
 			

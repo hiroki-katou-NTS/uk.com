@@ -55,7 +55,7 @@ public class DailySnapshotWorkAdapterImpl implements DailySnapshotWorkAdapter {
 						.predetermineTime(snapshot.getSnapshot().getPredetermineTime())
 						.build())
 				.build();
-		snapshotPub.save(domain);
+		snapshotPub.update(domain);
 	}
 
 	@Override

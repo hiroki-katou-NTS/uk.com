@@ -113,5 +113,19 @@ public class WorkTimeHolidayCalcMethod extends DomainObject implements Serializa
 		
 		return false;
 	}
+	
+	/**
+	 * 欠勤をマイナスせず所定から控除する
+	 * @return true：控除する、false：控除しない
+	 */
+	public boolean isMinusAbsenceTime() {
+		if(this.calculateActualOperation.isCalclationByActualTime()) {
+			return false;
+		}
+		if(!this.advancedSet.isPresent()) {
+			return false;
+		}
+		return this.advancedSet.get().isMinusAbsenceTime();
+	}
 }
 

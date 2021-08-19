@@ -43,12 +43,14 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
@@ -205,6 +207,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	@Override
 	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType appType, List<GeneralDate> dateLst,
 			AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+		List<MsgErrorOutput> msgErrorLst = new ArrayList<>();
 		// 基準日=INPUT．「申請対象日リスト」の1個目
 		Optional<GeneralDate> targetDate = Optional.empty();
 		if(!CollectionUtil.isEmpty(dateLst)) {
@@ -229,10 +232,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		ApprovalFunctionSet approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
 		// 取得したドメインモデル「申請承認機能設定．申請利用設定．利用区分」をチェックする
 		// xử lý trên UI
-		/*if (mode && approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
+		if (mode && approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
 			// エラーメッセージ(Msg_323)を返す
-			throw new BusinessException("Msg_323", String.valueOf(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate().value));
-		}*/
+			msgErrorLst.add(new MsgErrorOutput("Msg_323", Collections.emptyList()));
+		}
 		// 使用可能な就業時間帯を取得する
 		List<WorkTimeSetting> workTimeLst = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, baseDate);
 		// 社員所属雇用履歴を取得する
@@ -280,7 +283,22 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				deadlineLimitCurrentMonth.isUseAtr() ? NotUseAtr.USE : NotUseAtr.NOT_USE);
 		appDispInfoWithDateOutput.setOpEmploymentSet(opAppEmploymentSet);
 		appDispInfoWithDateOutput.setOpListApprovalPhaseState(opListApprovalPhaseState);
-		appDispInfoWithDateOutput.setOpErrorFlag(opErrorFlag);
+		if(opErrorFlag.isPresent()) {
+			switch (opErrorFlag.get()) {
+			case NO_CONFIRM_PERSON:
+				msgErrorLst.add(new MsgErrorOutput("Msg_238", Collections.emptyList()));
+				break;
+			case APPROVER_UP_10:
+				msgErrorLst.add(new MsgErrorOutput("Msg_237", Collections.emptyList()));
+				break;
+			case NO_APPROVER:
+				msgErrorLst.add(new MsgErrorOutput("Msg_324", Collections.emptyList()));
+				break;
+			default:
+				break;
+			}
+		}
+		appDispInfoWithDateOutput.setOpMsgErrorLst(Optional.of(msgErrorLst));
 		appDispInfoWithDateOutput.setOpActualContentDisplayLst(
 				CollectionUtil.isEmpty(appDispInfoRelatedDateOutput.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(appDispInfoRelatedDateOutput.getActualContentDisplayLst()));
 		appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(
@@ -473,7 +491,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 法定区分のチェック
 		HolidayAtrOutput holidayAtrOutput = judgmentOneDayHoliday.checkHolidayAtr(
 				companyID, 
-				actualContentDisplayLst.stream().findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
+				actualContentDisplayLst.stream().filter(x -> x.getDate().equals(dateLst.stream().findFirst().orElse(null)))
+					.findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
 				workTypeLst.get(1));
 		if(!holidayAtrOutput.isCheckResult()) {
 			String msgParam = Strings.EMPTY;

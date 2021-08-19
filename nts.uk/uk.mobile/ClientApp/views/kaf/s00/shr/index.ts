@@ -133,7 +133,7 @@ export class KafS00ShrComponent extends Vue {
         };
     }
 
-    public updateKaf000_B_Params(modeNew: boolean) {
+    public updateKaf000_B_Params(modeNew: boolean, appDate?: string) {
         const vm = this;
         let appDispInfoWithDateOutput = vm.appDispInfoStartupOutput.appDispInfoWithDateOutput,
             appDispInfoNoDateOutput = vm.appDispInfoStartupOutput.appDispInfoNoDateOutput,
@@ -151,6 +151,9 @@ export class KafS00ShrComponent extends Vue {
                 useMultiDaySwitch: true,
                 initSelectMultiDay: false
             };
+            if (appDate) {
+                _.set(vm.kaf000_B_Params.newModeContent, 'appDate', appDate);
+            }
         }
         if (!modeNew) {
             vm.kaf000_B_Params.detailModeContent = {
@@ -211,7 +214,7 @@ export enum AppTypeName {
 
 export interface Application {
     prePostAtr: number;
-    employeeIDLst: Array<String>;
+    employeeIDLst: Array<string>;
     appType: number;
     appDate: string;
     opAppReason: string;
@@ -224,6 +227,7 @@ export interface Application {
 export interface InitParam {
     appDispInfoStartupOutput: any;
     appDetail: any;
+    isDetailMode: boolean;
 }
 
 const API = {

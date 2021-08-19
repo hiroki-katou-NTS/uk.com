@@ -31,7 +31,6 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
@@ -90,7 +89,7 @@ public class HolidayShipmentMobileWS extends WebService {
 		return screenAFinder.startPageARefactor(
 				companyID, 
 				Arrays.asList(param.getEmployeeID()), 
-				param.getDateLst().stream().map(x -> GeneralDate.fromString(x, "YYYY/MM/DD")).collect(Collectors.toList()),
+				param.getDateLst().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd")).collect(Collectors.toList()),
 				param.getAppDispInfoStartupCmd()
 			);
 	}
@@ -139,7 +138,7 @@ public class HolidayShipmentMobileWS extends WebService {
 					displayInforWhenStarting.isRepresent(), 
 					rec.get(), 
 					null, 
-					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR), 
+					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 					new ArrayList<>(), 
 					appDispInfoStartup);
 			result.addAll(comfirmLst1);
@@ -152,7 +151,7 @@ public class HolidayShipmentMobileWS extends WebService {
 					displayInforWhenStarting.isRepresent(), 
 					abs.get(), 
 					null, 
-					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(ErrorFlagImport.NO_ERROR), 
+					appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 					new ArrayList<>(), 
 					appDispInfoStartup);
 			result.addAll(comfirmLst2);

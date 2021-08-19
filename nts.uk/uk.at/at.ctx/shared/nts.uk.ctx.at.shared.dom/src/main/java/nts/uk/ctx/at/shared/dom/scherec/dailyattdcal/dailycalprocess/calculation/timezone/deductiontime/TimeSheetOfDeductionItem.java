@@ -199,7 +199,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	 * @param compareTimeSheet　次のループで取り出すリスト　
 	 */
 	public List<TimeSheetOfDeductionItem> deplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,RestClockManageAtr clockManage
-															,boolean useFixedRestTime,FluidFixedAtr fluidFixedAtr,WorkTimeDailyAtr workTimeDailyAtr) {
+															,FluidFixedAtr fluidFixedAtr,WorkTimeDailyAtr workTimeDailyAtr) {
 		List<TimeSheetOfDeductionItem> map = new ArrayList<TimeSheetOfDeductionItem>();
 		List<TimeSpanForDailyCalc> baseThisNotDupSpan = this.timeSheet.getNotDuplicationWith(compareTimeSheet.timeSheet);
 		List<TimeSpanForDailyCalc> baseCompareNotDupSpan = compareTimeSheet.timeSheet.getNotDuplicationWith(this.timeSheet);
@@ -292,10 +292,8 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			}
 			else {
 				if(setMethod.isFluidWork()) {
-					if(!useFixedRestTime) {
-						if(clockManage.isNotClockManage()) {
-							return collectionBreakTime(this,compareTimeSheet);
-						}
+					if(clockManage.isNotClockManage()) {
+						return collectionBreakTime(this,compareTimeSheet);
 					}
 				}
 			}
@@ -338,15 +336,15 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			}
 			else {
 				if(setMethod.isFluidWork()||workTimeDailyAtr.isFlex()) {
-					if(!useFixedRestTime) {
-						if(clockManage.isNotClockManage()) {
-							return collectionBreakTime(compareTimeSheet,this);
-						}
+					if(clockManage.isNotClockManage()) {
+						return collectionBreakTime(compareTimeSheet,this);
 					}
 					//外出入れる
-					map.add(this);
+					map.addAll(this.timeSheet.getNotDuplicationWith(compareTimeSheet.timeSheet).stream()
+							.map(t -> this.cloneWithNewTimeSpan(Optional.of(t)))
+							.collect(Collectors.toList()));
 					//休憩を入れる
-					map.addAll(baseCompareNotDupSpan.stream().map(tc -> compareTimeSheet.cloneWithNewTimeSpan(Optional.of(tc))).collect(Collectors.toList()));
+					map.add(compareTimeSheet);
 					return map.stream().sorted((a, b) -> a.timeSheet.getStart().compareTo(b.timeSheet.getStart())).collect(Collectors.toList());
 				}
 			}
@@ -476,7 +474,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 		case CONNOTATE_BEGINTIME://開始時間を含む
 			returnList.add(frontBreakTimeSheet.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(frontBreakTimeSheet.start(),backGoOutTimeSheet.start()))));
 			returnList.add(backGoOutTimeSheet);
-			returnList.add(frontBreakTimeSheet.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(backGoOutTimeSheet.end(),frontBreakTimeSheet.getTimeSheet().getEnd().backByMinutes(backGoOutTimeSheet.getTimeSheet().lengthAsMinutes())))));
+			returnList.add(frontBreakTimeSheet.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(backGoOutTimeSheet.end(),frontBreakTimeSheet.getTimeSheet().getEnd().forwardByMinutes(backGoOutTimeSheet.getTimeSheet().lengthAsMinutes())))));
 			return returnList;
 		case NOT_DUPLICATE://重複していない
 			returnList.add(frontBreakTimeSheet);
@@ -562,7 +560,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	 * 休憩時間帯に出勤、退勤が含まれているかの判定ののち重複時間帯の取得
 	 * @param time 出退勤クラス
 	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
-	 * @param oneDayRange 1日の範囲
+	 * @param oneDayRange 1日の範囲と控除時間帯の重複
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> getIncludeAttendanceOrLeaveDuplicateTimeSheet(
@@ -587,7 +585,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			}
 			
 			if (dedAtr == DeductionAtr.Deduction) {
-				result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, time.getTimespan().getEnd()))));
+				result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
 				return result;
 			}
 		

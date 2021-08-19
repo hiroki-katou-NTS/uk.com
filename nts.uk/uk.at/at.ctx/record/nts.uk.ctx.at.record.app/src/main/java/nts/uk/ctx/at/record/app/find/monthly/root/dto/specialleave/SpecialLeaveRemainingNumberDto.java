@@ -80,7 +80,7 @@ public class SpecialLeaveRemainingNumberDto implements ItemConst, AttendanceItem
 	public void set(String path, ItemValue value) {
 		switch (path) {
 		case DAYS:
-			dayNumberOfRemain = value.valueOrDefault(0);
+			dayNumberOfRemain = value.valueOrDefault(0d);
 			break;
 		case TIME:
 			timeOfRemain = value.valueOrDefault(null);
