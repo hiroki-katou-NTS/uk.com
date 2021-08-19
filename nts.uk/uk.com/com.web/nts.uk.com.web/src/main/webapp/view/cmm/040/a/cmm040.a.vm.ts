@@ -761,11 +761,14 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
                         }).fail((res: any) => {
                             nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
-                                let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
-                                index = _.min([self.workPlacesList().length - 2, index]);
-                                self.reloadData().done(() => {
-                                    self.findByIndex(0);
-                                });
+                                // let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
+                                // index = _.min([self.workPlacesList().length - 2, index]);
+                                // self.reloadData().done(() => {
+                                //     self.findByIndex(0);
+                                // });
+                                // setTimeout(() => {
+                                //     self.selectWorkLocation(ko.unwrap(self.workLocationCD()))
+                                // }, 100);
                             });
                         }).always(() => {
                             block.clear();
