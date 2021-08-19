@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 <!-- ko if: $parent.condition22 -->
                 <div class="row-underline" style="display: flex; justify-content: space-between">
                     <div data-bind="ntsFormLabel: {}, text: $i18n('KAF006_70')"></div>
-                    <a class="hyperlink" href="" data-bind="text: $parent.subHdRemain, click: openKDL005"></a>
+                    <a class="hyperlink" href="" data-bind="text: $parent.subVacaHourRemain, click: openKDL005"></a>
                 </div>
                 <!-- /ko -->
                 <!-- ko if: $parent.condition23 -->
