@@ -197,29 +197,37 @@ module nts.uk.com.cmf001.c {
 
         canSave = ko.computed(() => this.$errors.length === 0 && this.isItemSelected());
 
-        save() {
-            let path = "/screen/com/cmf/cmf001/save";
+		save() {
+			let path = "/screen/com/cmf/cmf001/save";
 
-            let item = this.currentItem();
+			let item = this.currentItem();
 
-            let fixedValue = item.fixedMapping();
-            if (item.def.type() === 'DATE' && fixedValue) {
-                fixedValue = fixedValue.split("T")[0]?.replace(/-/g, "") ?? "";
-            }
+			let fixedValue = item.fixedMapping();
+			if (item.def.type() === 'DATE' && fixedValue) {
+				let splitValue = fixedValue.split("T");
+				if(splitValue.length === 0){
+					fixedValue = "";
+				}else{
+					fixedValue = splitValue[0].replace(/-/g, "");
+				}
+			}
 
-            let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
-            if (revisingValue.codeConvert) {
-                revisingValue.codeConvert.details = revisingValue.codeConvert
-                    .convertDetailsText
-                    ?.split("\n")
-                    .map(l => {
-                        let p = l.split(",");
-                        if (p.length !== 2) return null;
-                        return { before: p[0], after: p[1] };
-                    })
-                    .filter(d => d !== null)
-                    ?? [];
-            }
+			let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
+			if (revisingValue.codeConvert) {
+				let convertDetailsText = revisingValue.codeConvert.convertDetailsText;
+				if(convertDetailsText){
+					revisingValue.codeConvert.details = convertDetailsText
+						.split("\n")
+						.map(l => {
+							let p = l.split(",");
+							if (p.length !== 2) return null;
+							return { before: p[0], after: p[1] };
+						})
+						.filter(d => d !== null);
+				}else{
+					revisingValue.codeConvert.details = [];
+				}
+			}
 
             let command = {
                 settingCode: this.settingCode,
