@@ -26,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
@@ -2039,8 +2040,16 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     public ProcessResult registerHolidayDates(String companyID, ApplyForLeave newApplyForLeave,
             ApplyForLeave originApplyForLeave, List<GeneralDate> holidayDates,
             AppAbsenceStartInfoOutput appAbsenceStartInfoDto) {
-        // 申請の取消処理
-        // Pending chua tim thay xu ly
+        // 元の休暇申請のステータスを更新する
+        originApplyForLeave.getApplication().getReflectionStatus().getListReflectionStatusOfDay().forEach(x -> {
+            x.setActualReflectStatus(ReflectedState.CANCELED);
+        });
+        applicationRepository.update(originApplyForLeave.getApplication());
+        
+        // 暫定データの登録
+        interimRemainDataMngRegisterDateChange.registerDateChange(companyID, originApplyForLeave.getApplication().getEmployeeID(), 
+                originApplyForLeave.getApplication().getReflectionStatus().getListReflectionStatusOfDay()
+                    .stream().map(x -> x.getTargetDate()).collect(Collectors.toList()));
 
         // 休出代休紐付け管理を更新する
         this.updateLinkManage(
@@ -2056,7 +2065,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
-                appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApprovalLst(),
+                appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
                 appAbsenceStartInfoDto.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0));
 
         return processResult;

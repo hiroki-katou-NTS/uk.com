@@ -67,7 +67,7 @@ module cps003.a.vm {
                     onUnblock: () => block()
                 });
                 
-                self.requestData(null, true);
+                setTimeout(() => self.requestData(null, true), 700);
             }
         };
 
@@ -901,7 +901,7 @@ module cps003.a.vm {
             // { categoryId: 'COM1_00000000000000000000000_CS00020', lstEmployee: [], standardDate: '2818/01/01' };
             let self = this, dfd = $.Deferred();
             if ($("#base-date").ntsError("hasError")) return;
-            if (!employeeSelect) block();
+            block();
             
             let employeeIds = [];
             if (!regEmpIds || regEmpIds.length == 0) {

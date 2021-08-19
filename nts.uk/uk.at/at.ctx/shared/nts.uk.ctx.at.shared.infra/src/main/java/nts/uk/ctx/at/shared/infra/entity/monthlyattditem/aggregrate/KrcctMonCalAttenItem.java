@@ -21,8 +21,8 @@ import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggre
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCCT_MON_EDI_ATTEN_ITEM")
-public class KrcctMonEdiAttenItem implements Serializable
+@Table(name = "KRCCT_MON_CAL_ATTEN_ITEM")
+public class KrcctMonCalAttenItem implements Serializable
 										   , MonthlyAttItemCanAggregate.MementoSetter
 										   , MonthlyAttItemCanAggregate.MementoGetter {
 
@@ -31,7 +31,7 @@ public class KrcctMonEdiAttenItem implements Serializable
 
 	/** The id. */
 	@EmbeddedId
-	private KrcctMonEdiAttenItemPK id;
+	private KrcctMonCalAttenItemPK id;
 	
 	/** 排他バージョン */
 	@Version
@@ -43,8 +43,8 @@ public class KrcctMonEdiAttenItem implements Serializable
 	private String contractCd;
 	
 	/** 修正可能区分  */
-	@Column(name = "EDITABLE")
-	private BigDecimal editable;
+	@Column(name = "CALCULABLE")
+	private BigDecimal calculable;
 
 	@Override
 	public String getCid() {
@@ -59,7 +59,7 @@ public class KrcctMonEdiAttenItem implements Serializable
 	@Override
 	public void setCid(String cid) {
 		if (this.id == null) {
-			this.id = new KrcctMonEdiAttenItemPK();
+			this.id = new KrcctMonCalAttenItemPK();
 		}
 		this.id.setCid(cid);
 	}
@@ -67,19 +67,19 @@ public class KrcctMonEdiAttenItem implements Serializable
 	@Override
 	public void setAttItemId(BigDecimal attItemId) {
 		if (this.id == null) {
-			this.id = new KrcctMonEdiAttenItemPK();
+			this.id = new KrcctMonCalAttenItemPK();
 		}
 		this.id.setMAtItemId(attItemId);
 	}
 
 	@Override
-	public boolean isEditable() {
-		return this.editable.equals(BigDecimal.ONE);
+	public boolean isCalculable() {
+		return this.calculable.equals(BigDecimal.ONE);
 	}
 
 	@Override
-	public void setEditable(boolean editable) {
-		this.editable = editable ? BigDecimal.ONE : BigDecimal.ZERO;
+	public void setCalculable(boolean editable) {
+		this.calculable = editable ? BigDecimal.ONE : BigDecimal.ZERO;
 	}
 
 }

@@ -29,8 +29,12 @@ public class ReflectAttendance {
 	public static List<Integer> reflect(Require require, String cid, List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst,
 			ScheduleRecordClassifi classification, DailyRecordOfApplication dailyApp, Optional<Boolean> reflectAtt,
 			Optional<Boolean> reflectLeav, Optional<TimeChangeMeans> timeChangeMeanOpt) {
-
+		
 		List<Integer> lstItemId = new ArrayList<Integer>();
+		
+		if (!reflectAtt.orElse(false) && !reflectLeav.orElse(false)) {
+			return lstItemId;
+		}
 		// [input. 勤務時間帯(List）]をループ
 		for (TimeZoneWithWorkNo timeZone : timeZoneWithWorkNoLst) {
 
@@ -103,7 +107,7 @@ public class ReflectAttendance {
 					if (reflectAtt.orElse(false)) {
 						work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(
-										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), null),
+										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), Optional.empty()),
 												timeZone.getTimeZone().getStartTime()),
 										Optional.empty()),
 								0)));
@@ -112,7 +116,7 @@ public class ReflectAttendance {
 					if (reflectLeav.orElse(false)) {
 						work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(
-										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), null),
+										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), Optional.empty()),
 												timeZone.getTimeZone().getEndTime()),
 										Optional.empty()),
 								0)));

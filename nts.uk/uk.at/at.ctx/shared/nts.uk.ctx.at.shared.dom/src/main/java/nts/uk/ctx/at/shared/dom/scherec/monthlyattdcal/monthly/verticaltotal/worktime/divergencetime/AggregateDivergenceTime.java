@@ -23,10 +23,6 @@ public class AggregateDivergenceTime implements Serializable{
 	private int divergenceTimeNo;
 	/** 乖離時間 */
 	private AttendanceTimeMonth divergenceTime;
-	/** 控除時間 */
-	private AttendanceTimeMonth deductionTime;
-	/** 控除後乖離時間 */
-	private AttendanceTimeMonth divergenceTimeAfterDeduction;
 	/** 乖離フラグ */
 	@Setter
 	private DivergenceAtrOfMonthly divergenceAtr;
@@ -38,8 +34,6 @@ public class AggregateDivergenceTime implements Serializable{
 		 
 		this.divergenceTimeNo = divergenceTimeNo;
 		this.divergenceTime = new AttendanceTimeMonth(0);
-		this.deductionTime = new AttendanceTimeMonth(0);
-		this.divergenceTimeAfterDeduction = new AttendanceTimeMonth(0);
 		this.divergenceAtr = DivergenceAtrOfMonthly.NORMAL;
 	}
 	
@@ -55,14 +49,10 @@ public class AggregateDivergenceTime implements Serializable{
 	public static AggregateDivergenceTime of(
 			int divergenceTimeNo,
 			AttendanceTimeMonth divergenceTime,
-			AttendanceTimeMonth deductionTime,
-			AttendanceTimeMonth divergenceTimeAfterDeduction,
 			DivergenceAtrOfMonthly divergenceAtr){
 		
 		val domain = new AggregateDivergenceTime(divergenceTimeNo);
 		domain.divergenceTime = divergenceTime;
-		domain.deductionTime = deductionTime;
-		domain.divergenceTimeAfterDeduction = divergenceTimeAfterDeduction;
 		domain.divergenceAtr = divergenceAtr;
 		return domain;
 	}
@@ -74,21 +64,5 @@ public class AggregateDivergenceTime implements Serializable{
 	 */
 	public void addMinutesToDivergenceTime(int minutes){
 		this.divergenceTime = this.divergenceTime.addMinutes(minutes);
-	}
-	
-	/**
-	 * 控除時間に分を加算する
-	 * @param minutes 分
-	 */
-	public void addMinutesToDeductionTime(int minutes){
-		this.deductionTime = this.deductionTime.addMinutes(minutes);
-	}
-	
-	/**
-	 * 控除後乖離時間に分を加算する
-	 * @param minutes 分
-	 */
-	public void addMinutesToDivergenceTimeAfterDeduction(int minutes){
-		this.divergenceTimeAfterDeduction = this.divergenceTimeAfterDeduction.addMinutes(minutes);
 	}
 }

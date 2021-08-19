@@ -850,6 +850,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			if (vm.isEditBreakTime(vm.restTime(), vm.restTemp)) {
 				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 			}
+			let approvalRootContentMap: any = null;
 
 			// validate chung KAF000
 			vm.$validate(
@@ -941,6 +942,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 							// xử lý confirmMsg
 							return vm.handleConfirmMessage(result.confirmMsgOutputs);
 						} else {
+							approvalRootContentMap = result.approvalRootContentMap;
 							// xử lý confirmMsg
 							return vm.handleConfirmMessageMap(result.confirmMsgOutputMap, result.errorEmpBusinessName);
 						}
@@ -960,6 +962,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						commandRegister.isMail = appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet;
 						// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．申請設定．申請種類別設定
 						commandRegister.appTypeSetting = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0];
+						commandRegister.approvalRootContentMap = approvalRootContentMap;
 						// đăng kí 
 						return vm.$ajax('at', !vm.isAgentNew() ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -3457,6 +3460,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		appDispInfoStartupDto: any;
 		isMail: Boolean;
 		appTypeSetting: any;
+		approvalRootContentMap: any;
 	}
 	export interface HolidayMidNightTime {
 		attendanceTime: number;

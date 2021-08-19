@@ -56,9 +56,9 @@ public class PrioritySetting extends WorkTimeDomainObject implements Cloneable{
 	 *            the old domain
 	 */
 	public void correctData(ScreenMode screenMode, PrioritySetting oldDomain) {
-		if (screenMode == ScreenMode.SIMPLE) {
+		if (screenMode == ScreenMode.SIMPLE && oldDomain != null) {
 			if (this.stampAtr == StampPiorityAtr.GOING_WORK || this.stampAtr == StampPiorityAtr.LEAVE_WORK) {
-				this.priorityAtr = MultiStampTimePiorityAtr.BEFORE_PIORITY;
+				this.priorityAtr = oldDomain.getPriorityAtr();
 			}
 		}
 	}
