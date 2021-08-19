@@ -277,11 +277,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (itemOutByName[1].listOperationSetting().length == 0) {
                 itemOutByName[1].listOperationSetting().push(
                     new CalculationFormulaOfItem(
-                        203,    //attendanceItemId
+                        202,    //attendanceItemId
                         1,      // operation
                         getText('KWR008_70')
                     )
                 );
+            } else {
+              itemOutByName[1].listOperationSetting()[0].attendanceItemId = 202;
             }
             self.currentSetOutputSettingCode().printForm(self.selectedPrintForm());
             self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutByName));
