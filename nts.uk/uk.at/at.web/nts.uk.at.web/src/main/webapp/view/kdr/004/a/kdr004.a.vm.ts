@@ -69,7 +69,7 @@ module nts.uk.at.view.kdr004.a {
                 periodFormatYM: false,
 
                 /** Required parameter */
-                baseDate: new Date(period.endDate).toISOString(), //基準日
+                baseDate: moment.utc(period.endDate).toISOString(), //基準日
                 inService: true, //在職区分 = 対象
                 leaveOfAbsence: true, //休職区分 = 対象
                 closed: true, //休業区分 = 対象
