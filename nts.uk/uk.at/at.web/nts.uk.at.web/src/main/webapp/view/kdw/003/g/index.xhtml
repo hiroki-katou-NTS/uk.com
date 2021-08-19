@@ -25,7 +25,7 @@
         <ui:define name="content">
             <div id="functions-area">
                 <!--G1-1-->
-                <button class="normal" tabindex="1" data-bind="click: resetData" >#{i18n.getText('KDW003_134')}</button>
+                <button class="normal" tabindex="1" data-bind="click: resetData, enable: enableNewBtn" >#{i18n.getText('KDW003_134')}</button>
                 <!--G1-2-->
                 <button class="proceed" tabindex="2" data-bind="click: registerOrUpdate" >#{i18n.getText('KDW003_135')}</button>
                 <!--G1-3-->
@@ -71,18 +71,6 @@
                                     <span data-bind="text: endDate"></span>
                                 </div>
                             </td>
-                            <!-- <td colspan="2">
-                                <div id="daterangepicker" tabindex="9" data-bind="ntsDateRangePicker: { 
-                                    required: true, 
-                                    name: '#[KDW003_18]',
-                                    startName: '#[KDW003_25]',
-                                    endName: '#[KDW003_26]',
-                                    enable: true, 
-                                    showNextPrevious: false, 
-                                    value: dateValue, 
-                                    maxRange: 'none'}"/>
-                            </td> -->
-
                         </tr>
                         <tr>
                             <td>
@@ -92,7 +80,7 @@
                             <td colspan="2">
                                 <!--G5-6-->
                                 <div id="taskFrame1" tabindex="10" data-bind="ntsComboBox: {
-                                            options: taskListFrame1,
+                                            options: listTaskFrame1,
                                             width: 410,
                                             optionsValue: 'taskCode',
                                             visibleItemsCount: 10,
@@ -112,7 +100,7 @@
                             <td>
                                 <!--G5-9-->
                                 <div id="task-list" tabindex="11" data-bind="ntsComboBox: {
-                                    options: taskListFrame2,
+                                    options: listTaskFrame2,
                                     width: 310,
                                     optionsValue: 'taskCode',
                                     visibleItemsCount: 10,
@@ -129,7 +117,7 @@
                             <td>
                                 <!--G5-12-->
                                 <div id="task-list" tabindex="12" data-bind="ntsComboBox: {
-                                    options: taskListFrame3,
+                                    options: listTaskFrame3,
                                     width: 230,
                                     optionsValue: 'taskCode',
                                     visibleItemsCount: 10,
@@ -146,7 +134,7 @@
                             <td>
                                 <!--G5-15-->
                                 <div id="task-list" tabindex="13" data-bind="ntsComboBox: {
-                                    options: taskListFrame4,
+                                    options: listTaskFrame4,
                                     width: 230,
                                     optionsValue: 'taskCode',
                                     visibleItemsCount: 10,
@@ -163,7 +151,7 @@
                             <td>
                                 <!--G5-18-->
                                 <div id="task-list" tabindex="14" data-bind="ntsComboBox: {
-                                    options: taskListFrame5,
+                                    options: listTaskFrame5,
                                     width: 230,
                                     optionsValue: 'taskCode',
                                     visibleItemsCount: 10,
