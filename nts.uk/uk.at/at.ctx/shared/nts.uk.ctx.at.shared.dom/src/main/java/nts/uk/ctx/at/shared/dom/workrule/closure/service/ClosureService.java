@@ -265,7 +265,7 @@ public class ClosureService {
 		
 		List<ClosureInfor> closureInfor = new ArrayList<>();
 
-		List<Closure> closureList = require.closure(companyId);
+		List<Closure> closureList = require.closureActive(companyId, UseClassification.UseClass_Use);
 
 		closureList.forEach(item -> {
 			// <<Public>> 当月の期間を算出する
@@ -493,6 +493,8 @@ public class ClosureService {
 	}
 	
 	public static interface RequireM2 {
+		
+		List<Closure> closureActive(String companyId, UseClassification useAtr);
 
 		List<Closure> closure(String companyId);
 	}
@@ -531,6 +533,11 @@ public class ClosureService {
 			@Override
 			public List<Closure> closure(String companyId) {
 				return closureRepo.findAll(companyId);
+			}
+			
+			@Override
+			public List<Closure> closureActive(String companyId, UseClassification useAtr) {
+				return closureRepo.findAllActive(companyId, useAtr);
 			}
 
 		};

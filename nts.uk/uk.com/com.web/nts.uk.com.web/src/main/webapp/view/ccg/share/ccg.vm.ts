@@ -414,8 +414,6 @@ module nts.uk.com.view.ccg.share.ccg {
                         id: 'tab-1',
                         title: nts.uk.resource.getText("CCG001_22"),
                         content: '.tab-content-1',
-                        enable: ko.observable(true),
-                        visible: ko.observable(true)
                     });
                 }
                 // is advanced search tab
@@ -425,16 +423,12 @@ module nts.uk.com.view.ccg.share.ccg {
                         id: 'tab-2',
                         title: nts.uk.resource.getText("CCG001_23"),
                         content: '.tab-content-2',
-                        enable: ko.observable(true),
-                        visible: ko.observable(true)
                     });
                 }
                 arrTabs.push({
                     id: 'tab-3',
                     title: nts.uk.resource.getText("CCG001_103"),
                     content: '#ccg001-tab-content-3',
-                    enable: ko.observable(true),
-                    visible: ko.observable(true)
                 });
                 // => data res
                 return arrTabs;
@@ -2370,7 +2364,7 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
             </div>
         <div id="tab-panel" class="cf ccg-tabpanel pull-left"
             data-bind="attr: {tabindex: ccg001Tabindex}, ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-                <div tabindex="-1" class="tab-content-1" data-bind="if: showQuickSearchTab">
+                <div tabindex="-1" class="tab-content-1" data-bind="visible: showQuickSearchTab">
                     <!-- ko if: showAllReferableEmployee -->
                         <div id="ccg001-btn-search-all" class="btn-quick-search has-state" data-bind="attr: {tabindex: ccg001Tabindex}">
                             <div class="flex valign-center btn_big ccg-btn-quick-search ccg001-btn"
@@ -2432,8 +2426,8 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         </div>
                     <!-- /ko -->
                 </div>
-            <!-- ko if: showAdvancedSearchTab -->
-                <div tabindex="-1" class="tab-content-2 height-maximum">
+
+                <div tabindex="-1" class="tab-content-2 height-maximum" data-bind="visible: showAdvancedSearchTab">
                         <div id="ccg001-tab-content-2" class="height-maximum">
                             <div class="pull-left height-maximum" style="padding-right: 20px; overflow-y: scroll;">
                                 <div>
@@ -2625,7 +2619,6 @@ var CCG001_HTML = `<div id="component-ccg001" class="cf height-maximum" style="v
                         </div>
                         <div class="cf"></div>
                     </div>
-            <!-- /ko -->
             <div id="ccg001-tab-content-3" class="height-maximum">
                 <div id="ccg001-part-g" class="pull-left height-maximum">
                     <div class="control-group ccg001-control-group">

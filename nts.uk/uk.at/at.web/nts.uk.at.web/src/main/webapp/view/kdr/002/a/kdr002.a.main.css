@@ -51,11 +51,6 @@
 	height: 40px;
 }
 
-#print_date {
-	margin-top: 15px;
-	margin-left: 65px;
-}
-
 .mt-10 {
 	margin-top: 10px;
 }
@@ -64,8 +59,8 @@
 	margin-left: 10px;
 }
 
-.ml-20 {
-	margin-left: 20px;
+.mr-10 {
+	margin-right: 10px;
 }
 
 .mr-15 {
@@ -91,7 +86,6 @@
 
 .date-range-a3_15 {
 	display: inline-flex;
-    margin-left: 57px;
 }
 
 .a3_15 {
@@ -182,5 +176,15 @@
 	}
 }
 
+.setting-label {
+  width: 380px;
+}
 
+.label-zone {
+  width: 150px;
+}
 
+.div_line .switchbox-wrappers > label.nts-input > span {
+  width: 70px !important;
+  text-align: center !important;
+}

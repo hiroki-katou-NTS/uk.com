@@ -106,8 +106,8 @@ public class ChangePeriodModeFinder {
 		}
 		result.setShiftMasterWithWorkStyleLst(shiftMasterWithWorkStyleLst);
 		result.setListWorkScheduleShift(resultShiftMode.listWorkScheduleShift);
-		result.setAggreratePersonal(AggregatePersonalMapDto.convertMap(resultShiftMode.aggreratePersonal));
-		result.setAggrerateWorkplace(AggregateWorkplaceMapDto.convertMap(resultShiftMode.aggrerateWorkplace));
+		result.setAggreratePersonal(resultShiftMode.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(resultShiftMode.aggreratePersonal));
+		result.setAggrerateWorkplace(resultShiftMode.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(resultShiftMode.aggrerateWorkplace));
 		return result;
 	}
 	
@@ -141,8 +141,8 @@ public class ChangePeriodModeFinder {
 
 		result.setListWorkScheduleWorkInfor(resultOtherMode.listWorkScheduleWorkInfor);
 		
-		result.setAggreratePersonal(AggregatePersonalMapDto.convertMap(resultOtherMode.aggreratePersonal));
-		result.setAggrerateWorkplace(AggregateWorkplaceMapDto.convertMap(resultOtherMode.aggrerateWorkplace));
+		result.setAggreratePersonal(resultOtherMode.aggreratePersonal == null ? null : AggregatePersonalMapDto.convertMap(resultOtherMode.aggreratePersonal));
+		result.setAggrerateWorkplace(resultOtherMode.aggrerateWorkplace == null ? null : AggregateWorkplaceMapDto.convertMap(resultOtherMode.aggrerateWorkplace));
 		
 		return result;
 	}
