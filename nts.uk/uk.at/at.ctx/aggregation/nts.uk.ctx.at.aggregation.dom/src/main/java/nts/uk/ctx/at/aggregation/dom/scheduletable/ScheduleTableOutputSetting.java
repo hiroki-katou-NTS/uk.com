@@ -47,11 +47,11 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 	
 	/**
 	 * 作る
-	 * @param code
-	 * @param name
-	 * @param outputItem
-	 * @param workplaceCounterCategories
-	 * @param personalCounterCategories
+	 * @param code コード
+	 * @param name 名称
+	 * @param outputItem 出力項目
+	 * @param workplaceCounterCategories 職場計カテゴリ一覧
+	 * @param personalCounterCategories 個人計カテゴリ一覧
 	 * @return
 	 */
 	public static ScheduleTableOutputSetting create(
@@ -73,8 +73,8 @@ public class ScheduleTableOutputSetting implements DomainAggregate{
 	
 	/**
 	 * 複製する
-	 * @param newCode
-	 * @param newName
+	 * @param newCode コード
+	 * @param newName 名称
 	 * @return
 	 * @throws CloneNotSupportedException 
 	 */
