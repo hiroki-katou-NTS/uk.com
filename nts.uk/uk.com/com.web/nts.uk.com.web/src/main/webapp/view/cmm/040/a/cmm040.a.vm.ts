@@ -48,6 +48,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
         workplaceCode: KnockoutObservable<String> = ko.observable('');
         workplaceDisplayName: KnockoutObservable<String> = ko.observable('');
+
         constructor() {
             let self = this;
 
@@ -57,8 +58,6 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 textalign: "left"
             }
             )
-
-
 
             self.workLocationCD = ko.observable('');
             self.workLocationName = ko.observable('');
@@ -133,6 +132,10 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             });
 
 
+            setTimeout(() => {
+                self.selectWorkLocation(ko.unwrap(self.workLocationCD))
+            }, 1000);
+
             //            self.isCreate.subscribe(function(value) {
             //                if (value == true) {
             //                    $("#focus").focus();
@@ -185,7 +188,6 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     dfd.resolve();
                 }, 100);
             });
-
 
             return dfd.promise();
         }
@@ -641,32 +643,49 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     });
                 }
                 else {
-                    service.update(param).done((result) => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.reloadData().done(() => {
-                            self.selectedWorkLocation(self.workLocationCD());
-                            self.selectedWorkLocation.valueHasMutated();
-                        });
-                        $("#focusName").focus();
-                    }).fail((res: any) => {
-                        nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
-                            let p = nts.uk.ui.errors.errorsViewModel();
-                            p.option().show.subscribe(v => {
-                                if (v == false) {
-                                    nts.uk.ui.errors.clearAll();
-                                }
-                            });
-                            self.startPage();
-                            if (self.workPlacesList().length > 0) {
-                                self.findByIndex(0);
-                            }
-                        });
-                    }).always(() => {
-                        block.clear();
-                    });
+                    service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
+                        .done((data: any) => {
+                            self.update(param);
+                        })
+                        .fail((data: any) => {
+                            nts.uk.ui.dialog
+                                .confirm({ messageId: data.messageId })
+                                .ifYes(() => {
+                                    self.update(param);
+                                })
+                        })
                 }
             }
         }
+
+        update(param: any) {
+            const self = this;
+
+            service.update(param).done((result) => {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                self.reloadData().done(() => {
+                    self.selectedWorkLocation(self.workLocationCD());
+                    self.selectedWorkLocation.valueHasMutated();
+                });
+                $("#focusName").focus();
+            }).fail((res: any) => {
+                nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(() => {
+                    let p = nts.uk.ui.errors.errorsViewModel();
+                    p.option().show.subscribe(v => {
+                        if (v == false) {
+                            nts.uk.ui.errors.clearAll();
+                        }
+                    });
+                    self.startPage();
+                    if (self.workPlacesList().length > 0) {
+                        self.findByIndex(0);
+                    }
+                });
+            }).always(() => {
+                block.clear();
+            });
+        }
+
         deleteWorkLocation(): any {
             const vm = new ko.ViewModel();
             let self = this;

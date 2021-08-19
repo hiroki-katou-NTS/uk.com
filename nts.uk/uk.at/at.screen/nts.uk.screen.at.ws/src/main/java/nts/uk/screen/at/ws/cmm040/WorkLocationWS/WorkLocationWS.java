@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -134,8 +133,8 @@ public class WorkLocationWS extends WebService {
 	
 	@POST
 	@Path("checkWorkplace")
-	public void checkWorkplace(@PathParam("workplaceID") String workplaceID) {
-		this.checkWorkplace.checkWorkPlace(workplaceID);
+	public void checkWorkplace(CheckWorkplaceParam param) {
+		this.checkWorkplace.checkWorkPlace(param.workplaceID);
 	}
 
 }
