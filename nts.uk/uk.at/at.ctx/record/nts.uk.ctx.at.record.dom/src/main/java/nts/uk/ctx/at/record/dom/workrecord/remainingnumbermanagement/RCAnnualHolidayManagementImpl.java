@@ -71,11 +71,12 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 		Optional<DatePeriod> period = createCalRangeNextYearHdGrant(referenceDate);
 
 		// 次回年休付与を計算
-		List<NextAnnualLeaveGrant> result = calculateNextHolidayGrant(require, cacheCarrier, companyId.v(),
-				employeeId.v(), period, annualLeaveEmpBasicInfo);
+		List<NextAnnualLeaveGrant> nextAnnLeaGrantList = CalcNextAnnualLeaveGrantDate.algorithm(require, cacheCarrier,
+				companyId.v(), employeeId.v(), period,
+				Optional.empty(), annualLeaveEmpBasicInfo, Optional.empty(), Optional.empty());
 
 		// 次回年休付与を返す
-		return result;
+		return nextAnnLeaGrantList;
 	}
 
 	/**
@@ -94,51 +95,6 @@ public class RCAnnualHolidayManagementImpl implements RCAnnualHolidayManagement 
 		}
 
 		return result;
-	}
-
-	/**
-	 * 次回年休付与を計算
-	 *
-	 * @param companyId
-	 * @param employeeId
-	 * @param period
-	 * @param annualLeaveEmpBasicInfo
-	 * @return
-	 */
-	private List<NextAnnualLeaveGrant> calculateNextHolidayGrant(
-			RecordDomRequireService.Require require,
-			CacheCarrier cacheCarrier, String companyId, String employeeId,
-			Optional<DatePeriod> period, Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo) {
-		boolean isSingleDay = false;
-		Optional<DatePeriod> periodDate = period;
-
-		// Imported(就業)「社員」を取得する
-		EmployeeImport employee = empEmployeeAdapter.findByEmpId(employeeId);
-
-		// パラメータ「期間」をチェック
-		if(!period.isPresent()) {
-			isSingleDay = true;
-
-			// 社員に対応する締め開始日を取得する
-			Optional<GeneralDate> closureStartDate = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
-
-			periodDate = Optional.ofNullable(new DatePeriod(GeneralDate.ymd(closureStartDate.get().year(),
-					closureStartDate.get().month(), closureStartDate.get().day()), GeneralDate.ymd(9999, 12, 31)));
-		}
-
-		// ドメインモデル「年休付与テーブル設定」を取得する
-		Optional<GrantHdTblSet> grantHdTblSet = yearHolidayRepository.findByCode(companyId, annualLeaveEmpBasicInfo.get().getGrantRule().getGrantTableCode().v());
-
-		if(!grantHdTblSet.isPresent()) {
-			return Collections.emptyList();
-		}
-
-		// 次回年休付与を取得する
-		return  GetNextAnnualLeaveGrant.algorithm(require, cacheCarrier,
-				companyId, employeeId, grantHdTblSet.get().getYearHolidayCode().v(), employee.getEntryDate(),
-				annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate(), periodDate.get(), isSingleDay);
-
-		// List<次回年休付与>を返す
 	}
 
 	/**

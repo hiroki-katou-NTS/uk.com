@@ -90,7 +90,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 				result.put(empId, nextAnnualLeaveGrantList);
 				continue;
 			}
-			// 年休付与年月日を計算 　※要確認
+			// 年休付与年月日を計算
 			calcAnnualLeaveGrantDate(require, companyId, entryDate, criteriaDate, simultaneousGrantMDOpt, lengthServiceTbls, period,
 					isSingleDay, nextAnnualLeaveGrantList);
 			for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList) {
