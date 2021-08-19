@@ -135,8 +135,8 @@ public class DisplayRemainingHolidayNumber {
 		result.setCom60HVacation(this.getCom60HVacationSetting(companyId, employeeId, baseDate));
 		if (result.getAnnualLeave().isManageYearOff()) {
 			NextAnnualLeaveGrantImport nextAnnualLeaveGrantImport = this.getNextGrantDate(companyId, employeeId, baseDate);
-			result.setNextGrantDate(nextAnnualLeaveGrantImport.grantDate);
-			result.setGrantDays(nextAnnualLeaveGrantImport.grantDays);
+			result.setNextGrantDate(nextAnnualLeaveGrantImport==null? null : nextAnnualLeaveGrantImport.grantDate);
+			result.setGrantDays(nextAnnualLeaveGrantImport==null ? null : nextAnnualLeaveGrantImport.grantDays);
 		}
 		return result;
 	}
