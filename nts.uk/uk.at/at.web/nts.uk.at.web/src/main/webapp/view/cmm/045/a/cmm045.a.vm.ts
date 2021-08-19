@@ -2426,6 +2426,7 @@ module cmm045.a.viewmodel {
 			}
 			if(item.opBackgroundColor=='bg-pre-application-excess') {
 				if(confirmAllPreApp) {
+					itemConfirmLst.push(item);
 					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
 						return dfd.resolve(result);
 					});
@@ -2437,6 +2438,7 @@ module cmm045.a.viewmodel {
 				}
 			} else {
 				if(confirmAllActual) {
+					itemConfirmLst.push(item);
 					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
 						return dfd.resolve(result);
 					});

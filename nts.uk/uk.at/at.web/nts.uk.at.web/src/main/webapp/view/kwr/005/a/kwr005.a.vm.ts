@@ -11,6 +11,7 @@ module nts.uk.at.view.kwr005.a {
     getSettingListWorkStatus: 'at/function/kwr/005/a/listworkledger',
     checkDailyAuthor: 'at/function/kwr/checkdailyauthor',
     getStartFromMonthly: 'at/function/kwr/005/a/beginningmonth',
+      getInitDateLoginEmployee:'at/function/kwr/initdateloginemployee'
     //getInit: 'at/screen/kwr/005/b/getinfor',    
   };
 
@@ -87,7 +88,7 @@ module nts.uk.at.view.kwr005.a {
         nts.uk.ui.errors.clearAll();
       });
 
-      vm.CCG001_load();
+
       vm.KCP005_load();
 
     }
@@ -114,16 +115,16 @@ module nts.uk.at.view.kwr005.a {
         showEmployeeSelection: true,
         showQuickSearchTab: true, //クイック検索
         showAdvancedSearchTab: true, //詳細検索
-        showBaseDate: true, //基準日利用
+        showBaseDate: false, //基準日利用
         showClosure: true,
-        showAllClosure: false, //氏名の種類	-> ビジネスネーム（日本語）								
-        showPeriod: false, //対象期間利用
-        periodFormatYM: false,
-
+        showAllClosure: true, //氏名の種類	-> ビジネスネーム（日本語）
+        showPeriod: true, //対象期間利用
+        periodFormatYM: true,
+          maxPeriodRange: 'oneYear',
         /** Required parameter */
         baseDate: moment().toISOString(), //基準日
-        //periodStartDate: periodStartDate, //対象期間開始日
-        //periodEndDate: periodEndDate, //対象期間終了日
+        periodStartDate: vm.periodDate().startDate, //対象期間開始日
+        periodEndDate: vm.periodDate().endDate, //対象期間終了日
         //dateRangePickerValue: vm.datepickerValue
         inService: true, //在職区分 = 対象
         leaveOfAbsence: true, //休職区分 = 対象
@@ -195,7 +196,7 @@ module nts.uk.at.view.kwr005.a {
         isShowSelectAllButton: vm.isShowSelectAllButton(),
         isSelectAllAfterReload: false,
         tabindex: 5,
-        maxRows: 15
+        maxRows: 20
       };
 
       $('#kcp005').ntsListComponent(vm.listComponentOption)
@@ -394,8 +395,8 @@ module nts.uk.at.view.kwr005.a {
         let params = {
           //mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト
-          startMonth: _.toInteger(vm.periodDate().startDate), //対象年月,        
-          endMonth: _.toInteger(vm.periodDate().endDate),
+          startMonth: _.toInteger(vm.periodDate().startDate.replace('/', '')), //対象年月,
+          endMonth: _.toInteger(vm.periodDate().endDate.replace('/', '')),
           isZeroDisplay: vm.zeroDisplayClassification() ? true : false,//ゼロ表示区分選択肢
           code: vm.pageBreakSpecification() ? true : false, //改ページ指定選択肢,
           standardFreeClassification: vm.rdgSelectedId(), //自由設定: A5_4_2   || 定型選択 : A5_3_2,
@@ -487,21 +488,34 @@ module nts.uk.at.view.kwr005.a {
       vm.$ajax(PATH.getStartFromMonthly)
         .done((result) => {
           if (result && _.isNumber(result.startMonth)) {
-            //システム日付の月　＜　期首月　
-            const startMonth = _.toInteger(result.startMonth);
-            if (startMonth > _.toInteger(moment().format('MM'))) {
-              endDate = moment(currentYear + '/' + startMonth + '/01').toDate();
-              startDate = moment(endDate).subtract(1, 'year').add(1, 'month').toDate();
-            } else { //システム日付の月　＞=　期首月　
-              startDate = moment(currentYear + '/' + startMonth + '/01').toDate();
-              endDate = moment(startDate).add(1, 'year').subtract(1, 'month').toDate();
-            }
+              vm.$ajax(PATH.getInitDateLoginEmployee).done((data) => {
+                  if(!_.isNil(data))
+                      vm.dpkYearMonth(data);
+                  let date = data + '01';
+                  let processingDate = moment(date,"YYYY/MM/DD").toDate();
+                  let yearInit = null;
+                  //システム日付の月　＜　期首月　
+
+                  if (_.toInteger(result.startMonth) > _.toInteger(processingDate.getMonth())) {
+                      yearInit = processingDate.getFullYear() -1;
+                  } else { //システム日付の月　＞=　期首月　
+                      yearInit = processingDate.getFullYear();
+                  }
+                  startDate = moment(yearInit + '/' + result.startMonth + '/01').toDate();
+                  endDate = moment(startDate).add(11, 'month').toDate();
+                  vm.periodDate({
+                      startDate: startDate,
+                      endDate: endDate
+                  });
+                  vm.CCG001_load();
+              });
 
             vm.periodDate({
               startDate: startDate,
               endDate: endDate
             });
           }
+
         })
         .fail(() => { });
     }

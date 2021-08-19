@@ -14,6 +14,7 @@ body * {
 #content-left {
 	width: 330px;
 	float: left;
+	margin-left: 20px;
 }
 
 #content-right {
@@ -33,7 +34,8 @@ body * {
 }
 
 input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
-	width: 225px !important;
+	width: 195px !important;
+	margin-left: 2px;
 }
 
 #category_grid_container {
@@ -56,6 +58,23 @@ input.ntsSearchBox.nts-editor.ntsSearchBox_Component{
 }
 
 #col1 {
-	width: 150px;
+	width: 180px;
     margin-bottom: 10px;
+}
+
+.nts-help-button-image {
+	left: 30px !important;
+}
+
+.custom-img-1, .custom-img-2{
+	display: inline;
+}
+
+.custom-img-1 .nts-help-button-image img {
+	width: 420px;
+}
+
+.custom-img-2 .nts-help-button-image img {
+	width: 340px;
+	height: 400px;
 }
