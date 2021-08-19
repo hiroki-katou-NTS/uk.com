@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.input.workspace.item;
 
 import lombok.Value;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 
 /**
@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
 public class WorkspaceItem {
 
 	/** グループID */
-	private final ImportingGroupId groupId;
+	private final ImportingDomainId domainId;
 	
 	/** 項目No */
 	private final int itemNo;

@@ -1,0 +1,28 @@
+body.ko-cloak {
+  display: none;
+}
+
+#contents-area .ui-igcombo-wrapper,
+#contents-area .nts-fileupload-container {
+	position: relative;
+	top: 10px;
+	margin-top: -10px;
+}
+
+
+#setting, #execute {
+	display: inline-block;
+	height: 200px;
+}
+
+#setting {
+	width: 700px;
+}
+
+.row > div {
+	display: inline-block;
+}
+
+.row > div.label {
+	width: 150px;
+}

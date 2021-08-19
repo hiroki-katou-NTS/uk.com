@@ -20,7 +20,7 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -49,8 +49,8 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 	private String name;
 	
 	/* 受入グループID */
-	@Column(name = "GROUP_ID")
-	private int externalImportGroupId;
+	@Column(name = "DOMAIN_ID")
+	private int externalImportDomainId;
 	
 	/* 受入モード */
 	@Column(name = "IMPORTING_MODE")
@@ -79,7 +79,7 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 				this.pk.getCompanyId(), 
 				new ExternalImportCode(this.pk.getCode()), 
 				new ExternalImportName(this.name), 
-				ImportingGroupId.valueOf(this.externalImportGroupId),
+				ImportingDomainId.valueOf(this.externalImportDomainId),
 				EnumAdaptor.valueOf(importingMode, ImportingMode.class), 
 				new ExternalImportAssemblyMethod(
 						new ExternalImportCsvFileInfo(

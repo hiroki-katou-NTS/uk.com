@@ -12,7 +12,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
@@ -30,7 +30,7 @@ public class ReviseItemTest {
 		private static int EXI_ITEM_NO = 765;
 		private static ItemType ITEM_TYPE = ItemType.STRING;
 		private static ReviseValue REVISE_VALUE;
-		private static ImportingGroupId EXI_GROUP = ImportingGroupId.TASK;
+		private static ImportingDomainId EXI_GROUP = ImportingDomainId.TASK;
 		private static ImportingMode EXI_MODE = ImportingMode.INSERT_ONLY;
 		private static ExecutionContext EXE_CONTEXT = new ExecutionContext(COM_ID, EXI_CODE.v(), EXI_GROUP, EXI_MODE);
 		private static RevisedValueResult REVISE_V_RESULT;

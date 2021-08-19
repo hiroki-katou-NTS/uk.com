@@ -18,8 +18,8 @@ import lombok.NoArgsConstructor;
 public class XimctImportableItemPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "GROUP_ID")
-	private int groupdId;
+	@Column(name = "DOMAIN_ID")
+	private int domaindId;
 	
 	@Column(name = "ITEM_NO")
 	private int itemNo;

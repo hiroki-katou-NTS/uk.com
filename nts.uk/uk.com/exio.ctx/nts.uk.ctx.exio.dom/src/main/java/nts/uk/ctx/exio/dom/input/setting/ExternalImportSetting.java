@@ -9,7 +9,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.validation.ValidateData;
@@ -31,7 +31,7 @@ public class ExternalImportSetting implements DomainAggregate {
 	private ExternalImportName name;
 	
 	/** 受入グループID */
-	private ImportingGroupId externalImportGroupId;
+	private ImportingDomainId externalImportDomainId;
 	
 	/** 受入モード */
 	private ImportingMode importingMode;

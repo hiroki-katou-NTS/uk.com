@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 
 public class GetLayoutParam {
@@ -13,7 +13,7 @@ public class GetLayoutParam {
 	private String settingCode;
 	
 	/** 受入グループID */
-	private int importingGroupId;
+	private int importingDomainId;
 	
 	/** 項目NO一覧 */
 	@Getter
@@ -23,8 +23,8 @@ public class GetLayoutParam {
 		return new ExternalImportCode(settingCode);
 	}
 	
-	public ImportingGroupId getImportingGroupId() {
-		return EnumAdaptor.valueOf(importingGroupId, ImportingGroupId.class);
+	public ImportingDomainId getImportingDomainId() {
+		return EnumAdaptor.valueOf(importingDomainId, ImportingDomainId.class);
 	}
 	
 	public boolean isAllItem() {

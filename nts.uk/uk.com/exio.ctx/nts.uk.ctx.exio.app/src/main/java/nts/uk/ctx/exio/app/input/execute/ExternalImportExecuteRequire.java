@@ -12,14 +12,13 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
@@ -28,9 +27,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -39,8 +38,8 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalDataRepository;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 @Stateless
@@ -60,7 +59,7 @@ public class ExternalImportExecuteRequire {
 	private ExternalImportSettingRepository settingRepo;
 	
 	@Inject
-	private ImportingGroupRepository importingGroupRepo;
+	private ImportingDomainRepository importingDomainRepo;
 	
 	@Inject
 	private ConversionTableRepository conversionTableRepo;
@@ -69,7 +68,7 @@ public class ExternalImportExecuteRequire {
 	private TransferCanonicalDataRepository transferCanonicalDataRepo;
 	
 	@Inject
-	private GroupWorkspaceRepository groupWorkspaceRepo;
+	private DomainWorkspaceRepository domainWorkspaceRepo;
 	
 	@Inject
 	private CanonicalizedDataRecordRepository canonicalizedDataRecordRepo;
@@ -89,12 +88,6 @@ public class ExternalImportExecuteRequire {
 	@Inject
 	private EmploymentHistoryRepository employmentHistoryRepo;
 	
-	@Inject
-	private AffClassHistoryRepository affClassHistoryRepo;
-	
-	@Inject
-	private AffJobTitleHistoryRepository affJobTitleHistoryRepo; 
-	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {
 		
@@ -107,13 +100,13 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
-			return importingGroupRepo.find(groupId);
+		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
+			return importingDomainRepo.find(domainId);
 		}
 		
 		@Override
-		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
-			return groupWorkspaceRepo.get(groupId);
+		public DomainWorkspace getDomainWorkspace(ImportingDomainId domainId) {
+			return domainWorkspaceRepo.get(domainId);
 		}
 
 		@Override
@@ -142,28 +135,18 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void changeEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
-			employmentHistoryRepo.update(historyItem);
-		}
-
-		@Override
-		public void deleteEmploymentHistory(String employeeId, DateHistoryItem historyItem) {
-			employmentHistoryRepo.delete(historyItem.identifier());
-		}
-
-		@Override
 		public void deleteDailyPerformance(String employeeId, GeneralDate date) {
 			workInformationRepo.delete(employeeId, date);
 		}
 
 		@Override
-		public ConversionSource getConversionSource(String groupName) {
-			return conversionTableRepo.getSource(groupName);
+		public ConversionSource getConversionSource(String domainName) {
+			return conversionTableRepo.getSource(domainName);
 		}
 		
 		@Override
-		public List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct) {
-			return conversionTableRepo.get(groupName, source, cct);
+		public List<ConversionTable> getConversionTable(ConversionSource source, String domainName, ConversionCodeType cct) {
+			return conversionTableRepo.get(domainName, source, cct);
 		}
 
 		@Override
@@ -182,24 +165,13 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void changeAffClassHistory(String employeeId, DateHistoryItem historyItem) {
-			affClassHistoryRepo.update(historyItem);
+		public void delete(DomainDataId id) {
+			domainDataRepo.delete(id);			
 		}
 
 		@Override
-		public void deleteAffClassHistory(String employeeId, DateHistoryItem historyItem) {
-			affClassHistoryRepo.delete(historyItem.identifier());
+		public void update(DomainDataId id, DatePeriod period) {
+			domainDataRepo.update(id, period);
 		}
-
-		@Override
-		public void changeAffJobTitleHistory(String employeeId, DateHistoryItem historyItem) {
-			affJobTitleHistoryRepo.update(historyItem);
-		}
-
-		@Override
-		public void deleteAffJobTitleHistory(String employeeId, DateHistoryItem historyItem) {
-			affJobTitleHistoryRepo.delete(historyItem.identifier());
-		}
-		
 	}
 }

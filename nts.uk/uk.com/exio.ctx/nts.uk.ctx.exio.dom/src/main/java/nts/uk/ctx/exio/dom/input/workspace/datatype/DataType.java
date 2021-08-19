@@ -15,7 +15,8 @@ import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 @RequiredArgsConstructor
 public enum DataType {
 	STRING		(0, (s, name, value) -> s.paramString(name, (String) value)),
-	INT			(1, (s, name, value) -> s.paramInt(name, (Integer) value)),
+//	INT			(1, (s, name, value) -> s.paramInt(name, (Integer) value)),
+	INT			(1, (s, name, value) -> s.paramLong(name, (Long) value)),
 	REAL		(2, (s, name, value) -> s.paramDecimal(name, (BigDecimal) value)),
 	DATE		(3, (s, name, value) -> s.paramDate(name, (GeneralDate) value)),
 	DATETIME	(4, (s, name, value) -> s.paramDateTime(name, (GeneralDateTime) value)),

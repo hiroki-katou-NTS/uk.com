@@ -44,13 +44,13 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		
 		settingCode: KnockoutObservable<string> = ko.observable();
 		settingName: KnockoutObservable<string> = ko.observable();
-		importGroup: KnockoutObservable<number> = ko.observable();
+		importDomain: KnockoutObservable<number> = ko.observable();
 		importMode: KnockoutObservable<number> = ko.observable();
 		itemNameRow: KnockoutObservable<number> = ko.observable();
 		importStartRow: KnockoutObservable<number> = ko.observable();
 		layoutItemNoList: KnockoutObservableArray<number> = ko.observableArray([]);
 
-		importGroupOption: KnockoutObservableArray<any> = ko.observableArray([]);
+		importDomainOption: KnockoutObservableArray<any> = ko.observableArray([]);
 		importModeOption: KnockoutObservableArray<any> = ko.observableArray([]);
 
 		selectedCode: KnockoutObservable<string> = ko.observable();
@@ -78,7 +78,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			var self = this;
 
 			self.settingList = ko.observableArray<Setting>([]);
-			self.importGroupOption = ko.observableArray(__viewContext.enums.ImportingGroupId);
+			self.importDomainOption = ko.observableArray(__viewContext.enums.ImportingDomainId);
 			self.importModeOption = ko.observableArray(__viewContext.enums.ImportingMode);
 
 			self.startPage();
@@ -91,9 +91,9 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 				}
 			})
 
-			self.importGroup.subscribe((value) => {
+			self.importDomain.subscribe((value) => {
 				if (value) {
-					let condition = new LayoutGetCondition(self.settingCode(), self.importGroup(), []);
+					let condition = new LayoutGetCondition(self.settingCode(), self.importDomain(), []);
 					ajax("com", "screen/com/cmf/cmf001/get/layout", condition).done((itemNoList: number[]) => {
 						self.layoutItemNoList(itemNoList);
 					});
@@ -167,18 +167,18 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			self.settingCode(info.code);
 			self.settingName(info.name);
-			self.importGroup(info.group);
+			self.importDomain(info.domain);
 			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
-			// importGroupの変更にトリガして自動でセットされるため不要
+			// importDomainの変更にトリガして自動でセットされるため不要
 			// self.layoutItemNoList(info.itemNoList);
 		}
 
 		setLayout(itemNoList: number[]){
 			let self = this;
 			if(itemNoList.length > 0){
-				let condition = new LayoutGetCondition(self.settingCode(), self.importGroup(), itemNoList);
+				let condition = new LayoutGetCondition(self.settingCode(), self.importDomain(), itemNoList);
 				ajax("screen/com/cmf/cmf001/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
 				});
@@ -190,7 +190,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		selectLayout() {
 			let self = this;
 			setShared('CMF001DParams', {
-					groupId: self.importGroup(),
+					domainId: self.importDomain(),
 					selectedItems: self.layoutItemNoList()
 			}, true);
 
@@ -215,7 +215,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					__viewContext.user.companyId, 
 					self.settingCode(), 
 					self.settingName(), 
-					self.importGroup(), 
+					self.importDomain(), 
 					self.importMode(), 
 					self.itemNameRow(), 
 					self.importStartRow(), 
@@ -268,17 +268,17 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		companyId: string;
 		code: string;
 		name: string;
-		group: number;
+		domain: number;
 		mode: number;
 		itemNameRow: number;
 		importStartRow: number;
 		itemNoList: Array<number>;
 
-		constructor(companyId: string, code: string, name: string, group: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
+		constructor(companyId: string, code: string, name: string, domain: number, mode: number, itemNameRow: number, importStartRow: number, itemNoList: Array<number>) {
 			this.companyId = companyId;
 			this.code = code;
 			this.name = name;
-			this.group = group;
+			this.domain = domain;
 			this.mode = mode;
 			this.itemNameRow = itemNameRow;
 			this.importStartRow = importStartRow;
@@ -292,12 +292,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 	class LayoutGetCondition{
 		settingCode: string;
-		importingGroupId: number;
+		importingDomainId: number;
 		itemNoList: Array<number>;
 
-		constructor(settingCode: string, importingGroupId: number, itemNoList: Array<number>) {
+		constructor(settingCode: string, importingDomainId: number, itemNoList: Array<number>) {
 			this.settingCode = settingCode;
-			this.importingGroupId = importingGroupId;
+			this.importingDomainId = importingDomainId;
 			this.itemNoList = itemNoList;
 		}
 	}

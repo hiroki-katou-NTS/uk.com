@@ -6,8 +6,8 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AdjustExistingData;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalData;
@@ -23,7 +23,7 @@ public class ExecuteImporting {
 				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
 		
-		val transactionUnit = require.getImportingGroup(context.getGroupId())
+		val transactionUnit = require.getImportingDomain(context.getDomainId())
 				.getTransactionUnit();
 		
 		switch (transactionUnit) {
@@ -81,7 +81,7 @@ public class ExecuteImporting {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 
-		ImportingGroup getImportingGroup(ImportingGroupId groupId);
+		ImportingDomain getImportingDomain(ImportingDomainId domainId);
 		
 		List<String> getAllEmployeeIdsOfCanonicalizedData(ExecutionContext context);
 	}

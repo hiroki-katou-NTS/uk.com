@@ -93,7 +93,7 @@ public class DomainDataId {
 		}
 		
 		public void setParam(NtsStatement statement, String paramName) {
-			column.getDataType().setParam(statement, column.getColumnName(), value);
+			column.getDataType().setParam(statement, paramName, value);
 		}
 	}
 }

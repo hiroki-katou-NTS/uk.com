@@ -9,7 +9,7 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
@@ -32,7 +32,7 @@ public class ExternalImportSettingDto {
 	private String name;
 	
 	/** 受入グループID */
-	private int group;
+	private int domain;
 	
 	/** 受入モード */
 	private int mode;
@@ -52,12 +52,12 @@ public class ExternalImportSettingDto {
 				domain.getCompanyId(), 
 				domain.getCode().toString(), 
 				domain.getName().toString(), 
-				domain.getExternalImportGroupId().value, 
+				domain.getExternalImportDomainId().value, 
 				domain.getImportingMode().value, 
 				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
 				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
 				domain.getAssembly().getMapping().getMappings().stream()
-					.map(m -> ExternalImportLayoutDto.fromDomain(require, domain.getExternalImportGroupId(), m))
+					.map(m -> ExternalImportLayoutDto.fromDomain(require, domain.getExternalImportDomainId(), m))
 				.collect(Collectors.toList()));
 	}
 
@@ -67,7 +67,7 @@ public class ExternalImportSettingDto {
 				companyId, 
 				new ExternalImportCode(code), 
 				new ExternalImportName(name), 
-				ImportingGroupId.valueOf(group), 
+				ImportingDomainId.valueOf(domain), 
 				ImportingMode.valueOf(mode), 
 				new ExternalImportAssemblyMethod(
 						new ExternalImportCsvFileInfo(
@@ -112,12 +112,12 @@ public class ExternalImportSettingDto {
 
 		static ExternalImportLayoutDto fromDomain(
 				Require require,
-				ImportingGroupId groupId,
+				ImportingDomainId domainId,
 				ImportingItemMapping domain) {
 			return new ExternalImportLayoutDto(
 					domain.getItemNo(), 
-					require.getImportableItems(groupId, domain.getItemNo()).getItemName(),
-					require.getImportableItems(groupId, domain.getItemNo()).getItemType().name(),
+					require.getImportableItems(domainId, domain.getItemNo()).getItemName(),
+					require.getImportableItems(domainId, domain.getItemNo()).getItemType().name(),
 					checkImportSource(domain),
 					domain.getFixedValue().map(f -> f.asString()).orElse(""),
 					domain.isConfigured());
@@ -139,7 +139,7 @@ public class ExternalImportSettingDto {
 	}
 	
 	public static interface Require {
-		ImportableItem getImportableItems(ImportingGroupId groupId, int itemNo);
+		ImportableItem getImportableItems(ImportingDomainId domainId, int itemNo);
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}
 }

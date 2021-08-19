@@ -34,7 +34,7 @@ public enum ImportingMode {
 	 * 受入対象グループのデータをすべて削除して受け入れる
 	 * このモードの場合、正準化処理で削除判定はせず、ドメイン移送側で削除を実行する
 	 */
-	DELETE_GROUP_BEFOREHAND(4),
+	DELETE_DOMAIN_BEFOREHAND(4),
 	;
 	
 	public final int value;

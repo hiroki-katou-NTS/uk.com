@@ -17,8 +17,8 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
 
@@ -54,11 +54,11 @@ public class TransferCanonicalData {
 	
 	private static AtomTask transfer(Require require, ExecutionContext context, List<WhereSentence> whereList) {
 		
-		val importingGroup = require.getImportingGroup(context.getGroupId());
+		val importingDomain = require.getImportingDomain(context.getDomainId());
 		
 		val conversionTables = require.getConversionTable(
 				getConversionSource(require, context),
-				importingGroup.getName(),
+				importingDomain.getName(),
 				context.getMode().getType());
 
 		val itemNames = getImportingItemNames(require, context);
@@ -114,10 +114,10 @@ public class TransferCanonicalData {
 	
 	private static ConversionSource getConversionSource(Require require, ExecutionContext context) {
 		
-		val importingGroup = require.getImportingGroup(context.getGroupId());
-		val base = require.getConversionSource(importingGroup.getName());
+		val importingDomain = require.getImportingDomain(context.getDomainId());
+		val base = require.getConversionSource(importingDomain.getName());
 		
-		val tableName = new WorkspaceTableName(context, importingGroup.getName());
+		val tableName = new WorkspaceTableName(context, importingDomain.getName());
 		
 		// Source側のテーブル名を一時テーブルの名前に変更する必要がある
 		return new ConversionSource(
@@ -136,9 +136,9 @@ public class TransferCanonicalData {
 
 	public interface Require{
 		ImportingDataMeta getImportingDataMeta(ExecutionContext context);
-		ImportingGroup getImportingGroup(ImportingGroupId groupId);
-		ConversionSource getConversionSource(String groupName);
-		List<ConversionTable> getConversionTable(ConversionSource source, String groupName, ConversionCodeType cct);
+		ImportingDomain getImportingDomain(ImportingDomainId domainId);
+		ConversionSource getConversionSource(String domainName);
+		List<ConversionTable> getConversionTable(ConversionSource source, String domainName, ConversionCodeType cct);
 		int execute(List<ConversionSQL> conversionSqls);
 	}
 	

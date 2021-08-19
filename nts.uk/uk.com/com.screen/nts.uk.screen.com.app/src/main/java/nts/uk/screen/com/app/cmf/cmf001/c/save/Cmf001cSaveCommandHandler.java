@@ -59,7 +59,7 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 
 	private void updateReviseItem(String companyId, Cmf001cSaveCommand command, ExternalImportSetting setting) {
 
-		val importableItem = importableItemRepo.get(setting.getExternalImportGroupId(), command.getItemNo())
+		val importableItem = importableItemRepo.get(setting.getExternalImportDomainId(), command.getItemNo())
 				.orElseThrow(() -> new RuntimeException("not found: " + command.getSettingCode() + ", " + command.getItemNo()));
 
 		command.toDomainReviseItem(companyId, importableItem.getItemType())

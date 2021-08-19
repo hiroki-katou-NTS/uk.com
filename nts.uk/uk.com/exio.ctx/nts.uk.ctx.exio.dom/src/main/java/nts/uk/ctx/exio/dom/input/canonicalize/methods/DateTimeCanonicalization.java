@@ -7,7 +7,7 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 年月日と時刻を日時に正準化する
@@ -26,7 +26,7 @@ public class DateTimeCanonicalization {
 	/** 日時の項目No */
 	final int itemNoDateTime;
 	
-	public DateTimeCanonicalization(GroupWorkspace workspace) {
+	public DateTimeCanonicalization(DomainWorkspace workspace) {
 		itemNoDate = workspace.getItemByName("年月日").getItemNo();
 		itemNoTime = workspace.getItemByName("時分").getItemNo();
 		itemNoDateTime = workspace.getItemByName("日時").getItemNo();

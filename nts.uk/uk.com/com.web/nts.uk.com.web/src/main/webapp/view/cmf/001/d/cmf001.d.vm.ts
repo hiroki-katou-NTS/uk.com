@@ -32,14 +32,14 @@ module nts.uk.com.view.cmf001.d {
 				var params = getShared('CMF001DParams');
 				console.log("パラメータ受け取った")
 				self.selectablItemList = ko.observableArray<SelectableItem>([]);
-				self.getSelectableItem(params.groupId);
+				self.getSelectableItem(params.domainId);
 				self.selectedItems(params.selectedItems.map(n => Number(n)));
 			}	
 
-			getSelectableItem(groupId: string){
+			getSelectableItem(domainId: string){
 				let self = this;
 				let dfd = $.Deferred<any>();
-				ajax('com', "screen/com/cmf/cmf001/b/get/importableitem/" + groupId)
+				ajax('com', "screen/com/cmf/cmf001/b/get/importableitem/" + domainId)
 					.done((lstData: Array<viewmodel.SelectableItem>) => {
 						let selecteds: any[] = self.selectedItems();
 						let selectables = _(lstData)

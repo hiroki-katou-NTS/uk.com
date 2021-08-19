@@ -78,6 +78,7 @@ public class DataItem {
 	}
 
 	public boolean isEmpty() {
-		return isNull() || getString().isEmpty();
+		return isNull() || value.toString().isEmpty();
+		
 	}
 }

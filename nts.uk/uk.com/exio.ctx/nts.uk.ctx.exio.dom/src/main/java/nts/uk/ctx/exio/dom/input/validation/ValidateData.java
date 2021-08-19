@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
@@ -34,7 +34,7 @@ public class ValidateData{
 			RevisedDataRecord record ) {
 
 		for (val recordItem : record.getItems()) {
-			if(!require.getImportableItem(context.getGroupId(), recordItem.getItemNo())
+			if(!require.getImportableItem(context.getDomainId(), recordItem.getItemNo())
 					.validate(recordItem)) {
 
 				return false;
@@ -68,7 +68,7 @@ public class ValidateData{
 
 	public static interface ValidateRequire{
 
-		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 
 		Optional<ImportingUserCondition> getImportingUserCondition(String settingCode, int itemNo);
 	}

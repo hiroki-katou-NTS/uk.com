@@ -8,7 +8,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
@@ -82,7 +82,7 @@ public class ImportingItemMapping {
 		
 		// 固定値
 		if (fixedValue.isPresent()) {
-			val importableItem = require.getImportableItem(context.getGroupId(), itemNo);
+			val importableItem = require.getImportableItem(context.getDomainId(), itemNo);
 			Object value = fixedValue.get().asTypeOf(importableItem.getItemType());
 			return new DataItem(itemNo, value);
 		}
@@ -108,7 +108,7 @@ public class ImportingItemMapping {
 
 	private static DataItem noRevise(RequireAssemble require, ExecutionContext context, ImportingCsvItem csvItem) {
 		
-		Object value = require.getImportableItem(context.getGroupId(), csvItem.getItemNo())
+		Object value = require.getImportableItem(context.getDomainId(), csvItem.getItemNo())
 				.parse(csvItem.getCsvValue());
 		
 		return new DataItem(csvItem.getItemNo(), value);
@@ -118,6 +118,6 @@ public class ImportingItemMapping {
 		
 		Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode settingCode, int itemNo);
 		
-		ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo);
+		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}
 }

@@ -15,7 +15,7 @@
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportName
 				</com:ValidatorScript>
 				<com:EnumScript>
-					nts.uk.ctx.exio.dom.input.group.ImportingGroupId
+					nts.uk.ctx.exio.dom.input.domain.ImportingDomainId
 					nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode 
 				</com:EnumScript>
 			</ui:define>
@@ -64,7 +64,7 @@
 					</div>
 					
 					<div class="fixed-flex-layout-right" style="padding-top: 20px;">
-						<div class="group">
+						<div class="domain">
 							<div class="code">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportCode'] }">コード</div>
 								<input class="check-target" id="settingCode" data-bind="ntsTextEditor: { 
@@ -79,15 +79,15 @@
 									value: settingName,  
 									required: true}" />
 							</div>
-							<div class="import-group">
+							<div class="import-domain">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入グループ</div>
-								<div class="check-target" id="importGroup" data-bind="ntsComboBox: {
+								<div class="check-target" id="importDomain" data-bind="ntsComboBox: {
 									name: '受入グループ', 
-									options: $root.content.importGroupOption,
+									options: $root.content.importDomainOption,
 									optionsValue: 'value',
 									optionsText: 'name',
 									selectFirstIfNull: false,
-									value: importGroup,  
+									value: importDomain,  
 									required: true}"></div>
 							</div>
 							<div class="import-mode">
@@ -103,7 +103,7 @@
 							</div>
 						</div>
 
-						<div class="group">
+						<div class="domain">
 							<div class="divi">CSVファイルの情報</div><hr />
 							<div class="item-name-row">
 								<div data-bind="ntsFormLabel: { required: true }">項目名の行</div>
@@ -121,7 +121,7 @@
 							</div>
 						</div>
 						
-						<div class="group">
+						<div class="domain">
 							<div class="divi">受入レイアウト</div><hr />
 							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
 							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting" ></button>

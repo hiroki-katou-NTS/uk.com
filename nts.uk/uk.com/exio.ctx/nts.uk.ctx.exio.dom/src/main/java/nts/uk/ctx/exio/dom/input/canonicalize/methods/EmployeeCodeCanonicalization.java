@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 社員コードを社員IDに正準化する
@@ -27,7 +27,7 @@ public class EmployeeCodeCanonicalization {
 	/** 社員IDの項目No */
 	final int itemNoEmployeeId;
 	
-	public EmployeeCodeCanonicalization(GroupWorkspace workspace) {
+	public EmployeeCodeCanonicalization(DomainWorkspace workspace) {
 		itemNoEmployeeCode = workspace.getItemByName("社員コード").getItemNo();
 		itemNoEmployeeId = workspace.getItemByName("SID").getItemNo();
 	}

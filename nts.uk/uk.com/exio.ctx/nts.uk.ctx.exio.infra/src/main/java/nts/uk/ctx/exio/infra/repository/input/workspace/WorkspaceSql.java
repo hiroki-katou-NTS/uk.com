@@ -19,13 +19,13 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository.Require;
 import nts.uk.ctx.exio.dom.input.workspace.TemporaryTable;
 import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataTypeConfiguration;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 import nts.uk.shr.com.company.CompanyId;
 
@@ -33,16 +33,16 @@ import nts.uk.shr.com.company.CompanyId;
 public class WorkspaceSql {
 
 	private final ExecutionContext context;
-	private final ImportingGroup group;
-	private final GroupWorkspace workspace;
+	private final ImportingDomain domain;
+	private final DomainWorkspace workspace;
 	private final JdbcProxy jdbcProxy;
 	
 	public static WorkspaceSql create(Require require, ExecutionContext context, JdbcProxy jdbcProxy) {
 
-		val group = require.getImportingGroup(context.getGroupId());
-		val workspace = require.getGroupWorkspace(context.getGroupId());
+		val domain = require.getImportingDomain(context.getDomainId());
+		val workspace = require.getDomainWorkspace(context.getDomainId());
 		
-		return new WorkspaceSql(context, group, workspace, jdbcProxy);
+		return new WorkspaceSql(context, domain, workspace, jdbcProxy);
 	}
 	
 	/**
@@ -124,7 +124,7 @@ public class WorkspaceSql {
 		
 		private final StringBuilder sql;
 		
-		void primaryKey(String tableName, GroupWorkspace workspace) {
+		void primaryKey(String tableName, DomainWorkspace workspace) {
 			
 			String pkName = "PK_" + tableName;
 			
@@ -226,7 +226,7 @@ public class WorkspaceSql {
 
 	static class Insert {
 
-		static String createInsertSql(String tableName, GroupWorkspace workspace) {
+		static String createInsertSql(String tableName, DomainWorkspace workspace) {
 			
 			return new StringBuilder()
 				.append("insert into ")
@@ -262,7 +262,7 @@ public class WorkspaceSql {
 	
 	public List<String> getStringsOfRevisedData(String columnName) {
 		String sql = "select " + columnName + " from " + tableName().asRevised();
-		return jdbcProxy.query(sql).getList(rec -> rec.getString(1));
+		return jdbcProxy.query(sql).getList(rec -> rec.getString(1)).stream().distinct().collect(Collectors.toList());
 	}
 	
 	public Optional<RevisedDataRecord> findRevisedByRowNo(int rowNo) {
@@ -329,6 +329,6 @@ public class WorkspaceSql {
 	}
 	
 	private WorkspaceTableName tableName() {
-		return new WorkspaceTableName(context, group.getName());
+		return new WorkspaceTableName(context, domain.getName());
 	}
 }

@@ -65,7 +65,7 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		return new XimmtImportSetting(
 				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()), 
 				domain.getName().toString(), 
-				domain.getExternalImportGroupId().value, 
+				domain.getExternalImportDomainId().value, 
 				domain.getImportingMode().value, 
 				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().v(), 
 				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().v(), 

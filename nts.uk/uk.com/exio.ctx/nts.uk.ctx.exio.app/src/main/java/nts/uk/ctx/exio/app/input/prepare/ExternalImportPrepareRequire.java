@@ -10,20 +10,17 @@ import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistory;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistory;
-import nts.uk.ctx.bs.employee.dom.jobtitle.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -33,9 +30,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroup;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupRepository;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -50,8 +47,10 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserCondition;
 import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserConditionRepository;
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspace;
-import nts.uk.ctx.exio.dom.input.workspace.group.GroupWorkspaceRepository;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
+import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.history.History;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -76,10 +75,10 @@ public class ExternalImportPrepareRequire {
 	private ImportableItemsRepository importableItemsRepo;
 	
 	@Inject
-	private ImportingGroupRepository importingGroupRepo;
+	private ImportingDomainRepository importingDomainRepo;
 	
 	@Inject
-	private GroupWorkspaceRepository groupWorkspaceRepo;
+	private DomainWorkspaceRepository domainWorkspaceRepo;
 	
 	@Inject
 	private ExternalImportWorkspaceRepository workspaceRepo;
@@ -116,12 +115,6 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
 	
-	@Inject
-	private AffClassHistoryRepository affClassHistoryRepo;
-	
-	@Inject
-	private AffJobTitleHistoryRepository affJobTitleHistoryRepo;
-	
 	public class RequireImpl implements Require {
 		
 		private final String companyId ;
@@ -139,13 +132,13 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ImportingGroup getImportingGroup(ImportingGroupId groupId) {
-			return importingGroupRepo.find(groupId);
+		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
+			return importingDomainRepo.find(domainId);
 		}
 		
 		@Override
-		public GroupWorkspace getGroupWorkspace(ImportingGroupId groupId) {
-			return groupWorkspaceRepo.get(groupId);
+		public DomainWorkspace getDomainWorkspace(ImportingDomainId domainId) {
+			return domainWorkspaceRepo.get(domainId);
 		}
 		
 		@Override
@@ -154,9 +147,9 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public ImportableItem getImportableItem(ImportingGroupId groupId, int itemNo) {
-			return importableItemsRepo.get(groupId, itemNo)
-					.orElseThrow(() -> new RuntimeException("not found: " + groupId + ", " + itemNo));
+		public ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo) {
+			return importableItemsRepo.get(domainId, itemNo)
+					.orElseThrow(() -> new RuntimeException("not found: " + domainId + ", " + itemNo));
 		}
 		
 		@Override
@@ -229,11 +222,6 @@ public class ExternalImportPrepareRequire {
 			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
 		
-		@Override
-		public Optional<EmploymentHistory> getEmploymentHistory(String employeeId) {
-			return employmentHistoryRepo.getByEmployeeIdDesc(companyId, employeeId);
-		}
-		
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
 			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
 		}
@@ -248,14 +236,10 @@ public class ExternalImportPrepareRequire {
 			return domainDataRepo.exists(id);
 		}
 
-		@Override
-		public Optional<AffClassHistory> getAffClassHistory(String employeeId) {
-			return affClassHistoryRepo.getByEmployeeId(companyId, employeeId);
-		}
 
 		@Override
-		public Optional<AffJobTitleHistory> getAffJobTitleHistory(String employeeId) {
-			return affJobTitleHistoryRepo.getListBySid(companyId, employeeId);
+		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id) {
+			return domainDataRepo.getHistory(id);
 		}
 
 	}

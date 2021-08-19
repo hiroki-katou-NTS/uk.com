@@ -18,8 +18,8 @@ public class XimctWorkspaceItemPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/* 受入グループID */
-	@Column(name = "GROUP_ID")
-	public int groupId;
+	@Column(name = "DOMAIN_ID")
+	public int domainId;
 	
 	/* 受入項目NO */
 	@Column(name = "ITEM_NO")

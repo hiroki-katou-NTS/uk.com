@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.uk.ctx.exio.dom.input.group.ImportingGroupId;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -47,8 +47,8 @@ public class GetLayoutRequire {
 		}
 		
 		@Override
-		public List<ImportableItem> getImportableItems(ImportingGroupId groupId) {
-			return importableItemsRepo.get(groupId);
+		public List<ImportableItem> getImportableItems(ImportingDomainId domainId) {
+			return importableItemsRepo.get(domainId);
 		}
 
 		@Override
