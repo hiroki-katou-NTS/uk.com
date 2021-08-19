@@ -10,4 +10,5 @@ import nts.arc.time.GeneralDate;
 public class MailExportRolesDto {
 	private String roleId;
 	private String roleName;
+	private Integer employeeReferenceRange;
 }

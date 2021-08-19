@@ -28,7 +28,7 @@ public class AlarmMailSettingsAdapterImpl implements AlarmMailSettingsAdapter {
         if (roleList == null || roleList.isEmpty()) {
             return Collections.emptyList();
         }
-        return roleList.stream().map(x -> (new MailExportRolesDto(x.getRoleId(), x.getRoleName()))).collect(Collectors.toList());
+        return roleList.stream().map(x -> (new MailExportRolesDto(x.getRoleId(), x.getRoleName(), x.getEmployeeReferenceRange()))).collect(Collectors.toList());
     }
 
     /**
@@ -43,6 +43,6 @@ public class AlarmMailSettingsAdapterImpl implements AlarmMailSettingsAdapter {
         if (roleList == null || roleList.isEmpty()) {
             return Collections.emptyList();
         }
-        return roleList.stream().map(x -> (new MailExportRolesDto(x.getRoleId(), x.getRoleName()))).collect(Collectors.toList());
+        return roleList.stream().map(x -> (new MailExportRolesDto(x.getRoleId(), x.getRoleName(), x.getEmployeeReferenceRange()))).collect(Collectors.toList());
     }
 }

@@ -69,13 +69,31 @@ module nts.uk.at.view.kal002.c {
             vm.manualAdmin = ExecutionMailSetting.create(0, 1);
             vm.autoPerson = ExecutionMailSetting.create(1, 0);
             vm.autoAdmin = ExecutionMailSetting.create(1, 1);
-            // Init data when start screen
-            vm.init();
-
         }
 
         created(params: any) {
             const vm = this;
+            vm.init();
+            vm.isConfiguredManualPerson.subscribe((newValue: any) => {
+                if (newValue) {
+                    vm.statusConfigManualPerson(vm.$i18n('KAL002_14'));
+                }
+            });
+            vm.isConfiguredManualAdmin.subscribe((newValue: any) => {
+                if (newValue) {
+                    vm.statusConfigManualAdmin(vm.$i18n('KAL002_14'));
+                }
+            });
+            vm.isConfiguredAutoPerson.subscribe((newValue: any) => {
+                if (newValue) {
+                    vm.statusConfigAutoPerson(vm.$i18n('KAL002_14'));
+                }
+            });
+            vm.isConfiguredAutoAdmin.subscribe((newValue: any) => {
+                if (newValue) {
+                    vm.statusConfigAutoAdmin(vm.$i18n('KAL002_14'));
+                }
+            });
             vm.selectedRoleSetting.subscribe(function (newValue: any) {
                 vm.$errors("clear");
                 newValue === 0 ? vm.enableRoleSetting(true) : vm.enableRoleSetting(false);
@@ -84,39 +102,15 @@ module nts.uk.at.view.kal002.c {
                 vm.$ajax("com", PATH_API.get_role_name, newValue)
                     .done(function (listRole: Array<IRole>) {
                         vm.roleName(_.join(_.map(listRole, i => i.name), '、'));
-                        vm.$errors("clear");
                     }).fail(function (err) {
                     console.log(err);
                 });
-                // let nameList = _.filter(vm.roles(), (v) => _.includes(newValues, v.roleId));
-                // if(_.isNil(nameList)){
-                //     vm.roleName(_.join(nameList, '、'));
-                // }
-            });
-            vm.isConfiguredManualPerson.subscribe((newValue: any) => {
-                if (newValue && vm.isAlreadyConfigured(vm.manualPerson.contentMailSettings)) {
-                    vm.statusConfigManualPerson(vm.$i18n('KAL002_14'));
-                }
-            });
-            vm.isConfiguredManualAdmin.subscribe((newValue: any) => {
-                if (newValue && vm.isAlreadyConfigured(vm.manualAdmin.contentMailSettings)) {
-                    vm.statusConfigManualAdmin(vm.$i18n('KAL002_14'));
-                }
-            });
-            vm.isConfiguredAutoPerson.subscribe((newValue: any) => {
-                if (newValue && vm.isAlreadyConfigured(vm.autoPerson.contentMailSettings)) {
-                    vm.statusConfigAutoPerson(vm.$i18n('KAL002_14'));
-                }
-            });
-            vm.isConfiguredAutoAdmin.subscribe((newValue: any) => {
-                if (newValue && vm.isAlreadyConfigured(vm.autoAdmin.contentMailSettings)) {
-                    vm.statusConfigAutoAdmin(vm.$i18n('KAL002_14'));
-                }
             });
         }
 
         mounted() {
             const vm = this;
+            $('#B1_2').focus();
         }
 
         /**
@@ -192,7 +186,7 @@ module nts.uk.at.view.kal002.c {
                     let alarmMailSendingRoleCommand = new AlarmMailSendingRoleCommand(
                         0,
                         vm.enableRoleSetting(),  //B8_2, B8_3
-                        false, // DD not description
+                        false,
                         vm.currentRoleCodes() //B8_5
                     );
 
@@ -223,7 +217,6 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.manualPerson.contentMailSettings = mailSettingContent;
                     vm.manualPerson.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                    vm.isConfiguredManualPerson(true);
                 }
             });
         }
@@ -242,7 +235,6 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.manualAdmin.contentMailSettings = mailSettingContent;
                     vm.manualAdmin.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                    vm.isConfiguredManualAdmin(true);
                 }
             });
         }
@@ -261,7 +253,6 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.autoPerson.contentMailSettings = mailSettingContent;
                     vm.autoPerson.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                    vm.isConfiguredAutoPerson(true);
                 }
             });
         }
@@ -280,7 +271,6 @@ module nts.uk.at.view.kal002.c {
                 if (!_.isNil(mailSettingContent)) {
                     vm.autoAdmin.contentMailSettings = mailSettingContent;
                     vm.autoAdmin.senderAddress = nts.uk.ui.windows.getShared("senderAddress");
-                    vm.isConfiguredAutoAdmin(true);
                 }
             });
         }

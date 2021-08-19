@@ -22,6 +22,8 @@ public interface WorkplaceManagerPub {
 
 	// Get workplace manager list by workplace id
 	List<WorkplaceManagerExport> getWkpManagerListByWkpId(String workplaceId);
+
+	List<WorkplaceManagerExport> findListWkpManagerByWkpIdsAndBaseDate(List<String> wkpIDLst, GeneralDate baseDate);
 }
 
 
