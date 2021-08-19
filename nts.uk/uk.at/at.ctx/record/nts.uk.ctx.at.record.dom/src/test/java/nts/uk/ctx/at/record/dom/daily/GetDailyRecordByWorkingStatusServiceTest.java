@@ -19,21 +19,21 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.daily.DailyResultAccordScheduleStatusService;
-import nts.uk.ctx.at.record.dom.daily.DailyResultAccordScheduleStatusService.Require;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByWorkingStatusService;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByWorkingStatusService.Require;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 @RunWith(JMockit.class)
-public class DailyResultAccordScheduleStatusServiceTest {
+public class GetDailyRecordByWorkingStatusServiceTest {
 
 	@Injectable
 	private Require require;
 	
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is false
+	 * $社員の就業状態.勤務予定が必要か() is false
 	 */
 	@Test
 	public void testGet() {
@@ -56,14 +56,14 @@ public class DailyResultAccordScheduleStatusServiceTest {
 				return false;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.get(require,
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.get(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
 	}
 	
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is true
+	 * $社員の就業状態.勤務予定が必要か() is true
 	 * require.日別実績を取得する( 社員ID, $ )	is empty
 	 */
 	@Test
@@ -93,14 +93,14 @@ public class DailyResultAccordScheduleStatusServiceTest {
 				return true;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.get(require,
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.get(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
 	}
 	
 	/**
-	 * $社員の予定管理状態.勤務予定が必要か() is true
+	 * $社員の就業状態.勤務予定が必要か() is true
 	 * require.日別実績を取得する( 社員ID, $ )	is not empty
 	 */
 	@Test
@@ -134,7 +134,7 @@ public class DailyResultAccordScheduleStatusServiceTest {
 				return true;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.get(require,
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.get(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.of(integrationOfDaily)));

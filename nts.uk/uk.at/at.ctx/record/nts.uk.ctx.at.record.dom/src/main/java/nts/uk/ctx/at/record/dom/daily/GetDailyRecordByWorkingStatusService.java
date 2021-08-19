@@ -11,13 +11,12 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
- * 予定管理状態に応じて日別実績を取得する	
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定
- * 
+ * 予定管理区分に応じて日別実績を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別実績.予定管理区分に応じて日別実績を取得する
  * @author Hieult
  *
  */
-public class DailyResultAccordScheduleStatusService {
+public class GetDailyRecordByWorkingStatusService {
 	
 
 	/**
@@ -25,7 +24,7 @@ public class DailyResultAccordScheduleStatusService {
 	 * @param require
 	 * @param employeeID
 	 * @param datePeriod
-	 * @return Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> --- Map<社員の予定管理状態, Optional<日別勤怠(Work)>>
+	 * @return Map<社員の就業状態, Optional<日別勤怠(Work)>>
 	 */
 	//IntegrationOfDaily
 	public static Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> get(Require require, List<String> lstempID , DatePeriod datePeriod ){
@@ -36,7 +35,7 @@ public class DailyResultAccordScheduleStatusService {
 			flatMap	*/	
 			long startTime = System.nanoTime();
 			
-			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = DailyResultAccordScheduleStatusService.getByEmp(require, x, datePeriod);
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.getByEmp(require, x, datePeriod);
 			map.putAll(data);
 			
 			long endTime = System.nanoTime();
@@ -50,15 +49,15 @@ public class DailyResultAccordScheduleStatusService {
 	 * 	[prv-1] 社員別に取得する	
 	 * @param employeeID
 	 * @param datePeriod
-	 * @return Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> --- Map<社員の予定管理状態, Optional<日別勤怠(Work)>>
+	 * @return Map<社員の就業状態, Optional<日別勤怠(Work)>>
 	 */
 	private static Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> getByEmp(Require require, String employeeID , DatePeriod datePeriod){
 		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map = new HashMap<>();
 		datePeriod.stream().forEach(x-> {
-			//$社員の予定管理状態 = 社員の予定管理状態#作成する( require, 社員ID, $ )
+			//$社員の就業状態 = 社員の就業状態#作成する( require, 社員ID, $ )
 			EmployeeWorkingStatus data = EmployeeWorkingStatus.create(require, employeeID, x);
 			if(!(data.getWorkingStatus().needCreateWorkSchedule())){
-				//return Key: $社員の予定管理状態, Value: Optional.empty			
+				//return Key: $社員の就業状態, Value: Optional.empty			
 				 map.put(data,Optional.empty());
 			}
 			//$日別実績 = require.日別実績を取得する( 社員ID, $ )														
