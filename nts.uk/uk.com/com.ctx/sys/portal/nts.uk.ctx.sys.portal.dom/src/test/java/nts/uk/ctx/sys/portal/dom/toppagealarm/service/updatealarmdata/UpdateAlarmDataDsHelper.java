@@ -20,6 +20,7 @@ public class UpdateAlarmDataDsHelper {
 	public static final List<String> SIDS = Stream.of("sid").collect(Collectors.toList());
 	public static final DisplayAtr DISP_ATTR = DisplayAtr.SUPERIOR;
 	public static final String PATTER_CD = "patternCode";
+	public static final List<String> NO_ERR_SIDS = new ArrayList<>();
 	public static final AlarmListPatternCode ALARM_LIST_CD = new AlarmListPatternCode(PATTER_CD);
 
 	/**

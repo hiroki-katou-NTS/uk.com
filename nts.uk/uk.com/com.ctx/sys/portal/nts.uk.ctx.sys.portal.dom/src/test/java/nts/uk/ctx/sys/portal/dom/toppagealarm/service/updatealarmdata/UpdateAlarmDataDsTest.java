@@ -42,6 +42,7 @@ public class UpdateAlarmDataDsTest {
 				UpdateAlarmDataDsHelper.CID,  
 				UpdateAlarmDataDsHelper.SIDS, 
 				UpdateAlarmDataDsHelper.PATTER_CD,
+				UpdateAlarmDataDsHelper.NO_ERR_SIDS,
 				UpdateAlarmDataDsHelper.DISP_ATTR.value
 				);
 		 
@@ -75,6 +76,7 @@ public class UpdateAlarmDataDsTest {
 				UpdateAlarmDataDsHelper.CID,  
 				UpdateAlarmDataDsHelper.SIDS, 
 				UpdateAlarmDataDsHelper.PATTER_CD,
+				UpdateAlarmDataDsHelper.NO_ERR_SIDS,
 				UpdateAlarmDataDsHelper.DISP_ATTR.value
 				);
 		 

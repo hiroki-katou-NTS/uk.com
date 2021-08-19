@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,12 +73,21 @@ public class ToppageAlarmDataTest {
 		String sid = "sid";
 		ToppageAlarmData domain = ToppageAlarmDataHelper.mockDomainWithDispAtr(DisplayAtr.SUPERIOR);
 		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		List<String> noErrSids = Collections.emptyList();
 		
 		//when
-		domain.changeSubSids(newSubSid);
+		domain.changeSubSids(newSubSid, noErrSids);
 		
 		//then
 		assertThat(domain.getSubSids()).isEqualTo(newSubSid);
+		
+		noErrSids = newSubSid;
+		
+		//when
+		domain.changeSubSids(newSubSid, noErrSids);
+		
+		//then
+		assertThat(domain.getSubSids()).isEmpty();
 	}
 	
 	/**
@@ -90,12 +100,52 @@ public class ToppageAlarmDataTest {
 		String sid = "sid";
 		ToppageAlarmData domain = ToppageAlarmDataHelper.mockDomainWithDispAtr(DisplayAtr.PRINCIPAL);
 		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		List<String> noErrSids = newSubSid;
 		
 		//when
-		domain.changeSubSids(newSubSid);
+		domain.changeSubSids(newSubSid, noErrSids);
 		
 		//then
 		assertThat(domain.getSubSids()).isEmpty();
+	}
+	
+	/**
+	 * [4]上長の場合はエラーが解消済みになるか
+	 * 表示社員区分 == 上長
+	 */
+	@Test
+	public void isErrResolvedTest() {
+		//give
+		String sid = "sid";
+		ToppageAlarmData domain = ToppageAlarmDataHelper.mockDomainWithDispAtr(DisplayAtr.SUPERIOR);
+		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		List<String> noErrSids = newSubSid;
+		
+		//when
+		domain.changeSubSids(newSubSid, new ArrayList<>());
+		
+		//then
+		assertThat(domain.isErrorResolved(new ArrayList<>())).isFalse();
+		assertThat(domain.isErrorResolved(noErrSids)).isTrue();
+	}
+	
+	/**
+	 * [4]上長の場合はエラーが解消済みになるか
+	 * 表示社員区分 != 上長
+	 */
+	@Test
+	public void isErrResolvedTest2() {
+		//give
+		String sid = "sid";
+		ToppageAlarmData domain = ToppageAlarmDataHelper.mockDomainWithDispAtr(DisplayAtr.PRINCIPAL);
+		List<String> newSubSid = Stream.of(sid).collect(Collectors.toList());
+		List<String> noErrSids = newSubSid;
+		
+		//when
+		domain.changeSubSids(newSubSid, new ArrayList<>());
+		
+		//then
+		assertThat(domain.isErrorResolved(noErrSids)).isFalse();
 	}
 	
 	/**
