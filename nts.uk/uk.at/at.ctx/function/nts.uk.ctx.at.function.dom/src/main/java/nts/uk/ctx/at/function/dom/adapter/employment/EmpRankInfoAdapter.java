@@ -12,5 +12,5 @@ public interface EmpRankInfoAdapter {
      * @param List<String> listEmpId List<社員ID>
      * @return List<社員所属チーム情報Imported>
      */
-    List<EmpTeamInfoImport> get(List<String> listEmpId);
+    List<EmpRankInfoImport> get(List<String> listEmpId);
 }
