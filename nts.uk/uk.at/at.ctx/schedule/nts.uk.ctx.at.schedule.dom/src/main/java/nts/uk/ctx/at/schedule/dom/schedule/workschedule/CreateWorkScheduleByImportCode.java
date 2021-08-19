@@ -34,8 +34,8 @@ public class CreateWorkScheduleByImportCode {
 			boolean isOverwrite) {
 
 		// 上書き可否判定
-		val oldWorkSchedule = require.getScheduleConfirmAtr(employeeId, date);
-		if ( oldWorkSchedule.isPresent() && ! isOverwrite ) {
+	    val isScheduleExisted = require.isWorkScheduleExisted(employeeId, date);
+	    if ( isScheduleExisted && ! isOverwrite ) {
 			
 			return ResultOfRegisteringWorkSchedule.createWithError(
 					employeeId,

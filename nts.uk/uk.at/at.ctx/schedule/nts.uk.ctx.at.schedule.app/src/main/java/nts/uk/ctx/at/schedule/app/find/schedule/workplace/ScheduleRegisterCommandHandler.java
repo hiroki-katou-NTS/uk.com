@@ -451,6 +451,12 @@ public class ScheduleRegisterCommandHandler {
         public Optional<Boolean> getScheduleConfirmAtr(String employeeId, GeneralDate ymd) {
             return workScheduleRepo.getConfirmAtr(employeeId, ymd);
         }
+
+        @Override
+        public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
+            // TODO Auto-generated method stub
+            return null;
+        }
         
     }
 }

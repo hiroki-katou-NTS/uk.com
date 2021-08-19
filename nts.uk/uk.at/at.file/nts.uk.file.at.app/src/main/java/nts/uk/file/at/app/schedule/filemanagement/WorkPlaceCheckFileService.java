@@ -608,6 +608,18 @@ public class WorkPlaceCheckFileService {
         public Optional<Boolean> getScheduleConfirmAtr(EmployeeId employeeId, GeneralDate ymd) {
             return workScheduleRepository.getConfirmAtr(employeeId.v(), ymd);
         }
+
+        @Override
+        public boolean isWorkScheduleExisted(EmployeeId employeeId, GeneralDate ymd) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isWorkScheduleComfirmed(EmployeeId employeeId, GeneralDate ymd) {
+            // TODO Auto-generated method stub
+            return false;
+        }
     }
     
     @AllArgsConstructor
