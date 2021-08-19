@@ -353,8 +353,14 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
             // 基準日時点の年休残数を取得する
             ReNumAnnLeaReferenceDateImport reNumAnnLeave = leaveAdapter.getReferDateAnnualLeaveRemainNumber(employeeId, baseDate);
             if (reNumAnnLeave != null && reNumAnnLeave.getAnnualLeaveRemainNumberExport() != null) {
-                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime() != null)
-                    timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime());
+                if (reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() != null) {
+                    timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(reNumAnnLeave.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay());
+                }
+                int yearHourRemain = 0;
+                for (int i = 0; i < reNumAnnLeave.getAnnualLeaveGrantExports().size(); i++) {
+                    yearHourRemain += reNumAnnLeave.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
+                }
+                timeLeaveRemaining.setAnnualTimeLeaveRemainingTime(yearHourRemain);
             }
             // [No.210]次回年休付与日を取得する
             List<NextAnnualLeaveGrantImport> nextGrantHolidays = holidayAdapter.acquireNextHolidayGrantDate(companyId, employeeId, baseDate);
@@ -369,27 +375,27 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
         if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {
             // 期間内の休出代休残数を取得する
-            BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
-    				companyId,
-    				employeeId,
-    				new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
-    				false,
-    				baseDate,
-    				false,
-    				Collections.emptyList(),
-    				Optional.empty(),
-    				Optional.empty(),
-    				Collections.emptyList(),
-    				Collections.emptyList(),
-    				Optional.empty(),
-    				new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
-    		SubstituteHolidayAggrResult dataCheck = NumberRemainVacationLeaveRangeQuery
-    				.getBreakDayOffMngInPeriod(require, inputParam);
-            timeLeaveRemaining.setSubTimeLeaveRemainingTime(dataCheck.getRemainTime().v());
+//            BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(
+//    				companyId,
+//    				employeeId,
+//    				new DatePeriod(closingPeriod.start(), closingPeriod.start().addYears(1).addDays(-1)),
+//    				false,
+//    				baseDate,
+//    				false,
+//    				Collections.emptyList(),
+//    				Optional.empty(),
+//    				Optional.empty(),
+//    				Collections.emptyList(),
+//    				Collections.emptyList(),
+//    				Optional.empty(),
+//    				new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
+//    		SubstituteHolidayAggrResult dataCheck = NumberRemainVacationLeaveRangeQuery
+//    				.getBreakDayOffMngInPeriod(require, inputParam);
+//            timeLeaveRemaining.setSubTimeLeaveRemainingTime(dataCheck.getRemainTime().v());
             // [No.505]代休残数を取得する
             BreakDayOffMngInPeriodQuery.RequireM11 requireM11 = new RequireM11Imp(comDayOffManaDataRepo, leaveComDayOffManaRepo, leaveManaDataRepo, shareEmploymentAdapter, compensLeaveEmSetRepo, compensLeaveComSetRepo, interimBreakDayOffMngRepo, closureEmploymentRepo, closureRepo, payoutHdManaRepo);
             NumberConsecutiveVacation breakDay =  BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(requireM11, cache, employeeId, baseDate);
-            timeLeaveRemaining.setAnnualTimeLeaveRemainingDays(breakDay.getRemainTime().v());
+            timeLeaveRemaining.setSubTimeLeaveRemainingTime(breakDay.getRemainTime().v());
         }
 
         if (timeLeaveManagement.getSupHolidayManagement().isOverrest60HManagement()) {
