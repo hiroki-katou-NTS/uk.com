@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -880,7 +881,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		AttendanceTimeMonth prescribedWorkingTimeMonth;
 		val compensatoryLeave = aggregateTotalWorkingTime.getVacationUseTime().getCompensatoryLeave();
-		if (settingsByFlex.getComFlexSetOpt().map(c -> c.isWithinTimeUsageAttr()).orElse(false)) {
+		if (settingsByFlex.getComFlexSetOpt().map(c -> c.isWithinTimeUsageAttr()).orElseThrow(() -> new BusinessException("Msg_2242"))) {
 
 			// 所定労働時間（代休控除後）を求める
 			prescribedWorkingTimeMonth = settingsByFlex.getPrescribedWorkingTimeMonth(require, yearMonth, 
@@ -1737,7 +1738,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 						int nextPredMinutes = flexStatTime.getSpecifiedSetting().v();	// 翌月所定
 						
 						// 「フレックス勤務所定労働時間取得．参照先」を確認する
-						if (!companySets.getComFlexSetOpt().map(c -> c.isWithinTimeUsageAttr()).orElse(false)){	// 実績から参照
+						if (!companySets.getComFlexSetOpt().map(c -> c.isWithinTimeUsageAttr()).orElseThrow(() -> new BusinessException("Msg_2242"))){	// 実績から参照
 								
 							// 処理中の年月の翌月の「月別実績の勤怠時間」を取得する
 							val nextYearMonth = yearMonth.nextMonth();

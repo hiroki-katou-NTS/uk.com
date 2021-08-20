@@ -88,7 +88,7 @@ public class RefDesForAdditionalTakeLeave {
     	}
     	
     	/** 1日の時間内訳を０で返す */
-    	return rezoBrdTimeDay();
+    	return zeroBrdTimeDay();
     }
 
     /** 個人情報休暇加算時間を参照 */
@@ -104,7 +104,7 @@ public class RefDesForAdditionalTakeLeave {
     	return workCond.map(c -> {
     		
     		/** 休暇加算時間設定を取得する */
-    		return c.getHolidayAddTimeSet().orElseGet(() -> rezoBrdTimeDay());
+    		return c.getHolidayAddTimeSet().orElseGet(() -> zeroBrdTimeDay());
     	});
     }
 
@@ -120,10 +120,10 @@ public class RefDesForAdditionalTakeLeave {
 		}
 		
 		/** 1日の時間内訳を０で設定 */
-		return rezoBrdTimeDay();
+		return zeroBrdTimeDay();
 	}
 
-	private BreakDownTimeDay rezoBrdTimeDay() {
+	private BreakDownTimeDay zeroBrdTimeDay() {
 		return new BreakDownTimeDay(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO);
 	}
 	

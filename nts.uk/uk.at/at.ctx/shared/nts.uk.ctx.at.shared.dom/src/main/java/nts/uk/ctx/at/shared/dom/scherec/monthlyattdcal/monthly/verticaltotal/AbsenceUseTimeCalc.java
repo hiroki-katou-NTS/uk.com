@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.RefDesForAdditionalTakeLeave;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
-/** 特別休暇使用時間を計算 */
+/** 欠勤使用時間を計算 */
 public class AbsenceUseTimeCalc {
 
 	/** 計算する */
