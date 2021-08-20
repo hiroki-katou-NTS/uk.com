@@ -25,10 +25,10 @@ public class LayoutAnyRecordToDelete {
 	private final JdbcProxy jdbcProxy;
 	private final ExecutionContext context;
 	
-	private static final String TABLE_NAME = TemporaryTable.PREFIX + "ANY_RECORD_TO_DELETE";
+	private static final String TABLE_NAME = "ANY_RECORD_TO_DELETE";
 	
 	private String tableName() {
-		return TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
+		return TemporaryTable.createTableName(context, TABLE_NAME);
 	}
 	
 	public void createTable() {

@@ -19,7 +19,7 @@ public class JpaImportingDataMetaRepository extends JpaRepository implements Imp
 	@Override
 	public void setup(ExecutionContext context) {
 		
-		String tableName = tableName(context.getCompanyId());
+		String tableName = tableName(context);
 		
 		TemporaryTable.dropTable(jdbcProxy(), tableName);
 
@@ -31,9 +31,9 @@ public class JpaImportingDataMetaRepository extends JpaRepository implements Imp
 	}
 
 	@Override
-	public void save(ImportingDataMeta meta) {
+	public void save(ExecutionContext context, ImportingDataMeta meta) {
 		
-		String sql = "insert into " + tableName(meta.getCompanyId()) + " values (@name);";
+		String sql = "insert into " + tableName(context) + " values (@name);";
 		
 		for (String name : meta.getItemNames()) {
 			this.jdbcProxy().query(sql)
@@ -45,13 +45,13 @@ public class JpaImportingDataMetaRepository extends JpaRepository implements Imp
 	@Override
 	public ImportingDataMeta find(ExecutionContext context) {
 		
-		String sql = "select * from " + tableName(context.getCompanyId());
+		String sql = "select * from " + tableName(context);
 		List<String> itemNames = this.jdbcProxy().query(sql).getList(rec -> rec.getString("ITEM_NAME"));
 		
 		return new ImportingDataMeta(context.getCompanyId(), itemNames);
 	}
 
-	private static String tableName(String companyId) {
-		return TemporaryTable.PREFIX + "META_ITEMNAMES_" + companyId.replace("-", "");
+	private static String tableName(ExecutionContext context) {
+		return TemporaryTable.createTableName(context, "META_ITEMNAMES_");
 	}
 }

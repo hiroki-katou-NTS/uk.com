@@ -6,7 +6,7 @@ public interface ImportingDataMetaRepository {
 	
 	void setup(ExecutionContext context);
 	
-	void save(ImportingDataMeta meta);
+	void save(ExecutionContext context, ImportingDataMeta meta);
 
 	ImportingDataMeta find(ExecutionContext context);
 }
