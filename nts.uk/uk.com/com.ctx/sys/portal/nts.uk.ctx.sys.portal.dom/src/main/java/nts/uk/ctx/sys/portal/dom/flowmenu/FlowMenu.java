@@ -37,6 +37,7 @@ public class FlowMenu extends AggregateRoot {
 			TopPagePartCode code, TopPagePartName name,
 			TopPagePartType type, Size size,
 			String fileID, DefClassAtr defClassAtr) {
+		this.companyID = companyID;
 		this.code = code;
 		this.name = name;
 		this.fileID = fileID;
