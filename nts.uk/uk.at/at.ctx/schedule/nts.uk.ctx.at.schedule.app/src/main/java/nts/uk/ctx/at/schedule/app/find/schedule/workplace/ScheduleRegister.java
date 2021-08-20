@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.schedule.app.find.schedule.workplace;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ScheduleRegister {
 
-    List<ScheduleRegisterTarget> targets;
+    private List<ScheduleRegisterTarget> targets;
     
-    boolean overWrite;
+    private boolean overWrite;
 }

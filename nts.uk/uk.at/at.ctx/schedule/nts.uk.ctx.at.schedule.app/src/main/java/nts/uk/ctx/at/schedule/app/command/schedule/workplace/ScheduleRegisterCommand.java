@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheduleRegister;
+import nts.uk.ctx.at.schedule.app.find.schedule.workplace.ScheduleRegister;
 
 /**
  * @author anhnm

@@ -25,7 +25,7 @@ import nts.uk.ctx.at.schedule.app.command.schedule.workplace.ScheduleRegisterCom
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SClsHistImported;
 import nts.uk.ctx.at.schedule.dom.adapter.classification.SyClassificationAdapter;
 import nts.uk.ctx.at.schedule.dom.schedule.createworkschedule.createschedulecommon.correctworkschedule.CorrectWorkSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkScheduleService;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkScheduleByImportCode;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ResultOfRegisteringWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
@@ -126,9 +126,6 @@ public class ScheduleRegisterCommandHandler {
     private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
     @Inject
-    private CreateWorkScheduleService createWorkScheduleService;
-
-    @Inject
     private EmpEmployeeAdapter empEmployeeAdapter;
 
     public List<RegisterWorkScheduleOutput> register(ScheduleRegisterCommand command) {
@@ -142,7 +139,17 @@ public class ScheduleRegisterCommandHandler {
 //        RequireImp requireImp = new RequireImp(workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter, sharedAffWorkPlaceHisAdapter, syClassificationAdapter, businessTypeEmpService, workingConditionRepo, workScheduleRepo, shiftMasterRepository, correctWorkSchedule, interimRemainDataMngRegisterDateChange);
         RequireImp requireImp = new RequireImp(workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter, sharedAffWorkPlaceHisAdapter, syClassificationAdapter, businessTypeEmpService, workingConditionRepo, workScheduleRepo, shiftMasterRepository, correctWorkSchedule, interimRemainDataMngRegisterDateChange, importCodes, employeeList, period);
         // 1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
-        List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = createWorkScheduleService.register(requireImp, command.toDomain());
+        ScheduleRegister sr =  command.toDomain();
+        List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = 
+        		sr.getTargets()
+        		  .stream()
+        		  .map(x -> CreateWorkScheduleByImportCode.create(
+        				   requireImp, 
+		                    x.getEmployeeId(), 
+		                    x.getDate(), 
+		                    x.getImportCode(), 
+		                    sr.isOverWrite())
+				  ).collect(Collectors.toList());
 
         // 2: List<勤務予定の登録処理結果> : anyMatch $.エラーがあるか == true 社員IDを指定して社員を取得する(List<社員ID>)
         List<String> employeeIds = new ArrayList<String>();
@@ -180,7 +187,7 @@ public class ScheduleRegisterCommandHandler {
         return outputs;
     }
     
-    private class RequireImp implements CreateWorkScheduleService.Require {
+    private class RequireImp implements CreateWorkScheduleByImportCode.Require {
         
 //        private WorkTypeRepository workTypeRepo;
         private final MapCache<String, WorkType> workTypeCache;
@@ -452,11 +459,6 @@ public class ScheduleRegisterCommandHandler {
             return workScheduleRepo.getConfirmAtr(employeeId, ymd);
         }
 
-        @Override
-        public Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date) {
-            // TODO Auto-generated method stub
-            return null;
-        }
         
     }
 }

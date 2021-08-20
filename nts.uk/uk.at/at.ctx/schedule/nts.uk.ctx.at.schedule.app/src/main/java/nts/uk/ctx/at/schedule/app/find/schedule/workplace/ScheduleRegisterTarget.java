@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
+package nts.uk.ctx.at.schedule.app.find.schedule.workplace;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,9 +15,9 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterImportCode;
 @AllArgsConstructor
 public class ScheduleRegisterTarget {
     
-    String employeeId;
+    private String employeeId;
     
-    GeneralDate date;
+    private GeneralDate date;
     
-    ShiftMasterImportCode importCode;
+    private ShiftMasterImportCode importCode;
 }
