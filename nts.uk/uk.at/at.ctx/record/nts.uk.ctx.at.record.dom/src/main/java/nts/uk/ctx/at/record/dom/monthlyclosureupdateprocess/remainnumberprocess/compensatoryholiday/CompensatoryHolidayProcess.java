@@ -181,7 +181,7 @@ public class CompensatoryHolidayProcess {
 		/** 期間内の休出代休残数を取得する */
 		BreakDayOffRemainMngRefactParam p = new BreakDayOffRemainMngRefactParam(companyId, empId, period.getPeriod(), true,
 				period.getPeriod().end(), true, interimMng, Optional.of(CreateAtr.RECORD),
-				Optional.of(period.getPeriod()), breakMng, dayOffMng, Optional.empty(), remainDataMonthAgg.getMonthly());
+				Optional.of(period.getPeriod()), Optional.empty(), remainDataMonthAgg.getMonthly());
 
 		return NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, p);
 	}
