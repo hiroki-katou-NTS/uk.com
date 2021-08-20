@@ -26,7 +26,14 @@ public class DefaultFlowMenuService implements FlowMenuService {
 
 	@Override
 	public void createFlowMenu(FlowMenu flowMenu) {
-		throw new BusinessException("Msg_3");
+		Optional<FlowMenu> optFlowMenu = flowMenuRepository.findByToppagePartCodeAndType(
+				flowMenu.getCompanyID(),
+				flowMenu.getCode().v(),
+				0);
+		if (optFlowMenu.isPresent()) {
+			throw new BusinessException("Msg_3");
+		}
+		flowMenuRepository.add(flowMenu);
 	}
 	
 

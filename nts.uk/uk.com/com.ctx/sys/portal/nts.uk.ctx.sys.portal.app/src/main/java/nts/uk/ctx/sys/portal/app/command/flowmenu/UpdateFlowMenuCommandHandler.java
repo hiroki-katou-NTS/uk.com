@@ -32,9 +32,12 @@ public class UpdateFlowMenuCommandHandler extends CommandHandler<UpdateFlowMenuC
 		String companyId = AppContexts.user().companyId();
 		UpdateFlowMenuCommand command = context.getCommand();
 		
-		Optional<FlowMenu> checkFlowMenu = repository.findByCode(companyId, context.getCommand().getTopPagePartID());
+		Optional<FlowMenu> checkFlowMenu = repository.findByToppagePartCodeAndType(
+				companyId,
+				command.getTopPageCode(),
+				0);
 		if (!checkFlowMenu.isPresent())
-			throw new RuntimeException("Can't find FlowMenu with ID: " + context.getCommand().getTopPagePartID());
+			throw new RuntimeException("Can't find FlowMenu with code: " + command.getTopPageCode());
 		
 		// Update FLowMenu
 		FlowMenu flowMenu = checkFlowMenu.get();
