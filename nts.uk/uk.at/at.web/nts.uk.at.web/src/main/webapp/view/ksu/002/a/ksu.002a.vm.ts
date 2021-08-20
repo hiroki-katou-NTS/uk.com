@@ -149,6 +149,7 @@ module nts.uk.ui.at.ksu002.a {
 		showC: KnockoutObservable<boolean> = ko.observable(true);
 
 		mode: KnockoutObservable<EDIT_MODE> = ko.observable('copy');
+		yearMonth: KnockoutObservable<string> = ko.observable(moment().format('YYYYMM'));
 		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
 		baseDateKCP015: KnockoutObservable<Date> = ko.observable(null);
 		schedules: m.MementoObservableArray<DayDataRawObsv> = ko.observableArray([]).extend({ memento }) as any;
@@ -616,6 +617,24 @@ module nts.uk.ui.at.ksu002.a {
 		mounted() {
 		}
 		
+		openB() {
+			let self = this;
+			const { begin, finish } = self.baseDate();
+			let param = {
+				employeeCode: self.startupProcessingInformation().employeeCode,//社員コード
+				businessName: self.startupProcessingInformation().businessName,//社員名
+				yearMonth: self.yearMonth(),//対象年月
+				startDate: moment(begin).format('YYYY/MM/DD'),//対象期間開始日
+				endDate: moment(finish).format('YYYY/MM/DD'),//対象期間終了日
+				dayOfWeek: self.dayStartWeek()//起算曜日
+			}
+			setShared('dataShareDialogKSU002B', param);
+			try{
+				nts.uk.ui.windows.sub.modeless('/view/ksu/002/b/index.xhtml');
+			}catch{
+				nts.uk.ui.block.clear();
+			}
+		}
 		// UI-8: Undo-Redoの処理
 		undoOrRedo(action: 'undo' | 'redo') {
 			const vm = this;

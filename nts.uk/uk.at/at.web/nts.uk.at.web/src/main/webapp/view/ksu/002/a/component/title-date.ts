@@ -115,9 +115,10 @@ module nts.uk.ui.at.ksu002.a {
 			const achievement = allBindingsAccessor.get('achievement');
 			const workplaceId = allBindingsAccessor.get('workplace-id');
 			const hasChange = allBindingsAccessor.get('has-change');
+			const yearMonth = allBindingsAccessor.get('yearMonth');
 			const tabIndex = element.getAttribute('tabindex') || '1';
 			const rootVm = allBindingsAccessor.get('rootVm');
-			const params = { achievement, hasChange, dateRange, tabIndex, workplaceId, rootVm };
+			const params = { achievement, hasChange, dateRange, tabIndex, workplaceId, yearMonth, rootVm };
 			const component = { name, params };
 
 			element.classList.add('cf');
@@ -140,7 +141,7 @@ module nts.uk.ui.at.ksu002.a {
 		template
 	})
 	export class TitleDateComponent extends ko.ViewModel {
-		public yearMonth: KnockoutObservable<string> = ko.observable(moment().format('YYYYMM'));
+		public yearMonth: KnockoutObservable<string>;
 
 		public selectedRangeIndex: KnockoutObservable<number> = ko.observable(1);
 
@@ -165,12 +166,15 @@ module nts.uk.ui.at.ksu002.a {
 					achievement: ko.observable(1),
 					workplaceId: ko.observable(null),
 					hasChange: ko.computed(() => false),
+					yearMonth: ko.observable(moment().format('YYYYMM')),
 					rootVm: null
 				};
 			}
 
-			const { achievement, dateRange, workplaceId, hasChange, rootVm} = params;
+			const { achievement, dateRange, workplaceId, hasChange, yearMonth, rootVm} = params;
 
+			vm.yearMonth = yearMonth;
+			
 			if (achievement === undefined) {
 				vm.params.achievement = ko.observable(ACHIEVEMENT.NO);
 			}
@@ -377,6 +381,7 @@ module nts.uk.ui.at.ksu002.a {
 		achievement: KnockoutObservable<ACHIEVEMENT>;
 		workplaceId: KnockoutObservable<string | null>;
 		hasChange: KnockoutComputed<boolean>;
+		yearMonth: KnockoutObservable<string>;
 		rootVm: any;
 	}
 

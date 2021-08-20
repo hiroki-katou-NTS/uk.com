@@ -59,7 +59,7 @@
 					</div>
 					</com:ko-if>
 					<com:ko-if bind="visibleA1_4">
-					<button tabindex="4" class="btn-right" data-bind="i18n: 'KSU002_4', enable: $vm.enable"></button>
+					<button tabindex="4" class="btn-right" data-bind="i18n: 'KSU002_4', click: $vm.openB, enable: $vm.enable"></button>
 					</com:ko-if>
 				</div>
 			</div>
@@ -72,6 +72,7 @@
 								workplace-id: $vm.workplaceId,
 								achievement: $vm.achievement,
 								has-change: $vm.schedules.hasChange,
+								yearMonth: $vm.yearMonth,
 								rootVm: $vm
 							"></div>
 						<button id="A5" tabindex="-1" class="small btn-guide" data-bind="icon: 139"></button>
