@@ -139,15 +139,15 @@ public class MonthlyChildCareHdRemainDto extends MonthlyItemCommon {
 
 		switch (path) {
 		case THIS_YEAR + USAGE:
-			return Optional.of(this.thisYearUsedInfo);
+			return Optional.ofNullable(this.thisYearUsedInfo);
 		case TOTAL + USAGE:
-			return Optional.of(this.usedInfo);
+			return Optional.ofNullable(this.usedInfo);
 		case NEXT_YEAR + USAGE:
-			return Optional.of(this.nextYearUsedInfo);
+			return Optional.ofNullable(this.nextYearUsedInfo);
 		case THIS_YEAR + REMAIN:
-			return Optional.of(this.thisYearRemainNumber);
+			return Optional.ofNullable(this.thisYearRemainNumber);
 		case NEXT_YEAR + REMAIN:
-			return Optional.of(this.nextYearRemainNumber);
+			return Optional.ofNullable(this.nextYearRemainNumber);
 		default:
 			return super.get(path);
 		}

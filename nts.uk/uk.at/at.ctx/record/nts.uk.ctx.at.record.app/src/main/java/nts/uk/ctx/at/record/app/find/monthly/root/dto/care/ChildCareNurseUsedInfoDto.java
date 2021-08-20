@@ -88,7 +88,7 @@ public class ChildCareNurseUsedInfoDto implements ItemConst, AttendanceItemDataG
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		if (path.equals(USAGE)) {
-			return Optional.of(this.usedNumber);
+			return Optional.ofNullable(this.usedNumber);
 		}
 		return AttendanceItemDataGate.super.get(path);
 	}
