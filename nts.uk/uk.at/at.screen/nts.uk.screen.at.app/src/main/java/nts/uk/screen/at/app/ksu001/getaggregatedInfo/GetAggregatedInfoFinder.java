@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.print.attribute.HashAttributeSet;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DateInMonth;
@@ -121,8 +120,12 @@ public class GetAggregatedInfoFinder {
 
 		return externalBudget.entrySet().stream()
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().entrySet().stream()
-						.map(x -> new ExternalBudgetMapDto(x.getKey().getExternalBudgetCode(),
-								x.getKey().getExternalBudgetCode(), x.getValue()))
+						.map(x -> new ExternalBudgetMapDto(
+								x.getKey().getExternalBudgetCode(),
+								x.getKey().getExternalBudgetCode(), 
+								x.getValue(),
+								x.getKey().getBudgetAtr(),
+								x.getKey().getUnitAtr()))
 						.collect(Collectors.toList())))
 				.entrySet().stream().map(x -> new ExternalBudgetMapDtoList(x.getKey(), x.getValue()))
 				.collect(Collectors.toList());

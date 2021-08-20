@@ -16,4 +16,8 @@ public class ExternalBudgetMapDto {
 	public String name;
 	
 	public String value;
+	
+	public int budgetAtr;
+
+	public int unitAtr;
 }

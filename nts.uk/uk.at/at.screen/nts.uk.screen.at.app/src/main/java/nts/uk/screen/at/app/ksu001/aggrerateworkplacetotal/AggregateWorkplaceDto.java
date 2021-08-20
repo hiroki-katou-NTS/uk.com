@@ -102,7 +102,9 @@ public class AggregateWorkplaceDto {
 							  .map(x -> new ExternalBudgetMapDto(
 									  x.getKey().getExternalBudgetCode(),
 									  x.getKey().getExternalBudgetCode(),
-									  x.getValue()
+									  x.getValue(),
+									  x.getKey().getBudgetAtr(),
+									  x.getKey().getUnitAtr()
 									  ))
 							  .collect(Collectors.toList())
 						)
