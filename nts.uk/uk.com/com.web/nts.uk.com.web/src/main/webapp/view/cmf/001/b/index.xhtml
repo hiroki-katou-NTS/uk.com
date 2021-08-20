@@ -13,6 +13,7 @@
 				<com:ValidatorScript>
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportCode
 					nts.uk.ctx.exio.dom.input.setting.ExternalImportName
+					nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber
 				</com:ValidatorScript>
 				<com:EnumScript>
 					nts.uk.ctx.exio.dom.input.domain.ImportingDomainId
@@ -70,14 +71,17 @@
 								<input class="check-target" id="settingCode" data-bind="ntsTextEditor: { 
 									name: 'コード',
 									value: settingCode,  
-									required: true}" />
+									enable: isNewMode,
+									required: true, 
+									constraint: ['ExternalImportCode']}" />
 							</div>
 							<div class="name">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportName'] }">名称</div>
 								<input class="check-target" id="settingName" data-bind="ntsTextEditor: { 
 									name: '名称',
 									value: settingName,  
-									required: true}" />
+									required: true, 
+									constraint: ['ExternalImportName']}" />
 							</div>
 							<div class="import-domain">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入グループ</div>
@@ -106,18 +110,20 @@
 						<div class="domain">
 							<div class="divi">CSVファイルの情報</div><hr />
 							<div class="item-name-row">
-								<div data-bind="ntsFormLabel: { required: true }">項目名の行</div>
+								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">項目名の行</div>
 								<input class="check-target" id="itemNameRow" data-bind="ntsTextEditor: {
 									name: '項目名の行', 
 									value: itemNameRow,  
-									required: true}" />
+									required: true, 
+									constraint: ['ExternalImportRowNumber']}" />
 							</div>
 							<div class="import-start-row">
-								<div data-bind="ntsFormLabel: { required: true }">受入開始行</div>
+								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">受入開始行</div>
 								<input class="check-target" id="importStartRow" data-bind="ntsTextEditor: {
 									name: '受入開始行', 
 									value: importStartRow,  
-									required: true}" />
+									required: true, 
+									constraint: ['ExternalImportRowNumber']}" />
 							</div>
 						</div>
 						
