@@ -30,7 +30,6 @@ import nts.uk.ctx.at.schedule.dom.importschedule.ImportResultDetail;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportStatus;
 import nts.uk.ctx.at.schedule.dom.importschedule.WorkScheduleImportService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.EmployeeAndYmd;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
@@ -79,11 +78,13 @@ import nts.uk.shr.com.i18n.TextResource;
 
 
 /**
+ * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL055_個人スケジュールの取込み.B：内容チェック.メニュー別OCD.取り込み内容を取得する
+ * 取り込み内容を取得する
  * @author anhnm
  *
  */
 @Stateless
-public class WorkPlaceCheckFileService {
+public class ScreenQueryWorkPlaceCheckFile {
 
     @Inject
     private IEmployeeCESettingPub employeeSettingPub;

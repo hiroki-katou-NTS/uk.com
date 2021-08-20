@@ -11,7 +11,7 @@ import nts.gul.excel.ExcelFileTypeException;
 import nts.uk.file.at.app.schedule.export.WorkPlaceScheDataSource;
 import nts.uk.file.at.app.schedule.export.WorkPlaceScheExportService;
 import nts.uk.file.at.app.schedule.filemanagement.CapturedRawDataDto;
-import nts.uk.file.at.app.schedule.filemanagement.WorkPlaceCheckFileService;
+import nts.uk.file.at.app.schedule.filemanagement.ScreenQueryWorkPlaceCheckFile;
 import nts.uk.file.at.app.schedule.filemanagement.WorkPlaceScheCheckFileParam;
 import nts.uk.file.at.ws.schedule.export.dto.CaptureDataOutputDto;
 
@@ -23,7 +23,7 @@ public class WorkPlaceScheWebService extends WebService {
     private WorkPlaceScheExportService exportService;
     
     @Inject
-    private WorkPlaceCheckFileService checkFileService;
+    private ScreenQueryWorkPlaceCheckFile checkFileService;
     
     @POST
     @Path("print")
