@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.shared.dom.adapter.employment.rules.orgranization.empinfo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 /**
- * The Class ClassificationExport.
+ * The Class ClassificationImport.
  */
 // 所属分類
+@AllArgsConstructor
 @Data
-@Builder
 public class ClassificationImport {
 
 	/** The classification code. */

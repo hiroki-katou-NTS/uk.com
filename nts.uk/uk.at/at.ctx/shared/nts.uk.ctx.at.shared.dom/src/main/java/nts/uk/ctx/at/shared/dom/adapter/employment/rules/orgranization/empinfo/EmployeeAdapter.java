@@ -1,6 +1,8 @@
 
 package nts.uk.ctx.at.shared.dom.adapter.employment.rules.orgranization.empinfo;
 
+import nts.arc.time.GeneralDate;
+
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ public interface EmployeeAdapter {
      *
      * @param companyId the company id
      * @param empCodes  the emp codes
-     * @return Map<String   , String>
+     * @return Map<String       ,   String>
      */
     Map<String, String> getEmploymentMapCodeName(String companyId, List<String> empCodes);
 
@@ -23,16 +25,17 @@ public interface EmployeeAdapter {
      * [2] 社員IDリストから社員コードと表示名を取得する
      *
      * @param sIds List<社員ID>
-     * @return List<社員コードと表示名Imported	>
+     * @return List<社員コードと表示名Imported 	>
      */
     List<EmployeeInfoImport> getByListSid(List<String> sIds);
 
     /**
-     * Find.
+     * [3] 社員の情報を取得する[アルゴリズム.<<Public>> 社員の情報を取得する( 社員IDリスト, 基準日, 取得したい社員情報 )]
      *
-     * @param param the param
-     * @return the list
+     * @param employeeIds   List<社員ID>
+     * @param referenceDate 年月日
+     * @param param         取得したい社員情報
+     * @return List<EmployeeInformationImport>
      */
-    // <<Public>> 社員の情報を取得する
-    public List<EmployeeInformationImport> find(EmployeeInformationQueryDto param);
+    public List<EmployeeInformationImport> find(List<String> employeeIds, GeneralDate referenceDate, EmployeeInfoQueryDto param);
 }

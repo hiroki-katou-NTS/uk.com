@@ -4,15 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.adapter.employment.rules.orgranization.empinfo;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class EmployeeInformationExport.
+ * The Class EmployeeInformationImport.
  */
-// 社員情報
-@Builder
+// 社員情報Imported
+@AllArgsConstructor
 @Data
 public class EmployeeInformationImport {
 
@@ -82,5 +82,4 @@ public class EmployeeInformationImport {
     int age;
 
     int gender;
-
 }

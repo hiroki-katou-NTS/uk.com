@@ -4,15 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.adapter.employment.rules.orgranization.empinfo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 /**
- * The Class DepartmentExport.
+ * The Class DepartmentImport.
  */
 //所属部門
+@AllArgsConstructor
 @Data
-@Builder
 public class DepartmentImport {
 
 	///

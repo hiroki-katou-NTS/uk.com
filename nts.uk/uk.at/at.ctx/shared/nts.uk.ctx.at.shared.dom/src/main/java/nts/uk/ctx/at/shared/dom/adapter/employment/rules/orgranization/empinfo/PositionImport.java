@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.shared.dom.adapter.employment.rules.orgranization.empinfo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 /**
- * The Class PositionExport.
+ * The Class PositionImport.
  */
 // 所属職位
+@AllArgsConstructor
 @Data
-@Builder
 public class PositionImport {
 
 	/** The position id. */
