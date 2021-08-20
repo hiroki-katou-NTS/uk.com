@@ -6007,12 +6007,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     self.cloneDataSource();
                     self.updateDataBindGrid();
+
+                    setTimeout(() => {
+                        let key = request.location.current.rawUrl + "/extable/scroll";
+                        uk.localStorage.getItem(key).ifPresent((data) => {
+                            let scrollLength = JSON.parse(data);
+                            $("#extable").exTable('scrollBack', 2, scrollLength);
+                        });
+                    }, 10);
                 }
-                let key = request.location.current.rawUrl + "/extable/scroll";
-                uk.localStorage.getItem(key).ifPresent((data) => {
-                    let scrollLength = JSON.parse(data);
-                    $("#extable").exTable('scrollBack', 2, scrollLength);
-                });
                 dfd.resolve();
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
