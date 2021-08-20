@@ -5,10 +5,10 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc;
  * @author shuichu_ishida
  */
 public enum MonthlyAggregateAtr {
-	/** 法定内含む*/
-	AGGREGATE_STATUTORY_HOLIDAYS(0),
-	/** 法定内含まない */
-	NO_AGGREGATE_STATUTORY_HOLIDAYS(1);
+	/** 月の計算*/
+	MONTHLY(0),
+	/** 時間外超過 */
+	EXCESS_OUTSIDE_WORK(1);
 	
 	public int value;
 	private MonthlyAggregateAtr(int value){

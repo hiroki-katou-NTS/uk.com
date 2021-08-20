@@ -247,7 +247,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		// 「集計区分」を確認する
 		StandardFlexTime standFlexTime = new StandardFlexTime();
-		if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS && excessOutsideWorkMng != null){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 			
 			// 清算期間内の基準時間を集計する
 			standFlexTime = excessOutsideWorkMng.aggrStandardTime(require, cacheCarrier, yearMonth, 
@@ -338,7 +338,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 					ConcurrentStopwatches.stop("12222.4:週別実績の集計：");
 					
 					// 集計区分を確認する
-					if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS && excessOutsideWorkMng != null){
+					if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 					
 						ConcurrentStopwatches.start("12222.5:時間外超過の集計：");
 						
@@ -351,7 +351,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			}
 			
 			/** ○「集計区分」を確認する */
-			if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS && excessOutsideWorkMng != null){
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 
 				ConcurrentStopwatches.start("12222.6:超過時間割り当て：");
 				
@@ -554,7 +554,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 				val prevAttendanceTime = prevAttendanceTimeList.get(prevAttendanceTimeList.size() - 1);
 				val prevFlexTime = prevAttendanceTime.getMonthlyCalculation().getFlexTime();
 				FlexTimeCurrentMonth prevCurrentMonth = prevFlexTime.getFlexTime().getFlexTimeCurrentMonth();
-				if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+				if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 					// 時間外超過の時、時間外超過のフレックス時間．当月フレックス時間を利用する
 					prevCurrentMonth = prevFlexTime.getFlexTimeOfExcessOutsideTime().getFlexTimeCurrentMonth();
 				}
@@ -725,7 +725,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		// 当月フレックス時間を計算する　（フレックス時間合計－週平均超過時間）
 		FlexTimeCurrentMonth flexTimeCurrentMonth = this.flexTime.getFlexTimeCurrentMonth();
-		if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			// 時間外超過の時、時間外超過のフレックス時間を利用する
 			flexTimeCurrentMonth = this.flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth();
 		}
@@ -822,7 +822,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			// 所定労働時間（代休控除後）を基準時間に入れる
 			int standMinutes = compensatoryLeaveAfterDudection.valueAsMinutes();
 			if (standMinutes < 0) standMinutes = 0;
-			if (aggregateAtr == MonthlyAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS){
+			if (aggregateAtr == MonthlyAggregateAtr.MONTHLY){
 				this.flexTime.getFlexTimeCurrentMonth().setStandardTime(
 						new AttendanceTimeMonth(standMinutes));
 			} else{
@@ -917,7 +917,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		// 当月フレックス時間を計算する　（フレックス時間合計－所定労働時間－週平均超過時間）
 		FlexTimeCurrentMonth flexTimeCurrentMonth = this.flexTime.getFlexTimeCurrentMonth();
-		if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			// 時間外超過の時、時間外超過のフレックス時間を利用する
 			flexTimeCurrentMonth = this.flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth();
 		}
@@ -1018,7 +1018,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 			}
 		}
 		FlexTimeCurrentMonth flexTimeCurrentMonth = this.flexTime.getFlexTimeCurrentMonth();
-		if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			// 時間外超過の時、時間外超過のフレックス時間を利用する
 			flexTimeCurrentMonth = this.flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth();
 		}
@@ -1383,7 +1383,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		int result = 0;
 		val flexAggrSet = settingsByFlex.getFlexAggrSet();
 		FlexTimeCurrentMonth flexTimeCurrentMonth = this.flexTime.getFlexTimeCurrentMonth();
-		if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			// 時間外超過の時、時間外超過のフレックス時間を利用する
 			flexTimeCurrentMonth = this.flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth();
 		}
@@ -1424,7 +1424,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 					val prevAttendanceTime = prevAttendanceTimeList.get();
 					val prevFlexTime = prevAttendanceTime.getMonthlyCalculation().getFlexTime();
 					FlexTimeCurrentMonth prevCurrentMonth = prevFlexTime.getFlexTime().getFlexTimeCurrentMonth();
-					if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+					if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 						// 時間外超過の時、時間外超過のフレックス時間を利用する
 						prevCurrentMonth = prevFlexTime.getFlexTimeOfExcessOutsideTime().getFlexTimeCurrentMonth();
 					}
@@ -1797,7 +1797,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 		
 		// 清算後フレックス時間を計算する　（フレックス繰越時間＋当月フレックス時間．フレックス時間－当月精算フレックス時間）
 		FlexTimeCurrentMonth flexTimeCurrentMonth = this.flexTime.getFlexTimeCurrentMonth();
-		if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+		if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 			// 時間外超過の時、時間外超過のフレックス時間を利用する
 			flexTimeCurrentMonth = this.flexTimeOfExcessOutsideTime.getFlexTimeCurrentMonth();
 		}

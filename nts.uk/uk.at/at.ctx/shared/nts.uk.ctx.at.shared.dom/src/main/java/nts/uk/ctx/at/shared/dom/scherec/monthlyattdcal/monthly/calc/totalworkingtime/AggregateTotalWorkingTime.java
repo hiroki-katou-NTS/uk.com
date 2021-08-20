@@ -186,7 +186,7 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 			autoExceptHolidayWorkFrames = settingsByDefo.getAutoExceptHolidayWorkFrames();
 			
 			// 「割増集計方法」を取得する
-			if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 				excessOutsideTimeSet = settingsByDefo.getDeforAggrSet().getExcessOutsideTimeSet();
 			}
 			else {
@@ -202,7 +202,7 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 			autoExceptHolidayWorkFrames = settingsByReg.getAutoExceptHolidayWorkFrames();
 			
 			// 「割増集計方法」を取得する
-			if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS){
+			if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK){
 				excessOutsideTimeSet = settingsByReg.getRegularAggrSet().getExcessOutsideTimeSet();
 			}
 			else {

@@ -861,7 +861,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 				}
 
 				// 履歴ごとに月別実績を集計する
-				calcWork.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS, annualLeaveDeductDays,
+				calcWork.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, annualLeaveDeductDays,
 						absenceDeductTime, flexSettleTime);
 			}
 

@@ -255,7 +255,7 @@ public class ExcessOutsideWorkMng {
 			aggrValue = regAndIrgTime.aggregateMonthly(require,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, this.closureOpt,
-					MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS,
+					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
@@ -263,7 +263,7 @@ public class ExcessOutsideWorkMng {
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS,
+					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.settingsByReg, this.settingsByDefo,
 					aggrValue.getAggregateTotalWorkingTime());
@@ -273,14 +273,14 @@ public class ExcessOutsideWorkMng {
 			// フレックス勤務の月別実績を集計する
 			aggrValue = flexTime.aggregateMonthly(require, cacheCarrier, 
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS,
+					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.closureOpt, flexAggregateMethod, this.settingsByFlex,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// フレックス勤務の月単位の時間を集計する
 			flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, this.closureId,
-					this.procPeriod, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS, flexAggregateMethod,
+					this.procPeriod, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
 					this.workingConditionItem, this.workplaceId, this.employmentCd, this.companySets,
 					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime(), this.closureDate,
 					this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());
@@ -332,7 +332,7 @@ public class ExcessOutsideWorkMng {
 			aggrValue = regAndIrgTime.aggregateMonthly(require,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
 					this.procPeriod, this.workingSystem, this.closureOpt,
-					MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS,
+					MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.employmentCd, this.settingsByReg, this.settingsByDefo,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
@@ -340,7 +340,7 @@ public class ExcessOutsideWorkMng {
 			// 通常・変形労働時間勤務の月単位の時間を集計する
 			regAndIrgTime.aggregateMonthlyHours(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS,
+					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.isRetireMonth, this.workplaceId, this.employmentCd,
 					this.settingsByReg, this.settingsByDefo,
 					aggrValue.getAggregateTotalWorkingTime());
@@ -357,14 +357,14 @@ public class ExcessOutsideWorkMng {
 			// フレックス勤務の月別実績を集計する
 			aggrValue = flexTime.aggregateMonthly(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate,
-					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS,
+					this.procPeriod, this.workingSystem, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK,
 					this.closureOpt, flexAggregateMethod, this.settingsByFlex,
 					aggregateTotalWorkingTime, this, this.startWeekNo,
 					this.companySets, this.employeeSets, this.monthlyCalculatingDailys);
 			
 			// フレックス勤務の月単位の時間を集計する
 			flexTime.aggregateMonthlyHours(require, cacheCarrier, this.companyId, this.employeeId, this.yearMonth, this.closureId,
-					this.procPeriod, MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS, flexAggregateMethod,
+					this.procPeriod, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, flexAggregateMethod,
 					this.workingConditionItem, this.workplaceId, this.employmentCd, this.companySets,
 					this.employeeSets, this.settingsByFlex, aggrValue.getAggregateTotalWorkingTime(), this.closureDate,
 					this.monthlyCalculatingDailys.getAttendanceTimeOfDailyMap().values());

@@ -218,6 +218,9 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 																		companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
 																		false);
 		
+		val statutoryHolAggrAtr = aggregateAtr == MonthlyAggregateAtr.MONTHLY 
+				? StatutoryHolidayAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS : StatutoryHolidayAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS;
+		
 		// 休出・振替のループ
 		for (val holidayWorkAndTransferAtr : holidayWorkAndTransferAtrs){
 		
@@ -225,7 +228,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			canLegalHolidayWork = this.holidayWorkFrameTimeProcess(require, holidayWorkAndTransferAtr,
 					legalHolidayWorkTransferOrder, excessOutsideTimeSet, canLegalHolidayWork,
 					roleHolidayWorkFrameMap, holidayWorkFrameTimes, ymd,
-					aggregateAtr, workInfo, companySets);
+					statutoryHolAggrAtr, workInfo, companySets);
 		}
 	}
 	
@@ -281,7 +284,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			ExcessOutsideTimeSetReg excessOutsideTimeSet, 
 			AttendanceTime canLegalHolidayWork, Map<Integer, WorkdayoffFrame> roleHolidayWorkFrameMap,
 			Map<HolidayWorkFrameNo, HolidayWorkFrameTime> holidayWorkFrameTimeMap,
-			GeneralDate ymd, MonthlyAggregateAtr aggregateAtr, WorkInformation workInfo,
+			GeneralDate ymd, StatutoryHolidayAggregateAtr aggregateAtr, WorkInformation workInfo,
 			MonAggrCompanySettings companySets){
 		
 		AttendanceTime timeAfterCalc = canLegalHolidayWork;
@@ -308,7 +311,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			if (holWorkAtr == HolidayAtr.STATUTORY_HOLIDAYS) {
 				
 				/** パラメータ。集計区分を確認する */
-				if (aggregateAtr == MonthlyAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS) {
+				if (aggregateAtr == StatutoryHolidayAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS) {
 					
 					/** ○取得した休出枠時間を「集計休出時間」に入れる（法定内） */
 					addHolidayWorkTime(holidayWorkAndTransferAtr, holidayWorkFrameTime, timeSeriesWork);
@@ -418,7 +421,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 			val holWorkAtr = roleHolidayWorkFrame.getHolWorkAtrforDailyRecord(require, workInfo);
 			if (holWorkAtr == HolidayAtr.STATUTORY_HOLIDAYS) {
 				
-				if (aggregateAtr == MonthlyAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS) {
+				if (aggregateAtr == MonthlyAggregateAtr.MONTHLY) {
 
 					/** ○取得した休出枠時間を「集計休出時間」に入れる */
 					timeSeriesWork.addHolidayWorkTimeInHolidayWorkTime(holFrame.getHolidayWorkTime().get());

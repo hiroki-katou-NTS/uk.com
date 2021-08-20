@@ -252,7 +252,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 							weekTime.getWeeklyTotalPremiumTime().v());
 					
 					// 集計区分を確認する
-					if (aggregateAtr == MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS && excessOutsideWorkMng != null){
+					if (aggregateAtr == MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK && excessOutsideWorkMng != null){
 
 						ConcurrentStopwatches.start("12222.5:時間外超過の集計：");
 						

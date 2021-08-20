@@ -85,7 +85,7 @@ public class MonthlyCalculationByWorkCondition {
 		val employeeSets = require.monAggrEmployeeSettings(cacheCarrier, cid, sid, calcPeriod);
 		
 		return calcMonth(require, cid, sid, ym, baseDate, Optional.empty(), Optional.empty(),
-				MonthlyAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS, dailyRecords, cacheCarrier,
+				MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, dailyRecords, cacheCarrier,
 				companySets, employeeSets, wc, calcPeriod);
 	}
 
