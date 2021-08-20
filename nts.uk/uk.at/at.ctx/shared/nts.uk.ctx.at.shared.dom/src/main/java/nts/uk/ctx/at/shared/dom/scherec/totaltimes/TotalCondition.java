@@ -45,10 +45,6 @@ public class TotalCondition {
 		this.thresoldLowerLimit = memento.getThresoldLowerLimit();
 		this.atdItemId = memento.getAttendanceItemId();
 
-		if (atdItemId.isPresent() && (!thresoldLowerLimit.isPresent() || !thresoldUpperLimit.isPresent())) {
-			throw new BusinessException("Msg_2217");
-		}
-
 		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
 				&& thresoldUpperLimit.get().lessThanOrEqualTo(thresoldLowerLimit.get())) {
 			throw new BusinessException("Msg_210");

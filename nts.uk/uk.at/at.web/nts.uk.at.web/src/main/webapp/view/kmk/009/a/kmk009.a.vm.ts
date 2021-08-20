@@ -575,11 +575,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
 
                 }).fail(function (res) {
-                    nts.uk.ui.dialog.alertError(res).then(() => {
-                        if (res.messageId == "Msg_2217") {
-                            $("#inpAlarmTime").focus();
-                        }
-                    });
+                    nts.uk.ui.dialog.alertError(res);
                 }).always(function () {
                     nts.uk.ui.block.clear();
                 });
