@@ -166,7 +166,8 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				outputData.setChkPause(true);
 		}
 		// 特休チェック区分をチェックする
-		if (!errorCheck.getSpecialLeaveErrors().isEmpty()) {
+		if (!errorCheck.getSpecialLeaveErrors().stream().flatMap(x -> x.getRight().stream())
+				.collect(Collectors.toList()).isEmpty()) {
 			outputData.setChkSpecial(true);
 		}
 		
@@ -314,7 +315,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				                true, 
 				                specInterimRemain, 
 				                Optional.of(inputParam.getRegisterDate()))).getSpecialLeaveErrors();
-				specialLeaveErrorAll.add(Pair.of( a.getSpecialHolidayCode().v(), specialLeaveErrors));
+				if(!specialLeaveErrors.isEmpty()) {
+					specialLeaveErrorAll.add(Pair.of( a.getSpecialHolidayCode().v(), specialLeaveErrors));
+				}
 			}
 			outputData.setSpecialLeaveErrors(specialLeaveErrorAll);
 		}
@@ -323,7 +326,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			List<TempAnnualLeaveMngs> mngWork = remainData.getAnnualMng().stream().map(x -> ((TempAnnualLeaveMngs)x)).collect(Collectors.toList());
 			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(), inputParam.getBaseDate(),
-					false, false, Optional.of(true), Optional.of(mngWork), Optional.empty());
+					false, false, Optional.of(true), Optional.of(mngWork), Optional.empty(), inputParam.getRegisterDate());
 			outputData.setAnnualErrors(lstError.stream().filter(errorcheck -> {
 				if (errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT
 						|| errorcheck == AnnualLeaveErrorSharedImport.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT
@@ -342,7 +345,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			List<ReserveLeaveErrorImport> reserveLeaveErrors = annualService.reserveLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(), inputParam.getBaseDate(),
 					false, false, Optional.of(true), Optional.of(mngWork), Optional.of(lstReserve), Optional.empty(),
-					Optional.empty());
+					Optional.empty(), inputParam.getRegisterDate());
 			outputData.setReserveLeaveErrors(reserveLeaveErrors.stream().filter(errorCheck -> {
 				if (errorCheck == ReserveLeaveErrorImport.SHORTAGE_RSVLEA_AFTER_GRANT
 						|| errorCheck == ReserveLeaveErrorImport.SHORTAGE_RSVLEA_BEFORE_GRANT) {
