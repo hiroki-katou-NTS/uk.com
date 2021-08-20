@@ -122,7 +122,7 @@ public class GetAggregatedInfoFinder {
 				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().entrySet().stream()
 						.map(x -> new ExternalBudgetMapDto(
 								x.getKey().getExternalBudgetCode(),
-								x.getKey().getExternalBudgetCode(), 
+								x.getKey().getExternalBudgetName(), 
 								x.getValue(),
 								x.getKey().getBudgetAtr(),
 								x.getKey().getUnitAtr()))

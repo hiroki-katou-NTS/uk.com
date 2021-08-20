@@ -101,7 +101,7 @@ public class AggregateWorkplaceDto {
 							  .stream()
 							  .map(x -> new ExternalBudgetMapDto(
 									  x.getKey().getExternalBudgetCode(),
-									  x.getKey().getExternalBudgetCode(),
+									  x.getKey().getExternalBudgetName(),
 									  x.getValue(),
 									  x.getKey().getBudgetAtr(),
 									  x.getKey().getUnitAtr()
