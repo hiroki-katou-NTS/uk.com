@@ -3,7 +3,7 @@ module nts.uk.com.view.cmf001.d {
 	import close = nts.uk.ui.windows.close;
 	import setShared = nts.uk.ui.windows.setShared;
 	import getShared = nts.uk.ui.windows.getShared;
-	import alertError = nts.uk.ui.dialog.alertError;
+	import alert = nts.uk.ui.dialog.alert;
 	
 	export module viewmodel {
 		@bean()
@@ -27,10 +27,8 @@ module nts.uk.com.view.cmf001.d {
 			]);
 
 			constructor() {
-				console.log("ダイアログ起動した")
 				let self = this;
 				var params = getShared('CMF001DParams');
-				console.log("パラメータ受け取った")
 				self.selectablItemList = ko.observableArray<SelectableItem>([]);
 				self.getSelectableItem(params.domainId);
 				self.selectedItems(params.selectedItems.map(n => Number(n)));
@@ -54,7 +52,7 @@ module nts.uk.com.view.cmf001.d {
 			decide(): void {
 				let self = this;
 				if(self.selectingItems().length == 0) {
-					alertError({ messageId: "項目が選択されていません。" });
+					alert({ messageId: "項目が選択されていません。" });
 					return;
 				}
 				setShared('CMF001DOutput', self.selectingItems());
