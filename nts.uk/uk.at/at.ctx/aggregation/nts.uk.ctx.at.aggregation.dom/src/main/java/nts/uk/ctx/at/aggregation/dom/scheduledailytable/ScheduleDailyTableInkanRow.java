@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.scheduledailytable;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Value;
@@ -18,12 +19,12 @@ public class ScheduleDailyTableInkanRow {
 	/**
 	 * 使用区分
 	 */
-	private NotUseAtr notUseAtr;
+	private final NotUseAtr notUseAtr;
 	
 	/**
 	 * 見出しリスト
 	 */
-	private List<ScheduleDailyTableInkanTitle> titleList;
+	private final List<ScheduleDailyTableInkanTitle> titleList;
 	
 	/**
 	 * 作る
@@ -38,7 +39,27 @@ public class ScheduleDailyTableInkanRow {
 			throw new BusinessException("Msg_2085");
 		}
 		
+		if(notUseAtr == NotUseAtr.USE && titleList.isEmpty()) {
+			throw new BusinessException("Msg_2222");
+		}
+		
 		return new ScheduleDailyTableInkanRow(notUseAtr, titleList);
+	}
+	
+	/**
+	 * 印鑑欄見出しを取得する
+	 * @return
+	 */
+	public List<ScheduleDailyTableInkanTitle> getInkanRowTitle(){
+		return this.notUseAtr == NotUseAtr.USE? this.titleList: Collections.emptyList();
+	} 
+	
+	/**
+	 * 複製する
+	 * @return
+	 */
+	public ScheduleDailyTableInkanRow reproduce() {
+		return new ScheduleDailyTableInkanRow(this.notUseAtr, this.titleList);
 	}
 
 }

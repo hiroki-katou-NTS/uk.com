@@ -19,37 +19,37 @@ public class ScheduleDailyTableItemSetting {
 	/**
 	 * 印鑑欄
 	 */
-	private ScheduleDailyTableInkanRow inkanRow;
+	private final ScheduleDailyTableInkanRow inkanRow;
 	
 	/**
 	 * コメント
 	 */
-	private Optional<ScheduleDailyTableComment> comment;
+	private final Optional<ScheduleDailyTableComment> comment;
 	
 	/**
 	 * 個人計
 	 */
-	private List<Integer> personalCounter;
+	private final List<Integer> personalCounter;
 	
 	/**
 	 * 職場計
 	 */
-	private List<Integer> workplaceCounter;
+	private final List<Integer> workplaceCounter;
 	
 	/**
 	 * 異動者表示
 	 */
-	private NotUseAtr transferDisplay;
+	private final NotUseAtr transferDisplay;
 	
 	/**
 	 * 応援者の予定出力方法
 	 */
-	private SupporterPrintMethod supporterSchedulePrintMethod;
+	private final SupporterPrintMethod supporterSchedulePrintMethod;
 	
 	/**
 	 * 応援者の実績出力方法
 	 */
-	private SupporterPrintMethod supporterDailyDataPrintMethod;
+	private final SupporterPrintMethod supporterDailyDataPrintMethod;
 	
 	/**
 	 * 作る
@@ -86,5 +86,21 @@ public class ScheduleDailyTableItemSetting {
 				transferDisplay, 
 				supporterSchedulePrintMethod, 
 				supporterDailyDataPrintMethod);
+	}
+	
+	/**
+	 * 複製する
+	 * @return
+	 */
+	public ScheduleDailyTableItemSetting reproduct() {
+		return new ScheduleDailyTableItemSetting(
+						this.inkanRow.reproduce()
+					,	this.comment
+					,	this.personalCounter
+					,	this.workplaceCounter
+					,	this.transferDisplay
+					,	this.supporterSchedulePrintMethod
+					,	this.supporterDailyDataPrintMethod
+				);
 	}
 }

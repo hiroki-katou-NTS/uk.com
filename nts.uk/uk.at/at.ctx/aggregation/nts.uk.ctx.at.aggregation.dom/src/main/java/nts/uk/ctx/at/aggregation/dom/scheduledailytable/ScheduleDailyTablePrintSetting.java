@@ -28,5 +28,19 @@ public class ScheduleDailyTablePrintSetting implements DomainAggregate {
 	 * 項目設定
 	 */
 	private ScheduleDailyTableItemSetting itemSetting;
+	
+	/**
+	 * 複製する
+	 * @param detinationCode 複製先のコード
+	 * @param destinationName 複製先の名称
+	 * @return
+	 */
+	public ScheduleDailyTablePrintSetting reproduce(ScheduleDailyTableCode detinationCode
+			,	ScheduleDailyTableName destinationName) {
+		return new ScheduleDailyTablePrintSetting(
+					detinationCode
+				,	destinationName
+				,	this.itemSetting.reproduct());
+	}
 
 }
