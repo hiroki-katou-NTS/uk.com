@@ -121,19 +121,23 @@ module nts.uk.at.view.kal012.b {
             vm.setNormalAuto(0);// init for normal
             vm.setNormalAuto(1); // init for auto
             vm.$ajax(API.init).done((data) => {
+                let isNormalSet = false;
+                let isAutoSet = false;
                 if (data) {
                     if (data.mailSettings.exMailSettingsList.length > 0) {
                         for (let item of data.mailSettings.exMailSettingsList) {
-                            if (item.normalAutoClassify === 0 && (item.mailContents != null || item.senderAddress.length > 0)) {
+                            if (item.normalAutoClassify === 0 && (item.mailContents != null || item.senderAddress != null)) {
                                 vm.normal = item;
-                                vm.isNormalSet(true);
+                                isNormalSet = true;
                             }
-                            if (item.normalAutoClassify === 1 && (item.mailContents != null || item.senderAddress.length > 0)) {
+                            if (item.normalAutoClassify === 1 && (item.mailContents != null || item.senderAddress != null)) {
                                 vm.auto = item;
-                                vm.isAutoSet(true);
+                                isAutoSet = true;
                             }
                         }
                     }
+                    vm.isAutoSet(isAutoSet);
+                    vm.isNormalSet(isNormalSet);
                     vm.model.isMailAlreadySet(data.mailSettings.preConfigured);
 
                     if (data.sendingRole) {
