@@ -1068,7 +1068,7 @@ public class InterimRemainOffDateCreateData {
 		List<OccurrenceUseDetail> occList = inforData.getWorkTypeRemain().stream().map(x -> x.getOccurrenceDetailData())
 				.flatMap(List::stream).collect(Collectors.toList());
 
-		occList.forEach(x -> {
+		occList.stream().filter(x -> x.getDays() > 0).forEach(x -> {
 			WorkTypeClassification wkCls = x.getWorkTypeAtr();
 
 			switch (wkCls) {
