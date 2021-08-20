@@ -148,7 +148,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 
 	private List<EmployeeMonthlyPerError> getSpecialLeaveErrors(String sid, RemainErrors lstError) {
 		List<EmployeeMonthlyPerError> outPutData = new ArrayList<>();
-		lstError.getSpecialLeaveErrors().forEach(x -> {
+		lstError.getSpecialLeaveErrors().stream().filter(x -> !x.getRight().isEmpty()).forEach(x -> {
 			outPutData.addAll(CreatePerErrorsFromLeaveErrors.fromSpecialLeave(
 				sid,
 				YearMonth.of(999912),
