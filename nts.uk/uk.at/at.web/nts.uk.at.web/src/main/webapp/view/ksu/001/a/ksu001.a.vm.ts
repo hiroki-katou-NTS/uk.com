@@ -3149,7 +3149,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
 								let value = 0;
 								if(!_.isEmpty(findValueObject)) {
-									value = _.isEmpty(findValueObject.value) ? 0 : findValueObject.value;
+									value = _.isNaN(_.toNumber(findValueObject.value)) ?  0 : _.toNumber(findValueObject.value);
 								}
 								if(_.includes([1, 3, 5], i)) {
 									_.set(objectLaborCostAndTime, key, nts.uk.time.format.byId("Time_Short_HM", value));	
@@ -3206,7 +3206,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
 	                            _.set(objectExternalBudget, key, nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));   
 	                            sumExternalBudget += _.toNumber(value);
 	                        } else {
@@ -3253,7 +3253,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
 	                            _.set(objectTimeCount, key, value); 
 	                            sumTimeCount += value;
 	                        } else {
@@ -3317,7 +3317,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                                            break;
 	                                    default: break;
 	                                }
-									value = _.isEmpty(value) ? 0 : value;
+									value = _.isNaN(_.toNumber(value)) ?  0 : _.toNumber(value);
 									_.set(objectPeopleMethod, key, value);
 	                                sumPeopleMethod += value;
 	                            } else {
@@ -3365,7 +3365,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
 	                            _.set(objectEmployment, key, value); 
 	                            sumEmployment += value;
 	                        } else {
@@ -3412,7 +3412,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
 	                            _.set(objectClassification, key, value); 
 	                            sumClassification += value;
 	                        } else {
@@ -3459,7 +3459,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isEmpty(findObject.value) ? 0 : findObject.value;
+								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
 	                            _.set(objectJobTitle, key, value);   
 	                            sumJobTitleInfo += value;
 	                        } else {
