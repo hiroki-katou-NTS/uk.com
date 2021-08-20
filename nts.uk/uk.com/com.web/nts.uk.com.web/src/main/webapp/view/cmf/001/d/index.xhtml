@@ -10,17 +10,12 @@
 				<script> var dialogSize = { width : 350, height : 450 };</script>
 				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="cmf001.d.css" />
-				<!-- <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" /> -->
-				<!-- <com:scriptfile path="cmf001.d.start.js" /> -->
 				<com:scriptfile path="cmf001.d.vm.js" />
 				
 			</ui:define>
 			<ui:define name="content">
 				<div id="contents-area">
 					<div class="select">
-						<!-- <div class="lableCDL" tabindex="-1">
-							<label>受入項目を選択する</label>
-						</div> -->
 						<table id="item-select" data-bind="ntsGridList: {
 							height: 300,
 							options: selectablItemList,
@@ -31,7 +26,6 @@
 						}"></table>
 					</div>
 				</div>
-				<!-- <div id="ruled-line" style="border: 1px solid;"></div> -->
 				<div id="functions-area-bottom">
 					<button class="proceed x-large" data-bind="click: decide" tabindex="2">決定</button>
 					<button data-bind="click: cancel" tabindex="3">キャンセル</button>
