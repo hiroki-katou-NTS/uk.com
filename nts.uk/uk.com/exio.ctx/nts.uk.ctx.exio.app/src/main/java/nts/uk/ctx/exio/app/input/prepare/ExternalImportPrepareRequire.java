@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
@@ -97,11 +96,9 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private DomainDataRepository domainDataRepo;
-	@Inject
-	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
 	
 	@Inject
-	private EmploymentHistoryRepository employmentHistoryRepo;
+	private EmployeeDataMngInfoRepository employeeDataMngInfoRepo;
 	
 	@Inject
 	private TaskingRepository taskingRepo;
@@ -238,8 +235,8 @@ public class ExternalImportPrepareRequire {
 
 
 		@Override
-		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id) {
-			return domainDataRepo.getHistory(id);
+		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass) {
+			return domainDataRepo.getHistory(id, historyClass);
 		}
 
 	}

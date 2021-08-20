@@ -15,6 +15,7 @@ public interface DomainDataRepository {
 	void delete(DomainDataId id);
 	
 	//ここの2つは履歴を汎用的に触るやつなので、このRepositoryにまとまっているのは不適切化も
-	History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id);
+	History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass);
+	
 	void update(DomainDataId targetKey, DatePeriod period);
 }
