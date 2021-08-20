@@ -53,6 +53,6 @@ public class TimeVacationRemainingOutput {
     private Optional<GeneralDate> grantDate = Optional.empty();
 
     // 付与日数
-    private Optional<Integer> grantedDays = Optional.empty();
+    private Optional<Double> grantedDays = Optional.empty();
 
 }

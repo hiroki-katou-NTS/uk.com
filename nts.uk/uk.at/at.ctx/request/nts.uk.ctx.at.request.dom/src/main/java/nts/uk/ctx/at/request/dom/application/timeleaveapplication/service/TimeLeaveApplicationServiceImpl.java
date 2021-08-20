@@ -370,7 +370,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
                     .min(Comparator.comparing(h -> h.grantDate));
 
             timeLeaveRemaining.setGrantDate(closestFuture.map(NextAnnualLeaveGrantImport::getGrantDate));
-            timeLeaveRemaining.setGrantedDays(closestFuture.map(holiday -> holiday.grantDays.intValue()));
+            timeLeaveRemaining.setGrantedDays(closestFuture.map(holiday -> holiday.grantDays));
         }
 
         if (timeLeaveManagement.getTimeAllowanceManagement().isTimeBaseManagementClass()) {

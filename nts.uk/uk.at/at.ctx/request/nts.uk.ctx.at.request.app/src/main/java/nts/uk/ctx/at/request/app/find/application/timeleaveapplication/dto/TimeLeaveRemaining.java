@@ -56,7 +56,7 @@ public class TimeLeaveRemaining {
     private String grantDate;
 
     // 付与日数
-    private Integer grantedDays;
+    private Double grantedDays;
 
     public static TimeVacationRemainingOutput setDataOutput(TimeLeaveRemaining dto) {
         return new TimeVacationRemainingOutput(
