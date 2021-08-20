@@ -483,7 +483,6 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
             }
     }
     private void pageBreak (HorizontalPageBreakCollection pageBreaks,int count,Cells cells) throws Exception {
-        setTopBorderStyle(cells,count);
         pageBreaks.add(count);
         cells.copyRows(cells, 0, count, 5);
     }
@@ -493,14 +492,5 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 ||attributes == CommonAttributesOfForms.TIME
                 ||attributes == CommonAttributesOfForms.AMOUNT_OF_MONEY
                 ||attributes == CommonAttributesOfForms.NUMBER_OF_TIMES;
-    }
-    private void setTopBorderStyle(Cells cells,int index) {
-
-        for (int i = 0; i < 21; i++) {
-            val cell = cells.get(index - 1,i);
-            Style style = cell.getStyle();
-            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
-            cell.setStyle(style);
-        }
     }
 }
