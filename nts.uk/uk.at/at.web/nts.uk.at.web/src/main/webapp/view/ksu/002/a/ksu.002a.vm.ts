@@ -630,7 +630,7 @@ module nts.uk.ui.at.ksu002.a {
 			}
 			setShared('dataShareDialogKSU002B', param);
 			try{
-				nts.uk.ui.windows.sub.modeless('/view/ksu/002/b/index.xhtml');
+				nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml').;
 			}catch{
 				nts.uk.ui.block.clear();
 			}
