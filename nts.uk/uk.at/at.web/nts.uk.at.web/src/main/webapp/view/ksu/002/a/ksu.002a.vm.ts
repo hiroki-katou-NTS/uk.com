@@ -11,7 +11,6 @@ module nts.uk.ui.at.ksu002.a {
 	type DayDataSave2Memento = DayData | DayDataRawObsv | DayDataMementoObsv;
 
 	const API = {
-		UNAME: '/sys/portal/webmenu/username',
 		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation',
 		GSCHER: '/screen/ksu/ksu002/getDataDaily',
 		SAVE_DATA: '/screen/ksu/ksu002/regisWorkSchedule',
@@ -217,14 +216,11 @@ module nts.uk.ui.at.ksu002.a {
 		created() {
 			const vm = this;
 			
-			
 			vm.getfirst();
 			
 			vm.employeeId = ko.observableArray([vm.$user.employeeId]);
 			
 			initEvent();
-
-			const bussinesName: KnockoutObservable<string> = ko.observable('');
 
 			vm.enable = ko.computed({
 				read: () => {
@@ -237,15 +233,12 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.currentUser = ko.computed({
 				read: () => {
-					const bName = ko.unwrap(bussinesName);
+					const bName = ko.unwrap(vm.startupProcessingInformation);
 
-					return `${vm.$i18n('KSU002_20')}&nbsp;&nbsp;&nbsp;&nbsp;${vm.$user.employeeCode}&nbsp;&nbsp;${bName}`;
+					return `${vm.$i18n('KSU002_20')}&nbsp;&nbsp;&nbsp;&nbsp;${bName ? bName.employeeCode : ''}&nbsp;&nbsp;${bName ? bName.businessName : ''}`;
 				},
 				owner: vm
 			});
-
-			vm.$ajax('com', API.UNAME)
-				.then((name: string) => bussinesName(name));
 
 			// call to api and get data
 			vm.baseDate
@@ -621,9 +614,6 @@ module nts.uk.ui.at.ksu002.a {
 		
 		
 		mounted() {
-			const vm = this;
-
-			//$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
 		
 		// UI-8: Undo-Redoの処理
