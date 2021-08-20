@@ -43,7 +43,7 @@ public class CorrectWorkTimeByWorkType {
 			// 就業時間帯コード＝nullの確認
 			// 平日時の就業時間帯をセットする
 			domainDaily.getWorkInformation().getRecordInfo()
-					.setWorkTimeCode(workCondItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().orElse(null));
+					.setWorkTimeCode(workCondItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().orElse(null));
 			// 勤務情報が変更された情報を記録
 			changeAtt.setWorkInfo(true);
 		}

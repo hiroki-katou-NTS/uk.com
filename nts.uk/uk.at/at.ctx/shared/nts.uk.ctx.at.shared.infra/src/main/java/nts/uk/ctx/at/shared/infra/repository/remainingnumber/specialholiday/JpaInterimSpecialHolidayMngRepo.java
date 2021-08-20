@@ -82,7 +82,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			entity.usedTime = domain.getUseTimes().map(x -> x.v() == 0 ? null : x.v()).orElse(null);
 			entity.remainMngId = domain.getRemainManaID();
 			entity.pk = key;
-			this.getEntityManager().persist(entity);
+			this.commandProxy().insert(entity);
 		} else {
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.mngAtr = domain.getMngAtr().value;
@@ -110,6 +110,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 		.setParameter("sid", sId)
 		.setParameter("ymd", ymd)
 		.executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override

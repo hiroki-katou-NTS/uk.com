@@ -25,6 +25,9 @@
 												value: dateValue }">
 					</div>
 				</div>
+				<div data-bind="if: !dispSingleDate() && from006">
+					<div class="pl-15 cell valign-center" data-bind=" text: $i18n('KAF006_101')"></div>
+				</div>
 			</div>
 			<span data-bind="text: $vm.comment, visible: $vm.application().appType === 2"></span>
 		</div>

@@ -150,7 +150,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 	public void correctDefaultData(ScreenMode screenMode) {
 		this.goOutSet.correctDefaultData(screenMode);
 		this.subHolTimeSet.forEach(item -> item.correctDefaultData(screenMode));
-		this.stampSet.correctDefaultData(screenMode);
+		//this.stampSet.correctDefaultData(screenMode);
 		
 		// Tab 13
 		this.extraordTimeSet.correctData(screenMode);

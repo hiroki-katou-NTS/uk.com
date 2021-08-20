@@ -27,6 +27,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.net.Ipv4Address;
 
@@ -56,11 +57,14 @@ public class EmpInfoTerminalTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		CreateStampInfo temFix = new CreateStampInfo(
+				new NRConvertInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.of(GoingOutReason.PRIVATE)),
+						NotUseAtr.NOT_USE),
+				Optional.empty(), Optional.empty());
 		empInfoTerminal = new EmpInfoTerminalBuilder(Optional.of(Ipv4Address.parse("192.168.1.1")), new MacAddress("AABBCCDD"),
 				new EmpInfoTerminalCode("1"), Optional.of(new EmpInfoTerSerialNo("1")), new EmpInfoTerminalName(""),
 				new ContractCode("1"))
-						.createStampInfo(new CreateStampInfo(new OutPlaceConvert(NotUseAtr.NOT_USE, Optional.empty()),
-								new ConvertEmbossCategory(NotUseAtr.NOT_USE, NotUseAtr.NOT_USE), Optional.empty(), Optional.empty()))
+						.createStampInfo(temFix)
 						.modelEmpInfoTer(ModelEmpInfoTer.NRL_1).intervalTime((new MonitorIntervalTime(1))).build();
 	}
 
@@ -250,7 +254,7 @@ public class EmpInfoTerminalTest {
 		assertThat(resultActual.getRefActualResults().getWorkTimeCode())
 				.isEqualTo(recordExpect.getRefActualResults().getWorkTimeCode());
 
-		assertThat(resultActual.isReflectedCategory()).isEqualTo(recordExpect.isReflectedCategory());
+		assertThat(resultActual.getImprintReflectionStatus().isReflectedCategory()).isEqualTo(recordExpect.getImprintReflectionStatus().isReflectedCategory());
 
 		assertThat(resultActual.getLocationInfor()).isEqualTo(recordExpect.getLocationInfor());
 	}

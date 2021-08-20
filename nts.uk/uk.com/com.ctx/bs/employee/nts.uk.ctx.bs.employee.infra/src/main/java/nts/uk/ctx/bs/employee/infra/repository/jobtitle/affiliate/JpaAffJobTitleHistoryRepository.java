@@ -508,11 +508,13 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 	public void addAll(Map<String, DateHistoryItem> items) {
 		String INS_SQL = "INSERT INTO BSYMT_AFF_JOB_HIST (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " HIST_ID, SID, CID,"
+				+ " CONTRACT_CD, HIST_ID, SID, CID,"
 				+ " START_DATE, END_DATE)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, SID_VAL, CID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+				+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, CID_VAL, START_DATE_VAL, END_DATE_VAL); ";
+		
+		String contractCode = AppContexts.user().contractCode();
 		String cid = AppContexts.user().companyId();
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
@@ -535,6 +537,7 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository implements Af
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 			
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("HIST_ID_VAL", "'" + dateHistItem.identifier() + "'");
 			sql = sql.replace("CID_VAL", "'" + cid + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getKey() + "'");

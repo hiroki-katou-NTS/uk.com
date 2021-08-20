@@ -474,7 +474,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		registerNotCalcDomain(commandNew, commandOld, isUpdate);
 		List<IntegrationOfDaily> lastDt =  updateDomainAfterCalc(domainDailyNew);
 		
-		dailyRecordAdUpService.removeConfirmApproval(domainDailyNew, Optional.empty(), Optional.empty());
+		// エラーで本人確認と上司承認を解除する
+		dailyRecordAdUpService.removeConfirmApproval(domainDailyNew);
 		if (month != null && month.getEmployeeId() != null) {
 			// val error = x.getEmployeeMonthlyPerErrorList().get(0);
 			employeeMonthlyPerErrorRepository.removeAll(month.getEmployeeId(), new YearMonth(month.getYearMonth()),
@@ -710,6 +711,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 		case DAILY_SUPPORT_TIMESHEET_NAME:
 			return isUpdate ? this.supportUpdateHandler : this.supportAddHandler;
+		case DAILY_SNAPSHOT_NAME:
+			return isUpdate ? this.snapshotUpdateHandler : this.snapshotAddHandler;
 		default:
 			return null;
 		}

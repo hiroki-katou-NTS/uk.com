@@ -46,5 +46,30 @@
 .ksm007-right-content {
   padding-left: 30px;
   float: left;
-  width: 55%;
+  width: 55%;  
+}
+
+.switchbox-wrappers.radio-wrappers label:first-child input+span {
+  width: 60px;
+  text-align: center;
+}
+
+.switchbox-wrappers.radio-wrappers label:not(:first-child) input+span {
+  margin-left: 1px;
+  width: 60px;
+  text-align: center;
+}
+
+.set-spacing {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#history-list-panel_displayContainer {
+  height: 255px !important;
+}
+
+#history-list-panel_scrollContainer{
+  height: 255px !important;
 }

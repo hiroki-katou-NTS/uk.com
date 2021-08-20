@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
+import javax.servlet.http.HttpServletRequest;
+
 import lombok.Data;
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
@@ -17,6 +19,8 @@ public class PasswordAuthenticateCommand implements LoginCommandHandlerBase.Tena
 	private String employeeCode;
 	
 	private String password;
+	
+	private HttpServletRequest request;
 
 	@Override
 	public String getTenantCode() {
@@ -37,8 +41,12 @@ public class PasswordAuthenticateCommand implements LoginCommandHandlerBase.Tena
 			throw new BusinessException("Msg_312");
 		}
 		// パスワードが未入力でないかチェック
-		if (StringUtil.isNullOrEmpty(password, true)) {
+		if (StringUtil.isNullOrEmpty(password, false)) {
 			throw new BusinessException("Msg_310");
 		}
+	}
+
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 }

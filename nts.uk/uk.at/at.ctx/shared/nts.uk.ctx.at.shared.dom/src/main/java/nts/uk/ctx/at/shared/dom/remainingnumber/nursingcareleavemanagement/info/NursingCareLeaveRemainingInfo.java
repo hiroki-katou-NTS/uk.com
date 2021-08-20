@@ -146,21 +146,21 @@ public abstract class NursingCareLeaveRemainingInfo{
 
 		// 上限設定を確認
 		// ===家族情報を参照：家族情報を参照
-		if (upperlimitSetting == UpperLimitSetting.FAMILY_INFO) {
+		//if (upperlimitSetting == UpperLimitSetting.FAMILY_INFO) {
 
 			// INPUT．Require．介護看護休暇設定を取得する
-			NursingLeaveSetting nursingLeaveSetting = require.nursingLeaveSetting(companyId, this.leaveType);
+			//NursingLeaveSetting nursingLeaveSetting = require.nursingLeaveSetting(companyId, this.leaveType);
 
 			// 家族情報から対象人数を履歴で求める
 			// ===社員ID←パラメータ「社員ID」
 			// ===期間←パラメータ「期間」
 			// ===基準日←パラメータ「基準日」
 			// ===Require
-			childCareNurseUpperLimitSplit = nursingLeaveSetting.getHistoryCountFromFamilyInfo(employeeId, period, criteriaDate, require);
+			//childCareNurseUpperLimitSplit = nursingLeaveSetting.getHistoryCountFromFamilyInfo(employeeId, period, criteriaDate, require);
 			
 			// 「上限日数分割日（List）」を返す
-			return childCareNurseUpperLimitSplit;
-		}  
+			//return childCareNurseUpperLimitSplit;
+		//}  
 		
 		// ===個人情報を参照（本年度のみ利用）
 		if (upperlimitSetting == UpperLimitSetting.PER_INFO_FISCAL_YEAR){
@@ -176,7 +176,6 @@ public abstract class NursingCareLeaveRemainingInfo{
 				// ===上限日数＝本年度上限日数を設定
 				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
 			}
-			
 			// 「上限日数分割日（List）」を返す
 			return childCareNurseUpperLimitSplit;
 		}

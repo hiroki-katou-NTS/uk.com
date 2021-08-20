@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -40,26 +39,25 @@ public class CopyWorkTypeWorkTime {
 	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
 
-	public List<ErrorMessageInfo> copyWorkTypeWorkTime(IntegrationOfDaily integrationOfDaily) {
+	public List<ErrorMessageInfo> copyWorkTypeWorkTime(String companyId, IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getEmployeeId();
 		GeneralDate ymd = integrationOfDaily.getYmd();
 		//個人情報の休日の勤務種類を取得する
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
 				.getBySidAndStandardDate(employeeId, ymd);
-		if (!optWorkingConditionItem.isPresent() || optWorkingConditionItem.get().getWorkCategory().getHolidayTime() == null
-				|| !optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().isPresent()) {
+		if (!optWorkingConditionItem.isPresent()
+				|| optWorkingConditionItem.get().getWorkCategory().getHolidayWorkInformation().getWorkTypeCode() ==null
+				) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("012"), new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return listErrorMessageInfo;
 		}
+		
 		WorkInfoOfDailyAttendance workInformation = integrationOfDaily.getWorkInformation();
 		WorkInformation recordInfo = optWorkingConditionItem.map(opt -> {
-			SingleDaySchedule sched = opt.getWorkCategory().getHolidayTime();
-			
-			return new WorkInformation(sched.getWorkTypeCode().orElse(null), sched.getWorkTimeCode().orElse(null));
+			return opt.getWorkCategory().getHolidayWorkInformation();
 		}).orElse(null);
 		
 		//休日の勤務種類を勤務予定に写す

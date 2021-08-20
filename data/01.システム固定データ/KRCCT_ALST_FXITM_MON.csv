@@ -1,0 +1,4 @@
+﻿INS_DATE,INS_CCD,INS_SCD,INS_PG,UPD_DATE,UPD_CCD,UPD_SCD,UPD_PG,EXCLUS_VER,FIX_EXTRA_ITEM_MON_NO,FIX_EXTRA_ITEM_MON_NAME,INITIAL_MESSAGE
+,,,,,,,,0,1,"本人未確認","本人未確認です。"
+,,,,,,,,0,2,"管理者未確認","管理者未確認です。"
+,,,,,,,,0,6,"代休の消化期限チェック","代休の消化期限チェックエラーです。"

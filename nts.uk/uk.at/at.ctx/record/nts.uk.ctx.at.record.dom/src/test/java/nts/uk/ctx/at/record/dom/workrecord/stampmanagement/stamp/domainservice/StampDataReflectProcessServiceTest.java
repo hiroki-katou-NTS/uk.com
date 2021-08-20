@@ -38,7 +38,7 @@ public class StampDataReflectProcessServiceTest {
 		StampRecord stampRecord = StampRecordHelper.getStampRecord();//dummy
 		Optional<Stamp> stamp = Optional.empty();//dummy
 		
-		assertThat(StampDataReflectProcessService.reflect(require, employeeId, stampRecord, stamp).getReflectDate().isPresent()).isFalse();
+		assertThat(StampDataReflectProcessService.reflect(require, "", employeeId, stampRecord, stamp).getReflectDate().isPresent()).isFalse();
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class StampDataReflectProcessServiceTest {
 		StampRecord stampRecord = StampRecordHelper.getStampRecord();//dummy
 		Optional<Stamp> stamp = Optional.empty();
 		
-		assertThat(StampDataReflectProcessService.reflect(require, employeeId, stampRecord, stamp).getReflectDate().isPresent()).isFalse();
+		assertThat(StampDataReflectProcessService.reflect(require, "", employeeId, stampRecord, stamp).getReflectDate().isPresent()).isFalse();
 	}
 	/**
 	 * employeeId not null
@@ -68,7 +68,7 @@ public class StampDataReflectProcessServiceTest {
 				require.insert((Stamp)any);
 			}
 		};
-		StampDataReflectResult stampDataReflectResult = StampDataReflectProcessService.reflect(require, employeeId, stampRecord, stamp);
+		StampDataReflectResult stampDataReflectResult = StampDataReflectProcessService.reflect(require, "", employeeId, stampRecord, stamp);
 		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
 		NtsAssert.atomTask(
 				() -> stampDataReflectResult.getAtomTask(),
@@ -91,7 +91,7 @@ public class StampDataReflectProcessServiceTest {
 				times = 0; 
 			}
 		};
-		StampDataReflectResult stampDataReflectResult = StampDataReflectProcessService.reflect(require, employeeId, stampRecord, stamp);
+		StampDataReflectResult stampDataReflectResult = StampDataReflectProcessService.reflect(require, "", employeeId, stampRecord, stamp);
 		assertThat(stampDataReflectResult.getReflectDate().isPresent()).isFalse();
 		AtomTask persist = stampDataReflectResult.getAtomTask();
 		persist.run();

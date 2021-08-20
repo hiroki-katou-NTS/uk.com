@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.require;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -83,6 +84,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -371,6 +374,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -712,7 +716,6 @@ public class RecordDomRequireService {
 	private CheckCareService checkChildCareService;
 	@Inject
 	private WorkingConditionItemService workingConditionItemService;
-	
 	@Inject
 	private PublicHolidaySettingRepository publicHolidaySettingRepo;
 	@Inject
@@ -745,7 +748,9 @@ public class RecordDomRequireService {
 	private TempCareManagementRepository tempCareManagementRepo;
 	@Inject
 	private NursingLeaveSettingRepository nursingLeaveSettingRepo;
-	
+	@Inject 
+	private ExecutionLogRepository executionLogRepo;
+  
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
 		GetYearAndMultiMonthAgreementTime.RequireM1, InterimRemainOffPeriodCreateData.RequireM2, DailyStatutoryLaborTime.RequireM1, AggregateMonthlyRecordService.RequireM1,
@@ -790,7 +795,7 @@ public class RecordDomRequireService {
 				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService, publicHolidaySettingRepo, publicHolidayManagementUsageUnitRepo,
 				companyMonthDaySettingRepo,tempPublicHolidayManagementRepo, publicHolidayCarryForwardDataRepo, employmentMonthDaySettingRepo, workplaceMonthDaySettingRepo,
 				employeeMonthDaySettingRepo, publicHolidayCarryForwardHistoryRepo, childCareUsedNumberRepo, careUsedNumberRepo, childCareLeaveRemInfoRepo, careLeaveRemainingInfoRepo,
-				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo);
+				tempChildCareManagementRepo, tempCareManagementRepo, nursingLeaveSettingRepo,executionLogRepo);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -842,7 +847,7 @@ public class RecordDomRequireService {
 				PublicHolidayCarryForwardDataRepository publicHolidayCarryForwardDataRepo, EmploymentMonthDaySettingRepository employmentMonthDaySettingRepo, WorkplaceMonthDaySettingRepository workplaceMonthDaySettingRepo,
 				EmployeeMonthDaySettingRepository employeeMonthDaySettingRepo, PublicHolidayCarryForwardHistoryRepository publicHolidayCarryForwardHistoryRepo,ChildCareUsedNumberRepository childCareUsedNumberRepo,
 				CareUsedNumberRepository careUsedNumberRepo, ChildCareLeaveRemInfoRepository childCareLeaveRemInfoRepo, CareLeaveRemainingInfoRepository careLeaveRemainingInfoRepo, TempChildCareManagementRepository tempChildCareManagementRepo,
-				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo) {
+				TempCareManagementRepository tempCareManagementRepo, NursingLeaveSettingRepository nursingLeaveSettingRepo,ExecutionLogRepository executionLogRepo) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
 					interimRecAbasMngRepo, empSubstVacationRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter,
@@ -988,6 +993,7 @@ public class RecordDomRequireService {
 			this.tempChildCareManagementRepo = tempChildCareManagementRepo;
 			this.tempCareManagementRepo = tempCareManagementRepo;
 			this.nursingLeaveSettingRepo = nursingLeaveSettingRepo;
+			this.executionLogRepo = executionLogRepo;
 		}
 
 		private SuperHD60HConMedRepository superHD60HConMedRepo;
@@ -1261,6 +1267,7 @@ public class RecordDomRequireService {
 		
 		private NursingLeaveSettingRepository nursingLeaveSettingRepo;
 		
+		private ExecutionLogRepository executionLogRepo;
 
 		HashMap<String,Optional<PredetemineTimeSetting>> predetemineTimeSetting = new HashMap<String, Optional<PredetemineTimeSetting>>();
 		HashMap<String, Optional<RegularLaborTimeEmp>> regularLaborTimeEmpMap = new HashMap<String, Optional<RegularLaborTimeEmp>>();
@@ -1313,9 +1320,9 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public List<ScheRemainCreateInfor> scheRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid,
+		public List<ScheRemainCreateInfor> scheRemainCreateInfor(String sid,
 				DatePeriod dateData) {
-			return remainCreateInforByScheData.createRemainInfor(cacheCarrier, cid, sid, dateData);
+			return remainCreateInforByScheData.createRemainInforNew(sid, dateData.datesBetween());
 		}
 
 		@Override
@@ -2586,7 +2593,49 @@ public class RecordDomRequireService {
 
 		@Override
 		public void deleteSpecialLeaveGrantRemainAfter(String sid, int specialCode, GeneralDate targetDate) {
-				specialLeaveGrantRepo.deleteAfter(sid, specialCode, targetDate);
+			specialLeaveGrantRepo.deleteAfter(sid, specialCode, targetDate);
+		}
+
+		@Override
+		public List<WorkingConditionItemWithPeriod> workingCondition(String employeeId, DatePeriod datePeriod) {
+			return this.workingConditionRepo.getWorkingConditionItemWithPeriod(AppContexts.user().companyId(), Arrays.asList(employeeId), datePeriod)
+					.stream().filter(c -> c.getWorkingConditionItem().getEmployeeId().equals(employeeId))
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
+			return closureStatusManagementRepo.getAllByEmpId(employeeId);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> findByEmploymentCD(String employmentCode) {
+			String companyId = AppContexts.user().companyId();
+			return closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode);
+		}
+
+		@Override
+		public Optional<ActualLock> findById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return actualLockRepo.findById(companyId, closureId);
+		}
+
+		@Override
+		public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+					ClosureService.createRequireM1(closureRepo,closureEmploymentRepo), closureId, processYm);
+			return datePeriodClosure;
+		}
+
+		@Override
+		public Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
+			return executionLogRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent);
+		}
+
+		@Override
+		public Closure findClosureById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return closureRepo.findById(companyId, closureId).get();
 		}
 		
 		@Override
