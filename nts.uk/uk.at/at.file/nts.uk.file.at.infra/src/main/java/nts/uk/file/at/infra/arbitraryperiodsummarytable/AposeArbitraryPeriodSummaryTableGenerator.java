@@ -85,8 +85,10 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         pageSetup.setHeader(2,
                 "&7&\"MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
+        pageSetup.setFitToPagesTall(0);
+        pageSetup.setFitToPagesWide(0);
         pageSetup.setCenterHorizontally(true);
-
+        pageSetup.setZoom(100);
     }
 
     private void printContents(Worksheet worksheetTemplate, Worksheet worksheet, ArbitraryPeriodSummaryDto dataSource) {

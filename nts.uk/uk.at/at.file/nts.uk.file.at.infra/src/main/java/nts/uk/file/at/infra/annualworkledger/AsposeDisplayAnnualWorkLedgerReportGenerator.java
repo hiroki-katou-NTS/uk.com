@@ -165,10 +165,6 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                         Cell cell = cells.get(firstRow + 5 + di, 2 + mi * 2);
                         Style style =   cell.getStyle();
                         style.setHorizontalAlignment(checkText(dailyData.getLeftAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
-                        if (dailyData.getLeftAttribute() == CommonAttributesOfForms.WORK_TYPE ||
-                                dailyData.getLeftAttribute() == CommonAttributesOfForms.WORKING_HOURS) {
-                            style.setHorizontalAlignment(ColumnTextAlign.CENTER.value);
-                        }
                         cell.setStyle(style);
                     }
 
@@ -179,10 +175,6 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                         Cell cell =  cells.get(firstRow + 5 + di, 3 + mi * 2);
                         Style style =  cell.getStyle();
                         style.setHorizontalAlignment(checkText(dailyData.getRightAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
-                        if (dailyData.getRightAttribute() == CommonAttributesOfForms.WORK_TYPE ||
-                                dailyData.getRightAttribute() == CommonAttributesOfForms.WORKING_HOURS) {
-                            style.setHorizontalAlignment(ColumnTextAlign.CENTER.value);
-                        }
                         cell.setStyle(style);
                     }
                 } catch (DateTimeException ex) {
@@ -211,10 +203,6 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                     Cell cell =  cells.get(rowIndex, 2 + mi * 2);
                     Style style =  cell.getStyle();
                     style.setHorizontalAlignment(checkText(dataRow.getAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
-                    if (dataRow.getAttribute() == CommonAttributesOfForms.WORK_TYPE ||
-                            dataRow.getAttribute() == CommonAttributesOfForms.WORKING_HOURS) {
-                        style.setHorizontalAlignment(ColumnTextAlign.CENTER.value);
-                    }
                     cell.setStyle(style);
                 }
             }
