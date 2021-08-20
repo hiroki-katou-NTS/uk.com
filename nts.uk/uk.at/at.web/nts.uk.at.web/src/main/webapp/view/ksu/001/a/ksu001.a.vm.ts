@@ -141,14 +141,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         scheduleModifyStartDate = null;
         canOpenKsu003 = true;
         
-        // lưu nhưng cell bí disalble do không có worktime
-        listTimeDisable = [];
-        // lưu những cell confirm khi khởi động
-        listLockCells = [];
-        
+        listTimeDisable = []; // lưu nhưng cell bí disalble do không có worktime
+        listLockCells = [];  // lưu những cell confirm khi khởi động
         listWorkTypeInfo = [];// listWorkTypecombobox
         listCellRetained = [];
-        listCellError = []; // chưa những cell not valid khi sửa time
         
         visibleA4_234: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_567: KnockoutObservable<boolean>   = ko.observable(true);
@@ -836,7 +832,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").on("extablecellretained", (dataCell) => {
                 if (self.userInfor.disPlayFormat == ViewMode.TIME && self.userInfor.updateMode == UpdateMode.EDIT) {
                     self.addCellRetaine(dataCell);
-                    //self.validTimeInEditMode(dataCell, self.userInfor, true);
                 }
             });
 
@@ -919,20 +914,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (startTimeCal >= endTimeCal) {
-                self.addCellNotValidInTimeInputMode(rowIndex + '', columnKey);
                 self.checkExitCellUpdated();
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                 return;
             }
 
             if (strTime == '' || endTime == '' || _.isNaN(startTimeCal) || _.isNaN(endTimeCal)) {
-                self.addCellNotValidInTimeInputMode(rowIndex+'', columnKey);
                 self.checkExitCellUpdated();
                 return;
-            }
-            
-            if(isRetaine == true){
-                self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
             }
             
             nts.uk.ui.block.grayout();
@@ -985,11 +974,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     nts.uk.ui.block.clear();
                     self.enableBtnReg(false);
                     let errorsInfo = _.uniqBy(errors, x => { return x.message });
-                    self.addCellNotValidInTimeInputMode(rowIndex+'', columnKey);
                     self.checkExitCellUpdated();
                     bundledErrors({ errors: errorsInfo }).then(() => {});
                 } else {
-                    self.removeCellNotValidInTimeInputMode(rowIndex+'', columnKey);
                     self.checkExitCellUpdated();
                     nts.uk.ui.block.clear();
                 }
@@ -1004,10 +991,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             let rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
             let columnKey = dataCellUpdated.originalEvent.detail.columnKey;
-            // vi data stick là data khong sai được, nên là nếu stick vào những cell nằm trong list cell sửa tay bị lỗi. thì xóa cell đó khoi list error đi.
-            _.remove(self.listCellError, function(cell) {
-                return cell.rowId == rowIndex && cell.columnId == columnKey;
-            });
+            // check cell stick có đang lỗi hay khong.
+            // grid chưa support remove lỗi ở cell đang có lỗi, nên những cell đang bị lỗi đỏ bị stick vẫn còn đỏ.
             self.checkExitCellUpdated();
         }
 
@@ -1017,6 +1002,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let columnKey = dataCellUpdated.originalEvent.detail.columnKey;
             // copy paste hiện tại đang không lấy được cell nguồn
             // nên là đang khong biết có coppy từ cell bị lỗi hay không.
+            // grid chưa support add lỗi vào cell, nên khi copy từ cell đang bị lỗi đỏ, sẽ không set cell đích thành cell lỗi được. 
+            // nếu bên nhật log bug thì nhờ Mạnh public thêm hàm set error cho cell.
+            self.checkExitCellUpdated();
         }
 
         saveDataGrid(data: any) {
@@ -1140,7 +1128,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.listTimeDisable = [];
             self.listCellRetained = [];
-            self.listCellError = [];
 
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1733,7 +1720,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
                         return dfd.reject();
                     }
-
+                    
+                    // check NaN
+                    let hasClassError = _.includes("x-error", $("#extable").exTable('cellByIndex', rowIdx, columnKey).children[2].classList);
+                    if (innerIdx == InnerIndex.STARTTIME && _.isNaN(endTime) && hasClassError) {
+                        return dfd.reject();
+                    } else if (innerIdx == InnerIndex.STARTTIME && _.isNaN(endTime) && !hasClassError) {
+                        return dfd.resolve();
+                    } else if (innerIdx == InnerIndex.ENDTIME && _.isNaN(startTime) && hasClassError) {
+                        return dfd.reject();
+                    } else if (innerIdx == InnerIndex.ENDTIME && _.isNaN(startTime) && !hasClassError) {
+                        return dfd.resolve();
+                    }
+                    
+                    
                     let param = {
                         workType: workTypeCode,
                         workTime: workTimeCode,
@@ -1760,20 +1760,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     errors.push({
                                         message: nts.uk.resource.getMessage('Msg_439', getText('KDL045_12')),
                                         messageId: "Msg_439",
-                                        supplements: {}
+                                        supplements: {},
+                                        innerIdx: result[i].innerIdx
                                     });
                                 } else {
                                     if (result[i].timeSpan.startTime == result[i].timeSpan.endTime) {
                                         errors.push({
                                             message: nts.uk.resource.getMessage('Msg_2058', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime)]),
                                             messageId: "Msg_2058",
-                                            supplements: {}
+                                            supplements: {},
+                                            innerIdx: result[i].innerIdx
                                         });
                                     } else {
                                         errors.push({
                                             message: nts.uk.resource.getMessage('Msg_1772', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime), formatById("Clock_Short_HM", result[i].timeSpan.endTime)]),
                                             messageId: "Msg_1772",
-                                            supplements: {}
+                                            supplements: {},
+                                            innerIdx: result[i].innerIdx
                                         });
                                     }
                                 }
@@ -1787,7 +1790,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 nts.uk.ui.block.clear();
                                 self.checkExitCellUpdated();
                             });
-                            dfd.reject();
+                            if (errors.length == 2) {
+                                dfd.reject();
+                            } else if (errors.length == 1 && errors[0].innerIdx == InnerIndex.STARTTIME && innerIdx == InnerIndex.ENDTIME) {
+                                dfd.resolve();
+                            } else if (errors.length == 1 && errors[0].innerIdx == InnerIndex.ENDTIME && innerIdx == InnerIndex.STARTTIME) {
+                                dfd.resolve();
+                            } else {
+                                dfd.reject();
+                            }
                         } else {
                             self.checkExitCellUpdated();
                             nts.uk.ui.block.clear();
@@ -2240,7 +2251,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let data = self.buidDataReg(self.userInfor.disPlayFormat, cellsGroup);
             
             if (self.userInfor.disPlayFormat == ViewMode.TIME) {
-                self.checkCellRetained(data);    
+                //self.checkCellRetained(data); vì sau khi đăng ký done đã update lai grid rồi, nên không cần check cells retain nữa.
             }
             
             // check trường hợp starttime|end == ''  thì return luôn. 
@@ -2252,12 +2263,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.regWorkSchedule(data).done((rs) => {
                 if (rs.hasError == false) {
-
+                    $("#extable").exTable('saveScroll');
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
                     self.listCellRetained = [];
                     self.getAggregatedInfo(true, true, true, true).done(()=>{
-                        nts.uk.ui.block.clear();
                         if (isKsu003) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 self.openKsu003(ui, detailContentDs);
@@ -2267,6 +2277,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     });
                 } else {
+                    $("#extable").exTable('saveScroll');
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
                     self.listCellRetained = [];
@@ -2441,7 +2452,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // update grid sau khi dang ky data
         updateAfterSaveData($grid: HTMLElement) {
             let self = this;
-            nts.uk.ui.block.grayout();
             // Clear states
             $.data($grid, "copy-history", null);
             $.data($grid, "redo-stack", null);
@@ -2456,8 +2466,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.enableBtnReg(false);
             self.enableBtnUndo(false);
             self.enableBtnRedo(false);
-
-            nts.uk.ui.block.clear();
         }
 
         openKDL053(dataReg : any) {
@@ -4146,9 +4154,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 decorator: detailContentDeco
             }]);
 
-           $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
-            
-           self.setStyler();
+            $("#extable").exTable("updateTable", "detail", null, detailContentUpdate);
+
+            self.setStyler();
         }
 
         // save setting hight cua grid vao localStorage
@@ -4715,23 +4723,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
 
-        // add cell có time sửa tay không đúng (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
-        addCellNotValidInTimeInputMode(rowIdx, key) {
-            let self = this;
-            let exit = _.filter(self.listCellError, function(o: TimeError) { return o.rowId == rowIdx + '' && o.columnId == key + '' });
-            if (exit.length == 0) {
-                self.listCellError.push(new TimeError(rowIdx, key));
-            }
-        }
-
-        // remove cell có time sửa tay không đúng trước đấy (bao gồm trương hợp bằng'', NaN, startTime>endTime)(mode TimeInput)
-        removeCellNotValidInTimeInputMode(rowIdx, key) {
-            let self = this;
-            _.remove(self.listCellError, function(cell: TimeDisable) {
-                return cell.rowId == rowIdx && cell.columnId == key;
-            });
-        }
-
         /**
          * paste data on cell
          * stick
@@ -5294,8 +5285,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let updatedCells = $("#extable").exTable("updatedCells");
                 if (_.size(updatedCells) > 0) {
                     self.enableBtnReg(true);
-                    if (self.listCellError.length > 0)
-                        self.enableBtnReg(false);
                 } else {
                     self.enableBtnReg(false);
                 }
@@ -6019,6 +6008,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.cloneDataSource();
                     self.updateDataBindGrid();
                 }
+                let key = request.location.current.rawUrl + "/extable/scroll";
+                uk.localStorage.getItem(key).ifPresent((data) => {
+                    let scrollLength = JSON.parse(data);
+                    $("#extable").exTable('scrollBack', 2, scrollLength);
+                });
                 dfd.resolve();
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
@@ -6639,5 +6633,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         ANY_PERIOD = 1, // 任意期間
         TH28 = 2, // ２８日  
         END = 3, // 末日
+    }
+
+    enum InnerIndex {
+        STARTTIME = 2,
+        ENDTIME = 3,
     }
 }
