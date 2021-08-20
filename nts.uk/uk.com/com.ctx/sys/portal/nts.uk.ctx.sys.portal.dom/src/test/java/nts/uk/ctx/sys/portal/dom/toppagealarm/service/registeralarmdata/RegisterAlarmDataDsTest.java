@@ -74,7 +74,7 @@ public class RegisterAlarmDataDsTest {
 		new Verifications() {
 			{
 				require.update((ToppageAlarmData) any);
-				times = 0;
+				times = 1;
 			}
 			{
 				require.insert((ToppageAlarmData) any);
