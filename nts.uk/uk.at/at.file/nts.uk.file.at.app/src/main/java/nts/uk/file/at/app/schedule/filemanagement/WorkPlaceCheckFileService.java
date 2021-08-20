@@ -30,6 +30,7 @@ import nts.uk.ctx.at.schedule.dom.importschedule.ImportResultDetail;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportStatus;
 import nts.uk.ctx.at.schedule.dom.importschedule.WorkScheduleImportService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.EmployeeAndYmd;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
@@ -611,14 +612,26 @@ public class WorkPlaceCheckFileService {
 
         @Override
         public boolean isWorkScheduleExisted(EmployeeId employeeId, GeneralDate ymd) {
-            // TODO Auto-generated method stub
-            return false;
+        	
+        	return workScheduleRepository.checkExists(Arrays.asList(employeeId.v()), new DatePeriod(ymd, ymd))
+        						  .entrySet()
+        						  .stream()
+        						  .filter(x -> x.getKey().getEmployeeId().equals(employeeId.v()) && x.getKey().getYmd().equals(ymd))
+        						  .findFirst()
+        						  .flatMap(x -> Optional.ofNullable(x.getValue()))
+        						  .orElse(false);
         }
 
         @Override
         public boolean isWorkScheduleComfirmed(EmployeeId employeeId, GeneralDate ymd) {
-            // TODO Auto-generated method stub
-            return false;
+        	
+        	return workScheduleRepository.getConfirmedStatus(Arrays.asList(employeeId.v()), new DatePeriod(ymd, ymd))
+					  .entrySet()
+					  .stream()
+					  .filter(x -> x.getKey().getEmployeeId().equals(employeeId.v()) && x.getKey().getYmd().equals(ymd))
+					  .findFirst()
+					  .map(x -> x.getValue() == ConfirmedATR.CONFIRMED)
+					  .orElse(false);
         }
     }
     

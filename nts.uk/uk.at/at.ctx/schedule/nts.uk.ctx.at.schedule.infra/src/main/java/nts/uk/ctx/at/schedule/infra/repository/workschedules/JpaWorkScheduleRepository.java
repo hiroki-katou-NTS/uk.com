@@ -121,7 +121,9 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	@Override
 	public boolean checkExists(String employeeID, GeneralDate ymd) {
-		return this.queryProxy().query(SELECT_CHECK_UPDATE, Long.class).setParameter("employeeID", employeeID)
+		return this.queryProxy()
+				.query(SELECT_CHECK_UPDATE, Long.class)
+				.setParameter("employeeID", employeeID)
 				.setParameter("ymd", ymd).getSingle().get() > 0;
 	}
 
@@ -131,15 +133,19 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		if ( employeeIds.isEmpty() ) {
 			return Collections.emptyMap();
 		}
-
-		// TODO 取得処理
-
+		List<WorkSchedule> ws = 
+				this.queryProxy()
+					.query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
+					.setParameter("sids", employeeIds)
+					.setParameter("startDate", period.start())
+					.setParameter("endDate", period.end())
+					.getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
 
 		return employeeIds.stream()
 			.flatMap( empId -> period.stream().map( ymd -> new EmployeeAndYmd( empId, ymd ) ))
 			.collect(Collectors.toMap(
 					key -> key
-				,	key -> false	// TODO 判定処理
+				,	key -> ws.stream().anyMatch(x -> x.getEmployeeID().equals(key.getEmployeeId()) && x.getYmd().equals(key.getYmd()))
 			));
 
 	}
@@ -866,9 +872,19 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		if ( employeeIds.isEmpty() ) {
 			return Collections.emptyMap();
 		}
+		List<WorkSchedule> ws = 
+				this.queryProxy()
+					.query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
+					.setParameter("sids", employeeIds)
+					.setParameter("startDate", period.start())
+					.setParameter("endDate", period.end())
+					.getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
 
-		// TODO 取得処理・変換処理
-		return Collections.emptyMap();
+		return ws.stream()
+			.collect(Collectors.toMap(
+					key -> new EmployeeAndYmd(((WorkSchedule)key).getEmployeeID(), ((WorkSchedule)key).getYmd()),
+					key -> ((WorkSchedule)key).getConfirmedATR()
+			));
 
 	}
 

@@ -84,16 +84,15 @@ public class CreateWorkScheduleByImportCode {
 
 	public static interface Require extends WorkSchedule.Require {
 
+		
+		Optional<Boolean> getScheduleConfirmAtr(String employeeId, GeneralDate ymd);
+		
 		/**
 		 * 勤務予定が登録されているか
 		 * @param employeeId 社員ID
 		 * @param ymd 年月日
 		 * @return true:登録されている/false:登録されていない
 		 */
-		Optional<WorkSchedule> getWorkSchedule(String employeeId, GeneralDate date);
-		
-		Optional<Boolean> getScheduleConfirmAtr(String employeeId, GeneralDate ymd);
-		
 		boolean isWorkScheduleExisted(String employeeId, GeneralDate date);
 
 		/**
