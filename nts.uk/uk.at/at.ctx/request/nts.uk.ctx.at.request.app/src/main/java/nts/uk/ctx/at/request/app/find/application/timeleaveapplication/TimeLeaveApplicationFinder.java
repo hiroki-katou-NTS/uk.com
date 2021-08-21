@@ -403,7 +403,8 @@ public class TimeLeaveApplicationFinder {
                     output.getAppDispInfoStartup(), 
                     new ArrayList<String>(), 
                     Optional.of(new TimeDigestionParam(0, 0, 0, 0, 0, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
-                    Optional.empty()
+                    Optional.empty(), 
+                    false
             );
         } else {
             application = params.getApplicationUpdate().toDomain(params.getTimeLeaveAppDisplayInfo().getAppDispInfoStartupOutput().getAppDetailScreenInfo().getApplication());
@@ -420,7 +421,8 @@ public class TimeLeaveApplicationFinder {
                     null,
                     output.getAppDispInfoStartup(), 
                     new ArrayList<String>(), 
-                    Optional.of(new TimeDigestionParam(0, 0, 0, 0, 0, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList())))
+                    Optional.of(new TimeDigestionParam(0, 0, 0, 0, 0, 0, params.getDetails().stream().map(TimeLeaveAppDetailDto::toShare).collect(Collectors.toList()))), 
+                    false
             );
             confirmMsgOutputs = new ArrayList<>();
         }

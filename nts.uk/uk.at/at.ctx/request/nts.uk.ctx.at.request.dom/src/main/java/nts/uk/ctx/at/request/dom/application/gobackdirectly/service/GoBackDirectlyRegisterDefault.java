@@ -140,7 +140,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup(), 
                 goBackDirectly.getDataWork().isPresent() ? Arrays.asList(goBackDirectly.getDataWork().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
                 Optional.empty(),
-                goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty());
+                goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty(), false);
 		return listResult;
 	}
 	/**Refactor4
@@ -201,7 +201,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				workTimeCode,
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup(), 
 				goBackDirectly.getDataWork().isPresent() ? Arrays.asList(goBackDirectly.getDataWork().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
-				Optional.empty());
+				Optional.empty(), 
+				false);
 	}
 	/**
 	 * 共通登録前のエラーチェック処理

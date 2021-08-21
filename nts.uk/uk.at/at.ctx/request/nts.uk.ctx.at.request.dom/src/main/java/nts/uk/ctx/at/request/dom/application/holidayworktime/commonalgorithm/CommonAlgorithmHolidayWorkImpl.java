@@ -1083,7 +1083,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
 					Optional.of(timeDigestionParam), 
-					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
+					appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
+					false);
 			
 		} else { // 詳細・照会モード　の場合
 			//4-1.詳細画面登録前の処理
@@ -1099,7 +1100,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 					appHolidayWork.getWorkInformation().getWorkTimeCode().v(),
 					appHdWorkDispInfo.getAppDispInfoStartupOutput(), 
 					Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
-                    Optional.of(timeDigestionParam));
+                    Optional.of(timeDigestionParam), 
+                    false);
 		}
 		//	遷移する前のエラーチェック
 		this.checkBeforeMoveToAppTime(companyId, appHdWorkDispInfo, appHolidayWork);

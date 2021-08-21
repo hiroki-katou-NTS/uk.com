@@ -82,6 +82,11 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		
+		boolean existFlag = false;
+		if (abs.isPresent() && rec.isPresent()) {
+		    existFlag = true;
+		}
+		
 		if(rec.isPresent()) {
 			this.newBeforeRegister.processBeforeRegister_New(
 			        companyId, 
@@ -94,7 +99,8 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 			        appDispInfoStartup,
 			        Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
 			        Optional.empty(), 
-			        rec.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
+			        rec.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
+			        existFlag);
 		}
 		
 		if(abs.isPresent()) {
@@ -109,7 +115,8 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 			        appDispInfoStartup,
 			        Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
                     Optional.empty(), 
-                    abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
+                    abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
+                    existFlag);
 		}
 	}
 	

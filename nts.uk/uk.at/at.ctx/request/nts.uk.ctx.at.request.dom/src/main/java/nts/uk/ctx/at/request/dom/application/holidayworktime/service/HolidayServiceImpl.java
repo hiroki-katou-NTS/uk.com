@@ -345,7 +345,7 @@ public class HolidayServiceImpl implements HolidayService {
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput(), 
 				Arrays.asList(appHolidayWork.getWorkInformation().getWorkTypeCode().v()), 
 				Optional.of(timeDigestionParam), 
-				appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
+				appHolidayWork.getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), false);
 		
 		//3.個別エラーチェック
 		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 0);	//mode new = 0
@@ -555,7 +555,8 @@ public class HolidayServiceImpl implements HolidayService {
 				workTimeCode, 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput(), 
 				new ArrayList<String>(), 
-				Optional.of(timeDigestionParam));
+				Optional.of(timeDigestionParam), 
+				false);
 		
 		//3.個別エラーチェック
 		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 1);	//mode update = 1

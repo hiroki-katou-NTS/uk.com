@@ -461,7 +461,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     			, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()
     			, Arrays.asList(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v())
     			, Optional.of(timeDigestionParam)
-    			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v)));
+    			, appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
+    			false));
     	// 休暇申請登録時チェック処理
     	result.getConfirmMsgLst().addAll(this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates));
     	// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
@@ -1614,7 +1615,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
 				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput()
 				, Arrays.asList(newAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v())
 				, Optional.of(timeDigestionParam) 
-				, newAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
+				, newAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
+				false);
 		result.setConfirmMsgLst(lstConfirmMsg);
 		// 申請の矛盾チェック
 		List<GeneralDate> dateLst = new ArrayList<GeneralDate>();
@@ -2158,7 +2160,8 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 workTime,
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput(), 
                 Arrays.asList(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
-                Optional.of(timeDigestionParam));
+                Optional.of(timeDigestionParam), 
+                false);
 
         // 休暇申請登録時チェック処理
         List<ConfirmMsgOutput> listConfirmMsg = this.checkAbsenceWhenRegister(true, companyID, appAbsence, appAbsenceStartInfoOutput, holidayDates);

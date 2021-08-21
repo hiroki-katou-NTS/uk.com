@@ -283,7 +283,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				appDispInfoStartupOutput, 
 				appWorkChange.getOpWorkTypeCD().isPresent() ? Arrays.asList(appWorkChange.getOpWorkTypeCD().get().v()) : new ArrayList<String>(), 
 		        Optional.empty(), 
-		        appWorkChange.getOpWorkTimeCD().map(WorkTimeCode::v));
+		        appWorkChange.getOpWorkTimeCD().map(WorkTimeCode::v), 
+		        false);
 		// 「確認メッセージリスト」を全てと取得した「休日の申請日<List>」を返す
 		output.setConfirmMsgLst(confirmMsgLst);
 		output.setHolidayDateLst(lstDateHd);
@@ -480,7 +481,8 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 				workTimeCD,
 				appDispInfoStartupOutput, 
 				appWorkChange.getOpWorkTypeCD().isPresent() ? Arrays.asList(appWorkChange.getOpWorkTypeCD().get().v()) : new ArrayList<String>(), 
-				Optional.empty());
+				Optional.empty(), 
+				false);
 		// 登録時チェック処理（勤務変更申請）
 		this.checkRegisterWorkChange(application, appWorkChange);
 		return result;

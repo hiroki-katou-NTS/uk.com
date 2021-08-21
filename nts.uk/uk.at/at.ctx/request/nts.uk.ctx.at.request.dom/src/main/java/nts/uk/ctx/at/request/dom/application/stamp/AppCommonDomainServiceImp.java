@@ -270,7 +270,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				appStampOutput.getAppDispInfoStartupOutput(), 
 				new ArrayList<String>(), 
 				Optional.empty(), 
-				Optional.empty());
+				Optional.empty(), 
+				false);
 		
 		
 		return listConfirmMs;
@@ -297,7 +298,8 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 				null,
 				appStampOutput.getAppDispInfoStartupOutput(), 
 				new ArrayList<String>(), 
-				Optional.empty());
+				Optional.empty(), 
+				false);
 		
 		return listConfirmMs;
 	}

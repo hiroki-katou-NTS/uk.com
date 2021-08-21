@@ -216,7 +216,8 @@ public class BusinessTripFinder {
                 output.getAppDispInfoStartup(), 
                 businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
                 Optional.empty(), 
-                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTimeCode()).findFirst().map(WorkTimeCode::v)
+                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTimeCode()).findFirst().map(WorkTimeCode::v), 
+                false
         );
 
 
@@ -525,7 +526,8 @@ public class BusinessTripFinder {
                     businessTripInfoOutput.getAppDispInfoStartup(),
                     param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()), 
                     Optional.empty(), 
-                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst()
+                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst(), 
+                    false
             );
 
             // アルゴリズム「申請日を変更する処理」を実行する
