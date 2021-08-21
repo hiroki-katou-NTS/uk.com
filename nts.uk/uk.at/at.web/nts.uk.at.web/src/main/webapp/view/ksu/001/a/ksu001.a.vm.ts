@@ -1698,7 +1698,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let startTime, endTime, workTypeCode, workTimeCode;
                     let dataSource = $("#extable").exTable('dataSource', 'detail').body;
                     let cellData = dataSource[rowIdx][columnKey];
-                    console.log(cellData);
                     workTypeCode = cellData.workTypeCode;
                     workTimeCode = cellData.workTimeCode;
                     if (innerIdx == 3) {
@@ -2112,7 +2111,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         updateDataSource(cellsChange : any) {
             let self = this;
-            console.log(cellsChange);
             if (self.userInfor.disPlayFormat == ViewMode.SHIFT) {
                 self.updateDataSourceModeShift(cellsChange);
             } else {
@@ -4705,7 +4703,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // dis những cell mà không có worktime.
         enableCellsTime() {
             let self = this;
-            console.log('list timedisable: '+ self.listTimeDisable.length);
             _.forEach(self.listTimeDisable, function(obj: TimeDisable) {
                 $("#extable").exTable('enableCell', 'detail', obj.rowId + '', obj.columnId + '', '2');
                 $("#extable").exTable('enableCell', 'detail', obj.rowId + '', obj.columnId + '', '3');
@@ -6023,7 +6020,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 let end = Date.now();
                 let time = end - start;
-                console.log('time create data && gen grid:' + time);
                 setTimeout(() => {
                     let key = request.location.current.rawUrl + "/extable/scroll";
                     uk.localStorage.getItem(key).ifPresent((data) => {
