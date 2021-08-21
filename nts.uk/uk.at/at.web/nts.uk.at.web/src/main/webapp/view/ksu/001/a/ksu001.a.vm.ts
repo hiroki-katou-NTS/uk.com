@@ -144,7 +144,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listTimeDisable = []; // lưu nhưng cell bí disalble do không có worktime
         listLockCells = [];  // lưu những cell confirm khi khởi động
         listWorkTypeInfo = [];// listWorkTypecombobox
-        listCellRetained = [];
         
         visibleA4_234: KnockoutObservable<boolean>   = ko.observable(true);
         visibleA4_567: KnockoutObservable<boolean>   = ko.observable(true);
@@ -831,11 +830,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
 
-            $("#extable").on("extablecellretained", (dataCell) => {
-                if (self.userInfor.disPlayFormat == ViewMode.TIME && self.userInfor.updateMode == UpdateMode.EDIT) {
-                    self.addCellRetaine(dataCell);
-                }
-            });
+            $("#extable").on("extablecellretained", (dataCell) => {});
 
             $("#extable").on("extablerowupdated", (dataCell) => {
                 self.checkExitCellUpdated();
@@ -853,37 +848,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
 
-        addCellRetaine(dataCellRetaine: any) {
-            let self = this;
-            let startTime, endTime, workTypeCode, workTimeCode;
-            let rowIndex = dataCellRetaine.originalEvent.detail.rowIndex;
-            let columnKey = dataCellRetaine.originalEvent.detail.columnKey;
-            let innerIdx = dataCellRetaine.originalEvent.detail.innerIdx;
-            let dataSource = $("#extable").exTable('dataSource', 'detail').body;
-            let cellDataOnGrid = dataSource[rowIndex][columnKey];
-            workTypeCode = cellDataOnGrid.workTypeCode;
-            workTimeCode = cellDataOnGrid.workTimeCode;
-            if (innerIdx == 3) {
-                endTime = dataCellRetaine.originalEvent.detail.value;
-                startTime = cellDataOnGrid.startTime;
-            } else if (innerIdx == 2) {
-                startTime = dataCellRetaine.originalEvent.detail.value;
-                endTime = cellDataOnGrid.endTime;
-            }
-            
-            let objRetaind = {rowIndex: rowIndex, columnKey: columnKey, startTime: startTime, endTime: endTime, workTypeCode: workTypeCode, workTimeCode: workTimeCode}
-            
-            let exit = _.filter(self.listCellRetained, function(o) { return o.rowIndex == rowIndex && o.columnKey == columnKey; });
-            if (exit.length > 0) {
-                _.remove(self.listCellRetained, function(e) {
-                    return e.rowIndex == rowIndex && e.columnKey == columnKey;
-                });
-                self.listCellRetained.push(objRetaind);
-            } else {
-                self.listCellRetained.push(objRetaind);
-            }
-        }
-        
         validTimeInEditMode(dataCellUpdated: any, userInfor: any, isRetaine: boolean) {
             let self = this;
             let strTime, endTime, workTypeCode, workTimeCode, rowIndex, columnKey;
@@ -1129,7 +1093,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listWorkTypeInfo = data.listWorkTypeInfo;
             
             self.listTimeDisable = [];
-            self.listCellRetained = [];
 
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -2250,16 +2213,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let data = self.buidDataReg(self.userInfor.disPlayFormat, cellsGroup);
             
-            if (self.userInfor.disPlayFormat == ViewMode.TIME) {
-                //self.checkCellRetained(data); vì sau khi đăng ký done đã update lai grid rồi, nên không cần check cells retain nữa.
-            }
-            
             service.regWorkSchedule(data).done((rs) => {
                 if (rs.hasError == false) {
                     $("#extable").exTable('saveScroll');
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
-                    self.listCellRetained = [];
                     self.getAggregatedInfo(true, true, true, true).done(()=>{
                         if (isKsu003) {
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
@@ -2273,7 +2231,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable('saveScroll');
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
-                    self.listCellRetained = [];
                     // get lại data A11.A12
                     self.getAggregatedInfo(true, true, true, true).done(() => {
                         if (rs.listErrorInfo.length > 0) {
@@ -2291,37 +2248,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
  
-        checkCellRetained(dataSave: any) {
-            let self = this;
-            if (self.listCellRetained.length == 0) {
-                return;
-            }
-            let dataSource = $("#extable").exTable('dataSource', 'detail').body;
-            for (let i = 0; i < self.listCellRetained.length; i++) {
-                let cellRetaine = self.listCellRetained[i];
-                let exit = _.filter(dataSave, function(o) { return o.rowIndex == cellRetaine.rowIndex && o.columnKey == cellRetaine.columnKey; });
-                if (exit.length == 0) {
-                    let ymd = moment(cellRetaine.columnKey.slice(1)).format('YYYY/MM/DD');
- 
-                    let startTimeCal =  cellRetaine.startTime == '' ? '' : nts.uk.time.minutesBased.duration.parseString(cellRetaine.startTime).toValue();
-                    let endTimeCal   = cellRetaine.endTime  = '' ? '' : nts.uk.time.minutesBased.duration.parseString(cellRetaine.endTime).toValue();
- 
-                    dataSave.push({
-                        sid: self.listSid()[cellRetaine.rowIndex],
-                        ymd: ymd,
-                        viewMode: ViewMode.TIME,
-                        workTypeCd:  cellRetaine.workTypeCode,
-                        workTimeCd:  cellRetaine.workTimeCode,
-                        startTime: startTimeCal,
-                        endTime: endTimeCal,
-                        isChangeTime: true,
-                        rowIndex: cellRetaine.rowIndex,
-                        columnKey: cellRetaine.columnKey
-                    });
-                }
-            }
-        }
-            
         buidDataReg(viewMode, cellsGroup) {
             let self = this;
             let dataReg = [];
