@@ -335,9 +335,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 			// フレックス勤務の月別集計設定
 			this.settingsByFlex.setMonthlyAggrSetOfFlexOpt(Optional.of(companySets.getAggrSetOfFlex()));
 
-			// フレックス勤務所定労働時間
-			this.settingsByFlex.setGetFlexPredWorkTimeOpt(Optional.of(companySets.getFlexPredWorkTime()));
-
+			this.settingsByFlex.setComFlexSetOpt(companySets.getComFlexSetOpt());
 			// フレックス不足の年休補填管理
 			this.settingsByFlex.setInsufficientFlexOpt(companySets.getInsufficientFlexOpt());
 
