@@ -407,6 +407,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 				self.userInfor.useCategoriesWorkplaceValue = self.useCategoriesWorkplaceValue();
                 characteristics.save(self.KEY, self.userInfor);
                 self.useCategoriesPersonalValue.subscribe(value => {
+                    $("#extable").exTable('saveScroll');
                     self.userInfor.useCategoriesPersonalValue = value;
                     characteristics.save(self.KEY, self.userInfor);
 //                  let newVertSumHeader = self.createVertSumHeader();
@@ -418,6 +419,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
                 
                 self.useCategoriesWorkplaceValue.subscribe(value => {
+                    $("#extable").exTable('saveScroll');
                     self.userInfor.useCategoriesWorkplaceValue = value;
                     characteristics.save(self.KEY, self.userInfor);
                     self.showA12_2(_.includes([WorkplaceCounterCategory.WORKTIME_PEOPLE, WorkplaceCounterCategory.LABOR_COSTS_AND_TIME], value) ||
@@ -6007,15 +6009,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     self.cloneDataSource();
                     self.updateDataBindGrid();
-
-                    setTimeout(() => {
-                        let key = request.location.current.rawUrl + "/extable/scroll";
-                        uk.localStorage.getItem(key).ifPresent((data) => {
-                            let scrollLength = JSON.parse(data);
-                            $("#extable").exTable('scrollBack', 2, scrollLength);
-                        });
-                    }, 10);
                 }
+                
+                setTimeout(() => {
+                    let key = request.location.current.rawUrl + "/extable/scroll";
+                    uk.localStorage.getItem(key).ifPresent((data) => {
+                        let scrollLength = JSON.parse(data);
+                        $("#extable").exTable('scrollBack', 2, scrollLength);
+                    });
+                }, 10);
+
                 dfd.resolve();
                 nts.uk.ui.block.clear();
             }).fail(function(error) {
