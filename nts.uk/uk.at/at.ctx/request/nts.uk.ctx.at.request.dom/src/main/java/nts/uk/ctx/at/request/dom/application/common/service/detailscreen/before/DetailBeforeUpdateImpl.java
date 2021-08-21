@@ -131,28 +131,28 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 //            throw new BusinessException("Msg_1409");
 //        }
         if (earchInterimRemainCheck.isChkSubHoliday()) {
-            throw new BusinessException("Msg_1409", "代休不足区分");
+            throw new BusinessException("Msg_1409", "代休");
         }
         if (earchInterimRemainCheck.isChkPause()) {
-            throw new BusinessException("Msg_1409", "振休不足区分");
+            throw new BusinessException("Msg_1409", "振休");
         }
         if (earchInterimRemainCheck.isChkAnnual()) {
-            throw new BusinessException("Msg_1409", "年休不足区分");
+            throw new BusinessException("Msg_1409", "年休");
         }
         if (earchInterimRemainCheck.isChkFundingAnnual()) {
-            throw new BusinessException("Msg_1409", "積休不足区分");
+            throw new BusinessException("Msg_1409", "積休");
         }
         if (earchInterimRemainCheck.isChkSpecial()) {
-            throw new BusinessException("Msg_1409", "特休不足区分");
+            throw new BusinessException("Msg_1409", "特休");
         }
         if (earchInterimRemainCheck.isChkSuperBreak()) {
-            throw new BusinessException("Msg_1409", "超休不足区分");
+            throw new BusinessException("Msg_1409", "超休");
         }
         if (earchInterimRemainCheck.isChkChildNursing()) {
-            throw new BusinessException("Msg_1409", "子の看護不足区分");
+            throw new BusinessException("Msg_1409", "子の看護");
         }
         if (earchInterimRemainCheck.isChkLongTermCare()) {
-            throw new BusinessException("Msg_1409", "介護不足区分");
+            throw new BusinessException("Msg_1409", "介護");
         }
 	}
 	
