@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
  * @author HieuLt
  *
  */
-public class GetWorkScheduleByWorkingStatusService {
+public class GetWorkScheduleByScheduleManagementService {
 
 	/**
 	 * [1] 取得する
@@ -33,7 +33,7 @@ public class GetWorkScheduleByWorkingStatusService {
 		for (int i = 0; i < lstEmployeeID.size(); i++) {
 			long start = System.nanoTime();
 			
-			map.putAll(GetWorkScheduleByWorkingStatusService.getByEmployee(require,lstEmployeeID.get(i), period));
+			map.putAll(GetWorkScheduleByScheduleManagementService.getByEmployee(require,lstEmployeeID.get(i), period));
 			
 			System.out.println("employee: " + ((System.nanoTime() - start )/1000000) + "ms");	
 

@@ -19,7 +19,7 @@ import nts.arc.layer.app.cache.KeyDateHistoryCache;
 import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByWorkingStatusService;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
@@ -74,7 +74,7 @@ public class GetScheduleOfShift {
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 
 		// 管理状態と勤務予定Map
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap =  GetWorkScheduleByWorkingStatusService.getScheduleManagement(requireImpl1, param.listSid, period);
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap =  GetWorkScheduleByScheduleManagementService.getScheduleManagement(requireImpl1, param.listSid, period);
 		long end = System.nanoTime();
 		long duration = (end - start) / 1000000; // ms;
 		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");
@@ -94,7 +94,7 @@ public class GetScheduleOfShift {
 	}
 
 	@AllArgsConstructor
-	private static class RequireWorkScheManaStatusImpl implements GetWorkScheduleByWorkingStatusService.Require {
+	private static class RequireWorkScheManaStatusImpl implements GetWorkScheduleByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;

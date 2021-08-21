@@ -20,7 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.util.OptionalUtil;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByWorkingStatusService;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
@@ -109,7 +109,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 		
 		RequireImpl requireImpl = new RequireImpl(employeeIds, period);
 		
-		return GetWorkScheduleByWorkingStatusService.getScheduleManagement(requireImpl, employeeIds, period)
+		return GetWorkScheduleByScheduleManagementService.getScheduleManagement(requireImpl, employeeIds, period)
 					.values().stream()
 					.flatMap(OptionalUtil::stream)
 					.map(schedule -> schedule.convertToIntegrationOfDaily())
@@ -283,7 +283,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 		return result;
 	}
 	
-	private class RequireImpl implements GetWorkScheduleByWorkingStatusService.Require {
+	private class RequireImpl implements GetWorkScheduleByScheduleManagementService.Require {
 		
 		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;

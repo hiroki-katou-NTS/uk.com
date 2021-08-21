@@ -19,7 +19,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.TimeVacation;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByWorkingStatusService;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -91,7 +91,7 @@ public class DisplayWorkInfoByDateSc {
 				employmentHisScheduleAdapter);
 		
 		// 1 .取得する(Require, List<社員ID>, 期間):Map<社員の予定管理状態, Optional<勤務予定>>
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mapScheMana = GetWorkScheduleByWorkingStatusService
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mapScheMana = GetWorkScheduleByScheduleManagementService
 				.getScheduleManagement(requireImpl, param.getLstEmpId(), period);
 		List<ScheWorkDto> workDtos = mapScheMana.entrySet().stream().map(mapper-> new ScheWorkDto(mapper.getKey().getEmployeeID(), mapper.getKey(), mapper.getValue())).collect(Collectors.toList());
 		workDtos = workDtos.stream().sorted((a, b) -> param.getLstEmpId().indexOf(a.getEmpId()) - param.getLstEmpId().indexOf(b.getEmpId())).collect(Collectors.toList());
@@ -305,7 +305,7 @@ public class DisplayWorkInfoByDateSc {
 	}
 
 	@AllArgsConstructor
-	public static class RequireWorkScheManaStatusImpl implements GetWorkScheduleByWorkingStatusService.Require {
+	public static class RequireWorkScheManaStatusImpl implements GetWorkScheduleByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, WorkSchedule> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;

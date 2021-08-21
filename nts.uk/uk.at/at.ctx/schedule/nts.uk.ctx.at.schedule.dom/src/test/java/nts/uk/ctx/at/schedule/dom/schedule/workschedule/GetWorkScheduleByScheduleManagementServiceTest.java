@@ -21,15 +21,15 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByWorkingStatusService;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByWorkingStatusService.Require;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkScheduleByScheduleManagementService.Require;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 
 @RunWith(JMockit.class)
-public class GetWorkScheduleByWorkingStatusServiceTest {
+public class GetWorkScheduleByScheduleManagementServiceTest {
 
 	@Injectable
 	private Require require;
@@ -58,7 +58,7 @@ public class GetWorkScheduleByWorkingStatusServiceTest {
 			}
 		};
 		
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByWorkingStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByScheduleManagementService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -94,7 +94,7 @@ public class GetWorkScheduleByWorkingStatusServiceTest {
 				return true;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByWorkingStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByScheduleManagementService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -138,7 +138,7 @@ public class GetWorkScheduleByWorkingStatusServiceTest {
 			}
 		};
 		
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByWorkingStatusService.getScheduleManagement(require,
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> data = GetWorkScheduleByScheduleManagementService.getScheduleManagement(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.of(workSchedule)));
