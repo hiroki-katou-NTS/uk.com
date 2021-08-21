@@ -54,7 +54,7 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 	private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
 
 	@Override
-	public List<IntegrationOfDaily> getListDailyRecord(List<String> employeeIds, DatePeriod period) {
+	public List<IntegrationOfDaily> getDailyRecordByScheduleManagement(List<String> employeeIds, DatePeriod period) {
 		
 		RequireImpl requireImpl = new RequireImpl(employeeIds, period);
 		

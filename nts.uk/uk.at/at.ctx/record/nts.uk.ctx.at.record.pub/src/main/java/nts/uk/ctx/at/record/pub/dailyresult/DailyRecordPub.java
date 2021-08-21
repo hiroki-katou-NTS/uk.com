@@ -13,11 +13,11 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 public interface DailyRecordPub {
 	
 	/**
-	 * 取得する
+	 * 予定管理対象者の実績を取得する
 	 * @param employeeIds 社員リスト
 	 * @param period 期間
 	 * @return List<日別勤怠(Work)
 	 */
-	public List<IntegrationOfDaily> getListDailyRecord(List<String> employeeIds, DatePeriod period);
+	public List<IntegrationOfDaily> getDailyRecordByScheduleManagement(List<String> employeeIds, DatePeriod period);
 	
 }

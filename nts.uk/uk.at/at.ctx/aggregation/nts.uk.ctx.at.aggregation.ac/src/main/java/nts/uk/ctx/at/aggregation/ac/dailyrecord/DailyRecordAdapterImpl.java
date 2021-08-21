@@ -17,9 +17,9 @@ public class DailyRecordAdapterImpl implements DailyRecordAdapter {
 	private DailyRecordPub dailyRecordPub;
 
 	@Override
-	public List<IntegrationOfDaily> getList(List<String> employeeIds, DatePeriod period) {
+	public List<IntegrationOfDaily> getDailyRecordByScheduleManagement(List<String> employeeIds, DatePeriod period) {
 
-		return dailyRecordPub.getListDailyRecord(employeeIds, period);
+		return dailyRecordPub.getDailyRecordByScheduleManagement(employeeIds, period);
 	}
 
 }
