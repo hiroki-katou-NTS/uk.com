@@ -818,7 +818,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $("#extable").on("extablecellupdated", (dataCell) => {
                 if (self.userInfor.disPlayFormat == ViewMode.TIME && self.userInfor.updateMode == UpdateMode.EDIT) {
-                    //self.validTimeInEditMode(dataCell, self.userInfor, false);
+                    // thằng này dùng cơ chể valid khác là => ajaxValidateTime
                 } else if (self.userInfor.disPlayFormat == ViewMode.TIME && self.userInfor.updateMode == UpdateMode.STICK) {
                     // check xem cell vừa được stick data có nằm trong list cell lỗi do edit time hay không, nếu nằm trong list đấy thì rmove cell đó khỏi list lỗi đi.
                     self.validTimeStickMode(dataCell);
@@ -845,111 +845,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 }, 100);
                 //_.forEach(arg.detail, function(cell) {});
-            });
-        }
-
-        validTimeInEditMode(dataCellUpdated: any, userInfor: any, isRetaine: boolean) {
-            let self = this;
-            let strTime, endTime, workTypeCode, workTimeCode, rowIndex, columnKey;
-            rowIndex = dataCellUpdated.originalEvent.detail.rowIndex;
-            columnKey = dataCellUpdated.originalEvent.detail.columnKey;
-            if (!isRetaine) {
-                strTime = dataCellUpdated.originalEvent.detail.value.startTime;
-                endTime = dataCellUpdated.originalEvent.detail.value.endTime;
-            } else {
-                let dataSource = $("#extable").exTable('dataSource', 'detail').body;
-                let innerIdx = dataCellUpdated.originalEvent.detail.innerIdx;
-                let cellData = dataSource[rowIndex][columnKey];
-                workTypeCode = cellData.workTypeCode;
-                workTimeCode = cellData.workTimeCode;
-                if (innerIdx == 3) {
-                    endTime = dataCellUpdated.originalEvent.detail.value;
-                    strTime = cellData.startTime;
-                } else if (innerIdx == 2) {
-                    strTime = dataCellUpdated.originalEvent.detail.value;
-                    endTime = cellData.endTime;
-                }
-            }
-
-            let startTimeCal = nts.uk.time.minutesBased.duration.parseString(strTime).toValue();
-            let endTimeCal = nts.uk.time.minutesBased.duration.parseString(endTime).toValue();
-
-            if (startTimeCal < 0 && endTimeCal < 0) {
-                startTimeCal = startTimeCal * -1;
-                endTimeCal = endTimeCal * -1;
-            }
-
-            if (startTimeCal >= endTimeCal) {
-                self.checkExitCellUpdated();
-                nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
-                return;
-            }
-
-            if (strTime == '' || endTime == '' || _.isNaN(startTimeCal) || _.isNaN(endTimeCal)) {
-                self.checkExitCellUpdated();
-                return;
-            }
-            
-            nts.uk.ui.block.grayout();
-            let param = {
-                workType: isRetaine == true ? workTypeCode : dataCellUpdated.originalEvent.detail.value.workTypeCode,
-                workTime: isRetaine == true ? workTimeCode : dataCellUpdated.originalEvent.detail.value.workTimeCode,
-                workTime1: {
-                    startTime: {
-                        time: startTimeCal,
-                        dayDivision: 0
-                    },
-                    endTime: {
-                        time: endTimeCal,
-                        dayDivision: 0
-                    }
-                },
-                workTime2: null
-            }
-
-            // call alg : <<Query>> 時刻が不正かチェックする
-            service.checkTimeIsIncorrect(param).done((result) => {
-                let errors = [];
-                for (let i = 0; i < result.length; i++) {
-                    if (!result[i].check) {
-                        if (result[i].timeSpan == null) {
-                            errors.push({
-                                message: nts.uk.resource.getMessage('Msg_439', getText('KDL045_12')),
-                                messageId: "Msg_439",
-                                supplements: {}
-                            });
-                        } else {
-                            if (result[i].timeSpan.startTime == result[i].timeSpan.endTime) {
-                                errors.push({
-                                    message: nts.uk.resource.getMessage('Msg_2058', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime)]),
-                                    messageId: "Msg_2058",
-                                    supplements: {}
-                                });
-                            } else {
-                                errors.push({
-                                    message: nts.uk.resource.getMessage('Msg_1772', [result[i].nameError, formatById("Clock_Short_HM", result[i].timeSpan.startTime), formatById("Clock_Short_HM", result[i].timeSpan.endTime)]),
-                                    messageId: "Msg_1772",
-                                    supplements: {}
-                                });
-                            }
-                        }
-                    }
-                }
-
-                if (errors.length > 0) {
-                    nts.uk.ui.block.clear();
-                    self.enableBtnReg(false);
-                    let errorsInfo = _.uniqBy(errors, x => { return x.message });
-                    self.checkExitCellUpdated();
-                    bundledErrors({ errors: errorsInfo }).then(() => {});
-                } else {
-                    self.checkExitCellUpdated();
-                    nts.uk.ui.block.clear();
-                }
-            }).fail(function(error) {
-                nts.uk.ui.block.clear();
-                nts.uk.ui.dialog.alertError(error);
-                dfd.reject();
             });
         }
 
