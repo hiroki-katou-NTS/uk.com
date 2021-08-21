@@ -36,10 +36,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
  */
 @SuppressWarnings("unchecked")
 @RunWith(JMockit.class)
-public class ScheduleDailyTableOfPersonCountAggregateServiceTest {
+public class ScheduleDailyTablePersonCounterServiceTest {
 
 	@Injectable
-	private ScheduleDailyTableOfPersonCountAggregateService.Require require;
+	private ScheduleDailyTablePersonCounterService.Require require;
 	
 
 	/**
@@ -105,8 +105,8 @@ public class ScheduleDailyTableOfPersonCountAggregateServiceTest {
 		};
 		
 		//Act
-		List<ResultIndividualizedNoOfAggregation> result = NtsAssert.Invoke.staticMethod(
-					ScheduleDailyTableOfPersonCountAggregateService.class
+		List<NumberTimeEachIndividualCounterResult> result = NtsAssert.Invoke.staticMethod(
+					ScheduleDailyTablePersonCounterService.class
 				,	"aggregateByScheRecAtr", require
 				,	ScheRecAtr.RECORD, personalCounter, dailyWorks);
 		//Assert
@@ -210,8 +210,8 @@ public class ScheduleDailyTableOfPersonCountAggregateServiceTest {
 		//予定のみ
 		{			
 			//Act
-			List<ResultIndividualizedNoOfAggregation> result = NtsAssert.Invoke.staticMethod(
-						ScheduleDailyTableOfPersonCountAggregateService.class
+			List<NumberTimeEachIndividualCounterResult> result = NtsAssert.Invoke.staticMethod(
+						ScheduleDailyTablePersonCounterService.class
 					,	"aggregate", require
 					,	ScheRecGettingAtr.ONLY_SCHEDULE, personalCounter, dailyMaps);
 			
@@ -234,8 +234,8 @@ public class ScheduleDailyTableOfPersonCountAggregateServiceTest {
 		//実績のみ
 		{
 			//Act
-			List<ResultIndividualizedNoOfAggregation> result = NtsAssert.Invoke.staticMethod(
-						ScheduleDailyTableOfPersonCountAggregateService.class
+			List<NumberTimeEachIndividualCounterResult> result = NtsAssert.Invoke.staticMethod(
+						ScheduleDailyTablePersonCounterService.class
 					,	"aggregate", require
 					,	ScheRecGettingAtr.ONLY_RECORD, personalCounter, dailyMaps);
 			
@@ -258,8 +258,8 @@ public class ScheduleDailyTableOfPersonCountAggregateServiceTest {
 		//予定＋実績
 		{
 			//Act
-			List<ResultIndividualizedNoOfAggregation> result = NtsAssert.Invoke.staticMethod(
-						ScheduleDailyTableOfPersonCountAggregateService.class
+			List<NumberTimeEachIndividualCounterResult> result = NtsAssert.Invoke.staticMethod(
+						ScheduleDailyTablePersonCounterService.class
 					,	"aggregate", require
 					,	ScheRecGettingAtr.SCHEDULE_WITH_RECORD, personalCounter, dailyMaps);
 			
@@ -296,7 +296,6 @@ public class ScheduleDailyTableOfPersonCountAggregateServiceTest {
 		/**
 		 * 日別実績(Work)を作る
 		 * @param sid 社員ID
-		 * @param ymd 年月日
 		 * @return
 		 */
 		public static IntegrationOfDaily createDailyWorks(String sid) {

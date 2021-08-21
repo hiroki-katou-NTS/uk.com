@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  * @author lan_lt
  *
  */
-public class ScheduleDailyTableOfPersonCountAggregateService {
+public class ScheduleDailyTablePersonCounterService {
 
 	/**
 	 * 集計する
@@ -27,7 +27,7 @@ public class ScheduleDailyTableOfPersonCountAggregateService {
 	 * @param dailyMap 日別勤怠Map
 	 * @return List<個人別の回数集計結果>
 	 */
-	public static List<ResultIndividualizedNoOfAggregation> aggregate(
+	public static List<NumberTimeEachIndividualCounterResult> aggregate(
 				Require require
 			,	ScheRecGettingAtr inkanTarget
 			,	List<Integer> personCounter
@@ -35,7 +35,7 @@ public class ScheduleDailyTableOfPersonCountAggregateService {
 			){
 		
 		//予定集計
-		List<ResultIndividualizedNoOfAggregation> scheNoTimeTotalResult = new ArrayList<>();
+		List<NumberTimeEachIndividualCounterResult> scheNoTimeTotalResult = new ArrayList<>();
 		if(inkanTarget.isNeedSchedule()) {
 			scheNoTimeTotalResult.addAll(
 					aggregateByScheRecAtr(	require, ScheRecAtr.SCHEDULE, personCounter
@@ -43,14 +43,14 @@ public class ScheduleDailyTableOfPersonCountAggregateService {
 		}
 		
 		//予定集計
-		List<ResultIndividualizedNoOfAggregation> recNoTimeTotalResult = new ArrayList<>();
+		List<NumberTimeEachIndividualCounterResult> recNoTimeTotalResult = new ArrayList<>();
 		if(inkanTarget.isNeedRecord()) {
 			recNoTimeTotalResult.addAll(
 					aggregateByScheRecAtr(	require, ScheRecAtr.RECORD, personCounter
 										,	dailyMap.get(ScheRecGettingAtr.ONLY_RECORD)));
 		}
 		
-		List<ResultIndividualizedNoOfAggregation> results = new ArrayList<>();
+		List<NumberTimeEachIndividualCounterResult> results = new ArrayList<>();
 		results.addAll(scheNoTimeTotalResult);
 		results.addAll(recNoTimeTotalResult);
 		
@@ -64,7 +64,7 @@ public class ScheduleDailyTableOfPersonCountAggregateService {
 	 * @param targetTotalList 集計対象リスト
 	 * @return List<個人計の回数集計結果>
 	 */
-	private static List<ResultIndividualizedNoOfAggregation> aggregateByScheRecAtr(Require require
+	private static List<NumberTimeEachIndividualCounterResult> aggregateByScheRecAtr(Require require
 			,	ScheRecAtr scheRecAtr
 			,	List<Integer> personCounter
 			,	List<IntegrationOfDaily> targetTotalList){
@@ -73,20 +73,15 @@ public class ScheduleDailyTableOfPersonCountAggregateService {
 				.countingNumberOfTotalTimeByEmployee(require, personCounter, targetTotalList);
 		
 		return totalResult.entrySet().stream()
-				.map(entry -> {
-					return entry.getValue()
-								.entrySet()
-								.stream()
-								.map(item -> {
-									return new ResultIndividualizedNoOfAggregation(
-												entry.getKey()
-											,	item.getKey()
-											,	scheRecAtr
-											,	item.getValue());
-									})
-								.collect(Collectors.toList());
-				})
-				.flatMap(List::stream)
+				.flatMap(entry -> entry.getValue().entrySet()
+						.stream()
+						.map(item ->
+							 new NumberTimeEachIndividualCounterResult(
+										entry.getKey()
+									,	item.getKey()
+									,	scheRecAtr
+									,	item.getValue())
+						))
 				.collect(Collectors.toList());
 	}
 	
