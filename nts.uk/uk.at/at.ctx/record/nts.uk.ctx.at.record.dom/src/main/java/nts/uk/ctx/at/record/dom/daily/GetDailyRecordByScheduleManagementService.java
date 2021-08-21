@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  * @author Hieult
  *
  */
-public class GetDailyRecordByWorkingStatusService {
+public class GetDailyRecordByScheduleManagementService {
 	
 
 	/**
@@ -35,7 +35,7 @@ public class GetDailyRecordByWorkingStatusService {
 			flatMap	*/	
 			long startTime = System.nanoTime();
 			
-			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.getByEmp(require, x, datePeriod);
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByScheduleManagementService.getByEmp(require, x, datePeriod);
 			map.putAll(data);
 			
 			long endTime = System.nanoTime();

@@ -19,15 +19,15 @@ import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByWorkingStatusService;
-import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByWorkingStatusService.Require;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByScheduleManagementService;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByScheduleManagementService.Require;
 import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.employeeworkway.WorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 @RunWith(JMockit.class)
-public class GetDailyRecordByWorkingStatusServiceTest {
+public class GetDailyRecordByScheduleManagementServiceTest {
 
 	@Injectable
 	private Require require;
@@ -56,7 +56,7 @@ public class GetDailyRecordByWorkingStatusServiceTest {
 				return false;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.get(require,
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByScheduleManagementService.get(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -93,7 +93,7 @@ public class GetDailyRecordByWorkingStatusServiceTest {
 				return true;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.get(require,
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByScheduleManagementService.get(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.empty()));
@@ -134,7 +134,7 @@ public class GetDailyRecordByWorkingStatusServiceTest {
 				return true;
 			}
 		};
-		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByWorkingStatusService.get(require,
+		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByScheduleManagementService.get(require,
 				lstEmployeeID, period);
 		assertThat(data.entrySet()).extracting(d -> d.getKey(), d -> d.getValue())
 				.containsExactly(tuple(scheManaStatuTempo, Optional.of(integrationOfDaily)));

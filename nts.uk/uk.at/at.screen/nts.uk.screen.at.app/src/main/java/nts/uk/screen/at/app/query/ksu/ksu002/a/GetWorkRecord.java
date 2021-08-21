@@ -20,7 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByWorkingStatusService;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByScheduleManagementService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
@@ -83,7 +83,7 @@ public class GetWorkRecord {
 		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(param.listSid, period, dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 
-		 Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> map = GetDailyRecordByWorkingStatusService.get(requireDailyImpl, param.listSid, period);
+		 Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> map = GetDailyRecordByScheduleManagementService.get(requireDailyImpl, param.listSid, period);
 
 		 List<WorkScheduleWorkInforDto> result = createWorkScheduleBasedOnWorkRecord.get(map);
 
@@ -155,7 +155,7 @@ public class GetWorkRecord {
 	}
 
 	@AllArgsConstructor
-	private static class RequireDailyImpl implements GetDailyRecordByWorkingStatusService.Require {
+	private static class RequireDailyImpl implements GetDailyRecordByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, DailyRecordDto> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;

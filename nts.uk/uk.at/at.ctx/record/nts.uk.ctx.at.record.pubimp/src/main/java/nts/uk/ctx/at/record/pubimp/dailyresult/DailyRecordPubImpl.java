@@ -15,7 +15,7 @@ import nts.arc.layer.app.cache.NestedMapCache;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.OptionalUtil;
-import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByWorkingStatusService;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByScheduleManagementService;
 import nts.uk.ctx.at.record.pub.dailyresult.DailyRecordPub;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
@@ -58,13 +58,13 @@ public class DailyRecordPubImpl implements DailyRecordPub{
 		
 		RequireImpl requireImpl = new RequireImpl(employeeIds, period);
 		
-		return GetDailyRecordByWorkingStatusService.get(requireImpl, employeeIds, period)
+		return GetDailyRecordByScheduleManagementService.get(requireImpl, employeeIds, period)
 						.values().stream()
 						.flatMap(OptionalUtil::stream)
 						.collect(Collectors.toList());
 	}
 	
-	private class RequireImpl implements GetDailyRecordByWorkingStatusService.Require {
+	private class RequireImpl implements GetDailyRecordByScheduleManagementService.Require {
 		
 		private NestedMapCache<String, GeneralDate, IntegrationOfDaily> dailyRecordCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
