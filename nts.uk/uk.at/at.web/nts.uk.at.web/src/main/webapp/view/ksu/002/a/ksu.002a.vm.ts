@@ -630,7 +630,6 @@ module nts.uk.ui.at.ksu002.a {
 			}
 			setShared('dataShareDialogKSU002B', param);
 			nts.uk.ui.windows.sub.modal('/view/ksu/002/b/index.xhtml');
-			
 		}
 		// UI-8: Undo-Redoの処理
 		undoOrRedo(action: 'undo' | 'redo') {
