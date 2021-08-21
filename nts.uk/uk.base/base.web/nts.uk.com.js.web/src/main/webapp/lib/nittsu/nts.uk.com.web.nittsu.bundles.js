@@ -3665,7 +3665,8 @@ var nts;
                 com: 'nts.uk.com.web',
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web',
-                hr: 'nts.uk.hr.web'
+                hr: 'nts.uk.hr.web',
+                cloud: 'nts.uk.cloud.web'
             };
             var QueryString = /** @class */ (function () {
                 function QueryString() {
@@ -9246,38 +9247,38 @@ var nts;
                         Cloud.prototype.rollTo = function (cell) {
                             var self = this;
                             if (self.startIndex <= cell.rowIndex && self.endIndex >= cell.rowIndex) {
-                                var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdIndex = selector.index($cell);
-                                var tdPosLeft_1 = 0, tdPosTop_1 = 0;
-                                selector.siblingsLt($cell, tdIndex).forEach(function (e) {
-                                    if (e.style.display !== "none") {
-                                        tdPosLeft_1 += e.offsetWidth;
-                                    }
-                                });
-                                var $tr = $cell.parentElement;
-                                var trIndex = selector.index($tr);
-                                selector.siblingsLt($tr, trIndex).forEach(function (e) {
-                                    tdPosTop_1 += e.offsetHeight;
-                                });
-                                if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop_1 + 100)
-                                    || self.$container.scrollTop > tdPosTop_1) {
-                                    self.$container.scrollTop = tdPosTop_1;
-                                }
-                                if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft_1 + 100)
-                                    || self.$container.scrollLeft > tdPosLeft_1) {
-                                    self.$container.scrollLeft = tdPosLeft_1;
-                                }
+                                //                    let $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
+                                //                    let tdIndex = selector.index($cell);
+                                //                    let tdPosLeft = 0, tdPosTop = 0;
+                                //                    selector.siblingsLt($cell, tdIndex).forEach(function(e) {
+                                //                        if (e.style.display !== "none") {
+                                //                            tdPosLeft += e.offsetWidth;
+                                //                        }
+                                //                    });
+                                //                    let $tr = $cell.parentElement;
+                                //                    let trIndex = selector.index($tr);
+                                //                    selector.siblingsLt($tr, trIndex).forEach(function(e) {
+                                //                        tdPosTop += e.offsetHeight;
+                                //                    });
+                                //                    if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop + 100)
+                                //                        || self.$container.scrollTop > tdPosTop) {
+                                //                        self.$container.scrollTop = tdPosTop;
+                                //                    }
+                                //                    if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft + 100)
+                                //                        || self.$container.scrollLeft > tdPosLeft) {
+                                //                        self.$container.scrollLeft = tdPosLeft;
+                                //                    }
                             }
                             else {
                                 self.$container.scrollTop = cell.rowIndex * self.rowHeight;
                                 var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdPosLeft_2 = 0;
+                                var tdPosLeft_1 = 0;
                                 selector.siblingsLt($cell, selector.index($cell)).forEach(function (e) {
                                     if (e.style.display !== "none") {
-                                        tdPosLeft_2 += e.offsetWidth;
+                                        tdPosLeft_1 += e.offsetWidth;
                                     }
                                 });
-                                self.$container.scrollLeft = tdPosLeft_2;
+                                self.$container.scrollLeft = tdPosLeft_1;
                             }
                         };
                         /**
@@ -9447,7 +9448,7 @@ var nts;
                             if (!disable)
                                 return;
                             self.eachKey(disable, function (obj) { return obj.columnKey; }, function (obj) { return !obj.uiReflected; }, function ($cell, obj) {
-                                helper.markCellWith(style.SEAL_CLS, $cell);
+                                helper.markCellWith(style.SEAL_CLS, $cell, obj.innerIdx);
                                 obj.uiReflected = true;
                             });
                         };
@@ -9466,9 +9467,14 @@ var nts;
                                     var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                     if ($childCells && $childCells.length > 0) {
                                         if (makeup.textColor) {
-                                            _.forEach($childCells, function (c) {
-                                                c.style.color = makeup.textColor;
-                                            });
+                                            if (_.isNil(obj.innerIdx) || obj.innerIdx === -1) {
+                                                _.forEach($childCells, function (c) {
+                                                    c.style.color = makeup.textColor;
+                                                });
+                                            }
+                                            else if ($childCells.length > obj.innerIdx) {
+                                                $childCells[obj.innerIdx].style.color = makeup.textColor;
+                                            }
                                         }
                                         else
                                             helper.addClass($childCells, makeup.class);
@@ -10253,6 +10259,7 @@ var nts;
                             exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                             return { updateTarget: updateTarget, value: oldVal };
                         }
+                        exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                         return null;
                     }
                     update.cellData = cellData;
@@ -27691,7 +27698,8 @@ var nts;
                                         update: function (v, i, r, p) {
                                             su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                             if (_.isFunction(controlDef.onChange)) {
-                                                controlDef.onChange(id, key, v, rData);
+                                                var rObj = _dataSource[i];
+                                                controlDef.onChange(rObj[_pk], key, v, rObj);
                                             }
                                         },
                                         deleteRow: su.deleteRow,
@@ -27717,7 +27725,8 @@ var nts;
                                     update: function (v, i, r, p) {
                                         su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                         if (_.isFunction(controlDef.onChange)) {
-                                            controlDef.onChange(id, key, v, rData);
+                                            var rObj = _dataSource[i];
+                                            controlDef.onChange(rObj[_pk], key, v, rObj);
                                         }
                                     },
                                     deleteRow: su.deleteRow,
@@ -31967,6 +31976,7 @@ var nts;
                                         $cbxCell.textContent = selectedOpt ? selectedOpt.name : "";
                                         $.data($cbxCell, lo.CBX_SELECTED_TD, inputVal_1);
                                     }
+                                    inputRidd_1();
                                 }
                                 else if ((sCol_1 = _specialLinkColumn[editor.columnKey]) && sCol_1.changed) {
                                     var data = _mafollicle[_currentPage].origDs[editor.rowIdx];
@@ -36556,8 +36566,8 @@ var nts;
                                         return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
-                                        && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
-                                            || (pDec_1.start > sameLineChart.start && pDec_1.start < sameLineChart.end)));
+                                        && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
+                                            || (diff < 0 && chart.start >= sameLineChart.end && pDec_1.start < sameLineChart.end)));
                                 }))
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
@@ -49634,6 +49644,7 @@ var nts;
                         var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
                         construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
                         $container.data("construct", construct);
+                        $container.addClass("ntsDateRangePicker_Container");
                         return { 'controlsDescendantBindings': true };
                     };
                     /**
@@ -52597,7 +52608,7 @@ var nts;
                     };
                     NtsFormLabelComponent.prototype.mounted = function () {
                         var vm = this;
-                        $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+                        //            $(vm.$el).find('[data-bind]').removeAttr('data-bind');
                     };
                     NtsFormLabelComponent.prototype.destroyed = function () {
                         var vm = this;
@@ -52694,6 +52705,7 @@ var nts;
                         _this.currentCompanyId = ko.observable('');
                         _this.companyNameClick = ko.observable(false);
                         _this.pgName = ko.observable('');
+                        _this.pgId = ko.observable('');
                         _this.showManual = ko.observable(false);
                         _this.showPersonSetting = ko.observable(false);
                         return _this;
@@ -52786,7 +52798,7 @@ var nts;
                                             if (pgName) {
                                                 var name_2 = pgName.name;
                                                 if (name_2) {
-                                                    vm.pgName(name_2);
+                                                    vm.pgNameInit(name_2);
                                                 }
                                             }
                                         }
@@ -52795,7 +52807,7 @@ var nts;
                                             if (first) {
                                                 var name_3 = first.name;
                                                 if (name_3) {
-                                                    vm.pgName(name_3);
+                                                    vm.pgNameInit(name_3);
                                                 }
                                             }
                                         }
@@ -52814,6 +52826,26 @@ var nts;
                         $(window)
                             .on('keyup', function (evt) { return vm.ctrl(evt.ctrlKey); })
                             .on('keydown', function (evt) { return vm.ctrl(evt.ctrlKey); });
+                    };
+                    HeaderViewModel.prototype.pgNameInit = function (name) {
+                        var vm = this;
+                        vm.pgName(name.substr(7));
+                        vm.pgId(name.substr(0, 7));
+                        var $el = $("#pg-disp-name");
+                        var pgid = "<span id='pg-id'>" + vm.pgId() + "</span>";
+                        var pgidcaret = "<div id='pg-id-caret'></div>";
+                        $("body").append(pgid);
+                        $("body").append(pgidcaret);
+                        $el.mouseenter(function (e) {
+                            var top = $el.offset().top + 23;
+                            var left = $el.offset().left + 5;
+                            $("#pg-id").css({ "visibility": "visible", "top": top + "px", "left": left + "px", "z-index": "1000" });
+                            $("#pg-id-caret").css({ "visibility": "visible", "top": top + "px", "left": left + "px", "z-index": "1000" });
+                        });
+                        $el.mouseleave(function (e) {
+                            $("#pg-id").css({ "visibility": "hidden", "top": "0px", "left": "0px", "z-index": "-1" });
+                            $("#pg-id-caret").css({ "visibility": "hidden", "top": "0px", "left": "0px", "z-index": "-1" });
+                        });
                     };
                     HeaderViewModel.prototype.loadData = function () {
                         var vm = this;
@@ -53090,7 +53122,7 @@ var nts;
                     HeaderViewModel = __decorate([
                         component({
                             name: 'ui-header',
-                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                click: $component.hambergerClick,\n                css: {\n                    'hover': $component.menuSet.click()\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.click() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: 'CCG020_1'\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.companyNameClick\n                        }\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName, click: $component.companiesClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\" data-bind=\"foreach: { data: $component.companies, as: 'company' }\">\n                                <div class=\"item\" data-bind=\"\n                                    i18n: company.companyName,\n                                    click: function() { $component.selectCompany($data) }\n                                \"></div>\n                                <div class=\"item divider divider-company\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.userNameClick\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName, click: $component.userClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_5', click: $component.settingPerson, if: $component.showPersonSetting\"></div>\n                                <div data-bind=\"if: $component.showPersonSetting\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_4', click: $component.manual, if: $component.showManual\"></div>\n                                <div data-bind=\"if: $component.showManual\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_3', click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        <div class=\"pg-area\">\n            <div class=\"pg-name\">\n                <span data-bind=\"text: pgName\"></span>\n            </div>\n        </div>\n        "
+                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                click: $component.hambergerClick,\n                css: {\n                    'hover': $component.menuSet.click()\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.click() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: 'CCG020_1'\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.companyNameClick\n                        }\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName, click: $component.companiesClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\" data-bind=\"foreach: { data: $component.companies, as: 'company' }\">\n                                <div class=\"item\" data-bind=\"\n                                    i18n: company.companyName,\n                                    click: function() { $component.selectCompany($data) }\n                                \"></div>\n                                <div class=\"item divider divider-company\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.userNameClick\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName, click: $component.userClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_5', click: $component.settingPerson, if: $component.showPersonSetting\"></div>\n                                <div data-bind=\"if: $component.showPersonSetting\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_4', click: $component.manual, if: $component.showManual\"></div>\n                                <div data-bind=\"if: $component.showManual\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_3', click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        <div class=\"pg-area\">\n            <div class=\"pg-name\">\n                <span id=\"pg-disp-name\" data-bind=\"text: pgName\" style=\"cursor: default\"></span>\n            </div>\n        </div>\n        "
                         })
                     ], HeaderViewModel);
                     return HeaderViewModel;
@@ -53716,7 +53748,7 @@ var nts;
                 function SvgIconBindingHandler() {
                 }
                 SvgIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    element.removeAttribute('data-bind');
+                    //            element.removeAttribute('data-bind');
                     return { controlsDescendantBindings: false };
                 };
                 SvgIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
