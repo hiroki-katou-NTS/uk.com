@@ -2143,7 +2143,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
                 workType,
                 workTime,
                 appAbsenceStartInfoOutput.getAppDispInfoStartupOutput(), 
-                Arrays.asList(workType), 
+                Arrays.asList(appAbsence.getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v()), 
                 Optional.of(timeDigestionParam));
 
         // 休暇申請登録時チェック処理
