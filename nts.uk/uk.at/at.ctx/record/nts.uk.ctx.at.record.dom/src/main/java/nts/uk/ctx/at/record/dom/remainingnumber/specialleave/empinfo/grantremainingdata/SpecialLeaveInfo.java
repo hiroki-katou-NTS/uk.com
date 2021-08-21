@@ -581,7 +581,7 @@ public class SpecialLeaveInfo implements Cloneable {
 				}
 			}
 		}
-		resultInfo.setSpecialLeaveErrors(errors);
+		resultInfo.getSpecialLeaveErrors().addAll(errors);
 		return resultInfo;
 	}
 
