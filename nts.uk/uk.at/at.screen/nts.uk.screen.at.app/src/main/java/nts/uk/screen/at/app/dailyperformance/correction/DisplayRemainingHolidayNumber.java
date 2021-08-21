@@ -174,12 +174,14 @@ public class DisplayRemainingHolidayNumber {
 			//RequestList198
 			ReNumAnnLeaReferenceDateImport remainNum = annLeaveRemainAdapter
 					.getReferDateAnnualLeaveRemainNumber(employeeId, date);
+			int yearHourRemain = 0;
+            for (int i = 0; i < remainNum.getAnnualLeaveGrantExports().size(); i++) {
+                yearHourRemain += remainNum.getAnnualLeaveGrantExports().get(i).getRemainMinutes();
+            }
 			return new YearHolidaySettingDto(output.isYearHolidayManagerFlg(), output.isSuspensionTimeYearFlg(),
 					remainNum.getAnnualLeaveRemainNumberExport() != null
 							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay() : 0,
-					remainNum.getAnnualLeaveRemainNumberExport() != null
-							? remainNum.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantTime()
-							: 0);
+					yearHourRemain);
 		} else {
 			return new YearHolidaySettingDto(false, false, null, null);
 		}
