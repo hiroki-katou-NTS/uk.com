@@ -4109,8 +4109,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // update detail a10
         updateBodyDetailGrid(viewMode, updateMode): void {
             let self = this;
-            nts.uk.ui.block.grayout();
-             
             // update Phần Detail
             let detailContentDeco = [];
             if (viewMode == ViewMode.SHIFT) {
@@ -4567,7 +4565,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.mode(UpdateMode.DETERMINE);
             $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-
             // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
             self.enableBtnPaste(false);
             self.enableBtnCoppy(false);
@@ -4575,7 +4572,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.enableBtnRedo(false);
             self.enableBtnUndo(false);
             self.enableBtnReg(false);
-
             if (self.selectedModeDisplayInBody() == ViewMode.TIME || self.selectedModeDisplayInBody() == ViewMode.SHORTNAME) {
                 // disable combobox workType, workTime
                 __viewContext.viewModel.viewAB.disabled(true);
@@ -4592,16 +4588,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.listCellUpdatedWhenChangeModeBg = [];
                 self.hasChangeModeBg = false;
             }
-            
+
             if (needUpdate) {
                 self.updateDataBindGridBase();
-                self.updateBodyDetailGrid(self.selectedModeDisplayInBody(), UpdateMode.DETERMINE );
+                self.updateBodyDetailGrid(self.selectedModeDisplayInBody(), UpdateMode.DETERMINE);
             }
-            
-            $("#extable").exTable("updateMode", UpdateMode.DETERMINE );
-            
+
+            $("#extable").exTable("updateMode", UpdateMode.DETERMINE);
+
             self.setConfirmCells();
-            
+
             $('div.ex-body-leftmost a').css("pointer-events", "none");
             $('div.ex-header-detail.xheader a').css("pointer-events", "none");
             self.setIconEventHeader();
@@ -5980,6 +5976,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getAggregatedInfo(param).done((data: any) => {
+                let start = Date.now();
                 let aggreratePersonal = data.aggreratePersonal; // Data A11
                 let aggrerateWorkplace = data.aggrerateWorkplace; // Data A12
                 let externalBudget = data.externalBudget;
@@ -6010,14 +6007,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.cloneDataSource();
                     self.updateDataBindGrid();
                 }
-                
+                let end = Date.now();
+                let time = end - start;
+                console.log('time create data && gen grid:' + time);
                 setTimeout(() => {
                     let key = request.location.current.rawUrl + "/extable/scroll";
                     uk.localStorage.getItem(key).ifPresent((data) => {
                         let scrollLength = JSON.parse(data);
                         $("#extable").exTable('scrollBack', 2, scrollLength);
                     });
-                }, 10);
+                }, time + 100);
 
                 dfd.resolve();
                 nts.uk.ui.block.clear();
