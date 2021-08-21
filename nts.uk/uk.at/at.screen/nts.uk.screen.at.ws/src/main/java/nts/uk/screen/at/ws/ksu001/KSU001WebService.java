@@ -212,11 +212,15 @@ public class KSU001WebService extends WebService{
 	}
 	
 	@POST
-	@Path("get-28day-period") // get lai data A11, A12 
+	@Path("get-28day-period")
 	public DatePeriodDto get28DaysPeriod(ModePeriodParam param){
 		GeneralDate endDate = GeneralDate.fromString(param.endDate, "yyyy/MM/dd");
 		DatePeriodDto data = mode28DayPeriod.get(endDate);
 		return data;
 	}
+	
+	@POST
+	@Path("change-mode")
+	public void changeMode(){}
 	
 }

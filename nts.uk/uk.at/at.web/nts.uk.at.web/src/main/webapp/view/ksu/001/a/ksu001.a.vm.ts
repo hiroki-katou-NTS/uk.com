@@ -4485,57 +4485,63 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
         
-        editModeAct(needUpdate : boolean) {
+        editModeAct(needUpdate: boolean) {
             let self = this;
-            nts.uk.ui.block.grayout();
-            self.mode(UpdateMode.EDIT);
-            // set color button
-            $(".editMode").addClass("A6_hover btnControlSelected").removeClass("A6_not_hover btnControlUnSelected");
-            $(".confirmMode").addClass("A6_not_hover btnControlUnSelected").removeClass("A6_hover btnControlSelected");
-            self.removeClass();
+            let dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+            service.changemode().done(() => {
+                self.mode(UpdateMode.EDIT);
+                // set color button
+                $(".editMode").addClass("A6_hover btnControlSelected").removeClass("A6_not_hover btnControlUnSelected");
+                $(".confirmMode").addClass("A6_not_hover btnControlUnSelected").removeClass("A6_hover btnControlSelected");
+                self.removeClass();
 
-            // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
-            self.enableBtnReg(false);
-            self.enableBtnPaste(true);
-            self.enableBtnCoppy(true);
-            self.enableHelpBtn(true);
-            if (needUpdate) {
-                self.updateDataBindGridBase();
-                self.updateBodyDetailGrid(self.selectedModeDisplayInBody(), self.userInfor.updateMode);
-            }
-            
-            self.setUpdateMode();
-            
-            self.setIconEventHeader();
-            
-            $('div.ex-body-leftmost a').css("pointer-events", "");
-            $('div.ex-header-detail.xheader a').css("pointer-events", "");
-            
-            if (self.selectedModeDisplayInBody() == ViewMode.TIME || self.selectedModeDisplayInBody() == ViewMode.SHORTNAME) {
-                // enable combobox workType, workTime
-                __viewContext.viewModel.viewAB.enableListWorkType(true);
-                
-                let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
-                let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == wTypeCdSelected; });
-                if (objWtime[0].workTimeSetting != 2) {
-                    __viewContext.viewModel.viewAB.disabled(false);
+                // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
+                self.enableBtnReg(false);
+                self.enableBtnPaste(true);
+                self.enableBtnCoppy(true);
+                self.enableHelpBtn(true);
+                if (needUpdate) {
+                    self.updateDataBindGridBase();
+                    self.updateBodyDetailGrid(self.selectedModeDisplayInBody(), self.userInfor.updateMode);
                 }
+
+                self.setUpdateMode();
+
+                self.setIconEventHeader();
+
+                $('div.ex-body-leftmost a').css("pointer-events", "");
+                $('div.ex-header-detail.xheader a').css("pointer-events", "");
+
+                if (self.selectedModeDisplayInBody() == ViewMode.TIME || self.selectedModeDisplayInBody() == ViewMode.SHORTNAME) {
+                    // enable combobox workType, workTime
+                    __viewContext.viewModel.viewAB.enableListWorkType(true);
+
+                    let wTypeCdSelected = __viewContext.viewModel.viewAB.selectedWorkTypeCode();
+                    let objWtime = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == wTypeCdSelected; });
+                    if (objWtime[0].workTimeSetting != 2) {
+                        __viewContext.viewModel.viewAB.disabled(false);
+                    }
+                    if (self.selectedModeDisplayInBody() == ViewMode.TIME) {
+                        self.visibleBtnInput(true);
+                        self.enableBtnInput(true);
+                    }
+                } else {
+                    self.visibleBtnInput(false);
+                    self.enableBtnInput(false);
+                    self.shiftPalletControlEnable();
+                }
+
                 if (self.selectedModeDisplayInBody() == ViewMode.TIME) {
-                    self.visibleBtnInput(true);
-                    self.enableBtnInput(true);
+                    self.diseableCellsTime();
                 }
-            } else {
-                self.visibleBtnInput(false);
-                self.enableBtnInput(false);
-                self.shiftPalletControlEnable();
-            }
-            
-            if (self.selectedModeDisplayInBody() == ViewMode.TIME) {
-                self.diseableCellsTime();
-            }
-            self.calculateDisPlayA48A49();
-            
-            nts.uk.ui.block.clear();
+                self.calculateDisPlayA48A49();
+                dfd.resolve();
+                nts.uk.ui.block.clear();
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+            });
+            return dfd.promise();
         }
         
         confirmMode() {
@@ -4559,50 +4565,57 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
         
-        confirmModeAct(needUpdate : boolean) {
+        confirmModeAct(needUpdate: boolean) {
             let self = this;
-            nts.uk.ui.block.grayout();
-            self.mode(UpdateMode.DETERMINE);
-            $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
-            self.enableBtnPaste(false);
-            self.enableBtnCoppy(false);
-            self.enableHelpBtn(false);
-            self.enableBtnRedo(false);
-            self.enableBtnUndo(false);
-            self.enableBtnReg(false);
-            if (self.selectedModeDisplayInBody() == ViewMode.TIME || self.selectedModeDisplayInBody() == ViewMode.SHORTNAME) {
-                // disable combobox workType, workTime
-                __viewContext.viewModel.viewAB.disabled(true);
-                __viewContext.viewModel.viewAB.enableListWorkType(false);
-                if (self.selectedModeDisplayInBody() == ViewMode.TIME) {
-                    self.enableCellsTime();
-                    self.visibleBtnInput(true);
+            let dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+            service.changemode().done(() => {
+                self.mode(UpdateMode.DETERMINE);
+                $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
+                self.enableBtnPaste(false);
+                self.enableBtnCoppy(false);
+                self.enableHelpBtn(false);
+                self.enableBtnRedo(false);
+                self.enableBtnUndo(false);
+                self.enableBtnReg(false);
+                if (self.selectedModeDisplayInBody() == ViewMode.TIME || self.selectedModeDisplayInBody() == ViewMode.SHORTNAME) {
+                    // disable combobox workType, workTime
+                    __viewContext.viewModel.viewAB.disabled(true);
+                    __viewContext.viewModel.viewAB.enableListWorkType(false);
+                    if (self.selectedModeDisplayInBody() == ViewMode.TIME) {
+                        self.enableCellsTime();
+                        self.visibleBtnInput(true);
+                        self.enableBtnInput(false);
+                    }
+                } else {
+                    self.visibleBtnInput(false);
                     self.enableBtnInput(false);
+                    self.shiftPalletControlDisable();
+                    self.listCellUpdatedWhenChangeModeBg = [];
+                    self.hasChangeModeBg = false;
                 }
-            } else {
-                self.visibleBtnInput(false);
-                self.enableBtnInput(false);
-                self.shiftPalletControlDisable();
-                self.listCellUpdatedWhenChangeModeBg = [];
-                self.hasChangeModeBg = false;
-            }
 
-            if (needUpdate) {
-                self.updateDataBindGridBase();
-                self.updateBodyDetailGrid(self.selectedModeDisplayInBody(), UpdateMode.DETERMINE);
-            }
+                if (needUpdate) {
+                    self.updateDataBindGridBase();
+                    self.updateBodyDetailGrid(self.selectedModeDisplayInBody(), UpdateMode.DETERMINE);
+                }
 
-            $("#extable").exTable("updateMode", UpdateMode.DETERMINE);
+                $("#extable").exTable("updateMode", UpdateMode.DETERMINE);
 
-            self.setConfirmCells();
+                self.setConfirmCells();
 
-            $('div.ex-body-leftmost a').css("pointer-events", "none");
-            $('div.ex-header-detail.xheader a').css("pointer-events", "none");
-            self.setIconEventHeader();
-            self.calculateDisPlayA48A49();
-            nts.uk.ui.block.clear();
+                $('div.ex-body-leftmost a').css("pointer-events", "none");
+                $('div.ex-header-detail.xheader a').css("pointer-events", "none");
+                self.setIconEventHeader();
+                self.calculateDisPlayA48A49();
+                dfd.resolve();
+                nts.uk.ui.block.clear();
+            }).fail(function(error) {
+                nts.uk.ui.block.clear();
+            });
+            return dfd.promise();
         }
         
         updateDataBindGrid() {
@@ -4692,6 +4705,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         // dis những cell mà không có worktime.
         enableCellsTime() {
             let self = this;
+            console.log('list timedisable: '+ self.listTimeDisable.length);
             _.forEach(self.listTimeDisable, function(obj: TimeDisable) {
                 $("#extable").exTable('enableCell', 'detail', obj.rowId + '', obj.columnId + '', '2');
                 $("#extable").exTable('enableCell', 'detail', obj.rowId + '', obj.columnId + '', '3');
