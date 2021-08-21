@@ -33,6 +33,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
@@ -1892,10 +1894,36 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
             List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements,
             boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalRoot, AppTypeSetting appTypeSetting) {
         String companyId = AppContexts.user().companyId();
+        
+        // 年月日Listを作成する
+        GeneralDate startDate = applyForLeave.getApplication().getOpAppStartDate().isPresent() ?
+                applyForLeave.getApplication().getOpAppStartDate().get().getApplicationDate() :
+                    applyForLeave.getApplication().getAppDate().getApplicationDate();
+                
+                GeneralDate endDate = applyForLeave.getApplication().getOpAppEndDate().isPresent() ?
+                        applyForLeave.getApplication().getOpAppEndDate().get().getApplicationDate() :
+                            applyForLeave.getApplication().getAppDate().getApplicationDate();
+                        
+                        List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
+                        
+                        List<GeneralDate> listHolidayDates = appDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
+                        
+                        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // ドメインモデル「休暇申請」を１件INSERTする)
+        Application appTemp = applyForLeave.getApplication();
+        List<ReflectionStatusOfDay> listReflectionStatusTempDays = new ArrayList<ReflectionStatusOfDay>();
+        
+        for (ReflectionStatusOfDay item : applyForLeave.getApplication().getReflectionStatus().getListReflectionStatusOfDay()) {
+            if (listDates.contains(item.getTargetDate())) {
+                listReflectionStatusTempDays.add(item);
+            }
+        }
+        appTemp.setReflectionStatus(new ReflectionStatus(listReflectionStatusTempDays));
         this.applyForLeaveRepository.insert(applyForLeave, companyId, applyForLeave.getApplication().getAppID());;
-        this.applicationService.insertApp(applyForLeave.getApplication(), approvalRoot);
+        this.applicationService.insertApp(
+                appTemp, 
+                approvalRoot);
 
         Application appNew = this.applicationRepository.findByID(applyForLeave.getApplication().getAppID()).get();
 
@@ -1905,20 +1933,6 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         // 休暇紐付け管理を登録する
         this.registerVacationLinkManage(leaveComDayOffMana, payoutSubofHDManagements);
 
-        // 年月日Listを作成する
-        GeneralDate startDate = applyForLeave.getApplication().getOpAppStartDate().isPresent() ?
-                applyForLeave.getApplication().getOpAppStartDate().get().getApplicationDate() :
-                    applyForLeave.getApplication().getAppDate().getApplicationDate();
-
-        GeneralDate endDate = applyForLeave.getApplication().getOpAppEndDate().isPresent() ?
-                applyForLeave.getApplication().getOpAppEndDate().get().getApplicationDate() :
-                    applyForLeave.getApplication().getAppDate().getApplicationDate();
-
-        List<GeneralDate> listDates = new DatePeriod(startDate, endDate).datesBetween();
-
-        List<GeneralDate> listHolidayDates = appDates.stream().map(date -> GeneralDate.fromString(date, FORMAT_DATE)).collect(Collectors.toList());
-
-        listDates = listDates.stream().filter(date -> !listHolidayDates.contains(date)).collect(Collectors.toList());
 
         // 暫定データの登録
         this.interimRemainDataMngRegisterDateChange.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);

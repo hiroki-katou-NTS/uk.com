@@ -1157,7 +1157,10 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             const vm = this;
             if (time) {
                 let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
-                return vm.$i18n('KAF006_100', [day.toString(), timeString]);
+                if (day) {
+                    return vm.$i18n('KAF006_100', [day.toString(), timeString]);
+                }
+                return timeString;
             }
 
             return vm.$i18n('KAF006_46', [day.toString()]);
