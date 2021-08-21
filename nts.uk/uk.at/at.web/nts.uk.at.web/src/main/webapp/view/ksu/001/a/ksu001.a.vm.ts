@@ -2254,13 +2254,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 //self.checkCellRetained(data); vì sau khi đăng ký done đã update lai grid rồi, nên không cần check cells retain nữa.
             }
             
-            // check trường hợp starttime|end == ''  thì return luôn. 
-            let validData = self.validData(data, self.userInfor.disPlayFormat);
-            if (validData  == false) {
-                nts.uk.ui.block.clear();
-                return;
-            }
-
             service.regWorkSchedule(data).done((rs) => {
                 if (rs.hasError == false) {
                     $("#extable").exTable('saveScroll');
@@ -2329,30 +2322,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
             
-        //check truong hop mode time, worktype la required la khong co starttime or endtime
-        validData(data: any, vMode : any) {
-            let self = this;
-            if (data.length == 0) {
-                return false;
-            }
-            
-            if (vMode != ViewMode.TIME)
-                return true;
-
-            let check = true;
-            _.forEach(data, function(cell) {
-                let exit = _.filter(self.listTimeDisable, function(o) { return o.rowId + '' == cell.rowIndex && o.columnId == cell.columnKey });
-                if (exit.length == 0) {
-                    if (cell.startTime == null || cell.endTime == null) {
-                        console.log('startTime or endTime = null. Please check data...');
-                        check = false;
-                        return false;
-                    }
-                }
-            });
-            return check;
-        }
-
         buidDataReg(viewMode, cellsGroup) {
             let self = this;
             let dataReg = [];
