@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.sys.portal.dom.toppagepart.TopPagePartName;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusDetailedSetting;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWidgetItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.DetailStandardWidgetTypeSetting;
@@ -115,7 +116,7 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 		appStatusSettings.add(remandDisplay);
 		appStatusSettings.add(applimitDisplay);
 
-//		standardWidget.setName(this.getTopPagePartName());
+		standardWidget.setName(new TopPagePartName(this.topPagePartName));
 		standardWidget.setAppStatusDetailedSettingList(appStatusSettings);
 		List<DetailStandardWidgetTypeSetting> detailSettingStandardWidgetTypes = new ArrayList<DetailStandardWidgetTypeSetting>();
 		detailSettingStandardWidgetTypes.add(new DetailStandardWidgetTypeSetting(
@@ -133,7 +134,7 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 
 		approveWidgeEntity.setCompanyId(standardWidget.getCompanyID());
 		
-		approveWidgeEntity.setTopPagePartName("");
+		approveWidgeEntity.setTopPagePartName(standardWidget.getName().v());
 		
 		appStatusSettings.forEach(setting -> {
 
@@ -166,7 +167,7 @@ public class SptmtAppWidget extends ContractUkJpaEntity implements Serializable 
 
 		this.setCompanyId(standardWidget.getCompanyID());
 
-		this.setTopPagePartName("");
+		this.setTopPagePartName(standardWidget.getName().v());
 
 		appStatusSettings.forEach(setting -> {
 
