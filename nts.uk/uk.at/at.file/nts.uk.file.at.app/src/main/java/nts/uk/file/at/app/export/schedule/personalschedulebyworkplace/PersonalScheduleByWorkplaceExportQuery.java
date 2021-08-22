@@ -2,9 +2,13 @@ package nts.uk.file.at.app.export.schedule.personalschedulebyworkplace;
 
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.*;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.*;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.*;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
@@ -22,7 +26,11 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecif
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
@@ -30,16 +38,16 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapte
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceExportServiceAdapter;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -78,6 +86,9 @@ public class PersonalScheduleByWorkplaceExportQuery {
 
     @Inject
     private IntegrationOfDailyGetter integrationOfDailyGetter;
+
+    @Inject
+    private AggregatePersonalTotalQuery aggregatePersonalTotalQuery;
 
     public PersonalScheduleByWkpDataSource get(int orgUnit, String orgId, DatePeriod period, String outputSettingCode, List<String> employeeIds, GeneralDate closureDate) {
         String companyId = AppContexts.user().companyId();
@@ -203,13 +214,18 @@ public class PersonalScheduleByWorkplaceExportQuery {
             period,
             outputSetting.get().getOutputItem().getDailyDataDisplayAtr() == NotUseAtr.USE ? ScheRecGettingAtr.SCHEDULE_WITH_RECORD : ScheRecGettingAtr.ONLY_SCHEDULE
         );
+        List<IntegrationOfDaily> integrationOfDailyList = new ArrayList<>();
+        integrationOfDailyMap.forEach((scheRecAtr, dailyIntegrations) -> {
+            integrationOfDailyList.addAll(dailyIntegrations);
+        });
 
         // 7. 一日分の社員の表示情報を取得す
-        List<EmployeeOneDayAttendanceInfo> listEmpOneDayAttendanceInfo = employeeOneDayAttendanceInfoQuery.get(integrationOfDailyMap, attendanceItems);
+        List<EmployeeOneDayAttendanceInfo> listEmpOneDayAttendanceInfo = employeeOneDayAttendanceInfoQuery.get(integrationOfDailyList, attendanceItems);
 
         // 8. 個人計を集計する
+        Map<PersonalCounterCategory, Object> personalTotalResult = new HashMap<>();
         if (!outputSetting.get().getPersonalCounterCategories().isEmpty()) {
-            //個人計カテゴリ == 労働時間
+            personalTotalResult = aggregatePersonalTotalQuery.get(employeeIds, period, closureDate, outputSetting.get().getPersonalCounterCategories(), integrationOfDailyList);
         }
 
         // 9.
@@ -226,7 +242,8 @@ public class PersonalScheduleByWorkplaceExportQuery {
                 displayInfoOrganization,
                 dateInformationList,
                 personalInfoScheduleTableList,
-                listEmpOneDayAttendanceInfo
+                listEmpOneDayAttendanceInfo,
+                personalTotalResult
         );
     }
 }

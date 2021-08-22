@@ -5,7 +5,8 @@ module nts.uk.at.view.ksu001.k.a {
 
     const Paths = {
         GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID:"ctx/at/schedule/scheduletable/getall",
-        EXPORT: "ctx/at/schedule/personal/by-workplace/export"
+        EXPORT: "ctx/at/schedule/personal/by-workplace/export",
+        PREVIEW: "ctx/at/schedule/personal/by-workplace/preview"
     };
     @bean()
     class Ksu005aViewModel extends ko.ViewModel {
@@ -17,6 +18,7 @@ module nts.uk.at.view.ksu001.k.a {
         comments: KnockoutObservable<string>;
         characteristics: Characteristics = {code: null, name: null, comments: null};
         params: any;
+        filePath: KnockoutObservable<string> = ko.observable('');
 
         created(params?: any) {
             const self = this;
@@ -134,9 +136,14 @@ module nts.uk.at.view.ksu001.k.a {
                 outputSettingCode: vm.selectedCode(),
                 comment: vm.comments(),
                 excel: true,
-                closureDate: null
+                closureDate: vm.params.endDate
             };
-            nts.uk.request.exportFile(Paths.EXPORT, query);
+            vm.$blockui("show");
+            nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
         exportPdf() {
@@ -150,13 +157,48 @@ module nts.uk.at.view.ksu001.k.a {
                 outputSettingCode: vm.selectedCode(),
                 comment: vm.comments(),
                 excel: false,
-                closureDate: null
+                closureDate: vm.params.endDate
             };
-            nts.uk.request.exportFile(Paths.EXPORT, query);
+            vm.$blockui("show");
+            nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
+                vm.$dialog.error(error);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
         previewOutput() {
-
+            const vm = this;
+            const query: any = {
+                orgUnit: vm.params.orgUnit,
+                orgId: vm.params.orgId,
+                periodStart: vm.params.startDate,
+                periodEnd: vm.params.endDate,
+                employeeIds: vm.params.employeeIds,
+                outputSettingCode: vm.selectedCode(),
+                comment: vm.comments(),
+                preview: true,
+                closureDate: vm.params.endDate
+            };
+            vm.$blockui("show");
+            vm.$ajax(Paths.EXPORT, query).then((res: any) => {
+                return deferred.repeat(conf => conf
+                    .task(() => nts.uk.request.specials.getAsyncTaskInfo(res.taskId))
+                    .while(info => info.pending || info.running)
+                    .pause(1000));
+            }).done((res: any) => {
+                if (res.failed || res.status == "ABORTED") {
+                    vm.$dialog.error(res.error);
+                } else {
+                    nts.uk.request.ajax(Paths.PREVIEW + "/" + res.id, null, {dataType: 'text'}).done((data: any) => {
+                        $("#preview-frame").attr("srcdoc", data);
+                    });
+                }
+            }).fail((res: any) => {
+                vm.$dialog.error(res);
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
     }
 

@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.PersonalInfoScheduleTable;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,6 +42,7 @@ public class PersonalScheduleByWkpDataSource {
     private List<EmployeeOneDayAttendanceInfo> listEmpOneDayAttendanceInfo;
 
     // 個人計集計結果
+    private Map<PersonalCounterCategory, Object> personalTotalResult;
 
     // 職場計集計結果
 }

@@ -31,6 +31,8 @@ public class PersonalScheduleByWkpQuery {
     // Excel形式で出力か
     private boolean excel;
 
+    private boolean preview;
+
     // 締め日
     private GeneralDate closureDate;
 }
