@@ -1,6 +1,9 @@
 package nts.uk.ctx.sys.auth.app.find.grant.roleindividual;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,8 +12,10 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDto;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.jobtitle.AffJobTitleBasicExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.EmployeeJobHistExport;
@@ -24,6 +29,7 @@ import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonImport;
 import nts.uk.ctx.sys.auth.dom.adapter.role.employment.*;
+import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
 import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
@@ -59,6 +65,9 @@ public class RoleIndividualFinder {
 
     @Inject
     private EmployeeInfoPub employeeInfoPub;
+
+    @Inject
+    private AcquireUserIDFromEmpIDService userIDFromEmpIDService;
 
 
     private static final String COMPANY_ID_SYSADMIN = "000000000000-0000";
@@ -139,9 +148,9 @@ public class RoleIndividualFinder {
 
     public List<RoleTypeDto> getCAS013Metadata() {
         val user = AppContexts.user();
-        if (!user.roles().have().systemAdmin() && !user.roles().have().companyAdmin())
-            return null;
-
+        if (!user.roles().have().companyAdmin()){
+            throw  new BusinessException("Msg_1103");
+        }
         // Get List Enum RoleType
         List<EnumConstant> enumRoleType = EnumAdaptor.convertToValueNameList(RoleType.class,
                 RoleType.EMPLOYMENT, RoleType.SALARY, RoleType.HUMAN_RESOURCE,
@@ -238,9 +247,6 @@ public class RoleIndividualFinder {
 
     public RoleIndividualGrantDto getRoleGrant(String userId, String roleId) {
         String companyId = AppContexts.user().companyId();
-        if (companyId == null)
-            return null;
-
         if (userId == null || roleId == null)
             return null;
 
@@ -258,30 +264,23 @@ public class RoleIndividualFinder {
         List<String> uid = ListRoleGrants.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
         List<RoleExport> roleExportList = roleAdapter.getListRole(uid);
         val listPersonOptional = roleExportList.stream().filter( c -> c.getPersonId().equals(pid.get())).findFirst();
+        String userName = "";
+        String employeeName = "";
+        if (user.get().getUserName().isPresent())
+            userName = user.get().getUserName().get().v();
+        employeeName = listPersonOptional.get().getPersonName();
+        return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(),
+                employeeDataMngInfoOptional.get().getEmployeeId(), employeeDataMngInfoOptional.get().getEmployeeCode(), employeeName);
 
-        if (user.isPresent()) {
-            String userName = "";
-            String employeeName = "";
-            if (user.get().getUserName().isPresent())
-                userName = user.get().getUserName().get().v();
-                employeeName = listPersonOptional.get().getPersonName();
-                    return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(),
-                            employeeDataMngInfoOptional.get().getEmployeeId(), employeeDataMngInfoOptional.get().getEmployeeCode(), employeeName);
-
-            } else {
-            return null;
-        }
     }
-
     public CompanyInfo getCompanyInfo() {
         val cid = AppContexts.user().companyId();
-        if(cid == null)
-            return null;
         CompanyImport companyInfo = companyAdapter.findCompanyByCid(cid);
-        CompanyInfo companyInfo1 = new CompanyInfo(companyInfo.getCompanyCode(),companyInfo.getCompanyName(), companyInfo.getCompanyId(), companyInfo.getIsAbolition());
-        return companyInfo1;
+        return new CompanyInfo(companyInfo.getCompanyCode(),
+                companyInfo.getCompanyName(),
+                companyInfo.getCompanyId(),
+                companyInfo.getIsAbolition());
     }
-
     public WorkPlaceInfo GetWorkPlaceInfo(String employeeID) {
         String cid = AppContexts.user().companyId();
 
@@ -333,45 +332,51 @@ public class RoleIndividualFinder {
 
         return listCompanyDTO;
     }
-    public List<EmployeeBasicInfoDto> searchEmployyeList(List<String> employyeid) {
-        String companyId = AppContexts.user().companyId();
-
+    public List<EmployeeBasicInfoDto> getListEmployeeInfo(String cid) {
+        if (cid == null) {
+            cid = AppContexts.user().companyId();
+        }
+        val rs = new ArrayList<EmployeeBasicInfoDto>();
+        val basDate = GeneralDate.today();
         // 社員情報リストを取得する
-        List<EmployeeBasicInfoDto> data = personAdapter.listPersonInfor(employyeid)
-                .stream().map(c -> EmployeeBasicInfoDto.fromDomain(c)).collect(Collectors.toList());
-
-        if(data.isEmpty()) {
-            return Collections.emptyList();
+        Map<String, EmployeeInfoDtoExport> employeeInfoDtoExportList = employeeInfoPub.getEmployeesAtWorkByBaseDate(cid, basDate)
+                .stream().filter(distinctByKey(EmployeeInfoDtoExport::getEmployeeId)).collect(Collectors.toMap(EmployeeInfoDtoExport::getEmployeeId, i -> i));
+        val mapPidSid =  employeeInfoPub.getEmployeesAtWorkByBaseDate(cid, basDate)
+                .stream().filter(distinctByKey(EmployeeInfoDtoExport::getPersonId)).collect(Collectors.toMap(EmployeeInfoDtoExport::getEmployeeId, i -> i));
+        List<String> listSid = new ArrayList<>(employeeInfoDtoExportList.keySet());
+        List<String> listPid = new ArrayList<>(mapPidSid.keySet());
+        Map<String, SWkpHistExport> wkpHistExportMap = workplacePub.findBySId(listSid, basDate)
+                .stream().filter(distinctByKey(SWkpHistExport::getEmployeeId)).collect(Collectors.toMap( SWkpHistExport::getEmployeeId, i -> i));
+        Map<String, EmployeeJobHistExport> jobHistExportMap = syJobTitlePub.findSJobHistByListSIdV2(listSid, basDate).stream()
+                .filter(distinctByKey(EmployeeJobHistExport::getEmployeeId)).collect(Collectors.toMap(EmployeeJobHistExport::getEmployeeId, i -> i));
+        val mapUidPerId = userIDFromEmpIDService.getUserIDByEmpID(listPid);
+        for (val sid : listSid) {
+            val employeeIf = employeeInfoDtoExportList.get(sid);
+            val pid = employeeIf.getPersonId();
+            val uId = mapUidPerId.get(pid);
+            val jbInf = jobHistExportMap.get(sid);
+            val wplInf = wkpHistExportMap.get(sid);
+            rs.add(new EmployeeBasicInfoDto(
+                    employeeIf.getPersonId(),
+                    uId,
+                    sid,
+                    employeeIf.getEmployeeCode(),
+                    employeeIf.getPerName(),
+                    jbInf != null ? jbInf.getJobTitleID() : null,
+                    jbInf != null ? jbInf.getJobTitleCode() : null,
+                    jbInf != null ? jbInf.getJobTitleName() : null,
+                    wplInf != null ? wplInf.getWorkplaceId() : null,
+                    wplInf != null ? wplInf.getWorkplaceCode() : null,
+                    wplInf != null ? wplInf.getWorkplaceName() : null,
+                    wplInf != null ? wplInf.getWkpDisplayName() : null
+            ));
         }
-        return data;
+        return rs.stream().sorted(Comparator.comparing(e->e.employeeCode)).collect(Collectors.toList());
     }
 
-    public List<EmployeePosition> getSyJobTitlePub(List<String> employyeid) {
-        GeneralDate baseDate = GeneralDate.today();
-        List<EmployeeJobHistExport> listdata =  syJobTitlePub.findSJobHistByListSIdV2(employyeid, baseDate);
-        if (listdata.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return listdata.stream().map(m -> new EmployeePosition(m.getEmployeeId(), m.getJobTitleID(), m.getJobTitleCode())).collect(Collectors.toList());
-    }
-
-    public List<SWkpHistRcImported> getWorkPlacePub(List<String> employyeid) {
-        GeneralDate baseDate = GeneralDate.today();
-        List<SWkpHistRcImported> data = new ArrayList<>();
-        try {
-            data = workplacePub.findBySId(employyeid, baseDate)
-                    .stream()
-                    .map(e -> new SWkpHistRcImported(
-                            e.getDateRange(),
-                            e.getEmployeeId(),
-                            e.getWorkplaceId(),
-                            e.getWorkplaceCode(),
-                            e.getWorkplaceName(),
-                            e.getWkpDisplayName()
-                    )).collect(Collectors.toList());
-        } catch (Exception e){
-            return data;
-        }
-        return data;
+    private static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

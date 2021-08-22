@@ -6,26 +6,39 @@ import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
 
 @Value
 public class EmployeeBasicInfoDto {
-    //個人ID
+
     public String personId;
 
-    //社員ID
+    public String userId;
+
     public String employeeId;
 
-    //ビジネスネーム
-    public String businessName;
-
-    //性別
-    public int gender;
-
-    //生年月日
-    public GeneralDate birthday;
-
-    //社員コード
     public String employeeCode;
 
-    public static EmployeeBasicInfoDto fromDomain(EmployeeBasicInforAuthImport domain) {
-        return new EmployeeBasicInfoDto(domain.getPid(), domain.getEmployeeId(), domain.getBusinessName(), domain.getGender(),
-                domain.getBirthDay(), domain.getEmployeeCode());
-    }
+    public String businessName;
+
+    /** The job title id. */
+    // 職位ID
+    private String jobTitleID;
+
+    private String jobTitleCode;
+
+    /** The job title name. */
+    // 職位名称
+    private String jobTitleName;
+    // 職場ID
+    private String workplaceId;
+
+    /** The workplace code. */
+    private String workplaceCode;
+
+    /** The workplace name. */
+    private String workplaceName;
+
+    /** The wkp display name. */
+    // 職場表示名
+    private String wkpDisplayName;
+
+
+
 }

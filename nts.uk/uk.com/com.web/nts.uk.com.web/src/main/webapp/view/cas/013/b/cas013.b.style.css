@@ -16,7 +16,6 @@ div#grid_container_container.ui-widget.ui-helper-clearfix.ui-corner-all.ui-iggri
 }
 
 .control-group {
-	margin-top: -5px;
 	margin-bottom: 9px;
 }
 
@@ -30,4 +29,25 @@ div.control-group-2 {
 
 .caret-background:not(.deprecate).caret-bottom, .caret-background:not(.deprecate).caret-top, .caret-background:not(.deprecate).caret-left, .caret-background:not(.deprecate).caret-right {
 	margin: -25px;
+}
+.pad_left_5px {
+	padding-left: 5px;
+}
+.ntsSearchBox {
+	width: 451px;
+}
+.cas013-b{
+	float: left;
+	margin-top: 5px;
+}
+
+#kcp005 {
+	margin-left: 33px
+}
+
+#B3{
+	margin-left: 34px
+}
+#kcp005{
+	height: 360px;
 }

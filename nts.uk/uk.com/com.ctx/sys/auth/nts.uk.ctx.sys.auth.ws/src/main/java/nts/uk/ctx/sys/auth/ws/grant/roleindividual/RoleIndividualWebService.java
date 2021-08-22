@@ -189,18 +189,9 @@ public class RoleIndividualWebService extends WebService {
 	}
 
 	@POST
-	@Path("searchEmployyeList")
-	public List<EmployeeBasicInfoDto> searchEmployyeList(EiDDto employyeid) {
-		return this.roleIndividualFinder.searchEmployyeList(employyeid.getEmployyeId());
+	@Path("getEmployeeList/{cid}")
+	public List<EmployeeBasicInfoDto> getListEmployeeInfo(@PathParam("cid") String cid) {
+		return this.roleIndividualFinder.getListEmployeeInfo(cid);
 	}
-	@POST
-	@Path("getSyJobTitlePub")
-	public List<EmployeePosition> getSyJobTitlePub(EiDDto employyeid) {
-		return this.roleIndividualFinder.getSyJobTitlePub(employyeid.getEmployyeId());
-	}
-	@POST
-	@Path("getWorkPlacePub")
-	public List<SWkpHistRcImported> getWorkPlacePub(EiDDto employyeid) {
-		return this.roleIndividualFinder.getWorkPlacePub(employyeid.getEmployyeId());
-	}
+
 }

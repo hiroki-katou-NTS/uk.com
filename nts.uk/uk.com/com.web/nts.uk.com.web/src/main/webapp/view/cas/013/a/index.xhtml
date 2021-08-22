@@ -13,8 +13,6 @@
         </com:ValidatorScript>
         <com:stylefile path="cas013.a.style.css" />
         <com:scriptfile path="cas013.a.vm.js" />
-        <com:scriptfile path="cas013.a.service.js" />
-        <com:scriptfile path="cas013.a.start.js" />
         <!-- KCP005 -->
         <com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 
@@ -32,30 +30,29 @@
                     data-bind="click: Delete, enable: isDelete() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CAS013_5')}</button>
             <!--<button tabindex="3" id="print-button" data-bind="click: exportExcel" style="width: 120px;">#{i18n.getText('CAS013_48')}</button>-->
         </div>
-        <div class="master-content">
             <div id="contents-area">
-                <div class="cf">
-                    <div class="left-content">
-                        <div class="valign-center control-group">
-                            <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_6')}</div>
-                            <!--A4_2-->
-                            <div id="combo-box" tabindex="4"
-                                 data-bind="ntsComboBox: {
-							options: listRoleType,
-							optionsValue: 'value',
-							value: selectedRoleType,
-							optionsText: 'description',
-							visibleItemsCount: 6,
-							columns: [
-								{ prop: 'description', length: 10 }
-							]}"></div>
-                        </div>
-                        <div class="valign-center control-group">
-                            <!--A5_1-->
-                            <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_8')}</div>
-                            <!--A5_2-->
-                            <div id="combo-box2" tabindex="5"
-                                 data-bind="ntsComboBox: {
+                <div class="container">
+                        <div class="left-content">
+                            <div class="valign-center control-group">
+                                <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_6')}</div>
+                                <!--A4_2-->
+                                <div id="combo-box" tabindex="4"
+                                     data-bind="ntsComboBox: {
+                                        name:'#[CAS013_7]',
+                                        options: listRoleType,
+                                        optionsValue: 'value',
+                                        value: selectedRoleType,
+                                        optionsText: 'description',
+                                        visibleItemsCount: 6}">
+                                </div>
+                            </div>
+                            <div class="valign-center control-group">
+                                <!--A5_1-->
+                                <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_8')}</div>
+                                <!--A5_2-->
+                                <div id="combo-box2" tabindex="5"
+                                     data-bind="ntsComboBox: {
+                                            name:'#[CAS013_9]',
 								 			width: '240px',
 											options: listRole,
 											optionsValue: 'roleCode',
@@ -64,83 +61,90 @@
 											optionsText: 'name',
 											columns: [
 													{ prop: 'roleCode', length: 4 },
-													{ prop: 'name', length: 10 },
-							]}"></div>
-                        </div>
-                        <span class="caret-bottom"></span>
-                        <!--A6_KCP005-->
-                        <div tabindex="6" id="kcp005" class="panel panel-frame" style="width: 580px; margin-top: 10px"></div>
-                    </div>
-
-                    <div class="right-content">
-                        <div class="left-content">
-                            <span class="caret-right outline"></span>
+													{ prop: 'name', length: 10 },]}">
+                                </div>
+                            </div>
+                            <span class="caret-bottom">
+                            </span>
+                            <!--A6_KCP005-->
+                            <div tabindex="6" id="kcp005" class="panel panel-frame" style="width: 580px; margin-top: 10px">
+                            </div>
                         </div>
                         <div class="right-content">
-                            <div class="valign-center control-group">
-                                <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_10')}</div>
-                                <button tabindex="7" class="x-large"
-                                        data-bind="click: openBModal, enable: isCreateMode">#{i18n.getText('CAS013_11')}</button>
-                                <label class="ntsControl limited-label"
-                                       data-bind="text: employyeCode()"></label>
-                                <label class="ntsControl limited-label"
-                                       data-bind="text: employyeName()"></label>
+                            <div class="left-content">
+                                <span class="caret-right outline">
+                                </span>
                             </div>
-                            <div class="right-content-1">
+                            <div class="right-content">
                                 <div class="valign-center control-group">
-                                    <div class="tab-content-1">
-                                        <table class="fixed-table full">
-                                            <colgroup>
-                                                <col width="150px" />
-                                                <col width="150px" />
-                                                <col width="150px" />
-                                            </colgroup>
-                                            <thead>
-                                            <tr>
-                                                <th class="ui-widget-header" rowspan="1">#{i18n.getText('CAS013_13')}</th>
-                                                <th class="ui-widget-header" rowspan="1">#{i18n.getText('CAS013_14')}</th>
-                                                <th class="ui-widget-header" rowspan="1">#{i18n.getText('CAS013_15')}</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
+                                    <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_10')}</div>
+                                    <button tabindex="7" class="x-large"
+                                            data-bind="click: openBModal, enable: isCreateMode">#{i18n.getText('CAS013_11')}</button>
+                                    <label class="ntsControl limited-label"
+                                           data-bind="text: employyeCode()">
+                                    </label>
+                                    <label class="ntsControl limited-label"
+                                           data-bind="text: employyeName()">
+                                    </label>
+                                </div>
+                                <div class="right-content-1">
+                                    <div class="valign-center control-group">
+                                        <div class="tab-content-1">
+                                            <table class="fixed-table full">
+                                                <colgroup>
+                                                    <col width="120px" />
+                                                    <col width="110px" />
+                                                    <col width="200px" />
+                                                </colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <th class="ui-widget-header" rowspan="1">#{i18n.getText('CAS013_13')}</th>
+                                                    <th class="ui-widget-header" rowspan="1">#{i18n.getText('CAS013_14')}</th>
+                                                    <th class="ui-widget-header" rowspan="1">#{i18n.getText('CAS013_15')}</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
                                                 <tr>
                                                     <td class="ui-widget-header">#{i18n.getText('Com_Company')}</td>
-                                                    <td class="table-food-td" data-bind="text: companyCode()"></td>
-                                                    <td class="table-food-td" data-bind="text: companyName()"></td>
+                                                    <td class="table-food-td" data-bind="text: companyCode()">
+                                                    </td>
+                                                    <td class="table-food-td" data-bind="text: companyName()">
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="ui-widget-header">#{i18n.getText('Com_Workplace')}</td>
-                                                    <td class="table-food-td" data-bind="text: workplaceCode()"></td>
-                                                    <td class="table-food-td" data-bind="text: workplaceName()"></td>
+                                                    <td class="table-food-td" data-bind="text: workplaceCode()">
+                                                    </td>
+                                                    <td class="table-food-td" data-bind="text: workplaceName()">
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="ui-widget-header">#{i18n.getText('Com_Jobtitle')}</td>
-                                                    <td class="table-food-td" data-bind="text: jobTitleCode()"></td>
-                                                    <td class="table-food-td" data-bind="text: jobTitleName()"></td>
+                                                    <td class="table-food-td" data-bind="text: jobTitleCode()">
+                                                    </td>
+                                                    <td class="table-food-td" data-bind="text: jobTitleName()">
+                                                    </td>
                                                 </tr>
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="valign-center control-group">
-                                <!--CSS A9_1-->
-                                <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_16')}</div>
-                                <div id="daterangepicker" tabindex="8"
-                                     data-bind="ntsDateRangePicker:
-								{ required: true,
-								enable: true,
-								showNextPrevious: false,
-								value: dateValue,
-								maxRange: 'none'}
-							"
-                                     class="ntsControl" />
+                                <div class="valign-center control-group">
+                                    <!--CSS A9_1-->
+                                    <div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('CAS013_16')}</div>
+                                    <div class="ntsControl" id="daterangepicker" tabindex="8"
+                                         data-bind="ntsDateRangePicker:{
+                                                    required: true,
+                                                    enable: true,
+                                                    showNextPrevious: false,
+                                                    value: dateValue,
+                                                    maxRange: 'none'}"/>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
     </ui:define>
 </ui:composition>
 </body>

@@ -4,6 +4,7 @@ body{
 }
 .container {
 	margin-left: 15px;
+;
 }
 
 .left-content {
@@ -47,7 +48,7 @@ body{
 }
 
 .caret-right.outline {
-	font-size: 74px;
+	font-size: 70px;
 	margin: 10px 0px;
 	height: 4em;
 	margin-top: 30px;

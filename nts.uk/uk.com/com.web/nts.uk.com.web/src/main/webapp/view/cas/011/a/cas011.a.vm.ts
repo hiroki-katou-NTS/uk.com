@@ -44,6 +44,8 @@ module nts.uk.com.view.cas011.a {
 
         defaultRoleSetCode :KnockoutObservable<string> = ko.observable(null);
 
+        enable : KnockoutObservable<boolean> = ko.observable(false);
+
         constructor(params: any) {
             super();
             const vm = this;
