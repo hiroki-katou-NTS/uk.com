@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.input.util;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -40,6 +41,14 @@ public interface Either<L, R> {
 	
 	public static <L> Either<L, Void> leftVoid(L left) {
 		return new Left<>(left);
+	}
+	
+	public static <L, R> Either<L, R> rightOptional(Optional<R> rightOptional, Supplier<L> leftSupplier) {
+		if (rightOptional.isPresent()) {
+			return Either.right(rightOptional.get());
+		} else {
+			return Either.left(leftSupplier.get());
+		}
 	}
 	
 	/**

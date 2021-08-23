@@ -9,8 +9,11 @@ import lombok.val;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.util.Either;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -38,13 +41,14 @@ public class EmployeeCodeCanonicalization {
 	 * @param revisedData
 	 * @return
 	 */
-	public IntermediateResult canonicalize(
+	public Either<ErrorMessage, IntermediateResult> canonicalize(
 			CanonicalizationMethodRequire require,
 			RevisedDataRecord revisedData) {
 		
 		String employeeCode = revisedData.getItemByNo(itemNoEmployeeCode).get().getString();
 
-		return canonicalize(revisedData, getEmployeeId(require, employeeCode));
+		return getEmployeeId(require, employeeCode)
+				.map(employeeId -> canonicalize(revisedData, employeeId));
 	}
 
 	/**
@@ -54,7 +58,7 @@ public class EmployeeCodeCanonicalization {
 	 * @param employeeCode
 	 * @return
 	 */
-	public Stream<IntermediateResult> canonicalize(
+	public Either<Stream<RecordError>, Stream<IntermediateResult>> canonicalize(
 			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			String employeeCode) {
@@ -64,17 +68,20 @@ public class EmployeeCodeCanonicalization {
 				itemNoEmployeeCode,
 				employeeCode);
 		
-		String employeeId = getEmployeeId(require, employeeCode);
-		
-		return revisedDataRecords.stream()
-				.map(revisedData -> canonicalize(revisedData, employeeId));
+		return getEmployeeId(require, employeeCode)
+				.map(employeeId -> revisedDataRecords.stream()
+							.map(r -> canonicalize(r, employeeId)))
+				.mapLeft(error -> revisedDataRecords.stream()
+							.map(r -> new RecordError(r.getRowNo(), error.getText())));
 	}
 
-	private static String getEmployeeId(CanonicalizationMethodRequire require, String employeeCode) {
+	private static Either<ErrorMessage, String> getEmployeeId(CanonicalizationMethodRequire require, String employeeCode) {
 		
-		return require.getEmployeeDataMngInfoByEmployeeCode(employeeCode)
-				.orElseThrow(() -> new RuntimeException("社員が存在しない: " + employeeCode))
-				.getEmployeeId();
+		val employee = require.getEmployeeDataMngInfoByEmployeeCode(employeeCode);
+		
+		return Either.rightOptional(
+				employee.map(e -> e.getEmployeeId()),
+				() -> new ErrorMessage("未登録の社員コードです。"));
 	}
 
 	private IntermediateResult canonicalize(RevisedDataRecord revisedData, String employeeId) {

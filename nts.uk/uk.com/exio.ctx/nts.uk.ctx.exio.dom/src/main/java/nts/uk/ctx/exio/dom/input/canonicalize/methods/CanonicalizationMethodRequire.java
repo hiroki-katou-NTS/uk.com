@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
@@ -13,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
  * 正準化の方法
  */
 public interface CanonicalizationMethodRequire extends
+		ExternalImportErrorsRequire,
 		ImportingDataMeta.Require,
 		EmployeeCodeCanonicalization.Require {
 
