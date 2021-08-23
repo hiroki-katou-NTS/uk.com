@@ -130,11 +130,6 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public void deleteDailyPerformance(String employeeId, GeneralDate date) {
-			workInformationRepo.delete(employeeId, date);
-		}
-
-		@Override
 		public ConversionSource getConversionSource(String domainName) {
 			return conversionTableRepo.getSource(domainName);
 		}
