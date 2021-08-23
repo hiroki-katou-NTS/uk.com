@@ -11,13 +11,11 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecordRepository;
@@ -79,9 +77,6 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private DomainDataRepository domainDataRepo;
-	
-	@Inject
-	private WorkInformationRepository workInformationRepo;
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public class RequireImpl implements Require {

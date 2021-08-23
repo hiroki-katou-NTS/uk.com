@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -102,9 +101,6 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private TaskingRepository taskingRepo;
-	
-	@Inject
-	private WorkInformationRepository workInformationRepo;
 	
 	@Inject
 	private ExternalImportSettingRepository settingRepo;
