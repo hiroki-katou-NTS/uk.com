@@ -77,4 +77,7 @@ public interface LeaveComDayOffManaRepository {
 	 
 	 //[5] Insert(List<休出代休紐付け管理>)
 	 void insertList(List<LeaveComDayOffManagement> lstDomain);
+	 
+	 //[7] 登録及び更新
+	void updateOrInsert(LeaveComDayOffManagement domain);
 }

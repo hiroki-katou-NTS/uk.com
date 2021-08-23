@@ -59,7 +59,7 @@ public class VacationDetails {
 
 	// [6] 該当日の使用数を取得する
 	public double getNumberDigestCorrespDay(GeneralDate correspDay) {
-		return getVacStateForAppDay(correspDay).map(x -> x.getUnbalanceNumber().getDay().v()).orElse(0.0);
+		return getVacStateForAppDay(correspDay).map(x -> x.getNumberOccurren().getDay().v()).orElse(0.0);
 	}
 
 	//[7] 指定した期間内に未消化となる情報を取得する

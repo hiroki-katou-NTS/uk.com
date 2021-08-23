@@ -42,8 +42,8 @@ public class OffsetChronologicalOrder {
 		// 「逐次発生の休暇明細」(消化)でループする
 		for (AccumulationAbsenceDetail accAbsence : lstAccdigest) {
 
-			if (!accAbsence.getDateOccur().getDayoffDate().isPresent())
-				continue;
+//			if (!accAbsence.getDateOccur().getDayoffDate().isPresent())
+//				continue;
 
 			// 逐次発生の休暇明細（消化）.年月日が期間に含まれる逐次発生の休暇設定を取得
 //			TimeLapseVacationSetting timeLapSet = lstTimeLap.stream()

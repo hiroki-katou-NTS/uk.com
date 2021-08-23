@@ -305,4 +305,19 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		this.commandProxy().insertAll(lstDomain.stream().map(x -> toEntity(x)).collect(Collectors.toList()));
 
 	}
+
+	@Override
+	public void updateOrInsert(LeaveComDayOffManagement domain) {
+		KrcmtLeaveDayOffManaPK key = new KrcmtLeaveDayOffManaPK(domain.getSid(),
+				domain.getAssocialInfo().getOutbreakDay(), domain.getAssocialInfo().getDateOfUse());
+		Optional<KrcmtLeaveDayOffMana> existed = this.queryProxy().find(key, KrcmtLeaveDayOffMana.class);
+		if (existed.isPresent()) {
+			this.commandProxy().update(toEntity(domain));
+		}else{
+			this.commandProxy().insert(toEntity(domain));
+		}
+		
+	}
+	
+	
 }

@@ -49,13 +49,12 @@ public class AfterChangeHolidayDaikyuInfoResult {
 					continue;
 				}
 
-				//処理中の未消化数を更新する
-				double day = detail.getUnbalanceNumber().getDay().v()
-						- seqVacAssoci.stream().mapToDouble(x -> x.getDayNumberUsed().v()).sum();
-
+				double day = detail.getNumberOccurren().getDay().v();
+				if (!seqVacAssoci.isEmpty()) {
+					day -= seqVacAssoci.stream().mapToDouble(x -> x.getDayNumberUsed().v()).sum();
+				}
 				// 処理中の未消化数を更新する
 				detail.getUnbalanceNumber().setDay(new ManagementDataRemainUnit(day < 0 ? 0 : day));
-
 				// 処理中の逐次発生の休暇を代休の処理後一覧に追加する
 			}
 		}
@@ -76,15 +75,16 @@ public class AfterChangeHolidayDaikyuInfoResult {
 			}
 			// 紐付けデータを取得する
 			List<SeqVacationAssociationInfo> seqVacAssoci = seqVacInfoList.getSeqVacInfoList().stream()
-					.filter(x -> detail.getDateOccur().getDayoffDate().get().equals(x.getDateOfUse()))
+					.filter(x -> detail.getDateOccur().getDayoffDate().get().equals(x.getOutbreakDay()))
 					.collect(Collectors.toList());
 			if (seqVacAssoci.isEmpty()) {
 				continue;
 			}
 
-			//処理中の未消化数を更新する
-			double day = detail.getUnbalanceNumber().getDay().v()
-					- seqVacAssoci.stream().mapToDouble(x -> x.getDayNumberUsed().v()).sum();
+			double day = detail.getNumberOccurren().getDay().v();
+			if (!seqVacAssoci.isEmpty()) {
+				day -= seqVacAssoci.stream().mapToDouble(x -> x.getDayNumberUsed().v()).sum();
+			}
 
 			// 処理中の未消化数を更新する
 			detail.getUnbalanceNumber().setDay(new ManagementDataRemainUnit(day < 0 ? 0 : day));

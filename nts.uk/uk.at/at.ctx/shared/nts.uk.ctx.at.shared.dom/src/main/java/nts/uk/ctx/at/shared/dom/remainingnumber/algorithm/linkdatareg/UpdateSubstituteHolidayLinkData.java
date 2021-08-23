@@ -8,6 +8,8 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.vacationdetail.RequestChangeDigestOccr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.AfterChangeHolidayDaikyuInfoResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.vacationdetail.GetCompenChangeOccDigest;
@@ -23,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManageme
 public class UpdateSubstituteHolidayLinkData {
 
 	// [1] 更新する
-	public static AtomTask updateProcess(Require require, String sid, DatePeriod period, List<GeneralDate> lstDate,
+	public static AtomTask updateProcess(Require require, String sid, List<GeneralDate> lstDate,
 			List<InterimDayOffMng> lstDayoff, List<InterimBreakMng> lstBreakoff) {
 
 		// ＄逐次消化一覧
@@ -38,6 +40,7 @@ public class UpdateSubstituteHolidayLinkData {
 		// $発生の変更要求
 		val changeOccr = RequestChangeDigestOccr.createChangeRequestbyDate(lstDate, new VacationDetails(lstOccr));
 
+		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
 		// $変更後の代休休出情報
 		AfterChangeHolidayDaikyuInfoResult afterResult = GetCompenChangeOccDigest.get(require, sid, period,
 				changeDigest, changeOccr);
@@ -46,26 +49,12 @@ public class UpdateSubstituteHolidayLinkData {
 		val linkCouple = afterResult.getSeqVacInfoList().getSeqVacInfoList().stream()
 				.map(x -> new LeaveComDayOffManagement(sid, x)).collect(Collectors.toList());
 
-		List<InterimBreakMng> kyusyutsu = lstBreakoff.stream().map(x -> {
-			if (changeOccr.getDateChangeRequest().isPresent()) {
-				val detail = changeOccr.getDateChangeRequest().get().getChangeRequestList().stream()
-						.flatMap(y -> y.getVacDetail().getLstAcctAbsenDetail().stream())
-						.filter(y -> y.getManageId().equals(x.getId())).findFirst().orElse(null);
-				return detail == null ? null : x.updateUnoffsetNum(detail);
-			}
-			return null;
-		}).filter(x -> x != null).collect(Collectors.toList());
+		List<InterimBreakMng> kyusyutsu = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+				.filter(x -> x.getBreakMng().isPresent()).map(x -> x.getBreakMng().get()).collect(Collectors.toList());
 
-		List<InterimDayOffMng> daikyu = lstDayoff.stream().map(x -> {
-			if (changeDigest.getDateChangeRequest().isPresent()) {
-				val detail = changeDigest.getDateChangeRequest().get().getChangeRequestList().stream()
-						.flatMap(y -> y.getVacDetail().getLstAcctAbsenDetail().stream())
-						.filter(y -> y.getManageId().equals(x.getId())).findFirst().orElse(null);
-				return detail == null ? null : x.updateUnoffsetNum(detail);
-			}
-			return null;
-		}).filter(x -> x != null).collect(Collectors.toList());
-
+		List<InterimDayOffMng> daikyu = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+				.filter(x -> x.getDayOffMng().isPresent()).map(x -> x.getDayOffMng().get()).collect(Collectors.toList());
+		
 		return AtomTask.of(() -> {
 			require.deleteDayoffLinkWithPeriod(sid, period);
 			require.insertDayOffLinkList(linkCouple);

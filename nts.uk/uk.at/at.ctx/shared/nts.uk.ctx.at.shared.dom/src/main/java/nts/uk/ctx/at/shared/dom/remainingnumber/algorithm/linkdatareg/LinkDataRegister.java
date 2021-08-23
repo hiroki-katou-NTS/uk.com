@@ -27,12 +27,12 @@ public class LinkDataRegister {
 
 		List<AtomTask> lstTask = new ArrayList<>();
 		// 代休の発生消化を変更を加えて取得する
-		lstTask.add(UpdateSubstituteHolidayLinkData.updateProcess(require, sid, period, lstDate, 
+		lstTask.add(UpdateSubstituteHolidayLinkData.updateProcess(require, sid, lstDate, 
 				interimRemains.stream().filter(x -> x.getRemainType() == RemainType.SUBHOLIDAY).map(x -> (InterimDayOffMng)x).collect(Collectors.toList()), 
 				interimRemains.stream().filter(x -> x.getRemainType() == RemainType.BREAK).map(x -> (InterimBreakMng)x).collect(Collectors.toList())));
 
 		// 振休の発生消化を変更を加えて取得する
-		lstTask.add(UpdateHolidayLinkData.updateProcess(require, sid, period, lstDate,
+		lstTask.add(UpdateHolidayLinkData.updateProcess(require, sid, lstDate,
 				interimRemains.stream().filter(x -> x.getRemainType() == RemainType.PAUSE).map(x -> (InterimAbsMng) x)
 						.collect(Collectors.toList()),
 				interimRemains.stream().filter(x -> x.getRemainType() == RemainType.PICKINGUP)

@@ -139,7 +139,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		lstDate.sort((x, y) -> x.compareTo(y));
 		//逐次発生の休暇の登録処理
 		LinkDataRegister.process(linkDataRegisterImpl.createImpl(), sid, lstDate,
-				new DatePeriod(lstDate.get(0), lstDate.get(lstDate.size() - 1)), interimRemains).run();;
+				new DatePeriod(GeneralDate.min(), GeneralDate.max()), interimRemains).run();
 
 	}
 

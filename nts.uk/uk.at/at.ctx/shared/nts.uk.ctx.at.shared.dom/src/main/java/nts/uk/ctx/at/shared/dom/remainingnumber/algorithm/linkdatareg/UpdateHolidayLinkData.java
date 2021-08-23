@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 public class UpdateHolidayLinkData {
 
 	// [1] 更新する
-	public static AtomTask updateProcess(Require require, String sid, DatePeriod period, List<GeneralDate> lstDate,
+	public static AtomTask updateProcess(Require require, String sid, List<GeneralDate> lstDate,
 			List<InterimAbsMng> lstAbsMng, List<InterimRecMng> lstRecMng) {
 
 		// ＄逐次消化一覧
@@ -38,6 +38,7 @@ public class UpdateHolidayLinkData {
 		// $発生の変更要求
 		val changeOccr = RequestChangeDigestOccr.createChangeRequestbyDate(lstDate, new VacationDetails(lstOccr));
 
+		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.max());
 		// $変更後の振休振出情報=
 		AfterChangeHolidayInfoResult afterResult = GetModifiOutbreakDigest.get(require, sid, period, changeDigest,
 				changeOccr);
@@ -46,25 +47,11 @@ public class UpdateHolidayLinkData {
 		val linkCouple = afterResult.getSeqVacInfoList().getSeqVacInfoList().stream()
 				.map(x -> PayoutSubofHDManagement.of(sid, x)).collect(Collectors.toList());
 
-		List<InterimRecMng> furisyutsu = lstRecMng.stream().map(x -> {
-			if (changeOccr.getDateChangeRequest().isPresent()) {
-				val detail = changeOccr.getDateChangeRequest().get().getChangeRequestList().stream()
-						.flatMap(y -> y.getVacDetail().getLstAcctAbsenDetail().stream())
-						.filter(y -> y.getManageId().equals(x.getId())).findFirst().orElse(null);
-				return detail == null ? null : x.updateUnoffsetNum(detail);
-			}
-			return null;
-		}).filter(x -> x != null).collect(Collectors.toList());
+		List<InterimRecMng> furisyutsu = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+				.filter(x -> x.getRecMng().isPresent()).map(x -> x.getRecMng().get()).collect(Collectors.toList());
 
-		List<InterimAbsMng> furikyu = lstAbsMng.stream().map(x -> {
-			if (changeDigest.getDateChangeRequest().isPresent()) {
-				val detail = changeDigest.getDateChangeRequest().get().getChangeRequestList().stream()
-						.flatMap(y -> y.getVacDetail().getLstAcctAbsenDetail().stream())
-						.filter(y -> y.getManageId().equals(x.getId())).findFirst().orElse(null);
-				return detail == null ? null : x.updateUnoffsetNum(detail);
-			}
-			return null;
-		}).filter(x -> x != null).collect(Collectors.toList());
+		List<InterimAbsMng> furikyu = afterResult.getVacationDetail().getLstAcctAbsenDetail().stream()
+				.filter(x -> x.getAbsMng().isPresent()).map(x -> x.getAbsMng().get()).collect(Collectors.toList());
 
 		return AtomTask.of(() -> {
 			// [R-1] 振出振休紐付け管理を削除する

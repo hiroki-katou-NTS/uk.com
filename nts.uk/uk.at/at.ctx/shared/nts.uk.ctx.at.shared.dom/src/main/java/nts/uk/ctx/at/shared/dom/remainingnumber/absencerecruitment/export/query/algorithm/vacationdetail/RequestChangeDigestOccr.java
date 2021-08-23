@@ -61,8 +61,10 @@ public class RequestChangeDigestOccr {
 					.orElse(new VacationDetails(new ArrayList<>()));
 		}
 		// if ＠区分 =年月日
-		return dateChangeRequest.map(x -> x.overwriteChangeReqByDate(overwriteTemporaryData))
+		val result =  dateChangeRequest.map(x -> x.overwriteChangeReqByDate(overwriteTemporaryData))
 				.orElse(new VacationDetails(new ArrayList<>()));
+		result.addDetail(overwriteConfirmData.getLstAcctAbsenDetail());
+		return result;
 	}
 
 }
