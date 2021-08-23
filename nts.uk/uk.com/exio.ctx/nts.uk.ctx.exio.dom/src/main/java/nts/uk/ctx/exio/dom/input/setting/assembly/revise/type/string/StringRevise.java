@@ -9,8 +9,6 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImp
 
 /**
  * 文字型編集
- * @author m_kitahira
- *
  */
 @AllArgsConstructor
 @Getter
