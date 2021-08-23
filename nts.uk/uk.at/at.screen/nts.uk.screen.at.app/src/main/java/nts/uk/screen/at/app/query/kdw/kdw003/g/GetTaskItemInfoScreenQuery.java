@@ -37,7 +37,8 @@ public class GetTaskItemInfoScreenQuery {
 
 	public List<TaskItemDto> GetTaskItemInfo() {
 		String companyId = AppContexts.user().companyId();
-		/** 1.Get(ログイン会社ID)*/
+		Boolean hasTaskFrameSetting = true;
+		/** 1.Get(ログイン会社 ID)*/
 		Optional<TaskOperationSetting> optTaskOperation = taskOperationSettingRepository.getTasksOperationSetting(companyId);
 		/** 2.[作業運用設定.isEmpty OR 作業運用設定.作業運用方法 <> 実績で利用]:<call>()*/
 		if(!optTaskOperation.isPresent() || optTaskOperation.get().getTaskOperationMethod().value != 1) {
@@ -48,11 +49,20 @@ public class GetTaskItemInfoScreenQuery {
 		TaskFrameUsageSetting taskFrameUsageSetting = taskFrameUsageSettingRepository.getWorkFrameUsageSetting(companyId);
 		/** 4. [作業枠利用設定．枠設定．利用区分 == する　がない]:<call>()*/
 		List<TaskFrameSetting> lstTaskFrameSettings = taskFrameUsageSetting.getFrameSettingList();
-		lstTaskFrameSettings.stream().forEach(taskFrameSetting -> {
-			if(taskFrameSetting.getUseAtr().value == 0) {
-				throw new BusinessException("Msg_1960");
+//		lstTaskFrameSettings.stream().forEach(taskFrameSetting -> {
+//			if(taskFrameSetting.getUseAtr().value != 0) {
+//				throw new BusinessException("Msg_1960");
+//			}
+//		});
+		for (int i = 0; i < lstTaskFrameSettings.size(); i++) {
+			if (lstTaskFrameSettings.get(i).getUseAtr().value != 0) {
+				hasTaskFrameSetting = false;
 			}
-		});
+		}
+
+		if (hasTaskFrameSetting) {
+			throw new BusinessException("Msg_1960");
+		}
 		
 		/** 5.Get*(ログイン会社ID)*/
 		List<Task> lstTask = taskingRepository.getListTask(companyId);

@@ -484,7 +484,7 @@ module nts.uk.at.view.kdw003.cg {
             };
             self.$blockui("invisible");
             self.$ajax(Paths.COPY_TASK_INITIAL_SEL_SETTING, command).done(() => {
-                self.$dialog.info({messageId: 'Msg_926'}).then(() => {
+                self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                     self.isReload(false);
                     self.findDetail(command.empIdDes[0], self.isReload());
                     self.enableNewBtn(true);
