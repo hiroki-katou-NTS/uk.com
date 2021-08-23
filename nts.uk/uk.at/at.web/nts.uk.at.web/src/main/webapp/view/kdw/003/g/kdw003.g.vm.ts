@@ -43,6 +43,12 @@ module nts.uk.at.view.kdw003.cg {
         enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(false); 
         isReload: KnockoutObservable<boolean> = ko.observable(false); 
 
+        enableTaskFrame1: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame2: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame3: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame4: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame5: KnockoutObservable<boolean> = ko.observable(false);
+
         taskListFrame1: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame2: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame3: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
@@ -191,7 +197,7 @@ module nts.uk.at.view.kdw003.cg {
                 
                 if(!_.isNull(taskList) && !_.isEmpty(taskList)){                    
                     _.each(taskList, task => {
-                        taskLst.push(new TaskModel(task.taskCode, task.taskName, task.frameNo, task.startDate, task.endDate));
+                        taskLst.push(new TaskModel(task.taskCode, task.taskName, task.frameNo, task.startDate, task.endDate, task.frameNoUseAtr ));
                     })
                     taskLst1 = _.filter(taskLst, item => { return item.frameNo == 1; });
                     taskLst2 = _.filter(taskLst, item => { return item.frameNo == 2; });
@@ -199,6 +205,12 @@ module nts.uk.at.view.kdw003.cg {
                     taskLst4 = _.filter(taskLst, item => { return item.frameNo == 4; }); 
                     taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });                   
                     
+                    _.isEmpty(taskLst1) ? self.enableTaskFrame1(false) : taskLst1[0].frameNoUseAtr === 1 ? self.enableTaskFrame1(true) : self.enableTaskFrame1(false);
+                    _.isEmpty(taskLst2) ? self.enableTaskFrame2(false) :taskLst2[0].frameNoUseAtr === 1 ? self.enableTaskFrame2(true) : self.enableTaskFrame2(false);
+                    _.isEmpty(taskLst3) ? self.enableTaskFrame3(false) :taskLst3[0].frameNoUseAtr === 1 ? self.enableTaskFrame3(true) : self.enableTaskFrame3(false);
+                    _.isEmpty(taskLst4) ? self.enableTaskFrame4(false) :taskLst4[0].frameNoUseAtr === 1 ? self.enableTaskFrame4(true) : self.enableTaskFrame4(false);
+                    _.isEmpty(taskLst5) ? self.enableTaskFrame5(false) :taskLst5[0].frameNoUseAtr === 1 ? self.enableTaskFrame5(true) : self.enableTaskFrame5(false);
+
                     self.taskListFrame1(taskLst1);
                     self.taskListFrame2(taskLst2);
                     self.taskListFrame3(taskLst3);
@@ -501,21 +513,6 @@ module nts.uk.at.view.kdw003.cg {
             const self = this;
             self.$window.close();
         }
-
-        // private validateAll(): boolean {
-        //     const self = this;
-        //     $('#startTime').ntsEditor('validate');
-        //     $('#endTime').ntsEditor('validate');
-        //     if (nts.uk.ui.errors.hasError()) {                    
-        //         return true;
-        //     }
-        //     return false;
-        // }
-
-        // private clearError(): void {
-        //     $('#startTime').ntsError('clear');
-        //     $('#endTime').ntsError('clear');
-        // }
     }
 
     class EmployeeModel {
@@ -560,12 +557,14 @@ module nts.uk.at.view.kdw003.cg {
         taskCode: string;
         taskName: string;
         frameNo: number;
+        frameNoUseAtr: number;
         startDate: string;
         endDate: string;
-        constructor(taskCode: string, taskName: string, frameNo?: number, startDate?: string, endDate?: string){
+        constructor(taskCode: string, taskName: string, frameNo?: number, startDate?: string, endDate?: string, frameNoUseAtr?: number){
             this.taskCode = taskCode;
             this.taskName = taskName; 
-            this.frameNo = frameNo;          
+            this.frameNo = frameNo;        
+            this.frameNoUseAtr = frameNoUseAtr;  
             this.startDate = startDate;
             this.endDate = endDate;
         }

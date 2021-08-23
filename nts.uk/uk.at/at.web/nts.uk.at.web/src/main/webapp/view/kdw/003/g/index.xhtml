@@ -72,7 +72,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-bind="if: enableTaskFrame1 ">
                             <td>
                                 <!--G5-5-->
                                 <div data-bind="ntsFormLabel:{ required:false}">作業1</div>
@@ -92,7 +92,7 @@
                                             ]}"></div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-bind="if: enableTaskFrame2 ">
                             <td>
                                 <!--G5-8-->
                                 <div data-bind="ntsFormLabel:{ required:false}">作業2</div>
@@ -112,8 +112,11 @@
                                     ]}"></div>
                             </td>
                         </tr>
-                        <tr>
-                            <td><div data-bind="ntsFormLabel:{ required:false}">作業3</div></td>
+                        
+                        <tr data-bind="if: enableTaskFrame3 ">
+                            <td>
+                                <div data-bind="ntsFormLabel:{ required:false}">作業3</div>
+                            </td>
                             <td>
                                 <!--G5-12-->
                                 <div id="task-list" tabindex="12" data-bind="ntsComboBox: {
@@ -129,7 +132,9 @@
                                     ]}"></div>
                             </td>
                         </tr>
-                        <tr>
+                        
+                        
+                        <tr data-bind="if: enableTaskFrame4 ">
                             <td><div data-bind="ntsFormLabel:{ required:false}">作業4</div></td>
                             <td>
                                 <!--G5-15-->
@@ -146,7 +151,7 @@
                                     ]}"></div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-bind="if: enableTaskFrame5 ">
                             <td><div data-bind="ntsFormLabel:{ required:false}">作業5</div></td>
                             <td>
                                 <!--G5-18-->
