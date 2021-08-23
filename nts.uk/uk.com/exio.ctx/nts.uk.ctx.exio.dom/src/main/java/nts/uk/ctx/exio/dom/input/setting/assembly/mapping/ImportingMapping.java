@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Value;
 import lombok.val;
@@ -12,6 +11,8 @@ import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 
 /**
  * 受入マッピング
@@ -24,12 +25,21 @@ public class ImportingMapping {
 	
 	public DataItemList assemble(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
 		
-		return mappings.stream()
-				.map(m -> m.assemble(require, context, csvRecord))
-				.collect(Collectors.collectingAndThen(toList(), DataItemList::new));
+		val results = new DataItemList();
+		
+		for (val mapping : mappings) {
+			
+			mapping.assemble(require, context, csvRecord)
+				.ifRight(r -> results.add(r))
+				.ifLeft(e -> require.add(context, ExternalImportError.of(csvRecord.getRowNo(), e)));
+		}
+		
+		return results;
 	}
 	
-	public static interface RequireAssemble extends ImportingItemMapping.RequireAssemble {
+	public static interface RequireAssemble extends
+			ImportingItemMapping.RequireAssemble,
+			ExternalImportErrorsRequire {
 	}
 	
 	public List<Integer> getAllItemNo() {
