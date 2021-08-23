@@ -225,7 +225,7 @@ public class OneDayEmployeeAttendanceInfo<T> {
 		/**
 		 * シフトマスタを取得する
 		 * @param workTypeCode 勤務種類コード
-		 * @param workTimeCode
+		 * @param workTimeCode 就業時間帯コード
 		 * @return
 		 */
 		public Optional<ShiftMaster> getShiftMaster(String workTypeCode, Optional<String> workTimeCode);
@@ -239,7 +239,7 @@ public class OneDayEmployeeAttendanceInfo<T> {
 		
 		/**
 		 * 就業時間帯の設定を取得する
-		 * @param workTimeCode
+		 * @param workTimeCode 就業時間帯コード
 		 * @return
 		 */
 		public Optional<WorkTimeSetting> getWorkTimeSetting(String workTimeCode);

@@ -26,22 +26,22 @@ public class OutputItem implements DomainValue {
 	/**
 	 * 	追加列情報の利用区分
 	 */
-	private NotUseAtr additionalColumnUseAtr;
+	private final NotUseAtr additionalColumnUseAtr;
 	
 	/**
 	 * シフト背景色の表示区分	
 	 */
-	private NotUseAtr shiftBackgroundColorUseAtr;
+	private final NotUseAtr shiftBackgroundColorUseAtr;
 	
 	/**
 	 * 	実績表示区分
 	 */
-	private NotUseAtr dailyDataDisplayAtr;
+	private final NotUseAtr dailyDataDisplayAtr;
 	
 	/**
 	 * 	詳細リスト	
 	 */
-	private List<OneRowOutputItem> details;
+	private final List<OneRowOutputItem> details;
 	
 	/**
 	 * 作る
