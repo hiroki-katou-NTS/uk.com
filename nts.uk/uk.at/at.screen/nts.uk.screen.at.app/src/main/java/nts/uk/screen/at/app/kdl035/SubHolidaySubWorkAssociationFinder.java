@@ -112,6 +112,13 @@ public class SubHolidaySubWorkAssociationFinder {
 
         // 紐付け中の振出データを取得する
         result.addAll(getDrawingDataDuringLinking(employeeId, closurePeriod, managementData));
+        
+        // ドメインモデル「暫定残数管理データ」を取得する
+        List<PayoutSubofHDManagement> payoutSubofHDManagements = payoutSubofHDManaRepository.getByListOccDate(employeeId, result.stream().map(x -> x.getSubstituteWorkDate()).collect(Collectors.toList()));
+        List<GeneralDate> payoutDates = payoutSubofHDManagements.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
+        
+        result = result.stream().filter(x -> !payoutDates.contains(x.getSubstituteWorkDate())).collect(Collectors.toList());
+        
 
         result.sort(Comparator.comparing(SubstituteWorkData::getSubstituteWorkDate));
         return result;
@@ -139,12 +146,6 @@ public class SubHolidaySubWorkAssociationFinder {
                         recMng.getUnUsedDays().v()
                 )).collect(Collectors.toList());
 
-        // ドメインモデル「暫定残数管理データ」を取得する
-        List<PayoutSubofHDManagement> payoutSubofHDManagements = payoutSubofHDManaRepository.getByListOccDate(employeeId, result.stream().map(x -> x.getSubstituteWorkDate()).collect(Collectors.toList()));
-        List<GeneralDate> payoutDates = payoutSubofHDManagements.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
-        
-        result = result.stream().filter(x -> !payoutDates.contains(x.getSubstituteWorkDate())).collect(Collectors.toList());
-        
         return result;
     }
 
