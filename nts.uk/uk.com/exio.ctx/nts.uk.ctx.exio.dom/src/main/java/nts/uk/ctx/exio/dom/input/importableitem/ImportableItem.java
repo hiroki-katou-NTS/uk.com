@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
@@ -24,19 +25,15 @@ public class ImportableItem implements DomainAggregate{
 	private boolean required;
 	private Optional<DomainConstraint> domainConstraint;
 
-	public boolean validate(DataItem dataItem) {
+	public Optional<ErrorMessage> validate(DataItem dataItem) {
 
 		if(required && dataItem.isEmpty()) {
-			return false;
+			return Optional.of(new ErrorMessage("必須項目ですが受入データがありません。"));
 		}
 
-
 		return domainConstraint
-				.map(c -> c.validate(dataItem.getValue()))
-				//↓はそもそも制限が無いという意図.
-				.orElse(true);
+				.flatMap(c -> c.validate(dataItem.getValue()));
 	}
-
 
 	/**
 	 * 型を変換する
