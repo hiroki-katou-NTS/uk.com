@@ -38,6 +38,7 @@ public class GetTaskItemInfoScreenQuery {
 
 	public List<TaskItemDto> GetTaskItemInfo() {
 		List<TaskItemDto> results = new ArrayList<TaskItemDto>();
+		List<Integer> listFrameUseAtr = new ArrayList<Integer>();
 		String companyId = AppContexts.user().companyId();
 		Boolean hasTaskFrameSetting = true;
 		/** 1.Get(ログイン会社 ID)*/
@@ -51,12 +52,9 @@ public class GetTaskItemInfoScreenQuery {
 		TaskFrameUsageSetting taskFrameUsageSetting = taskFrameUsageSettingRepository.getWorkFrameUsageSetting(companyId);
 		/** 4. [作業枠利用設定．枠設定．利用区分 == する　がない]:<call>()*/
 		List<TaskFrameSetting> lstTaskFrameSettings = taskFrameUsageSetting.getFrameSettingList();
-//		lstTaskFrameSettings.stream().forEach(taskFrameSetting -> {
-//			if(taskFrameSetting.getUseAtr().value != 0) {
-//				throw new BusinessException("Msg_1960");
-//			}
-//		});
+
 		for (int i = 0; i < lstTaskFrameSettings.size(); i++) {
+			listFrameUseAtr.add(lstTaskFrameSettings.get(i).getUseAtr().value);
 			if (lstTaskFrameSettings.get(i).getUseAtr().value != 0) {
 				hasTaskFrameSetting = false;
 			}
@@ -81,15 +79,16 @@ public class GetTaskItemInfoScreenQuery {
 						.taskAbName(task.getDisplayInfo().getTaskAbName().v())
 						.startDate(task.getExpirationDate().start().toString())
 						.endDate(task.getExpirationDate().end().toString())
+						.listFrameNoUseAtr(listFrameUseAtr)
 						.build();
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList());	
+	
 		
-		for (int i = 0; i < lstTaskFrameSettings.size(); i++) {
-			for (int j = 0; j < results.size(); j++) {
-				if(lstTaskFrameSettings.get(i).getTaskFrameNo().v() == results.get(j).getFrameNo())
-					results.get(j).setFrameNoUseAtr(lstTaskFrameSettings.get(i).getUseAtr().value);
-			}
-		}		
+//		for (int j = 0; j < results.size(); j++) {
+//			results.get(j).setListFrameNoUseAtr(listFrameUseAtr);
+//		}
+		
 		return results;
+		
 	}
 }
