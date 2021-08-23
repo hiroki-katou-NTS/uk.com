@@ -33,7 +33,7 @@ module nts.uk.com.view.cas013.a {
     @bean()
     class ViewModel extends ko.ViewModel {
         //A51
-        selectRoleCheckbox: KnockoutObservable<string>;
+        selectRoleCheckbox: KnockoutObservable<string> = ko.observable('');
 
         langId: KnockoutObservable<string> = ko.observable('ja');
         // Metadata
@@ -47,7 +47,7 @@ module nts.uk.com.view.cas013.a {
 
         //list Roll
         listRole: KnockoutObservableArray<Role> = ko.observableArray([]);
-        selectedRole: KnockoutObservable<string>;
+        selectedRole: KnockoutObservable<string> = ko.observable('');
         selectedUserID: KnockoutObservable<string>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
 
@@ -99,7 +99,7 @@ module nts.uk.com.view.cas013.a {
             let vm = this;
             let dfd = $.Deferred();
             //A51
-            vm.selectRoleCheckbox = ko.observable('');
+
             vm.employyeCode = ko.observable('');
             vm.employyeName = ko.observable('');
             vm.workplaceCode = ko.observable('');
@@ -113,7 +113,6 @@ module nts.uk.com.view.cas013.a {
             vm.EmployeeIDList = ko.observableArray([]);
             vm.listRoleType = ko.observableArray([]);
             vm.listRole = ko.observableArray([]);
-            vm.selectedRole = ko.observable('');
             vm.selectedUserID = ko.observable('');
             vm.listRoleIndividual = ko.observableArray([]);
             vm.multiSelectedCode = ko.observable();
@@ -182,14 +181,9 @@ module nts.uk.com.view.cas013.a {
                 vm.isDelete(false);
                 console.log(roleId);
             });
-            vm.selectedRoleIndividual.subscribe((userId: string) => {
-                vm.selectRoleGrant(userId.toString());
-            });
         }
         created(params: any) {
             let vm = this;
-
-
         }
         mounted() {
             const vm = this;
@@ -377,22 +371,22 @@ module nts.uk.com.view.cas013.a {
                         if(index >=0 && indexNew < 0){
                             vm.multiSelectedCode(vm.employeeList()[index == 0 ? index : (index - 1)].code);
                             vm.dateValue(new datePeriod(employeeSearchs[index == 0 ? index : (index - 1)].startValidPeriod, employeeSearchs[index == 0 ? index : (index - 1)].endValidPeriod));
-                            vm.selectRoleEmployee(employeeSearchs[index == 0 ? index : (index - 1)].id);
+                          //  vm.selectRoleEmployee(employeeSearchs[index == 0 ? index : (index - 1)].id);
                         }
                         if(index <0 && indexNew >=0){
                             vm.multiSelectedCode(vm.employeeList()[indexNew].code);
                             vm.dateValue(new datePeriod(employeeSearchs[indexNew].startValidPeriod, employeeSearchs[indexNew].endValidPeriod));
-                            vm.selectRoleEmployee(employeeSearchs[indexNew].id);
+                           // vm.selectRoleEmployee(employeeSearchs[indexNew].id);
                         }
                         if(index == indexNew && index <0){
                             vm.multiSelectedCode(vm.employeeList()[0].code);
                             vm.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
-                            vm.selectRoleEmployee(employeeSearchs[0].id);
+                           // vm.selectRoleEmployee(employeeSearchs[0].id);
                         }
                         if(index == indexNew && index >0){
                             vm.multiSelectedCode(vm.employeeList()[index].code);
                             vm.dateValue(new datePeriod(employeeSearchs[index].startValidPeriod, employeeSearchs[index].endValidPeriod));
-                            vm.selectRoleEmployee(employeeSearchs[index].id);
+                            //vm.selectRoleEmployee(employeeSearchs[index].id);
                         }
                         //End KCP005
 
@@ -433,33 +427,6 @@ module nts.uk.com.view.cas013.a {
                 vm.employyeName('');
             }
         }
-
-
-        private selectRoleGrant(UserId: string): void {
-            let vm = this;
-            let roleId = vm.selectedRole();
-            if (roleId != '' && UserId != '') {
-                let userSelected = _.find(vm.listRoleIndividual(), ['userId', UserId]);
-                let data = {
-                    roleID: roleId,
-                    userID: UserId
-                };
-                block.invisible();
-                vm.$ajax('com', API.getRoleGrant, data).done(function (data: any) {
-                    if (data != null) {
-                        //vm.dateValue(new datePeriod(data.startValidPeriod, data.endValidPeriod));
-                        vm.isCreateMode(false);
-                        vm.isSelectedUser(false);
-                        vm.isDelete(true);
-                    }
-                }).always(()=>{
-                    block.clear();
-                });
-            } else {
-                vm.isDelete(false);
-            }
-        }
-
         private selectRoleEmployee(UserId: string): void {
             let vm = this;
             let roleId = vm.selectedRole();
