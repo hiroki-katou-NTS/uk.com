@@ -12,10 +12,19 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordServiceProc;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.emp.EmpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp.WkpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AggregateAttendanceTimeValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AgreementTimeAggregateService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.AnyItemAggregateService;
@@ -23,10 +32,41 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanyS
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyOldDatas;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flex.CalcFlexChangeDto;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flex.ConditionCalcResult;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -52,7 +92,7 @@ public class AggregatePastMonthsService {
 		aggrPeriods.forEach(ap -> {
 			
 			/** 過去月集計する */
-			val result = aggrPastMonth(require, cacheCarrier, cId, sid, ap, dailyRecords, comSets);
+			val result = aggrPastMonth(require, cacheCarrier, cId, sid, ap, dailyRecords, comSets, aggrResults);
 			
 			/** 過去月集計結果を一覧に入れる */
 			aggrResults.add(result);
@@ -64,7 +104,7 @@ public class AggregatePastMonthsService {
 	/** 過去月集計する */
 	private static AggregatePastMonthResult aggrPastMonth(RequireM2 require, CacheCarrier cacheCarrier, String cid,
 			 String sid, ClosurePeriod closurePeriod, List<IntegrationOfDaily> dailyRecords,
-			 MonAggrCompanySettings companySets) {
+			 MonAggrCompanySettings companySets, List<AggregatePastMonthResult> aggrResults) {
 
 		val ym = closurePeriod.getYearMonth();
 		val closureId = closurePeriod.getClosureId();
@@ -89,7 +129,7 @@ public class AggregatePastMonthsService {
 		/** 月別実績の勤怠時間を集計する */
 		val attendanceTime = aggrMonthAttendanceTime(require, cacheCarrier, cid, sid, ym, period, closureId, 
 				closureDate, companySets, empSets, dailyWorks, workConditionItems, monthlyOldDatas, editStates,
-				converter);
+				converter, aggrResults);
 		
 		/** 36協定時間の集計 */
 		val agreementTimeResults = AgreementTimeAggregateService.aggregate(require, cacheCarrier, cid, 
@@ -117,7 +157,7 @@ public class AggregatePastMonthsService {
 			ClosureDate closureDate, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys dailyWorks, List<WorkingConditionItemWithPeriod> workCondition,
 			MonthlyOldDatas monthlyOldDatas, List<EditStateOfMonthlyPerformance> editStates,
-			MonthlyRecordToAttendanceItemConverter converter) {
+			MonthlyRecordToAttendanceItemConverter converter, List<AggregatePastMonthResult> aggrResults) {
 		
 		/** 制労働ごと期間を計算する */
 		val workConGroup = mergeWorkCondition(workCondition, period);
@@ -127,8 +167,8 @@ public class AggregatePastMonthsService {
 			
 			/** 月別実績の勤怠時間を集計 */
 			val aggrResult = new AggregateAttendanceTimeValue(sid, ym, closureId, closureDate, wc.getDatePeriod());
-			val attendanceTimeWeeks = aggrResult.getAttendanceTime().aggregateAttendanceTime(require, cacheCarrier, 
-					cid, wc.getDatePeriod(), wc.getWorkingConditionItem(), companySets, employeeSets, 
+			val attendanceTimeWeeks = aggrResult.getAttendanceTime().aggregateAttendanceTime(createRequire(require, aggrResults), 
+					cacheCarrier, cid, wc.getDatePeriod(), wc.getWorkingConditionItem(), companySets, employeeSets, 
 					dailyWorks, monthlyOldDatas, new HashMap<>());
 			aggrResult.getAttendanceTimeWeeks().addAll(attendanceTimeWeeks);
 			
@@ -208,6 +248,258 @@ public class AggregatePastMonthsService {
 		}
 		
 		return workConditions;
+	}
+	
+	private static AttendanceTimeOfMonthly.RequireM3 createRequire(RequireM3 require, List<AggregatePastMonthResult> aggrResults) {
+		
+		return new AttendanceTimeOfMonthly.RequireM3() {
+			
+			@Override
+			public MonthlyRecordToAttendanceItemConverter createMonthlyConverter() {
+				return require.createMonthlyConverter();
+			}
+			
+			@Override
+			public Optional<OutsideOTSetting> outsideOTSetting(String cid) {
+				return require.outsideOTSetting(cid);
+			}
+			
+			@Override
+			public Optional<SuperHD60HConMed> superHD60HConMed(String cid) {
+				return require.superHD60HConMed(cid);
+			}
+			
+			@Override
+			public ReservationOfMonthly reservation(String sid, GeneralDate date, String companyID) {
+				return require.reservation(sid, date, companyID);
+			}
+			
+			@Override
+			public Optional<AggregateMethodOfMonthly> aggregateMethodOfMonthly(String cid) {
+				return require.aggregateMethodOfMonthly(cid);
+			}
+			
+			@Override
+			public Optional<PredetemineTimeSetting> predetemineTimeSetByWorkTimeCode(String companyId, String workTimeCode) {
+				return require.predetemineTimeSetByWorkTimeCode(companyId, workTimeCode);
+			}
+			
+			@Override
+			public Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
+					ClosureId closureId, ClosureDate closureDate) {
+				/** ・Requireで前月のデータを取得するとき、結果一覧から先に優先し、なければRepoから取得する */
+				val at = aggrResults.stream().filter(c -> c.getMonthlyAttdTime().getEmployeeId().equals(employeeId)
+						&& c.getMonthlyAttdTime().getYearMonth().equals(yearMonth) 
+						&& c.getMonthlyAttdTime().getClosureId().equals(closureId)
+						&& c.getMonthlyAttdTime().getClosureDate().equals(closureDate)).findFirst();
+				if (!at.isPresent()) {
+					return require.attendanceTimeOfMonthly(employeeId, yearMonth, closureId, closureDate);
+				}
+				return at.map(c -> c.getMonthlyAttdTime());
+			}
+			
+			@Override
+			public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth) {
+				/** ・Requireで前月のデータを取得するとき、結果一覧から先に優先し、なければRepoから取得する */
+				val dbAts = require.attendanceTimeOfMonthly(employeeId, yearMonth);
+				val cachedAts = aggrResults.stream().filter(c -> c.getMonthlyAttdTime().getEmployeeId().equals(employeeId)
+						&& c.getMonthlyAttdTime().getYearMonth().equals(yearMonth))
+						.map(c -> c.getMonthlyAttdTime())
+						.collect(Collectors.toList());
+				if (dbAts.isEmpty()) {
+					return cachedAts;
+				}
+				if (!cachedAts.isEmpty()) {
+					cachedAts.stream().forEach(c -> {
+						val at = dbAts.stream().filter(d -> c.getEmployeeId().equals(employeeId)
+								&& c.getYearMonth().equals(yearMonth) 
+								&& c.getClosureId().equals(d.getClosureId())
+								&& c.getClosureDate().equals(d.getClosureDate())).findFirst();
+						if (at.isPresent()) {
+							dbAts.remove(at.get());
+						} 
+						dbAts.add(c);
+					});
+				}
+				return dbAts;
+			}
+			
+			@Override
+			public Optional<FlowWorkSetting> flowWorkSetting(String companyId, String workTimeCode) {
+				return require.flowWorkSetting(companyId, workTimeCode);
+			}
+			
+			@Override
+			public Optional<FlexWorkSetting> flexWorkSetting(String companyId, String workTimeCode) {
+				return require.flexWorkSetting(companyId, workTimeCode);
+			}
+			
+			@Override
+			public Optional<FixedWorkSetting> fixedWorkSetting(String companyId, String workTimeCode) {
+				return require.fixedWorkSetting(companyId, workTimeCode);
+			}
+			
+			@Override
+			public Optional<DiffTimeWorkSetting> diffTimeWorkSetting(String companyId, String workTimeCode) {
+				return require.diffTimeWorkSetting(companyId, workTimeCode);
+			}
+			
+			@Override
+			public Optional<WorkTimeSetting> workTimeSetting(String companyId, String workTimeCode) {
+				return require.workTimeSetting(companyId, workTimeCode);
+			}
+			
+			@Override
+			public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+				return require.workingConditionItem(employeeId, baseDate);
+			}
+			
+			@Override
+			public Optional<WeekRuleManagement> weekRuleManagement(String cid) {
+				return require.weekRuleManagement(cid);
+			}
+			
+			@Override
+			public Optional<WorkType> workType(String companyId, String workTypeCd) {
+				return require.workType(companyId, workTypeCd);
+			}
+			
+			@Override
+			public DailyRecordToAttendanceItemConverter createDailyConverter() {
+				return require.createDailyConverter();
+			}
+			
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return require.closure(companyId, closureId);
+			}
+			
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return require.employmentClosure(companyID, employmentCD);
+			}
+			
+			@Override
+			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+				return require.employeeInfo(cacheCarrier, empId);
+			}
+			
+			@Override
+			public Optional<RegularLaborTimeSha> regularLaborTimeByEmployee(String Cid, String EmpId) {
+				return require.regularLaborTimeByEmployee(Cid, EmpId);
+			}
+			
+			@Override
+			public Optional<DeforLaborTimeSha> deforLaborTimeByEmployee(String cid, String empId) {
+				return require.deforLaborTimeByEmployee(cid, empId);
+			}
+			
+			@Override
+			public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
+				return require.regularLaborTimeByEmployment(cid, employmentCode);
+			}
+			
+			@Override
+			public Optional<DeforLaborTimeEmp> deforLaborTimeByEmployment(String cid, String employmentCode) {
+				return require.deforLaborTimeByEmployment(cid, employmentCode);
+			}
+			
+			@Override
+			public Optional<RegularLaborTimeWkp> regularLaborTimeByWorkplace(String cid, String wkpId) {
+				return require.regularLaborTimeByWorkplace(cid, wkpId);
+			}
+			
+			@Override
+			public Optional<DeforLaborTimeWkp> deforLaborTimeByWorkplace(String cid, String wkpId) {
+				return require.deforLaborTimeByWorkplace(cid, wkpId);
+			}
+			
+			@Override
+			public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
+				return require.regularLaborTimeByCompany(companyId);
+			}
+			
+			@Override
+			public Optional<DeforLaborTimeCom> deforLaborTimeByCompany(String companyId) {
+				return require.deforLaborTimeByCompany(companyId);
+			}
+			
+			@Override
+			public Optional<MonthlyWorkTimeSetCom> monthlyWorkTimeSetCom(String cid, LaborWorkTypeAttr laborAttr,
+					YearMonth ym) {
+				return require.monthlyWorkTimeSetCom(cid, laborAttr, ym);
+			}
+			
+			@Override
+			public Optional<MonthlyWorkTimeSetEmp> monthlyWorkTimeSetEmp(String cid, String empCode,
+					LaborWorkTypeAttr laborAttr, YearMonth ym) {
+				return require.monthlyWorkTimeSetEmp(cid, empCode, laborAttr, ym);
+			}
+			
+			@Override
+			public Optional<MonthlyWorkTimeSetSha> monthlyWorkTimeSetSha(String cid, String sid, LaborWorkTypeAttr laborAttr,
+					YearMonth ym) {
+				return require.monthlyWorkTimeSetSha(cid, sid, laborAttr, ym);
+			}
+			
+			@Override
+			public Optional<MonthlyWorkTimeSetWkp> monthlyWorkTimeSetWkp(String cid, String workplaceId,
+					LaborWorkTypeAttr laborAttr, YearMonth ym) {
+				return require.monthlyWorkTimeSetWkp(cid, workplaceId, laborAttr, ym);
+			}
+			
+			@Override
+			public Optional<WkpFlexMonthActCalSet> monthFlexCalcSetByWorkplace(String cid, String wkpId) {
+				return require.monthFlexCalcSetByWorkplace(cid, wkpId);
+			}
+			
+			@Override
+			public Optional<EmpFlexMonthActCalSet> monthFlexCalcSetByEmployment(String cid, String empCode) {
+				return require.monthFlexCalcSetByEmployment(cid, empCode);
+			}
+			
+			@Override
+			public Optional<WkpDeforLaborMonthActCalSet> monthDeforCalcSetByWorkplace(String cid, String wkpId) {
+				return require.monthDeforCalcSetByWorkplace(cid, wkpId);
+			}
+			
+			@Override
+			public Optional<EmpDeforLaborMonthActCalSet> monthDeforCalcSetByEmployment(String cid, String empCode) {
+				return require.monthDeforCalcSetByEmployment(cid, empCode);
+			}
+			
+			@Override
+			public List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod) {
+				return require.workingConditionItem(employeeId, datePeriod);
+			}
+			
+			@Override
+			public Optional<WkpRegulaMonthActCalSet> monthRegularCalcSetByWorkplace(String cid, String wkpId) {
+				return require.monthRegularCalcSetByWorkplace(cid, wkpId);
+			}
+			
+			@Override
+			public Optional<EmpRegulaMonthActCalSet> monthRegularCalcSetByEmployment(String cid, String empCode) {
+				return require.monthRegularCalcSetByEmployment(cid, empCode);
+			}
+			
+			@Override
+			public List<String> getCanUseWorkplaceForEmp(CacheCarrier cacheCarrier, String companyId, String employeeId,
+					GeneralDate baseDate) {
+				return require.getCanUseWorkplaceForEmp(cacheCarrier, companyId, employeeId, baseDate);
+			}
+			
+			@Override
+			public Optional<UsageUnitSetting> usageUnitSetting(String companyId) {
+				return require.usageUnitSetting(companyId);
+			}
+			
+			@Override
+			public ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId,
+					CalcFlexChangeDto calc) {
+				return require.flexConditionCalcResult(cacheCarrier, companyId, calc);
+			}
+		};
 	}
 
 	public static interface RequireM4 {
