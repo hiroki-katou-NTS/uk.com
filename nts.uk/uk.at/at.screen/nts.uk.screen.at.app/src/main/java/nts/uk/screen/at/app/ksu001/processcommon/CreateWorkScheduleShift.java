@@ -17,11 +17,11 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DeterEditStatusShiftService;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.ShiftEditState;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -84,7 +84,7 @@ public class CreateWorkScheduleShift {
 
 
 	public WorkScheduleShiftResult getWorkScheduleShift(
-			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew) {
 
 		// step 1
@@ -124,11 +124,11 @@ public class CreateWorkScheduleShift {
 		// call loop：entry(Map.Entry) in 管理状態と勤務予定Map
 		List<ScheduleOfShiftDto> listWorkScheduleShift = new ArrayList<>();
 		mngStatusAndWScheMap.forEach((k, v) -> {
-			ScheManaStatuTempo key = k;
+			EmployeeWorkingStatus key = k;
 			Optional<WorkSchedule> value = v;
 
 			// step 3.1
-			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
+			boolean needToWork = key.getWorkingStatus().needCreateWorkSchedule();
 			if (value.isPresent()) {
 				WorkSchedule workSchedule = value.get();
 				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
