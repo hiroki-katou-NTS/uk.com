@@ -166,6 +166,7 @@ public class ExternalImportPrepareRequire {
 			workspaceRepo.setup(this, context);
 			existingRepo.setup(context);
 			metaRepo.setup(context);
+			errorsRepo.setup(context);
 		}
 		
 		@Override
