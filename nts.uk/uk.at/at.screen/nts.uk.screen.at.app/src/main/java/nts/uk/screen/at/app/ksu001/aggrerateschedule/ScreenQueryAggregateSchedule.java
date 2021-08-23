@@ -15,9 +15,9 @@ import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceMergingService;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
@@ -60,8 +60,8 @@ public class ScreenQueryAggregateSchedule {
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
-			Map<ScheManaStatuTempo, Optional<WorkSchedule>> workSchedules,
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> integrationOfDailys,
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> workSchedules,
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> integrationOfDailys,
 			TargetOrgIdenInfor targetOrg,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp,
