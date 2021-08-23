@@ -19,6 +19,10 @@ public class ExternalImportErrors {
 				.collect(toList());
 	}
 	
+	public int count() {
+		return errors.size();
+	}
+	
 	public String toText(RequireToText require, ExecutionContext context) {
 		
 		val sb = new StringBuilder();
