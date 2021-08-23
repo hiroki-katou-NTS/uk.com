@@ -16,6 +16,9 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.TypeOfDays;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
@@ -109,12 +112,12 @@ public class CalculateVacationDayService {
 			
 			workingCondtionItem = workingConditionItemMap.get(condExDatePeriod.get());
 			
-			if (!workTypeOpt.isPresent() || !dailyOpt.isPresent() || workingCondtionItem == null) {
+			if (!workTypeOpt.isPresent() || workingCondtionItem == null) {
 				continue;
 			}
 			
 			// Input．日数の種類をチェック
-			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt.get(), workingCondtionItem, predTimeSetInDayOpt);
+			totalTime += getNumberOfDays(typeOfDay, workTypeOpt.get(), dailyOpt, workingCondtionItem, predTimeSetInDayOpt, monWorkTypeWorkTime.getWorkInfo());
 		}
 		
 		return totalTime;
@@ -166,23 +169,36 @@ public class CalculateVacationDayService {
 	private Double getNumberOfDays(
 			TypeOfDays typeOfDay,
 			WorkType workType,
-			IntegrationOfDaily daily,
+			Optional<IntegrationOfDaily> daily,
 			WorkingConditionItem workingCondtionItem,
-			Optional<PredetemineTimeSetting> predetemineTimeSettingOpt) {
+			Optional<PredetemineTimeSetting> predetemineTimeSettingOpt,
+			WorkInfoOfDailyAttendance workInfo) {
 		WorkDaysOfMonthly workDays = new WorkDaysOfMonthly();
 		WorkTypeDaysCountTable workTypeDaysCountTable = new WorkTypeDaysCountTable(
 				workType, new VacationAddSet(), Optional.empty());
 		val require = requireService.createRequire();
 		PredetemineTimeSetting predetemineTimeSetting = predetemineTimeSettingOpt.isPresent() ? predetemineTimeSettingOpt.get() : null;
 		
+		AttendanceTimeOfDailyAttendance attendanceTimeOfDaily = null;
+		SpecificDateAttrOfDailyAttd specificDateAttrOfDaily = null;
+		if (daily.isPresent()) {
+			if (daily.get().getAttendanceTimeOfDailyPerformance().isPresent()) {
+				attendanceTimeOfDaily = daily.get().getAttendanceTimeOfDailyPerformance().get();
+			}
+			
+			if (daily.get().getSpecDateAttr().isPresent()) {
+				specificDateAttrOfDaily = daily.get().getSpecDateAttr().get();
+			}
+		}
+		
 		workDays.aggregate(
 				require,
 				workingCondtionItem.getLaborSystem(), 
-				workType, 
-				daily.getAttendanceTimeOfDailyPerformance().get(), 
-				daily.getSpecDateAttr().get(),
+				workType,
+				attendanceTimeOfDaily, 
+				specificDateAttrOfDaily,
 				workTypeDaysCountTable, 
-				daily.getWorkInformation(), 
+				workInfo,
 				predetemineTimeSetting,
 				true, //confirm with Du san
 				true, //confirm with Du san
