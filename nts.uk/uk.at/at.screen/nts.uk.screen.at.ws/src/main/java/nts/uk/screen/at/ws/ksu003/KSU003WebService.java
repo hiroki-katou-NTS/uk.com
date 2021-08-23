@@ -21,6 +21,8 @@ import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeDto;
 import nts.uk.screen.at.app.ksu003.changeworktype.ChangeWorkTypeSc;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkType;
 import nts.uk.screen.at.app.ksu003.changeworktype.CheckWorkTypeDto;
+import nts.uk.screen.at.app.ksu003.d.GetInfoInitScreenKsu003D;
+import nts.uk.screen.at.app.ksu003.d.InitKsu003DInfoDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.EmpWorkFixedWorkInfoDto;
 import nts.uk.screen.at.app.ksu003.getempworkfixedworkkinfo.GetEmpWorkFixedWorkInfoSc;
 import nts.uk.screen.at.app.ksu003.sortemployee.SortEmployeeParam;
@@ -66,6 +68,9 @@ public class KSU003WebService extends WebService{
 	
 	@Inject
 	private RegisterWorkScheduleKsu003 regWorkSchedule;
+
+	@Inject
+	private GetInfoInitScreenKsu003D getInfoInitScreenKsu003D;
 	
 	@POST
 	@Path("getinfo-initstart")
@@ -135,6 +140,11 @@ public class KSU003WebService extends WebService{
 		ResultRegisWorkSchedule rs = regWorkSchedule.handle(param);
 		return rs;
 	}
-	
-	
+
+	@POST
+	@Path("ksu003/d/init")
+	// 画面初期起動
+	public InitKsu003DInfoDto getDataStartScreenD (){
+		 return getInfoInitScreenKsu003D.getData();
+	}
 }
