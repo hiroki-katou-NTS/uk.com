@@ -180,8 +180,8 @@ module nts.uk.com.view.cas013.a {
                 vm.selectRole(roleId.toString(), '');
                 vm.isSelectedUser(false);
                 vm.isDelete(false);
+                console.log(roleId);
             });
-
             vm.selectedRoleIndividual.subscribe((userId: string) => {
                 vm.selectRoleGrant(userId.toString());
             });
@@ -199,6 +199,15 @@ module nts.uk.com.view.cas013.a {
                 vm.isSelectedUser(false);
                 vm.isDelete(false);
             });
+
+            vm.selectRoleCheckbox.subscribe((e)=>{
+                let itemRole = _.find(vm.listRole(),(i)=>{
+                    return i.roleCode == e;
+                });
+                if(!isNullOrUndefined(itemRole)){
+                    vm.selectedRole(itemRole.roleId);
+                }
+            })
         }
         //A51
         setDefault() {
@@ -390,6 +399,10 @@ module nts.uk.com.view.cas013.a {
                         vm.dateValue({});
                         vm.New();
                     }
+                }).always(()=>{
+                    block.clear()
+                }).fail(()=>{
+
                 });
             } else {
                 vm.employeeList([]);//KCP005

@@ -60,7 +60,6 @@ module nts.uk.com.view.cas013.b {
             vm.companyCode = ko.observable('');
             vm.companyName = ko.observable('');
             //B1_2
-            vm.listCompany = ko.observableArray([]);
             vm.isEnable = ko.observable(true);
             vm.isEditable = ko.observable(true);
             vm.isRequired = ko.observable(true);
@@ -92,12 +91,15 @@ module nts.uk.com.view.cas013.b {
                 vm.backToTopPage();
                 dfd.reject();
             })
+            vm.KCP005_load()
         }
         created(params: any) {
             let vm = this;
             let dfd = $.Deferred();
             vm.companyId.subscribe((cid) => {
-                vm.getListEmployee(cid);
+                if (cid){
+                    vm.getListEmployee(cid);
+                }
             });
 
         }
@@ -126,7 +128,6 @@ module nts.uk.com.view.cas013.b {
                         vm.listEmployee(data);
                         if(!isNullOrEmpty(emps)){
                             vm.multiSelectedCode(emps[0].code)
-                            vm.KCP005_load()
                         }
                     }
                 }).always(()=>{
@@ -148,6 +149,7 @@ module nts.uk.com.view.cas013.b {
                         let item = data[i];
                         companys.push( new ItemModel(item.companyCode,item.companyName,item.companyId) )
                     }
+                    vm.companyId(cid);
                     vm.listCompany(companys);
                     if(isNullOrUndefined(cid) || cid == ""){
                         cid = vm.loginCid();
