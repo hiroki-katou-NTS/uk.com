@@ -4,8 +4,10 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 整数型編集
@@ -18,19 +20,17 @@ public class IntegerRevise implements ReviseValue {
 	private Optional<ExternalImportCodeConvert> codeConvert;
 	
 	@Override
-	public Object revise(String target) {
+	public Either<ErrorMessage, ?> revise(String target) {
 		
-		String strResult = target;
-		
-		if(codeConvert.isPresent()) {
-			strResult = this.codeConvert.get().convert(strResult).toString();
-		}
-		
-		return stringToInt(strResult);
+		return codeConvert
+			.map(conv -> conv.convert(target).map(v -> v.v()))
+			.orElse(Either.right(target))
+			.mapEither(str -> parseLong(str));
 	}
 	
-	// 文字列→整数変換
-	private Long stringToInt(String resultStr) {
-		return Long.parseLong(resultStr);
+	private static Either<ErrorMessage, Long> parseLong(String value) {
+		
+		return Either.tryCatch(() -> Long.parseLong(value), NumberFormatException.class)
+				.mapLeft(ex -> new ErrorMessage("受入データが整数ではありません。"));
 	}
 }

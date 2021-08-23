@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 時間・時刻型編集
@@ -27,10 +29,12 @@ public class TimeRevise implements ReviseValue {
 	private Optional<TimeBase10Rounding> rounding;
 
 	@Override
-	public Object revise(String target) {
+	public Either<ErrorMessage, ?> revise(String target) {
 		
 		if (hourly == HourlySegment.MINUTE) {
-			return hourly.toMinutesDecimal(new BigDecimal(target)).intValue();
+			return Either.tryCatch(() -> Integer.parseInt(target), NumberFormatException.class)
+					.mapLeft(ex -> new ErrorMessage("受入データが整数ではありません"))
+					.map(min -> hourly.toMinutesDecimal(new BigDecimal(min)));
 		}
 		
 		if (baseNumber.get() == TimeBaseNumber.SEXAGESIMAL) {
@@ -39,7 +43,7 @@ public class TimeRevise implements ReviseValue {
 		} else {
 			// 10進数は、分に変換して端数処理
 			BigDecimal minutes = hourly.toMinutesDecimal(new BigDecimal(target));
-			return rounding.get().round(minutes);
+			return Either.right(rounding.get().round(minutes));
 		}
 	}
 }

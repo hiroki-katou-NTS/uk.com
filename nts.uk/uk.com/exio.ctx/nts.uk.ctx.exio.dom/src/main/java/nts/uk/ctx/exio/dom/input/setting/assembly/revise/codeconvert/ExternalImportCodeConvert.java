@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 受入コード変換
@@ -29,18 +31,18 @@ public class ExternalImportCodeConvert extends DomainObject {
 	 * @param target
 	 * @return
 	 */
-	public CodeConvertValue convert(String target) {
+	public Either<ErrorMessage, CodeConvertValue> convert(String target) {
 		for (val detail : convertDetails) {
 			if (detail.getBefore().v().equals(target)) {
-				return detail.getAfter();
+				return Either.right(detail.getAfter());
 			}
 		}
 		
 		if(importWithoutSetting) {
 			// 変換対象外を受け入れる設定のためINPUTを変換値として返す
-			return new CodeConvertValue(target);
+			return Either.right(new CodeConvertValue(target));
 		}
 		
-		throw new RuntimeException("TODO: エラー時の処理");
+		return Either.left(new ErrorMessage("受入データがコード変換の設定に一致しませんでした。"));
 	}
 }

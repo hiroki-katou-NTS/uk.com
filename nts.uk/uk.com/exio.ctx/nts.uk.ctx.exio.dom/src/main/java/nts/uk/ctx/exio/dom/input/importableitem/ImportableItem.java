@@ -7,6 +7,8 @@ import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.errors.ItemError;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 受入可能項目
@@ -41,7 +43,8 @@ public class ImportableItem implements DomainAggregate{
 	 * @param value
 	 * @return
 	 */
-	public Object parse(String value) {
-		return this.itemType.parse(value);
+	public Either<ItemError, ?> parse(String value) {
+		return itemType.parse(value)
+				.mapLeft(errorMessage -> new ItemError(itemNo, errorMessage.getText()));
 	}
 }

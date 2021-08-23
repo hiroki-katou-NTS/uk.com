@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.time;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 60進数表記時分データの区切り文字
@@ -37,7 +39,7 @@ public enum TimeBase60Delimiter {
 	 * @param target
 	 * @return
 	 */
-	public int toMinutes(String target) {
+	public Either<ErrorMessage, Integer> toMinutes(String target) {
 		switch(this) {
 		case NONE:
 			return convertNoDelimiter(target);
@@ -51,10 +53,14 @@ public enum TimeBase60Delimiter {
 	}
 	
 	// 区切り文字なし
-	private int convertNoDelimiter(String target) {
+	private Either<ErrorMessage, Integer> convertNoDelimiter(String target) {
 		if (!target.matches("\\d+")) {
 			// 整数でない場合
-			throw new RuntimeException("整数でないので変換できません。");
+			return Either.left(new ErrorMessage("時間の区切り文字無しの設定ですが、受入データが整数ではありません。"));
+		}
+		
+		if (target.length() < 4) {
+			return Either.left(new ErrorMessage("時間の区切り文字無しの設定ですが、受入データの桁数が足りません。"));
 		}
 		
 		return convert(
@@ -63,30 +69,34 @@ public enum TimeBase60Delimiter {
 	}
 	
 	// 区切り文字あり
-	private int convertDelimiter(String target) {
+	private Either<ErrorMessage, Integer> convertDelimiter(String target) {
 		// 区切り文字で文字列を2分割
 		String[] strParts = target.split(character, 2);
 		
-		// 分割したそれぞれが整数であることを確認
-		if (!strParts[0].matches("\\d+") || !strParts[1].matches("\\d+")) {
-			// 整数でない場合
-			throw new RuntimeException("「整数 + 区切り文字 + 整数」の形式でないので変換できません。");
+		if (strParts.length != 2) {
+			return Either.left(new ErrorMessage("時間の区切り文字が正しく含まれていません。"));
 		}
 		
 		return convert(strParts[0], strParts[1]);
 	}
 
-	private static int convert(String hourString, String minString) {
-		int hour = Integer.parseInt(hourString);
-		// 分部分の切り出し
-		int min = Integer.parseInt(minString);
+	private static Either<ErrorMessage, Integer> convert(String hourString, String minString) {
+		
+		int hour;
+		int min;
+		try {
+			hour = Integer.parseInt(hourString);
+			min = Integer.parseInt(minString);
+		} catch (NumberFormatException ex) {
+			return Either.left(new ErrorMessage("受入データの時間値が正しくありません。"));
+		}
 		
 		// 分に当たる値が59以下であることを確認
 		if(min >= 60) {
-			throw new RuntimeException("分は59以下でなければ変換できません。");
+			return Either.left(new ErrorMessage("受入データの時間値が正しくありません。"));
 		}
 		
 		// 時間を分に変換して加算
-		return hour * 60 + min;
+		return Either.right(hour * 60 + min);
 	}
 }
