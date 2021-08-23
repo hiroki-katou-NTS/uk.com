@@ -208,6 +208,7 @@ module nts.uk.com.view.cas013.a {
                     vm.selectedRole(itemRole.roleId);
                 }
             })
+            vm.setFocus();
         }
         //A51
         setDefault() {
@@ -241,6 +242,15 @@ module nts.uk.com.view.cas013.a {
         }
         backToTopPage() {
             nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+        }
+        setFocus(){
+            let vm = this;
+            if(vm.isCreateMode()){
+                $('#combo-box').focus();
+            }else {
+                $("#daterangepicker").find(".ntsStartDatePicker").focus();
+            }
+
         }
         KCP005_load() {
             let vm = this;
@@ -276,9 +286,10 @@ module nts.uk.com.view.cas013.a {
             vm.multiSelectedCode.subscribe((e) => {
                 let item = _.find(vm.employeeList(), (i) => i.code == e.toString());
                 if (!isNullOrUndefined(item)) {
-                    let id = item.id.toString()
+                    let id = item.id.toString();
                     vm.selectRoleEmployee(id);
                 }
+                vm.setFocus();
             });
             $('#kcp005').ntsListComponent(vm.listComponentOption)
 
@@ -534,6 +545,7 @@ module nts.uk.com.view.cas013.a {
             vm.jobTitleName('');
             vm.employyeCode('');
             vm.employyeName('');
+            $('#combo-box').focus();
             nts.uk.ui.errors.clearAll();
         }
 
@@ -579,7 +591,7 @@ module nts.uk.com.view.cas013.a {
             else if (nts.uk.util.isNullOrUndefined(vm.employyeName())) {
                 nts.uk.ui.dialog.alertError({
                     messageId: "Msg_218",
-                    messageParams: [nts.uk.resource.getText("CAS013_19")]
+                    messageParams: ["A7_1"]
                 });
             }
             else if (nts.uk.util.isNullOrUndefined(vm.dateValue().startDate) || nts.uk.util.isNullOrUndefined(vm.dateValue().endDate)) {
@@ -651,6 +663,7 @@ module nts.uk.com.view.cas013.a {
         }
 
         Delete(): void {
+            let vm = this;
             if (!nts.uk.ui.errors.hasError()) {
                 nts.uk.ui.dialog.confirm({messageId: "Msg_18"}).ifYes(() => {
                     let vm = this;
@@ -670,6 +683,7 @@ module nts.uk.com.view.cas013.a {
                     vm.selectRole(vm.selectedRole(), userId);
                 });
             }
+            vm.setFocus();
         }
 
     }

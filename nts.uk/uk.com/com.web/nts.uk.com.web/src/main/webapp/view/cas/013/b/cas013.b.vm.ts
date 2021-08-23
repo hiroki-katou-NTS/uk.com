@@ -105,7 +105,12 @@ module nts.uk.com.view.cas013.b {
         }
         mounted() {
             let vm = this;
-
+            vm.setFocus();
+        }
+        setFocus() {
+            let vm = this;
+                $('#combo-box2').focus();
+            errors.clearAll();
         }
         getListEmployee(cid : string):JQueryPromise<any>{
             let vm = this,
