@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * UKDesign.データベース.ER図.オフィス支援.設備管理.OFIDT_EQUIPMENT_CLS
@@ -19,7 +20,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "OFIDT_EQUIPMENT_CLS")
-public class OfidtEquipmentCls implements Serializable {
+public class OfidtEquipmentCls extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -32,4 +33,9 @@ public class OfidtEquipmentCls implements Serializable {
 	@NotNull
 	@Column(name = "NAME")
 	private String name;
+
+	@Override
+	protected Object getKey() {
+		return this.pk;
+	}
 }

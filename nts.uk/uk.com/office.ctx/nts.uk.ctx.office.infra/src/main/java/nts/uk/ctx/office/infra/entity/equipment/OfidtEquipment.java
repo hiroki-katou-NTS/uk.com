@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * UKDesign.データベース.ER図.オフィス支援.設備管理.OFIDT_EQUIPMENT
@@ -21,19 +23,14 @@ import nts.arc.time.GeneralDate;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "OFIDT_EQUIPMENT")
-public class OfidtEquipment implements Serializable {
+public class OfidtEquipment extends ContractUkJpaEntity implements Serializable,
+									EquipmentInformation.MementoSetter,
+									EquipmentInformation.MementoGetter {
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
 	private OfidtEquipmentPK pk;
-	
-	/**
-	 * 契約コード
-	 */
-	@NotNull
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 	
 	/**
 	 * 名称
@@ -69,4 +66,25 @@ public class OfidtEquipment implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "REMARK")
 	private String remark;
+
+	@Override
+	protected Object getKey() {
+		return this.pk;
+	}
+
+	@Override
+	public String getCode() {
+		if (this.pk != null) {
+			return this.pk.getCode();
+		}
+		return null;
+	}
+
+	@Override
+	public void setCode(String code) {
+		if (this.pk == null) {
+			this.pk = new OfidtEquipmentPK();
+		}
+		this.pk.setCode(code);
+	}
 }

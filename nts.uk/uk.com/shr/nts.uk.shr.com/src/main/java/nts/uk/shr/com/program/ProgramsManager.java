@@ -3886,6 +3886,15 @@ public class ProgramsManager {
 										    		, "KWR008_100"
 										    		, "/view/kwr/008/c/index.xhtml");
 
+    public static final Program OEM001A = new Program(WebAppId.COM, ProgramIdConsts.OEM001A, "OEM001_1",
+            "/view/oem/001/a/index.xhtml");
+    
+    public static final Program OEM002A = new Program(WebAppId.COM, ProgramIdConsts.OEM002A, "OEM002_1",
+            "/view/oem/002/a/index.xhtml");
+    
+    public static final Program OEM002B = new Program(WebAppId.COM, ProgramIdConsts.OEM002B, "OEM002_2",
+            "/view/oem/002/b/index.xhtml");
+    
     /**
      * All programs map.
      */
