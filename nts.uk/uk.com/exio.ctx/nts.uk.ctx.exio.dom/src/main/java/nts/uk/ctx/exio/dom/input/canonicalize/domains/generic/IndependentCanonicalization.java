@@ -21,6 +21,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -51,7 +52,8 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			
 			val key = getPrimaryKeys(revisedData, workspace);
 			if (importingKeys.contains(key)) {
-				throw new RuntimeException("重複データ" + key);
+				require.add(context, ExternalImportError.record(revisedData.getRowNo(), "受入データの中にキーの重複があります。"));
+				return; // 次のレコードへ
 			}
 			
 			importingKeys.add(key);

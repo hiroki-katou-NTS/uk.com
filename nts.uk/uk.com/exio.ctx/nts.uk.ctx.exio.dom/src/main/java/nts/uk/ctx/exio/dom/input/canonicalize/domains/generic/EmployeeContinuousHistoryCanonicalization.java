@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -127,7 +128,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 				.forEach(interm -> getPeriod(interm)
 						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
 						.ifRight(c -> containers.add(c))
-						.ifLeft(e -> require.add(context, new ExternalImportError(interm.getRowNo(), e.getText()))));
+						.ifLeft(e -> require.add(context, ExternalImportError.record(interm.getRowNo(), e.getText()))));
 
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
@@ -137,7 +138,14 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		//既存データの一番未来のやつと受入れようとしてる一番過去のやつを見て、補正すればいい
 		adjustExistingHistory(require, context, containers.get(0).addingHistoryItem, existingHistory);
 		
-		adjustAddingHistory(existingHistory, containers);
+		try {
+			adjustAddingHistory(existingHistory, containers);
+		} catch (BusinessException ex) {
+			// どのデータで失敗しようと１社員分すべて受け入れるか、全て受け入れないかのどちらかとする
+			containers.forEach(c -> require.add(
+					context,
+					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
+		}
 		
 		return containers.stream()
 				.map(c -> c.complete())
