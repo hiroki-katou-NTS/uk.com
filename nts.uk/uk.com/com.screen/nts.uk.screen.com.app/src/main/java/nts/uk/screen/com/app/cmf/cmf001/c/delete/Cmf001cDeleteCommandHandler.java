@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.cmf.cmf001.delete;
+package nts.uk.screen.com.app.cmf.cmf001.c.delete;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
