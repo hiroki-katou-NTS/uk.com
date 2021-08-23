@@ -69,10 +69,6 @@ public class InterimRemainOffDateCreateData {
 		//時間休暇使用時間を作成
 		formerRemainData = createUsageHolidayTimes(require, cid, sid, baseDate, detailData, formerRemainData);
 
-		if (formerRemainData.getWorkTypeRemain().isEmpty()) {
-			return null;
-		}
-
 		//残数作成元情報から暫定残数管理データを作成する
 		DailyInterimRemainMngData createDataInterimRemain = createDataInterimRemain(require, formerRemainData);
 		return createDataInterimRemain;
