@@ -34,7 +34,10 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.util.Either;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
@@ -117,10 +120,14 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		 *  最終的には「社員コードを正準化した中間結果」に対してaddCanonicalizedをしなければならないため、
 		 *  「社員コードを正準化した中間結果」と「追加する履歴項目」を束ねたもの = Containerを、開始日昇順で処理する必要がある。
 		 */
-		List<Container> containers = employeeCanonicalized.stream()
+		List<Container> containers = new ArrayList<>();
+		
+		employeeCanonicalized.stream()
 				.sorted(Comparator.comparing(c -> c.getItemByNo(itemNoStartDate).get().getDate()))
-				.map(interm -> new Container(interm, DateHistoryItem.createNewHistory(getPeriod(interm))))
-				.collect(toList());
+				.forEach(interm -> getPeriod(interm)
+						.map(p -> new Container(interm, DateHistoryItem.createNewHistory(p)))
+						.ifRight(c -> containers.add(c))
+						.ifLeft(e -> require.add(context, new ExternalImportError(interm.getRowNo(), e.getText()))));
 
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
@@ -161,12 +168,17 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	 * @param revisedData
 	 * @return
 	 */
-	private DatePeriod getPeriod(IntermediateResult interm) {
+	private Either<ErrorMessage, DatePeriod> getPeriod(IntermediateResult interm) {
 		
 		val startDate = interm.getItemByNo(itemNoStartDate).get().getDate();
 		val endDate = interm.getItemByNo(itemNoEndDate).get().getDate();
 		
-		return new DatePeriod(startDate, endDate);
+		val period = new DatePeriod(startDate, endDate);
+		if (period.isReversed()) {
+			return Either.left(new ErrorMessage("開始日と終了日が逆転しています。"));
+		}
+		
+		return Either.right(period);
 	}
 	
 	
