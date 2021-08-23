@@ -269,8 +269,13 @@ public class RoleIndividualFinder {
         if (user.get().getUserName().isPresent())
             userName = user.get().getUserName().get().v();
         employeeName = listPersonOptional.get().getPersonName();
-        return RoleIndividualGrantDto.fromDomain(rGrant.get(), userName, user.get().getLoginID().v(),
-                employeeDataMngInfoOptional.get().getEmployeeId(), employeeDataMngInfoOptional.get().getEmployeeCode(), employeeName);
+        return RoleIndividualGrantDto.fromDomain(
+                rGrant.get(),
+                userName,
+                user.get().getLoginID().v(),
+                employeeDataMngInfoOptional.isPresent()? employeeDataMngInfoOptional.get().getEmployeeId() : null,
+                employeeDataMngInfoOptional.isPresent()?employeeDataMngInfoOptional.get().getEmployeeCode() : null,
+                employeeName);
 
     }
     public CompanyInfo getCompanyInfo() {

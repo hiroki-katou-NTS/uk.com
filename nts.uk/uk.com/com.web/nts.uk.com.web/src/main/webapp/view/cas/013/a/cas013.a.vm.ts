@@ -566,11 +566,6 @@ module nts.uk.com.view.cas013.a {
             if (!nts.uk.util.isNullOrUndefined(vm.employyeCode())
                 && !nts.uk.util.isNullOrUndefined(vm.employyeName())
                 && !nts.uk.util.isNullOrUndefined(vm.companyCode())
-                && !nts.uk.util.isNullOrUndefined(vm.companyName())
-                && !nts.uk.util.isNullOrUndefined(vm.workplaceCode())
-                && !nts.uk.util.isNullOrUndefined(vm.workplaceName())
-                && !nts.uk.util.isNullOrUndefined(vm.jobTitleName())
-                && !nts.uk.util.isNullOrUndefined(vm.jobTitleCode())
                 && !nts.uk.util.isNullOrUndefined(vm.dateValue().startDate)
                 && !nts.uk.util.isNullOrUndefined(vm.dateValue().endDate)
                 && vm.employyeName() != ''
