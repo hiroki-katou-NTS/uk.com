@@ -207,8 +207,8 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public void save(ImportingDataMeta meta) {
-			metaRepo.save(meta);
+		public void save(ExecutionContext context, ImportingDataMeta meta) {
+			metaRepo.save(context, meta);
 		}
 		
 		
