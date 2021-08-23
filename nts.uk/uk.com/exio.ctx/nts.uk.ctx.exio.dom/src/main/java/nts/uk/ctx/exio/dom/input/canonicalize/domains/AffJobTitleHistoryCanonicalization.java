@@ -8,6 +8,7 @@ import java.util.List;
 
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeContinuousHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportPersistentResidentHistory;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -31,6 +32,10 @@ public class AffJobTitleHistoryCanonicalization {
 			protected List<DomainDataColumn> getDomainDataKeys() {
 				return Arrays.asList(
 						new DomainDataColumn("HIST_ID", STRING));
+			}
+			@Override
+			protected Class<?> getHistoryClass() {
+				return ExternalImportPersistentResidentHistory.class;
 			}
 		};
 	}

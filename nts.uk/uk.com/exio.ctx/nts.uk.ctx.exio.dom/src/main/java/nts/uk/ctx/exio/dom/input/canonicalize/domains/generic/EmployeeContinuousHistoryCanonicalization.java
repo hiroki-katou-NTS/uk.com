@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -27,7 +26,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.UkImpotingItems;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
@@ -60,6 +59,9 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	
 	/** 社員コードの正準化 */
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
+
+	/** どんな履歴か*/
+	protected abstract Class<?> getHistoryClass();
 	
 	public EmployeeContinuousHistoryCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
@@ -105,7 +107,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 
 		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
 		//既存履歴
-		History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory = require.getHistory(id);
+		val existingHistory = require.getHistory(id, getHistoryClass());
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -123,19 +125,16 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
 
-		//受入れようとしてるデータで補正
-		
-		
 		//既存データと受入れようとしてるデータで補正
+		//未来履歴は↑で消えているため、
 		//既存データの一番未来のやつと受入れようとしてる一番過去のやつを見て、補正すればいい
-//		adjustImportingHistory(require, context, existingHistory, containers.stream().findFirst());
+		adjustExistingHistory(require, context, containers.get(0).addingHistoryItem, existingHistory);
 		
-//		return containers.stream()
-//				// 受入する期間を既存の履歴に繋がるように補正する
-//				.peek(c -> adjustExistingHistoryAdding(require, context, employeeId, c.addingHistoryItem, existingHistory))
-//				.map(c -> c.complete())
-//				.collect(toList());
-		return null;
+		adjustAddingHistory(existingHistory, containers);
+		
+		return containers.stream()
+				.map(c -> c.complete())
+				.collect(toList());
 	}
 
 	
@@ -204,14 +203,24 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		});
 	}
 	
+	
 	/**
-	 * 履歴を追加しつつ既存データを補正
-	 * @param require
-	 * @param employeeId
-	 * @param importingPeriod
-	 * @param existingHistory
+	 * 受入データを補正
+	 * @param existingHistory 受入データが入る前の既存履歴
+	 * @param addingItems 受入れる履歴
 	 */
-	private void adjustAdding(
+	private void adjustAddingHistory(History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory, List<Container> addingItems) {
+		addingItems.stream().peek(c -> existingHistory.add(c.addingHistoryItem)).collect(Collectors.toList());
+	}
+
+	/**
+	 * 既存データを補正
+	 * @param require
+	 * @param context
+	 * @param addingItem 追加する履歴
+	 * @param existingHistory 受入データが入る前の既存履歴
+	 */
+	private void adjustExistingHistory(
 			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			DateHistoryItem addingItem,
@@ -228,7 +237,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	}
 
 	public static interface RequireCanonicalize{
-		History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id);
+		History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass);
 	}
 	
 	@Override
@@ -260,7 +269,6 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		
 		List<String> tableNames = new ArrayList<>();
 		tableNames.add(getParentTableName());
-		tableNames.addAll(getChildTableNames());
 		
 		val keys = getDomainDataKeys();
 		return tableNames.stream()
@@ -277,8 +285,8 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 			val dataKey = dataKeys.get(i);
 			
 			StringifiedValue stringified = 
-					(UkImpotingItems.map.containsKey(dataKey.getColumnName()))
-					? toChange.getPrimaryKeys().get(UkImpotingItems.map.get(dataKey.getColumnName()))
+					(SystemImportingItems.map.containsKey(dataKey.getColumnName()))
+					? toChange.getPrimaryKeys().get(SystemImportingItems.map.get(dataKey.getColumnName()))
 					: toChange.getPrimaryKeys().get(i);
 			
 			Object value;

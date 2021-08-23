@@ -1,9 +1,12 @@
 package nts.uk.ctx.exio.infra.repository.input.canonicalize.domaindata;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
@@ -11,7 +14,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.HistoryClass;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -60,15 +62,18 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 		return statement;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id) {
+	@SneakyThrows
+	public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass) {
 		val statement = createStatement(id, "select *");
-		return new HistoryClass(statement.getList(rec ->{
+		List<DateHistoryItem> list = statement.getList(rec ->{
 			return new DateHistoryItem(rec.getString("HIST_ID"),
 					new DatePeriod(
 							rec.getGeneralDate("START_DATE"),
 							rec.getGeneralDate("END_DATE")));
-		}));
+		});
+		return (History<DateHistoryItem, DatePeriod, GeneralDate>)historyClass.getConstructors()[0].newInstance(list);
 	}
 
 	@Override

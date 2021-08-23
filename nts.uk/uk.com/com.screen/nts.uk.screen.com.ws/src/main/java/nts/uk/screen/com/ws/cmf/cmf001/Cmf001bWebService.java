@@ -14,7 +14,7 @@ import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingDto;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.ExternalImportSettingListItemDto;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetExternalImportSetting;
 import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayout;
-import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayoutQuery;
+import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayoutParam;
 import nts.uk.screen.com.app.cmf.cmf001.b.save.Cmf001bSaveCommand;
 import nts.uk.screen.com.app.cmf.cmf001.b.save.Cmf001bSaveCommandHandler;
 
@@ -47,14 +47,14 @@ public class Cmf001bWebService {
 	
 	@POST
 	@Path("get/layout")
-	public List<Integer> getLayout(GetLayoutQuery query) {
+	public List<Integer> getLayout(GetLayoutParam query) {
 		List<Integer> result = layout.get(query);
 		return result;
 	}
 	
 	@POST
 	@Path("get/layout/detail")
-	public List<ExternalImportLayoutDto> getLayoutDetail(GetLayoutQuery query) {
+	public List<ExternalImportLayoutDto> getLayoutDetail(GetLayoutParam query) {
 		List<ExternalImportLayoutDto> result = layout.getDetail(query);
 		return result;
 	}

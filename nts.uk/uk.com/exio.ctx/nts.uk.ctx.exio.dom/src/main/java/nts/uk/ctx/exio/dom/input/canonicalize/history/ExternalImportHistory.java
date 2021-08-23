@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
+package nts.uk.ctx.exio.dom.input.canonicalize.history;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
 /**
- * 汎用クラス　履歴を持つクラスを取得するための
+ *  履歴の汎用クラス
  */
 @AllArgsConstructor
-public class HistoryClass implements History<DateHistoryItem, DatePeriod, GeneralDate>{
+public class ExternalImportHistory implements History<DateHistoryItem, DatePeriod, GeneralDate>{
 
 	private List<DateHistoryItem> period;
 	
@@ -20,4 +20,5 @@ public class HistoryClass implements History<DateHistoryItem, DatePeriod, Genera
 	public List<DateHistoryItem> items() {
 		return period;
 	}
+
 }
