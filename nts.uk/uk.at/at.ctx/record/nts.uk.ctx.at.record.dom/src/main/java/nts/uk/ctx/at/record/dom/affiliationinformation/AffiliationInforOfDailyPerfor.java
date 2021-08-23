@@ -41,6 +41,7 @@ public class AffiliationInforOfDailyPerfor extends AggregateRoot {
 				Optional.ofNullable(businessTypeCode),
 				Optional.ofNullable(bonusPaySettingCode),
 				Optional.empty(), // TODO team daily add
+				Optional.empty(), // TODO team daily add
 				Optional.empty()); // TODO team daily add
 	}
 

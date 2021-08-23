@@ -344,7 +344,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 		 * @return
 		 */
 		public static AffiliationInforOfDailyAttd createAffiliationInfoByEmployment(String employmentCode) {
-			return new AffiliationInforOfDailyAttd(new EmploymentCode(employmentCode), null, null, null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+			return new AffiliationInforOfDailyAttd(new EmploymentCode(employmentCode), null, null, null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		}
 
 		/**
@@ -353,7 +353,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 		 * @return
 		 */
 		public static AffiliationInforOfDailyAttd createAffiliationInfoByJobTitle(String jobTitleID) {
-			return new AffiliationInforOfDailyAttd(null, jobTitleID, null, null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+			return new AffiliationInforOfDailyAttd(null, jobTitleID, null, null, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		}
 
 		/**
@@ -362,7 +362,7 @@ public class CountNumberOfPeopleByAttributeServiceTest {
 		 * @return
 		 */
 		public static AffiliationInforOfDailyAttd createAffiliationInfoByCls(String clsCode) {
-			return new AffiliationInforOfDailyAttd(null, null, null, new ClassificationCode(clsCode), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+			return new AffiliationInforOfDailyAttd(null, null, null, new ClassificationCode(clsCode), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		}
 	}
 
