@@ -71,7 +71,7 @@ public class GetWorkActualOfWorkInfo002 {
 
 		// step 1
 		// call 予定管理状態に応じて日別実績を取得する
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		DatePeriod period = new DatePeriod(param.getStartDate(), param.getEndDate());
 		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(param.listSid, period, dailyRecordWorkFinder,
 				empComHisAdapter, workCondRepo, empLeaveHisAdapter, empLeaveWorkHisAdapter,
 				employmentHisScheduleAdapter);
