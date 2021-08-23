@@ -7,6 +7,7 @@ module nts.uk.com.view.cas011.a {
     import resource = nts.uk.resource;
     import NtsGridListColumn = nts.uk.ui.NtsGridListColumn;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
+    import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     var format = nts.uk.text.format;
     const API = {
         getDtaInit: "screen/com/cas011/get-data-init",
@@ -43,8 +44,6 @@ module nts.uk.com.view.cas011.a {
         swapColumns: KnockoutObservableArray<NtsGridListColumn>;
 
         defaultRoleSetCode :KnockoutObservable<string> = ko.observable(null);
-
-        enable : KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(params: any) {
             super();
@@ -375,7 +374,6 @@ module nts.uk.com.view.cas011.a {
             block.clear();
         }
         createMode() {
-
             let vm = this,
                 currentRoleSet: RoleSet = vm.currentRoleSet();
             // clear selected role set
@@ -403,11 +401,20 @@ module nts.uk.com.view.cas011.a {
             if (currentRoleSet.roleSetCd() === '') {
                 return;
             }
+            if(!isNullOrEmpty(vm.dataA51()) && vm.dataA51().length >1 ){
+
+                currentRoleSet.personInfRoleId(vm.dataA51()[1].id);
+            }else {
+                currentRoleSet.personInfRoleId(null);
+            }
+            if(!isNullOrEmpty(vm.dataA41() && vm.dataA41().length>1)){
+
+                currentRoleSet.employmentRoleId(vm.dataA41()[1].id);
+            }else {
+                currentRoleSet.employmentRoleId(null);
+            }
             currentRoleSet.roleSetCd(null);
             currentRoleSet.roleSetName(null);
-            currentRoleSet.personInfRoleId(null);
-            currentRoleSet.employmentRoleId(null);
-
             currentRoleSet.defaultRoleSet(false);
             currentRoleSet.webMenus([]);
             // build swap web menu
@@ -419,10 +426,20 @@ module nts.uk.com.view.cas011.a {
 
             let vm = this,
                 currentRoleSet: RoleSet = vm.currentRoleSet();
+            if(!isNullOrEmpty(vm.dataA51()) && vm.dataA51().length >1){
+
+                currentRoleSet.personInfRoleId(vm.dataA51()[1].id);
+            }else {
+                currentRoleSet.personInfRoleId(null);
+            }
+            if(!isNullOrEmpty(vm.dataA41()) && vm.dataA41().length >1){
+
+                currentRoleSet.employmentRoleId(vm.dataA41()[1].id);
+            }else {
+                currentRoleSet.employmentRoleId(null);
+            }
             currentRoleSet.roleSetCd(null);
             currentRoleSet.roleSetName(null);
-            currentRoleSet.personInfRoleId(null);
-            currentRoleSet.employmentRoleId(null);
 
             currentRoleSet.defaultRoleSet(true);
             currentRoleSet.webMenus([]);

@@ -29,7 +29,6 @@
             <div class="container">
                 <div id="content-left"  class="fixed-flex-layout-left">
                     <!--A2_001 -->
-                    <div>#{i18n.getText('CAS011_8')}</div>
                     <div>
                         <table id="role_set_grid"
                                data-bind="ntsGridList: {
@@ -85,7 +84,7 @@
                             </td>
                             <td>
                                 <!-- A3_4 -->
-                                <div id = "defaultRoleSet" data-bind="ntsCheckBox: {checked: currentRoleSet().defaultRoleSet}"
+                                <div id = "defaultRoleSet" data-bind="ntsCheckBox: {enable: enableCheckDefault(), checked: currentRoleSet().defaultRoleSet}"
                                      class="checkbox-item">#{i18n.getText('CAS011_45')}</div>
                             </td>
                         </tr>
@@ -134,7 +133,7 @@
                         </colgroup>
                         <tr class="row">
                             <td>
-                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_48')}</div>
+                                <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS011_48')}</div>
                             </td>
                             <td class="pad_left_5px">
                                 <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_24')}</div>
