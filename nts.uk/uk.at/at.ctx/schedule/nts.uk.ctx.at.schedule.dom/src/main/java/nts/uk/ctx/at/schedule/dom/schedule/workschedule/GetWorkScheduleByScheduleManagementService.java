@@ -19,62 +19,64 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 public class GetWorkScheduleByScheduleManagementService {
 
 	/**
-	 * [1] 取得する
-	 * @param require
-	 * @param lstEmployeeID
+	 * 取得する
+	 * @param require Require
+	 * @param employeeIds 社員IDリスト
+	 * @param datePeriod 期間
 	 * @return Map<社員の就業状態, Optional<勤務予定>>
 	 */
-	public static Map<EmployeeWorkingStatus, Optional<WorkSchedule>> getScheduleManagement(Require require,
-			List<String> lstEmployeeID, DatePeriod period) {
-		/*	return 社員IDリスト:																										
-			map [prv-1] 社員別に取得する( require, $, 期間 )																
-			flatMap		*/												
-		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> map = new HashMap<>();
-		for (int i = 0; i < lstEmployeeID.size(); i++) {
-			long start = System.nanoTime();
-			
-			map.putAll(GetWorkScheduleByScheduleManagementService.getByEmployee(require,lstEmployeeID.get(i), period));
-			
-			System.out.println("employee: " + ((System.nanoTime() - start )/1000000) + "ms");	
+	public static Map<EmployeeWorkingStatus, Optional<WorkSchedule>> getScheduleManagement(Require require, List<String> employeeIds, DatePeriod period) {
 
-		}
-		
+		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> map = new HashMap<>();
+		employeeIds.stream().forEach( employeeId -> {
+			long start = System.nanoTime();
+
+			// 社員別に取得する
+			map.putAll( GetWorkScheduleByScheduleManagementService.getByEmployee(require, employeeId, period) );
+
+			System.out.println("employee: " + ((System.nanoTime() - start )/1000000) + "ms");
+		});
+
 		return  map;
 	}
 
 	/**
-	 * [prv-1] 社員別に取得する
-	 * @param employeeID
-	 * @param datePeriod
+	 * 	社員別に取得する
+	 * @param require Require
+	 * @param employeeID 社員ID
+	 * @param period 期間
 	 * @return Map<社員の就業状態, Optional<勤務予定>>
 	 */
-	private static Map<EmployeeWorkingStatus, Optional<WorkSchedule>> getByEmployee(Require require,String employeeID, DatePeriod datePeriod) {
+	private static Map<EmployeeWorkingStatus, Optional<WorkSchedule>> getByEmployee(Require require,String employeeID, DatePeriod period) {
+
 		Map<EmployeeWorkingStatus, Optional<WorkSchedule>> map = new HashMap<>();
-		
-		//期間.stream():
-		datePeriod.datesBetween().stream().forEach(x->{
-			//	map	$社員の就業状態 = 社員の就業状態#作成する( require, 社員ID, $ )
-			EmployeeWorkingStatus zScheManaStatuTempo =  EmployeeWorkingStatus.create(require, employeeID, x);
-			
-			if(!zScheManaStatuTempo.getWorkingStatus().needCreateWorkSchedule()){
-				 map.put(zScheManaStatuTempo, Optional.empty());
+		period.stream().forEach( date -> {
+
+			// 社員の就業状態を取得する
+			EmployeeWorkingStatus status =  EmployeeWorkingStatus.create(require, employeeID, date);
+			if(!status.getWorkingStatus().needCreateWorkSchedule()) {
+				// 勤務予定が必要ない⇒empty
+				 map.put(status, Optional.empty());
 				 return;
 			}
-			//$勤務予定 = require.勤務予定を取得する( 社員ID, $ )	
-			Optional<WorkSchedule> zWorkSchedule  = require.get(employeeID, x);
-			//return Key: $社員の就業状態, Value: $勤務予定															
-			map.put(zScheManaStatuTempo, zWorkSchedule);
+
+			// 勤務予定を取得する
+			map.put(status, require.get(employeeID, date));
+
 		});
 		return map;
 	}
 
-	public static interface Require extends EmployeeWorkingStatus.Require{
+
+
+	public static interface Require extends EmployeeWorkingStatus.Require {
 		/**
-		 * R-1] 勤務予定を取得する
-		 * @param employeeID
-		 * @param ymd
-		 * @return
+		 * 勤務予定を取得する
+		 * @param employeeID 社員ID
+		 * @param ymd 年月日
+		 * @return 勤務予定
 		 */
 		Optional<WorkSchedule> get(String employeeID, GeneralDate ymd);
 	}
+
 }

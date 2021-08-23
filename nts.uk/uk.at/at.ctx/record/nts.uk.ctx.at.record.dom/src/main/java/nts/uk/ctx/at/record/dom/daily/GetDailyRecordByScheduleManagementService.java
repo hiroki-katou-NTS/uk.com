@@ -17,61 +17,71 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  *
  */
 public class GetDailyRecordByScheduleManagementService {
-	
 
 	/**
-	 * 	[1] 取得する	
-	 * @param require
-	 * @param employeeID
-	 * @param datePeriod
+	 * 取得する
+	 * @param require Require
+	 * @param employeeIds 社員IDリスト
+	 * @param period 期間
 	 * @return Map<社員の就業状態, Optional<日別勤怠(Work)>>
 	 */
-	//IntegrationOfDaily
-	public static Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> get(Require require, List<String> lstempID , DatePeriod datePeriod ){
+	public static Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> get(Require require, List<String> employeeIds, DatePeriod period) {
+
 		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map = new HashMap<>();
-		lstempID.stream().forEach( x ->{
-			/*return 社員IDリスト:																												
-			map [prv-1] 社員別に取得する( require, $, 期間 )																		
-			flatMap	*/	
+		employeeIds.stream().forEach( employeeId -> {
 			long startTime = System.nanoTime();
-			
-			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> data = GetDailyRecordByScheduleManagementService.getByEmp(require, x, datePeriod);
-			map.putAll(data);
-			
+
+			// 社員別に取得する
+			map.putAll( GetDailyRecordByScheduleManagementService.getByEmployee(require, employeeId, period) );
+
 			long endTime = System.nanoTime();
 			long duration = (endTime - startTime) / 1000000; // ms;
 			System.out.println("employee: " + duration + "ms");
 		});
+
 		return map;
+
 	}
 
 	/**
-	 * 	[prv-1] 社員別に取得する	
-	 * @param employeeID
-	 * @param datePeriod
+	 * 	社員別に取得する
+	 * @param require Require
+	 * @param employeeID 社員ID
+	 * @param period 期間
 	 * @return Map<社員の就業状態, Optional<日別勤怠(Work)>>
 	 */
-	private static Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> getByEmp(Require require, String employeeID , DatePeriod datePeriod){
+	private static Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> getByEmployee(Require require, String employeeID, DatePeriod period) {
+
 		Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map = new HashMap<>();
-		datePeriod.stream().forEach(x-> {
-			//$社員の就業状態 = 社員の就業状態#作成する( require, 社員ID, $ )
-			EmployeeWorkingStatus data = EmployeeWorkingStatus.create(require, employeeID, x);
-			if(!(data.getWorkingStatus().needCreateWorkSchedule())){
-				//return Key: $社員の就業状態, Value: Optional.empty			
-				 map.put(data,Optional.empty());
+		period.stream().forEach( date -> {
+
+			// 社員の就業状態を取得する
+			EmployeeWorkingStatus status = EmployeeWorkingStatus.create(require, employeeID, date);
+			if(!status.getWorkingStatus().needCreateWorkSchedule()) {
+				// 勤務予定が必要ない⇒empty
+				map.put(status, Optional.empty());
+				return;
 			}
-			//$日別実績 = require.日別実績を取得する( 社員ID, $ )														
-			Optional<IntegrationOfDaily> integrationOfDaily = require.getDailyResults(employeeID, x);
-			map.put(data, integrationOfDaily);
-		}); 
+
+			// 日別実績を取得する
+			map.put(status, require.getDailyResults(employeeID, date));
+
+		});
+
 		return map;
+
 	}
 
+
+
 	public static interface Require extends EmployeeWorkingStatus.Require {
-		// 社員と日付を指定して日別勤怠(Work)を取得するアルゴリズムを利用する（1次の処理に存在するはず） --- http://192.168.50.4:3000/issues/110713
-		// Tài liệu chưa chỉ rõ thuật toán 
-		Optional<IntegrationOfDaily> getDailyResults(String empId , GeneralDate date);
-		
+		/**
+		 * 日別実績を取得する
+		 * @param empId 社員ID
+		 * @param date 年月日
+		 * @return 日別実績
+		 */
+		Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date);
 	}
-	
+
 }
