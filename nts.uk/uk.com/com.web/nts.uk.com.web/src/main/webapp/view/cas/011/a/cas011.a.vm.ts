@@ -138,16 +138,14 @@ module nts.uk.com.view.cas011.a {
         }
         created(params: any) {
             let vm = this;
+
+        }
+        mounted() {
+            const vm = this;
             vm.selectedRoleSetCd.subscribe((roleSetCd) => {
                 vm.getDetail(roleSetCd)
             });
 
-            vm.currentRoleSet().employmentRoleId.subscribe((roleSetCd) => {
-               console.log(roleSetCd);
-            })
-        }
-        mounted() {
-            const vm = this;
         }
         initialScreen(deferred: any, roleSetCd: string) {
             let vm = this,
@@ -212,7 +210,6 @@ module nts.uk.com.view.cas011.a {
                             if (index === -1) index = 0;
                         }
                         let _roleSet = listRoleSets()[index];
-                        vm.getDetail(_roleSet.roleSetCd);
                         //vm.createCurrentRoleSet(_roleSet);
                         vm.settingUpdateMode(_roleSet.roleSetCd);
                     } else { //in case number of RoleSet is zero
