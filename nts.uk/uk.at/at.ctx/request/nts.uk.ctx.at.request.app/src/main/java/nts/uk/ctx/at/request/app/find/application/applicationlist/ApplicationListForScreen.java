@@ -104,10 +104,17 @@ public class ApplicationListForScreen {
 				if(Integer.valueOf(y.getKey().toString())==ApplicationType.ABSENCE_APPLICATION.value){
 					Map<Object, List<AppGroupExportDto>> mapDateTypeAbsence = y.getValue().stream().collect(Collectors.groupingBy(z -> z.getAppTypeName()));
 					mapDateTypeAbsence.entrySet().stream().forEach(z -> {
-						result.add(z.getValue().get(0));
+						Map<Object, List<AppGroupExportDto>> mapDateTypeAbsencPrePost = z.getValue().stream().collect(Collectors.groupingBy(t -> t.getPrePostAtr()));
+						mapDateTypeAbsencPrePost.entrySet().stream().forEach(t -> {
+							result.add(t.getValue().get(0));
+						});
+						
 					});
 				} else {
-					result.add(y.getValue().get(0));
+					Map<Object, List<AppGroupExportDto>> mapDateTypePrePost = y.getValue().stream().collect(Collectors.groupingBy(t -> t.getPrePostAtr()));
+					mapDateTypePrePost.entrySet().stream().forEach(z -> {
+						result.add(z.getValue().get(0));
+					});
 				}
 			});
 		});
