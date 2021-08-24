@@ -49,10 +49,10 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 			+ " OR ps.krcmtPayoutSubOfHDManaPK.occDate IN :occDates)";
 	
 	private static final String QUERY_BY_DIGEST_OCC = String.join(" ", QUERY,
-			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.digestDate = :digestDate and ps.krcmtPayoutSubOfHDManaPK.occDate >= :baseDate");
+			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.digestDate = :digestDate and ps.krcmtPayoutSubOfHDManaPK.occDate > :baseDate");
 	
 	private static final String QUERY_BY_OCC_DIGEST = String.join(" ", QUERY,
-			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.occDate = :occDate and ps.krcmtPayoutSubOfHDManaPK.digestDate >= :baseDate");
+			" WHERE ps.krcmtPayoutSubOfHDManaPK.sid = :sid and ps.krcmtPayoutSubOfHDManaPK.occDate = :occDate and ps.krcmtPayoutSubOfHDManaPK.digestDate > :baseDate");
 	
 	@Override
 	public void add(PayoutSubofHDManagement domain) {
