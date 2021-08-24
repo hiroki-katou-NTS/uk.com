@@ -55,8 +55,8 @@ public class ChangeRequestInPeriod {
 		}
 		val result = new VacationDetails(
 				overwriteDataSource.getLstAcctAbsenDetail().stream()
-						.filter(x -> x.getDateOccur().getDayoffDate().isPresent()
-								&& !period.get().contains(x.getDateOccur().getDayoffDate().get()))
+						.filter(x -> !x.getDateOccur().getDayoffDate().isPresent()  || (x.getDateOccur().getDayoffDate().isPresent()
+								&& !period.get().contains(x.getDateOccur().getDayoffDate().get())))
 						.collect(Collectors.toList()));
 		result.getLstAcctAbsenDetail().addAll(overwriteData.getLstAcctAbsenDetail());
 		return result;
