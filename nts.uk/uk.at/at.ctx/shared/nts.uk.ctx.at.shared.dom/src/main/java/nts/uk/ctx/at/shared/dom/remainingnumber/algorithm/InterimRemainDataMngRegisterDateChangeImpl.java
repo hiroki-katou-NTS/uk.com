@@ -113,8 +113,6 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 
 		}
 		
-		
-
 		//暫定データの登録処理
 		regisInterimDataProcess(cid, sid, interimRemains, lstDate);
 

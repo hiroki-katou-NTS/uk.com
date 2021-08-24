@@ -50,10 +50,10 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 			+ " OR a.krcmtLeaveDayOffManaPK.digestDate IN :digestDates)";
 	
 	private static final String QUERY_BY_DIGEST_OCC = String.join(" ", QUERY,
-			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate = :digestDate and lc.krcmtLeaveDayOffManaPK.occDate >= :baseDate");
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate = :digestDate and lc.krcmtLeaveDayOffManaPK.occDate > :baseDate");
 	
 	private static final String QUERY_BY_OCC_DIGEST = String.join(" ", QUERY,
-			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate = :occDate and lc.krcmtLeaveDayOffManaPK.digestDate >= :baseDate");
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate = :occDate and lc.krcmtLeaveDayOffManaPK.digestDate > :baseDate");
 	
 	
 	@Override
@@ -318,6 +318,4 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		}
 		
 	}
-	
-	
 }

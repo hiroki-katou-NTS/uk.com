@@ -237,7 +237,7 @@ public class AccumulationAbsenceDetail implements Cloneable{
 		/**
 		 * ＜条件＞ ・社員ID＝逐次発生の休暇明細.社員ID 
 		 * ・使用日＝逐次発生の休暇明細．年月日．年月日 
-		 * ・発生日 >= INPUT．基準日
+		 * ・発生日 > INPUT．基準日
 		 */
 		// PayoutSubofHDManaRepository.getPayoutSubWithDateUse
 		List<PayoutSubofHDManagement> getPayoutSubWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate);
@@ -255,7 +255,7 @@ public class AccumulationAbsenceDetail implements Cloneable{
 		/**
 		 * ＜条件＞ ・社員ID＝逐次発生の休暇明細.社員ID 
 		 * ・使用日＝逐次発生の休暇明細．年月日．年月日 
-		 * ・発生日 >= INPUT．基準日
+		 * ・発生日 > INPUT．基準日
 		 */
 		// LeaveComDayOffManaRepository.getLeaveComWithDateUse
 		List<LeaveComDayOffManagement> getLeaveComWithDateUse(String sid, GeneralDate dateOfUse, GeneralDate baseDate);
@@ -264,7 +264,7 @@ public class AccumulationAbsenceDetail implements Cloneable{
 		 * ＜条件＞ 逐次発生の休暇明細．年月日．日付不明 = false 
 		 * ・社員ID＝逐次発生の休暇明細.社員ID 
 		 * ・発生日＝逐次発生の休暇明細．年月日．年月日
-		 * ・使用日 >= INPUT．基準日
+		 * ・使用日 > INPUT．基準日
 		 */
 		// LeaveComDayOffManaRepository.getLeaveComWithOutbreakDay
 		List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay,
