@@ -20,6 +20,9 @@ public enum ImportingDomainId{
 
 	/** 職位 */
 	JOBTITLE_HISTORY(400),
+	
+	/** 所属職場履歴 **/
+	AFF_WORKPLACE_HISTORY(500)
 	;
 	
 	public final int value;
