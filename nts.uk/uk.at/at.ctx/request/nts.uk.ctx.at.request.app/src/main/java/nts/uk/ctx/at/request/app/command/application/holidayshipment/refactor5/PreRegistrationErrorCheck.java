@@ -77,7 +77,8 @@ public class PreRegistrationErrorCheck {
 	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, 
 	        List<ActualContentDisplay> opActualContentDisplayLst, 
 	        EmployeeInfoImport employeeInfo, String employmentCode, 
-	        Optional<WorkInformationForApplicationDto> absWorkInformationForApp, Optional<WorkInformationForApplicationDto> recWorkInformationForApp, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
+	        Optional<WorkInformationForApplicationDto> absWorkInformationForApp, Optional<WorkInformationForApplicationDto> recWorkInformationForApp, 
+	        List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean checkFlag) {
 		//アルゴリズム「事前条件チェック」を実行する
 		this.preconditionCheck(abs, rec, absWorkInformationForApp, recWorkInformationForApp);
 		
@@ -103,7 +104,7 @@ public class PreRegistrationErrorCheck {
 		this.allDayAndHalfDayContradictionCheck(companyId, abs, rec);
 		
 		// INPUT．振出申請がNULL　AND　INPUT．振休申請がNULLじゃない　AND　INPUT.振休申請.振出振休紐付け管理＝設定なし
-		if (!rec.isPresent() && abs.isPresent() && payoutSubofHDManagements.isEmpty()) {
+		if (!rec.isPresent() && abs.isPresent() && checkFlag && payoutSubofHDManagements.isEmpty()) {
 		    throw new BusinessException("Msg_2223");
 		}
 	}

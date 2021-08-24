@@ -69,7 +69,7 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 	 * @param appDispInfoStartupOutput 表示する実績内容 
 	 * 
 	 */
-	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, List<MsgErrorOutput> msgErrorLst, List<ActualContentDisplay> opActualContentDisplayLst, AppDispInfoStartupOutput appDispInfoStartup, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
+	public void processing(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, boolean represent, List<MsgErrorOutput> msgErrorLst, List<ActualContentDisplay> opActualContentDisplayLst, AppDispInfoStartupOutput appDispInfoStartup, List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean checkFlag) {
 		
 		//登録前エラーチェック（新規）(Check error trước khi đăng ký (New)
 		this.PreRegistrationErrorCheck.errorCheck(companyId, abs, rec, 
@@ -78,7 +78,8 @@ public class ErrorCheckProcessingBeforeRegistrationKAF011 {
 												appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(),
 												Optional.empty(), 
 												Optional.empty(),
-												payoutSubofHDManagements);
+												payoutSubofHDManagements, 
+												checkFlag);
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		this.checkForInsufficientNumberOfHolidays(companyId, appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), abs, rec);
 		
