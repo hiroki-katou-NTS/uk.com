@@ -242,6 +242,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		NextAnnualLeaveGrant calcResult = calcGrantDateFromLengthService(
 				require, companyId, entryDate, lengthServiceTbl.getStandGrantDay(), criteriaDate, lengthServiceTbl, calcYears);
 		GeneralDate grantDate = calcResult.getGrantDate();
+		GeneralDate deadLine = calcResult.getDeadLine();
 		GrantNum grantNum = new GrantNum(calcResult.getTimes().v());
 
 		// 「一斉付与する」をチェック および 「一斉付与日」が存在するかチェック
@@ -257,6 +258,7 @@ public class GetNextAnnualLeaveGrantProcKdm002 {
 		// 次回年休付与を返す
 		nextAnnualLeaveGrant.setGrantDate(grantDate);
 		nextAnnualLeaveGrant.setTimes(grantNum);
+		nextAnnualLeaveGrant.setDeadLine(deadLine);
 		return nextAnnualLeaveGrant;
 	}
 
