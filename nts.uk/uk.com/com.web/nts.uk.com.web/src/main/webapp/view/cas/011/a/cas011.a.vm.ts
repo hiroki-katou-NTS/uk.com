@@ -56,7 +56,7 @@ module nts.uk.com.view.cas011.a {
                 {headerText: resource.getText('CAS011_10'), key: 'roleSetName',
                     headerCssClass: 'text-right',columnCssClass: 'text-center',formatter: _.escape, width: 180},
                 {
-                    headerText: resource.getText('CAS011_44'), key: 'check', width: 35,
+                    headerText: resource.getText('CAS011_44'), key: 'check', width: 25,
                     template: '{{if ${check} == 1 }}<div class="cssDiv"><i  class="icon icon icon-78 cssI"></i></div>{{/if}}'
                 }
             ]);

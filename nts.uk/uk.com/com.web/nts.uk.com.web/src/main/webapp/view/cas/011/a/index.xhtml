@@ -137,10 +137,10 @@
                                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CAS011_48')}</div>
                             </td>
                             <td class="pad_left_5px">
-                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_24')}</div>
+                                <div style="margin-top: 10px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_24')}</div>
                             </td>
-                            <td class="pad_left_10px">
-                                <div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_25')}</div>
+                            <td  class="pad_left_15px">
+                                <div style="margin-top: 10px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_25')}</div>
                             </td>
                         </tr>
                         <tr class="row">
@@ -150,8 +150,8 @@
                                 <div id="swap-list"
                                      data-bind="ntsSwapList: {
                             name: '#[CAS011_24]',
-                            height: 235,
-                            width: 280,
+                            height: 287,
+                            width: 250,
                             dataSource: listWebMenus,
                             disableMoveButton: false,
                             primaryKey: 'webMenuCode',
