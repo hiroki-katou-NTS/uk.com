@@ -199,7 +199,7 @@ public class AffiliationInforOfDailyAttdTest {
 		
 		new Expectations(GetEmpLicenseClassificationService.class) {{
 			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
-			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.empty() ));
+			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.empty(), Optional.empty() ));
 		}};
 		
 		Optional<LicenseClassification> result = NtsAssert.Invoke.staticMethod(
@@ -215,7 +215,8 @@ public class AffiliationInforOfDailyAttdTest {
 		
 		new Expectations(GetEmpLicenseClassificationService.class) {{
 			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
-			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE) ));
+			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE), Optional.of(Boolean.TRUE) ));
+			// TODO Lan continue to code
 		}};
 		
 		Optional<LicenseClassification> result = NtsAssert.Invoke.staticMethod(
@@ -251,7 +252,8 @@ public class AffiliationInforOfDailyAttdTest {
 			result = Optional.of(new BonusPaySettingCode("001"));
 			
 			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
-			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE) ));
+			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE), Optional.of(Boolean.TRUE) ));
+			// TODO Lan continue to code
 		}};
 		
 		
