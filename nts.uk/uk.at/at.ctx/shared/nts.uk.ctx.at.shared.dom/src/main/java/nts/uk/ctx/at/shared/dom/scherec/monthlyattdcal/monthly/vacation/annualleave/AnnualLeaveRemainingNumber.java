@@ -97,17 +97,17 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			val remainingNumber = remainingData.getDetails().getRemainingNumber();
 
 			// 「年休不足ダミーフラグ」をチェック
-			if (remainingData.isShortageRemain() == false){
+			if (remainingData.isDummyData() == false){
 
-				// 明細に年休付与残数データ．明細．残数を追加
-				AnnualLeaveRemainingTime remainingTime = null;
-				if (remainingNumber.getMinutes().isPresent()){
-					remainingTime = new AnnualLeaveRemainingTime(remainingNumber.getMinutes().get().v());
-				}
-				this.details.add(AnnualLeaveRemainingDetail.of(
-						remainingData.getGrantDate(),
-						new AnnualLeaveRemainingDayNumber(remainingNumber.getDays().v()),
-						Optional.ofNullable(remainingTime)));
+			// 明細に年休付与残数データ．明細．残数を追加
+			AnnualLeaveRemainingTime remainingTime = null;
+			if (remainingNumber.getMinutes().isPresent()){
+				remainingTime = new AnnualLeaveRemainingTime(remainingNumber.getMinutes().get().v());
+			}
+			this.details.add(AnnualLeaveRemainingDetail.of(
+					remainingData.getGrantDate(),
+					new AnnualLeaveRemainingDayNumber(remainingNumber.getDays().v()),
+					Optional.ofNullable(remainingTime)));
 			}
 
 			// 合計残日数　←　「明細．日数」の合計

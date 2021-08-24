@@ -597,7 +597,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			= this.getGrantRemainingDataList();
 		List<SpecialLeaveGrantRemainingData> dummyRemainingList
 			= remainingList.stream()
-				.filter(c -> c.isShortageRemain())
+				.filter(c -> c.isDummyData())
 				.collect(Collectors.toList());
 
 		if ( dummyRemainingList.size()==0 ) {
@@ -632,7 +632,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		// 特別休暇付与残数が残数不足の特別休暇付与残数をListから削除
 		List<SpecialLeaveGrantRemainingData> noDummyList
 			= this.getGrantRemainingDataList().stream()
-				.filter(c->!c.isShortageRemain())
+				.filter(c->!c.isDummyData())
 				.collect(Collectors.toList());
 		this.setGrantRemainingDataList(noDummyList);
 	}
