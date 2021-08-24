@@ -870,7 +870,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val itrRemainDatas = annualLeaveInfo.getGrantRemainingDataList().listIterator();
 		while (itrRemainDatas.hasNext()){
 			val remainData = itrRemainDatas.next();
-			if (remainData.isShortageRemain() == false) continue;
+			if (remainData.isDummyData() == false) continue;
 
 			// 取得した年休付与残数の「年休使用数」、「年休残数」をそれぞれ合計
 			AnnualLeaveNumberInfo detail = (AnnualLeaveNumberInfo) remainData.getDetails();
@@ -927,14 +927,14 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		val itrAsOfPeriodEndData = result.getAsOfPeriodEnd().getGrantRemainingDataList().listIterator();
 		while (itrAsOfPeriodEndData.hasNext()){
 			val remainData = itrAsOfPeriodEndData.next();
-			if (remainData.isShortageRemain()) itrAsOfPeriodEndData.remove();
+			if (remainData.isDummyData()) itrAsOfPeriodEndData.remove();
 		}
 
 		// 期間終了日の翌日開始時点の不足分付与残数データを削除する
 		val itrAsOfEndNextData = result.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingDataList().listIterator();
 		while (itrAsOfEndNextData.hasNext()){
 			val remainData = itrAsOfEndNextData.next();
-			if (remainData.isShortageRemain()) itrAsOfEndNextData.remove();
+			if (remainData.isDummyData()) itrAsOfEndNextData.remove();
 		}
 
 		// 付与時点の不足分付与残数データを削除する
@@ -943,7 +943,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				val itrAsOfGrant = asOfGrant.getGrantRemainingDataList().listIterator();
 				while (itrAsOfGrant.hasNext()){
 					val remainData = itrAsOfGrant.next();
-					if (remainData.isShortageRemain()) itrAsOfGrant.remove();
+					if (remainData.isDummyData()) itrAsOfGrant.remove();
 				}
 			}
 		}
@@ -954,7 +954,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				val itrLapsed = lapsed.getGrantRemainingDataList().listIterator();
 				while (itrLapsed.hasNext()){
 					val remainData = itrLapsed.next();
-					if (remainData.isShortageRemain()) itrLapsed.remove();
+					if (remainData.isDummyData()) itrLapsed.remove();
 				}
 			}
 		}
