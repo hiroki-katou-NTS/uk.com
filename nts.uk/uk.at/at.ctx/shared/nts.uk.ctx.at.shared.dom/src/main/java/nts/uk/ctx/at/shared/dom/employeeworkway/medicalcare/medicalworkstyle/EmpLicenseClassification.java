@@ -15,29 +15,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmpLicenseClassification {
 
-	/** 社員ID**/
+	/** 社員ID **/
 	private final String empID;
 	
-	/**	免許区分 **/
+	/** 免許区分 **/
 	
 	private final Optional<LicenseClassification> optLicenseClassification;
+	
+	/** 看護管理者か **/
+	private final Optional<Boolean> isNursingManager;
 	
 	
 	/**
 	 * [C-1] 社員免許区分
-	 * @param empID
+	 * @param empID 社員ID
 	 * @return
 	 */
-	public static EmpLicenseClassification empLicenseClassification( String empID){
-		return new EmpLicenseClassification(empID, 	Optional.empty());
+	public static EmpLicenseClassification createEmpLicenseClassification( String empID){
+		return new EmpLicenseClassification(empID, Optional.empty(), Optional.empty());
 	}
 	/**
 	 * [C-2] 社員免許区分
-	 * @param empID
-	 * @param licenseClassification
+	 * @param empID 社員ID
+	 * @param nurseClassification 看護区分
 	 * @return
 	 */
-	public static EmpLicenseClassification get(String empID , LicenseClassification licenseClassification ){
-		return new EmpLicenseClassification(empID, Optional.ofNullable(licenseClassification));
+	public static EmpLicenseClassification createEmpLicenseClassification(String empID , NurseClassification nurseClassification){
+		return new EmpLicenseClassification(empID
+				,	Optional.ofNullable(nurseClassification.getLicense())
+				,	Optional.ofNullable(nurseClassification.isNursingManager()));
 	}
 }

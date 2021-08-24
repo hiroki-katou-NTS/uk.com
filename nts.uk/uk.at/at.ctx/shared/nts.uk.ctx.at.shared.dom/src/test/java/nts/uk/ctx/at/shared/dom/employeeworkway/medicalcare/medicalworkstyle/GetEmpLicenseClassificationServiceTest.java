@@ -53,10 +53,10 @@ public class GetEmpLicenseClassificationServiceTest {
 		val result = GetEmpLicenseClassificationService.get(require, GeneralDate.today(), listEmp);
 		
 		assertThat(result)
-				.extracting(emp -> emp.getEmpID(),	emp -> emp.getOptLicenseClassification())
+				.extracting(emp -> emp.getEmpID(),	emp -> emp.getOptLicenseClassification(),	emp -> emp.getIsNursingManager())
 				.containsExactly(
-								tuple(	"sid_1",	Optional.empty()) , 
-								tuple(	"sid_2",	Optional.empty()));
+								tuple(	"sid_1",	Optional.empty(),	Optional.empty()) , 
+								tuple(	"sid_2",	Optional.empty(),	Optional.empty()));
 		
 	}
 	
@@ -64,7 +64,7 @@ public class GetEmpLicenseClassificationServiceTest {
 	 * input  
 	 * 		社員IDリスト　＝　「"sid_1","sid_2"」
 	 * 		社員の医療勤務形態履歴項目リスト　=	 「	{ 社員ID = sid_1, 看護区分コード = "2"}	」
-	 * 		看護リスト　= 					「 	｛看護区分コード = "2"、　免許区分　＝　NURSE_ASSIST｝	」
+	 * 		看護リスト　= 					「 	｛看護区分コード = "2", 免許区分 ＝ NURSE_ASSIST｝	」
 	 * output:
 	 * 		 「	{ 社員ID = sid_1, NURSE_ASSIST}	
 	 * 			{ 社員ID = sid_1, empty}
@@ -78,7 +78,9 @@ public class GetEmpLicenseClassificationServiceTest {
 				Helper.createEmpMedicalWorkFormHisItem("sid_1", new NurseClassifiCode("2")));
 		
 		val  nurseClassifications = Arrays.asList(
-				Helper.createNurseClassification( new NurseClassifiCode("2"), LicenseClassification.NURSE_ASSIST));
+				Helper.createNurseClassification(	new NurseClassifiCode("2")
+												,	LicenseClassification.NURSE_ASSIST//免許区分
+												,	false));//看護管理者か
 		
 		new Expectations() {
 			{
@@ -94,10 +96,12 @@ public class GetEmpLicenseClassificationServiceTest {
 		
 		assertThat(classifications)
 			.extracting(	emp -> emp.getEmpID()
-						,	emp -> emp.getOptLicenseClassification().isPresent() ? emp.getOptLicenseClassification().get() : Optional.empty())
+						,	emp -> emp.getOptLicenseClassification().isPresent() ? emp.getOptLicenseClassification().get() : Optional.empty()
+						,	emp -> emp.getIsNursingManager().isPresent() ? emp.getIsNursingManager().get() : Optional.empty()		
+					)
 			.containsExactly(
-						tuple("sid_1",	LicenseClassification.NURSE_ASSIST) , 
-						tuple("sid_2",	Optional.empty()));
+						tuple("sid_1",	LicenseClassification.NURSE_ASSIST,	new Boolean(false) ) , 
+						tuple("sid_2",	Optional.empty(),	Optional.empty()));
 	}
 	
 	/**
@@ -105,7 +109,7 @@ public class GetEmpLicenseClassificationServiceTest {
 	 * 		社員IDリスト　＝　「"sid_1","sid_2"」
 	 * 		社員の医療勤務形態履歴項目リスト　=	 「		{ 社員ID = sid_1, 看護区分コード = "9"}	
 	 * 										, 	{ 社員ID = sid_2, 看護区分コード = "7"}」
-	 * 		看護リスト　= 					「 	｛看護区分コード = "3"、　免許区分　＝　NURSE_ASSIST｝　」
+	 * 		看護リスト　= 					「 	｛看護区分コード = "3", 免許区分 ＝ NURSE_ASSIST｝」
 	 * output:
 	 * 		 「	{ 社員ID = sid_1, empty}	
 	 * 			{ 社員ID = sid_1, empty}」
@@ -120,7 +124,9 @@ public class GetEmpLicenseClassificationServiceTest {
 			);
 		
 		val  nurseClassifications = Arrays.asList(
-				Helper.createNurseClassification(new NurseClassifiCode("3"),	LicenseClassification.NURSE_ASSIST));
+				Helper.createNurseClassification(	new NurseClassifiCode("3")
+												,	LicenseClassification.NURSE_ASSIST//免許区分
+												,	false));//看護管理者か
 		
 		new Expectations() {
 			{
@@ -136,10 +142,13 @@ public class GetEmpLicenseClassificationServiceTest {
 		
 		assertThat(result)
 				.extracting(
-								emp-> emp.getEmpID(),	emp-> emp.getOptLicenseClassification())
+								emp-> emp.getEmpID()
+							,	emp-> emp.getOptLicenseClassification()
+							,	emp-> emp.getIsNursingManager()
+							)
 				.containsExactly(
-								tuple("sid_1",	Optional.empty())
-							,	tuple("sid_2",	Optional.empty()));
+								tuple("sid_1",	Optional.empty(), Optional.empty())
+							,	tuple("sid_2",	Optional.empty(), Optional.empty()));
 	}
 	
 	public static class Helper{
@@ -165,11 +174,13 @@ public class GetEmpLicenseClassificationServiceTest {
 		 * @param nurseClassifiCode　看護区分コード
 		 * @return
 		 */
-		public static NurseClassification createNurseClassification(NurseClassifiCode nurseClassifiCode, LicenseClassification licenseClss) {
+		public static NurseClassification createNurseClassification(NurseClassifiCode nurseClassifiCode
+				,	LicenseClassification licenseClss
+				,	boolean isNursingManager) {
 			return new NurseClassification(new CompanyId("CID") // dummy
 						,	nurseClassifiCode
 						,	 new NurseClassifiName("NAME1") // dummy
-						,	licenseClss, true);// dummy
+						,	licenseClss, true, isNursingManager);
 		}
 		
 	}

@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
@@ -17,56 +15,45 @@ import nts.arc.time.GeneralDate;
 public class GetEmpLicenseClassificationService {
 	
 	public static List<EmpLicenseClassification> get(Require require, GeneralDate referenceDate, List<String> listEmp){
-		
-		Map<String , NurseClassifiCode> mapNurseClassifiCode = new HashMap<>();
-		Map<NurseClassifiCode ,NurseClassification> map = new HashMap<>();
-
 		// $社員の看護区分Map = require.社員の医療勤務形態履歴項目を取得する(基準日, 社員リスト)
-		List<EmpMedicalWorkStyleHistoryItem> listEmpMedicalWorkFormHisItem  = require.getEmpMedicalWorkStyleHistoryItem(listEmp, referenceDate);
+		Map<String, NurseClassifiCode> mapNurseClassifiCode = require.getEmpMedicalWorkStyleHistoryItem(listEmp, referenceDate)
+				.stream()
+				.collect(Collectors.toMap(	EmpMedicalWorkStyleHistoryItem::getEmpID,
+											EmpMedicalWorkStyleHistoryItem::getNurseClassifiCode));
+		// $看護区分マスタMap
+		Map<NurseClassifiCode, NurseClassification> nurseClsMasterMaps = require.getListCompanyNurseCategory()
+				.stream()
+				.collect(Collectors.toMap(NurseClassification::getNurseClassifiCode, nurseCls -> nurseCls));
 		
-		mapNurseClassifiCode = listEmpMedicalWorkFormHisItem.stream()
-				.collect(Collectors.toMap(EmpMedicalWorkStyleHistoryItem::getEmpID, EmpMedicalWorkStyleHistoryItem::getNurseClassifiCode));
-		
-		// $看護区分Map = require.会社の看護区分リストを取得する()
-		List<NurseClassification>  listNurseClassification = require.getListCompanyNurseCategory();
-		// $看護区分Map
-		map = listNurseClassification.stream().collect(Collectors.toMap(x-> x.getNurseClassifiCode(), x-> x));
-		
-		// $社員の看護区分コード = $社員の看護区分Map.get($)	
-		// listEmpMedicalWorkFormHisItem.
-		Map<String ,NurseClassifiCode> mapNurse = mapNurseClassifiCode;
-		Map<NurseClassifiCode ,NurseClassification> mapNurseClass = map;
 		return listEmp.stream().map(empId-> {
 			// 	$社員の看護区分コード = $社員の看護区分Map.get($)
-			NurseClassifiCode classifiCode = mapNurse.get(empId);
+			NurseClassifiCode classifiCode = mapNurseClassifiCode.get(empId);
 			if(classifiCode == null){
-				return new EmpLicenseClassification(empId, Optional.empty());
+				return EmpLicenseClassification.createEmpLicenseClassification(empId);
 			}
 			
-			// $免許区分 = $免許区分Map.get($社員の看護区分コード)											
-			NurseClassification nurseClassification = mapNurseClass.get(classifiCode);
+			// $看護区分 = $看護区分マスタMap.get($社員の看護区分コード)											
+			NurseClassification nurseClassification = nurseClsMasterMaps.get(classifiCode);
 			
 			if(nurseClassification == null){
-				return new EmpLicenseClassification(empId, Optional.empty());
+				return EmpLicenseClassification.createEmpLicenseClassification(empId);
 			}
 			
-			return new EmpLicenseClassification(empId, Optional.of(LicenseClassification.valueOf(nurseClassification.getLicense().value)));
+			return EmpLicenseClassification.createEmpLicenseClassification(empId, nurseClassification);
 			 
 		}).collect(Collectors.toList());
 	}
 	
 	
 	public static interface Require{
-
 		/**
-		 * EmpMedicalWorkStyleHistoryRepository
 		 * [R-1] 社員の医療勤務形態履歴項目を取得する
 		 * @param listEmp
 		 * @param referenceDate
 		 * @return
 		 */
 		List<EmpMedicalWorkStyleHistoryItem> getEmpMedicalWorkStyleHistoryItem(List<String> listEmp , GeneralDate referenceDate);
-		//		看護区分Repository.会社の看護区分リストを取得する(会社ID)		
+		
 		/**
 		 * [R-1] 会社の看護区分リストを取得する
 		 * @param companyId
