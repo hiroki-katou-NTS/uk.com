@@ -52,14 +52,18 @@ public interface DomainCanonicalization {
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethodRequire,
 		IndependentCanonicalization.RequireCanonicalize,
-		EmployeeHistoryCanonicalization.RequireCanonicalize {
+		EmployeeHistoryCanonicalization.RequireCanonicalize,
+		AffWorkplaceHistoryCanonicalization.RequireCanonicalize
+		{
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
+
 	}
 	
 	public static interface RequireAdjsut extends
 		IndependentCanonicalization.RequireAdjust,
-		EmployeeHistoryCanonicalization.RequireAdjust {
+		EmployeeHistoryCanonicalization.RequireAdjust,
+		AffWorkplaceHistoryCanonicalization.RequireAdjust {
 		
 	}
 }

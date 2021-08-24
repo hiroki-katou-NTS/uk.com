@@ -126,9 +126,9 @@ public class TemporaryTable {
 				dataType(database, sql);
 
 				if (isNullable) {
-					sql.append(" not null ");
-				} else {
 					sql.append(" null ");
+				} else {
+					sql.append(" not null ");
 				}
 			}
 

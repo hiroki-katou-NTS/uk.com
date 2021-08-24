@@ -8,7 +8,6 @@ import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +30,8 @@ public class ExternalImport {
     private String companyCode;
     
     private String settingCode;
+	private String employeeCode;
+	private String password;
 
 	public ExternalImport(String settingCode) {
 		this.serverUrl = ExiClientProperty.getProperty(ExiClientProperty.UK_SERVER_URL);
@@ -38,8 +39,10 @@ public class ExternalImport {
     	this.constractCode = ExiClientProperty.getProperty(ExiClientProperty.UK_CONTRACT_CODE);
     	this.tenantLoginPassword = ExiClientProperty.getProperty(ExiClientProperty.UK_CONTRACT_LOGIN_PASS);
 		this.companyCode = ExiClientProperty.getProperty(ExiClientProperty.UK_COMPANY_CODE);
-
 		this.settingCode = settingCode;
+
+    	this.employeeCode = ExiClientProperty.getProperty(ExiClientProperty.UK_LOGIN_EMPLOYEE_CODE);
+		this.password = ExiClientProperty.getProperty(ExiClientProperty.UK_LOGIN_PASSWORD);
 	}
 
 	public boolean doWork(String fileId) {
@@ -62,8 +65,8 @@ public class ExternalImport {
 				+ "\"contractCode\": \"" + this.constractCode + "\","
 				+ "\"contractPassword\": \"" + this.tenantLoginPassword + "\","
 				+ "\"companyCode\": \"" + this.companyCode + "\","
-				+ "\"employeeCode\": \"" + "system" + "\","
-				+ "\"password\": \"" + "kinjirou" + "\""
+				+ "\"employeeCode\": \"" + this.employeeCode + "\","
+				+ "\"password\": \"" + this.password + "\""
 			+ "}";
 
 			URL url = new URL(serverUrl + SERVICE_URL_LOGIN);
@@ -83,7 +86,9 @@ public class ExternalImport {
 		CallWebServiceResult result = callWebService(url, json, cookieList);
 		
 		String taskId = (String) result.jsonAsyncTaskInfo.get("id");
-		awaitComplated(cookieList, taskId);
+		if ((boolean) result.jsonAsyncTaskInfo.get("running")) {
+			awaitComplated(cookieList, taskId);
+		}
 
 		LogManager.out("外部受入 事前チェック -- 終了 --");
 	}
@@ -99,7 +104,10 @@ public class ExternalImport {
 		CallWebServiceResult result = callWebService(url, json, cookieList);
 
 		String taskId = (String) result.jsonAsyncTaskInfo.get("id");
-		awaitComplated(cookieList, taskId);
+
+		if ((boolean) result.jsonAsyncTaskInfo.get("running")) {
+			awaitComplated(cookieList, taskId);
+		}
 		
 		LogManager.out("外部受入 実行 -- 終了 --");
 	}
@@ -126,13 +134,11 @@ public class ExternalImport {
 	private CallWebServiceResult callWebService(URL url, String json, List<String> cookieList) throws IOException {
 		int status = 0;
     	HttpURLConnection httpConn = null;
-		StringBuilder responce = new StringBuilder();
+		Map<String, Object> responceMap;
     	try {
 			httpConn = (HttpURLConnection) url.openConnection();
-		    if (cookieList != null) {
-		        for (String cookie : cookieList) {
-		        	httpConn.setRequestProperty("Cookie", cookie);
-		        }
+		    if (cookieList != null && cookieList.size() > 0) {
+	        	httpConn.setRequestProperty("Cookie", String.join(",", cookieList));
 		    }
 
 			httpConn.setDoInput(true);
@@ -147,6 +153,8 @@ public class ExternalImport {
 				ps.close();
 			}
 			
+			ObjectMapper mapper = new ObjectMapper();
+			StringBuilder responce = new StringBuilder();
 			httpConn.connect();
 			status = httpConn.getResponseCode();
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream(httpConn, status)))) {
@@ -154,6 +162,7 @@ public class ExternalImport {
 				while ((line = reader.readLine()) != null) {
 					responce.append(line + EOL);
 				}
+				responceMap = mapper.readValue(responce.toString(), new TypeReference<Map<String, Object>>(){});
 			}
     	} finally {
 			httpConn.disconnect();
@@ -162,12 +171,12 @@ public class ExternalImport {
 		if(status != 200) {
 			String errorMessage = "ERROR[" + status + "](" + url.toString() + "):"
 				+ httpConn.getResponseMessage()
-				+ (!responce.toString().isEmpty() ? "\r\n" + responce.toString() : "");
+				+ (!responceMap.isEmpty() ? "\r\n" + responceMap.get("stackTrace") : "");
 			throw new RuntimeException(errorMessage);
 		}
 		
 		Map<String, List<String>> headerFiesds = httpConn.getHeaderFields();
-	    return new CallWebServiceResult(headerFiesds.get("Set-Cookie"), responce.toString());
+	    return new CallWebServiceResult(headerFiesds.get("Set-Cookie"), responceMap);
 	}
 	
 	private InputStream inputStream(HttpURLConnection httpConn, int status) throws IOException {
@@ -180,16 +189,9 @@ public class ExternalImport {
 		public List<String> setCookies;
 		public Map<String, Object> jsonAsyncTaskInfo;
 		
-		public CallWebServiceResult(List<String> setCookies, String json) {
-			ObjectMapper mapper = new ObjectMapper();
-			
+		public CallWebServiceResult(List<String> setCookies, Map<String, Object> jsonAsyncTaskInfo) {
 			this.setCookies = setCookies;
-			try {
-				this.jsonAsyncTaskInfo  = mapper.readValue(json, new TypeReference<Map<String, Object>>(){});
-			} catch (IOException e) {
-				e.printStackTrace();
-				this.jsonAsyncTaskInfo = new HashMap<>();
-			}
+			this.jsonAsyncTaskInfo = jsonAsyncTaskInfo;
 		}
 	}
 }

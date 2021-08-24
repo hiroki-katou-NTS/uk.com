@@ -1,8 +1,7 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
 import static nts.uk.ctx.exio.dom.input.domain.ImportingDomainId.*;
-import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.INT;
-import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.STRING;
+import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,6 +61,9 @@ public class CreateDomainCanonicalization {
 
 		//職位履歴
 		CREATES.put(ImportingDomainId.JOBTITLE_HISTORY, w -> AffJobTitleHistoryCanonicalization.create(w));
+		
+		//所属職場履歴
+		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
 	}
 	
 	public static interface Require {
