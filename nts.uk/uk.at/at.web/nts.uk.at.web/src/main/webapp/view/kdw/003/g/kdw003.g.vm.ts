@@ -199,7 +199,7 @@ module nts.uk.at.view.kdw003.cg {
                 
                 if(!_.isNull(taskList) && !_.isEmpty(taskList)){                    
                     _.each(taskList, task => {
-                        taskLst.push(new TaskModel(task.taskCode, task.taskName, task.frameNo, task.startDate, task.endDate ));
+                        taskLst.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate ));
                     });
                     let temp = taskList[0];
                     listFrameUseAtr = temp.listFrameNoUseAtr;
@@ -215,7 +215,7 @@ module nts.uk.at.view.kdw003.cg {
                     taskLst3 = _.filter(taskLst, item => { return item.frameNo == 3; });
                     taskLst4 = _.filter(taskLst, item => { return item.frameNo == 4; }); 
                     taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });  
-                    
+
                     self.taskListFrame1(taskLst1);
                     self.taskListFrame2(taskLst2);
                     self.taskListFrame3(taskLst3);
@@ -565,13 +565,15 @@ module nts.uk.at.view.kdw003.cg {
         listFrameNoUseAtr: Array<number>;
         startDate: string;
         endDate: string;
-        constructor(taskCode: string, taskName: string, frameNo?: number, startDate?: string, endDate?: string, frameNoUseAtr?: Array<number>){
+        displayName: string;
+        constructor(taskCode: string, displayName: string, taskName?: string,  frameNo?: number, startDate?: string, endDate?: string, frameNoUseAtr?: Array<number>){
             this.taskCode = taskCode;
             this.taskName = taskName; 
+            this.displayName = displayName;
             this.frameNo = frameNo;        
             this.listFrameNoUseAtr = frameNoUseAtr;  
             this.startDate = startDate;
-            this.endDate = endDate;
+            this.endDate = endDate;           
         }
     }
     
