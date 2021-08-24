@@ -123,7 +123,8 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
 				displayInforWhenStarting.appDispInfoStartup.toDomain(), 
 				displayInforWhenStarting.existAbs() ? displayInforWhenStarting.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
-				false);
+				false,
+				true);
 		return abs;
 	}
 	
