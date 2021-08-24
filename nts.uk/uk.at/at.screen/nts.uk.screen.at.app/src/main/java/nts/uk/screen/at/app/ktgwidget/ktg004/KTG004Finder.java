@@ -104,7 +104,7 @@ public class KTG004Finder {
 					}
 				}
 			}
-			return new WorkStatusSettingDto(itemsSetting, "");
+			return new WorkStatusSettingDto(itemsSetting, standardWidget.get().getName().v());
 		}else {
 //			2021/02/18　EA3960
 //			設定がない場合、初期値を登録する

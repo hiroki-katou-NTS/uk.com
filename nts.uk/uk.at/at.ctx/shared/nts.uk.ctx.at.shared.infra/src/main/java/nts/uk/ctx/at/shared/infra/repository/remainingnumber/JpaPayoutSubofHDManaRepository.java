@@ -240,4 +240,17 @@ public class JpaPayoutSubofHDManaRepository extends JpaRepository implements Pay
 	public void insertPayoutList(List<PayoutSubofHDManagement> lstDomain) {
 		this.commandProxy().insertAll(lstDomain.stream().map(x -> toEntity(x)).collect(Collectors.toList()));
 	}
+
+	@Override
+	public void updateOrInsert(PayoutSubofHDManagement domain) {
+		KrcmtPayoutSubOfHDManaPK key = new KrcmtPayoutSubOfHDManaPK(domain.getSid(),
+				domain.getAssocialInfo().getOutbreakDay(), domain.getAssocialInfo().getDateOfUse());
+		Optional<KrcmtPayoutSubOfHDMana> existed = this.queryProxy().find(key, KrcmtPayoutSubOfHDMana.class);
+		if (existed.isPresent()) {
+			this.commandProxy().update(toEntity(domain));
+		}else {
+			this.commandProxy().insert(toEntity(domain));
+		}
+		
+	}
 }

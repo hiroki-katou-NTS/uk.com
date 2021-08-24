@@ -5417,14 +5417,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-annual-day").css("color", "");
             } else
                 this.annualDay = "";
-            if (this.dispAnnualTime && annualLeave.timeRemain != null) {
-                this.annualTime = nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain);
-                if (annualLeave.timeRemain < 0)
-                    $("#fixed-table td.remain-annual-time").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-annual-time").css("color", "");
-            } else
-                this.annualTime = "";
+            if (this.dispAnnualDay) {
+                if (annualLeave.timeRemain) {
+                    let timeString = nts.uk.time.format.byId("Clock_Short_HM", annualLeave.timeRemain);
+                    if (annualLeave.annualLeaveRemain != null) {
+                        this.annualDay = getText("KDW003_132", [annualLeave.annualLeaveRemain, timeString]);
+                        if (annualLeave.annualLeaveRemain < 0)
+                            $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
+                        else
+                            $("#fixed-table td.remain-annual-day").css("color", "");
+                    }
+                } else {
+                    this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);
+                }
+            }
             if (this.dispReserve && reserveLeave.remainNumber != null) {
                 this.reserve = getText("KDW003_8", [reserveLeave.remainNumber]);
                 if (reserveLeave.remainNumber < 0)

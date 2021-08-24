@@ -93,7 +93,8 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
                     i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v(),
                     infoOutput.getAppDispInfoStartup(), 
                     businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
-                    Optional.empty()
+                    Optional.empty(), 
+                    false
             );
         });
 

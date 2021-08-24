@@ -61,4 +61,7 @@ public interface PayoutSubofHDManaRepository {
 	 
 	 //[5] Insert(List<振出振休紐付け管理>)
 	 void insertPayoutList(List<PayoutSubofHDManagement> lstDomain);
+	 
+     //[7] 登録及び更新
+	void updateOrInsert(PayoutSubofHDManagement domain);
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.num
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,10 +25,10 @@ public class SeqVacationAssociationInfoList {
 	public SeqVacationAssociationInfoList matchAssocStateOccAndDigest(VacationDetails occr, VacationDetails digest) {
 
 		// $発生の検索一覧 = 逐次発生の休暇明細一覧#作成する(発生一覧)
-		VacationDetails occrSearchList = new VacationDetails(occr.getLstAcctAbsenDetail());
+		VacationDetails occrSearchList = new VacationDetails(occr.getLstAcctAbsenDetail().stream().map(x -> x.clone()).collect(Collectors.toList()));
 
 		// $使用の検索一覧 = 逐次発生の休暇明細一覧#作成する(使用一覧)
-		VacationDetails digestSearchList = new VacationDetails(digest.getLstAcctAbsenDetail());
+		VacationDetails digestSearchList = new VacationDetails(digest.getLstAcctAbsenDetail().stream().map(x -> x.clone()).collect(Collectors.toList()));
 
 		SeqVacationAssociationInfoList associationLst = new SeqVacationAssociationInfoList(new ArrayList<>());
 
@@ -46,7 +47,7 @@ public class SeqVacationAssociationInfoList {
 			}
 
 			// $使用数
-			val numberDigetCorresDay = digestSearchList.getNumberDigestCorrespDay(seqVac.getOutbreakDay());
+			val numberDigetCorresDay = digestSearchList.getNumberDigestCorrespDay(seqVac.getDateOfUse());
 			if (numberDigetCorresDay == 0.5) {
 				digestSearchList.getLstAcctAbsenDetail().removeIf(x -> x.getDateOccur().getDayoffDate().isPresent()
 						&& x.getDateOccur().getDayoffDate().get().equals(seqVac.getDateOfUse()));

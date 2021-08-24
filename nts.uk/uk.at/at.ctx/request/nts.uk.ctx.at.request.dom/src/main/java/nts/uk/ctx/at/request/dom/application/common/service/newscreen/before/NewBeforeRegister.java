@@ -87,7 +87,7 @@ public interface NewBeforeRegister {
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
 			Application application, OvertimeAppAtr overtimeAppAtr, List<MsgErrorOutput> msgErrorLst, List<GeneralDate> lstDateHd,
 			AppDispInfoStartupOutput appDispInfoStartupOutput, List<String> workTypeCds, 
-			Optional<TimeDigestionParam> timeDigestionUsageInfor, Optional<String> workTimeCode);
+			Optional<TimeDigestionParam> timeDigestionUsageInfor, Optional<String> workTimeCode, boolean flag);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム."2-1.新規画面登録前の処理(複数人)".2-1.新規画面登録前の処理(複数人)

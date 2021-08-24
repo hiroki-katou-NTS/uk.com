@@ -133,6 +133,10 @@ public class HolidayShipmentMobileWS extends WebService {
 //				appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
 //				abs, 
 //				rec);
+		boolean existFlag = false;
+		if (abs.isPresent() && rec.isPresent()) {
+		    existFlag = true;
+		}
 		
 		if(rec.isPresent()) {
 			List<ConfirmMsgOutput> comfirmLst1 = newBeforeRegister.processBeforeRegister_New(
@@ -146,7 +150,8 @@ public class HolidayShipmentMobileWS extends WebService {
 					appDispInfoStartup, 
 					Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
 					Optional.empty(), 
-					rec.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
+					rec.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
+					existFlag);
 			result.addAll(comfirmLst1);
 		}
 		
@@ -162,7 +167,8 @@ public class HolidayShipmentMobileWS extends WebService {
 					appDispInfoStartup, 
                     Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
                     Optional.empty(), 
-                    abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v));
+                    abs.get().getWorkInformation().getWorkTimeCodeNotNull().map(WorkTimeCode::v), 
+                    existFlag);
 			result.addAll(comfirmLst2);
 		}
 		return result;

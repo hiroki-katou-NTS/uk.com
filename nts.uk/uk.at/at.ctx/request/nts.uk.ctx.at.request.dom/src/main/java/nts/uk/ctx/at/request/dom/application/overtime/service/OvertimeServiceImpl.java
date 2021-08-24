@@ -650,7 +650,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				displayInfoOverTime.getAppDispInfoStartup(), 
 				appOverTime.getWorkInfoOp().isPresent() ? Arrays.asList(appOverTime.getWorkInfoOp().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
 				Optional.of(timeDigestionParam), 
-				appOverTime.getWorkInfoOp().isPresent() ? appOverTime.getWorkInfoOp().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty());
+				appOverTime.getWorkInfoOp().isPresent() ? appOverTime.getWorkInfoOp().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty(), 
+				false);
 		// 残業申請の個別登録前チェッ処理
 		output = commonAlgorithmOverTime.checkBeforeOverTime(
 				require,
@@ -852,7 +853,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				workTimeCode,
 				displayInfoOverTime.getAppDispInfoStartup(), 
 				new ArrayList<String>(), 
-				Optional.of(timeDigestionParam));
+				Optional.of(timeDigestionParam), 
+				false);
 		// 残業申請の個別登録前チェッ処理
 		output = commonAlgorithmOverTime.checkBeforeOverTime(
 				require,
@@ -1289,7 +1291,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					displayInfoOverTime.getAppDispInfoStartup(),
 					appOverTime.getWorkInfoOp().isPresent() ? Arrays.asList(appOverTime.getWorkInfoOp().get().getWorkTypeCode().v()) : new ArrayList<String>(), 
 			        Optional.of(timeDigestionParam), 
-			        appOverTime.getWorkInfoOp().isPresent() ? appOverTime.getWorkInfoOp().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty());
+			        appOverTime.getWorkInfoOp().isPresent() ? appOverTime.getWorkInfoOp().get().getWorkTimeCodeNotNull().map(WorkTimeCode::v) : Optional.empty(), 
+			        false);
 			
 		} else { // 詳細・照会モード　の場合
 			// 4-1.詳細画面登録前の処理
@@ -1305,7 +1308,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null),
 					displayInfoOverTime.getAppDispInfoStartup(), 
 					new ArrayList<String>(), 
-	                Optional.of(timeDigestionParam));
+	                Optional.of(timeDigestionParam), 
+	                false);
 			
 		}
 		// 申請時間に移動する前の個別チェック処理

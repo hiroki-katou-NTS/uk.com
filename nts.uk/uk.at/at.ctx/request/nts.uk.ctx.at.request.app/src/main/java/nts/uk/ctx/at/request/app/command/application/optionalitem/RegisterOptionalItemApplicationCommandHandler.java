@@ -100,7 +100,8 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
                 appDispInfoStartup, 
                 new ArrayList<String>(), 
                 Optional.empty(), 
-                Optional.empty());
+                Optional.empty(), 
+                false);
         /**
          * ドメインモデル「申請」の新規登録をする
          * */

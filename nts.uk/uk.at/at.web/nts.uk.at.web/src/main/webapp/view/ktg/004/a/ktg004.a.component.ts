@@ -283,7 +283,7 @@ module nts.uk.ui.ktg004.a {
                                         .push({
                                             name: 'KTG004_11',
                                             text: 
-												numberOfSubstituteHoliday.day <= 0
+												numberOfSubstituteHoliday.day <= 0 && numberOfSubstituteHoliday.time != ZERO_TIME
 												?
 												`${numberOfSubstituteHoliday.time}`
 												:

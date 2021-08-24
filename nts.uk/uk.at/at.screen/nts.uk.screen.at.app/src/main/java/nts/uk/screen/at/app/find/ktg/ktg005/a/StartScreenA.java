@@ -103,7 +103,7 @@ public class StartScreenA {
 		//設定が取得できた場合
 		if(standardWidgetOpt.isPresent()) {
 			//名称、申請状況の詳細設定
-			result.setTopPagePartName("");
+			result.setTopPagePartName(standardWidgetOpt.get().getName().v());
 			result.setAppSettings(standardWidgetOpt.get().getAppStatusDetailedSettingList().stream()
 					.map(x -> new ApplicationStatusDetailedSettingDto(x.getDisplayType().value, x.getItem().value))
 					.collect(Collectors.toList()));

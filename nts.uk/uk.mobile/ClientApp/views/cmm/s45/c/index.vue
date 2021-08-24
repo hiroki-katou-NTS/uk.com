@@ -224,10 +224,10 @@
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"
     >
       <ul>
-        <li class="uk-bg-white" v-on:click="cancelApp" v-if="displayCancelButton">
+        <!-- <li class="uk-bg-white" v-on:click="cancelApp" v-if="displayCancelButton">
           <span class="uk-text-dark-gray">{{'CMMS45_92' | i18n}}</span>
           <i class="far fa-times-circle uk-text-dark-gray"></i>
-        </li>
+        </li> -->
         <li class="uk-bg-white" v-on:click="deleteApp" v-if="displayDeleteButton">
           <span class="uk-text-dark-gray">{{'CMMS45_60' | i18n}}</span>
           <i class="fas fa-trash-alt uk-text-dark-gray"></i>

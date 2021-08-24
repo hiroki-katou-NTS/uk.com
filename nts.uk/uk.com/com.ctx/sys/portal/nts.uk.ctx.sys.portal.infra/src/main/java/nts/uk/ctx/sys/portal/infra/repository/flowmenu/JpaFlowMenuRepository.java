@@ -21,12 +21,12 @@ import nts.uk.ctx.sys.portal.infra.entity.flowmenu.CcgmtFlowMenuPK;
 public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepository{
 	
 	private static final String SELECT_BASE = "SELECT m FROM CcgmtFlowMenu m";
-	private static final String SELECT_SINGLE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.code = :topPagePartID";
+	private static final String SELECT_SINGLE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.code = :topPagePartID AND m.ccgmtFlowMenuPK.companyID = :companyID";
 	private static final String SELECT_SINGLE_AND_TYPE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.code = :topPagePartID";
 	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
 	private static final String SELECT_BY_TYPE = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.companyID = :companyID";
 	private static final String SELECT_IN = SELECT_BASE + " WHERE m.ccgmtFlowMenuPK.code IN :topPagePartID";
-	private static final String SELECT_BY_CODE = SELECT_BY_TYPE + " WHERE m.ccgmtFlowMenuPK.code = :code";
+	private static final String SELECT_BY_CODE = SELECT_BY_TYPE + " AND m.ccgmtFlowMenuPK.code = :code";
 
 	@Override
 	public List<FlowMenu> findAll(String companyID) {
@@ -39,6 +39,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 	public Optional<FlowMenu> findByCode(String companyID, String topPagePartID) {
 		return this.queryProxy().query(SELECT_SINGLE, CcgmtFlowMenu.class)
 				.setParameter("topPagePartID", topPagePartID)
+				.setParameter("companyID", companyID)
 				.getSingle(c -> joinObjectToDomain(c));
 	}
 	
@@ -67,6 +68,7 @@ public class JpaFlowMenuRepository extends JpaRepository implements FlowMenuRepo
 		CcgmtFlowMenu newEntity = toEntity(flow);
 		CcgmtFlowMenu entity = this.queryProxy().find(newEntity.ccgmtFlowMenuPK, CcgmtFlowMenu.class).get();
 		entity.fileID = newEntity.fileID;
+		entity.name = newEntity.name;
 		this.commandProxy().update(entity);
 	}
 

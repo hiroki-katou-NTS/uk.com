@@ -139,8 +139,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			return true;
 		}
 		if ( totalRemainingTime.isPresent() ){
-			if ( this.totalRemainingDays.v() == 0.0
-				&& this.totalRemainingTime.get().v() < 0 ){
+			if (this.totalRemainingTime.get().v() < 0 ){
 				return true;
 			}
 		}

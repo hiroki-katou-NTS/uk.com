@@ -70,6 +70,10 @@ public class PreUpdateErrorCheck {
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput()
 						.getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
 
+		boolean existFlag = false;
+		if (rec.isPresent() && abs.isPresent()) {
+		    existFlag = true;
+		}
 		//振休残数不足チェック
 //		 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
 	 
@@ -87,7 +91,8 @@ public class PreUpdateErrorCheck {
 					 null,
 					 displayInforWhenStarting.appDispInfoStartup.toDomain(), 
 					 Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
-					 Optional.empty());
+					 Optional.empty(), 
+					 existFlag);
 		 }
 		 if(abs.isPresent()) {
 			 //アルゴリズム「登録前共通処理（更新）」を実行する
@@ -102,7 +107,8 @@ public class PreUpdateErrorCheck {
 					 null,
 					 displayInforWhenStarting.appDispInfoStartup.toDomain(), 
 					 Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
-					 Optional.empty());
+					 Optional.empty(), 
+					 existFlag);
 		 }
 		
 	}

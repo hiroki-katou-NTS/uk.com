@@ -408,8 +408,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 				Integer attActualTime = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent())
-								? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
-										.valueAsMinutes()
+								? timeLeavingWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
+										.getTimeWithDay().map(x -> x.v()).orElse(null)
 								: null;
 				Integer attActualStampSource = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getActualStamp().isPresent())
@@ -427,9 +427,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				// TimeLeavingWork - attendanceStamp - stamp
 				Integer attStampTime = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
-								? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.valueAsMinutes()
+								? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
+										.getTimeWithDay().map(x -> x.v()).orElse(null)
 								: null;
+				
 				Integer attStampSource = (timeLeavingWork.getAttendanceStamp().isPresent()
 						&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
 								? timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value
@@ -447,9 +448,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				// TimeLeavingWork - leaveStamp - actualStamp
 				Integer leaveActualTime = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent())
-								? timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
-										.valueAsMinutes()
+								? timeLeavingWork.getLeaveStamp().get().getActualStamp().get().getTimeDay()
+										.getTimeWithDay().map(x -> x.v()).orElse(null)
 								: null;
+		
 				Integer leaveActualStampSource = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getActualStamp().isPresent())
 								? timeLeavingWork.getLeaveStamp().get().getActualStamp().get()
@@ -465,9 +467,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				// TimeLeavingWork - leaveStamp - stamp
 				Integer leaveStampTime = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())
-								? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-										.valueAsMinutes()
+								? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay()
+										.map(x -> x.v()).orElse(null)
 								: null;
+				
 				Integer leaveStampSource = (timeLeavingWork.getLeaveStamp().isPresent()
 						&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())
 								? timeLeavingWork.getLeaveStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value

@@ -52,7 +52,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate,
 			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version, String wkTypeCode,
 			String wkTimeCode, AppDispInfoStartupOutput appDispInfoStartupOutput, List<String> workTypeCds, 
-            Optional<TimeDigestionParam> timeDigestionUsageInfor) {
+            Optional<TimeDigestionParam> timeDigestionUsageInfor, boolean flag) {
 		//勤務種類、就業時間帯チェックのメッセージを表示
 		displayWorkingHourCheck(companyID, wkTypeCode, wkTimeCode);
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
@@ -83,42 +83,43 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
                 new DatePeriod(startDate, endDate), 
                 appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
         
-        // 登録時の残数チェック
-        AppRemainCreateInfor appRemainCreateInfor = new AppRemainCreateInfor(
-                application.getEmployeeID(), 
-                application.getAppID(), 
-                application.getInputDate(), 
-                application.getAppDate().getApplicationDate(), 
-                EnumAdaptor.valueOf(application.getPrePostAtr().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class), 
-                EnumAdaptor.valueOf(application.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class), 
-                Optional.ofNullable(wkTypeCode),
-                Optional.ofNullable(wkTimeCode), 
-                new ArrayList<VacationTimeInforNew>(), 
-                Optional.of(application.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION) && timeDigestionUsageInfor.isPresent() 
-                    ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 
-                Optional.of(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION) && timeDigestionUsageInfor.isPresent()
-                    ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 
-                application.getOpAppStartDate().map(ApplicationDate::getApplicationDate), 
-                application.getOpAppEndDate().map(ApplicationDate::getApplicationDate), 
-                holidays, 
-                timeDigestionUsageInfor.map(TimeDigestionParam::toTimeDigestionUsageInfor));
-        InterimRemainCheckInputParam param = new InterimRemainCheckInputParam(
-                companyID, 
-                application.getEmployeeID(), 
-                new DatePeriod(periodCurrentMonth.getStartDate(), periodCurrentMonth.getStartDate().addYears(1).addDays(-1)), 
-                false, 
-                application.getAppDate().getApplicationDate(), 
-                new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()), 
-                true, 
-                new ArrayList<RecordRemainCreateInfor>(), 
-                new ArrayList<ScheRemainCreateInfor>(), 
-                Arrays.asList(appRemainCreateInfor), 
-                workTypeCds, 
-                timeDigestionUsageInfor);
-        
-        EarchInterimRemainCheck earchInterimRemainCheck = interimRemainDataMngCheckRegisterRequest.checkRegister(param);
-        
-        // 代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分　or 超休不足区分　OR　子の看護不足区分　OR　介護不足区分 = true（残数不足）
+        if (!flag) {
+            // 登録時の残数チェック
+            AppRemainCreateInfor appRemainCreateInfor = new AppRemainCreateInfor(
+                    application.getEmployeeID(), 
+                    application.getAppID(), 
+                    application.getInputDate(), 
+                    application.getAppDate().getApplicationDate(), 
+                    EnumAdaptor.valueOf(application.getPrePostAtr().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr.class), 
+                    EnumAdaptor.valueOf(application.getAppType().value, nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType.class), 
+                    Optional.ofNullable(wkTypeCode),
+                    Optional.ofNullable(wkTimeCode), 
+                    new ArrayList<VacationTimeInforNew>(), 
+                    Optional.of(application.getAppType().equals(ApplicationType.HOLIDAY_WORK_APPLICATION) && timeDigestionUsageInfor.isPresent() 
+                            ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 
+                    Optional.of(application.getAppType().equals(ApplicationType.OVER_TIME_APPLICATION) && timeDigestionUsageInfor.isPresent()
+                            ? timeDigestionUsageInfor.get().getOverHolidayTime() : 0), 
+                    application.getOpAppStartDate().map(ApplicationDate::getApplicationDate), 
+                    application.getOpAppEndDate().map(ApplicationDate::getApplicationDate), 
+                    holidays, 
+                    timeDigestionUsageInfor.map(TimeDigestionParam::toTimeDigestionUsageInfor));
+            InterimRemainCheckInputParam param = new InterimRemainCheckInputParam(
+                    companyID, 
+                    application.getEmployeeID(), 
+                    new DatePeriod(periodCurrentMonth.getStartDate(), periodCurrentMonth.getStartDate().addYears(1).addDays(-1)), 
+                    false, 
+                    application.getAppDate().getApplicationDate(), 
+                    new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()), 
+                    true, 
+                    new ArrayList<RecordRemainCreateInfor>(), 
+                    new ArrayList<ScheRemainCreateInfor>(), 
+                    Arrays.asList(appRemainCreateInfor), 
+                    workTypeCds, 
+                    timeDigestionUsageInfor);
+            
+            EarchInterimRemainCheck earchInterimRemainCheck = interimRemainDataMngCheckRegisterRequest.checkRegister(param);
+            
+            // 代休不足区分 or 振休不足区分 or 年休不足区分 or 積休不足区分 or 特休不足区分　or 超休不足区分　OR　子の看護不足区分　OR　介護不足区分 = true（残数不足）
 //        if (earchInterimRemainCheck.isChkSubHoliday() 
 //                || earchInterimRemainCheck.isChkPause()
 //                || earchInterimRemainCheck.isChkAnnual()
@@ -130,29 +131,30 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 //            // エラーメッセージ（Msg_1409）
 //            throw new BusinessException("Msg_1409");
 //        }
-        if (earchInterimRemainCheck.isChkSubHoliday()) {
-            throw new BusinessException("Msg_1409", "代休不足区分");
-        }
-        if (earchInterimRemainCheck.isChkPause()) {
-            throw new BusinessException("Msg_1409", "振休不足区分");
-        }
-        if (earchInterimRemainCheck.isChkAnnual()) {
-            throw new BusinessException("Msg_1409", "年休不足区分");
-        }
-        if (earchInterimRemainCheck.isChkFundingAnnual()) {
-            throw new BusinessException("Msg_1409", "積休不足区分");
-        }
-        if (earchInterimRemainCheck.isChkSpecial()) {
-            throw new BusinessException("Msg_1409", "特休不足区分");
-        }
-        if (earchInterimRemainCheck.isChkSuperBreak()) {
-            throw new BusinessException("Msg_1409", "超休不足区分");
-        }
-        if (earchInterimRemainCheck.isChkChildNursing()) {
-            throw new BusinessException("Msg_1409", "子の看護不足区分");
-        }
-        if (earchInterimRemainCheck.isChkLongTermCare()) {
-            throw new BusinessException("Msg_1409", "介護不足区分");
+            if (earchInterimRemainCheck.isChkSubHoliday()) {
+                throw new BusinessException("Msg_1409", "代休");
+            }
+            if (earchInterimRemainCheck.isChkPause()) {
+                throw new BusinessException("Msg_1409", "振休");
+            }
+            if (earchInterimRemainCheck.isChkAnnual()) {
+                throw new BusinessException("Msg_1409", "年休");
+            }
+            if (earchInterimRemainCheck.isChkFundingAnnual()) {
+                throw new BusinessException("Msg_1409", "積休");
+            }
+            if (earchInterimRemainCheck.isChkSpecial()) {
+                throw new BusinessException("Msg_1409", "特休");
+            }
+            if (earchInterimRemainCheck.isChkSuperBreak()) {
+                throw new BusinessException("Msg_1409", "超休");
+            }
+            if (earchInterimRemainCheck.isChkChildNursing()) {
+                throw new BusinessException("Msg_1409", "子の看護");
+            }
+            if (earchInterimRemainCheck.isChkLongTermCare()) {
+                throw new BusinessException("Msg_1409", "介護");
+            }
         }
 	}
 	
