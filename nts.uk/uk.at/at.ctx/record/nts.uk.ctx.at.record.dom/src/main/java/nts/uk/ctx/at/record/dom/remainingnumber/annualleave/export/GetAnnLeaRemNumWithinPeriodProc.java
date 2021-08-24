@@ -275,7 +275,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 						}else{
 							resultRateOpt = Optional.of(new CalYearOffWorkAttendRate(100.0,0.0,365.0,0.0));
 						}
-						
+
 						if (resultRateOpt.isPresent()){
 							val resultRate = resultRateOpt.get();
 							nextAnnualGrantList.setAttendanceRate(Optional.of(
@@ -344,10 +344,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		Optional<AnnualLeaveGrantRemainingData> remainingShortageData
 			= annualLeaveInfoEnd.createLeaveGrantRemainingShortageData();
 
-		// 特別休暇不足分として作成した特別休暇付与データを削除する
+		// 年休不足分として作成した年休付与データを削除する
 		aggrResult.deleteShortageRemainData();
 
-		// 特別休暇(期間終了日時点)に残数不足の付与残数データを追加
+		// 年休(期間終了日時点)に残数不足の付与残数データを追加
 		if ( remainingShortageData.isPresent() ) {
 			annualLeaveInfoEnd.getGrantRemainingDataList().add(remainingShortageData.get());
 		}
@@ -822,14 +822,28 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		if (isOverWriteOpt.isPresent()){
 			if (isOverWriteOpt.get()){
 				if(isOverWritePeriod.isPresent()){
-				
-					//上書き対象期間内の暫定年休管理データを削除
-					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()));
-					
+
+					//上書き対象期間内の暫定年休管理データを削除(日数単位のデータ)
+					results.removeIf(x -> isOverWritePeriod.get().contains(x.getYmd()) && x.getUsedNumber().isUseDay());
+
 					// 上書き用データがある時、追加する
 					if (forOverWriteListOpt.isPresent()){
 						val overWrites = forOverWriteListOpt.get();
 						for (val overWrite : overWrites){
+
+							// 時間休暇の場合は、addする前に、時間休暇の種類を参照し、同じ種類がすでに存在する場合は削除してから上書きする。
+							if (!overWrite.getUsedNumber().isUseDay() && overWrite.getAppTimeTypeEnum().isPresent()) {
+								val sameDatas = results.stream()
+										.filter(x -> x.getYmd().equals(overWrite.getYmd())
+												&& x.getAppTimeTypeEnum().isPresent())
+										.collect(java.util.stream.Collectors.toList());
+								for (val sameData : sameDatas) {
+									if (sameData.getAppTimeTypeEnum().get()
+											.equals(overWrite.getAppTimeTypeEnum().get()))
+										results.removeIf(x -> x.getRemainManaID().equals(sameData.getRemainManaID()));
+								}
+							}
+
 							// 上書き用データを追加
 							results.add(overWrite);
 						}
