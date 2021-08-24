@@ -66,6 +66,8 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 
 	/** どんな履歴か*/
 	private final HistoryType historyType;
+
+//	protected abstract adjustExistingHistory();
 	
 	public EmployeeHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
 		super(workspace);
@@ -251,9 +253,9 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		
 		//履歴補正
 		existingHistory.add(addingItem);
-		//受入る履歴の１つ手前の履歴が既存の最新だろうという意
-		val existing = existingHistory.items().get(existingHistory.items().size() - 2);
-		AnyRecordToChange toChange = new EmployeeHistoryItem(existing).toChange(context);
+		existingHistory.removeForcively(addingItem);
+		//↑で受入る履歴を消してるから末尾が既存の最新だろうという意
+		AnyRecordToChange toChange = new EmployeeHistoryItem(existingHistory.items().get(existingHistory.items().size() - 1 )).toChange(context);
 		require.save(context, toChange);
 	}
 
