@@ -91,6 +91,7 @@ module nts.uk.com.view.cas011.a {
                     var _path = format(API.getRoleSetByRoleSetCd, roleSetCd);
                     vm.$ajax('com',_path).done((data)=>{
                         if(!isNullOrUndefined(data)){
+                            vm.enableCheckDefault(true);
                             let roleSetDtos :IRoleSet = data.roleSetDtos;
                             let defaultRoleSet = data.defaultRoleSet;
                             let linkWebMenuImportList: any[] = data.linkWebMenuImportList;
@@ -132,7 +133,6 @@ module nts.uk.com.view.cas011.a {
                     });
 
                 } else {
-                    vm.createNewCurrentRoleSet();
                     vm.settingCreateMode();
                 }
         }

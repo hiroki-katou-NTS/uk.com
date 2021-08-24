@@ -131,7 +131,7 @@ public class RoleIndividualWebService extends WebService {
 	@POST
 	@Path("getRoleGrant")
 	public RoleIndividualGrantDto GetRoleGrant(RoleIndividualGrantDto rDto){
-		return this.roleIndividualFinder.getRoleGrant(rDto.getUserID(), rDto.getRoleID());
+		return this.roleIndividualFinder.getRoleGrant(rDto.getUserID(), rDto.getRoleID(),rDto.getCompanyID());
 	}
 	
 	@POST

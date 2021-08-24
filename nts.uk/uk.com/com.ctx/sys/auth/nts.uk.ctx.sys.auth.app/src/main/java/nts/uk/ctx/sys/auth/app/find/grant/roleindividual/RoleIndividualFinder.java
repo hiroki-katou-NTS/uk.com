@@ -168,75 +168,38 @@ public class RoleIndividualFinder {
         if (companyId == null)
             return null;
         List<RoleIndividualGrantDto> rGrants = new ArrayList<>();
-
         if (roleId == null)
             return rGrants;
-
         List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
         ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
-
-        List<String> userId = ListRoleGrants.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
-
+        List<String> userId = ListRoleGrants.stream().map(RoleIndividualGrant::getUserId).distinct().collect(Collectors.toList());
         if (userId.size() == 0) {
             return rGrants;
         }
-        List<User> listUsers = userRepo.getByListUser(userId);
+        Map<String,User> mapUser = userRepo.getByListUser(userId)
+                .stream().collect(Collectors.toMap(User::getUserID, e->e));
 
-        List<String> userIdRequest = new ArrayList<String>();
-        for (User user : listUsers) {
-            if (user.getAssociatedPersonID().isPresent()) {
-                userIdRequest.add(user.getAssociatedPersonID().get());
-            }
-        }
-
-        List<PersonImport> listPerson = personAdapter.findByPersonIds(userIdRequest);
-        if (userIdRequest.size() > 0) {
-            for (User user : listUsers) {
-                if (user.getAssociatedPersonID().isPresent()) {
-                    for (PersonImport person : listPerson) {
-                        if (user.getAssociatedPersonID().get().equals(person.getPersonId())) {
-                            user.setUserName(Optional.of(new UserName(person.getPersonName())));
-                        }
-                    }
-                }
-            }
-        }
-
-        // (No86 of RequestList)
-        List<RoleExport> roleExportList = roleAdapter.getListRole(userId);
-        if (roleExportList.isEmpty()) {
-            return null;
-        }
-
-        // Get BusinessName
-        for(PersonImport personImport: listPerson) {
-            for (RoleExport roleExport : roleExportList){
-                if(personImport.getPersonId().equals(roleExport.getPersonName())){
-                    personImport.setPersonName(roleExport.getPersonName());
-                }
-            }
-        }
-
-        // 個人ID(List)から会社IDに一致する社員に絞り込む
-        List<String> pies = roleExportList.stream().map(e -> e.getPersonId()).collect(Collectors.toList());
-        List<EmployeeInfoDto> employeeDataMngInfos = employeeInfoPub.findEmployeesMatchingName(pies, companyId);
-
+        List<String> userIdRequest = mapUser.values().stream()
+                .filter(User::hasAssociatedPersonID)
+                .map(e->e.getAssociatedPersonID().get()).collect(Collectors.toList());
+        Map<String,PersonImport> mapPerson = personAdapter.findByPersonIds(userIdRequest).stream()
+                .filter(distinctByKey(PersonImport::getPersonId))
+                .collect(Collectors.toMap(PersonImport::getPersonId,i->i));
         for (RoleIndividualGrant rGrant : ListRoleGrants) {
             String userName = "";
             String employeeName = "";
-            Optional<User> user = listUsers.stream().filter(c -> c.getUserID().equals(rGrant.getUserId())).findFirst();
-            if (user.isPresent()) {
-                val pid = user.get().getAssociatedPersonID();
+            User user = mapUser.getOrDefault(rGrant.getUserId(),null);
+            if (user != null) {
+                val pid = user.getAssociatedPersonID();
                 if(pid.isPresent()){
-                    val employeeDataMngInfoOptional = employeeDataMngInfos.stream()
-                            .filter(c -> c.getPersonId().equals(pid.get())).findFirst();
-                    val listPersonOptional = roleExportList.stream().filter( c -> c.getPersonId().equals(pid.get())).findFirst();
+                    val employeeDataMngInfoOptional = employeeInfoPub
+                            .getEmployeeInfoByCidPid(rGrant.getCompanyId(),pid.get());
+                    val person = mapPerson.get(pid.get());
                     if ( employeeDataMngInfoOptional.isPresent()){
                         val employeeDataMngInfo = employeeDataMngInfoOptional.get();
-                        if( user.get().getUserName().isPresent())
-                        userName = user.get().getUserName().get().v();
-                        employeeName = listPersonOptional.get().getPersonName();
-                        rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, userName, user.get().getLoginID().v(),
+                        userName = user.getUserName().isPresent()? user.getUserName().get().v(): null ;
+                        employeeName = person.getPersonName();
+                        rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, userName, user.getLoginID().v(),
                                 employeeDataMngInfo.getEmployeeId(),employeeDataMngInfo.getEmployeeCode(),employeeName));
                     }
                 }
@@ -244,9 +207,7 @@ public class RoleIndividualFinder {
         }
         return rGrants;
     }
-
-    public RoleIndividualGrantDto getRoleGrant(String userId, String roleId) {
-        String companyId = AppContexts.user().companyId();
+    public RoleIndividualGrantDto getRoleGrant(String userId, String roleId,String companyId) {
         if (userId == null || roleId == null)
             return null;
 

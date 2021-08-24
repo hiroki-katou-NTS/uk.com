@@ -368,25 +368,25 @@ module nts.uk.com.view.cas013.a {
                         vm.employeeList(employeeSearchs);
                         let indexNew = _.findIndex(vm.employeeList(),(e)=>{return e.id == userIdSelected});
 
-                        if(index >=0 && indexNew < 0){
-                            vm.multiSelectedCode(vm.employeeList()[index == 0 ? index : (index - 1)].code);
-                            vm.dateValue(new datePeriod(employeeSearchs[index == 0 ? index : (index - 1)].startValidPeriod, employeeSearchs[index == 0 ? index : (index - 1)].endValidPeriod));
-                          //  vm.selectRoleEmployee(employeeSearchs[index == 0 ? index : (index - 1)].id);
+                        if(index >=0 && index < vm.employeeList().length && indexNew < 0){
+                            vm.multiSelectedCode(vm.employeeList()[index].code);
+                            vm.dateValue(new datePeriod(employeeSearchs[index].startValidPeriod, employeeSearchs[index].endValidPeriod));
+                        }
+                        if((index)== vm.employeeList().length  && indexNew < 0){
+                            vm.multiSelectedCode(vm.employeeList()[index - 1].code);
+                            vm.dateValue(new datePeriod(employeeSearchs[index -1].startValidPeriod, employeeSearchs[index - 1].endValidPeriod));
                         }
                         if(index <0 && indexNew >=0){
                             vm.multiSelectedCode(vm.employeeList()[indexNew].code);
                             vm.dateValue(new datePeriod(employeeSearchs[indexNew].startValidPeriod, employeeSearchs[indexNew].endValidPeriod));
-                           // vm.selectRoleEmployee(employeeSearchs[indexNew].id);
                         }
                         if(index == indexNew && index <0){
                             vm.multiSelectedCode(vm.employeeList()[0].code);
                             vm.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
-                           // vm.selectRoleEmployee(employeeSearchs[0].id);
                         }
                         if(index == indexNew && index >0){
                             vm.multiSelectedCode(vm.employeeList()[index].code);
                             vm.dateValue(new datePeriod(employeeSearchs[index].startValidPeriod, employeeSearchs[index].endValidPeriod));
-                            //vm.selectRoleEmployee(employeeSearchs[index].id);
                         }
                         //End KCP005
 
@@ -433,8 +433,11 @@ module nts.uk.com.view.cas013.a {
             vm.selectedUserID(UserId);
             if (roleId != '' && UserId != '') {
                 let userSelected = _.find(vm.employeeList(), (e) => e.id == UserId);
+                let role = _.find(vm.listRole(), (e) => e.roleId == roleId);
+
                 let userEmployee = _.find(vm.listRoleIndividual(), ['userId', UserId]);
                 let data = {
+                    companyID:role.companyId,
                     roleID: roleId,
                     userID: UserId
                 };
@@ -691,12 +694,14 @@ module nts.uk.com.view.cas013.a {
         roleCode: string;
         name: string;
         assignAtr: string;
+        companyId : string;
 
-        constructor(roleId: string, roleCode: string, name: string, assignAtr: string) {
+        constructor(roleId: string, roleCode: string, name: string, assignAtr: string, companyId : string) {
             this.roleId = roleId;
             this.roleCode = roleCode;
             this.name = name;
             this.assignAtr = assignAtr;
+            this.companyId = this.companyId;
         }
     }
 
