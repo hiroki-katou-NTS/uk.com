@@ -31,7 +31,7 @@ public class PublicHolidayRemNumEachMonth extends AggregateRoot{
 	private  YearMonth yearMonth;
 	/** 締めID */
 	private  ClosureId closureId;
-	/** 締め日付 */
+	/** 締め日 */
 	private  ClosureDate closureDate;
 	/** 締め処理状態 */
 	private ClosureStatus closureStatus;

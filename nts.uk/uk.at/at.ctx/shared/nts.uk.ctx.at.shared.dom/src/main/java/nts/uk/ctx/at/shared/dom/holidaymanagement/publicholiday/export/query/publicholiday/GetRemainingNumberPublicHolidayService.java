@@ -70,7 +70,7 @@ public class GetRemainingNumberPublicHolidayService {
 			return new AggrResultOfPublicHoliday();
 		}
 		
-		if(publicHolidaySetting.get().getIsManagePublicHoliday() != 1){
+		if(!publicHolidaySetting.get().isManagePublicHoliday()){
 			return new AggrResultOfPublicHoliday();
 		}
 		//集計期間WORKを作成

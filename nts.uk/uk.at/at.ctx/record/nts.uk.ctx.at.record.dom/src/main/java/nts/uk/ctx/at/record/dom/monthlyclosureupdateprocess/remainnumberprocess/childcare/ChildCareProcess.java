@@ -27,17 +27,17 @@ public class ChildCareProcess {
 	 * @param interimRemainMngMap
 	 * @return
 	 */
-	public static AtomTask childCareProcess(Require require, CacheCarrier cacheCarrier,
+	public static AtomTask process(Require require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String employeeId, List<DailyInterimRemainMngData> interimRemainMngMap){
 		
 		//ログイン社員の会社ID取得
 		String companyId = AppContexts.user().companyId();
 		
 		//暫定子の看護管理データに絞り込み
-		List<TempChildCareManagement> interimChildCareData = getChildCareRemain(interimRemainMngMap);
+		List<TempChildCareManagement> interimChildCareData = getRemain(interimRemainMngMap);
 		
 		//子の看護残数計算
-		AggrResultOfChildCareNurse output = CalculateChildCareNurse.calculateRemainChildCareNurse(
+		AggrResultOfChildCareNurse output = CalculateChildCareNurse.calculateRemain(
 				require,
 				cacheCarrier,
 				companyId,
@@ -47,8 +47,8 @@ public class ChildCareProcess {
 		
 		
 		//子の看護情報更新
-		return AtomTask.of(RemainChildCareUpdating.updateRemainChildCare(require, employeeId, output))
-				.then(DeleteTempChildCare.deleteTempChildCareManagement(require, employeeId, period.getPeriod()));
+		return AtomTask.of(RemainChildCareUpdating.updateRemain(require, employeeId, output))
+				.then(DeleteTempChildCare.delete(require, employeeId, period.getPeriod()));
 		
 	}
 	
@@ -58,7 +58,7 @@ public class ChildCareProcess {
 	 * @param interimRemainMngMap
 	 * @return
 	 */
-	private static List<TempChildCareManagement> getChildCareRemain(List<DailyInterimRemainMngData> interimRemainMngMap){
+	private static List<TempChildCareManagement> getRemain(List<DailyInterimRemainMngData> interimRemainMngMap){
 		
 		return interimRemainMngMap.stream()
 				.filter(c -> !c.getRecAbsData().isEmpty() && !c.getChildCareData().isEmpty())

@@ -24,14 +24,14 @@ public class RemainChildCareUpdating {
 	 * @param output
 	 * @return
 	 */
-	public static AtomTask updateRemainChildCare(Require require, String employeeId,AggrResultOfChildCareNurse output){
+	public static AtomTask updateRemain(Require require, String employeeId,AggrResultOfChildCareNurse output){
 		
 		List<AtomTask> atomTask = new ArrayList<>();
 		
 		//子の看護使用数更新
-		atomTask.add(updateUseChildCare(require,employeeId,output));
+		atomTask.add(updateUse(require,employeeId,output));
 		//子の看護上限数更新
-		Optional<AtomTask> maxDayAtomTask = updateMaxDayChildCare(require,employeeId,output);
+		Optional<AtomTask> maxDayAtomTask = updateMaxDay(require,employeeId,output);
 		
 		if(maxDayAtomTask.isPresent()){
 			atomTask.add(maxDayAtomTask.get());
@@ -48,7 +48,7 @@ public class RemainChildCareUpdating {
 	 * @param output
 	 * @return
 	 */
-	private static AtomTask updateUseChildCare(Require require, String employeeId,AggrResultOfChildCareNurse output){
+	private static AtomTask updateUse(Require require, String employeeId,AggrResultOfChildCareNurse output){
 		
 		return AtomTask.of(() -> require.persistAndUpdateUseChildCare(employeeId,
 				new ChildCareUsedNumberData(employeeId, output.getAsOfPeriodEnd())));
@@ -62,7 +62,7 @@ public class RemainChildCareUpdating {
 	 * @param output
 	 * @return
 	 */
-	private static Optional<AtomTask> updateMaxDayChildCare(Require require, String employeeId,AggrResultOfChildCareNurse output){
+	private static Optional<AtomTask> updateMaxDay(Require require, String employeeId,AggrResultOfChildCareNurse output){
 	
 		//起算日を含む期間かどうかを確認
 		if(!output.isStartDateAtr()){

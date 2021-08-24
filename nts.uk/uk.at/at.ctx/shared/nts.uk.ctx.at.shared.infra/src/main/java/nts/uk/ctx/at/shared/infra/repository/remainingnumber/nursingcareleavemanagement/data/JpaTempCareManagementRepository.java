@@ -96,27 +96,14 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 
 	/** 削除 */
 	@Override
-	public void remove(String employeeId, GeneralDate ymd, TempCareManagement domain) {
+	public void remove(TempCareManagement domain) {
 
 		val key = domain.getRemainManaID();
 
 		this.commandProxy().remove(KshdtInterimCareData.class, key);
 	}
 
-	/**
-	 * 暫定介護管理データの取得
-	 * @param 社員ID employeeId
-	 * @param 期間 period
-	 */
-	@Override
-	public List<TempCareManagement> findBySidPeriod(String employeeId, DatePeriod period){
 
-		return queryProxy().query(SELECT_BY_PERIOD, KshdtInterimCareData.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startYmd", period.start())
-				.setParameter("endYmd", period.end())
-				.getList(c -> c.toDomain());
-	}
 
 	@Override
 	public void deleteBySidAndYmd(String sid, GeneralDate ymd) {

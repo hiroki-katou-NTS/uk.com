@@ -29,7 +29,7 @@ public class CalculatePublicHoliday {
 	 * @param interimPublicDate　暫定公休管理データ
 	 * @return 公休の集計結果
 	 */
-	public static AggrResultOfPublicHoliday calculateRemainPublicHoliday(Require require, CacheCarrier cacheCarrier, String companyId,
+	public static AggrResultOfPublicHoliday calculateRemain(Require require, CacheCarrier cacheCarrier, String companyId,
 			AggrPeriodEachActualClosure period, String employeeId, List<TempPublicHolidayManagement> interimPublicDate){
 		
 		return GetRemainingNumberPublicHolidayService.getPublicHolidayRemNumWithinPeriod(

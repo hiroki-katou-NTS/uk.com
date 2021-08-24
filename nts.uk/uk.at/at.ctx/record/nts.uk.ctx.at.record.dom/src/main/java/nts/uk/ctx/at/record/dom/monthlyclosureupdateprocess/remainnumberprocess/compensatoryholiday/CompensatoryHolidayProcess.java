@@ -53,7 +53,7 @@ public class CompensatoryHolidayProcess {
 				/** 代休逐次休暇の紐付け情報を追加する */
 				.then(addSeaCompensatory(require, empId, output.getLstSeqVacation()))
 				/** 代休暫定データ削除 */
-				.then(deleteTempSubstitutionManagement(require, empId, period.getPeriod()));
+				.then(deleteTemp(require, empId, period.getPeriod()));
 	}
 
 	/** 代休逐次休暇の紐付け情報を追加する */
@@ -184,7 +184,7 @@ public class CompensatoryHolidayProcess {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTempSubstitutionManagement(Require require, String employeeId, DatePeriod period){
+	public static AtomTask deleteTemp(Require require, String employeeId, DatePeriod period){
 		//暫定休出管理データの削除
 		return AtomTask.of(() -> require.deleteInterimBreakMngBySidDatePeriod(employeeId, period))
 				//暫定代休管理データの削除

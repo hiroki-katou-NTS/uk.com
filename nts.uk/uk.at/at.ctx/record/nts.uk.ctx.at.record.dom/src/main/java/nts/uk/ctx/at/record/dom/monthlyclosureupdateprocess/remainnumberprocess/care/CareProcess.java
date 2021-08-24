@@ -27,16 +27,16 @@ public class CareProcess {
 	 * @param interimRemainMngMap
 	 * @return
 	 */
-	public static AtomTask careProcess(Require require, CacheCarrier cacheCarrier,
+	public static AtomTask process(Require require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String employeeId, List<DailyInterimRemainMngData> interimRemainMngMap){
 		
 		//ログイン社員の会社ID取得
 		String companyId = AppContexts.user().companyId();
 		//暫定介護管理データに絞り込み
-		List<TempCareManagement> interimCareData = getCareRemain(interimRemainMngMap);
+		List<TempCareManagement> interimCareData = getRemain(interimRemainMngMap);
 		
 		//介護残数計算
-		AggrResultOfChildCareNurse output = CalculateCareNurse.calculateRemainCareNurse(
+		AggrResultOfChildCareNurse output = CalculateCareNurse.calculateRemain(
 				require,
 				cacheCarrier,
 				companyId,
@@ -45,9 +45,9 @@ public class CareProcess {
 				interimCareData);
 		
 		//介護情報更新
-		return AtomTask.of(RemainCareUpdating.updateRemainCare(require, employeeId, output))
+		return AtomTask.of(RemainCareUpdating.updateRemain(require, employeeId, output))
 				//介護休暇暫定データ削除
-				.then(DeleteTempCare.deleteTempCareManagement(require, employeeId, period.getPeriod()));
+				.then(DeleteTempCare.delete(require, employeeId, period.getPeriod()));
 	}
 	
 	
@@ -56,7 +56,7 @@ public class CareProcess {
 	 * @param interimRemainMngMap
 	 * @return
 	 */
-	private static List<TempCareManagement> getCareRemain(List<DailyInterimRemainMngData> interimRemainMngMap){
+	private static List<TempCareManagement> getRemain(List<DailyInterimRemainMngData> interimRemainMngMap){
 		
 		return interimRemainMngMap.stream()
 				.filter(c -> !c.getRecAbsData().isEmpty() && !c.getCareData().isEmpty())

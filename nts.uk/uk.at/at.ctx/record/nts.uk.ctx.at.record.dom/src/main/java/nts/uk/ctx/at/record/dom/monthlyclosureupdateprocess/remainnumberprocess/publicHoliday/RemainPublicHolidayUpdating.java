@@ -31,7 +31,7 @@ public class RemainPublicHolidayUpdating {
 	 * @param output 公休の集計結果
 	 * @return
 	 */
-	public static AtomTask updateRemainPublicHoliday(Require require, CacheCarrier cacheCarrier,
+	public static AtomTask updateRemain(Require require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String employeeId,AggrResultOfPublicHoliday output){
 		List<AtomTask> atomTask = new ArrayList<>();
 		
@@ -43,7 +43,7 @@ public class RemainPublicHolidayUpdating {
 
 		return AtomTask.bundle(atomTask)
 				//公休繰越データ更新処理
-				.then(updatePublicHolidayRemainProcess(require, employeeId,  output.publicHolidayCarryForwardData));
+				.then(updateRemainProcess(require, employeeId,  output.publicHolidayCarryForwardData));
 		
 	}
 	
@@ -95,7 +95,7 @@ public class RemainPublicHolidayUpdating {
 	 * @param carryForwardData　公休繰越データ
 	 * @return
 	 */
-	private static AtomTask updatePublicHolidayRemainProcess(
+	private static AtomTask updateRemainProcess(
 			Require require, String employeeId, List<PublicHolidayCarryForwardData> carryForwardData){
 		
 		List<AtomTask> atomTask = new ArrayList<>();

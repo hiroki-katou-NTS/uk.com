@@ -56,7 +56,7 @@ public class SpecialHolidayProcess {
 			return AtomTask.of(updateRemainSpecialHoliday(require, output, empId, period.getPeriod(),
 														specialHoliday.getSpecialHolidayCode().v(), specialHoliday.getAutoGrant().value))
 					/** 特別休暇暫定データ削除 */
-							.then(deleteTempSpecialHolidayManagement(
+							.then(deleteTemp(
 									require, empId, specialHoliday.getSpecialHolidayCode().v(), period.getPeriod()));
 		}).collect(Collectors.toList());
 
@@ -183,7 +183,7 @@ public class SpecialHolidayProcess {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTempSpecialHolidayManagement(
+	public static AtomTask deleteTemp(
 			RequireM4 require, String employeeId, int specialLeaveCode,  DatePeriod period){
 		
 		return AtomTask.of(() -> require.deleteTempSpecialSidPeriod(employeeId, specialLeaveCode, period));

@@ -6,11 +6,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.DayOfVacationUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
@@ -19,7 +22,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author
  *
  */
-
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name ="KSHDT_INTERIM_HDPUB")
 public class KshdtInterimHdpub extends ContractUkJpaEntity {
@@ -38,7 +42,7 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 	
 	/** 使用日数 */
 	@Column(name ="USE_DAYS")
-	public Double useDays;
+	public double useDays;
 	
 	@Override
 	protected Object getKey() {
@@ -53,5 +57,19 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 				EnumAdaptor.valueOf(creatorAtr, CreateAtr.class),
 				RemainType.PUBLICHOLIDAY,
 				new DayOfVacationUse(useDays));
+	}
+	
+	public KshdtInterimHdpub toEntity(TempPublicHolidayManagement domain){
+		
+		KshdtInterimHdpubPK pk = new KshdtInterimHdpubPK(AppContexts.user().companyId(), domain.getSID(),
+				domain.getYmd());
+		
+		return new KshdtInterimHdpub(
+				pk,
+				domain.getRemainManaID(),
+				domain.getCreatorAtr().value,
+				domain.getUseDays().v()
+				);
+		
 	}
 }

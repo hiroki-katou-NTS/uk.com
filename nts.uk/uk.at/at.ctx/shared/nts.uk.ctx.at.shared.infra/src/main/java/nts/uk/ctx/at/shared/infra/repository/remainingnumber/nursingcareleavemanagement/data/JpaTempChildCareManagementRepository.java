@@ -95,27 +95,14 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 
 	/** 削除 */
 	@Override
-	public void remove(String employeeId, GeneralDate ymd, TempChildCareManagement domain) {
+	public void remove(TempChildCareManagement domain) {
 
 		val key = domain.getRemainManaID();
 
 		this.commandProxy().remove(KshdtInterimChildCare.class, key);
 	}
 
-	/**
-	 * 暫定子の看護管理データの取得
-	 * @param 社員ID employeeId
-	 * @param 期間 period
-	 */
-	@Override
-	public List<TempChildCareManagement> findBySidPeriod(String employeeId, DatePeriod period){
 
-		return queryProxy().query(SELECT_BY_PERIOD, KshdtInterimChildCare.class)
-				.setParameter("employeeId", employeeId)
-				.setParameter("startYmd", period.start())
-				.setParameter("endYmd", period.end())
-				.getList(c -> c.toDomain());
-	}
 
 	@Override
 	public void removeBySidAndYmd(String sid, GeneralDate ymd) {

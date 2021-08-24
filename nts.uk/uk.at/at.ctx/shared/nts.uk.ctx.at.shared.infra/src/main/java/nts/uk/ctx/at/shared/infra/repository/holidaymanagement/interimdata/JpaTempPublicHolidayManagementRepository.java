@@ -14,18 +14,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaTempPublicHolidayManagementRepository  extends JpaRepository implements TempPublicHolidayManagementRepository{
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimHdpub a"
-			+ " WHERE a.pk.sID = :employeeID"
+			+ " WHERE a.pk.sid = :employeeId"
 			+ "AND a.pk.ymd =  : ymd "
 			+ " ORDER BY a.pk.ymd ASC";
 	
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KshdtInterimHdpub a "
-			+ "WHERE a.pk.sID = :employeeId "
+			+ "WHERE a.pk.sid = :employeeId "
 			+ "AND a.pk.ymd >= :startYmd "
 			+ "AND a.pk.ymd <= :endYmd "
 			+ "ORDER BY a.pk.ymd ";
 	
 	private static final String REMOVE_BY_SID_PERIOD = "DELETE FROM KshdtInterimHdpub a"
-			+ " WHERE a.pk.sID = :sid"
+			+ " WHERE a.pk.sid = :sid"
 			+ "AND a.pk.ymd >= :startYmd "
 			+ "AND a.pk.ymd <= :endYmd ";
 	
@@ -34,7 +34,7 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 	public List<TempPublicHolidayManagement> find(String employeeId, GeneralDate ymd){
 
 		return this.queryProxy().query(SELECT_BY_EMPLOYEEID_YMD, KshdtInterimHdpub.class)
-				.setParameter("employeeID", employeeId)
+				.setParameter("employeeId", employeeId)
 				.setParameter("ymd",ymd)
 				.getList(c -> c.toDomain());
 	}
@@ -75,18 +75,10 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 
 		if (entity == null) {
 			entity = new KshdtInterimHdpub();
-			entity.pk = pk;
-			entity.creatorAtr = domain.getCreatorAtr().value;
-			entity.useDays = domain.getUseDays().v();
-			entity.remainMngId = domain.getRemainManaID();
-
-			this.getEntityManager().persist(entity);
+			this.getEntityManager().persist(entity.toEntity(domain));
 
 		} else {
-			entity.remainMngId = domain.getRemainManaID();
-			entity.creatorAtr = domain.getCreatorAtr().value;
-			entity.useDays = domain.getUseDays().v();
-			this.commandProxy().update(entity);
+			this.commandProxy().update(entity.toEntity(domain));
 		}
 
 		this.getEntityManager().flush();

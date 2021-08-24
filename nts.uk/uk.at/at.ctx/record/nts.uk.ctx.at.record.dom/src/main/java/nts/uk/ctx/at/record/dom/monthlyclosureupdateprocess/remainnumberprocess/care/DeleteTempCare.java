@@ -18,7 +18,7 @@ public class DeleteTempCare {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTempCareManagement(Require require, String employeeId, DatePeriod period){
+	public static AtomTask delete(Require require, String employeeId, DatePeriod period){
 		return AtomTask.of(() -> require.deleteTempCareByPeriod(employeeId, period));
 	}
 

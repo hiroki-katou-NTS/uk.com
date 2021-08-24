@@ -324,7 +324,13 @@ public class PublicHolidaySetting extends AggregateRoot {
 		return aggregatePublicHolidayWork;
 	}
 	
-
+	//公休管理するか
+	public boolean isManagePublicHoliday(){
+		return this.isManagePublicHoliday == 1;
+	}
+	
+	
+	
 	//公休日数がマイナス時に繰越するがtrueか
 	public boolean iscarryOverNumberOfPublicHoliday(){
 		return this.carryOverNumberOfPublicHolidayIsNegative == 1;

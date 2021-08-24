@@ -19,23 +19,23 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class PublicHolidayProcess {
 
-	public static AtomTask publicHolidayProcess(Require require, CacheCarrier cacheCarrier,
+	public static AtomTask process(Require require, CacheCarrier cacheCarrier,
 			AggrPeriodEachActualClosure period, String employeeId, List<DailyInterimRemainMngData> interimRemainMngMap){
 		
 		//ログイン社員の会社ID取得
 		String companyId = AppContexts.user().companyId();
 		
 		//List<暫定管理データ>から暫定公休管理データに絞り込む
-		List<TempPublicHolidayManagement> interimPublicData = getPublicHolidayRemain(interimRemainMngMap);
+		List<TempPublicHolidayManagement> interimPublicData = getRemain(interimRemainMngMap);
 		
 		//公休残数計算
-		AggrResultOfPublicHoliday output = CalculatePublicHoliday.calculateRemainPublicHoliday(
+		AggrResultOfPublicHoliday output = CalculatePublicHoliday.calculateRemain(
 				require, cacheCarrier, companyId, period, employeeId,interimPublicData);
 		
 		//公休残数更新
-		return AtomTask.of(RemainPublicHolidayUpdating.updateRemainPublicHoliday(require, cacheCarrier, period, employeeId, output))
+		return AtomTask.of(RemainPublicHolidayUpdating.updateRemain(require, cacheCarrier, period, employeeId, output))
 				//公休暫定データ削除
-				.then(DeleteTempPublicHoliday.deleteTempPublicHolidayManagement(require, employeeId, period.getPeriod()));
+				.then(DeleteTempPublicHoliday.delete(require, employeeId, period.getPeriod()));
 		
 	}
 	/**
@@ -43,7 +43,7 @@ public class PublicHolidayProcess {
 	 * @param interimRemainMngMap 暫定残数データ
 	 * @return
 	 */
-	private static List<TempPublicHolidayManagement> getPublicHolidayRemain(List<DailyInterimRemainMngData> interimRemainMngMap){
+	private static List<TempPublicHolidayManagement> getRemain(List<DailyInterimRemainMngData> interimRemainMngMap){
 		
 		return interimRemainMngMap.stream()
 				.filter(c -> !c.getRecAbsData().isEmpty() && !c.getPublicHolidayData().isEmpty())

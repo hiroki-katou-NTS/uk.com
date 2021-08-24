@@ -29,7 +29,7 @@ public class CalculateChildCareNurse {
 	 * @param interimChildCareData
 	 * @return
 	 */
-	public static AggrResultOfChildCareNurse calculateRemainChildCareNurse(Require require, CacheCarrier cacheCarrier, 
+	public static AggrResultOfChildCareNurse calculateRemain(Require require, CacheCarrier cacheCarrier, 
 			String companyId,AggrPeriodEachActualClosure period, String employeeId,
 			List<TempChildCareManagement> interimChildCareData){
 		

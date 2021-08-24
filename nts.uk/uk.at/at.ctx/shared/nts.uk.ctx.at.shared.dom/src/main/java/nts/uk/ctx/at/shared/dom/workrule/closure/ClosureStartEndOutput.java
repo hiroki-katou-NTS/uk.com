@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.uk.shr.com.time.calendar.Day;
 
 /**
- * 締め開始日締め日OUTPUT
+ * 締め開始日締め日
  * @author hayata_maekawa
  *
  */

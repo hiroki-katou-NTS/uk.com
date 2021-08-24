@@ -17,7 +17,7 @@ public class DeleteTempPublicHoliday {
 	 * @param period　期間
 	 * @return
 	 */
-	public static AtomTask deleteTempPublicHolidayManagement(Require require, String employeeId, DatePeriod period){
+	public static AtomTask delete(Require require, String employeeId, DatePeriod period){
 		return AtomTask.of(() -> require.deleteTempPublicHolidayByPeriod(employeeId, period));
 	}
 	

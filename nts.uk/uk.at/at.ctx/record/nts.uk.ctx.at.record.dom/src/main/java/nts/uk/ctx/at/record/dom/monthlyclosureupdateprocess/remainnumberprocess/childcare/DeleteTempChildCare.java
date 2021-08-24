@@ -17,7 +17,7 @@ public class DeleteTempChildCare {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTempChildCareManagement(Require require, String employeeId, DatePeriod period){
+	public static AtomTask delete(Require require, String employeeId, DatePeriod period){
 		return AtomTask.of(() -> require.deleteTempChildCareByPeriod(employeeId, period));
 	}
 

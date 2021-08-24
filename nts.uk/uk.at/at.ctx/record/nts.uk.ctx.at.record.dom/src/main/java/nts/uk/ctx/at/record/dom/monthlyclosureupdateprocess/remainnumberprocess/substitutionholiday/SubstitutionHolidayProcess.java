@@ -57,7 +57,7 @@ public class SubstitutionHolidayProcess {
 				/** 振休逐次休暇の紐付け情報を追加する */
 				.then(addSeqVacation(require, empId, output.getLstSeqVacation()))
 				/** 振休暫定データ削除 */
-				.then(deleteTempSubstitutionManagement(require, empId, period.getPeriod()));	
+				.then(deleteTemp(require, empId, period.getPeriod()));	
 	}
 	
 	/** 振休逐次休暇の紐付け情報を追加する */
@@ -140,7 +140,7 @@ public class SubstitutionHolidayProcess {
 	 * @param period
 	 * @return
 	 */
-	public static AtomTask deleteTempSubstitutionManagement(Require require, String employeeId, DatePeriod period){
+	public static AtomTask deleteTemp(Require require, String employeeId, DatePeriod period){
 		//暫定振休管理データ 削除
 		return AtomTask.of(() -> require.deleteInterimAbsMngBySidDatePeriod(employeeId, period))
 				//暫定振出管理データ 削除

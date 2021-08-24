@@ -227,7 +227,7 @@ public class ChildCareNusingLeaveFinder {
 				.build();
 
 		//	アルゴリズム「[NO.685]社員の暫定子の看護管理データを取得」を実行する。
-		List<TempCareManagement>  lstChildCareMana = this.tempCareManagementRepo.findBySidPeriod(eId, datePeriod);
+		List<TempCareManagement>  lstChildCareMana = this.tempCareManagementRepo.findByPeriodOrderByYmd(eId, datePeriod);
 		List<TempChildCareManagementDto> lstChildCareManaResult = lstChildCareMana.stream().map(item -> TempChildCareManagementDto.builder()
 					.usedDay(item.getUsedNumber().getUsedDay().v())
 					.usedTimes(item.getUsedNumber().getUsedTimes().map(x->x.v()).orElse(0))

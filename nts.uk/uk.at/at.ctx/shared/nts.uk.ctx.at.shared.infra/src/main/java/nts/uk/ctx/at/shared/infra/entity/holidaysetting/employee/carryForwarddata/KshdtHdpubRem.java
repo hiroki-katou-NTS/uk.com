@@ -29,12 +29,18 @@ public class KshdtHdpubRem extends ContractUkJpaEntity {
 	@EmbeddedId
 	protected KshdtHdpubRemPK pk;
 	
+	@Column(name = "ID")
+	private int remainmngid;
+	
+	/* 期限日 */
 	@Column(name = "DEADLINE")
 	private GeneralDate deadline;
 	
+	/* 登録種別 */
 	@Column(name = "REGISTER_TYPE")
 	private int registerType;
 	
+	/* 繰越数 */
 	@Column(name = "CARRIEDFORWARD")
 	private double carriedforward;
 	
