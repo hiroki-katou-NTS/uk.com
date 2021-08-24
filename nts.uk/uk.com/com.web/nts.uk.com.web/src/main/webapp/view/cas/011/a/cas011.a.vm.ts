@@ -220,16 +220,18 @@ module nts.uk.com.view.cas011.a {
 
                     vm.createMode();
                 }
+                if (deferred) {
+                    deferred.resolve();
+                }
             }).fail((error) => {
                 dialog.alertError({messageId: error.messageId}).then(()=>{
                 vm.backToTopPage();
                 });
+                deferred.reject();
             }).always(() => {
                 vm.roleSetCount(vm.listRoleSets().length);
-                if (deferred) {
-                    deferred.resolve();
-                }
                 vm.setFocus();
+                block.clear();
             });
         }
         backToTopPage() {
