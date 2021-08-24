@@ -53,4 +53,6 @@ public class HdShipmentMobileCmd {
 	 * 振休_振出振休紐付け管理<List>
 	 */
 	private List<PayoutSubofHDManagementDto> absWorkMngLst = new ArrayList<PayoutSubofHDManagementDto>();
+	
+	private boolean checkFlag = true;
 }

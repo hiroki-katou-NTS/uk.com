@@ -126,7 +126,8 @@ public class HolidayShipmentMobileWS extends WebService {
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getEmpHistImport().getEmploymentCode(), 
 				Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
 				Optional.ofNullable(displayInforWhenStarting.getApplicationForWorkingDay() == null ? null : displayInforWhenStarting.getApplicationForWorkingDay().getWorkInformationForApplication()), 
-				command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+				command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				command.isCheckFlag());
 		//振休残数不足チェック (Check số nghỉ bù thiếu)
 //		errorCheckProcessingBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(
 //				companyId, 
@@ -185,7 +186,13 @@ public class HolidayShipmentMobileWS extends WebService {
 			rec = Optional.of(command.rec.toDomainUpdateRec(command.rec.application));
 		}
 		DisplayInforWhenStarting displayInforWhenStarting = command.getDisplayInforWhenStarting();
-		preUpdateErrorCheck.errorCheck(companyID, abs, rec, displayInforWhenStarting);
+		preUpdateErrorCheck.errorCheck(
+		        companyID, 
+		        abs, 
+		        rec, 
+		        displayInforWhenStarting, 
+		        abs.isPresent() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
+		        command.isCheckFlag());
 		return Collections.emptyList();
 	}
 	
