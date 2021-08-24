@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -15,16 +14,14 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.primitive.PrimitiveValueBase;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
-import nts.uk.ctx.at.auth.dom.adapter.role.RoleImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.alarm.*;
 import nts.uk.ctx.at.function.dom.adapter.role.AlarmMailSettingsAdapter;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportDto;
+import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
-import nts.uk.ctx.at.function.dom.adapter.workplace.EmployeeInfoImported;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.shr.com.context.AppContexts;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +72,10 @@ public class AlarmSendEmailService implements SendEmailService {
 	private AlarmMailSettingsAdapter mailAdapter;
 
 	@Inject
-	private RoleAdaptor roleAdaptor;
+	private RoleSetExportAdapter roleAdapter;
+
+	@Inject
+	private UserEmployeeAdapter userEmployeeAdapter;
 	
 	public String alarmSendEmail(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
 			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
@@ -240,7 +240,7 @@ public class AlarmSendEmailService implements SendEmailService {
 	 * @return Map＜管理者ID、List＜対象者ID＞＞
 	 */
 	private Map<String, List<String>> adjustManagerByRole(String cid, List<ManagerTagetDto> managerTargetList,
-							List<AlarmListExecutionMailSetting> alarmExeMailSetting, GeneralDate executeDate) {
+														  List<AlarmListExecutionMailSetting> alarmExeMailSetting, GeneralDate executeDate) {
 		Map<String, List<String>> managerMap = new HashMap<>();
 		if (CollectionUtil.isEmpty(managerTargetList)) {
 			return managerMap;
@@ -281,12 +281,23 @@ public class AlarmSendEmailService implements SendEmailService {
 		if (mailSendingRole.isPresent() && mailSendingRole.get().isRoleSetting()) {
 			for (val item : managerMap.entrySet()) {
 				// 社員IDListから就業ロールIDを取得
-//				【Input】
-//　				・List＜社員ID＞　＝　ループ中のList＜管理社ID＞
-//　				・基準日　＝　システム日付
+//				【Input】:List＜社員ID＞　＝　ループ中のList＜管理社ID＞ ,基準日　＝　システム日付
 //               OUTPUT: Map <EmployeeID, RoleID>
-				// TODO: Call domainService : RoleIdWorkDomService
-				Map<String, String> empRoleMap = new HashMap<>();
+				Map<String, String> empRoleMap = GetRoleWorkByEmployeeService.get(
+						new GetRoleWorkByEmployeeService.Require() {
+							@Override
+							public Optional<String> getUserIDByEmpID(String employeeID) {
+								return userEmployeeAdapter.getUserIDByEmpID(employeeID);
+							}
+
+							@Override
+							public Optional<RoleSetExportDto> getRoleSetFromUserId(String userId, GeneralDate baseDate) {
+								return roleAdapter.getRoleSetFromUserId(userId, baseDate);
+							}
+						},
+						item.getValue(),
+						executeDate
+				);
 				for (val entry : empRoleMap.entrySet()) {
 					val roleValue = entry.getValue();
 					val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
