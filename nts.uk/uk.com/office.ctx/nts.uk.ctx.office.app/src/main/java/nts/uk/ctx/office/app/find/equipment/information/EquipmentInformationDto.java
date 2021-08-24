@@ -1,8 +1,8 @@
-package nts.uk.ctx.office.app.find.equipment;
+package nts.uk.ctx.office.app.find.equipment.information;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 
 @Data
 public class EquipmentInformationDto implements EquipmentInformation.MementoSetter {

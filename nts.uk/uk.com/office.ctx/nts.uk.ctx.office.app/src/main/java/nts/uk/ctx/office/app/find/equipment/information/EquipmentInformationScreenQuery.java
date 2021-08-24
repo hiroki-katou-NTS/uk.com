@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.find.equipment;
+package nts.uk.ctx.office.app.find.equipment.information;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,8 +8,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformationRepository;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationRepository;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -22,7 +24,8 @@ public class EquipmentInformationScreenQuery {
 	@Inject
 	private EquipmentInformationRepository equipmentInformationRepository;
 	
-	//TODO: Inject EqCls
+	@Inject
+	private EquipmentClassificationRepository equipmentClassificationRepository;
 	
 	public EquipmentInformationStartupDto getStartupList() {
 		// 1. get*(ログイン会社ID)
@@ -30,8 +33,11 @@ public class EquipmentInformationScreenQuery {
 				.findByCid(AppContexts.user().companyId());
 		// 2. 設備情報. isPresent
 		if (!equipmentInformations.isEmpty()) {
-			// TODO: get(契約コード、List<設備分類コード>)
-			
+			List<String> clsCodes = equipmentInformations.stream()
+					.map(data -> data.getEquipmentClsCode().v()).distinct().collect(Collectors.toList());
+			// get(契約コード、List<設備分類コード>)
+			List<EquipmentClassification> equipmentClassifications = this.equipmentClassificationRepository
+					.getFromClsCodeList(AppContexts.user().contractCode(), clsCodes);
 		}
 		return new EquipmentInformationStartupDto(
 				equipmentInformations.stream()

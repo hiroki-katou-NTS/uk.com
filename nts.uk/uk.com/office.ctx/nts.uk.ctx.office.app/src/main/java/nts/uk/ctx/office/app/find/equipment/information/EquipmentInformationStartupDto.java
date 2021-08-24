@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.find.equipment;
+package nts.uk.ctx.office.app.find.equipment.information;
 
 import java.util.List;
 

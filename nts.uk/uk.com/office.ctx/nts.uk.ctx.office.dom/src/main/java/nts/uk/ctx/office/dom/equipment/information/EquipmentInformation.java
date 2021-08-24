@@ -1,10 +1,13 @@
-package nts.uk.ctx.office.dom.equipment;
+package nts.uk.ctx.office.dom.equipment.information;
+
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備マスタ.設備情報
@@ -31,7 +34,17 @@ public class EquipmentInformation extends AggregateRoot {
 	/**
 	 * 備考
 	 */
-	private EquipmentRemark equipmentRemark;
+	private Optional<EquipmentRemark> equipmentRemark;
+	
+	/**
+	 * 設備分類コード
+	 */
+	private EquipmentClassificationCode equipmentClsCode;
+	
+	// [1] 有効期限内か																							
+	public boolean isValid(GeneralDate date) {
+		return this.validPeriod.contains(date);
+	}
 	
 	public static EquipmentInformation createFromMemento(MementoGetter mementoGetter) {
 		EquipmentInformation domain = new EquipmentInformation();
@@ -43,7 +56,8 @@ public class EquipmentInformation extends AggregateRoot {
 		this.equipmentCode = new EquipmentCode(mementoGetter.getCode());
 		this.equipmentName = new EquipmentName(mementoGetter.getName());
 		this.validPeriod = new DatePeriod(mementoGetter.getEffectiveStartDate(), mementoGetter.getEffectiveEndDate());
-		this.equipmentRemark = new EquipmentRemark(mementoGetter.getRemark());
+		this.equipmentRemark = Optional.ofNullable(mementoGetter.getRemark()).map(EquipmentRemark::new);
+		this.equipmentClsCode = new EquipmentClassificationCode(mementoGetter.getEquipmentClsCode());
 	}
 	
 	public void setMemento(MementoSetter mementoSetter) {
@@ -51,7 +65,8 @@ public class EquipmentInformation extends AggregateRoot {
 		mementoSetter.setName(this.equipmentName.v());
 		mementoSetter.setEffectiveStartDate(this.validPeriod.start());
 		mementoSetter.setEffectiveEndDate(this.validPeriod.end());
-		mementoSetter.setRemark(this.equipmentRemark.v());
+		mementoSetter.setRemark(this.equipmentRemark.map(EquipmentRemark::v).orElse(null));
+		mementoSetter.setEquipmentClsCode(this.equipmentClsCode.v());
 	}
 	
 	public interface MementoGetter {
@@ -60,6 +75,7 @@ public class EquipmentInformation extends AggregateRoot {
 		GeneralDate getEffectiveStartDate();
 		GeneralDate getEffectiveEndDate();
 		String getRemark();
+		String getEquipmentClsCode();
 	}
 	
 	public interface MementoSetter {
@@ -68,5 +84,6 @@ public class EquipmentInformation extends AggregateRoot {
 		void setEffectiveStartDate(GeneralDate startDate);
 		void setEffectiveEndDate(GeneralDate endDate);
 		void setRemark(String remark);
+		void setEquipmentClsCode(String equipmentClsCode);
 	}
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.infra.entity.equipment;
+package nts.uk.ctx.office.infra.entity.equipment.information;
 
 import java.io.Serializable;
 

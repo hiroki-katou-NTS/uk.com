@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.command.equipment;
+package nts.uk.ctx.office.app.command.equipment.information;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformationRepository;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
