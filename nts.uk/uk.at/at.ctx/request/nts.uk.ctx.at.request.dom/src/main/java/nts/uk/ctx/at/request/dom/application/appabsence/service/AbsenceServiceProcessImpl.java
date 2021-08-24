@@ -416,7 +416,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     	// 申請期間から休日の申請日を取得する
     	List<GeneralDate> holidayDates = otherCommonAlgorithm.lstDateIsHoliday(appAbsence.getEmployeeID()
 				, new DatePeriod(appAbsence.getOpAppStartDate().get().getApplicationDate(),appAbsence.getOpAppEndDate().get().getApplicationDate())
-				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
+				, appAbsenceStartInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
     	result.setHolidayDateLst(holidayDates);
     	
     	// 取得した「休日の申請日<List>」をチェックする
