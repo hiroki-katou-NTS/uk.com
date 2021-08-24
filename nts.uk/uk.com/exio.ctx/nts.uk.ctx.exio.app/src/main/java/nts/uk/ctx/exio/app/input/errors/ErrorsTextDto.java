@@ -6,6 +6,6 @@ import lombok.Value;
 public class ErrorsTextDto {
 
 	int pageNo;
-	int errosCount;
+	int errorsCount;
 	String text;
 }
