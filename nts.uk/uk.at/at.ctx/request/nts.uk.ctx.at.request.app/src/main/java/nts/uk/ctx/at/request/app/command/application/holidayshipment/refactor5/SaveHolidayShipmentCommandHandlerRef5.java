@@ -96,6 +96,10 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		AppDispInfoStartupOutput appDispInfoStartup = command.appDispInfoStartup.toDomain();
 		
 		//登録前のエラーチェック処理(Xử lý error check trước khi đăng ký)
+		boolean existFlag = false;
+        if (abs.isPresent() && rec.isPresent()) {
+            existFlag = true;
+        }
 		this.errorCheckProcessingBeforeRegistrationKAF011.processing(
 				companyId, 
 				abs,
@@ -105,7 +109,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
 				appDispInfoStartup, 
 				command.existAbs() ? command.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
-				command.isCheckFlag());
+				command.isCheckFlag(), 
+				existFlag);
 		
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
 		//QA: http://192.168.50.4:3000/issues/113451 -> done
@@ -200,7 +205,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		String absReflectAppId = registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
 		
 		//振休振出同時登録時紐付け管理を登録する
-		this.registerTheLinkManagement(companyId, abs.get(), rec.get(), holidayManage);
+		this.registerTheLinkManagement(companyId, abs.get(), rec.get());
 		
 		//暫定データの登録(đăng ký data tạm thời)
 		interimRemainDataMngRegisterDateChange.registerDateChange(
@@ -334,20 +339,20 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param rec 振出申請
 	 * @param holidayManage 振休紐付け管理区分
 	 */
-	public void registerTheLinkManagement(String companyId, AbsenceLeaveApp abs, RecruitmentApp rec, ManageDistinct holidayManage) {
-		if(holidayManage == ManageDistinct.YES) {
-			//<<Public>> 指定した勤務種類をすべて取得する
-			Optional<WorkType> workTypes = workTypeRepo.findByDeprecated(companyId, rec.getWorkInformation().getWorkTypeCode().v());;
-			if(workTypes.isPresent()) {
-				//ドメインモデル「振出振休紐付け管理」を登録する
-				payoutSubofHDManaRepository.add(
-						new PayoutSubofHDManagement(
-								rec.getEmployeeID(), 
-								rec.getAppDate().getApplicationDate(), 
-								abs.getAppDate().getApplicationDate(), 
-								workTypes.get().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay ? 1.0 : 0.5,
-								TargetSelectionAtr.REQUEST.value));
-			}
-		}
+	public void registerTheLinkManagement(String companyId, AbsenceLeaveApp abs, RecruitmentApp rec) {
+	    //<<Public>> 指定した勤務種類をすべて取得する
+	    Optional<WorkType> workTypes = workTypeRepo.findByDeprecated(companyId, rec.getWorkInformation().getWorkTypeCode().v());;
+	    if(workTypes.isPresent()) {
+	        //ドメインモデル「振出振休紐付け管理」を登録する
+	        payoutSubofHDManaRepository.add(
+	                new PayoutSubofHDManagement(
+	                        rec.getEmployeeID(), 
+	                        rec.getAppDate().getApplicationDate(), 
+	                        abs.getAppDate().getApplicationDate(), 
+	                        workTypes.get().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay ? 1.0 : 0.5,
+	                                TargetSelectionAtr.REQUEST.value));
+	    }
+//		if(holidayManage == ManageDistinct.YES) {
+//		}
 	}
 }
