@@ -4,8 +4,11 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeRevisedData;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -26,17 +29,23 @@ public class PrepareImporting {
 				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
 		
-		require.setupWorkspace(context);
-		
-		// 受入データの組み立て
-		setting.assemble(require, context, csvFileStream);
-		
-		// 編集済みデータの正準化
-		val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
-		CanonicalizeRevisedData.canonicalize(require, context, meta);
+		try {
+			require.setupWorkspace(context);
+			
+			// 受入データの組み立て
+			setting.assemble(require, context, csvFileStream);
+			
+			// 編集済みデータの正準化
+			val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
+			CanonicalizeRevisedData.canonicalize(require, context, meta);
+			
+		} catch (BusinessException bex) {
+			require.add(context, ExternalImportError.execution(bex.getMessage()));
+		}
 	}
 	
 	public static interface Require extends
+			ExternalImportErrorsRequire,
 			ExternalImportSetting.RequireAssemble,
 			CanonicalizeRevisedData.Require {
 		

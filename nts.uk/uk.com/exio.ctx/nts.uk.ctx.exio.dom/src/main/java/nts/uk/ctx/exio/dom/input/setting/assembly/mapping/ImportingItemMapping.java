@@ -105,7 +105,8 @@ public class ImportingItemMapping {
 	private ImportingCsvItem readCsv(CsvRecord record) {
 		
 		String value = record.getItemByColumnNo(csvColumnNo.get())
-				.orElseThrow(() -> new RuntimeException("列が存在しない：" + csvColumnNo));
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage(
+						"受入CSVファイルに " + csvColumnNo.get() + " 列目が存在しないため、処理を続行できません。")));
 		
 		return new ImportingCsvItem(itemNo, value);
 	}

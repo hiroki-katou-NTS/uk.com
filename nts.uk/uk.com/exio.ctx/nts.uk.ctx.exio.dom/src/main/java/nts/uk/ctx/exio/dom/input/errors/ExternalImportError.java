@@ -5,12 +5,26 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 
+/**
+ * 実行エラー（全体が実行不可能なエラー）の場合、行も項目のNULL
+ * レコードのエラーなら項目がNULL
+ * 項目のエラーなら全て非NULL
+ */
 @Value
 public class ExternalImportError {
 
-	int csvRowNo;
+	/** CSV行番号 */
+	Integer csvRowNo;
+	
+	/** 項目NO */
 	Integer itemNo;
+	
+	/** エラーメッセージ */
 	String message;
+	
+	public static ExternalImportError execution(String message) {
+		return new ExternalImportError(null, null, message);
+	}
 	
 	public static ExternalImportError record(int csvRowNo, String message) {
 		return new ExternalImportError(csvRowNo, null, message);
@@ -24,17 +38,25 @@ public class ExternalImportError {
 		return new ExternalImportError(error.getCsvRowNo(), null, error.getMessage());
 	}
 	
+	public boolean isExecution() {
+		return csvRowNo == null;
+	}
+	
 	public boolean isRecord() {
-		return itemNo == null;
+		return !isExecution() && itemNo == null;
 	}
 	
 	public boolean isItem() {
-		return !isRecord();
+		return !isExecution() && itemNo != null;
 	}
 	
 	public void toText(RequireToText require, ExecutionContext context, StringBuilder sb) {
 		
-		sb.append(String.format("%08d 行", csvRowNo));
+		if (isExecution()) {
+			sb.append("実行エラー");
+		} else {
+			sb.append(String.format("%8d 行", csvRowNo));
+		}
 		
 		sb.append("\t");
 		
@@ -46,8 +68,6 @@ public class ExternalImportError {
 		sb.append("\t");
 		
 		sb.append(message);
-		
-		sb.append("\r\n");
 	}
 	
 	public static interface RequireToText {

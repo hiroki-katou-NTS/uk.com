@@ -27,7 +27,10 @@ public class ExternalImportErrors {
 		
 		val sb = new StringBuilder();
 		
-		errors.forEach(e -> e.toText(require, context, sb));
+		errors.forEach(e -> {
+			e.toText(require, context, sb);
+			sb.append("\r\n");
+		});
 		
 		return sb.toString();
 	}
