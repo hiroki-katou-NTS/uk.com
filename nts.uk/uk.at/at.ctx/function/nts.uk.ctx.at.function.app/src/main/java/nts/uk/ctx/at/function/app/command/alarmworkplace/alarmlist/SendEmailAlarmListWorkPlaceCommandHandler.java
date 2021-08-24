@@ -9,6 +9,8 @@ import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.mailserver.MailServerAdapter;
+import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
+import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
@@ -78,6 +80,12 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 
     @Inject
     private CreateErrorInfo createErrorInfo;
+
+    @Inject
+    private RoleSetExportAdapter roleAdapter;
+
+    @Inject
+    private UserEmployeeAdapter userEmployeeAdapter;
 
 
     @Override
@@ -210,40 +218,25 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         return alarmMailSendingRole.get().getRoleIds().stream().anyMatch(x -> x == role);
     }
 
+    //社員IDListから就業ロールIDを取得
     private Map<String, String> roleIdWorkDomService(List<String> empIdList) {
         Map<String, String> map = new HashMap<>();
-        int index = 0;
         for (String empId : empIdList) {
-            /*Optional<String> userID = require.getUserID(empId);
-            if (userID.isPresent()) {
-                roleSetList.add(new RoleSetExport());
-            }*/
-            //TODO get role id from  https://insight.3si.vn/issues/53190
-            map.put(empId, "roleId_" + index);
-            index++;
+            //社員IDからユーザIDを取得する
+            val userId = userEmployeeAdapter.getUserIDByEmpID(empId);
+            if (userId.isPresent()) {
+                //ユーザIDからロールセットを取得する
+                val role = roleAdapter.getRoleSetFromUserId(userId.get(), GeneralDate.today());
+                if (role.isPresent() && !role.get().getEmploymentRoleId().isEmpty()) {
+                    map.put(empId, role.get().getEmploymentRoleId());
+                }
+            }
         }
         return map;
     }
 
     private boolean isNotHaveMailSetting(Optional<AlarmListExecutionMailSetting> mailSetting) {
         return !mailSetting.isPresent() || !(mailSetting.get().getContentMailSettings().isPresent());
-    }
-
-    private MailSettingsParamDto buildMailSend(AlarmListExecutionMailSetting mailSetting) {
-
-        val mailSetings = mailSetting.getContentMailSettings();
-        val mailSetingAdmins = mailSetting.getContentMailSettings();
-        String subject = "", text = "", subjectAdmin = "", textAdmin = "";
-        if (mailSetings.isPresent()) {
-            subject = mailSetings.get().getSubject().orElseGet(() -> new Subject("")).v();
-            text = mailSetings.get().getText().orElseGet(() -> new Content("")).v();
-        }
-        if (mailSetingAdmins != null) {
-            subjectAdmin = mailSetingAdmins.get().getSubject().orElseGet(() -> new Subject("")).v();
-            textAdmin = mailSetingAdmins.get().getText().orElseGet(() -> new Content("")).v();
-        }
-        // setting subject , body mail
-        return new MailSettingsParamDto(subject, text, subjectAdmin, textAdmin);
     }
 
     private Map<String, List<String>> angAnAdministrator(List<String> worplaceIdList) {
@@ -255,14 +248,5 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             }
         }
         return managerMap;
-    }
-
-    private Map<String, List<String>> getEmployeeIdMap(List<String> worplaceIdList) {
-        Map<String, List<String>> map = new HashMap<>();
-        for (String worlPlaceId : worplaceIdList) {
-            //TODO get employee list by worlPlaceId
-            map.put(worlPlaceId, Collections.emptyList());
-        }
-        return map;
     }
 }

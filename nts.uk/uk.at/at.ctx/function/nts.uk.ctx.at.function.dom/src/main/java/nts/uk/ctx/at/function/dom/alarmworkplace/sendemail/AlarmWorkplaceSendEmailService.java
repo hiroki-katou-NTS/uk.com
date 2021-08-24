@@ -128,14 +128,15 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
 
     @Override
     public Map<String, List<String>> alarmWorkplacesendEmail(Map<String, List<String>> administratorTarget,
-                                                List<ValueExtractAlarmDto> listValueExtractAlarmDto,
-                                                AlarmListExecutionMailSetting mailSettingsNormal,
-                                                String currentAlarmCode, boolean useAuthentication) {
+                                                             List<ValueExtractAlarmDto> listValueExtractAlarmDto,
+                                                             AlarmListExecutionMailSetting mailSettingsNormal,
+                                                             String currentAlarmCode, boolean useAuthentication) {
         val companyId = AppContexts.user().companyId();
         Integer functionID = 9; //function of Alarm list = 9
-        Map<String, List<String>> errorTadmin=new HashMap<>();
+        Map<String, List<String>> errorTadmin = new HashMap<>();
         //Map＜アラーム抽出結果、List＜管理者ID＞＞
         val mapAlarmExtractionResult = mapAlarmExtractionResult(administratorTarget, listValueExtractAlarmDto);
+        Optional<String> senderAddress = Optional.ofNullable(mailSettingsNormal.getSenderAddress().isPresent() ? mailSettingsNormal.getSenderAddress().get().v() : "");
         for (Map.Entry<ValueExtractAlarmDto, List<String>> target : mapAlarmExtractionResult.entrySet()) {
             // ループ中項目のList＜管理者ID＞をループする
 
@@ -152,8 +153,7 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                             currentAlarmCode,
                             useAuthentication,
                             mailSettingsNormal.getContentMailSettings(),
-                            Optional.empty()
-
+                            senderAddress
                     );
                     ;
                     if (!isSucess) {
@@ -166,7 +166,7 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                     throw e;
                 }
             }
-            errorTadmin.put(target.getKey().getWorkplaceID(),errorsAdmin);
+            errorTadmin.put(target.getKey().getWorkplaceID(), errorsAdmin);
             errorsAdmin.clear();
 
         }
@@ -181,6 +181,7 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                                                 boolean useAuthentication) {
         val companyId = AppContexts.user().companyId();
         List<String> errorsPerson = new ArrayList<>();
+        Optional<String> senderAddress = Optional.ofNullable(mailSettingsNormal.getSenderAddress().isPresent() ? mailSettingsNormal.getSenderAddress().get().v() : "");
         empList.forEach(emId -> {
             listValueExtractAlarmDto.forEach(ext -> {
                 try {
@@ -193,8 +194,7 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                             currentAlarmCode,
                             useAuthentication,
                             mailSettingsNormal.getContentMailSettings(),
-                            Optional.empty()
-
+                            senderAddress
                     );
                     ;
                     if (!isSucess) {
