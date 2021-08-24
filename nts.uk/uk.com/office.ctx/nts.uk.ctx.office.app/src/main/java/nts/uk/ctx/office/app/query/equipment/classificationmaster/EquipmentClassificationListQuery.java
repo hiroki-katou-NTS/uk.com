@@ -10,6 +10,11 @@ import javax.inject.Inject;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationRepository;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備分類マスタ.APP.設備分類一覧を取得する
+ * @author NWS-DungDV
+ *
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EquipmentClassificationListQuery {
