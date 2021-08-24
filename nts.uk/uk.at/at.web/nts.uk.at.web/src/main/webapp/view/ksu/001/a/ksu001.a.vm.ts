@@ -2939,7 +2939,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
 								let value = null;
 								if(!_.isEmpty(findValueObject)) {
-									value = _.isNaN(_.toNumber(findValueObject.value)) ? null : _.toNumber(findValueObject.value);
+									value = _.isNumber(findValueObject.value) ? findValueObject.value : 
+											_.isEmpty(findValueObject.value) ? null : 
+											_.isNaN(_.toNumber(findValueObject.value)) ? null : _.toNumber(findValueObject.value);
 								}
 								if(_.includes([1, 3, 5], i)) {
 									_.set(objectLaborCostAndTime, key, _.isNumber(value) ? nts.uk.time.format.byId("Time_Short_HM", value) : '');	
@@ -3005,7 +3007,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
 								if (findObject.budgetAtr==0) {
 									_.set(objectExternalBudget, key, _.isNumber(value) ? nts.uk.time.format.byId("Time_Short_HM", value) : '');
 								} else if (findObject.budgetAtr==2) {
@@ -3072,7 +3076,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
 	                            _.set(objectTimeCount, key, _.isNumber(value) ? value : '');
 								if(_.isNumber(value)) {
 									if(_.isNumber(sumTimeCount)) {
@@ -3142,7 +3148,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                                            break;
 	                                    default: break;
 	                                }
-									value = _.isNaN(_.toNumber(value)) ? null : _.toNumber(value);
+									value = _.isNumber(value) ? value : 
+											_.isEmpty(value) ? null : 
+											_.isNaN(_.toNumber(value)) ? null : _.toNumber(value);
 									_.set(objectPeopleMethod, key, _.isNumber(value) ? value : '');
 									if(_.isNumber(value)) {
 										if(_.isNumber(sumPeopleMethod)) {
@@ -3196,7 +3204,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
 	                            _.set(objectEmployment, key, _.isNumber(value) ? value : '');
 								if(_.isNumber(value)) {
 									if(_.isNumber(sumEmployment)) {
@@ -3249,7 +3259,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
 	                            _.set(objectClassification, key, _.isNumber(value) ? value : '');
 								if(_.isNumber(value)) {
 									if(_.isNumber(sumClassification)) {
@@ -3302,7 +3314,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
 	                            _.set(objectJobTitle, key, _.isNumber(value) ? value : '');
 								if(_.isNumber(value)) {
 									if(_.isNumber(sumJobTitleInfo)) {
