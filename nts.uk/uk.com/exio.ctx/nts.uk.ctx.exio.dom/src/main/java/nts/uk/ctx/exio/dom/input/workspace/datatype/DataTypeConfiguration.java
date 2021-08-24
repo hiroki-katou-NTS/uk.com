@@ -19,4 +19,16 @@ public class DataTypeConfiguration {
 	public static DataTypeConfiguration guid() {
 		return new DataTypeConfiguration(STRING, 36, 0);
 	}
+	
+	public static DataTypeConfiguration integer(int length) {
+		return new DataTypeConfiguration(DataType.INT, length, 0);
+	}
+	
+	public static DataTypeConfiguration text(int length) {
+		return new DataTypeConfiguration(DataType.STRING, length, 0);
+	}
+	
+	public static DataTypeConfiguration autonumber() {
+		return new DataTypeConfiguration(DataType.AUTONUMBER, 0, 0);
+	}
 }
