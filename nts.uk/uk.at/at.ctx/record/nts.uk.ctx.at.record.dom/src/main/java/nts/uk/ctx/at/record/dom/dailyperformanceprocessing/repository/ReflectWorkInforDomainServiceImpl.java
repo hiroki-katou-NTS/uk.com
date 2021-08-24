@@ -338,7 +338,12 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHistItemImport.get().getEmploymentCode()),
 							jobTitleHistItemImport.get().getJobTitleId(),
 							workplaceHistItemImport.get().getWorkplaceId(),
-							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),Optional.empty(), Optional.empty())));
+							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
+							Optional.empty(), // TODO team daily add
+							Optional.empty(), // TODO team daily add 
+							Optional.empty(), // TODO team daily add 
+							Optional.empty(),  // TODO team daily add
+							Optional.empty()))); // TODO team daily add
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -520,8 +525,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new EmploymentCode(employmentHasData.get().getEmploymentCode()),
 							jobTitleHasData.get().getJobTitleId(), workPlaceHasData.get().getWorkplaceId(),
 							new ClassificationCode(classificationHasData.get().getClassificationCode()),
-							Optional.empty(),
-							Optional.empty())));
+							Optional.empty(), // TODO team daily add
+							Optional.empty(), // TODO team daily add
+							Optional.empty(),  // TODO team daily add
+							Optional.empty(),  // TODO team daily add
+							Optional.empty()))); // TODO team daily add
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する
@@ -1498,7 +1506,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
 							worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()),
-							Optional.empty())),errMesInfos);
+							Optional.empty(), // TODO team daily add
+							Optional.empty(), // TODO team daily add
+							Optional.empty(), // TODO team daily add
+							Optional.empty())),  // TODO team daily add
+					errMesInfos);
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
 			// 社員の日別実績のエラーを作成する

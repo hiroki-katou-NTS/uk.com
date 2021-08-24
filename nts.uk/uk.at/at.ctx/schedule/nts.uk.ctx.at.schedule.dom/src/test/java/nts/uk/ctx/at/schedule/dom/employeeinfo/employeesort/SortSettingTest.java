@@ -271,16 +271,16 @@ public class SortSettingTest {
 		
 		val empLicenses = 
 				Arrays.asList(
-						  new EmpLicenseClassification("emp1", Optional.of(LicenseClassification.NURSE))
-						, new EmpLicenseClassification("emp2", Optional.of(LicenseClassification.NURSE_ASSOCIATE))
-						, new EmpLicenseClassification("emp3", Optional.of(LicenseClassification.NURSE_ASSIST))
-						, new EmpLicenseClassification("emp4", Optional.of(LicenseClassification.NURSE))
-						, new EmpLicenseClassification("emp5", Optional.of(LicenseClassification.NURSE_ASSIST))
-						, new EmpLicenseClassification("emp6", Optional.empty())
-						, new EmpLicenseClassification("emp7", Optional.of(LicenseClassification.NURSE_ASSIST))
-						, new EmpLicenseClassification("emp8", Optional.empty())
-						, new EmpLicenseClassification("emp9", Optional.of(LicenseClassification.NURSE_ASSOCIATE))
-						, new EmpLicenseClassification("emp10", Optional.of(LicenseClassification.NURSE))
+						  new EmpLicenseClassification("emp1", Optional.of(LicenseClassification.NURSE), Optional.of(false))
+						, new EmpLicenseClassification("emp2", Optional.of(LicenseClassification.NURSE_ASSOCIATE), Optional.of(false))
+						, new EmpLicenseClassification("emp3", Optional.of(LicenseClassification.NURSE_ASSIST), Optional.of(false))
+						, new EmpLicenseClassification("emp4", Optional.of(LicenseClassification.NURSE), Optional.of(false))
+						, new EmpLicenseClassification("emp5", Optional.of(LicenseClassification.NURSE_ASSIST), Optional.of(false))
+						, new EmpLicenseClassification("emp6", Optional.empty(), Optional.empty())
+						, new EmpLicenseClassification("emp7", Optional.of(LicenseClassification.NURSE_ASSIST), Optional.of(false))
+						, new EmpLicenseClassification("emp8", Optional.empty(), Optional.empty())
+						, new EmpLicenseClassification("emp9", Optional.of(LicenseClassification.NURSE_ASSOCIATE), Optional.of(false))
+						, new EmpLicenseClassification("emp10", Optional.of(LicenseClassification.NURSE), Optional.of(false))
 						);
 		
 		new MockUp<GetEmpLicenseClassificationService>() {

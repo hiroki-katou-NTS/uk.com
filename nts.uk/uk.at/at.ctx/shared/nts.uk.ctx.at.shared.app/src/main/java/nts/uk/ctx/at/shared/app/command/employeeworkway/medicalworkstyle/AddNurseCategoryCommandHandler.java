@@ -42,7 +42,8 @@ public class AddNurseCategoryCommandHandler extends CommandHandler<NurseCategory
 		NurseClassification nurseClassification = new NurseClassification(new CompanyId(companyId),
 				new NurseClassifiCode(command.getNurseClassificationCode()),
 				new NurseClassifiName(command.getNurseClassificationName()),
-				LicenseClassification.valueOf(command.getLicense()), command.isOfficeWorker());
+				LicenseClassification.valueOf(command.getLicense()), command.isOfficeWorker(),
+				false);//please update 
 		// 4: persist()
 		nurseClassificationRepository.insert(nurseClassification);
 	}

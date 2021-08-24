@@ -25,10 +25,13 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTeamInfor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.PersonSymbolQualify;
-import nts.uk.ctx.at.schedule.dom.workschedule.displaysetting.DisplayControlPersonalCondition.Require;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiCode;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassifiName;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
@@ -172,10 +175,11 @@ public class DisplayControlPersonalConditionTest {
 		// ------------------------- Mocking ↓
 
 		List<EmpLicenseClassification> lstEmpLicense = Arrays.asList(
-				EmpLicenseClassification.get("001", LicenseClassification.NURSE),
-				EmpLicenseClassification.empLicenseClassification("002"),
-				EmpLicenseClassification.get("003", LicenseClassification.NURSE_ASSOCIATE),
-				EmpLicenseClassification.get("004", LicenseClassification.NURSE_ASSIST));
+				EmpLicenseClassification.createEmpLicenseClassification("001", Helper.createNurseClassification(LicenseClassification.NURSE)),
+				EmpLicenseClassification.createEmpLicenseClassification("002"),
+				EmpLicenseClassification.createEmpLicenseClassification("003", Helper.createNurseClassification(LicenseClassification.NURSE_ASSOCIATE)),
+				EmpLicenseClassification.createEmpLicenseClassification("004", Helper.createNurseClassification(LicenseClassification.NURSE_ASSIST))
+				);
 
 		new MockUp<GetEmpLicenseClassificationService>() {
 			@Mock
@@ -210,5 +214,22 @@ public class DisplayControlPersonalConditionTest {
 						tuple("004", Optional.empty(), Optional.of("RankSymbol04"),
 								Optional.of(LicenseClassification.NURSE_ASSIST)));
 
+	}
+	
+	public static class Helper{
+		/**
+		 * 看護区分を作る
+		 * @param nurseClassifiCode　看護区分コード
+		 * @return
+		 */
+		public static NurseClassification createNurseClassification(
+					LicenseClassification licenseClss) {
+			return new NurseClassification(new CompanyId("CID") // dummy
+						,	new NurseClassifiCode("1")// dummy
+						,	new NurseClassifiName("NAME1") // dummy
+						,	licenseClss, true, false // dummy
+					);
+		}
+		
 	}
 }
