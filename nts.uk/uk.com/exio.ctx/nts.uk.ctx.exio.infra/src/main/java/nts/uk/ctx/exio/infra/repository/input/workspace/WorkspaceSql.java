@@ -29,6 +29,11 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 import nts.uk.shr.com.company.CompanyId;
 
+/**
+ * ワークスペースの一時テーブルを扱うクラス
+ * 現状はSQLServerにしか対応できていないので、後でPostgreSQL対応が必要。
+ * その際、できるだけTemporaryTableクラスに処理を移譲すること。
+ */
 @RequiredArgsConstructor
 public class WorkspaceSql {
 

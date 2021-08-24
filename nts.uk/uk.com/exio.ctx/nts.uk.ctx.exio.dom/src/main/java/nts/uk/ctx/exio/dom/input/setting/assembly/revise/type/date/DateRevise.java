@@ -2,7 +2,10 @@ package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.arc.error.BusinessException;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 日付型編集
@@ -15,8 +18,8 @@ public class DateRevise implements ReviseValue {
 	private ExternalImportDateFormat dateFormat;
 	
 	@Override
-	public Object revise(String target) {
-		//「値」が指定した書式に合致するか判別
-		return this.dateFormat.fromString(target);
+	public Either<ErrorMessage, ?> revise(String target) {
+		return Either.tryCatch(() -> dateFormat.fromString(target), BusinessException.class)
+				.mapLeft(ErrorMessage::of);
 	}
 }

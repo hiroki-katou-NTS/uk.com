@@ -26,12 +26,12 @@ public class LayoutAnyRecordToChange {
 	private final JdbcProxy jdbcProxy;
 	private final ExecutionContext context;
 	
-	private static final String TABLE_NAME = TemporaryTable.PREFIX +  "ANY_RECORD_TO_CHANGE";
+	private static final String TABLE_NAME = "ANY_RECORD_TO_CHANGE";
 	private static final int ATR_PRIMARY_KEYS = 1;
 	private static final int ATR_CHANGES = 2;
 	
 	private String tableName() {
-		return TABLE_NAME + "_" + context.getCompanyId().replace("-", "");
+		return TemporaryTable.createTableName(context, TABLE_NAME);
 	}
 	
 	public void createTable() {

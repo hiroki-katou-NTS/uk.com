@@ -11,15 +11,12 @@ import javax.inject.Inject;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
-import nts.uk.ctx.bs.employee.dom.employment.history.EmploymentHistoryRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -32,6 +29,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -104,13 +103,13 @@ public class ExternalImportPrepareRequire {
 	private TaskingRepository taskingRepo;
 	
 	@Inject
-	private WorkInformationRepository workInformationRepo;
-	
-	@Inject
 	private ExternalImportSettingRepository settingRepo;
 	
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
+	
+	@Inject
+	private ExternalImportErrorsRepository errorsRepo;
 	
 	public class RequireImpl implements Require {
 		
@@ -163,6 +162,7 @@ public class ExternalImportPrepareRequire {
 			workspaceRepo.setup(this, context);
 			existingRepo.setup(context);
 			metaRepo.setup(context);
+			errorsRepo.setup(context);
 		}
 		
 		@Override
@@ -207,8 +207,8 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public void save(ImportingDataMeta meta) {
-			metaRepo.save(meta);
+		public void save(ExecutionContext context, ImportingDataMeta meta) {
+			metaRepo.save(context, meta);
 		}
 		
 		
@@ -224,11 +224,6 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public Optional<WorkInfoOfDailyPerformance> getWorkInfoOfDailyPerformance(String employeeId, GeneralDate date) {
-			return workInformationRepo.find(employeeId, date);
-		}
-
-		@Override
 		public boolean existsDomainData(DomainDataId id) {
 			return domainDataRepo.exists(id);
 		}
@@ -237,6 +232,11 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass) {
 			return domainDataRepo.getHistory(id, historyClass);
+		}
+
+		@Override
+		public void add(ExecutionContext context, ExternalImportError error) {
+			errorsRepo.add(context, error);
 		}
 
 	}

@@ -4,14 +4,18 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 項目マッピング
@@ -74,17 +78,17 @@ public class ImportingItemMapping {
 		csvColumnNo = Optional.empty();
 	}
 	
-	public DataItem assemble(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
+	public Either<ItemError, DataItem> assemble(RequireAssemble require, ExecutionContext context, CsvRecord csvRecord) {
 		
 		if (!isConfigured()) {
-			throw new RuntimeException("未設定");
+			throw new BusinessException(new RawErrorMessage("未設定の受入項目があります。設定を確認してください。"));
 		}
 		
 		// 固定値
 		if (fixedValue.isPresent()) {
 			val importableItem = require.getImportableItem(context.getDomainId(), itemNo);
 			Object value = fixedValue.get().asTypeOf(importableItem.getItemType());
-			return new DataItem(itemNo, value);
+			return Either.right(new DataItem(itemNo, value));
 		}
 		
 		// CSV項目
@@ -101,17 +105,17 @@ public class ImportingItemMapping {
 	private ImportingCsvItem readCsv(CsvRecord record) {
 		
 		String value = record.getItemByColumnNo(csvColumnNo.get())
-				.orElseThrow(() -> new RuntimeException("列が存在しない：" + csvColumnNo));
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage(
+						"受入CSVファイルに " + csvColumnNo.get() + " 列目が存在しないため、処理を続行できません。")));
 		
 		return new ImportingCsvItem(itemNo, value);
 	}
 
-	private static DataItem noRevise(RequireAssemble require, ExecutionContext context, ImportingCsvItem csvItem) {
+	private static Either<ItemError, DataItem> noRevise(RequireAssemble require, ExecutionContext context, ImportingCsvItem csvItem) {
 		
-		Object value = require.getImportableItem(context.getDomainId(), csvItem.getItemNo())
-				.parse(csvItem.getCsvValue());
-		
-		return new DataItem(csvItem.getItemNo(), value);
+			return require.getImportableItem(context.getDomainId(), csvItem.getItemNo())
+					.parse(csvItem.getCsvValue())
+					.map(value -> new DataItem(csvItem.getItemNo(), value));
 	}
 
 	public static interface RequireAssemble {

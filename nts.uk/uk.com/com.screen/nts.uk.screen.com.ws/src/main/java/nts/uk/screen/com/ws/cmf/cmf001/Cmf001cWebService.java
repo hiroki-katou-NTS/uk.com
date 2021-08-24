@@ -7,8 +7,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.screen.com.app.cmf.cmf001.delete.Cmf001cDeleteCommand;
-import nts.uk.screen.com.app.cmf.cmf001.delete.Cmf001cDeleteCommandHandler;
+import nts.uk.screen.com.app.cmf.cmf001.c.delete.Cmf001cDeleteCommand;
+import nts.uk.screen.com.app.cmf.cmf001.c.delete.Cmf001cDeleteCommandHandler;
 import nts.uk.screen.com.app.cmf.cmf001.c.get.GetImportableItemAndConstraint;
 import nts.uk.screen.com.app.cmf.cmf001.c.get.ImportableItemDto;
 import nts.uk.screen.com.app.cmf.cmf001.c.save.Cmf001cSaveCommand;

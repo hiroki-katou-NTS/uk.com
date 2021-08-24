@@ -26,12 +26,12 @@ public class CanonicalizeRevisedData {
 		canonicalization.canonicalize(require, context);
 		val metaCanonicalized = canonicalization.appendMeta(meta);
 
-		require.save(metaCanonicalized);
+		require.save(context, metaCanonicalized);
 	}
 
 	public static interface Require
 			extends CreateDomainCanonicalization.Require, DomainCanonicalization.RequireCanonicalize {
 
-		void save(ImportingDataMeta meta);
+		void save(ExecutionContext context, ImportingDataMeta meta);
 	}
 }

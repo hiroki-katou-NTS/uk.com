@@ -10,14 +10,14 @@ public class WorkspaceTableName {
 	private final String workspaceName;
 
 	public String asRevised() {
-		return TemporaryTable.PREFIX + "REVI_" + create();
+		return create("REVI_");
 	}
 	
 	public String asCanonicalized() {
-		return TemporaryTable.PREFIX + "CANO_" + create();
+		return create("CANO_");
 	}
-	
-	private String create() {
-		return workspaceName + "_" + context.getCompanyId().replace("-", "");
+
+	private String create(String type) {
+		return TemporaryTable.createTableName(context, type + workspaceName);
 	}
 }

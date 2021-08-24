@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.cmf.cmf001.delete;
+package nts.uk.screen.com.app.cmf.cmf001.c.delete;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;

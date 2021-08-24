@@ -1,8 +1,13 @@
 package nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.date;
 
+import java.time.format.DateTimeParseException;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -38,8 +43,9 @@ public enum ExternalImportDateFormat {
 		try {
 			//指定の書式に変換
 			return GeneralDate.fromString(target, this.format);
-		} catch (Exception e) {
-			throw new RuntimeException("指定の日付形式に変換することができませんでした：" + this.format);
+		} catch (DateTimeParseException e) {
+			String formatName = I18NText.getText(this.nameId);
+			throw new BusinessException(new RawErrorMessage("日付データの形式が不正です（設定された形式：" + formatName + "）"));
 		}
 	}
 }

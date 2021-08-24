@@ -5,11 +5,11 @@ import static java.util.stream.Collectors.*;
 import java.util.List;
 import java.util.function.Consumer;
 
-import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 public class CanonicalizeUtil {
@@ -38,11 +38,12 @@ public class CanonicalizeUtil {
 		
 		for (String employeeCode : employeeCodes) {
 			
-			val employeeCanonicalized = employeeCodeCanonicalization
-					.canonicalize(require, context, employeeCode)
-					.collect(toList());
-			
-			process.accept(employeeCanonicalized);
+			employeeCodeCanonicalization.canonicalize(require, context, employeeCode)
+				.map(stream -> stream.collect(toList()))
+				.ifRight(process)
+				.ifLeft(errors -> errors.forEach(error -> {
+					require.add(context, ExternalImportError.of(error));
+				}));
 		}
 	}
 }

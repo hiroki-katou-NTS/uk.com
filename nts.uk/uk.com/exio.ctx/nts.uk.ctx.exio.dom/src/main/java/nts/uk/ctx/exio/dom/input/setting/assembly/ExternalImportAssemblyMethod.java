@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
@@ -32,15 +31,7 @@ public class ExternalImportAssemblyMethod {
 	 * @return
 	 */
 	public Optional<RevisedDataRecord> assemble(Require require, ExecutionContext context, CsvRecord csvRecord){
-		
-		val importData = mapping.assemble(require, context, csvRecord);
-		
-		if(importData.isEmpty()) {
-			// 受け入れられるデータがない
-			return Optional.empty();
-		}
-		
-		return Optional.of(new RevisedDataRecord(csvRecord.getRowNo(), importData));
+		return mapping.assemble(require, context, csvRecord);
 	}
 	
 	public List<Integer> getAllItemNo() {

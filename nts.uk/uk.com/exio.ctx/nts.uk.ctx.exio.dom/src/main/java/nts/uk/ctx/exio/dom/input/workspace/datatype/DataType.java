@@ -19,6 +19,7 @@ public enum DataType {
 	REAL		(2, (s, name, value) -> s.paramDecimal(name, (BigDecimal) value)),
 	DATE		(3, (s, name, value) -> s.paramDate(name, (GeneralDate) value)),
 	DATETIME	(4, (s, name, value) -> s.paramDateTime(name, (GeneralDateTime) value)),
+	AUTONUMBER	(5, (s, name, value) -> s.paramLong(name, (Long) value)),
 	;
 
 	public final int value;

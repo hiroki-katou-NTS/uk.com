@@ -53,7 +53,6 @@ public interface DomainCanonicalization {
 		CanonicalizationMethodRequire,
 		IndependentCanonicalization.RequireCanonicalize,
 		EmployeeContinuousHistoryCanonicalization.RequireCanonicalize,
-		DailyPerformanceCanonicalization.RequireCanonicalize,
 		AffWorkplaceHistoryCanonicalization.RequireCanonicalize
 		{
 		
@@ -64,8 +63,7 @@ public interface DomainCanonicalization {
 	public static interface RequireAdjsut extends
 		IndependentCanonicalization.RequireAdjust,
 		EmployeeContinuousHistoryCanonicalization.RequireAdjust,
-		DailyPerformanceCanonicalization.RequireAdjust,
-		AffWorkplaceHistoryCanonicalization.RequireAdjust{
+		AffWorkplaceHistoryCanonicalization.RequireAdjust {
 		
 	}
 }

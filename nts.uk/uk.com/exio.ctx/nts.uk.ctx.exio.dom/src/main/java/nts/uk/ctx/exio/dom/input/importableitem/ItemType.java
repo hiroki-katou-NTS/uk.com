@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 
@@ -48,20 +50,26 @@ public enum ItemType {
 		this.nameId = nameId;
 	}
 	
-	// 文字列を項目方に対応する型に変換する
-	public Object parse(String value) {
+	/**
+	 * 文字列を項目方に対応する型に変換する
+	 * @param value
+	 * @return
+	 */
+	public Either<ErrorMessage, ?> parse(String value) {
 		switch(this) {
 		case INT:
 		case TIME_DURATION:
 		case TIME_POINT:
-			return Long.parseLong(value);
+			return Either.tryCatch(() -> Long.parseLong(value), NumberFormatException.class)
+					.mapLeft(ex -> new ErrorMessage("整数ではありません。"));
 		case REAL:
-			return new BigDecimal(value);
+			return Either.tryCatch(() -> new BigDecimal(value), NumberFormatException.class)
+					.mapLeft(ex -> new ErrorMessage("数値ではありません。"));
 		case DATE:
-			// TODO:デフォルトの日付形式が必要
-			return GeneralDate.fromString(value, "yyyyMMdd");
+			return Either.tryCatch(() -> GeneralDate.fromString(value, "yyyyMMdd"), NumberFormatException.class)
+					.mapLeft(ex -> new ErrorMessage("日付データは8桁の整数(YYYYMMDD)の形式にしてください。"));
 		case STRING:
-			return value;
+			return Either.right(value);
 		default:
 			throw new RuntimeException("unknown: " + this);
 		}

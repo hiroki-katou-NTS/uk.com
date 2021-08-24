@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.DataItem;
+import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
  * 項目の編集
@@ -27,17 +29,13 @@ public class ReviseItem implements DomainAggregate {
 	
 	/**
 	 * 編集する
-	 * @param require
-	 * @param context
-	 * @param importItemNumber
 	 * @param targetValue
 	 * @return
 	 */
-	public DataItem revise(String targetValue) {
+	public Either<ItemError, DataItem> revise(String targetValue) {
 		
-		// 値の編集
-		Object result = this.revisingValue.revise(targetValue);
-		
-		return new DataItem(itemNo, result);
+		return revisingValue.revise(targetValue).map(
+				errorMessage -> new ItemError(itemNo, errorMessage.getText()),
+				result -> new DataItem(itemNo, result));
 	}
 }

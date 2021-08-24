@@ -1,10 +1,14 @@
 package nts.uk.ctx.exio.dom.input.importableitem;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
 import nts.gul.reflection.ClassReflection;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 
 /**
  * 受入値の検証方法
@@ -14,49 +18,49 @@ public enum CheckMethod {
 	
 	PRIMITIVE_VALUE(1) {
 		@Override
-		public boolean validate(Class<?> pvClass, Object value) {
+		@SneakyThrows
+		public Optional<ErrorMessage> validate(Class<?> pvClass, Object value) {
 			
 			if (value == null) {
-				return true;
+				return Optional.empty();
 			}
 			
 			if (ClassReflection.isSubclass(pvClass, IntegerPrimitiveValue.class)) {
 				value = Integer.parseInt(value.toString());
 			}
 			
+			PrimitiveValue<?> pv = (PrimitiveValue<?>) pvClass.getConstructors()[0].newInstance(value);
 			try {
-				PrimitiveValue<?> pv = (PrimitiveValue<?>) pvClass.getConstructors()[0].newInstance(value);
 				pv.validate();
-				return true;
 			} catch (Exception ex) {
-				//エラー時処理
-				throw new RuntimeException("PrimitiveValueの検証　仮置きエクスセプションです。", ex);
+				return Optional.of(new ErrorMessage("受入データが正しくありません。"));
 			}
+			
+			return Optional.empty();
 		}
 	},
 	
 	ENUM(2) {
 		@Override
-		public boolean validate(Class<?> pvClass, Object value) {
+		public Optional<ErrorMessage> validate(Class<?> pvClass, Object value) {
 			
 			if (value == null) {
-				return true;
+				return Optional.empty();
 			}
-
-			value = Integer.parseInt(value.toString());
 			
 			try {
+				value = Integer.parseInt(value.toString());
 				EnumAdaptor.valueOf((int)value, pvClass);
-				return true;
 			} catch (Exception ex) {
-				//エラー処理
-				throw new RuntimeException("Enumの検証　仮置きエクスセプションです。", ex);
+				return Optional.of(new ErrorMessage("受入データが正しくありません。"));
 			}
+
+			return Optional.empty();
 		}
 	},
 	;
 	
 	public final int value;
 	
-	public abstract boolean validate(Class<?> pvClass, Object value);
+	public abstract Optional<ErrorMessage> validate(Class<?> pvClass, Object value);
 }
