@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.dom.equipment.ClassificationMaster;
+package nts.uk.ctx.office.dom.equipment.classificationmaster;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

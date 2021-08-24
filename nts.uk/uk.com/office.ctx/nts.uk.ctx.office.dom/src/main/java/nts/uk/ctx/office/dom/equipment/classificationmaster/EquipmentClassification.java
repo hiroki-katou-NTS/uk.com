@@ -1,10 +1,10 @@
-package nts.uk.ctx.office.dom.equipment.ClassificationMaster;
+package nts.uk.ctx.office.dom.equipment.classificationmaster;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備分類マスタ.設備分類マスタ
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備分類マスタ.設備分類
  * @author NWS-DungDV
  *
  */

@@ -5,10 +5,10 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.office.dom.equipment.ClassificationMaster.EquipmentClassification;
-import nts.uk.ctx.office.dom.equipment.ClassificationMaster.EquipmentClassificationCode;
-import nts.uk.ctx.office.dom.equipment.ClassificationMaster.EquipmentClassificationName;
-import nts.uk.ctx.office.dom.equipment.ClassificationMaster.EquipmentClassificationRepository;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationName;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationRepository;
 import nts.uk.ctx.office.infra.entity.equipment.OfidtEquipmentCls;
 import nts.uk.ctx.office.infra.entity.equipment.OfidtEquipmentClsPK;
 import nts.uk.shr.com.context.AppContexts;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.dom.equipment.ClassificationMaster;
+package nts.uk.ctx.office.dom.equipment.classificationmaster;
 
 import java.util.List;
 
