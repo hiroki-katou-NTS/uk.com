@@ -15,6 +15,8 @@ public class ExiClientProperty {
 	public static final String UK_CONTRACT_CODE = "TenantCode";
 	public static final String UK_CONTRACT_LOGIN_PASS = "TenantLoginPassword";
 	public static final String UK_COMPANY_CODE = "CompanyCode";
+	public static final String UK_LOGIN_EMPLOYEE_CODE = "EmployeeCode";
+	public static final String UK_LOGIN_PASSWORD = "Password";
 
 	private static final String INIT_FILE_PATH = "default.settings";
 	private static final Properties properties;
