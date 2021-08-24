@@ -1,7 +1,5 @@
 package nts.uk.file.at.app.export.schedule.personalschedulebydate;
 
-import lombok.AllArgsConstructor;
-import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
@@ -18,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * 予定・実績を取得する
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU003_個人スケジュール修正(日付別).D：出力の設定.メニュー別OCD.予定・実績を取得する.予定・実績を取得する
  */
 @Stateless
 public class DailyAttendanceGettingExportQuery {
@@ -26,40 +25,33 @@ public class DailyAttendanceGettingExportQuery {
     private IntegrationOfDailyGetter integrationOfDailyGetter;
 
     public Map<ScheRecGettingAtr, List<IntegrationOfDaily>> get(List<String> sortedEmployeeIds, DatePeriod period, boolean isDisplayActual) {
-        val require = new RequireImpl(integrationOfDailyGetter);
         return DailyAttendanceGettingService.get(
-                require,
+                new DailyAttendanceGettingService.Require() {
+                    @Override
+                    public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
+                        List<IntegrationOfDaily> result = new ArrayList<>();
+                        empIds.forEach(sid -> {
+                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
+                            result.addAll(tmp);
+                        });
+                        return result;
+                    }
+
+                    @Override
+                    public List<IntegrationOfDaily> getRecordList(List<EmployeeId> empIds, DatePeriod period) {
+                        List<IntegrationOfDaily> result = new ArrayList<>();
+                        empIds.forEach(sid -> {
+                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
+                            result.addAll(tmp);
+                        });
+                        return result;
+                    }
+                },
                 sortedEmployeeIds.stream().map(EmployeeId::new).collect(Collectors.toList()),
                 period,
-//                ・if 実績も取得するか == false の時に => 取得対象＝予定のみ
-//                ・if 実績も取得するか == trueの時に => 取得対象＝予定+実績
+//              ・if 実績も取得するか == trueの時に => 取得対象＝予定+実績
+//              ・if 実績も取得するか == false の時に => 取得対象＝予定のみ
                 isDisplayActual ? ScheRecGettingAtr.SCHEDULE_WITH_RECORD : ScheRecGettingAtr.ONLY_SCHEDULE
         );
-    }
-
-    @AllArgsConstructor
-    public static class RequireImpl implements DailyAttendanceGettingService.Require {
-        @Inject
-        private IntegrationOfDailyGetter integrationOfDailyGetter;
-
-        @Override
-        public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
-            List<IntegrationOfDaily> result = new ArrayList<>();
-            empIds.forEach(sid -> {
-                List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-                result.addAll(tmp);
-            });
-            return result;
-        }
-
-        @Override
-        public List<IntegrationOfDaily> getRecordList(List<EmployeeId> empIds, DatePeriod period) {
-            List<IntegrationOfDaily> result = new ArrayList<>();
-            empIds.forEach(sid -> {
-                List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-                result.addAll(tmp);
-            });
-            return result;
-        }
     }
 }

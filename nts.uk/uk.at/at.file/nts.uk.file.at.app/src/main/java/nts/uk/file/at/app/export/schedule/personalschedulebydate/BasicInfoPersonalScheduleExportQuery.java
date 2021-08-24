@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 
 /**
  * 基本情報取得
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU003_個人スケジュール修正(日付別).D：出力の設定.メニュー別OCD.基本情報取得.基本情報取得
  */
 @Stateless
 public class BasicInfoPersonalScheduleExportQuery {
