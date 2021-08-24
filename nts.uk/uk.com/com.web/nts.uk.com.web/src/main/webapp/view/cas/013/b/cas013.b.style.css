@@ -43,9 +43,12 @@ div.control-group-2 {
 
 #kcp005 {
 	margin-left: 33px;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 #B3{
 	margin-left: 34px;
+}
+.nts-gridlist.ui-iggrid table th.ui-widget-header {
+	text-align: inherit;
 }

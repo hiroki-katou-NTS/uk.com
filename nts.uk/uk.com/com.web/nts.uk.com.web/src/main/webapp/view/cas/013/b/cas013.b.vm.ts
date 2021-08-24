@@ -51,6 +51,7 @@ module nts.uk.com.view.cas013.b {
         baseDate: KnockoutObservable<Date>;
         employInfors: KnockoutObservableArray<any> = ko.observableArray([]);
         listEmployee: KnockoutObservableArray<EmployInfor> = ko.observableArray([]);
+        optionalColumnDatasource: KnockoutObservableArray<any> = ko.observableArray([]);
         // end KCP005
 
 
@@ -120,15 +121,21 @@ module nts.uk.com.view.cas013.b {
                 vm.$ajax('com',_path ).done((data) => {
                     if(!isNullOrUndefined(data)){
                         let emps : any = [];
+                        let job : any = [];
                         for (let i =0; i<data.length;i++) {
                             let item = data[i];
-                            emps.push({id: item.employeeId,
+                            emps.push({
+                                id: item.employeeId,
                                 code: item.employeeCode,
                                 name: item.businessName,
-                                affiliationName: item.workplaceName,
-                                optionalColumn: item.jobTitleName
+                                affiliationName: item.workplaceName
                             });
+                            job.push({
+                                empId: item.employeeCode,
+                                content: item.jobTitleName
+                            })
                         }
+                        vm.optionalColumnDatasource(job);
                         vm.employInfors(emps);
                         vm.listEmployee(data);
                         if(!isNullOrEmpty(emps)){
@@ -193,7 +200,10 @@ module nts.uk.com.view.cas013.b {
                 alreadySettingList: vm.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
-                maxWidth: 580,
+                showOptionalColumn: true,
+                optionalColumnName: "職位",
+                optionalColumnDatasource: vm.optionalColumnDatasource,
+                maxWidth: 520,
                 maxRows: 15,
             };
             vm.multiSelectedCode.subscribe((e) => {

@@ -27,8 +27,8 @@ body{
 	margin-right: 10px;
 }
 .control-group {
-	margin-bottom: 10px;
-	margin-top: 10px;
+	margin-bottom: 15px;
+	margin-top: 15px;
 }
 
 #combo-box {
@@ -55,7 +55,7 @@ body{
 }
 
 .caret-right.outline:after {
-	border-width: 1.4em 0.5em;
+	border-width: 2.2em 0.4em;
 }
 
 .caret-bottom:after {
@@ -99,4 +99,8 @@ div.ntsLabel, label.ntsLabel, div.form-label, label.form-label {
 
 .caret-background:not(.deprecate).caret-bottom, .caret-background:not(.deprecate).caret-top, .caret-background:not(.deprecate).caret-left, .caret-background:not(.deprecate).caret-right {
 	margin: -20px;
+}
+#kcp005{
+	width: 421px;
+	margin-top: 10px;
 }

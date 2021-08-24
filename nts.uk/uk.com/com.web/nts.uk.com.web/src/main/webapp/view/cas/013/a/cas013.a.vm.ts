@@ -80,6 +80,8 @@ module nts.uk.com.view.cas013.a {
         disableSelection: KnockoutObservable<boolean>;
 
         employeeList: KnockoutObservableArray<UnitModel>;
+
+        optionalColumnDatasource: KnockoutObservableArray<any> = ko.observableArray([]);
         baseDate: KnockoutObservable<Date>;
 
         // Employye +Company + Workplace + Jobtitle
@@ -268,11 +270,14 @@ module nts.uk.com.view.cas013.a {
                 employeeInputList: vm.employeeList,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
                 selectedCode: vm.multiSelectedCode,
-                isShowWorkPlaceName: true,
+                isShowWorkPlaceName: false,
                 isDialog: false,
                 alreadySettingList: vm.alreadySettingPersonal,
                 isShowSelectAllButton: false,
-                maxWidth: 580,
+                showOptionalColumn: true,
+                optionalColumnName: "ABC",
+                optionalColumnDatasource: vm.optionalColumnDatasource,
+                maxWidth: 420,
                 maxRows: 10,
             };
 
@@ -331,6 +336,7 @@ module nts.uk.com.view.cas013.a {
                         let items = [];
                         let leids = [];
                         let periodDate = '';//KCP005
+                        let period = [];
                         for (let entry of data) {
                             items.push(new RoleIndividual(entry.userID, entry.loginID, entry.userName, entry.startValidPeriod, entry.endValidPeriod,
                                 entry.employeeID, entry.employeeId, entry.businessName));
@@ -346,7 +352,10 @@ module nts.uk.com.view.cas013.a {
                                 endValidPeriod: entry.endValidPeriod
                             };
                             employeeSearchs.push(employee);
-
+                            period.push({
+                                empId: entry.employeeCode,
+                                content: periodDate
+                            })
                         }
                         vm.EmployeeIDList(leids);
                         //Select First Employye
@@ -365,6 +374,7 @@ module nts.uk.com.view.cas013.a {
                             vm.employyeName('');
                         }
                         vm.listRoleIndividual(items);
+                        vm.optionalColumnDatasource(period);
                         vm.employeeList(employeeSearchs);
                         let indexNew = _.findIndex(vm.employeeList(),(e)=>{return e.id == userIdSelected});
 
@@ -515,6 +525,8 @@ module nts.uk.com.view.cas013.a {
             vm.jobTitleName('');
             vm.employyeCode('');
             vm.employyeName('');
+            vm.multiSelectedCode("");
+            vm.openBModal();
             $('#combo-box').focus();
             nts.uk.ui.errors.clearAll();
         }
