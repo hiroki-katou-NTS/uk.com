@@ -37,7 +37,8 @@ public class UpdateNurseCategoryCommandHandler extends CommandHandler<NurseCateg
 		NurseClassification nurseClassification = new NurseClassification(new CompanyId(companyId),
 				new NurseClassifiCode(command.getNurseClassificationCode()),
 				new NurseClassifiName(command.getNurseClassificationName()),
-				LicenseClassification.valueOf(command.getLicense()), command.isOfficeWorker());
+				LicenseClassification.valueOf(command.getLicense()), command.isOfficeWorker(),
+				false);//please update
 		// 3: persist()
 		nurseClassificationRepository.update(nurseClassification);
 		
