@@ -102,8 +102,7 @@ public class LeaveRemainingNumber {
 		}
 		// 日数 == 0.0 && 時間 < 0 のとき
 		if ( getMinutes().isPresent() ) {
-			if ( getDays().v() == 0.0
-					&& getMinutes().get().v() < 0 ) {
+			if (getMinutes().get().v() < 0 ) {
 				return true;
 			}
 		}
