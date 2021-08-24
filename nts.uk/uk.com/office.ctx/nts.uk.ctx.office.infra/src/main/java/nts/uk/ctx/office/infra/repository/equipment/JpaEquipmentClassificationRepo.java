@@ -1,6 +1,7 @@
 package nts.uk.ctx.office.infra.repository.equipment;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -18,6 +19,24 @@ public class JpaEquipmentClassificationRepo extends JpaRepository implements Equ
 
 	private static final String FIND_ALL = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd";
 	private static final String FIND_BY_CLS_CD = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd AND e.pk.code = :code";
+	private static final String FIND_FROM_CLS_CDS = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd AND e.pk.code IN :codeList";
+	
+	private EquipmentClassification toDomain(OfidtEquipmentCls entity) {
+		return new EquipmentClassification(
+			new EquipmentClassificationCode(entity.getPk().getCode()),
+			new EquipmentClassificationName(entity.getName())
+		);
+	}
+	
+	private OfidtEquipmentCls toEntity(EquipmentClassification domain) {
+		OfidtEquipmentCls entity = new OfidtEquipmentCls();
+		OfidtEquipmentClsPK pk = new OfidtEquipmentClsPK();
+		pk.setContractCd(AppContexts.user().contractCode());
+		pk.setCode(domain.getCode().v());
+		entity.setPk(pk);
+		entity.setName(domain.getName().v());
+		return entity;
+	}
 	
 	@Override
 	public void insert(EquipmentClassification domain) {
@@ -46,29 +65,23 @@ public class JpaEquipmentClassificationRepo extends JpaRepository implements Equ
 	}
 
 	@Override
-	public List<EquipmentClassification> getByClassificationCode(String contractCd, String clsCd) {
+	public Optional<EquipmentClassification> getByClassificationCode(String contractCd, String clsCd) {
 		return this.queryProxy()
 				.query(FIND_BY_CLS_CD, OfidtEquipmentCls.class)
 				.setParameter("contractCd", contractCd)
 				.setParameter("code", clsCd)
-				.getList(e -> toDomain(e));
+				.getSingle()
+				.map(e -> this.toDomain(e));
 	}
 	
-	private EquipmentClassification toDomain(OfidtEquipmentCls entity) {
-		return new EquipmentClassification(
-			new EquipmentClassificationCode(entity.getPk().getCode()),
-			new EquipmentClassificationName(entity.getName())
-		);
+	@Override
+	public List<EquipmentClassification> getFromClsCodeList(String contractCd, List<String> clsCds) {
+		return this.queryProxy()
+				.query(FIND_FROM_CLS_CDS, OfidtEquipmentCls.class)
+				.setParameter("contractCd", contractCd)
+				.setParameter("codeList", clsCds)
+				.getList(e -> this.toDomain(e));
 	}
 	
-	private OfidtEquipmentCls toEntity(EquipmentClassification domain) {
-		OfidtEquipmentCls entity = new OfidtEquipmentCls();
-		OfidtEquipmentClsPK pk = new OfidtEquipmentClsPK();
-		pk.setContractCd(AppContexts.user().contractCode());
-		pk.setCode(domain.getCode().v());
-		entity.setPk(pk);
-		entity.setName(domain.getName().v());
-		return entity;
-	}
-
 }
+

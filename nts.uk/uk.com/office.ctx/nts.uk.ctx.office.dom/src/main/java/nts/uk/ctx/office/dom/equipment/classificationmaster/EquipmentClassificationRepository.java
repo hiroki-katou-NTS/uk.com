@@ -1,6 +1,7 @@
 package nts.uk.ctx.office.dom.equipment.classificationmaster;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 設備分類Repository
@@ -41,7 +42,17 @@ public interface EquipmentClassificationRepository {
 	 * 指定する設備分類コードの設備分類を取得する
 	 * @param contractCd 契約コード
 	 * @param clsCd コード
+	 * @return 設備分類
+	 */
+	Optional<EquipmentClassification> getByClassificationCode(String contractCd, String clsCd);
+	
+	/**
+	 * [6] Get*
+	 * 分類コードから設備分類Listを取得する
+	 * @param contractCd 契約コード
+	 * @param clsCds コードList
 	 * @return 設備分類リスト
 	 */
-	List<EquipmentClassification> getByClassificationCode(String contractCd, String clsCd);
+	List<EquipmentClassification> getFromClsCodeList(String contractCd, List<String> clsCds); 
+	
 }
