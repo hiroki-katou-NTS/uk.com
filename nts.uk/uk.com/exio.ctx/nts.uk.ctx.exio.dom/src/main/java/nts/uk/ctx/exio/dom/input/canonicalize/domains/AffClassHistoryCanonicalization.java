@@ -7,16 +7,16 @@ import java.util.Collections;
 import java.util.List;
 
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeContinuousHistoryCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportPersistentResidentHistory;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  *分類履歴グループの正準化用定義 
  */
 public class AffClassHistoryCanonicalization {
-	protected static EmployeeContinuousHistoryCanonicalization create(DomainWorkspace w) {
-		return new EmployeeContinuousHistoryCanonicalization(w) {
+	protected static EmployeeHistoryCanonicalization create(DomainWorkspace w) {
+		return new EmployeeHistoryCanonicalization(w, HistoryType.PERSISTENERESIDENT) {
 			
 			@Override
 			protected String getParentTableName() {
@@ -33,10 +33,6 @@ public class AffClassHistoryCanonicalization {
 						new DomainDataColumn("PID", STRING),
 						DomainDataColumn.SID,
 						new DomainDataColumn("HIST_ID", STRING));
-			}
-			@Override
-			protected Class<?> getHistoryClass() {
-				return ExternalImportPersistentResidentHistory.class;
 			}
 		};
 	}

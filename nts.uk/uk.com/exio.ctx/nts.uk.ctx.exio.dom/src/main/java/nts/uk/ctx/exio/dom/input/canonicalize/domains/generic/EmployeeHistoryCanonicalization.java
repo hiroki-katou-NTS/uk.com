@@ -1,13 +1,12 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -32,6 +31,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -44,13 +44,13 @@ import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
 /**
- * 社員の履歴（連続）の正準化
+ * 社員の履歴の正準化
  * 
- * 社員の履歴（連続するやつ）を正準化するための処理がまとまっている
+ * 社員の履歴を正準化するための処理がまとまっている
  */
 @Getter
 @ToString
-public abstract class EmployeeContinuousHistoryCanonicalization extends IndependentCanonicalization implements DomainCanonicalization {
+public abstract class EmployeeHistoryCanonicalization extends IndependentCanonicalization implements DomainCanonicalization {
 	
 	/** 履歴開始日の項目No */
 	private final int itemNoStartDate;
@@ -65,13 +65,14 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 
 	/** どんな履歴か*/
-	protected abstract Class<?> getHistoryClass();
+	private final HistoryType historyType;
 	
-	public EmployeeContinuousHistoryCanonicalization(DomainWorkspace workspace) {
+	public EmployeeHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
 		super(workspace);
 		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
 		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
 		itemNoHistoryId = workspace.getItemByName("HIST_ID").getItemNo();
+		this.historyType = historyType;
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 
@@ -111,7 +112,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 
 		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
 		//既存履歴
-		val existingHistory = require.getHistory(id, getHistoryClass());
+		val existingHistory = require.getHistory(id, this.historyType);
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -230,7 +231,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 	 * @param addingItems 受入れる履歴
 	 */
 	private void adjustAddingHistory(History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory, List<Container> addingItems) {
-		addingItems.stream().peek(c -> existingHistory.add(c.addingHistoryItem)).collect(Collectors.toList());
+		addingItems.forEach(c -> existingHistory.add(c.addingHistoryItem));
 	}
 
 	/**
@@ -246,18 +247,18 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 			DateHistoryItem addingItem,
 			History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory) {
 		
-		// addすることで重複している履歴があれば（最新履歴のはず）、それも補正される
-		val latestExistingItemOpt = existingHistory.latestStartItem();
+		if(existingHistory.isEmpty()) return;
 		
-		latestExistingItemOpt.ifPresent(existing -> {
-			existing.shortenEndToAccept(addingItem);
-			AnyRecordToChange toChange = new EmployeeHistoryItem(existing).toChange(context);
-			require.save(context, toChange);
-		});
+		//履歴補正
+		existingHistory.add(addingItem);
+		//受入る履歴の１つ手前の履歴が既存の最新だろうという意
+		val existing = existingHistory.items().get(existingHistory.items().size() - 2);
+		AnyRecordToChange toChange = new EmployeeHistoryItem(existing).toChange(context);
+		require.save(context, toChange);
 	}
 
 	public static interface RequireCanonicalize{
-		History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass);
+		History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, HistoryType historyTypea);
 	}
 	
 	@Override
@@ -283,7 +284,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		});
 	}
 	
-	protected List<DomainDataId> toDomainDataIds(AnyRecordToChange toChange) {
+	private List<DomainDataId> toDomainDataIds(AnyRecordToChange toChange) {
 		
 		val keyValues = new KeyValues(toKeyValueObjects(toChange));
 		
@@ -304,10 +305,7 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 		for (int i = 0; i < dataKeys.size(); i++) {
 			val dataKey = dataKeys.get(i);
 			
-			StringifiedValue stringified = 
-					(SystemImportingItems.map.containsKey(dataKey.getColumnName()))
-					? toChange.getPrimaryKeys().get(SystemImportingItems.map.get(dataKey.getColumnName()))
-					: toChange.getPrimaryKeys().get(i);
+			StringifiedValue stringified = SystemImportingItems.getStringifiedValue(toChange, dataKey.getColumnName(), i);
 			
 			Object value;
 			switch (dataKey.getDataType()) {
@@ -322,6 +320,9 @@ public abstract class EmployeeContinuousHistoryCanonicalization extends Independ
 				break;
 			case DATE:
 				value = stringified.asGeneralDate();
+				break;
+			case DATETIME:
+				value = stringified.asGeneralDateTime();
 				break;
 			default:
 				throw new RuntimeException("unknown: " + dataKey);

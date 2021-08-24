@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 
 /**
@@ -18,6 +19,8 @@ public class StringifiedValue {
 	private final String value;
 	
 	private static final String DATE_FORMAT = "yyyyMMdd";
+	
+	private static final String DATETIME_FORMAT = "yyyyMMdd HHmmss";
 	
 	public static StringifiedValue nullValue() {
 		return new StringifiedValue(null);
@@ -53,6 +56,11 @@ public class StringifiedValue {
 		return of(value.toString(DATE_FORMAT));
 	}
 	
+	public static StringifiedValue of(GeneralDateTime value) {
+		if (value == null) return nullValue();
+		return of(value.toString(DATETIME_FORMAT));
+	}
+	
 	public static StringifiedValue create(Object value) {
 		
 		if (value == null) {
@@ -81,6 +89,10 @@ public class StringifiedValue {
 		
 		if (value instanceof GeneralDate) {
 			return of((GeneralDate) value);
+		}
+		
+		if (value instanceof GeneralDateTime) {
+			return of((GeneralDateTime) value);
 		}
 		
 		throw new RuntimeException("not supported: " + value);
@@ -120,6 +132,11 @@ public class StringifiedValue {
 		return GeneralDate.fromString(value, DATE_FORMAT);
 	}
 	
+	public Object asGeneralDateTime() {
+		if (value == null) return null;
+		return GeneralDateTime.fromString(value, DATETIME_FORMAT);
+	}
+	
 	public Object asTypeOf(ItemType type) {
 		switch (type) {
 		case STRING: return asString();
@@ -131,4 +148,6 @@ public class StringifiedValue {
 		default: throw new RuntimeException("unknown: " + type);
 		}
 	}
+
+
 }
