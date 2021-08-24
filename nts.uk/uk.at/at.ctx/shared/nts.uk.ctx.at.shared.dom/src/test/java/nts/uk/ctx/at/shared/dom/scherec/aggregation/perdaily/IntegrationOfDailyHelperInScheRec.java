@@ -170,6 +170,7 @@ public class IntegrationOfDailyHelperInScheRec {
 				,	Optional.empty()					// 加給コード
 				,	Optional.empty()					// 職場グループID
 				,	Optional.empty()					// 免許区分
+				,	Optional.empty()					// 看護管理者か
 			);
 		}
 

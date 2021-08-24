@@ -342,6 +342,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							Optional.empty(), // TODO team daily add
 							Optional.empty(), // TODO team daily add 
 							Optional.empty(), // TODO team daily add 
+							Optional.empty(),  // TODO team daily add
 							Optional.empty()))); // TODO team daily add
 		} else {
 			// #日別作成修正 2018/07/17 前川 隼大
@@ -526,6 +527,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							new ClassificationCode(classificationHasData.get().getClassificationCode()),
 							Optional.empty(), // TODO team daily add
 							Optional.empty(), // TODO team daily add
+							Optional.empty(),  // TODO team daily add
 							Optional.empty(),  // TODO team daily add
 							Optional.empty()))); // TODO team daily add
 		} else {
@@ -1504,6 +1506,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							workplaceHistItemImport.get().getWorkplaceId(),
 							new ClassificationCode(classificationHistItemImport.get().getClassificationCode()),
 							worktypeHistItemImport.map(c -> c.getEmployee().getBusinessTypeCode()),
+							Optional.empty(), // TODO team daily add
 							Optional.empty(), // TODO team daily add
 							Optional.empty(), // TODO team daily add
 							Optional.empty())),  // TODO team daily add

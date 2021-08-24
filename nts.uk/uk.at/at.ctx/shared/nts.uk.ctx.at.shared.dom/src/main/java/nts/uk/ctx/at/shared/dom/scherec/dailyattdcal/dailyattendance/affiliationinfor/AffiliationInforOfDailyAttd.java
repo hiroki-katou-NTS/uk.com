@@ -76,6 +76,11 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	private Optional<LicenseClassification> nursingLicenseClass;
 	
 	/**
+	 * 看護管理者か
+	 */
+	private Optional<Boolean> isNursingManager;
+	
+	/**
 	 * [C-1] 作る
 	 * @param require
 	 * @param employeeId
@@ -94,7 +99,8 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 				getBusinessTypeCode(require, employeeId, standardDate), 
 				getBonusPaySettingCode(require, employeeId, standardDate),
 				empOrganization.getWorkplaceGroupId(),
-				getNursingLicenseClass(require, employeeId, standardDate) );
+				getNursingLicenseClass(require, employeeId, standardDate),
+				Optional.empty() );
 	}
 	
 	/**

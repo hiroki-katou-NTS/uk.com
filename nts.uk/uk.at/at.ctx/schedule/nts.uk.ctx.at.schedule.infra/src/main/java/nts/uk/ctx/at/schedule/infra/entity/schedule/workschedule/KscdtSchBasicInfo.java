@@ -256,7 +256,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 				Optional.ofNullable(new BusinessTypeCode(busTypeCd)),
 				Optional.empty(), // TODO implement bonusPaySettingCode
 				Optional.empty(), // TODO implement workplaceGroupId
-				Optional.empty()); // TODO implement nursingLicenseClass
+				Optional.empty(), // TODO implement nursingLicenseClass
+				Optional.empty()); // TODO implement isnursingLicenseManager
 
 		// create List<BreakTimeOfDailyAttd>
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
