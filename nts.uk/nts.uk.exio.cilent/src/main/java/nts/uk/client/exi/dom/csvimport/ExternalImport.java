@@ -129,10 +129,8 @@ public class ExternalImport {
 		StringBuilder responce = new StringBuilder();
     	try {
 			httpConn = (HttpURLConnection) url.openConnection();
-		    if (cookieList != null) {
-		        for (String cookie : cookieList) {
-		        	httpConn.setRequestProperty("Cookie", cookie);
-		        }
+		    if (cookieList != null && cookieList.size() > 0) {
+	        	httpConn.setRequestProperty("Cookie", String.join(",", cookieList));
 		    }
 
 			httpConn.setDoInput(true);
