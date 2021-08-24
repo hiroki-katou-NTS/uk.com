@@ -8,5 +8,5 @@ public interface ExternalImportErrorsRepository {
 
 	void add(ExecutionContext context, ExternalImportError error);
 	
-	ExternalImportErrors find(ExecutionContext context, int startErrorNo, int endErrorNo);
+	ExternalImportErrors find(ExecutionContext context, int startErrorNo, int size);
 }

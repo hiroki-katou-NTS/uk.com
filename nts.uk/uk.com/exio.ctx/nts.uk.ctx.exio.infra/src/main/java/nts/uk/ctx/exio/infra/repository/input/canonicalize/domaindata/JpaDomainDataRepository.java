@@ -14,6 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -65,7 +66,7 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 	@SuppressWarnings("unchecked")
 	@Override
 	@SneakyThrows
-	public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass) {
+	public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, HistoryType historyType) {
 		val statement = createStatement(id, "select *");
 		List<DateHistoryItem> list = statement.getList(rec ->{
 			return new DateHistoryItem(rec.getString("HIST_ID"),
@@ -73,7 +74,7 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 							rec.getGeneralDate("START_DATE"),
 							rec.getGeneralDate("END_DATE")));
 		});
-		return (History<DateHistoryItem, DatePeriod, GeneralDate>)historyClass.getConstructors()[0].newInstance(list);
+		return (History<DateHistoryItem, DatePeriod, GeneralDate>)historyType.GetHistoryClass().getConstructors()[0].newInstance(list);
 	}
 
 	@Override

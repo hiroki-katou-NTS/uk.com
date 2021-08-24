@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
@@ -16,20 +17,22 @@ public class JpaExternalImportErrorsRepository extends JpaRepository implements 
 
 	@Override
 	public void setup(ExecutionContext context) {
-		// TODO Auto-generated method stub
-		
+		table(context).createTable();
 	}
 
 	@Override
 	public void add(ExecutionContext context, ExternalImportError error) {
-		// TODO Auto-generated method stub
-		
+		table(context).insert(error);
 	}
 
 	@Override
-	public ExternalImportErrors find(ExecutionContext context, int startErrorNo, int endErrorNo) {
-		// TODO Auto-generated method stub
-		return null;
+	public ExternalImportErrors find(ExecutionContext context, int startErrorNo, int size) {
+		val errors = table(context).select(startErrorNo, size);
+		return new ExternalImportErrors(errors);
 	}
 
+
+	private ErrorsTable table(ExecutionContext context) {
+		return new ErrorsTable(context, this.database().product(), this.jdbcProxy());
+	}
 }
