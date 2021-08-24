@@ -622,7 +622,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 // let select = 
                 if (self.isCreate() === true) {
 
-                    service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
+                    if (param.workplace) {
+                        service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
                         .done((data: any) => {
                             self.insert(param);
                         })
@@ -633,7 +634,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                     self.insert(param);
                                 })
                         })
-                    
+                    }else {
+                        self.insert(param);
+                    }
                 }
                 else {
                     service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
