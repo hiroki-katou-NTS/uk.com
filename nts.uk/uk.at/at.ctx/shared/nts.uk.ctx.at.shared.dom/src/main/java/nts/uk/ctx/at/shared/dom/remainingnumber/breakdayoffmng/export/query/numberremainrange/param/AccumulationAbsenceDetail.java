@@ -218,7 +218,7 @@ public class AccumulationAbsenceDetail implements Cloneable{
 	public Optional<InterimDayOffMng> getDayOffMng() {
 
 		if (this.dateOccur.isUnknownDate() || this.dataAtr == MngDataStatus.CONFIRMED
-				|| this.occurrentClass == OccurrenceDigClass.DIGESTION) {
+				|| this.occurrentClass == OccurrenceDigClass.OCCURRENCE) {
 			return Optional.empty();
 		}
 
