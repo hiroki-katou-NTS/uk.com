@@ -10,14 +10,8 @@ public enum BudgetAtr {
 
 	// 0:時間
 	TIME(0, "時間"),
-	// 1:人数
-	PEOPLE(1, "人数"),
 	// 2:金額
-	MONEY(2, "金額"),
-	// 3:数値
-	NUMERICAL(3, "数値"),
-	// :単価
-	PRICE(4, "単価");
+	MONEY(2, "金額");
 
 	public final int value;
 	public final String name;
