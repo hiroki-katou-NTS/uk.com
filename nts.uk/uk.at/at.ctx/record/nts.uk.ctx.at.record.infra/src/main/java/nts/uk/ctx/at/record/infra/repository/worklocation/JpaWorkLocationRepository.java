@@ -12,7 +12,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
-import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkplacePossible;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtIP4Address;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtIP4AddressPK;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkLocation;
@@ -61,11 +60,6 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
 			+ " AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD"
 			+ " AND c.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid = :cid";
-	
-	private static final String FIND_WORKPLACE = "SELECT c FROM KrcmtWorkplacePossible c"
-			+ " WHERE c.krcmtWorkplacePossiblePK.contractCode = :contractCode"
-			+ " AND c.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD"
-			+ " AND c.krcmtWorkplacePossiblePK.cid = :cid";
 
 	@Override
 	public List<WorkLocation> findAll(String contractCode) {
@@ -217,23 +211,6 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 		Optional<WorkLocation> result = this.queryProxy().query(SELECT_BY_WORKPLACE, KrcmtWorkLocation.class)
 				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workLocationCD)
 				.setParameter("cid", cid).getSingle(c -> c.toDomain());
-		
-		Optional<WorkplacePossible> workPlace = this.queryProxy().query(FIND_WORKPLACE, KrcmtWorkplacePossible.class)
-				.setParameter("contractCode", contractCode)
-				.setParameter("workLocationCD", workLocationCD)
-				.setParameter("cid", cid).getSingle(c -> c.toDomain());
-		
-		if (result.isPresent()) {
-			if (result.get().getWorkplace().isPresent()) {
-				if (result.get().getWorkplace().get().getWorkpalceId().equals("") || !result.get().getWorkplace().get().getCompanyId().equals(cid)) {
-					if (workPlace.isPresent()) {
-						WorkplacePossible possible = new WorkplacePossible(workPlace.get().getCompanyId(), workPlace.get().getWorkpalceId());
-						result.get().setWorkplace(Optional.of(possible));
-					}
-				}
-			}
-		}
-		
 		return result;
 	}
 
