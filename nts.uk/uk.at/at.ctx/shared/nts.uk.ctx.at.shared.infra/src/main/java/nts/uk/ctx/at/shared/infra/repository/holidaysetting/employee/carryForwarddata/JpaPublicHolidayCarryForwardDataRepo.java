@@ -86,7 +86,7 @@ public class JpaPublicHolidayCarryForwardDataRepo extends JpaRepository implemen
 	 * @see nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardDataRepository#deletePublicHolidayCarryForwardDataAfter(java.lang.String, nts.arc.time.YearMonth)
 	 */
 	@Override
-	public void deletePublicHolidayCarryForwardDataAfter(String employeeId, YearMonth yearMonth){
+	public void deleteThisMonthAfter(String employeeId, YearMonth yearMonth){
 		this.queryProxy().query(REMOVE_BY_SID_YM, KshdtHdpubRem.class)
 		.setParameter("employeeId", employeeId)
 		.setParameter("tagetmonth", yearMonth);
@@ -98,7 +98,7 @@ public class JpaPublicHolidayCarryForwardDataRepo extends JpaRepository implemen
 	 * @see nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardDataRepository#deletePublicHolidayCarryForwardData(java.lang.String)
 	 */
 	@Override
-	public void deletePublicHolidayCarryForwardData(String employeeId){
+	public void delete(String employeeId){
 		this.queryProxy().query(REMOVE_BY_SID, KshdtHdpubRem.class)
 		.setParameter("employeeId", employeeId);
 	}

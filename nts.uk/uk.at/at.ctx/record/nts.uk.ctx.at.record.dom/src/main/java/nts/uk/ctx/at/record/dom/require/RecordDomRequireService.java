@@ -2699,11 +2699,11 @@ public class RecordDomRequireService {
 		}
 		
 		public void deletePublicHolidayCarryForwardData(String employeeId){
-			this.publicHolidayCarryForwardDataRepo.deletePublicHolidayCarryForwardData(employeeId);
+			this.publicHolidayCarryForwardDataRepo.delete(employeeId);
 		}
 		
 		public void deletePublicHolidayCarryForwardDataAfter(String employeeId, YearMonth yearMonth){
-			this.publicHolidayCarryForwardDataRepo.deletePublicHolidayCarryForwardDataAfter(employeeId, yearMonth);
+			this.publicHolidayCarryForwardDataRepo.deleteThisMonthAfter(employeeId, yearMonth);
 		}
 		public void persistAndUpdateCarryForwardHistory(PublicHolidayCarryForwardHistory hist){
 			this.publicHolidayCarryForwardHistoryRepo.persistAndUpdate(hist);
@@ -2711,7 +2711,7 @@ public class RecordDomRequireService {
 		
 		public void deleteCarryForwardDataHistoryAfter(
 				String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
-			this.publicHolidayCarryForwardHistoryRepo.deleteCarryForwardDataHistoryAfter(
+			this.publicHolidayCarryForwardHistoryRepo.deleteThisMonthAfter(
 							employeeId, yearMonth, closureId, closureDate);
 		}
 		
@@ -2852,7 +2852,7 @@ public class RecordDomRequireService {
 		}
 		
 		public void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period){
-			this.interimSpecialHolidayMngRepo.deleteSpecialHolidayBySidAndPeriod(sid, specialCode, period);
+			this.interimSpecialHolidayMngRepo.deleteBySidAndPeriod(sid, specialCode, period);
 		}
 	}
 }

@@ -42,5 +42,5 @@ public interface InterimSpecialHolidayMngRepository {
 	 * @param specialCd
 	 * @param period
 	 */
-	void deleteSpecialHolidayBySidAndPeriod(String sid ,int specialCd,  DatePeriod period);
+	void deleteBySidAndPeriod(String sid ,int specialCd,  DatePeriod period);
 }

@@ -18,5 +18,5 @@ public interface PublicHolidayCarryForwardHistoryRepository {
 	 * @param employeeId
 	 * @param yearMonth
 	 */
-	void deleteCarryForwardDataHistoryAfter(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
+	void deleteThisMonthAfter(String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 }

@@ -127,7 +127,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository#deleteSpecialHolidayBySidAndPeriod(java.lang.String, int, nts.arc.time.calendar.period.DatePeriod)
 	 */
 	@Override
-	public void deleteSpecialHolidayBySidAndPeriod(String sid ,int specialCd,  DatePeriod period){
+	public void deleteBySidAndPeriod(String sid ,int specialCd,  DatePeriod period){
 		this.getEntityManager().createQuery(DELETE_BY_SID_CD_PERIOD)
 		.setParameter("sid", sid)
 		.setParameter("specialHolidayCode", specialCd)

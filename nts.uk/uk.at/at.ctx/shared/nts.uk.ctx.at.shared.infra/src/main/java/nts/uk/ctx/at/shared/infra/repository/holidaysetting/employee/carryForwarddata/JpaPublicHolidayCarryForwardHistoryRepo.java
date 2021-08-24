@@ -52,9 +52,9 @@ public class JpaPublicHolidayCarryForwardHistoryRepo extends JpaRepository imple
 	
 	/*
 	 * (非 Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardHistoryRepository#deleteCarryForwardDataHistoryAfter(java.lang.String, nts.arc.time.YearMonth, nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId, nts.uk.shr.com.time.calendar.date.ClosureDate)
+	 * @see nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardHistoryRepository#deleteThisMonthAfter(java.lang.String, nts.arc.time.YearMonth, nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId, nts.uk.shr.com.time.calendar.date.ClosureDate)
 	 */
-	public void deleteCarryForwardDataHistoryAfter(
+	public void deleteThisMonthAfter(
 			String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate){
 		this.queryProxy().query(REMOVE_BY_SID_YM_CLOSUREId_CLOSUREDATE,KshdtHdpubRemHist.class)
 		.setParameter("employeeId", employeeId)

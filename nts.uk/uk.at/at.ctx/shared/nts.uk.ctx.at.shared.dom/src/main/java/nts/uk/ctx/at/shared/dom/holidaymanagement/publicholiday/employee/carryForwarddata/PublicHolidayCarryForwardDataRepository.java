@@ -33,14 +33,14 @@ public interface PublicHolidayCarryForwardDataRepository {
 	 * @param employeeId
 	 * @param yearMonth
 	 */
-	void deletePublicHolidayCarryForwardDataAfter(String employeeId, YearMonth yearMonth);
+	void deleteThisMonthAfter(String employeeId, YearMonth yearMonth);
 	
 	
 	/**
 	 * 社員の公休繰越データ全て削除
 	 * @param employeeId
 	 */
-	void deletePublicHolidayCarryForwardData(String employeeId);
+	void delete(String employeeId);
 	
 	
 	
