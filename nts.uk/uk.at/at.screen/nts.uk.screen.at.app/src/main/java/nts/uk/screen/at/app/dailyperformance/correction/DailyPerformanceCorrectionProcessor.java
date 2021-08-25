@@ -1565,15 +1565,18 @@ public class DailyPerformanceCorrectionProcessor {
 		Map<Integer, DPAttendanceItemControl> mapAttendanceItemControl = this.repo
 				.getListAttendanceItemControl(companyId, lstAtdItemUnique).stream().collect(Collectors.toMap(x -> x.getAttendanceItemId(), x -> x));
 		for (FormatDPCorrectionDto dto : lstFormat) {
-			lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
-					mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
-					(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP, mapAttendanceItemControl));
+			if(mapDP.get(dto.getAttendanceItemId()).getAttendanceAtr()==DailyAttendanceAtr.Application.value) {
+				lstHeader.add(DPHeaderDto.addHeaderSubmitted());
+				if (showButton) {
+					lstHeader.add(DPHeaderDto.addHeaderApplication());
+				}
+			} else {
+				lstHeader.add(DPHeaderDto.createSimpleHeader(companyId,
+						mergeString(DPText.ADD_CHARACTER, String.valueOf(dto.getAttendanceItemId())),
+						(dto.getColumnWidth()== null || dto.getColumnWidth() == 0) ? "100px" : String.valueOf(dto.getColumnWidth()) + DPText.PX, mapDP, mapAttendanceItemControl));
+			}
 		}
 		
-		lstHeader.add(DPHeaderDto.addHeaderSubmitted());
-		if (showButton) {
-			lstHeader.add(DPHeaderDto.addHeaderApplication());
-		}
 		result.setLstHeader(lstHeader);
 		//if (!disItem.isSettingUnit()) {
 			if (disItem.getLstBusinessTypeCode().size() > 0) {
