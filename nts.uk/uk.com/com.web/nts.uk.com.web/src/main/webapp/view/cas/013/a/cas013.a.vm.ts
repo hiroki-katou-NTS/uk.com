@@ -570,7 +570,7 @@ module nts.uk.com.view.cas013.a {
                     vm.upDate();
                 }
             }
-            else if (nts.uk.util.isNullOrUndefined(vm.employyeName())) {
+            else if (nts.uk.util.isNullOrUndefined(vm.employyeName()) || vm.employyeName() == '') {
                 nts.uk.ui.dialog.alertError({
                     messageId: "Msg_218",
                     messageParams: ["A7_1"]
