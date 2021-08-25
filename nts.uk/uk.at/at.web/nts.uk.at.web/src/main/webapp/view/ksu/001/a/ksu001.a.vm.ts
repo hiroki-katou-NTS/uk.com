@@ -3122,11 +3122,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					_.forEach(peopleMethod, peopleMethodItem => {
 						_.forEach(peopleMethodItem.peopleMethod, peopleMethodSubItem => {
 							peopleMethodSubItem.date = peopleMethodItem.date;
+							peopleMethodSubItem.code = peopleMethodSubItem.workMethod.code;
+							peopleMethodSubItem.name = peopleMethodSubItem.workMethod.name;
 							peopleMethodData.push(peopleMethodSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(peopleMethodData, 'workMethod')), (groupItem: Array<any>, index: number) => {
-						leftHorzContentDs.push({ id: 'id'+(index*3+1), title: _.get(_.head(groupItem), 'workMethod'), subtitle: getText("KSU001_70") });
+					_.forEach(_.values(_.groupBy(peopleMethodData, 'code')), (groupItem: Array<any>, index: number) => {
+						leftHorzContentDs.push({ 
+							id: 'id'+(index*3+1), 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'),
+							subtitle: getText("KSU001_70") 
+						});
                     	leftHorzContentDs.push({ id: 'id'+(index*3+2), title: '', subtitle: getText("KSU001_71") });
                     	leftHorzContentDs.push({ id: 'id'+(index*3+3), title: '', subtitle: getText("KSU001_72") });
 						for(let i=1; i<=3; i++) {
@@ -3196,7 +3202,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					});
 					_.forEach(_.values(_.groupBy(employmentData, 'code')), (groupItem: Array<any>, index: number) => {
 						let objectEmployment = { sid: '' }, sumEmployment: any = '';
-	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+	                    leftHorzContentDs.push({ 
+							id: 'id' + index, 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
+							subtitle: '' 
+						});
 	                    _.set(objectEmployment, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
 	                        if(_.includes(['employeeId', 'sid'], key)) {
@@ -3251,7 +3261,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					});
 					_.forEach(_.values(_.groupBy(classificationData, 'code')), (groupItem: Array<any>, index: number) => {
 						let objectClassification = { sid: '' }, sumClassification: any = '';
-	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+	                    leftHorzContentDs.push({ 
+							id: 'id' + index, 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
+							subtitle: '' 
+						});
 	                    _.set(objectClassification, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
 	                        if(_.includes(['employeeId', 'sid'], key)) {
@@ -3306,7 +3320,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					});
 					_.forEach(_.values(_.groupBy(jobTitleInfoData, 'code')), (groupItem: Array<any>, index: number) => {
 						let objectJobTitle = { sid: '' }, sumJobTitleInfo: any = '';
-	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+	                    leftHorzContentDs.push({ 
+							id: 'id' + index, 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
+							subtitle: '' 
+						});
 	                    _.set(objectJobTitle, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
 	                        if(_.includes(['employeeId', 'sid'], key)) {
