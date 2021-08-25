@@ -275,7 +275,7 @@ module nts.uk.com.view.cas013.a {
                 alreadySettingList: vm.alreadySettingPersonal,
                 isShowSelectAllButton: false,
                 showOptionalColumn: true,
-                optionalColumnName: "ABC",
+                optionalColumnName: nts.uk.resource.getText("CAS013_32"),
                 optionalColumnDatasource: vm.optionalColumnDatasource,
                 maxWidth: 420,
                 maxRows: 10,

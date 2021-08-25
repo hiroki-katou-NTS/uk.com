@@ -201,7 +201,7 @@ module nts.uk.com.view.cas013.b {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
                 showOptionalColumn: true,
-                optionalColumnName: "職位",
+                optionalColumnName: nts.uk.resource.getText("CAS013_33"),
                 optionalColumnDatasource: vm.optionalColumnDatasource,
                 maxWidth: 520,
                 maxRows: 15,
