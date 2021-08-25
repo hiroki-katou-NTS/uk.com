@@ -5,7 +5,7 @@ import java.util.List;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeContinuousHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
@@ -52,14 +52,18 @@ public interface DomainCanonicalization {
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethodRequire,
 		IndependentCanonicalization.RequireCanonicalize,
-		EmployeeContinuousHistoryCanonicalization.RequireCanonicalize {
+		EmployeeHistoryCanonicalization.RequireCanonicalize,
+		AffWorkplaceHistoryCanonicalization.RequireCanonicalize
+		{
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
+
 	}
 	
 	public static interface RequireAdjsut extends
 		IndependentCanonicalization.RequireAdjust,
-		EmployeeContinuousHistoryCanonicalization.RequireAdjust {
+		EmployeeHistoryCanonicalization.RequireAdjust,
+		AffWorkplaceHistoryCanonicalization.RequireAdjust {
 		
 	}
 }

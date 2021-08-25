@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domaindata;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.history.History;
 
@@ -14,8 +15,7 @@ public interface DomainDataRepository {
 	
 	void delete(DomainDataId id);
 	
-	//ここの2つは履歴を汎用的に触るやつなので、このRepositoryにまとまっているのは不適切化も
-	History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass);
+	History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, HistoryType historyType);
 	
 	void update(DomainDataId targetKey, DatePeriod period);
 }

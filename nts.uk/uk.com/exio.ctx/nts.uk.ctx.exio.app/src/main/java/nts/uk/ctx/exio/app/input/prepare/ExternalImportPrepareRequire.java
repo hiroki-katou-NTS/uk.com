@@ -26,6 +26,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
@@ -248,8 +249,8 @@ public class ExternalImportPrepareRequire {
 
 
 		@Override
-		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, Class<?> historyClass) {
-			return domainDataRepo.getHistory(id, historyClass);
+		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, HistoryType historyType) {
+			return domainDataRepo.getHistory(id, historyType);
 		}
 
 		@Override

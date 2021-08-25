@@ -10,17 +10,20 @@ import nts.arc.enums.EnumAdaptor;
 public enum ImportingDomainId{
 
 	/** 雇用履歴 */
-	EMPLOYMENT_HISTORY(100),
+	EMPLOYMENT_HISTORY(102),
+
+	/** 所属職場履歴 **/
+	AFF_WORKPLACE_HISTORY(103),
 	
-	/** 作業 */
-	TASK(200),
+	/** 職位 */
+	JOBTITLE_HISTORY(104),
 	
 	/** 分類 */
-	CLASSIFICATION_HISTORY(300),
-
-	/** 職位 */
-	JOBTITLE_HISTORY(400),
-	;
+	CLASSIFICATION_HISTORY(105),
+	
+	/** 作業 */
+	TASK(200);
+	
 	
 	public final int value;
 	

@@ -4,14 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeContinuousHistoryCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportPersistentResidentHistory;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
+/**
+ * 雇用履歴の正準化 
+ */
 public class EmploymentHistoryCanonicalization {
-	protected static EmployeeContinuousHistoryCanonicalization create(DomainWorkspace w) {
-		return new EmployeeContinuousHistoryCanonicalization(w) {
+	protected static EmployeeHistoryCanonicalization create(DomainWorkspace w) {
+		return new EmployeeHistoryCanonicalization(w, HistoryType.PERSISTENERESIDENT) {
 			
 			@Override
 			protected String getParentTableName() {
@@ -26,11 +29,6 @@ public class EmploymentHistoryCanonicalization {
 			@Override
 			protected List<String> getChildTableNames() {
 				return Arrays.asList("BSYMT_AFF_EMP_HIST_ITEM");
-			}
-
-			@Override
-			protected Class<?> getHistoryClass() {
-				return ExternalImportPersistentResidentHistory.class;
 			}
 		};
 	}
