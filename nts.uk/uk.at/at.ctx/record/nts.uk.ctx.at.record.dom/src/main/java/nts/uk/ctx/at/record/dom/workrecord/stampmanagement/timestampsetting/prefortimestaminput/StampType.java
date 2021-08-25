@@ -7,6 +7,7 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReasonTest;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -16,7 +17,7 @@ import nts.uk.shr.com.i18n.TextResource;
  *
  */
 @AllArgsConstructor
-public class StampType implements DomainValue {
+public class StampType implements DomainValue, Cloneable{
 	
 	/** 勤務種類を半休に変更する */
 	//勤務種類を半休に変更する 1 old
@@ -152,6 +153,11 @@ public class StampType implements DomainValue {
 		return false;
 	}
 	
-	
+	@Override
+	public StampType clone() {
+		return new StampType(changeHalfDay, goOutArt.map(x -> GoingOutReason.valueOf(x.value)),
+				SetPreClockArt.valueOf(setPreClockArt.value), ChangeClockArt.valueOf(changeClockArt.value),
+				ChangeCalArt.valueOf(changeCalArt.value));
+	}
 
 }
