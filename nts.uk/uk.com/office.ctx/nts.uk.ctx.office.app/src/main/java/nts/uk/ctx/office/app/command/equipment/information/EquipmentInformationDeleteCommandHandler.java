@@ -15,16 +15,16 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class EquipmentInformationDeleteCommandHandler extends CommandHandler<EquipmentInformationCommand> {
+public class EquipmentInformationDeleteCommandHandler extends CommandHandler<String> {
 
 	@Inject
 	private EquipmentInformationRepository repository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<EquipmentInformationCommand> context) {
-		EquipmentInformationCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<String> context) {
+		String code = context.getCommand();
 		// delete(ログイン会社ID、設備コード)
-		this.repository.delete(AppContexts.user().companyId(), command.getCode());
+		this.repository.delete(AppContexts.user().companyId(), code);
 	}
 
 }
