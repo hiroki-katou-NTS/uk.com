@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
@@ -51,7 +50,7 @@ public class CreateStampDataForEmployeesService {
 	 */
 	
 	
-	public static TimeStampInputResult create(Require require, ContractCode contractCode, String employeeId,
+	public static TimeStampInputResult create(Require require, String cid, ContractCode contractCode, String employeeId,
 			Optional<StampNumber> stampNumber, GeneralDateTime stampDateTime, Relieve relieve, ButtonType buttonType,
 			RefectActualResult refActualResults, Optional<GeoCoordinate> stampLocationInfor) {
 		//	$打刻カード作成結果 = [prv-1] 打刻カード番号を取得する(require, 社員ID, 打刻カード番号, 打刻する方法.打刻手段)	
@@ -66,7 +65,7 @@ public class CreateStampDataForEmployeesService {
 		//	if not $打刻作成するか
 		if(!stampAtr) {
 			//$予約処理結果 = 打刻データ反映処理#反映する(require, 社員ID, $打刻記録, empty)
-			StampDataReflectResult reflectResult = StampDataReflectProcessService.reflect(require,
+			StampDataReflectResult reflectResult = StampDataReflectProcessService.reflect(require, cid, 
 					Optional.of(employeeId), stampRecord, Optional.empty());
 			//	return 打刻入力結果#打刻入力結果($予約処理結果, $打刻カード作成結果.永続化処理)		
 			return new TimeStampInputResult(reflectResult, stampResult.getAtomTask());
@@ -78,7 +77,7 @@ public class CreateStampDataForEmployeesService {
 		
 		//	$打刻反映結果 = 打刻データ反映処理#反映する(require, 社員ID, $打刻記録, $打刻データ)			
 		
-		StampDataReflectResult reflectResult = StampDataReflectProcessService.reflect(require,
+		StampDataReflectResult reflectResult = StampDataReflectProcessService.reflect(require, cid, 
 				Optional.of(employeeId), stampRecord, Optional.of(stamp));
 		
 		//return 打刻入力結果#打刻入力結果($打刻反映結果, $打刻カード作成結果.永続化処理)

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roleofovertimework.roleopenperiod;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.context.AppContexts;
@@ -9,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 // 休出枠の役割
 @Getter
+@AllArgsConstructor
 public class RoleOfOpenPeriod extends AggregateRoot{
 
 	/** The company ID. */

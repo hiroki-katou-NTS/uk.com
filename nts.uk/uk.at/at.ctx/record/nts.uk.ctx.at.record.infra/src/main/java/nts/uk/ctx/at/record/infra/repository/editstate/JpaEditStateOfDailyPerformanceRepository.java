@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -22,13 +25,13 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDayEditState;
 import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDailyRecEditSetPK;
+import nts.uk.ctx.at.record.infra.entity.editstate.KrcdtDayEditState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -119,6 +122,24 @@ public class JpaEditStateOfDailyPerformanceRepository extends JpaRepository
 		Map<String, List<GeneralDate>> keys = editStates.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
 				Collectors.collectingAndThen(Collectors.toList(), list -> list.stream().map(c -> c.getYmd()).collect(Collectors.toList()))));
 		
+		List<KrcdtDayEditState> olds = internalFinds(keys, c -> c);
+		
+		olds.removeIf(c -> editStates.stream().anyMatch(e -> e.getEditState().getAttendanceItemId() == c.krcdtDailyRecEditSetPK.attendanceItemId
+																&& e.getEmployeeId().equals(c.krcdtDailyRecEditSetPK.employeeId) 
+																&& e.getYmd().equals(c.krcdtDailyRecEditSetPK.processingYmd)));
+		
+		this.commandProxy().removeAll(olds);
+	}
+	
+	@SuppressWarnings("serial")
+	@Override
+	public void deleteExclude(String employeeId, GeneralDate ymd, List<EditStateOfDailyPerformance> editStates) {
+		Map<String, List<GeneralDate>> keys = new HashMap<String, List<GeneralDate>>() {
+			{
+				put(employeeId, Arrays.asList(ymd));
+			}
+		};
+
 		List<KrcdtDayEditState> olds = internalFinds(keys, c -> c);
 		
 		olds.removeIf(c -> editStates.stream().anyMatch(e -> e.getEditState().getAttendanceItemId() == c.krcdtDailyRecEditSetPK.attendanceItemId

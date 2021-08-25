@@ -2432,12 +2432,12 @@ public class RecordDomRequireService {
 
 		@Override
 		public void addPayoutSubofHDManagement(PayoutSubofHDManagement domain) {
-			payoutSubofHDManaRepo.add(domain);
+			payoutSubofHDManaRepo.updateOrInsert(domain);
 		}
 
 		@Override
 		public void addLeaveComDayOffManagement(LeaveComDayOffManagement domain) {
-			leaveComDayOffManaRepo.add(domain);
+			leaveComDayOffManaRepo.updateOrInsert(domain);
 		}
 
 		@Override

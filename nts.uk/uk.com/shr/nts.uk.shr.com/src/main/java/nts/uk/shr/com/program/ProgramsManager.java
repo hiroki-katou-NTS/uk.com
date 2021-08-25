@@ -3819,6 +3819,8 @@ public class ProgramsManager {
             "/view/knr/002/h/index.xhtml");
     public static final Program KNR002K = new Program(WebAppId.AT, ProgramIdConsts.KNR002K, "KNR002_11",
             "/view/knr/002/k/index.xhtml");
+    public static final Program KNR002L = new Program(WebAppId.AT, ProgramIdConsts.KNR002L, "KNR002_12",
+    		"/view/knr/002/l/index.xhtml");
 
     public static final Program KSM008L = new Program(WebAppId.AT, ProgramIdConsts.KSM008L, "KSM008_147",
             "/view/ksm/008/k/index.xhtml");

@@ -398,6 +398,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				sheetCollection.removeAt(0);
 			}
 			
+			// Set cursor
+			sheet.setActiveCell("A1");
+			
 			// Process designer
 			reportContext.processDesigner();
 			
@@ -1721,7 +1724,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 				if (condition.isShowPersonal()) usedRow++;
 //				if (totalOutput.isPersonalTotal())  usedRow++;
 //				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) usedRow += countPeriodMonth*dataRowCount;
-				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty()) {
+				if (totalOutput.isDetails() && !employeeReportData.getLstDetailedMonthlyPerformance().isEmpty() && firstWpl > 0) {
 					usedRow += employeeReportData.countItem(chunkSize);
 				}
 				if (rowPageTracker.checkRemainingRowSufficient(usedRow) <= 0) {
@@ -2339,7 +2342,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 			// B3_1
 			int month = monthlyReportData.getYearMonth().month();
 			String date = monthlyReportData.getYearMonth().year() + "/" + (month < 10 ? "0" + month : month);
-			String titleDate = TextResource.localize("KWR006_77") + "　" + date;
+			String titleDate = TextResource.localize("KWR006_77") + date;
 
 			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow
 					, sheetInfo
@@ -2429,7 +2432,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		Cells cells = sheetInfo.getSheet().getCells();
 		if (!findDetailedData(rootWorkplace))
 			return currentRow;
-		String workplaceTitle = TextResource.localize("KWR006_68") + "　" + rootWorkplace.getWorkplaceCode()
+		String workplaceTitle = TextResource.localize("KWR006_68") + rootWorkplace.getWorkplaceCode()
 				+ "　" + rootWorkplace.getWorkplaceName();
 		/*Range workplaceRangeTemp = templateSheetCollection.getRangeByName(WorkScheOutputConstants.RANGE_DATE_ROW);
 		Range workplaceRange = cells.createRange(currentRow, 0, 1, remarkColumn);
@@ -3040,7 +3043,6 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		String printEndMonth = endMonth.month() < 10 ? ("0" + String.valueOf(endMonth.month()))
 				: String.valueOf(endMonth.month());
 		builder.append(TextResource.localize("KWR006_66"));
-		builder.append(" ");
 		builder.append(startMonth.year() + "/" + printStartMonth);
 		builder.append("　～　");
 		builder.append(endMonth.year() + "/" + printEndMonth);

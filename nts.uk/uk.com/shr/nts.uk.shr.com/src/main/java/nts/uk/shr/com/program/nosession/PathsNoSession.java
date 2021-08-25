@@ -33,6 +33,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/sys/portal/webmenu/logout",
 			"/ctx/sys/gateway/kdp/login/.*",
 			"/at/record/stamp/.*",
+			"/ctx/cld/.*",
 			"/view-context/user",
 			"/nr/process/.*"
 			);
@@ -45,6 +46,7 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			"/view/ccg/033/index.xhtml",
 			"/ccg/033/a",
 			"/sessiontimeout/index.xhtml",
+			"/view/cld/.*",
 			ProgramsManager.CCG007A.getPPath(),
 			ProgramsManager.CCG007B.getPPath(),
 			ProgramsManager.CCG007C.getPPath(),
@@ -62,35 +64,35 @@ public class PathsNoSession implements PathsToCheckCsrf {
 			ProgramsManager.KDP005A.getPPath()
 			);
 
-	
+
 	private final Set<Pattern> patterns;
-	
+
 	private PathsNoSession(Set<Pattern> patterns) {
 		this.patterns = patterns;
 	}
-	
+
 	public static PathsNoSession define(String... patternStrings) {
 		val patterns = Arrays.asList(patternStrings).stream()
                 .map(regex -> Pattern.compile(regex))
                 .collect(Collectors.toSet());
 		return new PathsNoSession(patterns);
 	}
-    
+
     /**
      * Return true if the request requires session.
-     * 
+     *
      * @param requestedRootRelativePath requestedRootRelativePath
      * @param getRequestedPath getRequestedPath
      * @return true if the request requires session
      */
     public boolean sessionRequired(String requestedRootRelativePath) {
-        
+
         if (requestedRootRelativePath == null) {
             return false;
         }
-        
+
         String pathToBeChecked = requestedRootRelativePath.toLowerCase();
-        
+
         return this.patterns.stream()
                 .noneMatch(p -> {
                 	return p.matcher(pathToBeChecked).matches();

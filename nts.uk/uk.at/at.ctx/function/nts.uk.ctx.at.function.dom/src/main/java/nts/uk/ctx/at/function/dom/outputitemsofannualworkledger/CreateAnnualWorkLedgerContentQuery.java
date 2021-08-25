@@ -81,7 +81,7 @@ public class CreateAnnualWorkLedgerContentQuery {
         // DAILY
         List<AttendanceResultDto> listItemValue = require.getValueOf(listSid, datePeriod, listIdDailys);
         Map<String, Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>>> mapValue = new HashMap<>();
-        Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid, datePeriod.end(), listIdDailys);
+        Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid);
         listSid.forEach(e -> {
             val listValueEm = listItemValue.stream().filter(i -> i.getEmployeeId().equals(e)).collect(Collectors.toList());
             Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> values = listValueEm.stream()
@@ -301,8 +301,7 @@ public class CreateAnnualWorkLedgerContentQuery {
         Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(
                 List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds);
 
-        Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference,
-                                                                    List<Integer> lstDivNO);
+        Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId);
 
     }
 

@@ -121,7 +121,10 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		errorCheckProcessingBeforeRegistrationKAF011.processing(companyId, Optional.of(abs), rec, displayInforWhenStarting.represent, 
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()), 
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()), 
-				displayInforWhenStarting.appDispInfoStartup.toDomain());
+				displayInforWhenStarting.appDispInfoStartup.toDomain(), 
+				displayInforWhenStarting.existAbs() ? displayInforWhenStarting.abs.payoutSubofHDManagements.stream().map(c->c.toDomain()).collect(Collectors.toList()) : new ArrayList<>(), 
+				false,
+				true);
 		return abs;
 	}
 	
@@ -200,7 +203,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 				}
 			}
 		}
-		if(holidayManage == 1) {
+//		if(holidayManage == 1) {
 			if(payoutSubofHDManagements != null) {
 				for (PayoutSubofHDManagementDto item : payoutSubofHDManagements) {
 					//ドメインモデル「休出代休紐付け管理」を削除する
@@ -209,7 +212,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 					item.setDateOfUse(absDate);
 				}
 			}
-		}
+//		}
 		return new LinkingManagementInforDto(new ArrayList<>(), leaveComDayOffMana, payoutSubofHDManagements);
 	}
 	
