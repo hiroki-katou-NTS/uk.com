@@ -40,7 +40,12 @@ public class PrepareImporting {
 			CanonicalizeRevisedData.canonicalize(require, context, meta);
 			
 		} catch (BusinessException bex) {
+			
 			require.add(context, ExternalImportError.execution(bex.getMessage()));
+			
+			// このケースはもう実行不可能
+			// その制御は実行管理に処理を任せるために再スロー
+			throw bex;
 		}
 	}
 	

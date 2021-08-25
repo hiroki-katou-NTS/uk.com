@@ -28,7 +28,16 @@ public class ExternalImportExecuteCommandHandler extends AsyncCommandHandler<Ext
 		
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		
 		val require = this.require.create(companyId);
+		
+		val currentState = require.getExternalImportCurrentState(companyId);
+		currentState.execute(require, () -> run(require, command, companyId));
+	}
+
+	private void run(ExternalImportExecuteRequire.Require require,
+			ExternalImportExecuteCommand command,
+			String companyId) {
 		
 		Iterable<AtomTask> atomTasks = ExecuteImporting.execute(
 				require,
