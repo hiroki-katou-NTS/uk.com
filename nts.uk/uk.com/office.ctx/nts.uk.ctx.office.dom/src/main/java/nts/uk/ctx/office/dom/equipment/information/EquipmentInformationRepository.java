@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.dom.equipment;
+package nts.uk.ctx.office.dom.equipment.information;
 
 import java.util.List;
 import java.util.Optional;

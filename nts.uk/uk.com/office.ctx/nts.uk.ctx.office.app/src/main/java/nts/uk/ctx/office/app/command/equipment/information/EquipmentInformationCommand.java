@@ -1,8 +1,8 @@
-package nts.uk.ctx.office.app.command.equipment;
+package nts.uk.ctx.office.app.command.equipment.information;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 
 @Value
 public class EquipmentInformationCommand implements EquipmentInformation.MementoGetter {

@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.dom.equipment;
+package nts.uk.ctx.office.dom.equipment.information;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

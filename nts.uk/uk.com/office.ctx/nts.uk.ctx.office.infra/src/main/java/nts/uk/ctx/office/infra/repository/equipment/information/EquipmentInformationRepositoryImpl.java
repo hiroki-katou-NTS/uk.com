@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.infra.repository.equipment;
+package nts.uk.ctx.office.infra.repository.equipment.information;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformationRepository;
-import nts.uk.ctx.office.infra.entity.equipment.OfidtEquipment;
-import nts.uk.ctx.office.infra.entity.equipment.OfidtEquipmentPK;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
+import nts.uk.ctx.office.infra.entity.equipment.information.OfidtEquipment;
+import nts.uk.ctx.office.infra.entity.equipment.information.OfidtEquipmentPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

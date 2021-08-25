@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.command.equipment;
+package nts.uk.ctx.office.app.command.equipment.information;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformationRepository;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
 
 /**
  * UKDesign.UniversalK.オフィス.OEM_設備マスタ.OEM002_設備の登録.A：設備の登録.メニュー別OCD.設備情報を更新する

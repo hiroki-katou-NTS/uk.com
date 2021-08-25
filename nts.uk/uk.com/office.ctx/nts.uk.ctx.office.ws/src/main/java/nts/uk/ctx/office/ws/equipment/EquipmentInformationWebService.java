@@ -6,12 +6,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.office.app.command.equipment.EquipmentInformationCommand;
-import nts.uk.ctx.office.app.command.equipment.EquipmentInformationDeleteCommandHandler;
-import nts.uk.ctx.office.app.command.equipment.EquipmentInformationInsertCommandHandler;
-import nts.uk.ctx.office.app.command.equipment.EquipmentInformationUpdateCommandHandler;
-import nts.uk.ctx.office.app.find.equipment.EquipmentInformationScreenQuery;
-import nts.uk.ctx.office.app.find.equipment.EquipmentInformationStartupDto;
+import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationCommand;
+import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationDeleteCommandHandler;
+import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationInsertCommandHandler;
+import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationUpdateCommandHandler;
+import nts.uk.ctx.office.app.find.equipment.information.EquipmentInformationScreenQuery;
+import nts.uk.ctx.office.app.find.equipment.information.EquipmentInformationStartupDto;
 
 @Path("ctx/office/equipment/information/")
 @Produces("application/json")

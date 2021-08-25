@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.infra.entity.equipment;
+package nts.uk.ctx.office.infra.entity.equipment.information;
 
 import java.io.Serializable;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.office.dom.equipment.EquipmentInformation;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
