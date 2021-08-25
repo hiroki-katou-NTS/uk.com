@@ -7,7 +7,6 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReasonTest;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
