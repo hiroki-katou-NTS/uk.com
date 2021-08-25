@@ -83,6 +83,20 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String DELETE_DAYOFFMNG_BY_SID_AND_YMD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.breakMngId = :breakMngId";
 	private static final String DELETE_BREAKMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
+
+	private static final String DELETE_DAYOFFMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcmtInterimDayOffMng c "
+			+ "WHERE c.pk.sid = :sid "
+			+ " AND c.ymd >= :startDate"
+			+ " AND c.ymd <= :endDate";
+	
+	private static final String DELETE_BREAKMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcdtInterimHdwkMng c "
+			+ "WHERE c.pk.sid = :sid "
+			+ " AND c.ymd >= :startDate"
+			+ " AND c.ymd <= :endDate";
+
+
+	
+	
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
 		return this.queryProxy().find(breakManaId, KrcdtInterimHdwkMng.class)
@@ -451,6 +465,31 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		this.getEntityManager().createQuery(DELETE_BREAKMNG_BY_SID_AND_YMD)
 		.setParameter("sid", sid)
 		.setParameter("ymd", ymd)
+		.executeUpdate();
+	}
+	
+	/*
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository#deleteInterimDayOffMngBySidDatePeriod(java.lang.String, nts.arc.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period){
+		this.getEntityManager().createQuery(DELETE_DAYOFFMNG_BY_SID_AND_DATEPERIOD)
+		.setParameter("sid", sid)
+		.setParameter("startDate", period.start())
+		.setParameter("endDate", period.end())
+		.executeUpdate();
+	}
+	/*
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository#deleteInterimBreakMngBySidDatePeriod(java.lang.String, nts.arc.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public void deleteInterimBreakMngBySidDatePeriod(String sid, DatePeriod period){
+		this.getEntityManager().createQuery(DELETE_BREAKMNG_BY_SID_AND_DATEPERIOD)
+		.setParameter("sid", sid)
+		.setParameter("startDate", period.start())
+		.setParameter("endDate", period.end())
 		.executeUpdate();
 	}
 }

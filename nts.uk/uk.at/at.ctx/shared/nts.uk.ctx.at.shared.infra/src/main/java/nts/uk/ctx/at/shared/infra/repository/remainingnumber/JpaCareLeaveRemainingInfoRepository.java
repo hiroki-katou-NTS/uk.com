@@ -161,13 +161,14 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 			Optional<CareUsedNumberData>careUsed = careUsedInfo.stream().filter(a->a.getEmployeeId().equals(c)).findFirst();
 			Optional<ChildCareUsedNumberData>childcareUsed = childCareUsedInfo.stream().filter(a->a.getEmployeeId().equals(c)).findFirst();
 
-			if(careRemain.isPresent() && childcareRemain.isPresent() && careUsed.isPresent() && childcareUsed.isPresent())
+			if ((careRemain.isPresent() && careUsed.isPresent())  || (childcareRemain.isPresent() && childcareUsed.isPresent())) {
 				dtoList.add(new CareLeaveDataInfo(
-						careRemain.get(),
-						childcareRemain.get(),
-						careUsed.get(),
-						childcareUsed.get()
+						careRemain.orElse(null),
+						childcareRemain.orElse(null),
+						careUsed.orElse(null),
+						childcareUsed.orElse(null)
 						));
+			}
 		});
 
 		return dtoList;
@@ -234,6 +235,24 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 		});
 		return result;
 	}
+	
+	
+	
+	@Override
+	public void updateMaxDay(String cId, ChildCareNurseUpperLimit ThisFiscalYear) {
+		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(cId, NursingCategory.Nursing.value);
+		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
+		if (entityOpt.isPresent()) {
+			KrcdtHdNursingInfo entity = entityOpt.get();
+			entity.setCId(cId);
+			entity.setMaxDayNextFiscalYear(ThisFiscalYear.v());
+			entity.setMaxDayThisFiscalYear(null);
+			this.commandProxy().update(entity);
+		}
+	}
+	
+	
+	
 
 	/**
 	 * エンティティをドメインへ変換

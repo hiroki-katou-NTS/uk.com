@@ -36,6 +36,9 @@ export interface IAppInfo {
     appStatusNo: number;
     frameStatus?: boolean;
     version?: number;
+    opComplementLeaveApp?: any;
+    opAppStartDate?: Date;
+    opAppEndDate?: Date;
 }
 
 export interface AppListExtractConditionDto {

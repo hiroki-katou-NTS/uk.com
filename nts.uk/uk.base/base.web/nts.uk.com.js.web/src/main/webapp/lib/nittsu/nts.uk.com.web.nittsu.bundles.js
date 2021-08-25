@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -1896,7 +1896,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -3156,7 +3156,7 @@ var nts;
                         function toText(dayAttr) {
                             switch (dayAttr) {
                                 case DayAttr.THE_PREVIOUS_DAY: return "前日";
-                                case DayAttr.THE_PRESENT_DAY: return "当日";
+                                case DayAttr.THE_PRESENT_DAY: return "";
                                 case DayAttr.THE_NEXT_DAY: return "翌日";
                                 case DayAttr.TWO_DAY_LATER: return "翌々日";
                                 default: new Error("invalid dayAttr: " + dayAttr);
@@ -7168,6 +7168,7 @@ var nts;
                 var HORIZONTAL_SUM = "horz-sum";
                 var LEFT_HORZ_SUM = "left-horz-sum";
                 var RIGHT_HORZ_SUM = "right-horz-sum";
+                var DETAIL_HORZ_SCROLL = "detail-horz-scroll";
                 var CRUD = "crud";
                 var ADD_ROW = "add-row";
                 var DEL_ROWS = "delete-rows";
@@ -7191,6 +7192,7 @@ var nts;
                         this.updateMode = EDIT;
                         this.pasteOverWrite = true;
                         this.stickOverWrite = true;
+                        this.columnVirtualization = false;
                         this.overflowTooltipOn = false;
                         this.$container = $container[0];
                         this.$commander = options.primaryTable ? options.primaryTable[0] : null;
@@ -7216,6 +7218,7 @@ var nts;
                         this.pasteOverWrite = options.pasteOverWrite;
                         this.stickOverWrite = options.stickOverWrite;
                         this.viewMode = options.viewMode;
+                        this.columnVirtualization = options.columnVirtualization;
                         this.overflowTooltipOn = !uk.util.isNullOrUndefined(options.showTooltipIfOverflow)
                             ? options.showTooltipIfOverflow : false;
                         this.determination = options.determination;
@@ -7271,6 +7274,7 @@ var nts;
                         this.setBodyClass(this.detailContent, DETAIL);
                         this.detailContent.updateMode = this.updateMode;
                         this.detailContent.viewMode = this.viewMode;
+                        this.detailContent.columnVirtualization = this.columnVirtualization;
                         return this;
                     };
                     ExTable.prototype.VerticalSumHeader = function (verticalSumHeader) {
@@ -7361,8 +7365,7 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [],
-                            find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -7547,6 +7550,31 @@ var nts;
                             scroll.syncDoubDirVerticalScrolls([$leftSumContentWrapper, $sumContentWrapper, $rightSumContentWrapper]);
                             scroll.bindVertWheel($rightSumContentWrapper, true);
                         }
+                        var $contentHorzScroll;
+                        if (self.columnVirtualization) {
+                            var contentHorzScrollOptions = {
+                                containerClass: BODY_PRF + DETAIL_HORZ_SCROLL,
+                                height: helper.getScrollWidth() + "px",
+                                width: $detailContent.style.width
+                            };
+                            var top_1 = parseFloat($detailContent.style.top) + parseFloat($detailContent.style.height);
+                            $contentHorzScroll = render.createWrapper(top_1 + "px", $detailContent.style.left, contentHorzScrollOptions);
+                            $contentHorzScroll.style.overflowX = "scroll";
+                            if ($vertSumHeader) {
+                                $contentHorzScroll.style.overflowY = "hidden";
+                            }
+                            else {
+                                $contentHorzScroll.style.overflowY = "scroll";
+                            }
+                            var $scrollContent = document.createElement("div");
+                            var $detailContentTbl = $detailContent.querySelector("." + (BODY_TBL_PRF + DETAIL));
+                            var contentWidth = Array.prototype.slice.call($detailContentTbl.querySelectorAll("col"))
+                                .reduce(function (width, col) { return width + parseFloat(col.style.width); }, 0);
+                            $scrollContent.style.width = contentWidth + "px";
+                            $scrollContent.style.height = "1px";
+                            $contentHorzScroll.appendChild($scrollContent);
+                            $frag.appendChild($contentHorzScroll);
+                        }
                         if (self.$commander) {
                             self.$commander.addXEventListener(events.MOUSEIN_COLUMN, function (evt) {
                                 var colIndex = evt.detail;
@@ -7565,7 +7593,7 @@ var nts;
                         else if (self.$follower) {
                         }
                         else {
-                            scroll.syncDoubDirHorizontalScrolls([$detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper]);
+                            scroll.syncDoubDirHorizontalScrolls([$detailHeader, $detailContent, $sumHeaderWrapper, $sumContentWrapper, $contentHorzScroll]);
                         }
                     };
                     /**
@@ -7841,7 +7869,12 @@ var nts;
                         $container.appendChild($table);
                         var $tbody = $table.getElementsByTagName("tbody")[0];
                         if (!isUpdate) {
-                            $container.style.height = options.height;
+                            if (options.columnVirtualization) {
+                                $container.style.height = parseFloat(options.height) - helper.getScrollWidth() + "px";
+                            }
+                            else {
+                                $container.style.height = options.height;
+                            }
                             $container.style.width = options.width;
                         }
                         if (!uk.util.isNullOrUndefined(options.overflow))
@@ -7849,6 +7882,9 @@ var nts;
                         else if (!uk.util.isNullOrUndefined(options.overflowX) && !uk.util.isNullOrUndefined(options.overflowY)) {
                             $container.style.overflowX = options.overflowX;
                             $container.style.overflowY = options.overflowY;
+                        }
+                        if (options.columnVirtualization) {
+                            $container.style.overflowX = "hidden";
                         }
                         var $colGroup = document.createElement("colgroup");
                         $table.insertBefore($colGroup, $tbody);
@@ -8608,6 +8644,10 @@ var nts;
                         else if (options.containerClass === BODY_PRF + LEFTMOST) {
                             style = wrapperStyles(top, left, options.width, options.height);
                             style.borderBottom = "solid 1px #ABB7B8";
+                        }
+                        else if (options.containerClass === BODY_PRF + DETAIL_HORZ_SCROLL) {
+                            style = wrapperStyles(top, left, options.width, options.height);
+                            style.borderTop = "solid 1px #FFF";
                         }
                         else {
                             style = wrapperStyles(top, left, options.width, options.height);
@@ -12841,8 +12881,9 @@ var nts;
                         var $horzSumHeader, $horzSumBody, decreaseAmt;
                         wrappers = wrappers || selector.queryAll($container, "div[class*='" + BODY_PRF + "']").filter(function (e) {
                             return !e.classList.contains(BODY_PRF + HORIZONTAL_SUM) && !e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
-                                && !e.classList.contains(BODY_PRF + RIGHT_HORZ_SUM);
+                                && !e.classList.contains(BODY_PRF + RIGHT_HORZ_SUM) && !e.classList.contains(BODY_PRF + DETAIL_HORZ_SCROLL);
                         });
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         if (horzSumExists) {
                             $horzSumHeader = $container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             $horzSumBody = $container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
@@ -12851,13 +12892,27 @@ var nts;
                                 height -= decreaseAmt;
                             }
                         }
+                        if (height <= 0)
+                            return;
                         _.forEach(wrappers, function ($wrapper) {
                             if (($wrapper.style.overflowX && $wrapper.style.overflowX === "scroll")
-                                || ($wrapper.style.overflow && $wrapper.style.overflow === "scroll")) {
-                                $wrapper.style.height = height + "px";
+                                || ($wrapper.style.overflow && $wrapper.style.overflow === "scroll")
+                                || ($wrapper.style.overflow && $wrapper.style.overflow === "hidden scroll")) {
+                                if ($wrapper.classList.contains(BODY_PRF + DETAIL) && $detailHorzScroll) {
+                                    var detailHeight = height - helper.getScrollWidth();
+                                    $wrapper.style.height = detailHeight + "px";
+                                    $detailHorzScroll.style.top = parseFloat($wrapper.style.top) + detailHeight + "px";
+                                }
+                                else {
+                                    $wrapper.style.height = height + "px";
+                                }
                             }
                             else {
-                                $wrapper.style.height = (height - helper.getScrollWidth()) + "px";
+                                var detailHeight = height - helper.getScrollWidth();
+                                $wrapper.style.height = detailHeight + "px";
+                                if ($wrapper.classList.contains(BODY_PRF + DETAIL) && $detailHorzScroll) {
+                                    $detailHorzScroll.style.top = parseFloat($wrapper.style.top) + detailHeight + "px";
+                                }
                             }
                         });
                         if (horzSumExists) {
@@ -12895,6 +12950,7 @@ var nts;
                         var $horzSumContent = $container.querySelector("." + (BODY_PRF + HORIZONTAL_SUM));
                         var $rightHorzSumHeader = $container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
                         var $rightHorzSumContent = $container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
                         var detailOffsetLeft = parseFloat($detailHeader.style.left), //selector.offset($detailHeader).left, 
                         width = window.innerWidth - detailOffsetLeft;
                         var scrollWidth = helper.getScrollWidth();
@@ -12909,6 +12965,9 @@ var nts;
                                 var newDetailLeft = detailOffsetLeft + middleWidth;
                                 $detailHeader.style.left = newDetailLeft + "px";
                                 $detailBody.style.left = newDetailLeft + "px";
+                                if ($detailHorzScroll) {
+                                    $detailHorzScroll.style.left = newDetailLeft + "px";
+                                }
                                 if ($leftHorzSumHeader) {
                                     leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) + middleWidth;
                                     horzSumLeft = parseFloat($horzSumHeader.style.left) + middleWidth;
@@ -12922,6 +12981,9 @@ var nts;
                                 var newDetailLeft = detailOffsetLeft - middleWidth;
                                 $detailHeader.style.left = newDetailLeft + "px";
                                 $detailBody.style.left = newDetailLeft + "px";
+                                if ($detailHorzScroll) {
+                                    $detailHorzScroll.style.left = newDetailLeft + "px";
+                                }
                                 if ($leftHorzSumHeader) {
                                     leftHorzSumWidth = parseFloat($leftHorzSumHeader.style.width) - middleWidth;
                                     horzSumLeft = parseFloat($horzSumHeader.style.left) - middleWidth;
@@ -12957,6 +13019,9 @@ var nts;
                             }
                             $detailHeader.style.width = width + "px";
                             $detailBody.style.width = width + "px";
+                            if ($detailHorzScroll) {
+                                $detailHorzScroll.style.width = width + "px";
+                            }
                             if (storage.area.getPartWidths($container).isPresent()) {
                                 storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
                             }
@@ -12998,6 +13063,9 @@ var nts;
                             $container.style.width = parseFloat($leftmostHeader.style.width) + oMiddleWidth + width + 15 + "px";
                         }
                         $detailBody.style.width = width + "px";
+                        if ($detailHorzScroll) {
+                            $detailHorzScroll.style.width = width + "px";
+                        }
                         if (storage.area.getPartWidths($container).isPresent()) {
                             storage.area.save($container, $.data($detailHeader, internal.EX_PART), width);
                         }
@@ -13076,6 +13144,10 @@ var nts;
                             return;
                         var headerTop = parseFloat($container.querySelector("." + HEADER_PRF + DETAIL).style.height)
                             + parseFloat($container.querySelector("." + BODY_PRF + DETAIL).style.height) + DISTANCE + SPACE;
+                        var $detailHorzScroll = $container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                        if ($detailHorzScroll) {
+                            headerTop += helper.getScrollWidth();
+                        }
                         var bodyTop = headerTop + DISTANCE + parseFloat($horzSumHeader.style.height);
                         $container.querySelector("." + HEADER_PRF + LEFT_HORZ_SUM).style.top = headerTop + "px";
                         $container.querySelector("." + BODY_PRF + LEFT_HORZ_SUM).style.top = bodyTop + "px";
@@ -14066,10 +14138,14 @@ var nts;
                                     if (!det) {
                                         det = {};
                                     }
+                                    var opt = gen.options;
+                                    if (!opt)
+                                        return;
                                     var xRows = [];
                                     var xCellsInColumn = _.filter(ds, function (r, i) {
                                         if (helper.isXCell($main, r[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)
-                                            || _.some(emptyCells[i], function (c) { return c === coord.columnKey; })) {
+                                            || _.some(emptyCells[i], function (c) { return c === coord.columnKey; })
+                                            || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, r[coord.columnKey]))) {
                                             xRows.push(i);
                                             return true;
                                         }
@@ -14109,7 +14185,8 @@ var nts;
                                     _.forEach(ds, function (item, index) {
                                         if (index >= start && index < end) {
                                             var $c = selection.cellAt($main, index, coord.columnKey);
-                                            if ($c === intan.NULL || !$c || !helper.isDetable($c))
+                                            if ($c === intan.NULL || !$c || !helper.isDetable($c)
+                                                || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, item[coord.columnKey])))
                                                 return;
                                             helper.markCellWith(style.DET_CLS, $c);
                                         }
@@ -14161,11 +14238,16 @@ var nts;
                                         var colKeys = _.map(helper.gridVisibleColumns($main), "key");
                                         var det = $.data($main, internal.DET);
                                         var rowDet;
+                                        var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
+                                        var opt = gen.options;
+                                        if (!opt)
+                                            return;
                                         var undetables = [];
                                         var detables = selector.queryAll($targetRow, "td").filter(function (e) {
                                             return e.style.display !== "none";
                                         }).filter(function (e, i) {
-                                            if (!helper.isDetable(e)) {
+                                            if (!helper.isDetable(e)
+                                                || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, ds[coord.rowIdx][colKeys[i]]))) {
                                                 undetables.push(i);
                                                 return false;
                                             }
@@ -14250,6 +14332,12 @@ var nts;
                             return;
                         var $main = helper.getMainTable($tbl);
                         var ds = internal.getDataSource($main);
+                        var gen = $.data($main, internal.TANGI) || $.data($main, internal.CANON);
+                        var opt = gen.options;
+                        if (!opt)
+                            return;
+                        if (helper.isEmpty(helper.viewData(opt.view, opt.viewMode, ds[rowIdx][columnKey])))
+                            return;
                         var det = $.data($main, internal.DET);
                         if (!det) {
                             det = {};
@@ -14482,6 +14570,10 @@ var nts;
                         if (!helper.hasScrollBar($detailBody[0], true)) {
                             $container.css("width", parseFloat($container.css("width")) - parseFloat($vertSumHeader.css("width")));
                         }
+                        var $detailHorzScroll = $container.find("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                        if ($detailHorzScroll.length > 0) {
+                            $detailHorzScroll.css("overflow-y", "scroll");
+                        }
                         resize.fitWindowWidth($container[0]);
                         $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) + helper.getScrollWidth() + "px");
                         scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL)[0]);
@@ -14503,6 +14595,10 @@ var nts;
                         var $rightHorzSumHeader = $container.find("." + (HEADER_PRF + RIGHT_HORZ_SUM));
                         $rightHorzSumHeader.show();
                         $container.find("." + (BODY_PRF + RIGHT_HORZ_SUM)).show();
+                        var $detailHorzScroll = $container.find("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                        if ($detailHorzScroll.length > 0) {
+                            $detailHorzScroll.css("overflow-y", "hidden");
+                        }
                         resize.fitWindowWidth($container[0]);
                         $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) - helper.getScrollWidth() + "px");
                         scroll.bindVertWheel($detailBody[0]);
@@ -14568,6 +14664,9 @@ var nts;
                                 break;
                             case "horizontalSummaries":
                                 updateHorzSum($container, header, body);
+                                break;
+                            case "rightHorizontalSummaries":
+                                updateRightHorzSum($container, header, body);
                                 break;
                         }
                     }
@@ -14750,6 +14849,27 @@ var nts;
                             var $body = $container.find("." + BODY_PRF + HORIZONTAL_SUM);
                             $body.empty();
                             render.process($body[0], exTable.horizontalSumContent, true);
+                        }
+                    }
+                    /**
+                     * Update rightHorzSum.
+                     */
+                    function updateRightHorzSum($container, header, body) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (header) {
+                            _.assignIn(exTable.rightHorzSumHeader, header);
+                            var $header = $container.find("." + HEADER_PRF + RIGHT_HORZ_SUM);
+                            var pu = $header.find("table").data(internal.POPUP);
+                            $header.empty();
+                            render.process($header[0], exTable.rightHorzSumHeader, true);
+                            if (pu && pu.css("display") !== "none")
+                                pu.hide();
+                        }
+                        if (body) {
+                            _.assignIn(exTable.rightHorzSumContent, body);
+                            var $body = $container.find("." + BODY_PRF + RIGHT_HORZ_SUM);
+                            $body.empty();
+                            render.process($body[0], exTable.rightHorzSumContent, true);
                         }
                     }
                     /**
@@ -20240,11 +20360,11 @@ var nts;
                         $input.attr('autocomplete', 'off');
                         $input.on('keydown', function (evt) {
                             var target = evt.target, start = target.selectionStart, end = target.selectionEnd;
-                            if (!$input.data(_kc)) {
-                                $input.data(_kc, evt);
-                                $input.data(_rg, { start: start, end: end });
-                                $input.data(_val, target.value);
-                            }
+                            // if (!$input.data(_kc)) {
+                            $input.data(_kc, evt);
+                            $input.data(_rg, { start: start, end: end });
+                            $input.data(_val, target.value);
+                            // }
                         });
                         $input.on('paste', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, str = evt.originalEvent.clipboardData.getData('text');
@@ -20290,26 +20410,38 @@ var nts;
                             evt.preventDefault();
                         });
                         $input.on('input', function (evt) {
-                            var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = devt.originalEvent, ival = evt.target.value, dval = $input.data(_val);
-                            ival = ival
-                                .replace(/。/, '.')
-                                .replace(/ー/, '-')
-                                .replace(/０/, '0')
-                                .replace(/１/, '1')
-                                .replace(/２/, '2')
-                                .replace(/３/, '3')
-                                .replace(/４/, '4')
-                                .replace(/５/, '5')
-                                .replace(/６/, '6')
-                                .replace(/７/, '7')
-                                .replace(/８/, '8')
-                                .replace(/９/, '9')
-                                .replace(/./g, function (k) {
-                                if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
-                                    return '';
-                                }
-                                return k;
-                            });
+                            var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = ((devt || {}).originalEvent || {}), ival = evt.target.value, dval = $input.data(_val);
+                            // ival = ival
+                            //     .replace(/。/, '.')
+                            //     .replace(/ー/, '-')
+                            //     .replace(/０/, '0')
+                            //     .replace(/１/, '1')
+                            //     .replace(/２/, '2')
+                            //     .replace(/３/, '3')
+                            //     .replace(/４/, '4')
+                            //     .replace(/５/, '5')
+                            //     .replace(/６/, '6')
+                            //     .replace(/７/, '7')
+                            //     .replace(/８/, '8')
+                            //     .replace(/９/, '9')
+                            //     .replace(/./g, k => {
+                            //         if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
+                            //             return '';
+                            //         }
+                            //         return k;
+                            //     });
+                            var numberKeyCodes = [48, 49, 50, 51, 52, 53, 54, 55, 56, 57]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+                            var numberNumpadKeyCodes = [96, 97, 98, 99, 100, 101, 102, 103, 104, 105]; //['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] numpad
+                            var backspaceKeyCode = [8];
+                            var delKeyCode = [46];
+                            var dotWithNumpadKeyCodes = [110, 190]; //'.'
+                            var minusWithNumpadKeyCodes = [109, 189]; //'-'
+                            var allowedKeyCodes = __spreadArrays(numberKeyCodes, numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
+                            if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
+                                $input.val(dval);
+                                $input.data(_kc, null);
+                                return;
+                            }
                             if (ival.match(/^0+$/)) {
                                 ival = '0';
                             }
@@ -21472,7 +21604,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -22948,7 +23080,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -24021,8 +24153,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -33701,16 +33832,16 @@ var nts;
                             var list = $dd.querySelector(".mcombo-list");
                             var items = list.querySelectorAll("li");
                             if (items) {
-                                var top_1 = 0, selected_6;
+                                var top_2 = 0, selected_6;
                                 _.forEach(items, function (li) {
                                     if (li.classList.contains("selecteditem")) {
                                         selected_6 = true;
                                         return false;
                                     }
-                                    top_1 += 26;
+                                    top_2 += 26;
                                 });
-                                if (top_1 >= 0 && selected_6)
-                                    list.scrollTop = top_1;
+                                if (top_2 >= 0 && selected_6)
+                                    list.scrollTop = top_2;
                                 else
                                     list.scrollTop = 0;
                             }
@@ -34116,8 +34247,7 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
-                                    relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -36359,6 +36489,8 @@ var nts;
                                 var lineCharts_1 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_1).keys().find(function (k) {
                                     var sameLineChart = lineCharts_1[k];
+                                    if (sameLineChart.html.style.display === "none")
+                                        return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
@@ -36368,11 +36500,13 @@ var nts;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
                                     return;
                                 if (parentChart && _.find(parentChart.children, function (child) {
-                                    return child.id !== chart.id && !child.bePassedThrough
+                                    return child.id !== chart.id && !child.bePassedThrough && child.html.style.display !== "none"
                                         && ((chart.start >= child.end && pDec_1.start < child.end) || (chart.end <= child.start && pDec_1.end > child.start));
                                 }))
                                     return;
                                 _.forEach(chart.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     var childSlide;
                                     if (child.followParent) {
                                         childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
@@ -36426,12 +36560,18 @@ var nts;
                                 var lineCharts_2 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_2).keys().find(function (k) {
                                     var sameLineChart = lineCharts_2[k];
+                                    if (sameLineChart.html.style.display === "none")
+                                        return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine < chart.start && pDec_2.start < sameLineChart.end && chart.end > sameLineChart.end));
                                 }))
                                     return;
+                                self.slideTrigger.rangeMin = Math.min(nearestLine, self.slideTrigger.rangeMin || 0);
+                                self.slideTrigger.rangeMax = Math.max(nearestLine, self.slideTrigger.rangeMax || 0);
                                 _.forEach(chart.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                     if (!childSlide)
                                         return;
@@ -36449,13 +36589,14 @@ var nts;
                                             }
                                             else if (nearestLine < child.start) {
                                                 if (!self.chartArea.contains(child.html)) {
-                                                    if (self.slideTrigger.start <= child.end)
+                                                    if (self.slideTrigger.start <= child.end
+                                                        && self.slideTrigger.rangeMax < child.end)
                                                         return;
                                                     self.chartArea.appendChild(child.html);
                                                 }
                                                 var maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1, currentWidth = parseFloat(child.html.style.width);
                                                 if (currentWidth !== maxWidth) {
-                                                    child.reposition({ width: maxWidth, left: parseFloat(child.html.style.left) - parseFloat(maxWidth - currentWidth) });
+                                                    child.reposition({ width: maxWidth, left: child.start * child.unitToPx });
                                                 }
                                                 if (self.slideTrigger.edgeCharts.length > 0) {
                                                     _.remove(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; });
@@ -36492,12 +36633,18 @@ var nts;
                                 var lineCharts_3 = self.gcChart[chart.lineNo];
                                 if (_(lineCharts_3).keys().find(function (k) {
                                     var sameLineChart = lineCharts_3[k];
+                                    if (sameLineChart.html.style.display === "none")
+                                        return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
                                         && (nearestLine > chart.end && pDec_3.end > sameLineChart.start && chart.start < sameLineChart.start));
                                 }))
                                     return;
+                                self.slideTrigger.rangeMin = Math.min(nearestLine, self.slideTrigger.rangeMin || 0);
+                                self.slideTrigger.rangeMax = Math.max(nearestLine, self.slideTrigger.rangeMax || 0);
                                 _.forEach(chart.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     var childSlide = _.find(self.slideTrigger.children, function (c) { return c.id === child.id; });
                                     if (!childSlide)
                                         return;
@@ -36515,7 +36662,9 @@ var nts;
                                             }
                                             else if (nearestLine > child.end) {
                                                 if (!self.chartArea.contains(child.html)) {
-                                                    if (self.slideTrigger.end > child.start)
+                                                    console.log(child.id + "; slideTriggerEnd: " + self.slideTrigger.end + "; start: " + child.start);
+                                                    if (self.slideTrigger.end > child.start
+                                                        && self.slideTrigger.rangeMin > child.start)
                                                         return;
                                                     self.chartArea.appendChild(child.html);
                                                 }
@@ -36614,7 +36763,8 @@ var nts;
                                         self.metaresize.isPressed = true;
                                         var parent_2 = self.gcChart[chart.lineNo][chart.parent];
                                         _.forEach(parent_2.children, function (child) {
-                                            if (child.id !== chart.id && child.end === chart.start && child.canPaste) {
+                                            if (child.html.style.display !== "none"
+                                                && child.id !== chart.id && child.end === chart.start && child.canPaste) {
                                                 self.metaresize.adjChart = child;
                                                 return false;
                                             }
@@ -36632,7 +36782,8 @@ var nts;
                                         self.metaresize.isPressed = true;
                                         var parent_3 = self.gcChart[chart.lineNo][chart.parent];
                                         _.forEach(parent_3.children, function (child) {
-                                            if (child.id !== chart.id && child.start === chart.end && child.canPaste) {
+                                            if (child.html.style.display !== "none"
+                                                && child.id !== chart.id && child.start === chart.end && child.canPaste) {
                                                 self.metaresize.adjChart = child;
                                                 return false;
                                             }
@@ -36657,6 +36808,10 @@ var nts;
                                     color: self.metaholder.color,
                                     zIndex: self.pasteBand.zIndex || 1000
                                 });
+                                if (self.mode === "paste") {
+                                    self.metaholder.tempStart = self.metaholder.start;
+                                    self.metaholder.tempEnd = self.metaholder.end;
+                                }
                                 document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                                 document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
                                 return;
@@ -36757,7 +36912,7 @@ var nts;
                     };
                     Ruler.prototype.getHoldPos = function (chart) {
                         var self = this;
-                        if (self.lineLock[chart.lineNo] /*|| chart.fixed === CHART_FIXED.BOTH*/)
+                        if (self.lineLock[chart.lineNo] && self.mode === "normal")
                             return HOLD_POS.OUT;
                         var parentChart;
                         if (chart.parent) {
@@ -37112,6 +37267,10 @@ var nts;
                                     color: self.pasteBand.color,
                                     zIndex: self.pasteBand.zIndex || 1000
                                 });
+                                if (self.mode === "paste") {
+                                    self.metaholder.tempStart = self.metaholder.start;
+                                    self.metaholder.tempEnd = self.metaholder.end;
+                                }
                                 document.addEventListenerNS("mousemove.paste", manipulationMode.pasteMove.bind(self));
                                 document.addEventListenerNS("mouseup.paste", manipulationMode.pasteUp.bind(self));
                                 self.placeholder.parentNode.removeChild(self.placeholder);
@@ -37263,6 +37422,7 @@ var nts;
                         this.canPasteResize = options.canPasteResize;
                         this.resizeFinished = options.resizeFinished;
                         this.dropFinished = options.dropFinished;
+                        this.pastingResizeFinished = options.pastingResizeFinished;
                     }
                     DefinedType.prototype.orElse = function (option) {
                         return _.isFunction(option) ? option() : option;
@@ -37501,7 +37661,7 @@ var nts;
                     manipulationMode.Metaresize = Metaresize;
                     function pasteMove() {
                         var self = this;
-                        if (self.mode === "paste" || !self.metaholder.isPressed)
+                        if (!self.metaholder.isPressed || self.mode === "paste")
                             return;
                         var chart = self.metaholder.ancestorChart;
                         var startLine = chart.start, endLine = chart.end;
@@ -37518,14 +37678,20 @@ var nts;
                         var offsetLeft = chart.html.getBoundingClientRect().left + document.body.scrollLeft, nearestLine = Math.round((event.pageX - offsetLeft) / chart.unitToPx) + startLine;
                         if (nearestLine < self.metaholder.start) {
                             nearestLine = nearestLine - nearestLine % self._getSnatchInterval(chart);
-                            self.extend(self.metaholder.lineNo, self.metaholder.id, Math.max(nearestLine, startLine));
+                            var start = Math.max(nearestLine, startLine);
+                            self.extend(self.metaholder.lineNo, self.metaholder.id, start);
+                            self.metaholder.tempStart = start;
                         }
                         else if (nearestLine > self.metaholder.end) {
                             nearestLine = nearestLine - nearestLine % self._getSnatchInterval(chart) + self._getSnatchInterval(chart);
-                            self.extend(self.metaholder.lineNo, self.metaholder.id, null, Math.min(nearestLine, endLine));
+                            var end = Math.min(nearestLine, endLine);
+                            self.extend(self.metaholder.lineNo, self.metaholder.id, null, end);
+                            self.metaholder.tempEnd = end;
                         }
                         else {
                             self.extend(self.metaholder.lineNo, self.metaholder.id, self.metaholder.start, self.metaholder.end);
+                            self.metaholder.tempStart = self.metaholder.start;
+                            self.metaholder.tempEnd = self.metaholder.end;
                         }
                     }
                     manipulationMode.pasteMove = pasteMove;
@@ -37630,6 +37796,9 @@ var nts;
                                 return _.some(removed, function (c) { return c === child.id; });
                             });
                         }
+                        if (typeof target.pastingResizeFinished === "function") {
+                            target.pastingResizeFinished(target.lineNo, target.definedType, self.metaholder.tempStart, self.metaholder.tempEnd);
+                        }
                         self.metaholder = {};
                     }
                     manipulationMode.pasteUp = pasteUp;
@@ -37648,6 +37817,8 @@ var nts;
                                 if (!self.metaresize.adjChart) {
                                     var minStart_1 = 9999;
                                     _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
                                         if (nearestLine >= child.start && self.metaresize.start < child.start && child.start < minStart_1
                                             && child.id !== chart.id && child.canPaste) {
                                             self.metaresize.adjChart = child;
@@ -37660,6 +37831,8 @@ var nts;
                                 }
                                 else {
                                     _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
                                         if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
                                             cantPasteChart_1 = child;
                                             return false;
@@ -37672,11 +37845,13 @@ var nts;
                                         end = Math.min(end, cantPasteChart_1.start);
                                     }
                                     chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = end;
                                 }
                                 else if (self.metaresize.chart.definedType !== self.metaresize.adjChart.definedType) {
                                     var adjChart = self.metaresize.adjChart;
                                     if (cantPasteChart_1) {
                                         chart.reposition({ end: cantPasteChart_1.start, width: (cantPasteChart_1.start - self.metaresize.start) * chart.unitToPx - 1 });
+                                        self.metaresize.tempEnd = cantPasteChart_1.start;
                                         adjChart.reposition({
                                             start: cantPasteChart_1.end,
                                             left: parseFloat(adjChart.html.style.left) + (cantPasteChart_1.end - adjChart.start) * adjChart.unitToPx,
@@ -37693,6 +37868,7 @@ var nts;
                                         }
                                         var end = Math.min(nearestLine, maxAdjStart, parent.end);
                                         chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                        self.metaresize.tempEnd = end;
                                         self.metaresize.adjChart.reposition({
                                             start: end,
                                             left: parseFloat(adjChart.html.style.left) + (end - adjChart.start) * adjChart.unitToPx,
@@ -37704,12 +37880,15 @@ var nts;
                                     var adjChart = self.metaresize.adjChart;
                                     var end = Math.min(Math.max(nearestLine, adjChart.end), parent.end);
                                     chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = end;
                                     self.remove(adjChart);
                                 }
                             }
                             else {
                                 var minEnd = void 0, snatch = self._getSnatchInterval(chart), cantPasteChart_2;
                                 _.forEach(parent.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     if (!child.canPaste && child.id !== chart.id && nearestLine >= child.start && nearestLine <= child.end) {
                                         cantPasteChart_2 = child;
                                         return false;
@@ -37717,6 +37896,7 @@ var nts;
                                 });
                                 if (!_.isNil(cantPasteChart_2)) {
                                     chart.reposition({ end: cantPasteChart_2.start, width: (cantPasteChart_2.start - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = cantPasteChart_2.start;
                                     if (self.metaresize.adjChart && self.metaresize.adjChart.id !== cantPasteChart_2.id) {
                                         var adjChart = self.metaresize.adjChart;
                                         self.metaresize.adjChart.reposition({
@@ -37731,10 +37911,11 @@ var nts;
                                         minEnd = self.metaresize.start + snatch;
                                     }
                                     else {
-                                        minEnd = self.metaholder.start + (snatch - (self.metaresize % snatch));
+                                        minEnd = self.metaresize.start + (snatch - (self.metaresize.start % snatch));
                                     }
                                     var end = Math.max(nearestLine, minEnd);
                                     chart.reposition({ end: end, width: (end - self.metaresize.start) * chart.unitToPx - 1 });
+                                    self.metaresize.tempEnd = end;
                                     if (self.metaresize.adjChart) {
                                         var adjChart = self.metaresize.adjChart;
                                         self.metaresize.adjChart.reposition({
@@ -37752,6 +37933,8 @@ var nts;
                                 if (!self.metaresize.adjChart) {
                                     var maxEnd_1 = 0;
                                     _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
                                         if (nearestLine <= child.end && child.start < self.metaresize.start && child.end > maxEnd_1
                                             && child.id !== chart.id && child.canPaste) {
                                             self.metaresize.adjChart = child;
@@ -37764,6 +37947,8 @@ var nts;
                                 }
                                 else {
                                     _.forEach(parent.children, function (child) {
+                                        if (child.html.style.display === "none")
+                                            return;
                                         if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
                                             cantPasteChart_3 = child;
                                             return false;
@@ -37780,6 +37965,7 @@ var nts;
                                         left: self.metaresize.left - (self.metaresize.start - start) * chart.unitToPx,
                                         width: (self.metaresize.end - start) * chart.unitToPx - 1
                                     });
+                                    self.metaresize.tempStart = start;
                                 }
                                 else if (self.metaresize.chart.definedType !== self.metaresize.adjChart.definedType) {
                                     var minAdjEnd = void 0, adjChart = self.metaresize.adjChart, snatch = self._getSnatchInterval(chart);
@@ -37789,6 +37975,7 @@ var nts;
                                             left: self.metaresize.left - (self.metaresize.start - cantPasteChart_3.end) * chart.unitToPx,
                                             width: (self.metaresize.end - cantPasteChart_3.end) * chart.unitToPx - 1
                                         });
+                                        self.metaresize.tempStart = cantPasteChart_3.end;
                                         adjChart.reposition({
                                             end: cantPasteChart_3.start,
                                             width: (cantPasteChart_3.start - adjChart.start) * adjChart.unitToPx - 1
@@ -37807,6 +37994,7 @@ var nts;
                                             left: self.metaresize.left - (self.metaresize.start - end) * chart.unitToPx,
                                             width: (self.metaresize.end - end) * chart.unitToPx - 1
                                         });
+                                        self.metaresize.tempStart = end;
                                         adjChart.reposition({
                                             end: end,
                                             width: (end - adjChart.start) * adjChart.unitToPx - 1
@@ -37821,12 +38009,15 @@ var nts;
                                         left: self.metaresize.left - (self.metaresize.start - start) * chart.unitToPx,
                                         width: (self.metaresize.end - start) * chart.unitToPx - 1
                                     });
+                                    self.metaresize.tempStart = start;
                                     self.remove(adjChart);
                                 }
                             }
                             else {
                                 var minStart = void 0, snatch = self._getSnatchInterval(chart), cantPasteChart_4;
                                 _.forEach(parent.children, function (child) {
+                                    if (child.html.style.display === "none")
+                                        return;
                                     if (!child.canPaste && nearestLine >= child.start && nearestLine <= child.end) {
                                         cantPasteChart_4 = child;
                                         return false;
@@ -37838,6 +38029,7 @@ var nts;
                                         left: self.metaresize.left + (cantPasteChart_4.end - self.metaresize.start) * chart.unitToPx,
                                         width: (self.metaresize.end - cantPasteChart_4.end) * chart.unitToPx - 1
                                     });
+                                    self.metaresize.tempStart = cantPasteChart_4.end;
                                     var adjChart = self.metaresize.adjChart;
                                     if (adjChart) {
                                         adjChart.reposition({
@@ -37859,6 +38051,7 @@ var nts;
                                         left: self.metaresize.left + (start - self.metaresize.start) * chart.unitToPx,
                                         width: (self.metaresize.end - start) * chart.unitToPx - 1
                                     });
+                                    self.metaresize.tempStart = start;
                                     if (self.metaresize.adjChart) {
                                         var adjChart = self.metaresize.adjChart;
                                         adjChart.reposition({
@@ -37873,9 +38066,13 @@ var nts;
                     manipulationMode.resizeMove = resizeMove;
                     function resizeUp() {
                         var self = this;
-                        self.metaresize = {};
                         document.removeEventListenerNS("mousemove.pasteResize");
                         document.removeEventListenerNS("mouseup.pasteResize");
+                        var chart = self.metaresize.chart;
+                        if (typeof chart.pastingResizeFinished === "function") {
+                            chart.pastingResizeFinished(chart.lineNo, chart.definedType, self.metaresize.tempStart, self.metaresize.tempEnd);
+                        }
+                        self.metaresize = {};
                     }
                     manipulationMode.resizeUp = resizeUp;
                 })(manipulationMode || (manipulationMode = {}));
@@ -37989,8 +38186,8 @@ var nts;
                                 if ($functionsArea.length == 0) {
                                     $functionsArea = $("#functions-area-bottom");
                                     if ($functionsArea.find(".nts-guide-link").length == 0) {
-                                        var top_2 = ($functionsArea.height() - 24) / 2;
-                                        $functionsArea.append(self.link(top_2, self.configs[0]));
+                                        var top_3 = ($functionsArea.height() - 24) / 2;
+                                        $functionsArea.append(self.link(top_3, self.configs[0]));
                                     }
                                     if (!$functionsArea.prev().is(".nts-guide-area")) {
                                         $functionsArea.before(self.textArea(self.configs[0], Position.BOTTOM));
@@ -37998,8 +38195,8 @@ var nts;
                                     return;
                                 }
                                 if ($functionsArea.find(".nts-guide-link").length == 0) {
-                                    var top_3 = ($functionsArea.height() - 22) / 2;
-                                    $functionsArea.append(self.link(top_3, self.configs[0]));
+                                    var top_4 = ($functionsArea.height() - 22) / 2;
+                                    $functionsArea.append(self.link(top_4, self.configs[0]));
                                 }
                                 if (!$functionsArea.next().is(".nts-guide-area")) {
                                     $functionsArea.after(self.textArea(self.configs[0]));
@@ -38010,8 +38207,8 @@ var nts;
                                     var $tab = $("#" + tabConfig.tabId);
                                     var $contentHeader = $tab.find(".sidebar-content-header");
                                     if ($contentHeader.find(".nts-guide-link").length == 0) {
-                                        var top_4 = ($contentHeader.height() - 18) / 2;
-                                        $contentHeader.append(self.link(top_4, tabConfig));
+                                        var top_5 = ($contentHeader.height() - 18) / 2;
+                                        $contentHeader.append(self.link(top_5, tabConfig));
                                     }
                                     if (!$contentHeader.next().is(".nts-guide-area")) {
                                         $contentHeader.after(self.textArea(tabConfig));
@@ -47774,8 +47971,7 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
-                                dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -48170,7 +48366,8 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        }, initValue: value,
+                                        },
+                                        initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,

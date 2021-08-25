@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -34,6 +35,10 @@ public class AffiliationInfoOfMonthly extends AggregateRoot implements Serializa
 	/** 月末の情報 */
 	@Setter
 	private AggregateAffiliationInfo lastInfo;
+	
+	@Setter
+	/** 契約時間: 労働契約時間 */
+	private LaborContractTime contractTime;
 
 	/**
 	 * コンストラクタ
@@ -53,6 +58,7 @@ public class AffiliationInfoOfMonthly extends AggregateRoot implements Serializa
 		
 		this.firstInfo = new AggregateAffiliationInfo();
 		this.lastInfo = new AggregateAffiliationInfo();
+		this.contractTime = new LaborContractTime(0);
 	}
 	
 	/**
@@ -71,12 +77,14 @@ public class AffiliationInfoOfMonthly extends AggregateRoot implements Serializa
 			ClosureId closureId,
 			ClosureDate closureDate,
 			AggregateAffiliationInfo firstInfo,
-			AggregateAffiliationInfo lastInfo){
+			AggregateAffiliationInfo lastInfo,
+			LaborContractTime contractTime) {
 		
 		AffiliationInfoOfMonthly domain = new AffiliationInfoOfMonthly(
 				employeeId, yearMonth, closureId, closureDate);
 		domain.firstInfo = firstInfo;
 		domain.lastInfo = lastInfo;
+		domain.contractTime = contractTime;
 		return domain;
 	}
 	

@@ -34,6 +34,10 @@ public class RefectActualResult implements DomainValue {
 	 */
 	@Getter
 	private final Optional<OvertimeDeclaration> overtimeDeclaration;
+	
+	/** 作業グループ: 作業グループ */
+	//@Getter
+	//private Optional<WorkGroup> work;
 
 	public RefectActualResult(WorkInformationStamp workInforStamp,
 			WorkTimeCode workTimeCode,OvertimeDeclaration overtimeDeclaration) {

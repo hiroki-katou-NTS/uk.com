@@ -90,24 +90,26 @@ public class DayAndTime {
 		TimeOfUse resultTime = beSubtracted.time;
 
 		// 積み崩しが必要か
+		// INPUT．Require．契約時間取得する
+		LaborContractTime contractTime = require.empContractTime(employeeId, criteriaDate);
+
 		// ===積み崩し発生条件
 		// ===「 1<=計算結果の日と時間.日 and 1<=減算する日と時間.時間 and 計算結果の日と時間.時間 < 減算する日.時間」
-		if(1 <= resultDay.v() && 1 <= subtract.time.v() && resultTime.v() < subtract.time.v()) {
+		while (1 <= resultDay.v() && 1 <= subtract.time.v() &&  resultTime.v() <= subtract.time.v()) {
 			// 必要の場合
-			// INPUT．Require．契約時間取得する
-			LaborContractTime contractTime = require.empContractTime(employeeId, criteriaDate);
-
 			// 減算される日と時間を積み崩し
 			// ===計算結果の日と時間.日数から１をマイナス。
 			// ===計算結果の日と時間.時間に、「契約時間」を加算。
 			resultDay = new DayNumberOfUse(resultDay.v() - 1);
 			resultTime = resultTime.addMinutes(contractTime.v());
-		} else {
-			// 不要の場合
-			// 時間の減算を行う
-			// ===計算結果の日と時間．時間　＝　減算される日と時間．時間　ー　減算する日と時間．時間
-			resultTime = resultTime.minusMinutes(subtract.time.v());
 		}
+		
+		
+		
+		// 時間の減算を行う
+		// ===計算結果の日と時間．時間　＝　減算される日と時間．時間　ー　減算する日と時間．時間
+		resultTime = resultTime.minusMinutes(subtract.time.v());
+		
 
 		DayAndTime subDayAndTime = DayAndTime.of(resultTime, resultDay);
 

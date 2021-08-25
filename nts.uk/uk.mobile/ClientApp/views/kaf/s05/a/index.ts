@@ -1,6 +1,6 @@
 import { _} from '@app/provider';
 import { TrackRecordAtr, OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppDateContradictionAtr, ExcessState } from '../a/define.interface';
-import { component, Prop } from '@app/core/component';
+import { component, Prop, Watch } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
 import { KafS05Step1Component } from '../step1';
 import { HolidayTime, KafS05Step2Component } from '../step2';
@@ -371,7 +371,7 @@ export class KafS05Component extends KafS00ShrComponent {
 
         
 
-        if (!_.isNil(vm.params)) {
+        if (!_.isNil(vm.params) && vm.params.isDetailMode) {
             vm.modeNew = false;
             let model = {} as Model;
             model.appOverTime = vm.params.appDetail.appOverTime as AppOverTime;
@@ -426,6 +426,8 @@ export class KafS05Component extends KafS00ShrComponent {
         }
         if (vm.modeNew) {
             vm.application = vm.createApplicationInsert(AppType.OVER_TIME_APPLICATION);
+            vm.application.employeeIDLst = _.get(vm.params, 'employeeID') ? [_.get(vm.params, 'employeeID')] : [];
+            vm.application.appDate = _.get(vm.params, 'date');
         } else {
             vm.application = vm.createApplicationUpdate(vm.appDispInfoStartupOutput.appDetailScreenInfo);
         }
@@ -433,7 +435,12 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.user = user;
         }).then(() => {
             if (vm.modeNew) {
-                return vm.loadCommonSetting(AppType.OVER_TIME_APPLICATION, null, null, null, vm.overTimeClf);
+                return vm.loadCommonSetting(
+                    AppType.OVER_TIME_APPLICATION, 
+                    _.isEmpty(vm.application.employeeIDLst) ? null : vm.application.employeeIDLst[0], 
+                    null, 
+                    vm.application.appDate ? [vm.application.appDate] : [], 
+                    vm.overTimeClf);
             }
 
             return true;
@@ -441,7 +448,7 @@ export class KafS05Component extends KafS00ShrComponent {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
                 vm.kaf000_A_Params.opOvertimeAppAtr = vm.overTimeClf;
-                vm.updateKaf000_B_Params(vm.modeNew);
+                vm.updateKaf000_B_Params(vm.modeNew, vm.application.appDate);
                 vm.updateKaf000_C_Params(vm.modeNew);
                 if (vm.modeNew) {
                     vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
@@ -450,10 +457,11 @@ export class KafS05Component extends KafS00ShrComponent {
                 let url = self.location.search.split('=')[1];
                 command.mode = vm.modeNew;
                 command.companyId = vm.user.companyId;
-                command.employeeIdOptional = vm.user.employeeId;
+                command.employeeIdOptional = !_.isEmpty(vm.application.employeeIDLst) ? vm.application.employeeIDLst[0] : vm.user.employeeId;
                 command.overtimeAppAtr = vm.overTimeClf;
                 command.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
                 command.agent = false;
+                command.dateOptional = vm.application.appDate;
 
                 if (vm.modeNew) {
                     return vm.$http.post('at', API.start, command);
@@ -1223,8 +1231,44 @@ export class KafS05Component extends KafS00ShrComponent {
         vm.fetchData();
     }
 
+    @Watch('params')
+    public paramsWatcher() {
+        const vm = this;
+        if (!_.isNil(vm.params) && vm.params.isDetailMode) {
+            vm.modeNew = false;
+            let model = {} as Model;
+            model.appOverTime = vm.params.appDetail.appOverTime as AppOverTime;
+            model.displayInfoOverTime = vm.params.appDetail.displayInfoOverTime as DisplayInfoOverTime;
+            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+            vm.model = model;
+        } else {
+            vm.modeNew = true;
+        }
 
+        if (vm.modeNew) {
+            if (vm.$route.query.overworkatr == '0') {
+                vm.overTimeClf = 0;
+            } else if (vm.$route.query.overworkatr == '1') {
+                vm.overTimeClf = 1;
+            } else {
+                vm.overTimeClf = 2;
+            }
+        } else {
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
+        }
 
+        if (_.isNil(vm.overTimeClf)) {
+            vm.overTimeClf = 2;
+        }
+        if (vm.overTimeClf == 0) {
+            vm.pgName = 'kafs05step1';
+        } else if (vm.overTimeClf == 1) {
+            vm.pgName = 'kafs05step2';
+        } else {
+            vm.pgName = 'kafs05step3';
+        }
+        vm.fetchData();
+    }
 
 }
 const API = {

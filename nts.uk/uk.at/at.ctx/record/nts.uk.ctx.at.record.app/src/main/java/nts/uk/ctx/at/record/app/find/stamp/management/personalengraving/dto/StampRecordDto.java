@@ -107,7 +107,7 @@ public class StampRecordDto {
 				this.overTime = getTimeString(overtime.getOverTime().v());
 				this.overLateNightTime = getTimeString(overtime.getOverLateNightTime().v());
 			}
-			this.reflectedCategory = stamp.isReflectedCategory();
+			this.reflectedCategory = stamp.getImprintReflectionStatus().isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
 				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
 				this.latitude = stampLocate.getLatitude();
@@ -162,7 +162,7 @@ public class StampRecordDto {
 				this.overTime = getTimeString(overtime.getOverTime().v());
 				this.overLateNightTime = getTimeString(overtime.getOverLateNightTime().v());
 			}
-			this.reflectedCategory = stamp.isReflectedCategory();
+			this.reflectedCategory = stamp.getImprintReflectionStatus().isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
 				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
 				this.latitude = stampLocate.getLatitude();

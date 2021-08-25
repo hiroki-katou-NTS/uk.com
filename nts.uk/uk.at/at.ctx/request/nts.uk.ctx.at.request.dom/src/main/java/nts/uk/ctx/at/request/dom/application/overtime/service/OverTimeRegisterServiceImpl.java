@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
@@ -125,7 +127,9 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			AppOverTime appOverTime,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Boolean mailServerSet,
-			AppTypeSetting appTypeSetting) {
+			AppTypeSetting appTypeSetting,
+			Map<String, ApprovalRootContentImport_New> approvalRootContentMap
+			) {
 		List<String> guidS = new ArrayList<>();
 		List<String> reflectAppIdLst = new ArrayList<>();
 		for (EmployeeInfoImport el : appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst()) {
@@ -140,8 +144,11 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			application.setEmployeeID(sid);
 			appOverTime.setApplication(application);
 			// 登録処理を実行
-			appRepository.insertApp(application,
-					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
+			appRepository.insertApp(
+					application,
+					approvalRootContentMap.get(sid)
+										  .getApprovalRootState()
+										  .getListApprovalPhaseState());
 			String reflectAppId = registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 			if(Strings.isNotBlank(reflectAppId)) {
 				reflectAppIdLst.add(reflectAppId);
