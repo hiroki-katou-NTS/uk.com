@@ -29,7 +29,7 @@ public class EquipmentInformationExportImpl implements MasterListData {
 	
 	private static final String SHEET_NAME = "マスタリスト";
 	private static final String[] HEADER_NAMES = {
-			"OEM022_27", "OEM022_28", "OEM022_29", "OEM022_30", "OEM022_31", "OEM022_32"
+			"OEM002_27", "OEM002_28", "OEM002_29", "OEM002_30", "OEM002_31", "OEM002_32"
 	};
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
