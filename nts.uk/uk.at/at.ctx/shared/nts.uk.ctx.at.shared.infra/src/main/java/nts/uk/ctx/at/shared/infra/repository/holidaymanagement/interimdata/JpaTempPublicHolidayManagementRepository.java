@@ -74,11 +74,10 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 		KshdtInterimHdpub entity = this.getEntityManager().find(KshdtInterimHdpub.class, pk);
 
 		if (entity == null) {
-			entity = new KshdtInterimHdpub();
-			this.getEntityManager().persist(entity.toEntity(domain));
+			this.getEntityManager().persist(KshdtInterimHdpub.toEntity(domain));
 
 		} else {
-			this.commandProxy().update(entity.toEntity(domain));
+			this.commandProxy().update(KshdtInterimHdpub.toEntity(domain));
 		}
 
 		this.getEntityManager().flush();

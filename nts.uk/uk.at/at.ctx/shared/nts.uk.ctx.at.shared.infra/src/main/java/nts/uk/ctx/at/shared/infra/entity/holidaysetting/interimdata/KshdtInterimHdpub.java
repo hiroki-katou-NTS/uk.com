@@ -59,7 +59,7 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 				new DayOfVacationUse(useDays));
 	}
 	
-	public KshdtInterimHdpub toEntity(TempPublicHolidayManagement domain){
+	public static KshdtInterimHdpub toEntity(TempPublicHolidayManagement domain){
 		
 		KshdtInterimHdpubPK pk = new KshdtInterimHdpubPK(AppContexts.user().companyId(), domain.getSID(),
 				domain.getYmd());
