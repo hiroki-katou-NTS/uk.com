@@ -99,6 +99,16 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	private static final String QUERY_ABS_BY_IDS_ATR = "SELECT c FROM KrcdtInterimRecHdSub c "
 			+ " WHERE c.recAbsPk.absenceMngID IN :absenceMngIds"
 			+ " AND c.absenceMngAtr = :absenceMngAtr";
+	
+	private static final String DELETE_RECMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcdtInterimRecMng c "
+			+ " WHERE c.pk.sid = :sid"
+			+ " AND c.ymd >= :startDate"
+			+ " AND c.ymd <= :endDate";
+	
+	private static final String DELETE_ABSMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcdtInterimHdSubMng c "
+			+ " WHERE c.pk.sid = :sid"
+			+ " AND c.ymd >= :startDate"
+			+ " AND c.ymd <= :endDate";
 
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
@@ -312,6 +322,27 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 		this.getEntityManager().createQuery(DELETE_RECMNG_BY_SID_AND_YMD)
 		.setParameter("sid", sId)
 		.setParameter("ymd", ymd)
+		.executeUpdate();
+	}
+	
+	/*
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository#deleteInterimAbsMngBySidDatePeriod(java.lang.String, nts.arc.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public  void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period){
+		this.getEntityManager().createQuery(DELETE_RECMNG_BY_SID_AND_DATEPERIOD)
+		.setParameter("sid", sId)
+		.setParameter("startDate", period.start())
+		.setParameter("endDate", period.end())
+		.executeUpdate();
+	}
+	
+	public void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period){
+		this.getEntityManager().createQuery(DELETE_ABSMNG_BY_SID_AND_DATEPERIOD)
+		.setParameter("sid", sId)
+		.setParameter("startDate", period.start())
+		.setParameter("endDate", period.end())
 		.executeUpdate();
 	}
 
