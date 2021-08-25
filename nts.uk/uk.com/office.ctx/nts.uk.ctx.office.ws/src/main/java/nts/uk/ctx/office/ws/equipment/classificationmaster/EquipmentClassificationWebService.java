@@ -40,14 +40,9 @@ public class EquipmentClassificationWebService {
 	}
 	
 	@POST
-	@Path("delete")
-	public void delete(String code) {
-		
-	}
-	
-	@POST
 	@Path("getAll")
 	public List<EquipmentClassificationDto> getAll() {
 		return this.query.get(AppContexts.user().contractCode());
 	}
+	
 }
