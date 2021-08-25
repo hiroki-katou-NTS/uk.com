@@ -67,8 +67,6 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	/** どんな履歴か*/
 	private final HistoryType historyType;
 
-//	protected abstract adjustExistingHistory();
-	
 	public EmployeeHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
 		super(workspace);
 		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
@@ -255,8 +253,12 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		existingHistory.add(addingItem);
 		existingHistory.removeForcively(addingItem);
 		//↑で受入る履歴を消してるから末尾が既存の最新だろうという意
-		AnyRecordToChange toChange = new EmployeeHistoryItem(existingHistory.items().get(existingHistory.items().size() - 1 )).toChange(context);
-		require.save(context, toChange);
+		
+		existingHistory.latestStartItem().ifPresent(	existing ->{
+				AnyRecordToChange toChange = new EmployeeHistoryItem(existing).toChange(context);
+				require.save(context, toChange);
+		});
+
 	}
 
 	public static interface RequireCanonicalize{
