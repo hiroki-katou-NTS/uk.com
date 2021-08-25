@@ -576,7 +576,7 @@ module nts.uk.com.view.cas013.a {
             else if (nts.uk.util.isNullOrUndefined(vm.employyeName()) || vm.employyeName() == '') {
                 nts.uk.ui.dialog.alertError({
                     messageId: "Msg_218",
-                    messageParams: ["A7_1"]
+                    messageParams: [nts.uk.resource.getText("CAS013_10")]
                 });
             }
             else if (nts.uk.util.isNullOrUndefined(vm.dateValue().startDate) || nts.uk.util.isNullOrUndefined(vm.dateValue().endDate)) {
