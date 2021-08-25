@@ -19,8 +19,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				style="background-color: inherit; height: calc(100vh - 137px);">
 				<div class="two-panel" style="height: 100%; width: 1260px">
 					<div class="left-panel"
-						style="width: calc(1260px - 388px); height: inherit">
-						<div style="height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden">
+						style="width: calc(1260px - 388px); height: inherit; padding-bottom: 5px;">
+						<div style="border: 1px solid #CCC; height: inherit; overflow-y: auto; background-color: #fff; padding:0 10px; overflow-x: hidden"> 
 							<div class="table"
 								style="border-bottom: 2px solid #B1B1B1; padding-bottom: 30px; margin-bottom: 30px; width: 100%;">
 								<div class="cell" style="vertical-align: middle;">
@@ -109,20 +109,22 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							</div>                          
 						</div>
 					</div>
-					<div class="right-panel" style="width: 388px; height: inherit; padding-right: 0px">
-						<div style="height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
-							<div style="padding-top: 10px"
+					<div class="right-panel" style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
+						<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-y: auto; overflow-x: hidden">
+							<div
 								data-bind="component: { name: 'kaf000-b-component1', 
 									params: {
 										appType: appType,
 										appDispInfoStartupOutput: appDispInfoStartupOutput	
 									} }"></div>
-							<div
+<!--							<div data-bind="if: visibleModel.c6()">-->
+								<div
 									data-bind="component: { name: 'kaf005-share-header',
 													params: {
 														overTimeWork: overTimeWork
 													}
-													}"></div>        
+													}"></div>   
+<!--							</div>     -->
 							<div
 								data-bind="component: { name: 'kaf000-b-component9',
 									params: {
@@ -878,11 +880,16 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 					item.backgroundColor(COLOR_36.error);
 					item.textColor(COLOR_36.error_letter);
+				}  else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
 				}
 				
 				
 				overTimeWorks.push(item);
 			}
+			/*
+			
 			{
 				let item = new OvertimeWork();
 				let nextMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextMonth;
@@ -928,6 +935,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				}
 				overTimeWorks.push(item);
 			}
+			 */
 			self.overTimeWork(overTimeWorks);
 		}
 		
@@ -3098,15 +3106,19 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	}
 	const COLOR_36 = {
 		// 36協定エラー
-		error: '#FD4D4D',
+		error: 'bg-36contract-error',
 		// 36協定アラーム
-		alarm: '#F6F636',
+		alarm: 'bg-36contract-alarm',
 		// 36協定特例
-		exceptions: '#eb9152',
+		exceptions: 'bg-36contract-exception',
 		// 36協定エラー文字
-		error_letter: '#ffffff',
+		error_letter: 'color-36contract-error',
 		// 36協定アラーム文字
-		alarm_character: '#ff0000'
+		alarm_character: 'color-36contract-alarm',
+		// 特条上限超過背景色
+		bg_upper_limit: 'bg-exceed-special-upperlimit',
+		// 特条上限超過文字色
+		color_upper_limit: 'color-exceed-special-upperlimit'
 		
 	}
 	export enum MODE {

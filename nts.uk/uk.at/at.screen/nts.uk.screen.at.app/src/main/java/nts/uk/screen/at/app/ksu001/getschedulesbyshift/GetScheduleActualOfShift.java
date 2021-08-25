@@ -49,7 +49,7 @@ public class GetScheduleActualOfShift {
 	 * @param sids ・社員リスト　　　：List<社員ID>
 	 * @param datePeriod ・期間　　　　　　：期間
 	 * @param closeDate ・締め日　　　　　：日付
-	 * @param isAchievement ・実績も取得するか：boolean
+	 * @param getActualData ・実績も取得するか：boolean
 	 * @param targetOrg ・対象組織　　　　：対象組織識別情報
 	 * @param personalCounterOp ・個人計カテゴリ　：Optional<個人計カテゴリ>
 	 * @param workplaceCounterOp ・職場計カテゴリ　：Optional<職場計カテゴリ>
@@ -59,7 +59,7 @@ public class GetScheduleActualOfShift {
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
-			boolean isAchievement,
+			boolean getActualData,
 			TargetOrgIdenInfor targetOrg,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp
@@ -68,14 +68,14 @@ public class GetScheduleActualOfShift {
 		PlanAndActual planAndActual = screenQueryPlanAndActual.getPlanAndActual(
 				sids,
 				datePeriod,
-				isAchievement);
+				getActualData);
 		//2 取得する()
 		WorkScheduleShiftBaseResult workScheduleShiftBaseResult =
 				screenQueryWorkScheduleShift.create(
 						listShiftMasterNotNeedGet,
 						planAndActual.getSchedule(),
 						planAndActual.getDailySchedule(),
-						isAchievement);
+						getActualData);
 		
 		// 3 集計する(List<社員ID>, 期間, 日付, , , 対象組織識別情報, Optional<個人計カテゴリ>, Optional<職場計カテゴリ>, boolean)
 		AggregateScheduleDto aggrerateSchedule =

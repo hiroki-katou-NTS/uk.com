@@ -8,8 +8,13 @@ module nts.uk.at.view.knr001.a.service {
         register: "at/record/empinfoterminal/register",
         update: "at/record/empinfoterminal/update",
         delete: "at/record/empinfoterminal/delete",
-        knrExport: "file/empinfoterminal/report/export"
+        knrExport: "file/empinfoterminal/report/export",
+        getWorkplaceNameChangingBaseDate: "screen/at/empinfoterminal/getWorkplaceNameChangingBaseDate"
     };
+
+    export function getWorkplaceNameChangingBaseDate(input: any): JQueryPromise<any> {
+        return ajax(paths.getWorkplaceNameChangingBaseDate, input);
+    }
 
     /**
     * Get All

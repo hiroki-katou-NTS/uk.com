@@ -48,7 +48,7 @@ public class ScreenQueryAggregatePeopleMethod {
 	 * @return Map<年月日, List<勤務方法別の人数<T>>>
 			        ※Tはそれぞれコードから取得した名称に置き換える
 	 */
-	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> get(
+	public Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkInfo>>> get(
 			TargetOrgIdenInfor targetOrg,
 			DatePeriod period,
 			List<IntegrationOfDaily> scheduleList,
@@ -87,18 +87,18 @@ public class ScreenQueryAggregatePeopleMethod {
 					.collect(Collectors.toList())
 					;
 			
-			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> countWorkOutput = 
+			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkInfo>>> countWorkOutput = 
 					countWork.entrySet()
 							 .stream()
 							 .collect(Collectors.toMap(
 									 e -> e.getKey(),
 									 
 									 e -> e.getValue().stream()
-													 .map(x -> new NumberOfPeopleByEachWorkMethod<String>(
+													 .map(x -> new NumberOfPeopleByEachWorkMethod<WorkInfo>(
 															 workTimeSetting.stream()
 																	 .filter(y -> y.getWorkTimeCode().equals(x.getWorkMethod()))
 																	 .findFirst()
-																	 .map(y -> y.getWorkTimeName())
+																	 .map(y -> new WorkInfo(y.getWorkTimeCode(), y.getWorkTimeName()))
 																	 .orElse(null),
 															 x.getPlanNumber(),
 															 x.getScheduleNumber(),
@@ -135,17 +135,17 @@ public class ScreenQueryAggregatePeopleMethod {
 					.collect(Collectors.toList());
 					
 			
-			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> shiftOutput =
+			Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkInfo>>> shiftOutput =
 				shift.entrySet()
 					.stream()
 					.collect(Collectors.toMap(
 							e -> e.getKey(),
 							e -> e.getValue().stream()
-											 .map(x -> new NumberOfPeopleByEachWorkMethod<String>(
+											 .map(x -> new NumberOfPeopleByEachWorkMethod<WorkInfo>(
 													 shirftMasters.stream()
 															 .filter(y -> y.shiftMasterCode.equals(x.getWorkMethod().v()))
 															 .findFirst()
-															 .map(y -> y.getShiftMasterName())
+															 .map(y -> new WorkInfo(y.shiftMasterCode, y.getShiftMasterName()))
 															 .orElse(null),
 													 x.getPlanNumber(),
 													 x.getScheduleNumber(),

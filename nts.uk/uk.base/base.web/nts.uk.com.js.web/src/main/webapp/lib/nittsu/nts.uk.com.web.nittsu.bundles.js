@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: true,
+                    enumerable: false,
                     configurable: true
                 });
                 return browser;
@@ -569,7 +569,7 @@ var nts;
                         case 'Time':
                         case 'Clock':
                         case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint':// ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
                             constraintText += (constraintText.length > 0) ? "/" : "";
                             constraintText += constraint.min + "～" + constraint.max;
                             break;
@@ -1893,10 +1893,15 @@ var nts;
 })(nts || (nts = {}));
 /// <reference path="reference.ts"/>
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -2689,6 +2694,7 @@ var nts;
                     milliseconds = (uk.util.isNullOrUndefined(milliseconds)) ? currentDate.getUTCMilliseconds() : milliseconds;
                     return new Date(Date.UTC(year, month, date, hours, minutes, seconds, milliseconds));
                 }
+                // Return input time in UTC
                 else {
                     month = (uk.util.isNullOrUndefined(month)) ? 0 : month;
                     date = (uk.util.isNullOrUndefined(date)) ? 1 : date;
@@ -3659,7 +3665,8 @@ var nts;
                 com: 'nts.uk.com.web',
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web',
-                hr: 'nts.uk.hr.web'
+                hr: 'nts.uk.hr.web',
+                cloud: 'nts.uk.cloud.web'
             };
             var QueryString = /** @class */ (function () {
                 function QueryString() {
@@ -6202,9 +6209,11 @@ var nts;
                         if (uk.util.isNullOrUndefined(data)) {
                             transferData = data;
                         }
+                        // Data or KO data
                         else if (!_.isFunction(data) || ko.isObservable(data)) {
                             transferData = JSON.parse(JSON.stringify(ko.unwrap(data))); // Complete remove reference by object
                         }
+                        // Callback function
                         else {
                             transferData = data;
                         }
@@ -7137,6 +7146,11 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 var nts;
 (function (nts) {
     var uk;
@@ -9146,6 +9160,7 @@ var nts;
                                 //                    self.dirtyCellsIn(manual);
                                 //                    self.errorCellsIn();
                                 self.detCellsIn(manual);
+                                self.disableCellsIn();
                                 //                    self.editCellIn();
                                 self.madeUpCellsIn();
                                 //                    self.detModeRemainsChanges();
@@ -9232,38 +9247,38 @@ var nts;
                         Cloud.prototype.rollTo = function (cell) {
                             var self = this;
                             if (self.startIndex <= cell.rowIndex && self.endIndex >= cell.rowIndex) {
-                                var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdIndex = selector.index($cell);
-                                var tdPosLeft_1 = 0, tdPosTop_1 = 0;
-                                selector.siblingsLt($cell, tdIndex).forEach(function (e) {
-                                    if (e.style.display !== "none") {
-                                        tdPosLeft_1 += e.offsetWidth;
-                                    }
-                                });
-                                var $tr = $cell.parentElement;
-                                var trIndex = selector.index($tr);
-                                selector.siblingsLt($tr, trIndex).forEach(function (e) {
-                                    tdPosTop_1 += e.offsetHeight;
-                                });
-                                if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop_1 + 100)
-                                    || self.$container.scrollTop > tdPosTop_1) {
-                                    self.$container.scrollTop = tdPosTop_1;
-                                }
-                                if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft_1 + 100)
-                                    || self.$container.scrollLeft > tdPosLeft_1) {
-                                    self.$container.scrollLeft = tdPosLeft_1;
-                                }
+                                //                    let $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
+                                //                    let tdIndex = selector.index($cell);
+                                //                    let tdPosLeft = 0, tdPosTop = 0;
+                                //                    selector.siblingsLt($cell, tdIndex).forEach(function(e) {
+                                //                        if (e.style.display !== "none") {
+                                //                            tdPosLeft += e.offsetWidth;
+                                //                        }
+                                //                    });
+                                //                    let $tr = $cell.parentElement;
+                                //                    let trIndex = selector.index($tr);
+                                //                    selector.siblingsLt($tr, trIndex).forEach(function(e) {
+                                //                        tdPosTop += e.offsetHeight;
+                                //                    });
+                                //                    if ((self.$container.scrollTop + parseFloat(self.$container.style.height)) < (tdPosTop + 100)
+                                //                        || self.$container.scrollTop > tdPosTop) {
+                                //                        self.$container.scrollTop = tdPosTop;
+                                //                    }
+                                //                    if ((self.$container.scrollLeft + parseFloat(self.$container.style.width)) < (tdPosLeft + 100)
+                                //                        || self.$container.scrollLeft > tdPosLeft) {
+                                //                        self.$container.scrollLeft = tdPosLeft;
+                                //                    }
                             }
                             else {
                                 self.$container.scrollTop = cell.rowIndex * self.rowHeight;
                                 var $cell = selection.cellAt(self.$container, cell.rowIndex, cell.columnKey);
-                                var tdPosLeft_2 = 0;
+                                var tdPosLeft_1 = 0;
                                 selector.siblingsLt($cell, selector.index($cell)).forEach(function (e) {
                                     if (e.style.display !== "none") {
-                                        tdPosLeft_2 += e.offsetWidth;
+                                        tdPosLeft_1 += e.offsetWidth;
                                     }
                                 });
-                                self.$container.scrollLeft = tdPosLeft_2;
+                                self.$container.scrollLeft = tdPosLeft_1;
                             }
                         };
                         /**
@@ -9425,6 +9440,19 @@ var nts;
                             });
                         };
                         /**
+                         * Disable cells in.
+                         */
+                        Cloud.prototype.disableCellsIn = function () {
+                            var self = this;
+                            var disable = $.data(self.$container, internal.DISABLE);
+                            if (!disable)
+                                return;
+                            self.eachKey(disable, function (obj) { return obj.columnKey; }, function (obj) { return !obj.uiReflected; }, function ($cell, obj) {
+                                helper.markCellWith(style.SEAL_CLS, $cell, obj.innerIdx);
+                                obj.uiReflected = true;
+                            });
+                        };
+                        /**
                          * Made up cells in.
                          */
                         Cloud.prototype.madeUpCellsIn = function () {
@@ -9439,14 +9467,19 @@ var nts;
                                     var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                                     if ($childCells && $childCells.length > 0) {
                                         if (makeup.textColor) {
-                                            _.forEach($childCells, function (c) {
-                                                c.style.color = makeup.textColor;
-                                            });
+                                            if (_.isNil(obj.innerIdx) || obj.innerIdx === -1) {
+                                                _.forEach($childCells, function (c) {
+                                                    c.style.color = makeup.textColor;
+                                                });
+                                            }
+                                            else if ($childCells.length > obj.innerIdx) {
+                                                $childCells[obj.innerIdx].style.color = makeup.textColor;
+                                            }
                                         }
                                         else
                                             helper.addClass($childCells, makeup.class);
                                     }
-                                    else if (makeup.textColor) {
+                                    else if (makeup.textColor) { // Don't set textColor
                                         $cell.style.color = makeup.textColor;
                                     }
                                     else {
@@ -9761,7 +9794,7 @@ var nts;
                         var $grid = $exTable.querySelector("." + BODY_PRF + DETAIL);
                         var $body = !land ? $grid : helper.getTable($exTable, land);
                         var exTable = $.data($exTable, NAMESPACE);
-                        if (!forced && (selector.is($cell, "." + style.DET_CLS)
+                        if (!forced && ( /*errors.occurred($exTable) ||*/selector.is($cell, "." + style.DET_CLS)
                             || (land === BODY_PRF + DETAIL && exTable.detailContent.banEmptyInput
                                 && exTable.detailContent.banEmptyInput.some(function (m) { return m === exTable.viewMode; })
                                 && $cell.textContent === "")
@@ -9856,7 +9889,7 @@ var nts;
                                 return;
                             if (columnDf_1.ajaxValidate && _.isFunction(columnDf_1.ajaxValidate.request)) {
                                 helper.block($exTable);
-                                columnDf_1.ajaxValidate.request(content_1).done(function (res) {
+                                columnDf_1.ajaxValidate.request(coord.rowIdx, coord.columnKey, editor.innerIdx, content_1).done(function (res) {
                                     cont_1(helper.call(columnDf_1.ajaxValidate.onValid, { rowIndex: editor.rowIdx, columnKey: editor.columnKey, innerIdx: editor.innerIdx }, res));
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($editingGrid_1, editor.rowIdx, editor.columnKey);
@@ -9892,7 +9925,7 @@ var nts;
                                     $grid_1 = $exTable.querySelector("." + land);
                                 }
                                 var editor_1 = $.data($exTable, update.EDITOR);
-                                if (!editor_1)
+                                if ( /*errors.occurred($exTable) ||*/!editor_1)
                                     return;
                                 var visibleColumns = helper.getVisibleColumnsOn(!editor_1.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor_1.land));
                                 var columnDf_2;
@@ -9906,7 +9939,7 @@ var nts;
                                     return;
                                 if (columnDf_2.ajaxValidate && _.isFunction(columnDf_2.ajaxValidate.request)) {
                                     helper.block($exTable);
-                                    columnDf_2.ajaxValidate.request(value).done(function (res) {
+                                    columnDf_2.ajaxValidate.request(editor_1.rowIdx, editor_1.columnKey, editor_1.innerIdx, value).done(function (res) {
                                         var $parent = $editor.parentElement;
                                         helper.removeClass($parent, update.EDIT_CELL_CLS);
                                         var currentCell = new selection.Cell(editor_1.rowIdx, editor_1.columnKey, undefined, editor_1.innerIdx);
@@ -10143,7 +10176,7 @@ var nts;
                             if (!selector.is($target, "." + cellHandler.ROUND_GO)
                                 && columnDf_3.ajaxValidate && _.isFunction(columnDf_3.ajaxValidate.request)) {
                                 helper.block($exTable);
-                                columnDf_3.ajaxValidate.request(content_2).done(function (res) {
+                                columnDf_3.ajaxValidate.request(editor_2.rowIdx, editor_2.columnKey, editor_2.innerIdx, content_2).done(function (res) {
                                     mo_1(helper.call(columnDf_3.ajaxValidate.onValid, { rowIndex: editor_2.rowIdx, columnKey: editor_2.columnKey, innerIdx: editor_2.innerIdx }, res));
                                 }).fail(function (res) {
                                     var $target = selection.cellAt($grid_2, editor_2.rowIdx, editor_2.columnKey);
@@ -10226,6 +10259,7 @@ var nts;
                             exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                             return { updateTarget: updateTarget, value: oldVal };
                         }
+                        exTable[f].dataSource[ui.rowIndex][ui.columnKey][field] = ui.value;
                         return null;
                     }
                     update.cellData = cellData;
@@ -10512,7 +10546,8 @@ var nts;
                         var exTable = $.data($exTable, NAMESPACE);
                         var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
                         var pk = helper.getPrimaryKey($grid), pkVal = gen.dataSource[rowIdx][pk];
-                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey))
+                        if (!gen || helper.isDetCell($grid, rowIdx, columnKey)
+                        /*|| helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS)*/ )
                             return;
                         var cData = gen.dataSource[rowIdx][columnKey];
                         var opt = gen.options, fieldArr = opt.view(opt.viewMode), sticker = $.data($grid, internal.STICKER);
@@ -10579,7 +10614,8 @@ var nts;
                         _.assignInWith(gen.dataSource[rowIdx], clonedData, function (objVal, srcVal, key, obj, src) {
                             if ((!exTable.stickOverWrite
                                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, objVal)))
-                                || helper.isDetCell($grid, rowIdx, key)) {
+                                || helper.isDetCell($grid, rowIdx, key)
+                            /*|| helper.isXCell($grid, gen.dataSource[rowIdx][pk], key, style.HIDDEN_CLS, style.SEAL_CLS)*/ ) {
                                 src[key] = objVal;
                                 delete origData[key];
                                 return objVal;
@@ -11012,7 +11048,8 @@ var nts;
                                 var cell = selectedCells[0];
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
+                                if ( /*helper.isDetCell(self.$grid, cell.rowIndex, cell.columnKey)
+                                    ||*/helper.isXCell(self.$grid, ds[cell.rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/))
                                     return;
                                 this.mode = Mode.SINGLE;
                                 copiedData += _.isObject(selectedCells[0].value) ? JSON.stringify(selectedCells[0].value) : selectedCells[0].value;
@@ -11058,7 +11095,8 @@ var nts;
                                 }
                                 var ds = internal.getDataSource(self.$grid);
                                 var pk = helper.getPrimaryKey(self.$grid);
-                                if (helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
+                                if ( /*helper.isDetCell(self.$grid, rowIndex, cell.columnKey)
+                                    ||*/helper.isXCell(self.$grid, ds[rowIndex][pk], cell.columnKey, style.HIDDEN_CLS /*, style.SEAL_CLS*/)) {
                                     structure[rowIndex][columnIndex] = undefined;
                                 }
                                 else
@@ -12598,6 +12636,10 @@ var nts;
                             this.$leftHorzSumContent = this.$container.querySelector("." + BODY_PRF + LEFT_HORZ_SUM);
                             this.$horzSumHeader = this.$container.querySelector("." + HEADER_PRF + HORIZONTAL_SUM);
                             this.$horzSumContent = this.$container.querySelector("." + BODY_PRF + HORIZONTAL_SUM);
+                            this.$rightHorzSumHeader = this.$container.querySelector("." + (HEADER_PRF + RIGHT_HORZ_SUM));
+                            this.$rightHorzSumContent = this.$container.querySelector("." + (BODY_PRF + RIGHT_HORZ_SUM));
+                            this.$detailHorzScroll = this.$container.querySelector("." + (BODY_PRF + DETAIL_HORZ_SCROLL));
+                            this.$verticalSumHeader = this.$container.querySelector("." + (HEADER_PRF + VERTICAL_SUM));
                             if ($follower) {
                                 this.$depLeftmostHeader = $follower.querySelector("." + HEADER_PRF + LEFTMOST);
                                 this.$depLeftmostBody = $follower.querySelector("." + BODY_PRF + LEFTMOST);
@@ -12747,12 +12789,18 @@ var nts;
                             var $leftArea = self.actionDetails.$leftArea;
                             var $rightArea = self.actionDetails.$rightArea;
                             var scrollWidth = helper.getScrollWidth();
+                            var vertSumShown = self.$verticalSumHeader && self.$verticalSumHeader.style.display !== "none";
+                            var rightHorzShown = self.$rightHorzSumHeader && self.$rightHorzSumHeader.style.display !== "none";
                             if ($rightArea && $rightArea.classList.contains(HEADER_PRF + DETAIL)) {
                                 var horzLeftWidth = self.actionDetails.widths.leftHorzSum + diff;
                                 self.setWidth(self.$leftHorzSumHeader, horzLeftWidth);
                                 self.setWidth(self.$leftHorzSumContent, horzLeftWidth);
                                 self.setWidth(self.$horzSumHeader, rightWidth);
-                                self.setWidth(self.$horzSumContent, rightWidth + scrollWidth);
+                                self.setWidth(self.$horzSumContent, rightWidth + (rightHorzShown ? 0 : scrollWidth));
+                                if (self.$detailHorzScroll) {
+                                    self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
+                                    self.$detailHorzScroll.style.left = posLeft;
+                                }
                                 if (self.$horzSumHeader) {
                                     self.$horzSumHeader.style.left = posLeft;
                                     self.$horzSumContent.style.left = posLeft;
@@ -12768,10 +12816,19 @@ var nts;
                             }
                             else if ($leftArea && $leftArea.classList.contains(HEADER_PRF + DETAIL)) {
                                 self.setWidth(self.$horzSumHeader, leftWidth);
-                                self.setWidth(self.$horzSumContent, leftWidth + scrollWidth);
+                                self.setWidth(self.$horzSumContent, leftWidth + (self.$rightHorzSumHeader ? 0 : scrollWidth));
                                 if (self.$depDetailHeader) {
                                     self.setWidth(self.$depDetailHeader, leftWidth);
                                     self.setWidth(self.$depDetailBody, leftWidth + scrollWidth);
+                                }
+                                if (self.$rightHorzSumHeader) {
+                                    self.$rightHorzSumHeader.style.left = posLeft;
+                                    self.$rightHorzSumContent.style.left = posLeft;
+                                    self.setWidth(self.$rightHorzSumHeader, rightWidth);
+                                    self.setWidth(self.$rightHorzSumContent, rightWidth + scrollWidth);
+                                }
+                                if (self.$detailHorzScroll) {
+                                    self.setWidth(self.$detailHorzScroll, rightWidth + (vertSumShown ? 0 : scrollWidth));
                                 }
                             }
                         };
@@ -13171,7 +13228,8 @@ var nts;
                      */
                     function setHeight($container, height) {
                         selector.queryAll($container, "div[class*='" + BODY_PRF + "']").forEach(function (e) {
-                            if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM))
+                            if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)
+                                || e.classList.contains(BODY_PRF + RIGHT_HORZ_SUM))
                                 return;
                             if (e.classList.contains(BODY_PRF + LEFTMOST)) {
                                 e.style.height = height - helper.getScrollWidth() + "px";
@@ -13736,6 +13794,7 @@ var nts;
                     events.MOUSEOUT_COLUMN = "extablemousoutcolumn";
                     events.RENDERED = "extablerowsrendered";
                     events.COMPLETED = "extablecompleted";
+                    events.DETED = "extablecelldetermined";
                     window.addXEventListener = document.addXEventListener = Element.prototype.addXEventListener = addEventListener;
                     window.removeXEventListener = document.removeXEventListener = Element.prototype.removeXEventListener = removeEventListener;
                     /**
@@ -13938,15 +13997,37 @@ var nts;
                         var rightClickFt = find(options.features, feature_1.RIGHT_CLICK);
                         if (rightClickFt) {
                             $container.addXEventListener(events.CM, function () {
+                                var _a;
                                 var target = event.target;
                                 event.preventDefault();
                                 event.stopPropagation();
-                                if (selector.is(target, "." + render.CHILD_CELL_CLS)) {
-                                    target = helper.closest(target, "." + render.CELL_CLS);
+                                if (typeof rightClickFt.chartFilter === "function") {
+                                    if (selector.is(target, ".gantt-holder")) {
+                                        target.parentNode.removeChild(target);
+                                        target = document.elementFromPoint(event.pageX, event.pageY);
+                                    }
+                                    if (!selector.is(target, ".nts-ganttchart"))
+                                        return;
+                                    var id = target.getAttribute("id");
+                                    if (_.isNil(id))
+                                        return;
+                                    if (!rightClickFt.chartFilter.apply(rightClickFt, __spreadArray(__spreadArray([], id.split('-')), [target])))
+                                        return;
                                 }
-                                if (!selector.is(target, "." + render.CELL_CLS))
-                                    return;
-                                var cm, ui = helper.getCellCoord(target);
+                                else {
+                                    if (selector.is(target, "." + render.CHILD_CELL_CLS)) {
+                                        target = helper.closest(target, "." + render.CELL_CLS);
+                                    }
+                                    if (!selector.is(target, "." + render.CELL_CLS))
+                                        return;
+                                }
+                                var cm, ui = {};
+                                if (!rightClickFt.chartFilter) {
+                                    ui = helper.getCellCoord(target);
+                                }
+                                else {
+                                    _a = __spreadArray([], id.split('-')), ui.rowIndex = _a[0], ui.id = _a[1];
+                                }
                                 ui.target = target;
                                 ui.contextMenu = function (items) {
                                     if (_.isNil(cm)) {
@@ -14160,18 +14241,24 @@ var nts;
                                             }
                                         });
                                         if (!flaw_1) {
-                                            var rKeys = Object.keys(indices_1);
+                                            var rKeys = Object.keys(indices_1), data_1 = [];
                                             _.forEach(rKeys, function (k, i) {
                                                 var col = det[k].splice(indices_1[k], 1);
                                                 if (det[k].length === 0)
                                                     delete det[k];
-                                                var $c = selection.cellAt($main, k, col[0].columnKey);
+                                                var colKey = col[0].columnKey, $c = selection.cellAt($main, k, colKey);
                                                 if ($c)
                                                     helper.stripCellWith(style.DET_CLS, $c);
+                                                var rowObj = ds[k];
+                                                data_1.push({ rowId: rowObj[primaryKey], columnKey: colKey, data: _.cloneDeep(rowObj[colKey]), determined: false });
                                             });
+                                            if (data_1.length > 0) {
+                                                events.trigger($tbl, events.DETED, data_1);
+                                            }
                                             return;
                                         }
                                     }
+                                    var data = [];
                                     _.forEach(ds, function (item, index) {
                                         if (index >= start && index < end) {
                                             var $c = selection.cellAt($main, index, coord.columnKey);
@@ -14180,7 +14267,8 @@ var nts;
                                                 return;
                                             helper.markCellWith(style.DET_CLS, $c);
                                         }
-                                        else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
+                                        else if (helper.isXCell($main, item[primaryKey], coord.columnKey, style.HIDDEN_CLS, style.SEAL_CLS)
+                                            || helper.isEmpty(helper.viewData(opt.view, opt.viewMode, item[coord.columnKey])))
                                             return;
                                         if (!det[index]) {
                                             det[index] = [{ columnKey: coord.columnKey, value: item[coord.columnKey] }];
@@ -14198,7 +14286,9 @@ var nts;
                                                 det[index].push({ columnKey: coord.columnKey, value: item[coord.columnKey] });
                                             }
                                         }
+                                        data.push({ rowId: item[primaryKey], columnKey: coord.columnKey, data: _.cloneDeep(item[coord.columnKey]), determined: true });
                                     });
+                                    events.trigger($tbl, events.DETED, data);
                                 });
                                 return false;
                             }
@@ -14219,7 +14309,7 @@ var nts;
                                             return;
                                         var $main = helper.getMainTable($tbl);
                                         var ds = internal.getDataSource($main);
-                                        var coord = helper.getCellCoord($cell);
+                                        var coord = helper.getCellCoord($cell), rowObj = ds[coord.rowIdx];
                                         if (!coord)
                                             return;
                                         var $targetRow = selection.rowAt($main, coord.rowIdx);
@@ -14250,7 +14340,9 @@ var nts;
                                             helper.stripCellsWith(style.DET_CLS, selector.queryAll($targetRow, "td").filter(function (e) {
                                                 return e.style.display !== "none";
                                             }));
-                                            //                                det[coord.rowIdx] = [];
+                                            events.trigger($tbl, events.DETED, _.map(det[coord.rowIdx], function (d) { return ({
+                                                columnKey: d.columnKey, rowId: rowObj[gen.primaryKey], data: _.cloneDeep(rowObj[d.columnKey]), determined: false
+                                            }); }));
                                             delete det[coord.rowIdx];
                                             return;
                                         }
@@ -14281,6 +14373,9 @@ var nts;
                                                 }
                                             });
                                         }
+                                        events.trigger($tbl, events.DETED, _.map(detCols, function (d) { return ({
+                                            columnKey: d.columnKey, rowId: rowObj[gen.primaryKey], data: _.cloneDeep(rowObj[d.columnKey]), determined: true
+                                        }); }));
                                     });
                                     return false;
                                 }
@@ -14326,7 +14421,8 @@ var nts;
                         var opt = gen.options;
                         if (!opt)
                             return;
-                        if (helper.isEmpty(helper.viewData(opt.view, opt.viewMode, ds[rowIdx][columnKey])))
+                        var rowObj = ds[rowIdx], cellObj = rowObj[columnKey];
+                        if (helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cellObj)))
                             return;
                         var det = $.data($main, internal.DET);
                         if (!det) {
@@ -14351,11 +14447,13 @@ var nts;
                                 if (det[rowIdx].length === 0)
                                     delete det[rowIdx];
                                 helper.stripCellWith(style.DET_CLS, $cell);
+                                events.trigger($tbl, events.DETED, [{ rowId: rowObj[gen.primaryKey], columnKey: columnKey, data: _.cloneDeep(cellObj), determined: false }]);
                                 return;
                             }
                             det[rowIdx].push({ columnKey: columnKey, value: ds[rowIdx][columnKey] });
                         }
                         helper.markCellWith(style.DET_CLS, $cell);
+                        events.trigger($tbl, events.DETED, [{ rowId: rowObj[gen.primaryKey], columnKey: columnKey, data: _.cloneDeep(cellObj), determined: true }]);
                     }
                 })(style || (style = {}));
                 var func;
@@ -14567,7 +14665,7 @@ var nts;
                         resize.fitWindowWidth($container[0]);
                         $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) + helper.getScrollWidth() + "px");
                         scroll.unbindVertWheel($container.find("." + BODY_PRF + DETAIL)[0]);
-                        if ($rightHorzSumHeader.css("display") === "none") {
+                        if ($rightHorzSumHeader.length > 0 && $rightHorzSumHeader.css("display") === "none") {
                             scroll.unbindVertWheel($container.find("." + (BODY_PRF + HORIZONTAL_SUM))[0]);
                         }
                     }
@@ -14592,7 +14690,7 @@ var nts;
                         resize.fitWindowWidth($container[0]);
                         $detailBody.css("max-width", parseFloat($detailBody.css("max-width")) - helper.getScrollWidth() + "px");
                         scroll.bindVertWheel($detailBody[0]);
-                        if ($rightHorzSumHeader.css("display") !== "none") {
+                        if ($rightHorzSumHeader.length > 0 && $rightHorzSumHeader.css("display") !== "none") {
                             scroll.bindVertWheel($container.find("." + (BODY_PRF + HORIZONTAL_SUM))[0]);
                         }
                         $vertSumBody.scrollTop($detailBody.scrollTop());
@@ -14702,11 +14800,11 @@ var nts;
                                 $body.width(width);
                             }
                             if (keepStruct) {
-                                render.begin($body[0], body.dataSource, exTable.leftmostContent);
+                                render.begin($body[0], body.dataSource, exTable.leftmostContent, $container[0]);
                             }
                             else {
                                 $body.empty();
-                                render.process($body[0], exTable.leftmostContent, true);
+                                render.process($body[0], exTable.leftmostContent, true, $container[0]);
                             }
                         }
                     }
@@ -14720,7 +14818,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + MIDDLE);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.middleHeader, true);
+                            render.process($header[0], exTable.middleHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14728,7 +14826,7 @@ var nts;
                             _.assignIn(exTable.middleContent, body);
                             var $body = $container.find("." + BODY_PRF + MIDDLE);
                             $body.empty();
-                            render.process($body[0], exTable.middleContent, true);
+                            render.process($body[0], exTable.middleContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14760,7 +14858,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + DETAIL);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.detailHeader, true);
+                            render.process($header[0], exTable.detailHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14770,11 +14868,11 @@ var nts;
                             if (!keepStates)
                                 internal.clearStates($body[0]);
                             if (keepStruct) {
-                                render.begin($body[0], body.dataSource, exTable.detailContent);
+                                render.begin($body[0], body.dataSource, exTable.detailContent, $container[0]);
                             }
                             else {
                                 $body.empty();
-                                render.process($body[0], exTable.detailContent, true);
+                                render.process($body[0], exTable.detailContent, true, $container[0]);
                             }
                         }
                     }
@@ -14788,7 +14886,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + VERTICAL_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.verticalSumHeader, true);
+                            render.process($header[0], exTable.verticalSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14796,7 +14894,7 @@ var nts;
                             _.assignIn(exTable.verticalSumContent, body);
                             var $body = $container.find("." + BODY_PRF + VERTICAL_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.verticalSumContent, true);
+                            render.process($body[0], exTable.verticalSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14809,7 +14907,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + LEFT_HORZ_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.leftHorzSumHeader, true);
+                            render.process($header[0], exTable.leftHorzSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14817,7 +14915,7 @@ var nts;
                             _.assignIn(exTable.leftHorzSumContent, body);
                             var $body = $container.find("." + BODY_PRF + LEFT_HORZ_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.leftHorzSumContent, true);
+                            render.process($body[0], exTable.leftHorzSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14830,7 +14928,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + HORIZONTAL_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.horizontalSumHeader, true);
+                            render.process($header[0], exTable.horizontalSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14838,7 +14936,7 @@ var nts;
                             _.assignIn(exTable.horizontalSumContent, body);
                             var $body = $container.find("." + BODY_PRF + HORIZONTAL_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.horizontalSumContent, true);
+                            render.process($body[0], exTable.horizontalSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14851,7 +14949,7 @@ var nts;
                             var $header = $container.find("." + HEADER_PRF + RIGHT_HORZ_SUM);
                             var pu = $header.find("table").data(internal.POPUP);
                             $header.empty();
-                            render.process($header[0], exTable.rightHorzSumHeader, true);
+                            render.process($header[0], exTable.rightHorzSumHeader, true, $container[0]);
                             if (pu && pu.css("display") !== "none")
                                 pu.hide();
                         }
@@ -14859,7 +14957,7 @@ var nts;
                             _.assignIn(exTable.rightHorzSumContent, body);
                             var $body = $container.find("." + BODY_PRF + RIGHT_HORZ_SUM);
                             $body.empty();
-                            render.process($body[0], exTable.rightHorzSumContent, true);
+                            render.process($body[0], exTable.rightHorzSumContent, true, $container[0]);
                         }
                     }
                     /**
@@ -14980,7 +15078,7 @@ var nts;
                             exTable.detailContent.features = newFeatures;
                         }
                         var ds = helper.getOrigDS(table);
-                        render.begin(table, _.cloneDeep(ds), exTable.detailContent);
+                        render.begin(table, _.cloneDeep(ds), exTable.detailContent, $container[0]);
                     }
                     /**
                      * Set mode.
@@ -15045,7 +15143,7 @@ var nts;
                         if (updateMode && exTable.updateMode !== updateMode) {
                             exTable.setUpdateMode(updateMode);
                             refreshFeatures();
-                            render.begin(table, ds, exTable.detailContent);
+                            render.begin(table, ds, exTable.detailContent, $container[0]);
                             selection.tickRows($container.find("." + BODY_PRF + LEFTMOST)[0], true);
                             if (updateMode === COPY_PASTE) {
                                 selection.checkUp($container[0]);
@@ -15057,7 +15155,7 @@ var nts;
                         }
                         else if (updateViewMode) {
                             refreshFeatures();
-                            render.begin(table, ds, exTable.detailContent);
+                            render.begin(table, ds, exTable.detailContent, $container[0]);
                         }
                     }
                     /**
@@ -15208,11 +15306,11 @@ var nts;
                             }
                         }
                         else {
-                            var data_1 = {};
+                            var data_2 = {};
                             _.forEach(items, function (item) {
-                                data_1[item.columnKey] = item.value;
+                                data_2[item.columnKey] = item.value;
                             });
-                            update.stickGridRowOw($grid[0], items[0].rowIndex, data_1, sticker.styleMaker, items[0].stickFields);
+                            update.stickGridRowOw($grid[0], items[0].rowIndex, data_2, sticker.styleMaker, items[0].stickFields);
                         }
                     }
                     /**
@@ -15429,8 +15527,6 @@ var nts;
                             });
                         }
                         var $cell = selection.cellAt($table, i, columnKey);
-                        if (_.isNil($cell))
-                            return;
                         if (found === -1) {
                             if (!disables) {
                                 disables = {};
@@ -15442,7 +15538,9 @@ var nts;
                             }
                             else
                                 disables[i].push({ columnKey: columnKey, innerIdx: innerIdx, value: ds[i][columnKey] });
-                            helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+                            if (!_.isNil($cell)) {
+                                helper.markCellWith(style.SEAL_CLS, $cell, innerIdx);
+                            }
                         }
                     }
                     /**
@@ -16347,6 +16445,8 @@ var nts;
                         if (selector.is($cell, "div")) {
                             $td = closest($cell, "td");
                         }
+                        if (_.isNil($td))
+                            return;
                         var view = $.data($td, internal.VIEW);
                         if (!view)
                             return;
@@ -17072,7 +17172,8 @@ var nts;
                     function addClass(node, clazz) {
                         if (!node || !clazz)
                             return;
-                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList) {
+                        if (node.constructor !== HTMLCollection && node.constructor !== NodeList
+                            && !node.classList.contains(clazz)) {
                             node.classList.add(clazz);
                             return;
                         }
@@ -17752,7 +17853,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(checkeds.concat([value_1]));
+                                                accessor.checked(__spreadArray(__spreadArray([], checkeds), [value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -18067,6 +18168,7 @@ var nts;
                                 $element.attr('tabindex', 0);
                             }
                             $element
+                                // delegate event for change template (on old filter box)
                                 .on(SHOWVALUE, function (evt) {
                                 var data = $element.data(DATA), cws = data[CWIDTH], ks = _.keys(cws);
                                 var option = _.find(data[DATA], function (t) { return t[optionsValue] == data[VALUE]; }), _template = template;
@@ -18097,6 +18199,7 @@ var nts;
                                     }
                                 }
                             })
+                                // define event changed for save default data
                                 .on(CHANGED, function (evt, key, value) {
                                 if (value === void 0) { value = undefined; }
                                 var data = $element.data(DATA) || {};
@@ -18105,6 +18208,7 @@ var nts;
                                     $element.data(DATA, data);
                                 }
                             })
+                                // define event validate for check require
                                 .on(VALIDATE, function (evt, ui) {
                                 var data = $element.data(DATA), value = data[VALUE];
                                 if ((ui ? data[CHANGED] : true) && data[ENABLE] && data[REQUIRED] && (_.isEmpty(String(value).trim()) || _.isNil(value))) {
@@ -18124,6 +18228,7 @@ var nts;
                                     }
                                 }
                             })
+                                // delegate open or close event on enter key
                                 .on(KEYDOWN, function (evt, ui) {
                                 if ($element.data(IGCOMB)) {
                                     if ([13].indexOf(evt.which || evt.keyCode) > -1) {
@@ -18415,6 +18520,7 @@ var nts;
                             var sto = setTimeout(function () {
                                 if ($element.data("igCombo")) {
                                     $element
+                                        // enable or disable 
                                         .igCombo(OPTION, "disabled", !enable);
                                     clearTimeout(sto);
                                 }
@@ -18427,6 +18533,7 @@ var nts;
                                     $element.igCombo(OPTION, "dataSource", options);
                                 }
                                 $element
+                                    // set new value
                                     .igCombo("value", value);
                                 if (!enable) {
                                     $element.removeAttr(TAB_INDEX);
@@ -18443,7 +18550,7 @@ var nts;
                                     if (width != MINWIDTH) {
                                         $element.igCombo("option", "width", width);
                                     }
-                                    else {
+                                    else { // auto width
                                         $element
                                             .igCombo("option", "width", (_.sum(_.map(cws, function (c) { return c; })) * WoC + 60) + 'px');
                                     }
@@ -19805,6 +19912,7 @@ var nts;
                                 var $container = $dialog.closest("[role='dialog']");
                                 $container
                                     .show()
+                                    // hide "x" button
                                     .find(".ui-dialog-titlebar-close").hide();
                                 //$dialog.dialog("open");
                                 var $dialogs = window.top.$('body>[role="dialog"]').toArray();
@@ -20448,10 +20556,10 @@ var nts;
                                 }
                                 if (constraint) {
                                     var primitive = __viewContext.primitiveValueConstraints[constraint];
-                                    if (primitive) {
+                                    if (primitive) { // if primitive is avaiable
                                         var min = primitive.min, max = primitive.max, maxL = primitive.maxLength, dlen = primitive.mantissaMaxLength || 0;
                                         switch (primitive.valueType) {
-                                            case 'String':// check length
+                                            case 'String': // check length
                                                 if (maxL && ival.length > maxL) {
                                                     ival = dval;
                                                 }
@@ -20501,7 +20609,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else {
+                                                    else { // delete event
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20543,7 +20651,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else {
+                                                    else { // delete event
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -20575,7 +20683,7 @@ var nts;
                                                         ival = dval;
                                                         $input.val(dval);
                                                     }
-                                                    else {
+                                                    else { // delete event
                                                         if (ival.match(/^0\d+$/)) {
                                                             ival = ival.replace(/^0+/, '0');
                                                             ival = Number(ival).toString();
@@ -21128,7 +21236,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -21568,7 +21676,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -23044,7 +23152,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: true,
+                        enumerable: false,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23709,13 +23817,16 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../../reference.ts"/>
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var nts;
 (function (nts) {
@@ -23760,8 +23871,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign({}, d, { active: active,
-                                                tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
+                                                .map(function (d) { return (__assign(__assign({}, d), { active: active, tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
                                                     width: 40,
@@ -27588,7 +27698,8 @@ var nts;
                                         update: function (v, i, r, p) {
                                             su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                             if (_.isFunction(controlDef.onChange)) {
-                                                controlDef.onChange(id, key, v, rData);
+                                                var rObj = _dataSource[i];
+                                                controlDef.onChange(rObj[_pk], key, v, rObj);
                                             }
                                         },
                                         deleteRow: su.deleteRow,
@@ -27614,7 +27725,8 @@ var nts;
                                     update: function (v, i, r, p) {
                                         su.wedgeCell(_$grid[0], { rowIdx: (_.isNil(i) ? rowIdx : i), columnKey: key }, v, r, null, p);
                                         if (_.isFunction(controlDef.onChange)) {
-                                            controlDef.onChange(id, key, v, rData);
+                                            var rObj = _dataSource[i];
+                                            controlDef.onChange(rObj[_pk], key, v, rObj);
                                         }
                                     },
                                     deleteRow: su.deleteRow,
@@ -28291,7 +28403,7 @@ var nts;
                             if (_.has(_mDesc.fixedColIdxes, "rowNumber")) {
                                 no = _mDesc.fixedColIdxes.rowNumber;
                                 var tRow = _mDesc.fixedRows[idx][no];
-                                for (var i = 0; i < _mDesc.fixedRows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.fixedRows.length; i++) {
                                     noc = _mDesc.fixedRows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -28324,7 +28436,7 @@ var nts;
                             if (_.has(_mDesc.colIdxes, "rowNumber")) {
                                 no = _mDesc.colIdxes.rowNumber;
                                 var tRow = _mDesc.rows[idx][no];
-                                for (var i = 0; i < _mDesc.rows.length; i++) {
+                                for (var i = /*idx + 2*/ 0; i < _mDesc.rows.length; i++) {
                                     noc = _mDesc.rows[i];
                                     if (noc && (noc = noc[no]) && parseInt(noc.innerHTML) > parseInt(tRow.innerHTML)) {
                                         noc.innerHTML = parseInt(noc.innerHTML) + 1;
@@ -30487,7 +30599,7 @@ var nts;
                                 var check = $cell.querySelector("input[type='checkbox']");
                                 if (!check)
                                     return;
-                                if (val) {
+                                if (val) { //&& check.getAttribute("checked") !== "checked") {
                                     check.setAttribute("checked", "checked");
                                     check.checked = true;
                                     var evt = document.createEvent("HTMLEvents");
@@ -30496,7 +30608,7 @@ var nts;
                                     evt.checked = val;
                                     check.dispatchEvent(evt);
                                 }
-                                else if (!val) {
+                                else if (!val) { // && check.getAttribute("checked") === "checked") {
                                     check.removeAttribute("checked");
                                     check.checked = false;
                                     var evt = document.createEvent("HTMLEvents");
@@ -31324,11 +31436,11 @@ var nts;
                         var _loop_7 = function (i) {
                             var fr, ni = i + length - y - 1, r = _mDesc.rowElements[ni];
                             if (i === to.index) {
-                                var data_2 = _dataSource.splice(ni, 1)[0];
-                                _dataSource.splice(0, 0, data_2);
+                                var data_3 = _dataSource.splice(ni, 1)[0];
+                                _dataSource.splice(0, 0, data_3);
                                 _mafCurrent().origDs.splice(0, 0, _mafCurrent().origDs.splice(ni, 1)[0]);
                                 if (!r) {
-                                    var res = _cloud.painter.row(data_2, v.DefaultRowConfig, y);
+                                    var res = _cloud.painter.row(data_3, v.DefaultRowConfig, y);
                                     if (res.fixedRow) {
                                         _mDesc.fixedRowElements.splice(0, 0, res.fixedRow);
                                         _mDesc.fixedRows.splice(0, 0, res.fixedElements);
@@ -31361,7 +31473,7 @@ var nts;
                                             painter.revive(k);
                                             _mafollicle[SheetDef][k].ltrlPainter = painter;
                                         }
-                                        var res = painter.row(data_2, v.DefaultRowConfig, y);
+                                        var res = painter.row(data_3, v.DefaultRowConfig, y);
                                         if (res.fixedRow) {
                                             maf.desc.fixedRowElements.splice(0, 0, res.fixedRow);
                                             maf.desc.fixedRows.splice(0, 0, res.fixedElements);
@@ -31864,6 +31976,7 @@ var nts;
                                         $cbxCell.textContent = selectedOpt ? selectedOpt.name : "";
                                         $.data($cbxCell, lo.CBX_SELECTED_TD, inputVal_1);
                                     }
+                                    inputRidd_1();
                                 }
                                 else if ((sCol_1 = _specialLinkColumn[editor.columnKey]) && sCol_1.changed) {
                                     var data = _mafollicle[_currentPage].origDs[editor.rowIdx];
@@ -32521,8 +32634,8 @@ var nts;
                                 }
                             }
                             else if ((sCol = _specialLinkColumn[columnKey]) && sCol.changed) {
-                                var data_3 = _mafollicle[_currentPage].origDs[rowIdx];
-                                sCol.changed(columnKey, data_3[_pk], value, data_3[columnKey]).done(function (res) {
+                                var data_4 = _mafollicle[_currentPage].origDs[rowIdx];
+                                sCol.changed(columnKey, data_4[_pk], value, data_4[columnKey]).done(function (res) {
                                     var $linkCell = lch.cellAt(_$grid[0], rowIdx, sCol.column);
                                     if ($linkCell) {
                                         $linkCell.querySelector("a").textContent = res;
@@ -33479,7 +33592,7 @@ var nts;
                                         data = data.toLocaleDateString("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit" });
                                     }
                                     var tDate = moment.utc($editor.value, ctrl.format, true);
-                                    if (_.isFunction(ctrl.inputProcess)) {
+                                    if ( /*data !== tDate && !d.classList.contains(khl.ERROR_CLS) &&*/_.isFunction(ctrl.inputProcess)) {
                                         ctrl.inputProcess(tDate.isValid() ? tDate.format(ctrl.format[0]) : $editor.value, _dataSource[coord.rowIdx]);
                                     }
                                     su.endEdit(_$grid[0]);
@@ -36453,8 +36566,8 @@ var nts;
                                         return false;
                                     return (sameLineChart.id !== chart.id && sameLineChart.parent === chart.parent
                                         && !sameLineChart.bePassedThrough
-                                        && ((pDec_1.end > sameLineChart.start && pDec_1.end < sameLineChart.end)
-                                            || (pDec_1.start > sameLineChart.start && pDec_1.start < sameLineChart.end)));
+                                        && ((diff > 0 && chart.end <= sameLineChart.start && pDec_1.end > sameLineChart.start)
+                                            || (diff < 0 && chart.start >= sameLineChart.end && pDec_1.start < sameLineChart.end)));
                                 }))
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
@@ -36622,7 +36735,6 @@ var nts;
                                             }
                                             else if (nearestLine > child.end) {
                                                 if (!self.chartArea.contains(child.html)) {
-                                                    console.log(child.id + "; slideTriggerEnd: " + self.slideTrigger.end + "; start: " + child.start);
                                                     if (self.slideTrigger.end > child.start
                                                         && self.slideTrigger.rangeMin > child.start)
                                                         return;
@@ -36706,6 +36818,8 @@ var nts;
                             chart.html.dispatchEvent(e);
                         };
                         chart.html.addEventListener("mousedown", function () {
+                            if (event.button !== 0)
+                                return;
                             if (self.mode !== "normal") {
                                 if (chart.canPasteResize) {
                                     var rect = chart.html.getBoundingClientRect();
@@ -36786,6 +36900,7 @@ var nts;
                                         pevt.pageX = event.pageX;
                                         pevt.pageY = event.pageY;
                                         pevt.offsetX = event.offsetX;
+                                        pevt.button = 0;
                                         parentChart.html.dispatchEvent(pevt);
                                         return;
                                     }
@@ -36794,6 +36909,7 @@ var nts;
                                         pevt.pageX = event.pageX;
                                         pevt.pageY = event.pageY;
                                         pevt.offsetX = parseFloat(parentChart.html.style.width);
+                                        pevt.button = 0;
                                         parentChart.html.dispatchEvent(pevt);
                                         return;
                                     }
@@ -37023,7 +37139,8 @@ var nts;
                             var pDec_4 = { width: self.slideTrigger.length + (self.slideTrigger.start - start) * chart.unitToPx, left: start * chart.unitToPx, start: start };
                             if (chart.limitStartMin > pDec_4.start || chart.limitStartMax < pDec_4.start)
                                 return;
-                            if ((parentChart && !self.slideTrigger.overlap && pDec_4.start < parentChart.start))
+                            if ( /*pDec.start + self._getSnatchInterval(chart) > chart.end
+                                ||*/(parentChart && !self.slideTrigger.overlap && pDec_4.start < parentChart.start))
                                 return;
                             self.slideTrigger.ltr = start > chart.start;
                             _.forEach(chart.children, function (child) {
@@ -37069,7 +37186,8 @@ var nts;
                             var pDec_5 = { width: self.slideTrigger.length + (end - self.slideTrigger.end) * chart.unitToPx, end: end };
                             if (chart.limitEndMax < pDec_5.end || chart.limitEndMin > pDec_5.end)
                                 return;
-                            if ((parentChart && !self.slideTrigger.overlap && pDec_5.end > parentChart.end))
+                            if ( /*chart.start + self._getSnatchInterval(chart) > pDec.end
+                                ||*/(parentChart && !self.slideTrigger.overlap && pDec_5.end > parentChart.end))
                                 return;
                             self.slideTrigger.ltr = end > chart.end;
                             _.forEach(chart.children, function (child) {
@@ -37106,12 +37224,24 @@ var nts;
                         }
                         self.slideTrigger = {};
                     };
-                    Ruler.prototype.remove = function (chart, shadow) {
+                    Ruler.prototype.removeBy = function (chartInfo, shallow) {
+                        if (_.isNil(chartInfo))
+                            return;
+                        var self = this, chart = self.gcChart[chartInfo.no][chartInfo.id];
+                        if (!shallow) {
+                            _.forEach(chart.children, function (child) {
+                                self.remove(child, true);
+                                delete self.gcChart[child.lineNo][child.id];
+                            });
+                        }
+                        self.remove(chart);
+                    };
+                    Ruler.prototype.remove = function (chart, shallow) {
                         if (_.isNil(chart))
                             return;
                         var self = this;
                         chart.reposition({ width: 0 });
-                        if (shadow)
+                        if (shallow)
                             return;
                         delete self.gcChart[chart.lineNo][chart.id];
                         var parent = self.gcChart[chart.lineNo][chart.parent];
@@ -37121,7 +37251,6 @@ var nts;
                             return child.lineNo === chart.lineNo && child.id === chart.id;
                         });
                     };
-                    // TODO:
                     Ruler.prototype.setMode = function (modeName) {
                         var self = this;
                         self.mode = modeName;
@@ -37183,6 +37312,15 @@ var nts;
                                 return;
                             self._tailor(event.pageX, self.gcChart[meta[0]][meta[1]]);
                         });
+                        self.chartArea.addEventListener("mouseover", function () {
+                            if (self.mode !== "normal" && event.target && !event.target.classList.contains("nts-ganttchart")
+                                && !event.target.classList.contains("gantt-holder")) {
+                                self.chartArea.style.cursor = "not-allowed";
+                            }
+                            else {
+                                self.chartArea.style.cursor = "";
+                            }
+                        });
                     };
                     Ruler.prototype._tailor = function (posX, chart) {
                         var self = this;
@@ -37209,10 +37347,10 @@ var nts;
                             self.placeholder = chart_1.pDiv.cloneNode(true);
                             self.placeholder.className = "gantt-holder";
                             var width = self.pasteBand.blockSize * chart.unitToPx - 1;
-                            var cssText = "; position: absolute; width: " + width + "px; height: " + chart.chartWidth + "px; \n                    border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;";
+                            var cssText = "; position: absolute; width: " + width + "px; height: " + chart.chartWidth + "px; user-select: none;\n                    border: 1px solid #AAB7B8; z-index: 3000; background-color: #FFF; box-shadow: inset 1px 2px 3px 1px #AAB7B8;";
                             self.placeholder.style.cssText = cssText;
                             self.placeholder.addEventListener("mousedown", function () {
-                                if (!self.metaholder.hasOwnProperty("start"))
+                                if (!self.metaholder.hasOwnProperty("start") || event.button !== 0)
                                     return;
                                 self.metaholder.id = "pgc" + support.replaceAll(uk.util.randomId(), '-', '');
                                 self.metaholder.isPressed = true;
@@ -37440,7 +37578,7 @@ var nts;
                         var self = this, posTop = self.origin[1] + self.lineNo * self.lineWidth + Math.floor((self.lineWidth - self.chartWidth) / 2), posLeft = self.origin[0] + self.start * self.unitToPx, chart = document.createElement("div");
                         chart.setAttribute("id", self.lineNo + "-" + self.id);
                         chart.className = "nts-ganttchart";
-                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; \n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
+                        chart.style.cssText = "; position: absolute; top: " + posTop + "px; left: " + posLeft + "px; z-index: " + self.zIndex + "; text-overflow: ellipsis;\n                overflow: hidden; white-space: nowrap; width: " + ((self.end - self.start) * self.unitToPx - 1) + "px; height: " + self.chartWidth + "px;\n                line-height: " + self.chartWidth + "px; background-color: " + self.color + "; cursor: " + self.cursor + "; border: 1px solid #AAB7B8; font-size: 13px;";
                         self.html = chart;
                         self.html.onselectstart = function () { return false; };
                     };
@@ -37725,7 +37863,7 @@ var nts;
                                 }
                                 else {
                                     if (!child.canPaste) {
-                                        var left = parseFloat(target.html.style.left) - (child.end - target.start) * target.unitToPx;
+                                        var left = parseFloat(target.html.style.left) + (child.end - target.start) * target.unitToPx;
                                         target.reposition({ start: child.end, left: left, width: (target.end - child.end) * target.unitToPx - 1 });
                                     }
                                     else if (target.definedType !== child.definedType) {
@@ -38379,13 +38517,13 @@ function component(options) {
 }
 function handler(params) {
     return function (constructor) {
+        var _a;
         ko.bindingHandlers[params.bindingName] = new constructor();
         ko.virtualElements.allowedBindings[params.bindingName] = !!params.virtual;
         // block rewrite binding
         if (params.validatable) {
             ko.utils.extend(ko.expressionRewriting.bindingRewriteValidators, (_a = {}, _a[params.bindingName] = false, _a));
         }
-        var _a;
     };
 }
 var nts;
@@ -38583,7 +38721,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
+                            $jump.apply(null, __spreadArray([], Array.prototype.slice.apply(arguments, [])));
                         }
                     },
                     blank: {
@@ -38753,6 +38891,7 @@ var nts;
                                     .resolve(true)
                                     .then(function () {
                                     return $storeSession(name, params)
+                                        // for old page
                                         .then(function () { return windows.setShared(name, params); });
                                 })
                                     .then(function () { return $storeSession(name); });
@@ -38800,6 +38939,7 @@ var nts;
                             return $.Deferred()
                                 .resolve(true)
                                 .then(function () { return $('.nts-input').ntsError('clear'); })
+                                // if some element remove before clear func call
                                 .then(function () { return kvm.errorDialogViewModel.errors([]); })
                                 .then(function () { return !$('.nts-input').ntsError('hasError'); });
                         }
@@ -38857,6 +38997,7 @@ var nts;
                     }
                     return $.Deferred()
                         .resolve(true)
+                        /** Nếu có lỗi thì trả về false, không thì true */
                         .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     ;
                 };
@@ -38866,7 +39007,9 @@ var nts;
                     if (args.length === 0) {
                         return $.Deferred()
                             .resolve(true)
+                            /** Gọi xử lý validate của kiban */
                             .then(function () { return $('.nts-input').trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     }
                     else if (args.length === 1) {
@@ -38879,14 +39022,18 @@ var nts;
                         }
                         return $.Deferred()
                             .resolve(true)
+                            /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_1).trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_1).ntsError('hasError'); });
                     }
                     else {
                         var selectors_2 = args.join(', ');
                         return $.Deferred()
                             .resolve(true)
+                            /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_2).trigger("validate"); })
+                            /** Nếu có lỗi thì trả về false, không thì true */
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };
@@ -40451,7 +40598,7 @@ var nts;
                             ROW_HEIGHT = 24;
                             // Internet Explorer 6-11
                             var _document = document;
-                            var isIE = false || !!_document.documentMode;
+                            var isIE = /*@cc_on!@*/ false || !!_document.documentMode;
                             // Edge 20+
                             var _window = window;
                             var isEdge = !isIE && !!_window.StyleMedia;
@@ -46454,7 +46601,7 @@ var nts;
                             if (!loader) {
                                 $grid.data(internal.LOADER, new Loader(demandLoadFt.allKeysPath, demandLoadFt.pageRecordsPath));
                             }
-                            else if (loader.keys) {
+                            else if (loader.keys) { // Switch sheet
                                 pageSize = setting.pageSize;
                                 return false;
                             }
@@ -47277,7 +47424,7 @@ var nts;
                             $(window).on("mousedown.popup", function (e) {
                                 if (!$(e.target).is(control) // Target isn't Popup
                                     && control.has(e.target).length === 0 // Target isn't Popup's children
-                                    && !$(e.target).is(setting.trigger)) {
+                                    && !$(e.target).is(setting.trigger)) { // Target isn't Trigger element
                                     hide(control);
                                 }
                             });
@@ -48235,7 +48382,8 @@ var nts;
                                         }
                                     });
                                 }
-                            }, checkChildSiblings: function (source, key, childKey, primaryKey) {
+                            },
+                            checkChildSiblings: function (source, key, childKey, primaryKey) {
                                 var isAllCheck = _.isNil(_.find(source[childKey], function (c) {
                                     var controlCls = "nts-grid-control-" + $tree.data("UNIQ") + "-" + key + "-" + c[primaryKey], checkbox = $tree.find("." + controlCls).find("input[type='checkbox']");
                                     return !checkbox.is(":checked");
@@ -48246,7 +48394,8 @@ var nts;
                                     $checkbox.click();
                                 }
                                 return isAllCheck;
-                            }, checkSiblings: function (rowId, source, key, childKey, primaryKey) {
+                            },
+                            checkSiblings: function (rowId, source, key, childKey, primaryKey) {
                                 //let source = $tree.igTreeGrid("option", "dataSource");
                                 for (var i = 0; i < source.length; i++) {
                                     if (!_.isEmpty(source[i][childKey])) {
@@ -48265,10 +48414,12 @@ var nts;
                                     }
                                 }
                                 return { process: false, value: false };
-                            }, getTrueRowData: function (rowId, primaryKey, childKey) {
+                            },
+                            getTrueRowData: function (rowId, primaryKey, childKey) {
                                 var dataSource = $tree.data("igTreeGrid").dataSource._origDs, flatSource = helper.flatChild(dataSource, childKey);
                                 return _.find(flatSource, function (s) { return s[primaryKey] === rowId; });
-                            }, flatChild: function (dataSource, childKey) {
+                            },
+                            flatChild: function (dataSource, childKey) {
                                 var result = [];
                                 if (_.isEmpty(dataSource)) {
                                     return result;
@@ -49493,6 +49644,7 @@ var nts;
                         var data = valueAccessor(), $container = $(element), construct = new DateRangeHelper($container), value = ko.unwrap(data.value);
                         construct.bindInit(data, allBindingsAccessor, viewModel, bindingContext);
                         $container.data("construct", construct);
+                        $container.addClass("ntsDateRangePicker_Container");
                         return { 'controlsDescendantBindings': true };
                     };
                     /**
@@ -51730,6 +51882,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                             if (sourceParent) {
                                 $(sourceParent === targetParent ? this : ui.sender || this).sortable("cancel");
                             }
+                            //for a draggable item just remove the element
                             else {
                                 $(el).remove();
                             }
@@ -51757,7 +51910,7 @@ var NtsSortableBindingHandler = /** @class */ (function () {
                                 //rendering is handled by manipulating the observableArray; ignore dropped element
                                 self.dataSet(el, self.ITEMKEY, null);
                             }
-                            else {
+                            else { //employ the strategy of moving items
                                 if (targetIndex >= 0) {
                                     if (sourceParent) {
                                         if (sourceParent !== targetParent) {
@@ -51861,6 +52014,7 @@ var nts;
                             var $element = $(element);
                             var rounded = valueAccessor();
                             $element
+                                // prevent tabable to out of popup control
                                 .on("keydown", ":tabbable", function (evt) {
                                 if (ko.unwrap(rounded)) {
                                     var fable = $element
@@ -52255,6 +52409,7 @@ var nts;
                                 }
                             })
                                 .find('.ui-resizable-s')
+                                // support quick toggle widget height
                                 .on('dblclick', function () {
                                 var fx = element.style.height;
                                 mkv
@@ -52453,7 +52608,7 @@ var nts;
                     };
                     NtsFormLabelComponent.prototype.mounted = function () {
                         var vm = this;
-                        $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+                        //            $(vm.$el).find('[data-bind]').removeAttr('data-bind');
                     };
                     NtsFormLabelComponent.prototype.destroyed = function () {
                         var vm = this;
@@ -52550,6 +52705,7 @@ var nts;
                         _this.currentCompanyId = ko.observable('');
                         _this.companyNameClick = ko.observable(false);
                         _this.pgName = ko.observable('');
+                        _this.pgId = ko.observable('');
                         _this.showManual = ko.observable(false);
                         _this.showPersonSetting = ko.observable(false);
                         return _this;
@@ -52642,7 +52798,7 @@ var nts;
                                             if (pgName) {
                                                 var name_2 = pgName.name;
                                                 if (name_2) {
-                                                    vm.pgName(name_2);
+                                                    vm.pgNameInit(name_2);
                                                 }
                                             }
                                         }
@@ -52651,7 +52807,7 @@ var nts;
                                             if (first) {
                                                 var name_3 = first.name;
                                                 if (name_3) {
-                                                    vm.pgName(name_3);
+                                                    vm.pgNameInit(name_3);
                                                 }
                                             }
                                         }
@@ -52670,6 +52826,26 @@ var nts;
                         $(window)
                             .on('keyup', function (evt) { return vm.ctrl(evt.ctrlKey); })
                             .on('keydown', function (evt) { return vm.ctrl(evt.ctrlKey); });
+                    };
+                    HeaderViewModel.prototype.pgNameInit = function (name) {
+                        var vm = this;
+                        vm.pgName(name.substr(7));
+                        vm.pgId(name.substr(0, 7));
+                        var $el = $("#pg-disp-name");
+                        var pgid = "<span id='pg-id'>" + vm.pgId() + "</span>";
+                        var pgidcaret = "<div id='pg-id-caret'></div>";
+                        $("body").append(pgid);
+                        $("body").append(pgidcaret);
+                        $el.mouseenter(function (e) {
+                            var top = $el.offset().top + 23;
+                            var left = $el.offset().left + 5;
+                            $("#pg-id").css({ "visibility": "visible", "top": top + "px", "left": left + "px", "z-index": "1000" });
+                            $("#pg-id-caret").css({ "visibility": "visible", "top": top + "px", "left": left + "px", "z-index": "1000" });
+                        });
+                        $el.mouseleave(function (e) {
+                            $("#pg-id").css({ "visibility": "hidden", "top": "0px", "left": "0px", "z-index": "-1" });
+                            $("#pg-id-caret").css({ "visibility": "hidden", "top": "0px", "left": "0px", "z-index": "-1" });
+                        });
                     };
                     HeaderViewModel.prototype.loadData = function () {
                         var vm = this;
@@ -52946,7 +53122,7 @@ var nts;
                     HeaderViewModel = __decorate([
                         component({
                             name: 'ui-header',
-                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                click: $component.hambergerClick,\n                css: {\n                    'hover': $component.menuSet.click()\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.click() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: 'CCG020_1'\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.companyNameClick\n                        }\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName, click: $component.companiesClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\" data-bind=\"foreach: { data: $component.companies, as: 'company' }\">\n                                <div class=\"item\" data-bind=\"\n                                    i18n: company.companyName,\n                                    click: function() { $component.selectCompany($data) }\n                                \"></div>\n                                <div class=\"item divider divider-company\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.userNameClick\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName, click: $component.userClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_5', click: $component.settingPerson, if: $component.showPersonSetting\"></div>\n                                <div data-bind=\"if: $component.showPersonSetting\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_4', click: $component.manual, if: $component.showManual\"></div>\n                                <div data-bind=\"if: $component.showManual\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_3', click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        <div class=\"pg-area\">\n            <div class=\"pg-name\">\n                <span data-bind=\"text: pgName\"></span>\n            </div>\n        </div>\n        "
+                            template: "\n        <div class=\"hamberger\" data-bind=\"\n                click: $component.hambergerClick,\n                css: {\n                    'hover': $component.menuSet.click()\n                }\">\n            <svg viewBox=\"0 0 16 14\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <rect width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"6\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n                <rect y=\"12\" width=\"16\" height=\"2\" rx=\"1\" fill=\"white\"/>\n            </svg>\n            <div class=\"menu-dropdown menu-hamberger\" data-bind=\"css: { hidden: !$component.menuSet.click() }\">\n                <div class=\"menu-column\">\n                    <div class=\"menu-header\" data-bind=\"i18n: 'CCG020_1'\"></div>\n                    <div class=\"menu-item\" data-bind=\"foreach: $component.menuSet.items\">\n                        <div class=\"item\" data-bind=\"\n                            i18n: $data.webMenuName,\n                            click: function() { $component.selectSet($data, true) },\n                            css: { \n                                selected: $component.menuSet.items() && $data.selected\n                            }\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"logo-area\">\n            <i id=\"logo\" data-bind=\"ntsIcon: { no: 162 }\" class=\"img-icon\"></i>\n            <i class=\"control-slider pre-slider\" data-bind=\"\n                ntsIcon: { no: 129, width: 25, height: 25 },\n                click: $component.handlePrevSlider\"></i>\n        </div>\n        <div class=\"menu-groups\" data-bind=\"foreach: { data: $component.menuBars, as: 'bar', afterRender: $component.showPrevOrNextSlider.bind($component) }\">\n            <div class=\"item-group slide-item\" data-bind=\"\n                    event: {\n                        mouseover: function() { $component.itemBarHover(bar) },\n                        mouseout: function() { $component.itemBarMouseOut(bar) }\n                    },\n                    css: {\n                        'hover': bar.hover() && bar.canHover() && $component.click()\n                    },\n                    style: {\n                        'display': bar.display()\n                    },\n                    attr: {\n                        'data-column': (bar.titleMenu || []).length\n                    }\">\n                    <span class=\"bar-item-title\" data-bind=\"text: bar.menuBarName, click: function() { $component.selectBar(bar) }\"></span>\n                <div class=\"menu-dropdown menu-item\" data-bind=\"css: { hidden: !bar.hover() || !bar.titleMenu.length }, foreach: { data: bar.titleMenu, as: 'title' }\">\n                    <div class=\"menu-column\">\n                        <div class=\"menu-header\" data-bind=\"\n                            i18n: title.titleMenuName,\n                            style: {\n                                'color': title.textColor,\n                                'background-color': title.backgroundColor\n                            }\"></div>\n                        <div class=\"menu-items\" data-bind=\"foreach: title.treeMenu\">\n                            <div class=\"item\" data-bind=\"\n                                i18n: $component.getName($data),\n                                click: function() { $component.selectMenu($data, bar) },                        \n                                css: { \n                                    selected: false,\n                                    'divider': !$data.url || $data.url === '-'\n                                }\"></div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <div class=\"user-info\">\n            <div class=\"next-slider-area\">\n                <i class=\"control-slider next-slider\" data-bind=\"\n                    ntsIcon: { no: 128, width: 25, height: 25 },\n                    click: $component.handleNextSlider\"></i>\n            </div>\n            <div class=\"menu-groups\">\n                <div class=\"item-group\" style=\"margin-right: 10px;\">\n                    <ccg020-component></ccg020-component>\n                </div>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.companyNameClick\n                        }\">\n                    <span class=\"bar-item-title company\" data-bind=\"text: $component.companyName, click: $component.companiesClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\" data-bind=\"foreach: { data: $component.companies, as: 'company' }\">\n                                <div class=\"item\" data-bind=\"\n                                    i18n: company.companyName,\n                                    click: function() { $component.selectCompany($data) }\n                                \"></div>\n                                <div class=\"item divider divider-company\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.companiesClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n                <span class=\"divider\"></span>\n                <div class=\"item-group\" data-bind=\"\n                        css: {\n                            hover: $component.userNameClick\n                        }\">\n                    <span class=\"bar-item-title user-name\" data-bind=\"text: $component.userName, click: $component.userClick\"></span>\n                    <div class=\"menu-dropdown menu-item\">\n                        <div class=\"menu-column\">\n                            <div class=\"menu-items\">\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_5', click: $component.settingPerson, if: $component.showPersonSetting\"></div>\n                                <div data-bind=\"if: $component.showPersonSetting\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_4', click: $component.manual, if: $component.showManual\"></div>\n                                <div data-bind=\"if: $component.showManual\" class=\"item divider\"></div>\n                                <div class=\"item\" data-bind=\"i18n: 'CCG020_3', click: $component.logout\"></div>\n                            </div>\n                        </div>\n                    </div>\n                    <i data-bind=\"ntsIcon: { no: 135, width: 10, height: 10 }, click: $component.userClick\" style=\"margin-right: 5px; cursor: pointer;\"></i>\n                </div>\n            </div>\n            <div id=\"notice-msg\" class=\"avatar notification\">\n                <i id=\"new-mark-msg\" style=\"display: none\" data-bind=\"ntsIcon: { no: 165, width: 13, height: 13 }\"></i>\n            </div>\n        </div>\n        <div class=\"pg-area\">\n            <div class=\"pg-name\">\n                <span id=\"pg-disp-name\" data-bind=\"text: pgName\" style=\"cursor: default\"></span>\n            </div>\n        </div>\n        "
                         })
                     ], HeaderViewModel);
                     return HeaderViewModel;
@@ -53572,7 +53748,7 @@ var nts;
                 function SvgIconBindingHandler() {
                 }
                 SvgIconBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    element.removeAttribute('data-bind');
+                    //            element.removeAttribute('data-bind');
                     return { controlsDescendantBindings: false };
                 };
                 SvgIconBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {

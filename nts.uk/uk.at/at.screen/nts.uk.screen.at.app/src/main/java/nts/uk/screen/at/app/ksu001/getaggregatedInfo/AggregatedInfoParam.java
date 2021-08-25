@@ -30,4 +30,5 @@ public class AggregatedInfoParam {
 	public int unit;					     // workPlace | workPlaceGroup
 	public String workplaceId;     	         
 	public String workplaceGroupId;
+	public boolean getWorkschedule;
 }

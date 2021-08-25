@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksu001.processcommon.nextorderdschedule;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -47,9 +49,9 @@ public class ScreenQueryWorkScheduleShift {
 	 */
 	public WorkScheduleShiftBaseResult create(
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew,
-			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> mapDataDaily,
-			Boolean isAchievement
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> mapDataDaily,
+			Boolean getActualData
 			) {
 		WorkScheduleShiftBaseResult output = new WorkScheduleShiftBaseResult(
 				Collections.emptyList(),
@@ -63,7 +65,7 @@ public class ScreenQueryWorkScheduleShift {
 		output.setListWorkScheduleShift(workScheduleShiftResult.getListWorkScheduleShift());
 		output.setMapShiftMasterWithWorkStyle(workScheduleShiftResult.getMapShiftMasterWithWorkStyle());
 		// 2 実績も取得するか == true
-		if (isAchievement) {
+		if (getActualData) {
 			// 2.1: <call>
 			WorkScheduleShiftBaseResult workScheduleShiftBaseResult = 
 					createWorkScheduleShiftBase.getWorkScheduleShiftBase(
@@ -84,13 +86,10 @@ public class ScreenQueryWorkScheduleShift {
 			
 			Map<ShiftMaster,Optional<WorkStyle>> schedulesShiftMaster = workScheduleShiftResult.getMapShiftMasterWithWorkStyle();
 			
-			List<ScheduleOfShiftDto> list1 = achievements.stream()
-									.filter(x -> !schedules.stream()
-														  .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
-									.collect(Collectors.toList());
+			List<ScheduleOfShiftDto> list1 = CollectionUtil.isEmpty(achievements) ? new ArrayList<ScheduleOfShiftDto>() : achievements;
 									
-			List<ScheduleOfShiftDto> list2 = achievements.stream()
-					.filter(x -> schedules.stream()
+			List<ScheduleOfShiftDto> list2 = schedules.stream()
+					.filter(x -> !achievements.stream()
 										  .anyMatch(y -> y.getDate().equals(x.getDate()) && y.getEmployeeId().equals(x.getEmployeeId())))
 					.collect(Collectors.toList());
 			

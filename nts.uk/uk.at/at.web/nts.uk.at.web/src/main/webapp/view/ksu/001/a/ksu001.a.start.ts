@@ -13,8 +13,13 @@ module nts.uk.at.view.ksu001.a {
 				document.getElementById("main-area").style.display = '';
                 __viewContext.bind(__viewContext.viewModel);
 
-                __viewContext.viewModel.viewA.setHeightScreen();
-                __viewContext.viewModel.viewA.setPositionButonToRightToLeft();
+                __viewContext.viewModel.viewA.setHeightMainArea();
+                __viewContext.viewModel.viewA.setPositionButonA13A14A15();
+                __viewContext.viewModel.viewA.setExAreaAgency();
+                // fix cho truong hop khởi động ở mode height = fixed.
+                if(data && data.gridHeightSelection == 2){
+                   __viewContext.viewModel.viewA.saveHeightGridToLocal(); 
+                }
 
                 if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
                     $('.ntsButtonTableButton').addClass('nowithContent');
@@ -40,9 +45,9 @@ module nts.uk.at.view.ksu001.a {
                 }
                 
                 $(window).resize(function() {
-                    __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
-                    __viewContext.viewModel.viewA.setPositionButonToRight();
-                    __viewContext.viewModel.viewA.setHeightScreen();
+                    __viewContext.viewModel.viewA.setHeightMainArea();
+                    __viewContext.viewModel.viewA.setPositionButonA14();
+                    __viewContext.viewModel.viewA.setPositionButonA15();
                 });
 
                 nts.uk.ui.block.clear();
@@ -96,7 +101,8 @@ module nts.uk.at.view.ksu001.a {
         
         $(window).on("mousedown.popup", function(e) {
             let control = $('#A4_1_popup');
-            let combo = $('.nts-combo-column-0');
+            //let combo = $('.nts-combo-column-0');
+            let combo = $('div.nts-column.nts-combo-column-0.name');
 
             if ($(e.target).is(combo[1]) || $(e.target).is(combo[2])) {
                 console.log('not hide');
