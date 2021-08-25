@@ -250,6 +250,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.removeClass();
                 nts.uk.ui.block.grayout();
+
+                if (viewMode == ViewMode.SHIFT) {
+                    let newLst = _.filter(self.useCategoriesWorkplace(), (item: any) => !_.includes(
+                        [WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
+                    if (!_.isEmpty(newLst)) {
+                        self.useCategoriesWorkplace(newLst);
+                        self.showA12(true);
+                        $('#horzDiv').css('display', '');
+                    } else {
+                        self.showA12(false);
+                        $('#horzDiv').css('display', 'none');
+                    }
+                } else {
+                    let addLst = _.filter(self.useCategoriesWorkplaceFull, (item: any) => _.includes([
+                        WorkplaceCounterCategory.LABOR_COSTS_AND_TIME,
+                        WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
+                    if (!_.isEmpty(addLst)) {
+                        self.useCategoriesWorkplace(_.sortBy(_.union(self.useCategoriesWorkplace(), addLst), ['value']));
+                    }
+                    if (_.isEmpty(self.useCategoriesWorkplace())) {
+                        self.showA12(false);
+                        $('#horzDiv').css('display', 'none');
+                    } else {
+                        self.showA12(true);
+                        $('#horzDiv').css('display', '');
+                    }
+                }
+
                 self.getNewData(viewMode).done(() => {
                     nts.uk.ui.block.clear();
                 }).fail(function() {
@@ -428,32 +456,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
 
 				self.selectedModeDisplayInBody.subscribe((value: any) => {
-					if(value == ViewMode.SHIFT) {
-						let newLst = _.filter(self.useCategoriesWorkplace(), (item: any) => !_.includes(
-						[WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
-						if(!_.isEmpty(newLst)) {
-							self.useCategoriesWorkplace(newLst);
-							self.showA12(true);
-							$('#horzDiv').css('display', '');
-						} else {
-							self.showA12(false);
-							$('#horzDiv').css('display', 'none');
-						}
-					} else {
-						let addLst = _.filter(self.useCategoriesWorkplaceFull, (item: any) => _.includes([
-							WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, 
-							WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
-						if(!_.isEmpty(addLst)) {
-							self.useCategoriesWorkplace(_.sortBy(_.union(self.useCategoriesWorkplace(), addLst), ['value']));	
-						}
-						if(_.isEmpty(self.useCategoriesWorkplace())) {
-							self.showA12(false);
-							$('#horzDiv').css('display', 'none');
-						} else {
-							self.showA12(true);
-							$('#horzDiv').css('display', '');
-						}
-					}
+
 				});
 
                 // ngày có thể chỉnh sửa schedule
