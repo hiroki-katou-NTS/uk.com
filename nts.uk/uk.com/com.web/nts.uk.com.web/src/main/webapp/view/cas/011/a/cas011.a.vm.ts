@@ -44,7 +44,6 @@ module nts.uk.com.view.cas011.a {
         swapColumns: KnockoutObservableArray<NtsGridListColumn>;
 
         defaultRoleSetCode :KnockoutObservable<string> = ko.observable(null);
-
         constructor(params: any) {
             super();
             const vm = this;
@@ -52,9 +51,9 @@ module nts.uk.com.view.cas011.a {
             // A2_003, A2_004, A2_005, A2_006
             vm.gridColumns = ko.observableArray([
                 {headerText: resource.getText('CAS011_9'), key: 'roleSetCd',
-                    headerCssClass: 'text-right',columnCssClass: 'text-center',formatter: _.escape, width: 65},
+                    headerCssClass: 'text-right',columnCssClass: 'text-center',formatter: _.escape, width: 50},
                 {headerText: resource.getText('CAS011_10'), key: 'roleSetName',
-                    headerCssClass: 'text-right',columnCssClass: 'text-center',formatter: _.escape, width: 180},
+                    headerCssClass: 'text-right',columnCssClass: 'text-center',formatter: _.escape, width: 230},
                 {
                     headerText: resource.getText('CAS011_44'), key: 'check', width: 25,
                     template: '{{if ${check} == 1 }}<div class="cssDiv"><i  class="icon icon icon-78 cssI"></i></div>{{/if}}'

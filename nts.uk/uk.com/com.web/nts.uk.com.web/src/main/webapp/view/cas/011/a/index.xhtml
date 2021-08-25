@@ -33,7 +33,7 @@
                         <table id="role_set_grid"
                                data-bind="ntsGridList: {
 	                                            name:'#[CAS011_8]',
-	                                            width: 330,
+	                                            width: 340,
 	                                            rows: 20,
 	                                            options: listRoleSets,
 	                                            optionsValue: selectedRoleSetCd,
@@ -139,7 +139,7 @@
                             <td class="pad_left_5px">
                                 <div style="margin-top: 10px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_24')}</div>
                             </td>
-                            <td  class="pad_left_15px">
+                            <td  class="pad_left_40px">
                                 <div style="margin-top: 10px" data-bind="ntsFormLabel: {required: false}">#{i18n.getText('CAS011_25')}</div>
                             </td>
                         </tr>
@@ -151,7 +151,7 @@
                                      data-bind="ntsSwapList: {
                             name: '#[CAS011_24]',
                             height: 287,
-                            width: 250,
+                            width: 258,
                             dataSource: listWebMenus,
                             disableMoveButton: false,
                             primaryKey: 'webMenuCode',
