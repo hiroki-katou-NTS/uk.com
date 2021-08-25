@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
-import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.*;
+import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.STRING;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,17 +8,17 @@ import java.util.List;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeContinuousHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
-import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportPersistentResidentHistory;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 所属職場履歴の正準化
  */
-public class AffWorkplaceHistoryCanonicalization extends EmployeeContinuousHistoryCanonicalization implements  DomainCanonicalization {
+public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonicalization implements  DomainCanonicalization {
 //	/** 職場コードの項目No */
 //	private final int itemNoWorkplaceCode;
 //	/** 通常職場コードの項目No */
@@ -29,7 +29,7 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeContinuousHisto
 //	private final int itemNoNormalWorkplaceId;
 		
 	public AffWorkplaceHistoryCanonicalization(DomainWorkspace workspace) {
-		super(workspace);
+		super(workspace,HistoryType.PERSISTENERESIDENT);
 //		itemNoWorkplaceCode = workspace.getItemByName("職場コード").getItemNo();
 //		itemNoNormalWorkplaceCode = workspace.getItemByName("通常職場").getItemNo();
 //		itemNoWorkplaceId = workspace.getItemByName("WORKPLACE_ID").getItemNo();
@@ -55,11 +55,6 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeContinuousHisto
 	}
 	
 	@Override
-	protected Class<?> getHistoryClass() {
-		return ExternalImportPersistentResidentHistory.class;
-	}
-	
-	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
 				new DomainDataColumn("HIST_ID", STRING)
@@ -79,8 +74,8 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeContinuousHisto
 		return super.appendMeta(source);
 	}
 
-	public interface RequireCanonicalize extends EmployeeContinuousHistoryCanonicalization.RequireCanonicalize{
+	public interface RequireCanonicalize extends EmployeeHistoryCanonicalization.RequireCanonicalize{
 	}
-	public interface RequireAdjust extends EmployeeContinuousHistoryCanonicalization.RequireAdjust{
+	public interface RequireAdjust extends EmployeeHistoryCanonicalization.RequireAdjust{
 	}
 }
