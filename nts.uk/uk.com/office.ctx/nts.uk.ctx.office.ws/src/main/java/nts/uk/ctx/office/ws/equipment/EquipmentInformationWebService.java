@@ -3,6 +3,7 @@ package nts.uk.ctx.office.ws.equipment;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -37,8 +38,8 @@ public class EquipmentInformationWebService extends WebService {
 	}
 	
 	@POST
-	@Path("delete")
-	public void delete(String code) {
+	@Path("delete/{code}")
+	public void delete(@PathParam("code") String code) {
 		this.deleteCommandHandler.handle(code);
 	}
 }

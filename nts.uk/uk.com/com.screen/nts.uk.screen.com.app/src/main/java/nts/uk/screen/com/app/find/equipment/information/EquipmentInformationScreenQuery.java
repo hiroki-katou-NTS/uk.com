@@ -1,6 +1,6 @@
 package nts.uk.screen.com.app.find.equipment.information;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,19 +32,16 @@ public class EquipmentInformationScreenQuery {
 		// 1. get*(ログイン会社ID)
 		List<EquipmentInformation> equipmentInformations = this.equipmentInformationRepository
 				.findByCid(AppContexts.user().companyId());
+		List<EquipmentClassification> equipmentClassifications = Collections.emptyList();
 		// 2. 設備情報. isPresent
 		if (!equipmentInformations.isEmpty()) {
 			List<String> clsCodes = equipmentInformations.stream()
 					.map(data -> data.getEquipmentClsCode().v()).distinct().collect(Collectors.toList());
 			// get(契約コード、List<設備分類コード>)
-			List<EquipmentClassification> equipmentClassifications = this.equipmentClassificationRepository
+			equipmentClassifications = this.equipmentClassificationRepository
 					.getFromClsCodeList(AppContexts.user().contractCode(), clsCodes);
 		}
-		return new EquipmentInformationStartupDto(
-				equipmentInformations.stream()
-					.map(EquipmentInformationDto::fromDomain)
-					.sorted(Comparator.comparing(EquipmentInformationDto::getEquipmentClsCode)
-							.thenComparing(EquipmentInformationDto::getCode)).collect(Collectors.toList()));
+		return EquipmentInformationStartupDto.fromDomains(equipmentInformations, equipmentClassifications);
 	}
 	
 	/**

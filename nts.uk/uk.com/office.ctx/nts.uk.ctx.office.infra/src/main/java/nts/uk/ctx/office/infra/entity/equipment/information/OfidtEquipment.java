@@ -32,6 +32,9 @@ public class OfidtEquipment extends ContractUkJpaEntity implements Serializable,
 	@EmbeddedId
 	private OfidtEquipmentPK pk;
 	
+	@Column(name = "EXCLUS_VER")
+	private long version;
+	
 	/**
 	 * 名称
 	 */
