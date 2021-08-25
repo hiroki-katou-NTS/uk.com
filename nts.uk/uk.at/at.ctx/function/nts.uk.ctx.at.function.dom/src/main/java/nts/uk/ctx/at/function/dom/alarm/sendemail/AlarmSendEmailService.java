@@ -142,8 +142,6 @@ public class AlarmSendEmailService implements SendEmailService {
 			}
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			for (val entry : managerTargetMap.entrySet()) {
-				List<String> listEmpAdminError = new ArrayList<>();
-//				val managerID = entry.getKey(); // 管理者ID
 				val targetPersonIds = entry.getValue(); //List＜対象者ID＞
 				for (val empId : targetPersonIds) {
 					// ＜抽出元＞: INPUT.アラーム抽出結果, ＜条件＞: 社員ID＝　ループ中のList＜対象者ID＞
@@ -255,10 +253,8 @@ public class AlarmSendEmailService implements SendEmailService {
 	 */
 	private Map<String, List<String>> adjustManagerByRole(String cid, List<ManagerTagetDto> managerTargetList,
 														  List<AlarmListExecutionMailSetting> alarmExeMailSetting, GeneralDate executeDate) {
+		if (CollectionUtil.isEmpty(managerTargetList)) return null;
 		Map<String, List<String>> managerMap = new HashMap<>();
-		if (CollectionUtil.isEmpty(managerTargetList)) {
-			return managerMap;
-		}
 
 		// 管理者宛メール設定を探す
 		val alarmMailSettingAdmin = alarmExeMailSetting.stream().filter(x -> x.getPersonalManagerClassify().value ==
@@ -271,7 +267,7 @@ public class AlarmSendEmailService implements SendEmailService {
 		// ドメインモデル「職場管理者」を取得
 //　		・職場ID　＝　Input．List＜職場ID,List＜社員ID＞＞の職場ID
 //　		・履歴期間．開始日＜＝　システム日付＜＝履歴期間．終了日
-		val wkpIds = managerTargetList.stream().map(ManagerTagetDto::getWorkplaceID).collect(Collectors.toList());
+		val wkpIds = managerTargetList.stream().map(ManagerTagetDto::getWorkplaceID).distinct().collect(Collectors.toList());
 		List<WkpManagerImport> wkplManagerList = workplaceAdapter.findByWkpIdsAndDate(wkpIds, executeDate);
 
 		// Map＜管理者ID、List＜対象者ID＞＞にデータを追加
@@ -357,7 +353,8 @@ public class AlarmSendEmailService implements SendEmailService {
 				.getEmpEmailAddress(companyID, employeeId, functionID);
 		if (mailDestinationAlarmImport != null) {
 			// Get all mail address
-			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails().stream().filter(c->c.getEmailAddress() !=null).collect(Collectors.toList());
+			List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails().stream().filter(c -> c.getEmailAddress() != null)
+					.filter(x -> !x.getEmailAddress().equals("")).collect(Collectors.toList());
 			if (CollectionUtil.isEmpty(emails)) {
 				return false;
 			} else {
