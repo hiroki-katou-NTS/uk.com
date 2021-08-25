@@ -43,10 +43,10 @@ module nts.uk.at.view.ksu001.k.b {
         checkOne: KnockoutObservable<boolean> = ko.observable(false); 
         screenItem: KnockoutObservableArray<ScreenItem> = ko.observableArray([]);
 
-        personalInfoItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTablePersonalInfoItem); 
-	    attendanceItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTableAttendanceItem);
-        workplaceCounterCategories: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory);
-        personalCounterCategory: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.PersonalCounterCategory);
+        personalInfoItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTablePersonalInfoItem.map(i => ({value: i.value, name: this.$i18n(i.name)})));
+	    attendanceItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTableAttendanceItem.map(i => ({value: i.value, name: this.$i18n(i.name)})));
+        workplaceCounterCategories: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory.map(i => ({value: i.value, name: this.$i18n(i.name)})));
+        personalCounterCategory: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.PersonalCounterCategory.map(i => ({value: i.value, name: this.$i18n(i.name)})));
         
         selectedPersonalInfoItem: KnockoutObservable<string> = ko.observable("");        
         selectedAdditionalInfoItem: KnockoutObservable<string> = ko.observable("");

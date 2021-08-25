@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.e
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 
 /**
@@ -11,6 +13,7 @@ import lombok.Value;
  * @author dan_pv
  */
 @Value
+@AllArgsConstructor
 public class EmployeeInfoImported {
 
 	/**

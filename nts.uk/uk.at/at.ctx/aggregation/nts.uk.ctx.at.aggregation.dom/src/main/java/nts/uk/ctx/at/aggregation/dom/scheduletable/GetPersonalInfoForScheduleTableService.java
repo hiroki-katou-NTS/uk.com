@@ -43,19 +43,19 @@ public class GetPersonalInfoForScheduleTableService {
 			// employee's information
 			EmployeeInfoImported employeeInfo = employeeInfoList.stream()
 					.filter( x -> x.getEmployeeId().equals(employeeId))
-					.findFirst().get();
+					.findFirst().orElse(null);
 			// employee's team
 			EmployeeTeamInfoImported employeeTeamInfo = employeeTeamInfoList.stream()
 					.filter( x -> x.getEmployeeID().equals(employeeId))
-					.findFirst().get();
+					.findFirst().orElse(null);
 			// employee's rank
 			EmployeeRankInfoImported employeeRankInfo = employeeRankInfoList.stream()
 					.filter( x -> x.getEmployeeID().equals(employeeId))
-					.findFirst().get();
+					.findFirst().orElse(null);
 			// employee' license classification
 			EmpLicenseClassification employeeLicenseClass = employeeLicenseClassList.stream()
 					.filter( x -> x.getEmpID().equals(employeeId))
-					.findFirst().get();
+					.findFirst().orElse(null);
 			
 			return ScheduleTablePersonalInfo.create(employeeId, employeeInfo, employeeTeamInfo, employeeRankInfo, employeeLicenseClass);
 			

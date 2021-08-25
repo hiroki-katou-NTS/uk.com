@@ -7,7 +7,7 @@
 <body>    
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">	
-            <script>var dialogSize = { width: 1300, height: 620 };</script>
+            <script>var dialogSize = { width: 1350, height: 630 };</script>
             <com:ValidatorScript>
                 nts.uk.ctx.at.aggregation.dom.scheduletable.PersonalScheduleComments
 			</com:ValidatorScript>
@@ -59,6 +59,7 @@
                                 data-bind="click: openDialog, style: {visibility: enableSetting() ? 'initial' : 'hidden'}">#{i18n.getText('KSU001_4084')}</button>
                         <button tabindex="5"
                                 id="A2_4"
+                                class="caret-bottom caret-inline"
                                 style="margin-top: 10px;"
                                 data-bind="click: previewOutput, enable: !_.isEmpty(itemList())">#{i18n.getText('KSU001_4085')}</button>
                     </div>
@@ -68,14 +69,14 @@
                     <!--A3-2-->
                     <textarea tabindex="7"
                               class="inputValue"
-                              rows="3" cols="85"
+                              rows="3" cols="80"
                               data-bind="ntsMultilineEditor: {
                                                 name: '#[KSU001_4086]',
                                                 value: comments,
                                                 constraint:'PersonalScheduleComments',
                                                 required: false }" />
                 </div>
-                <iframe id="preview-frame" style="width: 100%; height: calc(100% - 100px);" data-bind="attr: { src: filePath }"/>
+                <div id="preview-frame" style="width: 100%; height: calc(100% - 100px); overflow: auto; border: 1px solid #cfd4da;"/>
             </div>
         </ui:define>
         </ui:composition>

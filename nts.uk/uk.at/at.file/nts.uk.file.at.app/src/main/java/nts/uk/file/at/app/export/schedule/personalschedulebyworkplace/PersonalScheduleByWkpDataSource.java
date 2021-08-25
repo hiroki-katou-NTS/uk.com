@@ -3,10 +3,13 @@ package nts.uk.file.at.app.export.schedule.personalschedulebyworkplace;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
-import nts.uk.ctx.at.aggregation.dom.scheduletable.PersonalInfoScheduleTable;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.OneDayEmployeeAttendanceInfo;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
+import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfo;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 
@@ -16,7 +19,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class PersonalScheduleByWkpDataSource {
+public class PersonalScheduleByWkpDataSource<T> {
     private int orgUnit;
 
     private DatePeriod period;
@@ -36,13 +39,14 @@ public class PersonalScheduleByWkpDataSource {
     private List<DateInformation> dateInfos;
 
     // List<スケジュール表の個人情報>
-    private List<PersonalInfoScheduleTable> personalInfoScheduleTableList;
+    private List<ScheduleTablePersonalInfo> personalInfoScheduleTableList;
 
     // List<一日分の社員の勤怠表示情報　dto>
-    private List<EmployeeOneDayAttendanceInfo> listEmpOneDayAttendanceInfo;
+    private List<OneDayEmployeeAttendanceInfo> listEmpOneDayAttendanceInfo;
 
     // 個人計集計結果
-    private Map<PersonalCounterCategory, Object> personalTotalResult;
+    private Map<PersonalCounterCategory, Map<String, T>> personalTotalResult;
 
     // 職場計集計結果
+    private Map<WorkplaceCounterCategory, Map<GeneralDate, T>> workplaceTotalResult;
 }

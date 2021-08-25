@@ -18,7 +18,6 @@ module nts.uk.at.view.ksu001.k.a {
         comments: KnockoutObservable<string>;
         characteristics: Characteristics = {code: null, name: null, comments: null};
         params: any;
-        filePath: KnockoutObservable<string> = ko.observable('');
 
         created(params?: any) {
             const self = this;
@@ -181,6 +180,7 @@ module nts.uk.at.view.ksu001.k.a {
                 closureDate: vm.params.endDate
             };
             vm.$blockui("show");
+            $("#preview-frame")[0].innerHTML = "";
             vm.$ajax(Paths.EXPORT, query).then((res: any) => {
                 return deferred.repeat(conf => conf
                     .task(() => nts.uk.request.specials.getAsyncTaskInfo(res.taskId))
@@ -191,7 +191,9 @@ module nts.uk.at.view.ksu001.k.a {
                     vm.$dialog.error(res.error);
                 } else {
                     nts.uk.request.ajax(Paths.PREVIEW + "/" + res.id, null, {dataType: 'text'}).done((data: any) => {
-                        $("#preview-frame").attr("srcdoc", data);
+                        const styles = data.substring(data.indexOf("<style>"), data.indexOf("</style>") + 8);
+                        const body = data.substring(data.indexOf("<table"), data.indexOf("</body>"));
+                        $("#preview-frame")[0].innerHTML = (styles + body);
                     });
                 }
             }).fail((res: any) => {

@@ -2,13 +2,17 @@ package nts.uk.file.at.app.export.schedule.personalschedulebyworkplace;
 
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.DateInMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
+import nts.uk.ctx.at.aggregation.dom.adapter.rank.EmployeeRankInfoAdapter;
+import nts.uk.ctx.at.aggregation.dom.adapter.rank.EmployeeRankInfoImported;
+import nts.uk.ctx.at.aggregation.dom.adapter.team.EmployeeTeamInfoAdapter;
+import nts.uk.ctx.at.aggregation.dom.adapter.team.EmployeeTeamInfoImported;
+import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.*;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.criterion.*;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.*;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
@@ -25,12 +29,14 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateIt
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkFormHisItem;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpMedicalWorkStyleHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.NurseClassificationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.EmployeeInfoWantToBeGet;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto.EmployeeInfoImported;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
@@ -38,18 +44,18 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapte
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.AffWorkplaceAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.WorkplaceExportServiceAdapter;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 個人スケジュール表(職場別)を作成する
+ */
 @Stateless
 public class PersonalScheduleByWorkplaceExportQuery {
     @Inject
@@ -57,9 +63,6 @@ public class PersonalScheduleByWorkplaceExportQuery {
 
     @Inject
     private ScheduleTableOutputSettingRepository outputSettingRepo;
-
-    @Inject
-    private GetPersonalInfoScheduleTableDomainService personalInfoScheduleDomainService;
 
     @Inject
     private EmployeeOneDayAttendanceInfoQuery employeeOneDayAttendanceInfoQuery;
@@ -85,12 +88,38 @@ public class PersonalScheduleByWorkplaceExportQuery {
     private SpecificDateItemRepository specificDateItemRepo;
 
     @Inject
-    private IntegrationOfDailyGetter integrationOfDailyGetter;
+    private EmpMedicalWorkStyleHistoryRepository empMedicalWorkStyleHisRepo;
+    @Inject
+    private NurseClassificationRepository nurseClassificationRepo;
+    @Inject
+    private EmployeeAdapter employeeAdapter;
+    @Inject
+    private EmployeeTeamInfoAdapter employeeTeamInfoAdapter;
+    @Inject
+    private EmployeeRankInfoAdapter employeeRankInfoAdapter;
+
+    @Inject
+    private WorkScheduleAdapter workScheduleAdapter;
+    @Inject
+    private DailyRecordAdapter dailyRecordAdapter;
 
     @Inject
     private AggregatePersonalTotalQuery aggregatePersonalTotalQuery;
 
-    public PersonalScheduleByWkpDataSource get(int orgUnit, String orgId, DatePeriod period, String outputSettingCode, List<String> employeeIds, GeneralDate closureDate) {
+    @Inject
+    private WorkplaceTotalAggregatedInfoQuery workplaceTotalAggregatedInfoQuery;
+
+    /**
+     * 取得する
+     * @param orgUnit
+     * @param orgId
+     * @param period
+     * @param outputSettingCode
+     * @param employeeIds
+     * @param closureDate
+     * @return
+     */
+    public <T> PersonalScheduleByWkpDataSource<T> get(int orgUnit, String orgId, DatePeriod period, String outputSettingCode, List<String> employeeIds, GeneralDate closureDate) {
         String companyId = AppContexts.user().companyId();
         // 共通情報を取得する
         // [RQ622]会社IDから会社情報を取得する
@@ -107,7 +136,6 @@ public class PersonalScheduleByWorkplaceExportQuery {
             public List<WorkplaceGroupImport> getSpecifyingWorkplaceGroupId(List<String> workplacegroupId) {
                 return groupAdapter.getbySpecWorkplaceGroupID(workplacegroupId);
             }
-
             @Override
             public List<WorkplaceInfo> getWorkplaceInforFromWkpIds(List<String> listWorkplaceId, GeneralDate baseDate) {
                 List<WorkplaceInfo> workplaceInfos = serviceAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate).stream()
@@ -115,7 +143,6 @@ public class PersonalScheduleByWorkplaceExportQuery {
                                 Optional.ofNullable(mapper.getWorkplaceGenericName()), Optional.ofNullable(mapper.getWorkplaceDisplayName()), Optional.ofNullable(mapper.getHierarchyCode()))).collect(Collectors.toList());
                 return workplaceInfos;
             }
-
             @Override
             public List<String> getWKPID(String WKPGRPID) {
                 return wplAdapter.getWKPID(companyId, WKPGRPID);
@@ -129,41 +156,29 @@ public class PersonalScheduleByWorkplaceExportQuery {
             DateInformation information = DateInformation.create(new DateInformation.Require() {
                 @Override
                 public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
-                    List<WorkplaceSpecificDateItem> data = workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId,
-                            specificDate);
-                    return data;
+                    return workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId, specificDate);
                 }
-
                 @Override
                 public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
-                    List<CompanySpecificDateItem> data = companySpecificDateRepo
-                            .getComSpecByDate(companyId, specificDate);
-                    return data;
+                    return companySpecificDateRepo.getComSpecByDate(companyId, specificDate);
                 }
-
                 @Override
                 public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
-                    Optional<WorkplaceEvent> data = workplaceEventRepo.findByPK(workplaceId, date);
-                    return data;
+                    return workplaceEventRepo.findByPK(workplaceId, date);
                 }
-
                 @Override
                 public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date) {
-                    Optional<CompanyEvent> data = companyEventRepo.findByPK(companyId, date);
-                    return data;
+                    return companyEventRepo.findByPK(companyId, date);
                 }
-
                 @Override
                 public Optional<PublicHoliday> getHolidaysByDate(GeneralDate date) {
                     return publicHolidayRepo.getHolidaysByDate(companyId, date);
                 }
-
                 @Override
                 public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
                     if (lstSpecificDateItemNo.isEmpty()) return new ArrayList<>();
                     List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-                    List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
-                    return data;
+                    return specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
                 }
             }, date, targetOrgIdenInfor);
             dateInformationList.add(information);
@@ -185,29 +200,44 @@ public class PersonalScheduleByWorkplaceExportQuery {
         });
 
         // 5.
-        List<PersonalInfoScheduleTable> personalInfoScheduleTableList = personalInfoScheduleDomainService.create(employeeIds, period.end(), personalInfoItems);
+        List<ScheduleTablePersonalInfo> personalInfoScheduleTableList = GetPersonalInfoForScheduleTableService.get(
+                new GetPersonalInfoForScheduleTableService.Require() {
+                    @Override
+                    public List<EmpMedicalWorkFormHisItem> getEmpClassifications(List<String> listEmp, GeneralDate referenceDate) {
+                        return empMedicalWorkStyleHisRepo.get(listEmp, referenceDate);
+                    }
+                    @Override
+                    public List<NurseClassification> getListCompanyNurseCategory() {
+                        return nurseClassificationRepo.getListCompanyNurseCategory(companyId);
+                    }
+                    @Override
+                    public List<EmployeeInfoImported> getEmployeeInfo(List<String> employeeIds, GeneralDate baseDate, EmployeeInfoWantToBeGet param) {
+                        return employeeAdapter.getEmployeeInfo(employeeIds, baseDate, param);
+                    }
+                    @Override
+                    public List<EmployeeTeamInfoImported> getEmployeeTeamInfo(List<String> employeeIds) {
+                        return employeeTeamInfoAdapter.get(employeeIds);
+                    }
+                    @Override
+                    public List<EmployeeRankInfoImported> getEmployeeRankInfo(List<String> employeeIds) {
+                        return employeeRankInfoAdapter.get(employeeIds);
+                    }
+                },
+                employeeIds,
+                period.end(),
+                personalInfoItems
+        );
 
         // 6.
         Map<ScheRecGettingAtr, List<IntegrationOfDaily>> integrationOfDailyMap = DailyAttendanceGettingService.get(
             new DailyAttendanceGettingService.Require() {
                 @Override
                 public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
-                    List<IntegrationOfDaily> result = new ArrayList<>();
-                    empIds.forEach(sid -> {
-                        List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-                        result.addAll(tmp);
-                    });
-                    return result;
+                    return workScheduleAdapter.getList(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
                 }
-
                 @Override
                 public List<IntegrationOfDaily> getRecordList(List<EmployeeId> empIds, DatePeriod period) {
-                    List<IntegrationOfDaily> result = new ArrayList<>();
-                    empIds.forEach(sid -> {
-                        List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-                        result.addAll(tmp);
-                    });
-                    return result;
+                    return dailyRecordAdapter.getDailyRecordByScheduleManagement(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
                 }
             },
             employeeIds.stream().map(EmployeeId::new).collect(Collectors.toList()),
@@ -220,17 +250,18 @@ public class PersonalScheduleByWorkplaceExportQuery {
         });
 
         // 7. 一日分の社員の表示情報を取得す
-        List<EmployeeOneDayAttendanceInfo> listEmpOneDayAttendanceInfo = employeeOneDayAttendanceInfoQuery.get(integrationOfDailyList, attendanceItems);
+        List<OneDayEmployeeAttendanceInfo> listEmpOneDayAttendanceInfo = employeeOneDayAttendanceInfoQuery.get(integrationOfDailyList);
 
         // 8. 個人計を集計する
-        Map<PersonalCounterCategory, Object> personalTotalResult = new HashMap<>();
+        Map<PersonalCounterCategory, Map<String, T>> personalTotalResult = new HashMap<>();
         if (!outputSetting.get().getPersonalCounterCategories().isEmpty()) {
             personalTotalResult = aggregatePersonalTotalQuery.get(employeeIds, period, closureDate, outputSetting.get().getPersonalCounterCategories(), integrationOfDailyList);
         }
 
         // 9.
+        Map<WorkplaceCounterCategory, Map<GeneralDate, T>> workplaceTotalResult = new HashMap<>();
         if (!outputSetting.get().getWorkplaceCounterCategories().isEmpty()) {
-
+            workplaceTotalResult = workplaceTotalAggregatedInfoQuery.get(attendanceItems, outputSetting.get().getWorkplaceCounterCategories(), integrationOfDailyMap, outputSetting.get().getOutputItem().getDailyDataDisplayAtr(), period, targetOrgIdenInfor);
         }
 
         return new PersonalScheduleByWkpDataSource(
@@ -243,7 +274,8 @@ public class PersonalScheduleByWorkplaceExportQuery {
                 dateInformationList,
                 personalInfoScheduleTableList,
                 listEmpOneDayAttendanceInfo,
-                personalTotalResult
+                personalTotalResult,
+                workplaceTotalResult
         );
     }
 }

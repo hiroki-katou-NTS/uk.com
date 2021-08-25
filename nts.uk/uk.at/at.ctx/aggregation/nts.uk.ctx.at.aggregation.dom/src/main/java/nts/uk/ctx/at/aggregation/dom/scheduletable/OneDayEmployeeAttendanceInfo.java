@@ -135,11 +135,13 @@ public class OneDayEmployeeAttendanceInfo<T> {
 		if ( dailyData.getAttendanceLeave().isPresent() ){
 			
 			val timeLeavingAttList = dailyData.getAttendanceLeave().get().getTimeOfTimeLeavingAtt();
-			
-			timePointMap.put(ScheduleTableAttendanceItem.START_TIME, (T) timeLeavingAttList.get(0).getStart() );
-			timePointMap.put(ScheduleTableAttendanceItem.END_TIME, (T) timeLeavingAttList.get(0).getEnd() );
-			
-			if ( timeLeavingAttList.size() == 2) {
+
+			if ( timeLeavingAttList.size() > 0) {
+				timePointMap.put(ScheduleTableAttendanceItem.START_TIME, (T) timeLeavingAttList.get(0).getStart() );
+				timePointMap.put(ScheduleTableAttendanceItem.END_TIME, (T) timeLeavingAttList.get(0).getEnd() );
+			}
+
+			if ( timeLeavingAttList.size() > 1) {
 				timePointMap.put(ScheduleTableAttendanceItem.START_TIME_2, (T) timeLeavingAttList.get(1).getStart() );
 				timePointMap.put(ScheduleTableAttendanceItem.END_TIME_2, (T) timeLeavingAttList.get(1).getEnd() );
 			}

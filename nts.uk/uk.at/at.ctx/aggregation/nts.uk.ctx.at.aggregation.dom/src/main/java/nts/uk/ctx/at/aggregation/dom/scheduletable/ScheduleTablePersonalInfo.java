@@ -67,11 +67,11 @@ public class ScheduleTablePersonalInfo {
 	private static void addEmployeeName(
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeInfoImported employeeInfo) {
-		
+
 		personalInfoMap.put(
-				ScheduleTablePersonalInfoItem.EMPLOYEE_NAME, 
+				ScheduleTablePersonalInfoItem.EMPLOYEE_NAME,
 				new ScheduleTablePersonalInfoItemData(
-						employeeInfo.getEmployeeCode(), 
+						employeeInfo.getEmployeeCode(),
 						employeeInfo.getBusinessName()));
 	}
 	
@@ -141,7 +141,7 @@ public class ScheduleTablePersonalInfo {
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeTeamInfoImported employeeTeamInfo) {
 		
-		if ( employeeTeamInfo.getTeamCode().isPresent() && employeeTeamInfo.getTeamName().isPresent() ) {
+		if ( employeeTeamInfo != null && employeeTeamInfo.getTeamCode().isPresent() && employeeTeamInfo.getTeamName().isPresent() ) {
 			
 			personalInfoMap.put(
 					ScheduleTablePersonalInfoItem.TEAM,
@@ -160,7 +160,7 @@ public class ScheduleTablePersonalInfo {
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmployeeRankInfoImported employeeRankInfo) {
 		
-		if ( employeeRankInfo.getRankCode().isPresent() && employeeRankInfo.getRankSymbol().isPresent() ) {
+		if ( employeeRankInfo != null && employeeRankInfo.getRankCode().isPresent() && employeeRankInfo.getRankSymbol().isPresent() ) {
 			
 			personalInfoMap.put(
 					ScheduleTablePersonalInfoItem.RANK, 
@@ -179,7 +179,7 @@ public class ScheduleTablePersonalInfo {
 			Map<ScheduleTablePersonalInfoItem, ScheduleTablePersonalInfoItemData> personalInfoMap,
 			EmpLicenseClassification employeeLicenseClass) {
 		
-		if ( employeeLicenseClass.getOptLicenseClassification().isPresent() ){
+		if ( employeeLicenseClass != null && employeeLicenseClass.getOptLicenseClassification().isPresent() ){
 			
 			EnumConstant constant = EnumAdaptor.convertToValueName(
 					employeeLicenseClass.getOptLicenseClassification().get());
