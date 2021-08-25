@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
  *
  */
 @Value
-public class NumberTimeEachIndividualCounterResult {
+public class NumberTimeEachPersonCounter {
 	/** 社員ID **/
 	private EmployeeId sid;
 	

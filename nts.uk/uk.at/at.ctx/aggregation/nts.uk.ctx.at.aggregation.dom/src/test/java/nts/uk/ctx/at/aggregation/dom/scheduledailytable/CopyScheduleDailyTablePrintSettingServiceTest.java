@@ -11,10 +11,10 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 
 @RunWith(JMockit.class)
-public class ReproductScheduleDailyTablePrintSettingServiceTest {
+public class CopyScheduleDailyTablePrintSettingServiceTest {
 	
 	@Injectable
-	private ReproductScheduleDailyTablePrintSettingService.Require require;
+	private CopyScheduleDailyTablePrintSettingService.Require require;
 	
 	@Test
 	public void testReproduct_Msg_2117() {
@@ -35,7 +35,7 @@ public class ReproductScheduleDailyTablePrintSettingServiceTest {
 		};
 		
 		NtsAssert.businessException("Msg_2117", () -> {
-			AtomTask persist = ReproductScheduleDailyTablePrintSettingService.reproduct(require
+			AtomTask persist = CopyScheduleDailyTablePrintSettingService.copy(require
 					,	reProductSoure, destinationCode
 					,	destinationName, overwrite);
 			persist.run();
@@ -53,7 +53,7 @@ public class ReproductScheduleDailyTablePrintSettingServiceTest {
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
 		val overwrite = false;
-		val reproductDestination = reProductSoure.reproduce(destinationCode, destinationName);
+		val reproductDestination = reProductSoure.clone(destinationCode, destinationName);
 		
 		new Expectations() {
 			{
@@ -63,7 +63,7 @@ public class ReproductScheduleDailyTablePrintSettingServiceTest {
 		};
 		
 		NtsAssert.atomTask(
-				() ->	ReproductScheduleDailyTablePrintSettingService.reproduct(require
+				() ->	CopyScheduleDailyTablePrintSettingService.copy(require
 							,	reProductSoure, destinationCode
 							,	destinationName, overwrite)
 				,	any -> require.insertScheduleDailyTablePrintSetting(reproductDestination));
@@ -81,7 +81,7 @@ public class ReproductScheduleDailyTablePrintSettingServiceTest {
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
 		val overwrite = true;
-		val reproductDestination = reProductSoure.reproduce(destinationCode, destinationName);
+		val reproductDestination = reProductSoure.clone(destinationCode, destinationName);
 		
 		new Expectations() {
 			{
@@ -91,7 +91,7 @@ public class ReproductScheduleDailyTablePrintSettingServiceTest {
 		};
 		
 		NtsAssert.atomTask(
-				() ->	ReproductScheduleDailyTablePrintSettingService.reproduct(require
+				() ->	CopyScheduleDailyTablePrintSettingService.copy(require
 							,	reProductSoure, destinationCode
 							,	destinationName, overwrite)
 				,	any -> require.updateScheduleDailyTablePrintSetting(reproductDestination));

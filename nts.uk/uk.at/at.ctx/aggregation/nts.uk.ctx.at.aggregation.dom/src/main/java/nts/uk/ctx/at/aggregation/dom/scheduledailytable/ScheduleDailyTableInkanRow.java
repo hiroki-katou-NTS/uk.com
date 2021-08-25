@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import lombok.Value;
-import nts.arc.error.BusinessException;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -27,26 +26,6 @@ public class ScheduleDailyTableInkanRow {
 	private final List<ScheduleDailyTableInkanTitle> titleList;
 	
 	/**
-	 * 作る
-	 * @param notUseAtr 使用区分
-	 * @param titleList 見出しリスト
-	 * @return
-	 */
-	public static ScheduleDailyTableInkanRow create(
-			NotUseAtr notUseAtr,
-			List<ScheduleDailyTableInkanTitle> titleList) {
-		if ( titleList.size() > 6 ) {
-			throw new BusinessException("Msg_2085");
-		}
-		
-		if(notUseAtr == NotUseAtr.USE && titleList.isEmpty()) {
-			throw new BusinessException("Msg_2222");
-		}
-		
-		return new ScheduleDailyTableInkanRow(notUseAtr, titleList);
-	}
-	
-	/**
 	 * 印鑑欄見出しを取得する
 	 * @return
 	 */
@@ -58,7 +37,7 @@ public class ScheduleDailyTableInkanRow {
 	 * 複製する
 	 * @return
 	 */
-	public ScheduleDailyTableInkanRow reproduce() {
+	public ScheduleDailyTableInkanRow clone() {
 		return new ScheduleDailyTableInkanRow(this.notUseAtr, this.titleList);
 	}
 

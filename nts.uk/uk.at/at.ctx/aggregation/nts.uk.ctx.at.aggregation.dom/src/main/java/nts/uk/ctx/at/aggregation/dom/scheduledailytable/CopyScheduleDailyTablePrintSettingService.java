@@ -10,7 +10,7 @@ import nts.arc.task.tran.AtomTask;
  * @author lan_lt
  *
  */
-public class ReproductScheduleDailyTablePrintSettingService {
+public class CopyScheduleDailyTablePrintSettingService {
 	
 /**
  * 複製する
@@ -21,7 +21,7 @@ public class ReproductScheduleDailyTablePrintSettingService {
  * @param overwrite 上書きするか
  * @return
  */
-	public static AtomTask reproduct(Require require
+	public static AtomTask copy(Require require
 			,	ScheduleDailyTablePrintSetting reproductSoure
 			,	ScheduleDailyTableCode destinationCode
 			,	ScheduleDailyTableName destinationName
@@ -33,7 +33,7 @@ public class ReproductScheduleDailyTablePrintSettingService {
 			throw new BusinessException("Msg_2117");
 		}
 		
-		val reproductDestination =  reproductSoure.reproduce(destinationCode, destinationName);
+		val reproductDestination =  reproductSoure.clone(destinationCode, destinationName);
 		
 		return AtomTask.of(() -> {
 			if(isExist) {
