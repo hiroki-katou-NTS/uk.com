@@ -3,7 +3,7 @@
 module nts.uk.com.view.oem002.b {
 
   const API = {
-    getEquipmentClsList : "com/screen/oem002/getEquipmentClsList"
+    getEquipmentClsList : "com/screen/oem002/getClassificationList"
   };
 
   @bean()

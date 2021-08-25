@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.office.app.query.equipment.classificationmaster.EquipmentClassificationDto;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
+import nts.uk.screen.com.app.find.equipment.classification.EquipmentClassificationDto;
 
 @Getter
 public class EquipmentInformationStartupDto {
