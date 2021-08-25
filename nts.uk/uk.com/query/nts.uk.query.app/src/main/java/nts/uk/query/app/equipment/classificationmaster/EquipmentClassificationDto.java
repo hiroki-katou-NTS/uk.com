@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.query.equipment.classificationmaster;
+package nts.uk.query.app.equipment.classificationmaster;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

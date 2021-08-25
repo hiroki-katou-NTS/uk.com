@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.query.equipment.classificationmaster;
+package nts.uk.query.app.equipment.classificationmaster;
 
 import java.util.List;
 import java.util.stream.Collectors;
