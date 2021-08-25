@@ -81,16 +81,16 @@ public class AlarmSendEmailService implements SendEmailService {
 			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
 			MailSettingsParamDto mailSettingsParamDto,String currentAlarmCode,
 			boolean useAuthentication, Optional<MailSettings> mailSetting, Optional<MailSettings> mailSettingAdmins,
-			Optional<String> senderAddress, List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting) {
+			Optional<String> senderAddress, List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting, boolean isAuto) {
 		return process(companyID, executeDate, employeeTagetIds, managerTagetIds, valueExtractAlarmDtos,mailSettingsParamDto,currentAlarmCode,
-				useAuthentication,mailSetting,mailSettingAdmins,senderAddress, managerTargetList, alarmExeMailSetting);
+				useAuthentication,mailSetting,mailSettingAdmins,senderAddress, managerTargetList, alarmExeMailSetting, isAuto);
 	}
 	//メール送信処理
 	private String process(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
 			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
 			MailSettingsParamDto mailSettingsParamDto,String currentAlarmCode, boolean useAuthentication,
 			Optional<MailSettings> mailSettingPerson, Optional<MailSettings> mailSettingAdmin, Optional<String> senderAddress,
-			List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting) {
+			List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting, boolean isAuto) {
 		String companyId = AppContexts.user().companyId();
 		List<String> errors = new ArrayList<>();
 		Integer functionID = 9; //function of Alarm list = 9
@@ -100,6 +100,13 @@ public class AlarmSendEmailService implements SendEmailService {
 
 		// Send mail for employee
 		if (!CollectionUtil.isEmpty(employeeTagetIds)) {
+			if (!isAuto) {
+				val alarmMailSetPerson = alarmExeMailSetting.stream().filter(x -> x.getPersonalManagerClassify().value ==
+						PersonalManagerClassification.EMAIL_SETTING_FOR_PERSON.value).findFirst();
+				if (alarmMailSetPerson.isPresent()) {
+					senderAddress = Optional.ofNullable(alarmMailSetPerson.get().getSenderAddress().isPresent() ? alarmMailSetPerson.get().getSenderAddress().get().v() : null);
+				}
+			}
 			for (String employeeId : employeeTagetIds) {
 				// 本人送信対象のアラーム抽出結果を抽出する
 				List<ValueExtractAlarmDto> valueExtractAlarmEmpDtos = valueExtractAlarmDtos.stream()
@@ -109,7 +116,7 @@ public class AlarmSendEmailService implements SendEmailService {
 					boolean isSuccess = sendMail(companyID, employeeId, functionID,
 							valueExtractAlarmEmpDtos, mailSettingsParamDto.getSubject(),
 							mailSettingsParamDto.getText(), currentAlarmCode,
-							useAuthentication, mailSettingPerson,senderAddress);
+							useAuthentication, mailSettingPerson, senderAddress);
 					if (!isSuccess) {
 						errors.add(employeeId);
 					}
@@ -126,6 +133,13 @@ public class AlarmSendEmailService implements SendEmailService {
 		Map<String, List<String>> managerTargetMap = this.adjustManagerByRole(companyId, managerTargetList, alarmExeMailSetting, executeDate);
 		// 取得したMap＜管理者ID、List＜対象者ID＞＞をチェック
 		if (managerTargetMap != null) {
+			if (!isAuto) {
+				val alarmMailSetAdmin = alarmExeMailSetting.stream().filter(x -> x.getPersonalManagerClassify().value ==
+						PersonalManagerClassification.EMAIL_SETTING_FOR_ADMIN.value).findFirst();
+				if (alarmMailSetAdmin.isPresent()) {
+					senderAddress = Optional.ofNullable(alarmMailSetAdmin.get().getSenderAddress().isPresent() ? alarmMailSetAdmin.get().getSenderAddress().get().v() : null);
+				}
+			}
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			for (val entry : managerTargetMap.entrySet()) {
 				List<String> listEmpAdminError = new ArrayList<>();
@@ -369,10 +383,8 @@ public class AlarmSendEmailService implements SendEmailService {
 				List<String> toList = emails.stream().map(c-> c.getEmailAddress()).collect(Collectors.toList());
 				List<String> ccList = new ArrayList<>();
 				List<String> bccList = new ArrayList<>();
-				String senderAddressInput = "";
-				if(senderAddress.isPresent()) {
-					senderAddressInput = senderAddress.get();
-				}
+				String senderAddressInput = senderAddress.orElse("");
+
 				if(mailSetting.isPresent()) {
 					ccList = mailSetting.get().getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
 					bccList = mailSetting.get().getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
@@ -392,14 +404,11 @@ public class AlarmSendEmailService implements SendEmailService {
 							mailSender.send(mailContent, companyID, mailSendOptions);
 						}else {
 							mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
-							
 						}
-						
 					}
 				} catch (SendMailFailedException e) {
 					throw e;
 				}
-				//}
 			}
 		}
 		return true;

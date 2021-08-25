@@ -12,5 +12,5 @@ public interface SendEmailService {
 			List<String> listManagerTagetId, List<ValueExtractAlarmDto> listValueExtractAlarmDto,
 			MailSettingsParamDto mailSettingsParamDto,String currentAlarmCode,
 			boolean useAuthentication, Optional<MailSettings> mailSettingPerson, Optional<MailSettings> mailSettingAdmins,
-								 Optional<String> senderAddress, List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting);
+			Optional<String> senderAddress, List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting, boolean isAuto);
 }

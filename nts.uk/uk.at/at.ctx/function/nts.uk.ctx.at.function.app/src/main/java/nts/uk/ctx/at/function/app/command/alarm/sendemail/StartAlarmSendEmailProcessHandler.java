@@ -78,7 +78,7 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 
 		return sendEmailService.alarmSendEmail(companyID, executeDate, listEmployeeTagetId, listManagerTagetId,
 				listValueExtractAlarmDto, mailSettingsParamDto, currentAlarmCode,
-				useAuthentication, mailSettingPerson, mailSettingAdmin, Optional.empty(), managerTargetList, alarmExeMailSetting);
+				useAuthentication, mailSettingPerson, mailSettingAdmin, Optional.empty(), managerTargetList, alarmExeMailSetting, false);
 	}
 
 	private MailSettingsParamDto buildMailSend(Optional<MailSettings> mailSetingPerson, Optional<MailSettings> mailSetingAdmin) {
@@ -94,10 +94,4 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 		// setting subject , body mail
 		return new MailSettingsParamDto(subject, text, subjectAdmin, textAdmin);
 	}
-
-	private boolean isNotHaveMailSetting(Optional<MailSettingNormal> mailSetting) {
-		return !mailSetting.isPresent() || !(mailSetting.get().getMailSettings().isPresent()
-												&& mailSetting.get().getMailSettingAdmins().isPresent());
-	}
-
 }
