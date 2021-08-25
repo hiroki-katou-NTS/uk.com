@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.find.equipment.information;
+package nts.uk.screen.com.app.find.equipment.information;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;

@@ -19,4 +19,10 @@ public interface EquipmentInformationRepository {
 	
 	//[5] Get																							
 	Optional<EquipmentInformation> findByPk(String cid, String code);
+	
+	//[6] Get*
+	List<EquipmentInformation> findByCidAndClsCode(String cid, String equipmentClsCode);
+	
+	//[7] Get*																							
+	List<EquipmentInformation> findByCidAndCodes(String cid, List<String> codes);
 }

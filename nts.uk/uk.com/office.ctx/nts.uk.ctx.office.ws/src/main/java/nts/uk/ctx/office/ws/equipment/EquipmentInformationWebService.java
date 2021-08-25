@@ -10,8 +10,6 @@ import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationC
 import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationDeleteCommandHandler;
 import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationInsertCommandHandler;
 import nts.uk.ctx.office.app.command.equipment.information.EquipmentInformationUpdateCommandHandler;
-import nts.uk.ctx.office.app.find.equipment.information.EquipmentInformationScreenQuery;
-import nts.uk.ctx.office.app.find.equipment.information.EquipmentInformationStartupDto;
 
 @Path("ctx/office/equipment/information/")
 @Produces("application/json")
@@ -25,10 +23,7 @@ public class EquipmentInformationWebService extends WebService {
 	
 	@Inject
 	private EquipmentInformationDeleteCommandHandler deleteCommandHandler;
-	
-	@Inject
-	private EquipmentInformationScreenQuery screenQuery;
-	
+
 	@POST
 	@Path("insert")
 	public void insert(EquipmentInformationCommand command) {
@@ -43,13 +38,7 @@ public class EquipmentInformationWebService extends WebService {
 	
 	@POST
 	@Path("delete")
-	public void delete(EquipmentInformationCommand command) {
-		this.deleteCommandHandler.handle(command);
-	}
-	
-	@POST
-	@Path("initScreen")
-	public EquipmentInformationStartupDto initScreen() {
-		return this.screenQuery.getStartupList();
+	public void delete(String code) {
+		this.deleteCommandHandler.handle(code);
 	}
 }

@@ -1,5 +1,6 @@
-package nts.uk.ctx.office.app.find.equipment.information;
+package nts.uk.screen.com.app.find.equipment.information;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,6 @@ import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-/**
- * UKDesign.UniversalK.オフィス.OEM_設備マスタ.OEM002_設備の登録.A：設備の登録.メニュー別OCD.設備一覧を取得する
- */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class EquipmentInformationScreenQuery {
@@ -27,6 +25,9 @@ public class EquipmentInformationScreenQuery {
 	@Inject
 	private EquipmentClassificationRepository equipmentClassificationRepository;
 	
+	/**
+	 * UKDesign.UniversalK.オフィス.OEM_設備マスタ.OEM002_設備の登録.A：設備の登録.メニュー別OCD.設備一覧を取得する
+	 */
 	public EquipmentInformationStartupDto getStartupList() {
 		// 1. get*(ログイン会社ID)
 		List<EquipmentInformation> equipmentInformations = this.equipmentInformationRepository
@@ -41,6 +42,17 @@ public class EquipmentInformationScreenQuery {
 		}
 		return new EquipmentInformationStartupDto(
 				equipmentInformations.stream()
-					.map(EquipmentInformationDto::fromDomain).collect(Collectors.toList()));
+					.map(EquipmentInformationDto::fromDomain)
+					.sorted(Comparator.comparing(EquipmentInformationDto::getEquipmentClsCode)
+							.thenComparing(EquipmentInformationDto::getCode)).collect(Collectors.toList()));
+	}
+	
+	/**
+	 * UKDesign.UniversalK.オフィス.OEM_設備マスタ.OEM002_設備の登録.A：設備の登録.メニュー別OCD.設備情報を表示する
+	 */
+	public EquipmentInformationDto getEquipmentInfo(String code) {
+		return this.equipmentInformationRepository.findByPk(AppContexts.user().companyId(), code)
+				.map(EquipmentInformationDto::fromDomain)
+				.orElse(null);
 	}
 }
