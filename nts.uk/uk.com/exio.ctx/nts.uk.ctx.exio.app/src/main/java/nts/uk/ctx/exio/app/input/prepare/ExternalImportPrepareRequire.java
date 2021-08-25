@@ -33,6 +33,8 @@ import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
+import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentState;
+import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentStateRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -60,11 +62,17 @@ public class ExternalImportPrepareRequire {
 	}
 	
 	public static interface Require extends
+			ExternalImportCurrentState.Require,
 			PrepareImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		
+		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
 	}
+	
+	@Inject
+	private ExternalImportCurrentStateRepository currentStateRepo;
 	
 	@Inject
 	private ImportingUserConditionRepository importingUserConditionRepo;
@@ -121,6 +129,16 @@ public class ExternalImportPrepareRequire {
 		
 		
 		/***** 外部受入関連 *****/
+
+		@Override
+		public ExternalImportCurrentState getExternalImportCurrentState(String companyId) {
+			return currentStateRepo.find(companyId);
+		}
+
+		@Override
+		public void update(ExternalImportCurrentState currentState) {
+			currentStateRepo.save(currentState);
+		}
 		
 		@Override
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {

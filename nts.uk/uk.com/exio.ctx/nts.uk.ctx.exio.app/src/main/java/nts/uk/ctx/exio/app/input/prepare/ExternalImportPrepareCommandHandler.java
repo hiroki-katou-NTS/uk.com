@@ -24,14 +24,31 @@ public class ExternalImportPrepareCommandHandler extends AsyncCommandHandler<Ext
 	private ExternalImportPrepareRequire require;
 	
 	@Override
-	@SneakyThrows
 	protected void handle(CommandHandlerContext<ExternalImportPrepareCommand> context) {
 		
 		val command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		val require = this.require.create(companyId);
+		
+		try {
+			val require = this.require.create(companyId);
+			
+			val currentState = require.getExternalImportCurrentState(companyId);
+			currentState.prepare(require, () -> run(require, command, companyId));
+			
+		} finally {
+			// 成功失敗問わず、ファイルは必ず削除する。ゴミを残さない。
+			fileStorage.delete(command.getUploadedCsvFileId());
+		}
+	}
+
+	@SneakyThrows
+	private void run(
+			ExternalImportPrepareRequire.Require require,
+			ExternalImportPrepareCommand command,
+			String companyId) {
 		
 		String fileId = command.getUploadedCsvFileId();
+		
 		try (val inputStream = fileStorage.getStream(fileId)
 				.orElseThrow(() -> new RuntimeException("file not found: " + fileId))) {
 			

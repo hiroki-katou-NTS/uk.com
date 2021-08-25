@@ -27,6 +27,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
+import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentState;
+import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentStateRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -47,9 +49,15 @@ public class ExternalImportExecuteRequire {
 	}
 	
 	public static interface Require extends
+			ExternalImportCurrentState.Require,
 			ExecuteImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
+		
+		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
 	}
+	
+	@Inject
+	private ExternalImportCurrentStateRepository currentStateRepo;
 	
 	@Inject
 	private ExternalImportSettingRepository settingRepo;
@@ -83,6 +91,16 @@ public class ExternalImportExecuteRequire {
 		
 		@SuppressWarnings("unused")
 		private final String companyId;
+
+		@Override
+		public ExternalImportCurrentState getExternalImportCurrentState(String companyId) {
+			return currentStateRepo.find(companyId);
+		}
+
+		@Override
+		public void update(ExternalImportCurrentState currentState) {
+			currentStateRepo.save(currentState);
+		}
 
 		@Override
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
