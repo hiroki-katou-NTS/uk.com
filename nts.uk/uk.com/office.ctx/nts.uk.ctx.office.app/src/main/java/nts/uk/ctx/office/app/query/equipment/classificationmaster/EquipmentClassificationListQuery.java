@@ -1,13 +1,13 @@
 package nts.uk.ctx.office.app.query.equipment.classificationmaster;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationRepository;
 
 /**
@@ -22,7 +22,10 @@ public class EquipmentClassificationListQuery {
 	@Inject
 	private EquipmentClassificationRepository equipmentClsRepo;
 	
-	public List<EquipmentClassification> get(String contractCd) {
-		return this.equipmentClsRepo.getAll(contractCd);
+	public List<EquipmentClassificationDto> get(String contractCd) {
+		return this.equipmentClsRepo.getAll(contractCd)
+				.stream()
+				.map(e -> new EquipmentClassificationDto(e.getCode().v(), e.getName().v()))
+				.collect(Collectors.toList());
 	}
 }
