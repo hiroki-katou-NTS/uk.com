@@ -21,7 +21,7 @@
     <ui:define name="content">
         <div id="functions-area">
             <!--A1-->
-            <button tabindex="1" data-bind="click: New, enable: listRole().length > 0">#{i18n.getText('CAS013_3')}</button>
+            <button tabindex="1" data-bind="click: createNew, enable: listRole().length > 0">#{i18n.getText('CAS013_3')}</button>
             <!--A2-->
             <button class="proceed" tabindex="2"
                     data-bind="click: save, enable: $root.errors.isEmpty() &amp;&amp; listRole().length > 0">#{i18n.getText('CAS013_4')}</button>

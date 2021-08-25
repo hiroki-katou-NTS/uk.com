@@ -526,11 +526,14 @@ module nts.uk.com.view.cas013.a {
             vm.employyeCode('');
             vm.employyeName('');
             vm.multiSelectedCode("");
-            vm.openBModal();
             $('#combo-box').focus();
             nts.uk.ui.errors.clearAll();
         }
-
+        createNew(): void {
+            let vm = this;
+            vm.New();
+            vm.openBModal();
+        }
         openBModal(): void {
             let vm = this;
             nts.uk.ui.windows.setShared("cid_from_a", vm.companyId());
