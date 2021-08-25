@@ -31,6 +31,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
@@ -140,6 +141,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		adjustExistingHistory(require, context, containers.get(0).addingHistoryItem, existingHistory);
 		
 		try {
+			//受入れようとしてる履歴同士で補正
 			adjustAddingHistory(existingHistory, containers);
 		} catch (BusinessException ex) {
 			// どのデータで失敗しようと１社員分すべて受け入れるか、全て受け入れないかのどちらかとする
@@ -203,7 +205,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 			ExecutionContext context,
 			String employeeId,
 			List<Container> addings,
-			History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory) {
+			ExternalImportHistory existingHistory) {
 		
 		// 追加する履歴の開始日のうち最も過去の日付
 		GeneralDate baseDate = addings.stream()
@@ -230,7 +232,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	 * @param existingHistory 受入データが入る前の既存履歴
 	 * @param addingItems 受入れる履歴
 	 */
-	private void adjustAddingHistory(History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory, List<Container> addingItems) {
+	private void adjustAddingHistory(ExternalImportHistory existingHistory, List<Container> addingItems) {
 		addingItems.forEach(c -> existingHistory.add(c.addingHistoryItem));
 	}
 
@@ -245,7 +247,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 			CanonicalizationMethodRequire require,
 			ExecutionContext context,
 			DateHistoryItem addingItem,
-			History<DateHistoryItem, DatePeriod, GeneralDate> existingHistory) {
+			ExternalImportHistory existingHistory) {
 		
 		if(existingHistory.isEmpty()) return;
 		
@@ -262,7 +264,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	}
 
 	public static interface RequireCanonicalize{
-		History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, HistoryType historyTypea);
+		ExternalImportHistory getHistory(DomainDataId id, HistoryType historyTypea);
 	}
 	
 	@Override
@@ -306,10 +308,10 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		List<Object> keyValues = new ArrayList<>();
 		
 		val dataKeys = getDomainDataKeys();
-		for (int i = 0; i < dataKeys.size(); i++) {
-			val dataKey = dataKeys.get(i);
+		for (int index = 0; index < dataKeys.size(); index++) {
+			val dataKey = dataKeys.get(index);
 			
-			StringifiedValue stringified = SystemImportingItems.getStringifiedValue(toChange, dataKey.getColumnName(), i);
+			StringifiedValue stringified = SystemImportingItems.getStringifiedValue(toChange, dataKey.getColumnName(), index);
 			
 			Object value;
 			switch (dataKey.getDataType()) {

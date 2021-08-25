@@ -5,10 +5,14 @@ public enum HistoryType {
 	NORMAL,
 	//* 連続かつ永続する履歴*/
 	PERSISTENT,
+	//* 連続する履歴*/
+	CONTINUOUS,
 	//* 連続かつ永続する履歴（常に1つ以上存在）*/
 	PERSISTENERESIDENT,
 	//* 重複禁止する履歴 */
-	UNDUPLICATABLE;
+	UNDUPLICATABLE,
+	;
+	
 	
 	public Class<?> GetHistoryClass(){
 		switch(this){
@@ -16,6 +20,8 @@ public enum HistoryType {
 				return ExternalImportHistory.class;
 			case PERSISTENT:
 				return ExternalImportPersistentHistory.class;
+			case CONTINUOUS:
+				return ExternalImportContinuousHistory.class;
 			case PERSISTENERESIDENT:
 				return ExternalImportPersistentResidentHistory.class;
 			case UNDUPLICATABLE:
