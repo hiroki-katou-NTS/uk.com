@@ -96,7 +96,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	 * @param employeeCanonicalized
 	 * @return
 	 */
-	private List<IntermediateResult> canonicalizeHistory(
+	protected List<IntermediateResult> canonicalizeHistory(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			List<IntermediateResult> employeeCanonicalized) {

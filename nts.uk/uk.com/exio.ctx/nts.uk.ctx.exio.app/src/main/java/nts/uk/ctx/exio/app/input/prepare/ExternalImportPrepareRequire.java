@@ -9,12 +9,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
+import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.PrepareImporting;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
@@ -116,6 +119,9 @@ public class ExternalImportPrepareRequire {
 	
 	@Inject
 	private ExternalImportErrorsRepository errorsRepo;
+
+	@Inject
+	private WorkplaceInformationRepository wkpinfoRepo;
 	
 	public class RequireImpl implements Require {
 		
@@ -253,6 +259,11 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public void add(ExecutionContext context, ExternalImportError error) {
 			errorsRepo.add(context, error);
+		}
+
+		@Override
+		public Optional<WorkplaceInformation> getWorkplaceByCode(String workplaceCode, GeneralDate startdate) {
+			return wkpinfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
 		}
 
 	}

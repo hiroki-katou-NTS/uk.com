@@ -17,7 +17,7 @@ public class ExternalImportPersistentResidentHistory
 	public ExternalImportPersistentResidentHistory(List<DateHistoryItem> period) {
 		super(period);
 	}
-
+	
 	@Override
 	public void exValidateIfCanAdd(DateHistoryItem itemToBeAdded) {
 	}
