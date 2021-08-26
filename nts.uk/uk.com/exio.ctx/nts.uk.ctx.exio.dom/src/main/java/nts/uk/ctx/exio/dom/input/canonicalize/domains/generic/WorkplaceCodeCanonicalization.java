@@ -9,7 +9,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.exio.dom.input.DataItem;
-import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.util.Either;
@@ -60,7 +61,9 @@ public class WorkplaceCodeCanonicalization {
 
 	private IntermediateResult canonicalize(IntermediateResult canonicalizingData, String workplaceId) {
 		return canonicalizingData.addCanonicalized(
-				new DataItemList(Arrays.asList(DataItem.of(itemNoWorkplaceId, workplaceId))),
+				new CanonicalItemList(Arrays.asList(
+						CanonicalItem.of(DataItem.of(itemNoWorkplaceId, workplaceId))
+					)),
 				itemNoWorkplaceCode);
 	}
 
