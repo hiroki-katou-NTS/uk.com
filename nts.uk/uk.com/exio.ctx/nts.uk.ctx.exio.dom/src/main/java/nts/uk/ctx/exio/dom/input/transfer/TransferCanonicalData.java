@@ -91,6 +91,7 @@ public class TransferCanonicalData {
 		conversionTable.getWhereList().addAll(whereList);
 		
 		// 受入項目の列名リストを元に移送する列をフィルタ
+		// 外部受入では基本そのまま移送パターンのみ（一部固定値使うかも？）のためそのまま移送パターンのみフィルタに対応
 		ConversionTable filteredConversionTable = new ConversionTable(
 				conversionTable.getSpec(),
 				conversionTable.getTargetTableName(),
@@ -99,7 +100,9 @@ public class TransferCanonicalData {
 				conversionTable.getEndDateColumnName(),
 				conversionTable.getWhereList(),
 				conversionTable.getConversionMap().stream()
-					.filter(m -> importingItemNames.contains(((NotChangePattern) m.getPattern()).getSourceColumn()))
+					.filter(m ->
+						m.getPattern() instanceof NotChangePattern ?  importingItemNames.contains(((NotChangePattern)m.getPattern()).getSourceColumn())
+					 	: true)
 					.collect(toList())
 				);
 		
