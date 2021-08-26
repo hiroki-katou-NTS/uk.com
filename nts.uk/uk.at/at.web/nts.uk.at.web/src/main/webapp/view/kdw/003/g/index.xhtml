@@ -29,7 +29,7 @@
                 <!--G1-2-->
                 <button class="proceed" tabindex="2" data-bind="click: registerOrUpdate" >#{i18n.getText('KDW003_135')}</button>
                 <!--G1-3-->
-                <button class="normal" tabindex="3"  data-bind="click: openDialogCDL023">#{i18n.getText('KDW003_136')}</button>
+                <button class="normal" tabindex="3"  data-bind="click: openDialogCDL023, enable: enableNewBtn">#{i18n.getText('KDW003_136')}</button>
                 <!--G1-4-->
                 <button class="danger" tabindex="4"   data-bind="click: remove, enable: enableDeleteBtn">#{i18n.getText('KDW003_137')}</button>
                 <!--G1-5-->
@@ -72,7 +72,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-bind="if: enableTaskFrame1 ">
                             <td>
                                 <!--G5-5-->
                                 <div data-bind="ntsFormLabel:{ required:false}">作業1</div>
@@ -86,13 +86,13 @@
                                             visibleItemsCount: 10,
                                             value: selectedTaskCode1,
                                             editable: true,
-                                            optionsText: 'taskName',                                  
+                                            optionsText: 'displayName',                                  
                                             columns: [                                               
-                                                { prop: 'taskName', length: 16 },
+                                                { prop: 'displayName', length: 16 },
                                             ]}"></div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-bind="if: enableTaskFrame2 ">
                             <td>
                                 <!--G5-8-->
                                 <div data-bind="ntsFormLabel:{ required:false}">作業2</div>
@@ -106,14 +106,17 @@
                                     visibleItemsCount: 10,
                                     value: selectedTaskCode2,
                                     editable: true,
-                                    optionsText: 'taskName',                                  
+                                    optionsText: 'displayName',                                  
                                     columns: [
-                                        { prop: 'taskName', length: 16 },
+                                        { prop: 'displayName', length: 16 },
                                     ]}"></div>
                             </td>
                         </tr>
-                        <tr>
-                            <td><div data-bind="ntsFormLabel:{ required:false}">作業3</div></td>
+                        
+                        <tr data-bind="if: enableTaskFrame3 ">
+                            <td>
+                                <div data-bind="ntsFormLabel:{ required:false}">作業3</div>
+                            </td>
                             <td>
                                 <!--G5-12-->
                                 <div id="task-list" tabindex="12" data-bind="ntsComboBox: {
@@ -123,13 +126,15 @@
                                     visibleItemsCount: 10,
                                     value: selectedTaskCode3,
                                     editable: true,
-                                    optionsText: 'taskName',                                  
+                                    optionsText: 'displayName',                                  
                                     columns: [
-                                        { prop: 'taskName', length: 16 },
+                                        { prop: 'displayName', length: 16 },
                                     ]}"></div>
                             </td>
                         </tr>
-                        <tr>
+                        
+                        
+                        <tr data-bind="if: enableTaskFrame4 ">
                             <td><div data-bind="ntsFormLabel:{ required:false}">作業4</div></td>
                             <td>
                                 <!--G5-15-->
@@ -140,13 +145,13 @@
                                     visibleItemsCount: 10,
                                     value: selectedTaskCode4,
                                     editable: true,
-                                    optionsText: 'taskName',                                  
+                                    optionsText: 'displayName',                                  
                                     columns: [
-                                        { prop: 'taskName', length: 16 },
+                                        { prop: 'displayName', length: 16 },
                                     ]}"></div>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-bind="if: enableTaskFrame5 ">
                             <td><div data-bind="ntsFormLabel:{ required:false}">作業5</div></td>
                             <td>
                                 <!--G5-18-->
@@ -157,9 +162,9 @@
                                     visibleItemsCount: 10,
                                     value: selectedTaskCode5,
                                     editable: true,
-                                    optionsText: 'taskName',                                  
+                                    optionsText: 'displayName',                                  
                                     columns: [
-                                        { prop: 'taskName', length: 16 },
+                                        { prop: 'displayName', length: 16 },
                                     ]}"></div>
                             </td>
                         </tr>

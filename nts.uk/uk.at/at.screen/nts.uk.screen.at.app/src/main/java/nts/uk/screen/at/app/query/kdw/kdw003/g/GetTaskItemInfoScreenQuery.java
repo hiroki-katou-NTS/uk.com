@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.query.kdw.kdw003.g;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,8 +37,11 @@ public class GetTaskItemInfoScreenQuery {
 	TaskingRepository taskingRepository;
 
 	public List<TaskItemDto> GetTaskItemInfo() {
+		List<TaskItemDto> results = new ArrayList<TaskItemDto>();
+		List<Integer> listFrameUseAtr = new ArrayList<Integer>();
 		String companyId = AppContexts.user().companyId();
-		/** 1.Get(ログイン会社ID)*/
+		Boolean hasTaskFrameSetting = true;
+		/** 1.Get(ログイン会社 ID)*/
 		Optional<TaskOperationSetting> optTaskOperation = taskOperationSettingRepository.getTasksOperationSetting(companyId);
 		/** 2.[作業運用設定.isEmpty OR 作業運用設定.作業運用方法 <> 実績で利用]:<call>()*/
 		if(!optTaskOperation.isPresent() || optTaskOperation.get().getTaskOperationMethod().value != 1) {
@@ -48,11 +52,17 @@ public class GetTaskItemInfoScreenQuery {
 		TaskFrameUsageSetting taskFrameUsageSetting = taskFrameUsageSettingRepository.getWorkFrameUsageSetting(companyId);
 		/** 4. [作業枠利用設定．枠設定．利用区分 == する　がない]:<call>()*/
 		List<TaskFrameSetting> lstTaskFrameSettings = taskFrameUsageSetting.getFrameSettingList();
-		lstTaskFrameSettings.stream().forEach(taskFrameSetting -> {
-			if(taskFrameSetting.getUseAtr().value == 0) {
-				throw new BusinessException("Msg_1960");
+
+		for (int i = 0; i < lstTaskFrameSettings.size(); i++) {
+			listFrameUseAtr.add(lstTaskFrameSettings.get(i).getUseAtr().value);
+			if (lstTaskFrameSettings.get(i).getUseAtr().value != 0) {
+				hasTaskFrameSetting = false;
 			}
-		});
+		}
+
+		if (hasTaskFrameSetting) {
+			throw new BusinessException("Msg_1960");
+		}
 		
 		/** 5.Get*(ログイン会社ID)*/
 		List<Task> lstTask = taskingRepository.getListTask(companyId);
@@ -62,10 +72,23 @@ public class GetTaskItemInfoScreenQuery {
 			throw new BusinessException("Msg_1961");
 		}
 		
-		return lstTask.stream().map(task -> {
-			return new TaskItemDto(task.getTaskFrameNo().v(), task.getCode().v(), task.getDisplayInfo().getTaskName().v(),
-					task.getDisplayInfo().getTaskAbName().v(), task.getExpirationDate().start().toString(), task.getExpirationDate().end().toString());
-			
-		}).collect(Collectors.toList());
+		results = lstTask.stream().map(task -> {
+				return  TaskItemDto.builder().frameNo(task.getTaskFrameNo().v())
+						.taskCode(task.getCode().v())
+						.taskName(task.getDisplayInfo().getTaskName().v())
+						.taskAbName(task.getDisplayInfo().getTaskAbName().v())
+						.startDate(task.getExpirationDate().start().toString())
+						.endDate(task.getExpirationDate().end().toString())
+						.listFrameNoUseAtr(listFrameUseAtr)
+						.build();
+		}).collect(Collectors.toList());	
+	
+		
+//		for (int j = 0; j < results.size(); j++) {
+//			results.get(j).setListFrameNoUseAtr(listFrameUseAtr);
+//		}
+		
+		return results;
+		
 	}
 }

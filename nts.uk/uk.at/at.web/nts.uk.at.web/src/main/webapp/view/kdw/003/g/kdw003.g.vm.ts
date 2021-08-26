@@ -43,6 +43,12 @@ module nts.uk.at.view.kdw003.cg {
         enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(false); 
         isReload: KnockoutObservable<boolean> = ko.observable(false); 
 
+        enableTaskFrame1: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame2: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame3: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame4: KnockoutObservable<boolean> = ko.observable(false);
+        enableTaskFrame5: KnockoutObservable<boolean> = ko.observable(false);
+
         taskListFrame1: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame2: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
         taskListFrame3: KnockoutObservableArray<TaskModel> = ko.observableArray([]);
@@ -184,21 +190,32 @@ module nts.uk.at.view.kdw003.cg {
             let dataShare = getShared("dataShareKdw003g");
             let empList: Array<EmployeeModel> = [], taskLst: Array<TaskModel> = [],  
                 taskLst1: Array<TaskModel> = [], taskLst2: Array<TaskModel> = [],
-                taskLst3: Array<TaskModel> = [], taskLst4: Array<TaskModel> = [], taskLst5: Array<TaskModel> = [];
+                taskLst3: Array<TaskModel> = [], taskLst4: Array<TaskModel> = [], 
+                taskLst5: Array<TaskModel> = [],
+                listFrameUseAtr: Array<number>;
 
             self.$blockui("invisible");
             self.$ajax(Paths.GET_TASK_ITEM_INFO).done((taskList: Array<TaskModel>) => {
                 
                 if(!_.isNull(taskList) && !_.isEmpty(taskList)){                    
                     _.each(taskList, task => {
-                        taskLst.push(new TaskModel(task.taskCode, task.taskName, task.frameNo, task.startDate, task.endDate));
-                    })
+                        taskLst.push(new TaskModel(task.taskCode, task.taskCode + " " + task.taskName, task.taskName,  task.frameNo, task.startDate, task.endDate ));
+                    });
+                    let temp = taskList[0];
+                    listFrameUseAtr = temp.listFrameNoUseAtr;
+
+                    self.enableTaskFrame1(taskList[0].listFrameNoUseAtr[0] == 1);
+                    self.enableTaskFrame2(taskList[0].listFrameNoUseAtr[1] == 1);
+                    self.enableTaskFrame3(taskList[0].listFrameNoUseAtr[2] == 1);
+                    self.enableTaskFrame4(taskList[0].listFrameNoUseAtr[3] == 1);
+                    self.enableTaskFrame5(taskList[0].listFrameNoUseAtr[4] == 1);
+                    
                     taskLst1 = _.filter(taskLst, item => { return item.frameNo == 1; });
                     taskLst2 = _.filter(taskLst, item => { return item.frameNo == 2; });
                     taskLst3 = _.filter(taskLst, item => { return item.frameNo == 3; });
                     taskLst4 = _.filter(taskLst, item => { return item.frameNo == 4; }); 
-                    taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });                   
-                    
+                    taskLst5 = _.filter(taskLst, item => { return item.frameNo == 5; });  
+
                     self.taskListFrame1(taskLst1);
                     self.taskListFrame2(taskLst2);
                     self.taskListFrame3(taskLst3);
@@ -287,7 +304,7 @@ module nts.uk.at.view.kdw003.cg {
                 listTaskFrame5 = self.listTaskFrame5();
 
             if (!_.isEmpty(listTaskFrame1) && _.isEmpty(_.filter(listTaskFrame1, code => { return code.taskCode === taskItem.task1 }))) {
-                if (taskItem.task1 != null) {
+                if (taskItem.task1 != null && taskItem.task1 != "") {
                     listTaskFrame1.push(new TaskModel(taskItem.task1, taskItem.task1 + " " + getText("KDW003_81")));                    
                 }
             }            
@@ -295,7 +312,7 @@ module nts.uk.at.view.kdw003.cg {
             self.selectedTaskCode1(taskItem.task1);
 
             if (!_.isEmpty(listTaskFrame2) && _.isEmpty(_.filter(listTaskFrame2, code => { return code.taskCode === taskItem.task2 }))) {
-                if (taskItem.task2 != null) {
+                if (taskItem.task2 != null && taskItem.task2 != "") {
                     listTaskFrame2.push(new TaskModel(taskItem.task2, taskItem.task2 + " " + getText("KDW003_81")));
                 }
             }
@@ -303,7 +320,7 @@ module nts.uk.at.view.kdw003.cg {
             self.selectedTaskCode2(taskItem.task2);
 
             if (!_.isEmpty(listTaskFrame3) && _.isEmpty(_.filter(listTaskFrame3, code => { return code.taskCode === taskItem.task3 }))) {
-                if (taskItem.task3 != null) {
+                if (taskItem.task3 != null && taskItem.task3 != "") {
                     listTaskFrame3.push(new TaskModel(taskItem.task3, taskItem.task3 + " " + getText("KDW003_81")));
                 }                
             }
@@ -311,7 +328,7 @@ module nts.uk.at.view.kdw003.cg {
             self.selectedTaskCode3(taskItem.task3);
 
             if (!_.isEmpty(listTaskFrame4) && _.isEmpty(_.filter(listTaskFrame4, code => { return code.taskCode === taskItem.task4 }))) {
-                if (taskItem.task4 != null) {
+                if (taskItem.task4 != null && taskItem.task4 != "") {
                     listTaskFrame4.push(new TaskModel(taskItem.task4, taskItem.task4 + " " + getText("KDW003_81")));
                 }
             }
@@ -319,7 +336,7 @@ module nts.uk.at.view.kdw003.cg {
             self.selectedTaskCode4(taskItem.task4);
 
             if (!_.isEmpty(listTaskFrame5) && _.isEmpty(_.filter(listTaskFrame5, code => { return code.taskCode === taskItem.task5 }))) {
-                if (taskItem.task5 != null) {
+                if (taskItem.task5 != null && taskItem.task5 != "") {
                     listTaskFrame5.push(new TaskModel(taskItem.task5, taskItem.task5 + " " + getText("KDW003_81")));
                 }
             }
@@ -484,7 +501,7 @@ module nts.uk.at.view.kdw003.cg {
             };
             self.$blockui("invisible");
             self.$ajax(Paths.COPY_TASK_INITIAL_SEL_SETTING, command).done(() => {
-                self.$dialog.info({messageId: 'Msg_926'}).then(() => {
+                self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                     self.isReload(false);
                     self.findDetail(command.empIdDes[0], self.isReload());
                     self.enableNewBtn(true);
@@ -501,21 +518,6 @@ module nts.uk.at.view.kdw003.cg {
             const self = this;
             self.$window.close();
         }
-
-        // private validateAll(): boolean {
-        //     const self = this;
-        //     $('#startTime').ntsEditor('validate');
-        //     $('#endTime').ntsEditor('validate');
-        //     if (nts.uk.ui.errors.hasError()) {                    
-        //         return true;
-        //     }
-        //     return false;
-        // }
-
-        // private clearError(): void {
-        //     $('#startTime').ntsError('clear');
-        //     $('#endTime').ntsError('clear');
-        // }
     }
 
     class EmployeeModel {
@@ -560,14 +562,18 @@ module nts.uk.at.view.kdw003.cg {
         taskCode: string;
         taskName: string;
         frameNo: number;
+        listFrameNoUseAtr: Array<number>;
         startDate: string;
         endDate: string;
-        constructor(taskCode: string, taskName: string, frameNo?: number, startDate?: string, endDate?: string){
+        displayName: string;
+        constructor(taskCode: string, displayName: string, taskName?: string,  frameNo?: number, startDate?: string, endDate?: string, frameNoUseAtr?: Array<number>){
             this.taskCode = taskCode;
             this.taskName = taskName; 
-            this.frameNo = frameNo;          
+            this.displayName = displayName;
+            this.frameNo = frameNo;        
+            this.listFrameNoUseAtr = frameNoUseAtr;  
             this.startDate = startDate;
-            this.endDate = endDate;
+            this.endDate = endDate;           
         }
     }
     
