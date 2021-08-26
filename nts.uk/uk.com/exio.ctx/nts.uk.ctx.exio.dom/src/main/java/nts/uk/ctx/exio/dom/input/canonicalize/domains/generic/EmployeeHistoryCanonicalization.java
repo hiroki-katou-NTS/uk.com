@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +19,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
@@ -42,7 +42,6 @@ import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.util.Either;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.History;
 
 /**
  * 社員の履歴の正準化
@@ -165,7 +164,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 			
 			// 正準化した結果を格納
 			// 開始日・終了日は変わらないかもしれないし、変わるかもしれない
-			val canonicalizedItems = new DataItemList()
+			val canonicalizedItems = new CanonicalItemList()
 					.add(itemNoHistoryId, addingHistoryItem.identifier())
 					.add(itemNoStartDate, addingHistoryItem.start())
 					.add(itemNoEndDate, addingHistoryItem.end());
