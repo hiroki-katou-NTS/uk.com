@@ -1,39 +1,36 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 
-import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.STRING;
-
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.WorkplaceCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
+import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 所属職場履歴の正準化
  */
 public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonicalization implements  DomainCanonicalization {
-//	/** 職場コードの項目No */
-//	private final int itemNoWorkplaceCode;
-//	/** 通常職場コードの項目No */
-//	private final int itemNoNormalWorkplaceCode;
-//	/** 職場IDの項目No */
-//	private final int itemNoWorkplaceId;
-//	/** 通常職場IDの項目No */
-//	private final int itemNoNormalWorkplaceId;
+
+	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
+	private final WorkplaceCodeCanonicalization workplaceCodeCanonicalization;
 		
 	public AffWorkplaceHistoryCanonicalization(DomainWorkspace workspace) {
 		super(workspace,HistoryType.PERSISTENERESIDENT);
-//		itemNoWorkplaceCode = workspace.getItemByName("職場コード").getItemNo();
-//		itemNoNormalWorkplaceCode = workspace.getItemByName("通常職場").getItemNo();
-//		itemNoWorkplaceId = workspace.getItemByName("WORKPLACE_ID").getItemNo();
-//		itemNoNormalWorkplaceId = workspace.getItemByName("NORMAL_WORKPLACE_ID").getItemNo();
+		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(workspace);
+		employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 	
 	public static DomainCanonicalization create(DomainWorkspace workspace) {
@@ -42,7 +39,16 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-		super.canonicalize(require, context);
+		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interm -> {
+			
+			val results = canonicalizeHistory(require, context, interm);
+			
+			results.forEach(result -> {
+				workplaceCodeCanonicalization.canonicalize(require, result, result.getRowNo())
+						.ifRight(canonicalized -> require.save(context, canonicalized.complete()))
+						.ifLeft(error -> require.add(context, ExternalImportError.of(error)));
+			});
+		});
 	}
 
 	@Override
@@ -57,7 +63,9 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
-				new DomainDataColumn("HIST_ID", STRING)
+				new DomainDataColumn("社員コード", DataType.STRING),
+				new DomainDataColumn("開始日", DataType.DATE),
+				new DomainDataColumn("終了日", DataType.DATE)
 		);
 	}
 
@@ -71,11 +79,14 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return super.appendMeta(source);
+		return super.appendMeta(source)
+				.addItem("WORKPLACE_ID");
 	}
 
-	public interface RequireCanonicalize extends EmployeeHistoryCanonicalization.RequireCanonicalize{
+	public interface RequireCanonicalize extends WorkplaceCodeCanonicalization.Require{
 	}
 	public interface RequireAdjust extends EmployeeHistoryCanonicalization.RequireAdjust{
 	}
+
+
 }

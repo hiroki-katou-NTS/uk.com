@@ -25,6 +25,7 @@ import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
+import nts.uk.ctx.exio.dom.input.workspace.item.WorkspaceItem;
 
 /**
  * 1レコードずつ完全に独立しているドメインの正準化
@@ -205,6 +206,11 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 
 	@Override
 	public int getItemNoOfEmployeeId() {
-		throw new RuntimeException("not supported");
+		WorkspaceItem wsItem = this.workspace.getAllItemsSortedByItemNo().stream()
+				.filter(item -> item.getName().equals("SID"))
+				.findFirst()
+				.orElseThrow(() -> new UnsupportedOperationException());
+
+		return wsItem.getItemNo();
 	}
 }

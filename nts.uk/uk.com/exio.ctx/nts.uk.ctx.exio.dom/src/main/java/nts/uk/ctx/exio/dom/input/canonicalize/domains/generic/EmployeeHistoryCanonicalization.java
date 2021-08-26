@@ -1,6 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,7 +96,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	 * @param employeeCanonicalized
 	 * @return
 	 */
-	private List<IntermediateResult> canonicalizeHistory(
+	protected List<IntermediateResult> canonicalizeHistory(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
 			List<IntermediateResult> employeeCanonicalized) {
