@@ -18,7 +18,7 @@ import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayoutParam;
 import nts.uk.screen.com.app.cmf.cmf001.b.save.Cmf001bSaveCommand;
 import nts.uk.screen.com.app.cmf.cmf001.b.save.Cmf001bSaveCommandHandler;
 
-@Path("screen/com/cmf/cmf001")
+@Path("screen/com/cmf/cmf001/b")
 @Produces(MediaType.APPLICATION_JSON)
 public class Cmf001bWebService {
 	

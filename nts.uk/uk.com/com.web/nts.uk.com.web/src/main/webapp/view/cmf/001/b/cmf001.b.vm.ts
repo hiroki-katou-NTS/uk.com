@@ -93,7 +93,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 						settingCode: self.settingCode(), 
 						importingDomainId: self.importDomain(), 
 						itemNoList: []};
-					ajax("com", "screen/com/cmf/cmf001/get/layout", condition).done((itemNoList: number[]) => {
+					ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition).done((itemNoList: number[]) => {
 						self.layoutItemNoList(itemNoList);
 					});
 				}else{
@@ -129,7 +129,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		getListData(){
 			var self = this;
 			let dfd = $.Deferred();
-			ajax("screen/com/cmf/cmf001/get/setting/all").done((lstData: Array<viewmodel.Setting>) => {
+			ajax("screen/com/cmf/cmf001/b/get/setting/all").done((lstData: Array<viewmodel.Setting>) => {
 				let sortedData = _.orderBy(lstData, ['code'], ['asc']);
 				self.settingList(sortedData);
 				dfd.resolve();
@@ -150,7 +150,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 		updateMode(){
 			let self = this;
-			ajax("com", "screen/com/cmf/cmf001/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
+			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
 				self.isNewMode(false);
 				self.checkError();
@@ -181,7 +181,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					settingCode: self.settingCode(), 
 					importingDomainId: self.importDomain(), 
 					itemNoList: itemNoList};
-				ajax("screen/com/cmf/cmf001/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
+				ajax("screen/com/cmf/cmf001/b/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
 				});
 			}else{
@@ -212,7 +212,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			self.checkError();
 			let saveContents = {
-				isCreateMode: self.isNewMode,
+				isCreateMode: self.isNewMode(),
 				setting: new SettingInfo(
 					__viewContext.user.companyId, 
 					self.settingCode(), 
@@ -223,7 +223,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					self.importStartRow(), 
 					self.layoutItemNoList()),
 			};
-			ajax("screen/com/cmf/cmf001/save", saveContents);
+			ajax("screen/com/cmf/cmf001/b/save", saveContents);
 			info(nts.uk.resource.getMessage("Msg_15", []));
 			self.reloadPage();
 			self.selectedCode(self.settingCode());

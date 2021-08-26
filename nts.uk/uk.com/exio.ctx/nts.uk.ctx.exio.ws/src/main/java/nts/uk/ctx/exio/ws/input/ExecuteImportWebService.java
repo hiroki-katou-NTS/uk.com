@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.ws.input;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -22,7 +21,7 @@ public class ExecuteImportWebService {
 	
 	@Inject
 	private ExternalImportPrepareCommandHandler prepare;
-
+	
 	@POST
 	@Path("prepare")
 	public AsyncTaskInfo prepare(ExternalImportPrepareCommand command) {
@@ -31,7 +30,7 @@ public class ExecuteImportWebService {
 	
 	@Inject
 	private ExternalImportExecuteCommandHandler execute;
-
+	
 	@POST
 	@Path("execute")
 	public AsyncTaskInfo execute(ExternalImportExecuteCommand command) {
@@ -41,8 +40,8 @@ public class ExecuteImportWebService {
 	@Inject
 	private GetLatestExternalImportErrors errors;
 	
-	@GET
-	@Path("errors/{settincCode}/{pageNo}")
+	@POST
+	@Path("errors/{settingCode}/{pageNo}")
 	public ErrorsTextDto getErrorsText(
 			@PathParam("settingCode") String settingCode,
 			@PathParam("pageNo") int pageNo) {
