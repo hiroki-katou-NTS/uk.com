@@ -67,6 +67,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService.Require;
 
 @Stateless
 public class ScheYearCheckServiceImpl implements ScheYearCheckService {
@@ -229,7 +230,9 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			String cid, List<String> listSid, DatePeriod dPeriod, ScheYearPrepareData prepareData,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<AlarmEmployeeList> alarmEmployeeList,
 			List<AlarmExtractionCondition> alarmExtractConditions, String alarmCheckConditionCode, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		val require = requireService.createRequire();
 		
+		// Input．List＜スケジュール年間の任意抽出条件＞をループ
 		for (ExtractionCondScheduleYear condScheYear: prepareData.getScheCondItems()) {
 			val lstExtractCon = alarmExtractConditions.stream()
 					.filter(x -> x.getAlarmListCheckType() == AlarmListCheckType.FreeCheck && x.getAlarmCheckConditionNo().equals(String.valueOf(condScheYear.getSortOrder())))
@@ -259,7 +262,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					PresentClosingPeriodImport presentClosingPeriod = getPresentClosingPeriod(cid, sid, cloure);
 					String checkCondTypeName = Strings.EMPTY;
 					
-					//＃117291
+					//＃115445
 					//・ループ中のスケジュール年間の任意抽出条件．チェック項目の種類　＝＝　日数
 					//AND
 					//・ループ中のスケジュール年間の任意抽出条件．日数の種類　＝＝　公休日数　OR　年休使用数　OR　積立年休使用数
@@ -276,7 +279,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 						//　 ・日数の種類　＝　ループ中のスケジュール年間の任意抽出条件．日数の種類
 						// 【Input】
 						//　 ・総取得結果
-						totalTime = calTheNumberOfDaysUsed(cid, sid, dayCheckCond.getTypeOfDays(), dPeriod);
+						totalTime = calTheNumberOfDaysUsed(require, cid, sid, dayCheckCond.getTypeOfDays(), dPeriod);
 					} else {
 						List<YearMonth> listDate = dPeriod.yearMonthsBetween();
 						for(YearMonth ym: listDate) {
@@ -367,9 +370,10 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					
 					// 抽出結果詳細を作成
 					String alarmCode = String.valueOf(condScheYear.getSortOrder());
-					String alarmContent = getAlarmContent(
-							getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName), 
-							totalTime, condScheYear.getCheckItemType());
+//					String alarmContent = getAlarmContent(
+//							getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName), 
+//							totalTime, condScheYear.getCheckItemType());
+					String alarmContent = getCompareOperatorText(condScheYear.getCheckItemType(), condScheYear.getCheckConditions(), checkCondTypeName, totalTime);
 					Optional<String> comment = condScheYear.getErrorAlarmMessage().isPresent()
 							? Optional.of(condScheYear.getErrorAlarmMessage().get().v())
 							: Optional.empty();
@@ -434,13 +438,12 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * Calculate the number of days used
 	 * @return 休暇日数
 	 */
-	private Double calTheNumberOfDaysUsed(String cid, String sid, TypeOfDays dayType, DatePeriod dPeriod) {
+	private Double calTheNumberOfDaysUsed(Require require, String cid, String sid, TypeOfDays dayType, DatePeriod dPeriod) {
 		// Input．日数の種類をチェック
 		
 		// Input．日数の種類　＝　年休使用数　OR　積立年休使用数
 		if (TypeOfDays.ANNUAL_LEAVE_NUMBER == dayType || TypeOfDays.ACC_ANNUAL_LEAVE_NUMBER == dayType) {
 			// 期間中の年休積休残数を取得
-			val require = requireService.createRequire();
 			val cacheCarrier = new CacheCarrier();
 			GeneralDate criteriaDate = GeneralDate.today();
 			DatePeriod period = new DatePeriod(dPeriod.start(), dPeriod.end());
@@ -508,7 +511,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * Get parameter 0 for alarm content 
 	 */
 	@SuppressWarnings("rawtypes")
-	public String getCompareOperatorText(YearCheckItemType checkItemType, CheckedCondition checkCondition, String checkCondTypeName) {
+	public String getCompareOperatorText(YearCheckItemType checkItemType, CheckedCondition checkCondition, String checkCondTypeName, Double totalTime) {
 		if (checkCondition == null) {
 			return checkCondTypeName;		
 		}
@@ -535,20 +538,25 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 			}
 		}
 				
-		String variable0 = "";
+		String param1 = YearCheckItemType.TIME == checkItemType ? formatTime(totalTime.intValue()) : String.valueOf(totalTime);
+		
 		if(compare <= 5) {
-			variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue;
-		} else {
-			if (compare == 6 || compare == 7) {
-				variable0 = startValue + compareOperatorText.getCompareLeft() + checkCondTypeName
-						+ compareOperatorText.getCompareright() + endValue;
-			} else {
-				variable0 = checkCondTypeName + compareOperatorText.getCompareLeft() + startValue
-						+ ", " + checkCondTypeName +  compareOperatorText.getCompareright() + endValue;
-			}
+			return TextResource.localize("KAL010_1203", checkCondTypeName, compareOperatorText.getCompareLeft(), startValue , param1);
+		} 
+		
+		if (compare == 6) {
+			return TextResource.localize("KAL010_1205", startValue, checkCondTypeName, endValue , param1);
+		} 
+		
+		if (compare == 7) {
+			return TextResource.localize("KAL010_1206", startValue, checkCondTypeName, endValue , param1);
 		}
 		
-		return variable0;
+		if (compare == 8) {
+			return TextResource.localize("KAL010_1207", startValue, checkCondTypeName, endValue , param1);
+		}
+		
+		return TextResource.localize("KAL010_1208", startValue, checkCondTypeName, endValue , param1);
 	}
 	
 	/**
