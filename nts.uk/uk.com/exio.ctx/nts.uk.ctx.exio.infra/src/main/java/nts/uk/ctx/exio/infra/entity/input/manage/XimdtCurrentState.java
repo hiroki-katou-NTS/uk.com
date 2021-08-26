@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "XIMDT_CURRENT_STATE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class XimdtCurrentState extends UkJpaEntity {
+public class XimdtCurrentState extends ContractUkJpaEntity {
 	
 	@Id
 	@Column(name = "CID")
