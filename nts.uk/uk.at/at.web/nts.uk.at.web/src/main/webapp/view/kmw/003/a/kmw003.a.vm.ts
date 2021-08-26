@@ -788,6 +788,7 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                     nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
 					
 					self.loadRowScreen().done(() => {
+						self.updateCellIsCal(data);
 						nts.uk.ui.block.clear();
 					});
                 }).fail(function(res: any) {
@@ -803,6 +804,14 @@ module nts.uk.at.view.kmw003.a.viewmodel {
                 });
             }
         }
+
+		updateCellIsCal(data:any){
+			_.forEach(data, row => {
+				_.forEach(row.itemChangeByCal, item => {
+					$("#dpGrid").mGrid("setState", row.employeeId,"A" + item.itemId, ["mgrid-calc"]);
+				});
+			});
+		}
 
         insertUpdate2() {
             let self = this;
