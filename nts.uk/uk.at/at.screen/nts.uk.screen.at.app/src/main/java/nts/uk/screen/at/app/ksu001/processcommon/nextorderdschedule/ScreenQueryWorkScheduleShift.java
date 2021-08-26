@@ -12,8 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
@@ -49,8 +49,8 @@ public class ScreenQueryWorkScheduleShift {
 	 */
 	public WorkScheduleShiftBaseResult create(
 			List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew,
-			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> mapDataDaily,
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> mapDataDaily,
 			Boolean getActualData
 			) {
 		WorkScheduleShiftBaseResult output = new WorkScheduleShiftBaseResult(

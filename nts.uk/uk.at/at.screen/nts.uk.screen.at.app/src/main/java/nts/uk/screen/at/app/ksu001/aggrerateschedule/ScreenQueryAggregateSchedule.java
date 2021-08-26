@@ -15,9 +15,9 @@ import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceMergingService;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.AggregatePersonalDto;
@@ -25,6 +25,7 @@ import nts.uk.screen.at.app.ksu001.aggreratepersonaltotal.ScreenQueryAggregatePe
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.AggregateWorkplaceDto;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggregatePeopleMethod;
 import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.ScreenQueryAggregateWorkplaceTotal;
+import nts.uk.screen.at.app.ksu001.aggrerateworkplacetotal.WorkInfo;
 /**
  * スケジュール集計をする
  * @author hoangnd
@@ -60,8 +61,8 @@ public class ScreenQueryAggregateSchedule {
 			List<String> sids,
 			DatePeriod datePeriod,
 			DateInMonth closeDate,
-			Map<ScheManaStatuTempo, Optional<WorkSchedule>> workSchedules,
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> integrationOfDailys,
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> workSchedules,
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> integrationOfDailys,
 			TargetOrgIdenInfor targetOrg,
 			Optional<PersonalCounterCategory> personalCounterOp,
 			Optional<WorkplaceCounterCategory> workplaceCounterOp,
@@ -116,7 +117,7 @@ public class ScreenQueryAggregateSchedule {
 			// 職場計カテゴリ == 就業時間帯別の利用人数
 			if (workplaceCounterOp.get() == WorkplaceCounterCategory.WORKTIME_PEOPLE) {
 				//4.2:  集計する(対象組織識別情報, 期間, List<日別勤怠(work)>, List<日別勤怠(work)>, boolean)
-				Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<String>>> peopleMethod =
+				Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<WorkInfo>>> peopleMethod =
 						screenQueryAggreratePeopleMethod.get(
 									targetOrg,
 									datePeriod,

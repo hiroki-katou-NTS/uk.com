@@ -250,6 +250,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 nts.uk.ui.errors.clearAll();
                 self.removeClass();
                 nts.uk.ui.block.grayout();
+
+                if (viewMode == ViewMode.SHIFT) {
+                    let newLst = _.filter(self.useCategoriesWorkplace(), (item: any) => !_.includes(
+                        [WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
+                    if (!_.isEmpty(newLst)) {
+                        self.useCategoriesWorkplace(newLst);
+                        self.showA12(true);
+                        $('#horzDiv').css('display', '');
+                    } else {
+                        self.showA12(false);
+                        $('#horzDiv').css('display', 'none');
+                    }
+                } else {
+                    let addLst = _.filter(self.useCategoriesWorkplaceFull, (item: any) => _.includes([
+                        WorkplaceCounterCategory.LABOR_COSTS_AND_TIME,
+                        WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
+                    if (!_.isEmpty(addLst)) {
+                        self.useCategoriesWorkplace(_.sortBy(_.union(self.useCategoriesWorkplace(), addLst), ['value']));
+                    }
+                    if (_.isEmpty(self.useCategoriesWorkplace())) {
+                        self.showA12(false);
+                        $('#horzDiv').css('display', 'none');
+                    } else {
+                        self.showA12(true);
+                        $('#horzDiv').css('display', '');
+                    }
+                }
+
                 self.getNewData(viewMode).done(() => {
                     nts.uk.ui.block.clear();
                 }).fail(function() {
@@ -428,32 +456,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
 
 				self.selectedModeDisplayInBody.subscribe((value: any) => {
-					if(value == ViewMode.SHIFT) {
-						let newLst = _.filter(self.useCategoriesWorkplace(), (item: any) => !_.includes(
-						[WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
-						if(!_.isEmpty(newLst)) {
-							self.useCategoriesWorkplace(newLst);
-							self.showA12(true);
-							$('#horzDiv').css('display', '');
-						} else {
-							self.showA12(false);
-							$('#horzDiv').css('display', 'none');
-						}
-					} else {
-						let addLst = _.filter(self.useCategoriesWorkplaceFull, (item: any) => _.includes([
-							WorkplaceCounterCategory.LABOR_COSTS_AND_TIME, 
-							WorkplaceCounterCategory.EXTERNAL_BUDGET], item.value));
-						if(!_.isEmpty(addLst)) {
-							self.useCategoriesWorkplace(_.sortBy(_.union(self.useCategoriesWorkplace(), addLst), ['value']));	
-						}
-						if(_.isEmpty(self.useCategoriesWorkplace())) {
-							self.showA12(false);
-							$('#horzDiv').css('display', 'none');
-						} else {
-							self.showA12(true);
-							$('#horzDiv').css('display', '');
-						}
-					}
+
 				});
 
                 // ngày có thể chỉnh sửa schedule
@@ -2904,7 +2907,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						if(!_.isEmpty(totalLeft)) {
 							totalLeft.title = getText("KSU001_58"); 	
 						}
-                        let objectLaborCostAndTime = { sid: '' }, sumLaborCostAndTime = 0;
+                        let objectLaborCostAndTime = { sid: '' }, sumLaborCostAndTime: any = '';
                         _.set(objectLaborCostAndTime, 'id', 'id'+i);
                         _.forEach(keys, key => {
                             if(_.includes(['employeeId', 'sid'], key)) {
@@ -2937,25 +2940,36 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                             break;
                                     default: break;
                                 }
-								let value = 0;
+								let value = null;
 								if(!_.isEmpty(findValueObject)) {
-									value = _.isNaN(_.toNumber(findValueObject.value)) ?  0 : _.toNumber(findValueObject.value);
+									value = _.isNumber(findValueObject.value) ? findValueObject.value : 
+											_.isEmpty(findValueObject.value) ? null : 
+											_.isNaN(_.toNumber(findValueObject.value)) ? null : _.toNumber(findValueObject.value);
 								}
 								if(_.includes([1, 3, 5], i)) {
-									_.set(objectLaborCostAndTime, key, nts.uk.time.format.byId("Time_Short_HM", value));	
+									_.set(objectLaborCostAndTime, key, _.isNumber(value) ? nts.uk.time.format.byId("Time_Short_HM", value) : '');	
 								} else {
-									_.set(objectLaborCostAndTime, key, nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));	
+									_.set(objectLaborCostAndTime, key, _.isNumber(value) ? 
+									nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) : '');	
 								}
-                                sumLaborCostAndTime += value;
+								if(_.isNumber(value)) {
+									if(_.isNumber(sumLaborCostAndTime)) {
+										sumLaborCostAndTime += value;	
+									} else {
+										sumLaborCostAndTime = value;
+									}
+								}
                             } else {
-                                _.set(objectLaborCostAndTime, key, 0); 
+                                _.set(objectLaborCostAndTime, key, ''); 
                             }
                         });
                         horizontalSumContentDs.push(objectLaborCostAndTime);    
-						if(_.includes([1, 3, 5], i)) {
-							sumLaborCostAndTime = nts.uk.time.format.byId("Time_Short_HM", sumLaborCostAndTime);	
-						} else {
-							sumLaborCostAndTime = nts.uk.ntsNumber.formatNumber(sumLaborCostAndTime, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0}));	
+						if(_.isNumber(sumLaborCostAndTime)) {
+							if(_.includes([1, 3, 5], i)) {
+								sumLaborCostAndTime = nts.uk.time.format.byId("Time_Short_HM", sumLaborCostAndTime);	
+							} else {
+								sumLaborCostAndTime = nts.uk.ntsNumber.formatNumber(sumLaborCostAndTime, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0}));	
+							}	
 						}
                         rightHorzContentDs.push({ id: 'id'+i, sum: sumLaborCostAndTime });
                     }
@@ -2987,7 +3001,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
 					_.forEach(_.values(_.groupBy(externalBudgetData, 'code')), (groupItem: Array<any>, index: number) => {
-						let objectExternalBudget = { sid: '' }, sumExternalBudget = 0;
+						let objectExternalBudget = { sid: '' }, sumExternalBudget: any = '';
 	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
 	                    _.set(objectExternalBudget, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
@@ -2996,15 +3010,37 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
-	                            _.set(objectExternalBudget, key, nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})));   
-	                            sumExternalBudget += _.toNumber(value);
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+								if (findObject.budgetAtr==0) {
+									_.set(objectExternalBudget, key, _.isNumber(value) ? nts.uk.time.format.byId("Time_Short_HM", value) : '');
+								} else if (findObject.budgetAtr==2) {
+									_.set(objectExternalBudget, key, _.isNumber(value) ? 
+									nts.uk.ntsNumber.formatNumber(value, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) : '');	
+								} else {
+									_.set(objectExternalBudget, key, _.isNumber(value) ? value : '');
+								}
+								if(_.isNumber(value)) {
+									if(_.isNumber(sumExternalBudget)) {
+										sumExternalBudget += value;	
+									} else {
+										sumExternalBudget = value;
+									}
+								}
 	                        } else {
-	                            _.set(objectExternalBudget, key, 0);   
+	                            _.set(objectExternalBudget, key, '');   
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectExternalBudget);
-	                    rightHorzContentDs.push({ id: 'id' + index, sum: nts.uk.ntsNumber.formatNumber(sumExternalBudget, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0})) });
+						if(_.isNumber(sumExternalBudget)) {
+							if (_.head(groupItem).budgetAtr==0) {
+								sumExternalBudget = nts.uk.time.format.byId("Time_Short_HM", sumExternalBudget);
+							} else if (_.head(groupItem).budgetAtr==2) {
+								sumExternalBudget = nts.uk.ntsNumber.formatNumber(sumExternalBudget, new nts.uk.ui.option.NumberEditorOption({grouplength: 3, decimallength: 0}));
+							}	
+						}
+						rightHorzContentDs.push({ id: 'id' + index, sum: sumExternalBudget });
 					});
                     break;
                     
@@ -3034,7 +3070,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
 					_.forEach(_.values(_.groupBy(timeCountData, 'totalCountNo')), (groupItem: Array<any>, index: number) => {
-						let objectTimeCount = { sid: '' }, sumTimeCount = 0;
+						let objectTimeCount = { sid: '' }, sumTimeCount: any = '';
 	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'totalTimesName'), subtitle: '' });
 	                    _.set(objectTimeCount, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
@@ -3043,11 +3079,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
-	                            _.set(objectTimeCount, key, value); 
-	                            sumTimeCount += value;
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+	                            _.set(objectTimeCount, key, _.isNumber(value) ? value : '');
+								if(_.isNumber(value)) {
+									if(_.isNumber(sumTimeCount)) {
+										sumTimeCount += value;	
+									} else {
+										sumTimeCount = value;
+									}
+								}
 	                        } else {
-	                            _.set(objectTimeCount, key, 0);    
+	                            _.set(objectTimeCount, key, '');    
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectTimeCount);
@@ -3081,15 +3125,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 					_.forEach(peopleMethod, peopleMethodItem => {
 						_.forEach(peopleMethodItem.peopleMethod, peopleMethodSubItem => {
 							peopleMethodSubItem.date = peopleMethodItem.date;
+							peopleMethodSubItem.code = peopleMethodSubItem.workMethod.code;
+							peopleMethodSubItem.name = peopleMethodSubItem.workMethod.name;
 							peopleMethodData.push(peopleMethodSubItem);
 						});
 					});
-					_.forEach(_.values(_.groupBy(peopleMethodData, 'workMethod')), (groupItem: Array<any>, index: number) => {
-						leftHorzContentDs.push({ id: 'id'+(index*3+1), title: _.get(_.head(groupItem), 'workMethod'), subtitle: getText("KSU001_70") });
+					_.forEach(_.values(_.groupBy(peopleMethodData, 'code')), (groupItem: Array<any>, index: number) => {
+						leftHorzContentDs.push({ 
+							id: 'id'+(index*3+1), 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'),
+							subtitle: getText("KSU001_70") 
+						});
                     	leftHorzContentDs.push({ id: 'id'+(index*3+2), title: '', subtitle: getText("KSU001_71") });
                     	leftHorzContentDs.push({ id: 'id'+(index*3+3), title: '', subtitle: getText("KSU001_72") });
 						for(let i=1; i<=3; i++) {
-	                        let objectPeopleMethod = { sid: '' }, sumPeopleMethod = 0;
+	                        let objectPeopleMethod = { sid: '' }, sumPeopleMethod: any = '';
 	                        _.set(objectPeopleMethod, 'id', 'id'+(index*3+i));
 	                        _.forEach(keys, key => {
 	                            if(_.includes(['employeeId', 'sid', 'empName'], key)) {
@@ -3097,7 +3147,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                            }
 	                            let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                            if(!_.isEmpty(findObject)) {
-									let value = 0;
+									let value = null;
 	                                switch(i) {
 	                                    case 1: value = _.get(findObject, 'planNumber');
 	                                            break;
@@ -3107,11 +3157,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                                            break;
 	                                    default: break;
 	                                }
-									value = _.isNaN(_.toNumber(value)) ?  0 : _.toNumber(value);
-									_.set(objectPeopleMethod, key, value);
-	                                sumPeopleMethod += value;
+									value = _.isNumber(value) ? value : 
+											_.isEmpty(value) ? null : 
+											_.isNaN(_.toNumber(value)) ? null : _.toNumber(value);
+									_.set(objectPeopleMethod, key, _.isNumber(value) ? value : '');
+									if(_.isNumber(value)) {
+										if(_.isNumber(sumPeopleMethod)) {
+											sumPeopleMethod += value;	
+										} else {
+											sumPeopleMethod = value;
+										}
+									}
 	                            } else {
-	                                _.set(objectPeopleMethod, key, 0); 
+	                                _.set(objectPeopleMethod, key, ''); 
 	                            }
 	                        });
 	                        horizontalSumContentDs.push(objectPeopleMethod);    
@@ -3146,8 +3204,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
 					_.forEach(_.values(_.groupBy(employmentData, 'code')), (groupItem: Array<any>, index: number) => {
-						let objectEmployment = { sid: '' }, sumEmployment = 0;
-	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+						let objectEmployment = { sid: '' }, sumEmployment: any = '';
+	                    leftHorzContentDs.push({ 
+							id: 'id' + index, 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
+							subtitle: '' 
+						});
 	                    _.set(objectEmployment, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
 	                        if(_.includes(['employeeId', 'sid'], key)) {
@@ -3155,11 +3217,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
-	                            _.set(objectEmployment, key, value); 
-	                            sumEmployment += value;
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+	                            _.set(objectEmployment, key, _.isNumber(value) ? value : '');
+								if(_.isNumber(value)) {
+									if(_.isNumber(sumEmployment)) {
+										sumEmployment += value;	
+									} else {
+										sumEmployment = value;
+									}
+								}
 	                        } else {
-	                            _.set(objectEmployment, key, 0);   
+	                            _.set(objectEmployment, key, '');   
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectEmployment);
@@ -3193,8 +3263,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
 					_.forEach(_.values(_.groupBy(classificationData, 'code')), (groupItem: Array<any>, index: number) => {
-						let objectClassification = { sid: '' }, sumClassification = 0;
-	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+						let objectClassification = { sid: '' }, sumClassification: any = '';
+	                    leftHorzContentDs.push({ 
+							id: 'id' + index, 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
+							subtitle: '' 
+						});
 	                    _.set(objectClassification, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
 	                        if(_.includes(['employeeId', 'sid'], key)) {
@@ -3202,11 +3276,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
-	                            _.set(objectClassification, key, value); 
-	                            sumClassification += value;
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+	                            _.set(objectClassification, key, _.isNumber(value) ? value : '');
+								if(_.isNumber(value)) {
+									if(_.isNumber(sumClassification)) {
+										sumClassification += value;	
+									} else {
+										sumClassification = value;
+									}
+								}
 	                        } else {
-	                            _.set(objectClassification, key, 0);   
+	                            _.set(objectClassification, key, '');   
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectClassification);
@@ -3240,8 +3322,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 						});
 					});
 					_.forEach(_.values(_.groupBy(jobTitleInfoData, 'code')), (groupItem: Array<any>, index: number) => {
-						let objectJobTitle = { sid: '' }, sumJobTitleInfo = 0;
-	                    leftHorzContentDs.push({ id: 'id' + index, title: _.get(_.head(groupItem), 'name'), subtitle: '' });
+						let objectJobTitle = { sid: '' }, sumJobTitleInfo: any = '';
+	                    leftHorzContentDs.push({ 
+							id: 'id' + index, 
+							title: _.isEmpty(_.get(_.head(groupItem), 'name')) ? _.get(_.head(groupItem), 'code') + getText("KSU001_22") : _.get(_.head(groupItem), 'name'), 
+							subtitle: '' 
+						});
 	                    _.set(objectJobTitle, 'id', 'id' + index);
 	                    _.forEach(keys, key => {
 	                        if(_.includes(['employeeId', 'sid'], key)) {
@@ -3249,11 +3335,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 	                        }
 	                        let findObject: any = _.find(groupItem, item => key==moment(item.date).format('_YYYYMMDD'));
 	                        if(!_.isEmpty(findObject)) {
-								let value = _.isNaN(_.toNumber(findObject.value)) ?  0 : _.toNumber(findObject.value);
-	                            _.set(objectJobTitle, key, value);   
-	                            sumJobTitleInfo += value;
+								let value = _.isNumber(findObject.value) ? findObject.value : 
+											_.isEmpty(findObject.value) ? null : 
+											_.isNaN(_.toNumber(findObject.value)) ? null : _.toNumber(findObject.value);
+	                            _.set(objectJobTitle, key, _.isNumber(value) ? value : '');
+								if(_.isNumber(value)) {
+									if(_.isNumber(sumJobTitleInfo)) {
+										sumJobTitleInfo += value;	
+									} else {
+										sumJobTitleInfo = value;
+									}
+								}
 	                        } else {
-	                            _.set(objectJobTitle, key, 0); 
+	                            _.set(objectJobTitle, key, ''); 
 	                        }
 	                    });
 	                    horizontalSumContentDs.push(objectJobTitle);

@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 /**
  * 勤務予定（勤務情報）dtoを作成する
@@ -36,8 +36,8 @@ public class ScreenQueryCreateWorkSchedule {
 	 * @return List<勤務予定（勤務情報）dto>
 	 */
 	public List<WorkScheduleWorkInforDto> get(
-			Map<ScheManaStatuTempo, Optional<WorkSchedule>> mngStatusAndWScheMap,
-			Map<ScheManaStatuTempo, Optional<IntegrationOfDaily>> map,
+			Map<EmployeeWorkingStatus, Optional<WorkSchedule>> mngStatusAndWScheMap,
+			Map<EmployeeWorkingStatus, Optional<IntegrationOfDaily>> map,
 			Boolean getActualData
 			) {
 		
