@@ -19,8 +19,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
@@ -164,7 +164,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 			
 			// 正準化した結果を格納
 			// 開始日・終了日は変わらないかもしれないし、変わるかもしれない
-			val canonicalizedItems = new DataItemList()
+			val canonicalizedItems = new CanonicalItemList()
 					.add(itemNoHistoryId, addingHistoryItem.identifier())
 					.add(itemNoStartDate, addingHistoryItem.start())
 					.add(itemNoEndDate, addingHistoryItem.end());

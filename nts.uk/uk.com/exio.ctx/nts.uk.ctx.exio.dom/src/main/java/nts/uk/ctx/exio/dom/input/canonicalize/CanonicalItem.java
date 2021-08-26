@@ -23,6 +23,57 @@ public class CanonicalItem {
 		return new CanonicalItem(dataItem.getItemNo(), dataItem.getValue());
 	}
 
+	/**
+	 * 文字型
+	 * @param itemNo
+	 * @param value
+	 * @return
+	 */
+	public static CanonicalItem of(int itemNo, String value) {
+		return new CanonicalItem(itemNo, value);
+	}
+	
+	/**
+	 * 整数型
+	 * @param itemNo
+	 * @param value
+	 * @return
+	 */
+	public static CanonicalItem of(int itemNo, long value) {
+		return new CanonicalItem(itemNo, value);
+	}
+	
+	/**
+	 * 実数型
+	 * @param itemNo
+	 * @param value
+	 * @return
+	 */
+	public static CanonicalItem of(int itemNo, BigDecimal value) {
+		return new CanonicalItem(itemNo, value);
+	}
+	
+	/**
+	 * 日付型
+	 * @param itemNo
+	 * @param value
+	 * @return
+	 */
+	public static CanonicalItem of(int itemNo, GeneralDate value) {
+		return new CanonicalItem(itemNo, value);
+	}
+
+	/**
+	 * 日時型
+	 * @param itemNo
+	 * @param value
+	 * @return
+	 */
+	public static CanonicalItem of(int itemNo, GeneralDateTime value) {
+		return new CanonicalItem(itemNo, value);
+	}
+	
+
 	public String getString() {
 		return value != null ? (String) value : null;
 	}

@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import lombok.Value;
 import lombok.val;
-import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
@@ -21,7 +21,7 @@ public class IntermediateResult {
 	int rowNo;
 	
 	/** 正準化したデータ */
-	DataItemList itemsAfterCanonicalize;
+	CanonicalItemList itemsAfterCanonicalize;
 	
 	/** 正準化対象の正準化前データ */
 	DataItemList itemsBeforeCanonicalize;
@@ -33,7 +33,7 @@ public class IntermediateResult {
 		
 		return new IntermediateResult(
 				revisedData.getRowNo(),
-				new DataItemList(),
+				new CanonicalItemList(),
 				new DataItemList(),
 				new DataItemList(revisedData.getItems()));
 	}
@@ -47,12 +47,12 @@ public class IntermediateResult {
 	 */
 	public static IntermediateResult create(
 			RevisedDataRecord source,
-			DataItem canonicalizedItem,
+			CanonicalItem canonicalizedItem,
 			Integer... targetItemNos) {
 		
 		return create(
 				source,
-				new DataItemList(Arrays.asList(canonicalizedItem)),
+				new CanonicalItemList(Arrays.asList(canonicalizedItem)),
 				targetItemNos);
 	}
 	
@@ -65,7 +65,7 @@ public class IntermediateResult {
 	 */
 	public static IntermediateResult create(
 			RevisedDataRecord source,
-			DataItemList canonicalizedItems,
+			CanonicalItemList canonicalizedItems,
 			Integer... targetItemNos) {
 		
 		val before = new DataItemList();
@@ -82,10 +82,10 @@ public class IntermediateResult {
 	 * @return
 	 */
 	public IntermediateResult addCanonicalized(
-			DataItemList canonicalizedItems,
+			CanonicalItemList canonicalizedItems,
 			Integer... targetItemNos) {
 
-		val after = new DataItemList();
+		val after = new CanonicalItemList();
 		after.addAll(itemsAfterCanonicalize);
 		after.addAll(canonicalizedItems);
 		
@@ -103,19 +103,19 @@ public class IntermediateResult {
 	 * @param itemNo
 	 * @return
 	 */
-	public Optional<DataItem> getItemByNo(int itemNo) {
+	public Optional<CanonicalItem> getItemByNo(int itemNo) {
 		
 		return itemsAfterCanonicalize.getItemByNo(itemNo)
 				.map(item -> Optional.of(item))
-				.orElseGet(() -> itemsBeforeCanonicalize.getItemByNo(itemNo))
+				.orElseGet(() -> (itemsBeforeCanonicalize.getItemByNo(itemNo).map(CanonicalItem::of)))
 				.map(item -> Optional.of(item))
-				.orElseGet(() -> itemsNotCanonicalize.getItemByNo(itemNo));
+				.orElseGet(() -> itemsNotCanonicalize.getItemByNo(itemNo).map(CanonicalItem::of));
 	}
 	
 	public CanonicalizedDataRecord complete() {
 		return new CanonicalizedDataRecord(
 				this.rowNo,
-				CanonicalItemList.of(itemsAfterCanonicalize),
+				itemsAfterCanonicalize,
 				CanonicalItemList.of(itemsBeforeCanonicalize),
 				CanonicalItemList.of(itemsNotCanonicalize));
 	}
