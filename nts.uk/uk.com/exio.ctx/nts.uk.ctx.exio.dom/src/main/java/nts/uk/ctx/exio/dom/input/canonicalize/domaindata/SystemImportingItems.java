@@ -18,13 +18,14 @@ public class SystemImportingItems {
 		map.put("HIST_ID",102);
 	}
 
-	public static StringifiedValue getStringifiedValue(AnyRecordToChange toChange, String columnName, int itemNo) {
-		//システム内部でしか使わない項目のNoに変更
-		int convertItemNo = map.containsKey(columnName)
-				? SystemImportingItems.map.get(columnName)
-				: itemNo;
-				
-		return toChange.getKey(convertItemNo);
+	public static StringifiedValue getStringifiedValue(AnyRecordToChange toChange, String columnName, int keyIndex) {
+		return toChange.getKey(getItemNo(columnName, keyIndex));
 	}
-	
+
+	private static int getItemNo(String columnName, int keyIndex) {
+		//システム内部でしか使わない項目も加味して項目Noに変更
+		return map.containsKey(columnName)
+				? SystemImportingItems.map.get(columnName)
+				: keyIndex;
+	}
 }

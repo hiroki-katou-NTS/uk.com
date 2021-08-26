@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.val;
-import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
@@ -49,8 +48,8 @@ public class DateTimeCanonicalization {
 		int minute = time % 60;
 		
 		val datetime = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), hour, minute, 0);
-		val item = new CanonicalItem(itemNoDateTime, datetime);
+		val item = CanonicalItem.of(itemNoDateTime, datetime);
 		
-		return null;
+		return IntermediateResult.create(revisedData, item, itemNoDate, itemNoTime);
 	}
 }

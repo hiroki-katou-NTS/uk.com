@@ -11,7 +11,7 @@ import nts.uk.shr.com.history.strategic.PersistentResidentHistory;
  * 連続かつ永続する履歴（常に1つ以上存在）の汎用クラス
  */
 public class ExternalImportPersistentResidentHistory 
-	extends ExternalImportContinuousHistory 
+	extends ExternalImportPersistentHistory 
 	implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
 	public ExternalImportPersistentResidentHistory(List<DateHistoryItem> period) {

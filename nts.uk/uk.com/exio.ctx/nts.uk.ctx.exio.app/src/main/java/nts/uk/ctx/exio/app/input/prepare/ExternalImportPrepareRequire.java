@@ -9,8 +9,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -28,6 +26,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
@@ -36,6 +35,8 @@ import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRepository;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
+import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentState;
+import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentStateRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMetaRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
@@ -50,8 +51,6 @@ import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserConditionRepositor
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
-import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.History;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -63,11 +62,17 @@ public class ExternalImportPrepareRequire {
 	}
 	
 	public static interface Require extends
+			ExternalImportCurrentState.Require,
 			PrepareImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
 		
 		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		
+		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
 	}
+	
+	@Inject
+	private ExternalImportCurrentStateRepository currentStateRepo;
 	
 	@Inject
 	private ImportingUserConditionRepository importingUserConditionRepo;
@@ -127,6 +132,16 @@ public class ExternalImportPrepareRequire {
 		
 		
 		/***** 外部受入関連 *****/
+
+		@Override
+		public ExternalImportCurrentState getExternalImportCurrentState(String companyId) {
+			return currentStateRepo.find(companyId);
+		}
+
+		@Override
+		public void update(ExternalImportCurrentState currentState) {
+			currentStateRepo.save(currentState);
+		}
 		
 		@Override
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
@@ -236,7 +251,7 @@ public class ExternalImportPrepareRequire {
 
 
 		@Override
-		public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, HistoryType historyType) {
+		public ExternalImportHistory getHistory(DomainDataId id, HistoryType historyType) {
 			return domainDataRepo.getHistory(id, historyType);
 		}
 

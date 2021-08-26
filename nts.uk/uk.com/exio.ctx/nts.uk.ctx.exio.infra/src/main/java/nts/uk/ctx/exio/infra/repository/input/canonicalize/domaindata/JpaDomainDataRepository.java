@@ -10,13 +10,12 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.history.History;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -63,10 +62,9 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 		return statement;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	@SneakyThrows
-	public History<DateHistoryItem, DatePeriod, GeneralDate> getHistory(DomainDataId id, HistoryType historyType) {
+	public ExternalImportHistory getHistory(DomainDataId id, HistoryType historyType) {
 		val statement = createStatement(id, "select *");
 		List<DateHistoryItem> list = statement.getList(rec ->{
 			return new DateHistoryItem(rec.getString("HIST_ID"),
@@ -74,7 +72,7 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 							rec.getGeneralDate("START_DATE"),
 							rec.getGeneralDate("END_DATE")));
 		});
-		return (History<DateHistoryItem, DatePeriod, GeneralDate>)historyType.GetHistoryClass().getConstructors()[0].newInstance(list);
+		return (ExternalImportHistory)historyType.GetHistoryClass().getConstructors()[0].newInstance(list);
 	}
 
 	@Override
