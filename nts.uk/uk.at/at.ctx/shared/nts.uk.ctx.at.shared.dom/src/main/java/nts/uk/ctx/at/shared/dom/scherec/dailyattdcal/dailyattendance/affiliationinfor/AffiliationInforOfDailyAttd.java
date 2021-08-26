@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.SharedSyEmploymentImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisImport;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpLicenseClassification;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
@@ -91,6 +92,8 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 		
 		EmpOrganizationImport empOrganization = getEmpOrganization(require, employeeId, standardDate);
 		
+		EmpLicenseClassification  empLicenseClass = getNursingLicenseClass(require, employeeId, standardDate);
+		
 		return new AffiliationInforOfDailyAttd(
 				getEmploymentCode(require, employeeId, standardDate), 
 				getJobTitleId(require, employeeId, standardDate), 
@@ -99,8 +102,8 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 				getBusinessTypeCode(require, employeeId, standardDate), 
 				getBonusPaySettingCode(require, employeeId, standardDate),
 				empOrganization.getWorkplaceGroupId(),
-				getNursingLicenseClass(require, employeeId, standardDate),
-				Optional.empty() );
+				empLicenseClass.getOptLicenseClassification(),
+				empLicenseClass.getIsNursingManager() );
 	}
 	
 	/**
@@ -192,11 +195,11 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	 * @param standardDate 基準日
 	 * @return
 	 */
-	private static Optional<LicenseClassification> getNursingLicenseClass(Require require, String employeeId, GeneralDate standardDate) {
+	private static EmpLicenseClassification getNursingLicenseClass(Require require, String employeeId, GeneralDate standardDate) {
 		
 		return GetEmpLicenseClassificationService
 				.get( require, standardDate, Arrays.asList(employeeId ))
-				.get( 0 ).getOptLicenseClassification();
+				.get( 0 );
 	}
 	
 	public static interface Require extends GetEmpLicenseClassificationService.Require {

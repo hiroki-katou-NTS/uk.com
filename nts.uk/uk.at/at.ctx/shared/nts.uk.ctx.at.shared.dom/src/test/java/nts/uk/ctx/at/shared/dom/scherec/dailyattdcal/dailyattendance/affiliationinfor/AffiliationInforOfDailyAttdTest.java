@@ -71,7 +71,7 @@ public class AffiliationInforOfDailyAttdTest {
 	public void testGetEmpOrganization(@Injectable EmpOrganizationImport empOrg) {
 		
 		
-		new Expectations() {{
+		new Expectations(empOrg) {{
 			require.getEmpOrganization( anyString, (GeneralDate) any);
 			result = empOrg;
 		}};
@@ -202,12 +202,13 @@ public class AffiliationInforOfDailyAttdTest {
 			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.empty(), Optional.empty() ));
 		}};
 		
-		Optional<LicenseClassification> result = NtsAssert.Invoke.staticMethod(
+		EmpLicenseClassification result = NtsAssert.Invoke.staticMethod(
 				AffiliationInforOfDailyAttd.class, 
 				"getNursingLicenseClass", 
 				require, "empId", GeneralDate.today());
 		
-		assertThat( result ).isEmpty();
+		assertThat( result.getIsNursingManager()).isEmpty();
+		assertThat( result.getOptLicenseClassification()).isEmpty();
 	}
 	
 	@Test
@@ -216,15 +217,16 @@ public class AffiliationInforOfDailyAttdTest {
 		new Expectations(GetEmpLicenseClassificationService.class) {{
 			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
 			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE), Optional.of(Boolean.TRUE) ));
-			// TODO Lan continue to code
 		}};
 		
-		Optional<LicenseClassification> result = NtsAssert.Invoke.staticMethod(
+		EmpLicenseClassification result = NtsAssert.Invoke.staticMethod(
 				AffiliationInforOfDailyAttd.class, 
 				"getNursingLicenseClass", 
 				require, "empId", GeneralDate.today());
 		
-		assertThat( result.get() ).isEqualTo( LicenseClassification.NURSE );
+		assertThat( result.getIsNursingManager().get()).isTrue();
+		assertThat( result.getOptLicenseClassification().get()).isEqualTo(LicenseClassification.NURSE);
+		
 	}
 	
 	@Test
@@ -253,9 +255,7 @@ public class AffiliationInforOfDailyAttdTest {
 			
 			GetEmpLicenseClassificationService.get(require, (GeneralDate) any, Arrays.asList("empId") );
 			result = Arrays.asList( new EmpLicenseClassification("empId", Optional.of(LicenseClassification.NURSE), Optional.of(Boolean.TRUE) ));
-			// TODO Lan continue to code
 		}};
-		
 		
 		AffiliationInforOfDailyAttd result = AffiliationInforOfDailyAttd.create(require, "empId", GeneralDate.today()); 
 		
@@ -267,6 +267,7 @@ public class AffiliationInforOfDailyAttdTest {
 		assertThat( result.getBonusPaySettingCode().get().v() ).isEqualTo( "001" );
 		assertThat( result.getWorkplaceGroupId().get() ).isEqualTo( "workplaceGroupId" );
 		assertThat( result.getNursingLicenseClass().get() ).isEqualTo( LicenseClassification.NURSE );
+		assertThat( result.getIsNursingManager().get()).isTrue();
 	}
 	
 	
