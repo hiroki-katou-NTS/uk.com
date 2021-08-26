@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.app.command.equipment.classificationmaster;
+package nts.uk.file.com.app.equipment.classificationmaster;
 
 import java.util.HashMap;
 import java.util.List;
