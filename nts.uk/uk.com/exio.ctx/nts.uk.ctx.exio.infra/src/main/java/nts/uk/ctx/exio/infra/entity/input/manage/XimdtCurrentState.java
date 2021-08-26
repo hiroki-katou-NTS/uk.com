@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.exio.dom.input.manage.ExecutionState;
 import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentState;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "XIMDT_CURRENT_STATE")
