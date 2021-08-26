@@ -211,12 +211,16 @@ module nts.uk.com.view.kal004.e.viewmodel {
                    startMonthly = moment(self.getParam.processingYm, "YYYYMM").set({'month': numberStrMonth, 'date': 1});
                 }
                 
-                let numberEndMonth = self.endMonth() > 0 ? self.endMonth() - 1 : 0;
+                let numberEndMonth = self.endMonth();
                 endMonthly = moment(self.getParam.processingYm, "YYYYMM").add(numberEndMonth, 'months').set('date', 1);
                 
                 var strYearMonth = startMonthly.format('YYYY-MM-01');
                 var endYearMonth = endMonthly.format('YYYY-MM-01');
-                if (startMonthly.isAfter(endMonthly)) {
+                if (startMonthly.year() > endMonthly.year()) {
+                    return "Msg_812";
+                }
+                
+                if (startMonthly.year() == endMonthly.year() && startMonthly.month() > endMonthly.month()) {
                     return "Msg_812";
                 }
             }
