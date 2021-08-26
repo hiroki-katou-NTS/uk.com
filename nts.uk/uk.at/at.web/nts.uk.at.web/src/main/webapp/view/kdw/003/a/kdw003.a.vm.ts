@@ -4035,7 +4035,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
                         case 2:
                             //KAF005-残業申請（早出・通常）
-                            nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
+                            nts.uk.ui.windows.sub.modal("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
+                            //  nts.uk.request.jump("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
                             break;
 
                         case 3:
@@ -4048,10 +4049,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             nts.uk.request.jump("/view/kaf/007/a/index.xhtml", transfer);
                             break;
 
-                        //                        case 5:
-                        //                            //KAF008-出張申請
-                        //                            nts.uk.request.jump("/view/kaer);
-                        //                            break;
+                        case 5:
+                            //KAF008-出張申請
+                            nts.uk.request.jump("/view/kaf/008/a/index.xhtml", transfer);
+                            break;
 
                         case 6:
                             //KAF009-直行直帰申請
@@ -4068,7 +4069,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             //KAF002-打刻申請（外出許可）
                             transfer.stampRequestMode = 0;
                             transfer.screenMode = 1;
-                            nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                            nts.uk.request.jump("/view/kaf/002/a/index.xhtml", transfer);
                             break;
 
                         case 9:
@@ -4082,32 +4083,32 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                             //KAF002-打刻申請（打刻取消）
                             transfer.stampRequestMode = 2;
                             transfer.screenMode = 1;
-                            nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                            nts.uk.request.jump("/view/kaf/012/a/index.xhtml", transfer);
                             break;
 
                         case 11:
-                            //KAF002-打刻申請（レコーダイメージ）
+                            //KAF004
                             transfer.stampRequestMode = 3;
                             transfer.screenMode = 1;
-                            nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                            nts.uk.request.jump("/view/kaf/004/a/index.xhtml", transfer);
                             break;
 
                         case 12:
-                            //KAF002-打刻申請（その他）
+
                             transfer.stampRequestMode = 4;
                             transfer.screenMode = 1;
-                            nts.uk.request.jump("/view/kaf/002/b/index.xhtml", transfer);
+                            nts.uk.request.jump("/view/kaf/011/a/index.xhtml", transfer);
                             break;
 
-                        //                        case 14:
-                        //                            //KAF004-遅刻早退取消申請
-                        //                            nts.uk.request.jump("/view/kaer);
-                        //                            break;
+                        case 13:
+
+                            nts.uk.request.jump("/view/kaf/020/a/index.xhtml", transfer);
+                            break;
 
                         case 14:
                             //KAF011-振休振出申請
-                             nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml?a=1");
-                         //   nts.uk.request.jump("view/cmm/045/a/index.xhtml?a=1", transfer);
+                            nts.uk.request.jump("at", "/view/cmm/045/a/index.xhtml?a=0");
+                            //   nts.uk.request.jump("view/cmm/045/a/index.xhtml?a=1", transfer);
                             break;
                         default:
                             break;
