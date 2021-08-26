@@ -137,13 +137,7 @@ public class ScreenQueryAggregateNumberPeople {
 																				x.getEmpExternalCode().v(),
 																				x.getMemo().v()
 																				))
-																.findFirst().orElse(new EmploymentDto(
-																		null,
-																		f.getKey().v(),
-																		null,
-																		null,
-																		null
-																		)),
+																.findFirst().orElse(null),
 														f -> f.getValue()))
 												.entrySet()
 												.stream()
@@ -183,12 +177,7 @@ public class ScreenQueryAggregateNumberPeople {
 																		.filter(x -> x.getClassificationCode().v().equals(f.getKey().v()))
 																		.map(x -> ClassificationDto.fromDomain(x))
 																		.findFirst()
-																		.orElse(new ClassificationDto(
-																				null,
-																				f.getKey().v(),
-																				null,
-																				null
-																				)),
+																		.orElse(null),
 													f -> f.getValue()))
 											.entrySet()
 											.stream()
