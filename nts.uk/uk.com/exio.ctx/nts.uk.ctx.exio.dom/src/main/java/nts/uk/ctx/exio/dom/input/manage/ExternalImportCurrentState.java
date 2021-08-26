@@ -43,6 +43,7 @@ public class ExternalImportCurrentState implements DomainAggregate {
 		} catch (Exception ex) {
 			log.error("受入処理の準備に失敗: " + companyId, ex);
 			abortedBySystemError(require);
+			throw ex;
 		}
 	}
 	
@@ -62,6 +63,7 @@ public class ExternalImportCurrentState implements DomainAggregate {
 		} catch (Exception ex) {
 			log.error("受入処理の実行に失敗: " + companyId, ex);
 			abortedBySystemError(require);
+			throw ex;
 		}
 	}
 	
