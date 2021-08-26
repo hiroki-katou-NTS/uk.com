@@ -30,7 +30,9 @@ public class CheckWorkplace {
 				AppContexts.user().companyId(),
 				workplaceID);
 		if (!result.isEmpty()){
-			throw new BusinessException("Msg_2214");
+			if (result.size() > 0) {
+				throw new BusinessException("Msg_2212");
+			}
 		}
 	}
 }

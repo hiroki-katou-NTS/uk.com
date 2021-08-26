@@ -49,6 +49,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         workplaceCode: KnockoutObservable<String> = ko.observable('');
         workplaceDisplayName: KnockoutObservable<String> = ko.observable('');
 
+        changeWorkPlaceID: String = '';
+
         constructor() {
             let self = this;
 
@@ -199,17 +201,31 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     if (data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport != null && data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport.length > 0) {
                         self.workplaceCode(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceCode);
                         self.workplaceDisplayName(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceDisplayName);
+
+                        self.listSelectWorkplaceID = [];
+                        self.listWorkPlaceIDs = [];
+                        self.listWorkPlaceIDs.push({ companyId: self.LoginCompanyId, workpalceId: data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId });
+                        self.listSelectWorkplaceID.push(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId);
+                        self.changeWorkPlaceID = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId;
                     } else {
+                        self.listSelectWorkplaceID = [];
+                        self.listWorkPlaceIDs = [];
+
                         self.workplaceCode('');
                         self.workplaceDisplayName('');
+                        self.changeWorkPlaceID = '';
                     }
                 } else {
+                    self.listSelectWorkplaceID = [];
+                    self.listWorkPlaceIDs = [];
+
                     self.workplaceCode('');
                     self.workplaceDisplayName('');
+                    self.changeWorkPlaceID = '';
                 }
             } else {
-                self.workplaceCode('');
-                self.workplaceDisplayName(ko.unwrap(self.workplaceCode));
+                self.workplaceCode(ko.unwrap(self.workplaceCode));
+                //self.workplaceDisplayName(ko.unwrap(self.workplaceCode));
                 self.workplaceDisplayName(ko.unwrap(self.workplaceDisplayName));
             }
         }
@@ -624,17 +640,17 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
                     if (param.workplace) {
                         service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
-                        .done((data: any) => {
-                            self.insert(param);
-                        })
-                        .fail((data: any) => {
-                            nts.uk.ui.dialog
-                                .confirm({ messageId: data.messageId })
-                                .ifYes(() => {
-                                    self.insert(param);
-                                })
-                        })
-                    }else {
+                            .done((data: any) => {
+                                self.insert(param);
+                            })
+                            .fail((data: any) => {
+                                nts.uk.ui.dialog
+                                    .confirm({ messageId: data.messageId })
+                                    .ifYes(() => {
+                                        self.insert(param);
+                                    })
+                            })
+                    } else {
                         self.insert(param);
                     }
                 }
@@ -644,11 +660,16 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             self.update(param);
                         })
                         .fail((data: any) => {
-                            nts.uk.ui.dialog
-                                .confirm({ messageId: data.messageId })
-                                .ifYes(() => {
-                                    self.update(param);
-                                })
+                            if (self.changeWorkPlaceID === param.workplace.workpalceId) {
+                                self.update(param);
+                            }
+                            else {
+                                nts.uk.ui.dialog
+                                    .confirm({ messageId: data.messageId })
+                                    .ifYes(() => {
+                                        self.update(param);
+                                    })
+                            }
                         })
                 }
             }
