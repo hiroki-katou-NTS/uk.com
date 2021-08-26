@@ -262,7 +262,6 @@ module nts.uk.com.view.cas013.a {
             vm.isShowSelectAllButton = ko.observable(false);
             vm.disableSelection = ko.observable(false);
             vm.employeeList = ko.observableArray<UnitModel>([]);
-
             vm.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
@@ -277,7 +276,7 @@ module nts.uk.com.view.cas013.a {
                 showOptionalColumn: true,
                 optionalColumnName: nts.uk.resource.getText("CAS013_32"),
                 optionalColumnDatasource: vm.optionalColumnDatasource,
-                maxWidth: 420,
+                maxWidth: 500,
                 maxRows: 10,
             };
 
@@ -346,7 +345,7 @@ module nts.uk.com.view.cas013.a {
                             let employee: UnitModel = {
                                 id: entry.userID,
                                 code: entry.employeeCode,
-                                name: entry.userName,
+                                name: entry.businessName,
                                 affiliationName: periodDate,
                                 startValidPeriod: entry.startValidPeriod,
                                 endValidPeriod: entry.endValidPeriod
