@@ -334,7 +334,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 								DayCheckCond dayCheckCond = (DayCheckCond) condScheYear.getScheCheckConditions();
 								checkCondTypeName = dayCheckCond.getTypeOfDays().nameId;
 								// 総取得結果　+＝　取得結果
-								totalTime += checkItemDay(
+								totalTime += checkItemDay(require,
 										cid, sid, ym, condScheYear, attendanceTimeOfMonthly, 
 										prepareData, presentClosingPeriod, lstDaily, workScheduleWorkInfosOpt);
 								break;
@@ -563,6 +563,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 	 * 日数チェック条件をチェック
 	 */
 	private Double checkItemDay(
+			Require require,
 			String cid, String sid, YearMonth ym, 
 			ExtractionCondScheduleYear condScheYear,
 			AttendanceTimeOfMonthly attendanceTimeOfMonthly,
@@ -586,7 +587,6 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		case ANNUAL_LEAVE_NUMBER:
 		case ACC_ANNUAL_LEAVE_NUMBER:
 			// 期間中の年休積休残数を取得
-			val require = requireService.createRequire();
 			val cacheCarrier = new CacheCarrier();
 			GeneralDate criteriaDate = GeneralDate.today();
 			DatePeriod period = new DatePeriod(ym.firstGeneralDate(), ym.lastGeneralDate());
