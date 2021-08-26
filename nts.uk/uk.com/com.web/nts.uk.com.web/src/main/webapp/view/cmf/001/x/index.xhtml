@@ -52,13 +52,14 @@
 			</div>
 
 			<div id="execute">
-				<button>受入準備</button>　＞＞＞　<button>実行</button>
+				<button class="normal"  data-bind="click: prepare, text: '受入準備', enable: canPrepare"></button>
+				　＞＞＞　
+				<button class="proceed" data-bind="click: execute, text: '受入実行', enable: canExecute"></button>
 			</div>
 
-			<div id="error-text">
-
+			<div id="error">
+				<textarea id="error-disp"  data-bind="ntsMultilineEditor: { value: errorsText, enable: true, readonly: true }" />
 			</div>
-			
 		</div>
 	</ui:define>
 </ui:composition>
