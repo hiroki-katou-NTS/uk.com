@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardData;
@@ -11,9 +13,10 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryFo
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.carryForwarddata.KshdtHdpubRem;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.carryForwarddata.KshdtHdpubRemPK;
 
+@Stateless
 public class JpaPublicHolidayCarryForwardDataRepo extends JpaRepository implements PublicHolidayCarryForwardDataRepository{
 	
-	private static final String GET_BY_SID = "SELECT a FROM KshdtHdpubRem a WHERE a.employeeId = :employeeId order by a.grantDate DESC";
+	private static final String GET_BY_SID = "SELECT a FROM KshdtHdpubRem a WHERE a.pk.employeeId = :employeeId order by a.pk.tagetmonth DESC";
 
 	private static final String REMOVE_BY_SID_YM = "DELETE FROM KshdtHdpubRem a"
 			+ " WHERE a.pk.employeeId = :employeeId"

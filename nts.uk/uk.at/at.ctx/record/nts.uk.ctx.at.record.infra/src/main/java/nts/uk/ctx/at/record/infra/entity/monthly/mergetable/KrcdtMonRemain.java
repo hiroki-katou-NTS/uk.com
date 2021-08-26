@@ -1782,6 +1782,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.toEntityAbsenceLeaveRemainData(domain.getAbsenceLeaveRemainData());
 		this.toEntityCareRemainData(domain.getMonCareHdRemain());
 		this.toEntityChildRemainData(domain.getMonChildHdRemain());
+		this.toEntityPublicHoliday(domain.getMonPublicHoliday());
 	}
 
 	public RemainMerge toDomain(){
@@ -3132,6 +3133,31 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.childRemainDaysAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainDay().v()).orElse(0.0);
 		this.childRemainMinutesBefore=domain.getRemNumEachMonth().getThisYearRemainNumber().getRemainTimes().map(mapper->mapper.v()).orElse(0);
 		this.childRemainMinutesAfter=domain.getRemNumEachMonth().getNextYearRemainNumber().map(mapper->mapper.getRemainTimes().map(c->c.v()).orElse(0)).orElse(0);
+	}
+	
+	public void toEntityPublicHoliday(PublicHolidayRemNumEachMonth domain) {
+		this.deletePublicHoliday();
+		if (domain == null) return;
+
+		this.closureStatus = domain.getClosureStatus().value;
+		/** 公休日数 */
+		this.puGrantDays = domain.getPublicHolidayday().v();
+		/** 繰越数 */ 
+		this.puCarryforwardDays = domain.getCarryForwardNumber().v();
+		/** 取得数 */
+		this.puUsedDays = domain.getNumberOfAcquisitions().v();
+		/** 翌月繰越数 */
+		this.puNextmonthCarryforwardDays = domain.getNumberCarriedOverToTheNextMonth().v();
+		/** 未消化数 */
+		this.puUnusedDays = domain.getUnDegestionNumber().v();
+	}
+	
+	public void deletePublicHoliday(){
+		this.puGrantDays = 0.0;
+		this.puCarryforwardDays = 0.0;
+		this.puUsedDays = 0.0;
+		this.puNextmonthCarryforwardDays = 0.0;
+		this.puUnusedDays = 0.0;
 	}
 
 	public void deleteChildRemainData(){

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.infra.repository.holidaymanagement.interimdata;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.interimdata.KshdtInterim
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.interimdata.KshdtInterimHdpubPK;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class JpaTempPublicHolidayManagementRepository  extends JpaRepository implements TempPublicHolidayManagementRepository{
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimHdpub a"
@@ -25,9 +28,9 @@ public class JpaTempPublicHolidayManagementRepository  extends JpaRepository imp
 			+ "ORDER BY a.pk.ymd ";
 	
 	private static final String REMOVE_BY_SID_PERIOD = "DELETE FROM KshdtInterimHdpub a"
-			+ " WHERE a.pk.sid = :sid"
-			+ "AND a.pk.ymd >= :startYmd "
-			+ "AND a.pk.ymd <= :endYmd ";
+			+ " WHERE a.pk.sid = :employeeId"
+			+ " AND a.pk.ymd >= :startYmd "
+			+ " AND a.pk.ymd <= :endYmd ";
 	
 	/** 検索 */
 	@Override
