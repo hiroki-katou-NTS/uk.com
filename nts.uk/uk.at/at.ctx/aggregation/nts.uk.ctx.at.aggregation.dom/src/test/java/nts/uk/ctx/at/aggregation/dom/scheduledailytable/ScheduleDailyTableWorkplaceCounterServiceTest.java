@@ -107,7 +107,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		};
 		
 		//Act
-		List<NumberTimeEachWorkplaceCounter> result = NtsAssert.Invoke.staticMethod(
+		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 				ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregate", require
 				,	workplaceCounter, targetTotalList);
@@ -193,7 +193,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		};
 		
 		//Act
-		List<NumberTimeEachWorkplaceCounter> result = NtsAssert.Invoke.staticMethod(
+		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 				ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregateByLicenseClassification", require
 				,	LicenseClassification.NURSE, workplaceCounter, targetTotalList);
@@ -260,7 +260,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		};
 		
 		//Act
-		List<NumberTimeEachWorkplaceCounter> result = NtsAssert.Invoke.staticMethod(
+		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 				ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregateByLicenseClassification", require
 				,	LicenseClassification.NURSE_ASSOCIATE, workplaceCounter, targetTotalList);
@@ -324,7 +324,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		};
 		
 		//Act
-		List<NumberTimeEachWorkplaceCounter> result = NtsAssert.Invoke.staticMethod(
+		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 				ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregateByLicenseClassification", require
 				,	LicenseClassification.NURSE_ASSIST, workplaceCounter, targetTotalList);

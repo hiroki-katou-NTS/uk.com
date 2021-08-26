@@ -23,9 +23,9 @@ public class ScheduleDailyTableWorkplaceCounterService {
 	 * @param require
 	 * @param workplaceCounters 職場計
 	 * @param targetTotalList 集計対象リスト
-	 * @return
+	 * @return List<職場別の回数集計結果>
 	 */
-	public static List<NumberTimeEachWorkplaceCounter> aggregate(
+	public static List<WorkplaceCounterTimesNumberCounterResult> aggregate(
 				Require require, List<Integer> workplaceCounters
 			,	List<IntegrationOfDaily> targetTotalList){
 		
@@ -43,9 +43,9 @@ public class ScheduleDailyTableWorkplaceCounterService {
 	 * @param licenseCls 免許区分
 	 * @param workplaceCounters 職場計
 	 * @param targetTotalList 集計対象リスト
-	 * @return
+	 * @return List<職場別の回数集計結果>
 	 */
-	private static List<NumberTimeEachWorkplaceCounter> aggregateByLicenseClassification(
+	private static List<WorkplaceCounterTimesNumberCounterResult> aggregateByLicenseClassification(
 				Require require
 			,	LicenseClassification licenseCls
 			,	List<Integer> workplaceCounters
@@ -62,13 +62,12 @@ public class ScheduleDailyTableWorkplaceCounterService {
 		Map<GeneralDate, Map<Integer, BigDecimal>> totalResult = TotalTimesCounterService
 				.countingNumberOfTotalTimeByDay(require, workplaceCounters, targetAggregate);
 		
-		
 		return totalResult.entrySet().stream()
 				.flatMap(entry -> entry.getValue()
 						.entrySet()
 						.stream()
 						.map(item ->
-							new NumberTimeEachWorkplaceCounter(entry.getKey(), item.getKey(), licenseCls, item.getValue())
+							new WorkplaceCounterTimesNumberCounterResult(entry.getKey(), item.getKey(), licenseCls, item.getValue())
 						))
 				.collect(Collectors.toList());
 	}

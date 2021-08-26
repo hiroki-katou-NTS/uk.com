@@ -27,7 +27,7 @@ public class ScheduleDailyTablePersonCounterService {
 	 * @param dailyMap 日別勤怠Map
 	 * @return List<個人別の回数集計結果>
 	 */
-	public static List<NumberTimeEachPersonCounter> aggregate(
+	public static List<PersonCounterTimesNumberCounterResult> aggregate(
 				Require require
 			,	ScheRecGettingAtr inkanTarget
 			,	List<Integer> personCounter
@@ -35,7 +35,7 @@ public class ScheduleDailyTablePersonCounterService {
 			){
 		
 		//予定集計
-		List<NumberTimeEachPersonCounter> scheNoTimeTotalResult = new ArrayList<>();
+		List<PersonCounterTimesNumberCounterResult> scheNoTimeTotalResult = new ArrayList<>();
 		if(inkanTarget.isNeedSchedule()) {
 			scheNoTimeTotalResult.addAll(
 					aggregateByScheRecAtr(	require, ScheRecAtr.SCHEDULE, personCounter
@@ -43,14 +43,14 @@ public class ScheduleDailyTablePersonCounterService {
 		}
 		
 		//予定集計
-		List<NumberTimeEachPersonCounter> recNoTimeTotalResult = new ArrayList<>();
+		List<PersonCounterTimesNumberCounterResult> recNoTimeTotalResult = new ArrayList<>();
 		if(inkanTarget.isNeedRecord()) {
 			recNoTimeTotalResult.addAll(
 					aggregateByScheRecAtr(	require, ScheRecAtr.RECORD, personCounter
 										,	dailyMap.get(ScheRecGettingAtr.ONLY_RECORD)));
 		}
 		
-		List<NumberTimeEachPersonCounter> results = new ArrayList<>();
+		List<PersonCounterTimesNumberCounterResult> results = new ArrayList<>();
 		results.addAll(scheNoTimeTotalResult);
 		results.addAll(recNoTimeTotalResult);
 		
@@ -64,7 +64,7 @@ public class ScheduleDailyTablePersonCounterService {
 	 * @param targetTotalList 集計対象リスト
 	 * @return List<個人計の回数集計結果>
 	 */
-	private static List<NumberTimeEachPersonCounter> aggregateByScheRecAtr(Require require
+	private static List<PersonCounterTimesNumberCounterResult> aggregateByScheRecAtr(Require require
 			,	ScheRecAtr scheRecAtr
 			,	List<Integer> personCounter
 			,	List<IntegrationOfDaily> targetTotalList){
@@ -76,7 +76,7 @@ public class ScheduleDailyTablePersonCounterService {
 				.flatMap(entry -> entry.getValue().entrySet()
 						.stream()
 						.map(item ->
-							 new NumberTimeEachPersonCounter(
+							 new PersonCounterTimesNumberCounterResult(
 										entry.getKey()
 									,	item.getKey()
 									,	scheRecAtr

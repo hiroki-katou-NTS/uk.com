@@ -31,7 +31,13 @@ public class ScheduleDailyTablePrintSetting implements DomainAggregate {
 	 */
 	private ScheduleDailyTableItemSetting itemSetting;
 	
-	
+	/**
+	 * 作る
+	 * @param code コード
+	 * @param name 名称
+	 * @param itemSetting 項目設定
+	 * @return
+	 */
 	public static ScheduleDailyTablePrintSetting create(ScheduleDailyTableCode code
 			,	ScheduleDailyTableName name
 			,	ScheduleDailyTableItemSetting itemSetting) {

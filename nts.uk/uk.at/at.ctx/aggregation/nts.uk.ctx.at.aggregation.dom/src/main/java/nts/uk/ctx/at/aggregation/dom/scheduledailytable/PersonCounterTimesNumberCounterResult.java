@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
  *
  */
 @Value
-public class NumberTimeEachPersonCounter {
+public class PersonCounterTimesNumberCounterResult {
 	/** 社員ID **/
 	private EmployeeId sid;
 	
@@ -23,7 +23,7 @@ public class NumberTimeEachPersonCounter {
 	/** 予実区分  **/
 	private ScheRecAtr scheRecAtr;
 	
-	/** 値  */
+	/** 値  **/
 	private BigDecimal value;
 
 }

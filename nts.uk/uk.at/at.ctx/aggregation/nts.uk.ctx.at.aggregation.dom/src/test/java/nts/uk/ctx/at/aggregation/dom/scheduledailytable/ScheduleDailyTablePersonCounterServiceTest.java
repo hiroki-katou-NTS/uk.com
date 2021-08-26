@@ -105,7 +105,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 		};
 		
 		//Act
-		List<NumberTimeEachPersonCounter> result = NtsAssert.Invoke.staticMethod(
+		List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 					ScheduleDailyTablePersonCounterService.class
 				,	"aggregateByScheRecAtr", require
 				,	ScheRecAtr.RECORD, personalCounter, dailyWorks);
@@ -210,7 +210,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 		//予定のみ
 		{			
 			//Act
-			List<NumberTimeEachPersonCounter> result = NtsAssert.Invoke.staticMethod(
+			List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 						ScheduleDailyTablePersonCounterService.class
 					,	"aggregate", require
 					,	ScheRecGettingAtr.ONLY_SCHEDULE, personalCounter, dailyMaps);
@@ -234,7 +234,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 		//実績のみ
 		{
 			//Act
-			List<NumberTimeEachPersonCounter> result = NtsAssert.Invoke.staticMethod(
+			List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 						ScheduleDailyTablePersonCounterService.class
 					,	"aggregate", require
 					,	ScheRecGettingAtr.ONLY_RECORD, personalCounter, dailyMaps);
@@ -258,7 +258,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 		//予定＋実績
 		{
 			//Act
-			List<NumberTimeEachPersonCounter> result = NtsAssert.Invoke.staticMethod(
+			List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 						ScheduleDailyTablePersonCounterService.class
 					,	"aggregate", require
 					,	ScheRecGettingAtr.SCHEDULE_WITH_RECORD, personalCounter, dailyMaps);

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Lic
  * @author lan_lt
  */
 @Value
-public class NumberTimeEachWorkplaceCounter {
+public class WorkplaceCounterTimesNumberCounterResult {
 	/** 社員ID **/
 	private GeneralDate ymd;
 	
@@ -22,6 +22,6 @@ public class NumberTimeEachWorkplaceCounter {
 	/** 免許区分  **/
 	private LicenseClassification licenseCls;
 	
-	/** 値  */
+	/** 値  **/
 	private BigDecimal value;
 }
