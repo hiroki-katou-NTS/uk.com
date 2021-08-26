@@ -331,8 +331,9 @@ public class DPLoadRowProcessor {
 				DPControlDisplayItem dPControlDisplayItem = new DPControlDisplayItem();
 				dPControlDisplayItem.setLstAttendanceItem(param.getLstAttendanceItem());
 				Optional<TaskItem> opTaskItem = process.getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
+				Optional<DailyRecordDto> opDailyRecordDto = result.getDomainOld().stream().filter(x -> x.getEmployeeId().equals(data.getEmployeeId()) && x.getDate().equals(data.getDate())).findAny();
 				process.processCellData(NAME_EMPTY, NAME_NOT_FOUND, result, dPControlDisplayItem, mapGetName, codeNameReasonMap, codeNameTaskMap,
-						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem);
+						itemValueMap,  data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())

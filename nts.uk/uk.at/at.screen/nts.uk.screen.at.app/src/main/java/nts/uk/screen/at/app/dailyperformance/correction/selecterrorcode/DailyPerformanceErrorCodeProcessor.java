@@ -363,8 +363,9 @@ public class DailyPerformanceErrorCodeProcessor {
 									"|", data.getEmployeeId(), "|", data.getDate().toString()), x -> x));
 				}
 				Optional<TaskItem> opTaskItem = dailyProcessor.getTaskItemByEmpDate(taskInitialSelHistLst, data.getEmployeeId(), data.getDate());
+				Optional<DailyRecordDto> opDailyRecordDto = screenDto.getDomainOld().stream().filter(x -> x.getEmployeeId().equals(data.getEmployeeId()) && x.getDate().equals(data.getDate())).findAny();
 				dailyProcessor.processCellData(NAME_EMPTY, NAME_NOT_FOUND, screenDto, dPControlDisplayItem,
-						mapGetName, codeNameReasonMap, codeNameTaskMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem);
+						mapGetName, codeNameReasonMap, codeNameTaskMap, itemValueMap, data, lockDaykWpl, dailyRecEditSetsMap, null, opTaskItem, opDailyRecordDto);
 				lstData.add(data);
 				Optional<WorkInfoOfDailyPerformanceDto> optWorkInfoOfDailyPerformanceDto = workInfoOfDaily.stream()
 						.filter(w -> w.getEmployeeId().equals(data.getEmployeeId())

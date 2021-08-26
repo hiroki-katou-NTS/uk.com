@@ -49,7 +49,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
     var DEVIATION_REASON_MAP = { "438": 1, "443": 2, "448": 3, "453": 4, "458": 5, "801": 6, "806": 7, "811": 8, "816": 9, "821": 10 };
 
-	var SUPPORT_WORK_MAP = {
+	var WORK_FRAME_MAP = {
 		1: [924,934,944,954,964,974,984,994,1004,1014,1024,1034,1044,1054,1064,1074,1084,1094,1104,1114],
 		2: [925,935,945,955,965,975,985,995,1005,1015,1025,1035,1045,1055,1065,1075,1085,1095,1105,1115],
 		3: [926,936,946,956,966,976,986,996,1006,1016,1026,1036,1046,1056,1066,1076,1086,1096,1106,1116],
@@ -5305,9 +5305,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 						dateParam15 = currentRow.date;
 					};
 					let workFrameNoSelection: any = null;
-					let keyList = _.keys(SUPPORT_WORK_MAP);
+					let keyList = _.keys(WORK_FRAME_MAP);
 					for(let itemTaskKey in keyList) {
-						if(_.includes(_.get(SUPPORT_WORK_MAP, keyList[itemTaskKey]), parseInt(self.attendenceId))) {
+						if(_.includes(_.get(WORK_FRAME_MAP, keyList[itemTaskKey]), parseInt(self.attendenceId))) {
 							workFrameNoSelection = parseInt(keyList[itemTaskKey]);
 							break;	
 						}
