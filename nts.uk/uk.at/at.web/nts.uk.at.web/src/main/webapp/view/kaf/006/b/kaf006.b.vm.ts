@@ -1605,7 +1605,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             employeeIds.push(__viewContext.user.employeeId);
             nts.uk.ui.windows.setShared('KDL020A_PARAM', {
                 baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate), 
-                employeeIds: employeeIds});
+                employeeIds: vm.application().employeeIDLst()});
             if (employeeIds.length > 1) {
                 nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
             } else {
