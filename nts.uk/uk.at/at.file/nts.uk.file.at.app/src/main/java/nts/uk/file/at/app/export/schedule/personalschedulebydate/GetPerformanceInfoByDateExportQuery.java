@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.schedule.personalschedulebydate;
 
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.dto.EmployeeWorkScheduleResultDto;
 
@@ -21,7 +22,7 @@ public class GetPerformanceInfoByDateExportQuery {
 
         lstIntegrationOfDaily.forEach(dailyInfo -> {
             Integer actualStartTime1 = null, actualStartTime2 = null, achievementEndTime1 = null, achievementEndTime2 = null;
-            val dailyAttendance = dailyInfo.getAttendanceLeave().isPresent()
+            List<TimeLeavingWork> dailyAttendance = dailyInfo.getAttendanceLeave().isPresent()
                     ? dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
                     : Collections.emptyList();
 

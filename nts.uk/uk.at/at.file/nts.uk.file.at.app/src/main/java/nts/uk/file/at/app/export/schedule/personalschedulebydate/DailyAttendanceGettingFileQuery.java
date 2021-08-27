@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU003_個人スケジュール修正(日付別).D：出力の設定.メニュー別OCD.予定・実績を取得する.予定・実績を取得する
  */
 @Stateless
-public class DailyAttendanceGettingExportQuery {
+public class DailyAttendanceGettingFileQuery {
 
     @Inject
     private IntegrationOfDailyGetter integrationOfDailyGetter;

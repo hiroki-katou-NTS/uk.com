@@ -1,12 +1,12 @@
 package nts.uk.file.at.infra.schedule.personalschedulebydate;
 
 import com.aspose.cells.*;
+import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.PersonalScheduleByDateDataSource;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.PersonalScheduleByDateExportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import java.time.LocalDateTime;
@@ -16,6 +16,8 @@ import java.util.Locale;
 public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByDateExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
     private final String EXCEL_EXT = ".xlsx";
+    private static final String TEMPLATE_FILE = "report/KSU003D_template.xlsx";
+    private static final int NUMBER_ROW_OF_PAGE = 37;
     private final String SPACE = "　";
     private final String COLON = "　：　";
 
@@ -25,40 +27,43 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     @Override
     public void generate(FileGeneratorContext context, PersonalScheduleByDateDataSource dataSource) {
         try {
-            AsposeCellsReportContext reportContext = this.createEmptyContext("PersonalScheduleByDate");
-            Workbook workbook = reportContext.getWorkbook();
+            val designer = this.createContext(TEMPLATE_FILE);
+            Workbook workbook = designer.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
+            // Get first sheet in template
             Worksheet worksheet = worksheets.get(0);
-            worksheet.setName("");
-            this.settingPage(worksheet, dataSource);
+
+            this.pageSetting(worksheet, dataSource);
             this.printHeader(worksheet, dataSource);
             this.printContent(worksheet, dataSource);
-            reportContext.processDesigner();
-            // Save as excel file
-            reportContext.saveAsExcel(this.createNewFile(context, this.getReportName("NAME_TODO" + EXCEL_EXT)));  //TODO
 
+            designer.getDesigner().setWorkbook(workbook);
+            designer.processDesigner();
+
+            // Save as excel file
+            designer.saveAsExcel(this.createNewFile(context, this.getReportName("NAME_TODO" + EXCEL_EXT)));  //TODO
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void settingPage(Worksheet worksheet, PersonalScheduleByDateDataSource dataSource) {
+    private void pageSetting(Worksheet worksheet, PersonalScheduleByDateDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-        pageSetup.setFitToPagesTall(0);
-        pageSetup.setFitToPagesWide(1);
-        pageSetup.setTopMarginInch(0.98);
-        pageSetup.setBottomMarginInch(0.39);
-        pageSetup.setLeftMarginInch(0.39);
-        pageSetup.setRightMarginInch(0.39);
-        pageSetup.setHeaderMarginInch(0.39);
-        pageSetup.setFooterMarginInch(0.31);
-        pageSetup.setCenterHorizontally(true);
-        pageSetup.setHeader(0, "&9&\"" + FONT_NAME + "\"" + "TODO"); //TODO
-        pageSetup.setHeader(1, "&16&\"" + FONT_NAME + ",Bold\"" + "TODO");  //TODO
-        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&9&\"" + FONT_NAME + "\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
+//        pageSetup.setFitToPagesTall(0);
+//        pageSetup.setFitToPagesWide(1);
+//        pageSetup.setTopMarginInch(0.98);
+//        pageSetup.setBottomMarginInch(0.39);
+//        pageSetup.setLeftMarginInch(0.39);
+//        pageSetup.setRightMarginInch(0.39);
+//        pageSetup.setHeaderMarginInch(0.39);
+//        pageSetup.setFooterMarginInch(0.31);
+//        pageSetup.setCenterHorizontally(true);
+        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + "Company_Name");
+        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "title");
+        DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
+        pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
     }
 
     private void printHeader(Worksheet worksheet, PersonalScheduleByDateDataSource dataSource) {
@@ -109,5 +114,47 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
     private String getText(String resourceId) {
         return TextResource.localize(resourceId);
+    }
+
+    private void removeTemplate(Worksheet worksheet) {
+        removeFirstShapes(worksheet);
+        Cells cells = worksheet.getCells();
+        cells.deleteRows(0, NUMBER_ROW_OF_PAGE);
+    }
+
+    private void removeFirstShapes(Worksheet worksheet) {
+        if (worksheet.getShapes().getCount() > 0) {
+            worksheet.getShapes().removeAt(0);
+        }
+    }
+
+    private void setTopBorderStyle(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.TOP_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        cell.setStyle(style);
+    }
+
+    private void setBottomBorderStyle(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        cell.setStyle(style);
+    }
+
+    private void setBackgroundGray(Cell cell) {
+        Style style = cell.getStyle();
+        style.setForegroundColor(Color.getGray());
+        cell.setStyle(style);
+    }
+
+    private void setCurrentMonthBackground(Cell cell) {
+        Style style = cell.getStyle();
+        style.setForegroundColor(Color.fromArgb(197, 217, 241));
+        cell.setStyle(style);
+    }
+
+    private void setForegroundRed(Cell cell) {
+        Style style = cell.getStyle();
+        style.getFont().setColor(Color.getRed());
+        cell.setStyle(style);
     }
 }

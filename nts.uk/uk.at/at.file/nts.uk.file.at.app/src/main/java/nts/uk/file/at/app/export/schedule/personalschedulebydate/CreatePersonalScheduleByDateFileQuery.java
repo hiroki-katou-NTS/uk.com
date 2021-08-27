@@ -19,16 +19,16 @@ import java.util.Map;
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU003_個人スケジュール修正(日付別).D：出力の設定.メニュー別OCD.個人スケジュール表(日付別)を作成する.個人スケジュール表(日付別)を作成する
  */
 @Stateless
-public class CreatePersonalScheduleByDateExportQuery {
+public class CreatePersonalScheduleByDateFileQuery {
 
     @Inject
-    private BasicInfoPersonalScheduleExportQuery basicInfoQuery;
+    private BasicInfoPersonalScheduleFileQuery basicInfoQuery;
 
     @Inject
-    private DailyAttendanceGettingExportQuery dailyAttendanceQuery;
+    private DailyAttendanceGettingFileQuery dailyAttendanceQuery;
 
     @Inject
-    private ScheduleInformationByDateExportQuery scheduleInfoByDateQuery;
+    private ScheduleInformationByDateFileQuery scheduleInfoByDateQuery;
 
     @Inject
     private GetPerformanceInfoByDateExportQuery performanceInfoByDateQuery;
@@ -43,7 +43,7 @@ public class CreatePersonalScheduleByDateExportQuery {
                 baseDate,
                 sortedEmployeeIds);
 
-        // 2. 取得する(): param (社員リスト, 期間, 実績も取得するか)
+        // 2. 取得する(): input (社員リスト, 期間, 実績も取得するか)
         Map<ScheRecGettingAtr, List<IntegrationOfDaily>> dailyAttendanceMap = this.dailyAttendanceQuery.get(
                 sortedEmployeeIds,
                 new DatePeriod(baseDate, baseDate),
@@ -76,6 +76,12 @@ public class CreatePersonalScheduleByDateExportQuery {
                 employeeWorkScheduleResultList);
     }
 
+    /**
+     * 3予定と4.1実績のList<社員勤務予定・実績　dto>をMergeする。
+     * @param scheduleDailies
+     * @param scheduleAchievements
+     * @return List<EmployeeWorkScheduleResultDto>
+     */
     private List<EmployeeWorkScheduleResultDto> mergeDataSchedule(List<EmployeeWorkScheduleResultDto> scheduleDailies, List<EmployeeWorkScheduleResultDto> scheduleAchievements) {
 //        List<EmployeeWorkScheduleResultDto> mergedResultList = new ArrayList<>();
         scheduleDailies.forEach(daily -> {

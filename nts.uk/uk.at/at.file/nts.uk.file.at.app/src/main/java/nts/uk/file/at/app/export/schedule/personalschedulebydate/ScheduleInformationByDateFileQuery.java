@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * UKDesign.UniversalK.就業.KSU_スケジュール.KSU003_個人スケジュール修正(日付別).D：出力の設定.メニュー別OCD.日付別予定情報を取得する.日付別予定情報を取得する
  */
 @Stateless
-public class ScheduleInformationByDateExportQuery {
+public class ScheduleInformationByDateFileQuery {
 
     @Inject
     private WorkTypeRepository workTypeRepo;
@@ -61,23 +61,22 @@ public class ScheduleInformationByDateExportQuery {
 
     public List<EmployeeWorkScheduleResultDto> get(List<IntegrationOfDaily> lstIntegrationOfDaily, boolean graphVacationDisplay,
                                                    boolean doubleWorkDisplay) {
-        final String companyId = AppContexts.user().companyId();
+        String companyId = AppContexts.user().companyId();
         List<EmployeeWorkScheduleResultDto> empWorkScheduleResults = new ArrayList<>();
 
         // 日別勤怠の勤務情報リスト = List<日別勤怠(Work)>．values: List $.勤務情報
         val lstWorkInfoOfDailyAttendance = lstIntegrationOfDaily.stream().map(IntegrationOfDaily::getWorkInformation)
                 .collect(Collectors.toList());
-        // 1. 取得(List<日別勤怠の勤務情報>): param arg input.日別勤怠の勤務情報 , return 日別勤怠の実績で利用する勤務種類と就業時間帯
+        // 1. 取得(List<日別勤怠の勤務情報>): input.日別勤怠の勤務情報 , output 日別勤怠の実績で利用する勤務種類と就業時間帯
         val workTypeWorkTimeList = GetListWtypeWtimeUseDailyAttendRecordService.getdata(lstWorkInfoOfDailyAttendance);
 
-        // 廃止された勤務種類、就業時間帯も取得する: (2) & (3)
-        // 2. get(会社ID, 日別勤怠の実績で利用する勤務種類と就業時間帯.勤務種類リスト) : return WorkType
+        // 2. get(会社ID, 日別勤怠の実績で利用する勤務種類と就業時間帯.勤務種類リスト) : output WorkType
         List<WorkType> workTypeList = workTypeRepo.findByCidAndWorkTypeCodes(
                 companyId,
                 workTypeWorkTimeList.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
         );
 
-        // 3. get(会社ID,List<就業時間帯コード>): return WorkTimeSetting
+        // 3. get(会社ID,List<就業時間帯コード>): output WorkTimeSetting
         List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepo.getListWorkTimeSetByListCode(
                 companyId,
                 workTypeWorkTimeList.getLstWorkTimeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
@@ -96,7 +95,7 @@ public class ScheduleInformationByDateExportQuery {
             System.out.println("-------Filter workTime" + workTimeCode + "not found (null)----");
 
             // 4.1. 勤務形態を取得する() : return 就業時間帯の勤務形態
-            WorkTimeForm workTimeForm = workTimeSetting.getWorkTimeDivision().getWorkTimeForm();
+            val workTimeForm = workTimeSetting.getWorkTimeDivision().getWorkTimeForm();
 
             // 4.2. 就業時間帯の勤務形態 == フレックス勤務用: コアタイム時間帯を取得する
             Optional<TimeSpanForCalc> coreTimeOpt = Optional.empty();
@@ -135,28 +134,27 @@ public class ScheduleInformationByDateExportQuery {
                     ? dailyInfo.getShortTime().get().getShortWorkingTimeSheets()
                     : Collections.emptyList();
 
-            // Map<時間休暇種類, 時間休暇>== 日別勤怠(Work)．時間休暇を取得する() : ※ グラフ休暇表示==false場合はempty
-//            Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = integrationOfDaily.getTimeVacation();
-
             // List＜休憩時間帯＞＝日別勤怠(Work)．日別勤怠の休憩時間帯．時間帯
             List<BreakTimeSheet> breakTimeSheets = graphVacationDisplay ? dailyInfo.getBreakTime().getBreakTimeSheets() : Collections.emptyList();
 
             // 開始時刻 1= 日別勤怠(Work)．出退勤．出退勤．出勤  : ※勤務NO = 1のもの。
             // 終了時刻 1= 日別勤怠(Work)．出退勤．出退勤．退勤  : ※勤務NO = 1のもの。
-            val dailyAttd1 = dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
+            val timeLeavingWork1 = dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
                     .stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
-            if (dailyAttd1.isPresent()) {
-                startTime1 = dailyAttd1.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
-                endTime1 = dailyAttd1.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+            if (timeLeavingWork1.isPresent()) {
+                startTime1 = timeLeavingWork1.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+                endTime1 = timeLeavingWork1.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
             }
 
             // 開始時刻 2= 日別勤怠(Work)．出退勤．出退勤．出勤  : ※勤務NO = 2のもの。, ２回勤務表示==false場合はempty
             // 終了時刻 2= 日別勤怠(Work)．出退勤．出退勤．退勤  : ※勤務NO = 2のもの。
-            val dailyAttd2 = dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
+            val timeLeavingWork2 = dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
                     .stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
-            if (doubleWorkDisplay && dailyAttd2.isPresent()) {
-                startTime2 = dailyAttd2.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
-                endTime2 = dailyAttd2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+            if (timeLeavingWork2.isPresent()) {
+                if (doubleWorkDisplay) {
+                    startTime2 = timeLeavingWork2.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+                }
+                endTime2 = timeLeavingWork2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
             }
 
             // 勤務種類名称= 勤務種類．勤務種類略名
