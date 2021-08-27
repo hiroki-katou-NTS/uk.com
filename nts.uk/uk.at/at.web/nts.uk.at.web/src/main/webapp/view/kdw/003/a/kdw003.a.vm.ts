@@ -3096,7 +3096,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
 
-                } else if (self.displayFormat() === 1) {
+                } else {
                     lstEmployee = self.lstEmployee().map((data) => {
                         return data.code;
                     });
@@ -3105,7 +3105,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         endDate: moment(self.dateRanger().startDate).utc().toISOString(),
                         lstEmployee: lstEmployee
                     });
-                    modal("/view/kdl/014/b/index.xhtml").onClosed(() => {
+                    modal("/view/kdl/014/a/index.xhtml").onClosed(() => {
                     });
                 }
             }
