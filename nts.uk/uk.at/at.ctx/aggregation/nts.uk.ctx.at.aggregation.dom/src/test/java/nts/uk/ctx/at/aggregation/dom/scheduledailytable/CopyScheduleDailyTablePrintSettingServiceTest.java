@@ -53,7 +53,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	 * output: insert
 	 */
 	@Test
-	public void testReproduct_insert(@Injectable ScheduleDailyTableItemSetting itemSetting) {
+	public void testCopy_insert(@Injectable ScheduleDailyTableItemSetting itemSetting) {
 		
 		val reProductSoure = new ScheduleDailyTablePrintSetting(
 				new ScheduleDailyTableCode("01")
@@ -90,7 +90,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	 * output: update
 	 */
 	@Test
-	public void testReproduct_update(@Injectable ScheduleDailyTableItemSetting itemSetting) {
+	public void testCopy_update(@Injectable ScheduleDailyTableItemSetting itemSetting) {
 		
 		val reProductSoure = new ScheduleDailyTablePrintSetting(
 				new ScheduleDailyTableCode("01")
