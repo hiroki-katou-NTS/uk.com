@@ -99,7 +99,7 @@ public class ScreenQueryAggregatePeopleMethod {
 																	 .filter(y -> y.getWorkTimeCode().equals(x.getWorkMethod()))
 																	 .findFirst()
 																	 .map(y -> new WorkInfo(y.getWorkTimeCode(), y.getWorkTimeName()))
-																	 .orElse(null),
+																	 .orElse( new WorkInfo(x.getWorkMethod(), null)),
 															 x.getPlanNumber(),
 															 x.getScheduleNumber(),
 															 x.getActualNumber()))
@@ -146,7 +146,7 @@ public class ScreenQueryAggregatePeopleMethod {
 															 .filter(y -> y.shiftMasterCode.equals(x.getWorkMethod().v()))
 															 .findFirst()
 															 .map(y -> new WorkInfo(y.shiftMasterCode, y.getShiftMasterName()))
-															 .orElse(null),
+															 .orElse( new WorkInfo(x.getWorkMethod().v(), null)),
 													 x.getPlanNumber(),
 													 x.getScheduleNumber(),
 													 x.getActualNumber()))
