@@ -97,10 +97,9 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 		}
 		
 		// 識別
-		String tenantCode = command.getTenantCode();
 		IdentifiedEmployeeInfo identified;
 		{
-			val opt = identify(tenantCode, optAssociation.get().getEmployeeId());
+			val opt = identify(optAssociation.get().getEmployeeId());
 			if (!opt.isPresent()) {
 				return AuthenResult.failed(CauseOfFailure.EMPLOYEE_NOT_FOUND);
 			}
@@ -115,7 +114,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 	 * @param employeeId
 	 * @return
 	 */
-	private Optional<IdentifiedEmployeeInfo> identify(String tenantCode, String employeeId) {
+	private Optional<IdentifiedEmployeeInfo> identify(String employeeId) {
 
 		val employee = employeeDataManageInfoAdapter.findByEmployeeId(employeeId);
 		if (!employee.isPresent() || employee.get().isDeleted()) {
@@ -127,7 +126,7 @@ public class SamlValidateCommandHandler extends LoginCommandHandlerBase<
 			return Optional.empty();
 		}
 		
-		return Optional.of(new IdentifiedEmployeeInfo(tenantCode, employee.get(), user.get()));
+		return Optional.of(new IdentifiedEmployeeInfo(employee.get(), user.get()));
 	}
 
 	// 社員認証失敗時の処理
