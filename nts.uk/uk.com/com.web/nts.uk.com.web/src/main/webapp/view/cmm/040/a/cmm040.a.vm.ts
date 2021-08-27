@@ -14,7 +14,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         //
         currentBonusPaySetting: KnockoutObservable<BonusPaySetting>;
         //
-        itemList: KnockoutObservableArray<ItemModel2>;
+        itemList: KnockoutObservableArray<ItemModel>;
         radius: KnockoutObservable<number> = ko.observable(1);
         //
         // items: KnockoutObservableArray<ItemModel>;
@@ -158,9 +158,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             var self = this;
 
             var dfd = $.Deferred();
-            // this.loadRadiusEnums().done(res => {
-            //     console.log("getEnum");
-            // });
+            this.loadRadiusEnums().done(res => {
+                console.log("getEnum");
+            });
             this.reloadData().done(function () {
                 setTimeout(function () {
                     let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
