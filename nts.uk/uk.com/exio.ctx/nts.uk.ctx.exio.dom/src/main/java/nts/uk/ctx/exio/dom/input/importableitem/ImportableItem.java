@@ -23,6 +23,7 @@ public class ImportableItem implements DomainAggregate{
 	private String itemName;
 	private ItemType itemType;
 	private boolean required;
+	private boolean isPrimaryKey;
 	private Optional<DomainConstraint> domainConstraint;
 
 	public Optional<ErrorMessage> validate(DataItem dataItem) {
