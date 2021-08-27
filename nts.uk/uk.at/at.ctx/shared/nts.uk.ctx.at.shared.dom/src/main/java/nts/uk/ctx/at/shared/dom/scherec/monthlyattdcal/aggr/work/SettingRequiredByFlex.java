@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.flexshortage.Insu
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryLaborDivisionService;
-import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -75,7 +75,7 @@ public class SettingRequiredByFlex {
 	private AttendanceTimeMonth canNextCarryforwardTimeMonth;
 	/** 休出枠の役割 */
 	@Getter
-	private Map<Integer, WorkdayoffFrameRole> roleHolidayWorkFrameMap;
+	private Map<Integer, WorkdayoffFrame> roleHolidayWorkFrameMap;
 
 	@Setter
 	@Getter
