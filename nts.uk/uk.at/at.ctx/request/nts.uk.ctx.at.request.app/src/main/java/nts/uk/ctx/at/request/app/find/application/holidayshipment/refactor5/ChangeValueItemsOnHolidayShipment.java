@@ -221,6 +221,10 @@ public class ChangeValueItemsOnHolidayShipment {
 				break;
 			}
 			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpMsgErrorLst(msgErrorLst);
+		} else {
+			displayInforWhenStarting.appDispInfoStartup
+									.getAppDispInfoWithDateOutput()
+									.setOpListApprovalPhaseState(displayInforWhenStarting.getAppDispInfoStartup().getAppDetailScreenInfo().getApprovalLst());
 		}
 		
 		List<ActualContentDisplay> achievementContents = collectAchievement.getAchievementContents(companyId, displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getEmployeeID(), Arrays.asList(newDate), ApplicationType.COMPLEMENT_LEAVE_APPLICATION);
@@ -228,6 +232,7 @@ public class ChangeValueItemsOnHolidayShipment {
 			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().removeIf(c->c.toDomain().getDate().equals(displayInforWhenStarting.abs.application.toDomain().getAppDate().getApplicationDate()));
 			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().add(ActualContentDisplayDto.fromDomain(achievementContents.get(0)));
 		}
+		
 		return displayInforWhenStarting;
 	}
 

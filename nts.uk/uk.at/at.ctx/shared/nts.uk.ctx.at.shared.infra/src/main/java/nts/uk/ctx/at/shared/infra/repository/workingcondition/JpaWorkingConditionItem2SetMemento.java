@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -22,9 +22,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
 
 /**
  * The Class JpaWorkingConditionItemSetMemento.
@@ -246,7 +246,7 @@ public class JpaWorkingConditionItem2SetMemento implements WorkingConditionItemS
 	 * BreakdownTimeDay)
 	 */
 	@Override
-	public void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet) {
+	public void setHolidayAddTimeSet(Optional<BreakDownTimeDay> holidayAddTimeSet) {
 		// Check exist
 		if (!holidayAddTimeSet.isPresent()) {
 			//this.entity.setHdAddTimeMorning(null);

@@ -45,6 +45,20 @@ import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepositor
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceExportService;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport2;
+import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistWrkLocationExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WkpInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceIdAndPeriod;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.shr.com.context.AppContexts;
@@ -594,6 +608,12 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		return mapResult;
 	}
 	
+	@Override
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Optional<SWkpHistExport> findBySidNew(String employeeId, GeneralDate baseDate) {
+		return this.findBySidNew(AppContexts.user().companyId(), employeeId, baseDate);
+	}
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<SWkpHistExport> findBySidNew(String companyId, String employeeId, GeneralDate baseDate) {

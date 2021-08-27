@@ -216,22 +216,48 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 							return n.timeZone.startTime == undefined || n.timeZone.startTime == undefined;  
 						}); 
 					}
-				vm.$blockui("show");
-
-				vm.$ajax('at/request/application/holidayshipment/save', data).then((result) => {
-					vm.$blockui("hide");
-					vm.$dialog.info({messageId: "Msg_15"}).done(() => {
-						nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
-						CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
+					let checkFlag = false;
+					vm.$blockui("show");
+					
+				if (!data.rec) {
+					let initParam = {
+						actualContentDisplayList: data.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
+						daysUnit: data.abs.workTypeSelected.workAtr == 0 ? 1: 0.5, 
+						employeeId: data.abs.application.employeeIDLst[0], 
+						startDate: moment(data.abs.application.appDate),
+						endDate: moment(data.abs.application.appDate), 
+						managementData: data.abs.payoutSubofHDManagements, 
+						targetSelectionAtr: 1
+					}
+					vm.$ajax('screen/at/kdl035/init', initParam).then((result: any) => {
+						if (result && result.substituteWorkInfoList.length > 0) {
+							checkFlag = true;
+						}
+						data.checkFlag = checkFlag;
+						vm.processRegister(data);
 					});
-				}).fail((failData) => {
-					vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds});
-					vm.$blockui("hide");
-				});
-
+				} else {
+					data.checkFlag = checkFlag;
+					vm.processRegister(data);
+				}
 			}
 			
 			
+		}
+		
+		processRegister(data: any) {
+			const vm = this;
+			vm.$ajax('at/request/application/holidayshipment/save', data).then((result) => {
+				vm.$blockui("hide");
+				vm.$dialog.info({messageId: "Msg_15"}).done(() => {
+					nts.uk.request.ajax("at", "at/request/application/reflect-app", result.reflectAppIdLst);
+					CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm, false, vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst);
+				});
+			}).fail((failData) => {
+				vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds});
+				vm.$blockui("hide");
+			});
+
 		}
 		
 		openKDL009() {

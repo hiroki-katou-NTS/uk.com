@@ -35,8 +35,9 @@
                     v-bind:show-constraint="false">
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute">{{'KAFS12_23' | i18n(substituteRemaining)}}</span>
+
         </div>
-        <div class="position-relative" v-if="displayAnnual">
+        <div id="annual-area" class="position-relative" v-if="displayAnnual">
             <nts-time-editor
                     v-model="params.annualAppTime"
                     v-bind:name="'KAFS12_25' | i18n"
@@ -45,6 +46,7 @@
                     v-bind:show-constraint="false">
             </nts-time-editor>
             <span class="numberOfHoursLeft position-absolute">{{'KAFS12_23' | i18n(annualRemaining)}}</span>
+            <span class="grant-day position-absolute" v-html="grantDate"></span>
         </div>
         <div class="position-relative" v-if="displayChildNursing">
             <nts-time-editor

@@ -86,6 +86,8 @@ export interface TimeLeaveRemaining {
     super60HRemainingTime: number;
     remainingStart: string;
     remainingEnd: string;
+    grantDate: string;
+    grantedDays: number;
 }
 
 export interface ITimeLeaveAppDispInfo {

@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 //流動休憩設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 
 	/** The use stamp. */
@@ -70,5 +73,23 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 			throw new RuntimeException("FlowRestSet clone error.");
 		}
 		return cloned;
+	}
+	
+	/**
+	 * 外出から休憩へ変換するか
+	 * @param reason 外出理由
+	 * @return true：変換する false：変換しない
+	 */
+	public boolean isConvertGoOutToBreak(GoingOutReason reason) {
+		if(!this.useStamp) {
+			return false; //外出を休憩として扱わない
+		}
+		if(!this.useStampCalcMethod.isRestTimeToCalculate()) {
+			return false; //外出として計上する
+		}
+		if(!reason.isPrivateOrUnion()) {
+			return false; //私用組合以外
+		}
+		return true;
 	}
 }

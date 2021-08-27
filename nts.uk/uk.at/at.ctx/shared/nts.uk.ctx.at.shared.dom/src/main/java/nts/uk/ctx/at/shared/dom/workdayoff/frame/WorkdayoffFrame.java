@@ -151,6 +151,10 @@ public class WorkdayoffFrame extends AggregateRoot{
 			return HolidayAtr.NON_STATUTORY_HOLIDAYS;
 		}
 	}
+
+	public boolean isUse() {
+		return this.useClassification == NotUseAtr.USE;
+	}
 	
 	public static interface Require {
 		

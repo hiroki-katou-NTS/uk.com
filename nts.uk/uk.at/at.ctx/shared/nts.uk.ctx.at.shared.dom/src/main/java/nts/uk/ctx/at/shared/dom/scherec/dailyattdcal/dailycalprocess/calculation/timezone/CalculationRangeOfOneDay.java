@@ -979,7 +979,7 @@ public class CalculationRangeOfOneDay {
 		
 		//計算範囲を判断する
 		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().add(this.createWithinWorkTimeFrameIncludingCalculationRange(
-				todayWorkType, timeLeavingWork, predetermineTimeSet));
+				todayWorkType, integrationOfWorkTime, timeLeavingWork, predetermineTimeSet));
 
 		//遅刻時間帯を計算
 		return creatingWithinWorkTimeSheet.calcLateTimeDeduction(
@@ -1074,27 +1074,26 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 計算範囲を判断
 	 * @param todayWorkType 勤務種類
+	 * @param workTime 統合就業時間帯
 	 * @param timeLeavingWork 出退勤
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @return 就業時間内時間枠
 	 */
-	public WithinWorkTimeFrame createWithinWorkTimeFrameIncludingCalculationRange(WorkType todayWorkType, 
-			TimeLeavingWork timeLeavingWork, PredetermineTimeSetForCalc predetermineTimeSet) {
+	public WithinWorkTimeFrame createWithinWorkTimeFrameIncludingCalculationRange(WorkType todayWorkType,
+			IntegrationOfWorkTime workTime, TimeLeavingWork timeLeavingWork, PredetermineTimeSetForCalc predetermineTimeSet) {
 		
 		/** 計算範囲を判断 */
 		TimeSpanForDailyCalc calcRange = getCalcRange(todayWorkType, timeLeavingWork, predetermineTimeSet);
 		
 		//就業時間内時間枠作成
-		return createWithinWorkTimeFrame(timeLeavingWork.getWorkNo().v(), calcRange);
-	}
-
-	private WithinWorkTimeFrame createWithinWorkTimeFrame(int workNo, TimeSpanForDailyCalc calcRange) {
 		return new WithinWorkTimeFrame(
-				new EmTimeFrameNo(workNo),
-				new WorkNo(workNo),
+				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()),
+				timeLeavingWork.getWorkNo(),
 				calcRange,
 				calcRange,
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				workTime.getFlowWorkSetting().isPresent()
+						? workTime.getFlowWorkSetting().get().getHalfDayWorkTimezone().getWorkTimeZone().getWorkTimeRounding()
+						: new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 				new ArrayList<>(),
 				new ArrayList<>(),
 				new ArrayList<>(),

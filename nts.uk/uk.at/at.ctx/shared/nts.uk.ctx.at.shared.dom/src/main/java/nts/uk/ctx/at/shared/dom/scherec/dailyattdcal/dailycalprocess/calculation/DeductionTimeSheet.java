@@ -830,7 +830,7 @@ public class DeductionTimeSheet {
 				Optional<TimeLeavingWork> firstTimeLeave = calcRange.getAttendanceLeavingWork().getAttendanceLeavingWork(new WorkNo(1));
 				
 				/** 計算範囲を判断 */
-				val within = calcRange.createWithinWorkTimeFrameIncludingCalculationRange(workType,
+				val within = calcRange.createWithinWorkTimeFrameIncludingCalculationRange(workType, workTime,
 						firstTimeLeave.orElse(getTimeLeaveWork(integrationOfDaily)), predetermineTimeSet);
 				
 				/** 計算開始時刻を取得 */

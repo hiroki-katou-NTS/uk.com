@@ -88,25 +88,15 @@ public class AttendanceStatusList {
 			// 出勤あり・2回目の打刻があるか確認する
 			for (val timeLeavingWork : timeLeavingWorks){
 				int workNo = timeLeavingWork.getWorkNo().v();
-				if (timeLeavingWork.getAttendanceStamp().isPresent()){
-					TimeActualStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().get();
-					if (attendanceStamp.getStamp().isPresent()){
-						WorkStamp stamp = attendanceStamp.getStamp().get();
-						if (stamp.getTimeDay().getTimeWithDay().isPresent()){
-							this.map.get(ymd).setExistAttendance(true);
-							if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
-						}
-					}
+				val attendanceTime = timeLeavingWork.getAttendanceStamp().flatMap(c -> c.getStamp()).flatMap(c -> c.getTimeDay().getTimeWithDay());
+				val leaveTime = timeLeavingWork.getLeaveStamp().flatMap(c -> c.getStamp()).flatMap(c -> c.getTimeDay().getTimeWithDay());
+				if (attendanceTime.isPresent()){
+					this.map.get(ymd).setExistAttendance(true);
+					if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
 				}
-				if (timeLeavingWork.getLeaveStamp().isPresent()){
-					TimeActualStamp leaveStamp = timeLeavingWork.getLeaveStamp().get();
-					if (leaveStamp.getStamp().isPresent()){
-						WorkStamp stamp = leaveStamp.getStamp().get();
-						if (stamp.getTimeDay().getTimeWithDay().isPresent()){
-							this.map.get(ymd).setExistAttendance(true);
-							if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
-						}
-					}
+				if (leaveTime.isPresent()){
+					this.map.get(ymd).setExistAttendance(true);
+					if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
 				}
 			}
 		}

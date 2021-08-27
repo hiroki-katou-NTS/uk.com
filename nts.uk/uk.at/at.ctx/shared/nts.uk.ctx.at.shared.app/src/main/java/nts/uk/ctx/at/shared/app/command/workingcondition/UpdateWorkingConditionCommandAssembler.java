@@ -9,8 +9,8 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode;
@@ -99,7 +99,7 @@ public class UpdateWorkingConditionCommandAssembler {
 		
 		
 		// ----------------------- BreakdownTimeDay
-		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(command.getOneDay() != null?
+		BreakDownTimeDay holidayAddTimeSet = new BreakDownTimeDay(command.getOneDay() != null?
 				new AttendanceTime(command.getOneDay().intValue()):null,
 				command.getMorning() != null? new AttendanceTime(command.getMorning().intValue()): null,
 				command.getAfternoon() != null ? new AttendanceTime(command.getAfternoon().intValue()):null);
@@ -234,7 +234,7 @@ public class UpdateWorkingConditionCommandAssembler {
 		
 		
 		// ----------------------- BreakdownTimeDay
-		BreakdownTimeDay holidayAddTimeSet = new BreakdownTimeDay(command.getOneDay() != null?
+		BreakDownTimeDay holidayAddTimeSet = new BreakDownTimeDay(command.getOneDay() != null?
 				new AttendanceTime(command.getOneDay().intValue()):null,
 				command.getMorning() != null? new AttendanceTime(command.getMorning().intValue()): null,
 				command.getAfternoon() != null ? new AttendanceTime(command.getAfternoon().intValue()):null);

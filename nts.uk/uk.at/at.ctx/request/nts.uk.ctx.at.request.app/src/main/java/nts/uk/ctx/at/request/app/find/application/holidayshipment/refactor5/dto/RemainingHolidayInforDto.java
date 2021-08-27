@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class RemainingHolidayInforDto {
 
 	/**
