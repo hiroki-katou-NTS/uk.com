@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,9 @@ public class WwfdtAppInstApprover extends ContractUkJpaEntity {
 	/**主キー*/
 	@EmbeddedId
 	public WwfdpApproverStatePK wwfdpApprovrStatePK;
+	@Version
+	@Column(name="EXCLUS_VER")
+	private int version;
     /**承認区分*/
 	@Column(name="APPROVAL_ATR")
 	public Integer approvalAtr;

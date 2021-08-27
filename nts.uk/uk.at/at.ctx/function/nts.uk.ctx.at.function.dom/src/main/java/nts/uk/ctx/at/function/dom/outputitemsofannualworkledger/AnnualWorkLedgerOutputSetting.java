@@ -7,6 +7,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class AnnualWorkLedgerOutputSetting extends AggregateRoot {
     private String employeeId;
 
     // 	月次出力項目リスト-MONTHLY
-    private List<OutputItem> monthlyOutputItemList;
+    private List<OutputItemWorkLedger> monthlyOutputItemList;
 
 
     // 	[C-0] 年間勤務台帳の出力設定を作成する

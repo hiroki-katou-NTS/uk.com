@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 550, height: 400 };</script>
+			<script>var dialogSize = { width: 650, height: 585 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../shr/kaf011.shr.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
@@ -61,11 +61,51 @@
 	                                    }"/>
 							</div>
 						</com:ko-if>
-						<div style="margin-top: 12px" data-bind="component: { name: 'kaf011-a-component6', 
+						<!-- <div style="margin-top: 12px" data-bind="component: { name: 'kaf011-a-component6', 
 											params: {
 												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
+											} }"></div> -->
+						<div id="listApproverRootState" class="table" data-bind="if: approvalRootState().length != 0">
+							<div style="margin-top: -1px;">
+								<div class="cell" id="label-1">
+									<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: nts.uk.resource.getText('KAF000_37')"></div>
+								</div>
+								<div class="cell">
+									<table class="table-phase">
+										<thead>
+											<tr class="bg-green">
+												<th style="width: 111px; border: 1px solid black; text-align: center; height: 25px;"></th>
+												<th style="width: 111px; border: 1px solid black; text-align: center; height: 25px;"></th>
+												<th style="width: 230px; border: 1px solid black; text-align: center; height: 25px;" data-bind="text: nts.uk.resource.getText('KAF000_3')"></th>
+											</tr>
+										</thead>
+										<tbody data-bind="foreach: { data: approvalRootState, as: 'loopPhase' }">
+											<com:ko-foreach bind="{data: loopPhase.listApprovalFrame, as: 'loopFrame'}">
+												<com:ko-foreach bind="{data: loopFrame.listApprover, as: 'loopApprover'}">
+												<tr>
+													<com:ko bind="$vm.isFirstIndexFrame(loopPhase, loopFrame, loopApprover)" tag="if">
+														<td data-bind="attr: {rowspan: ko.pureComputed(function() { return $vm.frameCount(loopPhase.listApprovalFrame())}) }" 
+														style="width: 81px; border: 1px solid black; text-align: center; height: 25px;" class="bg-green">
+															<p style="height: 25px;" data-bind="text: $vm.getPhaseLabel(loopPhase.phaseOrder())"></p>
+														</td>
+													</com:ko>
+													<td style="width: 73px; border: 1px solid black; text-align: center; height: 25px;" class="bg-green">
+														<p style="height: 25px;" data-bind="text: $vm.getApproverLabelByIndex()"></p>
+													</td>
+													<td style="width: 275px; border: 1px solid black; text-align: center; height: 25px;">
+														<p class="limited-label" style="width: 270px; text-align: left; padding-left: 5px; vertical-align: middle; height: 25px;"
+															data-bind="text: ko.pureComputed(function() { return $vm.getApproverAtr(loopApprover)})">
+														</p>
+													</td>
+												</tr>
+												</com:ko-foreach>
+											</com:ko-foreach>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

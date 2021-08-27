@@ -9,7 +9,8 @@ module nts.uk.at.view.kwr008.a.service{
         getOutputItemSetting : "at/function/annualworkschedule/get/outputitemsetting",
         getCurrentLoginerRole: "at/function/annualworkschedule/getCurrentLoginerRole",
         findAllBySettingType: "at/function/annualworkschedule/findAll/",
-        getAuthorityOfWorkPerformance: "com/function/attendancerecord/export/setting/getAuthorityOfWorkPerformance"
+        getAuthorityOfWorkPerformance: "com/function/attendancerecord/export/setting/getAuthorityOfWorkPerformance",
+        getStartMonth : "at/function/annualworkschedule/get/startMonth",
     }
 
     export function getCurrentLoginerRole() : JQueryPromise<any> {
@@ -42,5 +43,9 @@ module nts.uk.at.view.kwr008.a.service{
 
     export function getAuthorityOfWorkPerformance() : JQueryPromise<any>{
         return nts.uk.request.ajax("at", paths.getAuthorityOfWorkPerformance);
+    }
+
+    export function getStartMonth(): JQueryPromise<any> {
+      return nts.uk.request.ajax("at", paths.getStartMonth);
     }
 }

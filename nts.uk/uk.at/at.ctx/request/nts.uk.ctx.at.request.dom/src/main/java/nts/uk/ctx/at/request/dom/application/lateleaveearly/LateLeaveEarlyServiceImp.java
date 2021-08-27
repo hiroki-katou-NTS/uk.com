@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.lateleaveearly;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -416,17 +417,25 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 		if (isNew) {
 			// 2-1.新規画面登録前の処理
-			listMsg = this.newBeforeRegister.processBeforeRegister_New(companyID, EmploymentRootAtr.APPLICATION,
-					agentAtr, application, null,
-					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+			listMsg = this.newBeforeRegister.processBeforeRegister_New(
+			        companyID, 
+			        EmploymentRootAtr.APPLICATION,
+					agentAtr, 
+					application, 
 					null,
-					infoOutput.getAppDispInfoStartupOutput());
+					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
+					null,
+					infoOutput.getAppDispInfoStartupOutput(), 
+					new ArrayList<String>(), 
+					Optional.empty(),
+					Optional.empty(), 
+					false);
 		} else {
 			// 4-1.詳細画面登録前の処理
 			this.updateService.processBeforeDetailScreenRegistration(companyID, application.getEmployeeID(),
 					application.getAppDate().getApplicationDate(), EmploymentRootAtr.APPLICATION.value,
 					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null,
-					infoOutput.getAppDispInfoStartupOutput());
+					infoOutput.getAppDispInfoStartupOutput(), new ArrayList<String>(), Optional.empty(), false);
 		}
 
 		return listMsg;

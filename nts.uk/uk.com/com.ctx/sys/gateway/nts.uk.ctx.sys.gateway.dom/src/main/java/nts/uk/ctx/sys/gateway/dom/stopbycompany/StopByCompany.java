@@ -7,10 +7,17 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * @deprecated
+ * Use "PlannedOutageByCompany" instead of this.
+ * Ask to designer.
+ *
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Deprecated
 // 会社単位の利用停止の設定
 public class StopByCompany extends AggregateRoot {
 
@@ -23,13 +30,13 @@ public class StopByCompany extends AggregateRoot {
 	/** システム利用状態 */
 	private SystemStatusType systemStatus;
 
-	/** 利用停止のメッセージ */
+	/** 停止予告のメッセージ */
 	private StopMessage stopMessage;
 
 	/** 利用停止モード */
 	private StopModeType stopMode;
 
-	/** 停止予告のメッセージ */
+	/** 利用停止のメッセージ */
 	private StopMessage usageStopMessage;
 
 	public static StopByCompany createFromJavaType(String contractCd, String companyCd, Integer systemStatus,

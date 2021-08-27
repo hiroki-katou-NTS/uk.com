@@ -72,7 +72,7 @@ module nts.uk.at.kal014.a {
                 {headerText: vm.$i18n('KAL014_22'), key: 'key', hidden: true},
                 {headerText: vm.$i18n('KAL014_22'), key: 'cssClass', hidden: true},
                 {headerText: vm.$i18n('KAL014_22'), key: 'categoryName',
-                    template: "<span class='${cssClass}'>${categoryName}</span>", width: 130},
+                    template: "<span class='${cssClass}'>${categoryName}</span>", width: 150},
                 {headerText: vm.$i18n('KAL014_23'), key: 'code',
                     template: "<span class='${cssClass}'>${code}</span>", width: 50},
                 {headerText: vm.$i18n('KAL014_24'), key: 'name',
@@ -80,8 +80,8 @@ module nts.uk.at.kal014.a {
             ]);
             vm.currentCodeListSwap = ko.observableArray([]);
             vm.roundingRules = ko.observableArray([
-                {code: '1', name: vm.$i18n('KAL014_30')},
-                {code: '0', name: vm.$i18n('KAL014_31')}
+                {code: 1, name: vm.$i18n('KAL014_30')},
+                {code: 0, name: vm.$i18n('KAL014_31')}
             ]);
             vm.selectedRuleCode = ko.observable(null);
             vm.isNewMode = ko.observable(true);

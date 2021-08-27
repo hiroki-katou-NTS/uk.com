@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 
 	const template = `
 	<div class="container cf" data-bind="with: $parent">
-	<div class="cf valign-top control-group" data-bind="visible: restTimeTableVisible() && restTimeTableVisible2()">
+	<div class="cf valign-top control-group" data-bind="visible: restTimeTableVisible2()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 				<tbody data-bind="foreach: restTime">
 					<tr>
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: String(frameNo)"></td>
+						<td class="headerKAF010" data-bind="text: String(frameNo)"></td>
 						<!--A5_6 開始時刻-->
 						<td><input tabindex="12" class="right-content"
 							data-bind="
@@ -94,7 +94,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 				<tbody data-bind="foreach: holidayTime">
 					<tr>
 						<!--A6_7-->
-						<td class="header" data-bind="text: frameName()"></td>
+						<td class="headerKAF010" data-bind="text: frameName()"></td>
 						<!--A6_8 -->
 						<td data-bind="style: {'background-color': backgroundColor()}"><input tabindex="12" class="right-content"
 							data-bind="
@@ -147,7 +147,7 @@ module nts.uk.at.view.kaf010.shr.time.viewmodel {
 				<tbody data-bind="foreach: overTime">
 					<tr>
 						<!--A7_7-->
-						<td class="header" data-bind="text: frameName()"
+						<td class="headerKAF010" data-bind="text: frameName()"
 							></td>
 						<!--A7_8 残業申請時間入力-->
 						<td data-bind="style: {'background-color': backgroundColor()}">

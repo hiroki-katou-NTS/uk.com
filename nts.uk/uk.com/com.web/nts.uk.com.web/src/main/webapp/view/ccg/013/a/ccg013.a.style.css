@@ -203,6 +203,10 @@ button.search-btn {
 	width: 134px;
 }
 
+#menubar-tabs ul li a i {
+	cursor: pointer;
+}
+
 .unsortable {
 	display: inline-block;
 	vertical-align: top;
@@ -289,10 +293,17 @@ div.label {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	position: relative;
+}
+.title-menu-name .img-icon {
+	position: absolute;
+	right: 5px;
+	cursor: pointer;
 }
 #menubar-tabs .title-menu .title-menu-name .title-menu-content {
 	flex: 1;
 	overflow: hidden;
+	max-width: 105px;
 	/* text-overflow: ellipsis; */
 	/* margin-right: 10px; */
 }

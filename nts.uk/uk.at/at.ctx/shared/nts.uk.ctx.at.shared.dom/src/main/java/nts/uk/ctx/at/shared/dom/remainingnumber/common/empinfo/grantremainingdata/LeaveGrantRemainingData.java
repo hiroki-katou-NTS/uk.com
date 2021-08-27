@@ -235,7 +235,11 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	}
 
 	/** 残数不足のときにはtrueを返す */
-	public boolean isShortageRemain() {
+	public boolean isDummyData() {
+		return this.details.isDummyData() && this.isShortageRemain();
+	}
+
+	private boolean isShortageRemain() {
 		return details.isShortageRemain();
 	}
 

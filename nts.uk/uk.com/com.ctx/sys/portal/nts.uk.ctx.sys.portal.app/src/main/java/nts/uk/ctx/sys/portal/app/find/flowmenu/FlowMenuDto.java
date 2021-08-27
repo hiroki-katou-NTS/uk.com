@@ -30,12 +30,12 @@ public class FlowMenuDto {
 	
 	public static FlowMenuDto fromDomain (FlowMenu domain, StoredFileInfo fileInfo) {
 		 return new FlowMenuDto (
-				 domain.getToppagePartID(),
+				 "",
 				 domain.getCode().v(),
 				 domain.getName().v(),
-				 domain.getType().value,
-				 domain.getSize().getWidth().v(),
-				 domain.getSize().getHeight().v(),
+				 0,
+				 0,
+				 0,
 				 domain.getFileID(),
 				 fileInfo == null ? "" : fileInfo.getOriginalName(),
 				 domain.getDefClassAtr().value);
