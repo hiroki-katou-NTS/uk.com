@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -21,10 +24,12 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.screen.at.app.ksu003.start.dto.EmployeeWorkScheduleDto;
+import nts.uk.file.at.app.export.schedule.personalschedulebydate.dto.EmployeeWorkScheduleResultDto;
+import nts.uk.screen.at.app.ksu003.start.dto.ChangeableWorkTimeDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -54,119 +59,178 @@ public class ScheduleInformationByDateExportQuery {
     @Inject
     private FixedWorkSettingRepository fixedWorkSettingRepo;
 
-    public EmployeeWorkScheduleDto get(List<IntegrationOfDaily> lstIntegrationOfDaily, boolean graphVacationDisplay,
-                                       boolean doubleWorkDisplay) {
+    public List<EmployeeWorkScheduleResultDto> get(List<IntegrationOfDaily> lstIntegrationOfDaily, boolean graphVacationDisplay,
+                                                   boolean doubleWorkDisplay) {
         final String companyId = AppContexts.user().companyId();
+        List<EmployeeWorkScheduleResultDto> empWorkScheduleResults = new ArrayList<>();
 
         // 日別勤怠の勤務情報リスト = List<日別勤怠(Work)>．values: List $.勤務情報
         val lstWorkInfoOfDailyAttendance = lstIntegrationOfDaily.stream().map(IntegrationOfDaily::getWorkInformation)
                 .collect(Collectors.toList());
         // 1. 取得(List<日別勤怠の勤務情報>): param arg input.日別勤怠の勤務情報 , return 日別勤怠の実績で利用する勤務種類と就業時間帯
-        val workTypeWorkTimeUseDailyAttendanceRecord = GetListWtypeWtimeUseDailyAttendRecordService.getdata(lstWorkInfoOfDailyAttendance);
+        val workTypeWorkTimeList = GetListWtypeWtimeUseDailyAttendRecordService.getdata(lstWorkInfoOfDailyAttendance);
 
-        // 2. get(ログイン社員ID, 日別勤怠の実績で利用する勤務種類と就業時間帯.勤務種類リスト) : return WorkType
+        // 廃止された勤務種類、就業時間帯も取得する: (2) & (3)
+        // 2. get(会社ID, 日別勤怠の実績で利用する勤務種類と就業時間帯.勤務種類リスト) : return WorkType
         List<WorkType> workTypeList = workTypeRepo.findByCidAndWorkTypeCodes(
                 companyId,
-                workTypeWorkTimeUseDailyAttendanceRecord.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
+                workTypeWorkTimeList.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
         );
 
-        // 3. get(社員ID,List<就業時間帯コード>): return WorkTimeSetting
+        // 3. get(会社ID,List<就業時間帯コード>): return WorkTimeSetting
         List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepo.getListWorkTimeSetByListCode(
                 companyId,
-                workTypeWorkTimeUseDailyAttendanceRecord.getLstWorkTimeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
+                workTypeWorkTimeList.getLstWorkTimeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
         );
 
-        // Declare variable
-        List<TimeSpanForCalc> timeSpanForCalcList = new ArrayList<>();
-
         // 4. loop：日別勤怠(Work) in input.List<日別勤怠(Work)>
-        for (IntegrationOfDaily integrationOfDaily : lstIntegrationOfDaily) {
-            for (WorkTimeSetting workTimeSet : workTimeSettingList) {
-                // 4.1. 勤務形態を取得する() : return 就業時間帯の勤務形態
-                WorkTimeForm workTimeForm = workTimeSet.getWorkTimeDivision().getWorkTimeForm();
+        for (IntegrationOfDaily dailyInfo : lstIntegrationOfDaily) {
+            // 勤務種類コード = 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード
+            val workTypeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
+            // 就業時間帯コード = 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード
+            val workTimeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 
-                // 4.2. 就業時間帯の勤務形態 == フレックス勤務用: コアタイム時間帯を取得する
-                if (workTimeForm == WorkTimeForm.FLEX) {
-                    RequireTimezoneOfCoreImpl requireImpl = new RequireTimezoneOfCoreImpl(workTypeRepo, flexWorkSet, predetemineTimeSet);
-                    // コアタイム時間帯を取得する.取得する(Require, 勤務種類コード, 就業時間帯コード): return Optional<計算時間帯>
-                    for (WorkType workType : workTypeList) {
-                        val timeSpanForCalcOpt = GetTimezoneOfCoreTimeService.get(requireImpl, workType.getWorkTypeCode(), workTimeSet.getWorktimeCode()); //TODO: param WorkTypeCode
-                        timeSpanForCalcOpt.ifPresent(timeSpanForCalcList::add); // Add to timeSpanForCalcs}
-                    }
+            val workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst().orElse(null);
+            System.out.println("-------Filter workType" + workTypeCode + "not found (null)----");
+            val workTimeSetting = workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst().orElse(null);
+            System.out.println("-------Filter workTime" + workTimeCode + "not found (null)----");
 
-                }
+            // 4.1. 勤務形態を取得する() : return 就業時間帯の勤務形態
+            WorkTimeForm workTimeForm = workTimeSetting.getWorkTimeDivision().getWorkTimeForm();
 
-                // 4.3. 就業時間帯の勤務形態 == 固定勤務
-                if (workTimeForm == WorkTimeForm.FIXED) {
-                    // 4.3.1. get(会社ID, 就業時間帯コード): return Optional<固定勤務設定>
-                    val fixedWorkSettingOpt = fixedWorkSettingRepo.findByKey(companyId, workTimeSet.getWorktimeCode().v());
-                    // 4.3.2. 固定勤務設定.isPresent: 指定した午前午後区分の残業時間帯を取得する(午前午後区分): param 出勤日区分.午前午後区分に変換() : return List<計算用時間帯>
-                    if (fixedWorkSettingOpt.isPresent()) {
-                        timeSpanForCalcList = fixedWorkSettingOpt.get().getTimeZoneOfOvertimeWorkByAmPmAtr(AmPmAtr.AM); //TODO: param 出勤日区分.午前午後区分に変換()
-                    }
+            // 4.2. 就業時間帯の勤務形態 == フレックス勤務用: コアタイム時間帯を取得する
+            Optional<TimeSpanForCalc> coreTimeOpt = Optional.empty();
+            if (workTimeForm == WorkTimeForm.FLEX) {
+                RequireTimezoneOfCoreImpl requireImpl = new RequireTimezoneOfCoreImpl(workTypeRepo, flexWorkSet, predetemineTimeSet);
+                // コアタイム時間帯を取得する.取得する(Require, 勤務種類コード, 就業時間帯コード): INPUT: require, 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード, 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード : OUTPUT Optional<計算時間帯>
+                coreTimeOpt = GetTimezoneOfCoreTimeService.get(requireImpl, new WorkTypeCode(workTypeCode), new WorkTimeCode(workTimeCode));
+            }
+
+            // 4.3. 就業時間帯の勤務形態 == 固定勤務
+            List<TimeSpanForCalcDto> timeSpanForCalcList = new ArrayList<>();
+            if (workTimeForm == WorkTimeForm.FIXED) {
+                // 4.3.1. get(会社ID, 就業時間帯コード): return Optional<固定勤務設定>
+                val fixedWorkSettingOpt = fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
+
+                // 4.3.2. 1日半日出勤・1日休日系の判定（休出判定あり）() : output 出勤日区分
+                AttendanceDayAttr dayAttr = workTypeOpt.chechAttendanceDay();
+
+                // 4.3.3. 固定勤務設定.isPresent: 指定した午前午後区分の残業時間帯を取得する(午前午後区分): param 出勤日区分.午前午後区分に変換() : return List<計算用時間帯>
+                if (fixedWorkSettingOpt.isPresent()) {
+                    timeSpanForCalcList = fixedWorkSettingOpt.get().getTimeZoneOfOvertimeWorkByAmPmAtr(dayAttr.toAmPmAtr().get())
+                            .stream().map(x -> new TimeSpanForCalcDto(x.start(), x.end())).collect(Collectors.toList());
                 }
             }
 
             // 4.4. グラフ休暇表示==true: 時間休暇を取得する() : return Map<時間休暇種類, 時間休暇>
-            if (graphVacationDisplay) {
-
-            }
+            Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = graphVacationDisplay ? dailyInfo.getTimeVacation() : new HashMap<>();
 
             // 4.5. create()
-            String employeeId = integrationOfDaily.getEmployeeId();
-            GeneralDate date = integrationOfDaily.getYmd();
-            Integer startTime1 = null;
-            Integer startTime2 = null;
-            Integer endTime1 = null;
-            Integer endTime2 = null;
+            String employeeId = dailyInfo.getEmployeeId();
+            GeneralDate date = dailyInfo.getYmd();
+            Integer startTime1 = null, startTime2 = null, endTime1 = null, endTime2 = null;
 
             // List<育児介護短時間帯>= 日別勤怠(Work)．短時間勤務時間帯．時間帯 : ※項目の値は存在しない場合はempty
-            List<ShortWorkingTimeSheet> shortWorkingTimeSheets = integrationOfDaily.getShortTime().isPresent()
-                    ? integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets()
+            List<ShortWorkingTimeSheet> shortWorkingTimeSheets = dailyInfo.getShortTime().isPresent()
+                    ? dailyInfo.getShortTime().get().getShortWorkingTimeSheets()
                     : Collections.emptyList();
 
-            // ※ グラフ休暇表示==false場合はempty
-            // Map<時間休暇種類, 時間休暇>== 日別勤怠(Work)．時間休暇を取得する() //TODO: ko tìm thấy hàm 時間休暇を取得する()
-            Map<Object, Object> map = graphVacationDisplay ? new HashMap<>() : null;
+            // Map<時間休暇種類, 時間休暇>== 日別勤怠(Work)．時間休暇を取得する() : ※ グラフ休暇表示==false場合はempty
+//            Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = integrationOfDaily.getTimeVacation();
 
             // List＜休憩時間帯＞＝日別勤怠(Work)．日別勤怠の休憩時間帯．時間帯
-            List<BreakTimeSheet> breakTimeSheets = integrationOfDaily.getBreakTime().getBreakTimeSheets();
+            List<BreakTimeSheet> breakTimeSheets = graphVacationDisplay ? dailyInfo.getBreakTime().getBreakTimeSheets() : Collections.emptyList();
 
             // 開始時刻 1= 日別勤怠(Work)．出退勤．出退勤．出勤  : ※勤務NO = 1のもの。
             // 終了時刻 1= 日別勤怠(Work)．出退勤．出退勤．退勤  : ※勤務NO = 1のもの。
-            Optional<TimeLeavingWork> dailyAttd1 = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
+            val dailyAttd1 = dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
                     .stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
             if (dailyAttd1.isPresent()) {
-                startTime1 = dailyAttd1.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
-                        .getTimeWithDay().get().v();
-                endTime1 = dailyAttd1.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
-                        .v();
+                startTime1 = dailyAttd1.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+                endTime1 = dailyAttd1.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
             }
 
             // 開始時刻 2= 日別勤怠(Work)．出退勤．出退勤．出勤  : ※勤務NO = 2のもの。, ２回勤務表示==false場合はempty
             // 終了時刻 2= 日別勤怠(Work)．出退勤．出退勤．退勤  : ※勤務NO = 2のもの。
-            Optional<TimeLeavingWork> dailyAttd2 = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks()
+            val dailyAttd2 = dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
                     .stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
             if (doubleWorkDisplay && dailyAttd2.isPresent()) {
-                startTime2 = dailyAttd2.get().getAttendanceStamp().get().getStamp().get().getTimeDay()
-                        .getTimeWithDay().get().v();
-                endTime2 = dailyAttd2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay()
-                        .get().v();
+                startTime2 = dailyAttd2.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+                endTime2 = dailyAttd2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
             }
 
-            // 勤務種類コード = 日別勤怠(Work)．勤務情報．勤務情報．勤務種類コード
-            WorkTypeCode workTypeCode = integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode();
-
             // 勤務種類名称= 勤務種類．勤務種類略名
-
-            // 就業時間帯コード = 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード
+            String workTypeName = workTypeOpt.getAbbreviationName().v();
 
             // 就業時間帯名称 = 就業時間帯の設定．表示名．略名
+            String workTimeName = workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v();
 
+            // 勤務タイプ = 就業時間帯の設定.勤務区分.勤務形態を取得する()
+            Integer workType = workTimeForm.value;
 
+            // コア開始時刻 = Optional<計算時間帯>．開始時刻 : ※4.2で取得したもの。
+            Integer coreStartTime = coreTimeOpt.isPresent() ? coreTimeOpt.get().start() : null;
+
+            // コア終了時刻 = Optional<計算時間帯>．終了時刻 : ※4.2で取得したもの。
+            Integer coreEndTime = coreTimeOpt.isPresent() ? coreTimeOpt.get().end() : null;
+
+            // 就業時間合計=日別勤怠(Work).勤怠時間.勤務時間.総労働時間.所定内時間.就業時間
+            Integer totalWorkingHours = dailyInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+                    .getTotalWorkingTime().getWithinStatutoryTimeOfDaily().getWorkTime().v();
+
+            // 休憩時間合計=日別勤怠(Work).勤怠時間.勤務時間.総労働時間.休憩時間.計上用合計時間.合計時間.時間
+            Integer totalBreakTime = dailyInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+                    .getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v();
+
+            // List<残業時間帯>
+            val overTimeSheetList = this.getOverTimeSheets(workTimeForm, timeSpanForCalcList);
+
+            empWorkScheduleResults.add(new EmployeeWorkScheduleResultDto(
+                    date,
+                    employeeId,
+                    timeSpanForCalcList,
+                    breakTimeSheets,   // TODO: bị override ở 日付別実績情報を取得する sau khi merge ???
+                    overTimeSheetList,
+                    shortWorkingTimeSheets,
+                    timeVacationMap,
+                    coreStartTime,
+                    coreEndTime,
+                    totalBreakTime,
+                    workType,
+                    workTypeCode,
+                    workTypeName,
+                    null,  //override ở 日付別実績情報を取得する
+                    null,  //override ở 日付別実績情報を取得する
+                    null,  //override ở 日付別実績情報を取得する
+                    null,  //override ở 日付別実績情報を取得する
+                    totalWorkingHours,
+                    workTimeCode,
+                    workTimeName,
+                    startTime1,
+                    startTime2,
+                    endTime1,
+                    endTime2
+            ));
+        }
+        return empWorkScheduleResults;
+    }
+
+    private List<ChangeableWorkTimeDto> getOverTimeSheets(WorkTimeForm form, List<TimeSpanForCalcDto> lstOver) {
+        List<ChangeableWorkTimeDto> lstOverTime = new ArrayList<>();
+        switch (form) {
+            case FLEX: //フレックス勤務
+            case FLOW: //流動勤務
+                return lstOverTime;
+            case FIXED:
+                for (int i = 1; i <= lstOver.size(); i++) {
+                    lstOverTime.add(new ChangeableWorkTimeDto(i, lstOver.get(i - 1).getStart(), lstOver.get(i - 1).getEnd()));
+                }
+                return lstOverTime;
+            default:
+                break;
         }
 
-        return null;
+        return lstOverTime;
     }
 
     @AllArgsConstructor
@@ -174,13 +238,10 @@ public class ScheduleInformationByDateExportQuery {
 
         private final String companyId = AppContexts.user().companyId();
 
-        @Inject
         private WorkTypeRepository workTypeRepo;
 
-        @Inject
         private FlexWorkSettingRepository flexWorkSet;
 
-        @Inject
         private PredetemineTimeSettingRepository predetemineTimeSet;
 
         @Override

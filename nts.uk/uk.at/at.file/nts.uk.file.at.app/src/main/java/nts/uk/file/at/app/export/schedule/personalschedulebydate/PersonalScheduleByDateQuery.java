@@ -25,7 +25,7 @@ public class PersonalScheduleByDateQuery {
     private List<String> sortedEmployeeIds;
 
     // 実績表示できるか
-    private boolean isDisplayActual;
+    private boolean displayActual;
 
     /*グラフスタート時刻  D2_2_2*/
     private int graphStartTime;

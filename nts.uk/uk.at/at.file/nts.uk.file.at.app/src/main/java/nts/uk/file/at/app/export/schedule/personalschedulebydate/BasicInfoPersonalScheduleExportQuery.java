@@ -130,46 +130,38 @@ public class BasicInfoPersonalScheduleExportQuery {
 
     @AllArgsConstructor
     public static class DateInfoImpl implements DateInformation.Require {
-
-        @Inject
         private WorkplaceSpecificDateRepository workplaceSpecificDateRepo;
-        @Inject
+
         private CompanySpecificDateRepository companySpecificDateRepo;
-        @Inject
+
         private WorkplaceEventRepository workplaceEventRepo;
-        @Inject
+
         private CompanyEventRepository companyEventRepo;
-        @Inject
+
         private PublicHolidayRepository publicHolidayRepo;
-        @Inject
+
         private SpecificDateItemRepository specificDateItemRepo;
 
         private final String companyId = AppContexts.user().companyId();
 
         @Override
         public List<WorkplaceSpecificDateItem> getWorkplaceSpecByDate(String workplaceId, GeneralDate specificDate) {
-            List<WorkplaceSpecificDateItem> data = workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId,
-                    specificDate);
-            return data;
+            return workplaceSpecificDateRepo.getWorkplaceSpecByDate(workplaceId, specificDate);
         }
 
         @Override
         public List<CompanySpecificDateItem> getComSpecByDate(GeneralDate specificDate) {
-            List<CompanySpecificDateItem> data = companySpecificDateRepo
-                    .getComSpecByDate(companyId, specificDate);
-            return data;
+            return companySpecificDateRepo.getComSpecByDate(companyId, specificDate);
         }
 
         @Override
         public Optional<WorkplaceEvent> findByPK(String workplaceId, GeneralDate date) {
-            Optional<WorkplaceEvent> data = workplaceEventRepo.findByPK(workplaceId, date);
-            return data;
+            return workplaceEventRepo.findByPK(workplaceId, date);
         }
 
         @Override
         public Optional<CompanyEvent> findCompanyEventByPK(GeneralDate date) {
-            Optional<CompanyEvent> data = companyEventRepo.findByPK(companyId, date);
-            return data;
+            return companyEventRepo.findByPK(companyId, date);
         }
 
         @Override
@@ -181,8 +173,7 @@ public class BasicInfoPersonalScheduleExportQuery {
         public List<SpecificDateItem> getSpecifiDateByListCode(List<SpecificDateItemNo> lstSpecificDateItemNo) {
             if (lstSpecificDateItemNo.isEmpty()) return new ArrayList<>();
             List<Integer> _lstSpecificDateItemNo = lstSpecificDateItemNo.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-            List<SpecificDateItem> data = specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
-            return data;
+            return specificDateItemRepo.getSpecifiDateByListCode(companyId, _lstSpecificDateItemNo);
         }
     }
 }
