@@ -3789,6 +3789,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             } else {
                 subWidth = "155px";
             }
+			let features = [
+                { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
+                { name: 'Resizing', columnSettings: [{ columnKey: 'id', allowResizing: false, minimumWidth: 0 }] },
+                { name: 'MultiColumnHeaders' },
+                {
+                    name: 'Summaries',
+                    columnSettings: self.columnSettings()
+                },
+                { name: 'HeaderStyles', columns: self.headerColors },
+                { name: 'CellStyles', states: self.cellStates() },
+                {
+                    name: "Sheet",
+                    initialDisplay: self.sheetsGrid()[0].name,
+                    sheets: self.sheetsGrid()
+                },
+                { name: 'Copy' }
+            ];
+			if(self.displayFormat() === 1) {
+				features.push({ name: 'Paging', pageSize: 31, currentPageIndex: 0 });
+			}
             new nts.uk.ui.mgrid.MGrid($("#dpGrid")[0], {
                 subWidth: subWidth,
                 subHeight: '285px',
@@ -3812,24 +3832,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     let ids = primaryKey.split("_");
                     return ids[2] + "-" + ids[3] + "-" + ids[4];
                 },
-                features: [
-                    { name: 'Paging', pageSize: 31, currentPageIndex: 0 },
-                    { name: 'ColumnFixing', fixingDirection: 'left', showFixButtons: false, columnSettings: self.fixColGrid() },
-                    { name: 'Resizing', columnSettings: [{ columnKey: 'id', allowResizing: false, minimumWidth: 0 }] },
-                    { name: 'MultiColumnHeaders' },
-                    {
-                        name: 'Summaries',
-                        columnSettings: self.columnSettings()
-                    },
-                    { name: 'HeaderStyles', columns: self.headerColors },
-                    { name: 'CellStyles', states: self.cellStates() },
-                    {
-                        name: "Sheet",
-                        initialDisplay: self.sheetsGrid()[0].name,
-                        sheets: self.sheetsGrid()
-                    },
-                    { name: 'Copy' }
-                ],
+                features: features,
                 ntsControls: self.ntsMControl
             }).create();
             console.log("load grid detail:" + (performance.now() - startTime));
