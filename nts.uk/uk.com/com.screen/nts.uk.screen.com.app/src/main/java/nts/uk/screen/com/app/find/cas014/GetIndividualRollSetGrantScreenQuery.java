@@ -24,10 +24,10 @@ public class GetIndividualRollSetGrantScreenQuery {
         val rs = new RoleSetGrantedPersonDto();
         if(optionalRoleSetGrantedPerson.isPresent()){
             val grandPerSon = optionalRoleSetGrantedPerson.get();
-           rs.setCompanyId(grandPerSon.getCompanyId());
            rs.setEmployeeID(grandPerSon.getEmployeeID());
            rs.setRoleSetCd(grandPerSon.getRoleSetCd().v());
-           rs.setValidPeriod(grandPerSon.getValidPeriod());
+           rs.setStartDate(grandPerSon.getValidPeriod().start());
+           rs.setEndDate(grandPerSon.getValidPeriod().end());
         }
         return rs;
     }

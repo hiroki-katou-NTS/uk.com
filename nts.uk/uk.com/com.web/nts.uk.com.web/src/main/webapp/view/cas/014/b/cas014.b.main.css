@@ -1,0 +1,11 @@
+.fixed-flex-layout-left {
+    margin-right: 0!important;
+}
+
+.fixed-flex-layout-right {
+    padding-top: 20px;
+}
+
+.fixed-flex-layout-right .form-label {
+    width: 75px;
+}
