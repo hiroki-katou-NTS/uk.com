@@ -7,13 +7,14 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employmentinfoterminal.infoterminal.EmpDataImport;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTer;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive.StampReceptionData;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 /**
  * @author ThanhNX
@@ -43,9 +45,7 @@ public class ConvertTimeRecordStampService {
 
 		Optional<EmpInfoTerminal> empInfoTerOpt = require.getEmpInfoTerminal(empInfoTerCode, contractCode);
 
-		Optional<TimeRecordReqSetting> requestSetting = require.getTimeRecordReqSetting(empInfoTerCode, contractCode);
-
-		if (!empInfoTerOpt.isPresent() || !requestSetting.isPresent())
+		if (!empInfoTerOpt.isPresent())
 			return Optional.empty();
 
 		// $就業情報端末.打刻(打刻受信データ)
@@ -83,6 +83,7 @@ public class ConvertTimeRecordStampService {
 		return !stampRecord.isPresent();
 	}
 	
+	//打刻を作成する
 	private static Pair<Optional<Stamp>, AtomTask> createStamp(Require require, Optional<EmpInfoTerminal> empInfoTerOpt,
 			EmpInfoTerminalCode empInfoTerCode, ContractCode contractCode, StampReceptionData stampReceptData){
 		Optional<Pair<Stamp, StampRecord>> stamp = empInfoTerOpt.get().getCreateStampInfo().createStamp(contractCode, stampReceptData, empInfoTerCode);
@@ -126,6 +127,7 @@ public class ConvertTimeRecordStampService {
 
 	}
 	
+	//日別実績を処理する
 	private static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
 			Optional<String> sid, Optional<Stamp> stamp, AtomTask atomTask) {
 
@@ -136,6 +138,9 @@ public class ConvertTimeRecordStampService {
 		Optional<GeneralDate> reflectDate = StampDataReflectProcessService.reflectDailyResult(require, cid.get(), sid,
 				stamp);
 		if (reflectDate.isPresent()) {
+			if(!checkInClosurePeriod(require, sid.get(), reflectDate.get())) {
+				return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
+			}
 			val domdaily = StampDataReflectProcessService.updateStampToDaily(require, cid.get(), sid.get(),
 					reflectDate.get(), stamp.get());
 
@@ -150,6 +155,12 @@ public class ConvertTimeRecordStampService {
 			}
 		}
 		return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
+	}
+	
+    //[pvt-5] チェック日が当月かどうかを確認する
+	private static boolean checkInClosurePeriod(Require require, String sid, GeneralDate date) {
+		DatePeriod period = ClosureService.findClosurePeriod(require, new CacheCarrier(), sid, date);
+		return period == null ? false : period.contains(date);
 	}
 	
 	// [pvt-2] 就業情報端末通信用トップページアラームを作る
@@ -170,7 +181,7 @@ public class ConvertTimeRecordStampService {
 //
 //	}
 
-	public static interface Require extends StampDataReflectProcessService.Require, StampDataReflectProcessService.Require2 {
+	public static interface Require extends StampDataReflectProcessService.Require, StampDataReflectProcessService.Require2, ClosureService.RequireM3 {
 
 		// [R-1]就業情報端末を取得する
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(EmpInfoTerminalCode empInfoTerCode,
@@ -183,9 +194,9 @@ public class ConvertTimeRecordStampService {
 		// [R-3]打刻カードを取得する
 		public Optional<StampCard> getByCardNoAndContractCode(ContractCode contractCode, StampNumber stampNumber);
 
-		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
-		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
-				ContractCode contractCode);
+//		// [R-4]タイムレコードのﾘｸｴｽﾄ設定を取得する
+//		public Optional<TimeRecordReqSetting> getTimeRecordReqSetting(EmpInfoTerminalCode empInfoTerCode,
+//				ContractCode contractCode);
 
 		// [R-5] 就業情報端末通信用トップページアラームを作る
 		public void insertLogAll(TopPageAlarmEmpInfoTer alEmpInfo);
@@ -207,7 +218,7 @@ public class ConvertTimeRecordStampService {
 		//	IGetInfoForLogin
 		public Optional<String> getUserIdFromLoginId(String perId);
 		
-		//ログイン
+		// 紐従業員の役割でログインする
 		//LoginUserContextManager
 		void loggedInAsEmployee(
 				String userId,
@@ -224,5 +235,6 @@ public class ConvertTimeRecordStampService {
 		//計算
 		List<IntegrationOfDaily> calculatePassCompanySetting(String cid, List<IntegrationOfDaily> integrationOfDaily,
 				ExecutionType reCalcAtr);
+		
 	}
 }
