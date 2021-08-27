@@ -20,7 +20,6 @@ import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceMergingService;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkClassificationAsAggregationTarget;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkdayHolidayCounterService;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkingTimeCounterService;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
@@ -37,6 +36,7 @@ import nts.uk.ctx.at.schedule.dom.shift.specificdayset.primitives.SpecificDateIt
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.workplace.WorkplaceSpecificDateRepository;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
@@ -160,7 +160,7 @@ public class KSU002Finder {
 	/**
 	 * @name 個人スケジュールを集計する
 	 */
-	public PersonalSchedulesDataDto getPersonalSchedules(EmployeeId employeeId, DatePeriod period, List<DatePeriod> datePeriodList, Map<ScheManaStatuTempo, Optional<WorkSchedule>> schedule, Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> dailySchedule) {
+	public PersonalSchedulesDataDto getPersonalSchedules(EmployeeId employeeId, DatePeriod period, List<DatePeriod> datePeriodList, Map<EmployeeWorkingStatus, Optional<WorkSchedule>> schedule, Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> dailySchedule) {
 		//1:<call>
 		/* $予定リスト = 管理状態と勤務予定Map.values: filter: $.isPresent map: $.日別勤怠Workに変換する() */
 		List<IntegrationOfDaily> integrationOfDailyList = schedule.values().stream().filter(o -> o.isPresent()).map(c -> c.get().convertToIntegrationOfDaily()).collect(Collectors.toList());
