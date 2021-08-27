@@ -2738,7 +2738,7 @@ module nts.uk.ui.at.kdw013.calendar {
                             const targ = $tg
                                 .closest('.fc-timegrid-event.fc-v-event.fc-event').length ? 'event' :
                                 ($tg.hasClass('fc-non-business') || $tg.hasClass('fc-timegrid-slot')) ? 'date' : null;
-
+    
                             dataEvent.target(targ);
 
 
@@ -3142,9 +3142,11 @@ module nts.uk.ui.at.kdw013.calendar {
                 });
 
                 vm.event = (evt: JQueryEventObject) => {
-                    evt.preventDefault();
 
                     const tg = evt.target as HTMLElement;
+                    //chỉ khi click vào vùng màn hình riêng của KDW013 mới preventDefault
+                    if ($(tg).closest('#master-content').length > 0)
+                        evt.preventDefault();
 
                     if (tg && !!ko.unwrap(position)) {
                         if (!tg.classList.contains(POWNER_CLASS_CPY) && !$(tg).closest(`.${POWNER_CLASS_CPY}`).length && !$(tg).closest('.fc-popup-setting').length) {
