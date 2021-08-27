@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.aggregation.dom.scheduledailytable;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,8 +18,12 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	@Injectable
 	private CopyScheduleDailyTablePrintSettingService.Require require;
 	
+	/**
+	 * input: 複製先のコードが既に保存されている, 上書きするか = false
+	 * output: Msg_2117
+	 */
 	@Test
-	public void testReproduct_Msg_2117() {
+	public void testCopy_Msg_2117() {
 		
 		val reProductSoure = Helper.createScheduleDailyTablePrintSetting(
 					new ScheduleDailyTableCode("01")
@@ -42,6 +48,10 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		});
 	}
 	
+	/**
+	 * input: 複製先のコードが既に保存されない
+	 * output: insert
+	 */
 	@Test
 	public void testReproduct_insert(@Injectable ScheduleDailyTableItemSetting itemSetting) {
 		
@@ -53,7 +63,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
 		val overwrite = false;
-		val reproductDestination = reProductSoure.clone(destinationCode, destinationName);
+		val reproductDestination = reProductSoure.copy(destinationCode, destinationName);
 		
 		new Expectations() {
 			{
@@ -68,8 +78,17 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 							,	destinationName, overwrite)
 				,	any -> require.insertScheduleDailyTablePrintSetting(reproductDestination));
 		
+		//更新対象
+		assertThat( reproductDestination.getCode() ).isEqualTo( destinationCode );
+		assertThat( reproductDestination.getName() ).isEqualTo( destinationName );
+		assertThat( reproductDestination.getItemSetting() ).isEqualTo( itemSetting );
+		
 	}
 	
+	/**
+	 * input: 複製先のコードが既に保存されている, 上書きするか = true
+	 * output: update
+	 */
 	@Test
 	public void testReproduct_update(@Injectable ScheduleDailyTableItemSetting itemSetting) {
 		
@@ -81,7 +100,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
 		val overwrite = true;
-		val reproductDestination = reProductSoure.clone(destinationCode, destinationName);
+		val reproductDestination = reProductSoure.copy(destinationCode, destinationName);
 		
 		new Expectations() {
 			{
@@ -96,6 +115,10 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 							,	destinationName, overwrite)
 				,	any -> require.updateScheduleDailyTablePrintSetting(reproductDestination));
 		
+		//更新対象
+		assertThat( reproductDestination.getCode() ).isEqualTo( destinationCode );
+		assertThat( reproductDestination.getName() ).isEqualTo( destinationName );
+		assertThat( reproductDestination.getItemSetting() ).isEqualTo( itemSetting );
 	}
 	
 	public static class Helper{

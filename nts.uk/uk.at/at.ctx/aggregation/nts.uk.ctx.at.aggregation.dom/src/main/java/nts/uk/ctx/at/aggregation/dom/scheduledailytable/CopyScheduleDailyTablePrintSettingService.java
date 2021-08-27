@@ -15,14 +15,14 @@ public class CopyScheduleDailyTablePrintSettingService {
 /**
  * 複製する
  * @param require
- * @param reproductSoure 複製元
+ * @param reproductSource 複製元
  * @param destinationCode 複製先のコード
  * @param destinationName 複製先の名称
  * @param overwrite 上書きするか
  * @return
  */
 	public static AtomTask copy(Require require
-			,	ScheduleDailyTablePrintSetting reproductSoure
+			,	ScheduleDailyTablePrintSetting reproductSource
 			,	ScheduleDailyTableCode destinationCode
 			,	ScheduleDailyTableName destinationName
 			,	boolean overwrite) {
@@ -33,7 +33,7 @@ public class CopyScheduleDailyTablePrintSettingService {
 			throw new BusinessException("Msg_2117");
 		}
 		
-		val reproductDestination =  reproductSoure.clone(destinationCode, destinationName);
+		val reproductDestination =  reproductSource.copy(destinationCode, destinationName);
 		
 		return AtomTask.of(() -> {
 			if(isExist) {

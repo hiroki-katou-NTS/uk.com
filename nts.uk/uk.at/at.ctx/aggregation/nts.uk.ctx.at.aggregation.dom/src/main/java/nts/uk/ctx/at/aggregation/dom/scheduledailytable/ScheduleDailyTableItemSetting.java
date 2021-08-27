@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Value;
+import nts.arc.error.BusinessException;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -51,18 +52,40 @@ public class ScheduleDailyTableItemSetting {
 	private final SupporterPrintMethod supporterDailyDataPrintMethod;
 	
 	/**
-	 * 複製する
+	 * 作る
+	 * @param inkanRow 印鑑欄
+	 * @param comment コメント
+	 * @param personalCounter 個人計
+	 * @param workplaceCounter 職場計
+	 * @param transferDisplay 異動者表示
+	 * @param supporterSchedulePrintMethod 応援者の予定出力方法
+	 * @param supporterDailyDataPrintMethod 応援者の実績出力方法
 	 * @return
 	 */
-	public ScheduleDailyTableItemSetting clone() {
-		return new ScheduleDailyTableItemSetting(
-						this.inkanRow.clone()
-					,	this.comment
-					,	this.personalCounter
-					,	this.workplaceCounter
-					,	this.transferDisplay
-					,	this.supporterSchedulePrintMethod
-					,	this.supporterDailyDataPrintMethod
-				);
+	public static ScheduleDailyTableItemSetting create(
+			ScheduleDailyTableInkanRow inkanRow,
+			Optional<ScheduleDailyTableComment> comment,
+			List<Integer> personalCounter,
+			List<Integer> workplaceCounter,
+			NotUseAtr transferDisplay,
+			SupporterPrintMethod supporterSchedulePrintMethod,
+			SupporterPrintMethod supporterDailyDataPrintMethod) {
+		
+		if ( personalCounter.size() > 10 ) {
+			throw new BusinessException("Msg_2083");
+		}
+		
+		if ( workplaceCounter.size() > 5 ) {
+			throw new BusinessException("Msg_2084");
+		}
+		
+		return new ScheduleDailyTableItemSetting(inkanRow, 
+				comment, 
+				personalCounter, 
+				workplaceCounter, 
+				transferDisplay, 
+				supporterSchedulePrintMethod, 
+				supporterDailyDataPrintMethod);
 	}
+	
 }
