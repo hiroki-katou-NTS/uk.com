@@ -1,6 +1,5 @@
 package nts.uk.ctx.sys.gateway.app.command.login.password;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -13,11 +12,18 @@ import lombok.val;
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
-import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.authenticate.PasswordAuthenticationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLog;
+import nts.uk.ctx.sys.gateway.dom.login.password.identification.PasswordAuthIdentificationFailureLogRepository;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUser;
+import nts.uk.ctx.sys.gateway.dom.login.password.userpassword.LoginPasswordOfUserRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
@@ -40,10 +46,29 @@ public class PasswordAuthenticateCommandRequire {
 	
 	@Inject
 	private UserRepository userRepo;
+	
+	@Inject
+	private PasswordPolicyRepository passwordPolicyRepo;
+	
+	@Inject
+	private PasswordAuthenticationFailureLogRepository passwordAuthenticateFailuresLogRepo;
+	
+	@Inject
+	private PasswordAuthIdentificationFailureLogRepository passwordAuthIdentificateFailureLogRepo;
 
+	@Inject
+	private LockOutDataRepository lockOutDataRepo;
+	
+	@Inject
+	private AccountLockPolicyRepository accountLockPolicyRepo;
+	
+	@Inject
+	private LoginPasswordOfUserRepository loginPasswordOfUserRepo;
+	
+	
 	public Require createRequire(String tenantCode) {
 
-		val require = new RequireImpl(tenantCode);
+		val require = new RequireImpl();
 		loginRequire.setup(require);
 		return EmbedStopwatch.embed(require);
 
@@ -51,18 +76,6 @@ public class PasswordAuthenticateCommandRequire {
 
 	@RequiredArgsConstructor
 	public class RequireImpl extends LoginRequire.BaseImpl implements Require {
-
-		private final String tenantCode;
-		
-		@Override
-		public String getTenantCode() {
-			return tenantCode;
-		}
-
-		@Override
-		public String getLoginUserContractCode() {
-			return tenantCode;
-		}
 
 		@Override
 		public String createCompanyId(String tenantCode, String companyCode) {
@@ -86,39 +99,38 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public AuthenticationFailuresLog getAuthenticationFailuresLog(String userId) {
-			// TODO #116705暫定対応 要レポジトリ実装
-			return new AuthenticationFailuresLog(userId, new ArrayList<>());
+		public PasswordPolicy getPasswordPolicy(String tenantCode) {
+			return passwordPolicyRepo.getPasswordPolicy(tenantCode);
 		}
 
 		@Override
 		public Optional<AccountLockPolicy> getAccountLockPolicy(String contractCode) {
-			// TODO #116705暫定対応 要レポジトリ実装
-			return Optional.empty();
+			return accountLockPolicyRepo.getAccountLockPolicy(contractCode);
 		}
 
 		@Override
-		public void save(AuthenticationFailuresLog failuresLog) {
-			// TODO Auto-generated method stub
-			
+		public void save(LockoutData lockOutData) {
+			lockOutDataRepo.add(lockOutData);
+		}
+		
+		@Override
+		public Optional<LockoutData> getLockOutData(String userId) {
+			return lockOutDataRepo.find(userId);
 		}
 
 		@Override
-		public void save(LockOutData lockOutData) {
-			// TODO Auto-generated method stub
-			
+		public Optional<LoginPasswordOfUser> getLoginPasswordOfUser(String userId) {
+			return loginPasswordOfUserRepo.find(userId);
 		}
 
 		@Override
-		public PasswordChangeLog getPasswordChangeLog(String userId) {
-			// TODO Auto-generated method stub
-			return null;
+		public void addFailureLog(PasswordAuthIdentificationFailureLog failurLog) {
+			passwordAuthIdentificateFailureLogRepo.insert(failurLog);
+		}
+
+		@Override
+		public void save(PasswordAuthenticationFailureLog failuresLog) {
+			passwordAuthenticateFailuresLogRepo.insert(failuresLog);
 		}
 	}
 

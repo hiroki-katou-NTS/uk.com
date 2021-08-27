@@ -47,7 +47,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepositor
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -110,38 +109,46 @@ public class GetInformationStartup {
 		GetInformationStartupOutput data = new GetInformationStartupOutput();
 		String companyId = AppContexts.user().companyId();
 		val require = requireService.createRequire();
-
-		// 1 : 共通設定の取得
-		Optional<WorkTimezoneCommonSet> optWorktimezone = GetCommonSet.workTimezoneCommonSet(require, companyId,
-				workTimeCode);
-		WorkTimezoneCommonSetDto workTimezoneCommonSetDto = new WorkTimezoneCommonSetDto();
-		if (!optWorktimezone.isPresent()) {
-			data.setWorkTimezoneCommonSet(null);
-		} else {
-			optWorktimezone.get().saveToMemento(workTimezoneCommonSetDto);
-			data.setWorkTimezoneCommonSet(workTimezoneCommonSetDto);
+		
+		if(workTimeCode !=null) {
+			// 1.1 : 共通設定の取得
+			Optional<WorkTimezoneCommonSet> optWorktimezone = GetCommonSet.workTimezoneCommonSet(require, companyId,
+					workTimeCode);
+			WorkTimezoneCommonSetDto workTimezoneCommonSetDto = new WorkTimezoneCommonSetDto();
+			if (optWorktimezone.isPresent()) {
+				optWorktimezone.get().saveToMemento(workTimezoneCommonSetDto);
+				data.setWorkTimezoneCommonSet(workTimezoneCommonSetDto);
+			}
+			//1.2 : 会社を指定し就業時間帯を取得する
+			Optional<WorkTimeSetting> optWorkTimeSetting = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+			if(optWorkTimeSetting.isPresent()) {
+				data.setWorkTimeSettingName(new WorkTimeSettingNameDto(
+						optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeName().v(),
+						optWorkTimeSetting.get().getWorkTimeDisplayName().getWorkTimeAbName().v()));
+			}
 		}
-
+		
+		if (workTypeCode != null) {
+			// 2.1 :
+			Optional<WorkType> workType = workTypeRepo.findByPK(companyId, workTypeCode);
+			data.setWorkTypeSettingName(new WorkTypeSettingNameDto(workType.get().getName().v(), workType.get().getAbbreviationName().v()));
+			// 2.2 :
+			WorkInformation wi = new WorkInformation(workTypeCode, workTimeCode);
+			WorkInformation.Require requireWorkInfo = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
+					workTimeSettingService, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository,
+					flexWorkSettingRepository, predetemineTimeSettingRepository);
+			//2.3 : 
+			Optional<WorkStyle> workStyle = wi.getWorkStyle(requireWorkInfo);
+			data.setWorkStyle(workStyle.isPresent() ? workStyle.get().value : null);
+		}
+		// 3 : Map<時間休暇種類, 合計使用時間>
 		List<UsageTimeAndType> listUsageTimeAndType = new ArrayList<>();
-		// 2 : 合計使用時間()
+		// 3.1 : 合計使用時間の計算()
 		for (TimeVacationAndType timeVacationAndType : listTimeVacationAndType) {
 			int total = timeVacationAndType.getTimeVacation().getUsageTime().totalVacationAddTime();
-//			for (DailyAttdTimeVacationDto dailyAttdTimeVacationDto : timeVacationAndType.getTimeVacation()
-//					.getUsageTime()) {
-//				total = total + dailyAttdTimeVacationDto.totalVacationAddTime();
-//			}
 			listUsageTimeAndType.add(new UsageTimeAndType(timeVacationAndType.getTypeVacation(), total));
 		}
 		data.setListUsageTimeAndType(listUsageTimeAndType);
-		if(workTypeCode ==null || workTypeCode.equals("")) {
-			data.setWorkStyle(null);
-		}else {
-			WorkInformation wi = new WorkInformation(workTypeCode, workTimeCode);
-			WorkInformation.Require requireWorkInfo = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
-					workTimeSettingService, basicScheduleService,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
-			Optional<WorkStyle> workStyle =  wi.getWorkStyle(requireWorkInfo);
-			data.setWorkStyle(workStyle.isPresent()?workStyle.get().value:null);
-		}
 
 		// 4:取得する(Require, 対象組織識別情報)
 		GetShiftTableRuleForOrganizationService.Require requireGetShiftTableRule = new RequireImpl(
@@ -149,10 +156,11 @@ public class GetInformationStartup {
 		Optional<ShiftTableRule> otpShiftTableRule = GetShiftTableRuleForOrganizationService
 				.get(requireGetShiftTableRule, targetOrgIdenInforDto.convertFromDomain());
 		data.setShowYourDesire(0);
+		//5 : 希望を表示するか==true
 		if (otpShiftTableRule.isPresent() && otpShiftTableRule.get().getUseWorkAvailabilityAtr() == NotUseAtr.USE) {
 			data.setShowYourDesire(1);
 		}
-		// 5:
+		// 6:
 		Optional<WorkAvailabilityOfOneDay> workAvailabilityOfOneDayOpt = workAvailabilityOfOneDayRepo.get(employeeId,
 				baseDate);
 		if (workAvailabilityOfOneDayOpt.isPresent()) {

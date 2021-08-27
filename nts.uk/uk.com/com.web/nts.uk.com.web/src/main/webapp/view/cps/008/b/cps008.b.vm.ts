@@ -30,29 +30,33 @@ module cps008.b.vm {
         }
 
         resizedw() {
-            let self = this,
+            let self = this;
+            var currentDialog;
+
+            setTimeout(() => {
                 currentDialog = nts.uk.ui.windows.getSelf();
-            // $(currentDialog.parent.globalContext).css("overflow", "hidden");
+                // $(currentDialog.parent.globalContext).css("overflow", "hidden");
 
-            if (currentDialog) {
-                var rgc;
-                if (currentDialog.parent) {
-                    rgc = currentDialog.parent.globalContext
-                } else {
-                    rgc = currentDialog.rgc();
-                }
-                if (rgc.innerWidth <= 1275) {
-                    currentDialog.setWidth(rgc.innerWidth - 50);
-                } else {
-                    currentDialog.setWidth(1275);
-                }
+                if (currentDialog) {
+                    var rgc;
+                    if (currentDialog.parent) {
+                        rgc = currentDialog.parent.globalContext
+                    } else {
+                        rgc = currentDialog.rgc();
+                    }
+                    if (rgc.innerWidth <= 1275) {
+                        currentDialog.setWidth(rgc.innerWidth - 50);
+                    } else {
+                        currentDialog.setWidth(1275);
+                    }
 
-                if (rgc.innerHeight <= 750) {
-                    currentDialog.setHeight(rgc.innerHeight - 50);
-                } else {
-                    currentDialog.setHeight(750);
+                    if (rgc.innerHeight <= 750) {
+                        currentDialog.setHeight(rgc.innerHeight - 50);
+                    } else {
+                        currentDialog.setHeight(750);
+                    }
                 }
-            }
+            }, 100);
         }
 
         start() {

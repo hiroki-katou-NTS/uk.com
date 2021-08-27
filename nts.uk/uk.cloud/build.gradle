@@ -1,4 +1,4 @@
-import org.gradle.api.Project
+﻿import org.gradle.api.Project
 
 apply plugin: 'java'
 
@@ -488,7 +488,14 @@ project (':cloud.web:nts.uk.cloud.web') {
 		} else {
 			commandLine 'tsc'
 		}
+	}
+}
 
+project (':cloud.operate:nts.uk.ctx.cloud.operate.ac') {
+	dependencies {
+		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.app')
+		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
+		compile group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
 		args '--watch'
 		ignoreExitValue true
 	}

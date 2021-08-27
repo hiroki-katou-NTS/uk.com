@@ -5,13 +5,13 @@
 }
 
 .screen-k .information {
-	padding-left:25px;
+	padding-top: 10px;
+	padding-left: 25px;
 	vertical-align: top;
 	display: inline-block;
 }
 
 .screen-k .form-group {
-	display:none;
 	margin-bottom: 10px;
 }
 
@@ -22,4 +22,7 @@
 
 .screen-k .form-group.filter-group>.ui-igcombo-wrapper {
 	width: 110px;
+}
+#k_gridlist-div{
+	padding-top: 10px;
 }
