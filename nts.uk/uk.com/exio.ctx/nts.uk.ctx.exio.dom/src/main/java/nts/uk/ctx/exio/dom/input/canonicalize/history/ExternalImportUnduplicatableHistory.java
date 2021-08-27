@@ -24,8 +24,8 @@ public class ExternalImportUnduplicatableHistory
 		super.add(itemToBeAdded);
 	}
 	
-	public ExternalImportUnduplicatableHistory(List<DateHistoryItem> period) {
-		super(period);
+	public ExternalImportUnduplicatableHistory(String employeeId, List<DateHistoryItem> period) {
+		super(employeeId, period);
 	}
 
 }

@@ -14,8 +14,8 @@ public class ExternalImportPersistentResidentHistory
 	extends ExternalImportPersistentHistory 
 	implements PersistentResidentHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 	
-	public ExternalImportPersistentResidentHistory(List<DateHistoryItem> period) {
-		super(period);
+	public ExternalImportPersistentResidentHistory(String employeeId, List<DateHistoryItem> period) {
+		super(employeeId, period);
 	}
 	
 	@Override
