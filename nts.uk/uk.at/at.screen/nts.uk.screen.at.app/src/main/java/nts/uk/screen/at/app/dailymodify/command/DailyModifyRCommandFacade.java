@@ -68,7 +68,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -91,6 +90,7 @@ import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyResult;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
+import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.ValidatorDataDailyRes;
 import nts.uk.screen.at.app.dailyperformance.correction.checkdata.dto.ErrorAfterCalcDaily;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.DPAttendanceItem;
@@ -104,12 +104,10 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.EmpErrorCode;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.OperationOfDailyPerformanceDto;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.ResultReturnDCUpdateData;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.TypeError;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.month.DPMonthValue;
 import nts.uk.screen.at.app.dailyperformance.correction.dto.month.LeaveDayErrorDto;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IGetDataClosureStart;
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQuery;
-import nts.uk.screen.at.app.dailyperformance.correction.calctime.DailyCorrectCalcTimeService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -459,7 +457,7 @@ public class DailyModifyRCommandFacade {
 					}
 				}
 			}
-
+			//乖離エラー発生時の本人確認解除
 			val errorSign = validatorDataDaily.releaseDivergence(resultIU.getLstDailyDomain());
 			if (!errorSign.isEmpty()) {
 				// resultError.putAll(errorSign);
@@ -765,6 +763,12 @@ public class DailyModifyRCommandFacade {
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
 		boolean onlyErrorOld = true;
+		boolean chkChildNursing = lstItemEdits.stream()
+		    .filter(x -> (x.getItemId() == 759 || x.getItemId() == 760 || x.getItemId() == 761 || x.getItemId() == 762))
+		    .findFirst().isPresent();
+		boolean chkLongTermCare = lstItemEdits.stream()
+	            .filter(x -> (x.getItemId() == 763 || x.getItemId() == 764 || x.getItemId() == 765 || x.getItemId() == 766))
+	            .findFirst().isPresent();
 		for (String emp : employeeIds) {
 			// employeeIds.stream().forEach(emp -> {
 			List<IntegrationOfDaily> domainDailyEditAll = dailyDtoEditAll.stream()
@@ -790,7 +794,8 @@ public class DailyModifyRCommandFacade {
 					TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 							new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
 							new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false,
-							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime());
+							lstAttendanceTimeData, lstWorkInfor, month.getAttendanceTime(), 
+							Optional.of(chkChildNursing), Optional.of(chkLongTermCare));
 					// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 					lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				}
@@ -802,7 +807,7 @@ public class DailyModifyRCommandFacade {
 				TimeOffRemainErrorInputParam param = new TimeOffRemainErrorInputParam(companyId, emp,
 						new DatePeriod(date.get(), date.get().addYears(1).addDays(-1)),
 						new DatePeriod(dateRange.getStartDate(), dateRange.getEndDate()), false, lstAttendanceTimeData,
-						lstWorkInfor, optMonthlyData);
+						lstWorkInfor, optMonthlyData, Optional.of(chkChildNursing), Optional.of(chkLongTermCare));
 				lstEmpMonthError.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 				// monthPer.addAll(timeOffRemainErrorInfor.getErrorInfor(param));
 			}

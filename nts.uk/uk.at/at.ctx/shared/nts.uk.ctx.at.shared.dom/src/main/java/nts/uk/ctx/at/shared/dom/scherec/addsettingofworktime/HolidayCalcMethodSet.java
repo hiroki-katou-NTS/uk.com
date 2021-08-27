@@ -73,13 +73,31 @@ public class HolidayCalcMethodSet extends DomainObject implements Serializable{
 	
 	/**
 	 * 休暇加算するかどうか判断
-	 * @return
+	 * @param premiumAtr 割増区分（通常、割増）
+	 * @return USE:加算する,NOT_USE:加算しない
 	 */
 	public NotUseAtr getNotUseAtr(PremiumAtr premiumAtr) {
-		if(premiumAtr.isRegularWork()) {
-			return this.workTimeCalcMethodOfHoliday.getAdvancedSet().isPresent()?this.workTimeCalcMethodOfHoliday.getAdvancedSet().get().getIncludeVacationSet().getAddition():NotUseAtr.NOT_USE;
-		}else {
-			return this.premiumCalcMethodOfHoliday.getAdvanceSet().isPresent()?this.workTimeCalcMethodOfHoliday.getAdvancedSet().get().getIncludeVacationSet().getAddition():NotUseAtr.NOT_USE;
+		if (premiumAtr.isRegularWork()){
+			// 通常
+			if (this.workTimeCalcMethodOfHoliday.getCalculateActualOperation().isCalclationByActualTime()){
+				// 「実動のみで計算する」時、加算しない
+				return NotUseAtr.NOT_USE;
+			}
+			// 詳細設定を確認する　→　「加算する」を返す　（なければ、加算しない）
+			return this.workTimeCalcMethodOfHoliday.getAdvancedSet().isPresent() ?
+					this.workTimeCalcMethodOfHoliday.getAdvancedSet().get().getIncludeVacationSet().getAddition() :
+						NotUseAtr.NOT_USE;
+		}
+		else{
+			// 割増
+			if (this.premiumCalcMethodOfHoliday.getCalculateActualOperation().isCalclationByActualTime()){
+				// 「実動のみで計算する」時、加算しない
+				return NotUseAtr.NOT_USE;
+			}
+			// 詳細設定を確認する　→　「加算する」を返す　（なければ、加算しない）
+			return this.premiumCalcMethodOfHoliday.getAdvanceSet().isPresent() ?
+					this.workTimeCalcMethodOfHoliday.getAdvancedSet().get().getIncludeVacationSet().getAddition() :
+						NotUseAtr.NOT_USE;
 		}
 	}
 	
@@ -132,6 +150,16 @@ public class HolidayCalcMethodSet extends DomainObject implements Serializable{
 		return new HolidayCalcMethodSet(
 				this.premiumCalcMethodOfHoliday.of(this.workTimeCalcMethodOfHoliday),
 				this.workTimeCalcMethodOfHoliday);
+	}
+	
+	/**
+	 * 遅刻、早退の控除設定を「控除する」に変更して作成する
+	 * @return 遅刻、早退の控除設定を「控除する」に変更したインスタンス
+	 */
+	public HolidayCalcMethodSet createNewDeductLateEarly(){
+		return new HolidayCalcMethodSet(
+				this.premiumCalcMethodOfHoliday,
+				this.workTimeCalcMethodOfHoliday.changeDeduct());
 	}
 }
 

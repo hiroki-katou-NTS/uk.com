@@ -8,7 +8,6 @@
 	width: 320px;
 	height: 333px;
 	margin-left: 15px;
-	padding-left: 15px;
 	padding-top: 10px;
 }
 
@@ -37,7 +36,7 @@ td {
 }
 
 .ntsHelpButton {
-	margin-left: 10px;
+	top: -15px;
 }
 
 #contents-area {
@@ -74,4 +73,7 @@ table.control {
 
 #contents-area {
 	overflow: hidden;
+}
+.control .nts-help-button-image {
+	padding: 9px 6px 3px 6px !important;
 }

@@ -45,6 +45,9 @@ public class XimctImportableItem extends UkJpaEntity implements Serializable{
 	@Column(name = "REQUIRED")
 	private boolean required;
 	
+	@Column(name = "IS_PRIMARYKEY")
+	private boolean isPrimaryKey;	
+	
 	@Column(name = "CHECK_METHOD")
 	private Integer checkMethod;
 	
@@ -73,6 +76,7 @@ public class XimctImportableItem extends UkJpaEntity implements Serializable{
 				itemName,
 				EnumAdaptor.valueOf(itemType, ItemType.class),
 				required,
+				isPrimaryKey,
 				constraint);
 	}
 	
@@ -94,6 +98,7 @@ public class XimctImportableItem extends UkJpaEntity implements Serializable{
 				target.getItemName(),
 				target.getItemType().value, 
 				target.isRequired(),
+				target.isPrimaryKey(),
 				checkMethod, 
 				fqn);
 	}

@@ -1,5 +1,19 @@
 package nts.uk.ctx.at.request.app.find.application.businesstrip;
 
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -10,9 +24,23 @@ import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobil
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.CheckPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.DetailScreenInfo;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.*;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripActualContentDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripInfoOutputDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripOutputDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ChangeWorkCodeParam;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.CheckBeforeRegisterDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailScreenDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailStartScreenInfoDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ParamStartKDL003;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.WorkTypeNameDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
-import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
@@ -27,24 +55,18 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSetRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import org.apache.logging.log4j.util.Strings;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 public class BusinessTripFinder {
@@ -180,6 +202,7 @@ public class BusinessTripFinder {
                 ));
 
         BusinessTripInfoOutput output = param.getBusinessTripInfoOutput().toDomain();
+        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
@@ -188,12 +211,15 @@ public class BusinessTripFinder {
                 true,
                 application,
                 null,
-                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                 Collections.emptyList(),
-                output.getAppDispInfoStartup()
+                output.getAppDispInfoStartup(), 
+                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
+                Optional.empty(), 
+                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTimeCode()).findFirst().map(WorkTimeCode::v), 
+                false
         );
 
-        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
@@ -495,9 +521,13 @@ public class BusinessTripFinder {
                     true,
                     application,
                     null,
-                    businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+                    businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
-                    businessTripInfoOutput.getAppDispInfoStartup()
+                    businessTripInfoOutput.getAppDispInfoStartup(),
+                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()), 
+                    Optional.empty(), 
+                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst(), 
+                    false
             );
 
             // アルゴリズム「申請日を変更する処理」を実行する

@@ -443,12 +443,5 @@ module cmm045.shr {
 				this.sID = sID;
 			}
 		}
-		
-		export enum ConfirmDialog {
-			CONFIRM = 0,
-			NOT_CONFIRM = 1,
-			CONFIRM_ALL = 2,
-			NOT_CONFIRM_ALL = 3
-		}
     }
 }

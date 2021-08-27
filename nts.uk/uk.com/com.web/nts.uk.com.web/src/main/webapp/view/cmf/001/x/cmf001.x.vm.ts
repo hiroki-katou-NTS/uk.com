@@ -20,11 +20,17 @@ module nts.uk.com.cmf001.x {
 		// CSVファイルID
 		csvFileId: KnockoutObservable<string> = ko.observable();
 
-		// エラー出力
-		errorsText: KnockoutObservable<string> = ko.observable();
+		// メッセージ出力
+		messageBox: KnockoutObservable<string> = ko.observable();
+
+		// エラーメッセージ
+		errorMessage: KnockoutObservable<string> = ko.observable("");
 
 		// エラー出力
 		isPreparedSuccess: KnockoutObservable<boolean> = ko.observable();
+
+		// 処理中フラグ
+		isProcessing: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor() {
 			super();
@@ -49,20 +55,14 @@ module nts.uk.com.cmf001.x {
 			return dfd.promise();
 		}
 
-		csvFileSelected() {
+		csvFileSelected() {}
 
-		}
-
-		csvFileUploaded() {
-
-		}
-
-		canPrepare =  ko.computed(() => this.csvFileName());
+		csvFileUploaded() {}
 
 		prepare(){
+			nts.uk.ui._viewModel.content.processStart();
 			// ファイルのアップロード
 			$("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
-				console.log("成功！");
 				nts.uk.ui._viewModel.content.csvFileId(res[0].id)
 				let prepareCommand = {
 					settingCode: nts.uk.ui._viewModel.content.selectedSettingCode(), 
@@ -77,50 +77,58 @@ module nts.uk.com.cmf001.x {
 						.while (info => info.pending || info.running)
 						.pause(1000)).done((info: any) => {
 							if(info.status ==="COMPLETED"){
-								nts.uk.ui._viewModel.content.isPreparedSuccess(true);
 								// 正常に完了していればエラーチェック
 								let requestCount: number = 0;
-								nts.uk.ui._viewModel.content.errorsText("");
+								nts.uk.ui._viewModel.content.messageBox("");
 								nts.uk.deferred.repeat(conf => conf
-								.task(() => {
-									requestCount++;
-									return ajax("/exio/input/errors/" + nts.uk.ui._viewModel.content.selectedSettingCode() + "/" + requestCount).done((result) => {
-										// 取得したエラーを蓄積
-										nts.uk.ui._viewModel.content.errorsText(nts.uk.ui._viewModel.content.errorsText() + result.text);
+									.task(() => {
+										requestCount++;
+										// エラーの問い合わせ
+										return ajax("/exio/input/errors/" + nts.uk.ui._viewModel.content.selectedSettingCode() + "/" + requestCount).done((result) => {
+											// 取得したエラーを蓄積
+											nts.uk.ui._viewModel.content.errorMessage(nts.uk.ui._viewModel.content.errorMessage() + result.text);
+										});
+									})
+									// エラー件数が0件になるまで繰り返す
+									.while (result => result.errosCount === 0)).done(() => {
+										if(nts.uk.ui._viewModel.content.errorMessage()){
+											nts.uk.ui._viewModel.content.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。<br />" + nts.uk.ui._viewModel.content.errorMessage());
+										}else{
+											nts.uk.ui._viewModel.content.messageBox("受入準備が完了しました。");
+										}
 									});
-								})
-								// エラー件数が0件になるまで繰り返す
-								.while (result => result.errosCount === 0));
 							}else{
-								nts.uk.ui._viewModel.content.isPreparedSuccess(false);
+								nts.uk.ui._viewModel.content.errorMessage(info.error.message);
 								if(info.error.businessException){
 									// 業務エラーの場合は画面に表示
-									nts.uk.ui._viewModel.content.errorsText(info.error.message);
-									console.log(info.error.message);
-									console.log(nts.uk.ui._viewModel.content.errorsText());
+									nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
 								}else{
 									// システムエラーの場合はエラーダイアログを表示
 									(<any>nts).uk.request.specials.errorPages.systemError()
 								}
 							}
+							// 処理終了
+							nts.uk.ui._viewModel.content.processEnd();
 						});
 				}).fail(function(err) {
 					// 受入準備に失敗
-					nts.uk.ui._viewModel.content.errorsText(nts.uk.resource.getMessage(err.messageId, []))
+					nts.uk.ui._viewModel.content.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+					nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
+					nts.uk.ui._viewModel.content.processEnd();
 				})
 			}).fail(function(err) {
 				// ファイルのアップロードに失敗
 				nts.uk.ui._viewModel.content.csvFileId("");
-				nts.uk.ui._viewModel.content.errorsText(nts.uk.resource.getMessage(err.messageId, []))
+				nts.uk.ui._viewModel.content.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+				nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
+				nts.uk.ui._viewModel.content.processEnd();
 			});
 		}
-		
-    canExecute = ko.computed(() => this.csvFileId() && this.isPreparedSuccess() && !this.errorsText());
 
 		execute(){
-			let executeCommand = {
-				settingCode: nts.uk.ui._viewModel.content.selectedSettingCode()};
-			ajax("/exio/input/prepare", executeCommand).done((executeResult) => {
+			nts.uk.ui._viewModel.content.processStart();
+			let executeCommand = {settingCode: nts.uk.ui._viewModel.content.selectedSettingCode()};
+			ajax("/exio/input/execute", executeCommand).done((executeResult) => {
 				// サーバーへタスクの進捗問い合わせ
 				nts.uk.deferred.repeat(conf => conf
 					.task(() => {
@@ -129,16 +137,45 @@ module nts.uk.com.cmf001.x {
 					// 完了するまで問い合わせ続ける
 					.while (info => info.pending || info.running)
 					.pause(1000)).done((info: any) => {
-						if(info.stetus ==="COMPLETED"){
-							console.log("おわった");
+						if(info.status ==="COMPLETED"){
+							nts.uk.ui._viewModel.content.messageBox("受入処理が完了しました。");
+						}else{
+							nts.uk.ui._viewModel.content.messageBox("受入処理が失敗しました。");
 						}
+						nts.uk.ui._viewModel.content.processEnd();
 					});
-
 			}).fail(function(err) {
 				// 受入実行に失敗
-				nts.uk.ui._viewModel.content.errorsText(nts.uk.resource.getMessage(err.messageId, []))
+				nts.uk.ui._viewModel.content.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+				nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
+				nts.uk.ui._viewModel.content.processEnd();
 			})
 
 		}
+
+		processStart(){
+			nts.uk.ui._viewModel.content.errorMessage("");
+			nts.uk.ui._viewModel.content.messageBox("");			
+			nts.uk.ui._viewModel.content.isProcessing(true);
+		}
+
+		processEnd(){
+			nts.uk.ui._viewModel.content.isProcessing(false);
+		}
+		
+
+		canPrepare =  ko.computed(() => 
+		  // ファイルが指定されていること
+			this.csvFileName() && 
+			// 処理中でないこと
+			!this.isProcessing());
+		
+		canExecute = ko.computed(() => 
+			// ファイルがアップロードされていること
+			this.csvFileId() && 
+			// エラーメッセージが発生していないこと
+			!this.errorMessage() && 
+			// 処理中でないこと
+			!this.isProcessing());
 	}
 }

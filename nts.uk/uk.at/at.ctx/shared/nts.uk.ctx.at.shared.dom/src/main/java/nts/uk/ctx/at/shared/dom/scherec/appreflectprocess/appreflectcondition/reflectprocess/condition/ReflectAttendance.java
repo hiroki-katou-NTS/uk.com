@@ -29,8 +29,12 @@ public class ReflectAttendance {
 	public static List<Integer> reflect(Require require, String cid, List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst,
 			ScheduleRecordClassifi classification, DailyRecordOfApplication dailyApp, Optional<Boolean> reflectAtt,
 			Optional<Boolean> reflectLeav, Optional<TimeChangeMeans> timeChangeMeanOpt) {
-
+		
 		List<Integer> lstItemId = new ArrayList<Integer>();
+		
+		if (!reflectAtt.orElse(false) && !reflectLeav.orElse(false)) {
+			return lstItemId;
+		}
 		// [input. 勤務時間帯(List）]をループ
 		for (TimeZoneWithWorkNo timeZone : timeZoneWithWorkNoLst) {
 
@@ -66,47 +70,44 @@ public class ReflectAttendance {
 				if (attendanceLeave.isPresent()) {
 					if (reflectAtt.orElse(false)) {
 						//時刻を変更してもいいか判断する
-						if (timeChangeMeanOpt.isPresent() && !attendanceLeave.flatMap(c -> c.getStampOfAttendance())
+						if (timeChangeMeanOpt.isPresent() && attendanceLeave.flatMap(c -> c.getStampOfAttendance())
 								.map(x -> x.isCanChangeTime(require, cid, timeChangeMeanOpt.get())).orElse(true)) {
-							continue;
+							if (attendanceLeave.get().getAttendanceStamp().isPresent()
+									&& !attendanceLeave.get().getAttendanceStamp().get().getStamp().isPresent()) {
+								attendanceLeave.get().getAttendanceStamp().get()
+										.setStamp(Optional.of(WorkStamp.createDefault()));
+							}
+							attendanceLeave.flatMap(c -> c.getStampOfAttendance()).ifPresent(at -> {
+								at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getStartTime()));
+								at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(timeChangeMeanOpt.get());
+								
+								lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
+							});
 						}
-						if (attendanceLeave.get().getAttendanceStamp().isPresent()
-								&& !attendanceLeave.get().getAttendanceStamp().get().getStamp().isPresent()) {
-							attendanceLeave.get().getAttendanceStamp().get()
-									.setStamp(Optional.of(WorkStamp.createDefault()));
-						}
-						attendanceLeave.flatMap(c -> c.getStampOfAttendance()).ifPresent(at -> {
-							at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getStartTime()));
-							at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(timeChangeMeanOpt.get());
-							
-							lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(31, timeZone.getWorkNo().v(), 10)));
-						});
-						
 					}
 
 					if (reflectLeav.orElse(false)) {
 						//時刻を変更してもいいか判断する
-						if (timeChangeMeanOpt.isPresent() && !attendanceLeave.flatMap(c -> c.getStampOfLeave())
+						if (timeChangeMeanOpt.isPresent() && attendanceLeave.flatMap(c -> c.getStampOfLeave())
 								.map(x -> x.isCanChangeTime(require, cid, timeChangeMeanOpt.get())).orElse(true)) {
-							continue;
+							if (attendanceLeave.get().getLeaveStamp().isPresent()
+									&& !attendanceLeave.get().getLeaveStamp().get().getStamp().isPresent()) {
+								attendanceLeave.get().getLeaveStamp().get().setStamp(Optional.of(WorkStamp.createDefault()));
+							}
+							attendanceLeave.flatMap(c -> c.getStampOfLeave()).ifPresent(at -> {
+								at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getEndTime()));
+								at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(timeChangeMeanOpt.get());
+								
+								lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));
+							});
 						}
-						if (attendanceLeave.get().getLeaveStamp().isPresent()
-								&& !attendanceLeave.get().getLeaveStamp().get().getStamp().isPresent()) {
-							attendanceLeave.get().getLeaveStamp().get().setStamp(Optional.of(WorkStamp.createDefault()));
-						}
-						attendanceLeave.flatMap(c -> c.getStampOfLeave()).ifPresent(at -> {
-							at.getTimeDay().setTimeWithDay(Optional.of(timeZone.getTimeZone().getEndTime()));
-							at.getTimeDay().getReasonTimeChange().setTimeChangeMeans(timeChangeMeanOpt.get());
-							
-							lstItemId.addAll(Arrays.asList(CancelAppStamp.createItemId(34, timeZone.getWorkNo().v(), 10)));
-						});
 					}
 				} else {
 					TimeLeavingWork work = new TimeLeavingWork(timeZone.getWorkNo(), null, null);
 					if (reflectAtt.orElse(false)) {
 						work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(
-										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), null),
+										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), Optional.empty()),
 												timeZone.getTimeZone().getStartTime()),
 										Optional.empty()),
 								0)));
@@ -115,7 +116,7 @@ public class ReflectAttendance {
 					if (reflectLeav.orElse(false)) {
 						work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
 								new WorkStamp(
-										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), null),
+										new WorkTimeInformation(new ReasonTimeChange(timeChangeMeanOpt.get(), Optional.empty()),
 												timeZone.getTimeZone().getEndTime()),
 										Optional.empty()),
 								0)));

@@ -411,7 +411,7 @@
                                     optionsText: 'name',
                                     value: displayInitialSegment,
                                     required: true,
-                                    enable: $parent.prePostDisplayAtr() == 1 }"/>
+                                    enable: ko.computed(() => $parent.prePostDisplayAtr() == 1) }"/>
                     </td>
                     <td style="text-align: center">
                         <span data-bind="ntsCheckBox: {

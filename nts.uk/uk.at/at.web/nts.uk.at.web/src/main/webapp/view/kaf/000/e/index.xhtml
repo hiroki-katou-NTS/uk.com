@@ -33,13 +33,12 @@
 							                    	width: '340',
 							                    	textalign: 'left'
 							                   	},
-					             				required : true,
 					             				enable: true,
 					             				constraint: 'ApprovalComment' }" />
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed" style="width: 200px;" data-bind="click: approve, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_19')}</button>
+				<button class="proceed" style="width: 200px;" data-bind="click: approve, enable: $root.errors.isEmpty">#{i18n.getText('KAF000_15')}</button>
 				<button data-bind="click: close">#{i18n.getText('KAF000_36')}</button>
 			</div>
 		</ui:define>

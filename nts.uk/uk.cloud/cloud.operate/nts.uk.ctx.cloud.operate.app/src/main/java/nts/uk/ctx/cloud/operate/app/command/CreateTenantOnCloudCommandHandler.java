@@ -61,7 +61,6 @@ public class CreateTenantOnCloudCommandHandler extends CommandHandler<CreateTena
 		//デフォルト会社を作る()
 		AtomTask createCompany = CreateDefaultCompanyService.create(require, 
 																	context.getCommand().getTenanteCode(),
-																	"1",
 																	context.getCommand().getCompanyName());
 		
 //		List<AtomTask> tasks = Arrays.asList(at, createTenant, createCompany);

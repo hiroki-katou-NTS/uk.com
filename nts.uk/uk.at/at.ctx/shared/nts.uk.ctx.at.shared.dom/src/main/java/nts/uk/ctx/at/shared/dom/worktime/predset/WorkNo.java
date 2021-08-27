@@ -22,5 +22,4 @@ public class WorkNo extends IntegerPrimitiveValue<WorkNo> {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
-
 }

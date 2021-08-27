@@ -17,8 +17,8 @@ import nts.uk.ctx.bs.company.dom.company.primitive.ContractCd;
  */
 public class CreateDefaultCompanyService {
 
-	public static AtomTask create(Require require,String contractCode, String companyCode, String companyName) {
-		Company company = new Company(new CompanyCode(companyCode),
+	public static AtomTask create(Require require,String contractCode, String companyName) {
+		Company company = new Company(new CompanyCode("0001"),
 																	new Name(companyName),
 																	MonthStr.FOUR,
 																	AbolitionAtr.NOT_ABOLITION,
