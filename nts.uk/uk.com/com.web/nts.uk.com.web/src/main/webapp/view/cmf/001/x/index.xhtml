@@ -41,7 +41,7 @@
 						<div id="file-upload" data-bind="ntsFileUpload:{
 							filename: csvFileName,
 							accept: ['csv'],
-							text: 'てきすとID',
+							text: '選択',
 							aslink: false,
 							onchange: csvFileSelected,
 							immediateUpload: false,
@@ -58,7 +58,7 @@
 			</div>
 
 			<div id="error">
-				<textarea id="error-disp"  data-bind="ntsMultilineEditor: { value: errorsText, enable: true, readonly: true }" />
+				<textarea id="error-disp"  data-bind="ntsMultilineEditor: { value: messageBox, enable: true, readonly: true }" />
 			</div>
 		</div>
 	</ui:define>
