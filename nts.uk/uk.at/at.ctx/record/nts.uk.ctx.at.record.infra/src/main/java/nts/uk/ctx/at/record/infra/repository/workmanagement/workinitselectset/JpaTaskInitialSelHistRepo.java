@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.workmanagement.workinitselectset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -163,7 +164,7 @@ public class JpaTaskInitialSelHistRepo extends JpaRepository implements TaskInit
 
 	@Override
 	public List<TaskInitialSelHist> getByCid(String companyId) {
-		List<TaskInitialSel> data = this.queryProxy().query(SELECT_BY_CID ,  KrcmtTaskInitialSelHist.class )
+		Map<String, List<TaskInitialSel>> data = this.queryProxy().query(SELECT_BY_CID ,  KrcmtTaskInitialSelHist.class )
 				.setParameter("companyId", companyId)
 				.getList().stream().map(c -> new TaskInitialSel(c.pk.sID,
 						new DatePeriod(c.pk.startDate, c.endDate) ,
@@ -172,8 +173,9 @@ public class JpaTaskInitialSelHistRepo extends JpaRepository implements TaskInit
 								 Optional.ofNullable(new TaskCode(c.taskCd3)),
 								 Optional.ofNullable(new TaskCode(c.taskCd4)),
 								 Optional.ofNullable(new TaskCode(c.taskCd5)))))
-				.collect(Collectors.toList());
-		List<TaskInitialSelHist> lst = data.stream().map( c -> new TaskInitialSelHist(c.getEmpID(), data) ).collect(Collectors.toList());
+				.collect(Collectors.groupingBy(i->i.getEmpID()));
+		List<TaskInitialSelHist> lst = new ArrayList<>();
+				data.forEach((k,v) -> lst.add(new TaskInitialSelHist(k, v)));
 		return lst;
 	}
 }
