@@ -12,6 +12,7 @@ module nts.uk.com.view.oem002.b {
     equipmentClsList: KnockoutObservableArray<EquipmentClassificationDto> = ko.observableArray([]);
     selectedEquipmentClsCode: KnockoutObservable<string> = ko.observable(null);
     columns: KnockoutObservableArray<any> = ko.observableArray([]);
+    enableSave: KnockoutObservable<boolean>;
 
     created(param: string) {
       const vm = this;
@@ -19,6 +20,7 @@ module nts.uk.com.view.oem002.b {
         { headerText: vm.$i18n("OEM002_23"), key: 'code', width: 100 },
         { headerText: vm.$i18n("OEM002_24"), key: 'name', width: 200 },
       ]);
+      vm.enableSave = ko.computed(() => vm.equipmentClsList().length !== 0 && !!vm.selectedEquipmentClsCode());
       vm.selectedEquipmentClsCode(param);
     }
 

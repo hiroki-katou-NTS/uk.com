@@ -1,5 +1,5 @@
 .panel.panel-frame {
-  width: 245px;
+  width: 255px;
   height: 330px;
   float: left;
   display: block;
@@ -33,5 +33,5 @@
 .caret-bottom:after {
 	color: #92D050;
 	border-width: 18px 55px;
-	margin-top: 5px;
+	margin-top: 15px;
 }
