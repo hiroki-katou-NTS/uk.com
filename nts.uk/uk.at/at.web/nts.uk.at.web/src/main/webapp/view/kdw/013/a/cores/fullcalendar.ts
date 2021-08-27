@@ -2386,7 +2386,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         const { setting } = popupData;
                         const { firstDay, scrollTime, slotDuration } = value;
 
-                        if (firstDay)
+                        if (firstDay !== undefined)
                             setting.firstDay(firstDay);
                         if (scrollTime)
                             setting.scrollTime(scrollTime);

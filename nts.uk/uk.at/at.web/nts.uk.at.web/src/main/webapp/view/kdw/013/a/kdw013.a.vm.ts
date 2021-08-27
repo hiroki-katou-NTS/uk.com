@@ -481,7 +481,10 @@ module nts.uk.ui.at.kdw013.a {
                         .storage('KDW013_SETTING')
                         .then((value: any) => {
                             if (value) {
-                                vm.initialView(value.initialView);
+                                vm.initialView(value.initialView || 'oneDay');
+                                vm.firstDay(!!value.firstDay ? value.firstDay : 1);
+                                vm.scrollTime(value.scrollTime || 420);
+                                vm.slotDuration(value.slotDuration || 30);
                             }
                         });
                 
