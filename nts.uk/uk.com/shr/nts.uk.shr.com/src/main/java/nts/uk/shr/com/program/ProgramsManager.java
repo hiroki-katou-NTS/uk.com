@@ -3895,6 +3895,9 @@ public class ProgramsManager {
     public static final Program OEM002B = new Program(WebAppId.COM, ProgramIdConsts.OEM002B, "OEM002_2",
             "/view/oem/002/b/index.xhtml");
     
+    public static final Program OEM004A = new Program(WebAppId.COM, ProgramIdConsts.OEM004A, "OEM004_1",
+            "/view/oem/004/a/index.xhtml");
+    
     /**
      * All programs map.
      */
