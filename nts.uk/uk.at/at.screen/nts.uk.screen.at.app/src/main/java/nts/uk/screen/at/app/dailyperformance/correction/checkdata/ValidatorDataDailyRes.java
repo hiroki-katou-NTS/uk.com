@@ -138,15 +138,37 @@ public class ValidatorDataDailyRes {
 
 	private List<DPItemValue> hasChildCare(List<DPItemValue> items) {
 		List<DPItemValue> itemChild = items.stream()
-				.filter(x -> x.getValue() != null && (x.getItemId() == CHILD_CARE[0] || x.getItemId() == CHILD_CARE[1]
-						|| x.getItemId() == CHILD_CARE[2] || x.getItemId() == CHILD_CARE[3] || x.getItemId() == CHILD_CARE[4]))
+				.filter(x -> {
+					boolean check = false;
+					
+					if ((x.getValue() != null) && (x.getItemId() == CHILD_CARE[0] || x.getItemId() == CHILD_CARE[1]
+							|| x.getItemId() == CHILD_CARE[2] || x.getItemId() == CHILD_CARE[3] || x.getItemId() == CHILD_CARE[4]))
+						check = true;
+					
+					if (check == true) {
+						if (x.getValue().equals("0") && x.getItemId() == CHILD_CARE[4]) check = false;
+					}
+					
+					return check;
+				})
 				.collect(Collectors.toList());
 		return itemChild.isEmpty() ? new ArrayList<>() : itemChild;
 	}
 
 	private List<DPItemValue> hasCare(List<DPItemValue> items) {
-		List<DPItemValue> itemCare = items.stream().filter(x -> x.getValue() != null && (x.getItemId() == CARE[0]
-				|| x.getItemId() == CARE[1] || x.getItemId() == CARE[2] || x.getItemId() == CARE[3] || x.getItemId() == CARE[4]))
+		List<DPItemValue> itemCare = items.stream().filter(x -> {
+			boolean check = false;
+			if (x.getValue() != null && (x.getItemId() == CARE[0]
+					|| x.getItemId() == CARE[1] || x.getItemId() == CARE[2] || x.getItemId() == CARE[3] || x.getItemId() == CARE[4]))
+				check = true;
+			
+			if (check == true) {
+				if (x.getValue().equals("0") && x.getItemId() == CARE[4]) check = false;
+			}
+			
+			return check;
+				
+		})
 				.collect(Collectors.toList());
 		return itemCare.isEmpty() ? new ArrayList<>() : itemCare;
 	}
