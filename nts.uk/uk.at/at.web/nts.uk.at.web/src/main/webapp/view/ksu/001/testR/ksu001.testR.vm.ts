@@ -141,7 +141,10 @@ module nts.uk.at.view.ksu001.testR {
                 };
 
                 service.getWorkPlaceById(data).done(function(wkp) {
-                    self.name(wkp.workplaceName);
+                    if(!_.isNil(wkp)){
+                        self.name(wkp.workplaceName);
+                    }
+                    
                     if (self.unit === '0') {
                         setShare('name', self.name());
                     }
