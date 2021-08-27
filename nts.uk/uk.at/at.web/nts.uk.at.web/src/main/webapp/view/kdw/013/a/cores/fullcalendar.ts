@@ -2161,20 +2161,28 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     //check for resize fit with space
                     
+                   
+                    
                     //check override events
                     
                     
-                    const IEvents = _.chain(events())
+                     const IEvents = _.chain(events())
                             .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
                             .filter((evn) => { return evn.extendedProps.id != extendedProps.id })
                             .sortBy('end')
                             .value();
-
+                    
+                    const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
                     
                     
-                        
+                  
+                    if (!IEvents.length) {
+                        return;
+                    }
                     
+                    if (arg.relatedEvents.length == 0) {
                         const oEvents = [];
+
                         if (IEvents.length > 1) {
                             for (let i = 0; i < IEvents.length - 1; i++) {
                                 let cEvent = IEvents[i];
@@ -2196,46 +2204,94 @@ module nts.uk.ui.at.kdw013.calendar {
                             currentEvent.setEnd(first.start);
 
                         } else {
-                        oEvents = _.chain(IEvents)
-                            .filter((evn) => {
-                                let isStartOverride = moment(start).isSameOrAfter(moment(evn.start)) && moment(start).isBefore(moment(evn.end));
-                                let isEmbrace = moment(start).isBefore(moment(evn.start)) && moment(end).isAfter(moment(evn.end));
-                                let isEndOverride = moment(end).isAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end)) && moment(start).isBefore(moment(evn.start));
-                                return isStartOverride || isEmbrace || isEndOverride;
+                            oEvents = _.chain(IEvents)
+                                .filter((evn) => {
+                                    let isStartOverride = moment(start).isSameOrAfter(moment(evn.start)) && moment(start).isBefore(moment(evn.end));
+                                    let isEmbrace = moment(start).isSameOrBefore(moment(evn.start)) && moment(end).isSameOrAfter(moment(evn.end));
+                                    let isEndOverride = moment(end).isAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end)) && moment(start).isSameOrBefore(moment(evn.start));
+                                    let isEmbraced = moment(start).isSameOrAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end));
+                                    return isStartOverride || isEmbrace || isEndOverride || isEmbraced;
 
-                            })
-                            .value();
-                        
-                        if (oEvents.length) {
-                            _.each(vm.calendar.getEvents(), (e: EventApi) => {
+                                })
+                                .value();
 
-                                if (e.extendedProps.id === event.extendedProps.id) {
-                                    e.remove();
-                                }
-                            });
+                            if (oEvents.length) {
+                                _.each(vm.calendar.getEvents(), (e: EventApi) => {
 
-                            const { start, end, id, title, extendedProps, borderColor, groupId, backgroundColor } = arg.oldEvent;
-
-                            vm.calendar
-                                .addEvent({
-                                    id: randomId(),
-                                    backgroundColor,
-                                    title,
-                                    start: arg.oldEvent.start,
-                                    end: arg.oldEvent.end,
-                                    borderColor,
-                                    groupId,
-                                    extendedProps
+                                    if (e.extendedProps.id === event.extendedProps.id) {
+                                        e.remove();
+                                    }
                                 });
 
+                                const { start, end, id, title, extendedProps, borderColor, groupId, backgroundColor } = arg.oldEvent;
+
+                                const newEvent = vm.calendar
+                                    .addEvent({
+                                        id: randomId(),
+                                        backgroundColor,
+                                        title,
+                                        start: arg.oldEvent.start,
+                                        end: arg.oldEvent.end,
+                                        borderColor,
+                                        groupId,
+                                        extendedProps
+                                    });
+                                $caches.new(newEvent);
+
+                            }
                         }
+                    }else{
+                        
+                        const { dataEvent } = vm;
+                        
+                        const [secondEvent] = arg.relatedEvents;
+                        
+                        if ( ko.unwrap<boolean>(dataEvent.shift) && arg.relatedEvents.length == 1 && moment(end).isSame(moment(secondEvent.start))) {
+                            
+                            IEvents = _.chain(events())
+                            .filter((evn) => { return moment(start).isSame(evn.start, 'days'); })
+                            .filter((evn) => { return evn.extendedProps.id != secondEvent.extendedProps.id })
+                            .sortBy('end')
+                            .value();
+                            
+                            const oEvents = [];
+                            for (let i = 0; i < IEvents.length - 1; i++) {
+                                let cEvent = IEvents[i];
+                                let nEvent = IEvents[i + 1];
 
+                                let isEndOverrideBetween =
+                                    moment(secondEvent.end).isAfter(moment(nEvent.start)) &&
+                                    moment(secondEvent.end).isSameOrBefore(moment(nEvent.end)) &&
+                                    moment(secondEvent.start).isBefore(moment(nEvent.start)) &&
+                                    moment(secondEvent.start).isSameOrAfter(moment(cEvent.end));
 
+                                if (isEndOverrideBetween)
+                                    oEvents.push({ start: nEvent.start, end: nEvent.end });
+                            }
+
+                            if (oEvents.length) {
+                                const [first] = oEvents;
+                                const sEvent = _.find(vm.calendar.getEvents(), { 'groupId': 'selected', 'start': secondEvent.start, 'end': secondEvent.end });
+                                sEvent.remove();
+                                
+                                 const newEvent = vm.calendar
+                                    .addEvent({
+                                        id: randomId(),
+                                        backgroundColor:sEvent.backgroundColor,
+                                        title:sEvent.title,
+                                        start: sEvent.start,
+                                        end: first.start,
+                                        borderColor:sEvent.borderColor,
+                                        groupId:sEvent.groupId,
+                                        extendedProps:sEvent.extendedProps
+                                    });
+                                $caches.new(newEvent);
+
+                            }
+                            
+                            
+                        }
                     }
-
-
-
-                    
                     
                     
                 },
