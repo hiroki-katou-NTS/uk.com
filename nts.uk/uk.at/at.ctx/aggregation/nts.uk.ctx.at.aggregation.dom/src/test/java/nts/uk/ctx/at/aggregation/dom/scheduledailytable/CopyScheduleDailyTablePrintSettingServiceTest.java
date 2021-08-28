@@ -25,7 +25,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	@Test
 	public void testCopy_Msg_2117() {
 		
-		val reProductSoure = Helper.createScheduleDailyTablePrintSetting(
+		val reProductSource = Helper.createScheduleDailyTablePrintSetting(
 					new ScheduleDailyTableCode("01")
 				,	new ScheduleDailyTableName("name"));
 		
@@ -42,7 +42,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		
 		NtsAssert.businessException("Msg_2117", () -> {
 			AtomTask persist = CopyScheduleDailyTablePrintSettingService.copy(require
-					,	reProductSoure, destinationCode
+					,	reProductSource, destinationCode
 					,	destinationName, overwrite);
 			persist.run();
 		});
