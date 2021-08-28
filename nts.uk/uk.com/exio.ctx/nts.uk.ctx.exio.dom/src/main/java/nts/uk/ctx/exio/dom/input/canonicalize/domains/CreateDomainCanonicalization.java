@@ -68,6 +68,10 @@ public class CreateDomainCanonicalization {
 		
 		//所属職場履歴
 		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
+		
+		//社員の年休付与設定
+		CREATES.put(ImportingDomainId.EMPLOYEE_ANNUAL_LEAVE_SETTING, w -> EmployeeAnnualLeaveSettingCanonicalization.create(w));
+		
 	}
 	
 	public static interface Require {

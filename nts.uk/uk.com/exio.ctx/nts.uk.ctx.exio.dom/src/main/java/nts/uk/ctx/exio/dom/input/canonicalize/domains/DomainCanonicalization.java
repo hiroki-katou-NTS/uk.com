@@ -55,7 +55,8 @@ public interface DomainCanonicalization {
 		IndependentCanonicalization.RequireCanonicalize,
 		EmployeeBasicCanonicalization.RequireCanonicalize,
 		EmployeeHistoryCanonicalization.RequireCanonicalize,
-		AffWorkplaceHistoryCanonicalization.RequireCanonicalize
+		AffWorkplaceHistoryCanonicalization.RequireCanonicalize,
+		EmployeeAnnualLeaveSettingCanonicalization.RequireCanonicalize
 		{
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
