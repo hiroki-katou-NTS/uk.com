@@ -25,7 +25,7 @@ public enum ImportingMode {
 	UPDATE_ONLY(2),
 
 	/**
-	 * 受入対象レコードを削除して受け入れる
+	 * 受入対象データを削除して受け入れる
 	 * このモードの場合、削除すべき既存データの検出を正準化処理で行い、ドメイン移送側でその結果を参照して削除する
 	 */
 	DELETE_RECORD_BEFOREHAND(3),

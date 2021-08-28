@@ -34,6 +34,10 @@ public class CanonicalItemList extends ArrayList<CanonicalItem> {
 				.filter(item -> item.getItemNo() == itemNo)
 				.findFirst();
 	}
+	
+	public CanonicalItemList addNull(int itemNo) {
+		return addItem(CanonicalItem.nullValue(itemNo));
+	}
 
 	public CanonicalItemList add(int itemNo, String value) {
 		return addItem(CanonicalItem.of(itemNo, value));

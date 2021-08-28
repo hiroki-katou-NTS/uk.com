@@ -15,6 +15,9 @@ public class AnyRecordToDelete {
 	/** 会社ID */
 	String companyId;
 	
+	/** 対象データ名（区別不要なら省略可） */
+	String targetName;
+	
 	/**
 	 * 削除対象レコードの主キー
 	 * Key: 受入項目NO
@@ -23,7 +26,11 @@ public class AnyRecordToDelete {
 	List<AnyRecordItem> primaryKeys;
 	
 	public static AnyRecordToDelete create(ExecutionContext context) {
-		return new AnyRecordToDelete(context.getCompanyId(), new ArrayList<>());
+		return create(context, "");
+	}
+	
+	public static AnyRecordToDelete create(ExecutionContext context, String targetName) {
+		return new AnyRecordToDelete(context.getCompanyId(), targetName, new ArrayList<>());
 	}
 	
 	public AnyRecordToDelete addKey(int itemNo, StringifiedValue value) {

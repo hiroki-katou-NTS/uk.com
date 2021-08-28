@@ -22,6 +22,10 @@ public class CanonicalItem {
 	public static CanonicalItem of(DataItem dataItem) {
 		return new CanonicalItem(dataItem.getItemNo(), dataItem.getValue());
 	}
+	
+	public static CanonicalItem nullValue(int itemNo) {
+		return new CanonicalItem(itemNo, null);
+	}
 
 	/**
 	 * 文字型

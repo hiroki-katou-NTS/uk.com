@@ -52,6 +52,8 @@ import nts.uk.ctx.exio.dom.input.validation.user.ImportingUserConditionRepositor
 import nts.uk.ctx.exio.dom.input.workspace.ExternalImportWorkspaceRepository;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -122,6 +124,10 @@ public class ExternalImportPrepareRequire {
 
 	@Inject
 	private WorkplaceInformationRepository wkpinfoRepo;
+	
+	@Inject
+	private UserRepository userRepo;
+	
 	
 	public class RequireImpl implements Require {
 		
@@ -264,6 +270,12 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<WorkplaceInformation> getWorkplaceByCode(String workplaceCode, GeneralDate startdate) {
 			return wkpinfoRepo.getWkpNewByCdDate(companyId, workplaceCode, startdate);
+		}
+
+
+		@Override
+		public Optional<User> getUserByPersonId(String personId) {
+			return userRepo.getByAssociatedPersonId(personId);
 		}
 
 	}

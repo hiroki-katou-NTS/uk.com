@@ -98,6 +98,19 @@ public class IntermediateResult {
 	}
 	
 	/**
+	 * 現在の保持内容に対して新たに正準化した分を追加する
+	 * @param canonicalizedItem
+	 * @param targetItemNos
+	 * @return
+	 */
+	public IntermediateResult addCanonicalized(
+			CanonicalItem canonicalizedItem,
+			Integer... targetItemNos) {
+
+		return addCanonicalized(new CanonicalItemList().addItem(canonicalizedItem), targetItemNos);
+	}
+	
+	/**
 	 * 指定した項目のデータを取り出す
 	 * afterとbeforeの両方に入っている場合は、afterの値が優先
 	 * @param itemNo
