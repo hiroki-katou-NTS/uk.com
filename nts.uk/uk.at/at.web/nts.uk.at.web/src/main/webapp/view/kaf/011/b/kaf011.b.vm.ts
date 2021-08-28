@@ -157,26 +157,73 @@ module nts.uk.at.view.kaf011.b.viewmodel {
 						}); 
 					}
 				console.log(data);	
+				let checkFlag = false;
 				block.invisible();
-				ajax('at/request/application/holidayshipment/update', data).done((result: any) =>{
-					dialog.info({ messageId: "Msg_15" }).then(()=>{
-						CommonProcess.handleMailResult(result, vm).then(() => {
-							dfd.resolve(true);	
+				
+				if (!data.rec && data.abs.workAtrOld != data.abs.workAtrNew) {
+					let initParam = {
+						actualContentDisplayList: data.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
+						daysUnit: data.abs.workTypeSelected.workAtr == 0 ? 1: 0.5, 
+						employeeId: data.abs.application.employeeIDLst[0], 
+						startDate: moment(data.abs.application.appDate),
+						endDate: moment(data.abs.application.appDate), 
+						managementData: data.abs.payoutSubofHDManagements, 
+						targetSelectionAtr: 1
+					}
+					ajax('screen/at/kdl035/init', initParam).then((result: any) => {
+						if (result && result.substituteWorkInfoList.length > 0) {
+							checkFlag = true;
+						}
+						data.checkFlag = checkFlag;
+						ajax('at/request/application/holidayshipment/update', data).done((result: any) =>{
+							dialog.info({ messageId: "Msg_15" }).then(()=>{
+								CommonProcess.handleMailResult(result, vm).then(() => {
+									dfd.resolve(true);	
+								});
+							});
+						}).fail((res:any)=>{
+							dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(()=>{
+								dfd.resolve(false);	
+							});
+						}).always(()=>{
+							block.clear();
 						});
 					});
-				}).fail((res:any)=>{
-					dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(()=>{
-						dfd.resolve(false);	
+				} else {
+					data.checkFlag = checkFlag;
+					ajax('at/request/application/holidayshipment/update', data).done((result: any) =>{
+						dialog.info({ messageId: "Msg_15" }).then(()=>{
+							CommonProcess.handleMailResult(result, vm).then(() => {
+								dfd.resolve(true);	
+							});
+						});
+					}).fail((res:any)=>{
+						dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(()=>{
+							dfd.resolve(false);	
+						});
+					}).always(()=>{
+						block.clear();
 					});
-				}).always(()=>{
-					block.clear();
-				});
+				}
+				
+				// ajax('at/request/application/holidayshipment/update', data).done((result: any) =>{
+				// 	dialog.info({ messageId: "Msg_15" }).then(()=>{
+				// 		CommonProcess.handleMailResult(result, vm).then(() => {
+				// 			dfd.resolve(true);	
+				// 		});
+				// 	});
+				// }).fail((res:any)=>{
+				// 	dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(()=>{
+				// 		dfd.resolve(false);	
+				// 	});
+				// }).always(()=>{
+				// 	block.clear();
+				// });
 	        }else{
 				dfd.resolve(false);
 			}
 			return dfd.promise();
 		}
-		
     }
 
 }

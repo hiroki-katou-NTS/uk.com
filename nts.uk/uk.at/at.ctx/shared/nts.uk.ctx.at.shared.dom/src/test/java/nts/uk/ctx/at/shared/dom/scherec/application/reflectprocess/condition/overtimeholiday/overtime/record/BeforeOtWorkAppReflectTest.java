@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.condition.ov
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,62 +26,6 @@ public class BeforeOtWorkAppReflectTest {
 
 	@Injectable
 	private BeforeOtWorkAppReflect.Require require;
-
-	/*
-	 * テストしたい内容
-	 * 
-	 * 
-	 * →勤務情報、始業終業の反映が出来る
-	 * 
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →[勤務情報、始業終業を反映する] = する
-	 * 
-	 */
-	@Test
-	public void test1() {
-
-		val overTimeApp = ReflectApplicationHelper.createOverTimeAppWorkHours("003", "003", 600, 800);// 勤務情報 = ("003",
-																										// "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
-		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(1, 0, 0);
-		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("003");// 就業時間帯コード
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("003");// 勤務種類コード
-		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).extracting(x -> x.getWorkNo().v(),
-				x -> x.getAttendance().v(), x -> x.getLeaveWork().v())
-				.containsExactly(Tuple.tuple(1, 600, 800));
-	}
-
-	/*
-	 * テストしたい内容
-	 * 
-	 * 
-	 * →勤務情報、始業終業の反映が出来ない
-	 * 
-	 * 
-	 * 準備するデータ
-	 * 
-	 * →[勤務情報、始業終業を反映する] = しない
-	 * 
-	 */
-	@Test
-	public void test2() {
-
-		val overTimeApp = ReflectApplicationHelper.createOverTimeAppWorkHours("003", "003", 600, 800);// 勤務情報 = ("003",
-		// "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);// 勤務情報 = ("001", "001")
-		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).isEmpty();
-		val reflectOvertimeBeforeSet = BeforeOtWorkAppReflect.create(0, 0, 0);
-		reflectOvertimeBeforeSet.processRC(require, "", overTimeApp, dailyApp);
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTimeCode().v()).isEqualTo("001");// 就業時間帯コード
-		assertThat(dailyApp.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).isEqualTo("001");// 勤務種類コード
-		assertThat(dailyApp.getWorkInformation().getScheduleTimeSheets()).isEmpty();
-
-	}
 
 	/*
 	 * テストしたい内容
