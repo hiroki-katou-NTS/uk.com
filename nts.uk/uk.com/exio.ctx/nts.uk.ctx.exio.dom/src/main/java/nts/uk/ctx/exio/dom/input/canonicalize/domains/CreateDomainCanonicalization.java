@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -52,6 +53,9 @@ public class CreateDomainCanonicalization {
 						new DomainDataColumn("CD", STRING));
 			}
 		});
+		
+		// 個人基本情報
+		CREATES.put(EMPLOYEE_BASIC, w -> new EmployeeBasicCanonicalization());
 		
 		// 雇用履歴
 		CREATES.put(ImportingDomainId.EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
