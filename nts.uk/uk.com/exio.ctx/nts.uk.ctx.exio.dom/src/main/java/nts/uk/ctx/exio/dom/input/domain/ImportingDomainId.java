@@ -24,6 +24,18 @@ public enum ImportingDomainId{
 	/** 分類 */
 	CLASSIFICATION_HISTORY(105),
 	
+	/** 振休管理データ */
+	SUBSTITUTE_HOLIDAY(118),
+	
+	/** 振出管理データ */
+	SUBSTITUTE_WORK(119),
+	
+	/** 代休管理データ */
+	COMPENSATORY_HOLIDAY(120),
+	
+	/** 休出管理データ */
+	HOLIDAY_WORK(121),
+	
 	/** 作業 */
 	TASK(200);
 	
