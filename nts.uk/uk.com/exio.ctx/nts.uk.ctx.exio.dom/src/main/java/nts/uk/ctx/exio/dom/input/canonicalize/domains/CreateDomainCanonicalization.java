@@ -13,6 +13,8 @@ import java.util.function.Function;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -68,6 +70,12 @@ public class CreateDomainCanonicalization {
 		
 		//所属職場履歴
 		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
+		
+		// 社員の特別休暇付与設定
+		CREATES.put(ImportingDomainId.EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> SpecialHolidayGrantSettingCanonicalization.create(w));
+		
+		// 特別休暇付与残数データ
+		CREATES.put(ImportingDomainId.SPECIAL_HORYDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
 	}
 	
 	public static interface Require {

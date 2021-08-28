@@ -24,6 +24,12 @@ public enum ImportingDomainId{
 	/** 分類 */
 	CLASSIFICATION_HISTORY(105),
 	
+	/** 社員の特別休暇付与設定 */
+	EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING(116),
+	
+	/** 特別休暇付与残数データ */
+	SPECIAL_HORYDAY_GRANT_REMAIN(117),
+	
 	/** 作業 */
 	TASK(200);
 	
