@@ -220,7 +220,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 			
 			existingHistory.removeForcively(item);
 			
-			AnyRecordToDelete toDelete = new EmployeeHistoryItem(item).toDelete(context);
+			AnyRecordToDelete toDelete = new EmployeeHistoryItem(employeeId,item).toDelete(context);
 			require.save(context, toDelete);
 		});
 	}
@@ -256,7 +256,8 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		//↑で受入る履歴を消してるから末尾が既存の最新だろうという意
 		
 		existingHistory.latestStartItem().ifPresent(	existing ->{
-				AnyRecordToChange toChange = new EmployeeHistoryItem(existing).toChange(context);
+				AnyRecordToChange toChange = new EmployeeHistoryItem(existingHistory.getEmployeeId(),existing)
+						.toChange(context);
 				require.save(context, toChange);
 		});
 
@@ -353,33 +354,39 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	@RequiredArgsConstructor
 	@Getter
 	protected class EmployeeHistoryItem {
+		final String employeeId;
 		final String historyId;
 		final DatePeriod period;
 		
-		EmployeeHistoryItem(DateHistoryItem item) {
-			this(item.identifier(), item.span());
+		EmployeeHistoryItem(String employeeId, DateHistoryItem item) {
+			this(employeeId, item.identifier(), item.span());
 		}
 		
 		EmployeeHistoryItem(AnyRecordToChange record) {
-			this(record.getKey(itemNoHistoryId).asString(),
+			this(record.getKey(employeeCodeCanonicalization.getItemNoEmployeeId()).asString(),
+					record.getKey(itemNoHistoryId).asString(),
 					new DatePeriod(
 							record.getChange(itemNoStartDate).asGeneralDate(),
 							record.getChange(itemNoEndDate).asGeneralDate()));
 		}
 		
 		EmployeeHistoryItem(AnyRecordToDelete record) {
-			this(record.getKey(itemNoHistoryId).asString(),
+			this(record.getKey(employeeCodeCanonicalization.getItemNoEmployeeId()).asString(),
+					record.getKey(itemNoHistoryId).asString(),
 					null);
 		}
 		
 		AnyRecordToDelete toDelete(ExecutionContext context) {
 			return AnyRecordToDelete.create(context)
-				.addKey(itemNoHistoryId, StringifiedValue.of(historyId));
+				.addKey(itemNoHistoryId, StringifiedValue.of(historyId))
+				.addKey(employeeCodeCanonicalization.getItemNoEmployeeId(), StringifiedValue.of(employeeId));
+			
 		}
 		
 		AnyRecordToChange toChange(ExecutionContext context) {
 			return AnyRecordToChange.create(context)
 					.addKey(itemNoHistoryId, StringifiedValue.of(historyId))
+					.addKey(employeeCodeCanonicalization.getItemNoEmployeeId(), StringifiedValue.of(employeeId))
 					.addChange(itemNoStartDate, StringifiedValue.of(period.start()))
 					.addChange(itemNoEndDate, StringifiedValue.of(period.end()));
 		}

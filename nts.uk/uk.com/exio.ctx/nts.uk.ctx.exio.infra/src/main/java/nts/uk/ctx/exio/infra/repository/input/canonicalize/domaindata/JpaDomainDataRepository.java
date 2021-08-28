@@ -72,7 +72,9 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 							rec.getGeneralDate("START_DATE"),
 							rec.getGeneralDate("END_DATE")));
 		});
-		return (ExternalImportHistory)historyType.GetHistoryClass().getConstructors()[0].newInstance(list);
+		//EmployeeHistoryCanonicalizationで指定してるDomainDataIdが社員IDのみなので0で取得
+		String employeeId = (String)id.getKeys().get(0).getValue();
+		return (ExternalImportHistory)historyType.GetHistoryClass().getConstructors()[0].newInstance(employeeId, list);
 	}
 
 	@Override

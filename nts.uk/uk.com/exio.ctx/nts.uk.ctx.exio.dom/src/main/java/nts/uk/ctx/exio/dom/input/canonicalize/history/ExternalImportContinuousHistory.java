@@ -14,8 +14,8 @@ public class ExternalImportContinuousHistory
 	extends ExternalImportHistory
 	implements ContinuousHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 
-	public ExternalImportContinuousHistory(List<DateHistoryItem> period) {
-		super(period);
+	public ExternalImportContinuousHistory(String employeeId, List<DateHistoryItem> period) {
+		super(employeeId, period);
 	}
 
 	@Override
