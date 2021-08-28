@@ -8,6 +8,9 @@ import nts.arc.enums.EnumAdaptor;
  */
 @RequiredArgsConstructor
 public enum ImportingDomainId{
+	
+	/** 個人基本情報 */
+	EMPLOYEE_BASIC(100),
 
 	/** 雇用履歴 */
 	EMPLOYMENT_HISTORY(102),
