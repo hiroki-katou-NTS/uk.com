@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTimesCounterService;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
@@ -52,15 +53,15 @@ public class ScheduleDailyTableWorkplaceCounterService {
 			,	List<IntegrationOfDaily> targetTotalList
 			){
 		
-		List<IntegrationOfDaily> targetAggregate = targetTotalList.stream()
-				.filter(i -> i.getAffiliationInfor().getNursingLicenseClass().isPresent()
-						&& i.getAffiliationInfor().getIsNursingManager().isPresent())
-				.filter(i -> i.getAffiliationInfor().getNursingLicenseClass().get() == licenseCls)
-				.filter(i -> !i.getAffiliationInfor().getIsNursingManager().get())
-				.collect(Collectors.toList());
+		List<IntegrationOfDaily> targets = targetTotalList.stream()
+				.filter(dlyAtd -> {
+					val affInfo = dlyAtd.getAffiliationInfor();
+					return (affInfo.getNursingLicenseClass().isPresent()&& affInfo.getNursingLicenseClass().get() == licenseCls)
+							&& (affInfo.getNursingLicenseClass().isPresent() && !affInfo.getIsNursingManager().get());
+				}).collect(Collectors.toList());
 		
 		Map<GeneralDate, Map<Integer, BigDecimal>> totalResult = TotalTimesCounterService
-				.countingNumberOfTotalTimeByDay(require, workplaceCounters, targetAggregate);
+				.countingNumberOfTotalTimeByDay(require, workplaceCounters, targets);
 		
 		return totalResult.entrySet().stream()
 				.flatMap(entry -> entry.getValue()

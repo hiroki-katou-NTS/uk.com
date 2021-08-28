@@ -55,7 +55,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	@Test
 	public void testCopy_insert(@Injectable ScheduleDailyTableItemSetting itemSetting) {
 		
-		val reProductSoure = new ScheduleDailyTablePrintSetting(
+		val reProductSource = new ScheduleDailyTablePrintSetting(
 				new ScheduleDailyTableCode("01")
 			,	new ScheduleDailyTableName("name")
 			,	itemSetting);
@@ -63,7 +63,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
 		val overwrite = false;
-		val reproductDestination = reProductSoure.copy(destinationCode, destinationName);
+		val reproductDestination = reProductSource.copy(destinationCode, destinationName);
 		
 		new Expectations() {
 			{
@@ -74,7 +74,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		
 		NtsAssert.atomTask(
 				() ->	CopyScheduleDailyTablePrintSettingService.copy(require
-							,	reProductSoure, destinationCode
+							,	reProductSource, destinationCode
 							,	destinationName, overwrite)
 				,	any -> require.insertScheduleDailyTablePrintSetting(reproductDestination));
 		
@@ -92,7 +92,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	@Test
 	public void testCopy_update(@Injectable ScheduleDailyTableItemSetting itemSetting) {
 		
-		val reProductSoure = new ScheduleDailyTablePrintSetting(
+		val reProductSource = new ScheduleDailyTablePrintSetting(
 				new ScheduleDailyTableCode("01")
 			,	new ScheduleDailyTableName("name")
 			,	itemSetting);
@@ -100,7 +100,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
 		val overwrite = true;
-		val reproductDestination = reProductSoure.copy(destinationCode, destinationName);
+		val reproductDestination = reProductSource.copy(destinationCode, destinationName);
 		
 		new Expectations() {
 			{
@@ -111,7 +111,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		
 		NtsAssert.atomTask(
 				() ->	CopyScheduleDailyTablePrintSettingService.copy(require
-							,	reProductSoure, destinationCode
+							,	reProductSource, destinationCode
 							,	destinationName, overwrite)
 				,	any -> require.updateScheduleDailyTablePrintSetting(reproductDestination));
 		

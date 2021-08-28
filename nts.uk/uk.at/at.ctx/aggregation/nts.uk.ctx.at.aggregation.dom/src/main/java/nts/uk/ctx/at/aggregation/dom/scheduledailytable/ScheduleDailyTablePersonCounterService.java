@@ -22,7 +22,7 @@ public class ScheduleDailyTablePersonCounterService {
 	/**
 	 * 集計する
 	 * @param require
-	 * @param inkanTarget 印刷対象
+	 * @param inkanTarget 印鑑対象
 	 * @param personCounter 個人計
 	 * @param dailyMap 日別勤怠Map
 	 * @return List<個人別の回数集計結果>
