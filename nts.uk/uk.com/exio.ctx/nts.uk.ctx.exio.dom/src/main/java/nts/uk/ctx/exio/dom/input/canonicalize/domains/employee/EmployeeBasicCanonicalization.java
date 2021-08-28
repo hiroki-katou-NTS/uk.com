@@ -103,6 +103,9 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		require.save(context, interm.complete());
 	}
 
+	/**
+	 * 社員ID・個人ID・ユーザIDの取り扱い担当クラス
+	 */
 	@RequiredArgsConstructor
 	private static class Ids {
 		
@@ -110,6 +113,12 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		final String personId;
 		final String userId;
 		
+		/**
+		 * 社員コードから既存データを取得する
+		 * @param require
+		 * @param employeeCode
+		 * @return
+		 */
 		static Optional<Ids> get(
 				DomainCanonicalization.RequireCanonicalize require,
 				String employeeCode) {
@@ -120,6 +129,10 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 					require.getUserByPersonId(emp.getPersonId()).get().getUserID()));
 		}
 		
+		/**
+		 * 新しいIDを生成する
+		 * @return
+		 */
 		static Ids newIds() {
 			return new Ids(
 					IdentifierUtil.randomUniqueId(),
@@ -127,6 +140,11 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 					IdentifierUtil.randomUniqueId());
 		}
 		
+		/**
+		 * 中間データに値を埋める
+		 * @param source
+		 * @return
+		 */
 		IntermediateResult fill(IntermediateResult source) {
 			return source
 					.addCanonicalized(CanonicalItem.of(Items.SID, employeeId))
@@ -134,6 +152,11 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 					.addCanonicalized(CanonicalItem.of(Items.USER_ID, userId));
 		}
 		
+		/**
+		 * 補正削除のデータを保存する
+		 * @param require
+		 * @param context
+		 */
 		void toDelete(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 			require.save(context, toDeleteEmployee(context));
 			require.save(context, toDeletePerson(context));
@@ -317,7 +340,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 				
 			}
 		}
-		
 	}
 	
 	public static interface RequireCanonicalize { 
