@@ -16,6 +16,10 @@ import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
@@ -101,6 +105,18 @@ public class ExternalImportExecuteRequire {
 	
 	@Inject
 	private LoginPasswordOfUserRepository loginPasswordRepo;
+	
+	@Inject
+	private SubstitutionOfHDManaDataRepository substitutionOfHdManaDataRepo;
+	
+	@Inject
+	private PayoutManagementDataRepository payoutManagementDataRepo;
+	
+	@Inject
+	private ComDayOffManaDataRepository comDayOffManaDataRepo;
+	
+	@Inject
+	private LeaveManaDataRepository leaveManaDataRepo;
 	
 	
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -212,6 +228,27 @@ public class ExternalImportExecuteRequire {
 		@Override
 		public void deleteLoginPasswordOfUser(String userId) {
 			loginPasswordRepo.delete(userId);
+		}
+
+		@Override
+		public void deleteAllSubstitutionOfHDManagementData(String employeeId) {
+			substitutionOfHdManaDataRepo.deleteAllByEmployeeId(employeeId);
+		}
+
+		@Override
+		public void deleteAllPayoutManagementData(String employeeId) {
+			payoutManagementDataRepo.deleteAllByEmployeeId(employeeId);
+			
+		}
+
+		@Override
+		public void deleteAllCompensatoryDayOffManaData(String employeeId) {
+			comDayOffManaDataRepo.deleteAllByEmployeeId(employeeId);
+		}
+
+		@Override
+		public void deleteAllLeaveManagementData(String employeeId) {
+			leaveManaDataRepo.deleteAllByEmployeeId(employeeId);
 		}
 	}
 }

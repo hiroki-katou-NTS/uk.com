@@ -6,6 +6,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizedDataRecord;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.OccurenceHolidayCanonicalizationBase;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -55,8 +56,8 @@ public interface DomainCanonicalization {
 		IndependentCanonicalization.RequireCanonicalize,
 		EmployeeBasicCanonicalization.RequireCanonicalize,
 		EmployeeHistoryCanonicalization.RequireCanonicalize,
-		AffWorkplaceHistoryCanonicalization.RequireCanonicalize
-		{
+		AffWorkplaceHistoryCanonicalization.RequireCanonicalize,
+		OccurenceHolidayCanonicalizationBase.RequireCanonicalize {
 		
 		void save(ExecutionContext context, CanonicalizedDataRecord canonicalizedDataRecord);
 
@@ -66,7 +67,8 @@ public interface DomainCanonicalization {
 		IndependentCanonicalization.RequireAdjust,
 		EmployeeBasicCanonicalization.RequireAdjust,
 		EmployeeHistoryCanonicalization.RequireAdjust,
-		AffWorkplaceHistoryCanonicalization.RequireAdjust {
+		AffWorkplaceHistoryCanonicalization.RequireAdjust,
+		OccurenceHolidayCanonicalizationBase.RequireAdjust {
 		
 	}
 }
