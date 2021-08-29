@@ -24,14 +24,14 @@ public class Cas014Ws {
 
 
     @POST
-    @Path("cas014/get-role-set-grandted-person/{sid}")
+    @Path("get-role-set-grandted-person/{sid}")
     public RoleSetGrantedPersonDto getDetailRoleSet(@PathParam("sid") String sid) {
         return getIndividualRollSetGrantScreenQuery.getIndividualRollSetGrant(sid);
     }
 
     @POST
-    @Path("cas014/get-data-init")
-    public Cas014Dto getDataForStartUp(ParamsDto params) {
-        return getDataInitCas014ScreenQuery.getDataInitScreen(params.getSIds());
+    @Path("get-data-init")
+    public Cas014Dto getDataForStartUp() {
+        return getDataInitCas014ScreenQuery.getDataInitScreen();
     }
 }

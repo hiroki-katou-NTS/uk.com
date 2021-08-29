@@ -31,12 +31,17 @@ public class GetDataInitCas014ScreenQuery {
     @Inject
     private SyEmployeePub syEmployeePub;
 
-    public Cas014Dto getDataInitScreen(List<String> sIds){
+    public Cas014Dto getDataInitScreen(){
         List<RoleSetGrantedPerson> grantedPersonList = listOfIndividualGrantsQuery.getListIndividualRollSetGrant();
         List<RoleSetDto> roleSetList = roleSetService.getAllRoleSet().stream().map(this::convertToDto).collect(Collectors.toList());
-        List<EmployeeInfoExport> employeeInfoExportList = syEmployeePub.getByListSid(sIds);
-        return new Cas014Dto(grantedPersonList,roleSetList,employeeInfoExportList);
+        List<EmployeeInfoExport> employeeInfoExportList = syEmployeePub.getByListSid(grantedPersonList.stream().map(RoleSetGrantedPerson::getEmployeeID).collect(Collectors.toList()));
+        return new Cas014Dto(
+                grantedPersonList.stream().map(i -> new RoleSetGrantedPersonDto(i.getRoleSetCd().v(), i.getEmployeeID(), i.getValidPeriod().start(), i.getValidPeriod().end())).collect(Collectors.toList()),
+                roleSetList,
+                employeeInfoExportList
+        );
     }
+
     private RoleSetDto convertToDto(RoleSet domain) {
         RoleSetDto roleSetDto = new RoleSetDto();
         roleSetDto.setRoleSetName(domain.getRoleSetName().v());

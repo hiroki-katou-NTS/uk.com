@@ -2,7 +2,6 @@ package nts.uk.screen.com.app.find.cas014;
 
 import lombok.*;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
-import nts.uk.ctx.sys.auth.dom.grant.rolesetperson.RoleSetGrantedPerson;
 import nts.uk.ctx.sys.portal.dom.adapter.roleset.RoleSetDto;
 
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cas014Dto {
-    private List<RoleSetGrantedPerson> grantedPersonList;
+    private List<RoleSetGrantedPersonDto> grantedPersonList;
     private List<RoleSetDto> roleSetList;
     private List<EmployeeInfoExport> employeeInfoExportList;
 }

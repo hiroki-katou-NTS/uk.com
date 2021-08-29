@@ -1,309 +1,242 @@
 module nts.uk.com.view.cas014.b {
-    import getText = nts.uk.resource.getText;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import alertError = nts.uk.ui.dialog.alertError;
-    import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import textUK = nts.uk.text;
-    import block = nts.uk.ui.block;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    export module viewmodel {
-        export class ScreenModel {
-            
-            langId: KnockoutObservable<string> = ko.observable('ja');
-            roleSetList: KnockoutObservableArray<RoleSet>;
-            roleSetPersonList: KnockoutObservableArray<RoleSetPerson>;
-            dateValue: KnockoutObservable<any>
-            selectedRoleSet: KnockoutObservable<string>;
-            selectedEmployeeId: KnockoutObservable<string>;
-            roleSetPerson: KnockoutObservable<RoleSetPerson>;
-            screenMode: KnockoutObservable<number>;
+    var paths = {
+        initScreen: "screen/com/cas014/get-data-init",
+        getRoleSetGrantedToEmployee: "screen/com/cas014/get-role-set-grandted-person/",
+        getEmpInfo: "ctx/sys/auth/grant/rolesetperson/getempinfo/",
+        registerData: "ctx/sys/auth/grant/rolesetperson/register",
+        deleteData: "ctx/sys/auth/grant/rolesetperson/delete"
+    };
 
-            // B4_2
-            itemList: KnockoutObservableArray<ItemModel>;
-            selectedCode: KnockoutObservable<string>;
-            isEnable: KnockoutObservable<boolean>;
-            isEditable: KnockoutObservable<boolean>;
+    @bean()
+    class ScreenModel extends ko.ViewModel {
+        screenMode: KnockoutObservable<number>;
+        roleSetList: KnockoutObservableArray<RoleSet>;
+        roleSetPersonList: KnockoutObservableArray<any>;
+        grantedRoleColSource: KnockoutObservableArray<any>;
+        listComponentOption: any;
 
-            constructor() {
-                let self = this;
-                self.screenMode = ko.observable(ScreenMode.UPDATE);
-                self.dateValue = ko.observable({});
-                self.roleSetList = ko.observableArray([]);
-                self.roleSetPersonList = ko.observableArray([]);
-                self.selectedRoleSet = ko.observable('');
-                self.selectedEmployeeId = ko.observable('');
-                self.roleSetPerson = ko.observable(new RoleSetPerson('', '', '', '', '', ''));
-                self.selectedEmployeeId.subscribe(function(data: any) {
-                    if (data) {
-                        let item = _.find(ko.toJS(self.roleSetPersonList), (x: RoleSetPerson) => x.employeeId == data);
-                        if (item) {
-                            self.roleSetPerson(item);
-                            self.screenMode(ScreenMode.UPDATE);
-                            $(".ntsStartDatePicker").first().focus();
-                        } else {
-                            self.getEmployeeInfo(data);
-                            self.screenMode(ScreenMode.NEW);
+        selectedEmployeeId: KnockoutObservable<string>;
+        selectedEmployeeCode: KnockoutObservable<string>;
+        selectedEmployeeName: KnockoutObservable<string>;
+        selectedRoleCode: KnockoutObservable<string>;
+        dateValue: KnockoutObservable<any>;
+
+        constructor() {
+            super();
+            let self = this;
+            self.screenMode = ko.observable(ScreenMode.UPDATE);
+            self.dateValue = ko.observable({});
+            self.roleSetList = ko.observableArray([]);
+            self.roleSetPersonList = ko.observableArray([]);
+            self.selectedEmployeeId = ko.observable(null);
+            self.selectedEmployeeCode = ko.observable(null);
+            self.selectedEmployeeName = ko.observable(null);
+            self.selectedEmployeeCode.subscribe(function(data: any) {
+                if (data) {
+                    let item = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.code == data);
+                    self.getEmployeeInfo(item.id);
+                    self.selectedEmployeeName(item.name);
+                    self.screenMode(ScreenMode.UPDATE);
+                    $("#B4_2").focus();
+                } else {
+                    self.selectedEmployeeName(null);
+                    self.selectedRoleCode(null);
+                    self.dateValue({});
+                    self.screenMode(ScreenMode.NEW);
+                    $("#B3_2").focus();
+                }
+            });
+            self.selectedRoleCode = ko.observable(null);
+            self.grantedRoleColSource = ko.observableArray([]);
+            self.listComponentOption = {
+                isShowAlreadySet: false,
+                isMultiSelect: false,
+                listType: 4, //ListType.EMPLOYEE,
+                employeeInputList: self.roleSetPersonList,
+                selectType: 3, // SELECT_FIRST_ITEM
+                selectedCode: self.selectedEmployeeCode,
+                isDialog: true,
+                isShowNoSelectRow: false,
+                isShowWorkPlaceName: false,
+                isShowSelectAllButton: false,
+                disableSelection : false,
+                showOptionalColumn: true,
+                optionalColumnName: self.$i18n("CAS014_58"),
+                optionalColumnDatasource: self.grantedRoleColSource,
+                maxRows: 15,
+                tabindex: 4
+            };
+        }
+
+        created() {
+            const vm = this;
+            $('#component-items-list').ntsListComponent(vm.listComponentOption);
+            vm.startPage();
+        }
+
+        startPage(employeeId?: string): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            self.$blockui("show");
+            self.$ajax("com", paths.initScreen).done(function(data: any) {
+                if (data) {
+                    let _rsList: Array<RoleSet> = _.map(data.roleSetList, (rs: any) => {
+                        return new RoleSet(rs.roleSetCd, rs.roleSetName);
+                    });
+                    self.roleSetList(_.sortBy(_rsList, ['code']));
+
+                    self.roleSetPersonList(_.sortBy(data.employeeInfoExportList, ["scd"]).map((e: any) => ({
+                        id: e.sid,
+                        code: e.scd,
+                        name: e.bussinessName
+                    })));
+
+                    self.grantedRoleColSource(data.grantedPersonList.map((i: any) => {
+                        let tmp = _.find(_rsList, r => r.code == i.roleSetCd);
+                        let tmp2 = _.find(data.employeeInfoExportList, (e: any) => e.sid == i.employeeID);
+                        return {
+                            empId: tmp2 ? tmp2.scd : "",
+                            content: tmp ? tmp.name : ""
+                        }
+                    }));
+
+                    if (employeeId) {
+                        const emp = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.id == employeeId);
+                        if (emp) {
+                            if (emp.code == self.selectedEmployeeCode())
+                                self.selectedEmployeeCode.valueHasMutated();
+                            else
+                                self.selectedEmployeeCode(emp.code);
                         }
                     }
-                });
-                self.selectedRoleSet.subscribe(function(data: any) {
-                    if (data) {
-                        self.loadRoleSetHolder(data);
-                    } else {
-                        self.roleSetPersonList.removeAll();
-                    }
-                });
-                self.dateValue.subscribe((data: any) => {
-                    if (self.roleSetPerson) {
-                        self.roleSetPerson().startDate = moment.utc(data.startDate, "YYYY/MM/DD").toISOString();
-                        self.roleSetPerson().endDate = moment.utc(data.endDate, "YYYY/MM/DD").toISOString();
-                    }
-                });
-                self.roleSetPerson.subscribe((data: RoleSetPerson) => {
-                    self.dateValue({ startDate: data.startDate, endDate: data.endDate });
-                });
-                // B4_2
-                self.itemList = ko.observableArray([
-                    new ItemModel('1', 'いち'),
-                    new ItemModel('2', 'に'),
-                    new ItemModel('3', 'さん'),
-                    new ItemModel('4', 'よん'),
-                    new ItemModel('5', 'ご'),
-                    new ItemModel('6', 'ろく'),
-                    new ItemModel('7', 'なな'),
-                    new ItemModel('8', 'はち'),
-                    new ItemModel('9', 'きゅう'),
-                    new ItemModel('10', 'じゅう')
-                ]);
-
-                self.selectedCode = ko.observable('1');
-                self.isEnable = ko.observable(true);
-                self.isEditable = ko.observable(true);
-
-            }
-
-            startPage(): JQueryPromise<any> {
-                let self = this,
-                    dfd = $.Deferred();
-                block.invisible();
-
-                service.getAllRoleSet().done(function(data: Array<any>) {
-                    if (data && data.length) {
-                        self.roleSetList.removeAll();
-                        let _rsList: Array<RoleSet> = _.map(data, rs => {
-                            return new RoleSet(rs.code, rs.name);
-                        });
-                        _rsList = _.sortBy(_rsList, ['code']);
-                        _.each(_rsList, rs => self.roleSetList.push(rs));
-
-                        // B4_2
-                        self.itemList();
-
-                        //select first role set
-                        if (self.selectedRoleSet() == self.roleSetList()[0].code) 
-                            self.selectedRoleSet.valueHasMutated();
-                        else
-                            self.selectedRoleSet(self.roleSetList()[0].code);
-                    } else {
+                } else {
+                    nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                self.$dialog.error(error).then(() => {
+                    if (error.messageId == "Msg_713") {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
-                    dfd.resolve();
-                }).fail(function(error) {
-                    alertError(error).then(() => {
-                        if (error.messageId == "Msg_713") {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                        }
-                    });
-                    dfd.reject();
-                }).always(() => {
-                    block.clear();
                 });
+                dfd.reject();
+            }).always(() => {
+                self.$blockui("hide");
+            });
 
-                return dfd.promise();
-            }
+            return dfd.promise();
+        }
 
-            loadRoleSetHolder(rsCode: string, empId?: string): JQueryPromise<any> {
-                let self = this;
-                block.invisible();
-                let dfd = service.getAllRoleSetPerson(rsCode);
-                dfd.done(function(data: Array<any>) {
-                    self.roleSetPersonList.removeAll();
-                    if (data && data.length) {
-                        let _rspList: Array<RoleSetPerson> = _.map(data, rsp => {
-                            return new RoleSetPerson(rsp.roleSetCd, rsp.employeeId, rsp.employeeCd, rsp.employeeName, rsp.startDate, rsp.endDate);
-                        });
-                        _rspList = _.sortBy(_rspList, ['employeeCd']);
-                        _.each(_rspList, rsp => self.roleSetPersonList.push(rsp));
-
-                        if (empId) {
-                            //select empId 
-                            if (self.selectedEmployeeId() == empId)
-                                self.selectedEmployeeId.valueHasMutated();
-                            else
-                                self.selectedEmployeeId(empId);
-                        } else {
-                            //select first
-                            if (self.selectedEmployeeId() == self.roleSetPersonList()[0].employeeId)
-                                self.selectedEmployeeId.valueHasMutated();
-                            else
-                                self.selectedEmployeeId(self.roleSetPersonList()[0].employeeId);
-                        }
-
-                        self.screenMode(ScreenMode.UPDATE);
-                        $("#B4_2").focus();
-                    } else {
-                        self.createNewRoleSetPerson();
-                        $("#B3_2").focus();
-                    }
-                }).fail(function(error) {
-                    alertError(error);
-                }).always(() => {
-                    block.clear();
-                });
-                return dfd;
-            }
-
-            getEmployeeInfo(empId: string) {
-                let self = this, _data = self.roleSetPerson();
-                service.getEmployeeInfo(empId).done(function(data: any) {
-                    if (data) {
-                        self.roleSetPerson(new RoleSetPerson(self.selectedRoleSet(), empId, data.employeeCode, data.personalName, _data.startDate, _data.endDate));
-                    }
-                }).fail(function(error) {
-                    alertError(error);
-                });
-            }
-
-            createNewRoleSetPerson() {
-                let self = this;
-                nts.uk.ui.errors.clearAll();
-                self.selectedEmployeeId('');
-                self.roleSetPerson(new RoleSetPerson('', '', '', '', '', ''));
-                self.dateValue({});
-                self.screenMode(ScreenMode.NEW);
-                $("#B5_1_1").focus();
-            }
-
-            registerRoleSetPerson() {
-                let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPerson);
-                $(".ntsDateRange_Component").trigger("validate");
-                if (!nts.uk.ui.errors.hasError()) {
-                    let command: any = {
-                        roleSetCd: data.roleSetCd,
-                        employeeId: data.employeeId,
+        getEmployeeInfo(empId: string) {
+            let self = this;
+            self.$ajax("com", paths.getRoleSetGrantedToEmployee + empId).done(function(data: any) {
+                if (data) {
+                    self.selectedEmployeeId(data.employeeID);
+                    self.selectedRoleCode(data.roleSetCd);
+                    self.dateValue({
                         startDate: data.startDate,
-                        endDate: data.endDate,
-                        mode: self.screenMode()
-                    };
-
-                    block.invisible();
-
-                    service.registerData(command).done(function() {
-                        //display registered data in selected state
-                        self.loadRoleSetHolder(self.selectedRoleSet(), data.employeeId).done(() => {
-                            info({ messageId: "Msg_15" }).then(() => {
-                                $("#B4_2").focus();
-                            });
-                        });
-
-                    }).fail(error => {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
+                        endDate: data.endDate
                     });
                 }
-            }
+            }).fail(function(error) {
+                self.$dialog.error(error);
+            });
+        }
 
-            deleteRoleSetPerson() {
-                let self = this, data: RoleSetPerson = ko.toJS(self.roleSetPerson);
+        createNewRoleSetPerson() {
+            let self = this;
+            nts.uk.ui.errors.clearAll();
+            self.selectedEmployeeCode(null);
+        }
 
+        registerRoleSetPerson() {
+            let self = this;
+            $(".ntsDateRange_Component").trigger("validate");
+            if (!nts.uk.ui.errors.hasError()) {
                 let command: any = {
-                    employeeId: data.employeeId
+                    roleSetCd: self.selectedRoleCode(),
+                    employeeId: self.selectedEmployeeId(),
+                    startDate: new Date(self.dateValue().startDate).toISOString(),
+                    endDate: new Date(self.dateValue().endDate).toISOString(),
+                    mode: self.screenMode()
                 };
 
-                confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    // call service remove
-                    block.invisible();
-                    let indexItemDelete = _.findIndex(ko.toJS(self.roleSetPersonList), function(item: any) { return item.employeeId == data.employeeId; });
-                    service.deleteData(command).done(function() {
-                        //select after delete
-                        self.loadRoleSetHolder(self.selectedRoleSet()).done(() => {
-                            if (self.roleSetPersonList().length == 0) {
-                                self.createNewRoleSetPerson();
-                            } else {
-                                if (indexItemDelete == self.roleSetPersonList().length) {
-                                    self.selectedEmployeeId(self.roleSetPersonList()[indexItemDelete - 1].employeeId);
-                                } else {
-                                    self.selectedEmployeeId(self.roleSetPersonList()[indexItemDelete].employeeId);
-                                }
-                            }
-                            info({ messageId: "Msg_16" }).then(() => {
-                                //$(".ntsStartDatePicker").first().focus();
-                                //block.clear();
-                            });
-                        });
-
-                    }).fail(error => {
-                        alertError(error);
-                    }).always(() => {
-                        block.clear();
+                self.$blockui("show");
+                self.$ajax("com", paths.registerData, command).done(function() {
+                    self.$dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.startPage(command.employeeId);
                     });
-
-                }).ifNo(() => {
-                });
-
-            }
-
-            openDialogCDL009() {
-                let self = this;
-
-                setShared('CDL009Params', {
-                    isMultiSelect: false,
-                    baseDate: moment(new Date()).toDate(),
-                    target: TargetClassification.DEPARTMENT
-                }, true);
-
-                modal("/view/cdl/009/a/index.xhtml").onClosed(function() {
-                    var isCancel = getShared('CDL009Cancel');
-                    if (isCancel) {
-                        return;
-                    }
-                    var output = getShared('CDL009Output');
-                    self.selectedEmployeeId(output);
-                    $(".ntsStartDatePicker").focus();
+                }).fail(error => {
+                    self.$dialog.error(error);
+                }).always(() => {
+                    self.$blockui("hide");
                 });
             }
-            
-            saveAsExcel(): void {
-                let self = this;
-                let params = {
-                    date: null,
-                    mode: 1
-                };
-                if (!nts.uk.ui.windows.getShared("CDL028_INPUT")) {
-                    nts.uk.ui.windows.setShared("CDL028_INPUT", params);
-                }
-                nts.uk.ui.windows.sub.modal("../../../../../nts.uk.com.web/view/cdl/028/a/index.xhtml").onClosed(function() {
-                    var result = getShared('CDL028_A_PARAMS');
-                    if (result.status) {
-                        nts.uk.ui.block.grayout();
-                        let langId = self.langId();
-                        let date = moment.utc(result.standardDate, "YYYY/MM/DD");
-                        service.saveAsExcel(langId, date).done(function() {
-                        }).fail(function(error) {
-                            nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-                        }).always(function() {
-                            nts.uk.ui.block.clear();
+        }
+
+        deleteRoleSetPerson() {
+            let self = this;
+
+            let command: any = {
+                employeeId: self.selectedEmployeeId()
+            };
+
+            self.$dialog.confirm({ messageId: "Msg_18" }).then((value) => {
+                if (value == "yes") {
+                    // call service remove
+                    self.$blockui("show");
+                    let indexItemDelete = _.findIndex(ko.toJS(self.roleSetPersonList), (item: any) => item.id == command.employeeId);
+                    self.$ajax("com", paths.deleteData, command).done(function() {
+                        self.$dialog.info({ messageId: "Msg_16" }).then(() => {
+                            self.startPage().then(() => {
+                                if (self.roleSetPersonList().length == 0) {
+                                    self.createNewRoleSetPerson();
+                                } else {
+                                    self.selectedEmployeeCode(self.roleSetPersonList()[Math.min(indexItemDelete, self.roleSetPersonList().length - 1)].code);
+                                }
+                            })
                         });
-                    }
+                    }).fail(error => {
+                        self.$dialog.error(error);
+                    }).always(() => {
+                        self.$blockui("hide");
+                    });
+                }
+            });
+
+        }
+
+        openDialogCDL009() {
+            let self = this;
+
+            nts.uk.ui.windows.setShared('CDL009Params', {
+                isMultiSelect: false,
+                baseDate: moment(new Date()).toDate(),
+                target: TargetClassification.DEPARTMENT
+            }, true);
+
+            nts.uk.ui.windows.sub.modal("/view/cdl/009/a/index.xhtml").onClosed(function() {
+                var isCancel = nts.uk.ui.windows.getShared('CDL009Cancel');
+                if (isCancel) {
+                    return;
+                }
+                var output = nts.uk.ui.windows.getShared('CDL009Output');
+                self.$blockui("show");
+                self.$ajax("com", paths.getEmpInfo + output).done(data => {
+                    self.selectedEmployeeId(output);
+                    self.selectedEmployeeCode(data.employeeCode);
+                    self.selectedEmployeeName(data.personalName);
+                }).fail(error => {
+                    self.$dialog.error(error);
+                }).always(() => {
+                    self.$blockui("hide");
+                    $("#B3_2").focus();
                 });
-            }
+            });
+        }
 
-
+        closeDialog() {
+            nts.uk.ui.windows.close();
         }
     }
 
@@ -333,7 +266,7 @@ module nts.uk.com.view.cas014.b {
             this.employeeName = employeeName;
             this.startDate = start;
             this.endDate = end;
-            this.displayDateRange = (start && end) ? this.startDate.slice(0, 10).replace(/-/g, "/") + ' ' + getText('CAS014_38') + ' ' + this.endDate.slice(0, 10).replace(/-/g, "/") : '';
+            this.displayDateRange = (start && end) ? this.startDate.slice(0, 10).replace(/-/g, "/") + ' ' + nts.uk.resource.getText('CAS014_38') + ' ' + this.endDate.slice(0, 10).replace(/-/g, "/") : '';
         }
 
     }

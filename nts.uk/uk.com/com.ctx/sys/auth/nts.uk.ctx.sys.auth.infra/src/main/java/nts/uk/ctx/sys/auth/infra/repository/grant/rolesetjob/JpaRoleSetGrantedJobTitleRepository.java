@@ -46,16 +46,16 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 	private SacmtRoleSetGrantedJobTitleDetail toEntity(RoleSetGrantedJobTitle domain) {
 		SacmtRoleSetGrantedJobTitleDetailPK key = new SacmtRoleSetGrantedJobTitleDetailPK(domain.getJobTitleId(), domain.getCompanyId());
 		return new SacmtRoleSetGrantedJobTitleDetail(
+				domain.getRoleSetCd().v(),
 				key.jobTitleId,
-				key.companyId,
-				domain.getRoleSetCd().v()
+				key.companyId
 		);
 	}
 	private SacmtRoleSetGrantedJobTitleDetail toEntiryForUpdate(SacmtRoleSetGrantedJobTitleDetail upEntity) {
 		upEntity.upEntity(
+				upEntity.roleSetCd,
 				upEntity.roleSetGrantedJobTitleDetailPK.jobTitleId,
-				upEntity.roleSetGrantedJobTitleDetailPK.companyId,
-				upEntity.roleSetCd
+				upEntity.roleSetGrantedJobTitleDetailPK.companyId
 		);
 		return upEntity;
 	}
