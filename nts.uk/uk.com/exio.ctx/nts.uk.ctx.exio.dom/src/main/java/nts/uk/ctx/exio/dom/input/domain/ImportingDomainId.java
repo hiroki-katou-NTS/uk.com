@@ -23,7 +23,10 @@ public enum ImportingDomainId{
 	
 	/** 分類 */
 	CLASSIFICATION_HISTORY(105),
-	
+
+	/** 社員の年休付与設定*/
+	EMPLOYEE_ANNUAL_LEAVE_SETTING(111),	
+
 	/** 社員の特別休暇付与設定 */
 	EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING(116),
 	
@@ -43,9 +46,8 @@ public enum ImportingDomainId{
 	HOLIDAY_WORK(121),
 	
 	/** 作業 */
-	TASK(200);
-	
-	
+	TASK(200),
+	;
 	public final int value;
 	
 	public static ImportingDomainId valueOf(int value) {
