@@ -3,16 +3,15 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
-import lombok.val;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
@@ -31,28 +30,38 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
-			for (val interm : interms) {
-				interm.addCanonicalized(new CanonicalItemList().add(101, UUID.randomUUID().toString()), 101);
-				interm.addCanonicalized(new CanonicalItemList().add(103, 0), 103);
-				interm.addCanonicalized(new CanonicalItemList().add(104, 0), 104);
-				interm.addCanonicalized(new CanonicalItemList().add(105, 0), 105);
-				
-				require.save(context, interm.complete());
-			}
-		});
+		
+		List<String> employeeCodes = require.getStringsOfRevisedData(context, getItemNoOfEmployeeId());
+		
+		for (String employeeCode : employeeCodes) {
+			
+			employeeCodeCanonicalization.canonicalize(require, context, employeeCode)
+				.ifLeft(errors -> {
+					errors.forEach(error -> require.add(context, ExternalImportError.of(error)));
+				})
+				.ifRight(interms -> {
+					interms.forEach(interm -> {
+						interm.addCanonicalized(CanonicalItem.of(101, IdentifierUtil.randomUniqueId().toString()));
+						interm.addCanonicalized(CanonicalItem.of(103, 0));
+						interm.addCanonicalized(CanonicalItem.of(104, 0));
+						interm.addCanonicalized(CanonicalItem.of(105, 0));
+						
+						require.save(context, interm.complete());
+					});
+				});
+		}
 	}
-	
+
 	@Override
 	protected String getParentTableName() {
 		return "KRCDT_HD_SP_REMAIN";
 	}
-	
+
 	@Override
 	protected List<String> getChildTableNames() {
 		return Collections.emptyList();
 	}
-	
+
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
@@ -60,5 +69,4 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 				new DomainDataColumn("SPECIAL_LEAVE_CD", DataType.STRING), 
 				new DomainDataColumn("GRANT_DATE", DataType.DATETIME));
 	}
-
 }
