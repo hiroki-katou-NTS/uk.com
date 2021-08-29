@@ -1,9 +1,8 @@
 @CHARSET "UTF-8";
 
 #left-content {
-	margin-left: 30px;
-	margin-top: 20px;
-	padding: 25px;
+	margin-left: 15px;
+	margin-top: 10px;
 	float: left;
 	max-height: 300px;
 }
@@ -57,11 +56,6 @@
 	width: 80px;
 }
 
-#content-left.fixed-flex-layout-left {
-	float: left;
-	margin-top: 5px;
-	margin-left: 16px;
-}
 tr.row.display{
 	display: none;
 }
@@ -92,4 +86,11 @@ tr.row.display{
 #swap-list-grid2_displayContainer{
 	width: 251px !important;
 	max-width: 231px !important;
+}
+#defaultRoleSet{
+	margin-left: 5px;
+	margin-top: 3px;
+}
+#swap-list{
+	margin-top: -10px;
 }

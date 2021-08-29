@@ -27,7 +27,7 @@
         </div>
         <div id="contents-area" >
             <div class="container">
-                <div id="content-left"  class="fixed-flex-layout-left">
+                <div id="left-content"  class="fixed-flex-layout-left">
                     <!--A2_001 -->
                     <div>
                         <table id="role_set_grid"
@@ -65,7 +65,7 @@
                             <td class="pad_left_5px">
                                 <div data-bind="with: currentRoleSet">
                                     <!-- A3_2: Rose Set Code -->
-                                    <input class="nts-input" id="inpRoleSetCd"
+                                    <input class="code nts-input" id="inpRoleSetCd"
                                            data-bind="ntsTextEditor:{
                                             name: '#[CAS011_12]',
                                             value: roleSetCd,
@@ -73,7 +73,7 @@
                                             constraint: 'RoleSetCode',
                                             enable: $parent.isNewMode()}"/>
                                     <!-- A3_3: Rose Set Name -->
-                                    <input class="nts-input pad_left_5px" id="inpRoleSetName"
+                                    <input class="name nts-input" id="inpRoleSetName"
                                            data-bind="ntsTextEditor:{
                                                name: '#[CAS011_13]',
                                                value: roleSetName,
