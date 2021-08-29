@@ -80,7 +80,7 @@ public class GetHeaderOfCPS001Finder {
 		String roleId = AppContexts.user().roles().forPersonalInfo();
 		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
 
-		boolean isDepartment = isSelfAuth(roleId, "CS00015", "IS00073", AppContexts.user().employeeId().equals(sid));
+		boolean isDepartment = isSelfAuth(roleId, "CS00017", "IS00084", AppContexts.user().employeeId().equals(sid));
 		boolean isPosition = isSelfAuth(roleId, "CS00016", "IS00079", AppContexts.user().employeeId().equals(sid));
 		boolean isEmployeement = isSelfAuth(roleId, "CS00014", "IS00068", AppContexts.user().employeeId().equals(sid));
 		boolean isJobEntryRef = isSelfAuth(roleId, "CS00003", "IS00020", AppContexts.user().employeeId().equals(sid));
@@ -123,7 +123,7 @@ public class GetHeaderOfCPS001Finder {
 
 				wkp.ifPresent(wk -> {
 					_emp.setDepartmentCode(wk.getWorkplaceCode());
-					_emp.setDepartmentName(wk.getWorkplaceName());
+					_emp.setDepartmentName(wk.getWkpDisplayName());
 				});
 			}
 		} else {
