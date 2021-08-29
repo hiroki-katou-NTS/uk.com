@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.re
  */
 public class AcquireAppReflectHistForCancel {
 
-	public static Optional<AcquireAppReflectHistForCancelOutput> process(Require require, ApplicationShare app,
+	public static Optional<ApplicationReflectHistory> process(Require require, ApplicationShare app,
 			GeneralDate baseDate, ScheduleRecordClassifi classification) {
 
 		// 取消す申請の最新の反映履歴を取得
@@ -35,12 +35,12 @@ public class AcquireAppReflectHistForCancel {
 		for (ApplicationReflectHistory appHistBLast : appHistsBeforeLastest) {
 			// 申請IDをチェック
 			if (!appHistBLast.getApplicationId().equals(app.getAppID()))
-				break;
+				continue;
 			// 処理中の申請反映履歴を変数[反映前の情報を持つ申請反映履歴]にセット
 			appHistPrev = appHistBLast;
 		}
 		// [最新の申請反映履歴]と[反映前の情報を持つ申請反映履歴]を返す
-		return Optional.of(new AcquireAppReflectHistForCancelOutput(appHistLastest, appHistPrev));
+		return Optional.of(appHistPrev);
 	}
 
 	public static interface Require {

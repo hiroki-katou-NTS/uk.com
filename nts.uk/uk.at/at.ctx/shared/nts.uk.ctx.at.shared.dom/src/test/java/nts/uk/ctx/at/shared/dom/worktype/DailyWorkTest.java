@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktype;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -230,6 +231,195 @@ public class DailyWorkTest {
 		}
 		
 	}
+	
+
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 1日
+     *      1日 -> 勤務種類の分類 in (休業, 休職, 休日出勤       休出, 連続勤務, 振出, 欠勤, 出勤)
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Ouput:
+     *      休暇種類 -> all false
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isOneDay_asNoVacation() {
+        List<WorkTypeClassification> noVacationClassifications = Arrays.asList(WorkTypeClassification.Closure, WorkTypeClassification.LeaveOfAbsence, 
+                WorkTypeClassification.HolidayWork, WorkTypeClassification.ContinuousWork, WorkTypeClassification.Shooting, 
+                WorkTypeClassification.Absence, WorkTypeClassification.Attendance);
+        
+        val targets = Helper.getClasses( e -> noVacationClassifications.contains(e) ).stream()
+                .map( e -> Helper.getDailyWorkAsWholeDay( e ).determineHolidayByWorkType() )
+                .map( e -> !e.isAnnualHoliday() && !e.isYearlyReserved() && !e.isSubstituteHoliday() && !e.isPause() && !e.isHoliday() && !e.isSpecialHoliday() && !e.isTimeDigestVacation())
+                .collect(Collectors.toList());
+        
+        assertThat(targets).containsOnly(true);
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 1日
+     *      1日 -> 勤務種類の分類 = 年休
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.年休 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isOneDay_asAnnualHoliday() {
+        val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.AnnualHoliday).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createAnnualHoliday());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 1日
+     *      1日 -> 勤務種類の分類 = 積立年休
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.積立年休 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isOneDay_asYearlyReserved() {
+        val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.YearlyReserved).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createYearlyReserved());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 1日
+     *      1日 -> 勤務種類の分類 = 代休
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.代休 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isOneDay_asSubstituteHoliday() {
+        val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.SubstituteHoliday).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createSubstituteHoliday());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 1日
+     *      1日 -> 勤務種類の分類 = 振休
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.振休 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isOneDay_asPause() {
+        val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.Pause).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createPause());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 1日
+     *      1日 -> 勤務種類の分類 = 休日
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.休日 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isOneDay_asHoliday() {
+        val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.Holiday).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHoliday());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 1日
+     *      1日 -> 勤務種類の分類 = 特別休暇
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.特別休暇 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isOneDay_asSpecialHoliday() {
+        val target = Helper.getDailyWorkAsWholeDay(WorkTypeClassification.SpecialHoliday).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createSpecialHoliday());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 午前と午後
+     *      午前 -> 勤務種類の分類 = 休暇なし
+     *      午後 -> 勤務種類の分類 = 休暇なし
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類 -> all false
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isHalfDay_noVacation() {
+        val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Closure, WorkTypeClassification.LeaveOfAbsence).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createDefaultHoliday());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 午前と午後
+     *      午前 -> 勤務種類の分類 = 休日
+     *      午後 -> 勤務種類の分類 = 年休
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.年休 = true && 休暇種類.休日 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isHalfDay_AmPmVacation() {
+        val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Holiday, WorkTypeClassification.AnnualHoliday).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHolidayAnnual());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 午前と午後
+     *      午前 -> 勤務種類の分類 = 休日
+     *      午後 -> 勤務種類の分類 = 休暇なし
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.休日 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isHalfDay_AmHoliday() {
+        val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Holiday, WorkTypeClassification.Closure).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHoliday());
+    }
+    
+    /**
+     * Target: determineHolidayByWorkType
+     * Pattern: 
+     *      勤務の単位 -> 午前と午後
+     *      午前 -> 勤務種類の分類 = 休暇なし
+     *      午後 -> 勤務種類の分類 = 休日
+     *      1日の勤務.勤務種類からどんな休暇種類を含むか判断する
+     * Output: 
+     *      休暇種類.休日 = true
+     */
+    @Test
+    public void testDetermineHolidayByWorkType_isHalfDay_PmHoliday() {
+        val target = Helper.getDailyWorkAsHalfDay(WorkTypeClassification.Closure, WorkTypeClassification.Holiday).determineHolidayByWorkType();
+        
+        assertThat(target).isEqualToComparingFieldByField(HolidayTestHelper.createHoliday());
+    }
 
 	protected static class Helper {
 

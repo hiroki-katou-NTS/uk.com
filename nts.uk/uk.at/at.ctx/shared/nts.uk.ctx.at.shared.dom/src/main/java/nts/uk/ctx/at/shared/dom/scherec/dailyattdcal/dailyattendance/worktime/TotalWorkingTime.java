@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
@@ -115,10 +113,10 @@ public class TotalWorkingTime {
 	private ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily;
 	
 	/** 日別実績の遅刻時間 */
-	private List<LateTimeOfDaily> lateTimeOfDaily = Collections.emptyList();
+	private List<LateTimeOfDaily> lateTimeOfDaily = new ArrayList<>();
 	
 	/** 日別実績の早退時間 */
-	private List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = Collections.emptyList(); 
+	private List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = new ArrayList<>(); 
 	
 	/** 日別実績の休憩時間 */
 	private BreakTimeOfDaily breakTimeOfDaily;
@@ -215,6 +213,7 @@ public class TotalWorkingTime {
 		this.vacationAddTime = vacationAddTime;
 	}
 	
+	@SuppressWarnings("serial")
 	public static TotalWorkingTime createAllZEROInstance() {
 		List<HolidayWorkFrameTime> lstHolidayWorkFrameTime = new ArrayList<>();
 		for(int i = 1; i<=10; i++) {
@@ -231,36 +230,42 @@ public class TotalWorkingTime {
 																								new AttendanceTime(0), 
 																								new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)))),
 									new ExcessOfStatutoryTimeOfDaily(new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0)), new AttendanceTime(0)),
-																	 Optional.of(new OverTimeOfDaily(Collections.emptyList(), 
-																			 						 Collections.emptyList(), 
+																	 Optional.of(new OverTimeOfDaily(new ArrayList<>(), 
+																			 						 new ArrayList<>(), 
 																			 						 Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.createTimeWithCalculation(new AttendanceTime(0), new AttendanceTime(0)))),
 																			 						 new AttendanceTime(0),
 																			 						 new FlexTime(
 																			 								 TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0)),new AttendanceTime(0)), 
 																			 						 new AttendanceTime(0))),
-																	 Optional.of(new HolidayWorkTimeOfDaily(Collections.emptyList(), 
+																	 Optional.of(new HolidayWorkTimeOfDaily(new ArrayList<>(), 
 																			 								lstHolidayWorkFrameTime, 
-																			 								Finally.of(new HolidayMidnightWork(Collections.emptyList())), 
+																			 								Finally.of(new HolidayMidnightWork(new ArrayList<>())), 
 																			 								new AttendanceTime(0)))),
-									Arrays.asList(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
+									new ArrayList<LateTimeOfDaily>(){
+										   {
+										      add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
 																	  TimeWithCalculation.sameTime(new AttendanceTime(0)), 
 																	  new WorkNo(0), 
 																	  TimevacationUseTimeOfDaily.defaultValue(), 
-																	  IntervalExemptionTime.defaultValue())),
-									Arrays.asList(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
+																	  IntervalExemptionTime.defaultValue()));
+										  }},
+									new ArrayList<LeaveEarlyTimeOfDaily>(){
+											{
+											  add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)), 
 											  								TimeWithCalculation.sameTime(new AttendanceTime(0)), 
 											  								new WorkNo(0), 
 											  								TimevacationUseTimeOfDaily.defaultValue(), 
-											  								IntervalExemptionTime.defaultValue())),
+											  								IntervalExemptionTime.defaultValue()));
+											}},
 									new BreakTimeOfDaily(DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
 											DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
 																  new BreakTimeGoOutTimes(0),
 																  new AttendanceTime(0),
-																  Collections.emptyList()),
-									Collections.emptyList(),
+																  new ArrayList<>()),
+									new ArrayList<>(),
 									new RaiseSalaryTimeOfDailyPerfor(new ArrayList<>(),new ArrayList<>()),
 									new WorkTimes(0),
-									new TemporaryTimeOfDaily(Collections.emptyList()),
+									new TemporaryTimeOfDaily(new ArrayList<>()),
 									new ShortWorkTimeOfDaily(new WorkTimes(0),
 															 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
 															 DeductionTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0)), TimeWithCalculation.sameTime(new AttendanceTime(0))),
@@ -346,7 +351,7 @@ public class TotalWorkingTime {
 		val workCount = new WorkTimes(workCounter(recordClass.getCalculationRangeOfOneDay()));
 		
 		/*日別実績の臨時時間*/
-		val tempTime = new TemporaryTimeOfDaily(Collections.emptyList());
+		val tempTime = new TemporaryTimeOfDaily(new ArrayList<>());
 
 		//日別実績の遅刻時間
 		List<LateTimeOfDaily> lateTime = LateTimeOfDaily.calcList(

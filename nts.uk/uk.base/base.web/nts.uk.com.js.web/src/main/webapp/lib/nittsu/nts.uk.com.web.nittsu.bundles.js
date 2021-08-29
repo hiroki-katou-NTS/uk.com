@@ -1896,7 +1896,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -3663,7 +3663,8 @@ var nts;
                 com: 'nts.uk.com.web',
                 pr: 'nts.uk.pr.web',
                 at: 'nts.uk.at.web',
-                hr: 'nts.uk.hr.web'
+                hr: 'nts.uk.hr.web',
+                cloud: 'nts.uk.cloud.web'
             };
             var QueryString = /** @class */ (function () {
                 function QueryString() {
@@ -20487,6 +20488,10 @@ var nts;
                         });
                         $input.on('input', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = ((devt || {}).originalEvent || {}), ival = evt.target.value, dval = $input.data(_val);
+                            //Japanese input always return keyCode 229 -> skip constraining input, and validate after input is committed to editor's value
+                            if (dorgi == null || dorgi == undefined || dorgi.keyCode == 229) {
+                                return;
+                            }
                             // ival = ival
                             //     .replace(/。/, '.')
                             //     .replace(/ー/, '-')
@@ -40422,8 +40427,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);

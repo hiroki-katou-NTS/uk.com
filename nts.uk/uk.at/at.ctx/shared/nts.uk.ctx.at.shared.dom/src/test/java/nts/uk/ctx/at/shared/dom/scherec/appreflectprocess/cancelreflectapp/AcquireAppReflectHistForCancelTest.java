@@ -77,8 +77,7 @@ public class AcquireAppReflectHistForCancelTest {
 		val actualResult = AcquireAppReflectHistForCancel.process(require, app, GeneralDate.ymd(2021, 4, 22),
 				ScheduleRecordClassifi.RECORD);
 
-		assertHist(createAppReflectHistAll("1", GeneralDateTime.ymdhms(2021, 4, 19, 0, 0, 0)), actualResult.get().getAppHistLastest());
-		assertHist(createAppReflectHistAll("1", GeneralDateTime.ymdhms(2021, 4, 16, 0, 0, 0)), actualResult.get().getAppHistPrev());
+		assertHist(createAppReflectHistAll("1", GeneralDateTime.ymdhms(2021, 4, 16, 0, 0, 0)), actualResult.get());
 	}
 
 	/*
@@ -113,8 +112,7 @@ public class AcquireAppReflectHistForCancelTest {
 		val actualResult = AcquireAppReflectHistForCancel.process(require, app, GeneralDate.ymd(2021, 4, 22),
 				ScheduleRecordClassifi.RECORD);
 
-		assertHist(createAppReflectHistAll("1", GeneralDateTime.ymdhms(2021, 4, 19, 0, 0, 0)), actualResult.get().getAppHistLastest());
-		assertHist(createAppReflectHistAll("1", GeneralDateTime.ymdhms(2021, 4, 18, 0, 0, 0)), actualResult.get().getAppHistPrev());
+		assertHist(createAppReflectHistAll("1", GeneralDateTime.ymdhms(2021, 4, 15, 0, 0, 0)), actualResult.get());
 	}
 	
 	private ApplicationReflectHistory createAppReflectHistAll(String id, GeneralDateTime date) {

@@ -126,9 +126,9 @@
 				</div>
 				<!-- B1_14 -->
 				<div class="controlButtonCell_kaf000"
-					data-bind="if: displayApprovalLabel">
+					data-bind="if: displayApprovalLabel" style="vertical-align: top; margin-top: 5px;">
 					<div class="comment">
-						<label>【承認】</label>
+						<label>#{i18n.getText('KAF000_25')}</label>
 					</div>
 				</div>
 				<!-- B1_5 -->
@@ -141,9 +141,9 @@
 				</div>
 				<!-- B1_15 -->
 				<div class="controlButtonCell_kaf000"
-					data-bind="if: displayDenyLabel">
+					data-bind="if: displayDenyLabel" style="vertical-align: top; margin-top: 5px;">
 					<div class="comment">
-						<label>【否認】</label>
+						<label>#{i18n.getText('KAF000_26')}</label>
 					</div>
 				</div>
 				<!-- B1_7 -->
@@ -191,10 +191,17 @@
 						data-bind="click: btnDelete, enable : enableDeleteButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_23')}</button>
 				</div>
 				<!-- B1_13 -->
-				<div class="controlButtonCell_kaf000"
+				<!-- <div class="controlButtonCell_kaf000"
 					data-bind="if: displayCancelButton">
 					<button class="danger kaf000-function-btn"
 						data-bind="click: btnCancel, enable : enableCancelButton() &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KAF000_24')}</button>
+				</div> -->
+				<!-- B1_23 -->
+				<div class="controlButtonCell_kaf000"
+					data-bind="if: displayCancelLabel" style="vertical-align: top; margin-top: 5px;">
+					<div class="comment">
+						<label>#{i18n.getText('KAF000_63')}</label>
+					</div>
 				</div>
 			</div>
 			<div style="display: inline-block; position: absolute; left: 60px; z-index: 10;">
