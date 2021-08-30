@@ -629,9 +629,13 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	public void registDeductionListForWithin(
 			DeductionTimeSheet deductTimeSheet,
 			Optional<WorkTimezoneCommonSet> commonSet){
-		
+		//遅刻早退控除前の時間帯で控除時間を登録しないと、
+		//退勤後の休憩が求まらない等の問題が起きる為、一旦退避して置き換える。
+		TimeSpanForDailyCalc afterDeduct = this.timeSheet.clone();
+		this.timeSheet = this.beforeLateEarlyTimeSheet.clone();
 		// 控除時間帯の登録
 		this.registDeductionList(ActualWorkTimeSheetAtr.WithinWorkTime, deductTimeSheet, commonSet);
+		this.timeSheet = afterDeduct;
 		// 保持する控除時間帯を取得（計上用）
 		List<TimeSheetOfDeductionItem> recordList = WithinWorkTimeFrame.getDeductSheetForSave(
 				this.beforeLateEarlyTimeSheet, this.timeSheet, deductTimeSheet, DeductionAtr.Appropriate);
@@ -1059,12 +1063,14 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param timeLeavingOfDailyAttd 日別勤怠の出退勤
+	 * @param startOverTime 残業開始時刻
 	 */
 	public void setBeforeLateEarlyTimeSheet(
 			WorkType workType,
 			IntegrationOfWorkTime integrationOfWorkTime,
 			PredetermineTimeSetForCalc predetermineTimeSet,
-			Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd) {
+			Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd,
+			TimeWithDayAttr startOverTime) {
 		this.beforeLateEarlyTimeSheet = this.timeSheet.clone();
 		Optional<TimeLeavingWork> timeLeavingWork = timeLeavingOfDailyAttd.flatMap(t -> t.getAttendanceLeavingWork(this.workingHoursTimeNo.v()));
 		if (!timeLeavingWork.isPresent()) {
@@ -1076,7 +1082,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 				integrationOfWorkTime,
 				predetermineTimeSet,
 				timeLeavingWork.get(),
-				Optional.of(this.timeSheet.getEnd()));
+				Optional.of(startOverTime));
 	}
 	
 	/**
