@@ -29,7 +29,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
@@ -344,7 +344,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				boolean confirmReflectStamp = confirmReflectStamp(s, x, processTimeOutput);
 				if (confirmReflectStamp) {
 					// stampAtr
-					ChangeClockArt stampAtr = x.getType().getChangeClockArt();
+					ChangeClockAtr stampAtr = x.getType().getChangeClockArt();
 					// 外出
 					if (stampAtr.value == 4) {
 						// *7 外出打刻を反映する (Phản ánh 外出打刻 (thời diểm check ra

@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetStampTypeToSuppressService.Require;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 
 /**
  * 
@@ -305,10 +305,10 @@ public class GetStampTypeToSuppressServiceTest {
 				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now()),
-						StampHelper.getStampByChangeClockArt("stampCardId2",ChangeClockArt.GO_OUT,GeneralDateTime.now().addMinutes(3)),
-						StampHelper.getStampByChangeClockArt("stampCardId3",ChangeClockArt.RETURN,GeneralDateTime.now().addMinutes(4)),
-						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now().addMinutes(5)));
+				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now()),
+						StampHelper.getStampByChangeClockArt("stampCardId2",ChangeClockAtr.GO_OUT,GeneralDateTime.now().addMinutes(3)),
+						StampHelper.getStampByChangeClockArt("stampCardId3",ChangeClockAtr.RETURN,GeneralDateTime.now().addMinutes(4)),
+						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(5)));
 				
 			}
 		};
@@ -365,9 +365,9 @@ public class GetStampTypeToSuppressServiceTest {
 				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now().addMinutes(3)),
-						StampHelper.getStampByChangeClockArt("stampCardId2",ChangeClockArt.GO_OUT,GeneralDateTime.now().addMinutes(5)),
-						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now().addMinutes(7)));
+				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(3)),
+						StampHelper.getStampByChangeClockArt("stampCardId2",ChangeClockAtr.GO_OUT,GeneralDateTime.now().addMinutes(5)),
+						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(7)));
 				
 			}
 		};
@@ -422,8 +422,8 @@ public class GetStampTypeToSuppressServiceTest {
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
 				result = Arrays.asList(
-						StampHelper.getStampByChangeClockArt("stampCardId2",ChangeClockArt.GO_OUT,GeneralDateTime.now().addMinutes(5)),
-						StampHelper.getStampByChangeClockArt("stampCardId3",ChangeClockArt.RETURN,GeneralDateTime.now().addMinutes(4)));
+						StampHelper.getStampByChangeClockArt("stampCardId2",ChangeClockAtr.GO_OUT,GeneralDateTime.now().addMinutes(5)),
+						StampHelper.getStampByChangeClockArt("stampCardId3",ChangeClockAtr.RETURN,GeneralDateTime.now().addMinutes(4)));
 				
 			}
 		};
@@ -477,9 +477,9 @@ public class GetStampTypeToSuppressServiceTest {
 				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now().addMinutes(5)),
-						StampHelper.getStampByChangeClockArt("stampCardId3",ChangeClockArt.RETURN,GeneralDateTime.now().addMinutes(7)),
-						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now().addMinutes(9)));
+				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(5)),
+						StampHelper.getStampByChangeClockArt("stampCardId3",ChangeClockAtr.RETURN,GeneralDateTime.now().addMinutes(7)),
+						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(9)));
 				
 			}
 		};
@@ -533,8 +533,8 @@ public class GetStampTypeToSuppressServiceTest {
 				result = Arrays.asList(StampRecordHelper.getStampRecord());
 				
 				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now().addMinutes(3)),
-						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockArt.GOING_TO_WORK,GeneralDateTime.now().addMinutes(5)));
+				result = Arrays.asList(StampHelper.getStampByChangeClockArt("stampCardId1",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(3)),
+						StampHelper.getStampByChangeClockArt("stampCardId4",ChangeClockAtr.GOING_TO_WORK,GeneralDateTime.now().addMinutes(5)));
 				
 			}
 		};

@@ -30,7 +30,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStamp;
@@ -201,7 +201,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		val relieve = new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans));
 		val stampType = StampType.getStampType(entity.changeHalfDay,
 				entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
-				SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.pk.changeClockArt),
+				SetPreClockArt.valueOf(entity.preClockArt), ChangeClockAtr.valueOf(entity.pk.changeClockArt),
 				ChangeCalArt.valueOf(entity.changeCalArt));
 		
 		OvertimeDeclaration overtime = entity.overTime == null ? null
@@ -260,7 +260,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 				new StampType(entity.changeHalfDay,
 						entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
-						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.pk.changeClockArt),
+						SetPreClockArt.valueOf(entity.preClockArt), ChangeClockAtr.valueOf(entity.pk.changeClockArt),
 						ChangeCalArt.valueOf(entity.changeCalArt)),
 				new RefectActualResult(workInformationStamp,
 						entity.workTime == null ? null : new WorkTimeCode(entity.workTime),
@@ -301,7 +301,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 					new Relieve(AuthcMethod.valueOf(entity.autcMethod), StampMeans.valueOf(entity.stampMeans)),
 					StampType.getStampType(entity.changeHalfDay,
 							entity.goOutArt == null ? null : GoingOutReason.valueOf(entity.goOutArt),
-							SetPreClockArt.valueOf(entity.preClockArt), ChangeClockArt.valueOf(entity.pk.changeClockArt),
+							SetPreClockArt.valueOf(entity.preClockArt), ChangeClockAtr.valueOf(entity.pk.changeClockArt),
 							ChangeCalArt.valueOf(entity.changeCalArt)),
 
 					new RefectActualResult(workInformationStamp,
