@@ -13,6 +13,10 @@ import java.util.function.Function;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.CompensatoryHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.HolidayWorkCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteWorkCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
@@ -79,6 +83,18 @@ public class CreateDomainCanonicalization {
 		
 		// 特別休暇付与残数データ
 		CREATES.put(ImportingDomainId.SPECIAL_HORYDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
+
+		// 振休管理データ
+		CREATES.put(SUBSTITUTE_HOLIDAY, SubstituteHolidayCanonicalization::new);
+
+		// 振出管理データ
+		CREATES.put(SUBSTITUTE_WORK, SubstituteWorkCanonicalization::new);
+
+		// 代休管理データ
+		CREATES.put(COMPENSATORY_HOLIDAY, CompensatoryHolidayCanonicalization::new);
+
+		// 休出管理データ
+		CREATES.put(HOLIDAY_WORK, HolidayWorkCanonicalization::new);
 	}
 	
 	public static interface Require {
