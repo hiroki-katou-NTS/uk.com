@@ -138,9 +138,9 @@ module nts.uk.com.view.cas013.b {
                         vm.optionalColumnDatasource(job);
                         vm.employInfors(emps);
                         vm.listEmployee(data);
-                        if(!isNullOrEmpty(emps)){
-                            vm.multiSelectedCode(emps[0].code)
-                        }
+                        // if(!isNullOrEmpty(emps)){
+                        //     vm.multiSelectedCode(emps[0].code)
+                        // }
                     }
                 }).always(()=>{
                     block.clear()
@@ -222,7 +222,15 @@ module nts.uk.com.view.cas013.b {
             nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
         }
         decision(){
-            nts.uk.ui.windows.close();
+            let vm = this;
+            if(isNullOrEmpty(vm.multiSelectedCode())){
+                nts.uk.ui.dialog.alertError({
+                    messageId: "Msg_218",
+                    messageParams: [nts.uk.resource.getText("KCP005_1")]
+                });
+            }else {
+                nts.uk.ui.windows.close();
+            }
         }
         cancel_Dialog(): any {
             nts.uk.ui.windows.setShared("employeeInf", null);

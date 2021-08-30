@@ -435,11 +435,13 @@ module nts.uk.com.view.cas013.a {
                 vm.employyeCode('');
                 vm.employyeName('');
             }
+            vm.setFocus();
         }
         private selectRoleEmployee(UserId: string): void {
             let vm = this;
             let roleId = vm.selectedRole();
             vm.selectedUserID(UserId);
+            block.invisible();
             if (roleId != '' && UserId != '') {
                 let userSelected = _.find(vm.employeeList(), (e) => e.id == UserId);
                 let role = _.find(vm.listRole(), (e) => e.roleId == roleId);
@@ -581,9 +583,7 @@ module nts.uk.com.view.cas013.a {
             else if (nts.uk.util.isNullOrUndefined(vm.dateValue().startDate) || nts.uk.util.isNullOrUndefined(vm.dateValue().endDate)) {
                 $(".nts-input").trigger("validate");
             }
-
         }
-
         private insert(): void {
             let vm = this;
             let roleType = vm.selectedRoleType();
