@@ -57,6 +57,7 @@ public class DomainDataId {
 			}
 			
 			this.keys.add(new Key(key, value));
+			currentIndex+=1;
 			
 			return this;
 		}
