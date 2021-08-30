@@ -82,7 +82,7 @@ public class CreateDomainCanonicalization {
 		CREATES.put(ImportingDomainId.EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> SpecialHolidayGrantSettingCanonicalization.create(w));
 		
 		// 特別休暇付与残数データ
-		CREATES.put(ImportingDomainId.SPECIAL_HORYDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.SPECIAL_HOLIDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
 	}
 	
 	public static interface Require {
