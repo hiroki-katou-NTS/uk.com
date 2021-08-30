@@ -442,7 +442,7 @@ public class SupportWorkReflection {
 			@Override
 			public List<Stamp> stamp(List<String> listCard, String companyId, GeneralDateTime startDate,
 					GeneralDateTime endDate) {
-				return stampRepo.getByDateTimeperiod(listCard, companyId, startDate, endDate);
+				return stampRepo.getByDateTimeperiod(listCard, startDate, endDate);
 			}
 		};
 		
