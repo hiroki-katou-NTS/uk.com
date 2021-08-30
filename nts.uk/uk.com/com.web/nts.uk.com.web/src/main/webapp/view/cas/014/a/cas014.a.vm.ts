@@ -65,7 +65,7 @@ module nts.uk.com.view.cas014.a {
                 dfd.resolve();
             }).fail(function(error) {
                 self.$dialog.error(error).then(() => {
-                    if (error.messageId == "Msg_713" || error.messageId == "Msg_712") {
+                    if (error.messageId == "Msg_713" || error.messageId == "Msg_712" || error.messageId == "Msg_1103") {
                         nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                     }
                 });
