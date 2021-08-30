@@ -62,10 +62,10 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 	
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
+		// EmployeeHistoryCanonicalization.toDeleteのキーの順番と合わせる必要がある
 		return Arrays.asList(
-				new DomainDataColumn("社員コード", DataType.STRING),
-				new DomainDataColumn("開始日", DataType.DATE),
-				new DomainDataColumn("終了日", DataType.DATE)
+				new DomainDataColumn("HIST_ID", DataType.STRING),
+				new DomainDataColumn("SID", DataType.STRING)
 		);
 	}
 
