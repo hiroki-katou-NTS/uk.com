@@ -24,7 +24,7 @@ module nts.uk.com.view.cas014.b {
         constructor() {
             super();
             let self = this;
-            self.screenMode = ko.observable(ScreenMode.UPDATE);
+            self.screenMode = ko.observable(ScreenMode.NEW);
             self.dateValue = ko.observable({});
             self.roleSetList = ko.observableArray([]);
             self.roleSetPersonList = ko.observableArray([]);
@@ -32,8 +32,8 @@ module nts.uk.com.view.cas014.b {
             self.selectedEmployeeCode = ko.observable(null);
             self.selectedEmployeeName = ko.observable(null);
             self.selectedEmployeeCode.subscribe(function(data: any) {
-                if (data) {
-                    let item = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.code == data);
+                let item = _.find(ko.toJS(self.roleSetPersonList), (x: any) => x.code == data);
+                if (item) {
                     self.getEmployeeInfo(item.id);
                     self.selectedEmployeeName(item.name);
                     self.screenMode(ScreenMode.UPDATE);
@@ -109,6 +109,8 @@ module nts.uk.com.view.cas014.b {
                                 self.selectedEmployeeCode(emp.code);
                         }
                     }
+
+                    if (_.isEmpty(self.roleSetPersonList())) $("#B3_2").focus();
                 } else {
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                 }
