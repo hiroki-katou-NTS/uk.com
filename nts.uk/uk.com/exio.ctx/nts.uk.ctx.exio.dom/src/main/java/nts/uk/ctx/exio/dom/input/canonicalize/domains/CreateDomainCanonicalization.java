@@ -13,6 +13,7 @@ import java.util.function.Function;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
@@ -60,7 +61,7 @@ public class CreateDomainCanonicalization {
 		CREATES.put(EMPLOYEE_BASIC, w -> new EmployeeBasicCanonicalization());
 		
 		// 雇用履歴
-		CREATES.put(ImportingDomainId.EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
+		CREATES.put(EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
 		
 		//分類履歴
 		CREATES.put(CLASSIFICATION_HISTORY,w -> AffClassHistoryCanonicalization.create(w));
@@ -72,7 +73,10 @@ public class CreateDomainCanonicalization {
 		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
 		
 		//社員の年休付与設定
-		CREATES.put(ImportingDomainId.EMPLOYEE_ANNUAL_LEAVE_SETTING, w -> EmployeeAnnualLeaveSettingCanonicalization.create(w));
+		CREATES.put(EMPLOYEE_ANNUAL_LEAVE_SETTING, w -> EmployeeYearHolidaySettingCanonicalization.create(w));
+		//年休上限データ
+		CREATES.put(MAX_YEAR_HOLIDAY, w -> EmployeeYearHolidaySettingCanonicalization.create(w));
+		
 
 		// 社員の特別休暇付与設定
 		CREATES.put(ImportingDomainId.EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> SpecialHolidayGrantSettingCanonicalization.create(w));

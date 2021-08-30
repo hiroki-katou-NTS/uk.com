@@ -27,6 +27,12 @@ public enum ImportingDomainId{
 	/** 社員の年休付与設定*/
 	EMPLOYEE_ANNUAL_LEAVE_SETTING(111),	
 
+	/** 年休上限データ*/
+	MAX_YEAR_HOLIDAY(112),
+	
+	/** 年休付与残数データ*/
+	GRANTHOLIDAY_REMAINING(114),
+	
 	/** 社員の特別休暇付与設定 */
 	EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING(116),
 	
