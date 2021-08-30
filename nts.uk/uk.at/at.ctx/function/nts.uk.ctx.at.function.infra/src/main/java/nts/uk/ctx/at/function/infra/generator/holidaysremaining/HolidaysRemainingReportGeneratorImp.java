@@ -3134,10 +3134,10 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         pageSetup.setFirstPageNumber(1);
         //pageSetup.setPrintArea("A1:N");
         //ý 1 của bug #102883  事象(1)
-        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
-        pageSetup.setHeader(1, "&16&\"MS ゴシック,Bold\"" + title);
+        pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + dataSource.getCompanyName());
+        pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック,Bold\"" + title);
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
+        pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
 
     }
 
