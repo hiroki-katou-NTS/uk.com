@@ -539,7 +539,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		// 控除種別区分を確認する
 		switch (conditionAtr){
 		case PrivateGoOut:
-		case CompesationGoOut:
+		case UnionGoOut:
 			// コアタイムとの重複を判断して時間帯を作成
 			List<WithinWorkTimeFrame> targetFrameList = this.createSpanDuplicatedWithCoreTime(isWithin);
 			// 控除時間の計算
