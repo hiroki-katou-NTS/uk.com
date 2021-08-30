@@ -981,7 +981,7 @@ module nts.uk.at.view.kwr004.b {
             const oldSelectedTime = this.selectedTime;
             const oldDedependentCalcClassic = this.independentCalcClassic();
             const oldDailyAttributes = this.dailyAttributes();
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_2088" }).ifYes(()=>{
                 // if yes do nothing
             }).ifNo(()=>{
                 // if no reset value
@@ -998,6 +998,27 @@ module nts.uk.at.view.kwr004.b {
         }
       }, null, "beforeChange");
 
+        this.independentCalcClassic.subscribe((oldValue) => {
+            if (!this.independentCalcClassicProgrammaticChange && !_.isEmpty(this.selectionItem())) {
+                const oldSelectedTimeList = this.selectedTimeList();
+                const oldSelectionItem = this.selectionItem();
+                const oldSelectedTime = this.selectedTime;
+                const oldDailyAttributes = this.dailyAttributes();
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_2087" }).ifYes(()=>{
+                    // if yes do nothing
+                }).ifNo(()=>{
+                    // if no reset value
+                    this.independentCalcClassicProgrammaticChange = true;
+                    this.independentCalcClassic(oldValue);
+                    this.selectedTimeList(oldSelectedTimeList);
+                    this.selectionItem(oldSelectionItem);
+                    this.selectedTime = oldSelectedTime;
+                    this.dailyAttributes(oldDailyAttributes);
+                });
+            } else {
+                this.independentCalcClassicProgrammaticChange = false;
+            }
+        }, null, "beforeChange");
 
     }
   }
