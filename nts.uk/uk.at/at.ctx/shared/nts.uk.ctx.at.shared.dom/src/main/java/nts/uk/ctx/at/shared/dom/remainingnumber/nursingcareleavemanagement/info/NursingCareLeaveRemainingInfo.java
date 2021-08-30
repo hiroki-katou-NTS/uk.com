@@ -104,27 +104,28 @@ public abstract class NursingCareLeaveRemainingInfo{
 		GeneralDate nextStartMonthDay = nursingLeaveSetting.getNextStartMonthDay(nextCalcPeriod.start());
 
 		// 期間に次回起算日があるか
-		//	===期間．開始日 <=次回起算日 <= 期間．終了日
-		if (calcPeriod.contains(nextStartMonthDay)) {
+		//	===次回起算日を計算する期間．開始日 <=次回起算日 <= 次回起算日を計算する期間．終了日
+		if (nextCalcPeriod.contains(nextStartMonthDay)) {
 			// 期間．開始日から次回起算日の前日の上限日数を取得List<ChildCareTargetChanged> childCareTargetChanged
 			childCareNurseUpperLimitSplit.addAll(childCareNurseUpperLimitSplit(companyId, employeeId,
 					new DatePeriod(calcPeriod.start(), nextStartMonthDay.addDays(-1)), criteriaDate, nextStartMonthDay, require));
 
-			// 次回起算日から期間．終了日期間の上限日数を取得
+			// 次回起算日から次回起算日を計算する期間．終了日期間の上限日数を取得
 			childCareNurseUpperLimitSplit.addAll(childCareNurseUpperLimitSplit(companyId,employeeId,
-						new DatePeriod(nextStartMonthDay, calcPeriod.end()),criteriaDate,nextStartMonthDay, require));
+						new DatePeriod(nextStartMonthDay, nextCalcPeriod.end()),criteriaDate,nextStartMonthDay, require));
+			
+			//上限日数分割日から上限日数期間を作成
+			return limitSplitTolimitPeriod(new DatePeriod(calcPeriod.start(), nextCalcPeriod.end()),childCareNurseUpperLimitSplit);
 
 		}else {
 			// 期間．開始日を分割日に設定
 			childCareNurseUpperLimitSplit = childCareNurseUpperLimitSplit(companyId,employeeId,
 					calcPeriod ,criteriaDate, nextStartMonthDay,require);
+			
+			//上限日数分割日から上限日数期間を作成
+			return limitSplitTolimitPeriod(calcPeriod,childCareNurseUpperLimitSplit);
 		}
 
-		//上限日数分割日から上限日数期間を作成
-		List<ChildCareNurseUpperLimitPeriod> upperLimitPeriodList = limitSplitTolimitPeriod(calcPeriod,childCareNurseUpperLimitSplit);
-
-		// 「上限日数期間（List）」を返す
-		return upperLimitPeriodList;
 	}
 
 	/**
