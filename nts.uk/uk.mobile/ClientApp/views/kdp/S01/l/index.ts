@@ -53,16 +53,27 @@ export class KdpS01LComponent extends Vue {
 
     public created() {
         let vm = this;
-
-
         vm.initTask();
-        vm.reload(0);
     }
 
     public mounted() {
         let vm = this;
 
         vm.reloadData();
+
+        _.delay(function () {
+            let btnFunctions = vm.$refs.functionBtns as HTMLButtonElement[],
+                btnDefault = vm.$refs.functionBtn as HTMLButtonElement;
+
+            if (!!btnFunctions && btnFunctions.length) {
+                btnFunctions[0].focus();
+            } else {
+                if (!!btnDefault) {
+                    btnDefault.focus();
+                }
+            }
+
+        }, 300);
 
     }
 
@@ -104,6 +115,9 @@ export class KdpS01LComponent extends Vue {
             vm.setting = result.data.taskFrameUsageSetting.taskFrameSetting;
             vm.taskArray = _.chunk(vm.tasks, 6);
             vm.frameName = vm.getFrameName(1);
+        }).then(() => {
+            vm.reload(0);
+            vm.reloadData();
         });
 
     }
@@ -129,7 +143,7 @@ export class KdpS01LComponent extends Vue {
     public onClickTask(code: string) {
         let vm = this;
         vm.selectedCode = code;
-        
+        vm.framePosition = 0;
         let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo + 1, upperFrameWorkCode: vm.selectedCode};
 
         vm.$mask('show');
@@ -149,7 +163,6 @@ export class KdpS01LComponent extends Vue {
                     vm.frameName = vm.getFrameName(vm.frameNo);
                     vm.taskArray = _.chunk(result.data.task, 6);
                     vm.reloadData();
-                    vm.framePosition = 0;
                 }
 
             }
@@ -162,31 +175,56 @@ export class KdpS01LComponent extends Vue {
         if (vm.taskNameCd == '') {
             vm.$modal.error({ messageId: 'MsgB_24' });
         } else {
-            
-            let results =_.filter(vm.tasks, function(item) {
-                return item.displayInfo.taskName.indexOf(vm.taskNameCd) > -1 || item.code.indexOf(vm.taskNameCd) > -1 ;
-                });
-            
-            // L2_1の文字を含む作業見つからなかった場合
-            if (results.length == 0) {
-                vm.$modal.error({ messageId: 'MsgB_25' });
-                vm.taskArray = _.chunk(vm.tasks, 6);
-            } else {
-                vm.tasks = results;
-                vm.taskArray = _.chunk(vm.tasks, 6);
-            }
 
-            vm.reload(0);
-            vm.framePosition = 0;
-            vm.reloadData();
+            let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo, upperFrameWorkCode: vm.selectedCode };
+
+            vm.$mask('show');
+            vm.$http.post('at', API.GET_EMPLOYEE_TASKS, param).then((result: any) => {
+                vm.$mask('hide');
+    
+                if (result) {
+                    if (result.data.taskFrameUsageSetting) {
+                        vm.setting = result.data.taskFrameUsageSetting.taskFrameSetting;
+                    }
+                    vm.tasks = result.data.task;
+                }
+
+            }).then(() => {
+            
+                let results =_.filter(vm.tasks, function(item) {
+                    return item.displayInfo.taskName.indexOf(vm.taskNameCd) > -1 || item.code.indexOf(vm.taskNameCd) > -1 ;
+                    });
+                
+                // L2_1の文字を含む作業見つからなかった場合
+                if (results.length == 0) {
+                    vm.$modal.error({ messageId: 'MsgB_25' });
+                    vm.taskArray = _.chunk(vm.tasks, 6);
+                } else {
+                    vm.tasks = results;
+                    vm.taskArray = _.chunk(vm.tasks, 6);
+                }
+
+                vm.reload(0);
+                vm.framePosition = 0;
+                vm.reloadData();
+                
+            });
+
         }
     }
 
     public onClickCancel() {
         let vm = this;
         vm.taskNameCd = '';
-        vm.reload(0);
-        vm.reloadData();
+        let param: ITaskParam = {sid: vm.params.employeeId, workFrameNo: vm.frameNo, upperFrameWorkCode: vm.selectedCode};
+        vm.$mask('show');
+        vm.$http.post('at', API.GET_EMPLOYEE_TASKS, param).then((result: any) => {
+            vm.$mask('hide');
+            vm.taskArray = _.chunk(result.data.task, 6);
+        }).then(() => {
+            vm.reload(0);
+            vm.reloadData();
+        });
 
     }
 

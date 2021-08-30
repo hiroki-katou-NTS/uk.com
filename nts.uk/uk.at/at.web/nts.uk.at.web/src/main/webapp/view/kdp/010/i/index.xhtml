@@ -78,25 +78,27 @@
 												enable: selectedStampingEnable}"></div>
 						</td>
 					</tr>
-					<tr>
-						<td>
-							<!-- H8_1 -->
-							<div class="margin-left-20" data-bind="ntsFormLabel: { required: true }">
-								#{i18n.getText('KDP010_340')}</div>
-						</td>
-						<td class="rowHelpButton">
-							<!-- H8_2 -->
-							<div style="display: inline-block;" tabindex="3" data-bind="ntsRadioBoxGroup: {
+					<com:ko-if bind="$vm.isSupportUse">
+						<tr>
+							<td>
+								<!-- H8_1 -->
+								<div class="margin-left-20" data-bind="ntsFormLabel: { required: true }">
+									#{i18n.getText('KDP010_340')}</div>
+							</td>
+							<td class="rowHelpButton">
+								<!-- H8_2 -->
+								<div style="display: inline-block;" tabindex="3" data-bind="ntsRadioBoxGroup: {
 												name: '#[KDP010_340]',
 												options: supportWplSetOption,
 												optionsValue: 'id',
 												optionsText: 'name',
 												value: supportWplSet,
 												enable: supportWplSetEnable}"></div>
-							<button style="top: 5px;"
-								data-bind="ntsHelpButton: {textId: 'KDP010_343', position: 'bottom center' }, enable: supportWplSetEnable">？</button>
-						</td>
-					</tr>
+								<button style="top: 5px;"
+									data-bind="ntsHelpButton: {textId: 'KDP010_343', position: 'bottom center' }, enable: supportWplSetEnable">？</button>
+							</td>
+						</tr>
+					</com:ko-if>
 					<!-- H9 -->
 					<com:ko-if bind="$vm.isUseWork">
 						<tr>

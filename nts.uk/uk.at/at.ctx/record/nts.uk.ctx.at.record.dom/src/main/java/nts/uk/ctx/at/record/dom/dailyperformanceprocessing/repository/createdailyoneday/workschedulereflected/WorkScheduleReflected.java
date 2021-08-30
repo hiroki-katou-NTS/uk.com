@@ -39,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -62,9 +61,8 @@ public class WorkScheduleReflected {
 	@Inject
 	private DailySnapshotWorkAdapter snapshotAdapter;
 
-	public List<ErrorMessageInfo> workScheduleReflected(IntegrationOfDaily integrationOfDaily) {
+	public List<ErrorMessageInfo> workScheduleReflected(String companyId, IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
-		String companyId = AppContexts.user().companyId();
 		String employeeId = integrationOfDaily.getEmployeeId();
 		GeneralDate ymd = integrationOfDaily.getYmd();
 		//「勤務予定」ドメインを取得する

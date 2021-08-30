@@ -63,7 +63,8 @@ export class KdpS01AComponent extends Vue {
     public settingStampCommon: ISettingsStampCommon = {
         supportUse: false,
         temporaryUse: false,
-        workUse: false
+        workUse: false,
+        entranceExitUse: false
     };
 
     public locationInfoUse: boolean = false;
@@ -112,6 +113,7 @@ export class KdpS01AComponent extends Vue {
                         vm.settingStampCommon.temporaryUse = result.data.temporaryUse;
                         vm.locationInfoUse = data.setting.locationInfoUse;
                         vm.settingStampCommon.workUse = result.data.workUse;
+                        vm.settingStampCommon.entranceExitUse = result.data.entranceExitUse;
                     
                         if (_.has(data, 'setting.pageLayoutSettings') && data.setting.pageLayoutSettings.length > 0) {                          
 
@@ -228,7 +230,12 @@ export class KdpS01AComponent extends Vue {
                     buttonSetting = button;
                 }
 
-                if (_.includes ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 19, 20], btnType)) {
+                // 入退門利用＝Trueの場合
+                if (vm.settingStampCommon.entranceExitUse === true && _.includes ([10, 11], btnType)) {
+                    buttonSetting = button;
+                }
+
+                if (_.includes ([1, 2, 3, 4, 5, 6, 7, 8, 9, 19, 20], btnType)) {
                     buttonSetting = button;
                 }
 
@@ -756,6 +763,8 @@ interface ISettingsStampCommon {
     temporaryUse: boolean;
     //作業利用
     workUse: boolean;
+    //入退門の利用
+    entranceExitUse: boolean;
 }
 
 // 作業グループ

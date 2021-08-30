@@ -117,6 +117,9 @@ module nts.uk.at.view.kdp010.j {
 				if(value == 12 || value == 13){
 					return !self.settingsStampUse.temporaryUse;
 				}
+                if(value == 10 || value == 11) {
+					return !self.settingsStampUse.entranceExitUse;
+				}
 				return false;
 			}
             
@@ -301,7 +304,7 @@ module nts.uk.at.view.kdp010.j {
         
         class StampPageComment{
             pageComment = ko.observable("");
-            commentColor = ko.observable("#000000");
+            commentColor = ko.observable("#7F7F7F");
             constructor(){}
             update(data?:any){
                 let self = this;
@@ -313,7 +316,7 @@ module nts.uk.at.view.kdp010.j {
 			clear(){
 				let self = this;
 				self.pageComment("");
-            	self.commentColor("#000000");
+            	self.commentColor("#7F7F7F");
 			}
         }
         

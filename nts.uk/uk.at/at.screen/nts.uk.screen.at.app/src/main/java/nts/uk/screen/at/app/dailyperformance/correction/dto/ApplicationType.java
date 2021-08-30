@@ -45,13 +45,13 @@ public enum ApplicationType {
 	REGISTER_TIME_CARD_OTHER(12, "打刻申請（その他）","KAF002","A",null),
 	
 	/** 時間年休申請 */
-	ANNUAL_HD_APPLICATION(13, "時間年休申請",null,null,null),
+	//ANNUAL_HD_APPLICATION(13, "時間年休申請",null,null,null),
 	
 	/** 遅刻早退取消申請 */
-	EARLY_LEAVE_CANCEL_APPLICATION(14, "遅刻早退取消申請","KAF004","A",null),
+	EARLY_LEAVE_CANCEL_APPLICATION(13, "遅刻早退取消申請","KAF004","A",null),
 	
 	/** 振休振出申請 */
-	COMPLEMENT_LEAVE_APPLICATION(15, "振休振出申請","KAF011","A",null),
+	COMPLEMENT_LEAVE_APPLICATION(14, "振休振出申請","KAF011","A",null),
 	
 	/** 連続出張申請 */
 	LONG_BUSINESS_TRIP_APPLICATION(16, "連続出張申請",null,null,null),

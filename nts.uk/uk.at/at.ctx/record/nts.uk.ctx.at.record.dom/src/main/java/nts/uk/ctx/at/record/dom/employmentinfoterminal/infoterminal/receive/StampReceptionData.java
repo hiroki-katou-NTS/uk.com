@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockAtr;
@@ -88,14 +87,14 @@ public class StampReceptionData implements ReceptionData {
 
 	public String getOverTimeHours() {
 		if (overTimeHours.trim().isEmpty())
-			return overTimeHours;
+			return "";
 		return String.valueOf(
 				(Integer.parseInt(overTimeHours.trim()) / 100) * 60 + (Integer.parseInt(overTimeHours.trim()) % 100));
 	}
 
 	public String getMidnightTime() {
 		if (midnightTime.trim().isEmpty())
-			return midnightTime;
+			return "";
 		return String.valueOf(
 				(Integer.parseInt(midnightTime.trim()) / 100) * 60 + (Integer.parseInt(midnightTime.trim()) % 100));
 	}
@@ -106,6 +105,10 @@ public class StampReceptionData implements ReceptionData {
 
 	public String getShift() {
 		return shift.trim();
+	}
+	
+	public String getIdNumber() {
+		return idNumber.trim();
 	}
 
 	// 認証方法

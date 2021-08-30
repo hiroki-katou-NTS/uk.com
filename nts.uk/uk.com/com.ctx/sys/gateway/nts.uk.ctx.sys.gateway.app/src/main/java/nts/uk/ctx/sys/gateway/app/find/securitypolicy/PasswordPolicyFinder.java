@@ -22,13 +22,10 @@ public class PasswordPolicyFinder {
 	}
 	
 	public PasswordPolicyDto getPasswordPolicy(String contractCode) {
-		Optional<PasswordPolicy> passwordPolicyOptional = this.passwordPolicyRepository
+		PasswordPolicy passwordPolicy = this.passwordPolicyRepository
 				.getPasswordPolicy(new ContractCode(contractCode));
-		if (passwordPolicyOptional.isPresent()) {
-			return this.toDto(passwordPolicyOptional.get());
-		} else {
-			return null;
-		}
+		
+		return this.toDto(passwordPolicy);
 	}
 
 	private PasswordPolicyDto toDto(PasswordPolicy passwordPolicy) {

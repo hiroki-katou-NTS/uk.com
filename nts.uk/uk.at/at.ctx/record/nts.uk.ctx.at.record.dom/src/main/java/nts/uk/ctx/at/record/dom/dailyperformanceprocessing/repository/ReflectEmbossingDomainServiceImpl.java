@@ -2873,7 +2873,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			// Xác định phân loại 1日半日出勤・1日休日
 			// 1日半日出勤・1日休日系の判定
 			WorkStyle checkWorkDay = this.basicScheduleService
-					.checkWorkDay(recordWorkInformation.getWorkTypeCode().v());
+					.checkWorkDay(companyId, recordWorkInformation.getWorkTypeCode().v());
 			// 休日系
 			if (checkWorkDay.value == 0) {
 				// 勤務情報を変更する

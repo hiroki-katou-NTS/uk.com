@@ -117,32 +117,6 @@ public class EmpInfoTerminal implements DomainAggregate {
 		this.empInfoTerMemo = builder.empInfoTerMemo;
 	}
 
-	// [1] 打刻
-	public Pair<Stamp, StampRecord> createStamp(StampReceptionData recept) {
-		// 実績への反映内容
-		
-		WorkInformationStamp workInformationStamp = new WorkInformationStamp(Optional.empty(), Optional.empty(),
-				createStampInfo.getWorkLocationCd().isPresent() ? Optional.of(createStampInfo.getWorkLocationCd().get()) : Optional.empty(), 
-				recept.getSupportCode().isEmpty() ? Optional.empty() : Optional.of(new SupportCardNumber(Integer.valueOf(recept.getSupportCode()))));	
-		
-		RefectActualResult refActualResults = new RefectActualResult(
-				workInformationStamp,
-				(recept.getLeavingCategory().equals(LeaveCategory.GO_OUT.value)
-						|| recept.getLeavingCategory().equals(LeaveCategory.RETURN.value)
-						|| recept.getShift().isEmpty()) ? null : new WorkTimeCode(recept.getShift()),
-				(recept.getOverTimeHours().isEmpty() || recept.getMidnightTime().isEmpty()) ? null
-						: new OvertimeDeclaration(new AttendanceTime(Integer.parseInt(recept.getOverTimeHours())),
-								new AttendanceTime(Integer.parseInt(recept.getMidnightTime()))), null);
-		// 打刻する方法
-		Relieve relieve = new Relieve(recept.convertAuthcMethod(), StampMeans.TIME_CLOCK);
-
-		// 打刻種類
-		Stamp stamp = new Stamp(contractCode, new StampNumber(recept.getIdNumber()), recept.getDateTime(), relieve,
-				recept.createStampType(this), refActualResults, Optional.empty());
-
-		StampRecord stampRecord = createStampRecord(recept, stamp);
-		return Pair.of(stamp, stampRecord);
-	}
 
 	// [２] 予約
 	public Pair<StampRecord, AtomTask> createReservRecord(ConvertTimeRecordReservationService.Require require,
@@ -152,19 +126,10 @@ public class EmpInfoTerminal implements DomainAggregate {
 		return Pair.of(stampRecord, createReserv);
 	}
 
-	// [pvt-1] 打刻の打刻記録を作成
-	private StampRecord createStampRecord(StampReceptionData recept, Stamp stamp) {
-		// TODO: contractCode
-		ButtonType bt = new ButtonType(ReservationArt.NONE, Optional.of(stamp.getType()));
-		return new StampRecord(new ContractCode(""), new StampNumber(recept.getIdNumber()), recept.getDateTime(),
-				new StampTypeDisplay(bt.getStampTypeDisplay()));
-	}
-
 	// [pvt-2] 予約の打刻記録を作成
 	private StampRecord createStampRecord(ReservationReceptionData reservReceptData) {
-		// TODO: contractCode
 		ButtonType bt = new ButtonType(ReservationArt.RESERVATION, Optional.empty());
-		return new StampRecord(new ContractCode(""), new StampNumber(reservReceptData.getIdNumber()),
+		return new StampRecord(new ContractCode(contractCode.v()), new StampNumber(reservReceptData.getIdNumber()),
 				reservReceptData.getDateTime(), new StampTypeDisplay(bt.getStampTypeDisplay()));
 	}
 

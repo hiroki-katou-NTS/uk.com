@@ -7,16 +7,19 @@ module nts.uk.at.view.kdp.share {
         notiSet: KnockoutObservable<FingerStampSetting>;
         messageNoti: KnockoutObservable<IMessage>;
         viewShow: String;
+        showMessage: KnockoutObservable<boolean | null>;
     }
 
     const API = {
+        GET_NOTI_SYSTEM: 'at/record/stamp/employment/get-stamp-system-outage'
     };
 
     const template = `
     <div>
         <!-- ko if: ko.toJS($component.modeSystemNoti) -->
             <div data-bind="css: { 'error1': $component.state() === 'state1' , 'error2': $component.state() === 'state2'}">
-                <span class="text-error" data-bind="i18n: '本日１０：００よりをメンテナンスのためシステムを停止致します。'" style="color: white;"></span>
+                <div class="text-error" data-bind="i18n: $component.messageCom" style="color: white;"></div>
+                <div class="text-error" data-bind="i18n: $component.messageSys" style="color: white;"></div>
             </div>
         <!-- /ko -->
         <!-- ko if: $component.showCompanyNoti() -->
@@ -71,7 +74,7 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .error1 {
             padding: 5px 3px;
             height: 57px;
-            max-height: 57px;
+            max-height: 54px;
             word-break: break-all;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -185,8 +188,10 @@ module nts.uk.at.view.kdp.share {
 
         messageNoti: KnockoutObservable<IMessage> = ko.observable();
         notiSet: KnockoutObservable<FingerStampSetting> = ko.observable();
+        messageSys: KnockoutObservable<String> = ko.observable('');
+        messageCom: KnockoutObservable<String> = ko.observable('');
 
-        modeSystemNoti: KnockoutObservable<boolean | null> = ko.observable(true);
+        modeSystemNoti: KnockoutObservable<boolean | null> = ko.observable(null);
 
         showMessage: KnockoutObservable<boolean | null> = ko.observable(true);
 
@@ -201,6 +206,8 @@ module nts.uk.at.view.kdp.share {
 
             if (params) {
                 vm.messageNoti = params.messageNoti;
+
+                vm.showMessage = params.showMessage;
 
                 if (ko.unwrap(params.notiSet)) {
                     vm.notiSet = params.notiSet;
@@ -274,6 +281,8 @@ module nts.uk.at.view.kdp.share {
         mounted() {
             const vm = this;
 
+            // vm.getNotiSys();
+
             if (ko.unwrap(vm.messageNoti)) {
                 vm.reload();
             }
@@ -334,6 +343,26 @@ module nts.uk.at.view.kdp.share {
                         } else {
                             vm.workplaceNotice.update(DestinationClassification.WORKPLACE,
                                 '');
+                        }
+                    }
+
+                    const value: IMessage = ko.unwrap(vm.messageNoti);
+
+                    if (value.stopByCompany.systemStatus == 2) {
+                        vm.messageCom(value.stopByCompany.stopMessage);
+                    } else {
+                        vm.messageCom('');
+                    }
+
+                    if (value.stopBySystem.systemStatusType == 2) {
+                        vm.modeSystemNoti(true);
+                        vm.messageSys(value.stopBySystem.stopMessage);
+                    } else {
+                        if (value.stopByCompany.systemStatus == 2) {
+                            vm.modeSystemNoti(true);
+                        } else {
+                            vm.modeSystemNoti(false);
+                            vm.messageSys('');
                         }
                     }
                 })
@@ -408,6 +437,22 @@ module nts.uk.at.view.kdp.share {
 
     interface IMessage {
         messageNotices: IMessageNotice[];
+        stopBySystem: IStopBySystem;
+        stopByCompany: IStopByCompany;
+    }
+
+    interface IStopBySystem {
+        systemStatusType: number;
+        stopMode: number;
+        stopMessage: String;
+        usageStopMessage: String
+    }
+
+    interface IStopByCompany {
+        systemStatus: number;
+        stopMessage: String;
+        stopMode: number;
+        usageStopMessage: String
     }
 
     interface IMessageNotice {
@@ -425,6 +470,12 @@ module nts.uk.at.view.kdp.share {
         targetSIDs: string[];
         targetWpids: string[];
         destination: number | null;
+    }
+
+    interface IMessageSys {
+        notiMessage: string;
+        stopMessage: string;
+        stopSystem: boolean;
     }
 
     enum DestinationClassification {
