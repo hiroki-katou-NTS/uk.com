@@ -1671,17 +1671,10 @@ public class ScheduleCreatorExecutionTransaction {
 					.findById(command.getCompanyId(), classificationCode, workdayDivision.get());
 			// if 取得できない
 			if (!optionalClassificationBasicWork.isPresent() || optionalClassificationBasicWork.get().getBasicWorkSetting().isEmpty()) {
-				// xử lý ドメインモデル「全社基本勤務設定」を取得する
-				Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
-						.findById(command.getCompanyId(), workdayDivision.get());
-
+			
 				// if 取得できない
-				if (!optionalCompanyBasicWork.isPresent()) {
-					this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
-					return Optional.empty();
-				} else {
-					return optionalCompanyBasicWork.get().getBasicWorkSetting().stream().findFirst();
-				}
+				this.scheCreExeErrorLogHandler.addError(geterCommand, creator.getEmployeeId(), "Msg_589");
+				return Optional.empty();
 			}
 			
 			return optionalClassificationBasicWork.get().getBasicWorkSetting().stream().findFirst();
