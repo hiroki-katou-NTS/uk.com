@@ -73,7 +73,7 @@ public class CreateDomainCanonicalization {
 		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
 		
 		//社員の年休付与設定
-		CREATES.put(EMPLOYEE_ANNUAL_LEAVE_SETTING, w -> EmployeeYearHolidaySettingCanonicalization.create(w));
+		CREATES.put(EMPLOYEE_YEAR_HOLIDAY_SETTING, w -> EmployeeYearHolidaySettingCanonicalization.create(w));
 		//年休上限データ
 		CREATES.put(MAX_YEAR_HOLIDAY, w -> EmployeeYearHolidaySettingCanonicalization.create(w));
 		
