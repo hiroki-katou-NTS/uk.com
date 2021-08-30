@@ -1009,7 +1009,8 @@ public class TotalWorkingTime {
 				recordClass.getDailyUnit(),
 				commonSetting,
 				conditionItem,
-				predetermineTimeSetByPersonInfo).valueAsMinutes();
+				predetermineTimeSetByPersonInfo,
+				NotUseAtr.NOT_USE).valueAsMinutes();
 		// 時間枠毎の相殺による加算時間の合計を取得
 		vacationAddTime += withinWorkTimeSheet.getTotalAddTimeByOffset(
 				integrationOfDaily,
@@ -1024,7 +1025,8 @@ public class TotalWorkingTime {
 				recordClass.getDailyUnit(),
 				commonSetting,
 				conditionItem,
-				predetermineTimeSetByPersonInfo).valueAsMinutes();
+				predetermineTimeSetByPersonInfo,
+				NotUseAtr.NOT_USE).valueAsMinutes();
 		// 休暇加算時間を返す
 		return new AttendanceTime(vacationAddTime);
 	}
@@ -1204,6 +1206,24 @@ public class TotalWorkingTime {
 		}
 	}
 
+	/** 時間特別休暇の合計時間 */
+	public AttendanceTime getTotalTimeSpecialVacation(int spcNo) {
+		
+		/** @遅刻時間 */
+		val late = this.lateTimeOfDaily.stream().filter(c -> c.getTimePaidUseTime().getSpecialHolidayFrameNo().map(n -> n.v()).orElse(0) == spcNo)
+				.mapToInt(c -> c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()).sum();
+		
+		/** @早退時間 */
+		val leaveEarly = this.leaveEarlyTimeOfDaily.stream().filter(c -> c.getTimePaidUseTime().getSpecialHolidayFrameNo().map(n -> n.v()).orElse(0) == spcNo)
+				.mapToInt(c -> c.getTimePaidUseTime().getTimeSpecialHolidayUseTime().valueAsMinutes()).sum();
+		
+		/** @外出時間 */
+		val outing = this.outingTimeOfDailyPerformance.stream().filter(c -> c.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo().map(n -> n.v()).orElse(0) == spcNo)
+				.mapToInt(c -> c.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().valueAsMinutes()).sum();
+		
+		/** return $合計時間 */
+		return new AttendanceTime(late + leaveEarly + outing);
+	}
 
 	public TotalWorkingTime(AttendanceTime totalTime, AttendanceTime totalCalcTime, AttendanceTime actualTime,
 			WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily,

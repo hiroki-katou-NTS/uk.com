@@ -504,7 +504,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 					dailyUnit,
 					commonSetting,
 					conditionItem,
-					predetermineTimeSetByPersonInfo).valueAsMinutes();
+					predetermineTimeSetByPersonInfo,
+					lateEarlyMinusAtr).valueAsMinutes();
 		workTime = workTime.addMinutes(holidayAddMinutes);
 		
 		//所定内割増時間の計算
@@ -599,6 +600,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			// 就業時間の計算
 			workTime += copyItem.calcActualWorkTimeAndWorkTime(
 					integrationOfDaily,
+					integrationOfWorkTime,
 					autoCalcOfLeaveEarlySetting,
 					addSetting,
 					holidayAddtionSet,
@@ -628,6 +630,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param commonSetting 就業時間帯の共通設定
 	 * @param conditionItem 労働条件項目
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 休暇加算時間
 	 */
 	public AttendanceTime vacationAddProcess(
@@ -643,7 +646,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			DailyUnit dailyUnit,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
+			NotUseAtr lateEarlyMinusAtr) {
 
 		int vacationAddMinutes = 0;
 		// 就業時間帯コードの確認
@@ -664,7 +668,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		AttendanceTime timeVacationNotAddTime = this.calcNotAddedTimeVacationTime(
 				integrationOfDaily, integrationOfWorkTime, premiumAtr, vacationClass, workType,
 				addSetting, holidayAddtionSet, flexCalcMethod, predetermineTimeSet, dailyUnit,
-				commonSetting, conditionItem, predetermineTimeSetByPersonInfo);
+				commonSetting, conditionItem, predetermineTimeSetByPersonInfo, lateEarlyMinusAtr);
 		vacationAddMinutes += timeVacationNotAddTime.valueAsMinutes();
 		// 休暇加算時間を返す
 		return new AttendanceTime(vacationAddMinutes);
@@ -1501,6 +1505,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param commonSetting 就業時間帯の共通設定
 	 * @param conditionItem 労働条件項目
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 未相殺の時間
 	 */
 	public AttendanceTime calcNotAddedTimeVacationTime(
@@ -1516,7 +1521,8 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			DailyUnit dailyUnit,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
+			NotUseAtr lateEarlyMinusAtr) {
 
 		// 休暇加算するかどうか判断
 		if (addSetting.getNotUseAtr(premiumAtr) == NotUseAtr.NOT_USE) return AttendanceTime.ZERO;
@@ -1531,9 +1537,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				integrationOfDaily, integrationOfWorkTime, premiumAtr, vacationClass,
 				workType, addSetting, holidayAddtionSet,
 				flexCalcMethod, predetermineTimeSet, dailyUnit, commonSetting,
-				conditionItem, predetermineTimeSetByPersonInfo);
+				conditionItem, predetermineTimeSetByPersonInfo, lateEarlyMinusAtr);
+		// 休暇の計算方法の設定を確認する
+		HolidayCalcMethodSet holidayCalcMethodSet = addSetting.getVacationCalcMethodSet();
 		// 相殺合計時間
-		AttendanceTime totalOffsetTime = this.getTotalOffsetTime(holidayAddtionSet);
+		AttendanceTime totalOffsetTime = this.getTotalOffsetTimeForHolidayAdd(
+				integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet, holidayCalcMethodSet,
+				lateEarlyMinusAtr);
 		// 時間休暇加算設定
 		Optional<TimeHolidayAdditionSet> timeHolidayAddSet = Optional.empty();
 		if (workTimeForm.isPresent()){
@@ -1544,8 +1554,10 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		if (timeHolidayAddSet.isPresent()){
 			// 加算する時間を判断する(全加算用のまだ加算していない時間,相殺分加算用のまだ加算していない時間)
 			notAddedTime = timeHolidayAddSet.get().getAddTime(
-					this.timeVacationUseTime.getValueForAddWorkTime(holidayAddtionSet).total()
-						.minusMinutes(addedTime.valueAsMinutes()),
+					this.timeVacationUseTime.getValueForAddWorkTime(
+							integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet,
+							holidayCalcMethodSet, this.getTotalOffsetTime(), lateEarlyMinusAtr)
+						.total().minusMinutes(addedTime.valueAsMinutes()),
 					totalOffsetTime.minusMinutes(addedTime.valueAsMinutes()));
 		}
 		else{
@@ -1563,15 +1575,42 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	
 	/**
 	 * 休暇加算対象となる相殺時間の合計を取得する
+	 * @return 相殺合計時間(時間休暇WORK)
+	 */
+	private TimeVacationWork getTotalOffsetTime(){
+		TimeVacationWork result = new TimeVacationWork();	// 相殺合計時間
+		for (WithinWorkTimeFrame frame : this.withinWorkTimeFrame){
+			// 時間休暇相殺時間を取得　→　相殺合計時間に加算
+			result = result.add(frame.getTimeVacationOffsetTime());
+		}
+		return result;
+	}
+	
+	/**
+	 * 休暇加算対象となる相殺時間の合計を取得する
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param premiumAtr 割増区分
+	 * @param commonSetting 就業時間帯の共通設定
 	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param holidayCalcMethodSet 休暇の計算方法の設定
+	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 相殺合計時間
 	 */
-	private AttendanceTime getTotalOffsetTime(HolidayAddtionSet holidayAddtionSet){
+	private AttendanceTime getTotalOffsetTimeForHolidayAdd(
+			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
+			PremiumAtr premiumAtr,
+			Optional<WorkTimezoneCommonSet> commonSetting,
+			HolidayAddtionSet holidayAddtionSet,
+			HolidayCalcMethodSet holidayCalcMethodSet,
+			NotUseAtr lateEarlyMinusAtr){
+		
 		int result = 0;
 		for (WithinWorkTimeFrame frame : this.withinWorkTimeFrame){
 			// 時間休暇相殺時間を取得．就業時間に加算する時間のみ取得．合計
 			AttendanceTime frameTotal =
-					frame.getTimeVacationOffsetTime().getValueForAddWorkTime(holidayAddtionSet).total();
+					frame.getTimeVacationOffsetTime().getValueForAddWorkTime(
+							integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet, holidayCalcMethodSet,
+							frame.getTimeVacationOffsetTime(), lateEarlyMinusAtr).total();
 			result += frameTotal.valueAsMinutes();
 		}
 		return new AttendanceTime(result);
@@ -1592,6 +1631,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param commonSetting 就業時間帯の共通設定
 	 * @param conditionItem 労働条件項目
 	 * @param predetermineTimeSetByPersonInfo 計算用所定時間設定（個人）
+	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 加算合計時間
 	 */
 	public AttendanceTime getTotalAddTimeByOffset(
@@ -1607,10 +1647,13 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 			DailyUnit dailyUnit,
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			WorkingConditionItem conditionItem,
-			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
+			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
+			NotUseAtr lateEarlyMinusAtr) {
 
 		// 休暇加算するかどうか判断
 		if (addSetting.getNotUseAtr(premiumAtr) == NotUseAtr.NOT_USE) return AttendanceTime.ZERO;
+		// 休暇の計算方法の設定を確認する
+		HolidayCalcMethodSet holidayCalcMethodSet = addSetting.getVacationCalcMethodSet();
 		// 休暇を加算できる上限時間
 		Optional<AttendanceTime> limitTime = this.calcLimitTimeForAddTimeVacation(
 				integrationOfDaily, integrationOfWorkTime, vacationClass, workType, addSetting, holidayAddtionSet,
@@ -1620,7 +1663,9 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 		int totalAddMinutes = 0;
 		for (WithinWorkTimeFrame frame : this.withinWorkTimeFrame){
 			// 就業時間に加算する時間休暇相殺時間を取得
-			AttendanceTime addTime = frame.getTimeVacationOffsetTimeForAddWorkTime(limitTime, holidayAddtionSet);
+			AttendanceTime addTime = frame.getTimeVacationOffsetTimeForAddWorkTime(
+					integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet,
+					holidayCalcMethodSet, limitTime, lateEarlyMinusAtr);
 			totalAddMinutes += addTime.valueAsMinutes();
 		}
 		return new AttendanceTime(totalAddMinutes);

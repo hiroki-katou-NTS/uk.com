@@ -92,26 +92,32 @@ public class DeductionTotalTimeForFluidCalc {
 		val deductTimes = getBreakTimeDeduct(goOutGetStartTime, flowBreakSet, deductionTotal, deductTimeSheet, 
 				workTime, workType, dayStart, betweenWorkTimeSheets, breakTime);
 		
-		for (val breakTimeSheet : deductTimes) {
+		for (TimeSheetOfDeductionItem breakTimeSheet : deductTimes) {
+			//相殺後の休憩時間帯
+			Optional<TimeSheetOfDeductionItem> subtractedBreakTime = Optional.empty();
 			/** ○流動休憩設定を取得する */
 			if(workTime.getFlowWorkRestSettingDetail().get().getFlowRestSetting().isUseStamp()) {
 				
 				/** △外出と休憩の合計時間相殺処理 */
-				subtractionGoOutTimeOffsetRemainingTime(breakTimeSheet, breakTime, 
+				subtractedBreakTime = subtractionGoOutTimeOffsetRemainingTime(breakTimeSheet, breakTime, 
 													workTime.getFlowWorkRestSettingDetail().get().getFlowRestSetting().getUseStampCalcMethod(),
 													goOutGetStartTime, deductTimeSheet);
+				if(!subtractedBreakTime.isPresent()) {
+					continue;//相殺した結果、休憩が無くなった場合
+				}
 			}
-			
+			//補正する休憩時間帯
+			TimeSheetOfDeductionItem correctBreakTime = subtractedBreakTime.orElse(breakTimeSheet);
 			if (correctWithEndTime) {
 				
 				/** ○退勤が含まれている場合の補正 */
 				newTimeSpan.addAll(getLastLeave(timeLeave)
-						.map(tl -> breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
+						.map(tl -> correctBreakTime.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
 																					tl, workTime.getCommonRestSetting().getCalculateMethod(),
-																					deductionAtr, breakTimeSheet.getTimeSheet()))
+																					deductionAtr, correctBreakTime.getTimeSheet()))
 						.orElse(new ArrayList<>()));	
 			} else {
-				newTimeSpan.add(breakTimeSheet);
+				newTimeSpan.add(correctBreakTime);
 			}
 			
 			/** ○休憩時間帯クラスの開始時刻を退避 */
@@ -278,11 +284,14 @@ public class DeductionTotalTimeForFluidCalc {
 	
 	/**
 	 *  外出と休憩の相殺処理　　（外出相殺残時間）
-	 *  外出相殺残時間がメンバーになっているため、ここはvoidでOK
-	 * @param ｔimeSheetOfDeductionItem
-	 * @param restTime 親ロジックで作成した休憩時間
+	 * @param timeSheetOfDeductionItem 休憩時間帯
+	 * @param flowBreakDeductInfo 流動休憩作成情報
+	 * @param clockCalcMethod 流動休憩打刻併用時の計算方法
+	 * @param goOutGetStartTime 外出開始時刻
+	 * @param deductTimeSheet 控除項目の時間帯(List)
+	 * @return 外出の相殺時間分縮めた休憩時間帯
 	 */
-	private void subtractionGoOutTimeOffsetRemainingTime(
+	private Optional<TimeSheetOfDeductionItem> subtractionGoOutTimeOffsetRemainingTime(
 			TimeSheetOfDeductionItem timeSheetOfDeductionItem,
 			DeductionTotalTimeForFluidCalc flowBreakDeductInfo,
 			FlowRestClockCalcMethod clockCalcMethod,
@@ -294,12 +303,15 @@ public class DeductionTotalTimeForFluidCalc {
 		val offsetTime = flowBreakDeductInfo.deductionTotal.goOutTimeOffsetRemainingTime.lessThan(breakTime) 
 							? flowBreakDeductInfo.deductionTotal.goOutTimeOffsetRemainingTime : breakTime;
 		
+		Optional<TimeSpanForDailyCalc> afterShrinkingTimeSheet = Optional.of(timeSheetOfDeductionItem.getTimeSheet());
+		
 		if(offsetTime.greaterThan(0)) {
 			/** △休憩時間帯を相殺時間分縮める */
-			Optional<TimeSpanForDailyCalc> afterShrinkingTimeSheet = timeSheetOfDeductionItem.contractTimeSheet(new TimeWithDayAttr(offsetTime.valueAsMinutes()));
+			afterShrinkingTimeSheet = timeSheetOfDeductionItem.contractTimeSheet(new TimeWithDayAttr(offsetTime.valueAsMinutes()));
 			
 			/** ○外出相殺残時間から相殺時間を減算 */
-			flowBreakDeductInfo.deductionTotal.subGoOutOffset(afterShrinkingTimeSheet.map(c -> c.lengthAsMinutes()).orElse(0));
+			flowBreakDeductInfo.deductionTotal.subGoOutOffset(
+					afterShrinkingTimeSheet.map(c -> c.lengthAsMinutes()).orElse(timeSheetOfDeductionItem.getTimeSheet().lengthAsMinutes()));
 		}
 		
 		/** ○外出と休憩の相殺処理設定を取得 */
@@ -310,6 +322,8 @@ public class DeductionTotalTimeForFluidCalc {
 			
 			changeGoOutToBreak(toChangeToBreak, offsetTime, deductTimeSheet);
 		}
+		//相殺時間分縮めた時間帯で休憩時間帯を作り直す
+		return afterShrinkingTimeSheet.map(a -> timeSheetOfDeductionItem.cloneWithNewTimeSpan(Optional.of(a)));
 	}
 	
 	/**
