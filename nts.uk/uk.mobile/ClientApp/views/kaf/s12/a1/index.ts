@@ -142,7 +142,7 @@ export class KafS12A1Component extends Vue {
             self.outingTimeZones.forEach((i: OutingTimeZone) => {
                 i.timeZone.start = null;
                 i.timeZone.end = null;
-                i.appTimeType = self.reflectSetting.destination.privateGoingOut == 1 ? GoingOutReason.PRIVATE : GoingOutReason.UNION;
+                // i.appTimeType = self.reflectSetting.destination.privateGoingOut == 1 ? GoingOutReason.PRIVATE : GoingOutReason.UNION;
             });
             let maxWorkNoHasData = 3;
             const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];
