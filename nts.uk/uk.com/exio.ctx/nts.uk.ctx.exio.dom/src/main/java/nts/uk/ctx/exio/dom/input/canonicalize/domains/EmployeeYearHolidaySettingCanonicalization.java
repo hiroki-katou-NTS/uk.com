@@ -19,16 +19,17 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 社員の年休付与設定
  */
-public abstract class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanonicalization {
+public abstract class EmployeeYearHolidaySettingCanonicalization extends IndependentCanonicalization {
 
-	protected static EmployeeAnnualLeaveSettingCanonicalization create(DomainWorkspace w){
-		return new EmployeeAnnualLeaveSettingCanonicalization(w) {
+	protected static EmployeeYearHolidaySettingCanonicalization create(DomainWorkspace w){
+		return new EmployeeYearHolidaySettingCanonicalization(w) {
 			
 			@Override
 			protected String getParentTableName() {
@@ -51,7 +52,7 @@ public abstract class EmployeeAnnualLeaveSettingCanonicalization extends Indepen
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public EmployeeAnnualLeaveSettingCanonicalization(DomainWorkspace workspace) {
+	public EmployeeYearHolidaySettingCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
@@ -71,7 +72,8 @@ public abstract class EmployeeAnnualLeaveSettingCanonicalization extends Indepen
 				val addedFixedItem = interm.addCanonicalized(addFixedItem(interm)) ;
 				val key = getPrimaryKeys(addedFixedItem, workspace);
 				if (importingKeys.contains(key)) {
-					throw new RuntimeException("重複データ" + key);
+					require.add(context, ExternalImportError.record(interm.getRowNo(), "キーが重複しています。：" + key));
+					continue;
 				}
 				importingKeys.add(key);
 				super.canonicalize(require, context, addedFixedItem, new KeyValues(key));
