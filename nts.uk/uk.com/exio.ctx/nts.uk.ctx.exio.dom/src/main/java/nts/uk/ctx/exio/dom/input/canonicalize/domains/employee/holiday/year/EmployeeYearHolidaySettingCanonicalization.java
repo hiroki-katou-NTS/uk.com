@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +16,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -26,28 +27,22 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 /**
  * 社員の年休付与設定
  */
-public abstract class EmployeeYearHolidaySettingCanonicalization extends IndependentCanonicalization {
+public class EmployeeYearHolidaySettingCanonicalization extends IndependentCanonicalization {
 
-	protected static EmployeeYearHolidaySettingCanonicalization create(DomainWorkspace w){
-		return new EmployeeYearHolidaySettingCanonicalization(w) {
-			
-			@Override
-			protected String getParentTableName() {
-				return "KRCMT_HDPAID_BASIC";
-			}
-			
-			@Override
-			protected List<DomainDataColumn> getDomainDataKeys() {
-				return Arrays.asList(DomainDataColumn.SID);
-			}
-			
-			@Override
-			protected List<String> getChildTableNames() {
-				return Collections.emptyList();
-			}
-		};
+	@Override
+	protected String getParentTableName() {
+		return "KRCMT_HDPAID_BASIC";
 	}
-	
+
+	@Override
+	protected List<String> getChildTableNames() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	protected List<DomainDataColumn> getDomainDataKeys() {
+		return Arrays.asList(DomainDataColumn.SID);
+	}
 	
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
