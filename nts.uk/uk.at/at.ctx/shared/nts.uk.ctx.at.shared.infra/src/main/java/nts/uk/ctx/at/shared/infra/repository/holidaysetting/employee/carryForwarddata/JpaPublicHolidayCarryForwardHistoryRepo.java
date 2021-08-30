@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.infra.repository.holidaysetting.employee.carryForwa
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.employee.carryForwarddata.PublicHolidayCarryForwardHistory;
@@ -11,6 +13,7 @@ import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.carryForwarddat
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.employee.carryForwarddata.KshdtHdpubRemHistPK;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
+@Stateless
 public class JpaPublicHolidayCarryForwardHistoryRepo extends JpaRepository implements PublicHolidayCarryForwardHistoryRepository {
 
 	

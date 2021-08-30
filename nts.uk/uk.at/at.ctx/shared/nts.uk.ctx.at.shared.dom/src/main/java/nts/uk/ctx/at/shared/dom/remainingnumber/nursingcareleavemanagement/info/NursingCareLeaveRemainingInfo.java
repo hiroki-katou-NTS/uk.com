@@ -90,18 +90,18 @@ public abstract class NursingCareLeaveRemainingInfo{
 	 * @return 上限日数期間（List）
 	 */
 	public List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate, RequireM7 require) {
+			String employeeId, DatePeriod calcPeriod, GeneralDate criteriaDate, RequireM7 require) {
 
 		List<ChildCareNurseUpperLimitSplit> childCareNurseUpperLimitSplit = new ArrayList<>();
-
-		// パラメータ「期間」を＋1日する
-		DatePeriod calcPeriod = new DatePeriod(period.start().addDays(1), period.end().addDays(1));
 
 		// INPUT．Require．介護看護休暇設定を取得する（会社ID、介護看護区分）
 		NursingLeaveSetting nursingLeaveSetting = require.nursingLeaveSetting(companyId, this.leaveType);
 
+		// 次回起算日を計算する期間を作成
+		DatePeriod nextCalcPeriod = new DatePeriod(calcPeriod.start().addDays(1), calcPeriod.end().addDays(1));
+
 		// 次回起算日を求める
-		GeneralDate nextStartMonthDay = nursingLeaveSetting.getNextStartMonthDay(calcPeriod.start());
+		GeneralDate nextStartMonthDay = nursingLeaveSetting.getNextStartMonthDay(nextCalcPeriod.start());
 
 		// 期間に次回起算日があるか
 		//	===期間．開始日 <=次回起算日 <= 期間．終了日

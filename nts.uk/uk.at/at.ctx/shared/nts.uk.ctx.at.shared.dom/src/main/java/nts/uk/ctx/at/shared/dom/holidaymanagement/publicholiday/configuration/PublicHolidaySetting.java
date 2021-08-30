@@ -288,7 +288,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 		Optional<PublicHolidayManagementUsageUnit> publicHolidayManagementUsageUnit =
 				require.publicHolidayManagementUsageUnit(this.companyID);
 		
-		if(publicHolidayManagementUsageUnit.isPresent()){
+		if(!publicHolidayManagementUsageUnit.isPresent()){
 			return aggregatePublicHolidayWork;
 		}
 		

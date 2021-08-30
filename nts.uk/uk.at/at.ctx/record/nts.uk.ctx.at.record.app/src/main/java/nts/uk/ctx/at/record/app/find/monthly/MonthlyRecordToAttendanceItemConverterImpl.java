@@ -20,7 +20,6 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConverterCommonService;
-import nts.uk.ctx.at.record.dom.reservation.Helper.Reservation.operationDistinction;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
