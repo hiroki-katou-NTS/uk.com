@@ -11,6 +11,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ErpTableDesign {
+	String tableId;
+	String snapshotId;
 	String name;
+	String jpName;
 	List<ColumnDesign> columns;
 }
