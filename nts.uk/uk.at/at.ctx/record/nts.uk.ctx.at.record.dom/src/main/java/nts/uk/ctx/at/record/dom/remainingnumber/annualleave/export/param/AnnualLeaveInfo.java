@@ -592,7 +592,6 @@ public class AnnualLeaveInfo implements Cloneable {
 			
 			// 消化する
 			this.maxData = this.maxData.digest(tempAnnualLeaveMng);
-				
 		}
 
 		// 時間年休使用数を求める

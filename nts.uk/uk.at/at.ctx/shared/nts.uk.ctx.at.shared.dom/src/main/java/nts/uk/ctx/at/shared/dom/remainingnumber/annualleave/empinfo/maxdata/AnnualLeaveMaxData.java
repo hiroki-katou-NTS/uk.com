@@ -27,11 +27,6 @@ public class AnnualLeaveMaxData extends AggregateRoot {
 	private String employeeId;
 
 	/**
-	 * 会社ID
-	 */
-	private String companyId;
-
-	/**
 	 * 	半日年休上限
 	 */
 	private Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax;

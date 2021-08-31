@@ -84,7 +84,6 @@ public class JpaAnnualLeaveMaxHistRepository extends JpaRepository implements An
 	private KrcdtAnnLeaMaxHist toEntity(AnnualLeaveMaxHistoryData domain) {
 		return new KrcdtAnnLeaMaxHist(
 				domain.getEmployeeId(),
-				domain.getCompanyId(),
 				domain.getHalfdayAnnualLeaveMax().map(c -> c.getMaxTimes().v()).orElse(null),
 				domain.getHalfdayAnnualLeaveMax().map(c -> c.getUsedTimes().v()).orElse(null),
 				domain.getHalfdayAnnualLeaveMax().map(c -> c.getRemainingTimes().v()).orElse(null),
@@ -117,7 +116,6 @@ public class JpaAnnualLeaveMaxHistRepository extends JpaRepository implements An
 
 		return new AnnualLeaveMaxHistoryData(
 				entity.PK.sid,
-				entity.cid,
 				halfdayAnnualLeaveMax,
 				timeAnnualLeaveMax,
 				new YearMonth(entity.PK.yearMonth),

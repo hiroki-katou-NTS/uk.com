@@ -31,7 +31,7 @@ public class AnnualLeaveMaxHistoryData extends AnnualLeaveMaxData {
 	 */
 	private ClosureDate closureDate;
 
-	public AnnualLeaveMaxHistoryData(String employeeId, String companyId, Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax,
+	public AnnualLeaveMaxHistoryData(String employeeId, Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax,
 			Optional<TimeAnnualLeaveMax> timeAnnualLeaveMax, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		super(employeeId, halfdayAnnualLeaveMax, timeAnnualLeaveMax);
 
