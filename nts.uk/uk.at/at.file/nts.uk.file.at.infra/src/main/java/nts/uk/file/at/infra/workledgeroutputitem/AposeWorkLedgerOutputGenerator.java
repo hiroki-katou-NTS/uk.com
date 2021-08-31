@@ -29,7 +29,7 @@ import java.util.Locale;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR005_v3.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR005_v4.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
     private static final int NUMBER_ROW_OF_PAGE = 53;
