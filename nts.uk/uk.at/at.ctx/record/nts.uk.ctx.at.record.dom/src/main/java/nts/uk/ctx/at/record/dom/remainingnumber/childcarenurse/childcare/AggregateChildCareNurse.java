@@ -235,19 +235,22 @@ public class AggregateChildCareNurse {
 	 */
 	private static void splitEnd(List<DividedDayEachProcess> dividedDayEachProcess, GeneralDate end) {
 
+        if(!dividedDayEachProcess.isEmpty()) {
 	        // 終了日の処理単位分割日を取得
 	        List<DividedDayEachProcess> splitEnd = dividedDayEachProcess.stream().filter(c -> c.getYmd().equals(end))
                                     .collect(Collectors.toList());
 	        if(splitEnd.isEmpty())  {
 				// 一番年月日が大きい分割日を取得
-				dividedDayEachProcess.sort((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()));
-				DividedDayEachProcess largest = dividedDayEachProcess.get(0);
+				DividedDayEachProcess largest = dividedDayEachProcess.stream()
+								        			.sorted((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()))
+								        			.findFirst().get();
 				// 取得した分割日の終了日の期間かどうか ←true
 				largest.setEndDate(NextDayAfterPeriodEndWork.of(true, largest.getEndDate().isNextPeriodEndAtr()));
 			} else {
 				// 終了日の期間かどうか　←true
 				splitEnd.stream().forEach(action->action.setEndDate(NextDayAfterPeriodEndWork.of(true, false)));
 			}
+        }
 	}
 
 	/**
@@ -272,9 +275,6 @@ public class AggregateChildCareNurse {
 
         	return dividedDayEachProcess;
 		}else {
-			dividedDayEachProcess.sort((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()));
-			DividedDayEachProcess largest = dividedDayEachProcess.get(0);
-
         	// 処理単位分割日に終了日翌日を追加
         	//===処理単位分割日.年月日 = 終了日の翌日
         	//===		本年か翌年か＝取得した分割日の本年か翌年か
@@ -283,11 +283,13 @@ public class AggregateChildCareNurse {
         	DividedDayEachProcess splitEndNextAdd = DividedDayEachProcess.of(new ArrayList<>(),
         			NextDayAfterPeriodEndWork.of(false, true),
         			end.addDays(1),
-        			largest.getYearAtr());
+        			dividedDayEachProcess.stream()
+        			.sorted((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()))
+        			.findFirst().get().getYearAtr()
+        			);
 
         	dividedDayEachProcess.add(splitEndNextAdd);
 
-        	dividedDayEachProcess.sort((c1, c2) -> c1.getYmd().compareTo(c2.getYmd()));
 			// 「処理単位分割日（List）」を返す
 			return dividedDayEachProcess;
 		}
