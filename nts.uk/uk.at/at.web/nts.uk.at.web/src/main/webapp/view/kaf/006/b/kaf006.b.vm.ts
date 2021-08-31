@@ -925,9 +925,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             vm.over60HHourRemain(vm.formatRemainNumber(0, remainVacationInfo.over60HHourRemain));
 
             // set subVacaHourRemain
-			vm.subVacaHourRemain(vm.formatSubHdRemain(remainVacationInfo.subVacaRemain, remainVacationInfo.subVacaHourRemain, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
+            vm.subVacaHourRemain(vm.formatRemainNumber(remainVacationInfo.subHdRemain, remainVacationInfo.subVacaHourRemain));
 
-			// set subVacaRemain
+            // set subVacaRemain
             vm.subVacaRemain(vm.formatRemainNumber(remainVacationInfo.subVacaRemain, 0));
 
             // set yearRemain
