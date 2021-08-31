@@ -63,7 +63,7 @@
                                         data-bind="ntsFormLabel: {required: true,constraint: ['RoleSetCode', 'RoleSetName'] }">#{i18n.getText('CAS011_11')}</div>
                             </td>
                             <td class="pad_left_5px">
-                                <div data-bind="with: currentRoleSet">
+                                <div data-bind="with: currentRoleSet" style="display: inline-flex">
                                     <!-- A3_2: Rose Set Code -->
                                     <input class="code nts-input" id="inpRoleSetCd"
                                            data-bind="ntsTextEditor:{
