@@ -19,13 +19,10 @@ import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSetti
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSettingRepository;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.Content;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormalRepository;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.NormalAutoClassification;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.Subject;
-import nts.uk.ctx.at.function.dom.alarm.sendemail.MailSettingsParamDto;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.SendEmailService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.sendemail.WorkplaceSendEmailService;
@@ -37,7 +34,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,7 +190,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             val extractAlarmDto = command.listValueExtractAlarmDto.stream()
                     .filter(x -> x.getWorkplaceID() == target.getKey())
                     .findFirst();
-            if (!extractAlarmDto.isPresent()) {
+            if (extractAlarmDto.isPresent()) {
                 unsetList.add(extractAlarmDto.get().getWorkplaceID());
             }
         }
@@ -227,7 +223,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             if (userId.isPresent()) {
                 //ユーザIDからロールセットを取得する
                 val role = roleAdapter.getRoleSetFromUserId(userId.get(), GeneralDate.today());
-                if (role.isPresent() && !role.get().getEmploymentRoleId().isEmpty()) {
+                if (role.isPresent() && role.get().getEmploymentRoleId() != null) {
                     map.put(empId, role.get().getEmploymentRoleId());
                 }
             }
