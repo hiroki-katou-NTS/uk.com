@@ -16,7 +16,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.NextDayAfterPeriodEndWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.残数管理.特別休暇管理.Export
@@ -126,7 +127,9 @@ public class SpecialLeaveManagementService {
 					aggregatePeriodWork,
 					specialHolidayInterimMngData,
 					param.getSpecialLeaveCode(),
-					outputData);
+					employee.getEntryDate(),
+					outputData
+					);
 		}
 
 		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）
@@ -559,6 +562,15 @@ public class SpecialLeaveManagementService {
 				.filter(c -> c.getGrantDate().beforeOrEquals(nextDayEnd))
 				.collect(Collectors.toList());
 
+		// 特別休暇コードから設定を取得（会社設定）
+		Optional<SpecialHoliday> specialHolidayOpt
+			= require.specialHoliday(companyId, specialLeaveCode);
+		if (!specialHolidayOpt.isPresent()) {
+			return new ArrayList<>();
+		}
+		// 付与するタイミングの種類を取得
+		TypeTime typeTime = specialHolidayOpt.get().getGrantRegular().getTypeTime();
+
 		// 付与情報WORKを作成
 		//int grantNumber = 1; // 期間中、何回目の付与かをカウント
 		nextSpecialLeaveGrantList_period
@@ -567,6 +579,8 @@ public class SpecialLeaveManagementService {
 
 				// 付与情報WORK.期間の開始日に付与があるかどうか←true
 				specialLeaveGrantWork.setGrantAtr(true);
+				// 付与情報WORK.付与するタイミングの種類←取得した「付与するタイミングの種類」
+				specialLeaveGrantWork.setTypeTime(Optional.of(typeTime));
 				// 付与情報WORK.特休付与←次回特別休暇付与
 				specialLeaveGrantWork.setSpecialLeaveGrant(Optional.of(c));
 
@@ -738,7 +752,10 @@ public class SpecialLeaveManagementService {
 		for( SpecialLeaveAggregatePeriodWork nowWork : aggregatePeriodWorks ){
 			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
 			{
-				nowWork.getGrantWork().setGrantNumber(grantNumber.get());
+				if ( !nowWork.getGrantWork().getSpecialLeaveGrant().isPresent() ) {
+					nowWork.getGrantWork().setSpecialLeaveGrant(Optional.of(new NextSpecialLeaveGrant()));
+				}
+				nowWork.getGrantWork().getSpecialLeaveGrant().get().setTimes(new GrantNum(grantNumber.get()));
 				grantNumber.incrementAndGet();
 			}
 		}
@@ -805,7 +822,7 @@ public class SpecialLeaveManagementService {
 //		}
 
 		// 特休情報残数を更新
-		specialLeaveInfo.updateRemainingNumber(false);
+		specialLeaveInfo.updateRemainingNumber(GrantPeriodAtr.BEFORE_GRANT);
 
 		// 特休情報を返す
 		return specialLeaveInfo;

@@ -6,10 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
+import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.NextDayAfterPeriodEndWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveLapsedWork;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 
 /**
@@ -31,10 +33,6 @@ public class AggregatePeriodWork {
 
 	/**終了日 */
 	private AnnualNextDayAfterPeriodEndWork endWork;
-
-//	/**付与前か付与後か */
-//	private GrantPeriodAtr grantPeriodAtr;
-
 
 //	/** 期間終了内 */
 //	private boolean dayBeforePeriodEnd;

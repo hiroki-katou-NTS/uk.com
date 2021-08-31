@@ -3468,7 +3468,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				val_annualLeaveUsedDayTimes12,
 				Optional.ofNullable(val_annleaUsedDaysAfter == null ? null : AnnualLeaveUsedNumber.of(Optional.of(val_annleaUsedDaysAfter), val_annleaUsedMinutesAfter))),
 			AnnualLeaveRemainingNumberInfo.of(
-				AnnualLeaveRemainingNumber.of(val_annleaRemainingDays, val_annleaRemainingMinutes, val_details17),
+				//AnnualLeaveRemainingNumber.of(val_annleaRemainingDays, val_annleaRemainingMinutes, val_details17),
 				AnnualLeaveRemainingNumber.of(val_annleaRemainingDaysBefore, val_annleaRemainingMinutesBefore, val_details20),
 				Optional.ofNullable(val_annleaRemainingDaysAfter == null ? null : AnnualLeaveRemainingNumber.of(val_annleaRemainingDaysAfter, val_annleaRemainingMinutesAfter, val_details23)))
 		);

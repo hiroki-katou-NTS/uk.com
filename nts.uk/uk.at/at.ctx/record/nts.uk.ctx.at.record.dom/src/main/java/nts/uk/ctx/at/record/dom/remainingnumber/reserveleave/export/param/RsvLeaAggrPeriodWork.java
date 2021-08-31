@@ -5,6 +5,8 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -26,7 +28,7 @@ public class RsvLeaAggrPeriodWork {
 	/** 付与回数 */
 	private int grantNumber = 0;
 	/** 付与後 */
-	private boolean afterGrant;
+	private GrantPeriodAtr grantPeriodAtr;
 	/** 期間の開始日に消滅するかどうか */
 	private boolean lapsedAtr;
 	/** 上限日数 */
@@ -42,7 +44,7 @@ public class RsvLeaAggrPeriodWork {
 		this.period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.endWork = new RsvLeaNextDayAfterPeriodEndWork();
 		this.grantAtr = false;
-		this.afterGrant = false;
+		this.grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
 		this.lapsedAtr = false;
 		this.maxDays = new MaxDaysRetention(0);
 		this.reserveLeaveGrant = Optional.empty();
@@ -63,7 +65,7 @@ public class RsvLeaAggrPeriodWork {
 			DatePeriod period,
 			RsvLeaNextDayAfterPeriodEndWork endWork,
 			boolean grantAtr,
-			boolean afterGrant,
+			GrantPeriodAtr grantPeriodAtrIn,
 			boolean lapsedAtr,
 			MaxDaysRetention maxDays,
 			Optional<NextReserveLeaveGrant> reserveLeaveGrant){
@@ -72,10 +74,29 @@ public class RsvLeaAggrPeriodWork {
 		domain.period = period;
 		domain.endWork = endWork;
 		domain.grantAtr = grantAtr;
-		domain.afterGrant = afterGrant;
+		domain.grantPeriodAtr = grantPeriodAtrIn;
 		domain.lapsedAtr = lapsedAtr;
 		domain.maxDays = maxDays;
 		domain.reserveLeaveGrant = reserveLeaveGrant;
 		return domain;
+	}
+
+	/**
+	 * 付与前付与後を判断する
+	 * @param atr 処理タイミング
+	 * @param entryDate 入社日
+	 * @return 付与前か付与後か
+	 */
+	public GrantPeriodAtr judgeGrantPeriodAtr(ProcessTiming atr) {
+		switch(atr) {
+			case LASPED :// 消滅のとき
+				if (grantNumber == 1 ) { // 初回付与のとき
+					return GrantPeriodAtr.BEFORE_GRANT;
+				} else {
+					return grantPeriodAtr;
+				}
+			default:
+				return grantPeriodAtr;
+		}
 	}
 }

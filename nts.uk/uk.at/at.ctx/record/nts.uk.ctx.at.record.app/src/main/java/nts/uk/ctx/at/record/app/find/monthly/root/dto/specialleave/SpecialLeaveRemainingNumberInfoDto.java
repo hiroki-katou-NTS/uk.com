@@ -43,7 +43,6 @@ public class SpecialLeaveRemainingNumberInfoDto implements ItemConst, Attendance
 
 	public SpecialLeaveRemainingNumberInfo toDomain() {
 		return new SpecialLeaveRemainingNumberInfo(
-				remainingNumber == null ? new SpecialLeaveRemainingNumber() : remainingNumber.toDomain(), 
 				remainingNumberBeforeGrant == null ? new SpecialLeaveRemainingNumber() : remainingNumberBeforeGrant.toDomain(),
 				Optional.ofNullable(remainingNumberAfterGrantOpt == null ? null : remainingNumberAfterGrantOpt.toDomain()));
 	}

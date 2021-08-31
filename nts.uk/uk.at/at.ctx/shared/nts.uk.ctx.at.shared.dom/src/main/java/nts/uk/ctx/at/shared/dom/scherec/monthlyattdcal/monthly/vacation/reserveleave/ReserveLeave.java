@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
@@ -152,17 +153,17 @@ public class ReserveLeave implements Cloneable {
 	/**
 	 * 積立年休付与残数データから積立年休残数を作成
 	 * @param remainingDataList 積立年休付与残数データリスト
-	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<ReserveLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
 
 		// 積立年休付与残数データから残数を作成
 //		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);
 		this.remainingNumberInfo.getRemainingNumber().createRemainingNumberFromGrantRemaining(remainingDataList);
 
 		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
+		if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
 			// 残数付与後　←　残数
 			//this.remainingNumberInfoAfterGrant = Optional.of(this.remainingNumberInfo.clone());
 			saveStateAfterGrant();

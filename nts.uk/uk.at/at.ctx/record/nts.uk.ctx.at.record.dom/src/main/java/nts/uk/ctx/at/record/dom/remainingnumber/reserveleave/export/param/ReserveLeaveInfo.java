@@ -13,9 +13,11 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
@@ -145,8 +147,8 @@ public class ReserveLeaveInfo implements Cloneable {
 	/**
 	 * 積立年休付与残数を更新
 	 */
-	public void updateRemainingNumber(boolean afterGrantAtr){
-		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, afterGrantAtr);
+	public void updateRemainingNumber(GrantPeriodAtr grantPeriodAtr){
+		this.remainingNumber.updateRemainingNumber(this.grantRemainingList, grantPeriodAtr);
 	}
 
 	/**
@@ -173,10 +175,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			AnnualPaidLeaveSetting annualPaidLeaveSet,
 			Optional<RetentionYearlySetting> retentionYearlySet,
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
-
-
-		// 付与前退避処理
-		this.saveStateBeforeGrant(aggrPeriodWork);
 
 		// 年月日を更新　←　開始日
 		this.ymd = aggrPeriodWork.getPeriod().start();
@@ -300,8 +298,12 @@ public class ReserveLeaveInfo implements Cloneable {
 			targetUndigestNumber.addDays(remainingNumber.getDays().v());
 		}
 
+		// 付与前付与後を判断する
+				GrantPeriodAtr grantPeriodAtr
+					= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.LASPED);
+
 		// 積立年休情報残数を更新
-		this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
+		this.updateRemainingNumber(grantPeriodAtr);
 
 		// 積立年休情報を「積立年休の集計結果．積立年休情報（消滅）」に追加
 		if (!aggrResult.getLapsed().isPresent()) aggrResult.setLapsed(Optional.of(new ArrayList<>()));
@@ -369,8 +371,13 @@ public class ReserveLeaveInfo implements Cloneable {
 		this.grantInfo = Optional.of(ReserveLeaveGrantInfo.of(
 				new ReserveLeaveGrantDayNumber(infoDays + grantDays)));
 
+		// 付与前付与後を判断する
+		GrantPeriodAtr grantPeriodAtr
+			= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.GRANT);
+
+
 		// 積立年休情報残数を更新
-		this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
+		this.updateRemainingNumber(grantPeriodAtr);
 
 		// 上限を超過した積立年休を消滅させる
 		this.lapsedExcessReserveLeave(aggrPeriodWork);
@@ -435,8 +442,13 @@ public class ReserveLeaveInfo implements Cloneable {
 				if (excessDays <= 0.0) break;
 			}
 
+			// 付与前付与後を判断する
+			GrantPeriodAtr grantPeriodAtr
+				= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.LASPED);
+
+
 			// 積立年休情報残数を更新
-			this.updateRemainingNumber(aggrPeriodWork.isGrantAtr());
+			this.updateRemainingNumber(grantPeriodAtr);
 		}
 	}
 
@@ -475,6 +487,10 @@ public class ReserveLeaveInfo implements Cloneable {
 		List<LeaveGrantRemainingData> dummyDataList = new ArrayList<LeaveGrantRemainingData>();
 
 		targetList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
+
+		// 付与前付与後を判断する
+		GrantPeriodAtr grantPeriodAtr
+			= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.DIGEST);
 
 		for (val tmpReserveLeaveMng : targetList){
 
@@ -535,10 +551,10 @@ public class ReserveLeaveInfo implements Cloneable {
 				{
 					// 実積立年休（年休（マイナスあり））に使用数を加算する
 					this.getRemainingNumber().getReserveLeaveWithMinus().getUsedNumber().addUsedDays(
-							usedNumber.getDays().v(), aggrPeriodWork.isAfterGrant());
+							usedNumber.getDays().v(), grantPeriodAtr);
 
 					// 積立年休情報残数を更新
-					this.updateRemainingNumber(aggrPeriodWork.isAfterGrant());
+					this.updateRemainingNumber(grantPeriodAtr);
 				}
 			}
 		}
@@ -548,7 +564,8 @@ public class ReserveLeaveInfo implements Cloneable {
 			// 残数がマイナスかチェック
 			val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
 			if (withMinus.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v() < 0.0){
-				if (aggrPeriodWork.isGrantAtr()){
+
+				if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
 
 					// 「積立年休不足エラー（付与後）」を追加
 					aggrResult.addError(ReserveLeaveError.SHORTAGE_RSVLEA_AFTER_GRANT);

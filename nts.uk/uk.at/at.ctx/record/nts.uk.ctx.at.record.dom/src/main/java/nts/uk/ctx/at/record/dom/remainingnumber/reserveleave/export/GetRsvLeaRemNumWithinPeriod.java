@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
@@ -299,7 +300,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		returnInfo.setGrantRemainingList(targetDatas);
 
 		// 積立年休情報残数を更新
-		returnInfo.updateRemainingNumber(false);
+		returnInfo.updateRemainingNumber(GrantPeriodAtr.BEFORE_GRANT);
 
 		// 積立年休情報を返す
 		return returnInfo;
@@ -494,7 +495,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		}
 
 		// 付与後フラグ
-		boolean isAfterGrant = false;
+		GrantPeriodAtr grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
 
 		for (int index = 0; index < dividedDayList.size(); index++){
 			val nowDividedDay = dividedDayList.get(index);
@@ -502,7 +503,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 			if (index + 1 < dividedDayList.size()) nextDividedDay = dividedDayList.get(index + 1);
 
 			// 付与フラグをチェック
-			if (nowDividedDay.isGrantAtr()) isAfterGrant = true;
+			if (nowDividedDay.isGrantAtr()) {
+				grantPeriodAtr = GrantPeriodAtr.AFTER_GRANT;
+			}
 
 			// 集計期間をチェック
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
@@ -523,7 +526,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 					workPeriod,
 					nowDividedDay.getEndWork(),
 					nowDividedDay.isGrantAtr(),
-					isAfterGrant,
+					grantPeriodAtr,
 					nowDividedDay.isLapsedAtr(),
 					maxDays,
 					nowDividedDay.getNextReserveLeaveGrant());
@@ -583,10 +586,10 @@ public class GetRsvLeaRemNumWithinPeriod {
 		if (param.getIsOverWrite().isPresent()){
 			if (param.getIsOverWrite().get()){
 				if(param.getIsOverWritePeriod().isPresent()){
-				
+
 					//上書き対象期間内の暫定積休管理データを削除
 					results.removeIf(x -> param.getIsOverWritePeriod().get().contains(x.getYmd()));
-	
+
 					// 上書き用データがある時、追加する
 					if (param.getForOverWriteList().isPresent()){
 						val overWrites = param.getForOverWriteList().get();

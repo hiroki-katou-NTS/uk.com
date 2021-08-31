@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 
 /**
  * 特別休暇集計期間WORK
@@ -66,5 +69,30 @@ public class SpecialLeaveAggregatePeriodWork {
 		domain.grantWork = grantWork;
 		domain.grantPeriodAtr = grantPeriodAtr;
 		return domain;
+	}
+
+	/**
+	 * 付与前付与後を判断する
+	 * @param atr 処理タイミング
+	 * @param entryDate 入社日
+	 * @return 付与前か付与後か
+	 */
+	public GrantPeriodAtr judgeGrantPeriodAtr(ProcessTiming atr, GeneralDate entryDate) {
+		switch(atr) {
+			case LASPED :// 消滅のとき
+				if ( grantWork.isFirstGrant() ) { // 初回付与のとき
+					return GrantPeriodAtr.BEFORE_GRANT;
+				} else {
+					return grantPeriodAtr;
+				}
+			default:
+				if ( this.grantWork.getTypeTime().isPresent()
+						&& this.grantWork.getTypeTime().get().equals(TypeTime.GRANT_PERIOD)
+						&& this.period.start().equals(entryDate)) {
+					return GrantPeriodAtr.BEFORE_GRANT;
+				} else {
+					return grantPeriodAtr;
+				}
+		}
 	}
 }

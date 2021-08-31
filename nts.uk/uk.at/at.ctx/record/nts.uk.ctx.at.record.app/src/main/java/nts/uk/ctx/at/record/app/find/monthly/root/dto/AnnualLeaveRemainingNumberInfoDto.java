@@ -37,11 +37,11 @@ public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceI
 	}
 
 	public AnnualLeaveRemainingNumberInfo toDomain() {
-		return new AnnualLeaveRemainingNumberInfo(remainingNumber == null ? new AnnualLeaveRemainingNumber() : remainingNumber.toDomain(),
+		return new AnnualLeaveRemainingNumberInfo(
 													before == null ? new AnnualLeaveRemainingNumber() : before.toDomain(),
 													after == null ? Optional.empty() : Optional.of(after.toDomain()));
 	}
-	
+
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
@@ -66,7 +66,7 @@ public class AnnualLeaveRemainingNumberInfoDto implements ItemConst, AttendanceI
 		default:
 			return AttendanceItemDataGate.super.get(path);
 		}
-	
+
 	}
 
 	@Override

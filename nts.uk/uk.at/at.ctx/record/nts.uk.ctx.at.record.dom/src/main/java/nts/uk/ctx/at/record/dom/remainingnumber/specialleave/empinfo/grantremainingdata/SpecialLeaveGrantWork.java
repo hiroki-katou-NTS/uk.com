@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 
 /**
  * 付与情報WORK
@@ -16,13 +17,13 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 @Setter
 public class SpecialLeaveGrantWork {
 
-	/** 付与回数 */
-	private int grantNumber = 0;
-
 	/** 期間の開始日に付与があるか */
 	private boolean grantAtr;
 
-	/** 特別休暇付与 */
+	/** 付与するタイミングの種類 */
+	private Optional<TypeTime> typeTime;
+
+	/** 次回特別休暇付与 */
 	private Optional<NextSpecialLeaveGrant> specialLeaveGrant;
 
 	/**
@@ -30,7 +31,31 @@ public class SpecialLeaveGrantWork {
 	 */
 	public SpecialLeaveGrantWork(){
 		grantAtr = false;
+		typeTime = Optional.empty();
 		specialLeaveGrant = Optional.empty();
+	}
+
+	/**
+	 * 初回付与か判断
+	 * @return 初回付与のときはTrueを返す
+	 */
+	public boolean isFirstGrant() {
+
+		// 期間の開始日に付与があるか
+		if(this.grantAtr==false) {
+			return false;
+		}
+
+		if(!this.specialLeaveGrant.isPresent()) {
+			return false;
+		}
+
+		// 初回付与のときはTrueを返す
+		if ( specialLeaveGrant.isPresent() ) {
+			return specialLeaveGrant.get().getTimes().v() == 1;
+		}
+
+		return false;
 	}
 
 }

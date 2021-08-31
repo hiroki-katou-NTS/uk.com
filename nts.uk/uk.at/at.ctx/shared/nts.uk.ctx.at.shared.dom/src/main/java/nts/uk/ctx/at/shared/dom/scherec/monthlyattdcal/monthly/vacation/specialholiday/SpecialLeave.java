@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 /**
@@ -78,42 +79,42 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	/**
 	 * 特別休暇付与残数データから実特別休暇の特別休暇残数を作成
 	 * @param remainingDataList 特休付与残数データリスト
-	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<SpecialLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<SpecialLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
 
 		// 特別休暇付与残数データから特別休暇残数を作成
-		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
+		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 	}
 
 	/**
 	 * 使用数を加算する
 	 * @param days 日数
-	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantPeriodAtr 付与前付与後
 	 */
-	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, boolean afterGrantAtr){
+	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, GrantPeriodAtr grantPeriodAtr){
 
-		this.usedNumberInfo.addUsedNumber(usedNumber, afterGrantAtr);
+		this.usedNumberInfo.addUsedNumber(usedNumber, grantPeriodAtr);
 
 	}
 
-	/**
-	 * 付与前退避処理
-	 */
-	public void saveStateBeforeGrant(){
-		// 合計残数を付与前に退避する
-		this.usedNumberInfo.saveStateBeforeGrant();
-		this.remainingNumberInfo.saveStateBeforeGrant();
-	}
-
-	/**
-	 * 付与後退避処理
-	 */
-	public void saveStateAfterGrant(){
-		// 合計残数を付与後に退避する
-		this.usedNumberInfo.saveStateAfterGrant();
-		this.remainingNumberInfo.saveStateAfterGrant();
-	}
+//	/**
+//	 * 付与前退避処理
+//	 */
+//	public void saveStateBeforeGrant(){
+//		// 合計残数を付与前に退避する
+//		this.usedNumberInfo.saveStateBeforeGrant();
+//		this.remainingNumberInfo.saveStateBeforeGrant();
+//	}
+//
+//	/**
+//	 * 付与後退避処理
+//	 */
+//	public void saveStateAfterGrant(){
+//		// 合計残数を付与後に退避する
+//		this.usedNumberInfo.saveStateAfterGrant();
+//		this.remainingNumberInfo.saveStateAfterGrant();
+//	}
 
 }

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 
 /**
  * 処理単位分割日
