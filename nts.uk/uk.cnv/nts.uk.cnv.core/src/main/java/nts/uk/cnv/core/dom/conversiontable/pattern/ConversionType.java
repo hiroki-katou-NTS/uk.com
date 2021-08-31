@@ -17,7 +17,8 @@ public enum ConversionType {
 	Guid("GUID"),
 	Password("PASSWORD"),
 	FileId("FILE_ID"),
-	SourceJoin("SOURCE_JOIN");
+	SourceJoin("SOURCE_JOIN"),
+	ViewJoin("VIEW_JOIN");
 
 	private final String id;
 
@@ -66,6 +67,8 @@ public enum ConversionType {
 				return entity.typeFileId.toDomain(info, sourceJoin);
 			case SourceJoin:
 				return entity.typeSourceJoin.toDomain(info);
+			case ViewJoin:
+				return entity.typeViewJoin.toDomain(info);
 		}
 
 		throw new RuntimeException("ConversionPatternが不正です");

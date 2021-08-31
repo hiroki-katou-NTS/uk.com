@@ -42,6 +42,7 @@ import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeP
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeSourceJoin;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeStringConcat;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeTimeWithDayAttr;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeViewJoin;
 
 /**
  * コンバート表
@@ -103,6 +104,9 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeSourceJoin typeSourceJoin;
 
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
+	public ScvmtConversionTypeViewJoin typeViewJoin;
+
 
 	@Override
 	protected Object getKey() {
@@ -157,6 +161,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 			.typePassword(ScvmtConversionTypePassword.toEntity(pk, conversionPattern))
 			.typeFileId(ScvmtConversionTypeFileId.toEntity(pk, conversionPattern))
 			.typeSourceJoin(ScvmtConversionTypeSourceJoin.toEntity(pk, conversionPattern))
+			.typeViewJoin(ScvmtConversionTypeViewJoin.toEntity(pk, conversionPattern))
 			.build();
 	}
 

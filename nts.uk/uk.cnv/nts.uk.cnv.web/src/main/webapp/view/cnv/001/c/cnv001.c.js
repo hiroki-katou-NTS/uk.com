@@ -287,6 +287,8 @@ $(function(){
 		$(".selSourceParentColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
 
 		var parentTable = $("#txtParentTblName").val();
+		if(typeof parentTable === "undefined" ) return;
+
 		loadTableDesignByOruta(parentTable, function (options) {
 			$(".selSourceParentColumn > option").remove();
 			$(".selSourceParentColumn").append(options);
@@ -697,7 +699,9 @@ $(function(){
 			$("#txtParentTblName").val(data.parentTable);
 
 			if(typeof data.parentTable !== "undefined" ) {
-				loadParent( function() {
+				loadTableDesignByOruta(data.parentTable, function(options) {
+					$(".selJoinSourceColumn > option").remove();
+					$(".selJoinSourceColumn").append(options);
 
 					$("#selSourceColumn_parent").val(data.sourceColumn_parent);
 
@@ -745,19 +749,22 @@ $(function(){
 		case "SOURCE_JOIN":
 			$("#txtSourceTblName").val(data.sourceTable);
 
-			if(typeof data.parentTable !== "undefined" ) {
-				loadParent( function() {
+			$(".selJoinSourceColumn > option").remove();
+			$(".selJoinSourceColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
 
-					$("#selSourceColumn_source").val(data.sourceColumn_sourceJoin);
+			loadTableDesignByErp(data.sourceTable, function(options) {
+				$(".selJoinSourceColumn > option").remove();
+				$(".selJoinSourceColumn").append(options);
 
-					$("#parent input[type='checkbox']").prop("checked", false);
-					$.each(data.joinSourcePKs.split(","), function (index, value) {
-						$("#chkSourceJoin" + (index + 1)).prop("checked", true);
-						$("#selSourceJoinPK"+ (index + 1)).prop('disabled', false);
-						$("#selSourceJoinPK" + (index + 1)).val(value)
-					});
+				$("#selSourceColumn_source").val(data.sourceColumn_sourceJoin);
+
+				$("#parent input[type='checkbox']").prop("checked", false);
+				$.each(data.joinSourcePKs.split(","), function (index, value) {
+					$("#chkSourceJoin" + (index + 1)).prop("checked", true);
+					$("#selSourceJoinPK"+ (index + 1)).prop('disabled', false);
+					$("#selSourceJoinPK" + (index + 1)).val(value)
 				});
-			}
+			});
 			break;
 		}
 	}
