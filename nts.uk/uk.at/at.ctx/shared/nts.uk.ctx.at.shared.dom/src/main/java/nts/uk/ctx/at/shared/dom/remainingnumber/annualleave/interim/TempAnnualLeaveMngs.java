@@ -23,7 +23,7 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 	/** 勤務種類 */
 	private WorkTypeCode workTypeCode;
 	/** 年休使用数 */
-	private LeaveUsedNumber usedNumber;
+	private TempAnnualLeaveUsedNumber usedNumber;
 	/** 時間休暇種類 */
 	private  Optional<DigestionHourlyTimeType> appTimeType;
 
@@ -33,7 +33,7 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 	public TempAnnualLeaveMngs(){
 		super();
 		this.workTypeCode = new WorkTypeCode("");
-		this.usedNumber = new LeaveUsedNumber();
+		this.usedNumber = new TempAnnualLeaveUsedNumber();
 		this.appTimeType = Optional.empty();
 	}
 
@@ -48,7 +48,7 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 	public static TempAnnualLeaveMngs of(
 			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
 			WorkTypeCode workTypeCode,
-			LeaveUsedNumber usedNumber,
+			TempAnnualLeaveUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 
 		TempAnnualLeaveMngs domain = new TempAnnualLeaveMngs();
@@ -59,7 +59,7 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 	}
 
 	public TempAnnualLeaveMngs(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr,
-			RemainType remainType, WorkTypeCode workTypeCode, LeaveUsedNumber usedNumber,
+			RemainType remainType, WorkTypeCode workTypeCode, TempAnnualLeaveUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType> appTimeType) {
 		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.workTypeCode = workTypeCode;
@@ -78,6 +78,5 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 			return this.getAppTimeType().get().getAppTimeType();
 		return Optional.empty();
 	}
-
 }
 

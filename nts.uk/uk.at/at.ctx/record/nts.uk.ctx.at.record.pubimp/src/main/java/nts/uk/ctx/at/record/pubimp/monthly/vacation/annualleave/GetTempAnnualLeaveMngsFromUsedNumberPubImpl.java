@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLe
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.annual.TempAnnualLeaveUsedNumberExport;;
 
 @Stateless
 public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnualLeaveMngsFromUsedNumberPub {
@@ -53,16 +54,14 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 			}
 		}
 		);
-		
+
 		return new TempAnnualLeaveMngsExport(domain.getRemainManaID(), domain.getSID(), domain.getYmd(),
 				EnumAdaptor.valueOf(domain.getCreatorAtr().value, CreateAtrExport.class),
 				EnumAdaptor.valueOf(domain.getRemainType().value, RemainType.class),
 				domain.getWorkTypeCode().v(),
-				new LeaveUsedNumberExport(domain.getUsedNumber().getDays().v(),
-						domain.getUsedNumber().getMinutes().map(x -> x.v()),
-						domain.getUsedNumber().getStowageDays().map(x -> x.v()),
-						domain.getUsedNumber().getLeaveOverLimitNumber()
-								.map(x -> new LeaveOverNumberExport(x.numberOverDays.v(), x.timeOver.map(y -> y.v())))),
+				new TempAnnualLeaveUsedNumberExport(
+						domain.getUsedNumber().getUsedDayNumber().map(mapper->mapper.v()).orElse(0.0),
+						domain.getUsedNumber().getUsedTime().map(x -> x.v())),
 				timeTypeExport
 				);
 	}

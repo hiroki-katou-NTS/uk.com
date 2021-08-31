@@ -16,7 +16,6 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Getter
 public class AnnualLeaveMaxHistoryData extends AnnualLeaveMaxData {
 
-
 	/**
 	 * 年月
 	 */
@@ -34,7 +33,7 @@ public class AnnualLeaveMaxHistoryData extends AnnualLeaveMaxData {
 
 	public AnnualLeaveMaxHistoryData(String employeeId, String companyId, Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax,
 			Optional<TimeAnnualLeaveMax> timeAnnualLeaveMax, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
-		super(employeeId, companyId, halfdayAnnualLeaveMax, timeAnnualLeaveMax);
+		super(employeeId, halfdayAnnualLeaveMax, timeAnnualLeaveMax);
 
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
@@ -43,7 +42,7 @@ public class AnnualLeaveMaxHistoryData extends AnnualLeaveMaxData {
 
 	public AnnualLeaveMaxHistoryData(AnnualLeaveMaxData maxData, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		super(maxData.getEmployeeId(), maxData.getCompanyId(), maxData.getHalfdayAnnualLeaveMax(), maxData.getTimeAnnualLeaveMax());
+		super(maxData.getEmployeeId(), maxData.getHalfdayAnnualLeaveMax(), maxData.getTimeAnnualLeaveMax());
 
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;

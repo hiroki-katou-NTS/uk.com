@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.TimeRange;
 @TimeRange(min = "-999:59", max="999:59")
 
 /**
- * 月別休暇時間     
+ * 月別休暇残時間
  * @author masaaki_jinno
  *
  */
@@ -27,13 +27,13 @@ public class LeaveRemainingTime extends TimeDurationPrimitiveValue<LeaveRemainin
 		if (rawValue < -(999 * 60 + 59)) rawValue = -(999 * 60 + 59);
 		return super.reviseRawValue(rawValue);
 	}
-	
+
 	/**
 	 * 休暇残数（時間）を加算
 	 * @param aLeaveRemainingTime
 	 */
 	public LeaveRemainingTime add(LeaveRemainingTime aLeaveRemainingTime){
-		
+
 		// 時間加算
 		return new LeaveRemainingTime( v() + aLeaveRemainingTime.v() );
 	}
