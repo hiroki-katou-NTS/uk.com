@@ -88,7 +88,7 @@ public class EmployementHistoryCanonicalizationTest {
 						new DataItem(ItemNo.END_DATE, newHistoryPeriod.end())));
 		
 		new Expectations() {{
-			require.getHistory(id, HistoryType.PERSISTENERESIDENT);
+			require.getHistory(id, HistoryType.PERSISTENERESIDENT, null);
 			result = Arrays.asList(history);
 		}};
 		
