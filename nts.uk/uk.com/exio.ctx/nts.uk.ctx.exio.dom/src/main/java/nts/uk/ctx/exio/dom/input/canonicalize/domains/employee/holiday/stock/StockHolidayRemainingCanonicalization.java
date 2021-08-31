@@ -1,65 +1,58 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock;
+
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
-import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
- * 社員の年休付与設定
+ * 積立年休付与残数データ
  */
-public abstract class EmployeeYearHolidaySettingCanonicalization extends IndependentCanonicalization {
+public class StockHolidayRemainingCanonicalization  extends IndependentCanonicalization{
 
-	protected static EmployeeYearHolidaySettingCanonicalization create(DomainWorkspace w){
-		return new EmployeeYearHolidaySettingCanonicalization(w) {
-			
-			@Override
-			protected String getParentTableName() {
-				return "KRCMT_HDPAID_BASIC";
-			}
-			
-			@Override
-			protected List<DomainDataColumn> getDomainDataKeys() {
-				return Arrays.asList(DomainDataColumn.SID);
-			}
-			
-			@Override
-			protected List<String> getChildTableNames() {
-				return Collections.emptyList();
-			}
-		};
+	@Override
+	protected String getParentTableName() {
+		return "KRCDT_HDSTK_REM";
 	}
-	
-	
+
+	@Override
+	protected List<String> getChildTableNames() {
+		return Collections.emptyList();
+	}
+
+	@Override
+	protected List<DomainDataColumn> getDomainDataKeys() {
+		return Arrays.asList(DomainDataColumn.SID, DomainDataColumn.YMD);
+	}
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public EmployeeYearHolidaySettingCanonicalization(DomainWorkspace workspace) {
+	public StockHolidayRemainingCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
-	
-	/**
-	 * 正準化
-	 */
+
+
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 
@@ -72,17 +65,14 @@ public abstract class EmployeeYearHolidaySettingCanonicalization extends Indepen
 				val addedFixedItem = interm.addCanonicalized(addFixedItem(interm)) ;
 				val key = getPrimaryKeys(addedFixedItem, workspace);
 				if (importingKeys.contains(key)) {
-					require.add(context, ExternalImportError.record(interm.getRowNo(), "キーが重複しています。：" + key));
-					continue;
+					throw new RuntimeException("重複データ" + key);
 				}
+
 				importingKeys.add(key);
+				
 				super.canonicalize(require, context, addedFixedItem, new KeyValues(key));
 			}
 		});
-	}
-	
-	public static interface RequireCanonicalize{
-		Optional<AnnualLeaveEmpBasicInfo> getExistingEmployeeGrantHoliday(String employeeId);
 	}
 	
 	/**
@@ -90,23 +80,38 @@ public abstract class EmployeeYearHolidaySettingCanonicalization extends Indepen
 	 */
 	private CanonicalItemList addFixedItem(IntermediateResult interm) {
 	    List<CanonicalItem> items = new ArrayList<>();
-	    items.add(new CanonicalItem(100,null));
-	    
-	    if(!interm.getItemByNo(2).isPresent())
-	        items.add(CanonicalItem.of(2, 0));
+	    items.addAll(Arrays.asList(
+	    		new CanonicalItem(100,IdentifierUtil.randomUniqueId()),
+	    		new CanonicalItem(101,GrantRemainRegisterType.MANUAL.value),
+	    		new CanonicalItem(102,0),
+	    		new CanonicalItem(103,0),
+	    		new CanonicalItem(104,0),
+	    		new CanonicalItem(105,0),
+	    		new CanonicalItem(106,0),
+	    		new CanonicalItem(107,0)
+	    ));
 	    
 	    return new CanonicalItemList(items);
 	}
 	
 	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
-		return Arrays.asList(record.getItemByNo(workspace.getItemByName("SID").getItemNo()).get().getString());
+		
+		return workspace.getItemsPk().stream()
+				.map(k -> record.getItemByNo(k.getItemNo()).get())
+				.map(item -> item.getValue())
+				.collect(toList());
 	}
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		val meta = employeeCodeCanonicalization.appendMeta(source).addItem("年間所定労働日数");
-		if(!meta.getItemNames().contains("導入前労働日数"))
-			return meta.addItem("導入前労働日数");
-		return meta;
+		return employeeCodeCanonicalization.appendMeta(source)
+				.addItem("登録種別")
+				.addItem("付与数時間")//時間だと↓と被るため付与数時間
+				.addItem("使用数時間")//時間だと↑↓と被るため使用数時間
+				.addItem("積み崩し日数")
+				.addItem("上限超過消滅日数")
+				.addItem("残数時間")//時間だと↑と被るため残数時間
+				.addItem("使用率");
 	}
+
 }

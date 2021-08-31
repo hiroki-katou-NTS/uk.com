@@ -31,7 +31,10 @@ public enum ImportingDomainId{
 	MAX_YEAR_HOLIDAY(112),
 	
 	/** 年休付与残数データ*/
-	GRANT_YEAR_HOLIDAY_REMAINING(114),
+	YEAR_HOLIDAY_REMAINING(114),
+	
+	/** 積立休暇付与残数データ*/
+	STOCK_HOLIDAY_REMAINING(115),
 	
 	/** 社員の特別休暇付与設定 */
 	EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING(116),
