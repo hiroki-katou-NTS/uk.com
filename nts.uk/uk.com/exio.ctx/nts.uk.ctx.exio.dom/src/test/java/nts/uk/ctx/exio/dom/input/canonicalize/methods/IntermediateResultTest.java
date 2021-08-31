@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItemList;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 public class IntermediateResultTest {
@@ -18,7 +19,7 @@ public class IntermediateResultTest {
 		
 		val actual = IntermediateResult.create(
 				source,
-				canonicalizedItems,
+				CanonicalItemList.of(canonicalizedItems),
 				0, 2);
 
 		assertThat(actual.getItemsAfterCanonicalize())
@@ -37,9 +38,9 @@ public class IntermediateResultTest {
 		val source = new RevisedDataRecord(0, newList().add(0, "a").add(1, "b").add(2, "c"));
 		val canonicalizedItems = newList().add(10, "AAA");
 		val target = IntermediateResult.create(
-				source, canonicalizedItems, 0);
+				source, CanonicalItemList.of(canonicalizedItems), 0);
 		
-		val actual = target.addCanonicalized(newList().add(12, "CCC"), 2);
+		val actual = target.addCanonicalized(CanonicalItemList.of(newList().add(12, "CCC")));
 
 		assertThat(actual.getItemsAfterCanonicalize())
 			.isEqualTo(newList().add(10, "AAA").add(12, "CCC"));
@@ -59,7 +60,7 @@ public class IntermediateResultTest {
 		val canonicalizedItems = newList().add(0, "AAA").add(12, "CCC");
 		
 		val target = IntermediateResult.create(
-				source, canonicalizedItems, 0, 2);
+				source, CanonicalItemList.of(canonicalizedItems), 0, 2);
 
 		assertThat(target.getItemByNo(0).get().getString()).isEqualTo("AAA");
 		assertThat(target.getItemByNo(1).get().getString()).isEqualTo("b");
