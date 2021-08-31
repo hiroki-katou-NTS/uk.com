@@ -19,11 +19,13 @@ import { KDL002Component } from '../002/index';
 export class KdlTestComponent extends Vue {
     public title: string = 'KdlTest';
     public seledtedWkTypeCDs = '001,002,003,004,005,006,007';
-    public seledtedWkTimeCDs = '001,002,003,004,005,006,007,008';
+    public seledtedWkTimeCDs = '001,002,003,004,005,006,007,008';  
     public isSelectWorkTime = 1;
     public selectedWorkType: any = {};
     public selectedWorkTime: any = {};
     public isAddNone = 1;
+    public workplaceID = 'WKP_ID_xxxxxxxxxxx_000000000002-0001';
+    public referenceDate = '2021/08/30';
     public openKDL002() {
         let self = this;
         self.$modal(
@@ -51,9 +53,11 @@ export class KdlTestComponent extends Vue {
             'worktime',
             {
                 isAddNone: self.isAddNone,
-                seledtedWkTimeCDs: self.seledtedWkTimeCDs.split(','),
+                seledtedWkTimeCDs: self.seledtedWkTimeCDs == '' ? [] : self.seledtedWkTimeCDs.split(','),
                 selectedWorkTimeCD: self.selectedWorkTime.code,
-                isSelectWorkTime: self.isSelectWorkTime
+                isSelectWorkTime: self.isSelectWorkTime,
+                workplaceID: self.workplaceID,
+                referenceDate: self.referenceDate
             }
         ).then((f: any) => {
             if (f) {
