@@ -72,4 +72,6 @@ public interface EmployeeRequestAdapter {
 	public List<String> getWorkplaceIdAndUpper(String companyId, GeneralDate baseDate, String workplaceId);
 	
 	public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date);
+
+	List<String> getAllSidByCid(String cid);
 }

@@ -141,5 +141,9 @@ public class PersonEmpBasicInfoPubImpl implements PersonEmpBasicInfoPub {
 		Map<Object, Boolean> seen = new ConcurrentHashMap<>();
 		return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
 	}
-
+	
+	@Override
+	public List<String> getAllSidByCid (String cid) {
+		return empDataRepo.getAllSidByCid(cid);
+	}
 }

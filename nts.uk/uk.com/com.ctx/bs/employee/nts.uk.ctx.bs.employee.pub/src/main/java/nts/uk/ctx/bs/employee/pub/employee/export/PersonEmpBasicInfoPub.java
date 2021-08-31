@@ -19,4 +19,6 @@ public interface PersonEmpBasicInfoPub {
 	List<PersonEmpBasicInfoDto> getPerEmpBasicInfo(List<String> employeeIds);
 
 	List<PersonEmpBasicInfoDto> getEmpBasicInfo(String companyId, List<String> employeeIds);
+
+	List<String> getAllSidByCid(String cid);
 }

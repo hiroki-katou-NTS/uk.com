@@ -3,6 +3,7 @@ module kdl005.test {
         export class ScreenModel {
             date: KnockoutObservable<string>;
             empList: KnockoutObservableArray<string> = ko.observableArray([]);
+			
 
             constructor(){
                 var self = this;
@@ -19,7 +20,9 @@ module kdl005.test {
                 });
                 
                 var param: IEmployeeParam = {
-                    employeeIds: empIds,
+                    employeeIds: ["xxxxxx000000000003-0004-000000000001","xxxxxx000000000003-0004-000000000001","xxxxxx000000000003-0004-000000000002",
+"xxxxxx000000000003-0004-000000000002","xxxxxx000000000003-0004-000000000003","xxxxxx000000000003-0004-000000000004","xxxxxx000000000003-0004-000000000005","xxxxxx000000000003-0004-000000000006",
+"xxxxxx000000000003-0004-000000000007","xxxxxx000000000003-0004-000000000008","xxxxxx000000000003-0004-000000000009","xxxxxx000000000003-0004-0000000000010","xxxxxx000000000003-0004-0000000000011"],
                     baseDate: self.date().split("T")[0].replace('-','').replace('-','')
                 };
                 

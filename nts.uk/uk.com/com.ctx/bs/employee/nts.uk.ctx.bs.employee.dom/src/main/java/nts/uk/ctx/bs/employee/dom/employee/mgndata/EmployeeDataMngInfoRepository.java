@@ -191,5 +191,7 @@ public interface EmployeeDataMngInfoRepository {
 	Map<String, String> getAllSidAndScdBySids(List<String> sids);
 
 	Optional<EmployeeDataMngInfo> findByScdNotDel(String employeeCd, String companyId);
+
+	List<String> getAllSidByCid(String cid);
 	
 }
