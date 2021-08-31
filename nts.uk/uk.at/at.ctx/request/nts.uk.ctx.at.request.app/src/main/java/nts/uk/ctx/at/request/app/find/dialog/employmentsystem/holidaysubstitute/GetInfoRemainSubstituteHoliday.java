@@ -45,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
@@ -154,7 +155,7 @@ public class GetInfoRemainSubstituteHoliday {
 			DatePeriod datePeriod = new DatePeriod(closure.get(), closure.get().addMonths(1).addDays(-1));
 			BreakDayOffRemainMngRefactParam breakDay = new BreakDayOffRemainMngRefactParam(cID, sID, datePeriod, false,
 					closure.get(), false, Collections.emptyList(), Optional.empty(),
-					Optional.empty(), Optional.empty(), null);
+					Optional.empty(), Optional.empty(), new FixedManagementDataMonth());
 			
 			// [№203]期間内の休出代休残数を取得する
 			SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess
