@@ -78,6 +78,13 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         int itemOnePage = 0;
         Cells cells = worksheet.getCells();
         for (int i = 0; i < listContent.size(); i++) {
+            if (i >= 1) {
+                itemOnePage = 0;
+                pageBreaks.add(count);
+                for (int index = 0; index < 15; index++) {
+                    setBottomBorderStyle(cells.get(count -1, index));
+                }
+            }
             val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
             val content = listContent.get(i);
             val wplCode  = StringUtils.deleteWhitespace(content.getWorkplaceCode());
@@ -86,13 +93,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
             cells.copyRow(cells, 1, count + 1);
             cells.copyRow(cells, 2, count + 2);
             cells.clearContents(count, 0, cells.getMaxRow(), 15);
-            if (i >= 1) {
-                itemOnePage = 0;
-                pageBreaks.add(count);
-                for (int index = 0; index < 15; index++) {
-                    setBottomBorderStyle(cells.get(count -1, index));
-                }
-            }
+
             cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + wplCode + "　" + content.getWorkplaceName());
             cells.merge(count, 6, 1, 3, true, true);
             val date = TextResource.localize(TextResource.localize("KWR005_303")) +
@@ -101,6 +102,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
             cells.get(count, 6).setValue(date);
             Style styleTime =   cells.get(count, 6).getStyle();
             styleTime.setHorizontalAlignment(TextAlignmentType.CENTER);
+            styleTime.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+
             cells.get(count, 6).setStyle(styleTime);
 
             cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + emCode+ "　" + content.getEmployeeName());
@@ -125,7 +128,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                     cells.get(count, 6).setValue(date);
                     Style styleTime2 =   cells.get(count, 6).getStyle();
                     styleTime2.setHorizontalAlignment(TextAlignmentType.CENTER);
-                    cells.get(count, 6).setStyle(styleTime);
+                    styleTime2.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getAntiqueWhite());
+                    cells.get(count, 6).setStyle(styleTime2);
 
                     cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + wplCode + "　" + content.getWorkplaceName());
                     cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + emCode + "　" + content.getEmployeeName());
