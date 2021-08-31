@@ -5,7 +5,7 @@ module nts.uk.ui.at.kdw013.c {
     const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
 
     const style = `.edit-event {
-        width: 350px;
+        width: 370px;
     }
     .edit-event .header {
         box-sizing: border-box;
@@ -82,7 +82,13 @@ module nts.uk.ui.at.kdw013.c {
     .edit-event .nts-description:not(.error) textarea.nts-input,
     .edit-event .time-range-control:not(.error) input.nts-input {
         border: 1px solid #999 !important;
-    }`;
+    }
+    .edit-event table td {    
+        max-width: 80px;
+        line-break: anywhere;
+    }
+
+`;
 
     const { randomId } = nts.uk.util;
     const { number2String, string2Number, validateNumb, getTimeOfDate, setTimeOfDate, getTitles } = share;
