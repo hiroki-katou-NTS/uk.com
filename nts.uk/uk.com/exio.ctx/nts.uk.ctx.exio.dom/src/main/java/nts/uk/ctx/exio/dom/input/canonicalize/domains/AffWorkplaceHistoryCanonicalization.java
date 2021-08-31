@@ -4,13 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.val;
-import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.WorkplaceCodeCanonicalization;
@@ -69,13 +66,13 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 		);
 	}
 
-	@Override
-	public AtomTask adjust(
-			RequireAdjsut require,
-			List<AnyRecordToChange> recordsToChange,
-			List<AnyRecordToDelete> recordsToDelete) {
-		return super.adjust(require, recordsToChange, recordsToDelete);
-	}
+//	@Override
+//	public AtomTask adjust(
+//			RequireAdjsut require,
+//			List<AnyRecordToChange> recordsToChange,
+//			List<AnyRecordToDelete> recordsToDelete) {
+//		return super.adjust(require, recordsToChange, recordsToDelete);
+//	}
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
