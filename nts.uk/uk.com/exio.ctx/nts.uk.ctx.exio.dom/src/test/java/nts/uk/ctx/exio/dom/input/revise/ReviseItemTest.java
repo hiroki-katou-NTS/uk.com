@@ -2,28 +2,26 @@ package nts.uk.ctx.exio.dom.input.revise;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Optional;
-
 import org.junit.Test;
 
 import lombok.val;
 import mockit.Expectations;
-import mockit.Injectable;
 import mockit.Mocked;
+import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.errors.ItemError;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
+import nts.uk.ctx.exio.dom.input.util.Either;
 
 public class ReviseItemTest {
 	@Mocked ReviseValue reviseValue;
-	
-	@Injectable
-	private ReviseItem.Require require;
-	
+		
 	static class Dummy{
 		private static String COM_ID = "comcomcom";
 		private static ExternalImportCode EXI_CODE = new ExternalImportCode("exiexiexi");
@@ -33,7 +31,7 @@ public class ReviseItemTest {
 		private static ImportingDomainId EXI_GROUP = ImportingDomainId.TASK;
 		private static ImportingMode EXI_MODE = ImportingMode.INSERT_ONLY;
 		private static ExecutionContext EXE_CONTEXT = new ExecutionContext(COM_ID, EXI_CODE.v(), EXI_GROUP, EXI_MODE);
-		private static RevisedValueResult REVISE_V_RESULT;
+		private static Either<ErrorMessage, ?> REVISE_V_RESULT;
 	}
 
 	@Test
@@ -43,9 +41,7 @@ public class ReviseItemTest {
 				Dummy.COM_ID, 
 				Dummy.EXI_CODE, 
 				Dummy.EXI_ITEM_NO, 
-				Dummy.ITEM_TYPE,
-				Dummy.REVISE_VALUE, 
-				Optional.empty());
+				Dummy.REVISE_VALUE);
 		
 		String targetValue = "value";
 		
@@ -54,9 +50,10 @@ public class ReviseItemTest {
 			result = Dummy.REVISE_V_RESULT;
 		}};
 		
-		RevisedItemResult result = reviseItem.revise(require, Dummy.EXE_CONTEXT, targetValue);
+		Either<ItemError, DataItem> result = reviseItem.revise(targetValue);
 		
-		assertThat(result.isSuccess()).isEqualTo(true);
+		result.ifLeft(err -> assertThat(err).isNotNull());
+		result.ifRight(v -> assertThat(true).isTrue());
 	}
 
 }

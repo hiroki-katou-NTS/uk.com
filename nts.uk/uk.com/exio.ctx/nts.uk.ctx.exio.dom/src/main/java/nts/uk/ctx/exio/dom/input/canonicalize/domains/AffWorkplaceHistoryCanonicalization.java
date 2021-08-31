@@ -4,16 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.val;
-import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.WorkplaceCodeCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.WorkplaceCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
@@ -62,20 +59,20 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 	
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
+		// EmployeeHistoryCanonicalization.toDeleteのキーの順番と合わせる必要がある
 		return Arrays.asList(
-				new DomainDataColumn("社員コード", DataType.STRING),
-				new DomainDataColumn("開始日", DataType.DATE),
-				new DomainDataColumn("終了日", DataType.DATE)
+				new DomainDataColumn("HIST_ID", DataType.STRING),
+				new DomainDataColumn("SID", DataType.STRING)
 		);
 	}
 
-	@Override
-	public AtomTask adjust(
-			RequireAdjsut require,
-			List<AnyRecordToChange> recordsToChange,
-			List<AnyRecordToDelete> recordsToDelete) {
-		return super.adjust(require, recordsToChange, recordsToDelete);
-	}
+//	@Override
+//	public AtomTask adjust(
+//			RequireAdjsut require,
+//			List<AnyRecordToChange> recordsToChange,
+//			List<AnyRecordToDelete> recordsToDelete) {
+//		return super.adjust(require, recordsToChange, recordsToDelete);
+//	}
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {

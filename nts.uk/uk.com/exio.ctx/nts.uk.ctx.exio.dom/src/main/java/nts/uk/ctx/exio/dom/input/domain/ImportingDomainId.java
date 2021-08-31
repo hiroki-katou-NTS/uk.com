@@ -11,10 +11,10 @@ public enum ImportingDomainId{
 	
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100),
-
+	
 	/** 雇用履歴 */
 	EMPLOYMENT_HISTORY(102),
-
+	
 	/** 所属職場履歴 **/
 	AFF_WORKPLACE_HISTORY(103),
 	
@@ -23,18 +23,30 @@ public enum ImportingDomainId{
 	
 	/** 分類 */
 	CLASSIFICATION_HISTORY(105),
+
+	/** 休職休業履歴 */
+	TEMP_ABSENCE_HISTORY(107),
 	
 	/** 短時間勤務 */
 	SHORT_WORK_TIME(108),
-
+	
 	/** 社員の年休付与設定*/
-	EMPLOYEE_ANNUAL_LEAVE_SETTING(111),	
-
+	EMPLOYEE_YEAR_HOLIDAY_SETTING(111),	
+	
+	/** 年休上限データ*/
+	MAX_YEAR_HOLIDAY(112),
+	
+	/** 年休付与残数データ*/
+	YEAR_HOLIDAY_REMAINING(114),
+	
+	/** 積立休暇付与残数データ*/
+	STOCK_HOLIDAY_REMAINING(115),
+	
 	/** 社員の特別休暇付与設定 */
 	EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING(116),
 	
 	/** 特別休暇付与残数データ */
-	SPECIAL_HORYDAY_GRANT_REMAIN(117),
+	SPECIAL_HOLIDAY_GRANT_REMAIN(117),
 	
 	/** 振休管理データ */
 	SUBSTITUTE_HOLIDAY(118),
@@ -56,5 +68,4 @@ public enum ImportingDomainId{
 	public static ImportingDomainId valueOf(int value) {
 		return EnumAdaptor.valueOf(value, ImportingDomainId.class);
 	}
-	
 }

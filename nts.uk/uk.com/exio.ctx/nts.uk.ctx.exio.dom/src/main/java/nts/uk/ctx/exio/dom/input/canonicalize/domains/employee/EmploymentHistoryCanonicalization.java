@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,7 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
  * 雇用履歴の正準化 
  */
 public class EmploymentHistoryCanonicalization {
-	protected static EmployeeHistoryCanonicalization create(DomainWorkspace w) {
+	public static EmployeeHistoryCanonicalization create(DomainWorkspace w) {
 		return new EmployeeHistoryCanonicalization(w, HistoryType.PERSISTENERESIDENT) {
 			
 			@Override

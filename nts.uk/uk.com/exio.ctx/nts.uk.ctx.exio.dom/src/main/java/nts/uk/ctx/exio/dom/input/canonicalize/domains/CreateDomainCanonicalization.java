@@ -18,8 +18,13 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.HolidayWorkCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteHolidayCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteWorkCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year.EmployeeYearHolidaySettingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year.MaxYearHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year.YearHolidayRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -65,7 +70,7 @@ public class CreateDomainCanonicalization {
 		CREATES.put(EMPLOYEE_BASIC, w -> new EmployeeBasicCanonicalization());
 		
 		// 雇用履歴
-		CREATES.put(ImportingDomainId.EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
+		CREATES.put(EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
 		
 		//分類履歴
 		CREATES.put(CLASSIFICATION_HISTORY,w -> AffClassHistoryCanonicalization.create(w));
@@ -80,13 +85,22 @@ public class CreateDomainCanonicalization {
 		CREATES.put(SHORT_WORK_TIME, ShortWorkTimeCanonicalization::new);
 		
 		//社員の年休付与設定
-		CREATES.put(ImportingDomainId.EMPLOYEE_ANNUAL_LEAVE_SETTING, w -> EmployeeAnnualLeaveSettingCanonicalization.create(w));
+		CREATES.put(EMPLOYEE_YEAR_HOLIDAY_SETTING, w -> new EmployeeYearHolidaySettingCanonicalization(w));
+		
+		//年休上限データ
+		CREATES.put(MAX_YEAR_HOLIDAY, w -> new MaxYearHolidayCanonicalization(w));
+
+		//年休付与残数データ
+		CREATES.put(YEAR_HOLIDAY_REMAINING, w -> new YearHolidayRemainingCanonicalization(w));
+		
+		//積休付与残数データ
+		CREATES.put(STOCK_HOLIDAY_REMAINING, w -> new StockHolidayRemainingCanonicalization(w));
 
 		// 社員の特別休暇付与設定
 		CREATES.put(ImportingDomainId.EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> SpecialHolidayGrantSettingCanonicalization.create(w));
 		
 		// 特別休暇付与残数データ
-		CREATES.put(ImportingDomainId.SPECIAL_HORYDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.SPECIAL_HOLIDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
 
 		// 振休管理データ
 		CREATES.put(SUBSTITUTE_HOLIDAY, SubstituteHolidayCanonicalization::new);
@@ -99,6 +113,8 @@ public class CreateDomainCanonicalization {
 
 		// 休出管理データ
 		CREATES.put(HOLIDAY_WORK, HolidayWorkCanonicalization::new);
+		
+		CREATES.put(ImportingDomainId.SPECIAL_HOLIDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
 	}
 	
 	public static interface Require {

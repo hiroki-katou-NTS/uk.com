@@ -9,12 +9,18 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
+/**
+ * 社員の特別休暇付与設定の正準化
+ */
 public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndependentCanonicalization implements DomainCanonicalization{
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
@@ -30,16 +36,35 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
+		// 社員ごとに正準化
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
+			// 1レコードごとに正準化
 			for (val interm : interms) {
-				interm.addCanonicalized(new CanonicalItemList().add(102, 0), 102);
-				interm.addCanonicalized(new CanonicalItemList().addNull(103), 103);
-				interm.addCanonicalized(new CanonicalItemList().addNull(104), 104);
-				interm.addCanonicalized(new CanonicalItemList().addNull(105), 105);
+				val keyValues = new KeyValues(getPrimaryKeys(interm, workspace));
+				// 固定値の追加
+				interm.addCanonicalized(getFixedItems());
 				
-				require.save(context, interm.complete());
+				canonicalize(require, context, interm, keyValues);
 			}
 		});
+	}
+	
+	private static CanonicalItemList getFixedItems() {
+		return new CanonicalItemList()
+			// 適用設定
+			.add(102, 0)
+			// 付与日数
+			.addNull(103)
+			// 勤続年数テーブル
+			.addNull(104)
+			// 付与日テーブル
+			.addNull(105);
+	}
+	
+	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
+		return Arrays.asList(
+				record.getItemByNo(workspace.getItemByName("SID").getItemNo()).get().getString(), 
+				record.getItemByNo(workspace.getItemByName("SPECIAL_LEAVE_CD").getItemNo()).get().getString());
 	}
 	
 	@Override
@@ -57,5 +82,14 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 		return Arrays.asList(
 				DomainDataColumn.SID, 
 				new DomainDataColumn("SPECIAL_LEAVE_CD", DataType.STRING));
+	}
+	
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return super.appendMeta(source)
+				.addItem("適用設定")
+				.addItem("付与日数")
+				.addItem("勤続年数付与テーブル")
+				.addItem("付与日テーブル");
 	}
 }

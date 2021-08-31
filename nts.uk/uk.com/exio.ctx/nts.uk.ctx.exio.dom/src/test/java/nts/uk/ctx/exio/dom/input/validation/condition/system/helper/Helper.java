@@ -27,6 +27,7 @@ public class Helper {
 						Helper.DUMMY.NAME,
 						Helper.DUMMY.ITEM_TYPE,
 						Helper.DUMMY.REQUIRED,
+						false,
 						Optional.empty())
 			);  
 	}
