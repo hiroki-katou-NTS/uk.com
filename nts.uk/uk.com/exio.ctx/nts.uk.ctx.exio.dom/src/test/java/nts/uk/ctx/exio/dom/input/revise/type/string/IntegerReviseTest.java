@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.input.revise.type.string;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -10,8 +11,9 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.FetchingPosition;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.CodeConvertDetail;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.integer.IntegerRevise;
 
 public class IntegerReviseTest {
@@ -22,17 +24,21 @@ public class IntegerReviseTest {
 	private static class Dummy{
 		private static String TARGET = "12345";
 		private static Long RESULT = (long) 12345;
-		private static FetchingPosition RANGE_OF_VALUE = new FetchingPosition(new ExternalImportRowNumber(2), new ExternalImportRowNumber(4));
+		private static ExternalImportCodeConvert CODE_CONVERT =
+				new ExternalImportCodeConvert(false, Arrays.asList(
+						new CodeConvertDetail("0", "1"),
+						new CodeConvertDetail("1", "2")
+				));
 	}
 	
 	@Test
 	public void noRevise() {
-		val reviser = new IntegerRevise(false, Optional.empty());
+		val reviser = new IntegerRevise(Optional.empty());
 		
 		val result = reviser.revise(Dummy.TARGET);
 		
-		assertThat(result.isSuccess()).isTrue();
-		assertThat(result.getRevisedvalue().get()).isEqualTo(Dummy.RESULT);
+		result.ifLeft(err -> assertThat(err).isNull());
+		result.ifRight(v -> assertThat(v).isEqualTo(Dummy.RESULT));
 		
 		new Verifications() {{
 			rangeOfValue.extract((String)any);
@@ -42,7 +48,7 @@ public class IntegerReviseTest {
 	
 	@Test
 	public void specifyRange() {
-		val reviser = new IntegerRevise(true, Optional.of(Dummy.RANGE_OF_VALUE));
+		val reviser = new IntegerRevise(Optional.of(Dummy.CODE_CONVERT));
 		
 		new Expectations() {{
 			rangeOfValue.extract(Dummy.TARGET);
@@ -51,8 +57,8 @@ public class IntegerReviseTest {
 		
 		val result = reviser.revise(Dummy.TARGET);
 		
-		assertThat(result.isSuccess()).isTrue();
-		assertThat(result.getRevisedvalue().get()).isEqualTo(Dummy.RESULT);
+		result.ifLeft(err -> assertThat(err).isNull());
+		result.ifRight(v -> assertThat(v).isEqualTo(Dummy.RESULT));
 		
 		new Verifications() {{
 			rangeOfValue.extract((String)any);
