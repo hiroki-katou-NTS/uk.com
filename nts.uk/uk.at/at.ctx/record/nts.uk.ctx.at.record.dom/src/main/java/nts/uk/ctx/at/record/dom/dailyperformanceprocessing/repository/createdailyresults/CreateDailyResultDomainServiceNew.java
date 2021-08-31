@@ -273,10 +273,10 @@ public class CreateDailyResultDomainServiceNew {
 						return;
 					}
 					// 日別実績の作成入社前、退職後を期間から除く
-					DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
+					Optional<DatePeriod> newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
 
 					// Outputのエラーを確認する
-					if (newPeriod == null) {
+					if (!newPeriod.isPresent()) {
 						listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, periodTime.start(),
 								ExecutionContent.DAILY_CREATION, new ErrMessageResource("020"),
 								new ErrMessageContent(TextResource.localize("Msg_1156"))));
@@ -289,13 +289,13 @@ public class CreateDailyResultDomainServiceNew {
 						// List<DateHistoryItem>> mapLstDateHistoryItem )
 						// 特定日、加給、計算区分情報を取得する
 						// 履歴が区切られている年月日を判断する
-						List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod,
+						List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod.get(),
 								workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
 
 						PeriodInMasterList periodInMasterList = getPeriodInMasterList(companyId, employeeId,
-								newPeriod, historySeparatedList, employeeGeneralInfoImport);
+								newPeriod.get(), historySeparatedList, employeeGeneralInfoImport);
 
-						OutputCreateDailyResult cStatus = createDataNew(asyncContext, newPeriod, executionAttr, companyId,
+						OutputCreateDailyResult cStatus = createDataNew(asyncContext, newPeriod.get(), executionAttr, companyId,
 								empCalAndSumExeLog, dataSetter, employeeGeneralInfoImport,
 								stateHolder, employeeId, stampReflectionManagement, mapWorkingConditionItem,
 								mapDateHistoryItem, periodInMasterList,executionType, checkLock);
@@ -344,7 +344,7 @@ public class CreateDailyResultDomainServiceNew {
 		return status;
 	}
 
-	private DatePeriod checkPeriod(String companyId, String employeeId, DatePeriod periodTime) {
+	private Optional<DatePeriod> checkPeriod(String companyId, String employeeId, DatePeriod periodTime) {
 
 		DatePeriod datePeriodOutput = periodTime;
 
@@ -352,7 +352,7 @@ public class CreateDailyResultDomainServiceNew {
 		EmployeeRecordImport empInfo = employeeRecordAdapter.getPersonInfor(employeeId);
 
 		if (empInfo == null) {
-			return null;
+			return Optional.empty();
 		}
 
 		if (datePeriodOutput.start().before(empInfo.getEntryDate())
@@ -370,9 +370,9 @@ public class CreateDailyResultDomainServiceNew {
 				&& datePeriodOutput.end().afterOrEquals(empInfo.getRetiredDate())) {
 			datePeriodOutput = new DatePeriod(empInfo.getEntryDate(), empInfo.getRetiredDate());
 		} else
-			datePeriodOutput = null;
+			return  Optional.empty();
 
-		return datePeriodOutput;
+		return Optional.of(datePeriodOutput);
 	}
 
 	// 会社職場個人の加給設定を取得する
@@ -634,12 +634,17 @@ public class CreateDailyResultDomainServiceNew {
 		workPlaceHistory.addAll(listWorkplaceHistory.get(0));
 		StateHolder stateHolder = new StateHolder(1);
 		
-		DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
-		List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod,
+		Optional<DatePeriod> newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
+		
+		if (!newPeriod.isPresent()) {
+			return new OutputCreateDailyResult(ProcessState.SUCCESS, new ArrayList<>());
+		}
+
+		List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod.get(),
 				workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
 		
 		PeriodInMasterList periodInMasterList = getPeriodInMasterList(companyId, employeeId,
-				newPeriod, historySeparatedList, employeeGeneralInfoImport);
+				newPeriod.get(), historySeparatedList, employeeGeneralInfoImport);
 
 		/**
 		 * 勤務種別変更時に再作成 = false reCreateWorkType 異動時に再作成 = false reCreateWorkPlace
@@ -734,12 +739,15 @@ public class CreateDailyResultDomainServiceNew {
 		workPlaceHistory.addAll(listWorkplaceHistory.get(0));
 		StateHolder stateHolder = new StateHolder(1);
 		
-		DatePeriod newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
-		List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod,
+		Optional<DatePeriod> newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
+		if (!newPeriod.isPresent()) {
+			return new OutputCreateDailyResult(ProcessState.SUCCESS, new ArrayList<>());
+		}
+		List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod.get(),
 				workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
 		
 		PeriodInMasterList periodInMasterList = getPeriodInMasterList(companyId, employeeId,
-				newPeriod, historySeparatedList, employeeGeneralInfoImport);
+				newPeriod.get(), historySeparatedList, employeeGeneralInfoImport);
 
 		/**
 		 * 勤務種別変更時に再作成 = false reCreateWorkType 異動時に再作成 = false reCreateWorkPlace
@@ -760,6 +768,51 @@ public class CreateDailyResultDomainServiceNew {
 		}
 	}
 
+	public Optional<EmployeeGeneralAndPeriodMaster> getMasterData(String companyId, String employeeId,
+			DatePeriod periodTime) {
+
+		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
+				.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
+		List<BusinessTypeOfEmployeeHis> exWorkTypeHistoryImports = this.businessTypeOfEmpHisService.find(Arrays.asList(employeeId), periodTime);
+		
+		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
+		
+		List<WorkingCondition> workingConditions = workingConditionRepo.getBySidsAndDatePeriod(Arrays.asList(employeeId),
+				periodTime);
+
+		// Map<Sid, List<DateHistoryItem>>
+		Map<String, List<DateHistoryItem>> mapLstDateHistoryItem = workingConditions.parallelStream().collect(
+				Collectors.toMap(WorkingCondition::getEmployeeId, WorkingCondition::getDateHistoryItem));
+		// 会社IDと期間から期間内の職場構成期間を取得する
+		// ReqList485
+		// List<DatePeriod> workPlaceHistory =
+		// this.affWorkplaceAdapter.getLstPeriod(companyId, periodTime);
+
+		// [No.647]期間に対応する職場構成を取得する
+		List<WorkPlaceConfig> workPlaceConfigLst = this.affWorkplaceAdapter.findByCompanyIdAndPeriod(companyId,
+				periodTime);
+		List<DatePeriod> workPlaceHistory = new ArrayList<>();
+
+		List<List<DatePeriod>> listWorkplaceHistory = workPlaceConfigLst.stream()
+				.map(c -> c.getWkpConfigHistory().stream().map(m -> m.getPeriod()).collect(Collectors.toList()))
+				.collect(Collectors.toList());
+
+		workPlaceHistory.addAll(listWorkplaceHistory.get(0));
+		
+		Optional<DatePeriod> newPeriod = this.checkPeriod(companyId, employeeId, periodTime);
+		if (!newPeriod.isPresent()) {
+			return Optional.empty();
+		}
+		List<GeneralDate> historySeparatedList = this.historyIsSeparated(newPeriod.get(),
+				workPlaceHistory, employeeGeneralInfoImport, mapLstDateHistoryItem, employeeId);
+		
+		PeriodInMasterList periodInMasterList = getPeriodInMasterList(companyId, employeeId,
+				newPeriod.get(), historySeparatedList, employeeGeneralInfoImport);
+		
+		return Optional.of(new EmployeeGeneralAndPeriodMaster(employeeGeneralInfoImport, periodInMasterList));
+		
+	}
+	
 	// 特定日、加給、計算区分情報を取得する
 	private PeriodInMasterList getPeriodInMasterList(String companyId, String employeeId, DatePeriod period,
 			List<GeneralDate> historySeparatedList, EmployeeGeneralInfoImport employeeGeneralInfoImport) {

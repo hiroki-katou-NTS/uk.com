@@ -50,7 +50,7 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			// 23, 24
 			+ " ITEM.initValue"
 			+ " FROM  PpemtCtg CTG INNER JOIN PpemtItemCommon CM"
-			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd" + " INNER JOIN  PpemtItem ITEM"
+			+ " ON  CTG.categoryCd = CM.ppemtPerInfoItemCmPK.categoryCd AND CTG.contractCd = CM.ppemtPerInfoItemCmPK.contractCd" + " INNER JOIN  PpemtItem ITEM"
 			+ " ON CM.ppemtPerInfoItemCmPK.itemCd = ITEM.itemCd"
 			+ " AND CTG.ppemtPerInfoCtgPK.perInfoCtgId =  ITEM.perInfoCtgId " + " INNER JOIN PpemtItemSort E"
 			+ " ON  ITEM.ppemtPerInfoItemPK.perInfoItemDefId = E.ppemtPerInfoItemPK.perInfoItemDefId "

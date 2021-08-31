@@ -12,11 +12,11 @@ public enum RestClockManageAtr {
 
 	/** The is clock manage. */
 	// 時刻管理する
-	IS_CLOCK_MANAGE(0, "Enum_RestClockManageAtr_useRestTimeToCalc", "時刻管理する"),
+	IS_CLOCK_MANAGE(1, "Enum_RestClockManageAtr_useRestTimeToCalc", "時刻管理する"),
 
 	/** The not clock manage. */
 	// 時刻管理しない
-	NOT_CLOCK_MANAGE(1, "Enum_RestClockManageAtr_useGoOutTimeToCalc", "時刻管理しない");
+	NOT_CLOCK_MANAGE(0, "Enum_RestClockManageAtr_useGoOutTimeToCalc", "時刻管理しない");
 
 	/** The value. */
 	public final int value;

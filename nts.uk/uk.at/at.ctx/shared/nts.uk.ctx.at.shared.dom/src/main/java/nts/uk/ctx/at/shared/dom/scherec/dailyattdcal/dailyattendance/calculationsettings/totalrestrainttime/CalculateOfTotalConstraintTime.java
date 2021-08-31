@@ -88,12 +88,16 @@ public class CalculateOfTotalConstraintTime {
 				if(attendanceLeave.get().getAttendanceLeavingWork(i).isPresent()) {
 					if(attendanceLeave.get().getAttendanceLeavingWork(i).get().getAttendanceStamp().isPresent()) {
 						if(attendanceLeave.get().getAttendanceLeavingWork(i).get().getAttendanceStamp().get().getStamp().isPresent()) {
-							attendance = attendanceLeave.get().getAttendanceLeavingWork(i).get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
+							if(attendanceLeave.get().getAttendanceLeavingWork(i).get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
+								attendance = attendanceLeave.get().getAttendanceLeavingWork(i).get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
+							}
 						}
 					}
 					if(attendanceLeave.get().getAttendanceLeavingWork(i).get().getLeaveStamp().isPresent()) {
 						if(attendanceLeave.get().getAttendanceLeavingWork(i).get().getLeaveStamp().get().getStamp().isPresent()) {
-							leave = attendanceLeave.get().getAttendanceLeavingWork(i).get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
+							if(attendanceLeave.get().getAttendanceLeavingWork(i).get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
+								leave = attendanceLeave.get().getAttendanceLeavingWork(i).get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get();
+							}
 						}
 					}
 				}

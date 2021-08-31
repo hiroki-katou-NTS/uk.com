@@ -1,5 +1,5 @@
 #content {
-	width: 1260px;
+	width: 1270px;
 }
 
 #contents-area-right {
@@ -10,7 +10,7 @@
 }
 
 #contents-area-left {
-	width: 800px;
+	width: 900px;
 	float: left;
 	clear: right;
 	padding-left: 50px;
@@ -26,6 +26,7 @@
 
 .control-group-margin-custom {
 	margin-bottom: 15px !important;
+	display: flex;
 }
 
 #item-info-list_container {
@@ -39,4 +40,23 @@
 
 .ntsHelpButton {
 	margin-left: 15px !important;
+}
+
+#category-list-items_container {
+	height: 377px !important;
+}
+
+.custom-btn span {
+	width: 98px !important;
+	text-align: center;
+}
+
+
+.custom-img-1 .nts-help-button-image img {
+	width: 340px;
+	height: 400px;
+}
+
+.custom-img-2 .nts-help-button-image img {
+	width: 420px;
 }

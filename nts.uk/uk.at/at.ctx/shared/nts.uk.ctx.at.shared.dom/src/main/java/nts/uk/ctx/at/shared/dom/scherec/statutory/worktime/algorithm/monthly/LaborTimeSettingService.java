@@ -52,7 +52,7 @@ public class LaborTimeSettingService {
 		//通常勤務　の場合
 		if (workingSystem.isRegularWork()) {
 			for(String workPlaceId:workPlaceIdList) {
-				result = require.monthlyWorkTimeSetWkp(employeeId, workPlaceId, LaborWorkTypeAttr.REGULAR_LABOR, yearMonth).map(c -> c);
+				result = require.monthlyWorkTimeSetWkp(companyId, workPlaceId, LaborWorkTypeAttr.REGULAR_LABOR, yearMonth).map(c -> c);
 				if(result.isPresent()) {
 					return result;
 				}
@@ -61,7 +61,7 @@ public class LaborTimeSettingService {
 		//変形労働勤務　の場合
 		else if (workingSystem.isVariableWorkingTimeWork()) {
 			for(String workPlaceId:workPlaceIdList) {
-				result = require.monthlyWorkTimeSetWkp(employeeId, workPlaceId, LaborWorkTypeAttr.DEFOR_LABOR, yearMonth).map(c -> c);
+				result = require.monthlyWorkTimeSetWkp(companyId, workPlaceId, LaborWorkTypeAttr.DEFOR_LABOR, yearMonth).map(c -> c);
 				if(result.isPresent()) {
 					return result;
 				}

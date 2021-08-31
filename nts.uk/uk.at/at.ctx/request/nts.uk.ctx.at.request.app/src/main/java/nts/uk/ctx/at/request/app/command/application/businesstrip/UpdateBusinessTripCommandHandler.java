@@ -91,7 +91,10 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
                     application.getVersion(),
                     i.getWorkInformation().getWorkTypeCode().v(),
                     i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v(),
-                    infoOutput.getAppDispInfoStartup()
+                    infoOutput.getAppDispInfoStartup(), 
+                    businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
+                    Optional.empty(), 
+                    false
             );
         });
 
