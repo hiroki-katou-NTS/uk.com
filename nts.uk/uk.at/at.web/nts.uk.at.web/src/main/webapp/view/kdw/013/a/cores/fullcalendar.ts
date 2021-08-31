@@ -1040,13 +1040,15 @@ module nts.uk.ui.at.kdw013.calendar {
 
                     if (workGroupDtos && startManHourInputResultDto) {
                         const { tasks } = startManHourInputResultDto;
+                        
+
 
                         if (tasks && tasks.length) {
                             const draggers: EventRaw[] = _
                                 .chain(workGroupDtos)
                                 .map((wg) => {
                                     const task = getTask(wg, tasks);
-                                    const { workCD1, workCD2, workCD3, workCD4, workCD5 } = wg;
+                                    const { workCD1, workCD2, workCD3, workCD4, workCD5 , dropInfo} = wg;
 
                                     if (!task) {
                                         return null;
@@ -1086,7 +1088,8 @@ module nts.uk.ui.at.kdw013.calendar {
                                             workCD4,
                                             workCD5,
                                             remarks: '',
-                                            workingHours
+                                            workingHours,
+                                            dropInfo
                                         } as any
                                     };
                                 })
@@ -2541,18 +2544,41 @@ module nts.uk.ui.at.kdw013.calendar {
                         workCD5
                     } = extendedProps;
                     // add cloned event to datasources
-                    events.push({
-                        title: getTitles(wg, vm.params.$settings().startManHourInputResultDto.tasks),
-                        start,
-                        end,
-                        textColor,
-                        backgroundColor,
-                        extendedProps: {
-                            ...extendedProps,
-                            id: randomId(),
-                            status: 'update'
-                        } as any
-                    });
+                    
+                    if (extendedProps.dropInfo.dropType == 'task') {
+                            events.push({
+                                title: getTitles(wg, vm.params.$settings().startManHourInputResultDto.tasks),
+                                start,
+                                end,
+                                textColor,
+                                backgroundColor,
+                                extendedProps: {
+                                ...extendedProps,
+                                id: randomId(),
+                                status: 'update'
+                            } as any
+                        });
+                    }else {
+                        //drop by day
+    
+                        
+                        _.each(extendedProps.dropInfo.dropTaskInfo, task => {
+                            let timeStart = moment(start).set('hour', task.start).set('minute', 0);
+                            let timeEnd = moment(start).set('hour', task.end).set('minute', 0);
+                            events.push({
+                                title: getTitles(task.workCDs, vm.params.$settings().startManHourInputResultDto.tasks),
+                                start : timeStart,
+                                end : timeEnd,
+                                textColor,
+                                backgroundColor,
+                                extendedProps: {
+                                ...extendedProps,
+                                id: randomId(),
+                                status: 'update'
+                            } as any
+                        });
+                        });
+                    }
                 },
                 datesSet: ({ start, end }) => {
                     const current = moment().startOf('day');
