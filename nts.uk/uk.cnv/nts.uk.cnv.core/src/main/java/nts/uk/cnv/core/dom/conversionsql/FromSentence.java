@@ -36,6 +36,7 @@ public class FromSentence {
 			return;
 		}
 
+		if (baseTable.isPresent() && baseTable.get().name.equals(join.tableName)) return;
 		if (joinTables.stream().anyMatch(j -> j.tableName.equals(join.tableName))) return;
 
 		joinTables.add(join);

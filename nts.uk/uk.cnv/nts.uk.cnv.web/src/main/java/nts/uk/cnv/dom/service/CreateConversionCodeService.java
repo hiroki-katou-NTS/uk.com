@@ -43,6 +43,7 @@ public class CreateConversionCodeService {
 
 		List<String> conversionSqlList = categorys.stream()
 			.map(category -> createByCategory(require, category, info))
+			.filter(sql -> !sql.isEmpty())
 			.collect(Collectors.toList());
 
 		return this.preprocessing(require, info) + "\r\n" +
@@ -66,45 +67,46 @@ public class CreateConversionCodeService {
 		List<String> tables = require.getCategoryTables(category);
 		List<String> sqlList = tables.stream()
 			.map(table -> createByTables(require, category, table, info))
+			.filter(sql -> !sql.isEmpty())
 			.collect(Collectors.toList());
 
-		return String.join("\r\n\r\n", sqlList);
+		return String.join("\r\n", sqlList);
 	}
 
 	private String createByTables(Require require, String category, String table, ConversionInfo info) {
 
 		List<ConversionRecord> records = require.getRecords(category, table);
 
+		// 親テーブル参照関連の処理 - マッピングテーブルへの事前insertの追加など
+		Map<String, Map<String, List<String>>> referencedColumnList = new HashMap<>();
 		List<ConversionTable> conversionTables = records.stream()
 			.map(record -> {
 
 				ConversionSource source = require.getSource(record.getSourceId());
 
-				return require.getConversionTable(info, category, table, record.getRecordNo(), source);
+				Optional<ConversionTable> ct = require.getConversionTable(info, category, table, record.getRecordNo(), source, record.isRemoveDuplicate());
+
+				if(ct.isPresent()) {
+					AdditionalConversionCode additional = manager.createAdditionalConversionCode(info, category, ct.get(), info.getJoin(source));
+					require.addPreProcessing(additional.getPreProcessing());
+					require.addPostProcessing(additional.getPostProcessing());
+					additional.getReferencedColumnList().keySet().stream()
+						.forEach(key -> {
+							Map<String, List<String>> value = new HashMap<>();
+							value = additional.getReferencedColumnList().get(key);
+							if(referencedColumnList.isEmpty() || !referencedColumnList.containsKey(key)) {
+								referencedColumnList.put(key, value);
+							}
+							else {
+								referencedColumnList.get(key).putAll(value);
+							}
+						});
+				}
+				return ct;
 			})
 			.filter(opCt -> opCt.isPresent())
 			.map(opCt -> opCt.get())
 			.collect(Collectors.toList());
-
-		// 親テーブル参照関連の処理 - マッピングテーブルへの事前insertの追加など
-		Map<String, Map<String, List<String>>> referencedColumnList = new HashMap<>();
-		conversionTables.stream()
-			.forEach(ct -> {
-				AdditionalConversionCode additional = manager.createAdditionalConversionCode(info, category, ct);
-				require.addPreProcessing(additional.getPreProcessing());
-				require.addPostProcessing(additional.getPostProcessing());
-				additional.getReferencedColumnList().keySet().stream()
-					.forEach(key -> {
-						Map<String, List<String>> value = new HashMap<>();
-						value = additional.getReferencedColumnList().get(key);
-						if(referencedColumnList.isEmpty() || !referencedColumnList.containsKey(key)) {
-							referencedColumnList.put(key, value);
-						}
-						else {
-							referencedColumnList.get(key).putAll(value);
-						}
-					});
-			});
 
 		// 親テーブル参照前処理 - 被参照側の該当列は、親テーブル参照のマッピングテーブルより取得する必要があるためフラグを立てておく
 		conversionTables = conversionTables.stream()
@@ -137,7 +139,8 @@ public class CreateConversionCodeService {
 						ct.getStartDateColumnName(),
 						ct.getEndDateColumnName(),
 						ct.getWhereList(),
-						newConversionMap);
+						newConversionMap,
+						ct.isRemoveDuplicate());
 			})
 			.collect(Collectors.toList());
 
@@ -146,7 +149,7 @@ public class CreateConversionCodeService {
 			.map(conversionSql -> conversionSql.build(info.getDatebaseType().spec()))
 			.collect(Collectors.toList());
 
-		return String.join("\r\n\r\n", convertCodes);
+		return String.join("\r\n", convertCodes);
 	}
 
 	public static interface Require {
@@ -154,7 +157,7 @@ public class CreateConversionCodeService {
 		List<String> getCategoryPriorities();
 		List<String> getCategoryTables(String category);
 		List<ConversionRecord> getRecords(String category, String tableName);
-		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source);
+		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source, boolean isRemoveDuplicate);
 		ConversionSource getSource(String sourceId);
 		ConversionSQL createConversionSQL(ConversionTable ct);
 

@@ -37,6 +37,8 @@ public class ConversionTable {
 	private List<WhereSentence> whereList;
 	private List<OneColumnConversion> conversionMap;
 
+	private boolean removeDuplicate;
+
 	public ConversionSQL createConversionSql() {
 		val newWhereList = new ArrayList<WhereSentence>(whereList);
 		addPeriodCondition(spec, newWhereList);
@@ -44,7 +46,7 @@ public class ConversionTable {
 		ConversionSQL result = new ConversionInsertSQL(targetTableName, newWhereList);
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
-			result = oneColumnConversion.apply(targetTableName.getAlias(), result);
+			result = oneColumnConversion.apply(targetTableName.getAlias(), result, removeDuplicate);
 		}
 
 		return result;
@@ -58,17 +60,17 @@ public class ConversionTable {
 		result.addJoin(Join.createMain(targetTableName));
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
-			result = oneColumnConversion.apply(targetTableName.getAlias(), result);
+			result = oneColumnConversion.apply(targetTableName.getAlias(), result, removeDuplicate);
 		}
 
 		return result;
 	}
-	
+
 	public ConversionTable filterColumns(List<String> columns) {
 		val newList = this.conversionMap.stream()
 			.filter(oneColumn -> columns.contains(oneColumn.getTargetColumn()))
 			.collect(Collectors.toList());
-		
+
 		return new ConversionTable(
 				this.spec,
 				this.targetTableName,
@@ -76,7 +78,8 @@ public class ConversionTable {
 				this.startDateColumnName,
 				this.endDateColumnName,
 				this.whereList,
-				newList
+				newList,
+				this.removeDuplicate
 			);
 	}
 

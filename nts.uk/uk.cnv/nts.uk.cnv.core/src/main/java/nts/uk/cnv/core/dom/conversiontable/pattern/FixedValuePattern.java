@@ -32,7 +32,7 @@ public class FixedValuePattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		String newExpression = (isParamater)
 				? info.getDatebaseType().spec().param(expression)
 				: expression;

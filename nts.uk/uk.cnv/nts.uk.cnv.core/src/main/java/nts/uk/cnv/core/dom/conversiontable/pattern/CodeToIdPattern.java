@@ -81,17 +81,19 @@ public class CodeToIdPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 
 		Join idConvertJoin = this.idConvertJoin();
 		conversionSql.addJoin(idConvertJoin);
 
-		conversionSql.add(
-			columnName,
-			new ColumnExpression(
+		ColumnExpression expression = new ColumnExpression(
 				idConvertJoin.getTableName().getAlias(),
-				this.codeToIdType.getIdColumnName()));
+				this.codeToIdType.getIdColumnName());
+		conversionSql.add(columnName, expression);
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(expression);
+		}
 
 		if (this.sourceCcdColumnName.isPresent()) {
 			conversionSql.addWhere( new WhereSentence(

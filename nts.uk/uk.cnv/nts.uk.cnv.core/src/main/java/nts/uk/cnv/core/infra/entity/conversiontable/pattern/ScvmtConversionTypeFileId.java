@@ -36,6 +36,12 @@ public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable
 	@Column(name = "SOURCE_COLUMN_NAME")
 	private String sourceColumnName;
 
+	@Column(name = "FILE_TYPE")
+	private String fileType;
+
+	@Column(name = "KOJIN_ID_COLUMN_NAME")
+	private String kojinIdColumnName;
+
 	@OneToOne(optional=true) @PrimaryKeyJoinColumns({
         @PrimaryKeyJoinColumn(name="CATEGORY_NAME", referencedColumnName="CATEGORY_NAME"),
         @PrimaryKeyJoinColumn(name="TARGET_TBL_NAME", referencedColumnName="TARGET_TBL_NAME"),
@@ -53,18 +59,27 @@ public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable
 		return new FileIdPattern(
 				info,
 				sourcejoin,
-				this.sourceColumnName
+				sourceColumnName,
+				fileType,
+				kojinIdColumnName
 			);
 	}
 
-	public static ScvmtConversionTypeFileId toEntity(ScvmtConversionTablePk pk, ConversionPattern conversionPattern) {
+	public static ScvmtConversionTypeFileId toEntity(
+			ScvmtConversionTablePk pk,
+			ConversionPattern conversionPattern) {
+
 		if (!(conversionPattern instanceof FileIdPattern)) {
 			return null;
 		}
 
 		FileIdPattern domain = (FileIdPattern) conversionPattern;
 
-		return new ScvmtConversionTypeFileId(pk, domain.getSourceColumnName(), null);
+		return new ScvmtConversionTypeFileId(pk
+				, domain.getSourceColumnName()
+				, domain.getFileType().getId()
+				, domain.getKojinIdColumnName()
+				,null);
 	}
 
 }

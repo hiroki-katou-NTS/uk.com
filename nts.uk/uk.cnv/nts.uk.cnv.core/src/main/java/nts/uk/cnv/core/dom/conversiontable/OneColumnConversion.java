@@ -32,14 +32,14 @@ public class OneColumnConversion {
 		this.isReferenced = false;
 	}
 
-	public ConversionSQL apply(String targetTableAlias, ConversionSQL conversionSql) {
+	public ConversionSQL apply(String targetTableAlias, ConversionSQL conversionSql, boolean removeDuplicate) {
 
 		val column = new ColumnName(targetTableAlias, this.targetColumn);
 		if (this.isReferenced) {
-			conversionSql = this.referencedPattern.apply(column, conversionSql);
+			conversionSql = this.referencedPattern.apply(column, conversionSql, removeDuplicate);
 		}
 		else {
-			conversionSql = this.pattern.apply(column, conversionSql);
+			conversionSql = this.pattern.apply(column, conversionSql, removeDuplicate);
 		}
 
 		return conversionSql;

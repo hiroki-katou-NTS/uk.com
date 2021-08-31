@@ -46,7 +46,8 @@ public class Cnv001AService {
 						r.getRecordNo(),
 						r.getTableName(),
 						r.getExplanation(),
-						r.getSourceId()
+						r.getSourceId(),
+						r.isRemoveDuplicate()
 					))
 				.collect(Collectors.toList());
 

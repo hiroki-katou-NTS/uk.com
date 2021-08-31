@@ -29,11 +29,12 @@ var records;
 var sources;
 
 class record {
-	constructor(recordNo, tableName, explanation, sourceId) {
+	constructor(recordNo, tableName, explanation, sourceId, removeDuplicate) {
 		this.recordNo = recordNo;
 		this.tableName = tableName;
 		this.explanation = explanation;
 		this.sourceId = sourceId;
+		this.removeDuplicate = removeDuplicate;
 	}
 }
 
@@ -94,6 +95,7 @@ $(function(){
 		$("#txtWhereCondition").val('');
 		$("#txtMemo").val('');
 		$("#txtRecordName").val('');
+		$("#chkRemoveDuplicate").prop('checked', true);
 		recotds = [];
 		sources = [];
 	}
@@ -157,7 +159,8 @@ $(function(){
 						value.recordNo,
 						value.tableName,
 						value.explanation,
-						value.sourceId);
+						value.sourceId,
+						value.removeDuplicate);
 			});
 			sources = $.map(res.sources, function (value, index) {
 				return new source(
@@ -215,6 +218,8 @@ $(function(){
 		$("#selDateType").val(selectedSource.dateType);
 
 		$("#txtRecordName").val(selectedRecord.explanation);
+
+		$("#chkRemoveDuplicate").prop('checked', selectedRecord.removeDuplicate);
 	});
 
 	$("#btnAddSource").click(function() {
@@ -324,6 +329,7 @@ $(function(){
 
 		var sourceId = $("#selSources").val();
 		var explanation = $("#txtRecordName").val();
+		var removeDuplicate = $("#chkRemoveDuplicate").prop('checked');
 
 		if( $("#selCategory option:selected").val() === -1 ||
 			$("#selTable option:selected").val() === -1 ||
@@ -339,7 +345,8 @@ $(function(){
 			tableId: tableId,
 			recordNo: recordNo,
 			sourceId: sourceId,
-			explanation: explanation
+			explanation: explanation,
+			removeDuplicate: removeDuplicate
 		})).done(function (res) {
 
 			if($("#selRecords").val() === null) {
@@ -356,7 +363,8 @@ $(function(){
 				recordNo,
 				table,
 				explanation,
-				sourceId));
+				sourceId,
+				removeDuplicate));
 
 			showMsg("登録しました");
 		});

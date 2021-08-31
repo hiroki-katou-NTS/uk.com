@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.cnv.core.dom.constants.Constants;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
@@ -29,9 +30,9 @@ public class ConversionSource {
 
 	List<String> pkColumns;
 
-	public Join getMainJoin() {
+	public Join getMainJoin(String databaseName, String schema) {
 		return Join.createMain(
-			TableFullName.createMainTableName(this.sourceTableName));
+			new TableFullName(databaseName, schema, this.sourceTableName, Constants.BaseTableAlias));
 	}
 
 	public List<OnSentence> getOnSentence(String otherTableAlias, String sourceTableAlias, List<String> pkColumnNames){
@@ -43,7 +44,7 @@ public class ConversionSource {
 			.collect(Collectors.toList());
 	}
 
-	public Join getInnerJoin() {
+	public Join getInnerJoin(String databaseName, String schema) {
 		List<OnSentence> onSentences = pkColumns.stream()
 			.map(pkCol -> new OnSentence(
 					new ColumnName("dest", pkCol),
@@ -51,7 +52,7 @@ public class ConversionSource {
 					Optional.empty()))
 			.collect(Collectors.toList());
 		return new Join(
-				new TableFullName("", "", sourceTableName, "source"),
+				new TableFullName(databaseName, schema, sourceTableName, "source"),
 				JoinAtr.InnerJoin,
 				onSentences
 			);

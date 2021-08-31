@@ -29,7 +29,7 @@ public class PasswordPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 
 		Join mappingTableJoin = new Join(
@@ -50,11 +50,13 @@ public class PasswordPattern extends ConversionPattern {
 
 		conversionSql.addJoin(mappingTableJoin);
 
-		conversionSql.add(
-				column,
-				new ColumnExpression(
-						Constants.EncryptionTableAlias,
-						Constants.EncryptionColumnName));
+		ColumnExpression expression = new ColumnExpression(
+				Constants.EncryptionTableAlias,
+				Constants.EncryptionColumnName);
+		conversionSql.add(column, expression);
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(expression);
+		}
 
 		return conversionSql;
 	}
