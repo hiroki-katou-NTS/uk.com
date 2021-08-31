@@ -148,7 +148,7 @@ public class ConvertTimeRecordStampService {
 				val domAfterCalc = require.calculatePassCompanySetting(cid.get(), Arrays.asList(domdaily.get()),
 						ExecutionType.NORMAL_EXECUTION);
 				AtomTask task = atomTask.then(() -> {
-					require.addAllDomain(domAfterCalc.get(0), true);
+					require.addAllDomain(domAfterCalc.get(0));
 					require.loggedOut();
 				});
 				return Optional.of(new StampDataReflectResult(reflectDate, task));
@@ -206,7 +206,7 @@ public class ConvertTimeRecordStampService {
 		
 		//[R-7] 日別実績を更新する
 		//DailyRecordAdUpService - 日別実績を登録する
-		void addAllDomain(IntegrationOfDaily domain, boolean removeError);
+		void addAllDomain(IntegrationOfDaily domain);
 		
 		// [R-8] 社員IDListから管理情報を取得する
 		//GetMngInfoFromEmpIDListAdapter
