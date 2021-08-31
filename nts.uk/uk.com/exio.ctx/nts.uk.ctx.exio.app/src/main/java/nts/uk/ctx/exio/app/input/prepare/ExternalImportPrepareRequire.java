@@ -1,6 +1,8 @@
 package nts.uk.ctx.exio.app.input.prepare;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -18,6 +20,8 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -127,6 +131,8 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	private WorkplaceInformationRepository wkpinfoRepo;
 	
+	@Inject JobTitleInfoRepository jobTitleInfoRepo;
+	
 	@Inject
 	private UserRepository userRepo;
 	
@@ -138,8 +144,11 @@ public class ExternalImportPrepareRequire {
 		
 		private final String companyId ;
 		
+		private Map<String, JobTitleInfo> jobTitleInfoCache;
+		
 		public RequireImpl(String companyId) {
 			this.companyId = companyId;
+			this.jobTitleInfoCache = new HashMap<>();
 		}
 		
 		
@@ -287,6 +296,14 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<AnnualLeaveEmpBasicInfo> getExistingEmployeeGrantHoliday(String employeeId) {
 			return annLeaEmpBasicInfoRepo.get(employeeId);
+		}
+
+
+		@Override
+		public Optional<JobTitleInfo> getJobTitleByCode(String jobTitleCode, GeneralDate startdate) {
+			return jobTitleInfoRepo.findAll(companyId, startdate).stream()
+					.filter(jobTitle -> jobTitle.getJobTitleCode().equals(jobTitleCode))
+					.findFirst();
 		}
 
 	}

@@ -57,6 +57,7 @@ public interface DomainCanonicalization {
 		IndependentCanonicalization.RequireCanonicalize,
 		EmployeeBasicCanonicalization.RequireCanonicalize,
 		EmployeeHistoryCanonicalization.RequireCanonicalize,
+		AffJobTitleHistoryCanonicalization.RequireCanonicalize,
 		AffWorkplaceHistoryCanonicalization.RequireCanonicalize,
 		EmployeeYearHolidaySettingCanonicalization.RequireCanonicalize,
 		OccurenceHolidayCanonicalizationBase.RequireCanonicalize {
@@ -69,6 +70,7 @@ public interface DomainCanonicalization {
 		IndependentCanonicalization.RequireAdjust,
 		EmployeeBasicCanonicalization.RequireAdjust,
 		EmployeeHistoryCanonicalization.RequireAdjust,
+		AffJobTitleHistoryCanonicalization.RequireAdjust,
 		AffWorkplaceHistoryCanonicalization.RequireAdjust,
 		OccurenceHolidayCanonicalizationBase.RequireAdjust {
 		

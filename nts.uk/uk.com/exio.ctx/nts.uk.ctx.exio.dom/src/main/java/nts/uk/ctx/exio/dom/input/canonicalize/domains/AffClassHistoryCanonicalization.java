@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.STRING;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
@@ -24,14 +23,12 @@ public class AffClassHistoryCanonicalization {
 			}
 			@Override
 			protected List<String> getChildTableNames() {
-				return Collections.emptyList();
+				return Arrays.asList("BSYMT_AFF_CLASS_HIST_ITEM");
 			}
 			
 			@Override
 			protected List<DomainDataColumn> getDomainDataKeys() {
 				return Arrays.asList(
-						new DomainDataColumn("PID", STRING),
-						DomainDataColumn.SID,
 						new DomainDataColumn("HIST_ID", STRING));
 			}
 		};

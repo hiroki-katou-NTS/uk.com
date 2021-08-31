@@ -43,8 +43,10 @@ public class Helper {
 	public static class Interm {
 		
 		public static IntermediateResult of(
-				DataItemList itemsAfterCanonicalize, DataItemList itemsBeforeCanonicalize, DataItemList itemsNotCanonicalize) {
-			return new IntermediateResult(Dummy.ROW_NO, itemsAfterCanonicalize, itemsBeforeCanonicalize, itemsNotCanonicalize);
+				DataItemList itemsAfterCanonicalize,
+				DataItemList itemsBeforeCanonicalize,
+				DataItemList itemsNotCanonicalize) {
+			return new IntermediateResult(Dummy.ROW_NO, CanonicalItemList.of(itemsAfterCanonicalize), itemsBeforeCanonicalize, itemsNotCanonicalize);
 		}
 	}
 	

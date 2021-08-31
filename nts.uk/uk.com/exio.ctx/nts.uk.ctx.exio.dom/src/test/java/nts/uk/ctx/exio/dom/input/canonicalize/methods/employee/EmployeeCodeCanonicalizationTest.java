@@ -15,7 +15,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalizati
 public class EmployeeCodeCanonicalizationTest {
 
 	@Injectable
-	CanonicalizationMethodRequire.Require require;
+	CanonicalizationMethodRequire require;
 	
 	@Test
 	public void single(@Injectable EmployeeDataMngInfo employeeData) {
@@ -38,10 +38,11 @@ public class EmployeeCodeCanonicalizationTest {
 		
 		val target = new EmployeeCodeCanonicalization(itemNoEmployeeCode, itemNoEmployeeId);
 		
-		val actual = target.canonicalize(require, revisedData);
+		val result = target.canonicalize(require, revisedData);
 		
-		Helper.asserts(actual)
-			.equal(itemNoEmployeeCode, employeeCode)
-			.equal(itemNoEmployeeId, employeeId);
+		result.ifRight(actual -> 
+			Helper.asserts(actual)
+				.equal(itemNoEmployeeCode, employeeCode)
+				.equal(itemNoEmployeeId, employeeId));
 	}
 }
