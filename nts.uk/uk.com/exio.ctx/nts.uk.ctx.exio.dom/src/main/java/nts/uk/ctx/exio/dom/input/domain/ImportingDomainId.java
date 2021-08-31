@@ -23,6 +23,9 @@ public enum ImportingDomainId{
 	
 	/** 分類 */
 	CLASSIFICATION_HISTORY(105),
+	
+	/** 短時間勤務 */
+	SHORT_WORK_TIME(108),
 
 	/** 社員の年休付与設定*/
 	EMPLOYEE_ANNUAL_LEAVE_SETTING(111),	

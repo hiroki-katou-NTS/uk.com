@@ -12,4 +12,5 @@ public class DomainDataColumn {
 	public static final DomainDataColumn CID = new DomainDataColumn("CID", DataType.STRING);
 	public static final DomainDataColumn SID = new DomainDataColumn("SID", DataType.STRING);
 	public static final DomainDataColumn YMD = new DomainDataColumn("YMD", DataType.DATE);
+	public static final DomainDataColumn HIST_ID = new DomainDataColumn("HIST_ID", DataType.STRING);
 }

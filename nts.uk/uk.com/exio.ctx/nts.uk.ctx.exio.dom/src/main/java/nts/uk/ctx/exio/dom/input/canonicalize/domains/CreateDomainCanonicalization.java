@@ -13,6 +13,7 @@ import java.util.function.Function;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.ShortWorkTimeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.CompensatoryHolidayCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.HolidayWorkCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteHolidayCanonicalization;
@@ -74,6 +75,9 @@ public class CreateDomainCanonicalization {
 		
 		//所属職場履歴
 		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
+		
+		// 短時間勤務履歴
+		CREATES.put(SHORT_WORK_TIME, ShortWorkTimeCanonicalization::new);
 		
 		//社員の年休付与設定
 		CREATES.put(ImportingDomainId.EMPLOYEE_ANNUAL_LEAVE_SETTING, w -> EmployeeAnnualLeaveSettingCanonicalization.create(w));

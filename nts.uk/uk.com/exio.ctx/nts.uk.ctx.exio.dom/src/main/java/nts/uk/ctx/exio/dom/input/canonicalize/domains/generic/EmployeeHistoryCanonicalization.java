@@ -32,6 +32,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
@@ -111,8 +112,9 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 				.get().getString();
 
 		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
+		
 		//既存履歴
-		val existingHistory = require.getHistory(id, this.historyType);
+		val existingHistory = require.getHistory(id, this.historyType, getKeyColumnNames());
 		
 		/*
 		 *  複数の履歴を追加する場合、全て追加し終えるまで補正結果が確定しない点に注意が必要。
@@ -149,14 +151,35 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
 		}
 		
-		return containers.stream()
+		val newContainers = canonicalizeExtends(require, context, containers);
+		
+		return newContainers.stream()
 				.map(c -> c.complete())
 				.collect(toList());
 	}
-
+	
+	/**
+	 * テーブルの列名が違う場合はoverrideすること
+	 * @return
+	 */
+	protected HistoryKeyColumnNames getKeyColumnNames() {
+		return new HistoryKeyColumnNames("START_DATE", "END_DATE");
+	}
+	
+	/**
+	 * 追加の正準化処理が必要ならoverrideすること
+	 * @param targetContainers
+	 */
+	protected List<Container> canonicalizeExtends(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context,
+			List<Container> targetContainers) {
+		// 何もしない
+		return targetContainers;
+	}
 	
 	@Value
-	private class Container {
+	protected class Container {
 		IntermediateResult interm;
 		DateHistoryItem addingHistoryItem;
 		
@@ -264,7 +287,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	}
 
 	public static interface RequireCanonicalize{
-		ExternalImportHistory getHistory(DomainDataId id, HistoryType historyTypea);
+		ExternalImportHistory getHistory(DomainDataId id, HistoryType historyTypea, HistoryKeyColumnNames keyColumnNames);
 	}
 	
 	@Override

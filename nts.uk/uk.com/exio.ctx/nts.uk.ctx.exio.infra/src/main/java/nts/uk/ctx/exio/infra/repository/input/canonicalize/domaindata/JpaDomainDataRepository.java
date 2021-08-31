@@ -14,6 +14,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.ExternalImportHistory;
+import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryKeyColumnNames;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -64,13 +65,13 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 
 	@Override
 	@SneakyThrows
-	public ExternalImportHistory getHistory(DomainDataId id, HistoryType historyType) {
+	public ExternalImportHistory getHistory(DomainDataId id, HistoryType historyType, HistoryKeyColumnNames keyColumnNames) {
 		val statement = createStatement(id, "select *");
 		List<DateHistoryItem> list = statement.getList(rec ->{
 			return new DateHistoryItem(rec.getString("HIST_ID"),
 					new DatePeriod(
-							rec.getGeneralDate("START_DATE"),
-							rec.getGeneralDate("END_DATE")));
+							rec.getGeneralDate(keyColumnNames.getStartDate()),
+							rec.getGeneralDate(keyColumnNames.getEndDate())));
 		});
 		//EmployeeHistoryCanonicalizationで指定してるDomainDataIdが社員IDのみなので0で取得
 		String employeeId = (String)id.getKeys().get(0).getValue();
