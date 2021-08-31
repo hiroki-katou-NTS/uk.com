@@ -231,39 +231,6 @@ module nts.uk.ui.at.kdw013.a {
                             })
                             .flatten()
                             .value();
-
-                        
-                        events.push({
-                            id: randomId(),
-                            start: moment().set('hours', 11).toDate(),
-                            end: moment().set('hours', 12).toDate(),
-                            editable: true,
-                            backgroundColor: '#ffc0cb',
-                            extendedProps: {
-                                id: randomId(),
-                                supportFrameNo:0,
-                                status: 'normal',
-                                isTimeBreak: true,
-                                employeeId: vm.$user.employeeId
-                            }
-                        });
-                        
-                        
-                        
-                        events.push({
-                            id: randomId(),
-                            start: moment().set('hours', 8).toDate(),
-                            end: moment().set('hours', 16).toDate(),
-                            editable: true,
-                            backgroundColor: '#595959',
-                            extendedProps: {
-                                id: randomId(),
-                                supportFrameNo:1,
-                                status: 'normal',
-                                isTimeBreak: false,
-                                employeeId: vm.$user.employeeId
-                            }
-                        });
                         
                         vm.events(events);
 

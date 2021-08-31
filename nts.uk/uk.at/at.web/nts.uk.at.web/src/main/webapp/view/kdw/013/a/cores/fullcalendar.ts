@@ -2804,21 +2804,8 @@ module nts.uk.ui.at.kdw013.calendar {
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
 
                     if (!businessHours.length) {
-                        bhs = [
-                            {
-                                daysOfWeek: [1, 2, 3],
-                                startTime: '08:00',
-                                endTime: '18:00'
-                            },
-                            {
-                                daysOfWeek: [4, 5],
-                                startTime: '10:00',
-                                endTime: '16:00'
-                            }
-                        ];
-                        
-                        vm.calendar.setOption('businessHours', bhs );
-                        vm.updateStyle('breaktime', '');
+                         vm.calendar.setOption('businessHours', false);
+                         //vm.updateStyle('breaktime', '');
                     } else {
                         const { startTime, endTime, backgroundColor } = breakTime;
 
