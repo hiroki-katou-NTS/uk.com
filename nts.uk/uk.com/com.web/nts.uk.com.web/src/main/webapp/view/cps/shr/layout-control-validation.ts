@@ -1068,6 +1068,7 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
+                                setShared("kdl00showNoSelectionRow", workTime.data.required == true ? false: true);
                                 setShared("kml001multiSelectMode", false);
                                 setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
                                 setShared("kml001isSelection", true);
@@ -1222,7 +1223,7 @@ module nts.layout {
                                     });
                                 } else {
 
-
+                                    setShared("kdl00showNoSelectionRow", workTime.data.required == true ? false: true);
                                     setShared("kml001multiSelectMode", false);
                                     setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
                                     setShared("kml001isSelection", true);
