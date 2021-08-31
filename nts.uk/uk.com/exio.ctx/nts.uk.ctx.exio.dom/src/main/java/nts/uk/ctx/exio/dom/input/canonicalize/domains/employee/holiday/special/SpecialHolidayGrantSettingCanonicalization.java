@@ -14,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
@@ -81,5 +82,14 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 		return Arrays.asList(
 				DomainDataColumn.SID, 
 				new DomainDataColumn("SPECIAL_LEAVE_CD", DataType.STRING));
+	}
+	
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return super.appendMeta(source)
+				.addItem("適用設定")
+				.addItem("付与日数")
+				.addItem("勤続年数付与テーブル")
+				.addItem("付与日テーブル");
 	}
 }
