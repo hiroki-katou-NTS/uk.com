@@ -287,6 +287,7 @@ public class AggregateChildCareNurse {
 
         	dividedDayEachProcess.add(splitEndNextAdd);
 
+        	dividedDayEachProcess.sort((c1, c2) -> c1.getYmd().compareTo(c2.getYmd()));
 			// 「処理単位分割日（List）」を返す
 			return dividedDayEachProcess;
 		}
