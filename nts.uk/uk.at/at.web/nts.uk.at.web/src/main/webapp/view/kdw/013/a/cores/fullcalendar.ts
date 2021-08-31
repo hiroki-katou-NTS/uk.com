@@ -56,6 +56,7 @@ module nts.uk.ui.at.kdw013.calendar {
             workLocationCD: string;
             remarks: string;
             workingHours:number;
+            isTimeBreak:boolean;
         };
     };
 
@@ -362,7 +363,12 @@ module nts.uk.ui.at.kdw013.calendar {
         }
         .fc-container .fc-col-header-cell.fc-day:not(.fc-day-disabled):hover {
             background-color: #fffadf;
-        }`;
+        }
+        .fc-container .fc-timegrid-event-harness{
+            width: 100%;
+            left: 0% !important;
+        }
+`;
 
     @handler({
         bindingName: COMPONENT_NAME,
@@ -424,17 +430,16 @@ module nts.uk.ui.at.kdw013.calendar {
     }
 
     export type BussinessTime = {
-        start: number;
-        end: number;
+        startTime: number;
+        endTime: number;
     };
 
-    export type BreakTime = {
-        dayOfWeek: DayOfWeek;
-        breakTimes: BussinessTime[];
+    export type BreakTime = BussinessTime & {
+        backgroundColor: string;
     };
 
     export type BussinessHour = BussinessTime & {
-        dayOfWeek: DayOfWeek;
+        daysOfWeek: DayOfWeek[];
     };
 
     export type AttendanceTime = {
@@ -468,7 +473,7 @@ module nts.uk.ui.at.kdw013.calendar {
         editable: boolean | KnockoutObservable<boolean>;
         firstDay: DayOfWeek | KnockoutObservable<DayOfWeek>;
         attendanceTimes: AttendanceTime[] | KnockoutObservableArray<AttendanceTime>;
-        breakTime: BreakTime | KnockoutObservableArray<BreakTime>;
+        breakTime: BreakTime | KnockoutObservable<undefined | BreakTime>;
         businessHours: BussinessHour[] | KnockoutObservableArray<BussinessHour>;
         validRange: Partial<DatesSet> | KnockoutObservable<Partial<DatesSet>>;
         event: {
@@ -510,14 +515,10 @@ module nts.uk.ui.at.kdw013.calendar {
     const ISO_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:00';
 
     const formatDate = (date: Date, format: string = ISO_DATE_FORMAT) => moment(date).format(format);
-    const formatTime = (time: number, getSecond?: boolean) => {
+    const formatTime = (time: number) => {
         const f = Math.floor;
-        const times;
-        if (getSecond === false) {
-            times = [f(time / 60), f(time % 60)];
-        }else{
-            times = [f(time / 60), f(time % 60), 0];
-        }
+        const times = [f(time / 60), f(time % 60), 0]
+
         return times
             .map((m) => m.toString())
             .map((m) => _.padStart(m, 2, '0'))
@@ -678,7 +679,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     employee: ko.observable(''),
                     confirmers: ko.observableArray([]),
                     attendanceTimes: ko.observableArray([]),
-                    breakTime: ko.observableArray([]),
+                    breakTime: ko.observable(null),
                     businessHours: ko.observableArray([]),
                     validRange: ko.observable({ start: null, end: null }),
                     event: {
@@ -765,7 +766,7 @@ module nts.uk.ui.at.kdw013.calendar {
             }
 
             if (breakTime === undefined) {
-                this.params.breakTime = ko.observableArray([]);
+                this.params.breakTime = ko.observable(undefined);
             }
 
             if (businessHours === undefined) {
@@ -1548,7 +1549,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 const sltds = vm.selectedEvents;
                 const isSelected = (m: EventSlim) => _.some(sltds, (e: EventSlim) => formatDate(_.get(e,'start')) === formatDate(_.get(m,'start')));
                 const data = ko.unwrap(params.$datas);
-                const startDate =  moment(_.get(data,'workCorrectionStartDate'),'YYYY/MM/DD');
+                const startDate =  moment(_.get(data,'workCorrectionStartDate'));
                 let events = ko.unwrap<EventRaw[]>(params.events);
                 
                 const isDuplicated = _.uniqBy(events, 'extendedProps.supportFrameNo').length < events.length;
@@ -1606,6 +1607,8 @@ module nts.uk.ui.at.kdw013.calendar {
                 // set new events
                 vm.calendar.setOption('events', mapppedEvents);
                 // _.each(events, (e: EventRaw) => vm.calendar.addEvent(e));
+
+                
 
                 vm.selectedEvents = [];
             };
@@ -1667,19 +1670,19 @@ module nts.uk.ui.at.kdw013.calendar {
                 dayHeaders: true,
                 allDaySlot: false,
                 slotEventOverlap: false,
-                eventOverlap: true,
+                eventOverlap: false,
                 selectOverlap: false,
-                dayMaxEventRows: true, // for all non-TimeGrid views
+                eventLimit: true,
                 views: {
                     timeGrid: {
-                      dayMaxEventRows: 20
-                        }
+                        eventLimit: 20
+                    }
                 },
                 // rerenderDelay: 500,
                 dateClick: (info) => {
                     const events = vm.calendar.getEvents();
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate'),'YYYY/MM/DD');
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
                     
                     
 
@@ -1951,6 +1954,13 @@ module nts.uk.ui.at.kdw013.calendar {
                                 });
                         }
                     }
+                },
+                dayCellClassNames: (arg) => {
+                    if (arg.date > moment()) {
+                        return ['pika']
+                    } else {
+                        return ['mieo']
+                    }
                 }
                 ,
                 eventClick: ({ el, event, jsEvent, noCheckSave}) => {
@@ -1964,7 +1974,7 @@ module nts.uk.ui.at.kdw013.calendar {
                     let hasEventNotSave = _.find(events, (e) => !_.get(e, 'extendedProps.id'));
                     
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate','YYYY/MM/DD'));
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
                     
                     if (hasEventNotSave && !noCheckSave) {
                         _.each(events, (e: EventApi) => {
@@ -2014,6 +2024,10 @@ module nts.uk.ui.at.kdw013.calendar {
                     // get all event with border is black
                     const seletions = () => _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
 
+                    if (event.extendedProps.isTimeBreak) {
+                        return;
+                    }
+                    
                     // single select
                     if (!shift) {
                         _.each(seletions(), (e: EventApi) => {
@@ -2121,7 +2135,6 @@ module nts.uk.ui.at.kdw013.calendar {
                     });
 
                     arg.event.setProp(BORDER_COLOR, BLACK);
-                    
                 },
                 eventDragStop: (arg: EventDragStopArg) => {
                     // clear drag cache
@@ -2129,7 +2142,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventDrop: (arg: EventDropArg) => {
                     const { event, relatedEvents } = arg;
-                    const { start, end, id, title, extendedProps, borderColor, groupId } = event;
+                    const { start, end, id, title, extendedProps, borderColor, groupId, backgroundColor} = event;
                     const rels = relatedEvents.map(({ start, end }) => ({ start, end }));
 
                     vm.selectedEvents = [{ start, end }, ...rels];
@@ -2174,7 +2187,33 @@ module nts.uk.ui.at.kdw013.calendar {
                     
                     const selecteds = _.filter(vm.calendar.getEvents(), (e: EventApi) => e.borderColor === BLACK);
                     
+                    if (extendedProps.isTimeBreak) {
+                        if (!moment(arg.oldEvent.start).isSame(start, 'days')) {
+                            vm.revertEvent(arg.oldEvent , $caches);
+                        }
+                        
+                        let businessHours = vm.calendar.getOption('businessHours');
                     
+                        let dow = moment(start).day();
+
+                        if (businessHours) {
+                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow)});
+
+                            if (setting) {
+                                let format = 'hh:mm:ss',
+                                    startTime = moment(start, format),
+                                    endTime = moment(end, format),
+                                    beforeTime = moment(setting.startTime, format),
+                                    afterTime = moment(setting.endTime, format);
+                                if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime) ) {
+                                    vm.revertEvent(arg.oldEvent , $caches);
+                                }
+                            }
+
+                        }
+                        
+                        return;
+                    }
                   
                     if (!IEvents.length) {
                         return;
@@ -2210,33 +2249,15 @@ module nts.uk.ui.at.kdw013.calendar {
                                     let isEmbrace = moment(start).isSameOrBefore(moment(evn.start)) && moment(end).isSameOrAfter(moment(evn.end));
                                     let isEndOverride = moment(end).isAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end)) && moment(start).isSameOrBefore(moment(evn.start));
                                     let isEmbraced = moment(start).isSameOrAfter(moment(evn.start)) && moment(end).isSameOrBefore(moment(evn.end));
-                                    return isStartOverride || isEmbrace || isEndOverride || isEmbraced;
+                                    let isNotTimeBreak = !evn.extendedProps.isTimeBreak;
+                                    return (isStartOverride || isEmbrace || isEndOverride || isEmbraced) && isNotTimeBreak;
 
                                 })
                                 .value();
 
                             if (oEvents.length) {
-                                _.each(vm.calendar.getEvents(), (e: EventApi) => {
-
-                                    if (e.extendedProps.id === event.extendedProps.id) {
-                                        e.remove();
-                                    }
-                                });
-
-                                const { start, end, id, title, extendedProps, borderColor, groupId, backgroundColor } = arg.oldEvent;
-
-                                const newEvent = vm.calendar
-                                    .addEvent({
-                                        id: randomId(),
-                                        backgroundColor,
-                                        title,
-                                        start: arg.oldEvent.start,
-                                        end: arg.oldEvent.end,
-                                        borderColor,
-                                        groupId,
-                                        extendedProps
-                                    });
-                                $caches.new(newEvent);
+                                
+                                 vm.revertEvent(arg.oldEvent , $caches);
 
                             }
                         }
@@ -2315,7 +2336,7 @@ module nts.uk.ui.at.kdw013.calendar {
                 },
                 eventResize: (arg: EventResizeDoneArg) => {
                     const { event } = arg;
-                    const { start, end, title,backgroundColor, extendedProps, id, borderColor, groupId } = event;
+                    const { start, end, title, backgroundColor, extendedProps, id, borderColor, groupId } = event;
 
                     vm.selectedEvents = [{ start, end }];
 
@@ -2334,6 +2355,40 @@ module nts.uk.ui.at.kdw013.calendar {
                                 extendedProps
                             }));
                     }
+                    
+                    if (extendedProps.isTimeBreak) {
+                        
+                        //valid another day
+                        if (!moment(arg.oldEvent.end).isSame(end, 'days')) {
+                            vm.revertEvent(arg.oldEvent, $caches);
+                            return;
+                        }
+                        
+                        
+                        
+                        //validate businessHours 
+                        
+                        let businessHours = vm.calendar.getOption('businessHours');
+
+                        let dow = moment(start).day();
+
+                        if (businessHours) {
+                            let setting = _.find(businessHours, x => { return x.daysOfWeek.indexOf(dow) });
+
+                            let format = 'hh:mm:ss',
+                                startTime = moment(start, format),
+                                endTime = moment(end, format),
+                                beforeTime = moment(setting.startTime, format),
+                                afterTime = moment(setting.endTime, format);
+                            if (!startTime.isBetween(beforeTime, afterTime) || !endTime.isBetween(beforeTime, afterTime)) {
+                                 vm.revertEvent(arg.oldEvent , $caches);
+                            }
+
+                            return;
+                        }
+                        return;
+                    }
+                    
                     
                     //check override
                     
@@ -2399,12 +2454,12 @@ module nts.uk.ui.at.kdw013.calendar {
                    
                 },
                 eventResizeStop: ({ el, event }) => {
-                    
+                    console.log('stop', event.extendedProps);
                 },
                 select: ({ start, end }) => {
                     
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate','YYYY/MM/DD'));
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
                     
                     if (startDate.isAfter(formatDate(start))) {
                         vm.calendar.unselect();
@@ -2465,7 +2520,7 @@ module nts.uk.ui.at.kdw013.calendar {
                         extendedProps
                     } = event;
                     const data = ko.unwrap(params.$datas);
-                    const startDate = moment(_.get(data, 'workCorrectionStartDate','YYYY/MM/DD'));
+                    const startDate = moment(_.get(data, 'workCorrectionStartDate'));
                     
                     if (startDate.isAfter(formatDate(start))) {
                         event.remove();
@@ -2547,10 +2602,10 @@ module nts.uk.ui.at.kdw013.calendar {
                     } else {
                         $prev.removeAttr('disabled');
                     }
-                
+
                     // enable, disable next button with validRange
                     if (vre) {
-                        if (moment(end).isBefore(vre == '9999-12-32' ? '9999-12-31' : vre, 'day')) {
+                        if (moment(end).isBefore(vre, 'day')) {
                             $next.removeAttr('disabled');
                         } else {
                             $next.attr('disabled', 'disabled');
@@ -2599,15 +2654,6 @@ module nts.uk.ui.at.kdw013.calendar {
 
             // change weekends 
             ko.computed({
-                read: () => {
-                    const wk = ko.unwrap<boolean>(weekends);
-
-                    vm.calendar.setOption('weekends', wk);
-                },
-                disposeWhenNodeIsRemoved: vm.$el
-            });
-
-             ko.computed({
                 read: () => {
                     const wk = ko.unwrap<boolean>(weekends);
 
@@ -2754,48 +2800,56 @@ module nts.uk.ui.at.kdw013.calendar {
             // set businessHours
             ko.computed({
                 read: () => {
+                    const breakTime = ko.unwrap<BreakTime>(params.breakTime);
                     const businessHours = ko.unwrap<BussinessHour[]>(params.businessHours);
 
                     if (!businessHours.length) {
-                        vm.calendar.setOption('businessHours', false);
-
-                        //vm.updateStyle('breaktime', '');
-                    } else {
-                        const breakTimes = ko.unwrap<BreakTime[]>(params.breakTime);
-
-                        const bhs = [];
-                        for (let i = 0; i < businessHours.length; i++) {
-                            const cbh = businessHours[i];
-                            const breakOfDay = _.find(breakTimes, { 'dayOfWeek': cbh.dayOfWeek });
-                            if (breakOfDay && breakOfDay.breakTimes.length) {
-                                for (let j = 0; j < breakOfDay.breakTimes.length; j++) {
-                                    const brTime = breakOfDay.breakTimes[j];
-                                    const brBeforeTime = breakOfDay.breakTimes[j - 1];
-                                    bhs.push({
-                                        daysOfWeek: [cbh.dayOfWeek],
-                                        startTime: !brBeforeTime ? formatTime(cbh.start, false) : formatTime(brBeforeTime.end, false),
-                                        endTime: !brBeforeTime ? formatTime(brTime.start, false) : formatTime(brTime.start, false)
-                                    },
-                                        {
-                                            daysOfWeek: [cbh.dayOfWeek],
-                                            startTime: formatTime(brTime.end, false),
-                                            endTime: formatTime(cbh.end, false)
-                                        }
-                                    );
-                                }
-                            } else {
-                                bhs.push({
-                                     daysOfWeek: [cbh.dayOfWeek],
-                                     startTime: formatTime(cbh.start, false),
-                                     endTime: formatTime(cbh.end, false)
-                                });  
+                        bhs = [
+                            {
+                                daysOfWeek: [1, 2, 3],
+                                startTime: '08:00',
+                                endTime: '18:00'
+                            },
+                            {
+                                daysOfWeek: [4, 5],
+                                startTime: '10:00',
+                                endTime: '16:00'
                             }
-                        }
+                        ];
                         
                         vm.calendar.setOption('businessHours', bhs );
+                        vm.updateStyle('breaktime', '');
+                    } else {
+                        const { startTime, endTime, backgroundColor } = breakTime;
 
-                        //vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
+                        if (businessHours.length) {
+                            const starts = businessHours.map((m) => ({
+                                ...m,
+                                startTime: formatTime(m.startTime),
+                                endTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(startTime) : formatTime(0)
+                            }));
+                            const ends = businessHours.map((m) => ({
+                                ...m,
+                                startTime: m.startTime !== 0 && m.endTime !== 0 ? formatTime(endTime) : formatTime(0),
+                                endTime: formatTime(m.endTime)
+                            }));
+
+                            vm.calendar.setOption('businessHours', [...starts, ...ends]);
+                        } else {
+                            vm.calendar.setOption('businessHours', [{
+                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                                startTime: formatTime(0),
+                                endTime: formatTime(startTime)
+                            }, {
+                                daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                                startTime: formatTime(endTime),
+                                endTime: formatTime(24 * 60)
+                            }]);
+                        }
+
+                        vm.updateStyle('breaktime', `.fc-timegrid-slot-lane-breaktime { background-color: ${backgroundColor || 'transparent'} }`);
                     }
+                    
                 },
                 disposeWhenNodeIsRemoved: vm.$el
             });
@@ -2838,6 +2892,33 @@ module nts.uk.ui.at.kdw013.calendar {
             // test item
             _.extend(window, { dragger, calendar: vm.calendar, params, popupPosition });
         }
+
+
+
+           public revertEvent(oldEvent, caches){
+                let vm = this;
+                _.each(vm.calendar.getEvents(), (e: EventApi) => {
+
+                    if (e.extendedProps.id === oldEvent.extendedProps.id) {
+                        e.setExtendedProp('status', 'delete');
+                        e.remove();
+                        caches.new(null);
+                    }
+                });
+                let newEvent = vm.calendar
+                    .addEvent({
+                        id: randomId(),
+                        backgroundColor: oldEvent.backgroundColor,
+                        title: oldEvent.title,
+                        start: oldEvent.start,
+                        end: oldEvent.end,
+                        borderColor: oldEvent.borderColor,
+                        groupId: oldEvent.groupId,
+                        extendedProps: oldEvent.extendedProps
+                    });
+                caches.new(newEvent);
+
+            }
 
         public destroyed() {
             const vm = this;
