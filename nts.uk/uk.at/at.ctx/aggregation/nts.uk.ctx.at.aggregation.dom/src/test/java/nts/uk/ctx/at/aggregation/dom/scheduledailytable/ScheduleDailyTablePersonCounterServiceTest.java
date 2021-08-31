@@ -141,7 +141,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 	
 	/**
 	 * method:	集計する
-	 * case:	印刷対象 = 予定のみ
+	 * case:	印鑑対象 = 予定のみ
 	 */
 	@Test
 	public void testAggregate_case_schedule(@Injectable List<Integer> personalCounter) {
@@ -207,7 +207,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 
 	/**
 	 * method:	集計する
-	 * case:	印刷対象 = 実績のみ
+	 * case:	印鑑対象 = 実績のみ
 	 */
 	@Test
 	public void testAggregate_case_record(@Injectable List<Integer> personalCounter) {
@@ -274,7 +274,7 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 	
 	/**
 	 * method:	集計する
-	 * case:	印刷対象 = 予定・実績
+	 * case:	印鑑対象 = 予定・実績
 	 */
 	@Test
 	public void testAggregate_case_record_and_schedule(@Injectable List<Integer> personalCounter) {

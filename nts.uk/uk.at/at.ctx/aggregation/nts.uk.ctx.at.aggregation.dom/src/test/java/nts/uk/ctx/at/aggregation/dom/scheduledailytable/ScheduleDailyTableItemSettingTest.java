@@ -54,7 +54,7 @@ public class ScheduleDailyTableItemSettingTest {
 			@Injectable NotUseAtr transferDisplay,
 			@Injectable SupporterPrintMethod supporterSchedulePrintMethod,
 			@Injectable SupporterPrintMethod supporterDailyDataPrintMethod) {
-
+		//個人計.size = 11
 		List<Integer> personalCounter = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 		
 		NtsAssert.businessException("Msg_2083", () -> 
@@ -81,7 +81,7 @@ public class ScheduleDailyTableItemSettingTest {
 			@Injectable NotUseAtr transferDisplay,
 			@Injectable SupporterPrintMethod supporterSchedulePrintMethod,
 			@Injectable SupporterPrintMethod supporterDailyDataPrintMethod) {
-
+		//職場計.size = 6
 		List<Integer> workplaceCounter = Arrays.asList(1, 2, 3, 4, 5, 6);
 		
 		NtsAssert.businessException("Msg_2084", () -> 
@@ -97,7 +97,7 @@ public class ScheduleDailyTableItemSettingTest {
 	
 	/**
 	 * method 作る
-	 * input:  職場計.size() = 5, 個人計.size() = 11
+	 * input: 職場計.size() = 5, 個人計.size() = 11
 	 * output: create success
 	 */
 	@Test
@@ -107,8 +107,9 @@ public class ScheduleDailyTableItemSettingTest {
 			@Injectable NotUseAtr transferDisplay,
 			@Injectable SupporterPrintMethod supporterSchedulePrintMethod,
 			@Injectable SupporterPrintMethod supporterDailyDataPrintMethod) {
-
+		//個人計.size() = 11
 		List<Integer> personalCounter = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		//職場計.size() = 5,
 		List<Integer> workplaceCounter = Arrays.asList(1, 2, 3, 4, 5);
 		
 		ScheduleDailyTableItemSetting result = ScheduleDailyTableItemSetting.create(

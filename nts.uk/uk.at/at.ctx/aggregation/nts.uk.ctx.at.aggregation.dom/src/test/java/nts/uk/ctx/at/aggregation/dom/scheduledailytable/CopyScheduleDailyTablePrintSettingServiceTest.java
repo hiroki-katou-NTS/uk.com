@@ -31,12 +31,12 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
-		val overwrite = false;
+		val overwrite = false;//上書きするか = false
 		
 		new Expectations() {
 			{
 				require.isDestinationCodeExist((ScheduleDailyTableCode) any);
-				result = true;
+				result = true;//複製先のコードが既に保存されている
 			}
 		};
 		
@@ -68,7 +68,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 		new Expectations() {
 			{
 				require.isDestinationCodeExist((ScheduleDailyTableCode) any);
-				result = false;
+				result = false;//複製先のコードが既に保存されない
 			}
 		};
 		
@@ -99,13 +99,13 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 
 		val destinationCode = new ScheduleDailyTableCode("02");
 		val destinationName = new ScheduleDailyTableName("name_update");
-		val overwrite = true;
+		val overwrite = true;//上書きするか = true
 		val reproductDestination = reProductSource.copy(destinationCode, destinationName);
 		
 		new Expectations() {
 			{
 				require.isDestinationCodeExist((ScheduleDailyTableCode) any);
-				result = true;
+				result = true;//複製先のコードが既に保存されている
 			}
 		};
 		

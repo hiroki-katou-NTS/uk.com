@@ -37,7 +37,7 @@ public class ScheduleDailyTableInkanRowTest {
 	 */
 	@Test
 	public void create_inv1() {
-		
+		//見出しリスト.size() = 6
 		List<ScheduleDailyTableInkanTitle> titleList = Arrays.asList(
 				new ScheduleDailyTableInkanTitle("a1"),
 				new ScheduleDailyTableInkanTitle("a2"),
@@ -73,7 +73,7 @@ public class ScheduleDailyTableInkanRowTest {
 	 */
 	@Test
 	public void create_success() {
-		
+		//見出しリスト .size = 6
 		List<ScheduleDailyTableInkanTitle> titleList = Arrays.asList(
 				new ScheduleDailyTableInkanTitle("a1"),
 				new ScheduleDailyTableInkanTitle("a2"),
