@@ -131,8 +131,8 @@ public class SpecialLeaveInfo implements Cloneable {
 		/** 特別休暇情報．年月日を開始日に更新 */
 		this.ymd = specialLeaveAggregatePeriodWork.getPeriod().start();
 
-		/** ○消滅処理 */
-		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult);
+//		/** ○消滅処理 */
+//		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult);
 
 		/** 付与処理 */
 		aggrResult = this.grantProcess(require, companyId, employeeId,
@@ -151,6 +151,9 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		/** 終了時点更新処理 */
 		updateEnd(specialLeaveAggregatePeriodWork, aggrResult);
+
+		/** ○消滅処理 */
+		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult);
 
 		/** 「特休の集計結果」を返す */
 		return aggrResult;

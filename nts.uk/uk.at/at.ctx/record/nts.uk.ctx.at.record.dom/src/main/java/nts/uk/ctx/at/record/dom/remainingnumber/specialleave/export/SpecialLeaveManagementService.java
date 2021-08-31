@@ -493,25 +493,21 @@ public class SpecialLeaveManagementService {
 			// 消滅情報WORK.期間の開始日に消滅するかどうか←true
 			specialLeaveLapsedWork.setLapsedAtr(true);
 
-			// 年月日←期限日の翌日
-			GeneralDate nextDayOfDeadLine = deadline;
-			if (deadline.before(GeneralDate.max())){
-				nextDayOfDeadLine = deadline.addDays(1);
-			}
+			// 年月日←期限日
 
 			// ※既に同じ年月日がある場合は、追加せずに消滅情報WORKのみセット
-			if ( dividedDayMap.containsKey(nextDayOfDeadLine)){
+			if ( dividedDayMap.containsKey(deadline)){
 				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
-					= dividedDayMap.get(nextDayOfDeadLine);
+					= dividedDayMap.get(deadline);
 				if ( specialLeaveDividedDayEachProcess != null ){
 					specialLeaveDividedDayEachProcess.setLapsedWork(specialLeaveLapsedWork);
 				}
 			} else {
 				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
-					= new SpecialLeaveDividedDayEachProcess(nextDayOfDeadLine);
+					= new SpecialLeaveDividedDayEachProcess(deadline);
 				specialLeaveDividedDayEachProcess.setLapsedWork(specialLeaveLapsedWork);
 				// リストへ追加
-				dividedDayMap.put(nextDayOfDeadLine, specialLeaveDividedDayEachProcess);
+				dividedDayMap.put(deadline, specialLeaveDividedDayEachProcess);
 			}
 
 		}
