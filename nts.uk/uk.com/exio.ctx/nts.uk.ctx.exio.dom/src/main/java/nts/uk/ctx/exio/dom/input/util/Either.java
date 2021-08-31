@@ -127,7 +127,7 @@ public interface Either<L, R> {
 	 * @param rightEitherMapper
 	 * @return
 	 */
-	<R2> Either<L, R2> mapEither(Function<? super R, Either<L, ? extends R2>> rightEitherMapper);
+	<R2> Either<L, R2> mapEither(Function<? super R, Either<L, R2>> rightEitherMapper);
 	
 	/**
 	 * Leftを変換する
