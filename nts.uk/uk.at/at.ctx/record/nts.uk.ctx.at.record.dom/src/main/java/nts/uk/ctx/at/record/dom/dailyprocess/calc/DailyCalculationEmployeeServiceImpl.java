@@ -305,7 +305,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			Pair<String,GeneralDate> pair = Pair.of(value.getEmployeeId(),
 					value.getYmd());
 			//計算から呼ぶ場合はtrueでいいらしい。保科⇒thanh
-			this.dailyRecordAdUpService.adUpEmpError(value.getEmployeeError(), Arrays.asList(pair), true);			
+			this.dailyRecordAdUpService.adUpEmpError(value.getEmployeeError(), Arrays.asList(pair));			
 		}
 		
 		// 編集状態更新
