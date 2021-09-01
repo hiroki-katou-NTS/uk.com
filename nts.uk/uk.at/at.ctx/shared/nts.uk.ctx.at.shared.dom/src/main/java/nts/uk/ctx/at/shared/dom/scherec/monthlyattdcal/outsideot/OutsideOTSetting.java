@@ -21,8 +21,12 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.TimeRoundingOfExcessOutsideTime;
@@ -397,6 +401,59 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
 			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
 		});
+	}
+	
+	/** clones from 36協定対象時間を取得 */
+	public Map<String, AgreementTimeBreakdown> getTargetTimeClones(RequireM1 require, String cid, 
+			List<MonthlyCalculation> monthlyCalculations) {
+		
+		val breakdownMap = new HashMap<String, AgreementTimeBreakdown>();
+		/** 月別実績の丸め設定を取得 */
+		val roundSet = require.monthRoundingSet(cid);
+		
+		/** 内訳項目に設定されている勤怠項目IDを全て取得 */
+		val breakdownItems = getBreakDownItemIds();
+		
+		/** ○法定内休出の勤怠項目IDを全て取得 */
+		breakdownItems.addAll(getLegalHolidayWorkItems(require, cid));
+		if(breakdownItems.isEmpty()) {
+			monthlyCalculations.forEach(c-> {
+				breakdownMap.put(c.getEmployeeId(), new AgreementTimeBreakdown());
+			});
+			return breakdownMap;
+		}
+		
+		/** 取得した件数分ループ */
+		val attendanceTimes = monthlyCalculations.stream().map(monthlyCalculation -> {
+			
+			AttendanceTimeOfMonthly attendanceTimeOfMonthly = new AttendanceTimeOfMonthly(
+					monthlyCalculation.getEmployeeId(),
+					monthlyCalculation.getYearMonth(), 
+					monthlyCalculation.getClosureId(),
+					monthlyCalculation.getClosureDate(), 
+					monthlyCalculation.getProcPeriod());
+			attendanceTimeOfMonthly.setMonthlyCalculation(monthlyCalculation);
+			return attendanceTimeOfMonthly;
+		}).collect(Collectors.toList());
+
+		Map<String, List<ItemValue>> attendanceItemValues = new HashMap<String, List<ItemValue>>();
+		for (AttendanceTimeOfMonthly attendanceTimeOfMonthly : attendanceTimes) {
+			val converter = require.createMonthlyConverter();
+			converter.withAttendanceTime(attendanceTimeOfMonthly);
+			attendanceItemValues.put(attendanceTimeOfMonthly.getEmployeeId(), converter.convert(breakdownItems));
+		}
+		
+		for (val attendanceItemValue : attendanceItemValues.entrySet()) {
+			AgreementTimeBreakdown breakdown = new AgreementTimeBreakdown();
+			/** ○丸め処理 */
+			attendanceItemValue.getValue().stream().forEach(v -> {
+				val value = new AttendanceTimeMonth(v.valueOrDefault());
+				val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
+				breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
+			});
+			breakdownMap.put(attendanceItemValue.getKey(), breakdown);
+		}
+		return breakdownMap;
 	}
 
 	/** 内訳項目に設定されている勤怠項目IDを全て取得 */

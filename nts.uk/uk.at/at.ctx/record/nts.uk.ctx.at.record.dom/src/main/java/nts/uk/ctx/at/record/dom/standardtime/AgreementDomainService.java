@@ -98,6 +98,35 @@ public class AgreementDomainService {
 	}
 	
 	/**
+	 * clones from 年月指定して36協定基本設定を取得する
+	 */
+	public static Map<String, BasicAgreementSettingForCalc> getBasicSetClones(RequireM6 require, String companyId, List<String> employeeId, GeneralDate criteriaDate, YearMonth ym) {
+		
+		/** 36協定基本設定を取得する */
+		val basicSettingMap = getBasicSetClones(require, companyId, employeeId, criteriaDate);
+		
+		
+		/** 個人の「３６協定年月設定」を取得する */
+		val personYMSettings = require.agreementMonthSettingClones(employeeId, ym);
+		
+		Map<String, BasicAgreementSettingForCalc> results = new HashMap<String, BasicAgreementSettingForCalc>();
+		for(String id: employeeId) {
+			BasicAgreementSetting basicSetting = basicSettingMap.get(id);
+			val basicSetForCalc = new BasicAgreementSettingForCalc(basicSetting, false);
+			Optional<AgreementMonthSetting> personYMSetting = personYMSettings.stream().filter(c->c.getEmployeeId().equals(id)).findAny();
+			personYMSetting.ifPresent(pys -> {
+				
+				/** 取得した36協定基本設定。１ヶ月を上書きする */
+				basicSetting.getOneMonth().getBasic().setErAlTime(pys.getOneMonthTime());
+				basicSetForCalc.personAgreementSetted();
+			});
+			results.put(id, basicSetForCalc);
+		}
+		/** 「36協定基本設定」を返す */
+		return results;
+	}
+	
+	/**
 	 * 年月日指定して36協定基本設定を取得する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
@@ -113,6 +142,28 @@ public class AgreementDomainService {
 		}
 		
 		return getBasicSet(require, companyId, employeeId, criteriaDate, workCondition.get().getLaborSystem());
+	}
+	
+	/**
+	 * clones from 年月日指定して36協定基本設定を取得する
+	 */
+	public static Map<String, BasicAgreementSetting> getBasicSetClones(RequireM4 require, String companyId, List<String> employeeIds, GeneralDate criteriaDate) {
+		
+		/** ●ドメインモデル「労働契約履歴」を取得する */
+		val workConditionList = require.workingConditionItemClones(employeeIds, criteriaDate);
+		
+		Map<String, BasicAgreementSetting> result = new HashMap<String, BasicAgreementSetting>();
+		Map<String, WorkingSystem>  employeeIdWorkingSystem = new HashMap<String, WorkingSystem>();
+		for(val id: employeeIds) {
+			val workCondition = workConditionList.stream().filter(c->c.getEmployeeId().equals(id)).findAny();
+			if (!workCondition.isPresent()) {
+				result.put(id, getDefault());
+			}else {
+				employeeIdWorkingSystem.put(id, workCondition.get().getLaborSystem());
+			}
+		}
+		result.putAll(getBasicSetClones(require, companyId, employeeIdWorkingSystem, criteriaDate));
+		return result;
 	}
 	
 	/**
@@ -187,6 +238,80 @@ public class AgreementDomainService {
 		return getDefault();
 	}
 	
+	/**
+	 * clones from 年月日指定して36協定基本設定を取得する
+	 */
+	public static Map<String, BasicAgreementSetting> getBasicSetClones(RequireM3 require, String companyId, Map<String, WorkingSystem> employeeIdworkingSystem, GeneralDate criteriaDate) {
+		
+		// 「36協定単位設定」を取得する
+		AgreementUnitSetting agreementUnitSet = new AgreementUnitSetting(companyId,
+				UseClassificationAtr.NOT_USE, UseClassificationAtr.NOT_USE, UseClassificationAtr.NOT_USE);
+		val agreementUnitSetOpt = require.agreementUnitSetting(companyId);
+		if (agreementUnitSetOpt.isPresent()) agreementUnitSet = agreementUnitSetOpt.get();
+		Map<String, BasicAgreementSetting> result = new HashMap<String, BasicAgreementSetting>();
+		for(val emp: employeeIdworkingSystem.entrySet()) {
+			String employeeId = emp.getKey();
+			
+			// 36協定労働制を確認する
+			LaborSystemtAtr laborSystemAtr = LaborSystemtAtr.GENERAL_LABOR_SYSTEM;
+			if (emp.getValue() == WorkingSystem.VARIABLE_WORKING_TIME_WORK){
+				laborSystemAtr = LaborSystemtAtr.DEFORMATION_WORKING_TIME_SYSTEM;
+			}
+			
+			if (agreementUnitSet.getClassificationUseAtr() == UseClassificationAtr.USE){
+				
+				// 分類36協定時間を取得する
+				val affClassficationOpt = require.affEmployeeClassification(companyId, employeeId, criteriaDate);
+				if (affClassficationOpt.isPresent()){
+					val classCd = affClassficationOpt.get().getClassificationCode();
+					val agreementTimeOfCls = require.agreementTimeOfClassification(companyId, laborSystemAtr, classCd);
+					if (agreementTimeOfCls.isPresent()){
+						result.put(employeeId, agreementTimeOfCls.get().getSetting());
+						break;
+					}
+				}
+			}
+			if (agreementUnitSet.getWorkPlaceUseAtr() == UseClassificationAtr.USE){
+				
+				// 職場36協定時間を取得する
+				val workplaceIds = require.getCanUseWorkplaceForEmp(companyId, employeeId, criteriaDate);
+				boolean kt = false;
+				for (String workplaceId : workplaceIds){
+					val agreementTimeOfWkp = require.agreementTimeOfWorkPlace(workplaceId, laborSystemAtr);
+					if (agreementTimeOfWkp.isPresent()){
+						result.put(employeeId, agreementTimeOfWkp.get().getSetting());
+						kt = true;
+						break;
+					}
+				}
+				if(kt) break;
+			}
+			if (agreementUnitSet.getEmploymentUseAtr() == UseClassificationAtr.USE){
+				
+				// 雇用36協定時間を取得する
+				val syEmploymentOpt = require.employment(companyId, employeeId, criteriaDate);
+				if (syEmploymentOpt.isPresent()){
+					val employmentCd = syEmploymentOpt.get().getEmploymentCode();
+					val agreementTimeOfEmp = require.agreementTimeOfEmployment(companyId, employmentCd, laborSystemAtr);
+					if (agreementTimeOfEmp.isPresent()){
+						result.put(employeeId, agreementTimeOfEmp.get().getSetting());
+						break;
+					}
+				}
+			}
+			
+			// 会社36協定時間を取得する
+			val agreementTimeOfCmpOpt = require.agreementTimeOfCompany(companyId, laborSystemAtr);
+			if (agreementTimeOfCmpOpt.isPresent()){
+				result.put(employeeId, agreementTimeOfCmpOpt.get().getSetting());
+				break;
+			}
+			result.put(employeeId, getDefault());
+		}
+		// 全ての値を0で返す
+		return result;
+	}
+	
 	public static BasicAgreementSettingsGetter getBasicSet(RequireM2 require, String companyId, List<String> employeeIds, DatePeriod datePeriod) {
 		// 「36協定単位設定」を取得する
 		List<AffClassificationSidImport> affClassifications = new ArrayList<>();
@@ -248,6 +373,8 @@ public class AgreementDomainService {
 	public static interface RequireM6 extends RequireM4 {
 	
 		Optional<AgreementMonthSetting> agreementMonthSetting(String sid, YearMonth yearMonth);
+		
+		List<AgreementMonthSetting> agreementMonthSettingClones(List<String> sid, YearMonth yearMonth);
 	}
 	
 	public static interface RequireM5 extends RequireM4 {
@@ -258,6 +385,8 @@ public class AgreementDomainService {
 	public static interface RequireM4 extends RequireM3 {
 		
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
+		
+		List<WorkingConditionItem> workingConditionItemClones(List<String> employeeId, GeneralDate baseDate);
 	}
 	
 	public static interface RequireM3 {

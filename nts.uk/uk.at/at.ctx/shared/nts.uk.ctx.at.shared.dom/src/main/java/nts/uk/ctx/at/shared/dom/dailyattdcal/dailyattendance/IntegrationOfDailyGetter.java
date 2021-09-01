@@ -8,4 +8,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 public interface IntegrationOfDailyGetter {
 
 	List<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, DatePeriod datePeriod);
+	
+	List<IntegrationOfDaily> getIntegrationOfDailyClones(List<String> employeeId, DatePeriod datePeriod);
 }
