@@ -169,7 +169,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
             let wkpInfo = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0];
 
-            if (wkpInfo) {
+            if (wkpInfo && wkpInfo === undefined) {
                 self.listSelectWorkplaceID = [];
                 self.listWorkPlaceIDs = [];
                 self.workplaceCode('');
