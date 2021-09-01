@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.val;
@@ -27,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOf
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.TermsOfUseForOptItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalcResultOfAnyItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -82,16 +81,10 @@ public class AnyItemAggregateService {
 		
 		// 週単位の期間を取得
 		for(val attendanceTimeWeek : attendanceWeeks) {
-
-			List<AnyItemOfMonthly> anyItems = new ArrayList<>();
 			
 			// 週ごとの集計
-			val weekResults = aggregateAnyItemPeriod(attendanceTimeWeek.getPeriod(), true, false, 
-					anyItemCustomizeValue.get(attendanceTimeWeek.getWeekNo()),
-					monthlyCalcDailys, companySets, employeeSets,
-					(optionalItem) -> monthlyCalc(require, sid, ym, closureId, closureDate, anyItems, 
-													optionalItem, attendanceTime, companySets),
-					(anyItemAggrResult) -> anyItems.add(AnyItemOfMonthly.of(sid, ym, closureId, closureDate, anyItemAggrResult)));
+			val weekResults = aggregateAnyItemAnyPeriod(attendanceTimeWeek.getPeriod(), 
+					monthlyCalcDailys, companySets, employeeSets);
 					
 			for (val weekResult : weekResults.values()) {
 				attendanceTimeWeek.getAnyItem().getAnyItemValues().put(weekResult.getOptionalItemNo(),
@@ -100,13 +93,9 @@ public class AnyItemAggregateService {
 			}
 		}
 
-		List<AnyItemOfMonthly> anyItems = new ArrayList<>();
 		// 月ごとの集計
-		val monthResults = aggregateAnyItemPeriod(monthPeriod, false, false, anyItemCustomizeValue.get(0),
-				monthlyCalcDailys, companySets, employeeSets,
-				(optionalItem) -> monthlyCalc(require, sid, ym, closureId, closureDate, anyItems, 
-												optionalItem, attendanceTime, companySets),
-				(anyItemAggrResult) -> anyItems.add(AnyItemOfMonthly.of(sid, ym, closureId, closureDate, anyItemAggrResult)));
+		val monthResults = aggregateAnyItemMonth(require, sid, ym, closureId, closureDate, monthPeriod, 
+				anyItemCustomizeValue.get(0), monthlyCalcDailys, companySets, employeeSets, attendanceTime);
 		
 		for (val monthResult : monthResults.values()) {
 			
@@ -121,10 +110,13 @@ public class AnyItemAggregateService {
 	}
 
 	private static AnyItemAggrResult monthlyCalc(RequireM5 require, String sid, YearMonth ym,
-			ClosureId closureId, ClosureDate closureDate, List<AnyItemOfMonthly> anyItems, 
+			ClosureId closureId, ClosureDate closureDate, Map<Integer, AnyItemAggrResult> results, 
 			OptionalItem optionalItem, Optional<AttendanceTimeOfMonthly> attendanceTime,
 			MonAggrCompanySettings companySets) {
 
+		List<AnyItemOfMonthly> anyItems = results.entrySet().stream().map(c -> AnyItemOfMonthly.of(sid, ym, closureId, closureDate, c.getValue()))
+				.collect(Collectors.toList());
+				
 		int optionalItemNo = optionalItem.getOptionalItemNo().v();
 
 		// 初期化
@@ -138,21 +130,52 @@ public class AnyItemAggregateService {
 					optionalItem, attendanceTime.get(), anyItems, companySets);
 		}
 
-		anyItems.add(AnyItemOfMonthly.of(sid, ym, closureId, closureDate, result));
-
 		return result;
 	}
-
-	public static Map<Integer, AnyItemAggrResult> aggregateAnyItemPeriod(DatePeriod period,
-			boolean isWeek, boolean isPeriodAggr, Map<Integer, AnyItemAggrResult> anyItemCustomizeValue,
+	
+	/** 集計処理 (周用、期間別)*/
+	public static Map<Integer, AnyItemAggrResult> aggregateAnyItemAnyPeriod(DatePeriod period,
 			MonthlyCalculatingDailys monthlyCalc, MonAggrCompanySettings companySets,
-			MonAggrEmployeeSettings employeeSets, Function<OptionalItem, AnyItemAggrResult> monthlyUseGetter,
-			Consumer<AnyItemAggrResult> consumer) {
+			MonAggrEmployeeSettings employeeSets) {
 
 		Map<Integer, AnyItemAggrResult> results = new HashMap<>();
 
 		// 任意項目ごとに集計する
+		Map<Integer, AggregateAnyItem> anyItemTotals = createAggregateAnyItem(period, monthlyCalc);
+
+		// 任意項目を取得
+		for (val optionalItem : companySets.getOptionalItemMap().values()) {
+			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
+
+			// 利用条件の判定
+			Optional<EmpCondition> empCondition = Optional.empty();
+			if (companySets.getEmpConditionMap().containsKey(optionalItemNo)) {
+				empCondition = Optional.of(companySets.getEmpConditionMap().get(optionalItemNo));
+			}
+			val bsEmploymentHistOpt = employeeSets.getEmployment(period.end());
+			
+			if (optionalItem.checkTermsOfUseMonth(empCondition, bsEmploymentHistOpt) == TermsOfUseForOptItem.DAILY_VTOTAL) { // 日別縦計する
+				
+				// 日別実績 縦計処理
+				AnyItemAggrResult result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
+
+				/** ○縦計の結果をセット */
+				results.put(optionalItemNo, result);
+			} else {
+
+				/** ○縦計の結果をセット */
+				results.put(optionalItemNo, AnyItemAggrResult.of(optionalItemNo, 
+						Optional.of(new AnyTimeMonth(0)), Optional.of(new AnyTimesMonth(0d)), Optional.of(new AnyAmountMonth(0))));
+			}
+		}
+
+		return results;
+	}
+
+	private static Map<Integer, AggregateAnyItem> createAggregateAnyItem(DatePeriod period, MonthlyCalculatingDailys monthlyCalc) {
+		
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
+		
 		for (val anyItemValueOfDaily : monthlyCalc.getAnyItemValueOfDailyList().entrySet()){
 			if (!period.contains(anyItemValueOfDaily.getKey())) continue;
 			if (anyItemValueOfDaily.getValue().getItems() == null) continue;
@@ -167,18 +190,30 @@ public class AnyItemAggregateService {
 				}
 			}
 		}
+		
+		return anyItemTotals;
+	}
+
+	public static Map<Integer, AnyItemAggrResult> aggregateAnyItemMonth(RequireM5 require, String sid, YearMonth ym,
+			ClosureId closureId, ClosureDate closureDate, DatePeriod period,
+			Map<Integer, AnyItemAggrResult> anyItemCustomizeValue,
+			MonthlyCalculatingDailys monthlyCalc, MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets, Optional<AttendanceTimeOfMonthly> attendanceTime) {
+
+		Map<Integer, AnyItemAggrResult> results = new HashMap<>();
+
+		Map<Integer, AggregateAnyItem> anyItemTotals = createAggregateAnyItem(period, monthlyCalc);
 
 		// 任意項目を取得
 		for (val optionalItem : companySets.getOptionalItemMap().values()) {
 			Integer optionalItemNo = optionalItem.getOptionalItemNo().v();
 
 			/** 月間集計　＆＆　大塚モードを確認する */
-			if (!isWeek && !isPeriodAggr && AppContexts.optionLicense().customize().ootsuka()) {
+			if (AppContexts.optionLicense().customize().ootsuka()) {
 				// 大塚カスタマイズ （月別実績の任意項目←任意項目カスタマイズ値）
 				if (anyItemCustomizeValue != null) {
 					if (anyItemCustomizeValue.containsKey(optionalItemNo)) {
 						results.put(optionalItemNo, anyItemCustomizeValue.get(optionalItemNo));
-						consumer.accept(anyItemCustomizeValue.get(optionalItemNo));
 						continue;
 					}
 				}
@@ -190,38 +225,30 @@ public class AnyItemAggregateService {
 				empCondition = Optional.of(companySets.getEmpConditionMap().get(optionalItemNo));
 			}
 			val bsEmploymentHistOpt = employeeSets.getEmployment(period.end());
+			AnyItemAggrResult result;
 			switch(optionalItem.checkTermsOfUseMonth(empCondition, bsEmploymentHistOpt)){
-			case USE:
-				// 利用する
-				{
-					if (isWeek || isPeriodAggr) {
-						break;
-					}
-
-					AnyItemAggrResult result = monthlyUseGetter.apply(optionalItem);
-					results.put(optionalItemNo, result);
-					break;
-				}
-			case DAILY_VTOTAL:
-				// 日別縦計する
-				{
-					// 日別実績 縦計処理
-					AnyItemAggrResult result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
-
-					if (!isWeek && !isPeriodAggr) {
-						/** 上限下限チェック */
-						result = limitCheck(optionalItem, optionalItemNo, result);
-					}
-
-					consumer.accept(result);
-
-					results.put(optionalItemNo, result);
-					break;
-				}
-			case NOT_USE:
-				// 利用しない
+			case USE: // 利用する
+				
+				result = monthlyCalc(require, sid, ym, closureId, closureDate, results, 
+						optionalItem, attendanceTime, companySets);
 				break;
+			case DAILY_VTOTAL: // 日別縦計する
+				
+				// 日別実績 縦計処理
+				result = AnyItemAggrResult.calcFromDailys(optionalItemNo, optionalItem, anyItemTotals);
+
+				/** 上限下限チェック */
+				result = limitCheck(optionalItem, optionalItemNo, result);
+
+				break;
+			case NOT_USE: // 利用しない
+			default:
+				/** ○縦計の結果をセット */
+				result = AnyItemAggrResult.of(optionalItemNo, 
+						Optional.of(new AnyTimeMonth(0)), Optional.of(new AnyTimesMonth(0d)), Optional.of(new AnyAmountMonth(0)));
 			}
+
+			results.put(optionalItemNo, result);
 		}
 
 		return results;

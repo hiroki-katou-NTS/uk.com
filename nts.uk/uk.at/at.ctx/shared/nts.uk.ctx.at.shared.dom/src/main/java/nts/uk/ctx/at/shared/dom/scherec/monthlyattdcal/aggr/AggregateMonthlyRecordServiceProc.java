@@ -292,29 +292,31 @@ public class AggregateMonthlyRecordServiceProc {
 					this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthPeriod, this.companySets, 
 					this.employeeSets, this.monthlyCalculatingDailys,  monthlyOldDatas, basicCalced);
 
-			val agreementTime = agreementTimes.get(0);
+			if (!agreementTimes.isEmpty()) {
+				val agreementTime = agreementTimes.get(0);
 
-			if (agreementTime.getAgreementTime().isPresent()) {
+				if (agreementTime.getAgreementTime().isPresent()) {
 
-				this.aggregateResult.setAgreementTime(agreementTime.getAgreementTime());
-			} else {
-				if (!agreementTime.getError().isEmpty()) {
-					val error = agreementTime.getError().get(0);
-					this.aggregateResult.addErrorInfos(error.getResourceId(), error.getMessage());
-				}
-			}
-
-			/** 集計期間を一ヶ月手前にずらすの36協定時間　*/
-			if (agreementTimes.size() == 2) {
-				val prevAgreTime = agreementTimes.get(1);
-	
-				if (prevAgreTime.getAgreementTime().isPresent()) {
-	
-					this.aggregateResult.setPrevAgreementTime(prevAgreTime.getAgreementTime());
+					this.aggregateResult.setAgreementTime(agreementTime.getAgreementTime());
 				} else {
-					if (!prevAgreTime.getError().isEmpty()) {
-						val error = prevAgreTime.getError().get(0);
+					if (!agreementTime.getError().isEmpty()) {
+						val error = agreementTime.getError().get(0);
 						this.aggregateResult.addErrorInfos(error.getResourceId(), error.getMessage());
+					}
+				}
+
+				/** 集計期間を一ヶ月手前にずらすの36協定時間　*/
+				if (agreementTimes.size() == 2) {
+					val prevAgreTime = agreementTimes.get(1);
+		
+					if (prevAgreTime.getAgreementTime().isPresent()) {
+		
+						this.aggregateResult.setPrevAgreementTime(prevAgreTime.getAgreementTime());
+					} else {
+						if (!prevAgreTime.getError().isEmpty()) {
+							val error = prevAgreTime.getError().get(0);
+							this.aggregateResult.addErrorInfos(error.getResourceId(), error.getMessage());
+						}
 					}
 				}
 			}
