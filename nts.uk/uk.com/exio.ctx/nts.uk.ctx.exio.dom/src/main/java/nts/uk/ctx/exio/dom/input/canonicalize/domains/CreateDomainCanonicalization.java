@@ -114,7 +114,6 @@ public class CreateDomainCanonicalization {
 		// 休出管理データ
 		CREATES.put(HOLIDAY_WORK, HolidayWorkCanonicalization::new);
 		
-		CREATES.put(ImportingDomainId.SPECIAL_HOLIDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
 	}
 	
 	public static interface Require {
