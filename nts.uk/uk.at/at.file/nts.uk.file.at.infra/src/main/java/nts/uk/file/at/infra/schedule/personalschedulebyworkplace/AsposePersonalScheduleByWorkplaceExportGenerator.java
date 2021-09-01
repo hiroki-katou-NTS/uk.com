@@ -4,17 +4,29 @@ import com.aspose.cells.*;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.system.ServerSystemProperties;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.EstimatedSalary;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personcounter.WorkClassificationAsAggregationTarget;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.LaborCostAggregationUnit;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.LaborCostItemType;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.workplacecounter.NumberOfPeopleByEachWorkMethod;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.WorkplaceCounterCategory;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.laborcostandtime.LaborCostAndTime;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.laborcostandtime.WorkplaceCounterLaborCostAndTime;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.laborcostandtime.WorkplaceCounterLaborCostAndTimeRepo;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterSelection;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterSelectionRepo;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.tally.timescounting.TimesNumberCounterType;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.*;
+import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
+import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresults.ExternalBudgetValues;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AggregationUnitOfLaborCosts;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
@@ -26,9 +38,17 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.bs.employee.dom.classification.Classification;
+import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
+import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository;
+import nts.uk.file.at.app.export.schedule.personalschedulebyworkplace.CodeNameValue;
 import nts.uk.file.at.app.export.schedule.personalschedulebyworkplace.PersonalScheduleByWkpDataSource;
 import nts.uk.file.at.app.export.schedule.personalschedulebyworkplace.PersonalScheduleByWorkplaceExportGenerator;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
@@ -37,7 +57,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -46,8 +66,10 @@ import java.util.stream.Collectors;
 @Stateless
 public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByWorkplaceExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
+    private final int FONT_SIZE = 9;
     private final String PDF_EXT = ".pdf";
     private final String EXCEL_EXT = ".xlsx";
+    private final String HTML_EXT = ".html";
     private final String SPACE = "　";
     private final String COLON = "：";
 
@@ -65,6 +87,12 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
     private final int START_DATE_COL = 3;
     private final int PERSONAL_INFO_COLUMN = 0;
     private final int ADDITIONAL_PERSONAL_INFO_COLUMN = 2;
+    private final int MAX_ROWS_PER_PAGE_WITHOUT_ADDITIONAL_INFO = 37;
+
+    private int startRow = START_DATA_ROW;
+    private final List<Integer> indexes = new ArrayList<>();
+
+    private final DecimalFormat df = new DecimalFormat("###,###,###");
 
     @Inject
     private TotalTimesRepository totalTimesRepo;
@@ -83,20 +111,35 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         public Optional<ShiftMaster> getShiftMaster(String workTypeCode, Optional<String> workTimeCode) {
             return shiftMasterRepo.getByWorkTypeAndWorkTime(AppContexts.user().companyId(), workTypeCode, workTimeCode.orElse(null));
         }
-
         @Override
         public Optional<WorkType> getWorkType(String workTypeCode) {
             return workTypeRepo.findByPK(AppContexts.user().companyId(), workTypeCode);
         }
-
         @Override
         public Optional<WorkTimeSetting> getWorkTimeSetting(String workTimeCode) {
             return workTimeSettingRepo.findByCode(AppContexts.user().companyId(), workTimeCode);
         }
     };
 
+    @Inject
+    private WorkplaceCounterLaborCostAndTimeRepo workplaceCounterLaborCostAndTimeRepo;
+
+    @Inject
+    private ExternalBudgetRepository externalBudgetRepo;
+
+    @Inject
+    private EmploymentRepository employmentRepo;
+
+    @Inject
+    private ClassificationRepository classificationRepo;
+
+    @Inject
+    private JobTitleInfoRepository jobTitleInfoRepo;
+
     @Override
     public void generate(FileGeneratorContext context, PersonalScheduleByWkpDataSource dataSource, boolean excel, boolean preview) {
+        startRow = START_DATA_ROW;
+        indexes.clear();
         try {
             AsposeCellsReportContext reportContext = this.createEmptyContext("PersonalScheduleByWorkplace");
             Workbook workbook = reportContext.getWorkbook();
@@ -105,13 +148,15 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             worksheet.setName(dataSource.getOutputSetting().getName().v());
             this.printHeader(worksheet, dataSource);
             this.printContent(worksheet, dataSource);
+            this.handlePageBreak(worksheet, dataSource);
             worksheet.setViewType(ViewType.PAGE_LAYOUT_VIEW);
             reportContext.processDesigner();
             if (preview) {
+                worksheet.getCells().get(startRow, 0).setValue(" ");
                 // save as html file
                 HtmlSaveOptions options = new HtmlSaveOptions(SaveFormat.AUTO);
                 options.setPresentationPreference(true);
-                String fileName = this.getReportName(dataSource.getOutputSetting().getName().v() + ".html");
+                String fileName = this.getReportName(dataSource.getOutputSetting().getName().v() + HTML_EXT);
                 workbook.save(this.createNewFile(context, fileName), options);
                 workbook.save(ServerSystemProperties.fileStoragePath() + "\\" + fileName, options);
             } else {
@@ -147,7 +192,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         pageSetup.setHeader(1, "&16&\"" + FONT_NAME + ",Bold\"" + dataSource.getOutputSetting().getName().v());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
         pageSetup.setHeader(2, "&9&\"" + FONT_NAME + "\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage&P ");
-        pageSetup.setPrintTitleRows("$5:$8");
+        pageSetup.setPrintTitleRows("$1:$8");
     }
 
     private String getText(String resourceId) {
@@ -159,11 +204,11 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         // B part
         cells.get(0, START_DATE_COL).setValue(dataSource.getComment());
         Style styleC1 = cells.get(0, START_DATE_COL).getStyle();
-        styleC1.getFont().setSize(9);
-        styleC1.getFont().setName(FONT_NAME);
         styleC1.setVerticalAlignment(TextAlignmentType.TOP);
         styleC1.setHorizontalAlignment(TextAlignmentType.JUSTIFY);
         styleC1.setTextWrapped(true);
+        styleC1.getFont().setName(FONT_NAME);
+        styleC1.getFont().setSize(FONT_SIZE);
         cells.get(0, START_DATE_COL).setStyle(styleC1);
         cells.merge(0, START_DATE_COL, 2, dataSource.getDateInfos().size());
 
@@ -174,44 +219,41 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         + dataSource.getPeriod().end().toString() + "(" + this.getDayOfWeek(dataSource.getPeriod().end().dayOfWeekEnum()) + ")"
         );
         Style styleA3 = cells.get("A3").getStyle();
-        styleA3.getFont().setSize(9);
+        styleA3.setHorizontalAlignment(TextAlignmentType.LEFT);
         styleA3.getFont().setName(FONT_NAME);
+        styleA3.getFont().setSize(FONT_SIZE);
         cells.get("A3").setStyle(styleA3);
         cells.get("A4").setValue((dataSource.getOrgUnit() == 0 ? getText("KSU001_4132") : getText("KSU001_4133")) + dataSource.getOrganizationDisplayInfo().getCode() + SPACE + dataSource.getOrganizationDisplayInfo().getDisplayName());
         cells.get("A4").setStyle(styleA3);
 
         // C1 part
         cells.get(START_HEADER_ROW, PERSONAL_INFO_COLUMN).setValue(getText("KSU001_4131"));
-        this.setHeaderStyle(cells.get(START_HEADER_ROW, PERSONAL_INFO_COLUMN), null, false, true, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 1, PERSONAL_INFO_COLUMN), null, false, false, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 2, PERSONAL_INFO_COLUMN), null, false, false, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 3, PERSONAL_INFO_COLUMN), null, false, false, true, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW, PERSONAL_INFO_COLUMN + 1), null, false, true, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 1, PERSONAL_INFO_COLUMN + 1), null, false, false, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 2, PERSONAL_INFO_COLUMN + 1), null, false, false, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 3, PERSONAL_INFO_COLUMN + 1), null, false, false, true, false, false);
+        for (int i = 0; i < 4; i++) {
+            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, PERSONAL_INFO_COLUMN), null, false, i == 0, i == 3, false, false);
+            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, PERSONAL_INFO_COLUMN + 1), null, false, i == 0, i == 3, false, false);
+        }
         cells.merge(START_HEADER_ROW, PERSONAL_INFO_COLUMN, 4, 2, true);
         cells.setColumnWidth(PERSONAL_INFO_COLUMN, 10);
-        cells.setColumnWidth(PERSONAL_INFO_COLUMN + 1, 5);
+        cells.setColumnWidth(PERSONAL_INFO_COLUMN + 1, 7);
 
         // C2 part
         long additionCount = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count();
         if (additionCount == 0) {
             cells.hideColumn(ADDITIONAL_PERSONAL_INFO_COLUMN);
-        } else if (additionCount == 1) {
-            cells.get(START_HEADER_ROW, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(getText(dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).findFirst().get().getAdditionalInfo().get().nameId));
-            cells.setColumnWidth(ADDITIONAL_PERSONAL_INFO_COLUMN, 9);
         } else {
             cells.setColumnWidth(ADDITIONAL_PERSONAL_INFO_COLUMN, 9);
+            if (additionCount == 1) {
+                cells.get(START_HEADER_ROW, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(getText(dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).findFirst().get().getAdditionalInfo().get().nameId));
+            }
         }
-        this.setHeaderStyle(cells.get(START_HEADER_ROW, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, true, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 1, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, false, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 2, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, false, false, false, false);
-        this.setHeaderStyle(cells.get(START_HEADER_ROW + 3, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, false, true, false, false);
+        for (int i = 0; i < 4; i++) {
+            this.setHeaderStyle(cells.get(START_HEADER_ROW + i, ADDITIONAL_PERSONAL_INFO_COLUMN), null, false, i == 0, i == 3, false, false);
+        }
         cells.merge(START_HEADER_ROW, ADDITIONAL_PERSONAL_INFO_COLUMN, 4, 1, true);
 
         // C3 part
         int startCol = START_DATE_COL;
+        boolean hasPersonalTotal = !dataSource.getOutputSetting().getPersonalCounterCategories().isEmpty();
         for (int i = 0; i < dataSource.getDateInfos().size(); i++) {
             DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(i);
             cells.get(START_HEADER_ROW, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d") + "\n" + this.getDayOfWeek(dateInfo.getDayOfWeek()));
@@ -221,10 +263,9 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             if (dateInfo.getOptWorkplaceEventName().isPresent()) {
                 cells.get(START_HEADER_ROW + 3, startCol + i).setValue(dateInfo.getOptWorkplaceEventName().get().v());
             }
-            this.setHeaderStyle(cells.get(START_HEADER_ROW, startCol + i), dateInfo, true, true, false, i == dataSource.getDateInfos().size() - 1, false);
-            this.setHeaderStyle(cells.get(START_HEADER_ROW + 1, startCol + i), dateInfo, true, false, false, i == dataSource.getDateInfos().size() - 1, false);
-            this.setHeaderStyle(cells.get(START_HEADER_ROW + 2, startCol + i), dateInfo, false, false, false, i == dataSource.getDateInfos().size() - 1, false);
-            this.setHeaderStyle(cells.get(START_HEADER_ROW + 3, startCol + i), dateInfo, false, false, true, i == dataSource.getDateInfos().size() - 1, false);
+            for (int j = 0; j < 4; j++) {
+                this.setHeaderStyle(cells.get(START_HEADER_ROW + j, startCol + i), dateInfo, j < 2, j == 0, j == 3, i == dataSource.getDateInfos().size() - 1 && hasPersonalTotal, false);
+            }
             cells.merge(START_HEADER_ROW, startCol + i, 2, 1, true);
             cells.setColumnWidth(startCol + i, COLUMN_WIDTH);
         }
@@ -321,20 +362,17 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         }
     }
 
-    private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean wrapText, boolean firstRow, boolean lastRow, boolean lastDateColumn, boolean wkp) {
-        Style style = cell.getStyle();
-        style.setHorizontalAlignment(TextAlignmentType.CENTER);
-        style.setVerticalAlignment(TextAlignmentType.CENTER);
+    private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean wrapText, boolean firstRow, boolean lastRow, boolean doubleBorder, boolean wkp) {
+        Style style = commonStyle();
         if (wrapText) {
             style.setTextWrapped(true);
-        } else {
-            style.setShrinkToFit(true);
         }
-        style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(firstRow ? (wkp ? CellBorderType.THIN : CellBorderType.MEDIUM) : CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(lastRow ? (wkp ? CellBorderType.THIN : CellBorderType.MEDIUM) : CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.LEFT_BORDER).setLineStyle(CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(lastDateColumn ? CellBorderType.DOUBLE : CellBorderType.DOTTED);
-        style.setPattern(BackgroundType.SOLID);
+        if (firstRow)
+            style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(wkp ? CellBorderType.THIN : CellBorderType.MEDIUM);
+        if (lastRow)
+            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(wkp ? CellBorderType.THIN : CellBorderType.MEDIUM);
+        if (doubleBorder)
+            style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
         if (dateInfo != null) {
             if (dateInfo.isSpecificDay()) {
                 style.setForegroundColor(Color.fromArgb(BG_COLOR_SPECIFIC_DAY));
@@ -352,8 +390,6 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             style.setForegroundColor(Color.fromArgb(BG_COLOR_WEEKDAY));
             style.getFont().setColor(Color.fromArgb(TEXT_COLOR_WEEKDAY));
         }
-        style.getFont().setName(FONT_NAME);
-        style.getFont().setSize(9);
         cell.setStyle(style);
     }
 
@@ -376,18 +412,14 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         List<ScheduleTablePersonalInfo> personalInfoScheduleTableList = dataSource.getPersonalInfoScheduleTableList();
         personalInfoScheduleTableList.sort(Comparator.comparing(i -> i.getPersonalInfoMap().get(ScheduleTablePersonalInfoItem.EMPLOYEE_NAME).getCode()));
 
-        // fake emp count
-        ScheduleTablePersonalInfo pInfo = personalInfoScheduleTableList.get(0);
-        for (int g = 0; g < 15; g++) {
-            personalInfoScheduleTableList.add(pInfo);
-        }
-
         int rows = dataSource.getOutputSetting().getOutputItem().getDetails().size();
-        int startRow = START_DATA_ROW;
+        boolean hasPersonalTotal = !dataSource.getOutputSetting().getPersonalCounterCategories().isEmpty();
+        boolean hasWorkplaceTotal = !dataSource.getOutputSetting().getWorkplaceCounterCategories().isEmpty();
         long additionCount = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count();
         // loop employee
         for (int i1 = 0; i1 < personalInfoScheduleTableList.size(); i1++) {
             ScheduleTablePersonalInfo emp = personalInfoScheduleTableList.get(i1);
+            indexes.add(startRow);
             List<OneRowOutputItem> personalItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getPersonalInfo().isPresent()).collect(Collectors.toList());
             List<OneRowOutputItem> additionalItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).collect(Collectors.toList());
             List<OneRowOutputItem> attendanceItems = dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAttendanceItem().isPresent()).collect(Collectors.toList());
@@ -400,8 +432,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     OneRowOutputItem personalItem = personalItems.get(i);
                     this.setPesonalInfoValue(cells, personalItem.getPersonalInfo(), emp, startRow + i, PERSONAL_INFO_COLUMN, false);
                 }
-                this.setPersonalStyle(cells, startRow + i, PERSONAL_INFO_COLUMN, i == 0, i == rows - 1, i1 == personalInfoScheduleTableList.size() - 1);
-                this.setPersonalStyle(cells, startRow + i, PERSONAL_INFO_COLUMN + 1, i == 0, i == rows - 1, i1 == personalInfoScheduleTableList.size() - 1);
+                this.setPersonalStyle(cells, startRow + i, PERSONAL_INFO_COLUMN, i == 0, i == rows - 1, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal);
+                this.setPersonalStyle(cells, startRow + i, PERSONAL_INFO_COLUMN + 1, i == 0, i == rows - 1, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal);
                 cells.merge(startRow + i, PERSONAL_INFO_COLUMN, 1, 2);
 
                 // E2 part
@@ -409,7 +441,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     OneRowOutputItem additionalItem = additionalItems.get(i);
                     this.setPesonalInfoValue(cells, additionalItem.getAdditionalInfo(), emp, startRow + i, ADDITIONAL_PERSONAL_INFO_COLUMN, additionCount == 1);
                 }
-                this.setPersonalStyle(cells, startRow + i, ADDITIONAL_PERSONAL_INFO_COLUMN, i == 0, i == rows - 1, i1 == personalInfoScheduleTableList.size() - 1);
+                this.setPersonalStyle(cells, startRow + i, ADDITIONAL_PERSONAL_INFO_COLUMN, i == 0, i == rows - 1, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal);
 
                 // E3 part
                 for (int j = 0; j < dataSource.getDateInfos().size(); j++) {
@@ -423,8 +455,8 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                             startCol + j,
                             i == 0,
                             i == rows - 1,
-                            i1 == personalInfoScheduleTableList.size() - 1,
-                            j == dataSource.getDateInfos().size() - 1
+                            i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
+                            j == dataSource.getDateInfos().size() - 1 && hasPersonalTotal
                     );
                 }
             }
@@ -434,16 +466,16 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 PersonalCounterCategory personalCounterCategory = dataSource.getOutputSetting().getPersonalCounterCategories().get(ii);
                 switch (personalCounterCategory) {
                     case WORKING_HOURS:
-                        Map<String, Map<AttendanceTimesForAggregation, BigDecimal>> workingHoursMap = (Map<String, Map<AttendanceTimesForAggregation, BigDecimal>>) dataSource.getPersonalTotalResult().get(personalCounterCategory);
+                        Map<String, Map<AttendanceTimesForAggregation, BigDecimal>> workingHoursMap = (Map<String, Map<AttendanceTimesForAggregation, BigDecimal>>) dataSource.getPersonalTotalResult().getOrDefault(personalCounterCategory, new HashMap<>());
                         Map<AttendanceTimesForAggregation, BigDecimal> workingHours = workingHoursMap.get(emp.getEmployeeId());
                         AttendanceTimesForAggregation[] values = AttendanceTimesForAggregation.values();
                         for (int jj = 0; jj < values.length; jj++) {
                             AttendanceTimesForAggregation attendanceTimesForAggregation = values[jj];
                             if (attendanceTimesForAggregation != AttendanceTimesForAggregation.NIGHTSHIFT) {
                                 String value = workingHours != null && workingHours.get(attendanceTimesForAggregation) != null ? new TimeWithDayAttr(workingHours.get(attendanceTimesForAggregation).intValue()).getRawTimeWithFormat() : "";
-                                this.setPersonalTotalValue(cells.get(startRow, startCol + jj), value, i1 == personalInfoScheduleTableList.size() - 1, Optional.empty());
+                                this.setPersonalTotalValue(cells.get(startRow, startCol + jj), value, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
                                 for (int kk = 1; kk < rows; kk++) {
-                                    this.setPersonalTotalValue(cells.get(startRow + kk, startCol + jj), null, i1 == personalInfoScheduleTableList.size() - 1, Optional.empty());
+                                    this.setPersonalTotalValue(cells.get(startRow + kk, startCol + jj), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
                                 }
                                 cells.merge(startRow, startCol + jj, rows, 1);
                             }
@@ -452,23 +484,23 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                         break;
                     case MONTHLY_EXPECTED_SALARY:
                     case CUMULATIVE_ESTIMATED_SALARY:
-                        Map<String, EstimatedSalary> estimatedSalaryMap = (Map<String, EstimatedSalary>) dataSource.getPersonalTotalResult().get(personalCounterCategory);
+                        Map<String, EstimatedSalary> estimatedSalaryMap = (Map<String, EstimatedSalary>) dataSource.getPersonalTotalResult().getOrDefault(personalCounterCategory, new HashMap<>());
                         EstimatedSalary estimatedSalary = estimatedSalaryMap.get(emp.getEmployeeId());
                         this.setPersonalTotalValue(
                                 cells.get(startRow, startCol),
-                                estimatedSalary == null ? "" : NumberFormat.getCurrencyInstance().format(estimatedSalary.getCriterion().v()),
-                                i1 == personalInfoScheduleTableList.size() - 1,
+                                estimatedSalary == null ? "" : df.format(estimatedSalary.getCriterion().v()),
+                                i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
                                 estimatedSalary.getBackground().map(i -> i.v().substring(1))
                         );
                         this.setPersonalTotalValue(
                                 cells.get(startRow, startCol + 1),
-                                estimatedSalary == null ? "" : NumberFormat.getCurrencyInstance().format(estimatedSalary.getSalary()),
-                                i1 == personalInfoScheduleTableList.size() - 1,
+                                estimatedSalary == null ? "" : df.format(estimatedSalary.getSalary()),
+                                i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
                                 estimatedSalary.getBackground().map(PrimitiveValueBase::toString)
                         );
                         for (int kk = 1; kk < rows; kk++) {
-                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol), null, i1 == personalInfoScheduleTableList.size() - 1, Optional.empty());
-                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol + 1), null, i1 == personalInfoScheduleTableList.size() - 1, Optional.empty());
+                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
+                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol + 1), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
                         }
                         cells.merge(startRow, startCol, rows, 1);
                         cells.merge(startRow, startCol + 1, rows, 1);
@@ -477,7 +509,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                     case TIMES_COUNTING_1:
                     case TIMES_COUNTING_2:
                     case TIMES_COUNTING_3:
-                        Map<String, Map<Integer, BigDecimal>> timesCountMap = (Map<String, Map<Integer, BigDecimal>>) dataSource.getPersonalTotalResult().get(personalCounterCategory);
+                        Map<String, Map<Integer, BigDecimal>> timesCountMap = (Map<String, Map<Integer, BigDecimal>>) dataSource.getPersonalTotalResult().getOrDefault(personalCounterCategory, new HashMap<>());
                         Map<Integer, BigDecimal> timesCount = timesCountMap.get(emp.getEmployeeId());
                         TimesNumberCounterType counterType;
                         if (personalCounterCategory == PersonalCounterCategory.TIMES_COUNTING_1)
@@ -494,37 +526,39 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                                 this.setPersonalTotalValue(
                                         cells.get(startRow, startCol + jj),
                                         timesCount == null || timesCount.get(totalTime.getTotalCountNo()) == null ? "" : timesCount.get(totalTime.getTotalCountNo()).toString(),
-                                        i1 == personalInfoScheduleTableList.size() - 1,
+                                        i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
                                         Optional.empty()
                                 );
                                 for (int kk = 1; kk < rows; kk++) {
-                                    this.setPersonalTotalValue(cells.get(startRow + kk, startCol + jj), null, i1 == personalInfoScheduleTableList.size() - 1, Optional.empty());
+                                    this.setPersonalTotalValue(cells.get(startRow + kk, startCol + jj), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
                                 }
                                 cells.merge(startRow, startCol + jj, rows, 1);
                             }
+                            startCol += totalTimes.size();
                         }
                         break;
                     case ATTENDANCE_HOLIDAY_DAYS:
-                        Map<String, Map<WorkClassificationAsAggregationTarget, BigDecimal>> holidayWorkMap = (Map<String, Map<WorkClassificationAsAggregationTarget, BigDecimal>>) dataSource.getPersonalTotalResult().get(personalCounterCategory);
+                        Map<String, Map<WorkClassificationAsAggregationTarget, BigDecimal>> holidayWorkMap = (Map<String, Map<WorkClassificationAsAggregationTarget, BigDecimal>>) dataSource.getPersonalTotalResult().getOrDefault(personalCounterCategory, new HashMap<>());
                         Map<WorkClassificationAsAggregationTarget, BigDecimal> holidayWork = holidayWorkMap.get(emp.getEmployeeId());
                         this.setPersonalTotalValue(
                                 cells.get(startRow, startCol),
                                 holidayWork == null || holidayWork.get(WorkClassificationAsAggregationTarget.WORKING) == null ? "" : holidayWork.get(WorkClassificationAsAggregationTarget.WORKING).toString(),
-                                i1 == personalInfoScheduleTableList.size() - 1,
+                                i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
                                 Optional.empty()
                         );
                         this.setPersonalTotalValue(
                                 cells.get(startRow, startCol + 1),
                                 holidayWork == null || holidayWork.get(WorkClassificationAsAggregationTarget.HOLIDAY) == null ? "" : holidayWork.get(WorkClassificationAsAggregationTarget.HOLIDAY).toString(),
-                                i1 == personalInfoScheduleTableList.size() - 1,
+                                i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
                                 Optional.empty()
                         );
                         for (int kk = 1; kk < rows; kk++) {
-                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol), null, i1 == personalInfoScheduleTableList.size() - 1, Optional.empty());
-                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol + 1), null, i1 == personalInfoScheduleTableList.size() - 1, Optional.empty());
+                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
+                            this.setPersonalTotalValue(cells.get(startRow + kk, startCol + 1), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
                         }
                         cells.merge(startRow, startCol, rows, 1);
                         cells.merge(startRow, startCol + 1, rows, 1);
+                        startCol += 2;
                         break;
                     default:
                         break;
@@ -534,7 +568,22 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         }
 
         // F1, F2, F3 parts
-        this.printContentF(worksheet, dataSource, startRow);
+        this.printContentF(worksheet, dataSource);
+    }
+
+    private Style commonStyle() {
+        Style commonStyle = new Style();
+        commonStyle.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.DOTTED);
+        commonStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.DOTTED);
+        commonStyle.getBorders().getByBorderType(BorderType.LEFT_BORDER).setLineStyle(CellBorderType.DOTTED);
+        commonStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
+        commonStyle.getFont().setName(FONT_NAME);
+        commonStyle.getFont().setSize(FONT_SIZE);
+        commonStyle.setShrinkToFit(true);
+        commonStyle.setPattern(BackgroundType.SOLID);
+        commonStyle.setVerticalAlignment(TextAlignmentType.CENTER);
+        commonStyle.setHorizontalAlignment(TextAlignmentType.CENTER);
+        return commonStyle;
     }
 
     private void setPesonalInfoValue(Cells cells, Optional<ScheduleTablePersonalInfoItem> item, ScheduleTablePersonalInfo emp, int row, int column, boolean isValueOnly) {
@@ -550,7 +599,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 case TEAM:
                 case RANK:
                 case NURSE_CLASSIFICATION:
-                    value += emp.getPersonalInfoMap().get(item.get()) != null ? emp.getPersonalInfoMap().get(item.get()).getName() : "";
+                    value += emp.getPersonalInfoMap().getOrDefault(item.get(), new ScheduleTablePersonalInfoItemData("", "")).getName();
                     break;
 //                case QUALIFICATION:
                 default:
@@ -560,45 +609,50 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         }
     }
 
-    private void setPersonalStyle(Cells cells, int row, int column, boolean firstRow, boolean lastRow, boolean lastEmployee) {
-        Style style = cells.get(row, column).getStyle();
-        style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(firstRow ? CellBorderType.THIN : CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(lastRow ? (lastEmployee ? CellBorderType.DOUBLE : CellBorderType.THIN) : CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.LEFT_BORDER).setLineStyle(CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
-        style.getFont().setName(FONT_NAME);
-        style.getFont().setSize(9);
-        style.setShrinkToFit(true);
-        style.setPattern(BackgroundType.SOLID);
-        style.setVerticalAlignment(TextAlignmentType.CENTER);
+    private void setPersonalStyle(Cells cells, int row, int column, boolean firstRow, boolean lastRow, boolean doubleBorder) {
+        Style style = commonStyle();
+        if (firstRow)
+            style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
+        if (lastRow)
+            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(doubleBorder ? CellBorderType.DOUBLE : CellBorderType.THIN);
+        style.setHorizontalAlignment(TextAlignmentType.LEFT);
 //        if (firstRow) style.setForegroundColor(Color.fromArgb(221, 235, 247));
         cells.get(row, column).setStyle(style);
     }
 
-    private void setAttendanceValue(Cells cells, Optional<OneDayEmployeeAttendanceInfo> attendanceInfo, ScheduleTableAttendanceItem attendanceItem, int row, int column, boolean isFirstRow, boolean isLastRow, boolean isLastEmployee, boolean isLastDateColumn) {
+    private void setAttendanceValue(Cells cells, Optional<OneDayEmployeeAttendanceInfo> attendanceInfo, ScheduleTableAttendanceItem attendanceItem, int row, int column, boolean isFirstRow, boolean isLastRow, boolean doubleBorderBottom, boolean doubleBorderRight) {
         String value = "";
+        Style style = commonStyle();
         if (attendanceItem != null && attendanceInfo.isPresent()) {
             switch (attendanceItem) {
                 case SHIFT:
                     Optional<ShiftMaster> shiftMaster = attendanceInfo.get().getShiftMaster(require);
-                    if (shiftMaster.isPresent())
+                    if (shiftMaster.isPresent()) {
                         value = shiftMaster.get().getDisplayInfor().getName().v();
-//                    else
-//                        value = getText("KSU001_4136");
+                        style.setForegroundColor(Color.fromArgb(Integer.parseInt(shiftMaster.get().getDisplayInfor().getColor().v(), 16)));
+                    } else if (attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) != null)
+                        value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) + getText("KSU001_4136");
                     break;
                 case WORK_TYPE:
                     Optional<WorkType> workType = attendanceInfo.get().getWorkType(require);
-                    if (workType.isPresent())
+                    if (workType.isPresent()) {
                         value = workType.get().getAbbreviationName().v();
-                    else if (attendanceInfo.get().getAttendanceItemInfoMap().get(ScheduleTableAttendanceItem.WORK_TYPE) != null)
-                        value = attendanceInfo.get().getAttendanceItemInfoMap().get(ScheduleTableAttendanceItem.WORK_TYPE) + getText("KSU001_4135");
+                        if (workType.get().chechAttendanceDay() == AttendanceDayAttr.FULL_TIME) {
+                            style.getFont().setColor(Color.getBlue());
+                        } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HOLIDAY) {
+                            style.getFont().setColor(Color.getRed());
+                        } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_AM || workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_PM) {
+                            style.getFont().setColor(Color.fromArgb(255, 127, 39));
+                        }
+                    } else if (attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) != null)
+                        value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) + getText("KSU001_4135");
                     break;
                 case WORK_TIME:
                     Optional<WorkTimeSetting> workTime = attendanceInfo.get().getWorkTime(require);
                     if (workTime.isPresent())
                         value = workTime.get().getWorkTimeDisplayName().getWorkTimeAbName().v();
-                    else if (attendanceInfo.get().getAttendanceItemInfoMap().get(ScheduleTableAttendanceItem.WORK_TIME) != null)
-                        value = attendanceInfo.get().getAttendanceItemInfoMap().get(ScheduleTableAttendanceItem.WORK_TIME) + getText("KSU001_4135");
+                    else if (attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) != null)
+                        value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) + getText("KSU001_4135");
                     break;
                 case START_TIME:
                 case END_TIME:
@@ -622,6 +676,7 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                 case LABOR_COST_TIME_10:
                     AttendanceTime attdTime = (AttendanceTime) attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem);
                     if (attdTime != null) value = new TimeWithDayAttr(attdTime.v()).getRawTimeWithFormat();
+                    break;
                 default:
                     if (attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem) != null)
                         value = attendanceInfo.get().getAttendanceItemInfoMap().get(attendanceItem).toString();
@@ -629,52 +684,23 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
             }
         }
         cells.get(row, column).setValue(value);
-        Style style = cells.get(row, column).getStyle();
-        style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(isFirstRow ? CellBorderType.THIN : CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(isLastRow ? (isLastEmployee ? CellBorderType.DOUBLE : CellBorderType.THIN) : CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.LEFT_BORDER).setLineStyle(CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(isLastDateColumn ? CellBorderType.DOUBLE : CellBorderType.DOTTED);
-        style.getFont().setName(FONT_NAME);
-        style.getFont().setSize(9);
-        if (attendanceInfo.isPresent()) {
-            Optional<WorkType> workType = attendanceInfo.get().getWorkType(require);
-            if (workType.isPresent()) {
-                if (workType.get().chechAttendanceDay() == AttendanceDayAttr.FULL_TIME) {
-                    style.getFont().setColor(Color.getBlue());
-                } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HOLIDAY) {
-                    style.getFont().setColor(Color.getRed());
-                } else if (workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_AM || workType.get().chechAttendanceDay() == AttendanceDayAttr.HALF_TIME_PM) {
-                    style.getFont().setColor(Color.fromArgb(255, 127, 39));
-                }
-            }
-        }
-        style.setShrinkToFit(true);
-        style.setPattern(BackgroundType.SOLID);
-        style.setVerticalAlignment(TextAlignmentType.CENTER);
-        style.setHorizontalAlignment(TextAlignmentType.CENTER);
+        if (isFirstRow)
+            style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
+        if (isLastRow)
+            style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(doubleBorderBottom ? CellBorderType.DOUBLE : CellBorderType.THIN);
+        if (doubleBorderRight)
+            style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
 //        if (isFirstRow) {
 //            style.setForegroundColor(Color.fromArgb(221, 235, 247));
 //        } else
-        if (attendanceItem == ScheduleTableAttendanceItem.SHIFT && attendanceInfo.isPresent()) {
-            Optional<ShiftMaster> shiftMaster = attendanceInfo.get().getShiftMaster(require);
-            if (shiftMaster.isPresent())
-                style.setForegroundColor(Color.fromArgb(Integer.parseInt(shiftMaster.get().getDisplayInfor().getColor().v(), 16)));
-        }
         cells.get(row, column).setStyle(style);
     }
 
-    private void setPersonalTotalValue(Cell cell, String value, boolean lastEmployee, Optional<String> colorCode) {
+    private void setPersonalTotalValue(Cell cell, String value, boolean doubleBorder, Optional<String> colorCode) {
         cell.setValue(value);
-        Style style = cell.getStyle();
+        Style style = commonStyle();
         style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
-        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(lastEmployee ? CellBorderType.DOUBLE : CellBorderType.THIN);
-        style.getBorders().getByBorderType(BorderType.LEFT_BORDER).setLineStyle(CellBorderType.DOTTED);
-        style.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
-        style.getFont().setName(FONT_NAME);
-        style.getFont().setSize(9);
-        style.setShrinkToFit(true);
-        style.setPattern(BackgroundType.SOLID);
-        style.setVerticalAlignment(TextAlignmentType.CENTER);
+        style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(doubleBorder ? CellBorderType.DOUBLE : CellBorderType.THIN);
         style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 //        if (isFirstRow)
 //            style.setForegroundColor(Color.fromArgb(221, 235, 247));
@@ -685,19 +711,266 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         cell.setStyle(style);
     }
 
-    private void printContentF(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource, int startRow) {
+    private void printContentF(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource) {
+        String companyId = AppContexts.user().companyId();
         Cells cells = worksheet.getCells();
+        boolean hasPersonalTotal = !dataSource.getOutputSetting().getPersonalCounterCategories().isEmpty();
         for (WorkplaceCounterCategory category : dataSource.getOutputSetting().getWorkplaceCounterCategories()) {
             // header
-            this.printHeaderF(cells, category, dataSource.getDateInfos(), startRow);
+            this.printHeaderF(cells, category, dataSource.getDateInfos(), hasPersonalTotal);
+            indexes.add(startRow);
             startRow += 2;
 
             // content
+            switch (category) {
+                case LABOR_COSTS_AND_TIME:
+                    Map<GeneralDate, Map<LaborCostAggregationUnit, BigDecimal>> laborCostTimeMap = (Map<GeneralDate, Map<LaborCostAggregationUnit, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                    Optional<WorkplaceCounterLaborCostAndTime> workplaceCounterLaborCostAndTime = workplaceCounterLaborCostAndTimeRepo.get(companyId);
+                    if (workplaceCounterLaborCostAndTime.isPresent()) {
+                        List<AggregationUnitOfLaborCosts> units = Arrays.asList(AggregationUnitOfLaborCosts.WITHIN, AggregationUnitOfLaborCosts.EXTRA, AggregationUnitOfLaborCosts.TOTAL);
+                        List<String> unitStrings = Arrays.asList(getText("KSU001_50"), getText("KSU001_51"), getText("KSU001_58"));
+                        for (int i = 0; i < units.size(); i++) {
+                            AggregationUnitOfLaborCosts unit = units.get(i);
+                            LaborCostAndTime laborCostAndTime = workplaceCounterLaborCostAndTime.get().getLaborCostAndTimeList().get(unit);
+                            if (laborCostAndTime.getUseClassification() == NotUseAtr.USE) {
+                                int count = 0, copyStartRow = startRow;
+                                if (laborCostAndTime.isTargetAggregation(LaborCostItemType.TIME)) {
+                                    this.setWorkplaceLaborCostTimeTotalValue(
+                                            cells,
+                                            dataSource.getDateInfos(),
+                                            laborCostTimeMap,
+                                            unit,
+                                            LaborCostItemType.TIME,
+                                            true,
+                                            !laborCostAndTime.isTargetAggregation(LaborCostItemType.AMOUNT) && !laborCostAndTime.isTargetAggregation(LaborCostItemType.BUDGET),
+                                            hasPersonalTotal
+                                    );
+                                    startRow++;
+                                    count++;
+                                }
+                                if (laborCostAndTime.isTargetAggregation(LaborCostItemType.AMOUNT)) {
+                                    this.setWorkplaceLaborCostTimeTotalValue(
+                                            cells,
+                                            dataSource.getDateInfos(),
+                                            laborCostTimeMap,
+                                            unit,
+                                            LaborCostItemType.AMOUNT,
+                                            !laborCostAndTime.isTargetAggregation(LaborCostItemType.TIME),
+                                            !laborCostAndTime.isTargetAggregation(LaborCostItemType.BUDGET),
+                                            hasPersonalTotal
+                                    );
+                                    startRow++;
+                                    count++;
+                                }
+                                if (laborCostAndTime.isTargetAggregation(LaborCostItemType.BUDGET)) {
+                                    this.setWorkplaceLaborCostTimeTotalValue(
+                                            cells,
+                                            dataSource.getDateInfos(),
+                                            laborCostTimeMap,
+                                            unit,
+                                            LaborCostItemType.BUDGET,
+                                            !laborCostAndTime.isTargetAggregation(LaborCostItemType.TIME) && !laborCostAndTime.isTargetAggregation(LaborCostItemType.AMOUNT),
+                                            true,
+                                            hasPersonalTotal
+                                    );
+                                    startRow++;
+                                    count++;
+                                }
+                                cells.get(copyStartRow, PERSONAL_INFO_COLUMN).setValue(unitStrings.get(i));
+                                for (int k = 0; k < count; k++) {
+                                    Style style = commonStyle();
+                                    if (count > 1) style.setVerticalAlignment(TextAlignmentType.TOP);
+                                    style.setHorizontalAlignment(TextAlignmentType.LEFT);
+                                    style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
+                                    style.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THIN);
+                                    cells.get(copyStartRow + k, PERSONAL_INFO_COLUMN).setStyle(style);
+                                }
+                                cells.merge(copyStartRow, PERSONAL_INFO_COLUMN, count, 1);
+                            }
+                        }
+                    }
+                    break;
+                case TIMES_COUNTING:
+                    Optional<TimesNumberCounterSelection> timesNumberCounterSelection = timesNumberCounterSelectionRepo.get(companyId, TimesNumberCounterType.WORKPLACE);
+                    if (timesNumberCounterSelection.isPresent()) {
+                        Map<GeneralDate, Map<Integer, BigDecimal>> timeCountMap = (Map<GeneralDate, Map<Integer, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                        List<Integer> selectedNoList = timesNumberCounterSelection.get().getSelectedNoList();
+                        List<TotalTimes> totalTimes = totalTimesRepo.getTotalTimesDetailByListNo(companyId, selectedNoList)
+                                .stream().filter(t -> t.getUseAtr() == UseAtr.Use).collect(Collectors.toList());
+                        for (int i = 0; i < totalTimes.size(); i++) {
+                            TotalTimes totalTime = totalTimes.get(i);
+                            cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(totalTime.getTotalTimesName().v());
+                            Style itemStyle = commonStyle();
+                            itemStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+                            cells.get(startRow, PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+                            cells.get(startRow, PERSONAL_INFO_COLUMN + 1).setStyle(itemStyle);
+                            cells.merge(startRow, PERSONAL_INFO_COLUMN, 1, 2);
+                            BigDecimal total = BigDecimal.ZERO;
+                            for (int j = 0; j < dataSource.getDateInfos().size(); j++) {
+                                DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(j);
+                                Map<Integer, BigDecimal> mapValue = timeCountMap.getOrDefault(dateInfo.getYmd(), new HashMap<>());
+                                BigDecimal value = mapValue.getOrDefault(totalTime.getTotalCountNo(), BigDecimal.ZERO);
+                                cells.get(startRow, START_DATE_COL + j).setValue(value.toString());
+                                total = total.add(value);
+                                itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                                if (j == dataSource.getDateInfos().size() - 1 && hasPersonalTotal) itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
+                                cells.get(startRow, START_DATE_COL + j).setStyle(itemStyle);
+                            }
+                            cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(total.toString());
+                            itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                            itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
+                            cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+                            startRow++;
+                        }
+                    }
+                    break;
+                case EXTERNAL_BUDGET:
+                    Map<GeneralDate, Map<ExternalBudget, ExternalBudgetValues>> externalBudgetMap = (Map<GeneralDate, Map<ExternalBudget, ExternalBudgetValues>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                    List<ExternalBudget> externalBudgets = externalBudgetRepo.findAll(companyId);
+                    for (int i = 0; i < externalBudgets.size(); i++) {
+                        ExternalBudget externalBudget = externalBudgets.get(i);
+                        cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(externalBudget.getExternalBudgetName().v());
+                        Style itemStyle = commonStyle();
+                        itemStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+                        cells.get(startRow, PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+                        cells.get(startRow, PERSONAL_INFO_COLUMN + 1).setStyle(itemStyle);
+                        cells.merge(startRow, PERSONAL_INFO_COLUMN, 1, 2);
 
+                        BigDecimal total = BigDecimal.ZERO;
+                        for (int j = 0; j < dataSource.getDateInfos().size(); j++) {
+                            DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(j);
+                            Map<ExternalBudget, ExternalBudgetValues> valueMap = externalBudgetMap.getOrDefault(dateInfo.getYmd(), new HashMap<>());
+                            ExternalBudgetValues value = valueMap.get(externalBudget);
+                            if (value != null) {
+                                BigDecimal bdValue = new BigDecimal(value.toString());
+                                total = total.add(bdValue);
+                                cells.get(startRow, START_DATE_COL + j).setValue(externalBudget.getBudgetAtr() == BudgetAtr.TIME ? new TimeWithDayAttr(bdValue.intValue()).getRawTimeWithFormat() : df.format(bdValue));
+                            } else {
+                                cells.get(startRow, START_DATE_COL + j).setValue(externalBudget.getBudgetAtr() == BudgetAtr.TIME ? "0:00" : "0");
+                            }
+                            itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                            if (j == dataSource.getDateInfos().size() - 1 && hasPersonalTotal) itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
+                            cells.get(startRow, START_DATE_COL + j).setStyle(itemStyle);
+                        }
+                        cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(externalBudget.getBudgetAtr() == BudgetAtr.TIME ? new TimeWithDayAttr(total.intValue()).getRawTimeWithFormat() : df.format(total.intValue()));
+                        itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                        itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
+                        cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+                        startRow++;
+                    }
+                    break;
+                case WORKTIME_PEOPLE:
+                    Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<CodeNameValue>>> shiftTimeMap = (Map<GeneralDate, List<NumberOfPeopleByEachWorkMethod<CodeNameValue>>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                    List<CodeNameValue> masters;
+                    if (dataSource.getOutputSetting().getOutputItem().getDisplayAttendanceItems().contains(ScheduleTableAttendanceItem.SHIFT)) {
+                        masters = shiftMasterRepo.getAllByCid(companyId).stream().map(s -> new CodeNameValue(s.getShiftMasterCode(), s.getShiftMasterName())).collect(Collectors.toList());
+                    } else {
+                        masters = workTimeSettingRepo.findActiveItems(companyId).stream().map(w -> new CodeNameValue(w.getWorktimeCode().v(), w.getWorkTimeDisplayName().getWorkTimeAbName().v())).collect(Collectors.toList());
+                    }
+                    for (int i = 0; i < masters.size(); i++) {
+                        CodeNameValue master = masters.get(i);
+                        cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(master.getName());
+                        cells.get(startRow, PERSONAL_INFO_COLUMN + 1).setValue(getText("KSU001_70"));
+                        cells.get(startRow + 1, PERSONAL_INFO_COLUMN + 1).setValue(getText("KSU001_71"));
+                        cells.get(startRow + 2, PERSONAL_INFO_COLUMN + 1).setValue(getText("KSU001_72"));
+                        Style itemStyle = commonStyle();
+                        itemStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+                        for (int j = 0; j < 3; j++) {
+                            if (j == 0) {
+                                itemStyle.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
+                                itemStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.DOTTED);
+                            } else if (j == 1) {
+                                itemStyle.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.DOTTED);
+                                itemStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.DOTTED);
+                            } else {
+                                itemStyle.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.DOTTED);
+                                itemStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THIN);
+                            }
+                            itemStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+                            itemStyle.setVerticalAlignment(TextAlignmentType.TOP);
+                            cells.get(startRow + j, PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+                            itemStyle.setVerticalAlignment(TextAlignmentType.CENTER);
+                            cells.get(startRow + j, PERSONAL_INFO_COLUMN + 1).setStyle(itemStyle);
+                            itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                            cells.get(startRow + j, ADDITIONAL_PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+                        }
+                        cells.merge(startRow, PERSONAL_INFO_COLUMN, 3, 1);
+
+                        BigDecimal total = BigDecimal.ZERO;
+                        BigDecimal total2 = BigDecimal.ZERO;
+                        BigDecimal total3 = BigDecimal.ZERO;
+                        for (int j = 0; j < dataSource.getDateInfos().size(); j++) {
+                            DateInformation dateInfo = (DateInformation) dataSource.getDateInfos().get(j);
+                            List<NumberOfPeopleByEachWorkMethod<CodeNameValue>> values = shiftTimeMap.get(dateInfo.getYmd());
+                            Optional<NumberOfPeopleByEachWorkMethod<CodeNameValue>> value = values.stream().filter(s -> s.getWorkMethod().getCode().equals(master.getCode())).findFirst();
+                            if (value.isPresent()) {
+                                cells.get(startRow, START_DATE_COL + j).setValue(value.get().getPlanNumber().toString());
+                                cells.get(startRow + 1, START_DATE_COL + j).setValue(value.get().getScheduleNumber().toString());
+                                cells.get(startRow + 2, START_DATE_COL + j).setValue(value.get().getActualNumber().toString());
+                            } else {
+                                cells.get(startRow, START_DATE_COL + j).setValue("0");
+                                cells.get(startRow + 1, START_DATE_COL + j).setValue("0");
+                                cells.get(startRow + 2, START_DATE_COL + j).setValue("0");
+                            }
+                            Style valueStyle = commonStyle();
+                            valueStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                            if (j == dataSource.getDateInfos().size() - 1 && hasPersonalTotal) valueStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
+                            cells.get(startRow + 1, START_DATE_COL + j).setStyle(valueStyle);
+                            valueStyle.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.THIN);
+                            cells.get(startRow, START_DATE_COL + j).setStyle(valueStyle);
+                            valueStyle.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.DOTTED);
+                            valueStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.THIN);
+                            cells.get(startRow + 2, START_DATE_COL + j).setStyle(valueStyle);
+                        }
+                        cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(total.toString());
+                        cells.get(startRow + 1, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(total2.toString());
+                        cells.get(startRow + 2, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(total3.toString());
+                        startRow += 3;
+                    }
+                    break;
+                case EMPLOYMENT_PEOPLE:
+                    Map<GeneralDate, Map<Employment, BigDecimal>> employmentMap = (Map<GeneralDate, Map<Employment, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                    Map<GeneralDate, Map<CodeNameValue, BigDecimal>> empMap = employmentMap.entrySet().stream().collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            e1 -> e1.getValue().entrySet().stream().collect(Collectors.toMap(
+                                    e2 -> new CodeNameValue(e2.getKey().getEmploymentCode().v(), e2.getKey().getEmploymentName().v()),
+                                    e2 -> e2.getValue()
+                            ))
+                    ));
+                    List<CodeNameValue> employments = employmentRepo.findAll(companyId).stream().map(e -> new CodeNameValue(e.getEmploymentCode().v(), e.getEmploymentName().v())).collect(Collectors.toList());
+                    this.printEmpClsJobContent(cells, empMap, employments, dataSource.getDateInfos(), hasPersonalTotal);
+                    break;
+                case POSITION_PEOPLE:
+                    Map<GeneralDate, Map<JobTitleInfo, BigDecimal>> jobTitleMap = (Map<GeneralDate, Map<JobTitleInfo, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                    Map<GeneralDate, Map<CodeNameValue, BigDecimal>> jobMap = jobTitleMap.entrySet().stream().collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            e1 -> e1.getValue().entrySet().stream().collect(Collectors.toMap(
+                                    e2 -> new CodeNameValue(e2.getKey().getJobTitleCode().v(), e2.getKey().getJobTitleName().v()),
+                                    e2 -> e2.getValue()
+                            ))
+                    ));
+                    List<CodeNameValue> jobTitles = jobTitleInfoRepo.findAll(companyId, dataSource.getPeriod().end()).stream().map(j -> new CodeNameValue(j.getJobTitleCode().v(), j.getJobTitleName().v())).collect(Collectors.toList());
+                    this.printEmpClsJobContent(cells, jobMap, jobTitles, dataSource.getDateInfos(), hasPersonalTotal);
+                    break;
+                case CLASSIFICATION_PEOPLE:
+                    Map<GeneralDate, Map<Classification, BigDecimal>> classificationMap = (Map<GeneralDate, Map<Classification, BigDecimal>>) dataSource.getWorkplaceTotalResult().getOrDefault(category, new HashMap<>());
+                    Map<GeneralDate, Map<CodeNameValue, BigDecimal>> classMap = classificationMap.entrySet().stream().collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            e1 -> e1.getValue().entrySet().stream().collect(Collectors.toMap(
+                                    e2 -> new CodeNameValue(e2.getKey().getClassificationCode().v(), e2.getKey().getClassificationName().v()),
+                                    e2 -> e2.getValue()
+                            ))
+                    ));
+                    List<CodeNameValue> classifications = classificationRepo.getAllManagementCategory(companyId).stream().map(c -> new CodeNameValue(c.getClassificationCode().v(), c.getClassificationName().v())).collect(Collectors.toList());
+                    this.printEmpClsJobContent(cells, classMap, classifications, dataSource.getDateInfos(), hasPersonalTotal);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
-    private void printHeaderF(Cells cells, WorkplaceCounterCategory category, List<DateInformation> dateInformations, int startRow) {
+    private void printHeaderF(Cells cells, WorkplaceCounterCategory category, List<DateInformation> dateInformations, boolean hasPersonalTotal) {
         // F1 part
         cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(getText(category.nameId));
         this.setHeaderStyle(cells.get(startRow, PERSONAL_INFO_COLUMN), null, false, true, false, false, true);
@@ -717,9 +990,115 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
         for (int i = 0; i < dateInformations.size(); i++) {
             DateInformation dateInfo = dateInformations.get(i);
             cells.get(startRow, startCol + i).setValue(dateInfo.getYmd().toString(i == 0 || dateInfo.getYmd().day() == 1 ? "M/d" : "d") + "\n" + this.getDayOfWeek(dateInfo.getDayOfWeek()));
-            this.setHeaderStyle(cells.get(startRow, startCol + i), dateInfo, true, true, false, i == dateInformations.size() - 1, true);
-            this.setHeaderStyle(cells.get(startRow + 1, startCol + i), dateInfo, true, false, true, i == dateInformations.size() - 1, true);
+            this.setHeaderStyle(cells.get(startRow, startCol + i), dateInfo, true, true, false, i == dateInformations.size() - 1 && hasPersonalTotal, true);
+            this.setHeaderStyle(cells.get(startRow + 1, startCol + i), dateInfo, true, false, true, i == dateInformations.size() - 1 && hasPersonalTotal, true);
             cells.merge(startRow, startCol + i, 2, 1, true);
+        }
+    }
+
+    private void setWorkplaceLaborCostTimeTotalValue(Cells cells, List<DateInformation> dateInformations, Map<GeneralDate, Map<LaborCostAggregationUnit, BigDecimal>> laborCostTimeMap, AggregationUnitOfLaborCosts unit, LaborCostItemType itemType, boolean startUnit, boolean endUnit, boolean hasPesonalTotal) {
+        String itemString;
+        if (itemType == LaborCostItemType.TIME) itemString = getText("KSU001_59");
+        else if (itemType == LaborCostItemType.AMOUNT) itemString = getText("KSU001_60");
+        else itemString = getText("KSU001_61");
+        cells.get(startRow, PERSONAL_INFO_COLUMN + 1).setValue(itemString);
+        Style itemStyle = commonStyle();
+        itemStyle.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(startUnit ? CellBorderType.THIN : CellBorderType.DOTTED);
+        itemStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(endUnit ? CellBorderType.THIN : CellBorderType.DOTTED);
+        itemStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+        cells.get(startRow, PERSONAL_INFO_COLUMN + 1).setStyle(itemStyle);
+
+        BigDecimal total = BigDecimal.ZERO;
+        for (int j = 0; j < dateInformations.size(); j++) {
+            DateInformation dateInfo = dateInformations.get(j);
+            Map<LaborCostAggregationUnit, BigDecimal> mapUnitValue = laborCostTimeMap.getOrDefault(dateInfo.getYmd(), new HashMap<>());
+            BigDecimal value = mapUnitValue.getOrDefault(new LaborCostAggregationUnit(unit, itemType), BigDecimal.ZERO);
+            total = total.add(value);
+            cells.get(startRow, START_DATE_COL + j).setValue(itemType == LaborCostItemType.TIME ? new TimeWithDayAttr(value.intValue()).getRawTimeWithFormat() : df.format(value.intValue()));
+            itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(j == dateInformations.size() - 1 && hasPesonalTotal ? CellBorderType.DOUBLE : CellBorderType.DOTTED);
+            itemStyle.setVerticalAlignment(TextAlignmentType.CENTER);
+            itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+            cells.get(startRow, START_DATE_COL + j).setStyle(itemStyle);
+        }
+
+        cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(itemType == LaborCostItemType.TIME ? new TimeWithDayAttr(total.intValue()).getRawTimeWithFormat() : df.format(total.intValue()));
+        itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+        itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
+        cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+    }
+
+    private int printEmpClsJobContent(Cells cells, Map<GeneralDate, Map<CodeNameValue, BigDecimal>> dataMap, List<CodeNameValue> targets, List<DateInformation> dateInfos, boolean hasPersonalTotal) {
+        for (int i = 0; i < targets.size(); i++) {
+            CodeNameValue master = targets.get(i);
+            cells.get(startRow, PERSONAL_INFO_COLUMN).setValue(master.getName());
+            Style itemStyle = commonStyle();
+            itemStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+            cells.get(startRow, PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+            cells.get(startRow, PERSONAL_INFO_COLUMN + 1).setStyle(itemStyle);
+            cells.merge(startRow, PERSONAL_INFO_COLUMN, 1, 2);
+
+            BigDecimal total = BigDecimal.ZERO;
+            for (int j = 0; j < dateInfos.size(); j++) {
+                DateInformation dateInfo = dateInfos.get(j);
+                Map<CodeNameValue, BigDecimal> valueMap = dataMap.getOrDefault(dateInfo.getYmd(), new HashMap<>());
+                BigDecimal bdValue = valueMap.getOrDefault(master, BigDecimal.ZERO);
+                cells.get(startRow, START_DATE_COL + j).setValue(bdValue.toString());
+                total = total.add(bdValue);
+                itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+                if (j == dateInfos.size() - 1 && hasPersonalTotal) itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOUBLE);
+                cells.get(startRow, START_DATE_COL + j).setStyle(itemStyle);
+            }
+            cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setValue(total.toString());
+            itemStyle.setHorizontalAlignment(TextAlignmentType.RIGHT);
+            itemStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.DOTTED);
+            cells.get(startRow, ADDITIONAL_PERSONAL_INFO_COLUMN).setStyle(itemStyle);
+            startRow++;
+        }
+        return startRow;
+    }
+
+    private void handlePageBreak(Worksheet worksheet, PersonalScheduleByWkpDataSource dataSource) {
+        int start = START_DATA_ROW, maxRowPerPage = MAX_ROWS_PER_PAGE_WITHOUT_ADDITIONAL_INFO;
+        if (dataSource.getOutputSetting().getOutputItem().getDetails().stream().filter(i -> i.getAdditionalInfo().isPresent()).count() == 0) {
+            maxRowPerPage += 3;
+        }
+        for (PersonalCounterCategory category : dataSource.getOutputSetting().getPersonalCounterCategories()) {
+            switch (category) {
+                case WORKING_HOURS:
+                    maxRowPerPage = maxRowPerPage + 3 + 1;
+                    break;
+                case MONTHLY_EXPECTED_SALARY:
+                case CUMULATIVE_ESTIMATED_SALARY:
+                    maxRowPerPage = maxRowPerPage + 2 + 1;
+                    break;
+                case TIMES_COUNTING_1:
+                case TIMES_COUNTING_2:
+                case TIMES_COUNTING_3:
+                    TimesNumberCounterType counterType;
+                    if (category == PersonalCounterCategory.TIMES_COUNTING_1)
+                        counterType = TimesNumberCounterType.PERSON_1;
+                    else if (category == PersonalCounterCategory.TIMES_COUNTING_2)
+                        counterType = TimesNumberCounterType.PERSON_2;
+                    else counterType = TimesNumberCounterType.PERSON_3;
+                    Optional<TimesNumberCounterSelection> timesNumberCounterSelection = timesNumberCounterSelectionRepo.get(AppContexts.user().companyId(), counterType);
+                    if (timesNumberCounterSelection.isPresent()) {
+                        List<TotalTimes> totalTimes = totalTimesRepo.getTotalTimesDetailByListNo(AppContexts.user().companyId(), timesNumberCounterSelection.get().getSelectedNoList())
+                                .stream().filter(t -> t.getUseAtr() == UseAtr.Use).collect(Collectors.toList());
+                        maxRowPerPage += totalTimes.size() + 1;
+                    }
+                    break;
+                case ATTENDANCE_HOLIDAY_DAYS:
+                    maxRowPerPage = maxRowPerPage + 2 + 1;
+                    break;
+                default:
+                    break;
+            }
+        }
+        for (int i = 0; i < indexes.size(); i++) {
+            if (indexes.get(i) - start > maxRowPerPage) {
+                worksheet.getHorizontalPageBreaks().add(indexes.get(i - 1).intValue());
+                start = indexes.get(i - 1);
+            }
         }
     }
 }

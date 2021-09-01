@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * 個人計を集計する
  */
 @Stateless
-public class AggregatePersonalTotalQuery {
+public class WorkplaceAggregatePersonalTotalQuery {
     @Inject
     private WorkScheduleAdapter workScheduleAdapter;
     @Inject

@@ -11,6 +11,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,10 @@ import java.util.Map;
 @Stateless
 public class WorkplaceTotalAggregatedInfoQuery {
     @Inject
-    private AggregationWorkplaceTotalQuery totalQuery;
+    private AggregateWorkplaceTotalQuery totalQuery;
+
+    @Inject
+    private AggregateNumberOfPeopleByWorkQuery aggregateNumberOfPeopleByWorkQuery;
 
     /**
      * 集計する
@@ -37,6 +41,18 @@ public class WorkplaceTotalAggregatedInfoQuery {
     public <T> Map<WorkplaceCounterCategory, Map<GeneralDate, T>> get(List<ScheduleTableAttendanceItem> scheduleTableAttendanceItems, List<WorkplaceCounterCategory> workplaceCounterCategories, Map<ScheRecGettingAtr, List<IntegrationOfDaily>> integrationOfDailyMap, NotUseAtr dailyDataDisplayAtr, DatePeriod period, TargetOrgIdenInfor targetOrg) {
         Map<WorkplaceCounterCategory, Map<GeneralDate, T>> result = new HashMap<>();
         result.putAll(totalQuery.get(targetOrg, workplaceCounterCategories, integrationOfDailyMap, period));
+        if (workplaceCounterCategories.contains(WorkplaceCounterCategory.WORKTIME_PEOPLE)) {
+            result.put(
+                    WorkplaceCounterCategory.WORKTIME_PEOPLE,
+                    (Map<GeneralDate, T>) aggregateNumberOfPeopleByWorkQuery.get(
+                            targetOrg,
+                            period,
+                            integrationOfDailyMap.getOrDefault(ScheRecGettingAtr.ONLY_SCHEDULE, new ArrayList<>()),
+                            integrationOfDailyMap.getOrDefault(ScheRecGettingAtr.ONLY_RECORD, new ArrayList<>()),
+                            scheduleTableAttendanceItems.contains(ScheduleTableAttendanceItem.SHIFT)
+                    )
+            );
+        }
         return result;
     }
 }

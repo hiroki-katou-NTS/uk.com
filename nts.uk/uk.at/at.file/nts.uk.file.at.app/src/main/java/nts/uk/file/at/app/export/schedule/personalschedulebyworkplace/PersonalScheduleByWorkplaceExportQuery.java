@@ -104,7 +104,7 @@ public class PersonalScheduleByWorkplaceExportQuery {
     private DailyRecordAdapter dailyRecordAdapter;
 
     @Inject
-    private AggregatePersonalTotalQuery aggregatePersonalTotalQuery;
+    private WorkplaceAggregatePersonalTotalQuery aggregatePersonalTotalQuery;
 
     @Inject
     private WorkplaceTotalAggregatedInfoQuery workplaceTotalAggregatedInfoQuery;
@@ -191,13 +191,8 @@ public class PersonalScheduleByWorkplaceExportQuery {
 
         // 表示対象の勤怠項目を取得する
         // 表示対象の個人情報項目を取得する
-        List<ScheduleTableAttendanceItem> attendanceItems = new ArrayList<>();
-        List<ScheduleTablePersonalInfoItem> personalInfoItems = new ArrayList<>();
-        outputSetting.get().getOutputItem().getDetails().forEach(d -> {
-            d.getPersonalInfo().ifPresent(item -> personalInfoItems.add(item));
-            d.getAdditionalInfo().ifPresent(item -> personalInfoItems.add(item));
-            d.getAttendanceItem().ifPresent(item -> attendanceItems.add(item));
-        });
+        List<ScheduleTableAttendanceItem> attendanceItems = outputSetting.get().getOutputItem().getDisplayAttendanceItems();
+        List<ScheduleTablePersonalInfoItem> personalInfoItems = outputSetting.get().getOutputItem().getDisplayPersonalInfoItems();
 
         // 5.
         List<ScheduleTablePersonalInfo> personalInfoScheduleTableList = GetPersonalInfoForScheduleTableService.get(
