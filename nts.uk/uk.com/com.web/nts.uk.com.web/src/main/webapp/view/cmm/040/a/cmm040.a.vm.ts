@@ -160,27 +160,37 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
         setDataWorkPlace(data: any) {
             const self = this;
+            if (data) {
+                if (data.listCidAndWorkplaceInfo != null && data.listCidAndWorkplaceInfo.length > 0) {
+                    if (data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport != null && data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport.length > 0) {
+                        self.workplaceCode(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceCode);
+                        self.workplaceDisplayName(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceDisplayName);
 
-            if (!data) {
-                self.workplaceCode(ko.unwrap(self.workplaceCode));
-                self.workplaceDisplayName(ko.unwrap(self.workplaceDisplayName));
-                return;
-            }
+                        self.listSelectWorkplaceID = [];
+                        self.listWorkPlaceIDs = [];
+                        self.listWorkPlaceIDs.push({ companyId: self.LoginCompanyId, workpalceId: data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId });
+                        self.listSelectWorkplaceID.push(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId);
+                        self.changeWorkPlaceID = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId;
+                    } else {
+                        self.listSelectWorkplaceID = [];
+                        self.listWorkPlaceIDs = [];
 
-            let wkpInfo = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0];
+                        self.workplaceCode('');
+                        self.workplaceDisplayName('');
+                        self.changeWorkPlaceID = '';
+                    }
+                } else {
+                    self.listSelectWorkplaceID = [];
+                    self.listWorkPlaceIDs = [];
 
-            if (wkpInfo && wkpInfo === undefined) {
-                self.listSelectWorkplaceID = [];
-                self.listWorkPlaceIDs = [];
-                self.workplaceCode('');
-                self.workplaceDisplayName('');
-                self.changeWorkPlaceID = '';
+                    self.workplaceCode('');
+                    self.workplaceDisplayName('');
+                    self.changeWorkPlaceID = '';
+                }
             } else {
-                self.workplaceCode(wkpInfo.workplaceCode);
-                self.workplaceDisplayName(wkpInfo.workplaceDisplayName);
-                self.listWorkPlaceIDs = [{ companyId: self.LoginCompanyId, workpalceId: wkpInfo.workplaceId }];
-                self.listSelectWorkplaceID = [wkpInfo.workplaceId];
-                self.changeWorkPlaceID = wkpInfo.workplaceId;
+                self.workplaceCode(ko.unwrap(self.workplaceCode));
+                //self.workplaceDisplayName(ko.unwrap(self.workplaceCode));
+                self.workplaceDisplayName(ko.unwrap(self.workplaceDisplayName));
             }
         }
 
