@@ -159,7 +159,7 @@ public class AggregatePastMonthsService {
 			MonthlyOldDatas monthlyOldDatas, List<EditStateOfMonthlyPerformance> editStates,
 			MonthlyRecordToAttendanceItemConverter converter, List<AggregatePastMonthResult> aggrResults) {
 		
-		/** 制労働ごと期間を計算する */
+		/** 労働制ごと期間を計算する */
 		val workConGroup = mergeWorkCondition(workCondition, period);
 		val aggrAttendanceTime = new AggregateAttendanceTimeValue(sid, ym, closureId, closureDate, period);
 		
@@ -207,7 +207,7 @@ public class AggregatePastMonthsService {
 		aggrAttendanceTime.setAttendanceTime(converter.toAttendanceTime().get());
 	}
 	
-	/** 制労働ごと期間を計算する */
+	/** 労働制ごと期間を計算する */
 	private static List<WorkingConditionItemWithPeriod> mergeWorkCondition(List<WorkingConditionItemWithPeriod> workCondition, DatePeriod period) {
 		
 		/** 期間開始日をセットする */
