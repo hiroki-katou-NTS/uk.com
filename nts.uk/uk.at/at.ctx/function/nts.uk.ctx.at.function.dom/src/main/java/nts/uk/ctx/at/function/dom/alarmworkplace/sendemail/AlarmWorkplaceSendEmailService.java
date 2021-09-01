@@ -224,12 +224,11 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
 
         for (Map.Entry<String, List<String>> target : administratorTarget.entrySet()) {
             val extractAlarmDto = listValueExtractAlarmDto.stream()
-                    .filter(x -> x.getWorkplaceID() == target.getKey())
+                    .filter(x -> x.getWorkplaceID().trim().equals(target.getKey().trim()))
                     .findFirst();
             if (extractAlarmDto.isPresent()) {
                 filerMap.put(extractAlarmDto.get(), target.getValue());
             }
-
         }
 
         return filerMap;
