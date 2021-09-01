@@ -167,7 +167,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 return;
             }
 
-            let wkpInfo = _.get(data, 'listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0]');
+            let wkpInfo = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0];
 
             if (wkpInfo) {
                 self.listSelectWorkplaceID = [];
