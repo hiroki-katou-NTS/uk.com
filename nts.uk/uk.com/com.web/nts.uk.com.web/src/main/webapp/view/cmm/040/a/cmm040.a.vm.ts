@@ -50,6 +50,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         workplaceDisplayName: KnockoutObservable<String> = ko.observable('');
 
         changeWorkPlaceID: String = '';
+        // Cần đạt như này để lưu đúng giá trị vào database.
+        defautValueLocation: String = '0.000000';
 
         constructor() {
             let self = this;
@@ -158,38 +160,29 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
         setDataWorkPlace(data: any) {
             const self = this;
-            if (data) {
-                if (data.listCidAndWorkplaceInfo != null && data.listCidAndWorkplaceInfo.length > 0) {
-                    if (data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport != null && data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport.length > 0) {
-                        self.workplaceCode(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceCode);
-                        self.workplaceDisplayName(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceDisplayName);
 
-                        self.listSelectWorkplaceID = [];
-                        self.listWorkPlaceIDs = [];
-                        self.listWorkPlaceIDs.push({ companyId: self.LoginCompanyId, workpalceId: data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId });
-                        self.listSelectWorkplaceID.push(data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId);
-                        self.changeWorkPlaceID = data.listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0].workplaceId;
-                    } else {
-                        self.listSelectWorkplaceID = [];
-                        self.listWorkPlaceIDs = [];
-
-                        self.workplaceCode('');
-                        self.workplaceDisplayName('');
-                        self.changeWorkPlaceID = '';
-                    }
-                } else {
-                    self.listSelectWorkplaceID = [];
-                    self.listWorkPlaceIDs = [];
-
-                    self.workplaceCode('');
-                    self.workplaceDisplayName('');
-                    self.changeWorkPlaceID = '';
-                }
-            } else {
+            if (!data) {
                 self.workplaceCode(ko.unwrap(self.workplaceCode));
-                //self.workplaceDisplayName(ko.unwrap(self.workplaceCode));
                 self.workplaceDisplayName(ko.unwrap(self.workplaceDisplayName));
+                return;
             }
+
+            let wkpInfo = _.get(data, 'listCidAndWorkplaceInfo[0].listWorkplaceInfoImport[0]');
+
+            if (wkpInfo) {
+                self.listSelectWorkplaceID = [];
+                self.listWorkPlaceIDs = [];
+                self.workplaceCode('');
+                self.workplaceDisplayName('');
+                self.changeWorkPlaceID = '';
+                return;
+            }
+
+            self.workplaceCode(wkpInfo.workplaceCode);
+            self.workplaceDisplayName(wkpInfo.workplaceDisplayName);
+            self.listWorkPlaceIDs = [{ companyId: self.LoginCompanyId, workpalceId: wkpInfo.workplaceId }];
+            self.listSelectWorkplaceID = [wkpInfo.workplaceId];
+            self.changeWorkPlaceID = wkpInfo.workplaceId;
         }
 
         //tab3
@@ -397,8 +390,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.workLocationCD('');
                 self.workLocationName('');
                 self.radius(0);
-                self.longitude('0.000000');
-                self.latitude('0.000000');
+                self.longitude(self.defautValueLocation);
+                self.latitude(self.defautValueLocation);
                 self.selectedWorkLocation(null);
                 $("#focus").focus();
                 errors.clearAll();
@@ -444,8 +437,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             self.workLocationName('');
             self.valueA5_2('');
             self.radius(0);
-            self.latitude('0.000000');
-            self.longitude('0.000000');
+            self.latitude(self.defautValueLocation);
+            self.longitude(self.defautValueLocation);
             self.selectedWorkLocation(null);
             self.listSelectWorkplaceID = [];
             self.listWorkPlaceIDs = [];
@@ -733,7 +726,9 @@ module nts.uk.com.view.cmm040.a.viewmodel {
 
     }
     export class WorkLocation {
+        // 職場コード
         workLocationCD: string;
+        // 職場名称
         workLocationName: string;
         constructor(workLocationCD: string, workLocationName: string) {
             this.workLocationCD = workLocationCD;
@@ -741,8 +736,11 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         }
     }
     export class BonusPaySetting {
+        // 会社ID
         companyId: KnockoutObservable<string>;
+        // 会社名
         name: KnockoutObservable<string>;
+        // 会社コード
         code: KnockoutObservable<string>;
         constructor(companyId: string, name: string, code: string) {
             this.companyId = ko.observable(companyId);
@@ -760,9 +758,13 @@ module nts.uk.com.view.cmm040.a.viewmodel {
         }
     }
     class GridItem {
+        // 会社コード
         companyCode: string;
+        // 会社名
         companyName: string;
+        //  職場コード
         workplaceCode: string;
+        // 職場名称
         workplaceName: string;
         constructor(companyCode: string, companyName: string, workplaceCode: string, workplaceName: string) {
             this.companyCode = companyCode;
