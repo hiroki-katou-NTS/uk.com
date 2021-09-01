@@ -70,7 +70,7 @@ public class PremiumHolidayCalcMethod extends DomainObject implements Serializab
 	 * @return 「実働時間のみで計算する」に変更したインスタンス
 	 */
 	public PremiumHolidayCalcMethod createCalculationByActualTime() {
-		return new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, this.advanceSet);
+		return new PremiumHolidayCalcMethod(CalcurationByActualTimeAtr.CALCULATION_BY_ACTUAL_TIME, Optional.empty());
 	}
 	
 	/**

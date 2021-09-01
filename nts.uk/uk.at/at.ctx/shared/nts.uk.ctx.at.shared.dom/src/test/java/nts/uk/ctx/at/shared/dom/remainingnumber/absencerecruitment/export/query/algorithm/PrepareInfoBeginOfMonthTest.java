@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 
@@ -84,13 +85,11 @@ public class PrepareInfoBeginOfMonthTest {
 			}
 		};
 
-		AbsDaysRemain resultActual = PrepareInfoBeginOfMonth.prepare(require, CID, SID, GeneralDate.ymd(2019, 11, 01),
+		ReserveLeaveRemainingDayNumber resultActual = PrepareInfoBeginOfMonth.prepare(require, CID, SID, GeneralDate.ymd(2019, 11, 01),
 				GeneralDate.ymd(2019, 11, 30), false, lstAccDetail,
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
-		assertThat(resultActual.getRemainDays()).isEqualTo(2.0);
-
-		assertThat(resultActual.getRemainDays()).isEqualTo(2.0);
+		assertThat(resultActual.v()).isEqualTo(2.0);
 
 	}
 

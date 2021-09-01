@@ -24,9 +24,17 @@ public class HolidayRemainNumberDto {
 	
 	private Com60HVacationDto com60HVacation;
 	
+    private NursingVacationDto childCareVacation;
+    
+    private NursingVacationDto longTermCareVacation;
+	
 	private GeneralDate nextGrantDate;
 	
+<<<<<<< HEAD
 	/** 付与日数 */
 	public Double grantDays;
+=======
+	private Double grantDays;
+>>>>>>> pj/at/release_ver4
 	
 }

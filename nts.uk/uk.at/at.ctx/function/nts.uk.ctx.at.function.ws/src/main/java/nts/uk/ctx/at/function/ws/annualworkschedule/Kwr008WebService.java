@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
@@ -162,5 +163,11 @@ public class Kwr008WebService extends WebService {
 	@POST
 	public void executeCopy(SetOutItemsWoScCopyCommand command) {
 		this.copyHandler.handle(command);
+	}
+	
+	@Path("get/startMonth")
+	@POST
+	public JavaTypeResult<String> getStartMonth() {
+		return new JavaTypeResult<>(this.periodFinder.getStartMonth());
 	}
 }

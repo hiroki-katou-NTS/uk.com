@@ -8,37 +8,40 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         <div class="space-between-table ">
             <!-- ko if: display1() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_3')"></div>
+                <div data-bind="text: $i18n('KAF012_3')"></div>
                 <a class="hyperlink" href="" data-bind="text: substituteRemaining, click: openKDL005"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display2() -->
-            <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_4')"></div>
-                <a class="hyperlink" href="" data-bind="text: annualRemaining, click: openKDL020"></a>
+            <div class="row-underline" style="height: 60px">
+                <div style="display: flex; justify-content: space-between">
+                  <div data-bind="text: $i18n('KAF012_4')"></div>
+                  <a class="hyperlink" href="" data-bind="text: annualRemaining, click: openKDL020"></a>
+                </div>
+                  <div style="margin-left: 15px; margin-top: -5px" data-bind="ntsFormLabel: {text: maxGrantDate}"></div>
             </div>
             <!-- /ko -->
             <!-- ko if: display3() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ChildNurseHoliday')"></div>
+                <div data-bind="text: $i18n('Com_ChildNurseHoliday')"></div>
                 <a class="hyperlink" href="" data-bind="text: childNursingRemaining, click: openKDL051"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display4() -->
             <div class="row-underline"  style="display: flex; justify-content: space-between">
-                <div data-bind="ntsFormLabel: {}, text: $i18n('Com_CareHoliday')"></div>
+                <div data-bind="text: $i18n('Com_CareHoliday')"></div>
                 <a class="hyperlink" href="" data-bind="text: nursingRemaining, click: openKDL052"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display5() -->
             <div class="row-underline" style="display: flex; justify-content: space-between">
-                <div data-bind="ntsFormLabel: {}, text: $i18n('Com_ExsessHoliday')"></div>
+                <div data-bind="text: $i18n('Com_ExsessHoliday')"></div>
                 <a class="hyperlink" href="" data-bind="text: super60HRemaining, click: openKDL017"></a>
             </div>
             <!-- /ko -->
             <!-- ko if: display6() -->
             <div class="row-underline"  style="display: flex; justify-content: space-between">
-                <div data-bind="ntsFormLabel: {}, text: $i18n('KAF012_46')"></div>
+                <div data-bind="text: $i18n('KAF012_46')"></div>
                 <span data-bind="text: specialRemaining"></span>
             </div>
             <!-- /ko -->
@@ -57,12 +60,15 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         leaveType: KnockoutObservable<number>;
         application: KnockoutObservable<any>;
         specialLeaveFrame: KnockoutObservable<number>;
+        grantDate: KnockoutObservable<any>;
+        grantedDays: KnockoutObservable<number>;
 
         display1: KnockoutObservable<boolean>;
         substituteRemaining: KnockoutObservable<string>;
 
         display2: KnockoutObservable<boolean>;
         annualRemaining: KnockoutObservable<string>;
+        maxGrantDate : KnockoutObservable<string>;
 
         display3: KnockoutObservable<boolean>;
         childNursingRemaining: KnockoutObservable<string>;
@@ -84,6 +90,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             vm.leaveType = params.leaveType;
             vm.application = params.application;
             vm.specialLeaveFrame = params.specialLeaveFrame;
+
             vm.display1 = ko.computed(() => {
                 return !!vm.timeLeaveManagement()
                     && vm.timeLeaveManagement().timeSubstituteLeaveMng.timeSubstituteLeaveMngAtr
@@ -103,20 +110,28 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             });
             vm.annualRemaining = ko.computed(() => {
                 if (vm.timeLeaveRemaining()) {
-                    if (vm.timeLeaveRemaining().annualTimeLeaveRemainingDays <= 0)
-                        return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingTime);
-                    else if (vm.timeLeaveRemaining().annualTimeLeaveRemainingTime <= 0)
+                    if (vm.timeLeaveRemaining().annualTimeLeaveRemainingTime == 0) {
                         return vm.$i18n("KAF012_49", [vm.timeLeaveRemaining().annualTimeLeaveRemainingDays.toString()]);
-                    else
+                    } else {
                         return vm.$i18n(
                             "KAF012_50",
                             [
                                 vm.timeLeaveRemaining().annualTimeLeaveRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().annualTimeLeaveRemainingTime)
                             ]);
+                    }
                 }
                 return "0:00";
             });
+
+            vm.maxGrantDate = ko.computed(() => {
+                if (vm.timeLeaveRemaining() && vm.timeLeaveRemaining().grantDate){
+                    return nts.uk.resource.getText('KAF012_53') + vm.timeLeaveRemaining().grantDate + "　" + vm.timeLeaveRemaining().grantedDays + "日";
+                } else {
+                    return nts.uk.resource.getText('KAF012_53') + nts.uk.resource.getText('KAF012_54');
+                }
+            })
+
             vm.display3 = ko.computed(() => {
                 return !!vm.timeLeaveManagement()
                     && vm.timeLeaveManagement().nursingLeaveMng.timeChildCareLeaveMngAtr
@@ -125,17 +140,16 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             });
             vm.childNursingRemaining = ko.computed(() => {
                 if (vm.timeLeaveRemaining()) {
-                    if (vm.timeLeaveRemaining().childCareRemainingDays <= 0)
-                        return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingTime);
-                    else if (vm.timeLeaveRemaining().childCareRemainingTime <= 0)
+                    if (vm.timeLeaveRemaining().childCareRemainingTime == 0) {
                         return vm.$i18n("KAF012_49", [vm.timeLeaveRemaining().childCareRemainingDays.toString()]);
-                    else
+                    } else {
                         return vm.$i18n(
                             "KAF012_50",
                             [
                                 vm.timeLeaveRemaining().childCareRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().childCareRemainingTime)
                             ]);
+                    }
                 }
                 return "0:00";
             });
@@ -147,17 +161,16 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
             });
             vm.nursingRemaining = ko.computed(() => {
                 if (vm.timeLeaveRemaining()) {
-                    if (vm.timeLeaveRemaining().careRemainingDays <= 0)
-                        return nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingTime);
-                    else if (vm.timeLeaveRemaining().careRemainingTime <= 0)
+                    if (vm.timeLeaveRemaining().careRemainingTime == 0) {
                         return vm.$i18n("KAF012_49", [vm.timeLeaveRemaining().careRemainingDays.toString()]);
-                    else
+                    } else {
                         return vm.$i18n(
                             "KAF012_50",
                             [
                                 vm.timeLeaveRemaining().careRemainingDays.toString(),
                                 nts.uk.time.format.byId("Time_Short_HM", vm.timeLeaveRemaining().careRemainingTime)
                             ]);
+                    }
                 }
                 return "0:00";
             });
@@ -189,17 +202,16 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
                 if (vm.timeLeaveRemaining() && vm.timeLeaveRemaining().specialTimeFrames.length > 0) {
                     const tmp = _.find(vm.timeLeaveRemaining().specialTimeFrames, i => i.specialFrameNo == vm.specialLeaveFrame());
                     if (tmp) {
-                        if (tmp.dayOfSpecialLeave <= 0)
-                            return nts.uk.time.format.byId("Time_Short_HM", tmp.timeOfSpecialLeave);
-                        else if (tmp.timeOfSpecialLeave <= 0)
+                        if (tmp.timeOfSpecialLeave == 0) {
                             return vm.$i18n("KAF012_49", [tmp.dayOfSpecialLeave.toString()]);
-                        else
+                        } else {
                             return vm.$i18n(
                                 "KAF012_50",
                                 [
                                     tmp.dayOfSpecialLeave.toString(),
                                     nts.uk.time.format.byId("Time_Short_HM", tmp.timeOfSpecialLeave)
                                 ]);
+                        }
                     }
                 }
                 return "0:00";
@@ -353,6 +365,8 @@ module nts.uk.at.view.kaf012.shr.viewmodel1 {
         subTimeLeaveRemainingTime: number,
         super60HRemainingTime: number,
         remainingStart: string,
-        remainingEnd: string
+        remainingEnd: string,
+        grantDate: string,
+        grantedDays: number
     }
 }

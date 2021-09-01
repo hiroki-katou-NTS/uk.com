@@ -1269,66 +1269,6 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	/** 乖離時間10 */
 	@Column(name = "DIVERGENCE_TIME_10")
 	public int divergenceTime10;
-	/** 乖離控除時間1 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_1")
-	public int divergenceDeductTime1;
-	/** 乖離控除時間2 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_2")
-	public int divergenceDeductTime2;
-	/** 乖離控除時間3 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_3")
-	public int divergenceDeductTime3;
-	/** 乖離控除時間4 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_4")
-	public int divergenceDeductTime4;
-	/** 乖離控除時間5 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_5")
-	public int divergenceDeductTime5;
-	/** 乖離控除時間6 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_6")
-	public int divergenceDeductTime6;
-	/** 乖離控除時間7 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_7")
-	public int divergenceDeductTime7;
-	/** 乖離控除時間8 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_8")
-	public int divergenceDeductTime8;
-	/** 乖離控除時間9 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_9")
-	public int divergenceDeductTime9;
-	/** 乖離控除時間10 */
-	@Column(name = "DIVERGENCE_DEDUCTION_TIME_10")
-	public int divergenceDeductTime10;
-	/** 控除後乖離時間1 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_1")
-	public int divergenceAfterDeductTime1;
-	/** 控除後乖離時間2 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_2")
-	public int divergenceAfterDeductTime2;
-	/** 控除後乖離時間3 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_3")
-	public int divergenceAfterDeductTime3;
-	/** 控除後乖離時間4 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_4")
-	public int divergenceAfterDeductTime4;
-	/** 控除後乖離時間5 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_5")
-	public int divergenceAfterDeductTime5;
-	/** 控除後乖離時間6 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_6")
-	public int divergenceAfterDeductTime6;
-	/** 控除後乖離時間7 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_7")
-	public int divergenceAfterDeductTime7;
-	/** 控除後乖離時間8 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_8")
-	public int divergenceAfterDeductTime8;
-	/** 控除後乖離時間9 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_9")
-	public int divergenceAfterDeductTime9;
-	/** 控除後乖離時間10 */
-	@Column(name = "DIVERGENCE_TIME_AFT_DEDU_10")
-	public int divergenceAfterDeductTime10;
 
 	/** 日勤勤務時間 */
 	@Column(name = "MEDICAL_DAY_TIME")
@@ -1697,12 +1637,6 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 			
 			val time = FieldReflection.getField(this.getClass(), "divergenceTime" + data.getKey());
 			ReflectionUtil.setFieldValue(time, this, data.getValue().getDivergenceTime().v());
-			
-			val deduction = FieldReflection.getField(this.getClass(), "divergenceDeductTime" + data.getKey());
-			ReflectionUtil.setFieldValue(deduction, this, data.getValue().getDeductionTime().v());
-			
-			val timeAfterDeduct = FieldReflection.getField(this.getClass(), "divergenceAfterDeductTime" + data.getKey());
-			ReflectionUtil.setFieldValue(timeAfterDeduct, this, data.getValue().getDivergenceTimeAfterDeduction().v());
 		}
 	}
 
@@ -2297,13 +2231,9 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 		for (int i = 1; i <= 10; i++) {
 			val flag = FieldReflection.getField(this.getClass(), "divergenceFlag" + i);
 			val time = FieldReflection.getField(this.getClass(), "divergenceTime" + i);
-			val deduction = FieldReflection.getField(this.getClass(), "divergenceDeductTime" + i);
-			val timeAfterDeduct = FieldReflection.getField(this.getClass(), "divergenceAfterDeductTime" + i);
 			
 			divergenceTimeList.add(AggregateDivergenceTime.of(i,
-					new AttendanceTimeMonth(ReflectionUtil.getFieldValue(time, this)), 
-					new AttendanceTimeMonth(ReflectionUtil.getFieldValue(deduction, this)), 
-					new AttendanceTimeMonth(ReflectionUtil.getFieldValue(timeAfterDeduct, this)),
+					new AttendanceTimeMonth(ReflectionUtil.getFieldValue(time, this)),
 					EnumAdaptor.valueOf(ReflectionUtil.getFieldValue(flag, this), DivergenceAtrOfMonthly.class)));
 		}
 		
