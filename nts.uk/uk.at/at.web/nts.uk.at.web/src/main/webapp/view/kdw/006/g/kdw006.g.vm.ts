@@ -15,7 +15,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         isShowNoSelectRow: KnockoutObservable<boolean>;
         isMultiSelect: KnockoutObservable<boolean>;
         employmentList: KnockoutObservableArray<UnitModel>;
-
+        workTypesOrigin: KnockoutObservableArray<any>;
         listSetting: KnockoutObservableArray<any>;
 
         mode: KnockoutObservable<MODE>;
@@ -28,15 +28,28 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             self.fullWorkTypeList = ko.observableArray([]);
             self.groups1 = ko.observableArray([]);
             self.groups2 = ko.observableArray([]);
+            self.workTypesOrigin = ko.observableArray([
+                {no: 1, name: "", workTypeList: []},
+                {no: 2, name: "", workTypeList: []},
+                {no: 3, name: "", workTypeList: []},
+                {no: 4, name: "", workTypeList: []},
+                {no: 5, name: "", workTypeList: []},
+                {no: 6, name: "", workTypeList: []},
+                {no: 7, name: "", workTypeList: []},
+                {no: 8, name: "", workTypeList: []},
+                {no: 9, name: "", workTypeList: []},
+                {no: 10, name: "", workTypeList: []}
+            ]);
             self.listSetting = ko.observableArray([]);
             // template
             self.selectedCode = ko.observable('01');
-            self.alreadySettingList = ko.observableArray([
-                { code: '1', isAlreadySetting: true },
-                { code: '2', isAlreadySetting: true }
-            ]);
+            // self.alreadySettingList = ko.observableArray([
+            //     { code: '01', isAlreadySetting: true },
+            //     { code: '02', isAlreadySetting: true }
+            // ]);
+            self.alreadySettingList = ko.observableArray([]);
             self.listComponentOption = {
-                isShowAlreadySet: false,
+                isShowAlreadySet: true,
                 isMultiSelect: false,
                 listType: ListType.EMPLOYMENT,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -71,12 +84,56 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     dfd.resolve();
                 });
             });
+            self.getDistinctEmpCodeByCompanyId();
             return dfd.promise();
         }
 
         jumpTo() {
             let self = this;
             nts.uk.request.jump("/view/kdw/006/a/index.xhtml");
+        }
+
+        reEditListGroup() {
+            let self = this;
+
+            let fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
+            _.forEach(self.workTypesOrigin(), function(item) {
+                let names = _(item.workTypeList.sort()).map((x: any) => (_.find(ko.toJS(self.fullWorkTypeList), (z: any) => z.workTypeCode == x) || {}).name).value();
+                let comment = '';
+                if (item.no == 1) {
+                    item.name = self.$i18n('KDW006_76');
+                }
+                if (item.no == 2) {
+                    item.name = self.$i18n('KDW006_72');
+                    comment = self.$i18n("KDW006_59", ['法定内休日']);
+                }
+                if (item.no == 3) {
+                    item.name = self.$i18n('KDW006_73');
+                    comment = self.$i18n("KDW006_59", ['法定外休日']);
+                }
+                if (item.no == 4) {
+                    item.name = self.$i18n('KDW006_74');
+                    comment = self.$i18n("KDW006_59", ['法定外休日(祝)']);
+                }
+                let nameEnd = _.filter(names, undefined);
+                let group = new WorkTypeGroup(item.no, self.$i18n('KDW006_' + (252 + item.no)), item.name === " " ? '' : item.name, 
+                    item.workTypeList, nameEnd.join("、"), fullWorkTypeCodes, comment);
+                if (group.no < 5) {
+                    let dataObj = self.groups1().some(x => x.no == group.no);
+                    if(!dataObj) {
+                        self.groups1.push(group);
+                    }
+                } else {
+                    let dataObj = self.groups2().some(x => x.no == group.no);
+                    if(!dataObj) {
+                        self.groups2.push(group);
+                    }
+                }
+            });
+
+            // Order lại 2 group.
+            self.groups1(self.groups1().sort((a, b) => (a.no < b.no? -1 : 1)));
+            self.groups2(self.groups2().sort((a, b) => (a.no < b.no? -1 : 1)));
         }
 
         getFullWorkTypeList(): JQueryPromise<any> {
@@ -119,6 +176,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     self.mode(MODE.UPDATE);
                     data = res;    
                 }
+                
                 _.forEach(data, function(item) {
                     let names = _(item.workTypeList.sort()).map((x: any) => (_.find(ko.toJS(self.fullWorkTypeList), (z: any) => z.workTypeCode == x) || {}).name).value();
                     let comment = '';
@@ -140,6 +198,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     let nameEnd = _.filter(names, undefined);
                     let group = new WorkTypeGroup(item.no, self.$i18n('KDW006_' + (252 + item.no)), item.name === " " ? '' : item.name, 
                         item.workTypeList, nameEnd.join("、"), fullWorkTypeCodes, comment);
+
                     if (group.no < 5) {
                         self.groups1.push(group);
                     } else {
@@ -147,6 +206,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     }
                 });
 
+                self.reEditListGroup();
                 dfd.resolve();
             }).fail(function(res) {
                 self.$dialog.alert(res.message);
@@ -162,10 +222,12 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                 self.employmentList($('#empt-list-setting').getDataList());
                 if (self.employmentList().length > 0) {
                     self.selectedCode.valueHasMutated();
+                    
                     dfd.resolve();
                 } else {
                     self.$dialog.alert({ messageId: "Msg_146" });
                 }
+                self.getDistinctEmpCodeByCompanyId();
             });
             return dfd.promise();
         }
@@ -248,6 +310,53 @@ module nts.uk.at.view.kdw006.g.viewmodel {
                     self.$blockui("hide");
                 });
             });
+        }
+
+        deleteEmployment() {
+            let self = this;
+            let dfd = $.Deferred();
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                self.$blockui("show");
+                let command = {
+                    employmentCode: self.selectedCode(),
+                }
+                
+                service.deleteEmploymentSetting(command).done(function(res) {
+                    self.$dialog.info({ messageId: "Msg_16" }).then(function() {
+                        self.$blockui("hide");
+                    });
+                    self.refreshListEmployments();
+
+                    dfd.resolve();
+                }).fail(() => {
+                    self.$blockui("hide");
+                });
+            });
+        
+            return dfd.promise();
+        }
+
+        getDistinctEmpCodeByCompanyId() {
+            let self = this;
+            let dfd = $.Deferred();
+
+            service.getDistinctEmpCodeByCompanyId().done(function(res) {
+                if (res != null && res.length > 0) {
+                    let alreadySettings = [];
+                    _.forEach(res, (empCodeId) => {
+                        alreadySettings.push({ code: empCodeId, isAlreadySetting: true })
+                    })
+                    self.alreadySettingList(alreadySettings);
+                }
+                else {
+                    self.alreadySettingList([]);
+                }
+                dfd.resolve();
+            }).fail(() => {
+                self.$blockui("hide");
+            });
+
+            return dfd.promise();
         }
     }
 
