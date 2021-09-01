@@ -72,20 +72,20 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             //
             self.radiusEnum = ko.observableArray([]);
             self.itemList = ko.observableArray([]);
-                        self.itemList = ko.observableArray([
-                            new ItemModel('0', 'M_50'),
-                            new ItemModel('1', 'M_100'),
-                            new ItemModel('2', 'M_200'),
-                            new ItemModel('3', 'M_300'),
-                            new ItemModel('4', 'M_400'),
-                            new ItemModel('5', 'M_500'),
-                            new ItemModel('6', 'M_600'),
-                            new ItemModel('7', 'M_700'),
-                            new ItemModel('8', 'M_800'),
-                            new ItemModel('9', 'M_900'),
-                            new ItemModel('10', 'M_1000')
-                                 
-                        ]);
+            self.itemList = ko.observableArray([
+                new ItemModel('0', 'M_50'),
+                new ItemModel('1', 'M_100'),
+                new ItemModel('2', 'M_200'),
+                new ItemModel('3', 'M_300'),
+                new ItemModel('4', 'M_400'),
+                new ItemModel('5', 'M_500'),
+                new ItemModel('6', 'M_600'),
+                new ItemModel('7', 'M_700'),
+                new ItemModel('8', 'M_800'),
+                new ItemModel('9', 'M_900'),
+                new ItemModel('10', 'M_1000')
+
+            ]);
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: nts.uk.resource.getText("CMM040_9"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: nts.uk.resource.getText("CMM040_10"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -175,14 +175,13 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 self.workplaceCode('');
                 self.workplaceDisplayName('');
                 self.changeWorkPlaceID = '';
-                return;
+            } else {
+                self.workplaceCode(wkpInfo.workplaceCode);
+                self.workplaceDisplayName(wkpInfo.workplaceDisplayName);
+                self.listWorkPlaceIDs = [{ companyId: self.LoginCompanyId, workpalceId: wkpInfo.workplaceId }];
+                self.listSelectWorkplaceID = [wkpInfo.workplaceId];
+                self.changeWorkPlaceID = wkpInfo.workplaceId;
             }
-
-            self.workplaceCode(wkpInfo.workplaceCode);
-            self.workplaceDisplayName(wkpInfo.workplaceDisplayName);
-            self.listWorkPlaceIDs = [{ companyId: self.LoginCompanyId, workpalceId: wkpInfo.workplaceId }];
-            self.listSelectWorkplaceID = [wkpInfo.workplaceId];
-            self.changeWorkPlaceID = wkpInfo.workplaceId;
         }
 
         //tab3
@@ -575,7 +574,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
             const vm = new ko.ViewModel();
             let self = this;
             const role = __viewContext.user.role.systemAdmin;
-            
+
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
 
                 if (role !== null) {
@@ -599,7 +598,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                                 }
                                             });
                                         });
-    
+
                                     }).fail((res: any) => {
                                         nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
                                             let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
@@ -629,7 +628,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                         }
                                     });
                                 });
-    
+
                             }).fail((res: any) => {
                                 nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
                                 });
@@ -638,7 +637,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             });
                         }
                     })
-                }else {
+                } else {
                     nts.uk.ui.dialog.info({ messageId: "Msg_2214" })
                 }
 
