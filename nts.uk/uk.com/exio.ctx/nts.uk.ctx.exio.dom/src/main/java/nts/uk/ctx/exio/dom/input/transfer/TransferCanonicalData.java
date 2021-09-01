@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -15,6 +16,7 @@ import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
@@ -90,8 +92,23 @@ public class TransferCanonicalData {
 		
 		conversionTable.getWhereList().addAll(whereList);
 		
-		// 受入項目の列名リストを元に移送する列をフィルタ
-		// 外部受入では基本そのまま移送パターンのみ（一部固定値使うかも？）のためそのまま移送パターンのみフィルタに対応
+		val convertCodeType = context.getMode().getType();
+		
+		// UPDATEの場合は受け入れる項目だけを指定したSQLを作る
+		Predicate<OneColumnConversion> filterColumn = m -> {
+			if (convertCodeType != ConversionCodeType.UPDATE) {
+				return true;
+			}
+
+			// 外部受入では基本そのまま移送パターンのみ（一部固定値使うかも？）のためそのまま移送パターンのみフィルタに対応
+			if (m.getPattern() instanceof NotChangePattern) {
+				val pattern = (NotChangePattern)m.getPattern();
+				return importingItemNames.contains(pattern.getSourceColumn());
+			}
+			
+			return true;
+		};
+		
 		ConversionTable filteredConversionTable = new ConversionTable(
 				conversionTable.getSpec(),
 				conversionTable.getTargetTableName(),
@@ -99,16 +116,11 @@ public class TransferCanonicalData {
 				conversionTable.getStartDateColumnName(),
 				conversionTable.getEndDateColumnName(),
 				conversionTable.getWhereList(),
-				conversionTable.getConversionMap().stream()
-					.filter(m ->
-						m.getPattern() instanceof NotChangePattern ?  importingItemNames.contains(((NotChangePattern)m.getPattern()).getSourceColumn())
-					 	: true)
-					.collect(toList()),
+				conversionTable.getConversionMap().stream().filter(filterColumn).collect(toList()),
 				false
 			);
 		
-		// TODO: Insert & Update両方のモードは未対応
-		if(context.getMode().getType() == ConversionCodeType.INSERT) {
+		if(convertCodeType == ConversionCodeType.INSERT) {
 			return filteredConversionTable.createConversionSql();
 		}
 		else {
