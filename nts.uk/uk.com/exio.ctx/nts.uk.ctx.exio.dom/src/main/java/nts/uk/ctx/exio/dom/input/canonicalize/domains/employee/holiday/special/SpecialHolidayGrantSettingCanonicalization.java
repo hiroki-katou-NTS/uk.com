@@ -64,7 +64,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
 		return Arrays.asList(
 				record.getItemByNo(workspace.getItemByName("SID").getItemNo()).get().getString(), 
-				record.getItemByNo(workspace.getItemByName("SPECIAL_LEAVE_CD").getItemNo()).get().getString());
+				record.getItemByNo(workspace.getItemByName("特別休暇コード").getItemNo()).get().getString());
 	}
 	
 	@Override
@@ -86,10 +86,6 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return super.appendMeta(source)
-				.addItem("適用設定")
-				.addItem("付与日数")
-				.addItem("勤続年数付与テーブル")
-				.addItem("付与日テーブル");
+		return super.appendMeta(source);
 	}
 }
