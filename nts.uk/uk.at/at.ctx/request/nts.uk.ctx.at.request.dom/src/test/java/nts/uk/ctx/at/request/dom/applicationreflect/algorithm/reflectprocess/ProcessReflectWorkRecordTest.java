@@ -81,7 +81,7 @@ public class ProcessReflectWorkRecordTest {
 				result = Optional
 						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
 
-				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime)any);
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime)any, anyString);
 				result = Pair.of(new ReflectStatusResult(ReflectedState.REFLECTED, null, null),
 						Optional.empty());
 
@@ -89,7 +89,7 @@ public class ProcessReflectWorkRecordTest {
 		};
 
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId,  stamp,
-				true, dateRefer, statusWorkRecord);
+				true, dateRefer, statusWorkRecord, "1");
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
 	}
@@ -127,7 +127,7 @@ public class ProcessReflectWorkRecordTest {
 		};
 
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp,
-				true, dateRefer, statusWorkRecord);
+				true, dateRefer, statusWorkRecord, "1");
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
 	}
@@ -162,14 +162,14 @@ public class ProcessReflectWorkRecordTest {
 						(ReflectStatusResult) any, dateRefer);
 				result = new PreCheckProcessResult(NotUseAtr.USE, statusWorkRecord);
 				
-				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime) any);
+				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime) any, anyString);
 				result = Pair.of(new ReflectStatusResult(ReflectedState.REFLECTED, null, null),
 						Optional.empty());
 			}
 		};
 
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp,
-				true, dateRefer, statusWorkRecord);
+				true, dateRefer, statusWorkRecord, "1");
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
 	}

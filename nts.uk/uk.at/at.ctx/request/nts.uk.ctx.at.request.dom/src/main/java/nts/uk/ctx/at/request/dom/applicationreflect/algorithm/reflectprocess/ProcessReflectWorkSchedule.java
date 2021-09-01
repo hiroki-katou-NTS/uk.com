@@ -28,7 +28,7 @@ public class ProcessReflectWorkSchedule {
 
 	public static Pair<ReflectStatusResult, Optional<AtomTask>> processReflect(Require require, String companyId,
 			int closureId, Application application, boolean isCalWhenLock,
-			GeneralDate targetDate, ReflectStatusResult statusWorkSchedule) {
+			GeneralDate targetDate, ReflectStatusResult statusWorkSchedule, String execId) {
 
 		// [input. 処理中の申請. 事前事後区分]をチェック
 		if (application.getPrePostAtr() == PrePostAtr.POSTERIOR) {
@@ -57,7 +57,7 @@ public class ProcessReflectWorkSchedule {
 		// 勤務予定に反映
 		Pair<ReflectStatusResult, AtomTask> result = require.process(ConvertApplicationToShare.toAppliction(application), targetDate,
 				statusWorkSchedule,
-				appReFlectExec.get().getApplyBeforeWorkSchedule().value);
+				appReFlectExec.get().getApplyBeforeWorkSchedule().value, execId);
 		return Pair.of(statusResult(result.getLeft(), statusWorkSchedule), Optional.of(result.getRight()));
 
 	}
@@ -83,7 +83,7 @@ public class ProcessReflectWorkSchedule {
 
 		// ReflectApplicationWorkScheduleAdapter
 		public Pair<ReflectStatusResult, AtomTask> process(ApplicationShare application, GeneralDate date,
-				ReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr);
+				ReflectStatusResult reflectStatus, int preAppWorkScheReflectAttr, String execId);
 
 	}
 

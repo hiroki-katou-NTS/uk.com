@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.AppReflectExecInfo;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.ApplicationReflectHistory;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.DailyAfterAppReflectResult;
@@ -308,7 +309,7 @@ public class CancellationOfApplicationTest {
 				.map(x -> new AttendanceBeforeApplicationReflect(x.getKey(), Optional.of(x.getValue()),
 						editState == null ? Optional.empty() : Optional.of(new EditStateOfDailyAttd(x.getKey(), editState))))
 				.collect(Collectors.toList());
-		return new ApplicationReflectHistory("1",  GeneralDate.ymd(2021, 4, 21) , appId,
-				maxDate == null ? GeneralDateTime.now() : maxDate, ScheduleRecordClassifi.RECORD, true, lstAttBeforeAppReflect);
+		return new ApplicationReflectHistory("1",  GeneralDate.ymd(2021, 4, 21) , appId
+				, ScheduleRecordClassifi.RECORD, true, lstAttBeforeAppReflect, new AppReflectExecInfo(false, "1", maxDate == null ? GeneralDateTime.now() : maxDate));
 	}
 }

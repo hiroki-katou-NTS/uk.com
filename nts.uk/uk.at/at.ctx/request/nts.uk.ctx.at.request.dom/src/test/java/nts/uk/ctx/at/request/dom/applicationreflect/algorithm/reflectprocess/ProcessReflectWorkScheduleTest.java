@@ -69,7 +69,7 @@ public class ProcessReflectWorkScheduleTest {
 		Application application = ReflectApplicationHelper.createApp(PrePostAtr.POSTERIOR);
 
 		val actualResult = ProcessReflectWorkSchedule.processReflect(require, companyId, closureId, application,
-				false, dateRefer, statusWorkSchedule);
+				false, dateRefer, statusWorkSchedule, "1");
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
 
 	}
@@ -98,7 +98,7 @@ public class ProcessReflectWorkScheduleTest {
 			}
 		};
 		val actualResult = ProcessReflectWorkSchedule.processReflect(require, companyId, closureId, application,
-				false, dateRefer, statusWorkSchedule);
+				false, dateRefer, statusWorkSchedule, "1");
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
 
 	}
@@ -133,7 +133,7 @@ public class ProcessReflectWorkScheduleTest {
 			}
 		};
 		val actualResult = ProcessReflectWorkSchedule.processReflect(require, companyId, closureId, application,
-				 false, dateRefer, statusWorkSchedule);
+				 false, dateRefer, statusWorkSchedule, "1");
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
 		assertThat(actualResult.getLeft().getReasonNotReflectWorkSchedule()).isEqualTo(ReasonNotReflect.ACHIEVEMENTS_LOCKED);
 
