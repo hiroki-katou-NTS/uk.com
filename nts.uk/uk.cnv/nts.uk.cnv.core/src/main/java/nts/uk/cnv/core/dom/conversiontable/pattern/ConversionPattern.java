@@ -13,5 +13,5 @@ import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 @Getter
 @AllArgsConstructor
 public abstract class ConversionPattern {
-	public abstract ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql);
+	public abstract ConversionSQL apply(ColumnName columnName, ConversionSQL conversionSql, boolean removeDuplicate);
 }

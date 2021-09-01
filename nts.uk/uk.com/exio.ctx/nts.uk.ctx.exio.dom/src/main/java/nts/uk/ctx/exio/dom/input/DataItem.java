@@ -18,6 +18,15 @@ public class DataItem {
 	Object value;
 	
 	/**
+	 * null
+	 * @param itemNo 
+	 * @return
+	 */
+	public static DataItem of(int itemNo) {
+		return new DataItem(itemNo, null);
+	}
+	
+	/**
 	 * 文字型
 	 * @param itemNo
 	 * @param value

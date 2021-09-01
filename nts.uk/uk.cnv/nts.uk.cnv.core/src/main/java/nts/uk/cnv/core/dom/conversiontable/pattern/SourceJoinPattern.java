@@ -1,46 +1,50 @@
 package nts.uk.cnv.core.dom.conversiontable.pattern;
 
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
-
 /**
- * そのまま移送するパターン
- * @author ai_muto
+ * 移送元結合パターン
  */
 @Getter
-public class NotChangePattern extends ConversionPattern {
+public class SourceJoinPattern extends ConversionPattern {
 	ConversionInfo info;
 
-	private Join join;
+	private Join sourceJoin;
 
 	private String sourceColumn;
 
-	public NotChangePattern(ConversionInfo info, Join join, String sourceColumn) {
+	public SourceJoinPattern(ConversionInfo info, Join sourceJoin, String sourceColumn) {
 		this.info = info;
-		this.join = join;
+		this.sourceJoin = sourceJoin;
 		this.sourceColumn = sourceColumn;
 	}
 
 	@Override
 	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
+		conversionSql.addJoin(sourceJoin);
 
-		conversionSql.addJoin(join);
-
-		if(info.getType() == ConversionCodeType.UPDATE) {
-			boolean isPkColumn = join.onSentences.stream().anyMatch(on -> on.getRight().equals(column));
-			if (isPkColumn) return conversionSql;
-		}
-		ColumnExpression expression = new ColumnExpression(join.tableName.getAlias(), sourceColumn);
+		ColumnExpression expression = new ColumnExpression(
+				sourceJoin.tableName.getAlias(),
+				sourceColumn);
 		conversionSql.add(column, expression);
+
 		if(removeDuplicate) {
 			conversionSql.addGroupingColumn(expression);
 		}
+
 		return conversionSql;
+	}
+
+	public String sourceJoinColumns() {
+		return String.join(",", this.getSourceJoin().getOnSentences().stream()
+				.map(on -> on.getLeft().getName())
+				.collect(Collectors.toList()));
 	}
 
 }

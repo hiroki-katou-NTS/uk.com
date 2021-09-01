@@ -5,10 +5,8 @@ import java.util.Optional;
 
 import nts.uk.cnv.core.dom.tabledesign.ErpTableDesign;
 
-public interface ErpTableDesignRepository {
 
-	void insert(ErpTableDesign tableDesign);
-	void update(ErpTableDesign tableDesign);
+public interface ErpTableDesignRepository {
 	boolean exists(String tableName);
 
 	Optional<ErpTableDesign> find(String tablename);

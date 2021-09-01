@@ -19,7 +19,7 @@ public class ParentJoinPattern extends ConversionPattern {
 	private String parentTableName;
 	private String targetTable;
 
-	public ParentJoinPattern(Join sourceJoin, Join mappingJoin, String parentColumn, String parentTableName) {
+	public ParentJoinPattern(Join sourceJoin, Join mappingJoin, String parentTableName, String parentColumn) {
 		this.sourceJoin = sourceJoin;
 		this.mappingJoin = mappingJoin;
 		this.parentColumn = parentColumn;
@@ -36,16 +36,18 @@ public class ParentJoinPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 		conversionSql.addJoin(mappingJoin);
 
-		conversionSql.add(
-				column,
-				new ColumnExpression(
-						mappingJoin.tableName.getAlias(),
-						ParentJoinPatternManager.parentValueColumnName)
-				);
+		ColumnExpression expression = new ColumnExpression(
+				mappingJoin.tableName.getAlias(),
+				ParentJoinPatternManager.parentValueColumnName);
+		conversionSql.add(column, expression);
+
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(expression);
+		}
 
 		return conversionSql;
 	}

@@ -115,7 +115,8 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 					source.getStartDateColumnName(),
 					source.getEndDateColumnName(),
 					where,
-					columns
+					columns,
+					false
 				);
 	}
 

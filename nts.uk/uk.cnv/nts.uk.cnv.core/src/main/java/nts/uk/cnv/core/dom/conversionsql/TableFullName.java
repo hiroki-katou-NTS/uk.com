@@ -16,26 +16,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class TableFullName {
-//	/** DBインスタンス名 ex) PCNAME\MSSQLSERVER 
+//	/** DBインスタンス名 ex) PCNAME\MSSQLSERVER
 //	 * リンクサーバーの機能の使用を想定、いったん保留
 //	 */
 //	protected String instanceName;
-	
+
 	/** DB名 ex) KINJIROU **/
 	protected String databaseName;
-	
+
 	/** スキーマ名 ex) dbo **/
 	protected String schema;
-	
+
 	/** テーブル名 ex) BPSMT_PERSON */
 	protected String name;
-	
+
 	/** エイリアス */
 	protected String alias;
-
-	public static TableFullName createMainTableName(String mainTableName) {
-		return new TableFullName("", "", mainTableName, "");
-	}
 
 	public String fullName() {
 		return

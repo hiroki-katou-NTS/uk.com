@@ -13,7 +13,7 @@ public class GuidPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.add(column, new ColumnExpression(spec.newUuid()));
 		return conversionSql;
 	}

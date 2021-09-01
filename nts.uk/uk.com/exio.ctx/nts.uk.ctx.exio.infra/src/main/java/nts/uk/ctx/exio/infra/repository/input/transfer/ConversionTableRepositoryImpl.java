@@ -17,7 +17,6 @@ import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
 import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionSources;
 import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
-import nts.uk.ctx.exio.infra.entity.input.transfer.source.ScvmtErpColumnDesign;
 
 @Stateless
 public class ConversionTableRepositoryImpl extends JpaRepository implements ConversionTableRepository {
@@ -35,12 +34,15 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 	}
 	
 	private List<String> getPkColumns(String tableName) {
-		String sql = "SELECT cd FROM ScvmtErpColumnDesign cd"
-				+ " WHERE cd.scvmtErpColumnDesignPk.tableName = :tableName"
-				+ " AND cd.pk = 1";
-		return this.queryProxy().query(sql, ScvmtErpColumnDesign.class)
-				.setParameter("tableName", tableName)
-				.getList(cd -> cd.getName());
+//		String sql = "SELECT cd FROM ScvmtErpColumnDesign cd"
+//				+ " WHERE cd.scvmtErpColumnDesignPk.tableName = :tableName"
+//				+ " AND cd.pk = 1";
+//		return this.queryProxy().query(sql, ScvmtErpColumnDesign.class)
+//				.setParameter("tableName", tableName)
+//				.getList(cd -> cd.getName());
+		
+		//TODO fix
+		return new ArrayList<>();
 	}
 
 	@Override

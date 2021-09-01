@@ -104,8 +104,8 @@ public class CodeGenerator {
 		}
 
 		@Override
-		public Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source) {
-			return conversionTableRepository.get(info, category, tableName, recordNo, source);
+		public Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source, boolean isRemoveDuplicate) {
+			return conversionTableRepository.get(info, category, tableName, recordNo, source, isRemoveDuplicate);
 		}
 
 		@Override

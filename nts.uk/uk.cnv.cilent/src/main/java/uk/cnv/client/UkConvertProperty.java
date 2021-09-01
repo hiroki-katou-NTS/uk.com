@@ -22,14 +22,14 @@ public class UkConvertProperty {
 
     public static final String UK_CONTRACT_CODE = "UkContractCode";
 
-	public static final String CONVERT_CODE_FILE = "convertCodeFile";
+	public static final String CONVERT_CODE_FILE = "ConvertCodeFile";
 
-	public static final String CREATE_CONVERT_DB_SCRIPT = "createConvertDbScript";
-	public static final String CREATE_UKDB_SCRIPT = "createUkDbScript";
+	public static final String CREATE_CONVERT_DB_SCRIPT = "CreateConvertDbScript";
+	public static final String CREATE_UKDB_SCRIPT = "CreateUkDbScript";
 
-    public static final String LOG_FILE_PATH = "logfilePath";
-	public static final String CSV_DIR = "csvDirectory";
-	public static final String TEMP_DIR = "temporaryDirectory";
+    public static final String LOG_FILE_PATH = "LogfilePath";
+	public static final String CSV_DIR = "CsvDirectory";
+	public static final String TEMP_DIR = "TemporaryDirectory";
 
 
 	private static final String INIT_FILE_PATH = "common.properties";

@@ -14,28 +14,34 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-//import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
-//import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
-//import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 import nts.uk.cnv.core.dom.tabledesign.ColumnDesign;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_ERP_COLUMN_DESIGN")
-public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_SNAPSHOT_COLUMN")
+public class NemTdSnapshotColumn extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public ScvmtErpColumnDesignPk scvmtErpColumnDesignPk;
+	public NemTdSnapshotColumnPk pk;
 
 	@Column(name = "NAME")
 	public String name;
 
-	@Column(name = "TYPE")
+	@Column(name = "JPNAME")
+	private String jpName;
+
+	@Column(name = "DATA_TYPE")
 	private String type;
+
+	@Column(name = "MAX_LENGTH")
+	private int maxLength;
+
+	@Column(name = "SCALE")
+	private int scale;
 
 	@Column(name = "NULLABLE")
 	private int nullable;
@@ -46,33 +52,34 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "COMMENT")
 	private String comment;
 
+	@Column(name = "CHECK_CONSTRAINT")
+	private String checkConstraint;
+
 	@Column(name = "DISPORDER")
 	private int dispOrder;
 
-	@Column(name = "PK")
-	private int pk;
-
 	@ManyToOne
     @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "TABLE_NAME", referencedColumnName = "NAME")
+    	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
+    	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID")
     })
-	public ScvmtErpTableDesign tabledesign;
+	public NemTdSnapshotTable tabledesign;
 
 	@Override
 	protected Object getKey() {
-		return scvmtErpColumnDesignPk;
+		return pk;
 	}
 
 	public ColumnDesign toDomain() {
 		return new ColumnDesign(
-				scvmtErpColumnDesignPk.id,
+				pk.id,
 				name,
 				type,
 				(nullable == 1 ? true : false),
 				defaultValue,
 				comment,
 				dispOrder,
-				(pk == 1 ? true : false)
+				false
 			);
 	}
 

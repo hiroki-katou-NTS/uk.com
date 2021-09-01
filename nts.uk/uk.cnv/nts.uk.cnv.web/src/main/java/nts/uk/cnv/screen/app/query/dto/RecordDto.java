@@ -13,4 +13,6 @@ public class RecordDto {
 	String explanation;
 
 	String sourceId;
+
+	boolean isRemoveDuplicate;
 }

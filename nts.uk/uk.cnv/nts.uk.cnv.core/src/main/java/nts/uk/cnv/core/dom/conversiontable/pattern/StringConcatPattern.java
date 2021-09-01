@@ -31,7 +31,7 @@ public class StringConcatPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		conversionSql.addJoin(sourceJoin);
 
 		String source1 = sourceJoin.tableName.getAlias() + "." + column1;
@@ -44,9 +44,11 @@ public class StringConcatPattern extends ConversionPattern {
 		String concatString = spec.concat(source1, source2);
 
 
-		conversionSql.add(
-				column,
-				new ColumnExpression(concatString));
+		ColumnExpression expression = new ColumnExpression(concatString);
+		conversionSql.add(column, expression);
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(expression);
+		}
 
 		return conversionSql;
 	}

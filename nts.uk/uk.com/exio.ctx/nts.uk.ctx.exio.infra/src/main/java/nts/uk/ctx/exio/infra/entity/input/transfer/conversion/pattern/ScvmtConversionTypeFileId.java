@@ -50,10 +50,13 @@ public class ScvmtConversionTypeFileId extends JpaEntity implements Serializable
 	}
 
 	public FileIdPattern toDomain(ConversionInfo info, Join sourcejoin) {
+		// 外部受入の移送処理ではファイルID変換を使う予定がないためファイル種別や個人ID列名は未設定
 		return new FileIdPattern(
 				info,
 				sourcejoin,
-				this.sourceColumnName
+				this.sourceColumnName,
+				null,
+				null
 			);
 	}
 

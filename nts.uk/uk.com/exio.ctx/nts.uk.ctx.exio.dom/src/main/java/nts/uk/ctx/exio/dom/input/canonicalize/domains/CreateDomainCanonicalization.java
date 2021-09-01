@@ -13,6 +13,11 @@ import java.util.function.Function;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.ShortWorkTimeCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.CompensatoryHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.HolidayWorkCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteHolidayCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteWorkCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
@@ -76,6 +81,9 @@ public class CreateDomainCanonicalization {
 		//所属職場履歴
 		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
 		
+		// 短時間勤務履歴
+		CREATES.put(SHORT_WORK_TIME, ShortWorkTimeCanonicalization::new);
+		
 		//社員の年休付与設定
 		CREATES.put(EMPLOYEE_YEAR_HOLIDAY_SETTING, w -> new EmployeeYearHolidaySettingCanonicalization(w));
 		
@@ -92,6 +100,20 @@ public class CreateDomainCanonicalization {
 		CREATES.put(ImportingDomainId.EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> SpecialHolidayGrantSettingCanonicalization.create(w));
 		
 		// 特別休暇付与残数データ
+		CREATES.put(ImportingDomainId.SPECIAL_HOLIDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
+
+		// 振休管理データ
+		CREATES.put(SUBSTITUTE_HOLIDAY, SubstituteHolidayCanonicalization::new);
+
+		// 振出管理データ
+		CREATES.put(SUBSTITUTE_WORK, SubstituteWorkCanonicalization::new);
+
+		// 代休管理データ
+		CREATES.put(COMPENSATORY_HOLIDAY, CompensatoryHolidayCanonicalization::new);
+
+		// 休出管理データ
+		CREATES.put(HOLIDAY_WORK, HolidayWorkCanonicalization::new);
+		
 		CREATES.put(ImportingDomainId.SPECIAL_HOLIDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
 	}
 	

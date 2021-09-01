@@ -64,7 +64,9 @@ public class FileImportService {
 			LogManager.out("  0 ％の処理が完了しました。");
 			for (JmKihon employee : employees) {
 				try {
-					uploadPersonPhoto(require, company, employee);
+					if (employee.getProfilePhotoFileName() != null && !employee.getProfilePhotoFileName().isEmpty()) {
+						uploadPersonPhoto(require, company, employee);
+					}
 
 					Optional<JmGenAdd> address = employeeAddress.stream()
 						.filter(add -> employee.getPid() == add.getPid())

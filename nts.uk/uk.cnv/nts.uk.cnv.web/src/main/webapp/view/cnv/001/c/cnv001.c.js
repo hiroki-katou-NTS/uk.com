@@ -57,7 +57,8 @@ var TabMap = {
 	"DATETIME_MERGE": "#datetimeMerge",
 	"GUID": "#guid",
 	"PASSWORD": "#password",
-	"FILE_ID": "#fileId"
+	"FILE_ID": "#fileId",
+	"SOURCE_JOIN": "#sourceJoin"
 };
 
 class columnData {
@@ -133,7 +134,11 @@ $(function(){
 				tableName: erpTable
 			})).done(function (res) {
 				var options = $.map(res, function (value, index) {
-					return $('<option>', { value: value.columnName, text: value.columnName + String.fromCharCode( 160 ).repeat(25-getLen(value.columnName)) + " : " + value.dataType });
+					var length = 25 - getLen(value.columnName);
+					if (length <= 0) {
+						length = 1;
+					}
+					return $('<option>', { value: value.columnName, text: value.columnName + String.fromCharCode( 160 ).repeat(length) + " : " + value.dataType });
 				});
 
 				erpColumnsList = $.map(res, function (value, index) {
@@ -160,9 +165,13 @@ $(function(){
 		options = $.map(ukColumnsList, function(value, index) {
 			var registered = ($.inArray(value.name, registeredColumnList) !== -1);
 			var mark = registered ? "●" : "　";
+			var length = 25 - getLen(value.name);
+			if (length <= 0) {
+				length = 1;
+			}
 			return $('<option>', {
 					value: value.name,
-					text: mark + " " + value.name + String.fromCharCode(160).repeat(25-getLen(value.name)) + " : " + value.dataType + "(" + value.length + "," + value.scale + ")" });
+					text: mark + " " + value.name + String.fromCharCode(160).repeat(length) + " : " + value.dataType + "(" + value.length + "," + value.scale + ")" });
 		});
 
 		$('#selUkColumns > option').remove();
@@ -277,122 +286,83 @@ $(function(){
 	}
 
 	$("#btnLoadParent").click(function () {
-		loadParent(function () {});
+
+		$(".selSourceParentColumn > option").remove();
+		$(".selSourceParentColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
+
+		var parentTable = $("#txtParentTblName").val();
+		if(typeof parentTable === "undefined" ) return;
+
+		loadTableDesignByOruta(parentTable, function (options) {
+			$(".selSourceParentColumn > option").remove();
+			$(".selSourceParentColumn").append(options);
+		});
 	});
 
-	function loadParent(setDataFunc) {
-		var parentTable = $("#txtParentTblName").val();
+	$("#btnLoadSourceTbl").click(function () {
 
-		if(parentTable === null) {
-			$(".selSourceParentColumn > option").remove();
-			$(".selSourceParentColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
+		$(".selJoinSourceColumn > option").remove();
+		$(".selJoinSourceColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
+		var sourceTable = $("#txtSourceTblName").val();
+		loadTableDesignByErp(sourceTable, function (options) {
+			$(".selJoinSourceColumn > option").remove();
+			$(".selJoinSourceColumn").append(options);
+		});
+	});
+
+	function loadTableDesignByOruta(targetTable, setDataFunc) {
+
+		if(targetTable === null) {
 			return;
 		}
 
 		$.ajax(
-				$.extend({url:server + servicePath.getukcolumns_oruta + '/' + tableId + '/not-accepted'}, {type: "GET"})
+				$.extend({url:server + servicePath.getukcolumns_oruta + '/' + targetTable + '/not-accepted'}, {type: "GET"})
 		).done(function (res) {
-			var options = $.map(res, function (value, index) {
-				return $('<option>', { value: value.name, text: value.name + String.fromCharCode(160).repeat(25-getLen(value.name)) + " : " + value.dataType });
+			var options = $.map(res.columns, function (value, index) {
+				return $('<option>', {
+					value: value.name,
+					text: value.name
+						+ String.fromCharCode(160).repeat(25-getLen(value.name))
+						+ " : "
+						+ value.type.dataType
+						+ "("
+						+ value.type.length
+						+ ","
+						+ value.type.scale
+						+ ")"
+					});
 			});
 
-			$(".selSourceParentColumn > option").remove();
-			$(".selSourceParentColumn").append(options);
-
-			setDataFunc();
+			setDataFunc(options);
 		}).fail(function(rej){
 			console.log(rej);
 		});
 	}
 
-	$("#chkParentJoin1").change(function() {
-		if($("#chkParentJoin1").prop('checked')) {
-			$("#selJoinPK1").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK1").prop('disabled', true);
-		}
-	});
+	function loadTableDesignByErp(targetTable, setDataFunc) {
 
-	$("#chkParentJoin2").change(function() {
-		if($("#chkParentJoin2").prop('checked')) {
-			$("#selJoinPK2").prop('disabled', false);
+		if(targetTable === null) {
+			return;
 		}
-		else {
-			$("#selJoinPK2").prop('disabled', true);
-		}
-	});
 
-	$("#chkParentJoin3").change(function() {
-		if($("#chkParentJoin3").prop('checked')) {
-			$("#selJoinPK3").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK3").prop('disabled', true);
-		}
-	});
+		$.ajax(ajaxOption.build(servicePath.geterpcolumns, {
+			tableName: targetTable
+		})).done(function (res) {
+			var options = $.map(res, function (value, index) {
+				return $('<option>', {value: value.columnName, text: value.columnName + String.fromCharCode(160).repeat(25-getLen(value.columnName)) + " : " + value.dataType});
+			});
 
-	$("#chkParentJoin4").change(function() {
-		if($("#chkParentJoin4").prop('checked')) {
-			$("#selJoinPK4").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK4").prop('disabled', true);
-		}
-	});
+			setDataFunc(options);
+		}).fail(function(rej){
+			console.log(rej);
+		});
+	}
 
-	$("#chkParentJoin5").change(function() {
-		if($("#chkParentJoin5").prop('checked')) {
-			$("#selJoinPK5").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK5").prop('disabled', true);
-		}
-	});
+	$(".chkJoin").change(function() {
+		var targetId = '#' + $(this).data('target');
 
-	$("#chkParentJoin6").change(function() {
-		if($("#chkParentJoin6").prop('checked')) {
-			$("#selJoinPK6").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK6").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin7").change(function() {
-		if($("#chkParentJoin7").prop('checked')) {
-			$("#selJoinPK7").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK7").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin8").change(function() {
-		if($("#chkParentJoin8").prop('checked')) {
-			$("#selJoinPK8").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK8").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin9").change(function() {
-		if($("#chkParentJoin9").prop('checked')) {
-			$("#selJoinPK9").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK9").prop('disabled', true);
-		}
-	});
-
-	$("#chkParentJoin10").change(function() {
-		if($("#chkParentJoin10").prop('checked')) {
-			$("#selJoinPK10").prop('disabled', false);
-		}
-		else {
-			$("#selJoinPK10").prop('disabled', true);
-		}
+		$(targetId).prop('disabled', ($(this).prop('checked') == false));
 	});
 
 	function loadPage() {
@@ -497,6 +467,13 @@ $(function(){
 
 		// FILE_ID
 		var sourceColumn_fileId;
+		var fileType;
+		var sourceColumn_kojinId;
+
+		// SOURCE_JOIN
+		var joinSourceTable;
+		var sourceColumn_sourceJoin;
+		var joinSourcePKs;
 
 		switch(conversionType){
 		case "NONE":
@@ -558,7 +535,7 @@ $(function(){
 				return $(elem).val();
 			}).join(',');
 
-			if(codeToIdType === "" || sourceColumn_codeToId === "" || joinPKs === "") {
+			if(parentTable === "" || sourceColumn_parent === "" || joinPKs === "") {
 				showMsg("必須項目が入力されていません");
 				return;
 			}
@@ -599,14 +576,35 @@ $(function(){
 			break;
 		case "PASSWORD":
 			sourceColumn_password = $("#selSourceColumn_password option:selected").val();
-			if(sourceColumn_none === "") {
+			if(sourceColumn_password === "") {
 				showMsg("必須項目が入力されていません");
 				return;
 			}
 			break;
 		case "FILE_ID":
 			sourceColumn_fileId = $("#selSourceColumn_fileId option:selected").val();
-			if(sourceColumn_none === "") {
+			fileType = $("#selFileType option:selected").val();
+			sourceColumn_kojinId = $("#selSourceColumn_kojinId option:selected").val();
+			if(sourceColumn_fileId === "" || fileType === "") {
+				showMsg("必須項目が入力されていません");
+				return;
+			}
+			break;
+		case "SOURCE_JOIN":
+			joinSourceTable = $("#txtSourceTblName").val();
+			sourceColumn_sourceJoin = $("#selSourceColumn_source option:selected").val();
+
+			var elems = $(".selSourceJoinPK:not(:disabled)").sort(function(a,b){
+				    if($(a).attr("id") < $(b).attr("id")) return -1;
+				    if($(a).attr("id") > $(b).attr("id")) return 1;
+				    return 0;
+				});
+
+			joinSourcePKs = $.map(elems, function (elem, index) {
+				return $(elem).val();
+			}).join(',');
+
+			if(joinSourceTable === "" || sourceColumn_sourceJoin === "" || joinSourcePKs === "") {
 				showMsg("必須項目が入力されていません");
 				return;
 			}
@@ -655,7 +653,12 @@ $(function(){
 			sourceColumn_yyyymmddhhmi: sourceColumn_yyyymmddhhmi,
 			sourceColumn_yyyymmddhhmiss: sourceColumn_yyyymmddhhmiss,
 			sourceColumn_password: sourceColumn_password,
-			sourceColumn_fileId: sourceColumn_fileId
+			sourceColumn_fileId: sourceColumn_fileId,
+			fileType: fileType,
+			sourceColumn_kojinId: sourceColumn_kojinId,
+			joinSourceTable: joinSourceTable,
+			sourceColumn_sourceJoin: sourceColumn_sourceJoin,
+			joinSourcePKs: joinSourcePKs
 		};
 	}
 
@@ -700,7 +703,9 @@ $(function(){
 			$("#txtParentTblName").val(data.parentTable);
 
 			if(typeof data.parentTable !== "undefined" ) {
-				loadParent( function() {
+				loadTableDesignByOruta(data.parentTable, function(options) {
+					$(".selJoinSourceColumn > option").remove();
+					$(".selJoinSourceColumn").append(options);
 
 					$("#selSourceColumn_parent").val(data.sourceColumn_parent);
 
@@ -744,6 +749,26 @@ $(function(){
 			break;
 		case "FILE_ID":
 			$("#selSourceColumn_fileId").val(data.sourceColumn_fileId);
+			break;
+		case "SOURCE_JOIN":
+			$("#txtSourceTblName").val(data.sourceTable);
+
+			$(".selJoinSourceColumn > option").remove();
+			$(".selJoinSourceColumn").append($('<option>', { value: "", text:"-- 未選択 --" }));
+
+			loadTableDesignByErp(data.sourceTable, function(options) {
+				$(".selJoinSourceColumn > option").remove();
+				$(".selJoinSourceColumn").append(options);
+
+				$("#selSourceColumn_source").val(data.sourceColumn_sourceJoin);
+
+				$("#parent input[type='checkbox']").prop("checked", false);
+				$.each(data.joinSourcePKs.split(","), function (index, value) {
+					$("#chkSourceJoin" + (index + 1)).prop("checked", true);
+					$("#selSourceJoinPK"+ (index + 1)).prop('disabled', false);
+					$("#selSourceJoinPK" + (index + 1)).val(value)
+				});
+			});
 			break;
 		}
 	}

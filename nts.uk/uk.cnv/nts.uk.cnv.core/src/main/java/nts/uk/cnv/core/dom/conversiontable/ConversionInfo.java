@@ -57,9 +57,15 @@ public class ConversionInfo {
 				this.targetSchema, tableName, type.getTagetAlias());
 	}
 
+	public TableFullName getSourceTable(String sourceName, String alias) {
+		return new TableFullName(
+				this.sourceDatabaseName,
+				this.sourceSchema, sourceName, alias);
+	}
+
 	public Join getJoin(ConversionSource source) {
 		return this.type == ConversionCodeType.INSERT
-				? source.getMainJoin()
-				: source.getInnerJoin();
+				? source.getMainJoin(sourceDatabaseName, sourceSchema)
+				: source.getInnerJoin(sourceDatabaseName, sourceSchema);
 	}
 }

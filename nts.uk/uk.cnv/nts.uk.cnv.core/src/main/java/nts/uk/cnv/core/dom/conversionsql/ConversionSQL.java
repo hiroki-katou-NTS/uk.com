@@ -15,6 +15,7 @@ public interface ConversionSQL {
 	public void addJoin(Join join);
 	public void add(ColumnName column, ColumnExpression value);
 	public void add(ColumnName column, ColumnExpression value, TreeMap<FormatType, String> formatTable);
+	public void addGroupingColumn(ColumnExpression expression);
 
 	public TableFullName getBaseTable();
 

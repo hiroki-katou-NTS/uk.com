@@ -29,7 +29,8 @@ public class ConversionTableTestHelper {
 				Optional.empty(),
 				Optional.empty(),
 				new ArrayList<>(),
-				new ArrayList<>());
+				new ArrayList<>(),
+				true);
 	}
 
 	public static ConversionTable create_companyDummy(ConversionInfo info) {
@@ -91,7 +92,8 @@ public class ConversionTableTestHelper {
 									"kainame"
 							)
 					)
-				)
+				),
+				true
 			);
 	}
 
@@ -115,7 +117,8 @@ public class ConversionTableTestHelper {
 								"社員名"
 						)
 					)
-				)
+				),
+				true
 			);
 	}
 

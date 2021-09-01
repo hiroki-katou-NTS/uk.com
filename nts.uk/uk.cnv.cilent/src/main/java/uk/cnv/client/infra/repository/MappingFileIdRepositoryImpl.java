@@ -16,9 +16,7 @@ public class MappingFileIdRepositoryImpl extends UkCnvRepositoryBase implements 
 		val entity = new ScvmtMappingFileId(
 					mapptingFile.getId(),
 					FileType,
-					employee.getPid(),
-					employee.getCompanyCode(),
-					employee.getEmployeeCode()
+					employee.getPid()
 				);
 
 		super.insert(entity);

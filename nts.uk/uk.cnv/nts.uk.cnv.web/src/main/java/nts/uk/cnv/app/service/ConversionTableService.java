@@ -32,6 +32,7 @@ import nts.uk.cnv.core.dom.conversiontable.pattern.FixedValueWithConditionPatter
 import nts.uk.cnv.core.dom.conversiontable.pattern.NotChangePattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.PasswordPattern;
+import nts.uk.cnv.core.dom.conversiontable.pattern.SourceJoinPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.StringConcatPattern;
 import nts.uk.cnv.core.dom.conversiontable.pattern.TimeWithDayAttrPattern;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
@@ -98,7 +99,8 @@ public class ConversionTableService {
 						dto.getUkColumn(),
 						info.getJoin(source));
 
-		ConversionTable conversonTable = createConversionTable(onColumn, source, info, dto, info.getType().getTagetAlias());
+		ConversionTable conversonTable = createConversionTable(
+				onColumn, source, info, dto, info.getType().getTagetAlias(), record.isRemoveDuplicate());
 		ConversionSQL sql = conversonTable.createConversionSql();
 
 		return sql.build(info.getDatebaseType().spec());
@@ -119,13 +121,15 @@ public class ConversionTableService {
 						dto.getUkColumn(),
 						info.getJoin(source));
 
-		ConversionTable conversonTable = createConversionTable(onColumn, source, info, dto, info.getType().getTagetAlias());
+		ConversionTable conversonTable = createConversionTable(
+				onColumn, source, info, dto, info.getType().getTagetAlias(), record.isRemoveDuplicate());
 		ConversionSQL sql = conversonTable.createUpdateConversionSql();
 
 		return sql.build(info.getDatebaseType().spec());
 	}
 
-	private ConversionTable createConversionTable(Optional<OneColumnConversion> onColumn, ConversionSource source, ConversionInfo info, FindConversionTableDto dto, String alias) {
+	private ConversionTable createConversionTable(
+			Optional<OneColumnConversion> onColumn, ConversionSource source, ConversionInfo info, FindConversionTableDto dto, String alias, boolean isRemoveDuplicate) {
 
 		List<WhereSentence> whereList = new ArrayList<>();
 		List<OneColumnConversion> conversionMap = new ArrayList<>();
@@ -147,7 +151,8 @@ public class ConversionTableService {
 				source.getStartDateColumnName(),
 				source.getEndDateColumnName(),
 				whereList,
-				conversionMap
+				conversionMap,
+				isRemoveDuplicate
 			);
 	}
 
@@ -195,7 +200,7 @@ public class ConversionTableService {
 						String.join(
 							",",
 							parent.getMappingJoin().onSentences.stream()
-								.map(on -> on.getLeft().getName())
+								.map(on -> on.getRight().getName())
 								.collect(Collectors.toList())
 							)
 						);
@@ -235,6 +240,12 @@ public class ConversionTableService {
 		case FileId:
 			FileIdPattern fileId = (FileIdPattern) domain.getPattern();
 			result.setSourceColumn_fileId(fileId.getSourceColumnName());
+			return result;
+		case SourceJoin:
+			SourceJoinPattern sourceJoin = (SourceJoinPattern) domain.getPattern();
+			result.setSourceTable(sourceJoin.getSourceJoin().getTableName().getName());
+			result.setSourceColumn_sourceJoin(sourceJoin.getSourceColumn());
+			result.setJoinSourcePKs(sourceJoin.sourceJoinColumns());
 			return result;
 		}
 

@@ -1,96 +1,133 @@
 package nts.uk.cnv.infra.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.core.dom.tabledesign.ColumnDesign;
+import lombok.val;
 import nts.uk.cnv.core.dom.tabledesign.ErpTableDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
-import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesign;
-import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpColumnDesignPk;
-import nts.uk.cnv.infra.entity.tabledesign.ScvmtErpTableDesign;
+import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotColumn;
+import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotTable;
+import nts.uk.cnv.infra.impls.JpaSourceOrutaRepository;
 
 @Stateless
-public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {
-
-	@Override
-	public void insert(ErpTableDesign tableDesign) {
-		this.commandProxy().insert(toEntity(tableDesign));
-	}
-
-	@Override
-	public void update(ErpTableDesign tableDesign) {
-		this.commandProxy().update(toEntity(tableDesign));
-	}
-
+public class JpaErpTableDesignRepository extends JpaSourceOrutaRepository implements ErpTableDesignRepository {
 	@Override
 	public boolean exists(String tableName) {
-		String sql = "SELECT td FROM ScvmtErpTableDesign td WHERE td.name = :name";
-		Optional<ScvmtErpTableDesign> result = this.queryProxy().query(sql, ScvmtErpTableDesign.class)
-				.setParameter("name", tableName)
-				.getSingle();
+		val result = find(tableName);
 		return result.isPresent();
 	}
 
-	private ScvmtErpTableDesign toEntity(ErpTableDesign tableDesign) {
-		List<ScvmtErpColumnDesign> columns = tableDesign.getColumns().stream()
-				.map(cd -> toEntity(tableDesign.getName(), cd))
-				.collect(Collectors.toList());
-
-		return new ScvmtErpTableDesign(tableDesign.getName(), columns);
+	private String getLatestSnapshotId() {
+		String sql = "SELECT sss.SNAPSHOT_ID FROM NEM_TD_SNAPSHOT_SCHEMA sss"
+				+ " ORDER BY sss.GENERATED_AT DESC";
+		return this.jdbcProxy().query(sql).getList(rec -> rec.getString("SNAPSHOT_ID")).stream()
+			.findFirst().orElse("");
 	}
 
-	private ScvmtErpColumnDesign toEntity(String tableName, ColumnDesign columnDesign) {
-		return new ScvmtErpColumnDesign(
-					new ScvmtErpColumnDesignPk(tableName, columnDesign.getId()),
-					columnDesign.getName(),
-					columnDesign.getType(),
-					(columnDesign.isNullable() ? 1 : 0),
-					columnDesign.getDefaultValue(),
-					columnDesign.getComment(),
-					columnDesign.getDispOrder(),
-					(columnDesign.isPk() ? 1 : 0),
-					null
-				);
-	}
+//	private NemTdSnapshotTable toEntity(ErpTableDesign tableDesign) {
+//		NemTdSnapshotTablePk pk = new NemTdSnapshotTablePk(
+//				tableDesign.getTableId(),
+//				tableDesign.getSnapshotId());
+//		List<NemTdSnapshotColumn> columns = tableDesign.getColumns().stream()
+//				.map(cd -> toEntity(pk, cd))
+//				.collect(Collectors.toList());
+//
+//		return new NemTdSnapshotTable(
+//				pk,
+//				tableDesign.getName(),
+//				tableDesign.getJpName(),
+//				columns);
+//	}
+//
+//	private NemTdSnapshotColumn toEntity(NemTdSnapshotTablePk pk, ColumnDesign columnDesign) {
+//		return new NemTdSnapshotColumn(
+//					new NemTdSnapshotColumnPk(
+//							pk.tableId,
+//							pk.snapshotId,
+//							columnDesign.getId()),
+//					columnDesign.getName(),
+//					columnDesign.getJpName(),
+//					columnDesign.getType(),
+//					columnDesign.getMaxLength(),
+//					columnDesign.getScale(),
+//					(columnDesign.isNullable() ? 1 : 0),
+//					columnDesign.getDefaultValue(),
+//					columnDesign.getComment(),
+//					columnDesign.getCheckConstraint(),
+//					columnDesign.getDispOrder(),
+//					null
+//				);
+//	}
 
 	@Override
 	public Optional<ErpTableDesign> find(String tablename) {
-		String sql = "SELECT td FROM ScvmtErpTableDesign td WHERE td.name = :name";
-		Optional<ScvmtErpTableDesign> parent = this.queryProxy().query(sql, ScvmtErpTableDesign.class)
+		String ssid = getLatestSnapshotId();
+
+		String sql = "SELECT td FROM NemTdSnapshotTable td"
+				+ " WHERE td.pk.snapshotId = :snapshotId"
+				+ " AND td.name = :name";
+		Optional<NemTdSnapshotTable> parent = this.queryProxy().query(sql, NemTdSnapshotTable.class)
+				.setParameter("snapshotId", ssid)
 				.setParameter("name", tablename)
 				.getSingle();
 		if(!parent.isPresent()) return Optional.empty();
 
-		Optional<ScvmtErpTableDesign> result = this.queryProxy().find(parent.get().getName(), ScvmtErpTableDesign.class);
-		if(!parent.isPresent()) return Optional.empty();
+		Optional<NemTdSnapshotTable> result = this.queryProxy().find(
+				parent.get().getPk(), NemTdSnapshotTable.class);
+		if(!result.isPresent()) return Optional.empty();
 
 		return Optional.of(result.get().toDomain());
 	}
 
 	@Override
 	public List<String> getAllTableList() {
-		String sql = "SELECT td.NAME FROM SCVMT_ERP_TABLE_DESIGN td ORDER BY NAME ASC";
-		List<String> tablelist = new ArrayList<>();
-		tablelist = this.jdbcProxy().query(sql).getList(rec -> {
-			return rec.getString("NAME");
-		});
+		String ssid = getLatestSnapshotId();
 
-		return tablelist;
+		String sql = "SELECT td"
+				+ " FROM NemTdSnapshotTable td"
+				+ " WHERE td.pk.snapshotId = :snapshotId"
+				+ " ORDER BY td.name ASC";
+
+		return this.queryProxy().query(sql, NemTdSnapshotTable.class)
+			.setParameter("snapshotId", ssid)
+			.getList(td -> td.getName());
 	}
 
 	@Override
 	public List<String> getPkColumns(String tableName) {
-		String sql = "SELECT cd FROM ScvmtErpColumnDesign cd"
-				+ " WHERE cd.scvmtErpColumnDesignPk.tableName = :tableName"
-				+ " AND cd.pk = 1";
-		return this.queryProxy().query(sql, ScvmtErpColumnDesign.class)
-				.setParameter("tableName", tableName)
-				.getList(cd -> cd.getName());
+		String ssid = getLatestSnapshotId();
+		ErpTableDesign parent = this.find(tableName)
+				.orElseThrow(() -> new RuntimeException("テーブルの定義情報がありません:" + tableName));
+		List<String> pkColumnIds = getPkColumnIds(parent.getTableId(), ssid);
+
+		String sql = "SELECT cd FROM NemTdSnapshotColumn cd"
+				+ " WHERE cd.pk.snapshotId = :snapshotId"
+				+ " AND cd.pk.tableId = :tableId";
+
+		return this.queryProxy().query(sql, NemTdSnapshotColumn.class)
+				.setParameter("snapshotId", ssid)
+				.setParameter("tableId", parent.getTableId())
+				.getList()
+				.stream()
+				.filter(col -> pkColumnIds.contains(col.pk.id))
+				.map(col -> col.name)
+				.collect(Collectors.toList());
+	}
+
+	private List<String> getPkColumnIds(String tableId, String ssid) {
+
+		String sql = "SELECT idxcol.COLUMN_ID"
+				+ " FROM NEM_TD_SNAPSHOT_TABLE_INDEX_COLUMNS idxcol"
+				+ " WHERE idxcol.TABLE_ID = @tableId"
+				+ " AND idxcol.SNAPSHOT_ID = @snapshotId"
+				+ " AND idxcol.TYPE = 'PRIMARY KEY'";
+		return this.jdbcProxy().query(sql)
+			.paramString("tableId", tableId)
+			.paramString("snapshotId", ssid)
+			.getList(rec -> rec.getString("COLUMN_ID"));
 	}
 }

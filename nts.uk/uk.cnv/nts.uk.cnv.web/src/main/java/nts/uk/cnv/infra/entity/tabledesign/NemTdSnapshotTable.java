@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -25,18 +25,23 @@ import nts.uk.cnv.core.dom.tabledesign.ErpTableDesign;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_ERP_TABLE_DESIGN")
-public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
+@Table(name = "NEM_TD_SNAPSHOT_TABLE")
+public class NemTdSnapshotTable extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
+	@EmbeddedId
+	private NemTdSnapshotTablePk pk;
+
 	@Column(name = "NAME")
 	private String name;
 
-	@OneToMany(targetEntity = ScvmtErpColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Column(name = "JPNAME")
+	private String jpName;
+
+	@OneToMany(targetEntity = NemTdSnapshotColumn.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@OrderBy("dispOrder ASC")
-    @JoinTable(name = "SCVMT_ERP_COLUMN_DESIGN")
-	private List<ScvmtErpColumnDesign> columns;
+    @JoinTable(name = "NEM_TD_SNAPSHOT_COLUMN")
+	private List<NemTdSnapshotColumn> columns;
 
 	@Override
 	protected Object getKey() {
@@ -48,6 +53,6 @@ public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
 
-		return new ErpTableDesign(name, cols);
+		return new ErpTableDesign(pk.tableId, pk.snapshotId, name, jpName, cols);
 	}
 }

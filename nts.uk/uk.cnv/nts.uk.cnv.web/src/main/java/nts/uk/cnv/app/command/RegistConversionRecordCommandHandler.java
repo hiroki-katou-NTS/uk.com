@@ -23,7 +23,8 @@ public class RegistConversionRecordCommandHandler extends CommandHandler<RegistC
 				command.getTable(),
 				command.getRecordNo(),
 				command.getSourceId(),
-				command.getExplanation()
+				command.getExplanation(),
+				command.isRemoveDuplicate()
 			);
 
 		boolean exists = repository.isExists(command.getCategory(),

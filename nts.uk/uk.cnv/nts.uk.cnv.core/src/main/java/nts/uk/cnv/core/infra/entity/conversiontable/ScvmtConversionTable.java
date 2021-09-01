@@ -39,8 +39,10 @@ import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeG
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeNone;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeParent;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypePassword;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeSourceJoin;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeStringConcat;
 import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeTimeWithDayAttr;
+import nts.uk.cnv.core.infra.entity.conversiontable.pattern.ScvmtConversionTypeViewJoin;
 
 /**
  * コンバート表
@@ -99,13 +101,24 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
 	public ScvmtConversionTypeFileId typeFileId;
 
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
+	public ScvmtConversionTypeSourceJoin typeSourceJoin;
+
+	@OneToOne(optional=true, mappedBy="conversionTable", cascade=CascadeType.ALL)
+	public ScvmtConversionTypeViewJoin typeViewJoin;
+
 
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 
-	public static ConversionTable toDomain(String tagetTableName, ConversionInfo info, List<OneColumnConversion> columns, ConversionSource source) {
+	public static ConversionTable toDomain(
+			String tagetTableName,
+			ConversionInfo info,
+			List<OneColumnConversion> columns,
+			ConversionSource source,
+			boolean removeDuplicate) {
 		List<WhereSentence> where = createWhereSentence(tagetTableName, info, source.getCondition());
 
 		return new ConversionTable(
@@ -115,7 +128,8 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 					source.getStartDateColumnName(),
 					source.getEndDateColumnName(),
 					where,
-					columns
+					columns,
+					removeDuplicate
 				);
 	}
 
@@ -146,40 +160,14 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 			.typeGuid(ScvmtConversionTypeGuid.toEntity(pk, conversionPattern))
 			.typePassword(ScvmtConversionTypePassword.toEntity(pk, conversionPattern))
 			.typeFileId(ScvmtConversionTypeFileId.toEntity(pk, conversionPattern))
+			.typeSourceJoin(ScvmtConversionTypeSourceJoin.toEntity(pk, conversionPattern))
+			.typeViewJoin(ScvmtConversionTypeViewJoin.toEntity(pk, conversionPattern))
 			.build();
 	}
 
 	private ConversionPattern createConversionPattern(ConversionInfo info, Join sourceJoin) {
 		ConversionType type = ConversionType.parse(this.conversionType);
-
-		switch(type) {
-			case None:
-				return typeNone.toDomain(info, sourceJoin);
-			case CodeToId:
-				return typeCodeToId.toDomain(info, sourceJoin);
-			case CodeToCode:
-				return typeCodeToCode.toDomain(info, sourceJoin);
-			case FixedValue:
-				return typeFixedValue.toDomain(info, sourceJoin);
-			case FixedValueWithCondition:
-				return typeFixedValueWithCondition.toDomain(info.getDatebaseType().spec(), sourceJoin);
-			case Parent:
-				return typeParent.toDomain(info, sourceJoin);
-			case StringConcat:
-				return typeStringConcat.toDomain(info.getDatebaseType().spec(), sourceJoin);
-			case TimeWithDayAttr:
-				return typeTimeWithDayAttr.toDomain(sourceJoin);
-			case DateTimeMerge:
-				return typeDateTimeMerge.toDomain(info, sourceJoin);
-			case Guid:
-				return typeGuid.toDomain(info.getDatebaseType().spec());
-			case Password:
-				return typePassword.toDomain(info, sourceJoin);
-			case FileId:
-				return typeFileId.toDomain(info, sourceJoin);
-		}
-
-		throw new RuntimeException("ConversionPatternが不正です");
+		return type.toPattern(this, info, sourceJoin);
 	}
 
 	private static List<WhereSentence> createWhereSentence(String tagetTableName, ConversionInfo info, String sourceCondition) {
@@ -188,7 +176,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 		if (sourceCondition == null || sourceCondition.isEmpty()) return where;
 
-		String[] conditions = sourceCondition.toUpperCase().split("AND");
+		String[] conditions = sourceCondition.split(" [a|A][n|N][d|D] ");
 
 		for (String condition : conditions) {
 			RelationalOperator operator = null;
@@ -203,13 +191,16 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 			String[] expressions = condition.split(operator.getSign());
 
-			if(expressions.length < 2) throw new RuntimeException();
+			Optional<ColumnExpression> columnExpression =
+				(operator == RelationalOperator.IsNull || operator == RelationalOperator.IsNotNull)
+					? Optional.empty()
+					: Optional.of(new ColumnExpression(expressions[1]));
 
 			where.add(new WhereSentence(
-					new ColumnName(Constants.BaseTableAlias, expressions[0]),
+				new ColumnName(Constants.BaseTableAlias, expressions[0]),
 					operator,
-					Optional.of(new ColumnExpression(expressions[1]))
-				));
+					columnExpression)
+			);
 		}
 
 		return where;

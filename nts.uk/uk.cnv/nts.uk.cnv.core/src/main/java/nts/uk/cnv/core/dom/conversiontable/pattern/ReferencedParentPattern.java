@@ -37,15 +37,17 @@ public class ReferencedParentPattern extends ConversionPattern {
 	}
 
 	@Override
-	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql) {
+	public ConversionSQL apply(ColumnName column, ConversionSQL conversionSql, boolean removeDuplicate) {
 		String alias = "parent_" + this.parentColumn;
 		Join mapping = this.getMappingTableJoin(alias);
 
 		conversionSql.addJoin(mapping);
 
-		conversionSql.add(
-				column,
-				new ColumnExpression(alias, ParentJoinPatternManager.parentValueColumnName));
+		ColumnExpression expression = new ColumnExpression(alias, ParentJoinPatternManager.parentValueColumnName);
+		conversionSql.add(column, expression);
+		if(removeDuplicate) {
+			conversionSql.addGroupingColumn(expression);
+		}
 
 		return conversionSql;
 	}

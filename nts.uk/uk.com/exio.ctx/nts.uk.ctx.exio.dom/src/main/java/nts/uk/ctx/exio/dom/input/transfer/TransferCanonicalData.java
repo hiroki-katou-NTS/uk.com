@@ -103,8 +103,9 @@ public class TransferCanonicalData {
 					.filter(m ->
 						m.getPattern() instanceof NotChangePattern ?  importingItemNames.contains(((NotChangePattern)m.getPattern()).getSourceColumn())
 					 	: true)
-					.collect(toList())
-				);
+					.collect(toList()),
+				false
+			);
 		
 		// TODO: Insert & Update両方のモードは未対応
 		if(context.getMode().getType() == ConversionCodeType.INSERT) {

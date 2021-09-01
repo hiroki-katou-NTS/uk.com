@@ -65,4 +65,11 @@ public interface ConversionPatternValue {
 
 	/** FILE_ID **/
 	String getSourceColumn_fileId();
+	String getFileType();
+	String getSourceColumn_kojinId();
+
+	/** SOURCE_JOIN **/
+	String getJoinSourceTable();
+	String getSourceColumn_sourceJoin();
+	String getJoinSourcePKs();
 }
