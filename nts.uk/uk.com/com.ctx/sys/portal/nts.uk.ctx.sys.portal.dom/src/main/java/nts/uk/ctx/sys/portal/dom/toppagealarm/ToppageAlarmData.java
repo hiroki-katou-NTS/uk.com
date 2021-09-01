@@ -94,7 +94,7 @@ public class ToppageAlarmData extends AggregateRoot {
 	 */
 	public void changeSubSids(List<String> newSubSid, List<String> noErrSids) {
 		if (this.displayAtr == DisplayAtr.SUPERIOR) {
-			this.subSids = newSubSid;
+			this.subSids.addAll(newSubSid);
 			this.subSids = this.subSids.stream()
 					.filter(sid -> !noErrSids.contains(sid))
 					.distinct()
