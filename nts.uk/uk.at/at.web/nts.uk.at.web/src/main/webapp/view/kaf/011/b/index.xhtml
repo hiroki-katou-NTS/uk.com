@@ -46,22 +46,9 @@
                                                     application: applicationCommon,
                                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                                 } }"></div>
-					<div
-						data-bind="component: { name: 'kaf000-b-component6', 
-                                                params: {
-                                                    appType: appType,
-                                                    application: applicationCommon,
-                                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                                } }"
-						style="width: fit-content; display: inline-block; vertical-align: middle; margin-top: -15px"></div>
 
-
-					<div style="margin-top: -16px;">
-
-
-
+					<div>
 						<ui:include src="../shr/index.xhtml" />
-
 					</div>
 
 
@@ -79,15 +66,14 @@
 			<div class="right-panel"
 				style="width: 388px; padding-bottom: 5px; height: inherit; padding-right: 0px">
 				<div style="border: 1px solid #CCC; height: inherit; background-color: #fff; overflow-x: hidden; overflow-y: auto;">
-					
-					<div style="padding-top: 10px"
+					<div
 						data-bind="component: { name: 'kaf000-b-component1', 
                             params: {
                                 appType: appType,
                                 appDispInfoStartupOutput: appDispInfoStartupOutput	
                             } }"></div>
 
-					<div class="remainDay" style="margin: 0 15px; padding-top: 20px; padding-bottom: 10px; border-bottom: 2px solid #B1B1B1; min-height: 100px">
+					<div class="remainDay" style="margin: 0 25px; padding-top: 20px; padding-bottom: 15px; border-bottom: 2px solid #B1B1B1; min-height: 100px">
 						<div data-bind="foreach: remainDayList">
 							<div
 								style="padding-bottom: 10px; display: block;">
@@ -103,11 +89,6 @@
 							</div>
 
 						</div>
-
-						<com:ko-if
-							bind="displayInforWhenStarting() != null &amp;&amp; displayInforWhenStarting().remainingHolidayInfor.closestDueDate">
-									<span style="margin-left: -8px" data-bind="text: nts.uk.resource.getText('KAF011_82', [displayInforWhenStarting().remainingHolidayInfor.closestDueDate])"></span>
-						</com:ko-if>
 					</div>
 
 

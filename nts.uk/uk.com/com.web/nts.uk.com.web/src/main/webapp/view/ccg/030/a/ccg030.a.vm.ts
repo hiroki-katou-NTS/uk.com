@@ -25,7 +25,7 @@ module ccg030.a.viewmodel {
                 self.findFlowMenu(value);
             });
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG030_19"), key: 'defClassAtr', width: 40 , columnCssClass: 'halign-center', template: '{{if ${defClassAtr} == 1 }}<i class="icon icon-dot "></i>{{/if}}' , hidden: true },
+                // { headerText: nts.uk.resource.getText("CCG030_19"), key: 'defClassAtr', width: 40 , columnCssClass: 'halign-center', template: '{{if ${defClassAtr} == 1 }}<i class="icon icon-dot "></i>{{/if}}' , hidden: true },
                 { headerText: nts.uk.resource.getText("CCG030_9"), key: 'topPageCode', width: 50 },
                 { headerText: nts.uk.resource.getText("CCG030_10"), key: 'topPageName', width: 260 }
             ]);
@@ -112,7 +112,7 @@ module ccg030.a.viewmodel {
             if (self.selectedFlowMenuCD() !== null) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(function() {
                     nts.uk.ui.block.invisible();
-                    service.deleteFlowMenu(self.selectedFlowMenu().topPagePartID()).done(() => {
+                    service.deleteFlowMenu(self.selectedFlowMenu().topPageCode()).done(() => {
                         var index = _.findIndex(self.listFlowMenu(), ['topPageCode', self.selectedFlowMenu().topPageCode()]);
                         index = _.min([self.listFlowMenu().length - 2, index]);
                         self.reloadData().done(() => {

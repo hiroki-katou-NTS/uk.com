@@ -174,14 +174,19 @@ public class ShortWorkTimeOfDaily {
 			if (recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().isPresent()){
 				ShortTimeWorkSheetWithoutWork withoutWork =
 						recordClass.getCalculationRangeOfOneDay().getShortTimeWSWithoutWork().get();
-				// 勤務外短時間勤務時間を累計する
+				// 勤務外短時間勤務時間を累計する（所定内）
 				ConditionAtr conditionAtr = ConditionAtr.Child;
 				if (careAtr.isCare()) conditionAtr = ConditionAtr.Care;
+				AttendanceTime withinTime = withoutWork.sumShortWorkTimeWithoutWork(
+						conditionAtr, TimeSheetRoundingAtr.ALL, Optional.empty(), true);
+				// 勤務外短時間勤務時間を累計する（所定外）
 				AttendanceTime withoutTime = withoutWork.sumShortWorkTimeWithoutWork(
-						conditionAtr, TimeSheetRoundingAtr.ALL, Optional.empty());
+						conditionAtr, TimeSheetRoundingAtr.ALL, Optional.empty(), false);
+				
+				AttendanceTime totalTime = withinTime.addMinutes(withoutTime.valueAsMinutes());
 				result = DeductionTotalTime.of(
-						result.getTotalTime().addMinutes(withoutTime, withoutTime),
-						result.getWithinStatutoryTotalTime(),
+						result.getTotalTime().addMinutes(totalTime, totalTime),
+						result.getWithinStatutoryTotalTime().addMinutes(withinTime, withinTime),
 						result.getExcessOfStatutoryTotalTime().addMinutes(withoutTime, withoutTime));
 			}
 		}
@@ -223,7 +228,7 @@ public class ShortWorkTimeOfDaily {
 	 * @param integrationOfDaily 日別実績(Work)
 	 * @return 育児介護区分
 	 */
-	private static ChildCareAtr getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
+	public static ChildCareAtr getChildCareAttributeToDaily(IntegrationOfDaily integrationOfDaily) {
 		if(integrationOfDaily.getShortTime().isPresent()) {
 			val firstTimeSheet = integrationOfDaily.getShortTime().get().getShortWorkingTimeSheets().stream().findFirst();
 			if(firstTimeSheet.isPresent()) {

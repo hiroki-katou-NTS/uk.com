@@ -15,12 +15,18 @@ __viewContext.ready(function() {
             this.selectedMode.subscribe(s => {
                 if (s !== "normal") {
                     this.otType.hide(true);
+                    this.coreTimeType.hide(true);
+                    this.c1Type.hide(false);
+                    this.c2Type.hide(false);
                     this.fixedType.color("#fff");
                     this.changableType.color("#fff");
                     this.flexType.color("#fff");
                     this.breakTimeType.zIndex(3000);
                 } else {
                     this.otType.hide(false);
+                    this.coreTimeType.hide(false);
+                    this.c1Type.hide(true);
+                    this.c2Type.hide(true);
                     this.fixedType.color("#ccccff");
                     this.changableType.color("#ffc000");
                     this.flexType.color("#ccccff");
@@ -228,6 +234,20 @@ __viewContext.ready(function() {
                     {
                         name: "BodyCellStyle",
                         decorator: detailDeco
+                    }, {
+                        name: "RightClick",
+                        chartFilter: function() {
+                            return true;
+                        },
+                        handler: function(ui) {
+                            let items = [
+                                { id: "終日に拡大", text: "終日に拡大", selectHandler: function(id) { } },
+                                { id: "削除", text: "削除", selectHandler: function(id) { ruler.removeBy({ no: ui.rowIndex, id: ui.id }); } }
+                            ];
+                            
+                            ui.contextMenu(items);
+                            ui.contextMenu("show");
+                        }
                     }
                 ]
             };
@@ -239,6 +259,7 @@ __viewContext.ready(function() {
                 horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
+                columnVirtualization: true,
                 errorMessagePopup: true,
                 showTooltipIfOverflow: true,
                 manipulatorId: "6",
@@ -280,27 +301,37 @@ __viewContext.ready(function() {
             
             this.ruler = extable.getChartRuler();
             ruler = this.ruler;
-            ruler.setMode("paste");
+//            ruler.setMode("paste");
             ruler.setSnatchInterval(3);
-            ruler.addType({
+            this.c1Type = {
                 name: "C1",
                 color: "#F00",
                 lineWidth: 30,
                 canSlide: false,
                 unitToPx: 4,
+                hide: ruler.loggable(false),
                 canPaste: true,
-                canPasteResize: true
-            });
+                canPasteResize: true,
+                pastingResizeFinished: (line, type, start, end) => {
+                    console.log(`${line}-${type}-${start}-${end}`);
+                }
+            };
+            ruler.addType(this.c1Type);
             
-            ruler.addType({
+            this.c2Type = {
                 name: "C2",
                 color: "#0F0",
                 lineWidth: 30,
                 canSlide: false,
                 unitToPx: 4,
+                hide: ruler.loggable(false),
                 canPaste: true,
-                canPasteResize: true
-            });
+                canPasteResize: true,
+                pastingResizeFinished: (line, type, start, end) => {
+                    console.log(`${line}-${type}-${start}-${end}`);
+                }
+            };
+            ruler.addType(this.c2Type);
             
             this.fixedType = {
                 name: "Fixed",
@@ -365,14 +396,17 @@ __viewContext.ready(function() {
             };
             this.ruler.addType(this.otType);
             
-            this.ruler.addType({
+            this.coreTimeType = {
                 name: "CoreTime",
                 color: "#00ffcc",
                 lineWidth: 30,
                 unitToPx: 4,
                 fixed: "Both",
-                canPaste: true
-            });
+                canPaste: true,
+                hide: ruler.loggable(false)
+            };
+            
+            this.ruler.addType(this.coreTimeType);
             
             for (let i = 0; i < 300; i++) {
                 let start = Math.round(((i % 60) + i / 60) / 2);
@@ -580,7 +614,7 @@ __viewContext.ready(function() {
                 
                 // フレックス
                 if (i % 5 === 3) {
-                    this.ruler.addChartWithType("Flex", {
+                    let flexChart = this.ruler.addChartWithType("Flex", {
                         id: `rgc${i}`,
                         start: 102,
                         end: 210,
@@ -590,6 +624,26 @@ __viewContext.ready(function() {
 //                        limitEndMin: 168,
 //                        limitEndMax: 264,
                         title: "フレックス勤務"
+                    });
+                    
+                    $(flexChart).on("gcdrop", e => {
+                        let param = e.detail;
+                        let minutes = nts.uk.time.minutesBased.duration.create(param[0] * 5).text;
+                        $("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
+                        minutes = nts.uk.time.minutesBased.duration.create(param[1] * 5).text;
+                        $("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
+                    });
+                    
+                    $(flexChart).on("gcresize", (e) => {
+                        let param = e.detail;
+                        let minutes;
+                        if (param[2]) {
+                            minutes = nts.uk.time.minutesBased.duration.create(param[0] * 5).text;
+                            $("#extable").exTable("cellValue", "middle", i + "", "startTime1", minutes);
+                        } else {
+                            minutes = nts.uk.time.minutesBased.duration.create(param[1] * 5).text;
+                            $("#extable").exTable("cellValue", "middle", i + "", "endTime1", minutes);
+                        }
                     });
                     
                     this.ruler.addChartWithType("CoreTime", {

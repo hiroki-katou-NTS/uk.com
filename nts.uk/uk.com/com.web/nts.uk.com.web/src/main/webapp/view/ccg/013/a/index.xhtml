@@ -61,8 +61,8 @@
 							<div class="menubar-header">
 								<ul class="menubar-navigation" data-bind="foreach: menuBars">
 									<li class="context-menu-bar" data-bind="attr: {'id': menuBarId}">
-										<a class="tab-item" data-bind="attr: {href: targetContent}, style: {'background-color': backgroundColor}">
-											<span class="tab-item-content limited-label" data-bind="style: {'color': textColor}, text: menuBarName" />
+										<a class="tab-item" data-bind="attr: {href: targetContent}" style="background-color: #127D09;">
+											<span class="tab-item-content limited-label" data-bind="text: menuBarName" style="color: #ffffff;" />
 											<i data-bind="ntsIcon: { no: 5, width: 30, height: 30 }, click:function() { $vm.openIdialog(menuBarId()); }"></i>
 										</a>
 									</li>

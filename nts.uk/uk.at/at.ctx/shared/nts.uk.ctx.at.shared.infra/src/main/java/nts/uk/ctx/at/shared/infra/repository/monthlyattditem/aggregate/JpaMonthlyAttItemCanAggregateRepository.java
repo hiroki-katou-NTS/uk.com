@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttItemId;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
-import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.aggregrate.KrcctMonEdiAttenItem;
+import nts.uk.ctx.at.shared.infra.entity.monthlyattditem.aggregrate.KrcctMonCalAttenItem;
 
 /**
  * The Class JpaMonthlyAttItemCanAggregateRepository.
@@ -20,23 +20,23 @@ public class JpaMonthlyAttItemCanAggregateRepository extends JpaRepository
 		implements MonthlyAttItemCanAggregateRepository {
 
 	/** The Constant SELECT_MONTHLY_ATTENDANCE_CAN_AGGREGATE. */
-	private static final String SELECT_MONTHLY_ATTENDANCE_BY_CID = "SELECT att FROM KrcctMonEdiAttenItem att "
+	private static final String SELECT_MONTHLY_ATTENDANCE_BY_CID = "SELECT att FROM KrcctMonCalAttenItem att "
 																 + "WHERE att.id.cid = :cid"
-																 + " AND  att.editable = :editable";
+																 + " AND  att.calculable = :calculable";
 
 	@Override
 	public List<MonthlyAttItemId> getMonthlyAtdItemCanAggregate(String cid) {
-		return this.queryProxy().query(SELECT_MONTHLY_ATTENDANCE_BY_CID, KrcctMonEdiAttenItem.class)
+		return this.queryProxy().query(SELECT_MONTHLY_ATTENDANCE_BY_CID, KrcctMonCalAttenItem.class)
 				.setParameter("cid", cid)
-				.setParameter("editable", BigDecimal.ONE)
+				.setParameter("calculable", BigDecimal.ONE)
 				.getList(t -> new MonthlyAttItemId(t.getAttItemId()));
 	}
 
 	@Override
 	public List<MonthlyAttItemId> getMonthlyAtdItemCanNotAggregate(String cid) {
-		return this.queryProxy().query(SELECT_MONTHLY_ATTENDANCE_BY_CID, KrcctMonEdiAttenItem.class)
+		return this.queryProxy().query(SELECT_MONTHLY_ATTENDANCE_BY_CID, KrcctMonCalAttenItem.class)
 				.setParameter("cid", cid)
-				.setParameter("editable", BigDecimal.ZERO)
+				.setParameter("calculable", BigDecimal.ZERO)
 				.getList(t -> new MonthlyAttItemId(t.getAttItemId()));
 	}
 }

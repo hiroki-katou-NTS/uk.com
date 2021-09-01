@@ -140,7 +140,7 @@ module nts.uk.at.view.kdp005.a {
 										});
 									}
 								});
-							}else {
+							} else {
 								self.openDialogF({
 									mode: 'admin'
 								})
@@ -590,12 +590,12 @@ module nts.uk.at.view.kdp005.a {
 											service.addCheckCard(registerdata).done((res) => {
 
 												const param = {
-													sid: employeeId,
+													sid: employeeIdRegister,
 													date: vm.$date.now()
 												}
-				
+
 												service.createDaily(param);
-												
+
 												//phat nhac
 												if (source) {
 													let audio = new Audio(source);
@@ -644,7 +644,7 @@ module nts.uk.at.view.kdp005.a {
 							service.addCheckCard(registerdata).done((res) => {
 
 								const param = {
-									sid: employeeId,
+									sid: employeeIdRegister,
 									date: vm.$date.now()
 								}
 
@@ -880,7 +880,7 @@ module nts.uk.at.view.kdp005.a {
 											dfd.resolve();
 										}
 									});
-							}else {
+							} else {
 								dfd.resolve();
 							}
 						});

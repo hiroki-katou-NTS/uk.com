@@ -27,23 +27,23 @@ public class ReflectWork {
 	@Inject
 	private ReflectAttendanceClock reflectAttendanceClock;
 	
-	public ReflectStampOuput reflectWork(Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
+	public ReflectStampOuput reflectWork(String companyId, Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
 		// 出勤打刻の反映範囲か確認する (Xác nhận 反映範囲 của 出勤打刻)
 		OutputCheckRangeReflectAttd outputCheckRangeReflectAttd = checkRangeReflectAttd.checkRangeReflectAttd(stamp,
 				stampReflectRangeOutput, integrationOfDaily);
 		// 1回目勤務の出勤打刻反映範囲内 (出勤打刻反映範囲内 của worktype lần 1)
 		if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.FIRST_TIME) {
-			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP, 1,
+			reflectStampOuput = reflectAttendanceClock.reflect(companyId, stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP, 1,
 					integrationOfDaily);
-			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP_REAL, 1,
+			reflectStampOuput = reflectAttendanceClock.reflect(companyId, stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP_REAL, 1,
 					integrationOfDaily);
 
 			// 2回目勤務の出勤打刻反映範囲内 (出勤打刻反映範囲内 của worktype lần 2)
 		} else if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.SECOND_TIME) {
-			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP, 2,
+			reflectStampOuput = reflectAttendanceClock.reflect(companyId, stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP, 2,
 					integrationOfDaily);
-			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP_REAL, 2,
+			reflectStampOuput = reflectAttendanceClock.reflect(companyId, stamp, AttendanceAtr.GOING_TO_WORK, ActualStampAtr.STAMP_REAL, 2,
 					integrationOfDaily);
 		}
 		return reflectStampOuput;

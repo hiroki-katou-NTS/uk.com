@@ -147,7 +147,10 @@ module nts.uk.at.view.kmk005.k {
                     unblock();
                 });
                         
-                    });
+                    }).ifNo(()=>{
+                           // model.bpsn(getText("KDL007_6"));                    
+                          unblock();
+                        });
                 }
             }
 

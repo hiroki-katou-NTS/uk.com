@@ -333,11 +333,10 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				self.restTimeTableVisible2(false);
 			}
 			// ※6
-			if(self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet.extratimeDisplayAtr == 1){
-				self.overTimeWorkVisible(true);
-			} else {
-				self.overTimeWorkVisible(false);
-			}
+			const c6 = 
+					self.dataSource.holidayWorkAppSet.overtimeLeaveAppCommonSet.extratimeDisplayAtr == 1 
+						&& self.mode() != MODE.MULTiPLE_AGENT;
+			self.overTimeWorkVisible(c6);
 		}
 
 		toAppHolidayWork(){
@@ -530,6 +529,26 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 
 		handleErrorCustom(failData: any): any {
 			const vm = this;
+			if (!_.isEmpty(failData.errors)) {
+				
+				_.forEach(_.reverse(failData.errors), item => {
+					if (vm.isAgentNew() && item.messageId == 'Msg_1535') {
+						item.messageId = 'Msg_2012'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_1536') {
+						item.messageId = 'Msg_2013'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_1537') {
+						item.messageId = 'Msg_2014'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_1538') {
+						item.messageId = 'Msg_2015'
+					} else if (vm.isAgentNew() && item.messageId == 'Msg_2056') {
+						item.messageId = 'Msg_2057'
+					}
+					vm.$dialog.error({ messageId: item.messageId, messageParams: item.parameterIds })
+					.then(() => {
+					});
+				})
+				return $.Deferred().resolve(false);	
+			}
 			if(failData.messageId == "Msg_750"
 			|| failData.messageId == "Msg_1654"
 			|| failData.messageId == "Msg_1508"
@@ -631,7 +650,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								nts.uk.request.ajax("at", API.reflectApp, successData.reflectAppIdLst);
-								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm, true, vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst);
 							});
 						});
 					}
@@ -723,7 +742,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 					item.backgroundColor(COLOR_36.error);
 					item.textColor(COLOR_36.error_letter);
+				}  else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
 				}
+				
 				
 				
 				
@@ -769,7 +792,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 					item.backgroundColor(COLOR_36.error);
 					item.textColor(COLOR_36.error_letter);
+				}   else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
+					item.backgroundColor(COLOR_36.bg_upper_limit);
+					item.textColor(COLOR_36.color_upper_limit);
 				}
+				
 				
 				overTimeWorks.push(item);
 			}
@@ -1788,7 +1815,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		// 36協定エラー文字
 		error_letter: 'color-36contract-error',
 		// 36協定アラーム文字
-		alarm_character: 'color-36contract-alarm'
+		alarm_character: 'color-36contract-alarm',
+		// 特条上限超過背景色
+		bg_upper_limit: 'bg-exceed-special-upperlimit',
+		// 特条上限超過文字色
+		color_upper_limit: 'color-exceed-special-upperlimit'
+		
 		
 	}
 

@@ -87,6 +87,9 @@ export class CmmS45DComponent extends Vue {
     public isLoadingComplete = false;
     public reasons: Array<Reason> = null;
 
+    public opAppStartDate: Date;
+    public opAppEndDate: Date;
+
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -169,6 +172,8 @@ export class CmmS45DComponent extends Vue {
             self.authorComment = appDetailScreenInfoDto.authorComment;
             self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
             self.appType = appDetailScreenInfoDto.application.appType;
+            self.opAppStartDate = appDetailScreenInfoDto.application.opAppStartDate;
+            self.opAppEndDate = appDetailScreenInfoDto.application.opAppEndDate;
             self.memo = '';
             if (!_.isEmpty(self.authorComment)) {
                 self.commentDis = true ;
@@ -567,6 +572,12 @@ export class CmmS45DComponent extends Vue {
         return false;
     }
 
+    get displayCancelLabel() {
+        const vm = this;
+
+        return vm.appState.reflectStatus == ReflectedState.CANCELED;
+    }
+
     get applicant() {
         const vm = this;
         if (!vm.appTransferData.appDispInfoStartupOutput) {
@@ -755,9 +766,9 @@ export enum ApprovalBehaviorAtr {
 
 const API = {
     getDetailMob: 'at/request/app/smartphone/getDetailMob',
-    approve: 'at/request/app/smartphone/approveapp',
-    deny: 'at/request/app/smartphone/denyapp',
-    release: 'at/request/app/smartphone/releaseapp',
+    approve: 'at/request/application/approveapp',
+    deny: 'at/request/application/denyapp',
+    release: 'at/request/application/releaseapp',
     reflectApp: 'at/request/application/reflect-app',
     checkVersion: 'at/request/application/checkVersion'
 };

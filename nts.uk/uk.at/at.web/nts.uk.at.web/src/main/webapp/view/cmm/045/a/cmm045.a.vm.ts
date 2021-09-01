@@ -605,7 +605,7 @@ module cmm045.a.viewmodel {
             let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ?
                     null : __viewContext.transferred.value.PARAM_SPR_CMM045;
             //spr call
-            if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
+            if(paramSprCmm045 !== undefined && paramSprCmm045 !== null && !nts.uk.request.location.current.isFromMenu){
                 // character.save('AppListExtractCondition', null);
                 let date: vmbase.Date = { startDate: paramSprCmm045.startDate, endDate: paramSprCmm045.endDate }
                 self.dateValue(date);
@@ -615,7 +615,7 @@ module cmm045.a.viewmodel {
             }
             return character.restore("AppListExtractCondition").then((obj) => {
 				// characterData = obj;
-                if (obj !== undefined && obj !== null && !self.isSpr()) {
+                if (obj !== undefined && obj !== null && !self.isSpr() && !nts.uk.request.location.current.isFromMenu) {
 					self.appListExtractConditionDto = obj;
 					self.updateFromAppListExtractCondition();
                     /*let date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
@@ -662,6 +662,9 @@ module cmm045.a.viewmodel {
                 if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
                 }
+				if(nts.uk.request.location.current.isFromMenu) {
+					self.mode(urlParam);	
+				}
                 //write log
                 let paramLog = {programId: 'CMM045',
                                 screenId: 'A',
@@ -1169,16 +1172,20 @@ module cmm045.a.viewmodel {
                             date = self.appDateRangeColor(moment(item.opAppStartDate).format("M/D(ddd)"), moment(item.opAppEndDate).format("M/D(ddd)"));
                             $td.html(date);
                         } else {
-							let linkAppDate = null;
+							let linkAppDate = null, paramDate1 = null, paramDate2 = null;
 							if(item.appType==10) {
 								if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 									linkAppDate = moment(item.opComplementLeaveApp.linkAppDate).format("M/D(ddd)");
+									if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+										paramDate1 = date;
+										paramDate2 = linkAppDate;	
+									} else {
+										paramDate1 = linkAppDate;
+										paramDate2 = date;
+									}
 								}	
 							}
-                            $td.html(self.appDateColor(date, "", "", linkAppDate));
-                        }
-                        if(item.appType === 10) {
-
+                            $td.html(self.appDateColor(paramDate1 ? paramDate1 : date, "", "", paramDate2));
                         }
                     }
 					else if(column.key == 'appContent') {
@@ -2401,7 +2408,7 @@ module cmm045.a.viewmodel {
         //     return features;
         // }
 
-		checkDialog(itemLst: any, itemConfirmLst: any, confirmAll: boolean, notConfirmAll: boolean): any {
+		checkDialog(itemLst: any, itemConfirmLst: any, confirmAllPreApp: boolean, notConfirmAllPreApp: boolean, confirmAllActual: boolean, notConfirmAllActual: boolean): any {
 			const self = this;
 			let dfd = $.Deferred();
 			if(_.isEmpty(itemLst)) {
@@ -2410,27 +2417,52 @@ module cmm045.a.viewmodel {
 			let item = itemLst[0];
 			if(item.appType!=AppType.OVER_TIME_APPLICATION && item.appType!=AppType.HOLIDAY_WORK_APPLICATION) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
 			if(_.isEmpty(item.opBackgroundColor)) {
 				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
 					return dfd.resolve(result);
 				});
 			}
-			if(notConfirmAll) {
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
-					return dfd.resolve(result);
-				});
+			if(item.opBackgroundColor=='bg-pre-application-excess') {
+				if(confirmAllPreApp) {
+					itemConfirmLst.push(item);
+					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+						return dfd.resolve(result);
+					});
+				}
+				if(notConfirmAllPreApp) {
+					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+						return dfd.resolve(result);
+					});
+				}
+			} else {
+				if(confirmAllActual) {
+					itemConfirmLst.push(item);
+					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+						return dfd.resolve(result);
+					});
+				}
+				if(notConfirmAllActual) {
+					return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+						return dfd.resolve(result);
+					});
+				}
 			}
-			if(confirmAll) {
-				itemConfirmLst.push(item);
-				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
-					return dfd.resolve(result);
-				});
-			}
+//			if(notConfirmAll) {
+//				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+//					return dfd.resolve(result);
+//				});
+//			}
+//			if(confirmAll) {
+//				itemConfirmLst.push(item);
+//				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, confirmAllPreApp, notConfirmAllPreApp, confirmAllActual, notConfirmAllActual).then((result: any) => {
+//					return dfd.resolve(result);
+//				});
+//			}
 			let appInfo = { appName: ''},
 				appName = "";
 			if(item.opAppTypeDisplay) {
@@ -2449,30 +2481,63 @@ module cmm045.a.viewmodel {
 				appDate: item.appDate,
 				opBackgroundColor: item.opBackgroundColor,
 				appContent: item.appContent,
-				isMulti: itemLst.length > 1 
+				isMulti: itemLst.length > 1,
+				confirmAllPreApp: confirmAllPreApp, 
+				notConfirmAllPreApp: notConfirmAllPreApp, 
+				confirmAllActual: confirmAllActual, 
+				notConfirmAllActual: notConfirmAllActual
 			});
 			nts.uk.ui.windows.sub.modal("/view/cmm/045/b/index.xhtml").onClosed(() => {
 				let result = nts.uk.ui.windows.getShared('CMM045B_RESULT');
-				switch(result) {
-					case vmbase.ConfirmDialog.CONFIRM: 
+				if(result) {
+					if(result.confirm) {
 						itemConfirmLst.push(item);
-						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, 
+											result.confirmAllPreApp, 
+											result.notConfirmAllPreApp, 
+											result.confirmAllActual, 
+											result.notConfirmAllActual).then((result: any) => {
 							return dfd.resolve(result);
-						});
-					case vmbase.ConfirmDialog.CONFIRM_ALL: 
-						itemConfirmLst.push(item);
-						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
-							return dfd.resolve(result);
-						});
-					case vmbase.ConfirmDialog.NOT_CONFIRM_ALL: 
-						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
-							return dfd.resolve(result);
-						});
-					default: 
-						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
-							return dfd.resolve(result);
-						});
+						});	
+					}
 				}
+				return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, 
+											result ? result.confirmAllPreApp : false, 
+											result ? result.notConfirmAllPreApp : false, 
+											result ? result.confirmAllActual : false, 
+											result ? result.notConfirmAllActual : false).then((result: any) => {
+					return dfd.resolve(result);
+				});
+				
+//				switch(result) {
+//					case vmbase.ConfirmDialog.CONFIRM: 
+//						itemConfirmLst.push(item);
+//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false, false, false).then((result: any) => {
+//							return dfd.resolve(result);
+//						});
+//					case vmbase.ConfirmDialog.CONFIRM_ALL_PREAPP: 
+//						itemConfirmLst.push(item);
+//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
+//							return dfd.resolve(result);
+//						});
+//					case vmbase.ConfirmDialog.NOT_CONFIRM_ALL_PREAPP: 
+//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
+//							return dfd.resolve(result);
+//						});
+//					case vmbase.ConfirmDialog.CONFIRM_ALL_ACTUAL: 
+//						itemConfirmLst.push(item);
+//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, true, false).then((result: any) => {
+//							return dfd.resolve(result);
+//						});
+//					case vmbase.ConfirmDialog.CONOT_CONFIRM_ALL_ACTUAL: 
+//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, true).then((result: any) => {
+//							return dfd.resolve(result);
+//						});
+//					default: 
+//						return self.checkDialog(_.slice(itemLst, 1), itemConfirmLst, false, false).then((result: any) => {
+//							return dfd.resolve(result);
+//						});
+//				}
 			});
 			return dfd.promise();
 		}
@@ -2519,10 +2584,10 @@ module cmm045.a.viewmodel {
 							linkItem.application = item.opComplementLeaveApp.application;
 							listOfApplicationCmds.push(item);
 	                    	listOfApplicationCmds.push(linkItem);	
+							return;
 						}
-	                }else{
-	                    listOfApplicationCmds.push(item);
 	                }
+	            	listOfApplicationCmds.push(item);
 	            });
 				if(_.isEmpty(listOfApplicationCmds)) {
 					block.clear();

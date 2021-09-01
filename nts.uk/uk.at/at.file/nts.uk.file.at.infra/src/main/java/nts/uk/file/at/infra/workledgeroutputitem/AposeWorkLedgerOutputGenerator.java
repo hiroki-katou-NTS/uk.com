@@ -28,10 +28,10 @@ import java.util.Locale;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator implements WorkLedgerOutputItemGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR005.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR005_template.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "A1:O";
-    private static final int NUMBER_ROW_OF_PAGE = 29;
+    private static final int NUMBER_ROW_OF_PAGE = 50;
 
     @Override
     public void generate(FileGeneratorContext generatorContext, WorkLedgerExportDataSource dataSource) {
@@ -59,57 +59,62 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&9&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&16&\"ＭＳ フォントサイズ,Bold\""
+        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
                 + dataSource.getTitle());
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-        pageSetup.setHeader(2, "&9&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+        pageSetup.setHeader(2, "&7&\"MS MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setFitToPagesTall(0);
         pageSetup.setFitToPagesWide(0);
         pageSetup.setZoom(100);
-        pageSetup.setBottomMarginInch(1.5);
-        pageSetup.setTopMarginInch(1.5);
-        pageSetup.setLeftMarginInch(1.0);
-        pageSetup.setRightMarginInch(1.0);
-        pageSetup.setHeaderMarginInch(0.8);
         pageSetup.setCenterHorizontally(true);
-
     }
 
     private void printContents(Worksheet worksheet, WorkLedgerExportDataSource dataSource) throws Exception {
         HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
         List<WorkLedgerDisplayContent> listContent = dataSource.getListContent();
-        int count = 0;
+        int count = 10;
         int itemOnePage = 0;
         Cells cells = worksheet.getCells();
         for (int i = 0; i < listContent.size(); i++) {
             val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
             val content = listContent.get(i);
+            cells.copyRow(cells, 0, count);
+            cells.copyRow(cells, 1, count + 1);
+            cells.copyRow(cells, 2, count + 2);
+            cells.clearContents(count, 0, cells.getMaxRow(), 15);
             if (i >= 1) {
                 itemOnePage = 0;
                 pageBreaks.add(count);
-                cells.copyRow(cells, 0, count);
-                cells.copyRow(cells, 1, count + 1);
-                cells.copyRow(cells, 2, count + 2);
-                cells.clearContents(count, 0, cells.getMaxRow(), 15);
+                for (int index = 0; index < 15; index++) {
+                    setBottomBorderStyle(cells.get(count -1, index));
+                }
             }
-            cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-            cells.get(count, 7).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
+            cells.get(count, 0).setValue(TextResource.localize("KWR005_301")  + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+            cells.merge(count, 6, 1, 3, true, true);
+            cells.get(count, 6).setValue(TextResource.localize(TextResource.localize("KWR005_303")) +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                     this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
-            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+            Style styleTime =   cells.get(count, 6).getStyle();
+            styleTime.setHorizontalAlignment(ColumnTextAlign.CENTER.value);
+            cells.get(count, 6).setStyle(styleTime);
+            cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302")  + content.getEmployeeCode()+ "　" + content.getEmployeeName());
             // print date
             printDate(worksheet, count + 2, yearMonths);
             count += 3;
+            itemOnePage+=3;
             val data = content.getMonthlyDataList();
             for (int j = 0; j < data.size(); j++) {
                 val oneLine = data.get(j);
                 if (itemOnePage >= NUMBER_ROW_OF_PAGE) {
                     itemOnePage = 0;
                     pageBreaks.add(count);
+                    for (int index = 0; index < 15; index++) {
+                        setBottomBorderStyle(cells.get(count -1, index));
+                    }
                     cells.copyRow(cells, 0, count);
                     cells.copyRow(cells, 1, count + 1);
                     cells.copyRow(cells, 2, count + 2);
@@ -118,34 +123,21 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                             this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
 
-                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
-                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + content.getEmployeeCode() + "　" + content.getEmployeeName());
 
                     printDate(worksheet, count + 2, yearMonths);
                     count += 3;
 
                 }
                 if (j % 2 == 0) {
-                    cells.copyRow(cells, 3, count);
+                    cells.copyRow(cells, 5, count);
                 } else {
-                    cells.copyRow(cells, 4, count);
+                    cells.copyRow(cells, 6, count);
                 }
                 cells.clearContents(count, 0, cells.getMaxRow(), 15);
                 cells.merge(count, 0, 1, 2, true, true);
-                //Cell cell = cells.get(count, 0);
-                //Style style = cell.getStyle();
-                //style.setVerticalAlignment(TextAlignmentType.LEFT);
-                //if(dataSource.isCode() && checkCode(oneLine.getPrimitiveValue())){
-                //    val stringCode = "'" + String.valueOf(oneLine.getCode());
-                //    cells.get(count, 0).setValue(stringCode);
-                //   cell.setStyle(style);
-                //    cells.setStyle(style);
-
-                //}else {
-                    cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
-                //    cell.setStyle(style);
-                //   cells.setStyle(style);
-                //}
+                cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
                 cells.get(count, 14).getStyle()
                         .setVerticalAlignment(TextAlignmentType.RIGHT);
                 cells.get(count, 14).setValue(oneLine.getTotal());
@@ -179,14 +171,19 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         }
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPrintArea(PRINT_AREA + count);
+        for (int index = 0; index < 15; index++) {
+            setBottomBorderStyle(cells.get(count -1, index));
+        }
+        cells.deleteRows(0,10);
 
     }
-
+    private void setBottomBorderStyle(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+        cell.setStyle(style);
+    }
     private void printDate(Worksheet worksheet, int rowCount, List<YearMonth> yearMonths) {
         Cells cells = worksheet.getCells();
-        for (int i = 0; i < 15 ; i++) {
-            cells.setColumnWidthInch(i, 0.62);
-        }
         for (int mi = 0; mi < yearMonths.size(); mi++) {
            
             val yearMonth = yearMonths.get(mi);
@@ -282,7 +279,10 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
      * Convert minute to HH:mm
      */
     private String convertToTime(int minute) {
-        val minuteAbs = Math.abs(minute);
+        int minuteAbs = Math.abs(minute);
+        if (minute < 0) {
+            minuteAbs = Math.abs(minute +1440);
+        }
         int hours = minuteAbs / 60;
         int minutes = minuteAbs % 60;
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);

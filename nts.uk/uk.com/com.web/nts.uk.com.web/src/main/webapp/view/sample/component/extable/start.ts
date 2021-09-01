@@ -93,12 +93,12 @@ __viewContext.ready(function () {
                 else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
                 else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
-                else if (i === 6) this["_" + i] = new ExCell(null, null, "1", "通常８ｈ" + this.empId, "3:30", null);
+                else if (i === 6 && empId === "5") this["_" + i] = new ExCell(null, null, "1", "通常８ｈ" + this.empId, "3:30", null, null);
                 else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
             
             if (empId === "1") {
-                this["_" + 2] = new ExCell(null, null, null, null, null, null, null);
+                this["_" + 2] = new ExCell(null, null, null, null, null, null, "通常８ｈ" + this.empId);
             }
         }
     }
@@ -421,7 +421,7 @@ __viewContext.ready(function () {
         }, {
             name: "Click",
             handler: function(ui) {
-                alert(`${ui.rowIdx}-${ui.columnKey}`);
+//                alert(`${ui.rowIdx}-${ui.columnKey}`);
             }
         }]
     };
@@ -575,7 +575,7 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "stick",
+            updateMode: "determine",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "time",
@@ -604,6 +604,12 @@ __viewContext.ready(function () {
     
     $("#extable").exTable("scrollBack", 0, { h: 1050 });
     console.log(performance.now() - start);
+//    $("#extable").exTable("lockCell", "5", "_5");
+//    $("#extable").exTable("lockCell", "200", "_5");
+    
+    $("#extable").on("extablecelldetermined", () => {
+
+    });
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },

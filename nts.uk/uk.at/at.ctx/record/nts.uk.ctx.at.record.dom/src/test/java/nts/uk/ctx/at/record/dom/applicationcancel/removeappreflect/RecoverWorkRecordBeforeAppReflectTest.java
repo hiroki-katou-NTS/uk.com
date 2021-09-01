@@ -20,8 +20,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -57,7 +55,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 				NotUseAtr.NOT_USE);
 		
 		assertThat(result.getWorkRecord()).isEmpty();
-		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
+		assertThat(result.getReflectStatus().getReflectStatus()).isEqualTo(RCReflectedState.CANCELED);
 
 	}
 
@@ -84,8 +82,6 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 				require.findDaily(anyString, (GeneralDate) any);
 				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD));
 
-				WorkingConditionService.findWorkConditionByEmployee(require, anyString, (GeneralDate) any);
-				result = Optional.of(new WorkingConditionItem("", ManageAtr.USE, "1"));
 			}
 		};
 
@@ -94,7 +90,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 		result.getAtomTask().run();
 		new Verifications() {
 			{
-				require.addAllDomain((IntegrationOfDaily) any);
+				require.addAllDomain((IntegrationOfDaily) any, anyBoolean);
 				times = 0;
 
 				require.updateAppReflectHist(anyString, anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
@@ -130,9 +126,6 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 			{
 				require.findDaily(anyString, (GeneralDate) any);
 				result = Optional.of(ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD));
-
-				WorkingConditionService.findWorkConditionByEmployee(require, anyString, (GeneralDate) any);
-				result = Optional.of(new WorkingConditionItem("", ManageAtr.USE, "1"));
 			}
 		};
 
@@ -141,7 +134,7 @@ public class RecoverWorkRecordBeforeAppReflectTest {
 		result.getAtomTask().run();
 		new Verifications() {
 			{
-				require.addAllDomain((IntegrationOfDaily) any);
+				require.addAllDomain((IntegrationOfDaily) any, anyBoolean);
 				times = 1;
 
 				require.updateAppReflectHist(anyString, anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
