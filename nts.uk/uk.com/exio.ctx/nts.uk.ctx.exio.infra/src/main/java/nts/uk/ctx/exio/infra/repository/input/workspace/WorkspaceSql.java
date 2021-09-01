@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.infra.repository.input.workspace;
 
 import static java.util.stream.Collectors.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -294,11 +295,19 @@ public class WorkspaceSql {
 		
 		int rowNo = record.getInt(CommonColumns.ROW_NO.name);
 		
-		val items = workspace.getAllItemsSortedByItemNo().stream()
+		val items1 = workspace.getAllItemsSortedByItemNo();
+		
+		val items3 = new ArrayList<DataItem>();
+		for(WorkspaceItem wi: items1) {
+			val r = toDataItem(record, wi);
+			items3.add(r);
+		}
+		
+		val items2 = items1.stream()
 				.map(wi -> toDataItem(record, wi))
 				.collect(toList());
 		
-		return new RevisedDataRecord(rowNo, new DataItemList(items));
+		return new RevisedDataRecord(rowNo, new DataItemList(items2));
 	}
 	
 	private static DataItem toDataItem(NtsResultRecord record, WorkspaceItem workspaceItem) {
@@ -306,6 +315,11 @@ public class WorkspaceSql {
 		val dataType = workspaceItem.getDataTypeConfig();
 		int itemNo = workspaceItem.getItemNo();
 		String name = workspaceItem.getName();
+		
+		// nullの場合
+		if(record.getObject(name).equals(null)) {
+			return DataItem.of(itemNo);
+		}
 		
 		switch (dataType.getType()) {
 		case INT:

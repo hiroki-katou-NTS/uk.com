@@ -252,10 +252,10 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	/**
 	 * 受入データを補正
 	 * @param existingHistory 受入データが入る前の既存履歴
-	 * @param addingItems 受入れる履歴
+	 * @param addingHistories 受入れる履歴
 	 */
-	private void adjustAddingHistory(ExternalImportHistory existingHistory, List<Container> addingItems) {
-		addingItems.forEach(c -> existingHistory.add(c.addingHistoryItem));
+	private void adjustAddingHistory(ExternalImportHistory existingHistory, List<Container> addingHistories) {
+		addingHistories.forEach(c -> existingHistory.add(c.addingHistoryItem));
 	}
 
 	/**
