@@ -99,9 +99,6 @@ public class EmployeeYearHolidaySettingCanonicalization extends IndependentCanon
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		val meta = employeeCodeCanonicalization.appendMeta(source).addItem("年間所定労働日数");
-		if(!meta.getItemNames().contains("導入前労働日数"))
-			return meta.addItem("導入前労働日数");
-		return meta;
+		return employeeCodeCanonicalization.appendMeta(source);
 	}
 }

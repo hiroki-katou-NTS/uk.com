@@ -104,15 +104,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return employeeCodeCanonicalization.appendMeta(source)
-				.addItem("ID")
-				.addItem("登録種別")
-				.addItem("付与数時間")//時間だと↓と被るため付与数時間
-				.addItem("使用数時間")//時間だと↑↓と被るため使用数時間
-				.addItem("積み崩し日数")
-				.addItem("上限超過消滅日数")
-				.addItem("残数時間")//時間だと↑と被るため残数時間
-				.addItem("使用率");
+		return employeeCodeCanonicalization.appendMeta(source);
 	}
 
 }
