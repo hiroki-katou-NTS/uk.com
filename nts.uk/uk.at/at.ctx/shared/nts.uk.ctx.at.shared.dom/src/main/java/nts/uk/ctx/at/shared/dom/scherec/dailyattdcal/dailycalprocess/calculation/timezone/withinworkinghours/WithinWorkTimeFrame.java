@@ -1270,6 +1270,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		}
 		WithinWorkTimeFrame recreated = new WithinWorkTimeFrame(
 				new EmTimeFrameNo(this.workingHoursTimeNo.v().intValue()),
+				new WorkNo(this.workNo.v()),
 				duplicate.get(),
 				this.beforeLateEarlyTimeSheet.getDuplicatedWith(duplicate.get()).orElse(duplicate.get()),
 				this.rounding.clone(),

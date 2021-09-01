@@ -458,16 +458,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 	}
 
 	private TimevacationUseTimeOfDaily createTimeValication(ValicationUseDto c) {
-<<<<<<< HEAD
-		return new TimevacationUseTimeOfDaily(
-						toAttendanceTime(c == null ? null : c.getTimeAnnualLeaveUseTime()),
-						toAttendanceTime(c == null ? null : c.getTimeCompensatoryLeaveUseTime()),
-						toAttendanceTime(c == null ? null : c.getExcessHolidayUseTime()),
-						toAttendanceTime(c == null ? null : c.getTimeSpecialHolidayUseTime()),
-						Optional.ofNullable((c == null || c.specialHdFrameNo == null)  ? null : new SpecialHdFrameNo(c.specialHdFrameNo) ),
-						toAttendanceTime(c == null ? null : c.getChildCareUseTime()),
-						toAttendanceTime(c == null ? null : c.getCareUseTime())
-=======
 		return c == null ?  TimevacationUseTimeOfDaily.defaultValue() : new TimevacationUseTimeOfDaily(
 						toAttendanceTime(c.getTimeAnnualLeaveUseTime()),
 						toAttendanceTime(c.getTimeCompensatoryLeaveUseTime()),
@@ -476,7 +466,6 @@ public class TotalWorkingTimeDto implements ItemConst, AttendanceItemDataGate {
 						Optional.ofNullable(c.specialHdFrameNo == null ? null : new SpecialHdFrameNo(c.specialHdFrameNo)),
 						toAttendanceTime(c.getChildCareUseTime()),
 						toAttendanceTime(c.getCareUseTime())
->>>>>>> pj/at/release_ver4
 						);
 	}
 

@@ -18,7 +18,6 @@ public class SettingOfFlexWork {
 		this.flexCalcMethod = flexCalcMethod;
 	}
 	
-<<<<<<< HEAD
 	/**
 	 * デフォルト値で作成する
 	 * @return
@@ -28,13 +27,4 @@ public class SettingOfFlexWork {
 				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
 				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay)));
 	}
-
-=======
-	public static SettingOfFlexWork defaultValue(){
-		SettingOfFlexWork myclass = new SettingOfFlexWork(new FlexCalcMethodOfHalfWork(
-				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay),
-				new FlexCalcMethodOfEachPremiumHalfWork(FlexCalcMethod.OneDay, FlexCalcMethod.OneDay)));
-		return myclass;
-	}
->>>>>>> pj/at/release_ver4
 }

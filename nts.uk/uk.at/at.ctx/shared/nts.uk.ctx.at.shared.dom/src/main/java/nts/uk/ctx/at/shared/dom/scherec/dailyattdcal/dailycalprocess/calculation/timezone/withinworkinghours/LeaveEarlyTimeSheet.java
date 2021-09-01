@@ -421,7 +421,6 @@ public class LeaveEarlyTimeSheet {
 		return Optional.of(new LeaveEarlyTimeSheet(
 				record,
 				deducation,
-				this.workNo,
-				Optional.empty()));//相殺時間を削除する
+				this.workNo));
 	}
 }

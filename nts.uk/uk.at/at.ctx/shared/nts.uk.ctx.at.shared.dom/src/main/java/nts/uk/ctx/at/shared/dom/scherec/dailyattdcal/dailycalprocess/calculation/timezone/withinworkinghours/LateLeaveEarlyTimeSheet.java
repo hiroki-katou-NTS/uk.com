@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeVacationOffSetItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
@@ -122,20 +121,6 @@ public class LateLeaveEarlyTimeSheet extends TimeVacationOffSetItem implements C
 		}
 		// 遅刻時間帯.終了時刻を返す
 		return lateTimeSheet.getEnd();
-	}
-
-	private LateLeaveEarlyTimeSheet(
-			TimeSpanForDailyCalc timeSheet,
-			TimeRoundingSetting rounding,
-			List<TimeSheetOfDeductionItem> recordedTimeSheet,
-			List<TimeSheetOfDeductionItem> deductionTimeSheet,
-			Optional<DeductionOffSetTime> deductionOffSetTime) {
-		super(timeSheet, rounding);
-		this.timeSheet = timeSheet;
-		this.rounding = rounding;
-		this.deductionTimeSheet = deductionTimeSheet;
-		this.recordedTimeSheet = recordedTimeSheet;
-		this.deductionOffSetTime = deductionOffSetTime;
 	}
 	
 	/**

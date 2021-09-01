@@ -68,34 +68,7 @@ public class ReflectDataStampDailyServiceTest {
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
 						EmbossingExecutionFlag.ALL,
-<<<<<<< HEAD
-						(EmployeeGeneralInfoImport)any,
-						(PeriodInMasterList)any,
-						new IntegrationOfDaily(
-								employeeId,
-								(GeneralDate)any,
-								null, 
-								null, 
-								null,
-								Optional.empty(), 
-								new ArrayList<>(), 
-								Optional.empty(), 
-								new BreakTimeOfDailyAttd(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								new ArrayList<>(),
-								Optional.empty(),
-								new ArrayList<>(),
-								new ArrayList<>(),
-								new ArrayList<>(),
-								Optional.empty()));
-=======
 						(IntegrationOfDaily)any);
->>>>>>> pj/at/release_ver4
 				
 				result = resultData;
 				
@@ -125,34 +98,7 @@ public class ReflectDataStampDailyServiceTest {
 						(GeneralDate)any,
 						ExecutionTypeDaily.CREATE,
 						EmbossingExecutionFlag.ALL,
-<<<<<<< HEAD
-						(EmployeeGeneralInfoImport)any,
-						(PeriodInMasterList)any,
-						new IntegrationOfDaily(
-								employeeId,
-								(GeneralDate)any,
-								null, 
-								null, 
-								null,
-								Optional.empty(), 
-								new ArrayList<>(), 
-								Optional.empty(), 
-								new BreakTimeOfDailyAttd(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								new ArrayList<>(),
-								Optional.empty(),
-								new ArrayList<>(),
-								new ArrayList<>(),
-								new ArrayList<>(),
-								Optional.empty()));
-=======
 						(IntegrationOfDaily)any);
->>>>>>> pj/at/release_ver4
 				
 				result = resultData;
 				
@@ -189,38 +135,6 @@ public class ReflectDataStampDailyServiceTest {
 				StampDataReflectProcessService.updateStampToDaily(require, cid, employeeId, date, stamp);
 				result = Optional.of(new IntegrationOfDaily(
 						employeeId,
-<<<<<<< HEAD
-						(GeneralDate)any,
-						ExecutionTypeDaily.CREATE,
-						EmbossingExecutionFlag.ALL,
-						(EmployeeGeneralInfoImport)any,
-						(PeriodInMasterList)any,
-						new IntegrationOfDaily(
-								employeeId,
-								(GeneralDate)any,
-								null, 
-								null, 
-								null,
-								Optional.empty(), 
-								new ArrayList<>(), 
-								Optional.empty(), 
-								new BreakTimeOfDailyAttd(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								Optional.empty(), 
-								new ArrayList<>(),
-								Optional.empty(),
-								new ArrayList<>(),
-								new ArrayList<>(),
-								new ArrayList<>(),
-								Optional.empty()));
-				
-				result = resultData;
-				
-=======
 						date,
 						null, 
 						null, 
@@ -238,8 +152,9 @@ public class ReflectDataStampDailyServiceTest {
 						new ArrayList<>(),
 						Optional.empty(),
 						new ArrayList<>(),
+						new ArrayList<>(),
+						new ArrayList<>(),
 						Optional.empty()));
->>>>>>> pj/at/release_ver4
 //				require.get(
 //						employeeId,
 //						date,

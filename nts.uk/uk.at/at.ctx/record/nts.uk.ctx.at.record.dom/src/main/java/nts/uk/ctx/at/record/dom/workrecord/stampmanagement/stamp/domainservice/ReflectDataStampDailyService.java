@@ -42,32 +42,4 @@ public class ReflectDataStampDailyService {
 	public static interface Require extends StampDataReflectProcessService.Require2 {
 		
 	}
-	
-<<<<<<< HEAD
-	private static IntegrationOfDaily createNull(String sid, GeneralDate dateData) {
-			return new IntegrationOfDaily(
-					sid,
-					dateData,
-					null, 
-					null, 
-					null,
-					Optional.empty(), 
-					new ArrayList<>(), 
-					Optional.empty(), 
-					new BreakTimeOfDailyAttd(), 
-					Optional.empty(), 
-					Optional.empty(), 
-					Optional.empty(), 
-					Optional.empty(), 
-					Optional.empty(), 
-					Optional.empty(), 
-					new ArrayList<>(),
-					Optional.empty(),
-					new ArrayList<>(),
-					new ArrayList<>(),
-					new ArrayList<>(),
-					Optional.empty());
-		}
-=======
->>>>>>> pj/at/release_ver4
 }
