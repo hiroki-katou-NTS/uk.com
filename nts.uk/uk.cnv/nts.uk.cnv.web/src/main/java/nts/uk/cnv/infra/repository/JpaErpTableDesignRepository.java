@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import lombok.val;
-import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.core.dom.tabledesign.ErpTableDesign;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotColumn;
 import nts.uk.cnv.infra.entity.tabledesign.NemTdSnapshotTable;
+import nts.uk.cnv.infra.impls.JpaSourceOrutaRepository;
 
 @Stateless
-public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {
+public class JpaErpTableDesignRepository extends JpaSourceOrutaRepository implements ErpTableDesignRepository {
 	@Override
 	public boolean exists(String tableName) {
 		val result = find(tableName);
