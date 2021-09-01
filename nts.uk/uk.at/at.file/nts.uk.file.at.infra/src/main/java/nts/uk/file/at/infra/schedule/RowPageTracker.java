@@ -24,13 +24,13 @@ public class RowPageTracker {
 	/** The max row allowed. */
 	int maxRowAllowed;
 	
-	public static final int MAX_ROW_PER_PAGE_EMPLOYEE_1 = 31;
-	public static final int MAX_ROW_PER_PAGE_EMPLOYEE_2 = 25;
-	public static final int MAX_ROW_PER_PAGE_EMPLOYEE_3 = 23;
+	public static final int MAX_ROW_PER_PAGE_EMPLOYEE_1 = 33;
+	public static final int MAX_ROW_PER_PAGE_EMPLOYEE_2 = 31;
+	public static final int MAX_ROW_PER_PAGE_EMPLOYEE_3 = 27;
 	
-	public static final int MAX_ROW_PER_PAGE_DATE_1 = 27;
-	public static final int MAX_ROW_PER_PAGE_DATE_2 = 25;
-	public static final int MAX_ROW_PER_PAGE_DATE_3 = 23;
+	public static final int MAX_ROW_PER_PAGE_DATE_1 = 35;
+	public static final int MAX_ROW_PER_PAGE_DATE_2 = 31;
+	public static final int MAX_ROW_PER_PAGE_DATE_3 = 28;
 	
 	private static final int MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_1 = 32;
 	private static final int MAX_ROW_PER_PAGE_MONTHLY_EMPLOYEE_2 = 32;
