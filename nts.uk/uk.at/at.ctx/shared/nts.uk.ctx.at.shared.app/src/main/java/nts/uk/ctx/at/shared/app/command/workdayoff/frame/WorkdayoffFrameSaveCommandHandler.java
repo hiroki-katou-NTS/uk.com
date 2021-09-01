@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,14 +42,17 @@ public class WorkdayoffFrameSaveCommandHandler extends CommandHandler<Workdayoff
 		for (WorkdayoffFrameCommandDto item : command.getListData()) {
 			Optional<WorkdayoffFrame> optWorkdayoffFr = this.repository.findWorkdayoffFrame(new CompanyId(companyId), 
 																								item.getWorkdayoffFrameNo().v().intValue());
-			if (item.getUseAtr() == 0){
-				item.setTransferFrName(optWorkdayoffFr.get().getTransferFrName().v());
-				item.setWorkdayoffFrName(optWorkdayoffFr.get().getWorkdayoffFrName().v());
-			}
-			
+//			if (item.getUseAtr() == 0){
+//				item.setTransferFrName(optWorkdayoffFr.get().getTransferFrName().v());
+//				item.setWorkdayoffFrName(optWorkdayoffFr.get().getWorkdayoffFrName().v());
+//			}
 			WorkdayoffFrame workdayoffFrame = new WorkdayoffFrame(item);
-			
-			this.repository.update(workdayoffFrame);
+			if(optWorkdayoffFr.isPresent()) {
+				workdayoffFrame = optWorkdayoffFr.get();
+				workdayoffFrame.setUseClassification(item.getUseClassification());
+				this.repository.update(workdayoffFrame);
+			}
+
 		}
 	}
 
