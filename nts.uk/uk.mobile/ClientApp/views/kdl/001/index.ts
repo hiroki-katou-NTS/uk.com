@@ -62,7 +62,7 @@ export class Kdl001Component extends Vue {
             workPlaceId: self.workplaceID,
             referenceDate: self.referenceDate,
             display: self.isAddNone
-        }
+        };
         self.$http.post('at', servicePath.getAllWkTime, param).then((result: { data: Array<IWorkTime> }) => {
             self.$mask('hide');
 
