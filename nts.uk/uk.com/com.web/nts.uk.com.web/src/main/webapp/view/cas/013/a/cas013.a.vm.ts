@@ -383,22 +383,27 @@ module nts.uk.com.view.cas013.a {
 
                         if(index >=0 && index < vm.employeeList().length && indexNew < 0){
                             vm.multiSelectedCode(vm.employeeList()[index].code);
+                            vm.multiSelectedCode.valueHasMutated();
                             vm.dateValue(new datePeriod(employeeSearchs[index].startValidPeriod, employeeSearchs[index].endValidPeriod));
                         }
                         if((index)== vm.employeeList().length  && indexNew < 0){
                             vm.multiSelectedCode(vm.employeeList()[index - 1].code);
                             vm.dateValue(new datePeriod(employeeSearchs[index -1].startValidPeriod, employeeSearchs[index - 1].endValidPeriod));
+                            vm.multiSelectedCode.valueHasMutated();
                         }
                         if(index <0 && indexNew >=0){
                             vm.multiSelectedCode(vm.employeeList()[indexNew].code);
                             vm.dateValue(new datePeriod(employeeSearchs[indexNew].startValidPeriod, employeeSearchs[indexNew].endValidPeriod));
+                            vm.multiSelectedCode.valueHasMutated();
                         }
                         if(index == indexNew && index <0){
                             vm.multiSelectedCode(vm.employeeList()[0].code);
+                            vm.multiSelectedCode.valueHasMutated();
                             vm.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
                         }
                         if(index == indexNew && index >0){
                             vm.multiSelectedCode(vm.employeeList()[index].code);
+                            vm.multiSelectedCode.valueHasMutated();
                             vm.dateValue(new datePeriod(employeeSearchs[index].startValidPeriod, employeeSearchs[index].endValidPeriod));
                         }
                         //End KCP005
