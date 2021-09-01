@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * 
+ * 残数確認ダイアログDTO
  * @author phongtq
  *
  */
