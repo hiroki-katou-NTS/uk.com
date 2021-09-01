@@ -33,7 +33,7 @@ public class UpdateMonthlyAttendanceItemCommandHandler extends CommandHandler<Up
 		String companyId = AppContexts.user().companyId();
 		UpdateMonthlyAttendanceItemCommand command = context.getCommand();
 		int attendanceItemId = command.getAttendanceItemId();
-		String displayName  = command.getDisplayName();
+		String displayName  = command.getDisplayName();		
 		int nameLineFeedPosition = command.getNameLineFeedPosition();
 		
 		Optional<MonthlyAttendanceItem> data = this.monthlyAttendanceItemRepository
@@ -41,6 +41,7 @@ public class UpdateMonthlyAttendanceItemCommandHandler extends CommandHandler<Up
 		if(!data.isPresent())
 			return;
 		MonthlyAttendanceItem monthlyAttendanceItem = data.get();
+		
 		this.monthlyAttendanceItemRepository.update(new MonthlyAttendanceItem(new MonthlyAttendanceItemGetMemento() {
 			
 			@Override
@@ -75,7 +76,7 @@ public class UpdateMonthlyAttendanceItemCommandHandler extends CommandHandler<Up
 			
 			@Override
 			public Optional<AttendanceName> getDisplayName() {
-				return null == displayName ? monthlyAttendanceItem.getDisplayName() : Optional.ofNullable(new AttendanceName(displayName));
+				return (null == displayName) ? monthlyAttendanceItem.getDisplayName() : ("".equals(displayName.trim()) ? Optional.empty() : Optional.ofNullable(new AttendanceName(displayName)));
 			}
 			
 			@Override
