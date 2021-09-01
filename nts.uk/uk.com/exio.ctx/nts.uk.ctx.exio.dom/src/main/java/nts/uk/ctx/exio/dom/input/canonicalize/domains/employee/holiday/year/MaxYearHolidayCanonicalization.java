@@ -19,6 +19,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalizati
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -111,5 +112,9 @@ public class MaxYearHolidayCanonicalization extends IndependentCanonicalization{
 					+ "の値がありません。"
 				));
 		}
+	}
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return employeeCodeCanonicalization.appendMeta(source);
 	}
 }

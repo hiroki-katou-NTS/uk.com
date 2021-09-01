@@ -103,13 +103,6 @@ public class YearHolidayRemainingCanonicalization extends IndependentCanonicaliz
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return employeeCodeCanonicalization.appendMeta(source)
-				.addItem("登録種別")
-				.addItem("積み崩し日数")
-				.addItem("上限超過消滅日数")
-				.addItem("使用率")
-				.addItem("所定日数")
-				.addItem("控除日数")
-				.addItem("労働日数");
+		return employeeCodeCanonicalization.appendMeta(source);
 	}
 }
