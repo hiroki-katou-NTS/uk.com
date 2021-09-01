@@ -212,14 +212,18 @@ public class GetRemainNumberConfirmInfo {
 		// 期限の一番近い日をセットする
 		List<AccumulationAbsenceDetail> accAbsDetail = vacationDetails.sortAccAbsDetailASC();
 		if (!accAbsDetail.isEmpty()) {
-			LeaveOccurrDetail occurrDetailNew = (LeaveOccurrDetail)accAbsDetail;
+			
 			Optional<AccumulationAbsenceDetail> undigestInfoFil = accAbsDetail.stream()
-					.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE && //逐次発生の休暇明細一覧．発生消化区分　＝＝　発生　
-							occurrDetailNew.getDigestionCate() == DigestionAtr.UNUSED && // 逐次発生の休暇明細一覧．発生数．消化区分　＝＝　未消化 - can hoi lai
-							!x.getDateOccur().isUnknownDate()) // 逐次発生の休暇明細一覧．年月日．日付不明　＝＝　False
+					.filter(x -> {
+						LeaveOccurrDetail occurrDetailNew = (LeaveOccurrDetail)x;
+						return x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE && //逐次発生の休暇明細一覧．発生消化区分　＝＝　発生　
+								occurrDetailNew.getDigestionCate() == DigestionAtr.UNUSED && // 逐次発生の休暇明細一覧．発生数．消化区分　＝＝　未消化 - can hoi lai
+								!x.getDateOccur().isUnknownDate();
+					}) // 逐次発生の休暇明細一覧．年月日．日付不明　＝＝　False
 					.findFirst();
 			if (undigestInfoFil.isPresent()) {
 				String text = "";
+				LeaveOccurrDetail occurrDetailNew = (LeaveOccurrDetail)undigestInfoFil.get();
 				//dayCloseDeadline;
 				text = TextResource.localize("KDL005_41", occurrDetailNew.getDeadline().toString(), occurrDetailNew.getDeadline().dayOfWeek() + "");
 				// 探した逐次発生の休暇明細一覧．発生数．時間数　！＝　Empty

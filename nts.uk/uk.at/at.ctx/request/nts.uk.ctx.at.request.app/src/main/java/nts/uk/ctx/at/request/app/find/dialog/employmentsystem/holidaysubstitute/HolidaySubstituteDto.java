@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.dialog.employmentsystem.holidaysubstitute;
 
+import java.util.List;
+
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 
@@ -12,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 public class HolidaySubstituteDto {
 	
 	// 個人社員基本情報
-	private EmployeeImport emailDto;
+	private List<EmployeeImport> empImport;
 	
 	// 残数確認ダイアログDTO
 	private RemainNumberConfirmDto remainNumConfirmDto;
@@ -20,15 +22,15 @@ public class HolidaySubstituteDto {
 	// Mode 0 : single; 1 : multi
 	private int mode; 
 	
-	public HolidaySubstituteDto(EmployeeImport emailDto, RemainNumberConfirmDto remainNumConfirmDto) {
+	public HolidaySubstituteDto(List<EmployeeImport> empImport, RemainNumberConfirmDto remainNumConfirmDto) {
 		super();
-		this.emailDto = emailDto;
+		this.empImport = empImport;
 		this.remainNumConfirmDto = remainNumConfirmDto;
 	}
 	
-	public HolidaySubstituteDto(EmployeeImport emailDto, RemainNumberConfirmDto remainNumConfirmDto, int mode) {
+	public HolidaySubstituteDto(List<EmployeeImport> empImport, RemainNumberConfirmDto remainNumConfirmDto, int mode) {
 		super();
-		this.emailDto = emailDto;
+		this.empImport = empImport;
 		this.remainNumConfirmDto = remainNumConfirmDto;
 		this.mode = mode;
 	}

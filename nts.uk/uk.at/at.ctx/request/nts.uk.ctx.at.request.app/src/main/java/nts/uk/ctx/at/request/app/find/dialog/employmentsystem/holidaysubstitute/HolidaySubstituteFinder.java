@@ -38,7 +38,7 @@ public class HolidaySubstituteFinder {
 		else 
 			mode = 1; // 画面　＝　複数モード
 		
-		HolidaySubstituteDto substituteDto = new HolidaySubstituteDto(lstEmp.isEmpty() ? null : lstEmp.get(0), confirmDto, mode);
+		HolidaySubstituteDto substituteDto = new HolidaySubstituteDto(lstEmp, confirmDto, mode);
 		return substituteDto;
 	}
 }
