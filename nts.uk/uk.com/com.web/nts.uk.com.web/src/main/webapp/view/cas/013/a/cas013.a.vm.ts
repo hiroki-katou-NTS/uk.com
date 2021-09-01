@@ -311,10 +311,11 @@ module nts.uk.com.view.cas013.a {
                         vm.listRole([]);
                         vm.selectedRole('');
                         vm.selectRoleCheckbox('');
+                        block.clear();
                     }
+
                     dfd.resolve();
                 }).always(()=>{
-                    block.clear();
                 }).fail(()=>{
                     dfd.reject();
                 });
@@ -322,6 +323,7 @@ module nts.uk.com.view.cas013.a {
                 vm.listRole([]);
                 vm.selectedRole('');
                 vm.selectRoleCheckbox('');
+                block.clear();
             }
         }
 
@@ -332,7 +334,6 @@ module nts.uk.com.view.cas013.a {
             if (roleId != '') {
                 vm.selectedRoleIndividual('');
                 block.invisible();
-
                 vm.$ajax('com', API.getRoleGrants, roleId).done(function (data: any) {
                     if (data != null && data.length > 0) {
 
@@ -384,27 +385,22 @@ module nts.uk.com.view.cas013.a {
                         if(index >=0 && index < vm.employeeList().length && indexNew < 0){
                             vm.multiSelectedCode(vm.employeeList()[index].code);
                             vm.multiSelectedCode.valueHasMutated();
-                            vm.dateValue(new datePeriod(employeeSearchs[index].startValidPeriod, employeeSearchs[index].endValidPeriod));
                         }
                         if((index)== vm.employeeList().length  && indexNew < 0){
                             vm.multiSelectedCode(vm.employeeList()[index - 1].code);
-                            vm.dateValue(new datePeriod(employeeSearchs[index -1].startValidPeriod, employeeSearchs[index - 1].endValidPeriod));
                             vm.multiSelectedCode.valueHasMutated();
                         }
                         if(index <0 && indexNew >=0){
                             vm.multiSelectedCode(vm.employeeList()[indexNew].code);
-                            vm.dateValue(new datePeriod(employeeSearchs[indexNew].startValidPeriod, employeeSearchs[indexNew].endValidPeriod));
                             vm.multiSelectedCode.valueHasMutated();
                         }
                         if(index == indexNew && index <0){
                             vm.multiSelectedCode(vm.employeeList()[0].code);
                             vm.multiSelectedCode.valueHasMutated();
-                            vm.dateValue(new datePeriod(employeeSearchs[0].startValidPeriod, employeeSearchs[0].endValidPeriod));
                         }
                         if(index == indexNew && index >0){
                             vm.multiSelectedCode(vm.employeeList()[index].code);
                             vm.multiSelectedCode.valueHasMutated();
-                            vm.dateValue(new datePeriod(employeeSearchs[index].startValidPeriod, employeeSearchs[index].endValidPeriod));
                         }
                         //End KCP005
 
@@ -421,9 +417,10 @@ module nts.uk.com.view.cas013.a {
                         vm.userName('');
                         vm.dateValue({});
                         vm.New();
+                        block.clear();
                     }
                 }).always(()=>{
-                    block.clear()
+
                 }).fail(()=>{
 
                 });
@@ -443,6 +440,7 @@ module nts.uk.com.view.cas013.a {
                 vm.jobTitleName('');
                 vm.employyeCode('');
                 vm.employyeName('');
+                block.clear()
             }
         }
         private selectRoleEmployee(UserId: string): void {
@@ -471,7 +469,6 @@ module nts.uk.com.view.cas013.a {
                             vm.loginID('');
                             vm.userName('');
                         } else {
-                            vm.dateValue(new datePeriod(userEmployee.start, userEmployee.end));
                             vm.loginID(userSelected.code);
                             vm.userName(userSelected.name);
                         }
@@ -508,6 +505,7 @@ module nts.uk.com.view.cas013.a {
                                 vm.jobTitleName('');
                             }
                         });
+                        vm.dateValue(new datePeriod(userEmployee.start, userEmployee.end));
                         vm.isCreateMode(false);
                         vm.isSelectedUser(false);
                         vm.isDelete(true);
