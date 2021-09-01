@@ -215,9 +215,8 @@ public class GetRemainNumberConfirmInfo {
 			
 			Optional<AccumulationAbsenceDetail> undigestInfoFil = accAbsDetail.stream()
 					.filter(x -> {
-						LeaveOccurrDetail occurrDetailNew = (LeaveOccurrDetail)x;
 						return x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE && //逐次発生の休暇明細一覧．発生消化区分　＝＝　発生　
-								occurrDetailNew.getDigestionCate() == DigestionAtr.UNUSED && // 逐次発生の休暇明細一覧．発生数．消化区分　＝＝　未消化 - can hoi lai
+								((LeaveOccurrDetail)x).getDigestionCate() == DigestionAtr.UNUSED && // 逐次発生の休暇明細一覧．発生数．消化区分　＝＝　未消化 - can hoi lai
 								!x.getDateOccur().isUnknownDate();
 					}) // 逐次発生の休暇明細一覧．年月日．日付不明　＝＝　False
 					.findFirst();
