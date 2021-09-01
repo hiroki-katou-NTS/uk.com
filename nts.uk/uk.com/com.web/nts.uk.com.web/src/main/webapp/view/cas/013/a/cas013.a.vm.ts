@@ -95,6 +95,7 @@ module nts.uk.com.view.cas013.a {
         jobTitleCode: KnockoutObservable<string>;
         jobTitleName: KnockoutObservable<string>;
         EmployeeIDList: KnockoutObservableArray<any>;
+        checkFirt: KnockoutObservable<number> = ko.observable(0);
 
         constructor(params: any) {
             super();
@@ -203,7 +204,7 @@ module nts.uk.com.view.cas013.a {
                 if(!isNullOrUndefined(itemRole)){
                     vm.selectedRole(itemRole.roleId);
                 }
-            })
+            });
             vm.setFocus();
         }
         //A51
@@ -241,12 +242,13 @@ module nts.uk.com.view.cas013.a {
         }
         setFocus(){
             let vm = this;
-            if(vm.isCreateMode()){
+            if(vm.isCreateMode() || vm.checkFirt()==1){
                 $('#combo-box').focus();
             }else {
-                $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                if(vm.listRole().length > 0){
+                    $("#daterangepicker").find(".ntsStartDatePicker").focus();
+                }
             }
-
         }
         KCP005_load() {
             let vm = this;
@@ -287,7 +289,6 @@ module nts.uk.com.view.cas013.a {
                     let id = item.id.toString();
                     vm.selectRoleEmployee(id);
                 }
-                vm.setFocus();
             });
             $('#kcp005').ntsListComponent(vm.listComponentOption)
 
@@ -330,8 +331,10 @@ module nts.uk.com.view.cas013.a {
             if (roleId != '') {
                 vm.selectedRoleIndividual('');
                 block.invisible();
+
                 vm.$ajax('com', API.getRoleGrants, roleId).done(function (data: any) {
                     if (data != null && data.length > 0) {
+
                         let items = [];
                         let leids = [];
                         let periodDate = '';//KCP005
@@ -435,7 +438,6 @@ module nts.uk.com.view.cas013.a {
                 vm.employyeCode('');
                 vm.employyeName('');
             }
-            vm.setFocus();
         }
         private selectRoleEmployee(UserId: string): void {
             let vm = this;
@@ -452,7 +454,10 @@ module nts.uk.com.view.cas013.a {
                     roleID: roleId,
                     userID: UserId
                 };
+                let number = vm.checkFirt();
                 vm.$ajax('com', API.getRoleGrant, data).done(function (data: any) {
+                    number+=1;
+                    vm.checkFirt(number);
                     if (data != null) {
                         if (nts.uk.text.isNullOrEmpty(userSelected)
                             && nts.uk.text.isNullOrEmpty(userEmployee)
@@ -501,12 +506,14 @@ module nts.uk.com.view.cas013.a {
                         vm.isSelectedUser(false);
                         vm.isDelete(true);
                     }
+                    vm.setFocus();
                 }).always(()=>{
                     block.clear();
                 });
             } else {
                 vm.isDelete(false);
             }
+
         }
         New(): void {
             let vm = this;

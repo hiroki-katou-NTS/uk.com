@@ -10,6 +10,7 @@ body{
 .left-content {
 	display: inline-block;
 	vertical-align: top;
+	float: left;
 }
 
 .right-content {
@@ -32,11 +33,11 @@ body{
 }
 
 #combo-box {
-	width: 240px;
+	width: 300px;
 }
 
 #combo-box2 {
-	width: 240px;
+	width: 300px;
 }
 
 .caret-bottom {
@@ -101,6 +102,5 @@ div.ntsLabel, label.ntsLabel, div.form-label, label.form-label {
 	margin: -20px;
 }
 #kcp005{
-	width: 500px;
 	margin-top: 10px;
 }
