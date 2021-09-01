@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import lombok.Getter;
 import lombok.Value;
@@ -22,6 +23,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
@@ -46,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author kumiko_otake
  *
  */
+@RunWith(JMockit.class)
 public class WorkScheduleImportServiceTest {
 
 	@Injectable WorkScheduleImportService.Require require;
