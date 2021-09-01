@@ -58,7 +58,7 @@ public class EmploymentHistoryCanonicalization extends EmployeeHistoryCanonicali
 	
 	public static CanonicalItemList getFixedItems() {
 		return new CanonicalItemList()
-			.add(100, AppContexts.user().companyId()) // 給与区分
+			.add(100, AppContexts.user().companyId()) // CID
 			.addNull(103); //給与区分
 	}
 }
