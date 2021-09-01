@@ -144,10 +144,10 @@ module nts.uk.at.view.kal002.c {
                                 item.alreadyConfigured ? vm.isConfiguredManualPerson(true) : vm.isConfiguredManualPerson(false);
                             } else if (item.mailSettingInfo.normalAutoClassify === 0 && item.mailSettingInfo.personalManagerClassify === 1) {
                                 vm.manualAdmin = item.mailSettingInfo;
-                                item.alreadyConfigured ? vm.isConfiguredManualAdmin(true): vm.isConfiguredManualAdmin(false);
+                                item.alreadyConfigured ? vm.isConfiguredManualAdmin(true) : vm.isConfiguredManualAdmin(false);
                             } else if (item.mailSettingInfo.normalAutoClassify === 1 && item.mailSettingInfo.personalManagerClassify === 0) {
                                 vm.autoPerson = item.mailSettingInfo;
-                                item.alreadyConfigured? vm.isConfiguredAutoPerson(true): vm.isConfiguredAutoPerson(false);
+                                item.alreadyConfigured ? vm.isConfiguredAutoPerson(true) : vm.isConfiguredAutoPerson(false);
                             } else if (item.mailSettingInfo.normalAutoClassify === 1 && item.mailSettingInfo.personalManagerClassify === 1) {
                                 vm.autoAdmin = item.mailSettingInfo;
                                 item.alreadyConfigured ? vm.isConfiguredAutoAdmin(true) : vm.isConfiguredAutoAdmin(false);
@@ -208,7 +208,7 @@ module nts.uk.at.view.kal002.c {
          */
         manualMailSettingForPersonal() {
             let vm = this;
-            vm.setParamCCG027();
+            vm.setParamCCG027(false);
             nts.uk.ui.windows.setShared("senderAddress", vm.manualPerson.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.manualPerson.contentMailSettings);
 
@@ -227,7 +227,7 @@ module nts.uk.at.view.kal002.c {
          */
         manualMailSettingForManager() {
             let vm = this;
-            vm.setParamCCG027();
+            vm.setParamCCG027(false);
             nts.uk.ui.windows.setShared("senderAddress", vm.manualAdmin.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.manualAdmin.contentMailSettings);
 
@@ -246,7 +246,7 @@ module nts.uk.at.view.kal002.c {
          */
         automaticMailSettingForPersonal() {
             let vm = this;
-            vm.setParamCCG027();
+            vm.setParamCCG027(true);
             nts.uk.ui.windows.setShared("senderAddress", vm.autoPerson.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.autoPerson.contentMailSettings);
 
@@ -265,7 +265,7 @@ module nts.uk.at.view.kal002.c {
          */
         automaticMailSettingForManager() {
             let vm = this;
-            vm.setParamCCG027();
+            vm.setParamCCG027(true);
             nts.uk.ui.windows.setShared("senderAddress", vm.autoAdmin.senderAddress);
             nts.uk.ui.windows.setShared("MailSettings", vm.autoAdmin.contentMailSettings);
 
@@ -282,8 +282,12 @@ module nts.uk.at.view.kal002.c {
         /**
          * Set relate parameters before get dialog CCG027
          */
-        setParamCCG027() {
-            nts.uk.ui.windows.setShared("sendingAddressCheck", true);
+        setParamCCG027(isAuto: boolean) {
+            if (isAuto) {
+                nts.uk.ui.windows.setShared("sendingAddressCheck", true);
+            } else {
+                nts.uk.ui.windows.setShared("sendingAddressCheck", false);
+            }
             nts.uk.ui.windows.setShared("SetCC", true);
             nts.uk.ui.windows.setShared("SetBCC", true);
             nts.uk.ui.windows.setShared("SetReply", true);

@@ -222,7 +222,7 @@ module nts.uk.at.view.kal012.b {
         setMailAutoAd() {
             var vm = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
-            vm.setPara();
+            vm.setPara(true);
             if (vm.auto.mailContents == null) {
                 vm.auto.mailContents = {
                     "subject": "",
@@ -249,7 +249,7 @@ module nts.uk.at.view.kal012.b {
         setMailManual() {
             var vm = this;
             nts.uk.ui.windows.setShared("sendingAddressCheck", true);
-            vm.setPara();
+            vm.setPara(false);
             if (vm.normal.mailContents == null) {
                 vm.normal.mailContents = {
                     "subject": "",
@@ -274,13 +274,18 @@ module nts.uk.at.view.kal012.b {
          * initial cgg027 modal params *
          *
          * */
-        setPara() {
+        setPara(isAuto: boolean) {
             nts.uk.ui.windows.setShared("SetCC", true);
             nts.uk.ui.windows.setShared("SetBCC", true);
             nts.uk.ui.windows.setShared("SetReply", true);
             nts.uk.ui.windows.setShared("SetSubject", true);
             nts.uk.ui.windows.setShared("SetBody", true);
             nts.uk.ui.windows.setShared("wording", "");
+            if (isAuto) {
+                nts.uk.ui.windows.setShared("sendingAddressCheck", true);
+            } else {
+                nts.uk.ui.windows.setShared("sendingAddressCheck", false);
+            }
         }
     }
 
