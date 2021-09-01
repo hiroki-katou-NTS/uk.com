@@ -95,7 +95,7 @@ module nts.uk.com.view.cas013.a {
         jobTitleCode: KnockoutObservable<string>;
         jobTitleName: KnockoutObservable<string>;
         EmployeeIDList: KnockoutObservableArray<any>;
-        checkFirt: KnockoutObservable<number> = ko.observable(0);
+        checkFirt: KnockoutObservable<number>;
 
         constructor(params: any) {
             super();
@@ -107,6 +107,7 @@ module nts.uk.com.view.cas013.a {
             vm.employyeName = ko.observable('');
             vm.workplaceCode = ko.observable('');
             vm.workplaceName = ko.observable('');
+            vm.checkFirt =  ko.observable(0);
 
             vm.companyId = ko.observable('');
             vm.companyCode = ko.observable('');
