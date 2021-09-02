@@ -1169,9 +1169,8 @@ public class DeductionTimeSheet {
 		for (TimeSheetOfDeductionItem targetItem : targetClass){
 			// 重複外時間帯リスト
 			List<TimeSpanForDailyCalc> notDupList = targetItem.getTimeSheet().getNotDuplicationWith(timeSpan);
-			for (TimeSpanForDailyCalc notDupSpan : notDupList){
-				result.add(targetItem.cloneWithNewTimeSpan(Optional.of(notDupSpan)));
-			}
+			result.addAll(notDupList.stream()
+							.map(c -> targetItem.cloneWithNewTimeSpan(Optional.of(c))).collect(Collectors.toList()));
 		}
 		
 		return result.stream()

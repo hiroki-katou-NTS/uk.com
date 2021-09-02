@@ -92,10 +92,10 @@ public class WithinOutingTotalTime {
 		TimeWithCalculation withinDedTime = oneDay.getDeductionTime(
 				ConditionAtr.convertFromGoOutReason(reason),
 				dedAtr, StatutoryAtr.Statutory, roundAtr, Optional.empty());
-		// 外出合計時間を返す（所定内合計時間だけ返す）
+		// 外出合計時間を返す（コア外に全て入れる）
 		return WithinOutingTotalTime.of(
 				withinDedTime,
 				TimeWithCalculation.sameTime(AttendanceTime.ZERO),
-				TimeWithCalculation.sameTime(AttendanceTime.ZERO));
+				withinDedTime);
 	}
 }

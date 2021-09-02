@@ -534,22 +534,12 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 			DeductionAtr dedAtr,
 			TimeSheetRoundingAtr roundAtr) {
 		
-		AttendanceTime goOutTime = AttendanceTime.ZERO;		// 外出時間
-		
-		// 控除種別区分を確認する
-		switch (conditionAtr){
-		case PrivateGoOut:
-		case UnionGoOut:
-			// コアタイムとの重複を判断して時間帯を作成
-			List<WithinWorkTimeFrame> targetFrameList = this.createSpanDuplicatedWithCoreTime(isWithin);
-			// 控除時間の計算
-			goOutTime = ActualWorkTimeSheetListService.calcDeductionTime(
-					conditionAtr, dedAtr, roundAtr,
-					targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()));
-			break;
-		default:
-			break;
-		}
+		// コアタイムとの重複を判断して時間帯を作成
+		List<WithinWorkTimeFrame> targetFrameList = this.createSpanDuplicatedWithCoreTime(isWithin);
+		// 控除時間の計算
+		AttendanceTime goOutTime = ActualWorkTimeSheetListService.calcDeductionTime(
+				conditionAtr, dedAtr, roundAtr,
+				targetFrameList.stream().map(t -> (ActualWorkingTimeSheet)t).collect(Collectors.toList()));
 		// 外出時間を返す
 		return goOutTime;
 	}
@@ -882,9 +872,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		if (!integrationOfWorkTime.getFlexWorkSetting().isPresent()) return deductionTimeSheet;
 		// フレックス勤務設定
 		FlexWorkSetting flexWorkSet = integrationOfWorkTime.getFlexWorkSetting().get();
-		if (flexWorkSet.getCoreTimeSetting().getTimesheet().isNOT_USE()) return deductionTimeSheet;
-		if (flexWorkSet.getCoreTimeSetting().getGoOutCalc().getRemoveFromWorkTime().isUse())
-			return deductionTimeSheet;
+		if (!flexWorkSet.isDeductGoOutWithinCoreFromWorkTime()) return deductionTimeSheet;
 		TimeSheet coreTimeSetting = flexWorkSet.getCoreTimeSetting().getCoreTimeSheet();
 		// コアタイム時間帯
 		TimeSpanForDailyCalc coreTimeSheet = new TimeSpanForDailyCalc(
