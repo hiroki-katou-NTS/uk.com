@@ -144,8 +144,6 @@ public class WorkspaceSql {
 		void columnCommonColumns() {
 			// ROW_NO列はdecimal使わなくても良いんじゃないかな、さすがにintで足りると思う
 			sql.append(CommonColumns.ROW_NO.sqlDefine() + ",");
-			sql.append(CommonColumns.CONTRACT_CD.sqlDefine() + ",");
-			sql.append(CommonColumns.CID.sqlDefine() + ",");
 		}
 		
 		void column(WorkspaceItem item, boolean isPK) {
