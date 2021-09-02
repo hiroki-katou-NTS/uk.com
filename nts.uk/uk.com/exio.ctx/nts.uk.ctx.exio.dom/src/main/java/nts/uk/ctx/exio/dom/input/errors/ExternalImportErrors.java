@@ -15,7 +15,7 @@ public class ExternalImportErrors {
 	public ExternalImportErrors(List<ExternalImportError> errors) {
 		
 		this.errors = errors.stream()
-				.sorted(Comparator.comparing(e -> e.getCsvRowNo()))
+				.sorted(Comparator.comparing(e -> e.getCsvRowNo() != null ? e.getCsvRowNo() : 0))
 				.collect(toList());
 	}
 	
