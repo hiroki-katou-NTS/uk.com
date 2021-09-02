@@ -19,6 +19,12 @@ public class ExternalImportPersistentHistory
 	}
 
 	@Override
+	public void add(DateHistoryItem itemToBeAdded) {
+		itemToBeAdded.changeSpan(new DatePeriod(itemToBeAdded.start(), GeneralDate.max()));
+		super.add(itemToBeAdded);
+	}
+	
+	@Override
 	public void exValidateIfCanAdd(DateHistoryItem itemToBeAdded) {
 	}
 }
