@@ -9,7 +9,7 @@ module nts.uk.com.view.cmf001.a {
              */
             importScreen(): void {
                 let self = this;
-                nts.uk.request.jump("/view/cmf/001/o/index.xhtml");
+                nts.uk.request.jump("/view/cmf/001/x/index.xhtml");
             }
             
             /**
