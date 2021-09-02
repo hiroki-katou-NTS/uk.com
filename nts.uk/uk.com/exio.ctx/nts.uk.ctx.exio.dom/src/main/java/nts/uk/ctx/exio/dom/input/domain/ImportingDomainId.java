@@ -11,6 +11,9 @@ public enum ImportingDomainId{
 	
 	/** 個人基本情報 */
 	EMPLOYEE_BASIC(100),
+
+	/** 個人基本情報 */
+	AFF_COMPANY_HISTORY(101),
 	
 	/** 雇用履歴 */
 	EMPLOYMENT_HISTORY(102),
