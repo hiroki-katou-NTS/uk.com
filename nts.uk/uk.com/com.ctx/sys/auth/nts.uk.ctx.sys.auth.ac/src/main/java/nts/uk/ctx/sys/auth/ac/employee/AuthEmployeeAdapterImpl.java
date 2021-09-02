@@ -14,6 +14,7 @@ import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmpInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.PersonalEmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.employee.dto.EmployeeImport;
 
 @Stateless
@@ -53,6 +54,12 @@ public class AuthEmployeeAdapterImpl implements EmployeeAdapter{
 			return Optional.empty();
 		EmployeeImport dataImport = new EmployeeImport(data.get().getCid(), data.get().getPid(), data.get().getSid(), data.get().getEmployeeCode(), data.get().getPersonName());
 		return Optional.of(dataImport);
+	}
+
+	@Override
+	public List<PersonalEmployeeInfoImport> getPersonalEmployeeInfo(List<String> personIds) {
+		// TODO dev fix
+		return null;
 	}
 
 }

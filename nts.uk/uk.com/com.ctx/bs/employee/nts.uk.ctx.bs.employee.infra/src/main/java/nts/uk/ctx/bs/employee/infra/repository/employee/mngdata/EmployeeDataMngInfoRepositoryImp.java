@@ -916,4 +916,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 				.setParameter("employeeCode", employeeCd)
 				.getSingle(m -> toDomain(m));
 	}
+
+	@Override
+	public List<EmployeeDataMngInfo> getByPersonIdList(List<String> personIdList) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
