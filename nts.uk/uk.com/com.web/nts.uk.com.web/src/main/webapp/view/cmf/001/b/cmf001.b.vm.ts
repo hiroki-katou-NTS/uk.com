@@ -38,7 +38,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 	
 	@bean()
 	class ViewModel extends ko.ViewModel {
-		isNewMode: KnockoutObservable<boolean> = ko.observable();
+		isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
 		settingList: KnockoutObservableArray<Setting> = ko.observableArray([]);
 		
@@ -211,22 +211,24 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		save(){
 			let self = this;
 			self.checkError();
-			let saveContents = {
-				isCreateMode: self.isNewMode(),
-				setting: new SettingInfo(
-					__viewContext.user.companyId, 
-					self.settingCode(), 
-					self.settingName(), 
-					self.importDomain(), 
-					self.importMode(), 
-					self.itemNameRow(), 
-					self.importStartRow(), 
-					self.layoutItemNoList()),
-			};
-			ajax("screen/com/cmf/cmf001/b/save", saveContents);
-			info(nts.uk.resource.getMessage("Msg_15", []));
-			self.reloadPage();
-			self.selectedCode(self.settingCode());
+			if(!nts.uk.ui.errors.hasError()){
+				let saveContents = {
+					isCreateMode: self.isNewMode(),
+					setting: new SettingInfo(
+						__viewContext.user.companyId, 
+						self.settingCode(), 
+						self.settingName(), 
+						self.importDomain(), 
+						self.importMode(), 
+						self.itemNameRow(), 
+						self.importStartRow(), 
+						self.layoutItemNoList()),
+				};
+				ajax("screen/com/cmf/cmf001/b/save", saveContents);
+				info(nts.uk.resource.getMessage("Msg_15", []));
+				self.reloadPage();
+				self.selectedCode(self.settingCode());
+			}
 		}
 
     canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
