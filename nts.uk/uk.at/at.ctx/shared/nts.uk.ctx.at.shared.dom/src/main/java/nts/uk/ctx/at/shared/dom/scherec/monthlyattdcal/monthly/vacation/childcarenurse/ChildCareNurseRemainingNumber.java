@@ -81,10 +81,9 @@ public class ChildCareNurseRemainingNumber {
 	/** 子の看護介護残数を引算 */
 	public void sub(ChildCareNurseRemainingNumber usedNumber) {
 		remainDay = new DayNumberOfRemain(remainDay.v() - usedNumber.getRemainDay().v());
-		if (remainTimes.isPresent()) {
-			remainTimes = remainTimes.map(c -> c.minusMinutes(usedNumber.getRemainTimes().map(x -> x.v()).orElse(0)));
-		} else {
-			remainTimes = usedNumber.getRemainTimes();
-		}
+		if (!remainTimes.isPresent()) {
+			remainTimes = Optional.of(new TimeOfRemain(0));
+		} 
+		remainTimes = remainTimes.map(c -> c.minusMinutes(usedNumber.getRemainTimes().map(x -> x.v()).orElse(0)));
 	}
 }
