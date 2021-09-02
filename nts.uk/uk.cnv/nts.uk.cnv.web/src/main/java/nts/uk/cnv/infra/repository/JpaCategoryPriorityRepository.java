@@ -6,15 +6,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.categorypriority.CategoryPriorityRepository;
+import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 import nts.uk.cnv.infra.entity.categorypriority.ScvmtCategoryPriority;
 
 @Stateless
 public class JpaCategoryPriorityRepository  extends JpaRepository implements CategoryPriorityRepository{
 
+	@Inject
+	ConversionCategoryTableRepository categryTableRepo;
+	
 	@Override
 	public LinkedList<String> getAll() {
 		String query = "SELECT cp FROM ScvmtCategoryPriority cp ORDER BY cp.sequenceNo ASC";
@@ -53,6 +58,7 @@ public class JpaCategoryPriorityRepository  extends JpaRepository implements Cat
 	@Override
 	public void delete(String category) {
 		this.commandProxy().remove(ScvmtCategoryPriority.class, category);
+		categryTableRepo.delete(category);
 		this.getEntityManager().flush();
 	}
 
