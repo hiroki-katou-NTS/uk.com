@@ -309,11 +309,11 @@ public class AnnualLeaveInfo implements Cloneable {
 		while (itrGrantRemainingNumber.hasNext()){
 			val grantRemainingNumber = itrGrantRemainingNumber.next();
 
-			// 期限日が年休集計期間WORK.期間.開始日の前日でなければ、消滅処理しない
-			if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().start().addDays(-1))){
+			// 期限日が年休集計期間WORK.期間.終了日でなければ、消滅処理しない
+			if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().end())){
 				continue;
 			}
-
+			
 			// 年休不足ダミーフラグがtrueなら、消滅処理しない
 			if (grantRemainingNumber.isDummyData() == true) continue;
 

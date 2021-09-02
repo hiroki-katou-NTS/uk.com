@@ -674,14 +674,10 @@ public class SpecialLeaveManagementService {
 		boolean isFirst = true;
 		GeneralDate preYmd = null;
 
-
 		if (dividedDayList.size() <= 0)
 			return new ArrayList<>();
 
 		List<SpecialLeaveAggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
-//		SpecialLeaveAggregatePeriodWork firstPeriod = new SpecialLeaveAggregatePeriodWork(
-//				new DatePeriod(aggrPeriod.start(),dividedDayList.get(0).getYmd().addDays(-1)));
-//		aggregatePeriodWorks.add(firstPeriod);
 
 		for( SpecialLeaveDividedDayEachProcess c : dividedDayList ){
 
@@ -691,7 +687,7 @@ public class SpecialLeaveManagementService {
 				= SpecialLeaveAggregatePeriodWork.of(
 					new DatePeriod(aggrPeriod.start(), c.getYmd().addDays(-1)),
 					new NextDayAfterPeriodEndWork(),
-					new SpecialLeaveLapsedWork(false),
+					c.getLapsedWork(),
 					new SpecialLeaveGrantWork(),
 					GrantPeriodAtr.BEFORE_GRANT);
 
@@ -702,12 +698,10 @@ public class SpecialLeaveManagementService {
 				continue;
 			}
 
-			new SpecialLeaveLapsedWork();
-
 			// 期間．開始日←「処理単位分割日．年月日」
 			// 期間．終了日←次の「処理単位分割日．年月日」の前日
 			// 　　　　※次の処理単位分割日がない場合、パラメータ「終了日」の翌日
-			// 消滅←「処理単位分割日.消滅情報WORK」
+			// 消滅←次の「処理単位分割日.消滅情報WORK」
 			// 付与←「処理単位分割日.付与情報WORK」
 			// 終了日←「処理単位分割日.終了日の翌日情報WORK」
 			// 付与前か付与後か←「処理単位分割日.付与前、付与後の期間区分」
@@ -718,7 +712,7 @@ public class SpecialLeaveManagementService {
 //					specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
 //					specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(),
 					specialLeaveDividedDayEachProcess_pre.get().getEndDay(),
-					specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
+					c.getLapsedWork(),
 					specialLeaveDividedDayEachProcess_pre.get().getGrantWork(),
 					specialLeaveDividedDayEachProcess_pre.get().getGrantPeriodAtr());
 
@@ -737,11 +731,16 @@ public class SpecialLeaveManagementService {
 
 		// 期間．開始日←最後の「処理単位分割日．年月日」
 		// 期間．終了日←パラメータ「終了日」の翌日
+		// 消滅←次の「処理単位分割日.消滅情報WORK」
+		// ※次の処理単位分割日がない場合、「期間の開始日に消滅するかどうか」をfalseで消滅情報WORKを作成
+		// 付与←「処理単位分割日.付与情報WORK」
+		// 終了日←「処理単位分割日.終了日の翌日情報WORK」
+		// 付与前か付与後か←「処理単位分割日.付与前、付与後の期間区分」
 		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
 		= SpecialLeaveAggregatePeriodWork.of(
 			new DatePeriod(preYmd, nextDayOfPeriodEnd),
 			specialLeaveDividedDayEachProcess_pre.get().getEndDay(),
-			specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
+			new SpecialLeaveLapsedWork(false),
 			specialLeaveDividedDayEachProcess_pre.get().getGrantWork(),
 			specialLeaveDividedDayEachProcess_pre.get().getGrantPeriodAtr());
 

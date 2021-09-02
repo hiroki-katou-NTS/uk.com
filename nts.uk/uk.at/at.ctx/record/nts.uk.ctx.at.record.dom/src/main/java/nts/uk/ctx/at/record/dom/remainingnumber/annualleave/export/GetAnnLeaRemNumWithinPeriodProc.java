@@ -19,6 +19,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -723,8 +724,13 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 「年休集計期間WORK」を作成
 		AggregatePeriodWork startWork = new AggregatePeriodWork();
-		val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
-		startWork.setPeriod(new DatePeriod(aggrPeriod.start(), startWorkEnd));
+		
+		if ( 0 < dividedDayList.size() ){
+			val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
+			startWork.setPeriod(new DatePeriod(aggrPeriod.start(), startWorkEnd));
+			// 消滅　←最初の「処理単位分割日．消滅情報WORK」
+			startWork.setLapsedAtr(dividedDayList.get(0).getLapsedWork());
+		}
 		aggregatePeriodWorks.add(startWork);
 
 		// 付与後フラグ
@@ -733,8 +739,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		for (int index = 0; index < dividedDayList.size(); index++){
 			val nowDividedDay = dividedDayList.get(index);
-			DividedDayEachProcess nextDividedDay = null;
-			if (index + 1 < dividedDayList.size()) nextDividedDay = dividedDayList.get(index + 1);
+			Optional<DividedDayEachProcess> nextDividedDay = Optional.empty();
+			if (index + 1 < dividedDayList.size()) nextDividedDay = Optional.of(dividedDayList.get(index + 1));
 
 			// 付与フラグをチェック
 			if (nowDividedDay.getGrantWork().isGrantAtr()) {
@@ -742,11 +748,21 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			}
 
 			// 年休集計期間WORKを作成し、Listに追加
+			
+			// 期間．終了日←次の「処理単位分割日．年月日」の前日
+			// 　※次の処理単位分割日がない場合、パラメータ「終了日」の翌日
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
+			if (nextDividedDay.isPresent()) workPeriodEnd = nextDividedDay.get().getYmd().addDays(-1);
+			
+			// 消滅←次の「処理単位分割日.消滅情報WORK」
+			//　　※次の処理単位分割日がない場合、「期間の開始日に消滅するかどうか」をfalseで消滅情報WORKを作成
+			AnnualLeaveLapsedWork lapsedWork = new AnnualLeaveLapsedWork(false);
+			if ( nextDividedDay.isPresent() ){
+				lapsedWork = nextDividedDay.get().getLapsedWork();
+			}
 
 			AggregatePeriodWork nowWork = new AggregatePeriodWork(new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
-					nowDividedDay.getLapsedWork(),
+					lapsedWork,
 					nowDividedDay.getGrantWork(),
 					nowDividedDay.getEndDay(),
 					grantPeriodAtr);
