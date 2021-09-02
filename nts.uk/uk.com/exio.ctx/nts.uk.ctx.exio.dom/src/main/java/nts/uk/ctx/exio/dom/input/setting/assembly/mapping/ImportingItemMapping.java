@@ -105,8 +105,10 @@ public class ImportingItemMapping {
 	private ImportingCsvItem readCsv(CsvRecord record) {
 		
 		String value = record.getItemByColumnNo(csvColumnNo.get())
-				.orElseThrow(() -> new BusinessException(new RawErrorMessage(
-						"受入CSVファイルに " + csvColumnNo.get() + " 列目が存在しないため、処理を続行できません。")));
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage(String.format(
+						"受入CSVファイルの%d行目に%d列目が存在しないため、処理を続行できません。",
+						record.getRowNo(),
+						csvColumnNo.get()))));
 		
 		return new ImportingCsvItem(itemNo, value);
 	}
