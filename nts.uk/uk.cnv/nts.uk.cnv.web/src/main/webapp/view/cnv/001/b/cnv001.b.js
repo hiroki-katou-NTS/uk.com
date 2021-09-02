@@ -17,6 +17,8 @@ var ajaxOption = {
 var servicePath = {
 	getCategoryList: "/nts.uk.cnv.web/webapi/cnv/categorypriority/getcategories",
 	registCategoryPriority: "/nts.uk.cnv.web/webapi/cnv/categorypriority/regist",
+	deleteCategoryPriority: "/nts.uk.cnv.web/webapi/cnv/categorypriority/delete",
+    updateCategoryPriority: "/nts.uk.cnv.web/webapi/cnv/categorypriority/updatepriority",
 	registCategory: "/nts.uk.cnv.web/webapi/cnv/conversiontable/category/regist",
 	loaddata: "/nts.uk.cnv.web/webapi/cnv/cnv001b/loaddata",
 	ukTableList: "/nemunoki.oruta.web/webapi/tables/list/not-accepted",
@@ -153,9 +155,17 @@ $(function(){
 		}).get();
 
 		$.ajax(ajaxOption.build(servicePath.registCategoryPriority, {
-			categories : categories
+			category : categoryName
 		})).done(function (res) {
-
+			$.ajax(ajaxOption.build(servicePath.updateCategoryPriority, {
+				categories: categories
+			})).done(function (res){
+				
+			}).fail(function(rej){
+				console.log(rej);
+				showMsg("登録でエラーが発生しました");
+				return;
+			});
 		}).fail(function(rej){
 			console.log(rej);
 			showMsg("登録でエラーが発生しました");
@@ -189,12 +199,9 @@ $(function(){
 		}
 		select.remove();
 
-		var categories = $('#category option').map(function(index, element){
-			return element.text;
-		}).get();
-
-		$.ajax(ajaxOption.build(servicePath.registCategoryPriority, {
-			categories: categories
+		var categoryName = $("#categoryName").val();
+		$.ajax(ajaxOption.build(servicePath.deleteCategoryPriority, {
+			category: categoryName
 		})).done(function (res) {
 
 			$("#category").val();
