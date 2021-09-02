@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.dom.input.importableitem;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeParseException;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
@@ -66,7 +67,7 @@ public enum ItemType {
 			return Either.tryCatch(() -> new BigDecimal(value), NumberFormatException.class)
 					.mapLeft(ex -> new ErrorMessage("数値ではありません。"));
 		case DATE:
-			return Either.tryCatch(() -> GeneralDate.fromString(value, "yyyyMMdd"), NumberFormatException.class)
+			return Either.tryCatch(() -> GeneralDate.fromString(value, "yyyyMMdd"), DateTimeParseException.class)
 					.mapLeft(ex -> new ErrorMessage("日付データは8桁の整数(YYYYMMDD)の形式にしてください。"));
 		case STRING:
 			return Either.right(value);
