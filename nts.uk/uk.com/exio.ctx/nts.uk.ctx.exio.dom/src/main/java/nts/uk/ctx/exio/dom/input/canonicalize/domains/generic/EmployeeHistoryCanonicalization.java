@@ -27,6 +27,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.AffCompanyHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
@@ -151,7 +152,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
 		}
 		
-		val newContainers = canonicalizeExtends(require, context, containers);
+		val newContainers = canonicalizeExtends(require, context, employeeId, containers);
 		
 		return newContainers.stream()
 				.map(c -> c.complete())
@@ -173,6 +174,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	protected List<Container> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
+			String employeeId,
 			List<Container> targetContainers) {
 		// 何もしない
 		return targetContainers;
@@ -286,7 +288,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 
 	}
 
-	public static interface RequireCanonicalize{
+	public static interface RequireCanonicalize extends AffCompanyHistoryCanonicalization.RequireCanonicalizeExtends {
 		ExternalImportHistory getHistory(DomainDataId id, HistoryType historyTypea, HistoryKeyColumnNames keyColumnNames);
 	}
 	

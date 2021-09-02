@@ -261,6 +261,11 @@ public class ExternalImportPrepareRequire {
 		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode) {
 			return employeeDataMngInfoRepo.findByScdNotDel(employeeCode, companyId);
 		}
+
+		@Override
+		public Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId) {
+			return employeeDataMngInfoRepo.findByEmpId(employeeId);
+		}
 		
 		public Optional<Task> getTask(String companyId, int taskFrameNo, String taskCode) {
 			return taskingRepo.getOptionalTask(companyId, new TaskFrameNo(taskFrameNo), new TaskCode(taskCode));
@@ -306,6 +311,7 @@ public class ExternalImportPrepareRequire {
 					.filter(jobTitle -> jobTitle.getJobTitleCode().equals(jobTitleCode))
 					.findFirst();
 		}
+
 
 	}
 }

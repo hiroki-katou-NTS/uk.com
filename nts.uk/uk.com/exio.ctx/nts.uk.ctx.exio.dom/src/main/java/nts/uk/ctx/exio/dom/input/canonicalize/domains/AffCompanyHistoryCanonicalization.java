@@ -3,15 +3,19 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import lombok.val;
+import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
+import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 所属会社履歴の正準化
@@ -45,21 +49,36 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	protected List<Container> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
+			String employeeId,
 			List<Container> targetContainers) {
 
 		List<Container> results = new ArrayList<>();
 		
+		val employee = require.getEmployeeDataMngInfoByEmployeeId(employeeId).get();
+		String personId = employee.getPersonId();
 		
+		for (val container : targetContainers) {
+			
+			IntermediateResult interm = container.getInterm();
+			
+			interm = interm
+					.addCanonicalized(getFixedItems())
+					.addCanonicalized(CanonicalItem.of(100, context.getCompanyId())) // 会社ID
+					.addCanonicalized(CanonicalItem.of(103, personId)); // 個人ID
+			
+			results.add(new Container(interm, container.getAddingHistoryItem()));
+		}
 		
 		return results;
 	}
 	
-	public static CanonicalItemList getFixedItems() {
+	public static interface RequireCanonicalizeExtends {
+		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
+	}
+	
+	private static CanonicalItemList getFixedItems() {
 		return new CanonicalItemList()
-			.add(100, AppContexts.user().companyId()) // CID
 			.add(104, 0) //出向先データである
-			.add(105, "                                    ") //採用区分コード
-			.addNull(106) //本採用年月日
-			.addNull(107); //退職金計算開始日
+			.add(105, "                                    "); //採用区分コード
 	}
 }

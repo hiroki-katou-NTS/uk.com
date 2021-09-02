@@ -36,6 +36,7 @@ public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalizati
 	protected List<Container> canonicalizeExtends(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
+			String employeeId,
 			List<Container> targetContainers) {
 		
 		List<Container> canonicalizeds = new ArrayList<>();
