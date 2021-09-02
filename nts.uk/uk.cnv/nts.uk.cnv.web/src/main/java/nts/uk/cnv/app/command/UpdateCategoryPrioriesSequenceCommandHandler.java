@@ -8,15 +8,14 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.cnv.dom.categorypriority.CategoryPriorityRepository;
 
 @Stateless
-public class RegistCategoryPriorityCommandHandler  extends CommandHandler<RegistCategoryPriorityCommand>{
+public class UpdateCategoryPrioriesSequenceCommandHandler extends CommandHandler<UpdateCategoryPrioriesSequenceCommand>{
 
 	@Inject
 	CategoryPriorityRepository repository;
 
 	@Override
-	protected void handle(CommandHandlerContext<RegistCategoryPriorityCommand> context) {
-		RegistCategoryPriorityCommand command = context.getCommand();
-		repository.register(command.getCategory());
+	protected void handle(CommandHandlerContext<UpdateCategoryPrioriesSequenceCommand> context) {
+		UpdateCategoryPrioriesSequenceCommand command = context.getCommand();
+		repository.update(command.getCategories());
 	}
-
 }
