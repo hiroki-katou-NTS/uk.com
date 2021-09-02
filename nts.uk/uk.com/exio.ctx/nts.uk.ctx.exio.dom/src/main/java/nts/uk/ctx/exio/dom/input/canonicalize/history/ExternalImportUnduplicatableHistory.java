@@ -14,16 +14,6 @@ public class ExternalImportUnduplicatableHistory
 	extends ExternalImportHistory
 	implements UnduplicatableHistory<DateHistoryItem, DatePeriod, GeneralDate>{
 
-	@Override
-	public void add(DateHistoryItem itemToBeAdded) {
-		this.latestStartItem().ifPresent(latest->{
-			if(latest.compare(itemToBeAdded.span()).isDuplicated()) {
-				latest.shortenEndToAccept(itemToBeAdded);
-			}
-		});
-		super.add(itemToBeAdded);
-	}
-	
 	public ExternalImportUnduplicatableHistory(String employeeId, List<DateHistoryItem> period) {
 		super(employeeId, period);
 	}
