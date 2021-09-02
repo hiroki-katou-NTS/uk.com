@@ -35,7 +35,6 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 	private final static String FIND_APP_NOT_REF;
 	private final static String FIND_APP_REF;
 	private final static String FIND_OTHER_ID_REMOVED;
-	private final static String FIND_SAME_SID_APPID;
 	private final static String FIND_SID_DATE;
 	static {
 		StringBuilder builder = new StringBuilder();
@@ -80,19 +79,12 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 		
 		builder = new StringBuilder();
 		builder.append(FIND);
+		builder.append(" LEFT JOIN KRQDT_APPLICATION app ON app.APP_ID = hist.APP_ID");
 		builder.append(
-				"WHERE hist.APP_ID <> @APPID AND  hist.SID =  @SID AND hist.YMD = @YMD AND hist.DELETE_ATR =  1 AND hist.REFLECT_TIME < @REFLECT_TIME AND hist.ATR =  @ATR");
+				" WHERE hist.APP_ID <> @APPID AND  hist.SID =  @SID AND hist.YMD = @YMD AND hist.DELETE_ATR =  1 AND hist.REFLECT_TIME < @REFLECT_TIME AND hist.ATR =  @ATR");
 		builder.append(
-				" ORDER BY hist.REFLECT_TIME DESC ");
+				" ORDER BY hist.REFLECT_TIME DESC,  app.INPUT_DATE DESC");
 		FIND_OTHER_ID_REMOVED = builder.toString();
-		
-		builder = new StringBuilder();
-		builder.append(FIND);
-		builder.append(
-				"WHERE hist.APP_ID = @APPID AND  hist.SID =  @SID AND hist.ATR =  @ATR");
-		builder.append(
-				" ORDER BY hist.REFLECT_TIME ASC ");
-		FIND_SAME_SID_APPID = builder.toString();
 		
 		builder = new StringBuilder();
 		builder.append(FIND);
@@ -204,15 +196,6 @@ public class JpaApplicationReflectHistoryRepo extends JpaRepository implements A
 				.paramDate("YMD", date)
 				.paramString("APPID", appId).getList(x -> toDomain(x));
 		return groupSameKey(lstResult, true);
-	}
-
-	@Override
-	public List<ApplicationReflectHistory> getSameSidAppId(String sid, String appId,
-			ScheduleRecordClassifi classification) {
-		List<ApplicationReflectHistory> lstResult = new NtsStatement(FIND_SAME_SID_APPID, this.jdbcProxy())
-				.paramString("SID", sid).paramInt("ATR", classification.value).paramString("APPID", appId)
-				.getList(x -> toDomain(x));
-		return groupSameKey(lstResult, false);
 	}
 
 	@Override

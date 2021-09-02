@@ -74,8 +74,7 @@ public class ApplicationReflectHistory implements DomainAggregate {
 				&& x.getCorrectTime().after(cancelHistOtherIdLst.get().appExecInfo.getReflectionTime()))) {
 			return Optional.empty();
 		}
-		return require.getSameSidAppId(cancelHistOtherIdLst.get().employeeId, cancelHistOtherIdLst.get().applicationId,
-				classification).stream().findFirst();
+		return cancelHistOtherIdLst;
 	}
 
 	// [2] 指定した勤怠項目IDの反映前を取得する
@@ -105,10 +104,5 @@ public class ApplicationReflectHistory implements DomainAggregate {
 		// GetWorkScheduleLogAdapter 勤務予定
 		public List<CorrectRecordDailyResultImport> getBySpecifyItemId(String sid, GeneralDate targetDate,
 				Integer itemId);
-
-		// [R-3] 申請IDを指定して申請反映履歴を取得する
-		// ApplicationReflectHistoryRepo
-		public List<ApplicationReflectHistory> getSameSidAppId(String sid, String appId,
-				ScheduleRecordClassifi classification);
 	}
 }

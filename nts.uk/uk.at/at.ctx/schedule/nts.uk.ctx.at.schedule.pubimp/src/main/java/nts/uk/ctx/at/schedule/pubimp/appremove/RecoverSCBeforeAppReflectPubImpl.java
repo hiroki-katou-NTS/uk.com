@@ -181,12 +181,6 @@ public class RecoverSCBeforeAppReflectPubImpl implements RecoverSCBeforeAppRefle
 		}
 
 		@Override
-		public List<ApplicationReflectHistory> getSameSidAppId(String sid, String appId,
-				ScheduleRecordClassifi classification) {
-			return applicationReflectHistoryRepo.getSameSidAppId(sid, appId, classification);
-		}
-
-		@Override
 		public List<ApplicationReflectHistory> getHistWithSidDate(String sid, GeneralDate date,
 				ScheduleRecordClassifi classification) {
 			return applicationReflectHistoryRepo.getHistWithSidDate(sid, date, classification);

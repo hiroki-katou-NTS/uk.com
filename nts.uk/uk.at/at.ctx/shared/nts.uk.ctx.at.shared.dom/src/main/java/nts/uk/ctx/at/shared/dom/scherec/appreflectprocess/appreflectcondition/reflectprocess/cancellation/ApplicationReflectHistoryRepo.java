@@ -39,13 +39,8 @@ public interface ApplicationReflectHistoryRepo {
 	 */
 	public List<ApplicationReflectHistory> getCancelHistOtherId(String sid,  GeneralDate date, String appId, GeneralDateTime createTime,
 			ScheduleRecordClassifi classification);
-	/**
-	 * [2] 申請IDを指定して取得する
-	 */
-	public List<ApplicationReflectHistory> getSameSidAppId(String sid, String appId,
-			ScheduleRecordClassifi classification);
 	
-	//[3] 申請反映履歴を取得する
+	//[2] 申請反映履歴を取得する
 	public List<ApplicationReflectHistory> getHistWithSidDate(String sid, GeneralDate date,
 			ScheduleRecordClassifi classification);
 }
