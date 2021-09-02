@@ -133,7 +133,7 @@ public class AnyItemAggregateService {
 		return result;
 	}
 	
-	/** 集計処理 (周用、期間別)*/
+	/** 集計処理 (週、期間別用)*/
 	public static Map<Integer, AnyItemAggrResult> aggregateAnyItemAnyPeriod(DatePeriod period,
 			MonthlyCalculatingDailys monthlyCalc, MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets) {
