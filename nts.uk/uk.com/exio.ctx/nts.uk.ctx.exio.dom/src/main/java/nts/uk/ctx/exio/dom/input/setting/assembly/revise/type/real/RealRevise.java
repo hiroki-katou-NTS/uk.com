@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.util.Either;
@@ -21,6 +22,10 @@ public class RealRevise implements ReviseValue {
 	
 	@Override
 	public Either<ErrorMessage, ?> revise(String target) {
+		
+		if (StringUtil.isNullOrEmpty(target, false)) {
+			return Either.right(null);
+		}
 		
 		Either<ErrorMessage, BigDecimal> result;
 		

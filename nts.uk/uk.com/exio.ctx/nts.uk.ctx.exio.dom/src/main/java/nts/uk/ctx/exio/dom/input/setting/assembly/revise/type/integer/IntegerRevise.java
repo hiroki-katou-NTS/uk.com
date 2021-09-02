@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.codeconvert.ExternalImportCodeConvert;
@@ -21,6 +22,10 @@ public class IntegerRevise implements ReviseValue {
 	
 	@Override
 	public Either<ErrorMessage, ?> revise(String target) {
+		
+		if (StringUtil.isNullOrEmpty(target, false)) {
+			return Either.right(null);
+		}
 		
 		return codeConvert
 			.map(conv -> conv.convert(target).map(v -> v.v()))

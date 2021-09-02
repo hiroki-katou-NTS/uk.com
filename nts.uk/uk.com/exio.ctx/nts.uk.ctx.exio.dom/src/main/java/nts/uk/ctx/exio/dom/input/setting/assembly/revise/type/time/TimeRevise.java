@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseValue;
 import nts.uk.ctx.exio.dom.input.util.Either;
@@ -30,6 +31,10 @@ public class TimeRevise implements ReviseValue {
 
 	@Override
 	public Either<ErrorMessage, ?> revise(String target) {
+		
+		if (StringUtil.isNullOrEmpty(target, false)) {
+			return Either.right(null);
+		}
 		
 		if (hourly == HourlySegment.MINUTE) {
 			return Either.tryCatch(() -> Integer.parseInt(target), NumberFormatException.class)

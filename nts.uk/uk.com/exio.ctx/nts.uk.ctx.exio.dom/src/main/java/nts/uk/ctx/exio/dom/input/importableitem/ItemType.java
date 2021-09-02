@@ -5,6 +5,7 @@ import java.time.format.DateTimeParseException;
 
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
@@ -61,12 +62,15 @@ public enum ItemType {
 		case INT:
 		case TIME_DURATION:
 		case TIME_POINT:
+			if (StringUtil.isNullOrEmpty(value, false)) return Either.right(null);
 			return Either.tryCatch(() -> Long.parseLong(value), NumberFormatException.class)
 					.mapLeft(ex -> new ErrorMessage("整数ではありません。"));
 		case REAL:
+			if (StringUtil.isNullOrEmpty(value, false)) return Either.right(null);
 			return Either.tryCatch(() -> new BigDecimal(value), NumberFormatException.class)
 					.mapLeft(ex -> new ErrorMessage("数値ではありません。"));
 		case DATE:
+			if (StringUtil.isNullOrEmpty(value, false)) return Either.right(null);
 			return Either.tryCatch(() -> GeneralDate.fromString(value, "yyyyMMdd"), DateTimeParseException.class)
 					.mapLeft(ex -> new ErrorMessage("日付データは8桁の整数(YYYYMMDD)の形式にしてください。"));
 		case STRING:
