@@ -26,7 +26,7 @@ public class TempAbsenceHistoryCanonicalization extends EmployeeHistoryCanonical
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
 	public static DomainCanonicalization create(DomainWorkspace workspace) {
-		return new AffWorkplaceHistoryCanonicalization(workspace);
+		return new TempAbsenceHistoryCanonicalization(workspace);
 	}
 	
 	public TempAbsenceHistoryCanonicalization(DomainWorkspace workspace) {
