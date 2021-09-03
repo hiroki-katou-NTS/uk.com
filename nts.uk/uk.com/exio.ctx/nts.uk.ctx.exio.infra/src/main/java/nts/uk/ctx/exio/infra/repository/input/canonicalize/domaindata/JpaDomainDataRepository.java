@@ -25,7 +25,7 @@ public class JpaDomainDataRepository extends JpaRepository implements DomainData
 	@Override
 	public boolean exists(DomainDataId id) {
 		val statement = createStatement(id, "select 1");
-		return statement.getSingle(rec -> 1).isPresent();
+		return statement.getList(rec -> 1).isEmpty() == false;
 	}
 
 	@Override
