@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +11,8 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization.RequireCanonicalize;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -61,10 +63,11 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 			
 			IntermediateResult interm = container.getInterm();
 			
-			interm = interm
-					.addCanonicalized(getFixedItems())
-					.addCanonicalized(CanonicalItem.of(100, context.getCompanyId())) // 会社ID
-					.addCanonicalized(CanonicalItem.of(103, personId)); // 個人ID
+			interm = interm.addCanonicalized(new CanonicalItemList()
+					.add(103, personId) // 個人ID
+					.add(104, 0) // 出向先データである
+					.add(105, "                                    ") // 採用区分コード
+					);
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
 		}
@@ -74,11 +77,5 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	
 	public static interface RequireCanonicalizeExtends {
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
-	}
-	
-	private static CanonicalItemList getFixedItems() {
-		return new CanonicalItemList()
-			.add(104, 0) //出向先データである
-			.add(105, "                                    "); //採用区分コード
 	}
 }
