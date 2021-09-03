@@ -18,7 +18,7 @@ import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
- * 所属会社履歴の正準化
+ * 入社退職履歴の正準化
  */
 public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicalization{
 	
