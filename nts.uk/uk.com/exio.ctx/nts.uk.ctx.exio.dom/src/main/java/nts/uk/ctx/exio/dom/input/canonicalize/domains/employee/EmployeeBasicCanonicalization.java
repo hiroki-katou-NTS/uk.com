@@ -24,7 +24,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.sys.shared.dom.user.User;
-import nts.uk.shr.com.company.CompanyId;
 
 /**
  * 個人基本情報の正準化
@@ -161,6 +160,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			require.save(context, toDeleteEmployee(context));
 			require.save(context, toDeletePerson(context));
 			require.save(context, toDeleteUser(context));
+			require.save(context, toDeletePassword(context));
 		}
 		
 		AnyRecordToDelete toDeleteEmployee(ExecutionContext context) {
@@ -171,16 +171,19 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		
 		AnyRecordToDelete toDeletePerson(ExecutionContext context) {
 			return AnyRecordToDelete.create(context, Items.Person.TARGET_NAME)
+					.addKey(Items.SID, StringifiedValue.of(employeeId))
 					.addKey(Items.PID, StringifiedValue.of(personId));
 		}
 		
 		AnyRecordToDelete toDeleteUser(ExecutionContext context) {
 			return AnyRecordToDelete.create(context, Items.User.TARGET_NAME)
+					.addKey(Items.SID, StringifiedValue.of(employeeId))
 					.addKey(Items.USER_ID, StringifiedValue.of(userId));
 		}
 		
 		AnyRecordToDelete toDeletePassword(ExecutionContext context) {
 			return AnyRecordToDelete.create(context, Items.Password.TARGET_NAME)
+					.addKey(Items.SID, StringifiedValue.of(employeeId))
 					.addKey(Items.USER_ID, StringifiedValue.of(userId));
 		}
 	}
@@ -189,9 +192,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 
 		/** 社員コード */
 		private static final int SCD = 1;
-		
-		/** 会社ID */
-		private static final int CID = 100;
 		
 		/** 社員ID */
 		private static final int SID = 101;
@@ -210,7 +210,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		 */
 		private static IntermediateResult fillNewData(ExecutionContext context, IntermediateResult interm) {
 			
-			interm = interm.addCanonicalized(CanonicalItem.of(Items.CID, context.getCompanyId()));
 			interm = Items.Employee.fillNewData(context, interm);
 			interm = Items.Person.fillNewData(context, interm);
 			interm = Items.User.fillNewData(context, interm);
@@ -259,9 +258,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			
 			private static final String TARGET_NAME = "User";
 			
-			/** 契約コード */
-			private static final int CONTRACT_CD = 122;
-
 			/** 紐付け先個人ID */
 			private static final int ASSO_PID = 123;
 
@@ -284,7 +280,6 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			 */
 			static IntermediateResult fillNewData(ExecutionContext context, IntermediateResult source) {
 				return source
-						.addCanonicalized(CanonicalItem.of(CONTRACT_CD, CompanyId.getContractCodeOf(context.getCompanyId())))
 						.addCanonicalized(CanonicalItem.of(ASSO_PID, source.getItemByNo(PID).get().getString()))
 						.addCanonicalized(CanonicalItem.of(EXPIRE_DATE, GeneralDate.max()))
 						.addCanonicalized(CanonicalItem.of(SPECIAL_USER, 0))
