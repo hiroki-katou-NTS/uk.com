@@ -92,15 +92,13 @@ public class WorkspaceSql {
 	
 	static class CommonColumns {
 		static final Column ROW_NO = new Column("ROW_NO", "int not null", "rowno");
-		
-		/** 外部orutaで必ず1列目に定義 */
-		static final Column CONTRACT_CD = new Column(null, null, "p1");
-		
-		/** 外部orutaで必ず2列目に定義 */
-		static final Column CID = new Column(null, null, "p2");
+		static final Column CONTRACT_CD = new Column("CONTRACT_CD", "char(12) not null", "contract");
+		static final Column CID = new Column("CID", "char(17) not null", "cid");
 
+		static final List<Column> LIST = Arrays.asList(ROW_NO, CONTRACT_CD, CID);
+		
 		static String sqlParams() {
-			return Arrays.asList(ROW_NO).stream()
+			return LIST.stream()
 					.map(c -> "@" + c.paramName)
 					.collect(Collectors.joining(","));
 		}
