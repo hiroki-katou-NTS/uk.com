@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.infra.repository.input.canonicalize.existing;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,6 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.infra.data.jdbc.JdbcProxy;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -33,29 +36,14 @@ public class LayoutAnyRecordToDelete {
 	
 	public void createTable() {
 		
-		TemporaryTable.dropTable(jdbcProxy, tableName());
-		
-		String sql = "create table " + tableName() + "("
-				+ " ID char(36) not null,"
-				+ " ITEM_NO decimal(5) not null,"
-				+ " VALUE varchar(1000) null"
-				+ ");";
-		
-		jdbcProxy.query(sql).execute();
+		String tableName = tableName();
+		TemporaryTable.dropTable(jdbcProxy, tableName);
+		jdbcProxy.query(Entity.sqlCreateTable(tableName)).execute();
 	}
 	
 	public void insert(AnyRecordToDelete record) {
 		
-		String id = IdentifierUtil.randomUniqueId();
-		
-		record.getPrimaryKeys().forEach(key -> {
-			
-			String sql = "insert into " + tableName() + " values ("
-					+ "'" + id + "'"
-					+ ", " + key.getItemNo()
-					+ ", '" + key.getValue().asString() + "'"
-					+ ")";
-			
+		Entity.sqlsInsert(record, tableName()).forEach(sql -> {
 			jdbcProxy.query(sql).execute();
 		});
 	}
@@ -66,12 +54,7 @@ public class LayoutAnyRecordToDelete {
 					+ " from " + tableName();
 		
 		List<Entity> allEntitys = this.jdbcProxy.query(sql)
-				.getList(rec -> {
-					return new Entity(
-						rec.getString("ID"), 
-						rec.getInt("ITEM_NO"), 
-						rec.getString("VALUE"));
-				});
+				.getList(Entity::of);
 		
 		return assembleDeletes(allEntitys);
 	}
@@ -99,12 +82,7 @@ public class LayoutAnyRecordToDelete {
 			allEntitys.addAll(
 				this.jdbcProxy.query(sqlByID)
 					.paramString("ids", subIdList)
-					.getList(rec -> {
-						return new Entity(
-								rec.getString("ID"), 
-								rec.getInt("ITEM_NO"), 
-								rec.getString("VALUE"));
-					}));
+					.getList(Entity::of));
 		});
 		
 		return assembleDeletes(allEntitys);
@@ -116,25 +94,66 @@ public class LayoutAnyRecordToDelete {
 					.collect(Collectors.groupingBy(Entity::getId));
 		val result = new ArrayList<AnyRecordToDelete>();
 		for(List<Entity> entitys : entitysMap.values()) {
-			result.add(toDomain(entitys));
+			result.add(Entity.toDomain(context, entitys));
 		}
-		return result;
-	}
-	
-	private AnyRecordToDelete toDomain(List<Entity> entitys){
-		val result = AnyRecordToDelete.create(context);
-		
-		entitys.forEach(entity -> {
-			result.addKey(entity.itemNo, StringifiedValue.of(entity.value));
-		});
 		return result;
 	}
 	
 	@AllArgsConstructor
 	@Getter
-	private class Entity{
+	private static class Entity{
 		private final String id;
+		private final String targetName;
 		private final int itemNo;
 		private final String value;
+		
+		static Entity of(NtsResultSet.NtsResultRecord rec) {
+			return new Entity(
+					rec.getString("ID"), 
+					rec.getString("TARGET_NAME"), 
+					rec.getInt("ITEM_NO"), 
+					rec.getString("VALUE"));
+		}
+		
+		static String sqlCreateTable(String tableName) {
+			return "create table " + tableName + "("
+					+ " ID char(36) not null,"
+					+ " TARGET_NAME varchar(100) null,"
+					+ " ITEM_NO decimal(5) not null,"
+					+ " VALUE varchar(1000) null"
+					+ ");";
+		}
+		
+		String sqlInsert(String tableName) {
+			return "insert into " + tableName + " values ("
+					+ "'" + id + "'"
+					+ ", '" + targetName + "'"
+					+ ", " + itemNo
+					+ ", '" + value + "'"
+					+ ")";
+		}
+		
+		static List<String> sqlsInsert(AnyRecordToDelete record, String tableName) {
+			
+			String id = IdentifierUtil.randomUniqueId();
+			String targetName = record.getTargetName() != null ? record.getTargetName() : "";
+			
+			return record.getPrimaryKeys().stream()
+					.map(key -> new Entity(id, targetName, key.getItemNo(), key.getValue().asString())
+						.sqlInsert(tableName))
+					.collect(toList());
+		}
+		
+		static AnyRecordToDelete toDomain(ExecutionContext context, List<Entity> entities) {
+			
+			String targetName = entities.get(0).targetName;
+			val result = AnyRecordToDelete.create(context, targetName);
+			
+			entities.forEach(entity -> {
+				result.addKey(entity.itemNo, StringifiedValue.of(entity.value));
+			});
+			
+			return result;
+		}
 	}
 }
