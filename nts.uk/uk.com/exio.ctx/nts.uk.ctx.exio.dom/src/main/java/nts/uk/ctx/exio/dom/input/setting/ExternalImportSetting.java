@@ -10,6 +10,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 import nts.uk.ctx.exio.dom.input.validation.ValidateData;
@@ -66,9 +67,18 @@ public class ExternalImportSetting implements DomainAggregate {
 		
 		val revisedData = optRevisedData.get();
 		
-		ValidateData.validate(require, context, revisedData);
+		val errors = ValidateData.validate(require, context, revisedData);
 		
-		require.save(context, revisedData);
+		if(errors.isEmpty()) {
+			require.save(context, revisedData);
+		}
+		else {
+			errors.forEach(error ->{
+				require.add(context, new ExternalImportError(revisedData.getRowNo(), 
+																						   error.getItemNo(),
+																						   error.getMessage()));
+			});
+		}
 	}
 	
 	public static interface RequireAssemble extends
