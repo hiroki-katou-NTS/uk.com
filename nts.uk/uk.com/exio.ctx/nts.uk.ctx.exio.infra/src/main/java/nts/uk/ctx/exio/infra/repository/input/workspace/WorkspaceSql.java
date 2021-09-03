@@ -172,6 +172,7 @@ public class WorkspaceSql {
 				sql.append("nvarchar(").append(config.getLength()).append(")");
 				break;
 			case INT:
+			case AUTONUMBER:
 				sql.append("decimal(").append(config.getLength()).append(")");
 				break;
 			case REAL:

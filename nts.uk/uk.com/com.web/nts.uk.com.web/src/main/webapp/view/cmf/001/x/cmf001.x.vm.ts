@@ -92,7 +92,7 @@ module nts.uk.com.cmf001.x {
 									// エラー件数が0件になるまで繰り返す
 									.while (result => result.errosCount === 0)).done(() => {
 										if(nts.uk.ui._viewModel.content.errorMessage()){
-											nts.uk.ui._viewModel.content.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。<br />" + nts.uk.ui._viewModel.content.errorMessage());
+											nts.uk.ui._viewModel.content.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。\r\n" + nts.uk.ui._viewModel.content.errorMessage());
 										}else{
 											nts.uk.ui._viewModel.content.messageBox("受入準備が完了しました。");
 										}

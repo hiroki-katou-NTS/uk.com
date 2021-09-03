@@ -17,6 +17,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistory
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.ShortWorkTimeCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.TempAbsenceHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.CompensatoryHolidayCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.HolidayWorkCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteHolidayCanonicalization;
@@ -85,6 +86,9 @@ public class CreateDomainCanonicalization {
 		
 		//所属職場履歴
 		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
+		
+		//休職休業履歴
+		CREATES.put(ImportingDomainId.TEMP_ABSENCE_HISTORY, w -> TempAbsenceHistoryCanonicalization.create(w));
 		
 		// 短時間勤務履歴
 		CREATES.put(SHORT_WORK_TIME, ShortWorkTimeCanonicalization::new);
