@@ -1,10 +1,12 @@
 package nts.uk.ctx.exio.dom.input.importableitem;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
 import nts.gul.reflection.ClassReflection;
@@ -27,6 +29,9 @@ public enum CheckMethod {
 			
 			if (ClassReflection.isSubclass(pvClass, IntegerPrimitiveValue.class)) {
 				value = Integer.parseInt(value.toString());
+			}
+			else if (ClassReflection.isSubclass(pvClass, DecimalPrimitiveValue.class)) {
+				value = new BigDecimal(value.toString());
 			}
 			
 			PrimitiveValue<?> pv = (PrimitiveValue<?>) pvClass.getConstructors()[0].newInstance(value);
