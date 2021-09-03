@@ -17,6 +17,12 @@ public class TransferCanonicalDataRepositoryImpl extends JpaRepository implement
 
 	@Override
 	public int execute(List<ConversionSQL> conversionSqls) {
+		
+		// 正準化の既存データ補正のSQLがまだDBに流されてない可能性がある。
+		// そうすると、この移送処理はJDBC経由なので、データの不整合が起きてしまう。
+		// それを避けるためにここでflushしておく。
+		this.getEntityManager().flush();
+		
 		List<String> sqls = conversionSqls.stream()
 				.map(conversionSql -> buildSql(conversionSql))
 				.collect(Collectors.toList());
