@@ -15,7 +15,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependen
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -62,8 +61,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	
 	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
 		return Arrays.asList(
-				record.getItemByNo(workspace.getItemByName("SID").getItemNo()).get().getString(), 
-				record.getItemByNo(workspace.getItemByName("特別休暇コード").getItemNo()).get().getString());
+				record.getItemByNo(workspace.getItemByName("SID").getItemNo()).get().getString());
 	}
 	
 	@Override
@@ -79,8 +77,7 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
-				DomainDataColumn.SID, 
-				new DomainDataColumn("SPECIAL_LEAVE_CD", DataType.STRING));
+				DomainDataColumn.SID);
 	}
 	
 	@Override

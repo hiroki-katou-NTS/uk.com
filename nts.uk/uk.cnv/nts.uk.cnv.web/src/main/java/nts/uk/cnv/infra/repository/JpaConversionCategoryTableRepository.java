@@ -38,6 +38,7 @@ public class JpaConversionCategoryTableRepository extends JpaRepository implemen
 		this.jdbcProxy().query(sql)
 			.paramString("category", category)
 			.execute();
+		this.getEntityManager().flush();
 	}
 
 

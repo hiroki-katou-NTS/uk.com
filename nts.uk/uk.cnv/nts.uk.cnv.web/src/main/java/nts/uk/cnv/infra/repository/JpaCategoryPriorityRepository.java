@@ -58,7 +58,6 @@ public class JpaCategoryPriorityRepository  extends JpaRepository implements Cat
 	@Override
 	public void delete(String category) {
 		this.commandProxy().remove(ScvmtCategoryPriority.class, category);
-		categryTableRepo.delete(category);
 		this.getEntityManager().flush();
 	}
 
