@@ -44,6 +44,7 @@ module nts.uk.com.view.cas014.b {
                     self.dateValue({});
                     self.screenMode(ScreenMode.NEW);
                     $("#B3_2").focus();
+                    self.openDialogCDL009();
                 }
             });
             self.selectedRoleCode = ko.observable(null);
@@ -110,7 +111,12 @@ module nts.uk.com.view.cas014.b {
                         }
                     }
 
-                    if (_.isEmpty(self.roleSetPersonList())) $("#B3_2").focus();
+                    if (_.isEmpty(self.roleSetPersonList())) {
+                        if (self.selectedEmployeeCode() == null)
+                            self.selectedEmployeeCode.valueHasMutated();
+                        else
+                            self.selectedEmployeeCode(null);
+                    }
                 } else {
                     nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
                 }
