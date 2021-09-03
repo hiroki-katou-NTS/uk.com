@@ -24,7 +24,7 @@ var ajaxOptionGet = {
 		}
 	};
 var servicePath = {
-    getukcolumns_oruta: "/nemunoki.oruta.web/webapi/tables/id",
+    getukcolumns_oruta: "/nemunoki.oruta.web/webapi/tables/name",
     getukcolumns_cnv: "/nts.uk.cnv.web/webapi/cnv/tableinfo/getukcolumns",
     geterpcolumns: "/nts.uk.cnv.web/webapi/cnv/tableinfo/geterpcolumns",
     find: "/nts.uk.cnv.web/webapi/cnv/conversiontable/find",
@@ -112,7 +112,7 @@ $(function(){
 		});
 
 		$.ajax(
-			$.extend({url:server + servicePath.getukcolumns_oruta + '/' + tableId + '/not-accepted'}, {type: "GET"})
+			$.extend({url:server + servicePath.getukcolumns_oruta + '/' + ukTable + '/not-accepted'}, {type: "GET"})
 		).done(function (res) {
 			ukColumnsList = $.map(res.columns, function (value, index) {
 					return new columnData(value.name, value.type.dataType, value.type.length, value.type.scale, value.type.nullable);
