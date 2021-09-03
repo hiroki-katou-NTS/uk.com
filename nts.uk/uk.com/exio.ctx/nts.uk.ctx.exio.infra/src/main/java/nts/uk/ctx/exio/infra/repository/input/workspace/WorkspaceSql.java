@@ -165,6 +165,7 @@ public class WorkspaceSql {
 			
 			switch (config.getType()) {
 			case DATE:
+			case DATETIME:
 				sql.append("datetime2");
 				break;
 			case STRING:
