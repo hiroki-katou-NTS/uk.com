@@ -38,14 +38,12 @@ public class TempAbsenceHistoryCanonicalization extends EmployeeHistoryCanonical
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		// 社員ごとに正準化
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
-			
 			val historyCanonicalizedInterms = canonicalizeHistory(require, context, interms);
-			
 			// 1レコードごとに正準化
 			for (val interm : historyCanonicalizedInterms) {
 				// 固定値の追加
-				interm.addCanonicalized(getFixedItems());
-				require.save(context, interm.complete());
+				val added = interm.addCanonicalized(getFixedItems());
+				require.save(context, added.complete());
 			}
 		});
 	}
