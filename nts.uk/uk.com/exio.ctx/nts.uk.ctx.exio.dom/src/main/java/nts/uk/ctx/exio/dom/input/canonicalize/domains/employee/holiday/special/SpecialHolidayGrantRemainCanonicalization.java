@@ -43,9 +43,8 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 			for (val interm : interms) {
 				val keyValues = new KeyValues(getPrimaryKeys(interm, workspace));
 				// 固定値の追加
-				interm.addCanonicalized(getFixedItems());
-				
-				canonicalize(require, context, interm, keyValues);
+				val added = interm.addCanonicalized(getFixedItems());
+				canonicalize(require, context, added, keyValues);
 			}
 		});
 	}
