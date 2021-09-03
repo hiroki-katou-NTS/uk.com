@@ -111,7 +111,7 @@ public class ChildCareCheckOverUsedNumberWork {
 																								&&  x.getPeriod().end().afterOrEquals(period.end())).findFirst().get();
 
 		// 子の看護介護残数が上限超過していないか
-		boolean checkRemainingNumber = checkRemainingNumber(companyId, employeeId, upperLimitPeriod, criteriaDate, require);
+		boolean checkRemainingNumber = resultCheckOverUsedNumberWork.checkRemainingNumber(companyId, employeeId, upperLimitPeriod, criteriaDate, require);
 
 		if(checkRemainingNumber) {
 			// true

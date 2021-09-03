@@ -272,21 +272,39 @@ public class AggregateChildCareNurseWork {
 		// =====日数←上限日数、時間←0
 		// ===減算する日と時間←日と時間
 		// =====日数←使用数.日数、時間←使用数.時間
-		DayAndTime subDayAndTime = DayAndTime.subDayAndTime(DayAndTime.of(new TimeOfUse(0), new DayNumberOfUse(limitDays.v().doubleValue())),
-																						DayAndTime.of(usedNumber.getUsedTimes().orElse(new TimeOfUse(0)), usedNumber.getUsedDay()),
-																						companyId,
-																						employeeId,
-																						criteriaDate,
-																						require);
+		return getRemainingNumber(
+				require, criteriaDate,companyId,employeeId,
+				DayAndTime.of(new TimeOfUse(0), new DayNumberOfUse(limitDays.v().doubleValue())),
+				DayAndTime.of(usedNumber.getUsedTimes().orElse(new TimeOfUse(0)), usedNumber.getUsedDay()));
+	}
+	
+	/**
+	 * 残数から使用数を引く
+	 * @param require
+	 * @param criteriaDate
+	 * @param companyId
+	 * @param employeeId
+	 * @param sender
+	 * @param used
+	 * @return
+	 */
+	private static ChildCareNurseRemainingNumber getRemainingNumber(
+			RequireM3 require, GeneralDate criteriaDate, 
+			String companyId, String employeeId,
+			DayAndTime sender, DayAndTime used){
+		
+		DayAndTime subDayAndTime = DayAndTime.subDayAndTime(sender,
+				used,
+				companyId,
+				employeeId,
+				criteriaDate,
+				require);
 
-		// 日と時間を残数に変換する
-		//	===	子の看護介護残数．日数　＝　日と時間．日
-		//	===	子の看護介護残数．時間　＝　日と時間．時間
 		DayNumberOfRemain remainDay = new DayNumberOfRemain(subDayAndTime.getDay().v());
 		TimeOfRemain remainTimes = new TimeOfRemain(subDayAndTime.getTime().v());
-
+		
 		ChildCareNurseRemainingNumber remUsedNumber =ChildCareNurseRemainingNumber.of(remainDay,Optional.of(remainTimes));
-
+		
 		return remUsedNumber;
 	}
 
@@ -346,7 +364,14 @@ public class AggregateChildCareNurseWork {
 			// ===超過確認用使用数 +=　子の看護介護残数不足数． 使用可能数
 			// ===子の看護看護残数 ー=　子の看護介護残数不足数．残数不足数
 			checkOverUsedNumberWork.getUsedNumber().add(shortageRemainingNumber.getAvailable());
-			remainingNumber.sub(shortageRemainingNumber.getShortageRemNum());
+			
+			remainingNumber = getRemainingNumber(require, criteriaDate, companyId, employeeId, 
+					DayAndTime.of((new TimeOfUse(remainingNumber.getRemainTimes().orElse(new TimeOfRemain(0)).v())),
+									new DayNumberOfUse(remainingNumber.getRemainDay().v())),
+					DayAndTime.of(
+								new TimeOfUse(shortageRemainingNumber.getShortageRemNum().getRemainTimes().orElse(new TimeOfRemain(0)).v())
+								,new DayNumberOfUse(shortageRemainingNumber.getShortageRemNum().getRemainDay().v())
+					));
 		}
 
 		// 「子の看護介護残数」を返す
