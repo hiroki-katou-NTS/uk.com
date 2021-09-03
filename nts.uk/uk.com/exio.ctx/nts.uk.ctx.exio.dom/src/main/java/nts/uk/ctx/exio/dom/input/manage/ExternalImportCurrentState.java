@@ -92,11 +92,19 @@ public class ExternalImportCurrentState implements DomainAggregate {
 	}
 	
 	private void abortedByBusinessError(Require require) {
-		changeState(require, ExecutionState.IDLE);
+		changeState(require, getNextStateOnAbort());
 	}
 	
 	private void abortedBySystemError(Require require) {
-		changeState(require, ExecutionState.IDLE);
+		changeState(require, getNextStateOnAbort());
+	}
+
+	private ExecutionState getNextStateOnAbort() {
+		if (executionState == ExecutionState.ON_EXECUTE) {
+			return ExecutionState.PREPARED;
+		} else {
+			return ExecutionState.IDLE;
+		}
 	}
 	
 	private void changeState(Require require, ExecutionState nextState) {
