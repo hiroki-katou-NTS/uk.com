@@ -61,10 +61,11 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 			
 			IntermediateResult interm = container.getInterm();
 			
-			interm = interm
-					.addCanonicalized(getFixedItems())
-					.addCanonicalized(CanonicalItem.of(100, context.getCompanyId())) // 会社ID
-					.addCanonicalized(CanonicalItem.of(103, personId)); // 個人ID
+			interm = interm.addCanonicalized(new CanonicalItemList()
+					.add(103, personId) // 個人ID
+					.add(104, 0) // 出向先データである
+					.add(105, "                                    ") // 採用区分コード
+					);
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
 		}
@@ -74,11 +75,5 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	
 	public static interface RequireCanonicalizeExtends {
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeId(String employeeId);
-	}
-	
-	private static CanonicalItemList getFixedItems() {
-		return new CanonicalItemList()
-			.add(104, 0) //出向先データである
-			.add(105, "                                    "); //採用区分コード
 	}
 }
