@@ -46,7 +46,6 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	@Override
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
 		return Arrays.asList(101);
-		
 	}
 	
 	@Override
@@ -64,11 +63,11 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 		return Arrays.asList(
 				DomainDataColumn.SID, 
 				new DomainDataColumn("SPECIAL_LEAVE_CD", DataType.STRING), 
-				new DomainDataColumn("GRANT_DATE", DataType.DATETIME));
+				new DomainDataColumn("GRANT_DATE", DataType.DATE));
 	}
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return super.appendMeta(source);
+		return super.appendMeta(source).addItem("特別休暇コード").addItem("特別休暇付与日");
 	}
 }

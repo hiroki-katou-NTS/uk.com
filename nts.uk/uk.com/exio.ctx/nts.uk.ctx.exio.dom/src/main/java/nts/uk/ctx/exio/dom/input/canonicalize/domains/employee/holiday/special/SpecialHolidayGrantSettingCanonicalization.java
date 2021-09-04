@@ -38,7 +38,6 @@ public class SpecialHolidayGrantSettingCanonicalization extends EmployeeIndepend
 	@Override
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
 		return Arrays.asList(101);
-		
 	}
 	
 	@Override
