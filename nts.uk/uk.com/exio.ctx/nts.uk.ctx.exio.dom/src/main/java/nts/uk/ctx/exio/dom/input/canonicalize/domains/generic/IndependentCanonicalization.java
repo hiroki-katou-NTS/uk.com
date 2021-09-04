@@ -95,9 +95,17 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
-		require.save(context, intermResult.complete());
+		require.save(context, canonicalizeExtends(intermResult).complete());
 	}
 	
+	/**
+	 * 追加の正準化処理が必要ならoverrideすること
+	 * @param targetContainers
+	 */
+	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
+		return targertResult;
+	}
+
 	private static AnyRecordToDelete toDelete(
 			ExecutionContext context,
 			DomainWorkspace workspace,
