@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
+import lombok.val;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
@@ -28,6 +29,15 @@ public class DomainDataId {
 	public static Builder builder(String tableName, KeyValues keyValues) {
 		return new Builder(tableName, keyValues);
 	}
+	
+	public static DomainDataId createDomainDataId(String tableName, List<DomainDataColumn> keys, KeyValues keyValues) {
+
+		val builder = DomainDataId.builder(tableName, keyValues);
+		keys.forEach(k -> builder.addKey(k));
+		
+		return builder.build();
+	}
+	
 	
 	@RequiredArgsConstructor
 	public static class Builder {

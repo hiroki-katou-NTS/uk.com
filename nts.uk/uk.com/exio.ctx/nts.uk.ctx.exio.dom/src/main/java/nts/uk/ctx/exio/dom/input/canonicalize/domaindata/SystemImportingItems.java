@@ -3,7 +3,7 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domaindata;
 import java.util.HashMap;
 import java.util.Map;
 
-import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordTo;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 
 /**
@@ -18,8 +18,8 @@ public class SystemImportingItems {
 		map.put("HIST_ID",102);
 	}
 
-	public static StringifiedValue getStringifiedValue(AnyRecordToChange toChange, String columnName, int keyIndex) {
-		return toChange.getKey(getItemNo(columnName, keyIndex));
+	public static StringifiedValue getStringifiedValue(AnyRecordTo record, String columnName, int keyIndex) {
+		return record.getKey(getItemNo(columnName, keyIndex));
 	}
 
 	private static int getItemNo(String columnName, int keyIndex) {
