@@ -24,6 +24,7 @@ import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
@@ -118,8 +119,11 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 			ConversionInfo info,
 			List<OneColumnConversion> columns,
 			ConversionSource source,
-			boolean removeDuplicate) {
-		List<WhereSentence> where = createWhereSentence(tagetTableName, info, source.getCondition());
+			ConversionRecord record) {
+		List<WhereSentence> where = createWhereSentence(source.getCondition());
+		if(record.getWhereCondition() != null && !record.getWhereCondition().isEmpty()) {
+			where.addAll(createWhereSentence(record.getWhereCondition()));
+		}
 
 		return new ConversionTable(
 					info.getDatebaseType().spec(),
@@ -129,7 +133,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 					source.getEndDateColumnName(),
 					where,
 					columns,
-					removeDuplicate
+					record.isRemoveDuplicate()
 				);
 	}
 
@@ -170,7 +174,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 		return type.toPattern(this, info, sourceJoin);
 	}
 
-	private static List<WhereSentence> createWhereSentence(String tagetTableName, ConversionInfo info, String sourceCondition) {
+	private static List<WhereSentence> createWhereSentence(String sourceCondition) {
 
 		List<WhereSentence> where = new ArrayList<>();
 
@@ -180,9 +184,9 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 		for (String condition : conditions) {
 			RelationalOperator operator = null;
-			for (RelationalOperator oreratorValue : RelationalOperator.values()) {
-				if(condition.contains(oreratorValue.getSign())) {
-					operator = oreratorValue;
+			for (RelationalOperator operatorValue : RelationalOperator.values()) {
+				if(condition.contains(operatorValue.getSign())) {
+					operator = operatorValue;
 					break;
 				}
 			}

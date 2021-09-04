@@ -84,7 +84,7 @@ public class CreateConversionCodeService {
 
 				ConversionSource source = require.getSource(record.getSourceId());
 
-				Optional<ConversionTable> ct = require.getConversionTable(info, category, table, record.getRecordNo(), source, record.isRemoveDuplicate());
+				Optional<ConversionTable> ct = require.getConversionTable(info, category, table, source, record);
 
 				if(ct.isPresent()) {
 					AdditionalConversionCode additional = manager.createAdditionalConversionCode(info, category, ct.get(), info.getJoin(source));
@@ -157,7 +157,7 @@ public class CreateConversionCodeService {
 		List<String> getCategoryPriorities();
 		List<String> getCategoryTables(String category);
 		List<ConversionRecord> getRecords(String category, String tableName);
-		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source, boolean isRemoveDuplicate);
+		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, ConversionSource source, ConversionRecord record);
 		ConversionSource getSource(String sourceId);
 		ConversionSQL createConversionSQL(ConversionTable ct);
 

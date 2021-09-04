@@ -26,6 +26,9 @@ public class ScvmtConversionRecord {
 	@Column(name = "EXPLANATION")
 	private String explanation;
 
+	@Column(name = "WHERE_CONDITION")
+	private String whereCondition;
+
 	@Column(name = "REMOVE_DUPLICATE")
 	private boolean removeDuplicate;
 
@@ -36,6 +39,7 @@ public class ScvmtConversionRecord {
 				this.pk.getRecordNo(),
 				this.sourceId,
 				this.explanation,
+				this.whereCondition,
 				this.removeDuplicate);
 	}
 }

@@ -329,6 +329,7 @@ $(function(){
 
 		var sourceId = $("#selSources").val();
 		var explanation = $("#txtRecordName").val();
+		var recordCondition = $("#txtRecordCondition").val();
 		var removeDuplicate = $("#chkRemoveDuplicate").prop('checked');
 
 		if( $("#selCategory option:selected").val() === -1 ||
@@ -346,6 +347,7 @@ $(function(){
 			recordNo: recordNo,
 			sourceId: sourceId,
 			explanation: explanation,
+			whereCondition: recordCondition,
 			removeDuplicate: removeDuplicate
 		})).done(function (res) {
 
