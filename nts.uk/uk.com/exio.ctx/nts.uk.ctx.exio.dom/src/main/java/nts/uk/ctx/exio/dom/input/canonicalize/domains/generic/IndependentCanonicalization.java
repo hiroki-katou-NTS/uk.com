@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -47,11 +48,11 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			ExecutionContext context) {
 		
 		// 受入データ内の重複チェック
-		Set<List<Object>> importingKeys = new HashSet<>();
+		Set<KeyValues> importingKeys = new HashSet<>();
 		
 		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
 			
-			val key = getPrimaryKeys(revisedData, workspace);
+			KeyValues key = getPrimaryKeys(revisedData, workspace);
 			if (importingKeys.contains(key)) {
 				require.add(context, ExternalImportError.record(revisedData.getRowNo(), "受入データの中にキーの重複があります。"));
 				return; // 次のレコードへ
@@ -61,18 +62,28 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			
 			// データ自体を正準化する必要は無い
 			val intermResult = IntermediateResult.noChange(revisedData);
-			canonicalize(require, context, intermResult, new KeyValues(key));
+			canonicalize(require, context, intermResult, key);
 		});
 	}
 	
 	/**
 	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
 	 */
-	private static List<Object> getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
+	protected KeyValues getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
 		
-		return workspace.getItemsPk().stream()
-				.map(k -> record.getItemByNo(k.getItemNo()).get())
+		return getPrimaryKeyItemNos(workspace).stream()
+				.map(itemNo -> record.getItemByNo(itemNo).get())
 				.map(item -> item.getValue())
+				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
+	}
+	
+	/**
+	 * 既存データの補正に使用する主キーが格納される項目NOを返す（Workspaceとは別の主キーを指定したければOverrideすること）
+	 * @return
+	 */
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
+		return workspace.getItemsPk().stream()
+				.map(k -> k.getItemNo())
 				.collect(toList());
 	}
 
