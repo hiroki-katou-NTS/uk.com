@@ -117,19 +117,20 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		return targertResult;
 	}
 
-	private static AnyRecordToDelete toDelete(
+	private AnyRecordToDelete toDelete(
 			ExecutionContext context,
 			DomainWorkspace workspace,
 			KeyValues keyValues) {
 		
 		val toDelete = AnyRecordToDelete.create(context); 
+		val keys = getPrimaryKeyItemNos(workspace);
 		
-		for (int i = 0; i < workspace.getItemsPk().size(); i++) {
-			val pkItem = workspace.getItemsPk().get(i);
+		for (int i = 0; i < keys.size(); i++) {
+			val pkItemNo = keys.get(i);
 			val keyValue = keyValues.get(i);
 			
 			val stringified = StringifiedValue.create(keyValue);
-			toDelete.addKey(pkItem.getItemNo(), stringified);
+			toDelete.addKey(pkItemNo, stringified);
 		}
 		
 		return toDelete;
