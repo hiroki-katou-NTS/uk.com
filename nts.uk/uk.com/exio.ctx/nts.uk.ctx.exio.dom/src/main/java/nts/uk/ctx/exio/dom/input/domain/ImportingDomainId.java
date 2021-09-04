@@ -46,19 +46,19 @@ public enum ImportingDomainId {
 	AFF_COMPANY_HISTORY(101, AffCompanyHistoryCanonicalization::new),
 	
 	/** 所属雇用履歴 */
-	EMPLOYMENT_HISTORY(102, w -> EmploymentHistoryCanonicalization.create(w)),
+	EMPLOYMENT_HISTORY(102, EmploymentHistoryCanonicalization::new),
 	
 	/** 所属職場履歴 **/
-	AFF_WORKPLACE_HISTORY(103, w -> AffWorkplaceHistoryCanonicalization.create(w)),
+	AFF_WORKPLACE_HISTORY(103, AffWorkplaceHistoryCanonicalization::new),
 	
 	/** 所属職位履歴 */
 	JOBTITLE_HISTORY(104, AffJobTitleHistoryCanonicalization::new),
 	
 	/** 所属分類履歴 */
-	CLASSIFICATION_HISTORY(105, w -> AffClassHistoryCanonicalization.create(w)),
+	CLASSIFICATION_HISTORY(105, AffClassHistoryCanonicalization::new),
 
 	/** 休職休業履歴 */
-	TEMP_ABSENCE_HISTORY(107, w -> TempAbsenceHistoryCanonicalization.create(w)),
+	TEMP_ABSENCE_HISTORY(107, TempAbsenceHistoryCanonicalization::new),
 	
 	/** 短時間勤務 */
 	SHORT_WORK_TIME(108, ShortWorkTimeCanonicalization::new),
@@ -76,10 +76,10 @@ public enum ImportingDomainId {
 	STOCK_HOLIDAY_REMAINING(115, StockHolidayRemainingCanonicalization::new),
 	
 	/** 社員の特別休暇付与設定 */
-	EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING(116, SpecialHolidayGrantSettingCanonicalization::create),
+	EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING(116, SpecialHolidayGrantSettingCanonicalization::new),
 	
 	/** 特別休暇付与残数データ */
-	SPECIAL_HOLIDAY_GRANT_REMAIN(117, SpecialHolidayGrantRemainCanonicalization::create),
+	SPECIAL_HOLIDAY_GRANT_REMAIN(117, SpecialHolidayGrantRemainCanonicalization::new),
 	
 	/** 振休管理データ */
 	SUBSTITUTE_HOLIDAY(118, SubstituteHolidayCanonicalization::new),

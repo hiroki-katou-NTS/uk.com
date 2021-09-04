@@ -19,7 +19,11 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  *分類履歴グループの正準化用定義 
  */
-public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicalization{
+public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicalization {
+	
+	public AffClassHistoryCanonicalization(DomainWorkspace workspace) {
+		super(workspace, HistoryType.PERSISTENERESIDENT);
+	}
 	
 	@Override
 	protected String getParentTableName() {
@@ -37,14 +41,6 @@ public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicaliza
 				new DomainDataColumn("HIST_ID", STRING));
 	}
 
-	public static AffClassHistoryCanonicalization create(DomainWorkspace workspace) {
-		return new AffClassHistoryCanonicalization(workspace, HistoryType.PERSISTENERESIDENT);
-	}
-	
-	private AffClassHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
-		super(workspace, historyType);
-	}
-	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
 		CanonicalizeUtil.forEachEmployee(require, context, this.getEmployeeCodeCanonicalization(), interm -> {

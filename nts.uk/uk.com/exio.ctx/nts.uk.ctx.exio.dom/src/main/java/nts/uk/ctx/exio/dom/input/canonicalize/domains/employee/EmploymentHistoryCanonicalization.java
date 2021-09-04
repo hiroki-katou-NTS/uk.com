@@ -20,6 +20,10 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class EmploymentHistoryCanonicalization extends EmployeeHistoryCanonicalization{
 
+	public EmploymentHistoryCanonicalization(DomainWorkspace workspace) {
+		super(workspace, HistoryType.PERSISTENERESIDENT);
+	}
+	
 	@Override
 	protected String getParentTableName() {
 		return "BSYMT_AFF_EMP_HIST";
@@ -33,14 +37,6 @@ public class EmploymentHistoryCanonicalization extends EmployeeHistoryCanonicali
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(new DomainDataColumn("HIST_ID", DataType.STRING));
-	}
-	
-	public static EmploymentHistoryCanonicalization create(DomainWorkspace workspace) {
-		return new EmploymentHistoryCanonicalization(workspace, HistoryType.PERSISTENERESIDENT);
-	}
-	
-	private EmploymentHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
-		super(workspace, historyType);
 	}
 	
 	@Override
