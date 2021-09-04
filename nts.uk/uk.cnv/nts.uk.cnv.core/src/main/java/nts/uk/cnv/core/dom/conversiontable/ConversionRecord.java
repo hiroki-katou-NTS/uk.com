@@ -11,5 +11,6 @@ public class ConversionRecord {
 	int recordNo;
 	String sourceId;
 	String explanation;
+	String whereCondition;
 	boolean removeDuplicate;
 }

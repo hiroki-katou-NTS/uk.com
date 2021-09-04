@@ -12,6 +12,7 @@ import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
@@ -23,7 +24,7 @@ import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
 public class JpaConversionTableRepository extends JpaRepository implements ConversionTableRepository {
 
 	@Override
-	public Optional<ConversionTable> get(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source, boolean isRemoveDuplicate) {
+	public Optional<ConversionTable> get(ConversionInfo info, String category, String tableName, ConversionSource source, ConversionRecord record) {
 		String query =
 				  "SELECT c FROM ScvmtConversionTable c"
 				+ " WHERE c.pk.categoryName = :category"
@@ -32,14 +33,17 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 		List<ScvmtConversionTable> entities = this.queryProxy().query(query, ScvmtConversionTable.class)
 			.setParameter("category", category)
 			.setParameter("table", tableName)
-			.setParameter("recordNo", recordNo)
+			.setParameter("recordNo", record.getRecordNo())
 			.getList();
 
 		List<OneColumnConversion> columns = entities.stream()
 				.map(entity -> entity.toDomain(info, info.getJoin(source)))
 				.collect(Collectors.toList());
 
-		return Optional.of(ScvmtConversionTable.toDomain(tableName, info, columns, source, isRemoveDuplicate));
+		return Optional.of(
+				ScvmtConversionTable.toDomain(
+						tableName, info, columns, source, record
+					));
 	}
 
 	@Override
