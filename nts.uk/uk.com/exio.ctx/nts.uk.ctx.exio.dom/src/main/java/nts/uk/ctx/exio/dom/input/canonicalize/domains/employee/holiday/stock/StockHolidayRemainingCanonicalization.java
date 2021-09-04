@@ -1,24 +1,13 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import lombok.val;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
-import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -52,54 +41,28 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 
-
 	@Override
-	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-
-		// 受入データ内の重複チェック
-		Set<List<Object>> importingKeys = new HashSet<>();
-		
-		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
-
-			for (val interm : interms) {
-				val addedFixedItem = interm.addCanonicalized(addFixedItem(interm)) ;
-				val key = getPrimaryKeys(addedFixedItem, workspace);
-				if (importingKeys.contains(key)) {
-					throw new RuntimeException("重複データ" + key);
-				}
-
-				importingKeys.add(key);
-				
-				super.canonicalize(require, context, addedFixedItem, new KeyValues(key));
-			}
-		});
+	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
+		return addFixedItems(targertResult);
 	}
 	
 	/**
 	 *  受入時に固定の値を入れる物たち
 	 */
-	private CanonicalItemList addFixedItem(IntermediateResult interm) {
-	    List<CanonicalItem> items = new ArrayList<>();
-	    items.addAll(Arrays.asList(
-	    		new CanonicalItem(100,IdentifierUtil.randomUniqueId()),
-	    		new CanonicalItem(101,GrantRemainRegisterType.MANUAL.value),
-	    		new CanonicalItem(102,0),
-	    		new CanonicalItem(103,0),
-	    		new CanonicalItem(104,0),
-	    		new CanonicalItem(105,0),
-	    		new CanonicalItem(106,0),
-	    		new CanonicalItem(107,0)
-	    ));
-	    
-	    return new CanonicalItemList(items);
+	private IntermediateResult addFixedItems(IntermediateResult interm) {
+		return interm.addCanonicalized(CanonicalItem.of(100,IdentifierUtil.randomUniqueId()))
+				  .addCanonicalized(CanonicalItem.of(102,GrantRemainRegisterType.MANUAL.value))
+				  .addCanonicalized(CanonicalItem.of(103,0))
+				  .addCanonicalized(CanonicalItem.of(104,0))
+				  .addCanonicalized(CanonicalItem.of(105,0))
+				  .addCanonicalized(CanonicalItem.of(106,0))
+				  .addCanonicalized(CanonicalItem.of(107,0))
+				  .addCanonicalized(CanonicalItem.of(108,0));
 	}
 	
-	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
-		
-		return workspace.getItemsPk().stream()
-				.map(k -> record.getItemByNo(k.getItemNo()).get())
-				.map(item -> item.getValue())
-				.collect(toList());
+	@Override
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
+		return Arrays.asList(101);//SID
 	}
 	
 	@Override
