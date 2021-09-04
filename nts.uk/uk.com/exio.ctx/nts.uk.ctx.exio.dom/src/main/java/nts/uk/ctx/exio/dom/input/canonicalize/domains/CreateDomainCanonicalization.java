@@ -82,13 +82,13 @@ public class CreateDomainCanonicalization {
 		CREATES.put(CLASSIFICATION_HISTORY,AffClassHistoryCanonicalization::new);
 
 		//職位履歴
-		CREATES.put(ImportingDomainId.JOBTITLE_HISTORY, w -> AffJobTitleHistoryCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.JOBTITLE_HISTORY, AffJobTitleHistoryCanonicalization::new);
 		
 		//所属職場履歴
-		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, AffWorkplaceHistoryCanonicalization::new);
 		
 		//休職休業履歴
-		CREATES.put(ImportingDomainId.TEMP_ABSENCE_HISTORY, w -> TempAbsenceHistoryCanonicalization.create(w));
+		CREATES.put(TEMP_ABSENCE_HISTORY, w -> new TempAbsenceHistoryCanonicalization(w));
 		
 		// 短時間勤務履歴
 		CREATES.put(SHORT_WORK_TIME, ShortWorkTimeCanonicalization::new);
@@ -106,10 +106,10 @@ public class CreateDomainCanonicalization {
 		CREATES.put(STOCK_HOLIDAY_REMAINING, w -> new StockHolidayRemainingCanonicalization(w));
 
 		// 社員の特別休暇付与設定
-		CREATES.put(ImportingDomainId.EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> SpecialHolidayGrantSettingCanonicalization.create(w));
+		CREATES.put(EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> new SpecialHolidayGrantSettingCanonicalization(w));
 		
 		// 特別休暇付与残数データ
-		CREATES.put(ImportingDomainId.SPECIAL_HOLIDAY_GRANT_REMAIN, w -> SpecialHolidayGrantRemainCanonicalization.create(w));
+		CREATES.put(SPECIAL_HOLIDAY_GRANT_REMAIN, w -> new SpecialHolidayGrantRemainCanonicalization(w));
 
 		// 振休管理データ
 		CREATES.put(SUBSTITUTE_HOLIDAY, SubstituteHolidayCanonicalization::new);

@@ -93,7 +93,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			IntermediateResult intermResult,
 			KeyValues keyValues) {
 		
-		val domainDataId = createDomainDataId(getParentTableName(), getDomainDataKeys(), keyValues);
+		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), getDomainDataKeys(), keyValues);
 		boolean exists = require.existsDomainData(domainDataId);
 		
 		// 受け入れず無視するケース
@@ -173,7 +173,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		
 		val keys = getDomainDataKeys();
 		return tableNames.stream()
-				.map(tn -> createDomainDataId(tn, keys, keyValues))
+				.map(tn -> DomainDataId.createDomainDataId(tn, keys, keyValues))
 				.collect(toList());
 	}
 	
@@ -213,14 +213,6 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	public static interface RequireAdjust {
 		
 		void deleteDomainData(DomainDataId id);
-	}
-	
-	protected static DomainDataId createDomainDataId(String tableName, List<DomainDataColumn> keys, KeyValues keyValues) {
-		
-		val builder = DomainDataId.builder(tableName, keyValues);
-		keys.forEach(k -> builder.addKey(k));
-		
-		return builder.build();
 	}
 
 	@Override

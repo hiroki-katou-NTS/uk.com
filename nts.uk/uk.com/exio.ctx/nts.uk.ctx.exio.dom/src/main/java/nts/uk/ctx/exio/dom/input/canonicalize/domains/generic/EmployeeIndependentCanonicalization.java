@@ -26,28 +26,40 @@ public abstract class EmployeeIndependentCanonicalization extends IndependentCan
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
-
+	
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-
+		
 		// 受入データ内の重複チェック
 		Set<List<Object>> importingKeys = new HashSet<>();
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
-
+			
 			for (val interm : interms) {
 				
 				val key = getPrimaryKeys(interm, workspace);
 				if (importingKeys.contains(key)) {
 					throw new RuntimeException("重複データ" + key);
 				}
-
+				
 				importingKeys.add(key);
 				
 				super.canonicalize(require, context, interm, new KeyValues(key));
 			}
 		});
 	}
+	
+	/**
+	 * 派生クラス側で追加の正準化が必要ならOverrideする
+	 * @param require
+	 * @param context
+	 * @param interm
+	 * @return
+	 */
+	protected abstract IntermediateResult canonicalizeExtends(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context,
+			IntermediateResult interm);
 	
 	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
 		
