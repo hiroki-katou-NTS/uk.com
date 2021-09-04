@@ -82,10 +82,10 @@ public class CreateDomainCanonicalization {
 		CREATES.put(CLASSIFICATION_HISTORY,w -> AffClassHistoryCanonicalization.create(w));
 
 		//職位履歴
-		CREATES.put(ImportingDomainId.JOBTITLE_HISTORY, w -> AffJobTitleHistoryCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.JOBTITLE_HISTORY, AffJobTitleHistoryCanonicalization::new);
 		
 		//所属職場履歴
-		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, w -> AffWorkplaceHistoryCanonicalization.create(w));
+		CREATES.put(ImportingDomainId.AFF_WORKPLACE_HISTORY, AffWorkplaceHistoryCanonicalization::new);
 		
 		//休職休業履歴
 		CREATES.put(ImportingDomainId.TEMP_ABSENCE_HISTORY, w -> TempAbsenceHistoryCanonicalization.create(w));
