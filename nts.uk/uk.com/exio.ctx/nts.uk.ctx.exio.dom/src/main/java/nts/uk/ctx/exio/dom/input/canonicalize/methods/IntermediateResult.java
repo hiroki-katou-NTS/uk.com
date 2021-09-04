@@ -76,6 +76,22 @@ public class IntermediateResult {
 	}
 	
 	/**
+	 * 任意項目の既定値を指定する（受け入れていなければ指定した既定値を埋める）
+	 * @param item 既定値
+	 * @return
+	 */
+	public IntermediateResult optionalItem(CanonicalItem item) {
+		boolean accepted = this.getItemByNo(item.getItemNo())
+				.map(e -> e.getValue()).orElse(null) != null;
+		
+		if (!accepted) {
+			return addCanonicalized(item);
+		}
+		
+		return this;
+	}
+	
+	/**
 	 * 現在の保持内容に対して新たに正準化した分を追加する
 	 * @param canonicalizedItems
 	 * @param targetItemNos
