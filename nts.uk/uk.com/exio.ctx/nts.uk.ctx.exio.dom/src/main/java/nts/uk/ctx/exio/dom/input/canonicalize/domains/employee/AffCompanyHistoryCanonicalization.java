@@ -22,6 +22,10 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
  */
 public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicalization{
 	
+	public AffCompanyHistoryCanonicalization(DomainWorkspace workspace) {
+		super(workspace, HistoryType.UNDUPLICATABLE);
+	}
+	
 	@Override
 	protected String getParentTableName() {
 		return "BSYMT_AFF_COM_HIST";
@@ -35,14 +39,6 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	@Override
 	protected List<String> getChildTableNames() {
 		return Arrays.asList("BSYMT_AFF_COM_HIST_ITEM");
-	}
-	
-	public static AffCompanyHistoryCanonicalization create(DomainWorkspace workspace) {
-		return new AffCompanyHistoryCanonicalization(workspace, HistoryType.UNDUPLICATABLE);
-	}
-	
-	private AffCompanyHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
-		super(workspace, historyType);
 	}
 	
 	@Override
@@ -64,7 +60,7 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 			interm = interm.addCanonicalized(new CanonicalItemList()
 					.add(103, personId) // 個人ID
 					.add(104, 0) // 出向先データである
-					.add(105, "                                    ") // 採用区分コード
+					.add(105, "") // 採用区分コード
 					);
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));

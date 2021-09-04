@@ -1,6 +1,5 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -8,9 +7,7 @@ import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
-import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.util.Either;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -45,8 +42,7 @@ public class WorkplaceCodeCanonicalization {
 		GeneralDate startDate = revisedData.getItemByNo(itemNoStartDate).get().getDate();
 
 		return getWorkplaceId(require, workplaceCode, startDate, csvRowNo)
-				.map(workplaceId -> canonicalize(revisedData, workplaceId))
-				.mapLeft(error -> error);
+				.map(workplaceId -> canonicalize(revisedData, workplaceId));
 		
 	}
 
@@ -60,9 +56,7 @@ public class WorkplaceCodeCanonicalization {
 
 	private IntermediateResult canonicalize(IntermediateResult canonicalizingData, String workplaceId) {
 		return canonicalizingData.addCanonicalized(
-				new CanonicalItemList(Arrays.asList(
-						CanonicalItem.of(DataItem.of(itemNoWorkplaceId, workplaceId))
-					)),
+				CanonicalItem.of(itemNoWorkplaceId, workplaceId),
 				itemNoWorkplaceCode);
 	}
 
