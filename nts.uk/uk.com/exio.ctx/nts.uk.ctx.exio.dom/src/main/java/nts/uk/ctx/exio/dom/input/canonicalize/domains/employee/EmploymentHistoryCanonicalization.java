@@ -14,6 +14,10 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
  */
 public class EmploymentHistoryCanonicalization extends EmployeeHistoryCanonicalization{
 
+	public EmploymentHistoryCanonicalization(DomainWorkspace workspace) {
+		super(workspace, HistoryType.PERSISTENERESIDENT);
+	}
+	
 	@Override
 	protected String getParentTableName() {
 		return "BSYMT_AFF_EMP_HIST";
@@ -27,9 +31,5 @@ public class EmploymentHistoryCanonicalization extends EmployeeHistoryCanonicali
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(new DomainDataColumn("HIST_ID", DataType.STRING));
-	}
-	
-	public EmploymentHistoryCanonicalization(DomainWorkspace workspace) {
-		super(workspace, HistoryType.PERSISTENERESIDENT);
 	}
 }

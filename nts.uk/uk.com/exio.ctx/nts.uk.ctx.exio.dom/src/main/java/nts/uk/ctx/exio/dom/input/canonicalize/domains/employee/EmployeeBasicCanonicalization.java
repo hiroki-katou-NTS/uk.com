@@ -67,7 +67,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			if (require.getEmployeeDataMngInfoByEmployeeCode(employeeCode).isPresent()) {
 				return;
 			}
-
+			
 			interm = Ids.newIds().fill(interm);
 			interm = Items.fillNewData(context, interm);
 			
@@ -81,10 +81,12 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			
 			val ids = idsOpt.get();
 			interm = ids.fill(interm);
-			
+
 			// パスワードは既存データを削除して受け入れる
-			interm = Items.Password.fillNewData(context, interm);
-			require.save(context, ids.toDeletePassword(context));
+			if (interm.isImporting(Items.Password.PASSWORD)) {
+				interm = Items.Password.fillNewData(context, interm);
+				require.save(context, ids.toDeletePassword(context));
+			}
 			
 		} else {
 			
@@ -99,9 +101,16 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			interm = Items.fillNewData(context, interm);
 		}
 		
+		// ログインIDの重複チェック
+		if (Items.User.isDuplicatedLoginId(require, interm)) {
+			require.add(context, ExternalImportError.record(interm.getRowNo(), "ログインIDが重複しています。"));
+			
+			return;
+		}
+		
 		require.save(context, interm.complete());
 	}
-
+	
 	/**
 	 * 社員ID・個人ID・ユーザIDの取り扱い担当クラス
 	 */
@@ -258,6 +267,9 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			
 			private static final String TARGET_NAME = "User";
 			
+			/** ログインID */
+			private static final int LOGIN_ID = 4;
+			
 			/** 紐付け先個人ID */
 			private static final int ASSO_PID = 123;
 
@@ -285,6 +297,17 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 						.addCanonicalized(CanonicalItem.of(SPECIAL_USER, 0))
 						.addCanonicalized(CanonicalItem.of(MULTI_COMPANY, 0))
 						.addCanonicalized(CanonicalItem.of(DEFAULT_USER, 0));
+			}
+			
+			static boolean isDuplicatedLoginId(RequireCanonicalize require, IntermediateResult interm) {
+				
+				String userId = interm.getItemByNo(USER_ID).get().getString();
+				String loginId = interm.getItemByNo(LOGIN_ID).get().getString();
+
+				// 異なるユーザIDであるにも関わらず同じログインIDの既存データがあるか
+				return require.getUserByLoginId(loginId)
+						.filter(u -> !u.getUserID().equals(userId))
+						.isPresent();
 			}
 
 		}
@@ -342,6 +365,8 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 		Optional<EmployeeDataMngInfo> getEmployeeDataMngInfoByEmployeeCode(String employeeCode);
 		
 		Optional<User> getUserByPersonId(String personId);
+		
+		Optional<User> getUserByLoginId(String loginId);
 	}
 
 	@Override

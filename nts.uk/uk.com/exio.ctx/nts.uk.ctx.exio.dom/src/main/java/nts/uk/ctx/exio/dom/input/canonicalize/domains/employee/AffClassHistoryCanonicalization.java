@@ -13,7 +13,11 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 /**
  *分類履歴グループの正準化用定義 
  */
-public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicalization{
+public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicalization {
+	
+	public AffClassHistoryCanonicalization(DomainWorkspace workspace) {
+		super(workspace, HistoryType.PERSISTENERESIDENT);
+	}
 	
 	@Override
 	protected String getParentTableName() {
@@ -29,9 +33,5 @@ public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicaliza
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
 				new DomainDataColumn("HIST_ID", STRING));
-	}
-
-	public AffClassHistoryCanonicalization(DomainWorkspace workspace) {
-		super(workspace, HistoryType.PERSISTENERESIDENT);
 	}
 }
