@@ -81,10 +81,12 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			
 			val ids = idsOpt.get();
 			interm = ids.fill(interm);
-			
+
 			// パスワードは既存データを削除して受け入れる
-			interm = Items.Password.fillNewData(context, interm);
-			require.save(context, ids.toDeletePassword(context));
+			if (interm.isImporting(Items.Password.PASSWORD)) {
+				interm = Items.Password.fillNewData(context, interm);
+				require.save(context, ids.toDeletePassword(context));
+			}
 			
 		} else {
 			
