@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 /**
  * 年休上限データ 
  */
-public class MaxYearHolidayCanonicalization extends IndependentCanonicalization{
+public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 
 	@Override
 	protected String getParentTableName() {
@@ -42,7 +42,7 @@ public class MaxYearHolidayCanonicalization extends IndependentCanonicalization{
 	/** 社員コードの正準化 */
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public MaxYearHolidayCanonicalization(DomainWorkspace workspace) {
+	public MaxAnnualLeaveCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}

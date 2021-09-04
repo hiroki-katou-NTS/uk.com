@@ -1,9 +1,11 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
@@ -13,13 +15,13 @@ import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
- * 社員の年休付与設定
+ * 年休付与残数データ 
  */
-public class EmployeeYearHolidaySettingCanonicalization extends IndependentCanonicalization {
-
+public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicalization{
+	
 	@Override
 	protected String getParentTableName() {
-		return "KRCMT_HDPAID_BASIC";
+		return "KRCDT_HDPAID_REM";
 	}
 
 	@Override
@@ -29,21 +31,17 @@ public class EmployeeYearHolidaySettingCanonicalization extends IndependentCanon
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID);
+		return Arrays.asList(DomainDataColumn.SID, DomainDataColumn.YMD);
 	}
-	
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public EmployeeYearHolidaySettingCanonicalization(DomainWorkspace workspace) {
+	public AnnualLeaveRemainingCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
-	
-	/**
-	 * 追加の正準化処理が必要ならoverrideすること
-	 * @param targetContainers
-	 */
+
+	@Override
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
 	}
@@ -52,8 +50,14 @@ public class EmployeeYearHolidaySettingCanonicalization extends IndependentCanon
 	 *  受入時に固定の値を入れる物たち
 	 */
 	private IntermediateResult addFixedItems(IntermediateResult interm) {
-	    return interm.addCanonicalized(CanonicalItem.nullValue(100), 100)
-	    		    		   .optionalItem(CanonicalItem.of(2, 0));
+		return interm.addCanonicalized(CanonicalItem.of(100,IdentifierUtil.randomUniqueId()))
+				  .addCanonicalized(CanonicalItem.of(101,GrantRemainRegisterType.MANUAL.value))
+				  .addCanonicalized(CanonicalItem.of(102,0))
+				  .addCanonicalized(CanonicalItem.of(103,0))
+				  .addCanonicalized(CanonicalItem.of(104,0))
+				  .addCanonicalized(CanonicalItem.of(105,0))
+				  .addCanonicalized(CanonicalItem.of(106,0))
+				  .addCanonicalized(CanonicalItem.of(107,0));
 	}
 	
 	@Override
