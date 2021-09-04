@@ -7,7 +7,7 @@ import lombok.Value;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 @Value
-public class AnyRecordToChange {
+public class AnyRecordToChange implements AnyRecordTo {
 
 	/** 会社ID */
 	String companyId;
@@ -40,6 +40,7 @@ public class AnyRecordToChange {
 		return this;
 	}
 	
+	@Override
 	public StringifiedValue getKey(int itemNo) {
 		return primaryKeys.get(itemNo);
 	}
