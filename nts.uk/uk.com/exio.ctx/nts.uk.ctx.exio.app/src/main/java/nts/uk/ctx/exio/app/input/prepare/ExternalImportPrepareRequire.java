@@ -298,13 +298,6 @@ public class ExternalImportPrepareRequire {
 			return userRepo.getByAssociatedPersonId(personId);
 		}
 
-
-		@Override
-		public Optional<AnnualLeaveEmpBasicInfo> getExistingEmployeeGrantHoliday(String employeeId) {
-			return annLeaEmpBasicInfoRepo.get(employeeId);
-		}
-
-
 		@Override
 		public Optional<JobTitleInfo> getJobTitleByCode(String jobTitleCode, GeneralDate startdate) {
 			return jobTitleInfoRepo.findAll(companyId, startdate).stream()
