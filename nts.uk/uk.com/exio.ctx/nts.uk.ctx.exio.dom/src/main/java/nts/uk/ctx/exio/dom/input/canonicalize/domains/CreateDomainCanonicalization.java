@@ -94,16 +94,16 @@ public class CreateDomainCanonicalization {
 		CREATES.put(SHORT_WORK_TIME, ShortWorkTimeCanonicalization::new);
 		
 		//社員の年休付与設定
-		CREATES.put(EMPLOYEE_YEAR_HOLIDAY_SETTING, w -> new EmployeeAnnualLeaveSettingCanonicalization(w));
+		CREATES.put(EMPLOYEE_YEAR_HOLIDAY_SETTING, EmployeeAnnualLeaveSettingCanonicalization::new);
 		
 		//年休上限データ
-		CREATES.put(MAX_YEAR_HOLIDAY, w -> new MaxAnnualLeaveCanonicalization(w));
+		CREATES.put(MAX_YEAR_HOLIDAY, MaxAnnualLeaveCanonicalization::new);
 
 		//年休付与残数データ
-		CREATES.put(YEAR_HOLIDAY_REMAINING, w -> new AnnualLeaveRemainingCanonicalization(w));
+		CREATES.put(YEAR_HOLIDAY_REMAINING, AnnualLeaveRemainingCanonicalization::new);
 		
 		//積休付与残数データ
-		CREATES.put(STOCK_HOLIDAY_REMAINING, w -> new StockHolidayRemainingCanonicalization(w));
+		CREATES.put(STOCK_HOLIDAY_REMAINING, StockHolidayRemainingCanonicalization::new);
 
 		// 社員の特別休暇付与設定
 		CREATES.put(EMPLOYEE_SPECIAL_HOLIDAY_GRANT_SETTING, w -> new SpecialHolidayGrantSettingCanonicalization(w));
