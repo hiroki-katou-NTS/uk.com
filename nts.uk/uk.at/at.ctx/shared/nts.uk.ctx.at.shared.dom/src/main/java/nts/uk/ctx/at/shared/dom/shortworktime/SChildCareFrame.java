@@ -39,8 +39,8 @@ public class SChildCareFrame extends DomainObject {
 			throw new BusinessException("Msg_858");
 		}
 		
-		// 開始時刻＞＝終了時刻でなければならない
-		if (startTime.greaterThanOrEqualTo(endTime)) {
+		// 開始時刻＜＝終了時刻でなければならない
+		if (!startTime.lessThanOrEqualTo(endTime)) {
 			throw new BusinessException("Msg_857");
 		}
 		

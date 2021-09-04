@@ -295,7 +295,7 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 			private static final String TARGET_NAME = "Password";
 			
 			/** パスワード */
-			private static final int PASSWORD = 4;
+			private static final int PASSWORD = 5;
 			
 			/** パスワード状態 */
 			private static final int STATE = 130;

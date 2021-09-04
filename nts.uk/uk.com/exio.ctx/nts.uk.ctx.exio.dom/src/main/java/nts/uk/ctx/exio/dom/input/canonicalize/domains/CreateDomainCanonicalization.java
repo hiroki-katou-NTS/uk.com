@@ -73,7 +73,7 @@ public class CreateDomainCanonicalization {
 		CREATES.put(EMPLOYEE_BASIC, w -> new EmployeeBasicCanonicalization());
 
 		// 所属会社履歴
-		CREATES.put(AFF_COMPANY_HISTORY, w -> AffCompanyHistoryCanonicalization.create(w));
+		CREATES.put(AFF_COMPANY_HISTORY, AffCompanyHistoryCanonicalization::new);
 		
 		// 雇用履歴
 		CREATES.put(EMPLOYMENT_HISTORY, w -> EmploymentHistoryCanonicalization.create(w));
