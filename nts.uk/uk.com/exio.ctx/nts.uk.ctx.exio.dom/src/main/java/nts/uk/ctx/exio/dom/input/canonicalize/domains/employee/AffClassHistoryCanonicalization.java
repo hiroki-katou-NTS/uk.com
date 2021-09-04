@@ -31,7 +31,7 @@ public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicaliza
 				new DomainDataColumn("HIST_ID", STRING));
 	}
 
-	public AffClassHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
+	public AffClassHistoryCanonicalization(DomainWorkspace workspace) {
 		super(workspace, HistoryType.PERSISTENERESIDENT);
 	}
 }

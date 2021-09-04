@@ -29,7 +29,7 @@ public class EmploymentHistoryCanonicalization extends EmployeeHistoryCanonicali
 		return Arrays.asList(new DomainDataColumn("HIST_ID", DataType.STRING));
 	}
 	
-	public EmploymentHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
+	public EmploymentHistoryCanonicalization(DomainWorkspace workspace) {
 		super(workspace, HistoryType.PERSISTENERESIDENT);
 	}
 }
