@@ -10,7 +10,7 @@ import nts.uk.ctx.exio.dom.input.ExecutionContext;
  * 任意の既存レコードの単純な削除
  */
 @Value
-public class AnyRecordToDelete {
+public class AnyRecordToDelete implements AnyRecordTo {
 
 	/** 会社ID */
 	String companyId;
@@ -38,6 +38,7 @@ public class AnyRecordToDelete {
 		return this;
 	}
 	
+	@Override
 	public StringifiedValue getKey(int itemNo) {
 		return primaryKeys.stream()
 				.filter(k -> k.getItemNo() == itemNo)
