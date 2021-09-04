@@ -106,22 +106,31 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
-		require.save(context, intermResult.complete());
+		require.save(context, canonicalizeExtends(intermResult).complete());
 	}
 	
-	private static AnyRecordToDelete toDelete(
+	/**
+	 * 追加の正準化処理が必要ならoverrideすること
+	 * @param targetContainers
+	 */
+	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
+		return targertResult;
+	}
+
+	private AnyRecordToDelete toDelete(
 			ExecutionContext context,
 			DomainWorkspace workspace,
 			KeyValues keyValues) {
 		
 		val toDelete = AnyRecordToDelete.create(context); 
+		val keys = getPrimaryKeyItemNos(workspace);
 		
-		for (int i = 0; i < workspace.getItemsPk().size(); i++) {
-			val pkItem = workspace.getItemsPk().get(i);
+		for (int i = 0; i < keys.size(); i++) {
+			val pkItemNo = keys.get(i);
 			val keyValue = keyValues.get(i);
 			
 			val stringified = StringifiedValue.create(keyValue);
-			toDelete.addKey(pkItem.getItemNo(), stringified);
+			toDelete.addKey(pkItemNo, stringified);
 		}
 		
 		return toDelete;

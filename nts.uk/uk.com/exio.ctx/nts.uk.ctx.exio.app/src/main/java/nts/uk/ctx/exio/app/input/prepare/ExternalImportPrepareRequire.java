@@ -12,8 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -138,8 +136,6 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	private UserRepository userRepo;
 	
-	@Inject
-	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
 	
 	
 	public class RequireImpl implements Require {
@@ -309,13 +305,6 @@ public class ExternalImportPrepareRequire {
 					.filter(u -> u.getContractCode().v().equals(contractCode))
 					.findFirst();
 		}
-
-
-		@Override
-		public Optional<AnnualLeaveEmpBasicInfo> getExistingEmployeeGrantHoliday(String employeeId) {
-			return annLeaEmpBasicInfoRepo.get(employeeId);
-		}
-
 
 		@Override
 		public Optional<JobTitleInfo> getJobTitleByCode(String jobTitleCode, GeneralDate startdate) {

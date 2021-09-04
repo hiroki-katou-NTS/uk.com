@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,13 +15,13 @@ import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
- * 積立年休付与残数データ
+ * 年休付与残数データ 
  */
-public class StockHolidayRemainingCanonicalization  extends IndependentCanonicalization{
-
+public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicalization{
+	
 	@Override
 	protected String getParentTableName() {
-		return "KRCDT_HDSTK_REM";
+		return "KRCDT_HDPAID_REM";
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public StockHolidayRemainingCanonicalization(DomainWorkspace workspace) {
+	public AnnualLeaveRemainingCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
@@ -45,7 +45,7 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
 	}
-	
+
 	/**
 	 *  受入時に固定の値を入れる物たち
 	 */
@@ -69,5 +69,4 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
 		return employeeCodeCanonicalization.appendMeta(source);
 	}
-
 }
