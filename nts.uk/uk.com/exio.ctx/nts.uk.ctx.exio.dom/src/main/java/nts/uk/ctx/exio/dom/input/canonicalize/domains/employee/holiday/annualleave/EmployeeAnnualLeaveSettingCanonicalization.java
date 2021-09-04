@@ -40,6 +40,11 @@ public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanon
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 	
+	@Override
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
+		return Arrays.asList(100);//SID
+	}
+	
 	/**
 	 * 追加の正準化処理が必要ならoverrideすること
 	 * @param targetContainers

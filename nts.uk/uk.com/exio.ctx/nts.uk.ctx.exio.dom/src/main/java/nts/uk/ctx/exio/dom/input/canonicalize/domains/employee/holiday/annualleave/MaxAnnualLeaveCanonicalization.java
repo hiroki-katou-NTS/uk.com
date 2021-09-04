@@ -61,6 +61,11 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 				}
 		});
 	}
+	
+	@Override
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
+		return Arrays.asList(100);//SID
+	}
 
 	private static class FixedItem{
 		//半日上限回数、半休使用回数、残回数

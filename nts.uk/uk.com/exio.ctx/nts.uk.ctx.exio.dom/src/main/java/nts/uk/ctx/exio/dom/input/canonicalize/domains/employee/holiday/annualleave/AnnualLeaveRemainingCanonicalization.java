@@ -45,19 +45,24 @@ public class AnnualLeaveRemainingCanonicalization extends IndependentCanonicaliz
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
 	}
-	
+
 	/**
 	 *  受入時に固定の値を入れる物たち
 	 */
 	private IntermediateResult addFixedItems(IntermediateResult interm) {
 		return interm.addCanonicalized(CanonicalItem.of(100,IdentifierUtil.randomUniqueId()))
-				  .addCanonicalized(CanonicalItem.of(101,GrantRemainRegisterType.MANUAL.value))
-				  .addCanonicalized(CanonicalItem.of(102,0))
+				  .addCanonicalized(CanonicalItem.of(102,GrantRemainRegisterType.MANUAL.value))
 				  .addCanonicalized(CanonicalItem.of(103,0))
 				  .addCanonicalized(CanonicalItem.of(104,0))
 				  .addCanonicalized(CanonicalItem.of(105,0))
 				  .addCanonicalized(CanonicalItem.of(106,0))
-				  .addCanonicalized(CanonicalItem.of(107,0));
+				  .addCanonicalized(CanonicalItem.of(107,0))
+				  .addCanonicalized(CanonicalItem.of(108,0));
+	}
+	
+	@Override
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
+		return Arrays.asList(101);//SID
 	}
 	
 	@Override
