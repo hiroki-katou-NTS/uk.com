@@ -20,6 +20,9 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCano
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmploymentHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.ShortWorkTimeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.TempAbsenceHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.AnnualLeaveRemainingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.EmployeeAnnualLeaveSettingCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave.MaxAnnualLeaveCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.CompensatoryHolidayCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.compensatory.HolidayWorkCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.substitute.SubstituteHolidayCanonicalization;
@@ -27,9 +30,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year.EmployeeYearHolidaySettingCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year.MaxYearHolidayCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.year.YearHolidayRemainingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
@@ -64,13 +64,13 @@ public enum ImportingDomainId {
 	SHORT_WORK_TIME(108, ShortWorkTimeCanonicalization::new),
 	
 	/** 社員の年休付与設定*/
-	EMPLOYEE_YEAR_HOLIDAY_SETTING(111, EmployeeYearHolidaySettingCanonicalization::new),	
+	EMPLOYEE_ANNUAL_LEAVE_SETTING(111, EmployeeAnnualLeaveSettingCanonicalization::new),	
 	
 	/** 年休上限データ*/
-	MAX_YEAR_HOLIDAY(112, MaxYearHolidayCanonicalization::new),
+	MAX_ANNUAL_LEAVE(112, MaxAnnualLeaveCanonicalization::new),
 	
 	/** 年休付与残数データ*/
-	YEAR_HOLIDAY_REMAINING(114, YearHolidayRemainingCanonicalization::new),
+	ANNUAL_LEAVE_REMAINING(114, AnnualLeaveRemainingCanonicalization::new),
 	
 	/** 積立休暇付与残数データ*/
 	STOCK_HOLIDAY_REMAINING(115, StockHolidayRemainingCanonicalization::new),
