@@ -15,6 +15,7 @@ import nts.uk.cnv.infra.impls.JpaSourceOrutaRepository;
 
 @Stateless
 public class JpaErpTableDesignRepository extends JpaSourceOrutaRepository implements ErpTableDesignRepository {
+
 	@Override
 	public boolean exists(String tableName) {
 		val result = find(tableName);

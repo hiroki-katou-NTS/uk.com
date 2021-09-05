@@ -24,6 +24,7 @@ public class RegistConversionRecordCommandHandler extends CommandHandler<RegistC
 				command.getRecordNo(),
 				command.getSourceId(),
 				command.getExplanation(),
+				command.getWhereCondition(),
 				command.isRemoveDuplicate()
 			);
 

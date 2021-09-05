@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -47,11 +48,11 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			ExecutionContext context) {
 		
 		// 受入データ内の重複チェック
-		Set<List<Object>> importingKeys = new HashSet<>();
+		Set<KeyValues> importingKeys = new HashSet<>();
 		
 		CanonicalizeUtil.forEachRow(require, context, revisedData -> {
 			
-			val key = getPrimaryKeys(revisedData, workspace);
+			KeyValues key = getPrimaryKeys(revisedData, workspace);
 			if (importingKeys.contains(key)) {
 				require.add(context, ExternalImportError.record(revisedData.getRowNo(), "受入データの中にキーの重複があります。"));
 				return; // 次のレコードへ
@@ -61,18 +62,28 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			
 			// データ自体を正準化する必要は無い
 			val intermResult = IntermediateResult.noChange(revisedData);
-			canonicalize(require, context, intermResult, new KeyValues(key));
+			canonicalize(require, context, intermResult, key);
 		});
 	}
 	
 	/**
 	 * Record(CSV行番号, 編集済みの項目List)のListの方からworkspaceの項目Noに一致しているやつの値を取る 
 	 */
-	private static List<Object> getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
+	protected KeyValues getPrimaryKeys(RevisedDataRecord record, DomainWorkspace workspace) {
 		
-		return workspace.getItemsPk().stream()
-				.map(k -> record.getItemByNo(k.getItemNo()).get())
+		return getPrimaryKeyItemNos(workspace).stream()
+				.map(itemNo -> record.getItemByNo(itemNo).get())
 				.map(item -> item.getValue())
+				.collect(Collectors.collectingAndThen(toList(), KeyValues::new));
+	}
+	
+	/**
+	 * 既存データの補正に使用する主キーが格納される項目NOを返す（Workspaceとは別の主キーを指定したければOverrideすること）
+	 * @return
+	 */
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
+		return workspace.getItemsPk().stream()
+				.map(k -> k.getItemNo())
 				.collect(toList());
 	}
 
@@ -82,7 +93,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			IntermediateResult intermResult,
 			KeyValues keyValues) {
 		
-		val domainDataId = createDomainDataId(getParentTableName(), getDomainDataKeys(), keyValues);
+		val domainDataId = DomainDataId.createDomainDataId(getParentTableName(), getDomainDataKeys(), keyValues);
 		boolean exists = require.existsDomainData(domainDataId);
 		
 		// 受け入れず無視するケース
@@ -95,22 +106,31 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 			require.save(context, toDelete(context, workspace, keyValues));
 		}
 		
-		require.save(context, intermResult.complete());
+		require.save(context, canonicalizeExtends(intermResult).complete());
 	}
 	
-	private static AnyRecordToDelete toDelete(
+	/**
+	 * 追加の正準化処理が必要ならoverrideすること
+	 * @param targetContainers
+	 */
+	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
+		return targertResult;
+	}
+
+	private AnyRecordToDelete toDelete(
 			ExecutionContext context,
 			DomainWorkspace workspace,
 			KeyValues keyValues) {
 		
 		val toDelete = AnyRecordToDelete.create(context); 
+		val keys = getPrimaryKeyItemNos(workspace);
 		
-		for (int i = 0; i < workspace.getItemsPk().size(); i++) {
-			val pkItem = workspace.getItemsPk().get(i);
+		for (int i = 0; i < keys.size(); i++) {
+			val pkItemNo = keys.get(i);
 			val keyValue = keyValues.get(i);
 			
 			val stringified = StringifiedValue.create(keyValue);
-			toDelete.addKey(pkItem.getItemNo(), stringified);
+			toDelete.addKey(pkItemNo, stringified);
 		}
 		
 		return toDelete;
@@ -154,7 +174,7 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 		
 		val keys = getDomainDataKeys();
 		return tableNames.stream()
-				.map(tn -> createDomainDataId(tn, keys, keyValues))
+				.map(tn -> DomainDataId.createDomainDataId(tn, keys, keyValues))
 				.collect(toList());
 	}
 	
@@ -194,14 +214,6 @@ public abstract class IndependentCanonicalization implements DomainCanonicalizat
 	public static interface RequireAdjust {
 		
 		void deleteDomainData(DomainDataId id);
-	}
-	
-	protected static DomainDataId createDomainDataId(String tableName, List<DomainDataColumn> keys, KeyValues keyValues) {
-		
-		val builder = DomainDataId.builder(tableName, keyValues);
-		keys.forEach(k -> builder.addKey(k));
-		
-		return builder.build();
 	}
 
 	@Override

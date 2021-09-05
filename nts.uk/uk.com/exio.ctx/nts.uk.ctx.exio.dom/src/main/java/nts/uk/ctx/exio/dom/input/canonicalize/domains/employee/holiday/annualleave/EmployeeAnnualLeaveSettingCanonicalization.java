@@ -1,11 +1,9 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
@@ -15,13 +13,13 @@ import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
- * 積立年休付与残数データ
+ * 社員の年休付与設定
  */
-public class StockHolidayRemainingCanonicalization  extends IndependentCanonicalization{
+public class EmployeeAnnualLeaveSettingCanonicalization extends IndependentCanonicalization {
 
 	@Override
 	protected String getParentTableName() {
-		return "KRCDT_HDSTK_REM";
+		return "KRCMT_HDPAID_BASIC";
 	}
 
 	@Override
@@ -31,17 +29,26 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
-		return Arrays.asList(DomainDataColumn.SID, DomainDataColumn.YMD);
+		return Arrays.asList(DomainDataColumn.SID);
 	}
+	
 	
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public StockHolidayRemainingCanonicalization(DomainWorkspace workspace) {
+	public EmployeeAnnualLeaveSettingCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
-
+	
 	@Override
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
+		return Arrays.asList(100);//SID
+	}
+	
+	/**
+	 * 追加の正準化処理が必要ならoverrideすること
+	 * @param targetContainers
+	 */
 	protected IntermediateResult canonicalizeExtends(IntermediateResult targertResult) {
 		return addFixedItems(targertResult);
 	}
@@ -50,24 +57,12 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	 *  受入時に固定の値を入れる物たち
 	 */
 	private IntermediateResult addFixedItems(IntermediateResult interm) {
-		return interm.addCanonicalized(CanonicalItem.of(100,IdentifierUtil.randomUniqueId()))
-				  .addCanonicalized(CanonicalItem.of(102,GrantRemainRegisterType.MANUAL.value))
-				  .addCanonicalized(CanonicalItem.of(103,0))
-				  .addCanonicalized(CanonicalItem.of(104,0))
-				  .addCanonicalized(CanonicalItem.of(105,0))
-				  .addCanonicalized(CanonicalItem.of(106,0))
-				  .addCanonicalized(CanonicalItem.of(107,0))
-				  .addCanonicalized(CanonicalItem.of(108,0));
-	}
-	
-	@Override
-	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace) {
-		return Arrays.asList(101);//SID
+	    return interm.addCanonicalized(CanonicalItem.nullValue(100), 100)
+	    		    		   .optionalItem(CanonicalItem.of(2, 0));
 	}
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
 		return employeeCodeCanonicalization.appendMeta(source);
 	}
-
 }

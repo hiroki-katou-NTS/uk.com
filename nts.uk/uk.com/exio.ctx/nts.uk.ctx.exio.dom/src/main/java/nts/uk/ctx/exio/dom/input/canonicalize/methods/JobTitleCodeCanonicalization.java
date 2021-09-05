@@ -1,15 +1,12 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.methods;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
-import nts.uk.ctx.exio.dom.input.DataItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.util.Either;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
@@ -41,8 +38,7 @@ public class JobTitleCodeCanonicalization {
 		GeneralDate startDate = revisedData.getItemByNo(itemNoStartDate).get().getDate();
 
 		return getJobTitleId(require, jobTitleCode, startDate, csvRowNo)
-				.map(workplaceId -> canonicalize(revisedData, workplaceId))
-				.mapLeft(error -> error);
+				.map(workplaceId -> canonicalize(revisedData, workplaceId));
 	}
 
 	private static Either<RecordError, String> getJobTitleId(Require require, String jobTitleCode, GeneralDate startDate, int csvRowNo) {
@@ -55,9 +51,7 @@ public class JobTitleCodeCanonicalization {
 
 	private IntermediateResult canonicalize(IntermediateResult canonicalizingData, String jobTitleId) {
 		return canonicalizingData.addCanonicalized(
-				new CanonicalItemList(Arrays.asList(
-						CanonicalItem.of(DataItem.of(itemNoJobTitleId, jobTitleId))
-					)),
+				CanonicalItem.of(itemNoJobTitleId, jobTitleId),
 				itemNoJobTitleCode);
 	}
 

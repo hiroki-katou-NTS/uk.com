@@ -141,6 +141,15 @@ public class IntermediateResult {
 				.orElseGet(() -> itemsNotCanonicalize.getItemByNo(itemNo).map(CanonicalItem::of));
 	}
 	
+	/**
+	 * 指定した項目を受け入れているか
+	 * @param itemNo
+	 * @return
+	 */
+	public boolean isImporting(int itemNo) {
+		return getItemByNo(itemNo).map(e -> e.getValue()).orElse(null) != null;
+	}
+	
 	public CanonicalizedDataRecord complete() {
 		return new CanonicalizedDataRecord(
 				this.rowNo,

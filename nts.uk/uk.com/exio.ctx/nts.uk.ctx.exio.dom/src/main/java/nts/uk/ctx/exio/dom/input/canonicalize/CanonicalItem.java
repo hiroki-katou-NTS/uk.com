@@ -87,7 +87,7 @@ public class CanonicalItem {
 	}
 	
 	public Integer getJavaInt() {
-		return value != null ? (int) value : null;
+		return value != null ? (int) (long) value : null;
 	}
 	
 	public BigDecimal getReal() {

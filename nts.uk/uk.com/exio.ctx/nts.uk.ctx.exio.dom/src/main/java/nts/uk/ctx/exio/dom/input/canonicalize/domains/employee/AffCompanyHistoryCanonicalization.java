@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
@@ -62,6 +64,9 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 					.add(104, 0) // 出向先データである
 					.add(105, "") // 採用区分コード
 					);
+			
+			// 退職日の既定値
+			interm = interm.optionalItem(CanonicalItem.of(3, GeneralDate.ymd(9999, 12, 31)));
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
 		}

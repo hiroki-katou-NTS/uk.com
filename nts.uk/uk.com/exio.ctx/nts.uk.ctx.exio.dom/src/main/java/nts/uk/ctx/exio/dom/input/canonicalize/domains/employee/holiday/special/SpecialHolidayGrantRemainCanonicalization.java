@@ -4,16 +4,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import lombok.val;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItemList;
-import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
@@ -22,31 +18,17 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 /**
  * 特別休暇付与残数データの正準化
  */
-public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndependentCanonicalization implements DomainCanonicalization{
-	
-	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
-	
-	public static SpecialHolidayGrantRemainCanonicalization create(DomainWorkspace workspace) {
-		return new SpecialHolidayGrantRemainCanonicalization(workspace);
-	}
+public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndependentCanonicalization {
 	
 	public SpecialHolidayGrantRemainCanonicalization(DomainWorkspace workspace) {
 		super(workspace);
-		employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
 	
 	@Override
-	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
-		// 社員ごとに正準化
-		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
-			// 1レコードごとに正準化
-			for (val interm : interms) {
-				val keyValues = new KeyValues(getPrimaryKeys(interm, workspace));
-				// 固定値の追加
-				val added = interm.addCanonicalized(getFixedItems());
-				canonicalize(require, context, added, keyValues);
-			}
-		});
+	protected IntermediateResult canonicalizeExtends(
+			DomainCanonicalization.RequireCanonicalize require,
+			ExecutionContext context, IntermediateResult interm) {
+		return interm.addCanonicalized(getFixedItems());
 	}
 	
 	private static CanonicalItemList getFixedItems() {
@@ -61,11 +43,9 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 			.add(105, 0);
 	}
 	
-	private static List<Object> getPrimaryKeys(IntermediateResult record, DomainWorkspace workspace) {
-		return Arrays.asList(
-				record.getItemByNo(workspace.getItemByName("SID").getItemNo()).get().getString(), 
-				record.getItemByNo(workspace.getItemByName("特別休暇コード").getItemNo()).get().getString(), 
-				record.getItemByNo(workspace.getItemByName("付与日").getItemNo()).get().getString());
+	@Override
+	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
+		return Arrays.asList(101);
 	}
 	
 	@Override
@@ -83,11 +63,11 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 		return Arrays.asList(
 				DomainDataColumn.SID, 
 				new DomainDataColumn("SPECIAL_LEAVE_CD", DataType.STRING), 
-				new DomainDataColumn("GRANT_DATE", DataType.DATETIME));
+				new DomainDataColumn("GRANT_DATE", DataType.DATE));
 	}
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return super.appendMeta(source);
+		return super.appendMeta(source).addItem("特別休暇コード").addItem("特別休暇付与日");
 	}
 }

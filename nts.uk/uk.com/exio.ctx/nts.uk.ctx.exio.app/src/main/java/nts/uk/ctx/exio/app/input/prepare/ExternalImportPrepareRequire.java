@@ -12,8 +12,6 @@ import javax.inject.Inject;
 
 import nts.arc.diagnose.stopwatch.embed.EmbedStopwatch;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
@@ -61,6 +59,7 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspaceRepository;
 import nts.uk.ctx.sys.shared.dom.user.User;
 import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.shr.com.company.CompanyId;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -137,17 +136,18 @@ public class ExternalImportPrepareRequire {
 	@Inject
 	private UserRepository userRepo;
 	
-	@Inject
-	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
 	
 	
 	public class RequireImpl implements Require {
 		
-		private final String companyId ;
+		private final String contractCode;
+		
+		private final String companyId;
 		
 		private Map<String, JobTitleInfo> jobTitleInfoCache;
 		
 		public RequireImpl(String companyId) {
+			this.contractCode = CompanyId.getContractCodeOf(companyId);
 			this.companyId = companyId;
 			this.jobTitleInfoCache = new HashMap<>();
 		}
@@ -298,12 +298,13 @@ public class ExternalImportPrepareRequire {
 			return userRepo.getByAssociatedPersonId(personId);
 		}
 
-
 		@Override
-		public Optional<AnnualLeaveEmpBasicInfo> getExistingEmployeeGrantHoliday(String employeeId) {
-			return annLeaEmpBasicInfoRepo.get(employeeId);
+		public Optional<User> getUserByLoginId(String loginId) {
+			return userRepo.getByLoginId(loginId).stream()
+					// 契約コードで絞れば最大１つのはず
+					.filter(u -> u.getContractCode().v().equals(contractCode))
+					.findFirst();
 		}
-
 
 		@Override
 		public Optional<JobTitleInfo> getJobTitleByCode(String jobTitleCode, GeneralDate startdate) {

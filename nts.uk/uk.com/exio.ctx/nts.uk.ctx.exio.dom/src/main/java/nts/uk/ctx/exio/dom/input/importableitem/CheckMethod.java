@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.HalfIntegerPrimitiveValue;
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
 import nts.gul.reflection.ClassReflection;
@@ -32,6 +33,9 @@ public enum CheckMethod {
 			}
 			else if (ClassReflection.isSubclass(pvClass, DecimalPrimitiveValue.class)) {
 				value = new BigDecimal(value.toString());
+			}
+			else if (ClassReflection.isSubclass(pvClass, HalfIntegerPrimitiveValue.class)) {
+				value = new Double(value.toString());
 			}
 			
 			PrimitiveValue<?> pv = (PrimitiveValue<?>) pvClass.getConstructors()[0].newInstance(value);

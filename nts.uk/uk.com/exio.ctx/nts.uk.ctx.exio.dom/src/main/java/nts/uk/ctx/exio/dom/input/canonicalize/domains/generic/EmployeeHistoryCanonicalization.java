@@ -29,6 +29,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordTo;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
@@ -52,7 +53,7 @@ import nts.uk.shr.com.history.DateHistoryItem;
  */
 @Getter
 @ToString
-public abstract class EmployeeHistoryCanonicalization extends IndependentCanonicalization implements DomainCanonicalization {
+public abstract class EmployeeHistoryCanonicalization implements DomainCanonicalization {
 	
 	/** 履歴開始日の項目No */
 	private final int itemNoStartDate;
@@ -70,13 +71,18 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 	private final HistoryType historyType;
 
 	public EmployeeHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
-		super(workspace);
 		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
 		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
 		itemNoHistoryId = workspace.getItemByName("HIST_ID").getItemNo();
 		this.historyType = historyType;
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
 	}
+	
+	protected abstract String getParentTableName();
+	
+	protected abstract List<String> getChildTableNames();
+	
+	protected abstract List<DomainDataColumn> getDomainDataKeys();
 
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
@@ -109,7 +115,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		
 		// 複数レコードあったとしても同じ社員のデータなので、社員IDは先頭レコードから取り出せば良い
 		String employeeId = employeeCanonicalized.get(0)
-				.getItemByNo(itemNoEmployeeId())
+				.getItemByNo(this.getItemNoOfEmployeeId())
 				.get().getString();
 
 		DomainDataId id = new DomainDataId(this.getParentTableName(), Arrays.asList(new DomainDataId.Key(DomainDataColumn.SID, employeeId))); 
@@ -315,20 +321,20 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		});
 	}
 	
-	private List<DomainDataId> toDomainDataIds(AnyRecordToChange toChange) {
+	private List<DomainDataId> toDomainDataIds(AnyRecordTo record) {
 		
-		val keyValues = new KeyValues(toKeyValueObjects(toChange));
+		val keyValues = new KeyValues(toKeyValueObjects(record));
 		
 		List<String> tableNames = new ArrayList<>();
 		tableNames.add(getParentTableName());
 		
 		val keys = getDomainDataKeys();
 		return tableNames.stream()
-				.map(tn -> createDomainDataId(tn, keys, keyValues))
+				.map(tn -> DomainDataId.createDomainDataId(tn, keys, keyValues))
 				.collect(toList());
 	}
 	
-	private List<Object> toKeyValueObjects(AnyRecordToChange toChange) {
+	private List<Object> toKeyValueObjects(AnyRecordTo record) {
 		
 		List<Object> keyValues = new ArrayList<>();
 		
@@ -336,7 +342,7 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		for (int index = 0; index < dataKeys.size(); index++) {
 			val dataKey = dataKeys.get(index);
 			
-			StringifiedValue stringified = SystemImportingItems.getStringifiedValue(toChange, dataKey.getColumnName(), index);
+			StringifiedValue stringified = SystemImportingItems.getStringifiedValue(record, dataKey.getColumnName(), index);
 			
 			Object value;
 			switch (dataKey.getDataType()) {
@@ -421,7 +427,8 @@ public abstract class EmployeeHistoryCanonicalization extends IndependentCanonic
 		}
 	}
 	
-	private int itemNoEmployeeId() {
+	@Override
+	public int getItemNoOfEmployeeId() {
 		return employeeCodeCanonicalization.getItemNoEmployeeId();
 	}
 	
