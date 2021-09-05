@@ -28,6 +28,7 @@ module nts.uk.at.view.kdp002.a {
 
 					self.yearMonth(yearMonth);
 					self.systemDate(sysDate);
+                    self.bindItemData(start.stampDataOfEmployees);
 				});
 				self.workManagementMultiple(workManagementMultiple);
 
@@ -38,7 +39,7 @@ module nts.uk.at.view.kdp002.a {
 						{ headerText: nts.uk.resource.getText('KDP002_31'), key: 'stampHowAndTime', width: 90 },
 						{ headerText: nts.uk.resource.getText('KDP002_32'), key: 'timeStampType', width: 90 }
 					]);
-					self.bindItemData(start.stampDataOfEmployees);
+					//self.bindItemData(start.stampDataOfEmployees);
 				} else if (self.displayMethod() == self.displayType.SHOW_TIME_CARD) {
 					if(workManagementMultiple) {
 						self.columns([
@@ -47,7 +48,7 @@ module nts.uk.at.view.kdp002.a {
 							{ headerText: nts.uk.resource.getText('KDP002_33', ['#Com_WorkIn']), key: 'workIn1', width: 90 },
 							{ headerText: nts.uk.resource.getText('KDP002_34', ['#Com_WorkOut']), key: 'workOut1', width: 100 }
 						]);
-						self.bindItemData(start.timeCard.listAttendances);
+						//self.bindItemData(start.timeCard.listAttendances);
 					} else {
 						self.columns([
 							{ headerText: 'コード', key: 'code', width: 100, hidden: true },
@@ -57,7 +58,7 @@ module nts.uk.at.view.kdp002.a {
 							{ headerText: nts.uk.resource.getText('KDP002_35', ['#Com_WorkIn']), key: 'workIn2', width: 90 },
 							{ headerText: nts.uk.resource.getText('KDP002_36', ['#Com_WorkOut']), key: 'workOut2', width: 110 }
 						]);
-						self.bindItemData(start.timeCard.listAttendances);
+						//self.bindItemData(start.timeCard.listAttendances);
 					}
 				}
 
