@@ -348,7 +348,8 @@ public class DeductionTimeSheet {
 																					Finally.of(BreakClassification.BREAK),
 																					Optional.empty(),
 																					DeductionClassification.BREAK,
-																					Optional.empty());
+																					Optional.empty(),
+																					false);
 	}
 	
 	/**
@@ -411,7 +412,8 @@ public class DeductionTimeSheet {
 				return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(timeSheet,
 						dedTimeSheet.getRounding(), dedTimeSheet.getRecordedTimeSheet(), dedTimeSheet.getDeductionTimeSheet(),
 						dedTimeSheet.getWorkingBreakAtr(), dedTimeSheet.getGoOutReason(), dedTimeSheet.getBreakAtr(), 
-						dedTimeSheet.getShortTimeSheetAtr(), dedTimeSheet.getDeductionAtr(), dedTimeSheet.getChildCareAtr());
+						dedTimeSheet.getShortTimeSheetAtr(), dedTimeSheet.getDeductionAtr(), dedTimeSheet.getChildCareAtr(),
+						dedTimeSheet.isRecordOutside());
 			}).orElse(null);
 		}).filter(c -> c != null).collect(Collectors.toList());
 	}
@@ -527,7 +529,8 @@ public class DeductionTimeSheet {
 				Finally.empty(),
 				decisionShortTimeAtr(attendanceLeaveWork.getTimeLeavingWorks(), sts),
 				DeductionClassification.CHILD_CARE,
-				Optional.of(sts.getChildCareAttr()));
+				Optional.of(sts.getChildCareAttr()),
+				false);
 	}
 	
 	/**
@@ -553,7 +556,8 @@ public class DeductionTimeSheet {
 							timeSheet.getRounding(), timeSheet.getRecordedTimeSheet(), timeSheet.getDeductionTimeSheet(),
 							timeSheet.getWorkingBreakAtr(),
 							timeSheet.getGoOutReason(), timeSheet.getBreakAtr(), 
-							timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr()));
+							timeSheet.getShortTimeSheetAtr(),timeSheet.getDeductionAtr(),timeSheet.getChildCareAtr(),
+							timeSheet.isRecordOutside()));
 
 				}
 				break;
@@ -886,6 +890,11 @@ public class DeductionTimeSheet {
 			// 重複している時間帯を返す
 			val dupCalcRange = timeSheet.getTimeSheet().getDuplicatedWith(timeSpan);
 			if (dupCalcRange.isPresent()) {
+				if(timeSheet.isRecordOutside()) {
+					//「勤務外を計上する==true」の場合には絞り込まない
+					returnList.add(timeSheet.clone());
+					continue;
+				}
 				// 処理中の「控除項目の時間帯」を重複した時間帯で作り直す
 				TimeSheetOfDeductionItem divideStartTime = timeSheet.reCreateOwn(dupCalcRange.get().getTimeSpan().getStart(), false);
 				TimeSheetOfDeductionItem correctAfterTimeSheet = divideStartTime.reCreateOwn(dupCalcRange.get().getTimeSpan().getEnd(), true);

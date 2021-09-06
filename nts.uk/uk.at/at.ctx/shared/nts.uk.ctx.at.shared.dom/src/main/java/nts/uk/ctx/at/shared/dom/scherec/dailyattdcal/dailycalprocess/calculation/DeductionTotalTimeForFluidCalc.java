@@ -163,7 +163,8 @@ public class DeductionTotalTimeForFluidCalc {
 															rounding, new ArrayList<>(), new ArrayList<>(), 
 															WorkingBreakTimeAtr.NOTWORKING, Finally.empty(), 
 															Finally.of(BreakClassification.BREAK), 
-															Optional.empty(), DeductionClassification.BREAK, Optional.empty());
+															Optional.empty(), DeductionClassification.BREAK, Optional.empty(),
+															false);
 	}
 	
 	private Optional<TimeLeavingWork> getLastLeave(TimeLeavingOfDailyAttd timeLeave) {
@@ -350,7 +351,8 @@ public class DeductionTotalTimeForFluidCalc {
 				
 				val breakTime = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(dts.getTimeSheet().getStart(), endTime.get()),
 											dts.getRounding(), new ArrayList<>(), new ArrayList<>(), WorkingBreakTimeAtr.NOTWORKING, Finally.empty(), 
-											Finally.of(BreakClassification.BREAK_STAMP), Optional.empty(), DeductionClassification.BREAK, Optional.empty());
+											Finally.of(BreakClassification.BREAK_STAMP), Optional.empty(), DeductionClassification.BREAK, Optional.empty(),
+											false);
 				deductTimeSheet.add(breakTime);
 				dts.shiftTimeSheet(new TimeSpanForDailyCalc(endTime.get(), dts.getTimeSheet().getEnd()));
 			} else {
