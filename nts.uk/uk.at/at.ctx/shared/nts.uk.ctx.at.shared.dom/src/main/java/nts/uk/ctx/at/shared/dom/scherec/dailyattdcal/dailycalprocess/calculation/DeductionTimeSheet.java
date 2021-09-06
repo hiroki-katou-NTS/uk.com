@@ -1109,4 +1109,72 @@ public class DeductionTimeSheet {
 			return new TimeSpanForDailyCalc(endOclock, oneDayRange.getTimeSpan().getEnd());
 		}
 	}
+	
+	/**
+	 * 指定条件の時間帯部分を除く
+	 * @param deductionAtr 控除区分
+	 * @param deductionClass 控除種別
+	 * @param timeSpan 時間帯
+	 * @return 控除時間帯
+	 */
+	public DeductionTimeSheet exceptTimeSheet(
+			DeductionAtr deductionAtr,
+			DeductionClassification deductionClass,
+			TimeSpanForDailyCalc timeSpan){
+
+		// 処理後控除用リスト
+		List<TimeSheetOfDeductionItem> afterDudList = this.forDeductionTimeZoneList;
+		// 処理後計上用リスト
+		List<TimeSheetOfDeductionItem> afterRecList = this.forRecordTimeZoneList;
+		switch (deductionAtr){
+		case Deduction:
+			afterDudList = this.getTimeSheetListExceptTimeSheet(DeductionAtr.Deduction, deductionClass, timeSpan);
+			break;
+		case Appropriate:
+			afterRecList = this.getTimeSheetListExceptTimeSheet(DeductionAtr.Appropriate, deductionClass, timeSpan);
+			break;
+		}
+		return new DeductionTimeSheet(
+				afterDudList,
+				afterRecList,
+				this.breakTimeOfDailyList,
+				this.dailyGoOutSheet,
+				this.shortTimeSheets);
+	}
+	
+	/**
+	 * 指定条件の時間帯部分を除いた時間帯リストを取得
+	 * @param deductionAtr 控除区分
+	 * @param deductionClass 控除種別
+	 * @param timeSpan 時間帯
+	 * @return 結果時間帯リスト
+	 */
+	private List<TimeSheetOfDeductionItem> getTimeSheetListExceptTimeSheet(
+			DeductionAtr deductionAtr,
+			DeductionClassification deductionClass,
+			TimeSpanForDailyCalc timeSpan){
+	
+		// 対象時間帯リスト
+		List<TimeSheetOfDeductionItem> target = this.forDeductionTimeZoneList;
+		if (deductionAtr == DeductionAtr.Appropriate) target = this.forRecordTimeZoneList;
+		// 結果時間帯リスト
+		List<TimeSheetOfDeductionItem> result = new ArrayList<>();
+		
+		result.addAll(target.stream()
+				.filter(c -> !c.getDeductionAtr().equals(deductionClass)).collect(Collectors.toList()));
+		
+		// 対象種別時間帯リスト
+		List<TimeSheetOfDeductionItem> targetClass = target.stream()
+				.filter(c -> c.getDeductionAtr().equals(deductionClass)).collect(Collectors.toList());
+		for (TimeSheetOfDeductionItem targetItem : targetClass){
+			// 重複外時間帯リスト
+			List<TimeSpanForDailyCalc> notDupList = targetItem.getTimeSheet().getNotDuplicationWith(timeSpan);
+			result.addAll(notDupList.stream()
+							.map(c -> targetItem.cloneWithNewTimeSpan(Optional.of(c))).collect(Collectors.toList()));
+		}
+		
+		return result.stream()
+				.sorted((a, b) -> a.getTimeSheet().getStart().compareTo(b.getTimeSheet().getStart()))
+				.collect(Collectors.toList());
+	}
 }

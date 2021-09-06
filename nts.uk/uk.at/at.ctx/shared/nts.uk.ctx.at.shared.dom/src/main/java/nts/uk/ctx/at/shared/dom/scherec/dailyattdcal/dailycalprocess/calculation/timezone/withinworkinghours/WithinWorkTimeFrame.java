@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ActualWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.FlexWithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
@@ -602,6 +603,14 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		deductForWithin.getForDeductionTimeZoneList().addAll(ootsukaBreak);
 		deductForWithin.getForRecordTimeZoneList().addAll(ootsukaBreak);
 
+		// フレックス勤務日かどうか
+		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().isFlexWorkDay(
+				personDailySetting.getPersonInfo()) == true){
+			// コア内の外出時間帯を控除する
+			deductForWithin = FlexWithinWorkTimeSheet.deductGoOutSheetWithinCore(
+					integrationOfWorkTime, deductForWithin);
+		}
+		
 		// 控除時間帯の登録
 		result.registDeductionListForWithin(deductForWithin, Optional.of(integrationOfWorkTime.getCommonSetting()));
 
