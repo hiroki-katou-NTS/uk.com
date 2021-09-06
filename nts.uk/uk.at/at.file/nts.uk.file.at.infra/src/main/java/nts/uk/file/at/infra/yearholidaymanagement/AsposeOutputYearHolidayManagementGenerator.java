@@ -661,23 +661,23 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 							.map(this::genTimeText)
 							.collect(Collectors.toList());
 					
-					if (holidayInfo != null && 
-							holidayInfo.getLstGrantInfor().stream().anyMatch(item -> item.getGrantMinutes().v() > 0)) {
-						int newLineCount = ((int) Math.ceil(dateList.size() / 15.0)) * 2;
-						if (newLineCount > dataLine.get(1)) {
-							dataLine.set(1, newLineCount);
-						}
-						for (int j = 0; j < dateList.size(); j++) {
-							cells.get(holidayDetailRow, holidayDetailCol).setValue(dateList.get(j));
-							cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(hourList.get(j));
-							if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
-								holidayDetailRow += 2;
-								holidayDetailCol = MIN_GRANT_DETAIL_COL;
-							} else {
-								holidayDetailCol++;
-							}
+//					if (holidayInfo != null && 
+//							holidayInfo.getLstGrantInfor().stream().anyMatch(item -> item.getGrantMinutes().v() > 0)) {
+					int newLineCount = ((int) Math.ceil(dateList.size() / 15.0)) * 2;
+					if (newLineCount > dataLine.get(1)) {
+						dataLine.set(1, newLineCount);
+					}
+					for (int j = 0; j < dateList.size(); j++) {
+						cells.get(holidayDetailRow, holidayDetailCol).setValue(dateList.get(j));
+						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(hourList.get(j));
+						if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
+							holidayDetailRow += 2;
+							holidayDetailCol = MIN_GRANT_DETAIL_COL;
+						} else {
+							holidayDetailCol++;
 						}
 					}
+//					}
 					currentRow = currentRow + dataLine.get(1);
 					isBlueBackground = this.setRowStyle(cells, currentRow, dataLine.get(1), isBlueBackground, isManageTime, true);
 				}
