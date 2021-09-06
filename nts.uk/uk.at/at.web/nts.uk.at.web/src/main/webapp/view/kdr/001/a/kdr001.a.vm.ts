@@ -495,10 +495,12 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             let params = new PramToScrrenB(settingId, id);
             setShared('KDR001Params', params);
             modal("/view/kdr/001/b/index.xhtml").onClosed(function () {
-                self.freeCode(getShared('KDR001B2A_cd'));
-                self.standardCode(getShared('KDR001B2A_cd'));
+                let id = getShared('KDR001B2A_cd');
+
                 service.findAll().done(function (data: Array<any>) {
                     self.loadAllHolidayRemaining(data);
+                    self.freeCode(id);
+                    self.standardCode(id);
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alertError({messageId: res.messageId});
                 }).always(() => {
