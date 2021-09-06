@@ -418,38 +418,29 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return dtoCheck;
         }
         boolean yearlyHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
-        boolean insideHours = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHours();
-        boolean insideHalfDay = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHalfDay();
         if (!(yearlyHoliday )) {
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
         }
-        if ((yearlyHoliday && !insideHours && !insideHalfDay)) {
-            dtoCheck.setFirstRow(firstRow);
-            return dtoCheck;
-        }
-        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) && insideHours;
-        int totalAddRows = isTime & insideHalfDay ? 4 : 2 ;
+
+        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement());
+        int totalAddRows = isTime ? 4 : 2 ;
 
         int row23 =0;
         int row24 =0;
         int row33 =0;
         int row34 =0;
-        if(isTime && insideHalfDay){
+        if(isTime){
              row23 =0;
              row24 =1;
              row33 =2;
              row34 =3;
         }
-        if(isTime && !insideHalfDay){
-            row24 = 0;
-            row34 = 1;
-        }
-        if(!isTime && insideHalfDay){
+
+        if(!isTime){
             row23 =0;
             row33 =1;
         }
-
         if (count >= MAX_ROW_IN_PAGE || MAX_ROW_IN_PAGE - count < totalAddRows) {
             printEmployeeInfore(cells, firstRow - (count - 6 - countEmployeeBefore), dataSource, employee);
             for (int i = 0; i < NUMBER_COLUMN; i++) {
@@ -476,7 +467,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 1, firstRow, totalAddRows);
         // E1_1
         cells.get(firstRow, 2).setValue(TextResource.localize("KDR001_13"));
-        if(!isTime || (isTime && !insideHalfDay)){
+        if(!isTime){
             Style styleCopy = cells.get(firstRow, 10).getStyle();
             cells.get(firstRow, 9).setStyle(styleCopy);
 
@@ -534,7 +525,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 ? TextResource.localize("KDR001_15")
                 : "";
 
-        cells.get(firstRow + (isTime & insideHalfDay ? 2 : 1), 9).setValue(text);
+        cells.get(firstRow + (isTime  ? 2 : 1), 9).setValue(text);
         if (listAnnLeaGrant != null) {
             for (int i = 0; i < listAnnLeaGrant.size(); i++) {
                 if (i >= 2) {
@@ -607,7 +598,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         List<AggrResultOfAnnualLeaveEachMonthKdr> rs363New = hdRemainingInfor.getRs363New();
         if (dataSource != null && listAnnLeaveUsageStatusOfThisMonth != null) {
             // E1_4
-            if(insideHalfDay){
+
                 val valueE14 = listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getRemainDay).sum();
                 Double leave_DaysRemain = checkShowAreaAnnualBreak1(
                         dataSource.getHolidaysRemainingManagement()) ?
@@ -664,14 +655,14 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 if (number_date_remain != null && number_date_remain < 0) {
                     setForegroundRed(cells.get(firstRow, 7));
                 }
-            }
+
             // E1_13; SUM VALUE 281
             if(isTime){
                 Double valueE113 = listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getRemainTime).sum();
                 Double leave_Hours = isTime ?
                         valueE113 : null;
                 val e113 = leave_Hours != null ? convertToTime((int) (leave_Hours.doubleValue())) : "";
-                cells.get(firstRow + (insideHalfDay ? 1 :0), 5).setValue((e113));
+                cells.get(firstRow +  1 , 5).setValue((e113));
                 if (leave_Hours != null && leave_Hours < 0) {
                     setForegroundRed(cells.get(firstRow + 1, 5));
                 }
@@ -706,7 +697,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 val valueE114 = use_after_grant_time;
                 Double uses_Hours = valueE114 ;
                 val e114 = uses_Hours != null ? convertToTime(uses_Hours.intValue()) : "";
-                cells.get(firstRow +  (insideHalfDay ? 1 :0), 6).setValue(e114);
+                cells.get(firstRow +  1 , 6).setValue(e114);
                 // E1_15
                 // 年休_残数_時間 :月度残時間
                 // 月度残時間 = 年月毎年休の集計結果．年休の集計結果．年休情報(期間終了日時点)．残数．年休(マイナスあり)．残数．付与前
@@ -716,9 +707,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                                 .getRemainingNumberBeforeGrant().getTotalRemainingTime()).mapToDouble(e -> e.isPresent() && e != null ? e.get().v() : 0).sum();
                 Double leave_RemainHours =  valueE115;
                 val e115 = leave_RemainHours != null ? convertToTime(leave_RemainHours.intValue()) : "";
-                cells.get(firstRow +  (insideHalfDay ? 1 :0), 7).setValue(e115);
+                cells.get(firstRow +   1 , 7).setValue(e115);
                 if (leave_RemainHours != null && leave_RemainHours < 0) {
-                    setForegroundRed(cells.get(firstRow +  (insideHalfDay ? 1 :0), 7));
+                    setForegroundRed(cells.get(firstRow +   1 , 7));
                 }
             }
         }
@@ -745,7 +736,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 if (maxRange < totalMonth || totalMonth < 0) {
                     continue;
                 }
-                if(insideHalfDay){
+
                     val value23 = item.getUsedDays() == 0 ? null : item.getUsedDays();
                     Double e23 = checkShowAreaAnnualBreak1(
                             dataSource.getHolidaysRemainingManagement()) ?
@@ -754,7 +745,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     val vl23 = e23 != null && e23 != 0 ? df.format(e23.doubleValue()) : "";
                     cells.get(firstRow +row23, 10 + totalMonth)
                             .setValue(vl23);
-                }
+
                 if(isTime){
                     // E2_4:月度使用時間 Update KDR ver 15
                     val value24 = item.getUsedTime();
@@ -763,7 +754,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     cells.get(firstRow + +row24, 10 + totalMonth)
                             .setValue(e24);
                 }
-                if(insideHalfDay){
+
                     // E3_3 当月より前
                     val valueE33 = item.getRemainingDays();
                     val e33 = checkShowAreaAnnualBreak1(dataSource.getHolidaysRemainingManagement()) ?
@@ -774,7 +765,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
                     if (valueE33 != null && valueE33 < 0) {
                         setForegroundRed(cells.get(firstRow + row33, 10 + totalMonth));
-                    }
+
                 }
                 if(isTime){
                     val valueE34 = item.getRemainingTime();
@@ -810,7 +801,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                             .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
                             .getUsedNumberBeforeGrant().getUsedDays();
 
-                    if ( insideHalfDay && checkShowAreaAnnualBreak1(
+                    if (  checkShowAreaAnnualBreak1(
                             dataSource.getHolidaysRemainingManagement())) {
                         Double value23bf = null;
                         if (use_date363opt.isPresent()) {
@@ -852,7 +843,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         }
 
                     }
-                    if(insideHalfDay){
                         // E3_3 当月以降 : 月度残日数
                         val value33 = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                 .getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo()
@@ -871,8 +861,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         if (e33 != null && e33 < 0) {
                             setForegroundRed(cells.get(firstRow + row33, 10 + totalMonth));
                         }
-                    }
-
                     // E2_4
                     if (isTime) {
                         val use_time255 = listPerMonth.stream().mapToDouble(AnnualLeaveUsageImported::getUsedTime).sum();
@@ -929,7 +917,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     }
                 }
                 if (item.getYearMonth().compareTo(currentMonth) > 0) {
-                    if(insideHalfDay){
+
                         //E2_3 年休使用日数 実績値: 月度使用日数;
                         val value23 = item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
                                 .getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumberInfo()
@@ -954,7 +942,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         if (e23 != null && e23 < 0) {
                             setForegroundRed(cells.get(firstRow + row23, 10 + totalMonth));
                         }
-                    }
 
                     if(isTime){
                         //E2_4: 月度使用時間
@@ -977,10 +964,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         // Update KDR 001 : 値＝(クリア)/背景色＝グレー;
                         setBackgroundGray(cells.get(firstRow + row34, 10 + totalMonth));
                     }
-                    if(insideHalfDay){
                         // Update KDR 001 : 値＝(クリア)/背景色＝グレー;
                         setBackgroundGray(cells.get(firstRow + row33, 10 + totalMonth));
-                    }
                 }
             }
         }
