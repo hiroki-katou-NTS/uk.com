@@ -515,7 +515,10 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                     }
                 }
                 else {
-                    service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
+                    if (param.workplace === undefined || param.workplace.workpalceId === undefined) {
+                        self.update(param);
+                    }else {
+                        service.checkWorkplace({ workplaceID: param.workplace.workpalceId })
                         .done((data: any) => {
                             self.update(param);
                         })
@@ -531,6 +534,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                     })
                             }
                         })
+                    }
                 }
             }
         }
