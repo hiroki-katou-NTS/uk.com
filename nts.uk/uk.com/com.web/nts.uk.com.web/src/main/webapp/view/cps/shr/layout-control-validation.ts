@@ -1109,10 +1109,16 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
+                                let possibleItems = _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue);
+                                possibleItems.sort();
                                 setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false:true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
-                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                setShared("KDL002_SelectedItemId", 
+                                    _.isNil(workType.data.value()) 
+                                    ? (workType.data.required && possibleItems.length > 0 ? possibleItems[0] : []) 
+                                    : [workType.data.value()], 
+                                    true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1166,10 +1172,16 @@ module nts.layout {
                                         }
                                     });
                                 } else {
+                                    let possibleItems = _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue);
+                                    possibleItems.sort();
                                     setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false: true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
-                                    setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                    setShared("KDL002_SelectedItemId", 
+                                        _.isNil(workType.data.value()) 
+                                        ? (workType.data.required && possibleItems.length > 0 ? possibleItems[0] : []) 
+                                        : [workType.data.value()], 
+                                        true);
                                     setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                     modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
