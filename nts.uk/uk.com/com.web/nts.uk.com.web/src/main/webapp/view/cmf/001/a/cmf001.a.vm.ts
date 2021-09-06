@@ -19,14 +19,6 @@ module nts.uk.com.view.cmf001.a {
                 let self = this;
                 nts.uk.request.jump("/view/cmf/001/b/index.xhtml");
             }
-            
-            /**
-             * request to reference history screen
-             */
-            referenceHistoryScreen(): void {
-                let self = this;
-               nts.uk.request.jump("/view/cmf/001/s/index.xhtml");
-            }
         }
     }
 }
