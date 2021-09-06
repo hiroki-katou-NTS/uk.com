@@ -2443,7 +2443,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		
 		boolean colorWhite = true; // true = white, false = light blue, start with white row
 		
-		List<MonthlyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData();
+		List<MonthlyPersonalPerformanceData> employeeReportData = rootWorkplace.getLstDailyPersonalData().stream()
+				.sorted(Comparator.comparing(MonthlyPersonalPerformanceData::getEmployeeCode))
+				.collect(Collectors.toList());
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
 			boolean isPrintWplTitle = false;
 			// rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
