@@ -139,7 +139,7 @@ module nts.uk.ui.ktg001.a {
                                     <!-- /ko -->
                                     <td>
                                         <!-- A3_5 -->
-                                        <div style="width: 37px;" data-bind="text: day.name"></div>
+                                        <div style="width: 70px;" data-bind="text: day.name"></div>
                                     </td>
                                 </tr>
                             <!-- /ko -->
@@ -169,7 +169,7 @@ module nts.uk.ui.ktg001.a {
                                     <!-- /ko -->
                                     <td>
                                         <!-- A4_5 -->
-                                        <div style="width: 37px;" data-bind="text: month.name"></div>
+                                        <div style="width: 70px;" data-bind="text: month.name"></div>
                                  	</td>
                                 </tr>
                             <!-- /ko -->
