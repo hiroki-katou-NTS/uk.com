@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -116,7 +115,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		static final int TARGET_DATE = 2;
 		
 		// 日付不明
-		static final int TARGET_DATE_UNKNOWN = 101;
+		static final int TARGET_DATE_UNKNOWN = 102;
 	}
 	
 	private int itemNoEmployeeCode() {
