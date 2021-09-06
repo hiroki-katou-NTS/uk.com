@@ -29,10 +29,11 @@ var records;
 var sources;
 
 class record {
-	constructor(recordNo, tableName, explanation, sourceId, removeDuplicate) {
+	constructor(recordNo, tableName, explanation, whereCondition, sourceId, removeDuplicate) {
 		this.recordNo = recordNo;
 		this.tableName = tableName;
 		this.explanation = explanation;
+		this.whereCondition = whereCondition;
 		this.sourceId = sourceId;
 		this.removeDuplicate = removeDuplicate;
 	}
@@ -159,6 +160,7 @@ $(function(){
 						value.recordNo,
 						value.tableName,
 						value.explanation,
+						value.whereCondition,
 						value.sourceId,
 						value.removeDuplicate);
 			});
@@ -218,6 +220,7 @@ $(function(){
 		$("#selDateType").val(selectedSource.dateType);
 
 		$("#txtRecordName").val(selectedRecord.explanation);
+		$("#txtRecordCondition").val(selectedRecord.whereCondition);
 
 		$("#chkRemoveDuplicate").prop('checked', selectedRecord.removeDuplicate);
 	});
