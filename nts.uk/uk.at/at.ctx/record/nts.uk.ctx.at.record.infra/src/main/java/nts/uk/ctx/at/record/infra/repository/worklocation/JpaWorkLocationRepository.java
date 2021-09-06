@@ -121,11 +121,13 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			oldData.get().radius = newData.radius;
 			oldData.get().latitude = newData.latitude;
 			oldData.get().longitude = newData.longitude;
-			oldData.get().krcmtWorkplacePossible = new KrcmtWorkplacePossible(
-					new KrcmtWorkplacePossiblePK(newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.contractCode,
-							newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.workLocationCD,
-							newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid),
-					workLocation.getWorkplace().map(m -> m.getWorkpalceId()).orElse(null));
+			if (oldData.get().krcmtWorkplacePossible != null) {
+				oldData.get().krcmtWorkplacePossible = new KrcmtWorkplacePossible(
+						new KrcmtWorkplacePossiblePK(newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.contractCode,
+								newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.workLocationCD,
+								newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid),
+						workLocation.getWorkplace().map(m -> m.getWorkpalceId()).orElse(null));
+			}
 			oldData.get().krcmtIP4Address = newData.krcmtIP4Address;
 			this.commandProxy().update(oldData.get());
 
