@@ -174,10 +174,8 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		};
 		
 		//Act
-		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
-				ScheduleDailyTableWorkplaceCounterService.class
-				,	"aggregate", require
-				,	workplaceCounter, targetTotalList);
+		List<WorkplaceCounterTimesNumberCounterResult> result = ScheduleDailyTableWorkplaceCounterService
+				.aggregate(require, workplaceCounter, targetTotalList);
 		
 		//Assert
 		assertThat(result)
