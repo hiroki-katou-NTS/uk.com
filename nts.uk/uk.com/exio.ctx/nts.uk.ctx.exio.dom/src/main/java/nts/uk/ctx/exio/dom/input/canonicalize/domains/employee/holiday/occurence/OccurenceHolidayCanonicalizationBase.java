@@ -45,8 +45,12 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 					errors.forEach(error -> require.add(context, ExternalImportError.of(error)));
 				})
 				.ifRight(interms -> {
-					saveToDelete(require, context, interms);
-					interms.forEach(interm -> canonicalizeRecord(require, context, interm));
+					interms.forEach(interm -> {
+						if(interm.getRowNo() == 1) {
+							saveToDelete(require, context, interm);
+						}
+						canonicalizeRecord(require, context, interm);
+					});
 				});
 		}
 	}
@@ -60,18 +64,15 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 	private void saveToDelete(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
-			Stream<IntermediateResult> interms) {
+			IntermediateResult interm) {
+			
+		int itemNo = getItemNoOfEmployeeId();
+		String employeeId = interm.getItemByNo(itemNo).get().getString();
 		
-		interms.findFirst().ifPresent(interm -> {
-			
-			int itemNo = getItemNoOfEmployeeId();
-			String employeeId = interm.getItemByNo(itemNo).get().getString();
-			
-			val toDelete = AnyRecordToDelete.create(context)
-					.addKey(itemNo, StringifiedValue.of(employeeId));
-			
-			require.save(context, toDelete);
-		});
+		val toDelete = AnyRecordToDelete.create(context)
+				.addKey(itemNo, StringifiedValue.of(employeeId));
+		
+		require.save(context, toDelete);
 	}
 
 	private void canonicalizeRecord(

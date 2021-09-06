@@ -1,8 +1,7 @@
-package nts.uk.ctx.exio.dom.input.canonicalize.domains;
+package nts.uk.ctx.exio.dom.input.canonicalize.domains.generic;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

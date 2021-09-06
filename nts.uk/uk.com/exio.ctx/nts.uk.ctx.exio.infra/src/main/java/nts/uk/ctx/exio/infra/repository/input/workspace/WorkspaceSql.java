@@ -138,7 +138,7 @@ public class WorkspaceSql {
 					.map(item -> item.getName())
 					.collect(Collectors.joining(", "));
 			
-			sql.append("constraint ").append(pkName).append(" primary key nonclustered (").append(keys).append(")");
+			sql.append("constraint ").append(pkName).append(" primary key nonclustered (").append(CommonColumns.ROW_NO.name).append(")");
 		}
 		
 		void columnCommonColumns() {
