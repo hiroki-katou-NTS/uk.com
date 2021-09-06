@@ -11,11 +11,13 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.DataItemList;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataId;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.errors.ItemError;
+import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
 
 /**
@@ -28,8 +30,11 @@ public class ImportingMapping {
 	private List<ImportingItemMapping> mappings;
 
 
+	/**
+	 * マッピング一覧の値を更新する
+	 * @param itemList
+	 */
 	public void merge(List<Integer> itemList) {
-
 
 		List<ImportingItemMapping> newMappings = new ArrayList<>();
 
@@ -49,8 +54,12 @@ public class ImportingMapping {
 
 		mappings.addAll(newMappings);
 
-
 	}
+	/**
+	 * 新しくマッピングを作ったときに初期値を設定する
+	 * @param items
+	 * @return
+	 */
 
 	public static ImportingMapping defaultSet(List<Integer> items){
 
@@ -58,8 +67,10 @@ public class ImportingMapping {
 			.map(item -> ImportingItemMapping.noSetting(item))
 			.collect(Collectors.toList());
 
+
 		return new ImportingMapping(list);
 	}
+
 
 
 	/**

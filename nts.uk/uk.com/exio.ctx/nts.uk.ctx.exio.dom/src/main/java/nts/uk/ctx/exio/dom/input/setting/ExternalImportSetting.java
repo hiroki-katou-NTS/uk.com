@@ -45,10 +45,20 @@ public class ExternalImportSetting implements DomainAggregate {
 	/** 組立方法 */
 	private ExternalImportAssemblyMethod assembly;
 
+	/**
+	 * マッピングを更新する
+	 * @param itemList
+	 */
+
 	public void merge(List<Integer> itemList) {
 		this.assembly.merge(itemList);
 	}
 
+	/**
+	 * ドメインが変更されたのでマッピングを作り直す
+	 * @param domainId
+	 * @param items
+	 */
 	public void changeDomain(ImportingDomainId domainId, List<Integer> items) {
 		externalImportDomainId = domainId;
 		assembly = ExternalImportAssemblyMethod.create(assembly.getCsvFileInfo(), items);

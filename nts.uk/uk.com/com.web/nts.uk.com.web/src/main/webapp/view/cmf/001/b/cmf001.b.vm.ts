@@ -21,7 +21,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		}
 	}
 	function deleteButton(deletable, data) {
-		if (deletable === "true") {
+		if (deletable) {
 				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">delete</button>';
 		} else {
 				return '';
@@ -145,7 +145,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.selectedCode("");
 			self.setInfo(SettingInfo.new());
 			self.isNewMode(true);
-			self.checkError();
 		}
 
 		updateMode(){
@@ -308,7 +307,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
-			this.deletable = deletable;
+			this.deletable = !required;
 			this.type = type;
 			this.source = source;
 			this.alreadyDetail = alreadyDetail;
