@@ -368,6 +368,7 @@ $(function(){
 				recordNo,
 				table,
 				explanation,
+				recordCondition,
 				sourceId,
 				removeDuplicate));
 
