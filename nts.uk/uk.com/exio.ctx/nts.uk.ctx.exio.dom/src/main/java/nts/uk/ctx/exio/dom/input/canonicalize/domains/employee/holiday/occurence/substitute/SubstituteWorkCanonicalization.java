@@ -5,6 +5,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.OccurenceHolidayCanonicalizationBase;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
+import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -23,7 +24,9 @@ public class SubstituteWorkCanonicalization extends OccurenceHolidayCanonicaliza
 		
 		return interm
 				// 振休消化区分
-				.addCanonicalized(CanonicalItem.of(100, 0));
+				.addCanonicalized(CanonicalItem.of(103, 0))
+				// 法定内外区分
+				.addCanonicalized(CanonicalItem.of(105, 0));
 	}
 	
 	public static interface RequireAdjust {
@@ -34,5 +37,9 @@ public class SubstituteWorkCanonicalization extends OccurenceHolidayCanonicaliza
 	protected void deleteExistingData(OccurenceHolidayCanonicalizationBase.RequireAdjust require, String employeeId) {
 		require.deleteAllPayoutManagementData(employeeId);
 	}
-
+	
+	@Override
+	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
+		return super.appendMeta(source).addItem("振出データID");
+	}
 }
