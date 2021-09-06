@@ -60,18 +60,21 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 				.collect(Collectors.groupingBy(e -> e.pk.getTargetTableName()));
 		
 		List<ConversionTable> results = new ArrayList<>();
+		ConversionInfo info = new ConversionInfo(type, "", "", "" , "", "", "", "", cct);
 		
 		for (val entry : entitiesByTable.entrySet()) {
 			
 			String targetTableName = entry.getKey();
-			val entitiesOfTable = entry.getValue();
-			
-			ConversionInfo info = new ConversionInfo(type, "", "", "" , "", "", "", "", cct);
-			List<OneColumnConversion> columns = entitiesOfTable.stream()
+			val records = entry.getValue().stream()
+					.collect(Collectors.groupingBy(r -> r.pk.getRecordNo()));
+
+			for(val record : records.entrySet()) {
+				List<OneColumnConversion> columns = record.getValue().stream()
 					.map(entity -> entity.toDomain(info, info.getJoin(source)))
 					.collect(Collectors.toList());
-			
-			results.add(ScvmtConversionTable.toDomain(targetTableName, info, columns, source));
+
+				results.add(ScvmtConversionTable.toDomain(targetTableName, info, columns, source));
+			}
 		}
 
 		return results;
