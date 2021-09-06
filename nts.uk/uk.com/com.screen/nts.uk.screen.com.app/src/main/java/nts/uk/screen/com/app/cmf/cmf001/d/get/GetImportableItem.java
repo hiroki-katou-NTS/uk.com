@@ -12,16 +12,20 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 
 @Stateless
 public class GetImportableItem {
-	
+
 	@Inject
 	private GetImportableItemRequire require;
-	
+
 	public List<ImportableItemDto> get(int importingDomainId) {
 		val require = this.require.create();
+
 		val importableItems = require.getImportableItems(ImportingDomainId.valueOf(importingDomainId));
-		return importableItems.stream().map(d -> ImportableItemDto.fromDomain(d)).collect(Collectors.toList());
+
+		return importableItems.stream()
+				.map(d -> ImportableItemDto.fromDomain(d))
+				.collect(Collectors.toList());
 	}
-	
+
 	public static interface Require {
 		List<ImportableItem> getImportableItems(ImportingDomainId domainId);
 	}

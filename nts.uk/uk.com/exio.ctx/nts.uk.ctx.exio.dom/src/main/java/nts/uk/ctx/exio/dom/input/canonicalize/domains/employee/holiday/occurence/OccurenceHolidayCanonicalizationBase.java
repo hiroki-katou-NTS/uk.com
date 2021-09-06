@@ -1,7 +1,7 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -45,12 +45,13 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 					errors.forEach(error -> require.add(context, ExternalImportError.of(error)));
 				})
 				.ifRight(interms -> {
-					saveToDelete(require, context, interms);
-					interms.forEach(interm -> canonicalizeRecord(require, context, interm));
+					List<IntermediateResult> intermsList = interms.collect(Collectors.toList());
+					saveToDelete(require, context, intermsList);
+					intermsList.forEach(interm -> canonicalizeRecord(require, context, interm));
 				});
 		}
 	}
-
+	
 	/**
 	 * 対象社員のデータを全て削除するための補正データを保存する
 	 * @param require
@@ -60,20 +61,19 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 	private void saveToDelete(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
-			Stream<IntermediateResult> interms) {
-		
-		interms.findFirst().ifPresent(interm -> {
+			List<IntermediateResult> intermsList) {
 			
+		if(intermsList.size() >= 1) {
 			int itemNo = getItemNoOfEmployeeId();
-			String employeeId = interm.getItemByNo(itemNo).get().getString();
+			String employeeId = intermsList.get(0).getItemByNo(itemNo).get().getString();
 			
 			val toDelete = AnyRecordToDelete.create(context)
 					.addKey(itemNo, StringifiedValue.of(employeeId));
 			
 			require.save(context, toDelete);
-		});
+		}
 	}
-
+	
 	private void canonicalizeRecord(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
@@ -115,7 +115,7 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 		static final int TARGET_DATE = 2;
 		
 		// 日付不明
-		static final int TARGET_DATE_UNKNOWN = 101;
+		static final int TARGET_DATE_UNKNOWN = 102;
 	}
 	
 	private int itemNoEmployeeCode() {

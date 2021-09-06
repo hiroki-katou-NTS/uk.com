@@ -58,24 +58,17 @@ public class JpaConversionRecodeRepository extends JpaRepository implements Conv
 
 	@Override
 	public void insert(ConversionRecord domain) {
-		ScvmtConversionRecordPk pk = new ScvmtConversionRecordPk(
-				domain.getCategoryName(),
-				domain.getTableName(),
-				domain.getRecordNo()
-			);
-
-		ScvmtConversionRecord entity = new ScvmtConversionRecord(
-				pk,
-				domain.getSourceId(),
-				domain.getExplanation(),
-				domain.isRemoveDuplicate()
-			);
-
+		ScvmtConversionRecord entity = toEntity(domain);
 		this.commandProxy().insert(entity);
 	}
 
 	@Override
 	public void update(ConversionRecord domain) {
+		ScvmtConversionRecord entity = toEntity(domain);
+		this.commandProxy().update(entity);
+	}
+
+	private ScvmtConversionRecord toEntity(ConversionRecord domain) {
 		ScvmtConversionRecordPk pk = new ScvmtConversionRecordPk(
 				domain.getCategoryName(),
 				domain.getTableName(),
@@ -86,10 +79,10 @@ public class JpaConversionRecodeRepository extends JpaRepository implements Conv
 				pk,
 				domain.getSourceId(),
 				domain.getExplanation(),
+				domain.getWhereCondition(),
 				domain.isRemoveDuplicate()
 			);
-
-		this.commandProxy().update(entity);
+		return entity;
 	}
 
 	@Override

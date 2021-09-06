@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
@@ -16,13 +17,27 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
 @Getter
 @AllArgsConstructor
 public class ExternalImportAssemblyMethod {
-	
+
 	/** CSVファイル情報 */
+	@Setter
 	private ExternalImportCsvFileInfo csvFileInfo;
-	
+
 	/** マッピング */
 	private ImportingMapping mapping;
-	
+
+	public void merge(List<Integer> itemList) {
+		mapping.merge(itemList);
+	}
+
+
+
+	public static ExternalImportAssemblyMethod create(ExternalImportCsvFileInfo csvFileInfo, List<Integer> items){
+
+		return new ExternalImportAssemblyMethod(csvFileInfo,
+				ImportingMapping.defaultSet(items));
+
+	}
+
 	/**
 	 * 組み立てる
 	 * @param require
@@ -33,11 +48,11 @@ public class ExternalImportAssemblyMethod {
 	public Optional<RevisedDataRecord> assemble(Require require, ExecutionContext context, CsvRecord csvRecord){
 		return mapping.assemble(require, context, csvRecord);
 	}
-	
+
 	public List<Integer> getAllItemNo() {
 		return mapping.getAllItemNo();
 	}
-	
+
 	public interface Require extends ImportingMapping.RequireAssemble {
 	}
 }
