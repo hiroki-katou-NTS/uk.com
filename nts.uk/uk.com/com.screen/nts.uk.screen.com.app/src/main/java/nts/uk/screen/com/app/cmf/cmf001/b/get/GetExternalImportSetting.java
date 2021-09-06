@@ -13,23 +13,23 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GetExternalImportSetting {
-	
+
 	@Inject
 	private GetExternalImportSettingRequire require;
-	
+
 	public List<ExternalImportSettingListItemDto> getAll() {
 		val require = this.require.create();
 		val settings = require.getSettings(AppContexts.user().companyId());
 		return ExternalImportSettingListItemDto.fromDomain(settings);
 	}
-	
+
 	public ExternalImportSettingDto get(String settingCode) {
 		val require = this.require.create();
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode));
-		return ExternalImportSettingDto.fromDomain(require, settingOpt.get());
+		return ExternalImportSettingDto.fromDomain(settingOpt.get());
 	}
-	
-	public static interface Require extends ExternalImportSettingDto.Require, ExternalImportLayoutDto.Require {
+
+	public static interface Require extends ExternalImportLayoutDto.Require {
 		List<ExternalImportSetting> getSettings(String companyId);
 		Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode);
 	}

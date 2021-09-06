@@ -18,65 +18,70 @@ import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMappingPK;
 
 @Stateless
 public class JpaExternalImportSettingRepository extends JpaRepository implements ExternalImportSettingRepository {
-	
+
 	@Override
 	public void insert(ExternalImportSetting domain) {
 		this.commandProxy().insert(toEntitiy(domain));
 	}
-	
+
 	@Override
 	public void update(ExternalImportSetting domain) {
 		this.commandProxy().update(toEntitiy(domain));
-		
+
 	}
-	
+
 	@Override
 	public void delete(String companyId, ExternalImportCode settingCode) {
 		val pk = new XimmtImportSettingPK(companyId, settingCode.toString());
 		this.commandProxy().remove(XimmtImportSetting.class, pk);
-		
+
 	}
-	
+
 	@Override
 	public List<ExternalImportSetting> getAll(String companyId) {
 		String sql 	= " select f "
 				+ " from XimmtImportSetting f "
 				+ " where f.pk.companyId = :companyID ";
-		
+
 		return this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
 				.getList(rec -> rec.toDomain());
 	}
-	
+
 	@Override
 	public Optional<ExternalImportSetting> get(String companyId, ExternalImportCode settingCode) {
 		String sql 	= " select f "
 					+ " from XimmtImportSetting f "
 					+ " where f.pk.companyId = :companyID "
 					+ " and f.pk.code = :settingCD";
-		
+
 		return this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())
 				.getSingle(rec -> rec.toDomain());
 	}
-	
+
 	private XimmtImportSetting toEntitiy(ExternalImportSetting domain) {
 		return new XimmtImportSetting(
-				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()), 
-				domain.getName().toString(), 
-				domain.getExternalImportDomainId().value, 
-				domain.getImportingMode().value, 
-				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().v(), 
-				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().v(), 
+				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()),
+				domain.getName().toString(),
+				domain.getExternalImportDomainId().value,
+				domain.getImportingMode().value,
+				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().v(),
+				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().v(),
 				domain.getAssembly().getMapping().getMappings().stream()
 				.map(m -> new XimmtItemMapping(
 						new XimmtItemMappingPK(
-								domain.getCompanyId(), 
-								domain.getCode().v(), 
-								m.getItemNo()), 
-						m.getCsvColumnNo().isPresent()? m.getCsvColumnNo().get(): null, 
+								domain.getCompanyId(),
+								domain.getCode().v(),
+								m.getItemNo()),
+						m.getCsvColumnNo().isPresent()? m.getCsvColumnNo().get(): null,
 						m.getFixedValue().isPresent()? m.getFixedValue().get().getValue(): null))
 				.collect(Collectors.toList()));
+	}
+
+	@Override
+	public boolean exist(String companyId, ExternalImportCode settingCode) {
+		return this.get(companyId, settingCode).isPresent();
 	}
 }

@@ -7,12 +7,9 @@ import lombok.Value;
 @Value
 public class RecordDto {
 	int recordNo;
-
 	String tableName;
-
 	String explanation;
-
+	String whereCondition;
 	String sourceId;
-
 	boolean isRemoveDuplicate;
 }

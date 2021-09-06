@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
 	function renderConfiguredIcon(configured) {
 		if (configured === "true") {
-				return '<div class="icon-configured" style="text-align: center;">' 
+				return '<div class="icon-configured" style="text-align: center;">'
 						+ '<span id="icon-configured" style="'
 						+ 'background: url(\'' + ICON_CONFIGURED + '\');'
 						+ 'background-size: 20px 20px; width: 20px; height: 20px;'
@@ -35,13 +35,13 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			vm.removeItem($(this).data("target"));
 		});
 	})
-	
+
 	@bean()
 	class ViewModel extends ko.ViewModel {
 		isNewMode: KnockoutObservable<boolean> = ko.observable(true);
 
 		settingList: KnockoutObservableArray<Setting> = ko.observableArray([]);
-		
+
 		settingCode: KnockoutObservable<string> = ko.observable();
 		settingName: KnockoutObservable<string> = ko.observable();
 		importDomain: KnockoutObservable<number> = ko.observable();
@@ -54,7 +54,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		importModeOption: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ImportingMode);
 
 		selectedCode: KnockoutObservable<string> = ko.observable();
-		
+
 		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
 		selectedItem: KnockoutObservable<string> = ko.observable();
 
@@ -90,8 +90,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importDomain.subscribe((value) => {
 				if (value) {
 					let condition = {
-						settingCode: self.settingCode(), 
-						importingDomainId: self.importDomain(), 
+						settingCode: self.settingCode(),
+						importingDomainId: self.importDomain(),
 						itemNoList: []};
 					ajax("com", "screen/com/cmf/cmf001/b/get/layout", condition).done((itemNoList: number[]) => {
 						self.layoutItemNoList(itemNoList);
@@ -178,8 +178,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			if(itemNoList.length > 0){
 				let condition = {
-					settingCode: self.settingCode(), 
-					importingDomainId: self.importDomain(), 
+					settingCode: self.settingCode(),
+					importingDomainId: self.importDomain(),
 					itemNoList: itemNoList};
 				ajax("screen/com/cmf/cmf001/b/get/layout/detail", condition).done((layoutItems: Array<viewmodel.Layout>) => {
 					self.layout(layoutItems);
@@ -213,15 +213,15 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.checkError();
 			if(!nts.uk.ui.errors.hasError()){
 				let saveContents = {
-					isCreateMode: self.isNewMode(),
+					createMode: self.isNewMode(),
 					setting: new SettingInfo(
-						__viewContext.user.companyId, 
-						self.settingCode(), 
-						self.settingName(), 
-						self.importDomain(), 
-						self.importMode(), 
-						self.itemNameRow(), 
-						self.importStartRow(), 
+						__viewContext.user.companyId,
+						self.settingCode(),
+						self.settingName(),
+						self.importDomain(),
+						self.importMode(),
+						self.itemNameRow(),
+						self.importStartRow(),
 						self.layoutItemNoList()),
 				};
 				ajax("screen/com/cmf/cmf001/b/save", saveContents);
@@ -232,7 +232,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		}
 
     canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
-		
+
 		remove(){
 			let self = this;
 			let target = {code: self.selectedCode()};
@@ -253,10 +253,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			}))
 		}
 	}
-	
 
 
-	
+
+
 	export class Setting {
 		code: string;
 		name: string;
@@ -268,7 +268,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 				this.configured = configured ? "✓" : "";
 		}
 	}
-	
+
 	export class SettingInfo {
 		companyId: string;
 		code: string;
@@ -289,12 +289,12 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			this.importStartRow = importStartRow;
 			this.itemNoList = itemNoList;
 		}
-		
+
 		static new(){
 			return new SettingInfo(__viewContext.user.companyId, "", "", null, null, null, null, [])
 		}
 	}
-	
+
 	export class Layout {
 		itemNo: number;
 		name: string;
