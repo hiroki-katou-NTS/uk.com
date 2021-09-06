@@ -297,7 +297,9 @@ public class DeductionTimeSheet {
 		return new DeductionTimeSheetAdjustDuplicationTime(reNewSheetList).reCreate(
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 										integrationOfWorkTime.getRestClockManageAtr(),
-										FluidFixedAtr.of(integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType)),
+										todayWorkType.getDecisionAttendanceHolidayAttr()
+												? FluidFixedAtr.FixedWork //1日休日系の場合は区分自体必要ない為、固定値を渡している
+												: FluidFixedAtr.of(integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType)),
 										integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
 	}
 
