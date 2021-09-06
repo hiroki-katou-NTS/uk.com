@@ -3,7 +3,9 @@ package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualle
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.val;
@@ -49,6 +51,9 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
+		// 受入データ内の重複チェック
+		Set<KeyValues> importingKeys = new HashSet<>();
+		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
 			for(val interm : interms) {
 					val results = FixedItem.getLackItemError(interm);
@@ -56,10 +61,21 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 						results.stream().peek(result ->require.add(context, result));
 						continue;
 					}
+					val keyValue = getPrimaryKeys(interm, workspace);
+					if (importingKeys.contains(keyValue)) {
+						require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
+						return; // 次のレコードへ
+					}
+					
 					//既存データのチェックと保存は継承先に任せる
-					super.canonicalize(require, context, interm, new KeyValues(Arrays.asList(interm.getItemByNo(this.getItemNoOfEmployeeId()))));
+					super.canonicalize(require, context, interm, getPrimaryKeys(interm, workspace));
 				}
 		});
+	}
+	
+	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
+		//このドメインのKeyはSIDなので、Stringで取り出す。
+		return new KeyValues(Arrays.asList(interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString()));
 	}
 	
 	@Override

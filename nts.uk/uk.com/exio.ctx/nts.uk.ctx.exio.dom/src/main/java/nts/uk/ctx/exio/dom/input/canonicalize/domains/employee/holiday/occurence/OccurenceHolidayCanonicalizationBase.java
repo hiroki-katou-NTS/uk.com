@@ -1,8 +1,7 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
 
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.ObjIntConsumer;
+import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -46,21 +45,13 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 					errors.forEach(error -> require.add(context, ExternalImportError.of(error)));
 				})
 				.ifRight(interms -> {
-					interms.forEach(this.count(1,(interm, i) -> {
-						if(i == 1) {
-							saveToDelete(require, context, interm);
-						}
-						canonicalizeRecord(require, context, interm);
-					}));
+					List<IntermediateResult> intermsList = interms.collect(Collectors.toList());
+					saveToDelete(require, context, intermsList);
+					intermsList.forEach(interm -> canonicalizeRecord(require, context, interm));
 				});
 		}
 	}
 	
-	private <T> Consumer<T> count(int start, ObjIntConsumer<T> consumer) {
-		int counter[] = { start };
-		return obj -> consumer.accept(obj, counter[0]++);
-	}
-
 	/**
 	 * 対象社員のデータを全て削除するための補正データを保存する
 	 * @param require
@@ -70,17 +61,19 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 	private void saveToDelete(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
-			IntermediateResult interm) {
+			List<IntermediateResult> intermsList) {
 			
-		int itemNo = getItemNoOfEmployeeId();
-		String employeeId = interm.getItemByNo(itemNo).get().getString();
-		
-		val toDelete = AnyRecordToDelete.create(context)
-				.addKey(itemNo, StringifiedValue.of(employeeId));
-		
-		require.save(context, toDelete);
+		if(intermsList.size() >= 1) {
+			int itemNo = getItemNoOfEmployeeId();
+			String employeeId = intermsList.get(0).getItemByNo(itemNo).get().getString();
+			
+			val toDelete = AnyRecordToDelete.create(context)
+					.addKey(itemNo, StringifiedValue.of(employeeId));
+			
+			require.save(context, toDelete);
+		}
 	}
-
+	
 	private void canonicalizeRecord(
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context,
