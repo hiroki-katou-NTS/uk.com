@@ -87,7 +87,9 @@ public class GetRemainNumberConfirmInfo {
 					// ループ中の逐次発生の休暇明細一覧．発生数．時間　！＝　Empty
 					if (detail.getNumberOccurren().getTime().isPresent()) { 
 						// 残数詳細情報．消化数をセットする
-						String hoursMinu = String.valueOf(detail.getNumberOccurren().getTime().get().hour()) + ":" + String.valueOf(detail.getNumberOccurren().getTime().get().minute());
+						String minu = String.valueOf(detail.getNumberOccurren().getTime().get().minute()).length() > 1 ? 
+								String.valueOf(detail.getNumberOccurren().getTime().get().minute()) : 0 + String.valueOf(detail.getNumberOccurren().getTime().get().minute());
+						String hoursMinu = String.valueOf(detail.getNumberOccurren().getTime().get().hour()) + ":" + minu;
 						detailedInfo.setDigestionCount(hoursMinu);
 					} else {
 						detailedInfo.setDigestionCount(TextResource.localize("KDL005_27", 
@@ -115,7 +117,9 @@ public class GetRemainNumberConfirmInfo {
 					// ループ中の逐次発生の休暇明細一覧．発生数．時間　！＝　Empty
 					if (detail.getNumberOccurren().getTime().isPresent()) {
 						// 残数詳細情報．発生数をセットする
-						String hoursMinu = String.valueOf(detail.getNumberOccurren().getTime().get().hour()) + ":" + String.valueOf(detail.getNumberOccurren().getTime().get().minute());
+						String minu = String.valueOf(detail.getNumberOccurren().getTime().get().minute()).length() > 1 ? 
+								String.valueOf(detail.getNumberOccurren().getTime().get().minute()) : 0 + String.valueOf(detail.getNumberOccurren().getTime().get().minute());
+						String hoursMinu = String.valueOf(detail.getNumberOccurren().getTime().get().hour()) + ":" + minu;
 						detailedInfo.setNumberOccurrences(hoursMinu);
 						
 					} else {
@@ -229,7 +233,8 @@ public class GetRemainNumberConfirmInfo {
 				if (undigestInfoFil.get().getNumberOccurren().getTime().isPresent()) {
 					// 探した逐次発生の休暇明細一覧．発生数．時間数 - 探した逐次発生の休暇明細一覧．未相殺数．時間数
 					Integer time = undigestInfoFil.get().getNumberOccurren().getTime().get().v() - undigestInfoFil.get().getUnbalanceNumber().getTime().get().v();
-					text = text +  String.valueOf(time/60) + ":" + String.valueOf(time%60);
+					String minu = String.valueOf(time%60).length() > 1 ? String.valueOf(time%60) : 0 + String.valueOf(time%60);
+					text = text +  String.valueOf(time/60) + ":" + minu;
 					// 探した逐次発生の休暇明細一覧．発生数．日数 - 探した逐次発生の休暇明細一覧．未相殺数．日数
 					dayCloseDeadline = text;
 				}

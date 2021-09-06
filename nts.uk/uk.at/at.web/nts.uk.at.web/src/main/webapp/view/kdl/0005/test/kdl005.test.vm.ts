@@ -46,7 +46,7 @@ module nts.uk.at.view.kdl0005.test.viewmodel {
 				isMultiSelect: true,
 				listType: ListType.EMPLOYEE,
 				employeeInputList: self.employeeList,
-				selectType: SelectType.SELECT_BY_SELECTED_CODE,
+				selectType: SelectType.SELECT_FIRST_ITEM,
 				selectedCode: self.selectedCode,
 				isDialog: self.isDialog(),
 				isShowNoSelectRow: self.isShowNoSelectRow(),
@@ -74,7 +74,10 @@ module nts.uk.at.view.kdl0005.test.viewmodel {
 			let empIds: any = _.map(_.filter(self.employeeList(), (z: any) => {
 				return self.listComponentOption.selectedCode().contains(z.code + "");
 			}), (a: any) => a.name);
-
+			if (empIds.length == 0) {
+				nts.uk.ui.dialog.alertError("Please select one employee or more");
+				return;
+			}
 			let param: IEmployeeParam = {
 				employeeIds: empIds,
 				baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
