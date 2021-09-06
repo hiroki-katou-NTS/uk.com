@@ -57,7 +57,7 @@ public class SpecialLeaveManagementService {
 			//AggregateMonthlyRecordServiceProc.RequireM8 require,
 			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
-
+			
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
@@ -244,8 +244,6 @@ public class SpecialLeaveManagementService {
 			int specialLeaveCode,
 			Optional<DatePeriod> isOverWritePeriod){
 
-		SpecialLeaveInfo emptyInfo = new SpecialLeaveInfo();
-		emptyInfo.setYmd(aggrPeriod.start());
 
 		// 集計開始日時点の前回の特休の集計結果が存在するかチェック
 		// 「前回の特休情報」を確認　（前回の特休の集計結果．特休情報（期間終了日の翌日開始時点））

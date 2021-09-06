@@ -232,9 +232,6 @@ public class AnnualLeaveInfo implements Cloneable {
 		//○年休情報．年月日を開始日に更新
 		this.ymd = aggregatePeriodWork.getPeriod().end();
 
-//		//○消滅処理
-//		aggrResult = this.lapsedProcess(aggregatePeriodWork, aggrResult);
-
 		//○付与処理
 		aggrResult = this.grantProcess(companyId, employeeId,
 				aggregatePeriodWork, aggrResult);

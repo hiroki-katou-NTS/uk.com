@@ -133,8 +133,8 @@ public class SpecialLeaveInfo implements Cloneable {
 		/** 特別休暇情報．年月日を開始日に更新 */
 		this.ymd = specialLeaveAggregatePeriodWork.getPeriod().start();
 
-		/** ○消滅処理 */
-		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, entryDate);
+//		/** ○消滅処理 */
+//		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, entryDate);
 
 		/** 付与処理 */
 		aggrResult = this.grantProcess(require, companyId, employeeId,
@@ -153,6 +153,9 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		/** 終了時点更新処理 */
 		updateEnd(specialLeaveAggregatePeriodWork, aggrResult);
+
+		/** ○消滅処理 */
+		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult, entryDate);
 
 		/** 「特休の集計結果」を返す */
 		return aggrResult;
@@ -261,13 +264,16 @@ public class SpecialLeaveInfo implements Cloneable {
 		for (val grantRemainingNumber : this.grantRemainingDataList){
 
 			// 期限日が特休集計期間WORK.期間.開始日の前日でなければ、消滅処理しない
-			if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().start().addDays(-1))){
+//			if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().start().addDays(-1))){
+//				continue;
+//			}
+			if (!grantRemainingNumber.getDeadline().equals(aggregatePeriodWork.getPeriod().end())){
 				continue;
 			}
 
 			// 特休不足ダミーフラグがtrueなら、消滅処理しない
-//			if (grantRemainingNumber.isDummyAtr() == true) continue;
-
+			if (grantRemainingNumber.isDummyData() == true) continue;
+			
 			// 処理中の付与残数データを期限切れにする
 			grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
 
