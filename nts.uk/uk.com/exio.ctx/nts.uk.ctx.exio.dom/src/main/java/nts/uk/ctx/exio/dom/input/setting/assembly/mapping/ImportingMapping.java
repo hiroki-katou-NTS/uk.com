@@ -27,6 +27,31 @@ public class ImportingMapping {
 	/** マッピング一覧 */
 	private List<ImportingItemMapping> mappings;
 
+
+	public void merge(List<Integer> itemList) {
+
+
+		List<ImportingItemMapping> newMappings = new ArrayList<>();
+
+		for(int itemNo : itemList) {
+
+			val found = mappings.stream().filter(m -> m.getItemNo() == itemNo).findFirst();
+
+
+			if(found.isPresent()) { //値を変えないやつら
+				newMappings.add(found.get());
+			} else { //新しく追加されたやつら
+				newMappings.add(ImportingItemMapping.noSetting(itemNo));
+			}
+		}
+
+		mappings.clear();
+
+		mappings.addAll(newMappings);
+
+
+	}
+
 	public static ImportingMapping defaultSet(List<Integer> items){
 
 		val list = items.stream()

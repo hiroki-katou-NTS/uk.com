@@ -25,6 +25,11 @@ public class ExternalImportAssemblyMethod {
 	/** マッピング */
 	private ImportingMapping mapping;
 
+	public void merge(List<Integer> itemList) {
+		mapping.merge(itemList);
+	}
+
+
 
 	public static ExternalImportAssemblyMethod create(ExternalImportCsvFileInfo csvFileInfo, List<Integer> items){
 

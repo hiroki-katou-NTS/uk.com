@@ -35,7 +35,7 @@ public class ExternalImportSetting implements DomainAggregate {
 	@Setter
 	private ExternalImportName name;
 
-	/** 受入グループID */
+	/** 受入ドメインID */
 	private ImportingDomainId externalImportDomainId;
 
 	/** 受入モード */
@@ -45,7 +45,9 @@ public class ExternalImportSetting implements DomainAggregate {
 	/** 組立方法 */
 	private ExternalImportAssemblyMethod assembly;
 
-
+	public void merge(List<Integer> itemList) {
+		this.assembly.merge(itemList);
+	}
 
 	public void changeDomain(ImportingDomainId domainId, List<Integer> items) {
 		externalImportDomainId = domainId;
