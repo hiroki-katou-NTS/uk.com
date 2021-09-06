@@ -1,6 +1,8 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.ObjIntConsumer;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
@@ -44,14 +46,19 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 					errors.forEach(error -> require.add(context, ExternalImportError.of(error)));
 				})
 				.ifRight(interms -> {
-					interms.forEach(interm -> {
-						if(interm.getRowNo() == 1) {
+					interms.forEach(this.count(1,(interm, i) -> {
+						if(i == 1) {
 							saveToDelete(require, context, interm);
 						}
 						canonicalizeRecord(require, context, interm);
-					});
+					}));
 				});
 		}
+	}
+	
+	private <T> Consumer<T> count(int start, ObjIntConsumer<T> consumer) {
+		int counter[] = { start };
+		return obj -> consumer.accept(obj, counter[0]++);
 	}
 
 	/**
