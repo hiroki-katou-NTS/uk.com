@@ -130,8 +130,7 @@ public class ScheduleRegisterCommandHandler {
                 .map(x -> GeneralDate.fromString(x.getDate(), "yyyy/MM/dd"))
                 .distinct().sorted().collect(Collectors.toList());
         DatePeriod period = dates.size() > 0 ? new DatePeriod(dates.get(0), dates.get(dates.size() - 1)) : null;
-//        RequireImp requireImp = new RequireImp(workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter, sharedAffWorkPlaceHisAdapter, syClassificationAdapter, businessTypeEmpService, workingConditionRepo, workScheduleRepo, shiftMasterRepository, correctWorkSchedule, interimRemainDataMngRegisterDateChange);
-        RequireImp requireImp = new RequireImp(workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, employmentHisScheduleAdapter, sharedAffJobtitleHisAdapter, sharedAffWorkPlaceHisAdapter, syClassificationAdapter, businessTypeEmpService, workingConditionRepo, workScheduleRepo, shiftMasterRepository, correctWorkSchedule, interimRemainDataMngRegisterDateChange, importCodes, employeeList, period);
+        RequireImp requireImp = new RequireImp(importCodes, employeeList, period);
         // 1: 作る(Require, 社員ID, 年月日, シフトマスタ取り込みコード, boolean)
         ScheduleRegister sr =  command.toDomain();
         List<ResultOfRegisteringWorkSchedule> resultOfRegisteringWorkSchedule = 
@@ -183,62 +182,31 @@ public class ScheduleRegisterCommandHandler {
     
     private class RequireImp implements CreateWorkScheduleByImportCode.Require {
         
-//        private WorkTypeRepository workTypeRepo;
         private final MapCache<String, WorkType> workTypeCache;
         
-//        private WorkTimeSettingRepository workTimeSettingRepository;
         private final MapCache<String, WorkTimeSetting> workTimeSettingCache;
         
-//        private BasicScheduleService basicScheduleService;
         private final MapCache<String, SetupType> basicScheduleCache;
         
-//        private FixedWorkSettingRepository fixedWorkSettingRepository;
         private final MapCache<String, FixedWorkSetting> fixedWorkSettingCache;
         
-//        private FlowWorkSettingRepository flowWorkSettingRepository;
         private final MapCache<String, FlowWorkSetting> flowWorkSettingCache;
         
-//        private FlexWorkSettingRepository flexWorkSettingRepository;
         private final MapCache<String, FlexWorkSetting> flexWorkSettingCache;
         
-//        private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
         private final MapCache<String, PredetemineTimeSetting> predetemineTimeSettingCache;
         
-//        private EmploymentHisScheduleAdapter employmentHisScheduleAdapter;
         private final KeyDateHistoryCache<String, SharedSyEmploymentImport> employmentHisScheduleCache;
         
-        private SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter;
-        
-//        private SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
         private final DateHistoryCache<SharedAffWorkPlaceHisImport> sharedAffWorkPlaceHisCache;
         
-//        private SyClassificationAdapter syClassificationAdapter;
         private final DateHistoryCache<SClsHistImport> syClassificationCache;
         
-        private BusinessTypeEmpService businessTypeEmpService;
-        
-//        private WorkingConditionRepository workingConditionRepo;
         private final KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workingConditionCache;
-        
-        private WorkScheduleRepository workScheduleRepo;
         
         private final Map<String, ShiftMaster> shiftMasterCache;
         
-        private CorrectWorkSchedule correctWorkSchedule;
-
-        private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
-        
-        public RequireImp(WorkTypeRepository workTypeRepo, WorkTimeSettingRepository workTimeSettingRepository, 
-                BasicScheduleService basicScheduleService, FixedWorkSettingRepository fixedWorkSettingRepository, 
-                FlowWorkSettingRepository flowWorkSettingRepository, FlexWorkSettingRepository flexWorkSettingRepository, 
-                PredetemineTimeSettingRepository predetemineTimeSettingRepository, 
-                EmploymentHisScheduleAdapter employmentHisScheduleAdapter, 
-                SharedAffJobtitleHisAdapter sharedAffJobtitleHisAdapter, 
-                SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter, SyClassificationAdapter syClassificationAdapter, 
-                BusinessTypeEmpService businessTypeEmpService, WorkingConditionRepository workingConditionRepo, 
-                WorkScheduleRepository workScheduleRepo, ShiftMasterRepository shiftMasterRepository, 
-                CorrectWorkSchedule correctWorkSchedule, InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange, 
-                List<String> importCodes, List<String> employeeIds, DatePeriod period) {
+        public RequireImp(List<String> importCodes, List<String> employeeIds, DatePeriod period) {
             List<ShiftMaster> shiftMasters = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
             shiftMasterCache = shiftMasters.stream()
                     .collect(Collectors.toMap(shiftMaster -> shiftMaster.getImportCode().get().v(), shiftMaster -> shiftMaster));
@@ -272,23 +240,6 @@ public class ScheduleRegisterCommandHandler {
             Map<String, List<WorkingConditionItemWithPeriod>> data2 = workingConditionPeriod.stream()
                     .collect(Collectors.groupingBy(item -> item.getWorkingConditionItem().getEmployeeId()));
             workingConditionCache = KeyDateHistoryCache.loaded(createEntries2(data2));
-            
-//            this.workTypeRepo = workTypeRepo;
-//            this.workTimeSettingRepository = workTimeSettingRepository;
-//            this.basicScheduleService = basicScheduleService;
-//            this.fixedWorkSettingRepository = fixedWorkSettingRepository;
-//            this.flowWorkSettingRepository = flowWorkSettingRepository;
-//            this.flexWorkSettingRepository = flexWorkSettingRepository;
-//            this.predetemineTimeSettingRepository = predetemineTimeSettingRepository;
-//            this.employmentHisScheduleAdapter = employmentHisScheduleAdapter;
-            this.sharedAffJobtitleHisAdapter = sharedAffJobtitleHisAdapter;
-//            this.sharedAffWorkPlaceHisAdapter = sharedAffWorkPlaceHisAdapter;
-//            this.syClassificationAdapter = syClassificationAdapter;
-            this.businessTypeEmpService = businessTypeEmpService;
-//            this.workingConditionRepo = workingConditionRepo;
-            this.workScheduleRepo = workScheduleRepo;
-            this.correctWorkSchedule = correctWorkSchedule;
-            this.interimRemainDataMngRegisterDateChange = interimRemainDataMngRegisterDateChange;
         }
         
         private Map<String, List<DateHistoryCache.Entry<SharedSyEmploymentImport>>>  createEntries1(Map<String, List<SharedSyEmploymentImport>> data) {
@@ -418,8 +369,13 @@ public class ScheduleRegisterCommandHandler {
 
         @Override
         public boolean isWorkScheduleExisted(String employeeId, GeneralDate date) {
-            // TODO 実装
-            return false;
+            return workScheduleRepo.checkExists(Arrays.asList(employeeId), new DatePeriod(date, date))
+                    .entrySet()
+                    .stream()
+                    .filter(x -> x.getKey().getEmployeeId().equals(employeeId) && x.getKey().getYmd().equals(date))
+                    .findFirst()
+                    .flatMap(x -> Optional.ofNullable(x.getValue()))
+                    .orElse(false);
         }
 
         @Override
@@ -447,12 +403,6 @@ public class ScheduleRegisterCommandHandler {
         public void registerTemporaryData(String employeeId, GeneralDate date) {
             interimRemainDataMngRegisterDateChange.registerDateChange(AppContexts.user().companyId(), employeeId, Arrays.asList(date));
         }
-
-        @Override
-        public Optional<Boolean> getScheduleConfirmAtr(String employeeId, GeneralDate ymd) {
-            return workScheduleRepo.getConfirmAtr(employeeId, ymd);
-        }
-
         
     }
 }

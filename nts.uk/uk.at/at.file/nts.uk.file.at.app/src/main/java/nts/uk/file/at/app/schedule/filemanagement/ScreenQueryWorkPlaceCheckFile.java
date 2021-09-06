@@ -30,7 +30,7 @@ import nts.uk.ctx.at.schedule.dom.importschedule.ImportResultDetail;
 import nts.uk.ctx.at.schedule.dom.importschedule.ImportStatus;
 import nts.uk.ctx.at.schedule.dom.importschedule.WorkScheduleImportService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ConfirmedATR;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.EmployeeAndYmd;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -176,13 +176,9 @@ public class ScreenQueryWorkPlaceCheckFile {
         DatePeriod period = listDateData.size() == 0 ? null :
             new DatePeriod(listDateData.get(0), listDateData.get(listDateData.size() - 1));
         ImportResult importResult = WorkScheduleImportService.importFrom(
-                new RequireImp(scheAuthModifyDeadlineRepository, workplaceGroupAdapter, regulInfoEmpAdap, regulInfoEmpPub, 
-                        workingConditionRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, 
-                        fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository, 
-                        shiftMasterRepository, workScheduleRepository, empEmployeeAdapter, comHisAdapter, empHisAdapter, leaHisAdapter, 
-                        scheAdapter, data.getContents().stream().map(x -> x.getEmployeeCode()).distinct().collect(Collectors.toList()), 
+                new RequireImp(data.getContents().stream().map(x -> x.getEmployeeCode()).distinct().collect(Collectors.toList()), 
                         data.getContents().stream().map(x -> x.getImportCode()).distinct().collect(Collectors.toList()), period), 
-                data.toDomain());
+                        data.toDomain());
         long endImport = System.currentTimeMillis();
         System.out.println("Time Import File: " + (endImport - startImport));
 
@@ -286,22 +282,14 @@ public class ScreenQueryWorkPlaceCheckFile {
         return new CaptureDataOutput(listPersonEmp, importableDates, holidays, importResult, mappingErrorList);
     }
     
-    private static class RequireImp implements WorkScheduleImportService.Require {
+    private class RequireImp implements WorkScheduleImportService.Require {
         private final MapCache<String, ScheAuthModifyDeadline> scheAuthModifyDeadlineCache;
         
         private final MapCache<GetEmpCanReferByWorkplaceGroupParam, List<String>> workplaceGroupCache;
         
         private final MapCache<GetAllEmpCanReferByWorkplaceGroupParam, List<String>> workplaceGroupAllCache;
         
-        private RegulationInfoEmployeeAdapter regulInfoEmpAdap;
-        
-        private RegulationInfoEmployeePub regulInfoEmpPub;
-        
         private KeyDateHistoryCache<String, WorkingConditionItemWithPeriod> workCondItemWithPeriodCache;
-        
-        private WorkTypeRepository workTypeRepo;
-        
-        private WorkTimeSettingRepository workTimeSettingRepository;
         
         private final MapCache<String, SetupType> basicScheduleCache;
 
@@ -321,28 +309,15 @@ public class ScreenQueryWorkPlaceCheckFile {
         
         private final KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;
         
-        private EmpLeaveHistoryAdapter empHisAdapter;
-        
         private final KeyDateHistoryCache<String, EmploymentPeriodImported> employmentPeriodCache;
         
         private final KeyDateHistoryCache<String, EmpLeaveWorkPeriodImport> empLeaveWorkPeriodCache;
         
-        private WorkScheduleRepository workScheduleRepository;
+        private final Map<EmployeeAndYmd, Boolean> workScheExistedCache;
         
-        public RequireImp(ScheAuthModifyDeadlineRepository scheAuthModifyDeadlineRepository, WorkplaceGroupAdapter workplaceGroupAdapter, 
-                RegulationInfoEmployeeAdapter regulInfoEmpAdap, RegulationInfoEmployeePub regulInfoEmpPub, WorkingConditionRepository workingConditionRepo, 
-                WorkTypeRepository workTypeRepo, WorkTimeSettingRepository workTimeSettingRepository, BasicScheduleService basicScheduleService, 
-                FixedWorkSettingRepository fixedWorkSettingRepository, FlowWorkSettingRepository flowWorkSettingRepository, 
-                FlexWorkSettingRepository flexWorkSettingRepository, PredetemineTimeSettingRepository predetemineTimeSettingRepository, 
-                ShiftMasterRepository shiftMasterRepository, WorkScheduleRepository workScheduleRepository, EmpEmployeeAdapter empEmployeeAdapter, 
-                EmpComHisAdapter comHisAdapter, EmpLeaveHistoryAdapter empHisAdapter, EmpLeaveWorkHistoryAdapter leaHisAdapter, EmploymentHisScheduleAdapter scheAdapter, 
-                List<String> employeeCodes, List<String> importCodes, DatePeriod period) {
-            this.regulInfoEmpAdap = regulInfoEmpAdap;
-            this.regulInfoEmpPub = regulInfoEmpPub;
-            this.workTypeRepo = workTypeRepo;
-            this.workTimeSettingRepository = workTimeSettingRepository;
-            this.empHisAdapter = empHisAdapter;
-            this.workScheduleRepository = workScheduleRepository;
+        private final Map<EmployeeAndYmd, ConfirmedATR> workScheConfirmAtrMap;
+        
+        public RequireImp(List<String> employeeCodes, List<String> importCodes, DatePeriod period) {
             
             shiftMasterCache = shiftMasterRepository.getByListImportCodes(AppContexts.user().companyId(), importCodes);
             
@@ -388,9 +363,13 @@ public class ScreenQueryWorkPlaceCheckFile {
             List<EmpLeaveWorkPeriodImport> empLeaveWorkPeriods =  leaHisAdapter.getHolidayPeriod(employeeIds, period);
             Map<String, List<EmpLeaveWorkPeriodImport>> data5 = empLeaveWorkPeriods.stream().collect(Collectors.groupingBy(item ->item.getEmpID()));
             empLeaveWorkPeriodCache = KeyDateHistoryCache.loaded(createEntries4(data5));
+            
+            workScheExistedCache = workScheduleRepository.checkExists(employeeIds, period);
+            
+            workScheConfirmAtrMap = workScheduleRepository.getConfirmedStatus(employeeIds, period);
         }
         
-        private static Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
+        private Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>>  createEntries1(Map<String, List<EmpEnrollPeriodImport>> data) {
             Map<String, List<DateHistoryCache.Entry<EmpEnrollPeriodImport>>> rs = new HashMap<>();
             data.forEach( (k,v) -> {
                 List<DateHistoryCache.Entry<EmpEnrollPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpEnrollPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -399,7 +378,7 @@ public class ScreenQueryWorkPlaceCheckFile {
             return rs;
         }
         
-        private static Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
+        private Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>>  createEntries2(Map<String, List<EmploymentPeriodImported>> data) {
             Map<String, List<DateHistoryCache.Entry<EmploymentPeriodImported>>> rs = new HashMap<>();
             data.forEach( (k,v) -> {
                 List<DateHistoryCache.Entry<EmploymentPeriodImported>> s = v.stream().map(i->new DateHistoryCache.Entry<EmploymentPeriodImported>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -408,7 +387,7 @@ public class ScreenQueryWorkPlaceCheckFile {
             return rs;
         }
         
-        private static Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
+        private Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>>  createEntries5(Map<String, List<WorkingConditionItemWithPeriod>> data) {
             Map<String, List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>>> rs = new HashMap<>();
             data.forEach( (k,v) -> {
                 List<DateHistoryCache.Entry<WorkingConditionItemWithPeriod>> s = v.stream().map(i->new DateHistoryCache.Entry<WorkingConditionItemWithPeriod>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -417,7 +396,7 @@ public class ScreenQueryWorkPlaceCheckFile {
             return rs;
         }
         
-        private static Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
+        private Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>>  createEntries4(Map<String, List<EmpLeaveWorkPeriodImport>> data) {
             Map<String, List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>>> rs = new HashMap<>();
             data.forEach( (k,v) -> {
                 List<DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>> s = v.stream().map(i->new DateHistoryCache.Entry<EmpLeaveWorkPeriodImport>(i.getDatePeriod(),i)).collect(Collectors.toList()) ;
@@ -601,38 +580,13 @@ public class ScreenQueryWorkPlaceCheckFile {
         }
 
         @Override
-        public Optional<WorkSchedule> getWorkSchedule(EmployeeId employeeId, GeneralDate ymd) {
-            return workScheduleRepository.get(employeeId.v(), ymd);
-//            return workScheduleCache.get(employeeId.v(), ymd);
-        }
-
-        @Override
-        public Optional<Boolean> getScheduleConfirmAtr(EmployeeId employeeId, GeneralDate ymd) {
-            return workScheduleRepository.getConfirmAtr(employeeId.v(), ymd);
-        }
-
-        @Override
         public boolean isWorkScheduleExisted(EmployeeId employeeId, GeneralDate ymd) {
-        	
-        	return workScheduleRepository.checkExists(Arrays.asList(employeeId.v()), new DatePeriod(ymd, ymd))
-        						  .entrySet()
-        						  .stream()
-        						  .filter(x -> x.getKey().getEmployeeId().equals(employeeId.v()) && x.getKey().getYmd().equals(ymd))
-        						  .findFirst()
-        						  .flatMap(x -> Optional.ofNullable(x.getValue()))
-        						  .orElse(false);
+            return workScheExistedCache.get(new EmployeeAndYmd(employeeId.v(), ymd));
         }
 
         @Override
         public boolean isWorkScheduleComfirmed(EmployeeId employeeId, GeneralDate ymd) {
-        	
-        	return workScheduleRepository.getConfirmedStatus(Arrays.asList(employeeId.v()), new DatePeriod(ymd, ymd))
-					  .entrySet()
-					  .stream()
-					  .filter(x -> x.getKey().getEmployeeId().equals(employeeId.v()) && x.getKey().getYmd().equals(ymd))
-					  .findFirst()
-					  .map(x -> x.getValue() == ConfirmedATR.CONFIRMED)
-					  .orElse(false);
+        	return workScheConfirmAtrMap.get(new EmployeeAndYmd(employeeId.v(), ymd)).equals(ConfirmedATR.CONFIRMED) ? true : false;
         }
     }
     

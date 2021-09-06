@@ -86,14 +86,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				.getSingle(c -> c.toDomain(employeeID, ymd));
 		return workSchedule;
 	}
-	
-	@Override
-	public Optional<Boolean> getConfirmAtr(String employeeID, GeneralDate ymd) {
-	    return new NtsStatement(SELECT_CONFIRMATR, this.jdbcProxy())
-	            .paramString("employeeID", employeeID)
-	            .paramDate("ymd", ymd)
-	            .getSingle(rec -> rec.getBoolean("DECISION_STATUS"));
-	}
 
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
