@@ -54,6 +54,7 @@ public class ExternalImportSettingDto {
 		domain.getAssembly().setCsvFileInfo(toCsvFileInfo());
 
 		if(this.domain == domain.getExternalImportDomainId().value) {
+			domain.merge(itemNoList);
 
 		}else {
 			domain.changeDomain(ImportingDomainId.valueOf(this.domain), itemNoList);
