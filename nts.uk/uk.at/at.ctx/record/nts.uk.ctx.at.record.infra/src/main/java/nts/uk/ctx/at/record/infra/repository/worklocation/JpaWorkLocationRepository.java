@@ -18,6 +18,7 @@ import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkLocation;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkplacePossible;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkplacePossiblePK;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KwlmtWorkLocationPK;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.net.Ipv4Address;
 
 @Stateless
@@ -121,25 +122,29 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			oldData.get().radius = newData.radius;
 			oldData.get().latitude = newData.latitude;
 			oldData.get().longitude = newData.longitude;
-			if (oldData.get().krcmtWorkplacePossible != null) {
+			
+			if (newData.krcmtWorkplacePossible != null) {
 				oldData.get().krcmtWorkplacePossible = new KrcmtWorkplacePossible(
 						new KrcmtWorkplacePossiblePK(newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.contractCode,
 								newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.workLocationCD,
 								newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid),
 						workLocation.getWorkplace().map(m -> m.getWorkpalceId()).orElse(null));
 			}
+			
 			oldData.get().krcmtIP4Address = newData.krcmtIP4Address;
 			this.commandProxy().update(oldData.get());
 
-			String toDeleteData = "DELETE FROM KrcmtWorkplacePossible e" + " WHERE "
-					+ "e.krcmtWorkplacePossiblePK.contractCode = :contractCode "
-					+ " AND e.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD "
-					+ " AND e.krcmtWorkplacePossiblePK.cid = :cid ";
-			this.getEntityManager().createQuery(toDeleteData)
-					.setParameter("contractCode", oldData.get().kwlmtWorkLocationPK.contractCode)
-					.setParameter("workLocationCD", oldData.get().kwlmtWorkLocationPK.workLocationCD)
-					.setParameter("cid", newData.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid).executeUpdate();
-			this.commandProxy().insert(newData.krcmtWorkplacePossible);
+			if (newData.krcmtWorkplacePossible != null) {
+				String toDeleteData = "DELETE FROM KrcmtWorkplacePossible e" + " WHERE "
+						+ "e.krcmtWorkplacePossiblePK.contractCode = :contractCode "
+						+ " AND e.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD "
+						+ " AND e.krcmtWorkplacePossiblePK.cid = :cid ";
+				this.getEntityManager().createQuery(toDeleteData)
+						.setParameter("contractCode", oldData.get().kwlmtWorkLocationPK.contractCode)
+						.setParameter("workLocationCD", oldData.get().kwlmtWorkLocationPK.workLocationCD)
+						.setParameter("cid", AppContexts.user().companyId()).executeUpdate();
+				this.commandProxy().insert(newData.krcmtWorkplacePossible);
+			}
 		}
 
 	}
