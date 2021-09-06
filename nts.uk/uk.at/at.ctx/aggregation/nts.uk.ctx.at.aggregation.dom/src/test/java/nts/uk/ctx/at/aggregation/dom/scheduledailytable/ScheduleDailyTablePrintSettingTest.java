@@ -21,7 +21,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ScheduleDailyTablePrintSettingTest {
 	
 	@Test
-	public void getters( @Injectable ScheduleDailyTableItemSetting itemSetting ){
+	public void testGetters( @Injectable ScheduleDailyTableItemSetting itemSetting ){
 		
 		ScheduleDailyTablePrintSetting printSetting = new ScheduleDailyTablePrintSetting(
 				new ScheduleDailyTableCode("01")

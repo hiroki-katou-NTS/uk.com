@@ -31,7 +31,7 @@ public class ScheduleDailyTableInkanRow {
 	 * @return
 	 */
 	public List<ScheduleDailyTableInkanTitle> getInkanRowTitle(){
-		return this.notUseAtr == NotUseAtr.USE? this.titleList: Collections.emptyList();
+		return this.notUseAtr.isUse()? this.titleList: Collections.emptyList();
 	} 
 	
 	/**

@@ -14,7 +14,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ScheduleDailyTableInkanRowTest {	
 	
 	@Test
-	public void getters() {
+	public void testGetters() {
 		
 		List<ScheduleDailyTableInkanTitle> titleList = Arrays.asList(
 				new ScheduleDailyTableInkanTitle("a1"),
@@ -31,13 +31,13 @@ public class ScheduleDailyTableInkanRowTest {
 	}
 	
 	/**
-	 * method 作る
-	 * input: 見出しリスト.size() = 6
-	 * output: Msg_2085
+	 * target:: 作る
+	 * pattern: 見出しリスト.size() = 7
+	 * except: Msg_2085
 	 */
 	@Test
-	public void create_inv1() {
-		//見出しリスト.size() = 6
+	public void testCreate_inv1() {
+		//見出しリスト.size() = 7
 		List<ScheduleDailyTableInkanTitle> titleList = Arrays.asList(
 				new ScheduleDailyTableInkanTitle("a1"),
 				new ScheduleDailyTableInkanTitle("a2"),
@@ -54,12 +54,12 @@ public class ScheduleDailyTableInkanRowTest {
 	}
 	
 	/**
-	 * method 作る
-	 * input: 利用区分= する, 見出しリスト = empty
-	 * output: Msg_2222
+	 * target: 作る
+	 * pattern: 利用区分= する, 見出しリスト = empty
+	 * except: Msg_2222
 	 */
 	@Test
-	public void create_inv2() {
+	public void testCreate_inv2() {
 		
 		NtsAssert.businessException("Msg_2222", 
 			() -> ScheduleDailyTableInkanRow.create(NotUseAtr.USE, Collections.emptyList())
@@ -67,12 +67,12 @@ public class ScheduleDailyTableInkanRowTest {
 	}
 	
 	/**
-	 * method 作る
-	 * input: 利用区分= する, 見出しリスト .size = 6
-	 * output: create_success
+	 * target: 作る
+	 * pattern: 利用区分= する, 見出しリスト .size = 6
+	 * except: create_success
 	 */
 	@Test
-	public void create_success() {
+	public void testCreate_success() {
 		//見出しリスト .size = 6
 		List<ScheduleDailyTableInkanTitle> titleList = Arrays.asList(
 				new ScheduleDailyTableInkanTitle("a1"),
@@ -92,12 +92,12 @@ public class ScheduleDailyTableInkanRowTest {
 	}
 	
 	/**
-	 * method 印鑑欄見出しを取得する
-	 * input : 使用区分 = しない
-	 * output: empty
+	 * target: 印鑑欄見出しを取得する
+	 * pattern : 使用区分 = しない
+	 * except: empty
 	 */
 	@Test
-	public void getInkanRowTitle_Not_Use() {
+	public void testGetInkanRowTitle_Not_Use() {
 		
 		List<ScheduleDailyTableInkanTitle> titleList = Arrays.asList(
 				new ScheduleDailyTableInkanTitle("a1"),
@@ -118,12 +118,12 @@ public class ScheduleDailyTableInkanRowTest {
 	}
 	
 	/**
-	 * method 印鑑欄見出しを取得する
-	 * input : 使用区分 = する
-	 * output: 見出しリスト
+	 * target: 印鑑欄見出しを取得する
+	 * pattern : 使用区分 = する
+	 * except: 見出しリスト
 	 */
 	@Test
-	public void getInkanRowTitle_Use() {
+	public void testGetInkanRowTitle_Use() {
 		
 		List<ScheduleDailyTableInkanTitle> titleList = Arrays.asList(
 				new ScheduleDailyTableInkanTitle("a1"),

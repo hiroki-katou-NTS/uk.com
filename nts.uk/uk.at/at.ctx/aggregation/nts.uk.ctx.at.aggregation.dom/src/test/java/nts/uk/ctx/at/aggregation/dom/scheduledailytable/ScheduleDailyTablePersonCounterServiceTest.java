@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-
 /**
  * 勤務計画実施表の個人計を集計する
  * @author lan_lt
@@ -40,10 +39,11 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 	private ScheduleDailyTablePersonCounterService.Require require;
 
 	/**
-	 * method:	予実区分によって集計する
+	 * target:	予実区分によって集計する
+	 * pattern:	印刷対象 = 実績
 	 */
 	@Test
-	public void testAggregateByScheRecAtr(
+	public void testAggregateByScheRecAt_case_Record(
 				@Injectable List<IntegrationOfDaily> dailyWorks
 			,	@Injectable List<Integer> personalCounter) {
 		
@@ -51,30 +51,30 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	社員1
-				//	- No: 1, 値: 100
-				//	- No: 2, 値 : 200
+				//	- No: 1, 値: 10
+				//	- No: 2, 値 : 20
 				put(	new EmployeeId("sid_1")
 					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
-								put(1, new BigDecimal(100));
-								put(2, new BigDecimal(200));
+								put(1, new BigDecimal(10));
+								put(2, new BigDecimal(20));
 						}});
 				
 				//	社員2
-				//	- No: 1, 値 : 300
-				//	- No: 2, 値: 400
+				//	- No: 1, 値 : 30
+				//	- No: 2, 値: 40
 				put(	new EmployeeId("sid_2")
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-								put( 1, new BigDecimal(300) );
-								put( 2, new BigDecimal(400) );
+								put( 1, new BigDecimal(30) );
+								put( 2, new BigDecimal(40) );
 						}});
 				
 				//	社員3
-				//	- No: 1, 値 : 500
-				//	- No: 2, 値: 600
+				//	- No: 1, 値 : 50
+				//	- No: 2, 値: 60
 				put(	new EmployeeId("sid_3")
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put( 1, new BigDecimal(500) );
-							put( 2, new BigDecimal(600) );
+							put( 1, new BigDecimal(50) );
+							put( 2, new BigDecimal(60) );
 						}});
 			}};
 		
@@ -86,62 +86,105 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			
 		};
 		
-		/** 印鑑対象 = 実績 **/
-		{
-			//Act
-			List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
-						ScheduleDailyTablePersonCounterService.class
-					,	"aggregateByScheRecAtr", require
-					,	ScheRecAtr.RECORD//実績
-					,	personalCounter, dailyWorks);
-			
-			//Assert
-			assertThat(result)
-					.extracting(	d -> d.getSid().v()
-								,	d -> d.getScheRecAtr()
-								,	d -> d.getTotalCountNo()
-								,	d -> d.getValue())
-					.containsExactlyInAnyOrder(
-							tuple("sid_1", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(100))
-						,	tuple("sid_1", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(200))
-						,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(300))
-						,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(400))
-						,	tuple("sid_3", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(500))
-						,	tuple("sid_3", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(600))
-					);			
-			
-		}
+		//Act
+		List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
+					ScheduleDailyTablePersonCounterService.class
+				,	"aggregateByScheRecAtr", require
+				,	ScheRecAtr.RECORD//実績
+				,	personalCounter, dailyWorks);
 		
-		/** 印鑑対象 = 予定  **/
-		{
-			//Act
-			List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
-						ScheduleDailyTablePersonCounterService.class
-					,	"aggregateByScheRecAtr", require
-					,	ScheRecAtr.SCHEDULE//予定
-					,	personalCounter, dailyWorks);
-			
-			//Assert
-			assertThat(result)
-					.extracting(	d -> d.getSid().v()
-								,	d -> d.getScheRecAtr()
-								,	d -> d.getTotalCountNo()
-								,	d -> d.getValue())
-					.containsExactlyInAnyOrder(
-							tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(100))
-						,	tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(200))
-						,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(300))
-						,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(400))
-						,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(500))
-						,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(600))
-					);			
-		}
+		//Assert
+		assertThat(result)
+				.extracting(	d -> d.getSid().v()
+							,	d -> d.getScheRecAtr()
+							,	d -> d.getTotalCountNo()
+							,	d -> d.getValue())
+				.containsExactlyInAnyOrder(
+						tuple("sid_1", ScheRecAtr.RECORD, 1, BigDecimal.valueOf(10))
+					,	tuple("sid_1", ScheRecAtr.RECORD, 2, BigDecimal.valueOf(20))
+					,	tuple("sid_2", ScheRecAtr.RECORD, 1, BigDecimal.valueOf(30))
+					,	tuple("sid_2", ScheRecAtr.RECORD, 2, BigDecimal.valueOf(40))
+					,	tuple("sid_3", ScheRecAtr.RECORD, 1, BigDecimal.valueOf(50))
+					,	tuple("sid_3", ScheRecAtr.RECORD, 2, BigDecimal.valueOf(60))
+				);
 
 	}
 	
 	/**
-	 * method:	集計する
-	 * case:	印鑑対象 = 予定のみ
+	 * target:	予実区分によって集計する
+	 * pattern:	印刷対象 = 予定
+	 */
+	@Test
+	public void testAggregateByScheRecAt_case_schedule(
+				@Injectable List<IntegrationOfDaily> dailyWorks
+			,	@Injectable List<Integer> personalCounter) {
+		
+		Map<EmployeeId, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<EmployeeId, Map<Integer, BigDecimal>>() {
+			private static final long serialVersionUID = 1L;
+			{
+				//	社員1
+				//	- No: 1, 値: 11
+				//	- No: 2, 値 : 21
+				put(	new EmployeeId("sid_1")
+					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
+								put(1, new BigDecimal(11));
+								put(2, new BigDecimal(21));
+						}});
+				
+				//	社員2
+				//	- No: 1, 値 : 31
+				//	- No: 2, 値: 41
+				put(	new EmployeeId("sid_2")
+					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
+								put( 1, new BigDecimal(31) );
+								put( 2, new BigDecimal(41) );
+						}});
+				
+				//	社員3
+				//	- No: 1, 値 : 51
+				//	- No: 2, 値: 61
+				put(	new EmployeeId("sid_3")
+					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
+							put( 1, new BigDecimal(51) );
+							put( 2, new BigDecimal(61) );
+						}});
+			}};
+		
+		new Expectations(TotalTimesCounterService.class) {
+			{
+				TotalTimesCounterService.countingNumberOfTotalTimeByEmployee(require, personalCounter, dailyWorks);
+				result = totalNoTimeResult;
+			}
+			
+		};
+		
+		//Act
+		List<PersonCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
+					ScheduleDailyTablePersonCounterService.class
+				,	"aggregateByScheRecAtr", require
+				,	ScheRecAtr.SCHEDULE//予定
+				,	personalCounter, dailyWorks);
+		
+		//Assert
+		assertThat(result)
+				.extracting(	d -> d.getSid().v()
+							,	d -> d.getScheRecAtr()
+							,	d -> d.getTotalCountNo()
+							,	d -> d.getValue())
+				.containsExactlyInAnyOrder(
+						tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(11))
+					,	tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(21))
+					,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(31))
+					,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(41))
+					,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(51))
+					,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(61))
+				);			
+
+	}
+	
+	/**
+	 * target:	集計する
+	 * pattern:	印刷対象 = 予定のみ
 	 */
 	@Test
 	public void testAggregate_case_schedule(@Injectable List<Integer> personalCounter) {
@@ -154,21 +197,21 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	社員1
-				//	- No: 1, 値: 100
-				//	- No: 2, 値 : 200
+				//	- No: 1, 値: 15
+				//	- No: 2, 値 : 20
 				put(	new EmployeeId("sid_1")
 					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
-								put(1, new BigDecimal(100));
-								put(2, new BigDecimal(200));
+								put(1, new BigDecimal(15));
+								put(2, new BigDecimal(20));
 						}});
 				
 				//	社員2
-				//	- No: 1, 値 : 300
-				//	- No: 2, 値: 400
+				//	- No: 1, 値 : 18
+				//	- No: 2, 値: 23
 				put(	new EmployeeId("sid_2")
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-								put( 1, new BigDecimal(300) );
-								put( 2, new BigDecimal(400) );
+								put( 1, new BigDecimal(18) );
+								put( 2, new BigDecimal(23) );
 						}});
 			}};
 
@@ -198,16 +241,16 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 							,	d -> d.getTotalCountNo()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(100))
-					,	tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(200))
-					,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(300))
-					,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(400))
+						tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(15))
+					,	tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(20))
+					,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(18))
+					,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(23))
 				);
 	}
 
 	/**
-	 * method:	集計する
-	 * case:	印鑑対象 = 実績のみ
+	 * target:	集計する
+	 * pattern:	印刷対象 = 実績のみ
 	 */
 	@Test
 	public void testAggregate_case_record(@Injectable List<Integer> personalCounter) {
@@ -228,21 +271,21 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	社員1
-				//	- No: 1, 値: 100
-				//	- No: 2, 値 : 200
+				//	- No: 1, 値: 20
+				//	- No: 2, 値 : 25
 				put(	new EmployeeId("sid_1")
 					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
-								put(1, new BigDecimal(100));
-								put(2, new BigDecimal(200));
+								put(1, new BigDecimal(20));
+								put(2, new BigDecimal(25));
 						}});
 				
 				//	社員2
-				//	- No: 1, 値 : 300
-				//	- No: 2, 値: 400
+				//	- No: 1, 値 : 22
+				//	- No: 2, 値: 26
 				put(	new EmployeeId("sid_2")
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-								put( 1, new BigDecimal(300) );
-								put( 2, new BigDecimal(400) );
+								put( 1, new BigDecimal(22) );
+								put( 2, new BigDecimal(26) );
 						}});
 			}};
 
@@ -265,16 +308,16 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 							,	d -> d.getTotalCountNo()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple("sid_1", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(100))
-					,	tuple("sid_1", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(200))
-					,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(300))
-					,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(400))
+						tuple("sid_1", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(20))
+					,	tuple("sid_1", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(25))
+					,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(22))
+					,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(26))
 				);
 	}
 	
 	/**
-	 * method:	集計する
-	 * case:	印鑑対象 = 予定・実績
+	 * target:	集計する
+	 * pattern:	印刷対象 = 予定・実績
 	 */
 	@Test
 	public void testAggregate_case_record_and_schedule(@Injectable List<Integer> personalCounter) {
@@ -295,7 +338,8 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 		);
 		
 		List<IntegrationOfDaily> dailyWorks_scheAndRecord = Arrays.asList(
-				Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 01, 8) )
+				Helper.createDailyWorks("sid_1", GeneralDate.ymd(2021, 01, 8) )
+			,	Helper.createDailyWorks("sid_2", GeneralDate.ymd(2021, 01, 8) )
 			,	Helper.createDailyWorks("sid_3", GeneralDate.ymd(2021, 01, 8) )
 		);
 		
@@ -313,53 +357,53 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	社員1
-				//	- No: 1, 値: 100
-				//	- No: 2, 値: 200
+				//	- No: 1, 値: 22
+				//	- No: 2, 値: 30
 				put(	new EmployeeId("sid_1")
 					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
-								put(1, new BigDecimal(100));
-								put(2, new BigDecimal(200));
+								put(1, new BigDecimal(22));
+								put(2, new BigDecimal(30));
 						}});
 				
 				//	社員2
-				//	- No: 1, 値: 300
-				//	- No: 2, 値: 400
+				//	- No: 1, 値: 25
+				//	- No: 2, 値: 28
 				put(	new EmployeeId("sid_2")
 					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
-								put(1, new BigDecimal(300));
-								put(2, new BigDecimal(400));
+								put(1, new BigDecimal(25));
+								put(2, new BigDecimal(28));
 						}});
 				
 				//	社員3
-				//	- No: 1, 値: 500
-				//	- No: 2, 値: 600
+				//	- No: 1, 値: 24
+				//	- No: 2, 値: 26
 				put(	new EmployeeId("sid_3")
 					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
-								put(1, new BigDecimal(500));
-								put(2, new BigDecimal(600));
+								put(1, new BigDecimal(24));
+								put(2, new BigDecimal(26));
 						}});					
 			}};
 		
 		//実績集計結果の社員2, 社員3
 		Map<EmployeeId, Map<Integer, BigDecimal>> totalNoTimeRecResult = new HashMap<EmployeeId, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
-			{
+			{				
 				//	社員2
-				//	- No: 1, 値: 150
-				//	- No: 2, 値 : 250
+				//	- No: 1, 値: 25
+				//	- No: 2, 値 : 28
 				put(	new EmployeeId("sid_2")
 					,	new HashMap<Integer, BigDecimal>() {private static final long serialVersionUID = 1L;{
-								put(1, new BigDecimal(150));
-								put(2, new BigDecimal(250));
+								put(1, new BigDecimal(25));
+								put(2, new BigDecimal(28));
 						}});
 				
 				//	社員3
-				//	- No: 1, 値 : 350
-				//	- No: 2, 値: 450
+				//	- No: 1, 値 : 22
+				//	- No: 2, 値: 26
 				put(	new EmployeeId("sid_3")
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-								put( 1, new BigDecimal(350) );
-								put( 2, new BigDecimal(450) );
+								put( 1, new BigDecimal(22) );
+								put( 2, new BigDecimal(26) );
 						}});				
 			}};
 			
@@ -388,16 +432,16 @@ public class ScheduleDailyTablePersonCounterServiceTest {
 								,	d -> d.getTotalCountNo()
 								,	d -> d.getValue())
 					.containsExactlyInAnyOrder(
-							tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(100))
-						,	tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(200))
-						,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(300))
-						,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(400))
-						,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(500))
-						,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(600))
-						,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(150))
-						,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(250))
-						,	tuple("sid_3", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(350))
-						,	tuple("sid_3", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(450))
+							tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(22))
+						,	tuple("sid_1", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(30))
+						,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(25))
+						,	tuple("sid_2", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(28))
+						,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(1), BigDecimal.valueOf(24))
+						,	tuple("sid_3", ScheRecAtr.SCHEDULE, Integer.valueOf(2), BigDecimal.valueOf(26))
+						,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(25))
+						,	tuple("sid_2", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(28))
+						,	tuple("sid_3", ScheRecAtr.RECORD, Integer.valueOf(1), BigDecimal.valueOf(22))
+						,	tuple("sid_3", ScheRecAtr.RECORD, Integer.valueOf(2), BigDecimal.valueOf(26))
 					);
 	}
 	

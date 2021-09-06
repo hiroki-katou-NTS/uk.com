@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.aggregation.dom.scheduledailytable;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -19,106 +17,114 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	private CopyScheduleDailyTablePrintSettingService.Require require;
 	
 	/**
-	 * input: 複製先のコードが既に保存されている, 上書きするか = false
-	 * output: Msg_2117
-	 */
+	 * target: 複製する(copy)
+	 * pattern: 
+	 * 		- 複製先のコードが登録された(重複)
+	 * 		- 上書きするか = false(上書きしない)
+	 * except: Msg_2117
+	 */	
 	@Test
-	public void testCopy_Msg_2117() {
+	public void testCopy_sourceIsExist_overideIsFalse() {
 		
-		val reProductSource = Helper.createScheduleDailyTablePrintSetting(
+		val source = Helper.createScheduleDailyTablePrintSetting(
 					new ScheduleDailyTableCode("01")
 				,	new ScheduleDailyTableName("name"));
 		
-		val destinationCode = new ScheduleDailyTableCode("02");
-		val destinationName = new ScheduleDailyTableName("name_update");
+		val destCode = new ScheduleDailyTableCode("02");
+		val destName = new ScheduleDailyTableName("name_update");
 		val overwrite = false;//上書きするか = false
 		
-		new Expectations() {
+		new Expectations( source ) {
 			{
 				require.isDestinationCodeExist((ScheduleDailyTableCode) any);
-				result = true;//複製先のコードが既に保存されている
+				result = true;//複製先のコードが登録された
 			}
 		};
 		
 		NtsAssert.businessException("Msg_2117", () -> {
 			AtomTask persist = CopyScheduleDailyTablePrintSettingService.copy(require
-					,	reProductSource, destinationCode
-					,	destinationName, overwrite);
+					,	source, destCode
+					,	destName, overwrite);
 			persist.run();
 		});
 	}
 	
 	/**
-	 * input: 複製先のコードが既に保存されない
-	 * output: insert
+	 * target: 複製する(copy)
+	 * pattern: 
+	 * 		- 複製先のコードが未登録(重複なし)
+	 * 		- 上書きするか = false(上書きしない)
+	 * except: 複製された出力設定が登録(insert)される
 	 */
 	@Test
-	public void testCopy_insert(@Injectable ScheduleDailyTableItemSetting itemSetting) {
-		
-		val reProductSource = new ScheduleDailyTablePrintSetting(
+	public void testCopy_DestinationCodeCodeIsNew(@Injectable ScheduleDailyTableItemSetting itemSetting) {
+		//複製先
+		val source = new ScheduleDailyTablePrintSetting(
 				new ScheduleDailyTableCode("01")
 			,	new ScheduleDailyTableName("name")
 			,	itemSetting);
 
-		val destinationCode = new ScheduleDailyTableCode("02");
-		val destinationName = new ScheduleDailyTableName("name_update");
+		val destCode = new ScheduleDailyTableCode("02");
+		val destName = new ScheduleDailyTableName("name_update");
 		val overwrite = false;
-		val reproductDestination = reProductSource.copy(destinationCode, destinationName);
 		
-		new Expectations() {
+		new Expectations( source ) {
 			{
+				//複製先のコードが未登録(重複なし)
 				require.isDestinationCodeExist((ScheduleDailyTableCode) any);
-				result = false;//複製先のコードが既に保存されない
+				result = false;
+				
+				//[複製する]メソッドが正しく呼び出されているか
+				source.copy(destCode, destName);
+				times = 1;
 			}
 		};
 		
 		NtsAssert.atomTask(
 				() ->	CopyScheduleDailyTablePrintSettingService.copy(require
-							,	reProductSource, destinationCode
-							,	destinationName, overwrite)
-				,	any -> require.insertScheduleDailyTablePrintSetting(reproductDestination));
+							,	source, destCode
+							,	destName, overwrite)
+				,	any -> require.insertScheduleDailyTablePrintSetting(any.get()));
 		
-		//更新対象
-		assertThat( reproductDestination.getCode() ).isEqualTo( destinationCode );
-		assertThat( reproductDestination.getName() ).isEqualTo( destinationName );
-		assertThat( reproductDestination.getItemSetting() ).isEqualTo( itemSetting );
 		
 	}
 	
 	/**
-	 * input: 複製先のコードが既に保存されている, 上書きするか = true
-	 * output: update
+	 * target: 複製する(copy)
+	 * pattern: 
+	 * 		- 複製先のコードが登録された(重複)
+	 * 		- 上書きするか = true(上書きする)
+	 * except: 複製された出力設定が登録(update)される
 	 */
 	@Test
-	public void testCopy_update(@Injectable ScheduleDailyTableItemSetting itemSetting) {
+	public void testCopy_DestinationCodeCodeIsUpdate(@Injectable ScheduleDailyTableItemSetting itemSetting) {
 		
-		val reProductSource = new ScheduleDailyTablePrintSetting(
+		val source = new ScheduleDailyTablePrintSetting(
 				new ScheduleDailyTableCode("01")
 			,	new ScheduleDailyTableName("name")
 			,	itemSetting);
 
-		val destinationCode = new ScheduleDailyTableCode("02");
-		val destinationName = new ScheduleDailyTableName("name_update");
+		val destCode = new ScheduleDailyTableCode("02");
+		val destName = new ScheduleDailyTableName("name_update");
 		val overwrite = true;//上書きするか = true
-		val reproductDestination = reProductSource.copy(destinationCode, destinationName);
 		
-		new Expectations() {
+		new Expectations( source ) {
 			{
+				//複製先のコードが登録された(重複)
 				require.isDestinationCodeExist((ScheduleDailyTableCode) any);
-				result = true;//複製先のコードが既に保存されている
+				result = true;
+				
+				//[複製する]メソッドが正しく呼び出されているか
+				source.copy(destCode, destName);
+				times = 1;
 			}
 		};
 		
 		NtsAssert.atomTask(
 				() ->	CopyScheduleDailyTablePrintSettingService.copy(require
-							,	reProductSource, destinationCode
-							,	destinationName, overwrite)
-				,	any -> require.updateScheduleDailyTablePrintSetting(reproductDestination));
-		
-		//更新対象
-		assertThat( reproductDestination.getCode() ).isEqualTo( destinationCode );
-		assertThat( reproductDestination.getName() ).isEqualTo( destinationName );
-		assertThat( reproductDestination.getItemSetting() ).isEqualTo( itemSetting );
+							,	source, destCode
+							,	destName, overwrite)
+				,	any -> require.updateScheduleDailyTablePrintSetting(any.get()));
 	}
 	
 	public static class Helper{

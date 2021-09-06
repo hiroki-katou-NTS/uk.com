@@ -15,13 +15,13 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTimesCounterService;
-import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.TotalTimesCounterService.Require;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
@@ -42,53 +42,116 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 	@Injectable
 	private ScheduleDailyTableWorkplaceCounterService.Require require;
 
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testAggregate() {
+	public void testAggregate(@Injectable List<Integer> workplaceCounter) {
 		
-		List<IntegrationOfDaily> targetTotalList = new ArrayList<>(Arrays.asList(
+		/** 看護免許区分 = 看護師 */
+		val nurseList = new ArrayList<>(Arrays.asList(
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE))
+				));
+		
+		/** 看護免許区分 = 准看護師 */
+		val nurseAssociateList = new ArrayList<>(Arrays.asList(
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
+				));
+		
+		/** 看護免許区分 = 看護補助者 */
+		val nurseAssistList = new ArrayList<>(Arrays.asList(
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSIST))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSIST))
+				));
+		
+		val targetTotalList = new ArrayList<>(Arrays.asList(
 				/** 2021/01/01, 看護管理者 */
 				Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 1))
+				/** 2021/01/01, 看護免許区分 = empty */
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 1))
 				/** 2021/01/02, 看護管理者 */
 			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 2))
-				/** 2021/01/02, 看護免許区分 = 看護師 */
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))	
-				/** 2021/01/02, 看護免許区分 = 准看護師*/
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSOCIATE))	
-				/** 2021/01/02, 看護免許区分 = 看護補助者 */
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSIST))
-				/** 2021/01/03, 看護免許区分 = 看護師 */
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE))	
-				/** 2021/01/03, 看護免許区分 = 准看護師 */
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
-				/** 2021/01/03, 看護免許区分 = 看護補助者 */
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSIST))					
-				/** 2021/01/04, 看護免許区分 = empty */
-			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 4))							
-			));
+				/** 2021/01/02, 看護免許区分 = empty */
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 2))
+				/** 2021/01/03, 看護管理者 */
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 3))
+				/** 2021/01/03, 看護免許区分 = empty */
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 3))
+				));
 		
-		// 回数集計No = 1, 回数集計No = 2
-		List<Integer> workplaceCounter = Arrays.asList(1, 2);		
+		targetTotalList.addAll(nurseList);
+		targetTotalList.addAll(nurseAssociateList);
+		targetTotalList.addAll(nurseAssistList);
 		
-		Map<GeneralDate, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<GeneralDate, Map<Integer, BigDecimal>>() {
+		//看護師の回数の結果
+		Map<GeneralDate, Map<Integer, BigDecimal>> totalNoTimeOfNurseResult = new HashMap<GeneralDate, Map<Integer, BigDecimal>>() {
+			private static final long serialVersionUID = 1L;
+			{
+				//	2021.01.02
+				//	- No: 1, 値: 10
+				//	- No: 2, 値: 20
+				put(	GeneralDate.ymd(2021, 1, 2)
+					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
+							put(1, new BigDecimal(10));
+							put(2, new BigDecimal(20));
+						}});
+				
+				//	2021.01.03
+				//	- No: 1, 値: 15
+				//	- No: 2, 値: 25
+				put(	GeneralDate.ymd(2021, 1, 3)
+					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
+							put(1, new BigDecimal(15));
+							put(2, new BigDecimal(25));
+						}});				
+				
+			}
+		};
+		
+		//准看護師の回数の結果
+		Map<GeneralDate, Map<Integer, BigDecimal>> totalNoTimeOfAssociateResult = new HashMap<GeneralDate, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
 				//	- No: 1, 値: 100
-				//	- No: 2, 値: 200
+				//	- No: 2, 値: 150
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
 							put(1, new BigDecimal(100));
-							put(2, new BigDecimal(200));
+							put(2, new BigDecimal(150));
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 300
-				//	- No: 2, 値: 400
+				//	- No: 1, 値: 200
+				//	- No: 2, 値: 250
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
+							put(1, new BigDecimal(200));
+							put(2, new BigDecimal(250));
+						}});				
+				
+			}
+		};
+		
+		//看護補助者の回数の結果
+		Map<GeneralDate, Map<Integer, BigDecimal>> totalNoTimeOfAssistResult = new HashMap<GeneralDate, Map<Integer, BigDecimal>>() {
+			private static final long serialVersionUID = 1L;
+			{
+				//	2021.01.02
+				//	- No: 1, 値: 300
+				//	- No: 2, 値: 350
+				put(	GeneralDate.ymd(2021, 1, 2)
+					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
 							put(1, new BigDecimal(300));
-							put(2, new BigDecimal(400));
+							put(2, new BigDecimal(350));
+						}});
+				
+				//	2021.01.03
+				//	- No: 1, 値: 400
+				//	- No: 2, 値: 450
+				put(	GeneralDate.ymd(2021, 1, 3)
+					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
+							put(1, new BigDecimal(400));
+							put(2, new BigDecimal(450));
 						}});				
 				
 			}
@@ -96,8 +159,17 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		
 		new Expectations(TotalTimesCounterService.class) {
 			{
-				TotalTimesCounterService.countingNumberOfTotalTimeByDay((Require) any, (List<Integer>) any, (List<IntegrationOfDaily>) any);
-				result = totalNoTimeResult;
+				//看護師
+				TotalTimesCounterService.countingNumberOfTotalTimeByDay(require, workplaceCounter, nurseList);
+				result = totalNoTimeOfNurseResult;
+				
+				//准看護師
+				TotalTimesCounterService.countingNumberOfTotalTimeByDay(require, workplaceCounter, nurseAssociateList);
+				result = totalNoTimeOfAssociateResult;
+				
+				//看護補助者
+				TotalTimesCounterService.countingNumberOfTotalTimeByDay(require, workplaceCounter, nurseAssistList);
+				result = totalNoTimeOfAssistResult;
 			}
 		};
 		
@@ -114,34 +186,40 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 							,	d -> d.getLicenseCls()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(100))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(300))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(400))
+						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(10))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(20))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(15))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(25))
 					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(100))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(300))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(400))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(100))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(300))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(400))					
+					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(150))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(200))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(250))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(300))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(350))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(400))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(450))
 				);
 	}
 	
 	/**
-	 * method:	免許区分によって集計する
-	 * input:	免許区分 = [看護師]
-	 * 			集計対象リストが全部[看護補助者]
+	 * target:	免許区分によって集計する
+	 * pattern:	免許区分 = [看護師]
+	 * 			集計対象リスト: 看護補助者, 准看護師, 看護管理者, 看護じゃない
 	 * output:	empty
 	 */
 	@Test
-	public void testAggregateByLicenseClassification_case_nurse_assist(
+	public void testAggregateByLicenseClassification_case_nurse_empty(
 			@Injectable List<Integer> workplaceCounter) {
+		
 		List<IntegrationOfDaily> targetTotalList = new ArrayList<>(Arrays.asList(
 				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 1), Optional.of(LicenseClassification.NURSE_ASSIST))//看護補助者
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 1), Optional.of(LicenseClassification.NURSE_ASSOCIATE))//准看護師
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 1))//看護管理者
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 1))//看護じゃない
 			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSIST))//看護補助者
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSIST))//看護補助者
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSOCIATE))//准看護師
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 2))//看護管理者
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 2))//看護じゃない
 				));
 		
 		//Act
@@ -151,46 +229,100 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 				,	LicenseClassification.NURSE //看護師
 				,	workplaceCounter, targetTotalList);
 		
+		//Assert
 		assertThat(result).isEmpty();
 	}
 	
 	/**
-	 * method:	免許区分によって集計する
-	 * input:	免許区分 = [看護師]
-	 * 			集計対象リストが全部[看護管理者]
+	 * target:	免許区分によって集計する
+	 * pattern:	免許区分 = [看護補助者]
+	 * 			集計対象リスト: 看護師, 准看護師, 看護管理者, 看護じゃない
 	 * output:	empty
 	 */
 	@Test
-	public void testAggregateByLicenseClassification_all_manager(@Injectable List<Integer> workplaceCounter) {
+	public void testAggregateByLicenseClassification_case_nurse_assist_empty(
+			@Injectable List<Integer> workplaceCounter) {
 		List<IntegrationOfDaily> targetTotalList = new ArrayList<>(Arrays.asList(
-				Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 1))//看護管理者
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 1), Optional.of(LicenseClassification.NURSE))//看護師
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 1), Optional.of(LicenseClassification.NURSE_ASSOCIATE))//准看護師
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 1))//看護管理者
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 1))//看護じゃない
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))//看護師
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSOCIATE))//准看護師
 			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 2))//看護管理者
-			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 3))//看護管理者
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 2))//看護じゃない
 				));
 		
 		//Act
 		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 					ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregateByLicenseClassification", require
-				,	LicenseClassification.NURSE //看護師
+				,	LicenseClassification.NURSE_ASSIST //看護補助者
 				,	workplaceCounter, targetTotalList);
 		
+		//Assert
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * target:	免許区分によって集計する
+	 * pattern:	免許区分 = [准看護師者]
+	 * 			集計対象リスト: 看護補助者, 看護師, 看護管理者, 看護じゃない
+	 * output:	empty
+	 */
+	@Test
+	public void testAggregateByLicenseClassification_case_nurse_asscociate_empty(
+			@Injectable List<Integer> workplaceCounter) {
+		
+		List<IntegrationOfDaily> targetTotalList = new ArrayList<>(Arrays.asList(
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 1), Optional.of(LicenseClassification.NURSE))//看護師
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 1), Optional.of(LicenseClassification.NURSE_ASSIST))//看護補助者
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 1))//看護管理者
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 1))//看護じゃない
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))//看護師
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSIST))//看護補助者
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 2))//看護管理者
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 2))//看護じゃない
+				));
+		
+		//Act
+		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
+					ScheduleDailyTableWorkplaceCounterService.class
+				,	"aggregateByLicenseClassification", require
+				,	LicenseClassification.NURSE_ASSOCIATE //准看護師
+				,	workplaceCounter, targetTotalList);
+		
+		//Assert
 		assertThat(result).isEmpty();
 	}
 	
 	/**
 	 * method:	免許区分によって集計する
-	 * input:	免許区分 = [看護師]
-	 * 			集計対象リストが全部[看護師]
+	 * pattern:	免許区分 = [看護師]
+	 * 			集計対象リストが混ぜる
 	 */
 	@Test
 	public void testAggregateByLicenseClassification_case_Nurse(
 			@Injectable List<Integer> workplaceCounter) {
 		
-		List<IntegrationOfDaily> targets = new ArrayList<>(Arrays.asList(
+		//該当の集計対象リスト
+		val targets = new ArrayList<>(Arrays.asList(
 				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))
-			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE))
-			));
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))
+				));
+		//集計対象リスト
+		List<IntegrationOfDaily> targetTotalList = new ArrayList<>(Arrays.asList(
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSIST))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 2))
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 2))//看護じゃない
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSIST))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 3))
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 3))//看護じゃない
+				));
+		
+		targetTotalList.addAll(targets);
 		
 		Map<GeneralDate, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<GeneralDate, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
@@ -225,7 +357,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 				ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregateByLicenseClassification", require
-				,	LicenseClassification.NURSE, workplaceCounter, targets);
+				,	LicenseClassification.NURSE, workplaceCounter, targetTotalList);
 		
 		//Assert
 		assertThat(result)
@@ -242,37 +374,50 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 	}
 	
 	/**
-	 * method:	免許区分によって集計する
-	 * input:	免許区分 = [看護補助者]
-	 * 			集計対象リストが全部[看護補助者]
+	 * target:	免許区分によって集計する
+	 * pattern:	免許区分 = [看護補助者]
+	 * 			集計対象リストが混ぜる
 	 */
 	@Test
 	public void testAggregateByLicenseClassification_case_Nurse_Assist(@Injectable List<Integer> workplaceCounter) {
 		
-		List<IntegrationOfDaily> targets = new ArrayList<>(Arrays.asList(
+		//該当の集計対象リスト
+		val targets = new ArrayList<>(Arrays.asList(
 				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSIST))
 			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSIST))
-			));
+				));
+		//集計対象リスト
+		List<IntegrationOfDaily> targetTotalList = new ArrayList<>(Arrays.asList(
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 2))
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 2))//看護じゃない
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 3))
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 3))//看護じゃない
+				));
+		targetTotalList.addAll(targets);
 		
 		Map<GeneralDate, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<GeneralDate, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 100
-				//	- No: 2, 値: 200
+				//	- No: 1, 値: 200
+				//	- No: 2, 値: 230
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(100));
-							put(2, new BigDecimal(200));
+							put(1, new BigDecimal(200));
+							put(2, new BigDecimal(230));
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 300
-				//	- No: 2, 値: 400
+				//	- No: 1, 値: 310
+				//	- No: 2, 値: 360
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(300));
-							put(2, new BigDecimal(400));
+							put(1, new BigDecimal(310));
+							put(2, new BigDecimal(360));
 						}});
 				
 			}
@@ -290,7 +435,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 				ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregateByLicenseClassification", require
-				,	LicenseClassification.NURSE_ASSIST, workplaceCounter, targets);
+				,	LicenseClassification.NURSE_ASSIST, workplaceCounter, targetTotalList);
 		
 		//Assert
 		assertThat(result)
@@ -299,46 +444,59 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 							,	d -> d.getLicenseCls()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(100))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(300))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(400))
+						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(200))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(230))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(310))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(360))
 				);
 	}
 	
 	/**
 	 * method:	免許区分によって集計する
-	 * input:	免許区分 = [准看護師]
-	 * 			集計対象リストが全部[准看護師]
+	 * pattern:	免許区分 = [准看護師]
+	 * 			集計対象リストが混ぜる
 	 */
 	@Test
 	public void testAggregateByLicenseClassification_case_Nurse_Associate(@Injectable List<Integer> workplaceCounter) {
 		
-		List<IntegrationOfDaily> targets = new ArrayList<>(Arrays.asList(
+		//該当の集計対象リスト
+		val targets = new ArrayList<>(Arrays.asList(
 				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
 			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSOCIATE))
 				));
-				
+		//集計対象リスト
+		List<IntegrationOfDaily> targetTotalList = new ArrayList<>(Arrays.asList(
+				Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 2), Optional.of(LicenseClassification.NURSE_ASSIST))
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 2))
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 2))//看護じゃない
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE))
+			,	Helper.createDailyWorksOfNurse( GeneralDate.ymd(2021, 1, 3), Optional.of(LicenseClassification.NURSE_ASSIST))
+			,	Helper.createDailyWorkOfManager( GeneralDate.ymd(2021, 1, 3))
+			,	Helper.createDailyWorksIsNotNurse(GeneralDate.ymd(2021, 1, 3))//看護じゃない
+				));
+		
+		targetTotalList.addAll(targets);
 		
 		Map<GeneralDate, Map<Integer, BigDecimal>> totalNoTimeResult = new HashMap<GeneralDate, Map<Integer, BigDecimal>>() {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 100
-				//	- No: 2, 値: 200
+				//	- No: 1, 値: 280
+				//	- No: 2, 値: 310
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(100));
-							put(2, new BigDecimal(200));
+							put(1, new BigDecimal(280));
+							put(2, new BigDecimal(310));
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 300
-				//	- No: 2, 値: 400
+				//	- No: 1, 値: 285
+				//	- No: 2, 値: 330
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(300));
-							put(2, new BigDecimal(400));
+							put(1, new BigDecimal(285));
+							put(2, new BigDecimal(330));
 						}});
 			}
 		};
@@ -355,7 +513,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		List<WorkplaceCounterTimesNumberCounterResult> result = NtsAssert.Invoke.staticMethod(
 				ScheduleDailyTableWorkplaceCounterService.class
 				,	"aggregateByLicenseClassification", require
-				,	LicenseClassification.NURSE_ASSOCIATE, workplaceCounter, targets);
+				,	LicenseClassification.NURSE_ASSOCIATE, workplaceCounter, targetTotalList);
 		
 		//Assert
 		assertThat(result)
@@ -364,10 +522,10 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 							,	d -> d.getLicenseCls()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(100))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(300))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(400))
+						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(280))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(310))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(285))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(330))
 				);
 	}
 

@@ -22,21 +22,21 @@ public class ScheduleDailyTablePersonCounterService {
 	/**
 	 * 集計する
 	 * @param require
-	 * @param inkanTarget 印鑑対象
+	 * @param printTarget 印刷対象
 	 * @param personCounter 個人計
 	 * @param dailyMap 日別勤怠Map
 	 * @return List<個人別の回数集計結果>
 	 */
 	public static List<PersonCounterTimesNumberCounterResult> aggregate(
 				Require require
-			,	ScheRecGettingAtr inkanTarget
+			,	ScheRecGettingAtr printTarget
 			,	List<Integer> personCounter
 			,	Map<ScheRecGettingAtr, List<IntegrationOfDaily>> dailyMap
 			){
 		
 		//予定集計
 		List<PersonCounterTimesNumberCounterResult> scheNoTimeTotalResult = new ArrayList<>();
-		if(inkanTarget.isNeedSchedule()) {
+		if(printTarget.isNeedSchedule()) {
 			scheNoTimeTotalResult.addAll(
 					aggregateByScheRecAtr(	require, ScheRecAtr.SCHEDULE, personCounter
 										,	dailyMap.get(ScheRecGettingAtr.ONLY_SCHEDULE)));
@@ -44,7 +44,7 @@ public class ScheduleDailyTablePersonCounterService {
 		
 		//予定集計
 		List<PersonCounterTimesNumberCounterResult> recNoTimeTotalResult = new ArrayList<>();
-		if(inkanTarget.isNeedRecord()) {
+		if(printTarget.isNeedRecord()) {
 			recNoTimeTotalResult.addAll(
 					aggregateByScheRecAtr(	require, ScheRecAtr.RECORD, personCounter
 										,	dailyMap.get(ScheRecGettingAtr.ONLY_RECORD)));

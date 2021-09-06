@@ -57,7 +57,7 @@ public class ScheduleDailyTableWorkplaceCounterService {
 				.filter(dlyAtd -> {
 					val affInfo = dlyAtd.getAffiliationInfor();
 					return (affInfo.getNursingLicenseClass().isPresent()&& affInfo.getNursingLicenseClass().get() == licenseCls)
-							&& (affInfo.getNursingLicenseClass().isPresent() && !affInfo.getIsNursingManager().get());
+							&& (affInfo.getIsNursingManager().isPresent() && !affInfo.getIsNursingManager().get().equals(Boolean.TRUE));
 				}).collect(Collectors.toList());
 		
 		Map<GeneralDate, Map<Integer, BigDecimal>> totalResult = TotalTimesCounterService

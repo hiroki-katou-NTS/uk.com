@@ -18,7 +18,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class ScheduleDailyTableItemSettingTest {
 
 	@Test
-	public void getters(
+	public void testGetters(
 			@Injectable ScheduleDailyTableInkanRow inkanRow,
 			@Injectable Optional<ScheduleDailyTableComment> comment,
 			@Injectable NotUseAtr transferDisplay,
@@ -42,12 +42,12 @@ public class ScheduleDailyTableItemSettingTest {
 	}
 
 	/**
-	 * method 作る
-	 * input: 個人計.size = 11
-	 * output: Msg_2083
+	 * target 作る
+	 * pattern: 個人計.size = 11
+	 * except: Msg_2083
 	 */
 	@Test
-	public void create_inv1(
+	public void testCreate_inv1(
 			@Injectable ScheduleDailyTableInkanRow inkanRow,
 			@Injectable Optional<ScheduleDailyTableComment> comment,
 			@Injectable List<Integer> workplaceCounter,
@@ -69,12 +69,12 @@ public class ScheduleDailyTableItemSettingTest {
 	}
 	
 	/**
-	 * method 作る
-	 * input: 職場計.size = 6
-	 * output: Msg_2084
+	 * target 作る
+	 * pattern: 職場計.size = 6
+	 * except: Msg_2084
 	 */
 	@Test
-	public void create_inv2(
+	public void testCreate_inv2(
 			@Injectable ScheduleDailyTableInkanRow inkanRow,
 			@Injectable Optional<ScheduleDailyTableComment> comment,
 			@Injectable List<Integer> personalCounter,
@@ -96,20 +96,20 @@ public class ScheduleDailyTableItemSettingTest {
 	}
 	
 	/**
-	 * method 作る
-	 * input: 職場計.size() = 5, 個人計.size() = 11
-	 * output: create success
+	 * target 作る
+	 * pattern: 職場計.size() = 5, 個人計.size() = 10
+	 * except: create success
 	 */
 	@Test
-	public void create_success(
+	public void testCreate_success(
 			@Injectable ScheduleDailyTableInkanRow inkanRow,
 			@Injectable Optional<ScheduleDailyTableComment> comment,
 			@Injectable NotUseAtr transferDisplay,
 			@Injectable SupporterPrintMethod supporterSchedulePrintMethod,
 			@Injectable SupporterPrintMethod supporterDailyDataPrintMethod) {
-		//個人計.size() = 11
+		//個人計.size() = 10
 		List<Integer> personalCounter = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-		//職場計.size() = 5,
+		//職場計.size() = 5
 		List<Integer> workplaceCounter = Arrays.asList(1, 2, 3, 4, 5);
 		
 		ScheduleDailyTableItemSetting result = ScheduleDailyTableItemSetting.create(
