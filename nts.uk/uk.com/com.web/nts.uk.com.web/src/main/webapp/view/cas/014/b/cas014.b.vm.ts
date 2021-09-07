@@ -20,6 +20,7 @@ module nts.uk.com.view.cas014.b {
         selectedEmployeeName: KnockoutObservable<string>;
         selectedRoleCode: KnockoutObservable<string>;
         dateValue: KnockoutObservable<any>;
+        backFromCDL009: boolean = false;
 
         constructor() {
             super();
@@ -44,7 +45,8 @@ module nts.uk.com.view.cas014.b {
                     self.dateValue({});
                     self.screenMode(ScreenMode.NEW);
                     $("#B3_2").focus();
-                    self.openDialogCDL009();
+                    if (!self.backFromCDL009) self.openDialogCDL009();
+                    else self.backFromCDL009 = false;
                 }
             });
             self.selectedRoleCode = ko.observable(null);
@@ -224,6 +226,7 @@ module nts.uk.com.view.cas014.b {
             }, true);
 
             nts.uk.ui.windows.sub.modal("/view/cdl/009/a/index.xhtml").onClosed(function() {
+                self.backFromCDL009 = true;
                 var isCancel = nts.uk.ui.windows.getShared('CDL009Cancel');
                 if (isCancel) {
                     return;
