@@ -18,7 +18,7 @@ module nts.uk.com.view.cas014.a {
             self.roleSetList = ko.observableArray([]);
             self.jobTitleList = ko.observableArray([]);
             self.roleSetJobTitle = ko.observable(new RoleSetJobTitle(false, self.jobTitleList(), self.roleSetList()));
-            $("#A4").ntsFixedTable({ height: 393 });
+            $("#A4").ntsFixedTable({ height: 405 });
         }
 
         created() {
@@ -100,7 +100,7 @@ module nts.uk.com.view.cas014.a {
             self.$blockui("show");
             self.$ajax("com", paths.registerData, command).done(function() {
                 self.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                    $("#A4").focus();
+                    if (!_.isEmpty($("#A4 .ui-igcombo-wrapper"))) $("#A4 .ui-igcombo-wrapper")[0].focus();
                 });
             }).fail(error => {
                 self.$dialog.error(error);

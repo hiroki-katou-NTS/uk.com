@@ -33,7 +33,7 @@
 					<colgroup>
 						<col width="80px" />
 						<col width="170px" />
-						<col width="205px" />
+						<col width="280px" />
 					</colgroup>
 					<thead>
 					<!--A4_H1 A4_H2 A4_H3-->
@@ -45,11 +45,12 @@
 					</thead>
 					<tbody data-bind = "foreach: details">
 					<tr>
-						<td><div data-bind = "text: jobTitle.code" style="display: inline-block;"></div></td>
-						<td><div class="limited-label" data-bind = "text: jobTitle.name" style="display: inline-block;"></div></td>
-						<td>
+						<td data-bind="text: jobTitle.code"></td>
+						<td data-bind="text: jobTitle.name"></td>
+						<td style="display: inline-flex; padding: 2px 2px;">
 							<!--A4-->
 							<div class="combo-box" tabindex="6"
+								 style="width: 275px;"
 								 data-bind="ntsComboBox: {
 											name: '#[CAS014_26]',
 											options: roleSetList,

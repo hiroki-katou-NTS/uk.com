@@ -51,14 +51,7 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 				key.companyId
 		);
 	}
-	private SacmtRoleSetGrantedJobTitleDetail toEntiryForUpdate(SacmtRoleSetGrantedJobTitleDetail upEntity) {
-		upEntity.upEntity(
-				upEntity.roleSetCd,
-				upEntity.roleSetGrantedJobTitleDetailPK.jobTitleId,
-				upEntity.roleSetGrantedJobTitleDetailPK.companyId
-		);
-		return upEntity;
-	}
+
 	@Override
 	public List<RoleSetGrantedJobTitle> getByCompanyId(String companyId) {
 		return this.queryProxy().query(FIND_BY_CID_JOBTITLES, SacmtRoleSetGrantedJobTitleDetail.class)
@@ -83,7 +76,8 @@ public class JpaRoleSetGrantedJobTitleRepository extends JpaRepository implement
 				new SacmtRoleSetGrantedJobTitleDetailPK(domain.getJobTitleId(), domain.getCompanyId()),
 				SacmtRoleSetGrantedJobTitleDetail.class);
 		if (upEntity.isPresent()) {
-			this.commandProxy().update(toEntiryForUpdate(upEntity.get()));
+			upEntity.get().roleSetCd = domain.getRoleSetCd().v();
+			this.commandProxy().update(upEntity.get());
 		}
 	}
 
