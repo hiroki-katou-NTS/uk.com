@@ -22,7 +22,7 @@ public class GetPersonalEmployeeInfoByUserIdService {
 		Optional<User> user = require.getUser(userId);
 		
 		if(!user.isPresent()) {
-			throw new RuntimeException();
+			throw new RuntimeException("This user doesn't exist");
 		}
 		
 		Optional<String> personId = user.get().getAssociatedPersonID();
@@ -35,7 +35,6 @@ public class GetPersonalEmployeeInfoByUserIdService {
 	}
 	
 	public static interface Require{
-		
 		/**
 		 * ユーザを取得する
 		 * @param userId ユーザID
@@ -46,7 +45,7 @@ public class GetPersonalEmployeeInfoByUserIdService {
 		/**
 		 * 個人の社員情報を取得する(個人ID)
 		 * @param personId 個人ID
-		 * @return Optional<個人社員情報Imported>
+		 * @return
 		 */
 		Optional<PersonalEmployeeInfoImport> getPersonalEmployeeInfo(String personId);
 		
