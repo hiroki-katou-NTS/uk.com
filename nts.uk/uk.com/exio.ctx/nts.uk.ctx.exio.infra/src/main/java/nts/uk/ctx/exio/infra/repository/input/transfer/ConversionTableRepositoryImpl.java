@@ -15,10 +15,10 @@ import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionRecord;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionSources;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
-import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionRecord;
-import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionSources;
-import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
 
 @Stateless
 public class ConversionTableRepositoryImpl extends JpaRepository implements ConversionTableRepository {
