@@ -20,6 +20,7 @@ module nts.uk.com.view.cas014.b {
         selectedEmployeeName: KnockoutObservable<string>;
         selectedRoleCode: KnockoutObservable<string>;
         dateValue: KnockoutObservable<any>;
+        backFromCDL009: boolean = false;
 
         constructor() {
             super();
@@ -39,12 +40,17 @@ module nts.uk.com.view.cas014.b {
                     self.screenMode(ScreenMode.UPDATE);
                     $("#B4_2").focus();
                 } else {
-                    self.selectedEmployeeName(null);
-                    self.selectedRoleCode(null);
-                    self.dateValue({});
                     self.screenMode(ScreenMode.NEW);
                     $("#B3_2").focus();
-                    self.openDialogCDL009();
+                    if (!self.backFromCDL009) {
+                        self.selectedEmployeeId(null);
+                        self.selectedEmployeeName(null);
+                        self.selectedRoleCode(null);
+                        self.dateValue({});
+                        self.openDialogCDL009();
+                    } else {
+                        self.backFromCDL009 = false;
+                    }
                 }
             });
             self.selectedRoleCode = ko.observable(null);
@@ -198,6 +204,11 @@ module nts.uk.com.view.cas014.b {
                         self.$dialog.info({ messageId: "Msg_16" }).then(() => {
                             self.startPage().then(() => {
                                 if (self.roleSetPersonList().length == 0) {
+                                    self.backFromCDL009 = true;
+                                    self.selectedEmployeeId(null);
+                                    self.selectedEmployeeName(null);
+                                    self.selectedRoleCode(null);
+                                    self.dateValue({});
                                     self.createNewRoleSetPerson();
                                 } else {
                                     self.selectedEmployeeCode(self.roleSetPersonList()[Math.min(indexItemDelete, self.roleSetPersonList().length - 1)].code);
@@ -224,6 +235,7 @@ module nts.uk.com.view.cas014.b {
             }, true);
 
             nts.uk.ui.windows.sub.modal("/view/cdl/009/a/index.xhtml").onClosed(function() {
+                self.backFromCDL009 = true;
                 var isCancel = nts.uk.ui.windows.getShared('CDL009Cancel');
                 if (isCancel) {
                     return;
