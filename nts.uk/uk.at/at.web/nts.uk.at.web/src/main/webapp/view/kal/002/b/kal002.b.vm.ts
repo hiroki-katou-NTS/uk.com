@@ -14,8 +14,6 @@ module nts.uk.at.view.kal002.c {
         // Switch button Component
         roundingRules: KnockoutObservableArray<any>;
         selectedRoleSetting: any;
-        // Mode
-        isUpdateMode: KnockoutObservable<boolean> = ko.observable(false);
         // Declare object
         alarmMailSendingRole: IAlarmMailSendingRole;
         manualPerson: IAlarmListExecutionMailSetting;
@@ -33,7 +31,7 @@ module nts.uk.at.view.kal002.c {
         statusConfigAutoAdmin: KnockoutObservable<string> = ko.observable(this.$i18n('KAL012_13'));
         // Role setting
         enableRoleSetting: KnockoutObservable<boolean> = ko.observable(false);
-        roles: KnockoutObservableArray<IRole> = ko.observableArray([]);
+        // roles: KnockoutObservableArray<IRole> = ko.observableArray([]);
         roleName: KnockoutObservable<any> = ko.observable('');
         currentRoleCodes: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -161,7 +159,7 @@ module nts.uk.at.view.kal002.c {
                         vm.currentRoleCodes(data.alarmMailSendingRole.roleIds);
                     }
                     if (!_.isEmpty(data.roleList)) {
-                        vm.roles(data.roleList);
+                        // vm.roles(data.roleList);
                         vm.roleName(_.join(_.map(data.roleList, 'roleName'), '、'));
                     }
                 }
@@ -283,11 +281,7 @@ module nts.uk.at.view.kal002.c {
          * Set relate parameters before get dialog CCG027
          */
         setParamCCG027(isAuto: boolean) {
-            if (isAuto) {
-                nts.uk.ui.windows.setShared("sendingAddressCheck", true);
-            } else {
-                nts.uk.ui.windows.setShared("sendingAddressCheck", false);
-            }
+            nts.uk.ui.windows.setShared("sendingAddressCheck", isAuto);
             nts.uk.ui.windows.setShared("SetCC", true);
             nts.uk.ui.windows.setShared("SetBCC", true);
             nts.uk.ui.windows.setShared("SetReply", true);
