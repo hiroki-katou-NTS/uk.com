@@ -130,9 +130,11 @@ module nts.uk.at.view.kal012.b {
                                 vm.normal = item;
                                 isNormalSet = true;
                             }
-                            if (item.normalAutoClassify === 1 && (item.mailContents != null)) {
+                            if (item.normalAutoClassify) {
                                 vm.auto = item;
-                                isAutoSet = true;
+                                if(item.mailContents != null){
+                                    isAutoSet = true;
+                                }
                             }
                         }
                     }
