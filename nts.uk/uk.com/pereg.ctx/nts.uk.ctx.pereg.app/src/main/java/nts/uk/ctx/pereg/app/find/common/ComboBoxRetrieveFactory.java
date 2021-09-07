@@ -6,6 +6,7 @@ package nts.uk.ctx.pereg.app.find.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -316,9 +318,10 @@ public class ComboBoxRetrieveFactory {
 						workplaceId = null;
 					}
 				}
-
-				List<String> workTimeCodeList = workTimePlaceRepo.getWorkTimeWorkplaceById(companyId, workplaceId)
-						.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
+				
+				List<String> workTimeCodeList = workTimeSettingRepo.findByCompanyId(companyId).stream()
+		                .filter(x -> x.getAbolishAtr() == AbolishAtr.NOT_ABOLISH)
+		                .map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
 				return workTimeSettingRepo.getListWorkTimeSetByListCode(companyId, workTimeCodeList).stream()
 						.map(workTimeSetting -> new ComboBoxObject(workTimeSetting.getWorktimeCode().v(),
 								workTimeSetting.getWorktimeCode() + JP_SPACE
