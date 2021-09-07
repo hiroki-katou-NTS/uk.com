@@ -54,8 +54,6 @@ public class ReserveLeaveInfo implements Cloneable {
 	private List<ReserveLeaveGrantRemainingData> grantRemainingList;
 	/** 使用数 */
 	private ReserveLeaveUsedDayNumber usedDays;
-//	/** 付与後フラグ */
-//	private boolean afterGrantAtr;
 	/** 付与情報 */
 	private Optional<ReserveLeaveGrantInfo> grantInfo;
 
@@ -216,39 +214,6 @@ public class ReserveLeaveInfo implements Cloneable {
 
 		// 「積立年休の集計結果」を返す
 		return aggrResult;
-	}
-
-	/**
-	 * 付与前退避処理
-	 * @param aggrPeriodWork 処理中の積立年休集計期間WORK
-	 */
-	private void saveStateBeforeGrant(RsvLeaAggrPeriodWork aggrPeriodWork){
-
-		// パラメータ「積立年休集計期間WORK．期間の開始日に付与があるか」をチェック
-		if (!aggrPeriodWork.isGrantAtr()) return;
-
-		// 初回付与か判断する
-		if ( !isFirstTimeGrant(aggrPeriodWork) ) {
-			// 初回以外
-			return;
-		}
-
-		// 「年休集計期間WORK.付与フラグ」をチェック
-//		if (!aggrPeriodWork.isGrantAtr()) return;
-
-//		// 「積立年休情報．付与後フラグ」をチェック
-//		if (this.isAfterGrantAtr()) return;
-
-		// 現在の積立年休（マイナスあり）の残数を付与前として退避する
-		val withMinus = this.remainingNumber.getReserveLeaveWithMinus();
-		//withMinus.setRemainingNumberBeforeGrant(withMinus.getRemainingNumber().clone());
-		withMinus.getRemainingNumberInfo().saveStateBeforeGrant();
-
-		// 現在の積立年休（マイナスなし）の残数を付与前として退避する
-		val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
-		//noMinus.setRemainingNumberBeforeGrant(noMinus.getRemainingNumber().clone());
-		noMinus.getRemainingNumberInfo().saveStateBeforeGrant();
-
 	}
 
 	//初回付与か判断する

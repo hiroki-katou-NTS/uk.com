@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 @AllArgsConstructor
 public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItemDataGate {
 
-	/** 合計残日数 */
-	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
-	private RsvLeaveRemainingNumberDto totalRemainingDays;
+//	/** 合計残日数 */
+//	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
+//	private RsvLeaveRemainingNumberDto totalRemainingDays;
 
 	/** 付与前 */
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
@@ -31,7 +31,7 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	public static RsvLeaveRemainingNumberInfoDto from(ReserveLeaveRemainingInfo domain) {
 
 		return domain == null ? null
-				: new RsvLeaveRemainingNumberInfoDto(RsvLeaveRemainingNumberDto.from(domain.getRemainingNumber()),
+				: new RsvLeaveRemainingNumberInfoDto(
 						RsvLeaveRemainingNumberDto.from(domain.getRemainingNumberBeforeGrant()),
 						domain.getRemainingNumberAfterGrantOpt().map(c -> RsvLeaveRemainingNumberDto.from(c))
 								.orElse(null));
@@ -39,7 +39,7 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 
 	public ReserveLeaveRemainingInfo toReserveDomain() {
 
-		return ReserveLeaveRemainingInfo.of(totalRemainingDays.toReserveDomain(), before.toReserveDomain(),
+		return ReserveLeaveRemainingInfo.of(before.toReserveDomain(),
 				Optional.ofNullable(after == null ? null : after.toReserveDomain()));
 	}
 
@@ -60,7 +60,8 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
 		case DAYS:
-			return Optional.ofNullable(totalRemainingDays);
+			//return Optional.ofNullable(totalRemainingDays);
+			return Optional.empty();
 		case BEFORE:
 			return Optional.ofNullable(before);
 		case AFTER:
@@ -87,7 +88,7 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
 		case DAYS:
-			totalRemainingDays = (RsvLeaveRemainingNumberDto) value;
+			//totalRemainingDays = (RsvLeaveRemainingNumberDto) value;
 			break;
 		case BEFORE:
 			before = (RsvLeaveRemainingNumberDto) value;

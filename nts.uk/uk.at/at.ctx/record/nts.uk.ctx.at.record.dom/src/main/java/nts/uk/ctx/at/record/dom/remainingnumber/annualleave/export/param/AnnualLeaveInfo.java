@@ -65,9 +65,6 @@ public class AnnualLeaveInfo implements Cloneable {
 	private AnnualLeaveUsedDayNumber usedDays;
 	/** 使用時間 */
 	private UsedMinutes usedTime;
-//	/** 付与後フラグ */
-//	private boolean afterGrantAtr;
-
 	/** 年休設定 */
 	private AnnualPaidLeaveSetting annualPaidLeaveSet;
 
@@ -83,8 +80,6 @@ public class AnnualLeaveInfo implements Cloneable {
 		this.grantInfo = Optional.empty();
 		this.usedDays = new AnnualLeaveUsedDayNumber(0.0);
 		this.usedTime = new UsedMinutes(0);
-//		this.afterGrantAtr = false;
-
 		this.annualPaidLeaveSet = null;
 	}
 

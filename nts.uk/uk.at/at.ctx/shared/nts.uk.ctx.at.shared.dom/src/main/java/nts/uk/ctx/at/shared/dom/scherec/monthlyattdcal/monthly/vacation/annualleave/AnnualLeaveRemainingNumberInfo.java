@@ -93,7 +93,7 @@ public class AnnualLeaveRemainingNumberInfo implements Cloneable {
 	}
 
 	/**
-	 * 合計を取得
+	 * 残数を取得
 	 * @return
 	 */
 	public AnnualLeaveRemainingNumber getRemainingNumber(){

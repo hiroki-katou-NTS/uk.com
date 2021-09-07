@@ -27,11 +27,6 @@ public class AnnualLeave implements Cloneable, Serializable {
 	/** 残数情報 */
 	private AnnualLeaveRemainingNumberInfo remainingNumberInfo;
 
-//	/** 残数付与前 */
-//	private AnnualLeaveRemainingNumber remainingNumberBeforeGrant;
-//	/** 残数付与後 */
-//	private Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrant;
-//
 	/**
 	 * コンストラクタ
 	 */
@@ -39,8 +34,6 @@ public class AnnualLeave implements Cloneable, Serializable {
 
 		this.usedNumberInfo = new AnnualLeaveUsedInfo();
 		this.remainingNumberInfo = new AnnualLeaveRemainingNumberInfo();
-//		this.remainingNumberBeforeGrant = new AnnualLeaveRemainingNumber();
-//		this.remainingNumberAfterGrant = Optional.empty();
 	}
 
 	/**
@@ -56,8 +49,6 @@ public class AnnualLeave implements Cloneable, Serializable {
 		AnnualLeave domain = new AnnualLeave();
 		domain.usedNumberInfo = usedNumberInfo;
 		domain.remainingNumberInfo = remainingNumberInfo;
-//		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
-//		domain.remainingNumberAfterGrant = remainingNumberAfterGrant;
 		return domain;
 	}
 

@@ -31,7 +31,6 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	 * @return
 	 */
 	public static SpecialLeaveRemainingNumberInfo of(
-			SpecialLeaveRemainingNumber remainingNumber,
 			SpecialLeaveRemainingNumber remainingNumberBeforeGrant,
 			Optional<SpecialLeaveRemainingNumber> remainingNumberAfterGrantOpt
 			){
@@ -97,22 +96,6 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 		remainingNumberBeforeGrant.clear();
 		remainingNumberAfterGrantOpt = Optional.empty();
 	}
-
-//	/**
-//	 * 付与前退避処理
-//	 */
-//	public void saveStateBeforeGrant(){
-//		// 合計残数を付与前に退避する
-//		remainingNumberBeforeGrant = remainingNumber.clone();
-//	}
-//
-//	/**
-//	 * 付与後退避処理
-//	 */
-//	public void saveStateAfterGrant(){
-//		// 合計残数を付与後に退避する
-//		remainingNumberAfterGrantOpt = Optional.of(remainingNumber.clone());
-//	}
 
 	/**
 	 * 明細をクリア。（要素数を０にする）

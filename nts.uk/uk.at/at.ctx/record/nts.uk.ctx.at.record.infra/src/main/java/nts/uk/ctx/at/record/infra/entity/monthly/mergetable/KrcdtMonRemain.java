@@ -165,20 +165,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	/** 実使用回数 */
 	@Column(name = "AL_FACT_USED_TIMES")
 	public Integer annleaFactUsedTimes;
-
-	/** 合計残日数 */
-	@Column(name = "AL_REM_DAYS")
-	public double annleaRemainingDays;
-	/** 合計残時間 */
-	@Column(name = "AL_REM_MINUTES")
-	public Integer annleaRemainingMinutes;
-	/** 実合計残日数 */
-	@Column(name = "AL_FACT_REM_DAYS")
-	public double annleaFactRemainingDays;
-	/** 実合計残時間 */
-	@Column(name = "AL_FACT_REM_MINUTES")
-	public Integer annleaFactRemainingMinutes;
-
 	/** 合計残日数付与前 */
 	@Column(name = "AL_REM_DAYS_BEFORE")
 	public double annleaRemainingDaysBefore;
@@ -323,12 +309,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	/** 実使用日数付与後 */
 	@Column(name = "RL_FACT_USED_DAYS_AFTER")
 	public Double rsvleaFactUsedDaysAfter;
-	/** 合計残日数 */
-	@Column(name = "RL_REM_DAYS")
-	public double rsvleaRemainingDays;
-	/** 実合計残日数 */
-	@Column(name = "RL_FACT_REM_DAYS")
-	public double rsvleaFactRemainingDays;
 	/** 合計残日数付与前 */
 	@Column(name = "RL_REM_DAYS_BEFORE")
 	public double rsvleaRemainingDaysBefore;
@@ -940,174 +920,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 	public Integer factUseTimes19;
 	@Column(name = "SP_FACT_USED_TIMES_20")
 	public Integer factUseTimes20;
-
-	/** 特別休暇月別残数データ．特別休暇．残数.日数 */
-	@Column(name = "SP_REM_DAYS_1")
-	public double remainDays1;
-	@Column(name = "SP_REM_DAYS_2")
-	public double remainDays2;
-	@Column(name = "SP_REM_DAYS_3")
-	public double remainDays3;
-	@Column(name = "SP_REM_DAYS_4")
-	public double remainDays4;
-	@Column(name = "SP_REM_DAYS_5")
-	public double remainDays5;
-	@Column(name = "SP_REM_DAYS_6")
-	public double remainDays6;
-	@Column(name = "SP_REM_DAYS_7")
-	public double remainDays7;
-	@Column(name = "SP_REM_DAYS_8")
-	public double remainDays8;
-	@Column(name = "SP_REM_DAYS_9")
-	public double remainDays9;
-	@Column(name = "SP_REM_DAYS_10")
-	public double remainDays10;
-	@Column(name = "SP_REM_DAYS_11")
-	public double remainDays11;
-	@Column(name = "SP_REM_DAYS_12")
-	public double remainDays12;
-	@Column(name = "SP_REM_DAYS_13")
-	public double remainDays13;
-	@Column(name = "SP_REM_DAYS_14")
-	public double remainDays14;
-	@Column(name = "SP_REM_DAYS_15")
-	public double remainDays15;
-	@Column(name = "SP_REM_DAYS_16")
-	public double remainDays16;
-	@Column(name = "SP_REM_DAYS_17")
-	public double remainDays17;
-	@Column(name = "SP_REM_DAYS_18")
-	public double remainDays18;
-	@Column(name = "SP_REM_DAYS_19")
-	public double remainDays19;
-	@Column(name = "SP_REM_DAYS_20")
-	public double remainDays20;
-
-	/** 特別休暇月別残数データ．特別休暇．残数.時間 */
-	@Column(name = "SP_REM_MINUTES_1")
-	public Integer remainMinutes1;
-	@Column(name = "SP_REM_MINUTES_2")
-	public Integer remainMinutes2;
-	@Column(name = "SP_REM_MINUTES_3")
-	public Integer remainMinutes3;
-	@Column(name = "SP_REM_MINUTES_4")
-	public Integer remainMinutes4;
-	@Column(name = "SP_REM_MINUTES_5")
-	public Integer remainMinutes5;
-	@Column(name = "SP_REM_MINUTES_6")
-	public Integer remainMinutes6;
-	@Column(name = "SP_REM_MINUTES_7")
-	public Integer remainMinutes7;
-	@Column(name = "SP_REM_MINUTES_8")
-	public Integer remainMinutes8;
-	@Column(name = "SP_REM_MINUTES_9")
-	public Integer remainMinutes9;
-	@Column(name = "SP_REM_MINUTES_10")
-	public Integer remainMinutes10;
-	@Column(name = "SP_REM_MINUTES_11")
-	public Integer remainMinutes11;
-	@Column(name = "SP_REM_MINUTES_12")
-	public Integer remainMinutes12;
-	@Column(name = "SP_REM_MINUTES_13")
-	public Integer remainMinutes13;
-	@Column(name = "SP_REM_MINUTES_14")
-	public Integer remainMinutes14;
-	@Column(name = "SP_REM_MINUTES_15")
-	public Integer remainMinutes15;
-	@Column(name = "SP_REM_MINUTES_16")
-	public Integer remainMinutes16;
-	@Column(name = "SP_REM_MINUTES_17")
-	public Integer remainMinutes17;
-	@Column(name = "SP_REM_MINUTES_18")
-	public Integer remainMinutes18;
-	@Column(name = "SP_REM_MINUTES_19")
-	public Integer remainMinutes19;
-	@Column(name = "SP_REM_MINUTES_20")
-	public Integer remainMinutes20;
-
-	/** 特別休暇月別残数データ．実特別休暇．残数. 日数 */
-	@Column(name = "SP_FACT_REM_DAYS_1")
-	public double factRemainDays1;
-	@Column(name = "SP_FACT_REM_DAYS_2")
-	public double factRemainDays2;
-	@Column(name = "SP_FACT_REM_DAYS_3")
-	public double factRemainDays3;
-	@Column(name = "SP_FACT_REM_DAYS_4")
-	public double factRemainDays4;
-	@Column(name = "SP_FACT_REM_DAYS_5")
-	public double factRemainDays5;
-	@Column(name = "SP_FACT_REM_DAYS_6")
-	public double factRemainDays6;
-	@Column(name = "SP_FACT_REM_DAYS_7")
-	public double factRemainDays7;
-	@Column(name = "SP_FACT_REM_DAYS_8")
-	public double factRemainDays8;
-	@Column(name = "SP_FACT_REM_DAYS_9")
-	public double factRemainDays9;
-	@Column(name = "SP_FACT_REM_DAYS_10")
-	public double factRemainDays10;
-	@Column(name = "SP_FACT_REM_DAYS_11")
-	public double factRemainDays11;
-	@Column(name = "SP_FACT_REM_DAYS_12")
-	public double factRemainDays12;
-	@Column(name = "SP_FACT_REM_DAYS_13")
-	public double factRemainDays13;
-	@Column(name = "SP_FACT_REM_DAYS_14")
-	public double factRemainDays14;
-	@Column(name = "SP_FACT_REM_DAYS_15")
-	public double factRemainDays15;
-	@Column(name = "SP_FACT_REM_DAYS_16")
-	public double factRemainDays16;
-	@Column(name = "SP_FACT_REM_DAYS_17")
-	public double factRemainDays17;
-	@Column(name = "SP_FACT_REM_DAYS_18")
-	public double factRemainDays18;
-	@Column(name = "SP_FACT_REM_DAYS_19")
-	public double factRemainDays19;
-	@Column(name = "SP_FACT_REM_DAYS_20")
-	public double factRemainDays20;
-
-	/** 特別休暇月別残数データ．実特別休暇．残数.時間 */
-	@Column(name = "SP_FACT_REM_MINUTES_1")
-	public Integer factRemainMinutes1;
-	@Column(name = "SP_FACT_REM_MINUTES_2")
-	public Integer factRemainMinutes2;
-	@Column(name = "SP_FACT_REM_MINUTES_3")
-	public Integer factRemainMinutes3;
-	@Column(name = "SP_FACT_REM_MINUTES_4")
-	public Integer factRemainMinutes4;
-	@Column(name = "SP_FACT_REM_MINUTES_5")
-	public Integer factRemainMinutes5;
-	@Column(name = "SP_FACT_REM_MINUTES_6")
-	public Integer factRemainMinutes6;
-	@Column(name = "SP_FACT_REM_MINUTES_7")
-	public Integer factRemainMinutes7;
-	@Column(name = "SP_FACT_REM_MINUTES_8")
-	public Integer factRemainMinutes8;
-	@Column(name = "SP_FACT_REM_MINUTES_9")
-	public Integer factRemainMinutes9;
-	@Column(name = "SP_FACT_REM_MINUTES_10")
-	public Integer factRemainMinutes10;
-	@Column(name = "SP_FACT_REM_MINUTES_11")
-	public Integer factRemainMinutes11;
-	@Column(name = "SP_FACT_REM_MINUTES_12")
-	public Integer factRemainMinutes12;
-	@Column(name = "SP_FACT_REM_MINUTES_13")
-	public Integer factRemainMinutes13;
-	@Column(name = "SP_FACT_REM_MINUTES_14")
-	public Integer factRemainMinutes14;
-	@Column(name = "SP_FACT_REM_MINUTES_15")
-	public Integer factRemainMinutes15;
-	@Column(name = "SP_FACT_REM_MINUTES_16")
-	public Integer factRemainMinutes16;
-	@Column(name = "SP_FACT_REM_MINUTES_17")
-	public Integer factRemainMinutes17;
-	@Column(name = "SP_FACT_REM_MINUTES_18")
-	public Integer factRemainMinutes18;
-	@Column(name = "SP_FACT_REM_MINUTES_19")
-	public Integer factRemainMinutes19;
-	@Column(name = "SP_FACT_REM_MINUTES_20")
-	public Integer factRemainMinutes20;
 
 	/** 特別休暇月別残数データ．特別休暇．残数付与前.日数 */
 	@Column(name = "SP_REM_DAYS_BEFORE_1")
@@ -1845,10 +1657,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		val normalRemainBefore = normalR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val normalRemainAfterOpt = normalR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
-		this.annleaRemainingDays = normalRemain.getTotalRemainingDays().v();
-		if (normalRemain.getTotalRemainingTime().isPresent()) {
-			this.annleaRemainingMinutes = normalRemain.getTotalRemainingTime().get().v();
-		}
 		this.annleaRemainingDaysBefore = normalRemainBefore.getTotalRemainingDays().v();
 		if (normalRemainBefore.getTotalRemainingTime().isPresent()) {
 			this.annleaRemainingMinutesBefore = normalRemainBefore.getTotalRemainingTime().get().v();
@@ -1867,10 +1675,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		val realRemainBefore = realR.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val realRemainAfterOpt = realR.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
-		this.annleaFactRemainingDays = realRemain.getTotalRemainingDays().v();
-		if (realRemain.getTotalRemainingTime().isPresent()){
-			this.annleaFactRemainingMinutes = realRemain.getTotalRemainingTime().get().v();
-		}
 		this.annleaFactRemainingDaysBefore = realRemainBefore.getTotalRemainingDays().v();
 		if (realRemainBefore.getTotalRemainingTime().isPresent()) {
 			this.annleaFactRemainingMinutesBefore = realRemainBefore.getTotalRemainingTime().get().v();
@@ -1977,10 +1781,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.annleaFactUsedMinutesBefore = null;
 		this.annleaFactUsedMinutesAfter = null;
 		this.annleaFactUsedTimes = null;
-		this.annleaRemainingDays = 0.0;
-		this.annleaRemainingMinutes = null;
-		this.annleaFactRemainingDays = 0.0;
-		this.annleaFactRemainingMinutes = null;
 		this.annleaRemainingDaysBefore = 0.0;
 		this.annleaRemainingMinutesBefore = null;
 		this.annleaFactRemainingDaysBefore = 0.0;
@@ -2055,11 +1855,9 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		}
 
 		// 積立年休：残数
-		val normalRemain = normal.getRemainingNumberInfo().getRemainingNumber();
 		val normalRemainBefore = normal.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val normalRemainAfterOpt = normal.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
-		this.rsvleaRemainingDays = normalRemain.getTotalRemainingDays().v();
 		this.rsvleaRemainingDaysBefore = normalRemainBefore.getTotalRemainingDays().v();
 		if (normalRemainAfterOpt.isPresent()) {
 			val normalRemainAfter = normalRemainAfterOpt.get();
@@ -2068,11 +1866,9 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		// 実積立年休：残数
 		val realR = domain.getRealReserveLeave();
-		val realRemain = real.getRemainingNumberInfo().getRemainingNumber();
 		val realRemainBefore = real.getRemainingNumberInfo().getRemainingNumberBeforeGrant();
 		val realRemainAfterOpt = real.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt();
 
-		this.rsvleaFactRemainingDays = realRemain.getTotalRemainingDays().v();
 		this.rsvleaFactRemainingDaysBefore = realRemainBefore.getTotalRemainingDays().v();
 		if (realRemainAfterOpt.isPresent()) {
 			val realRemainAfter = realRemainAfterOpt.get();
@@ -2100,8 +1896,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.rsvleaFactUsedDays = 0.0;
 		this.rsvleaFactUsedDaysBefore = 0.0;
 		this.rsvleaFactUsedDaysAfter = null;
-		this.rsvleaRemainingDays = 0.0;
-		this.rsvleaFactRemainingDays = 0.0;
 		this.rsvleaRemainingDaysBefore = 0.0;
 		this.rsvleaFactRemainingDaysBefore = 0.0;
 		this.rsvleaRemainingDaysAfter = null;
@@ -2263,20 +2057,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			}
 		}
 
-		/** 特別休暇月別残数データ.特別休暇.特別休暇残数情報.合計.合計残日数 */
-		result.remainDays = domain.getSpecialLeave().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v();
-		if (domain.getSpecialLeave().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().isPresent()){
-			/** 特別休暇月別残数データ.特別休暇.特別休暇残数情報.合計.合計残時間 */
-			result.remainMinutes = domain.getSpecialLeave().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().get().v();
-		}
-
-		/** 特別休暇月別残数データ.実特別休暇.特別休暇残数情報.合計.合計残日数 */
-		result.factRemainDays = domain.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getDayNumberOfRemain().v();
-		if (domain.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().isPresent()){
-			/** 特別休暇月別残数データ.実特別休暇.特別休暇残数情報.合計.合計残時間 */
-			result.factRemainMinutes = domain.getActualSpecial().getRemainingNumberInfo().getRemainingNumber().getTimeOfRemain().get().v();
-		}
-
 		/** 特別休暇月別残数データ.特別休暇.特別休暇残数情報.付与前.合計残日数 */
 		result.beforeRemainDays = domain.getSpecialLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getDayNumberOfRemain().v();
 		if (domain.getSpecialLeave().getRemainingNumberInfo().getRemainingNumberBeforeGrant().getTimeOfRemain().isPresent()){
@@ -2344,10 +2124,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes1 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes1 = entity.afterFactUseMinutes;
 		this.factUseTimes1 = entity.factUseTimes;
-		this.remainDays1 = entity.remainDays;
-		this.remainMinutes1 = entity.remainMinutes;
-		this.factRemainDays1 = entity.factRemainDays;
-		this.factRemainMinutes1 = entity.factRemainMinutes;
 		this.beforeRemainDays1 = entity.beforeRemainDays;
 		this.beforeRemainMinutes1 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays1 = entity.beforeFactRemainDays;
@@ -2379,10 +2155,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes2 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes2 = entity.afterFactUseMinutes;
 		this.factUseTimes2 = entity.factUseTimes;
-		this.remainDays2 = entity.remainDays;
-		this.remainMinutes2 = entity.remainMinutes;
-		this.factRemainDays2 = entity.factRemainDays;
-		this.factRemainMinutes2 = entity.factRemainMinutes;
 		this.beforeRemainDays2 = entity.beforeRemainDays;
 		this.beforeRemainMinutes2 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays2 = entity.beforeFactRemainDays;
@@ -2414,10 +2186,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes3 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes3 = entity.afterFactUseMinutes;
 		this.factUseTimes3 = entity.factUseTimes;
-		this.remainDays3 = entity.remainDays;
-		this.remainMinutes3 = entity.remainMinutes;
-		this.factRemainDays3 = entity.factRemainDays;
-		this.factRemainMinutes3 = entity.factRemainMinutes;
 		this.beforeRemainDays3 = entity.beforeRemainDays;
 		this.beforeRemainMinutes3 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays3 = entity.beforeFactRemainDays;
@@ -2449,10 +2217,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes4 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes4 = entity.afterFactUseMinutes;
 		this.factUseTimes4 = entity.factUseTimes;
-		this.remainDays4 = entity.remainDays;
-		this.remainMinutes4 = entity.remainMinutes;
-		this.factRemainDays4 = entity.factRemainDays;
-		this.factRemainMinutes4 = entity.factRemainMinutes;
 		this.beforeRemainDays4 = entity.beforeRemainDays;
 		this.beforeRemainMinutes4 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays4 = entity.beforeFactRemainDays;
@@ -2484,10 +2248,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes5 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes5 = entity.afterFactUseMinutes;
 		this.factUseTimes5 = entity.factUseTimes;
-		this.remainDays5 = entity.remainDays;
-		this.remainMinutes5 = entity.remainMinutes;
-		this.factRemainDays5 = entity.factRemainDays;
-		this.factRemainMinutes5 = entity.factRemainMinutes;
 		this.beforeRemainDays5 = entity.beforeRemainDays;
 		this.beforeRemainMinutes5 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays5 = entity.beforeFactRemainDays;
@@ -2519,10 +2279,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes6 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes6 = entity.afterFactUseMinutes;
 		this.factUseTimes6 = entity.factUseTimes;
-		this.remainDays6 = entity.remainDays;
-		this.remainMinutes6 = entity.remainMinutes;
-		this.factRemainDays6 = entity.factRemainDays;
-		this.factRemainMinutes6 = entity.factRemainMinutes;
 		this.beforeRemainDays6 = entity.beforeRemainDays;
 		this.beforeRemainMinutes6 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays6 = entity.beforeFactRemainDays;
@@ -2554,10 +2310,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes7 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes7 = entity.afterFactUseMinutes;
 		this.factUseTimes7 = entity.factUseTimes;
-		this.remainDays7 = entity.remainDays;
-		this.remainMinutes7 = entity.remainMinutes;
-		this.factRemainDays7 = entity.factRemainDays;
-		this.factRemainMinutes7 = entity.factRemainMinutes;
 		this.beforeRemainDays7 = entity.beforeRemainDays;
 		this.beforeRemainMinutes7 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays7 = entity.beforeFactRemainDays;
@@ -2589,10 +2341,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes8 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes8 = entity.afterFactUseMinutes;
 		this.factUseTimes8 = entity.factUseTimes;
-		this.remainDays8 = entity.remainDays;
-		this.remainMinutes8 = entity.remainMinutes;
-		this.factRemainDays8 = entity.factRemainDays;
-		this.factRemainMinutes8 = entity.factRemainMinutes;
 		this.beforeRemainDays8 = entity.beforeRemainDays;
 		this.beforeRemainMinutes8 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays8 = entity.beforeFactRemainDays;
@@ -2624,10 +2372,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes9 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes9 = entity.afterFactUseMinutes;
 		this.factUseTimes9 = entity.factUseTimes;
-		this.remainDays9 = entity.remainDays;
-		this.remainMinutes9 = entity.remainMinutes;
-		this.factRemainDays9 = entity.factRemainDays;
-		this.factRemainMinutes9 = entity.factRemainMinutes;
 		this.beforeRemainDays9 = entity.beforeRemainDays;
 		this.beforeRemainMinutes9 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays9 = entity.beforeFactRemainDays;
@@ -2659,10 +2403,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes10 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes10 = entity.afterFactUseMinutes;
 		this.factUseTimes10 = entity.factUseTimes;
-		this.remainDays10 = entity.remainDays;
-		this.remainMinutes10 = entity.remainMinutes;
-		this.factRemainDays10 = entity.factRemainDays;
-		this.factRemainMinutes10 = entity.factRemainMinutes;
 		this.beforeRemainDays10 = entity.beforeRemainDays;
 		this.beforeRemainMinutes10 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays10 = entity.beforeFactRemainDays;
@@ -2694,10 +2434,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes11 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes11 = entity.afterFactUseMinutes;
 		this.factUseTimes11 = entity.factUseTimes;
-		this.remainDays11 = entity.remainDays;
-		this.remainMinutes11 = entity.remainMinutes;
-		this.factRemainDays11 = entity.factRemainDays;
-		this.factRemainMinutes11 = entity.factRemainMinutes;
 		this.beforeRemainDays11 = entity.beforeRemainDays;
 		this.beforeRemainMinutes11 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays11 = entity.beforeFactRemainDays;
@@ -2729,10 +2465,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes12 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes12 = entity.afterFactUseMinutes;
 		this.factUseTimes12 = entity.factUseTimes;
-		this.remainDays12 = entity.remainDays;
-		this.remainMinutes12 = entity.remainMinutes;
-		this.factRemainDays12 = entity.factRemainDays;
-		this.factRemainMinutes12 = entity.factRemainMinutes;
 		this.beforeRemainDays12 = entity.beforeRemainDays;
 		this.beforeRemainMinutes12 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays12 = entity.beforeFactRemainDays;
@@ -2764,10 +2496,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes13 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes13 = entity.afterFactUseMinutes;
 		this.factUseTimes13 = entity.factUseTimes;
-		this.remainDays13 = entity.remainDays;
-		this.remainMinutes13 = entity.remainMinutes;
-		this.factRemainDays13 = entity.factRemainDays;
-		this.factRemainMinutes13 = entity.factRemainMinutes;
 		this.beforeRemainDays13 = entity.beforeRemainDays;
 		this.beforeRemainMinutes13 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays13 = entity.beforeFactRemainDays;
@@ -2799,10 +2527,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes14 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes14 = entity.afterFactUseMinutes;
 		this.factUseTimes14 = entity.factUseTimes;
-		this.remainDays14 = entity.remainDays;
-		this.remainMinutes14 = entity.remainMinutes;
-		this.factRemainDays14 = entity.factRemainDays;
-		this.factRemainMinutes14 = entity.factRemainMinutes;
 		this.beforeRemainDays14 = entity.beforeRemainDays;
 		this.beforeRemainMinutes14 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays14 = entity.beforeFactRemainDays;
@@ -2834,10 +2558,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes15 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes15 = entity.afterFactUseMinutes;
 		this.factUseTimes15 = entity.factUseTimes;
-		this.remainDays15 = entity.remainDays;
-		this.remainMinutes15 = entity.remainMinutes;
-		this.factRemainDays15 = entity.factRemainDays;
-		this.factRemainMinutes15 = entity.factRemainMinutes;
 		this.beforeRemainDays15 = entity.beforeRemainDays;
 		this.beforeRemainMinutes15 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays15 = entity.beforeFactRemainDays;
@@ -2869,10 +2589,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes16 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes16 = entity.afterFactUseMinutes;
 		this.factUseTimes16 = entity.factUseTimes;
-		this.remainDays16 = entity.remainDays;
-		this.remainMinutes16 = entity.remainMinutes;
-		this.factRemainDays16 = entity.factRemainDays;
-		this.factRemainMinutes16 = entity.factRemainMinutes;
 		this.beforeRemainDays16 = entity.beforeRemainDays;
 		this.beforeRemainMinutes16 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays16 = entity.beforeFactRemainDays;
@@ -2904,10 +2620,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes17 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes17 = entity.afterFactUseMinutes;
 		this.factUseTimes17 = entity.factUseTimes;
-		this.remainDays17 = entity.remainDays;
-		this.remainMinutes17 = entity.remainMinutes;
-		this.factRemainDays17 = entity.factRemainDays;
-		this.factRemainMinutes17 = entity.factRemainMinutes;
 		this.beforeRemainDays17 = entity.beforeRemainDays;
 		this.beforeRemainMinutes17 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays17 = entity.beforeFactRemainDays;
@@ -2939,10 +2651,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes18 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes18 = entity.afterFactUseMinutes;
 		this.factUseTimes18 = entity.factUseTimes;
-		this.remainDays18 = entity.remainDays;
-		this.remainMinutes18 = entity.remainMinutes;
-		this.factRemainDays18 = entity.factRemainDays;
-		this.factRemainMinutes18 = entity.factRemainMinutes;
 		this.beforeRemainDays18 = entity.beforeRemainDays;
 		this.beforeRemainMinutes18 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays18 = entity.beforeFactRemainDays;
@@ -2974,10 +2682,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes19 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes19 = entity.afterFactUseMinutes;
 		this.factUseTimes19 = entity.factUseTimes;
-		this.remainDays19 = entity.remainDays;
-		this.remainMinutes19 = entity.remainMinutes;
-		this.factRemainDays19 = entity.factRemainDays;
-		this.factRemainMinutes19 = entity.factRemainMinutes;
 		this.beforeRemainDays19 = entity.beforeRemainDays;
 		this.beforeRemainMinutes19 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays19 = entity.beforeFactRemainDays;
@@ -3009,10 +2713,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		this.beforeFactUseMinutes20 = entity.beforeFactUseMinutes;
 		this.afterFactUseMinutes20 = entity.afterFactUseMinutes;
 		this.factUseTimes20 = entity.factUseTimes;
-		this.remainDays20 = entity.remainDays;
-		this.remainMinutes20 = entity.remainMinutes;
-		this.factRemainDays20 = entity.factRemainDays;
-		this.factRemainMinutes20 = entity.factRemainMinutes;
 		this.beforeRemainDays20 = entity.beforeRemainDays;
 		this.beforeRemainMinutes20 = entity.beforeRemainMinutes;
 		this.beforeFactRemainDays20 = entity.beforeFactRemainDays;
@@ -3197,15 +2897,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		Optional<UsedMinutes> val_annleaUsedMinutesAfter = Optional.ofNullable(this.annleaUsedMinutesAfter == null ? null
 				: new UsedMinutes(this.annleaUsedMinutesAfter));
 
-		/** 年休.残数情報.合計.合計残日数 */
-		AnnualLeaveRemainingDayNumber val_annleaRemainingDays = new AnnualLeaveRemainingDayNumber(this.annleaRemainingDays);
-
-		/** 年休.残数情報.合計.合計残時間 */
-		Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutes = Optional.empty();
-		if ( this.annleaRemainingMinutes != null ) {
-			val_annleaRemainingMinutes = Optional.of(new AnnualLeaveRemainingTime(this.annleaRemainingMinutes));
-		}
-
 		/** 年休.残数情報.合計.明細 */
 		List<AnnualLeaveRemainingDetail> val_details17 = new ArrayList<>();
 
@@ -3239,8 +2930,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 
 		AnnualLeave annualLeave = createAnnualLeave(val_annleaUsedDays, val_annleaUsedMinutes, val_annleaUsedDaysBefore,
 				val_annleaUsedMinutesBefore, val_annleaUsedTimes, val_annualLeaveUsedDayTimes12,
-				val_annleaUsedDaysAfter, val_annleaUsedMinutesAfter, val_annleaRemainingDays,
-				val_annleaRemainingMinutes, val_details17, val_annleaRemainingDaysBefore,
+				val_annleaUsedDaysAfter, val_annleaUsedMinutesAfter, val_details17, val_annleaRemainingDaysBefore,
 				val_annleaRemainingMinutesBefore, val_details20, val_annleaRemainingDaysAfter,
 				val_annleaRemainingMinutesAfter, val_details23);
 
@@ -3272,15 +2962,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		Optional<UsedMinutes> val_annleaFactUsedMinutesAfter = Optional.ofNullable(this.annleaFactUsedMinutesAfter == null ? null
 				: new UsedMinutes(this.annleaFactUsedMinutesAfter));
 
-		/** 実年休.残数情報.合計.合計残日数 */
-		AnnualLeaveRemainingDayNumber val_annleaFactRemainingDays = new AnnualLeaveRemainingDayNumber(this.annleaFactRemainingDays);
-
-		/** 実年休.残数情報.合計.合計残時間 */
-		Optional<AnnualLeaveRemainingTime> val_annleaFactRemainingMinutes = Optional.empty();
-		if ( this.annleaFactRemainingMinutes != null ) {
-			val_annleaFactRemainingMinutes = Optional.of(new AnnualLeaveRemainingTime(this.annleaFactRemainingMinutes));
-		}
-
 		/** 実年休.残数情報.合計.明細 */
 		List<AnnualLeaveRemainingDetail> val_details34 = new ArrayList<AnnualLeaveRemainingDetail>();
 
@@ -3311,11 +2992,10 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 		/** 実年休.残数情報.付与後.明細 */
 		List<AnnualLeaveRemainingDetail> val_details40 = new ArrayList<AnnualLeaveRemainingDetail>();
 
-
 		AnnualLeave realAnnualLeave = createAnnualLeave(val_annleaFactUsedDays, val_annleaFactUsedMinutes,
 				val_annleaFactUsedDaysBefore, val_annleaFactUsedMinutesBefore, val_annleaFactUsedTimes,
 				val_annualLeaveUsedDayTimes29, val_annleaFactUsedDaysAfter, val_annleaFactUsedMinutesAfter,
-				val_annleaFactRemainingDays, val_annleaFactRemainingMinutes, val_details34,
+				val_details34,
 				val_annleaFactRemainingDaysBefore, val_annleaFactRemainingMinutesBefore, val_details37,
 				val_annleaFactRemainingDaysAfter, val_annleaFactRemainingMinutesAfter, val_details40);
 
@@ -3452,8 +3132,7 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			Optional<UsedMinutes> val_annleaUsedMinutes, AnnualLeaveUsedDayNumber val_annleaUsedDaysBefore,
 			Optional<UsedMinutes> val_annleaUsedMinutesBefore, UsedTimes val_annleaUsedTimes,
 			UsedTimes val_annualLeaveUsedDayTimes12, AnnualLeaveUsedDayNumber val_annleaUsedDaysAfter,
-			Optional<UsedMinutes> val_annleaUsedMinutesAfter, AnnualLeaveRemainingDayNumber val_annleaRemainingDays,
-			Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutes,
+			Optional<UsedMinutes> val_annleaUsedMinutesAfter,
 			List<AnnualLeaveRemainingDetail> val_details17, AnnualLeaveRemainingDayNumber val_annleaRemainingDaysBefore,
 			Optional<AnnualLeaveRemainingTime> val_annleaRemainingMinutesBefore,
 			List<AnnualLeaveRemainingDetail> val_details20, AnnualLeaveRemainingDayNumber val_annleaRemainingDaysAfter,
@@ -3511,9 +3190,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 						Optional.ofNullable(valUsedDaysAfter)),
 				ReserveLeaveRemainingInfo.of(
 						ReserveLeaveRemainingNumber.of(
-								new ReserveLeaveRemainingDayNumber(this.getRsvleaRemainingDays()),
-								new ArrayList<ReserveLeaveRemainingDetail>()),
-						ReserveLeaveRemainingNumber.of(
 								new ReserveLeaveRemainingDayNumber(this.getRsvleaRemainingDaysBefore()),
 								new ArrayList<ReserveLeaveRemainingDetail>()),
 						Optional.ofNullable(valRemainAfter)
@@ -3539,9 +3215,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 						new ReserveLeaveUsedDayNumber(this.rsvleaFactUsedDaysBefore),
 						Optional.ofNullable(valFactUsedDaysAfter)),
 				ReserveLeaveRemainingInfo.of(
-						ReserveLeaveRemainingNumber.of(
-								new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDays),
-								realDetail),
 						ReserveLeaveRemainingNumber.of(
 								new ReserveLeaveRemainingDayNumber(this.rsvleaFactRemainingDaysBefore),
 								realDetailBefore),
@@ -3604,7 +3277,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 			Integer useMinutes, Integer beforeUseMinutes, Integer afterUseMinutes, Integer useTimes,
 			double factUseDays, double beforeFactUseDays, Double afterFactUseDays,
 			Integer factUseMinutes, Integer beforeFactUseMinutes, Integer afterFactUseMinutes, Integer factUseTimes,
-			double remainDays, Integer remainMinutes, double factRemainDays, Integer factRemainMinutes,
 			double beforeRemainDays, Integer beforeRemainMinutes, double beforeFactRemainDays, Integer beforeFactRemainMinutes,
 			Double afterRemainDays, Integer afterRemainMinutes, Double afterFactRemainDays, Integer afterFactRemainMinutes,
 			double notUseDays, Integer notUseMinutes, int grantAtr, Double grantDays) {
@@ -3623,7 +3295,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 														new UsedTimes(0),
 														afterFactUseDays == null && afterFactUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterFactUseDays, afterFactUseMinutes))),
 								SpecialLeaveRemainingNumberInfo.of(
-														SpecialLeaveRemainingNumber.createFromJavaType(factRemainDays, factRemainMinutes),
 														SpecialLeaveRemainingNumber.createFromJavaType(beforeFactRemainDays, beforeFactRemainMinutes),
 														afterFactRemainDays == null && afterFactRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterFactRemainDays, afterFactRemainMinutes)))),
 				SpecialLeave.of(SpecialLeaveUsedInfo.of(SpecialLeaveUseNumber.of(useDays, useMinutes),
@@ -3632,7 +3303,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 														new UsedTimes(0),
 														afterUseDays == null && afterUseMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveUseNumber.of(afterUseDays, afterUseMinutes))),
 								SpecialLeaveRemainingNumberInfo.of(
-														SpecialLeaveRemainingNumber.createFromJavaType(remainDays, remainMinutes),
 														SpecialLeaveRemainingNumber.createFromJavaType(beforeRemainDays, beforeRemainMinutes),
 														afterRemainDays == null && afterRemainMinutes == null ? Optional.empty() : Optional.of(SpecialLeaveRemainingNumber.createFromJavaType(afterRemainDays, afterRemainMinutes)))),
 				grantAtr == 1,
@@ -3659,10 +3329,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes1,
 				this.afterFactUseMinutes1,
 				this.factUseTimes1,
-				this.remainDays1,
-				this.remainMinutes1,
-				this.factRemainDays1,
-				this.factRemainMinutes1,
 				this.beforeRemainDays1,
 				this.beforeRemainMinutes1,
 				this.beforeFactRemainDays1,
@@ -3694,10 +3360,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes2,
 				this.afterFactUseMinutes2,
 				this.factUseTimes2,
-				this.remainDays2,
-				this.remainMinutes2,
-				this.factRemainDays2,
-				this.factRemainMinutes2,
 				this.beforeRemainDays2,
 				this.beforeRemainMinutes2,
 				this.beforeFactRemainDays2,
@@ -3729,10 +3391,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes3,
 				this.afterFactUseMinutes3,
 				this.factUseTimes3,
-				this.remainDays3,
-				this.remainMinutes3,
-				this.factRemainDays3,
-				this.factRemainMinutes3,
 				this.beforeRemainDays3,
 				this.beforeRemainMinutes3,
 				this.beforeFactRemainDays3,
@@ -3764,10 +3422,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes4,
 				this.afterFactUseMinutes4,
 				this.factUseTimes4,
-				this.remainDays4,
-				this.remainMinutes4,
-				this.factRemainDays4,
-				this.factRemainMinutes4,
 				this.beforeRemainDays4,
 				this.beforeRemainMinutes4,
 				this.beforeFactRemainDays4,
@@ -3799,10 +3453,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes5,
 				this.afterFactUseMinutes5,
 				this.factUseTimes5,
-				this.remainDays5,
-				this.remainMinutes5,
-				this.factRemainDays5,
-				this.factRemainMinutes5,
 				this.beforeRemainDays5,
 				this.beforeRemainMinutes5,
 				this.beforeFactRemainDays5,
@@ -3834,10 +3484,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes6,
 				this.afterFactUseMinutes6,
 				this.factUseTimes6,
-				this.remainDays6,
-				this.remainMinutes6,
-				this.factRemainDays6,
-				this.factRemainMinutes6,
 				this.beforeRemainDays6,
 				this.beforeRemainMinutes6,
 				this.beforeFactRemainDays6,
@@ -3869,10 +3515,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes7,
 				this.afterFactUseMinutes7,
 				this.factUseTimes7,
-				this.remainDays7,
-				this.remainMinutes7,
-				this.factRemainDays7,
-				this.factRemainMinutes7,
 				this.beforeRemainDays7,
 				this.beforeRemainMinutes7,
 				this.beforeFactRemainDays7,
@@ -3904,10 +3546,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes8,
 				this.afterFactUseMinutes8,
 				this.factUseTimes8,
-				this.remainDays8,
-				this.remainMinutes8,
-				this.factRemainDays8,
-				this.factRemainMinutes8,
 				this.beforeRemainDays8,
 				this.beforeRemainMinutes8,
 				this.beforeFactRemainDays8,
@@ -3939,10 +3577,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes9,
 				this.afterFactUseMinutes9,
 				this.factUseTimes9,
-				this.remainDays9,
-				this.remainMinutes9,
-				this.factRemainDays9,
-				this.factRemainMinutes9,
 				this.beforeRemainDays9,
 				this.beforeRemainMinutes9,
 				this.beforeFactRemainDays9,
@@ -3974,10 +3608,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes10,
 				this.afterFactUseMinutes10,
 				this.factUseTimes10,
-				this.remainDays10,
-				this.remainMinutes10,
-				this.factRemainDays10,
-				this.factRemainMinutes10,
 				this.beforeRemainDays10,
 				this.beforeRemainMinutes10,
 				this.beforeFactRemainDays10,
@@ -4009,10 +3639,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes11,
 				this.afterFactUseMinutes11,
 				this.factUseTimes11,
-				this.remainDays11,
-				this.remainMinutes11,
-				this.factRemainDays11,
-				this.factRemainMinutes11,
 				this.beforeRemainDays11,
 				this.beforeRemainMinutes11,
 				this.beforeFactRemainDays11,
@@ -4044,10 +3670,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes12,
 				this.afterFactUseMinutes12,
 				this.factUseTimes12,
-				this.remainDays12,
-				this.remainMinutes12,
-				this.factRemainDays12,
-				this.factRemainMinutes12,
 				this.beforeRemainDays12,
 				this.beforeRemainMinutes12,
 				this.beforeFactRemainDays12,
@@ -4079,10 +3701,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes13,
 				this.afterFactUseMinutes13,
 				this.factUseTimes13,
-				this.remainDays13,
-				this.remainMinutes13,
-				this.factRemainDays13,
-				this.factRemainMinutes13,
 				this.beforeRemainDays13,
 				this.beforeRemainMinutes13,
 				this.beforeFactRemainDays13,
@@ -4114,10 +3732,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes14,
 				this.afterFactUseMinutes14,
 				this.factUseTimes14,
-				this.remainDays14,
-				this.remainMinutes14,
-				this.factRemainDays14,
-				this.factRemainMinutes14,
 				this.beforeRemainDays14,
 				this.beforeRemainMinutes14,
 				this.beforeFactRemainDays14,
@@ -4149,10 +3763,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes15,
 				this.afterFactUseMinutes15,
 				this.factUseTimes15,
-				this.remainDays15,
-				this.remainMinutes15,
-				this.factRemainDays15,
-				this.factRemainMinutes15,
 				this.beforeRemainDays15,
 				this.beforeRemainMinutes15,
 				this.beforeFactRemainDays15,
@@ -4184,10 +3794,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes16,
 				this.afterFactUseMinutes16,
 				this.factUseTimes16,
-				this.remainDays16,
-				this.remainMinutes16,
-				this.factRemainDays16,
-				this.factRemainMinutes16,
 				this.beforeRemainDays16,
 				this.beforeRemainMinutes16,
 				this.beforeFactRemainDays16,
@@ -4219,10 +3825,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes17,
 				this.afterFactUseMinutes17,
 				this.factUseTimes17,
-				this.remainDays17,
-				this.remainMinutes17,
-				this.factRemainDays17,
-				this.factRemainMinutes17,
 				this.beforeRemainDays17,
 				this.beforeRemainMinutes17,
 				this.beforeFactRemainDays17,
@@ -4254,10 +3856,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes18,
 				this.afterFactUseMinutes18,
 				this.factUseTimes18,
-				this.remainDays18,
-				this.remainMinutes18,
-				this.factRemainDays18,
-				this.factRemainMinutes18,
 				this.beforeRemainDays18,
 				this.beforeRemainMinutes18,
 				this.beforeFactRemainDays18,
@@ -4289,10 +3887,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes19,
 				this.afterFactUseMinutes19,
 				this.factUseTimes19,
-				this.remainDays19,
-				this.remainMinutes19,
-				this.factRemainDays19,
-				this.factRemainMinutes19,
 				this.beforeRemainDays19,
 				this.beforeRemainMinutes19,
 				this.beforeFactRemainDays19,
@@ -4324,10 +3918,6 @@ public class KrcdtMonRemain extends ContractUkJpaEntity implements Serializable 
 				this.beforeFactUseMinutes20,
 				this.afterFactUseMinutes20,
 				this.factUseTimes20,
-				this.remainDays20,
-				this.remainMinutes20,
-				this.factRemainDays20,
-				this.factRemainMinutes20,
 				this.beforeRemainDays20,
 				this.beforeRemainMinutes20,
 				this.beforeFactRemainDays20,
