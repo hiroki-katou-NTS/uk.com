@@ -1,14 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.NRHelper;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 
 /**
  * @author ThanhNX
@@ -77,21 +71,6 @@ public class AppWorkHolidayReceptionData extends ApplicationReceptionData implem
 		this.reason = builder.reason;
 	}
 
-	public List<HolidayWorkInput> holidayWorkInput(String companyId, String appId) {
-		List<HolidayWorkInput> result = new ArrayList<HolidayWorkInput>();
-		result.add(HolidayWorkInput.createSimpleFromJavaType(companyId, appId, AttendanceType.BREAKTIME.value,
-				Integer.parseInt(breakNo1) + 1, null, null, NRHelper.toMinute(breakTime1)));
-		if (breakNo2 != null && !breakNo2.isEmpty()) {
-			result.add(HolidayWorkInput.createSimpleFromJavaType(companyId, appId, AttendanceType.BREAKTIME.value,
-					Integer.parseInt(breakNo2) + 1, null, null, NRHelper.toMinute(breakTime2)));
-		}
-		if (breakNo3 != null && !breakNo3.isEmpty()) {
-			result.add(HolidayWorkInput.createSimpleFromJavaType(companyId, appId, AttendanceType.BREAKTIME.value,
-					Integer.parseInt(breakNo3) + 1, null, null, NRHelper.toMinute(breakTime3)));
-		}
-		return result;
-	}
-
 	public static class AppWorkHolidayBuilder extends ApplicationReceptionData {
 
 		private String breakTime1;
@@ -153,6 +132,9 @@ public class AppWorkHolidayReceptionData extends ApplicationReceptionData implem
 			this.reason = reason;
 			return this;
 		}
-
+		
+		public AppWorkHolidayReceptionData build() {
+			return new AppWorkHolidayReceptionData(this);
+		}
 	}
 }

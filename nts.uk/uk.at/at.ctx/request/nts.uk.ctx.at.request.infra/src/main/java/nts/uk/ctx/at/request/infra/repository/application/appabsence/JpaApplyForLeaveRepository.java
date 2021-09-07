@@ -11,9 +11,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -136,4 +136,11 @@ public class JpaApplyForLeaveRepository extends JpaRepository implements ApplyFo
         
         return datas;
     }
+
+	@Override
+	public void insert(String cid, String contractCode, ApplyForLeave domain) {
+		val entity = KrqdtAppHd.fromDomain(domain, cid, domain.getAppID());
+		this.commandProxy().insert(entity);
+		this.getEntityManager().flush();
+	}
 }

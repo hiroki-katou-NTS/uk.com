@@ -3,22 +3,47 @@ package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infotermina
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.appabsence.ReflectFreeTimeApp;
+import nts.uk.ctx.at.request.dom.application.appabsence.SupplementInfoVacation;
+import nts.uk.ctx.at.request.dom.application.appabsence.VacationRequestInfo;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AnnualHolidayReceptionData;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AnnualHolidayType;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppLateReceptionData;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppOverTimeReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppStampReceptionData;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppVacationReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkChangeReceptionData;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkHolidayReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationCategory;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ReasonLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrEarlyAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -29,7 +54,7 @@ import nts.uk.shr.com.time.AttendanceClock;
 /**
  * @author ThanhNX
  *
- *         就業情報端末
+ *         就業情報端末Import
  */
 public class EmpInfoTerminal implements DomainAggregate {
 
@@ -70,10 +95,10 @@ public class EmpInfoTerminal implements DomainAggregate {
 	private final String contractCode;
 
 	/**
-	 * 打刻情報の作成
+	 * 外出理由
 	 */
-//	@Getter
-//	private final CreateStampInfo createStampInfo;
+    @Getter
+	private final Optional<GoingOutReason> goOutReason;
 
 	/**
 	 * 機種
@@ -104,6 +129,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 		this.modelEmpInfoTer = builder.modelEmpInfoTer;
 		this.intervalTime = builder.intervalTime;
 		this.empInfoTerMemo = builder.empInfoTerMemo;
+		this.goOutReason = builder.goOutReason;
 	}
 
 	// [３] 申請
@@ -120,44 +146,57 @@ public class EmpInfoTerminal implements DomainAggregate {
 			Application appStampNew = recept.createAplication(companyId, employeeId,
 					Integer.parseInt(appStampData.getTypeBeforeAfter()),
 					NRHelper.convertAppType(recept.getApplicationCategory()),
-					Optional.of(NRHelper.createGeneralDate(appStampData.getAppYMD())), Optional.empty(),
-					appStampData.getReason(), true);
+					Optional.of(NRHelper.createGeneralDate(appStampData.getAppYMD())),
+					Optional.of(NRHelper.createGeneralDate(appStampData.getAppYMD())), appStampData.getReason(), true);
 			AppRecordImage appImg = new AppRecordImage(appStampData.convertCombi(),
 					new AttendanceClock(NRHelper.toMinute(appStampData.getAppTime())),
-					GoingOutReason.corvert(Integer.parseInt(appStampData.getGoOutCategory())), appStampNew);
+					StringUtils.isEmpty(appStampData.getGoOutCategory()) ? this.goOutReason
+							: GoingOutReason.corvert(Integer.parseInt(appStampData.getGoOutCategory())),
+					appStampNew);
 			return appImg;
 
 		// 残業申請
 		case OVERTIME:
 			// AppOverTime
-//			AppOverTimeReceptionData appOverTimeData = (AppOverTimeReceptionData) recept;
-//			Application appOverNew = recept.createAplication(companyId, employeeId,
-//					Integer.parseInt(appOverTimeData.getTypeBeforeAfter()),
-//					NRHelper.convertAppType(recept.getApplicationCategory()),
-//					Optional.of(NRHelper.createGeneralDate(appOverTimeData.getAppYMD())), Optional.empty(),
-//					appOverTimeData.getReason());
-//			AppOverTime appOverTime = AppOverTime.createSimpleFromJavaType(companyId, IdentifierUtil.randomUniqueId(),
-//					OverTimeAtr.ALL, null, null, workClockFrom1, workClockTo1, workClockFrom2, workClockTo2,
-//					divergenceReason, flexExessTime, overTimeShiftNight);
-			// TODO : ko map duoc domain
-			return null;
+			AppOverTimeReceptionData appOverTimeData = (AppOverTimeReceptionData) recept;
+			Application appOverNew = recept.createAplication(companyId, employeeId,
+					Integer.parseInt(appOverTimeData.getTypeBeforeAfter()),
+					NRHelper.convertAppType(recept.getApplicationCategory()),
+					Optional.of(NRHelper.createGeneralDate(appOverTimeData.getAppYMD())),
+					Optional.of(NRHelper.createGeneralDate(appOverTimeData.getAppYMD())),	appOverTimeData.getReason());
+			List<OvertimeApplicationSetting> applicationTimeDetail = new ArrayList<OvertimeApplicationSetting>();
+			createOvertimeSetting(appOverTimeData.getOvertimeNo1(),
+					appOverTimeData.getOvertimeHour1(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> applicationTimeDetail.add(x));
+			createOvertimeSetting(appOverTimeData.getOvertimeNo2(),
+					appOverTimeData.getOvertimeHour2(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> applicationTimeDetail.add(x));
+			createOvertimeSetting(appOverTimeData.getOvertimeNo3(),
+					appOverTimeData.getOvertimeHour3(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> applicationTimeDetail.add(x));
+
+			ApplicationTime applicationTime = new ApplicationTime(applicationTimeDetail, Optional.empty(),
+					Optional.empty(), Optional.empty(), Optional.empty());
+			AppOverTime appOverTime = new AppOverTime(OvertimeAppAtr.EARLY_NORMAL_OVERTIME, applicationTime,
+					Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+			appOverTime.setApplication(appOverNew);
+			return appOverTime;
 
 		// 休暇申請
 		case VACATION:
 			// AppAbsence
-//			AppVacationReceptionData appAbsenceData = (AppVacationReceptionData) recept;
-//			Application appAbsenceNew = recept.createAplication(companyId, employeeId,
-//					Integer.parseInt(appAbsenceData.getTypeBeforeAfter()),
-//					NRHelper.convertAppType(recept.getApplicationCategory()),
-//					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getStartDate())),
-//					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getEndDate())), appAbsenceData.getReason());
-//			AppAbsence appAbsence = new AppAbsence(companyId, appAbsenceNew.getAppID(),
-//					workTypeOpt.isPresent() ? NRHelper.convertHolidayType(workTypeOpt.get().getDailyWork().getOneDay()).value : null,
-//					appAbsenceData.getWorkType(), null, true, false, AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE.value, null,
-//					null, null, null, null);
-//			appAbsence.setApplication(appAbsenceNew);
-//			return appAbsence;
-			return null;
+			AppVacationReceptionData appAbsenceData = (AppVacationReceptionData) recept;
+			Application appAbsenceNew = recept.createAplication(companyId, employeeId,
+					Integer.parseInt(appAbsenceData.getTypeBeforeAfter()),
+					NRHelper.convertAppType(recept.getApplicationCategory()),
+					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getStartDate())),
+					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getEndDate())), appAbsenceData.getReason());
+			ReflectFreeTimeApp reflectFreeTimeApp = new ReflectFreeTimeApp(Optional.empty(), Optional.empty(),
+					new WorkInformation(workTypeOpt.map(x -> x.getWorkTypeCode().v()).orElse(null), null),
+					NotUseAtr.NOT_USE);
+			VacationRequestInfo vacationInfo = new VacationRequestInfo(workTypeOpt.isPresent()
+					? HolidayAppType.covertToHoldayType(workTypeOpt.get().getDailyWork().getOneDay())
+					: HolidayAppType.HOLIDAY, new SupplementInfoVacation(Optional.empty(), Optional.empty()));
+			ApplyForLeave appAbsence = new ApplyForLeave(reflectFreeTimeApp, vacationInfo);
+			appAbsence.setApplication(appAbsenceNew);
+			return appAbsence;
 
 		// 勤務変更申請
 		case WORK_CHANGE:
@@ -178,27 +217,34 @@ public class EmpInfoTerminal implements DomainAggregate {
 		// 休日出勤時間申請
 		case WORK_HOLIDAY:
 			// AppHolidayWork
-//			AppWorkHolidayReceptionData appHolidayData = (AppWorkHolidayReceptionData) recept;
-//			Application appHolidayNew = recept.createAplication(companyId, employeeId,
-//					Integer.parseInt(appHolidayData.getTypeBeforeAfter()),
-//					NRHelper.convertAppType(recept.getApplicationCategory()),
-//					Optional.of(NRHelper.createGeneralDate(appHolidayData.getAppYMD())), Optional.empty(),
-//					appHolidayData.getReason());
-//			SingleDaySchedule singleDay = workingConItemOpt.isPresent()
-//					? workingConItemOpt.get().getWorkCategory().getHolidayTime()
-//					: null;
-//			AppHolidayWork appHoliday = AppHolidayWork.createSimpleFromJavaType(companyId, appHolidayNew.getAppID(),
-//					(singleDay != null && singleDay.getWorkTypeCode().isPresent())
-//							? singleDay.getWorkTypeCode().get().v()
-//							: null,
-//					(singleDay != null && singleDay.getWorkTimeCode().isPresent())
-//							? singleDay.getWorkTimeCode().get().v()
-//							: null,
-//					null, null, null, null, 0, 0, 0, 0, "", 0);
-//			appHoliday.setHolidayWorkInputs(appHolidayData.holidayWorkInput(companyId, appHolidayNew.getAppID()));
-//			// 乖離理由 -> ""
-//			// 就業時間外深夜時間 -> 0
-			return null;
+			AppWorkHolidayReceptionData appHolidayData = (AppWorkHolidayReceptionData) recept;
+			Application appHolidayNew = recept.createAplication(companyId, employeeId,
+					Integer.parseInt(appHolidayData.getTypeBeforeAfter()),
+					NRHelper.convertAppType(recept.getApplicationCategory()),
+					Optional.of(NRHelper.createGeneralDate(appHolidayData.getAppYMD())),
+					Optional.of(NRHelper.createGeneralDate(appHolidayData.getAppYMD())),	appHolidayData.getReason());
+
+			List<OvertimeApplicationSetting> applicationTimeHolDetail = new ArrayList<OvertimeApplicationSetting>();
+			createOvertimeSetting(appHolidayData.getBreakNo1(),
+					appHolidayData.getBreakTime1(), AttendanceType_Update.BREAKTIME).ifPresent(x -> applicationTimeHolDetail.add(x));
+			createOvertimeSetting(appHolidayData.getBreakNo2(),
+					appHolidayData.getBreakTime2(), AttendanceType_Update.BREAKTIME).ifPresent(x -> applicationTimeHolDetail.add(x));
+			createOvertimeSetting(appHolidayData.getBreakNo3(),
+					appHolidayData.getBreakTime3(), AttendanceType_Update.BREAKTIME).ifPresent(x -> applicationTimeHolDetail.add(x));
+
+			ApplicationTime applicationTimeHol = new ApplicationTime(applicationTimeHolDetail, Optional.empty(),
+					Optional.empty(), Optional.empty(), Optional.empty());
+			List<TimeZoneWithWorkNo> lstTimeZone = workingConItemOpt.get().getWorkCategory().getHolidayWork().getWorkingHours(
+					).stream().map(x -> new TimeZoneWithWorkNo(x.getCnt(), x.getStart().v(), x.getEnd().v())).collect(Collectors.toList());
+			AppHolidayWork appHoliday = new AppHolidayWork(
+					new WorkInformation(
+							workingConItemOpt.get().getWorkCategory().getHolidayWork().getWorkTypeCode().orElse(null),
+							workingConItemOpt.get().getWorkCategory().getHolidayWork().getWorkTimeCode().orElse(null)),
+					applicationTimeHol, nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE,
+					nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE, Optional.empty(), Optional.of(lstTimeZone),
+					Optional.empty());
+			appHoliday.setApplication(appHolidayNew);
+			return appHoliday;
 
 		// 遅刻早退取消申請
 		case LATE:
@@ -207,8 +253,8 @@ public class EmpInfoTerminal implements DomainAggregate {
 			Application appLateNew = recept.createAplication(companyId, employeeId,
 					Integer.parseInt(appLateData.getTypeBeforeAfter()),
 					NRHelper.convertAppType(recept.getApplicationCategory()),
-					Optional.of(NRHelper.createGeneralDate(appLateData.getAppYMD())), Optional.empty(),
-					appLateData.getReason());
+					Optional.of(NRHelper.createGeneralDate(appLateData.getAppYMD())),
+					Optional.of(NRHelper.createGeneralDate(appLateData.getAppYMD())), appLateData.getReason());
 			ArrivedLateLeaveEarly appLate = new ArrivedLateLeaveEarly(appLateNew);
 			appLate.setLateOrLeaveEarlies(new ArrayList<>());
 			List<LateCancelation> lateCancelation = new ArrayList<>();
@@ -220,9 +266,79 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 		// 時間年休申請
 		case ANNUAL:
-			// TODO: chua co domain
-			return null;
+			AnnualHolidayReceptionData appAnnual = (AnnualHolidayReceptionData) recept;
+			Application appAnnualHol = recept.createAplication(companyId, employeeId,
+					Integer.parseInt(appAnnual.getTypeBeforeAfter()),
+					NRHelper.convertAppType(recept.getApplicationCategory()),
+					Optional.of(NRHelper.createGeneralDate(appAnnual.getAppYMD())),
+					Optional.of(NRHelper.createGeneralDate(appAnnual.getAppYMD())), appAnnual.getReason());
+			List<TimeLeaveApplicationDetail> leaveApplicationDetails = new ArrayList<>();
+			leaveApplicationDetails.add(
+					new TimeLeaveApplicationDetail(toAppTimeType(appAnnual.getAnnualHolidayType()), new ArrayList<>(),
+							new TimeDigestApplication(
+									check60h(appAnnual.getAnnualHolidayType())
+											? new AttendanceTime(Integer.parseInt(appAnnual.getAnnualHolidayTime()))
+											: AttendanceTime.ZERO,
+									AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO,
+									!check60h(appAnnual.getAnnualHolidayType())
+											? new AttendanceTime(Integer.parseInt(appAnnual.getAnnualHolidayTime()))
+											: AttendanceTime.ZERO,
+									Optional.empty())));
+			return new TimeLeaveApplication(appAnnualHol, leaveApplicationDetails);
 
+		default:
+			return null;
+		}
+	}
+
+	private Optional<OvertimeApplicationSetting> createOvertimeSetting(String no, String time,
+			AttendanceType_Update type) {
+		return StringUtils.isEmpty(no) ? Optional.empty()
+				: Optional.of(new OvertimeApplicationSetting(Integer.parseInt(no) + 1, type,
+						StringUtils.isEmpty(time) ? 0 : Integer.parseInt(time)));
+	}
+
+	private boolean check60h(String annualHolidayType) {
+		switch (AnnualHolidayType.valueStringOf(annualHolidayType)) {
+		case LATE1:
+		case LATE2:
+		case EARLY1:
+		case EARLY2:
+		case OUT1:
+		case OUT2:
+			return false;
+		case VERY_LATE1:
+		case VERY_LATE2:
+		case LEAVE_EARLY1:
+		case LEAVE_EARLY2:
+		case HOLIDAY_PRIV:
+		case HOLIDAY_GOOUT:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	private AppTimeType toAppTimeType(String annualHolidayType) {
+		switch (AnnualHolidayType.valueStringOf(annualHolidayType)) {
+		case LATE1:
+		case VERY_LATE1:
+			return AppTimeType.ATWORK;
+		case LATE2:
+		case VERY_LATE2:
+			return AppTimeType.ATWORK2;
+		case EARLY1:
+		case LEAVE_EARLY1:
+			return AppTimeType.OFFWORK;
+		case EARLY2:
+		case LEAVE_EARLY2:
+			return AppTimeType.OFFWORK2;
+		case OUT1:
+		case HOLIDAY_PRIV:
+			return AppTimeType.PRIVATE;
+		case OUT2:
+		case HOLIDAY_GOOUT:
+			return AppTimeType.UNION;
 		default:
 			return null;
 		}
@@ -258,6 +374,12 @@ public class EmpInfoTerminal implements DomainAggregate {
 		 * 契約コード
 		 */
 		private String contractCode;
+		
+		/**
+		 * 外出理由
+		 */
+	    @Getter
+		private Optional<GoingOutReason> goOutReason;
 
 		/**
 		 * 機種
@@ -300,6 +422,11 @@ public class EmpInfoTerminal implements DomainAggregate {
 			return this;
 		}
 
+		public EmpInfoTerminalBuilder goOutReason(Optional<GoingOutReason> goOutReason) {
+			this.goOutReason = goOutReason;
+			return this;
+		}
+		
 		public EmpInfoTerminal build() {
 			return new EmpInfoTerminal(this);
 		}
