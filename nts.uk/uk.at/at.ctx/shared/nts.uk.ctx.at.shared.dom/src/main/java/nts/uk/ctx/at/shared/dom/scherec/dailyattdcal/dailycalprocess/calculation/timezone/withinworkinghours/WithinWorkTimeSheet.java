@@ -1426,12 +1426,14 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				}
 			}
 		}
+		// 残業開始時刻
+		TimeWithDayAttr startOverTime = endTime;
 		// 退勤時刻の補正
 		endTime = this.correctleaveTimeForFlow(endTime);
 		// 退勤時刻を更新する
 		this.updateleaveTime(endTime);
 		// 遅刻早退控除前時間帯を作成
-		this.setBeforeLateEarlyTimeSheet(workType, integrationOfWorkTime, predetermineTimeSet, integrationOfDaily.getAttendanceLeave());
+		this.setBeforeLateEarlyTimeSheet(workType, integrationOfWorkTime, predetermineTimeSet, integrationOfDaily.getAttendanceLeave(), startOverTime);
 	}
 	
 	/**
@@ -1817,14 +1819,16 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @param timeLeavingOfDailyAttd 日別勤怠の出退勤
+	 * @param startOverTime 残業開始時刻
 	 */
 	public void setBeforeLateEarlyTimeSheet(
 			WorkType workType,
 			IntegrationOfWorkTime integrationOfWorkTime,
 			PredetermineTimeSetForCalc predetermineTimeSet,
-			Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd) {
+			Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd,
+			TimeWithDayAttr startOverTime) {
 		this.withinWorkTimeFrame.forEach(
-				f -> f.setBeforeLateEarlyTimeSheet(workType, integrationOfWorkTime, predetermineTimeSet, timeLeavingOfDailyAttd));
+				f -> f.setBeforeLateEarlyTimeSheet(workType, integrationOfWorkTime, predetermineTimeSet, timeLeavingOfDailyAttd, startOverTime));
 	}
 	
 	/**

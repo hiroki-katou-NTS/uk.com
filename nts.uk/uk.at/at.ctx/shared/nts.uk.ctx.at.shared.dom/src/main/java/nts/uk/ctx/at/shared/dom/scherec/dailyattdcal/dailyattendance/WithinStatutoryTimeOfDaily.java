@@ -386,7 +386,8 @@ public class WithinStatutoryTimeOfDaily {
 	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 実働就業時間
 	 */
-	public static AttendanceTime calcActualWorkTime(WithinWorkTimeSheet withinTimeSheet,
+	public static AttendanceTime calcActualWorkTime(
+			WithinWorkTimeSheet withinTimeSheet,
 			IntegrationOfDaily integrationOfDaily,
 			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
 			VacationClass vacationClass,
@@ -404,17 +405,14 @@ public class WithinStatutoryTimeOfDaily {
 			NotUseAtr lateEarlyMinusAtr) {
 		
 		// 統合就業時間帯の確認
-		Optional<WorkTimeDailyAtr> workTimeDailyAtr = Optional.empty();	// 勤務形態区分
+		boolean isFlexDay = false;										// フレックス勤務日かどうか
 		Optional<CoreTimeSetting> coreTimeSetting = Optional.empty();	// コアタイム時間帯設定
 		if (integrationOfWorkTime.isPresent()){
 			WorkTimeSetting workTimeSet = integrationOfWorkTime.get().getWorkTimeSetting();	// 就業時間帯の設定
-			workTimeDailyAtr = Optional.of(workTimeSet.getWorkTimeDivision().getWorkTimeDailyAtr());
+			isFlexDay = workTimeSet.getWorkTimeDivision().isFlexWorkDay(conditionItem);
 			coreTimeSetting = integrationOfWorkTime.get().getCoreTimeSetting();
 		}
-		
-		if(conditionItem.getLaborSystem().isFlexTimeWork()
-			&& (!workTimeDailyAtr.isPresent() || workTimeDailyAtr.get().isFlex())) {
-			
+		if (isFlexDay) {
 			FlexWithinWorkTimeSheet changedFlexTimeSheet = (FlexWithinWorkTimeSheet)withinTimeSheet;
 			Optional<WorkTimezoneCommonSet> leaveLatesetForWorkTime =
 					commonSetting.isPresent() &&
