@@ -134,9 +134,12 @@ public class WorkspaceSql {
 			
 			String pkName = "PK_" + tableName;
 			
-			String keys = workspace.getItemsPk().stream()
-					.map(item -> item.getName())
-					.collect(Collectors.joining(", "));
+			// 正準化時にうまれる項目を主キーに指定できない（編集時にはNULLである）ので、一旦ROW_NOを固定で主キーとする
+			// 必要なら主キーではなくインデックスにすることを検討する
+			
+			//String keys = workspace.getItemsPk().stream()
+			//		.map(item -> item.getName())
+			//		.collect(Collectors.joining(", "));
 			
 			sql.append("constraint ").append(pkName).append(" primary key nonclustered (").append(CommonColumns.ROW_NO.name).append(")");
 		}
