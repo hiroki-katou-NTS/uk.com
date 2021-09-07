@@ -7,10 +7,12 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -27,6 +29,7 @@ import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
  * @author lan_lt
  *
  */
+@RunWith(JMockit.class)
 public class GetPersonalEmployeeInfoByUserIdServiceTest {
 	
 	@Injectable
