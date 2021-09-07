@@ -2497,6 +2497,7 @@ module cps003 {
                                 }
                             });
                         } else {
+                            setShared("kdl00showNoSelectionRow", !required);
                             setShared("kml001multiSelectMode", false);
                             setShared("kml001selectedCodeList", _.isNil(data.value) ? [] : [data.value]);
                             setShared("kml001isSelection", true);
