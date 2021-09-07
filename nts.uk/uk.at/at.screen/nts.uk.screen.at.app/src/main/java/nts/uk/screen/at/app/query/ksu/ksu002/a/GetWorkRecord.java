@@ -20,13 +20,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
-import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DailyResultAccordScheduleStatusService;
+import nts.uk.ctx.at.record.dom.daily.GetDailyRecordByScheduleManagementService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
+import nts.uk.ctx.at.shared.dom.employeeworkway.EmployeeWorkingStatus;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -78,12 +78,12 @@ public class GetWorkRecord {
 
 	public List<WorkScheduleWorkInforDto> get(DisplayInWorkInfoInput param) {
 
-		DatePeriod period = new DatePeriod(param.startDate, param.endDate);
+		DatePeriod period = new DatePeriod(param.getStartDate(), param.getEndDate());
 
 		RequireDailyImpl requireDailyImpl = new RequireDailyImpl(param.listSid, period, dailyRecordWorkFinder , empComHisAdapter, workCondRepo, empLeaveHisAdapter,
 				empLeaveWorkHisAdapter, employmentHisScheduleAdapter);
 
-		 Map<ScheManaStatuTempo , Optional<IntegrationOfDaily>> map = DailyResultAccordScheduleStatusService.get(requireDailyImpl, param.listSid, period);
+		 Map<EmployeeWorkingStatus , Optional<IntegrationOfDaily>> map = GetDailyRecordByScheduleManagementService.get(requireDailyImpl, param.listSid, period);
 
 		 List<WorkScheduleWorkInforDto> result = createWorkScheduleBasedOnWorkRecord.get(map);
 
@@ -155,7 +155,7 @@ public class GetWorkRecord {
 	}
 
 	@AllArgsConstructor
-	private static class RequireDailyImpl implements DailyResultAccordScheduleStatusService.Require {
+	private static class RequireDailyImpl implements GetDailyRecordByScheduleManagementService.Require {
 
 		private NestedMapCache<String, GeneralDate, DailyRecordDto> workScheduleCache;
 		private KeyDateHistoryCache<String, EmpEnrollPeriodImport> affCompanyHistByEmployeeCache;

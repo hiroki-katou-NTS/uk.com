@@ -138,8 +138,8 @@ public class SendWorkTimeNameServiceTest {
 		List<SendWorkTimeName> actual = SendWorkTimeNameService.send(require, new EmpInfoTerminalCode("1"),
 				new ContractCode("1"));
 		assertThat(actual).extracting(d -> d.getWorkTimeNumber(), d -> d.getWorkTimeName(), d -> d.getTime())
-				.containsExactly(Tuple.tuple("00A", "AAA", "+08001700"), Tuple.tuple("00B", "AAA", "+08001700"),
-						Tuple.tuple("00C", "AAA", ""), Tuple.tuple("00D", "AAA", ""));
+				.containsExactly(Tuple.tuple("00A", "BBB", "+08001700"), Tuple.tuple("00B", "BBB", "+08001700"),
+						Tuple.tuple("00C", "BBB", ""), Tuple.tuple("00D", "BBB", ""));
 
 	}
 

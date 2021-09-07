@@ -1027,7 +1027,7 @@ module nts.uk.at.view.ksu003.a.model {
 		byDateDto: DisplaySettingByDateDto = new DisplaySettingByDateDto(0, 0, 0); //スケジュール修正日付別の表示設定
 		displayInforOrganization: DisplayInfoOrganizationDto = new DisplayInfoOrganizationDto("", "", "", "", ""); // 組織の表示情報
 		manageMultiDto: WorkManageMultiDto = new WorkManageMultiDto("", 0); // 複数回勤務管理
-		functionControlDto: ScheFunctionControlDto = new ScheFunctionControlDto([], 0); // スケジュール修正の機能制御 
+		functionControlDto: ScheFunctionControlDto = new ScheFunctionControlDto([], 0,0, []); // スケジュール修正の機能制御 
 		taskOperationMethod: number;
 		constructor(byDateDto: DisplaySettingByDateDto,
 			displayInforOrganization: DisplayInfoOrganizationDto,
@@ -1090,10 +1090,15 @@ module nts.uk.at.view.ksu003.a.model {
 	export class ScheFunctionControlDto {
 		changeableWorks: Array<number>; /** 時刻修正できる勤務形態 */
 		useATR: number; /** 実績表示できるか */
+		displayWorkTypeControl: number; /** 表示可能勤務種類制御 */
+		displayableWorkTypeCodeList: Array<string>; /** 表示可能勤務種類リスト */
 		constructor(changeableWorks: Array<number>,
-			useATR: number) {
+			useATR: number, displayWorkTypeControl: number, 
+			displayableWorkTypeCodeList: Array<string>) {
 			this.changeableWorks = changeableWorks;
 			this.useATR = useATR;
+			this.displayWorkTypeControl = displayWorkTypeControl;
+			this.displayableWorkTypeCodeList = displayableWorkTypeCodeList;
 		}
 	}
 

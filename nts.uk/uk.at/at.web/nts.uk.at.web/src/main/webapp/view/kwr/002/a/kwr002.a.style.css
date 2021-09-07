@@ -69,3 +69,7 @@ body {
 #employee-search > div {
 	padding: 0px !important;
 }
+
+.ui-igcombo-wrapper {
+    margin-top: 10px;
+}

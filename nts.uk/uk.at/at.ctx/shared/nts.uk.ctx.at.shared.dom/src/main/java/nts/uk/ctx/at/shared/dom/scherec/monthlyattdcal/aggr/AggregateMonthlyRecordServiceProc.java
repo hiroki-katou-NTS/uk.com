@@ -324,9 +324,19 @@ public class AggregateMonthlyRecordServiceProc {
 			// 手修正された項目を元に戻す （勤怠時間用）
 			attendanceTime = this.undoRetouchValuesForAttendanceTime(require, attendanceTime, this.monthlyOldDatas);
 
-			// 手修正を戻してから計算必要な項目を再度計算
 			if (this.isRetouch) {
-				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(attendanceTime)));
+				val converter = require.createMonthlyConverter();
+				val edittedItemIds = this.editStates.stream().map(c -> c.getAttendanceItemId()).collect(Collectors.toList());
+				val oldValues = converter.withAttendanceTime(attendanceTime).convert(edittedItemIds);
+
+				// 手修正を戻してから計算必要な項目を再度計算
+				val reCalcedAt = this.recalcAttendanceTime(attendanceTime); 
+				
+				/** 手修正された項目を元に戻す */
+				converter.withAttendanceTime(reCalcedAt).merge(oldValues);
+				val lastAggrAt = converter.toAttendanceTime();
+				
+				this.aggregateResult.setAttendanceTime(lastAggrAt);
 			}
 		}
 

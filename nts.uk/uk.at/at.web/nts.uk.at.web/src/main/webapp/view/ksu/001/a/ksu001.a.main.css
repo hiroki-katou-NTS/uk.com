@@ -89,7 +89,7 @@
 }
 
 #A1_7 {
-	margin-left: 40px !important;
+	margin-left: 120px !important;
 }
 
 .generally, .simulation, .capture {
@@ -134,7 +134,6 @@
 }
 
 #oViewModel, #qViewModel {
-	float: left;
 	margin-left: 15px;
 }
 
@@ -345,7 +344,8 @@
 	padding-bottom: 2px;
 	border-bottom: 1px solid #B1B1B1;
 	white-space: nowrap;
-	width: fit-content;
+	width: 1190px;
+	float: left;
 }
 
 #functon-area-row2-left {
@@ -353,6 +353,7 @@
 	margin-top: 5px;
 	height: 45px;
 	display: inline-block;
+	float: left;
 }
 
 #functon-area-row2-center {
@@ -360,6 +361,7 @@
 	height: 45px;
 	display: inline-block;
 	margin-bottom: 4px;
+	float: left;
 }
 
 #functon-area-row2-right {
@@ -368,6 +370,7 @@
 	margin-left: 57px;
 	height: 45px;
 	display: inline-block;
+	float: right;
 }
 
 #date-time-prev, #date-time-after {
@@ -438,8 +441,16 @@ tbody a.x-link:hover {
 	color: #ff0000 !important;
 }
 
+.bg-schedule-that-day-color-schedule-sunday a{
+	color: #ff0000 !important;
+}
+
 .bg-schedule-that-day-color-schedule-saturday{
 	background-color: #ffff00 !important;
+	color: #0000ff !important;
+}
+
+.bg-schedule-that-day-color-schedule-saturday a{
 	color: #0000ff !important;
 }
 
@@ -448,8 +459,16 @@ tbody a.x-link:hover {
 	color: #404040 !important;
 }
 
+.bg-schedule-that-day-color-schedule-weekdays a{
+	color: #404040 !important;
+}
+
 .bg-schedule-specific-date-color-schedule-sunday{
 	background-color: #ffc0cb !important;
+	color: #ff0000 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-sunday a{
 	color: #ff0000 !important;
 }
 
@@ -458,8 +477,16 @@ tbody a.x-link:hover {
 	color: #0000ff !important;
 }
 
+.bg-schedule-specific-date-color-schedule-saturday a{
+	color: #0000ff !important;
+}
+
 .bg-schedule-specific-date-color-schedule-weekdays{
 	background-color: #ffc0cb !important;
+	color: #404040 !important;
+}
+
+.bg-schedule-specific-date-color-schedule-weekdays a{
 	color: #404040 !important;
 }
 
@@ -468,14 +495,26 @@ tbody a.x-link:hover {
 	color: #ff0000 !important;
 }
 
+.bg-schedule-sunday a{
+	color: #ff0000 !important;
+}
+
 .bg-schedule-saturday{
 	background-color: #8bd8ff;
 	color: #0000ff !important;
 }
 
+.bg-schedule-saturday a{
+	color: #0000ff !important;
+}
+
 .bg-weekdays{
 	background-color: #D9D9D9;
-	color: #404040 !important;
+	color: #595959 !important;
+}
+
+.bg-weekdays a{
+	color: #595959 !important;
 }
 
 .right-content {
@@ -549,23 +588,26 @@ html {
 }
 
 .toLeft {
-	margin-left: 308px;  
+	margin-left: 230px;  
 	float: left;
     height: 18px;
     padding-top: 2px;
+    width: 30px;
 }
 
 .toRight {
 	float: left;
     height: 18px;
     padding-top: 2px;
+    width: 30px;
 }
 
 .toDown {
-	height: 25px;
-	margin-left: 9px;
+	margin-left: 11px; 
+	margin-right: 1px;
 	float: left;
-	width: 18px;
+	width: 15px;
+	box-shadow: 1px 0px 0px 0px rgb(0 0 0 / 40%) !important;
 }
 
 .iconToDown {
@@ -574,11 +616,16 @@ html {
 }
 
 .iconToLeft {
-	margin-top: -5px;
+	margin-top: -7px;
 }
 
 .iconToRight {
-	margin-top: -5px;
+	margin-top: -7px;
+}
+
+#btnControlLeftRight {
+	width: max-content;
+	height: 18px;
 }
 
 #A5 {
@@ -599,7 +646,7 @@ html {
 .bg-daily-alter-self {background-color:#94B7FE;}
 .bg-daily-alter-other {background-color:#CEE6FF;}
 .background-white {background-color: white}
-.color-default {color : #000000;}
+.color-default {color : #595959;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
 
 table th, table td {
@@ -619,4 +666,10 @@ table th, table td {
 
 #extable>div.ex-header-leftmost.xheader>table>tbody>tr>td>a {
 	pointer-events: none;
+}
+#vertComboBox * {
+	text-align: left;
+}
+#horzComboBox * {
+	text-align: left;
 }

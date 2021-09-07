@@ -13,6 +13,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.AffInfoForWorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
@@ -110,8 +111,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	public KscdtSchBasicInfo toEntity(WorkSchedule workSchedule, String cID) {
 		return KscdtSchBasicInfo.toEntity(workSchedule, cID);
-	}
-
+	} 
+	
 	@Override
 	public void update(WorkSchedule workSchedule) {
 		String cID = AppContexts.user().companyId();
@@ -831,5 +832,21 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		if (data.isEmpty())
 			return Optional.empty();
 		return Optional.of(data.get(0));
+	}
+
+	@Override
+	public void updateConfirmedState(WorkSchedule workSchedule) {
+		Optional<KscdtSchBasicInfo> entity = this.queryProxy().find(new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd()), KscdtSchBasicInfo.class);
+		if(entity.isPresent()){
+			entity.get().confirmedATR = workSchedule.getConfirmedATR().value == 1 ? true : false;
+			this.commandProxy().update(entity.get());
+		}
+	}
+	
+	@Override
+	public List<AffInfoForWorkSchedule> getAffiliationInfor(String sid, DatePeriod period) {
+		List<WorkSchedule>  data = this.getListBySid(sid, period);
+		List<AffInfoForWorkSchedule> result = data.stream().map(c->new AffInfoForWorkSchedule(c.getEmployeeID(), c.getYmd(), c.getAffInfo()) ).collect(Collectors.toList());
+		return result;
 	}
 }

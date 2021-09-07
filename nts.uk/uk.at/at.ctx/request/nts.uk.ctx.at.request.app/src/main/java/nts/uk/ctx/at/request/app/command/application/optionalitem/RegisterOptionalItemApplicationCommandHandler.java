@@ -94,7 +94,7 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
                 false,
                 application,
                 null,
-                appDispInfoStartup.getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+                appDispInfoStartup.getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                 Collections.emptyList(),
                 appDispInfoStartup);
         /**

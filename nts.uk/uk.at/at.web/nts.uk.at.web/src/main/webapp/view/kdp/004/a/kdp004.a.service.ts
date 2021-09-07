@@ -12,7 +12,8 @@ module nts.uk.at.view.kdp004.a {
 			fingerAuth: '',
 			getError: 'at/record/stamp/employment_system/get_omission_contents',
 			getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress',
-			getLogginSetting: 'ctx/sys/gateway/kdp/login/getLogginSetting'
+			getLogginSetting: 'ctx/sys/gateway/kdp/login/getLogginSetting',
+			createDaily: 'at/record/stamp/craeteDaily'
 		}
 
 		export function startPage(): JQueryPromise<any> {
@@ -50,6 +51,10 @@ module nts.uk.at.view.kdp004.a {
 		}
 		export function getLogginSetting(param): JQueryPromise<any> {
 			return ajax("at", url.getLogginSetting, {contractCode: param});
+		}
+
+		export function createDaily(data): JQueryPromise<any> {
+			return ajax("at", url.createDaily, data);
 		}
 	}
 

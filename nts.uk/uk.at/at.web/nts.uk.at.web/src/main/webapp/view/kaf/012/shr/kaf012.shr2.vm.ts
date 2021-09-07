@@ -40,7 +40,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
         </div>
         <div class="control-group table" style="margin-bottom: -3px">
             <div class="cell" style="padding-right: 3px; vertical-align: top" data-bind="ntsFormLabel: {required:true , text: $i18n('KAF012_6')}"></div>
-            <div class="cell valign-center" style="display: inline-flex;" data-bind="css: {hidden: appDispInfoStartupOutput().appDispInfoWithDateOutput.opErrorFlag > 0}">
+            <div class="cell valign-center" style="display: inline-flex;">
                 <div class="pull-left" >
                     <table id="kaf012-input-table">
                         <thead>
@@ -480,6 +480,7 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                         vm.switchOptions(result);
                     }
                     if (result.length > 0 && !vm.leaveType()) vm.leaveType(vm.switchOptions()[0].code);
+                    vm.leaveType.valueHasMutated();
                 }
             });
             vm.specialLeaveFrame.subscribe(value => {

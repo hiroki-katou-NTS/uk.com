@@ -59,7 +59,7 @@ public class TimeStampApplicationNRMode {
 				.collect(Collectors.toMap(x -> ((x - 86) / 7) + 1, x -> x));
 	}
 
-	public static List<Integer> process(Require require, GeneralDate baseDate, AppRecordImageShare appNr,
+	public static List<Integer> process(Require require, String companyId, GeneralDate baseDate, AppRecordImageShare appNr,
 			DailyRecordOfApplication dailyRecordApp, Optional<Stamp> stamp, ChangeDailyAttendance changeDailyAtt) {
 
 		// 勤務情報から打刻反映時間帯を取得する
@@ -75,7 +75,7 @@ public class TimeStampApplicationNRMode {
 		if (appNr.getAppStampCombinationAtr() == EngraveShareAtr.GO_OUT
 				|| appNr.getAppStampCombinationAtr() == EngraveShareAtr.RETURN) {
 			/// 外出・戻りの打刻を反映する
-			ReflectTimeStampResult stampResult = ReflectGoOutReturn.process(require, dailyRecordApp, timeReflectWork,
+			ReflectTimeStampResult stampResult = ReflectGoOutReturn.process(require, companyId, dailyRecordApp, timeReflectWork,
 					appNr.getAttendanceTime(), appNr.getAppStampCombinationAtr(), stamp, changeDailyAtt);
 			
 			if (!stampResult.isReflect())

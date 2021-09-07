@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf000.a.component1.viewmodel {
         template: `
             <div id="kaf000-a-component1">
 				<div data-bind="if: displayMsg">
-					<div class="message-div">
+					<div style="padding-top: 20px" class="message-div">
 						<div style="word-break: break-all; word-wrap: break-word; line-height: 1.6;" data-bind="html: message"></div>
 					</div>
 				</div>

@@ -784,7 +784,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             applicationDto: self.application,
             appWorkChangeDto: self.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
-            isError: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+            opMsgErrorLst: self.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opMsgErrorLst,
             appDispInfoStartupDto: self.appDispInfoStartupOutput, 
             appWorkChangeDispInfo: self.appWorkChangeDisp
         }).then((res: any) => {

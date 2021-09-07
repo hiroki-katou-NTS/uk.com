@@ -15,20 +15,20 @@ module nts.uk.at.view.kdl030.a.viewmodel {
         appEmailSet: any = null;
 		isMultiEmp: boolean = false;
 		isExpandMode: boolean = false;
+		appproverCount = 1;
 
         created() {
             const vm = this;
+			vm.$blockui('show');
             let param = getShared("KDL030_PARAM");
             vm.appIDLst = param.appIDLst;
 			vm.isMultiEmp = param.isMultiEmp;
             //from screen A
-            if (!_.isNil(param.employeeInfoLst)) {
-                if (vm.isMultiEmp) {
-                    vm.isExpandMode = true;
-                }
-                if (param.employeeInfoLst.length == 1) {
-                    vm.isExpandMode = !(param.employeeInfoLst[0].scd == __viewContext.user.employeeCode);
-                }
+            if (vm.isMultiEmp) {
+                vm.isExpandMode = true;
+            }
+            if (!_.isNil(param.employeeInfoLst) && param.employeeInfoLst.length == 1) {
+                vm.isExpandMode = !(param.employeeInfoLst[0].scd == __viewContext.user.employeeCode);
             }
             //from screenB
             if (!_.isNil(param.appDispInfoStartupOutput)) {
@@ -40,15 +40,17 @@ module nts.uk.at.view.kdl030.a.viewmodel {
             }
 
             if (!_.isEmpty(vm.appIDLst)) {
-                vm.$ajax(API.applicationForSendByAppID, { appIDLst: vm.appIDLst, isMultiMode: vm.isMultiEmp }).done((result) => {
+                vm.$ajax(API.applicationForSendByAppID, { appIDLst: vm.appIDLst, isMultiEmp: vm.isMultiEmp }).done((result) => {
                     vm.mailContent(result.mailTemplate);
                     vm.appEmailSet = result.appEmailSet;
                     let appSendMails = [];
                     if (!_.isNil(param.employeeInfoLst) && param.employeeInfoLst.length > 1) {
                         _.forEach(param.employeeInfoLst, emp => {
-                            let x = result.appSendMailByEmpLst.filter(app => app.applicantName.localeCompare(emp.bussinessName) == 0);
-                            appSendMails.push(x[0]);
-                        })
+                            let x = result.appSendMailByEmpLst.find((app: any) => app.application.employeeID == emp.sid);
+							if(x) {
+								appSendMails.push(x);
+							}
+                        });
                     } else {
                         appSendMails = result.appSendMailByEmpLst;
                     }
@@ -56,7 +58,11 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                         _.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto, phase => {
                             _.forEach(phase.listApprovalFrame, frame => {
                                 _.forEach(frame.listApprover, approver => {
-                                    approver.handleSendMail = false;
+                                    if (_.isNil(approver.approverMail)) {
+                                        approver.handleSendMail = 0;
+                                    } else {
+                                        approver.handleSendMail = approver.approverID != __viewContext.user.employeeId ? 1 : 0;
+                                    }
                                 });
                             });
                         });
@@ -73,6 +79,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                     } else if ($('.switchBtn').length > 0) {
                         $('.switchBtn')[0].focus();
                     }
+					vm.$blockui('hide');
                 });
             }
         }
@@ -237,8 +244,6 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 						indexForApprover += Number(length);
 					}
 				})
-				
-				
 			}
 			const orderNumber = indexForApprover + indexApprover + 1;
 			
@@ -246,17 +251,9 @@ module nts.uk.at.view.kdl030.a.viewmodel {
 		
 		}
 
-        getApproverLabel(loopPhase, loopFrame, loopApprover) {
-            const vm = this;
-            let index = vm.getFrameIndex(loopPhase, loopFrame, loopApprover);
-            // case group approver
-//            if(_.size(loopFrame.listApprover()) > 1) {
-//                index++;
-//            }
-            if (index <= 10) {
-                return vm.$i18n("KAF000_9", [index + '']);
-            }
-            return "";
+        getApproverLabel() {
+            let vm = this;
+            return vm.$i18n("KAF000_9", [(vm.appproverCount++) + '']);
         }
 
         getApprovalDateFormat(loopApprover) {
@@ -284,7 +281,7 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                 _.forEach(appSendMailByEmp.approvalRoot.listApprovalPhaseStateDto(), phase => {
                     _.forEach(phase.listApprovalFrame(), frame => {
                         _.forEach(frame.listApprover(), approver => {
-                            if (approver.handleSendMail()) {
+                            if (approver.handleSendMail() == 1) {
                                 let approverID = approver.approverID(),
                                     approverMail = approver.approverMail(),
                                     approverName = approver.approverName();
