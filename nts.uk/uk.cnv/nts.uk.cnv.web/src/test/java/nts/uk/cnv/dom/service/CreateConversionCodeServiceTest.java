@@ -17,7 +17,6 @@ import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.core.dom.conversionsql.Join;
-import nts.uk.cnv.core.dom.conversionsql.JoinAtr;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
 import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
@@ -66,8 +65,7 @@ public class CreateConversionCodeServiceTest {
 			require.getConversionTable(info, (String) any, (String) any, null, dummyRecords.get(0));
 			result = dummyConversionTable;
 
-			manager.createAdditionalConversionCode(info, (String) any, dummyConversionTable.get(),
-					new Join(info.getTargetTable(""), JoinAtr.InnerJoin, new ArrayList<>()));
+			manager.createAdditionalConversionCode(info, (String) any, dummyConversionTable.get(), (Join) any);
 			result = dummyAdditionalConversionCode;
 		}};
 

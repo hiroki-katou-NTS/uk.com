@@ -42,7 +42,7 @@ public class ConversionTable {
 		val newWhereList = new ArrayList<WhereSentence>(whereList);
 		addPeriodCondition(spec, newWhereList);
 
-		ConversionSQL result = new ConversionInsertSQL(targetTableName, newWhereList);
+		ConversionSQL result = new ConversionInsertSQL(targetTableName, newWhereList, spec);
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
 			result = oneColumnConversion.apply(targetTableName.getAlias(), result, removeDuplicate);
@@ -55,7 +55,7 @@ public class ConversionTable {
 		val newWhereList = new ArrayList<WhereSentence>(whereList);
 		addPeriodCondition(spec, newWhereList);
 
-		ConversionSQL result = new ConversionUpdateSQL(targetTableName, newWhereList);
+		ConversionSQL result = new ConversionUpdateSQL(targetTableName, newWhereList, spec);
 		result.addJoin(Join.createMain(targetTableName));
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
