@@ -8,9 +8,9 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionRecord;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionRecordPk;
 import nts.uk.cnv.dom.conversiontable.ConversionRecordRepository;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionRecord;
-import nts.uk.cnv.infra.entity.conversiontable.ScvmtConversionRecordPk;
 
 @Stateless
 public class JpaConversionRecodeRepository extends JpaRepository implements ConversionRecordRepository {

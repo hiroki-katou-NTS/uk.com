@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity.conversiontable;
+package nts.uk.cnv.core.infra.entity.conversiontable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
