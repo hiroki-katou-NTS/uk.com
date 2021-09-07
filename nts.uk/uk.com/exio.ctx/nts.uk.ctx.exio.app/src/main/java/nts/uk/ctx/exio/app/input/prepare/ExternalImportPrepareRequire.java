@@ -169,6 +169,11 @@ public class ExternalImportPrepareRequire {
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
 			return settingRepo.get(companyId, settingCode);
 		}
+
+		@Override
+		public List<ImportingDomain> getAllImportingDomains() {
+			return importingDomainRepo.findAll();
+		}
 		
 		@Override
 		public ImportingDomain getImportingDomain(ImportingDomainId domainId) {
@@ -312,7 +317,6 @@ public class ExternalImportPrepareRequire {
 					.filter(jobTitle -> jobTitle.getJobTitleCode().equals(jobTitleCode))
 					.findFirst();
 		}
-
 
 	}
 }
