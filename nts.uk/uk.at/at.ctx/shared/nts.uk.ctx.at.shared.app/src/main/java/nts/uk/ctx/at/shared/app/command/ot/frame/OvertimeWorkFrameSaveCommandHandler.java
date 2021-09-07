@@ -49,7 +49,9 @@ public class OvertimeWorkFrameSaveCommandHandler extends CommandHandler<Overtime
 				// Only update value UseClassification
 				overtimeWorkFrame = optPlanYearHdFr.get();
 				overtimeWorkFrame.setUseClassification(NotUseAtr.valueOf(item.getUseAtr()));
-
+				overtimeWorkFrame.setOvertimeWorkFrName(item.getOvertimeWorkFrameName());
+				overtimeWorkFrame.setTransferFrName(item.getTransferFrameName());
+				
 				this.repository.update(overtimeWorkFrame);
 			}
 		}
