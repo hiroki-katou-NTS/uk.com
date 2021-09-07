@@ -229,7 +229,7 @@ public class AlarmSendEmailService implements SendEmailService {
 								return roleAdapter.getRoleSetFromUserId(userId, baseDate);
 							}
 						},
-						item.getValue().stream().filter(Objects::nonNull).collect(Collectors.toList()),
+						Arrays.asList(item.getKey()),
 						executeDate
 				);
 				for (val entry : empRoleMap.entrySet()) {
