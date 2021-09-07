@@ -85,12 +85,21 @@ module nts.uk.com.view.cas014.a {
         }
 
         register() {
+            let self = this,
+                data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle),
+                regDetails: Array<any> = [];
+
+            data.details.forEach((d: RoleSetJobTitleDetail, index: number) => {
+                if (_.isEmpty(d.roleSetCd)) {
+                    $("#a4m3_" + index).ntsError("set", { messageId: "Msg_2190", messageParams: [d.jobTitle.code, d.jobTitle.name] });
+                } else {
+                    regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId });
+                }
+            });
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-            let self = this, data: RoleSetJobTitle = ko.toJS(self.roleSetJobTitle), regDetails: Array<any> = [];
-
-            _.each(data.details, (d: any) => regDetails.push({ roleSetCd: d.roleSetCd, jobTitleId: d.jobTitleId }));
 
             let command: any = {
                 applyToConcurrentPerson: data.applyToConcurrentPerson,
