@@ -24,6 +24,7 @@ import nts.uk.cnv.core.dom.conversionsql.Join;
 import nts.uk.cnv.core.dom.conversionsql.RelationalOperator;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
@@ -105,8 +106,16 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 		return pk;
 	}
 
-	public static ConversionTable toDomain(String tagetTableName, ConversionInfo info, List<OneColumnConversion> columns, ConversionSource source) {
-		List<WhereSentence> where = createWhereSentence(tagetTableName, info, source.getCondition());
+	public static ConversionTable toDomain(
+			String tagetTableName,
+			ConversionInfo info,
+			List<OneColumnConversion> columns,
+			ConversionSource source,
+			ConversionRecord record) {
+		List<WhereSentence> where = createWhereSentence(source.getCondition());
+		if(record.getWhereCondition() != null && !record.getWhereCondition().isEmpty()) {
+			where.addAll(createWhereSentence(record.getWhereCondition()));
+		}
 
 		return new ConversionTable(
 					info.getDatebaseType().spec(),
@@ -116,7 +125,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 					source.getEndDateColumnName(),
 					where,
 					columns,
-					false
+					record.isRemoveDuplicate()
 				);
 	}
 
@@ -183,19 +192,19 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 		throw new RuntimeException("ConversionPatternが不正です");
 	}
 
-	private static List<WhereSentence> createWhereSentence(String tagetTableName, ConversionInfo info, String sourceCondition) {
+	private static List<WhereSentence> createWhereSentence(String sourceCondition) {
 
 		List<WhereSentence> where = new ArrayList<>();
 
 		if (sourceCondition == null || sourceCondition.isEmpty()) return where;
 
-		String[] conditions = sourceCondition.toUpperCase().split("AND");
+		String[] conditions = sourceCondition.split(" [a|A][n|N][d|D] ");
 
 		for (String condition : conditions) {
 			RelationalOperator operator = null;
-			for (RelationalOperator oreratorValue : RelationalOperator.values()) {
-				if(condition.contains(oreratorValue.getSign())) {
-					operator = oreratorValue;
+			for (RelationalOperator operatorValue : RelationalOperator.values()) {
+				if(condition.contains(operatorValue.getSign())) {
+					operator = operatorValue;
 					break;
 				}
 			}
@@ -204,13 +213,16 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 			String[] expressions = condition.split(operator.getSign());
 
-			if(expressions.length < 2) throw new RuntimeException();
+			Optional<ColumnExpression> columnExpression =
+				(operator == RelationalOperator.IsNull || operator == RelationalOperator.IsNotNull)
+					? Optional.empty()
+					: Optional.of(new ColumnExpression(expressions[1]));
 
 			where.add(new WhereSentence(
-					new ColumnName(Constants.BaseTableAlias, expressions[0]),
+				new ColumnName(Constants.BaseTableAlias, expressions[0]),
 					operator,
-					Optional.of(new ColumnExpression(expressions[1]))
-				));
+					columnExpression)
+			);
 		}
 
 		return where;
