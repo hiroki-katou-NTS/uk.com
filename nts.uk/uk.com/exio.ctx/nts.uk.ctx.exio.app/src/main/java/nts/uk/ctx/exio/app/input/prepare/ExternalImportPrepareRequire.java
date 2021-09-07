@@ -1,8 +1,6 @@
 package nts.uk.ctx.exio.app.input.prepare;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -144,12 +142,9 @@ public class ExternalImportPrepareRequire {
 		
 		private final String companyId;
 		
-		private Map<String, JobTitleInfo> jobTitleInfoCache;
-		
 		public RequireImpl(String companyId) {
 			this.contractCode = CompanyId.getContractCodeOf(companyId);
 			this.companyId = companyId;
-			this.jobTitleInfoCache = new HashMap<>();
 		}
 		
 		
@@ -168,6 +163,11 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
 			return settingRepo.get(companyId, settingCode);
+		}
+
+		@Override
+		public List<ImportingDomain> getAllImportingDomains() {
+			return importingDomainRepo.findAll();
 		}
 		
 		@Override
@@ -312,7 +312,6 @@ public class ExternalImportPrepareRequire {
 					.filter(jobTitle -> jobTitle.getJobTitleCode().equals(jobTitleCode))
 					.findFirst();
 		}
-
 
 	}
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.exio.dom.input.workspace;
 
+import java.util.List;
+
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
@@ -17,5 +19,7 @@ public interface ExternalImportWorkspaceRepository {
 		ImportingDomain getImportingDomain(ImportingDomainId domainId);
 		
 		DomainWorkspace getDomainWorkspace(ImportingDomainId domainId);
+		
+		List<ImportingDomain> getAllImportingDomains();
 	}
 }
