@@ -229,6 +229,7 @@ public class RoleIndividualFinder {
         String employeeName = "";
         if (user.get().getUserName().isPresent())
             userName = user.get().getUserName().get().v();
+        if(listPersonOptional.isPresent())
         employeeName = listPersonOptional.get().getPersonName();
         return RoleIndividualGrantDto.fromDomain(
                 rGrant.get(),
