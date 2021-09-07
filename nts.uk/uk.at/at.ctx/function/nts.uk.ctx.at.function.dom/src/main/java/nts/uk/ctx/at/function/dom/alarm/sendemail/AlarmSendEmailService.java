@@ -249,12 +249,12 @@ public class AlarmSendEmailService implements SendEmailService {
 	private boolean isRoleValid(Optional<AlarmMailSendingRole> mailSendingRole, Optional<MailExportRolesDto> roleOpt, String roleId) {
 		if (!mailSendingRole.isPresent() || !roleOpt.isPresent()) return false;
 //		・ループ中のロールID　は取得した「アラームメール送信ロール」のロールIDに存在する
-//		OR
+//		AND
 //		・ループ中のロールIDはドメインモデル「ロール」に参照範囲　！＝　自分のみ
 		val condition1 = mailSendingRole.get().getRoleIds().contains(roleId);
 		val condition2 = roleOpt.get().getEmployeeReferenceRange() != EmployeeReferenceRange.ONLY_MYSELF.value;
 
-		return condition1 || condition2;
+		return condition1 && condition2;
 	}
 	
 	/**
