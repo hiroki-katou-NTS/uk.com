@@ -76,7 +76,8 @@ public class ReflectWorkInformation {
 		
 		changeDailyAtt.setCalcCategory(true);
 		
-		integrationOfDaily.getEditState().addAll(reflects);
+		integrationOfDaily.setEditState(reflects);
+//		integrationOfDaily.getEditState().addAll(reflects);
 		
 		return listErrorMessageInfo;
 	}
