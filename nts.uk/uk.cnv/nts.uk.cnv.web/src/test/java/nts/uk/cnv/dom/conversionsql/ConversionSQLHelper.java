@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import lombok.val;
+import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.core.dom.conversionsql.ColumnExpression;
 import nts.uk.cnv.core.dom.conversionsql.ColumnName;
 import nts.uk.cnv.core.dom.conversionsql.ConversionInsertSQL;
@@ -35,7 +36,7 @@ public class ConversionSQLHelper {
 			new ColumnExpression("DEL_DATE"),
 			new ColumnExpression("REMV_REASON"),
 			new ColumnExpression("EXT_CD"));
-
+	
 	public static ConversionSQL create_emptyDummy() {
 
 		return new ConversionInsertSQL(
@@ -46,7 +47,8 @@ public class ConversionSQLHelper {
 				expressions.stream()
 					.filter(ce -> !ce.sql().equals("NEWID()"))
 					.map(ce -> ce.sql())
-					.collect(Collectors.toList())
+					.collect(Collectors.toList()),
+				DatabaseType.sqlserver.spec()
 			);
 	}
 
@@ -59,7 +61,8 @@ public class ConversionSQLHelper {
 				expressions.stream()
 					.filter(ce -> !ce.sql().equals("NEWID()"))
 					.map(ce -> ce.sql())
-					.collect(Collectors.toList())
+					.collect(Collectors.toList()),
+				DatabaseType.sqlserver.spec()
 			);
 	}
 
@@ -92,38 +95,14 @@ public class ConversionSQLHelper {
 
 		private static List<SelectSentence> createDummy() {
 			List<SelectSentence> result = new ArrayList<SelectSentence>();
-			result.add(new SelectSentence(
-					new ColumnExpression("NEWID()"),
-					new TreeMap<FormatType, String>(),
-					"SID"));
-			result.add(new SelectSentence(
-					new ColumnExpression("NEWID()"),
-					new TreeMap<FormatType, String>(),
-					"PID"));
-			result.add(new SelectSentence(
-					new ColumnExpression("CIDVIEW", "CID"),
-					new TreeMap<FormatType, String>(),
-					"CID"));
-			result.add(new SelectSentence(
-					new ColumnExpression("SOURCE", "社員CD"),
-					new TreeMap<FormatType, String>(),
-					"SCD"));
-			result.add(new SelectSentence(
-					new ColumnExpression("0"),
-					new TreeMap<FormatType, String>(),
-					"DEL_STATUS_ATR"));
-			result.add( new SelectSentence(
-					new ColumnExpression("NULL"),
-					new TreeMap<FormatType, String>(),
-					"DEL_DATE"));
-			result.add( new SelectSentence(
-					new ColumnExpression("NULL"),
-					new TreeMap<FormatType, String>(),
-					"REMV_REASON"));
-			result.add( new SelectSentence(
-					new ColumnExpression("NULL"),
-					new TreeMap<FormatType, String>(),
-					"EXT_CD"));
+			result.add(SelectSentence.createNotFormat("", "NEWID()", "SID"));
+			result.add(SelectSentence.createNotFormat("", "NEWID()", "PID"));
+			result.add(SelectSentence.createNotFormat("CIDVIEW", "CID", "CID"));
+			result.add(SelectSentence.createNotFormat("SOURCE", "社員CD", "SCD"));
+			result.add(SelectSentence.createNotFormat("", "0", "DEL_STATUS_ATR"));
+			result.add(SelectSentence.createNotFormat("", "NULL", "DEL_DATE"));
+			result.add(SelectSentence.createNotFormat("", "NULL", "REMV_REASON"));
+			result.add(SelectSentence.createNotFormat("", "NULL", "EXT_CD"));
 
 			return result;
 		}
