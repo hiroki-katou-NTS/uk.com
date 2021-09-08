@@ -10,7 +10,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		 + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
 
 	function renderConfiguredIcon(configured) {
-		if (configured === "true") {
+		if (configured) {
 				return '<div class="icon-configured" style="text-align: center;">'
 						+ '<span id="icon-configured" style="'
 						+ 'background: url(\'' + ICON_CONFIGURED + '\');'
@@ -20,9 +20,9 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 				return '';
 		}
 	}
-	function deleteButton(deletable, data) {
-		if (deletable) {
-				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">delete</button>';
+	function deleteButton(required, data) {
+		if (required === "false") {
+				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">削除</button>';
 		} else {
 				return '';
 		}
@@ -61,16 +61,14 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "コード", 				key: "code", 					width: 50 	},
 			{ headerText: "名称", 					key: "name", 					width: 200 	},
-			{ headerText: "", 							key: "configured", 		width: 25 	},
 		]);
 
 		layoutListColumns: KnockoutObservableArray<any> = ko.observableArray([
-			{ headerText: "削除", 					key: "deletable", 		width: 75 , 	formatter: deleteButton },
+			{ headerText: "削除", 					key: "required", 		width: 50 , 	formatter: deleteButton },
 			{ headerText: "NO", 						key: "itemNo", 				width: 100 , 	hidden: true },
-			{ headerText: "名称", 					key: "name", 					width: 200 		},
-			{ headerText: "型", 						key: "type", 					width: 75 		},
-			{ headerText: "受入元", 				key: "source", 				width: 50 		},
-			{ headerText: "詳細設定", 			key: "alreadyDetail", width: 75 ,		formatter: renderConfiguredIcon },
+			{ headerText: "名称", 					key: "name", 					width: 300 		},
+			{ headerText: "型", 						key: "type", 					width: 80 		},
+			{ headerText: "受入元", 				key: "source", 				width: 80 		},
 		]);
 
 		constructor() {
@@ -259,12 +257,10 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 	export class Setting {
 		code: string;
 		name: string;
-		configured: string;
 
-		constructor(code: string, name: string, configured: boolean) {
+		constructor(code: string, name: string) {
 				this.code = code;
 				this.name = name;
-				this.configured = configured ? "✓" : "";
 		}
 	}
 
@@ -298,19 +294,15 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		itemNo: number;
 		name: string;
 		required: boolean;
-		deletable: boolean;
 		type: string;
 		source: string;
-		alreadyDetail: boolean;
 
-		constructor(itemNo: number,　name: string, required: boolean, deletable: boolean, type: string, source: string, alreadyDetail: boolean) {
+		constructor(itemNo: number,　name: string, required: boolean, type: string, source: string) {
 			this.itemNo = itemNo;
 			this.name = name;
 			this.required = required;
-			this.deletable = !required;
 			this.type = type;
 			this.source = source;
-			this.alreadyDetail = alreadyDetail;
 		}
 	}
 }
