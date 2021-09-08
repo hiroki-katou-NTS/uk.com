@@ -226,10 +226,10 @@ module nts.uk.ui.at.kdw013.share {
                             const { code, name } = item;
 
                             $(element)
-                                .html(`<div style='height:31px;' >${code}</div><div style='margin-left:10px;' >${name}</div>`);
+                                .html(`<div style='height:31px;' >${code}</div><div style='margin-left:10px;white-space: nowrap;' >${name}</div>`);
                         } else {
                             $(element)
-                                .html(`<div style='height:31px;' ></div><div style='margin-left:10px;' >${vm.$i18n('KDW013_41')}</div>`);
+                                .html(`<div style='height:31px;' ></div><div style='margin-left:10px;white-space: nowrap;' >${vm.$i18n('KDW013_41')}</div>`);
                         }
                     },
                     disposeWhenNodeIsRemoved: element
