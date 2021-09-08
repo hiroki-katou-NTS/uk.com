@@ -1,10 +1,11 @@
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common;
 
-import java.time.YearMonth;
+
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 

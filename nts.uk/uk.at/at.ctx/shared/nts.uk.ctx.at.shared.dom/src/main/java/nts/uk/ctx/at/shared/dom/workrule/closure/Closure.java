@@ -401,7 +401,7 @@ public class Closure extends AggregateRoot {
 	 * 締め開始日と締め日を取得する
 	 * @return
 	 */
-	public Optional<ClosureStartEndOutput>  getClosureStartDayAndClosureDay(){
+	public Optional<ClosureStartEndOutput>  getClosureStartDayAndClosureDay(YearMonth yearMonth){
 		//当月の締め日を取得する
 		Optional<ClosureDate> closureDate = getClosureDateOfCurrentMonth();
 		if(!closureDate.isPresent()){
@@ -411,7 +411,8 @@ public class Closure extends AggregateRoot {
 		Day start = new Day(closureDate.get().getLastDayOfMonth() ? 1 : 
 			GeneralDate.ymd(closureMonth.getProcessingYm(),closureDate.get().getClosureDay().v()).addDays(1).day());
 		//締め日を取得する
-		Day closure = closureDate.get().getClosureDay();
+		Day closure = closureDate.get().getLastDayOfMonth() ? new Day(yearMonth.lastDateInMonth())
+				: closureDate.get().getClosureDay();
 		
 		return  Optional.of(new ClosureStartEndOutput(start,closure));
 	}

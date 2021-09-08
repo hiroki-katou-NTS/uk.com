@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.export.query.publicholiday;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 import lombok.Getter;
 import lombok.Setter;

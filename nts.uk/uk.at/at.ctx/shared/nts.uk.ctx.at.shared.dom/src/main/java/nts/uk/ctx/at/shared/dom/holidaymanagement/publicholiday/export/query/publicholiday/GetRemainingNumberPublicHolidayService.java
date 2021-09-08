@@ -76,6 +76,12 @@ public class GetRemainingNumberPublicHolidayService {
 		//集計期間WORKを作成
 		List<AggregatePublicHolidayWork> aggregatePublicHolidayWork = publicHolidaySetting.get().createAggregatePeriodWork(
 				employeeId, yearMonth,criteriaDate, cacheCarrier, require);
+		
+		if(aggregatePublicHolidayWork.isEmpty()){
+			return new AggrResultOfPublicHoliday();
+		}
+		
+		
 		//繰越データを取得する
 		PublicHolidayCarryForwardDataList carryForwardDataList = new PublicHolidayCarryForwardDataList(
 				require.publicHolidayCarryForwardData(employeeId));
