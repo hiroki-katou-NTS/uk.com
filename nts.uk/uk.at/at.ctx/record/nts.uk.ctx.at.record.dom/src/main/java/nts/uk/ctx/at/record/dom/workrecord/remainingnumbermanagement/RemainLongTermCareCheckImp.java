@@ -20,9 +20,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Employ
 public class RemainLongTermCareCheckImp implements RemainLongTermCareCheck {
     
     @Inject
-    private GetRemainingNumberCareService getRemainingNumberCareService;
-    
-    @Inject
     private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
     
     @Inject
@@ -33,7 +30,7 @@ public class RemainLongTermCareCheckImp implements RemainLongTermCareCheck {
         val require = childCareNurseRequireImplFactory.createRequireImpl();
         
         // [NO.207]期間中の介護休暇残数を取得
-        AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
+        AggrResultOfChildCareNurse result = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
                 param.getCID(), 
                 param.getSID(), 
                 param.getPeriod(),

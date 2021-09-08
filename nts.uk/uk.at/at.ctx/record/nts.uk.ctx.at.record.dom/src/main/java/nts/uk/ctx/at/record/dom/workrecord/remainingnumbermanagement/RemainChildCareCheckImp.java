@@ -24,9 +24,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.Employ
 public class RemainChildCareCheckImp implements RemainChildCareCheck {
     
     @Inject
-    private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
-    
-    @Inject
     private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
     
     @Inject
@@ -37,7 +34,7 @@ public class RemainChildCareCheckImp implements RemainChildCareCheck {
         val require = childCareNurseRequireImplFactory.createRequireImpl();
         
         // [NO.206]期間中の子の看護休暇残数を取得
-        AggrResultOfChildCareNurse aggrResultOfChildCareNurse = getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+        AggrResultOfChildCareNurse aggrResultOfChildCareNurse = GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
                 param.getCID(), 
                 param.getSID(),
                 param.getPeriod(), 

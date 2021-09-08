@@ -31,9 +31,6 @@ public class GetRemainingNumberChildCare {
     private NursingLeaveSettingRepository nursingLeaveSettingRepo;
     
     @Inject
-    private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
-    
-    @Inject
     private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 
     /**
@@ -53,7 +50,7 @@ public class GetRemainingNumberChildCare {
         DatePeriod period = nursingLeaveSettings.findPeriodForRemainNumber(date);
         
         // [NO.206]期間中の子の看護休暇残数を取得
-        AggrResultOfChildCareNurse childNursePeriod = getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+        AggrResultOfChildCareNurse childNursePeriod = GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
                 cId,
                 sId, 
                 period,

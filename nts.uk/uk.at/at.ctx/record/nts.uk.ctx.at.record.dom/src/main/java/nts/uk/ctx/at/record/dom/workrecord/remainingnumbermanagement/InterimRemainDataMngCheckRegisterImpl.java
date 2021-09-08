@@ -85,12 +85,6 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
 	
 	@Inject
-    private GetRemainingNumberChildCareService getRemainingNumberChildCareService;
-	
-	@Inject
-    private GetRemainingNumberCareService getRemainingNumberCareService;
-	
-	@Inject
     private ChildCareNurseRequireImplFactory childCareNurseRequireImplFactory;
 	
 	@Inject
@@ -359,7 +353,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		if (remainNumberClassification.map(x -> x.isChkChildNursing()).orElse(true)) {
 		    // [NO.206]期間中の子の看護休暇残数を取得
 		    AggrResultOfChildCareNurse result =
-	                getRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
+		            GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
 	                        inputParam.getCid(), 
 	                        inputParam.getSid(), 
 	                        inputParam.getDatePeriod(), 
@@ -379,7 +373,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 		// 介護チェック区分をチェックする
 		if (remainNumberClassification.map(x -> x.isChkLongTermCare()).orElse(true)) {
 		    // [NO.207]期間中の介護休暇残数を取得
-		    AggrResultOfChildCareNurse result = getRemainingNumberCareService.getCareRemNumWithinPeriod(
+		    AggrResultOfChildCareNurse result = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
 		            inputParam.getCid(), 
                     inputParam.getSid(), 
                     inputParam.getDatePeriod(),
