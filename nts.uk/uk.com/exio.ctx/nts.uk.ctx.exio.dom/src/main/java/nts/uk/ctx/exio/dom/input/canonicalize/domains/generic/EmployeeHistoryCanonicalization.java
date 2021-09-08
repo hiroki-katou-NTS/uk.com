@@ -142,13 +142,13 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
-
-		//既存データと受入れようとしてるデータで補正
-		//未来履歴は↑で消えているため、
-		//既存データの一番未来のやつと受入れようとしてる一番過去のやつを見て、補正すればいい
-		adjustExistingHistory(require, context, containers.get(0).addingHistoryItem, existingHistory);
 		
 		try {
+			//既存データと受入れようとしてるデータで補正
+			//未来履歴は↑で消えているため、
+			//既存データの一番未来のやつと受入れようとしてる一番過去のやつを見て、補正すればいい
+			adjustExistingHistory(require, context, containers.get(0).addingHistoryItem, existingHistory);
+			
 			//受入れようとしてる履歴同士で補正
 			adjustAddingHistory(existingHistory, containers);
 		} catch (BusinessException ex) {
@@ -156,6 +156,8 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 			containers.forEach(c -> require.add(
 					context,
 					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
+			
+			return Collections.emptyList();
 		}
 		
 		val newContainers = canonicalizeExtends(require, context, employeeId, containers);
@@ -306,11 +308,11 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		
 		return AtomTask.of(() -> {
 
-			for (val record : recordsToDelete) {
+			for (AnyRecordToDelete record : recordsToDelete) {
 				toDomainDataIds(record).forEach(id -> require.delete(id));
 			}
 
-			for (val record : recordsToChange) {
+			for (AnyRecordToChange record : recordsToChange) {
 				//項目Noから何をどの値に変更するのか特定できないとここから進めない
 				val period = new DatePeriod(
 						record.getChange(this.itemNoStartDate).asGeneralDate(),
@@ -321,7 +323,21 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		});
 	}
 	
-	private List<DomainDataId> toDomainDataIds(AnyRecordTo record) {
+	private List<DomainDataId> toDomainDataIds(AnyRecordToDelete toDelete) {
+
+		val keyValues = new KeyValues(toKeyValueObjects(toDelete));
+		
+		List<String> tableNames = new ArrayList<>();
+		tableNames.add(getParentTableName());
+		tableNames.addAll(getChildTableNames());
+		
+		val keys = getDomainDataKeys();
+		return tableNames.stream()
+				.map(tn -> DomainDataId.createDomainDataId(tn, keys, keyValues))
+				.collect(toList());
+	}
+	
+	private List<DomainDataId> toDomainDataIds(AnyRecordToChange record) {
 		
 		val keyValues = new KeyValues(toKeyValueObjects(record));
 		
