@@ -82,11 +82,11 @@ export class KafS12A1Component extends Vue {
                 if (!oldVal && newVal) {
                     if (newVal.destination.privateGoingOut == 1 && newVal.destination.unionGoingOut == 0) {
                         vm.outingTimeZones.forEach((i) => {
-                            i.appTimeType = AppTimeType.PRIVATE;
+                            i.appTimeType = GoingOutReason.PRIVATE;
                         });
                     } else if (newVal.destination.privateGoingOut == 0 && newVal.destination.unionGoingOut == 1) {
                         vm.outingTimeZones.forEach((i) => {
-                            i.appTimeType = AppTimeType.UNION;
+                            i.appTimeType = GoingOutReason.UNION;
                         });
                     }
                 }
@@ -142,7 +142,7 @@ export class KafS12A1Component extends Vue {
             self.outingTimeZones.forEach((i: OutingTimeZone) => {
                 i.timeZone.start = null;
                 i.timeZone.end = null;
-                i.appTimeType = GoingOutReason.PRIVATE;
+                i.appTimeType = self.reflectSetting.destination.privateGoingOut == 1 ? GoingOutReason.PRIVATE : GoingOutReason.UNION;
             });
             let maxWorkNoHasData = 3;
             const outingTimes = opActualContentDisplayLst[0].opAchievementDetail.stampRecordOutput.outingTime || [];

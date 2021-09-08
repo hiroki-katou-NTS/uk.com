@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1152,7 +1153,9 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		List<CodeName> lstBussinessType = queryData.getLstBussinessType();
 		
 		List<String> lstEmployeeId = query.getEmployeeId();
-		List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeId);
+		List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeId)
+				.stream().sorted(Comparator.comparing(EmployeeDto::getEmployeeCode))
+				.collect(Collectors.toList());
 		boolean isDisplayCode = query.getCondition().getItemDisplaySwitch() == ItemDisplaySwitchEnum.CODE.indicator;
 		
 		for (String employeeId: lstEmployeeId) {
@@ -2444,7 +2447,7 @@ public class AsposeMonthlyWorkScheduleGenerator extends AsposeCellsReportGenerat
 		if (employeeReportData != null && !employeeReportData.isEmpty()) {
 			boolean isPrintWplTitle = false;
 			// rowPageTracker.useOneRowAndCheckResetRemainingRow(sheetInfo.getSheet(), currentRow);
-			if (rowPageTracker.checkRemainingRowSufficient(2) <= 0) {
+			if (rowPageTracker.checkRemainingRowSufficient(2 + dataRowCount) <= 0) {
 				rowPageTracker.resetRemainingRow();
 				if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
 					cells = sheetInfo.getSheet().getCells();

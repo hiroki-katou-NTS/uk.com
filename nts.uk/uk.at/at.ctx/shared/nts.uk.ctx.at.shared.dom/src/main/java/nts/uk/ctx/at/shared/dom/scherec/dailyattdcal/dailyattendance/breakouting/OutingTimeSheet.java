@@ -70,7 +70,7 @@ public class OutingTimeSheet extends DomainObject {
 																			  new ArrayList<>(),
 																			  new ArrayList<>(),
 																			  WorkingBreakTimeAtr.NOTWORKING,
-																			  Finally.of(this.reasonForGoOut),
+																			  Finally.of(this.reasonForGoOut == null ? GoingOutReason.PRIVATE : this.reasonForGoOut),
 																			  Finally.empty(),
 																			  Optional.empty(),
 																			  DeductionClassification.GO_OUT,

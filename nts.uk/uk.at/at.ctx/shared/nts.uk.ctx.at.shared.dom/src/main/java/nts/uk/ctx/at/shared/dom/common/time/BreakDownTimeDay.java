@@ -44,17 +44,21 @@ public class BreakDownTimeDay extends WorkTimeDomainObject implements Cloneable,
 	 */
 	@Override
 	public void validate() {
-		// if 1日<午前 => Msg_518
-		if (this.oneDay.lessThan(this.morning)) {
-			this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_217");
+		if(this.oneDay != null && this.morning != null) {
+			// if 1日<午前 => Msg_518
+			if (this.oneDay.lessThan(this.morning)) {
+				this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_217");
+			}
 		}
-
-		// 1日<午後 => Msg_518
-		if (this.oneDay.lessThan(this.afternoon)) {
-			this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_218");
+		if(this.oneDay != null && this.afternoon != null) {
+			// 1日<午後 => Msg_518
+			if (this.oneDay.lessThan(this.afternoon)) {
+				this.bundledBusinessExceptions.addMessage("Msg_518", "KMK003_218");
+			}
 		}
-
-		super.validate();
+		if(this.oneDay != null && this.morning != null && this.afternoon != null) {
+			super.validate();
+		}
 	}
 
 	/**
