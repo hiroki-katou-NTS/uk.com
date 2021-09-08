@@ -24,6 +24,8 @@ import nts.uk.cnv.dom.service.CreateConversionCodeService;
 
 @Stateless
 public class CodeGenerator {
+	
+	private static final String programId = "CNV001";
 
 	@Inject
 	protected CategoryPriorityRepository categoryPriorityRepository;
@@ -82,14 +84,14 @@ public class CodeGenerator {
 	private class RequireImplForInsert extends RequireImpl{
 		@Override
 		public ConversionSQL createConversionSQL(ConversionTable ct) {
-			return ct.createConversionSql();
+			return ct.createConversionSql(programId);
 		}
 	}
 
 	private class RequireImplForUpdate extends RequireImpl{
 		@Override
 		public ConversionSQL createConversionSQL(ConversionTable ct) {
-			return ct.createUpdateConversionSql();
+			return ct.createUpdateConversionSql(programId);
 		}
 	}
 
