@@ -169,12 +169,7 @@ public class WorkspaceSql {
 			sql.append(item.getName()).append(" ");
 			
 			dataType(item.getDataTypeConfig());
-			
-			if (isPK) {
-				sql.append(" not null,");
-			} else {
-				sql.append(" null,");
-			}
+			sql.append(" null,");
 		}
 		
 		void dataType(DataTypeConfiguration config) {
