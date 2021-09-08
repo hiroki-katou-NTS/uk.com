@@ -77,16 +77,16 @@ public class AlarmSendEmailService implements SendEmailService {
 			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
 			MailSettingsParamDto mailSettingsParamDto,String currentAlarmCode,
 			boolean useAuthentication, Optional<MailSettings> mailSetting, Optional<MailSettings> mailSettingAdmins,
-			Optional<String> senderAddress, List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting, boolean isAuto) {
+			Optional<String> senderAddress, List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting) {
 		return process(companyID, executeDate, employeeTagetIds, managerTagetIds, valueExtractAlarmDtos,mailSettingsParamDto,currentAlarmCode,
-				useAuthentication,mailSetting,mailSettingAdmins,senderAddress, managerTargetList, alarmExeMailSetting, isAuto);
+				useAuthentication, mailSetting, mailSettingAdmins, senderAddress, managerTargetList, alarmExeMailSetting);
 	}
 	//メール送信処理
 	private String process(String companyID, GeneralDate executeDate, List<String> employeeTagetIds,
 			List<String> managerTagetIds, List<ValueExtractAlarmDto> valueExtractAlarmDtos,
 			MailSettingsParamDto mailSettingsParamDto,String currentAlarmCode, boolean useAuthentication,
 			Optional<MailSettings> mailSettingPerson, Optional<MailSettings> mailSettingAdmin, Optional<String> senderAddress,
-			List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting, boolean isAuto) {
+			List<ManagerTagetDto> managerTargetList, List<AlarmListExecutionMailSetting> alarmExeMailSetting) {
 		String companyId = AppContexts.user().companyId();
 		List<String> errors = new ArrayList<>();
 		Integer functionID = 9; //function of Alarm list = 9
