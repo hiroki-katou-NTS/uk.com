@@ -560,7 +560,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 	 * 休憩時間帯に出勤、退勤が含まれているかの判定ののち重複時間帯の取得
 	 * @param time 出退勤クラス
 	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
-	 * @param oneDayRange 1日の範囲
+	 * @param oneDayRange 1日の範囲と控除時間帯の重複
 	 * @return
 	 */
 	public List<TimeSheetOfDeductionItem> getIncludeAttendanceOrLeaveDuplicateTimeSheet(
@@ -585,7 +585,7 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements 
 			}
 			
 			if (dedAtr == DeductionAtr.Deduction) {
-				result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, time.getTimespan().getEnd()))));
+				result.add(cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(newStart, newEnd))));
 				return result;
 			}
 		

@@ -6,10 +6,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.PremiumAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 時間休暇WORK
@@ -25,7 +30,7 @@ public class TimeVacationWork implements Cloneable {
 	/** 組合外出 */
 	private TimevacationUseTimeOfDaily unionOuting;
 	
-	private TimeVacationWork(){
+	public TimeVacationWork(){
 		this.eachNo = new ArrayList<>();
 		this.privateOuting = TimevacationUseTimeOfDaily.defaultValue();
 		this.unionOuting = TimevacationUseTimeOfDaily.defaultValue();
@@ -172,14 +177,28 @@ public class TimeVacationWork implements Cloneable {
 	
 	/**
 	 * 就業時間に加算する時間のみ取得
-	 * @param holidayAddSet 休暇加算時間設定
+	 * @param integrationOfWorkTime 統合就業時間帯
+	 * @param commonSetting 就業時間帯の共通設定
+	 * @param holidayAddtionSet 休暇加算時間設定
+	 * @param offsetTime 相殺時間
+	 * @param lateEarlyMinusAtr 強制的に遅刻早退控除する
 	 * @return 時間休暇WORK
 	 */
-	public TimeVacationWork getValueForAddWorkTime(HolidayAddtionSet holidayAddSet){
+	public TimeVacationWork getValueForAddWorkTime(
+			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
+			PremiumAtr premiumAtr,
+			Optional<WorkTimezoneCommonSet> commonSetting,
+			HolidayAddtionSet holidayAddtionSet,
+			HolidayCalcMethodSet holidayCalcMethodSet,
+			TimeVacationWork offsetTime,
+			NotUseAtr lateEarlyMinusAtr){
+		
 		return TimeVacationWork.of(
-				this.eachNo.stream().map(c -> c.getValueForAddWorkTime(holidayAddSet)).collect(Collectors.toList()),
-				this.privateOuting.getValueForAddWorkTime(holidayAddSet),
-				this.unionOuting.getValueForAddWorkTime(holidayAddSet));
+				this.eachNo.stream().map(c -> c.getValueForAddWorkTime(
+						integrationOfWorkTime, premiumAtr, commonSetting, holidayAddtionSet,
+						holidayCalcMethodSet, offsetTime, lateEarlyMinusAtr)).collect(Collectors.toList()),
+				this.privateOuting.getValueForAddWorkTime(holidayAddtionSet),
+				this.unionOuting.getValueForAddWorkTime(holidayAddtionSet));
 	}
 	
 	/**

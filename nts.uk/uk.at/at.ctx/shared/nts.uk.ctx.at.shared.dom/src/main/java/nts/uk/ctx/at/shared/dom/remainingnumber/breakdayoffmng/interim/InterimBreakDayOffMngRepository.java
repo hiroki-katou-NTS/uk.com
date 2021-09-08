@@ -157,4 +157,18 @@ public interface InterimBreakDayOffMngRepository {
 	
 	// [5] Insert(List<暫定休出管理データ>) 	暫定代休管理データ
 	void insertDayoffList(List<InterimDayOffMng> lstDomain);
+	
+	/**
+	 * 暫定代休管理データ 削除　期間
+	 * @param sId
+	 * @param period
+	 */
+	void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period);
+	
+	/**
+	 * 暫定休出管理データ 削除　期間
+	 * @param sId
+	 * @param period
+	 */
+	void deleteInterimBreakMngBySidDatePeriod(String sid, DatePeriod period);
 }

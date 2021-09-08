@@ -14,8 +14,8 @@ import nts.arc.layer.app.cache.CacheCarrier;
 //import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.interim.InterimHolidayMng;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.interim.InterimHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagement;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.interimdata.TempPublicHolidayManagementRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.linkdatareg.LinkDataRegister;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
@@ -60,7 +60,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 	@Inject
 	private TmpHolidayOver60hMngRepository over60hMngRepository;
 	@Inject
-	private InterimHolidayMngRepository holidayMngRepository;
+	private TempPublicHolidayManagementRepository tempPublicHolidayManagementRepository;
 	@Inject
 	private TempChildCareManagementRepository  childCareManagementRepo;
 	@Inject
@@ -187,8 +187,8 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 			break;
 		case PUBLICHOLIDAY:
 			// 暫定公休データの登録
-			InterimHolidayMng holidayMng = (InterimHolidayMng) interimRemain;
-			this.holidayMngRepository.persistAndUpdate(holidayMng);
+			TempPublicHolidayManagement holidayMng = (TempPublicHolidayManagement) interimRemain;
+			this.tempPublicHolidayManagementRepository.persistAndUpdate(holidayMng);
 			break;
 		case CHILDCARE:
 			// 暫定子の看護管理データの登録
@@ -223,7 +223,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 			// 暫定60H超休管理データをDelete
 			this.over60hMngRepository.deleteBySidAndYmd(sid, day);
 			// 暫定公休管理データをDeleteする
-			this.holidayMngRepository.deleteBySidAndYmd(sid, day);
+			this.tempPublicHolidayManagementRepository.deleteByDate(sid, day);
 			// 暫定子の看護管理データをDeleteする
 			this.childCareManagementRepo.removeBySidAndYmd(sid, day);
 			// 暫定介護管理データをDeleteする

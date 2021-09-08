@@ -95,6 +95,22 @@ public class JpaChildCareLevRemainInfoRepo extends JpaChildCareNurseLevRemainInf
 		// 共通関数呼び出し
 		updateAllList(cid, commonDomains);
 	}
+	
+	/*
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.ChildCareLeaveRemInfoRepository#updateMaxDay(java.lang.String, nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit, nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimit)
+	 */
+	@Override
+	public void updateMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear) {
+		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(sid, NursingCategory.ChildNursing.value);
+		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
+		if (entityOpt.isPresent()) {
+			KrcdtHdNursingInfo entity = entityOpt.get();
+			entity.setMaxDayNextFiscalYear(ThisFiscalYear.v());
+			entity.setMaxDayThisFiscalYear(null);
+			this.commandProxy().update(entity);
+		}
+	}
 
 	/**
 	 * エンティティをドメインへ変換

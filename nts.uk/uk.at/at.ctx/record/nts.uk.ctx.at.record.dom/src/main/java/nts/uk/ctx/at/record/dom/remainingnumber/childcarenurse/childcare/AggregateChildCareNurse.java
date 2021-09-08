@@ -158,19 +158,19 @@ public class AggregateChildCareNurse {
 		// 次回起算日で期間を区切る
 		splitNextStartMonthDay(period, dividedDayEachProcessList, nursingCategory, require);
 
-		// 終了日で期間を区切る
-		 splitEnd(dividedDayEachProcessList, period.end());
+		// 一番年月日が大きい分割日にフラグを立てる
+		 flagSplitEnd(dividedDayEachProcessList, period.end());
 
 		// 終了日翌日の期間を区切る
 		// =====処理単位分割日←「処理単位分割日」
 		// =====終了日←パラメータ「期間．終了日」
-		splitEndNextDay(dividedDayEachProcessList, period.end());
+		 List<DividedDayEachProcess> afterSplitNextEndDate = splitEndNextDay(dividedDayEachProcessList, period.end());
 
 		// 暫定データを分割
-		splitInterimDate(period.end(), dividedDayEachProcessList, interimDate);
+		List<DividedDayEachProcess> afterSplitInterimData= splitInterimDate(period.end(), afterSplitNextEndDate, interimDate);
 
 		// 子の看護介護休暇集計WORK作成
-		List<AggregateChildCareNurseWork> periodWork = periodWork(dividedDayEachProcessList, period.end());
+		List<AggregateChildCareNurseWork> periodWork = periodWork(afterSplitInterimData, period.end());
 
 		// 「子の看護介護集計期間」を返す
 		return AggregateChildCareNurse.of(periodWork);
@@ -228,31 +228,18 @@ public class AggregateChildCareNurse {
 	}
 
 	/**
-	 * 終了日で期間を区切る
+	 * 一番年月日が大きい分割日にフラグを立てる
 	 * @param dividedDayEachProcess 処理単位分割日（List）
 	 * @param end 終了日
 	 * @return 処理単位分割日（List）
 	 */
-	private static void splitEnd(List<DividedDayEachProcess> dividedDayEachProcess, GeneralDate end) {
+	private static void flagSplitEnd(List<DividedDayEachProcess> dividedDayEachProcess, GeneralDate end) {
 
-	        // 終了日の処理単位分割日を取得
-	        List<DividedDayEachProcess> splitEnd = dividedDayEachProcess.stream().filter(c -> c.getYmd().equals(end))
-	                                                                                                                                .map(c -> {
-	                                                                                                                                	// 終了日の期間かどうか ←true
-	                                                                                                                                    c.setEndDate(NextDayAfterPeriodEndWork.of(true, c.getEndDate().isNextPeriodEndAtr()));
-	                                                                                                                                    return c;
-	                                                                                                                                })
-	                                                                                                                                .collect(Collectors.toList());
-	        if(splitEnd.isEmpty())  {
-				// 一番年月日が大きい分割日を取得
-				dividedDayEachProcess.sort((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()));
-				DividedDayEachProcess largest = dividedDayEachProcess.get(0);
-				// 取得した分割日の終了日の期間かどうか ←true
-				largest.setEndDate(NextDayAfterPeriodEndWork.of(true, largest.getEndDate().isNextPeriodEndAtr()));
-			} else {
-				// 終了日の期間かどうか　←true
-				splitEnd.stream().forEach(action->action.setEndDate(NextDayAfterPeriodEndWork.of(true, false)));
-			}
+		// 一番年月日が大きい分割日を取得
+		Optional<DividedDayEachProcess> largest = dividedDayEachProcess.stream()
+				.sorted((c1, c2) -> c2.getYmd().compareTo(c1.getYmd())).findFirst();
+		// 終了日期間として扱う
+		largest.ifPresent(x -> x.treatAsPeriodEnd());
 	}
 
 	/**
@@ -270,16 +257,13 @@ public class AggregateChildCareNurse {
 
         // 終了日翌日の処理単位分割日を取得
         Optional<DividedDayEachProcess> splitEndNext = dividedDayEachProcess.stream().filter(c -> c.getYmd().equals(end))
-                                                                                                                                .findFirst();
+                                                                                       .findFirst();
 
         if(splitEndNext.isPresent()) {
         	splitEndNext.get().getEndDate().setPeriodEndAtr(true);
 
         	return dividedDayEachProcess;
 		}else {
-			dividedDayEachProcess.sort((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()));
-			DividedDayEachProcess largest = dividedDayEachProcess.get(0);
-
         	// 処理単位分割日に終了日翌日を追加
         	//===処理単位分割日.年月日 = 終了日の翌日
         	//===		本年か翌年か＝取得した分割日の本年か翌年か
@@ -288,7 +272,10 @@ public class AggregateChildCareNurse {
         	DividedDayEachProcess splitEndNextAdd = DividedDayEachProcess.of(new ArrayList<>(),
         			NextDayAfterPeriodEndWork.of(false, true),
         			end.addDays(1),
-        			largest.getYearAtr());
+        			dividedDayEachProcess.stream()
+        			.sorted((c1, c2) -> c2.getYmd().compareTo(c1.getYmd()))
+        			.findFirst().get().getYearAtr()
+        			);
 
         	dividedDayEachProcess.add(splitEndNextAdd);
 
@@ -309,6 +296,8 @@ public class AggregateChildCareNurse {
 			List<DividedDayEachProcess> dividedDayEachProcess,
 			List<TempChildCareNurseManagement> interimDate) {
 
+		List<DividedDayEachProcess> currentDayProcessList = new ArrayList<>();
+		
 		// 対象期間の暫定データを処理単位分割日に設定
 		for (int idx = 0; idx < dividedDayEachProcess.size(); idx++) {
 
@@ -320,15 +309,18 @@ public class AggregateChildCareNurse {
 			} else {
 				splitInterimDate = dividedDayEachProcess.get(idx + 1).getYmd().addDays(-1);
 			}
+			
 
 			// 「処理単位分割日．年月日」＜＝ 対象日 ＜＝ 次の「処理単位分割日．年月日」の前日
-			val interimDate2 = interimDate.stream().filter(c -> c.getYmd().beforeOrEquals(currentDayProcess.getYmd())
-					&& c.getYmd().afterOrEquals(splitInterimDate)).collect(Collectors.toList());
+			val interimDate2 = interimDate.stream()
+					.filter(c -> new DatePeriod(currentDayProcess.getYmd(), splitInterimDate).contains(c.getYmd())).collect(Collectors.toList());
 			currentDayProcess.getInterimDate().addAll(interimDate2);
+			
+			currentDayProcessList.add(currentDayProcess);
 
 		}
 		// 「処理単位分割日（List）」を返す
-		return dividedDayEachProcess;
+		return currentDayProcessList;
 	}
 
 	/**

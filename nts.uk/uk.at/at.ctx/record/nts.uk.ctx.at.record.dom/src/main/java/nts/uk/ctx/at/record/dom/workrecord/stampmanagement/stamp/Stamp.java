@@ -65,10 +65,10 @@ public class Stamp implements DomainAggregate, Cloneable {
 	private final RefectActualResult refActualResults;
 
 	/**
-	 * 反映済み区分
+	 * 打刻反映状態
 	 */
 	@Getter
-	private boolean reflectedCategory;
+	private ImprintReflectionState imprintReflectionStatus;
 
 	/**
 	 * 打刻位置情報
@@ -99,7 +99,7 @@ public class Stamp implements DomainAggregate, Cloneable {
 		this.relieve = relieve;
 		this.type = type;
 		this.refActualResults = refActualResults;
-		this.reflectedCategory = false;
+		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
 		this.locationInfor = locationInfor;
 	}
 	
@@ -131,7 +131,7 @@ public class Stamp implements DomainAggregate, Cloneable {
 	}
 
 	public void setReflectedCategory(boolean reflectedCategory) {
-		this.reflectedCategory = reflectedCategory;
+		this.imprintReflectionStatus.setReflectedCategory(reflectedCategory);
 	}
 
 	@Override
