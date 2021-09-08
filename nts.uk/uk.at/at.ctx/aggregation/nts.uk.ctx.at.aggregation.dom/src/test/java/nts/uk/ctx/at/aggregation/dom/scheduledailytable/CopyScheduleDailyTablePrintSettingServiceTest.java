@@ -24,7 +24,7 @@ public class CopyScheduleDailyTablePrintSettingServiceTest {
 	 * except: Msg_2117
 	 */	
 	@Test
-	public void testCopy_sourceIsExist_overideIsFalse() {
+	public void testCopy_sourceIsExist_overwriteIsFalse() {
 		
 		val source = Helper.createScheduleDailyTablePrintSetting(
 					new ScheduleDailyTableCode("01")

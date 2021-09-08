@@ -47,7 +47,7 @@ public class ScheduleDailyTableInkanRow {
 			throw new BusinessException("Msg_2085");
 		}
 		
-		if(notUseAtr == NotUseAtr.USE && titleList.isEmpty()) {
+		if(notUseAtr.isUse() && titleList.isEmpty()) {
 			throw new BusinessException("Msg_2222");
 		}
 		

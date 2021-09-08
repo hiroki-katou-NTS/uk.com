@@ -87,22 +87,26 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 10
-				//	- No: 2, 値: 20
+				//	- No: 2, 値: 10
+				//	- No: 4, 値 : 20
+				//	- No: 6, 値 : 60
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(10));
-							put(2, new BigDecimal(20));
+							put(2, BigDecimal.valueOf(10));
+							put(4, BigDecimal.valueOf(20));
+							put(6, BigDecimal.valueOf(60));
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 15
-				//	- No: 2, 値: 25
+				//	- No: 2, 値: 30
+				//	- No: 4, 値: 45
+				//	- No: 6, 値: 40
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(15));
-							put(2, new BigDecimal(25));
-						}});				
+							put( 2, BigDecimal.valueOf(30) );
+							put( 4, BigDecimal.valueOf(45) );
+							put( 6, BigDecimal.valueOf(40) );
+						}});
 				
 			}
 		};
@@ -112,21 +116,25 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 100
-				//	- No: 2, 値: 150
+				//	- No: 2, 値: 26
+				//	- No: 4, 値: 23
+				//	- No: 6, 値: 48
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(100));
-							put(2, new BigDecimal(150));
+							put( 2, BigDecimal.valueOf(26) );
+							put( 4, BigDecimal.valueOf(23) );
+							put( 6, BigDecimal.valueOf(48) );
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 200
-				//	- No: 2, 値: 250
+				//	- No: 2, 値: 37
+				//	- No: 4, 値: 43
+				//	- No: 6, 値: 52
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(200));
-							put(2, new BigDecimal(250));
+							put( 2, BigDecimal.valueOf(37) );
+							put( 4, BigDecimal.valueOf(43) );
+							put( 6, BigDecimal.valueOf(52) );
 						}});				
 				
 			}
@@ -137,21 +145,25 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 300
-				//	- No: 2, 値: 350
+				//	- No: 2, 値: 29
+				//	- No: 4, 値: 37
+				//	- No: 6, 値: 60
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(300));
-							put(2, new BigDecimal(350));
+							put( 2, BigDecimal.valueOf(29) );
+							put( 4, BigDecimal.valueOf(37) );
+							put( 6, BigDecimal.valueOf(60) );
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 400
-				//	- No: 2, 値: 450
+				//	- No: 2, 値: 42
+				//	- No: 4, 値: 34
+				//	- No: 6, 値: 56
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(400));
-							put(2, new BigDecimal(450));
+							put( 2, BigDecimal.valueOf(42) );
+							put( 4, BigDecimal.valueOf(34) );
+							put( 6, BigDecimal.valueOf(56) );
 						}});				
 				
 			}
@@ -176,7 +188,7 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 		//Act
 		List<WorkplaceCounterTimesNumberCounterResult> result = ScheduleDailyTableWorkplaceCounterService
 				.aggregate(require, workplaceCounter, targetTotalList);
-		
+
 		//Assert
 		assertThat(result)
 				.extracting(	d -> d.getYmd()
@@ -184,18 +196,24 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 							,	d -> d.getLicenseCls()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(10))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(20))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(15))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(25))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(100))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(150))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(250))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(300))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(350))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(400))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(450))
+						tuple(GeneralDate.ymd(2021, 01, 02), 2, LicenseClassification.NURSE, BigDecimal.valueOf(10))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 4, LicenseClassification.NURSE, BigDecimal.valueOf(20))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 6, LicenseClassification.NURSE, BigDecimal.valueOf(60))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 2, LicenseClassification.NURSE, BigDecimal.valueOf(30))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 4, LicenseClassification.NURSE, BigDecimal.valueOf(45))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 6, LicenseClassification.NURSE, BigDecimal.valueOf(40))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 2, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(26))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 4, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(23))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 6, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(48))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 2, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(37))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 4, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(43))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 6, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(52))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 2, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(29))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 4, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(37))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 6, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(60))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 2, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(42))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 4, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(34))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 6, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(56))
 				);
 	}
 	
@@ -326,21 +344,33 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 100
-				//	- No: 2, 値: 200
+				//	- No: 5, 値: 50
+				//	- No: 8, 値: 45
+				//	- No: 11, 値: 36
+				//	- No: 15, 値: 27
+				//	- No: 18, 値: 18
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(100));
-							put(2, new BigDecimal(200));
+							put(5, BigDecimal.valueOf(50));
+							put(8, BigDecimal.valueOf(45));
+							put(11, BigDecimal.valueOf(36));
+							put(15, BigDecimal.valueOf(27));
+							put(18, BigDecimal.valueOf(18));
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 300
-				//	- No: 2, 値: 400
+				//	- No: 5, 値: 25
+				//	- No: 8, 値: 29
+				//	- No: 11, 値: 21
+				//	- No: 15, 値: 26
+				//	- No: 18, 値: 28
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(300));
-							put(2, new BigDecimal(400));
+							put( 5, BigDecimal.valueOf(25) );
+							put( 8, BigDecimal.valueOf(29) );
+							put( 11, BigDecimal.valueOf(21) );
+							put( 15, BigDecimal.valueOf(26) );
+							put( 18, BigDecimal.valueOf(28) );
 						}});
 			}};
 		
@@ -364,10 +394,16 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 							,	d -> d.getLicenseCls()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(100))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE, BigDecimal.valueOf(300))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE, BigDecimal.valueOf(400))
+						tuple(GeneralDate.ymd(2021, 01, 02), 5, LicenseClassification.NURSE, BigDecimal.valueOf(50))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 8, LicenseClassification.NURSE, BigDecimal.valueOf(45))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 11, LicenseClassification.NURSE, BigDecimal.valueOf(36))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 15, LicenseClassification.NURSE, BigDecimal.valueOf(27))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 18, LicenseClassification.NURSE, BigDecimal.valueOf(18))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 5, LicenseClassification.NURSE, BigDecimal.valueOf(25))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 8, LicenseClassification.NURSE, BigDecimal.valueOf(29))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 11, LicenseClassification.NURSE, BigDecimal.valueOf(21))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 15, LicenseClassification.NURSE, BigDecimal.valueOf(26))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 18, LicenseClassification.NURSE, BigDecimal.valueOf(28))
 				);
 	}
 	
@@ -401,21 +437,37 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 200
-				//	- No: 2, 値: 230
+				//	- No: 1, 値: 111
+				//	- No: 2, 値: 33
+				//	- No: 5, 値: 15
+				//	- No: 7, 値: 37	
+				//	- No: 9, 値: 29
+				//	- No: 12, 値: 66
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(200));
-							put(2, new BigDecimal(230));
+							put(1, BigDecimal.valueOf(111));
+							put(2, BigDecimal.valueOf(33));
+							put(5, BigDecimal.valueOf(15));
+							put(7, BigDecimal.valueOf(37));
+							put(9, BigDecimal.valueOf(29));
+							put(12, BigDecimal.valueOf(66));
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 310
-				//	- No: 2, 値: 360
+				//	- No: 1, 値: 201
+				//	- No: 2, 値: 203
+				//	- No: 5, 値: 105
+				//	- No: 7, 値: 207
+				//	- No: 9, 値: 209
+				//	- No: 12, 値: 112
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(310));
-							put(2, new BigDecimal(360));
+							put( 1, BigDecimal.valueOf(201) );
+							put( 2, BigDecimal.valueOf(203) );
+							put( 5, BigDecimal.valueOf(105) );
+							put( 7, BigDecimal.valueOf(207) );
+							put( 9, BigDecimal.valueOf(209) );
+							put( 12, BigDecimal.valueOf(112) );
 						}});
 				
 			}
@@ -442,10 +494,18 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 							,	d -> d.getLicenseCls()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(200))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(230))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(310))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(360))
+						tuple(GeneralDate.ymd(2021, 01, 02), 1, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(111))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 2, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(33))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 5, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(15))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 7, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(37))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 9, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(29))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 12, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(66))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 1, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(201))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 2, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(203))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 5, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(105))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 7, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(207))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 9, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(209))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 12, LicenseClassification.NURSE_ASSIST, BigDecimal.valueOf(112))
 				);
 	}
 	
@@ -480,21 +540,25 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 			private static final long serialVersionUID = 1L;
 			{
 				//	2021.01.02
-				//	- No: 1, 値: 280
-				//	- No: 2, 値: 310
+				//	- No: 1, 値: 220
+				//	- No: 2, 値: 330
+				//	- No: 3, 値: 440
 				put(	GeneralDate.ymd(2021, 1, 2)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(280));
-							put(2, new BigDecimal(310));
+							put(1, BigDecimal.valueOf(220));
+							put(2, BigDecimal.valueOf(330));
+							put(3, BigDecimal.valueOf(440));
 						}});
 				
 				//	2021.01.03
-				//	- No: 1, 値: 285
-				//	- No: 2, 値: 330
+				//	- No: 1, 値: 250
+				//	- No: 2, 値: 168
+				//	- No: 3, 値: 145
 				put(	GeneralDate.ymd(2021, 1, 3)
 					,	new HashMap<Integer, BigDecimal>(){private static final long serialVersionUID = 1L;{
-							put(1, new BigDecimal(285));
-							put(2, new BigDecimal(330));
+							put(1, BigDecimal.valueOf(250));
+							put(2, BigDecimal.valueOf(168));
+							put(3, BigDecimal.valueOf(145));
 						}});
 			}
 		};
@@ -520,10 +584,12 @@ public class ScheduleDailyTableWorkplaceCounterServiceTest {
 							,	d -> d.getLicenseCls()
 							,	d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(280))
-					,	tuple(GeneralDate.ymd(2021, 01, 02), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(310))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(1), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(285))
-					,	tuple(GeneralDate.ymd(2021, 01, 03), Integer.valueOf(2), LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(330))
+						tuple(GeneralDate.ymd(2021, 01, 02), 1, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(220))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 2, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(330))
+					,	tuple(GeneralDate.ymd(2021, 01, 02), 3, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(440))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 1, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(250))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 2, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(168))
+					,	tuple(GeneralDate.ymd(2021, 01, 03), 3, LicenseClassification.NURSE_ASSOCIATE, BigDecimal.valueOf(145))
 				);
 	}
 
