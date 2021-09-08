@@ -599,7 +599,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                     service.deleteWorkLocation(self.workLocationCD()).done((result) => {
                                         let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
                                         index = _.min([self.workPlacesList().length - 2, index]);
-                                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function () {
+                                        vm.$blockui('invisible')
+                                        .then(() => {
                                             self.reloadData().done(() => {
                                                 if (index == -1) {
                                                     self.selectedWorkLocation(null);
@@ -610,9 +611,12 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                                 else {
                                                     self.findByIndex(index);
                                                 }
+                                                nts.uk.ui.dialog.info({ messageId: "Msg_16" })
+                                                .then(() => {
+                                                    vm.$blockui('clear');
+                                                });
                                             });
-                                        });
-
+                                        })
                                     }).fail((res: any) => {
                                         nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
                                             let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
@@ -629,7 +633,8 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                             service.deleteWorkLocation(self.workLocationCD()).done((result) => {
                                 let index = _.findIndex(self.workPlacesList(), ['workLocationCD', self.workLocationCD()]);
                                 index = _.min([self.workPlacesList().length - 2, index]);
-                                nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function () {
+                                vm.$blockui('invisible')
+                                .then(() => {
                                     self.reloadData().done(() => {
                                         if (index == -1) {
                                             self.selectedWorkLocation(null);
@@ -640,8 +645,12 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                                         else {
                                             self.findByIndex(index);
                                         }
+                                        nts.uk.ui.dialog.info({ messageId: "Msg_16" })
+                                        .then(() => {
+                                            vm.$blockui('clear');
+                                        });
                                     });
-                                });
+                                })
 
                             }).fail((res: any) => {
                                 nts.uk.ui.dialog.alert({ messageId: res.messageId }).then(function () {
