@@ -4,7 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSetting;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailAddress;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailAddressSet;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.NormalAutoClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import org.apache.commons.lang3.StringUtils;
@@ -112,8 +118,8 @@ public class KfnmtAlstExeMailSetting extends ContractUkJpaEntity implements Seri
                         ? new MailSettings(
                         subject,
                         text,
-                        mailSettingBcc,
                         mailSettingCc,
+                        mailSettingBcc,
                         mailReply)
                         : null),
                 Optional.ofNullable(StringUtils.isNotEmpty(this.senderAddress) ? new MailAddress(senderAddress) : null),
