@@ -21,7 +21,7 @@
 }
 
 .row {
-	height: 58px;
+	height: 56px;
 }
 
 #single-list-dataSource tr td {
@@ -93,7 +93,7 @@ tr.row.display{
 	margin-top: 3px;
 }
 #swap-list{
-	margin-top: -12px;
+	margin-top: -14px;
 }
 .text{
 	margin-top: -2px;
