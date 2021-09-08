@@ -2867,6 +2867,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     lstEmployee: lstEmployee,
                     selectFormat:  self.formatCodes()
                 };
+				setShared("displayFormat", self.displayFormat());
                 setShared("paramToGetError", param);
                 setShared("errorValidate", errorValidateScreeen);
                 setShared("messageKdw003a", (_.isEmpty(messageAlert) || !_.isString(messageAlert)) ? null : messageAlert);

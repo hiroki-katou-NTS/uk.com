@@ -743,22 +743,28 @@ public class DailyPerformanceCorrectionProcessor {
 											}
 										}
 									}
-									if(opOuenWorkTimeSheetOfDailyAttendanceDto.isPresent()) {
+									if(opOuenWorkTimeSheetOfDailyAttendanceDto.isPresent() &&
+											opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().isPresent()) {
 										switch (workFrameNo) {
 											case 1:
-												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWork().getWorkCD1();
+												if (opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD1() != null)
+												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD1();
 												break;
 											case 2:
-												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWork().getWorkCD2();
+												if (opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD2() != null)
+												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD2();
 												break;
 											case 3:
-												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWork().getWorkCD3();
+												if (opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD3() != null)
+												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD3();
 												break;
 											case 4:
-												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWork().getWorkCD4();
+												if (opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD4() != null)
+												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD4();
 												break;
 											case 5:
-												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWork().getWorkCD5();
+												if (opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD5() != null)
+												initValue = opOuenWorkTimeSheetOfDailyAttendanceDto.get().getWorkContent().getWorkOpt().get().getWorkCD5();
 												break;
 											default:
 												break;
