@@ -20,7 +20,7 @@ public class JpaPublicHolidayCarryForwardDataRepo extends JpaRepository implemen
 
 	private static final String REMOVE_BY_SID_YM = "DELETE FROM KshdtHdpubRem a"
 			+ " WHERE a.pk.employeeId = :employeeId"
-			+"AND a.pk.tagetmonth >= :tagetmonth ";
+			+" AND a.pk.tagetmonth >= :tagetmonth ";
 	
 	
 	private static final String REMOVE_BY_SID = "DELETE FROM KshdtHdpubRem a"

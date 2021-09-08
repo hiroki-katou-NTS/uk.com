@@ -23,14 +23,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaTempChildCareManagementRepository extends JpaRepository implements TempChildCareManagementRepository{
 
 	private static final String SELECT_BY_PERIOD = "SELECT a FROM KshdtInterimChildCare a "
-			+ "WHERE a.pk.sID = :employeeId "
-			+ "AND a.pk.ymd >= :startYmd "
-			+ "AND a.pk.ymd <= :endYmd "
-			+ "ORDER BY a.pk.ymd ";
+			+ " WHERE a.pk.sID = :employeeId "
+			+ " AND a.pk.ymd >= :startYmd "
+			+ " AND a.pk.ymd <= :endYmd "
+			+ " ORDER BY a.pk.ymd ";
 
 	private static final String SELECT_BY_EMPLOYEEID_YMD = "SELECT a FROM KshdtInterimChildCare a"
 			+ " WHERE a.pk.sID = :employeeID"
-			+ "AND a.pk.ymd =  : ymd "
+			+ " AND a.pk.ymd =  : ymd "
 			+ " ORDER BY a.pk.ymd ASC";
 
 	private static final String REMOVE_BY_SID_YMD = "DELETE FROM KshdtInterimChildCare a"
@@ -39,9 +39,9 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 
 	
 	private static final String REMOVE_BY_SID_PERIOD = "DELETE FROM KshdtInterimChildCare a"
-			+ "WHERE a.pk.sID = :employeeId "
-			+ "AND a.pk.ymd >= :startYmd "
-			+ "AND a.pk.ymd <= :endYmd ";
+			+ " WHERE a.pk.sID = :sid "
+			+ " AND a.pk.ymd >= :startYmd "
+			+ " AND a.pk.ymd <= :endYmd ";
 	
 	/** 検索 */
 	@Override
@@ -114,7 +114,7 @@ public class JpaTempChildCareManagementRepository extends JpaRepository implemen
 	
 	public void deleteByPeriod(String sid, DatePeriod period){
 		this.getEntityManager().createQuery(REMOVE_BY_SID_PERIOD)
-		.setParameter("employeeId", sid)
+		.setParameter("sid", sid)
 		.setParameter("startYmd", period.start())
 		.setParameter("endYmd", period.end());
 	}
