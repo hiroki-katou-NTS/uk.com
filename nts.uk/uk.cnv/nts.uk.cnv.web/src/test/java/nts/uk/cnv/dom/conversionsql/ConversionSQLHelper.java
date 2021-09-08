@@ -26,6 +26,7 @@ import nts.uk.cnv.core.dom.conversionsql.TableFullName;
 import nts.uk.cnv.core.dom.conversionsql.WhereSentence;
 
 public class ConversionSQLHelper {
+	private static final String programId = "CNV001";
 
 	private static final List<ColumnExpression> expressions = Arrays.asList(
 			new ColumnExpression("SID"),
@@ -48,7 +49,8 @@ public class ConversionSQLHelper {
 					.filter(ce -> !ce.sql().equals("NEWID()"))
 					.map(ce -> ce.sql())
 					.collect(Collectors.toList()),
-				DatabaseType.sqlserver.spec()
+				DatabaseType.sqlserver.spec(),
+				programId
 			);
 	}
 
@@ -62,7 +64,8 @@ public class ConversionSQLHelper {
 					.filter(ce -> !ce.sql().equals("NEWID()"))
 					.map(ce -> ce.sql())
 					.collect(Collectors.toList()),
-				DatabaseType.sqlserver.spec()
+				DatabaseType.sqlserver.spec(),
+				programId
 			);
 	}
 

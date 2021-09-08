@@ -18,15 +18,18 @@ public class ConversionUpdateSQL implements ConversionSQL {
 	private FromSentence from;
 	private List<WhereSentence> where;
 	private List<String> groupingColumns;
+	private String programId;
 
 	public ConversionUpdateSQL(
 			TableFullName table,
 			List<WhereSentence> where,
-			DatabaseSpec spec) {
+			DatabaseSpec spec,
+			String programId) {
 		this.update = new UpdateSentence(table);
 		this.from = new FromSentence();
 		this.where = where;
 		this.groupingColumns = new ArrayList<>();
+		this.programId = programId;
 
 		Map<ColumnName, ColumnExpression> fixedColumns = fixedColumns(spec);
 		fixedColumns.entrySet().stream().forEach(fixedColumn -> {
@@ -84,7 +87,7 @@ public class ConversionUpdateSQL implements ConversionSQL {
 		String sysDatetime = spec.sysDatetime();
 		 String ccd = "''";
 		String scd = "''";
-		String pg = "'" + programId() + "'";
+		String pg = "'" + programId + "'";
 		return Collections.unmodifiableMap( new LinkedHashMap<ColumnName, ColumnExpression>() {
 		    {
 		        put (new ColumnName("UPD_DATE"), new ColumnExpression("", sysDatetime));
@@ -93,9 +96,5 @@ public class ConversionUpdateSQL implements ConversionSQL {
 		        put (new ColumnName("UPD_PG"), new ColumnExpression("", pg));
 		        put (new ColumnName("EXCLUS_VER"), new ColumnExpression("", "(EXCLUS_VER + 1)"));
 		    }} );
-	}
-	
-	protected String programId() {
-		return "CNV001";
 	}
 }

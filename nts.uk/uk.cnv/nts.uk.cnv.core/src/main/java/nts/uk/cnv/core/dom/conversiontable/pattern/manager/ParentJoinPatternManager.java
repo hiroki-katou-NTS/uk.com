@@ -105,7 +105,8 @@ public class ParentJoinPatternManager {
 			ConversionSQL cnvSql = new ConversionInsertSQL(
 					mappingTableName,
 					ct.getWhereList(),
-					info.getDatebaseType().spec()
+					info.getDatebaseType().spec(),
+					""
 				);
 
 			cnvSql.addJoin(join);

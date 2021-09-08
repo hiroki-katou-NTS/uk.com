@@ -43,6 +43,8 @@ import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
 @Stateless
 public class ConversionTableService {
 
+	private static final String programId = "CNV001";
+	
 	@Inject
 	ConversionCategoryTableRepository categoryRepo;
 
@@ -101,7 +103,7 @@ public class ConversionTableService {
 
 		ConversionTable conversonTable = createConversionTable(
 				onColumn, source, info, dto, info.getType().getTagetAlias(), record.isRemoveDuplicate());
-		ConversionSQL sql = conversonTable.createConversionSql();
+		ConversionSQL sql = conversonTable.createConversionSql(programId);
 
 		return sql.build(info.getDatebaseType().spec());
 	}
@@ -123,7 +125,7 @@ public class ConversionTableService {
 
 		ConversionTable conversonTable = createConversionTable(
 				onColumn, source, info, dto, info.getType().getTagetAlias(), record.isRemoveDuplicate());
-		ConversionSQL sql = conversonTable.createUpdateConversionSql();
+		ConversionSQL sql = conversonTable.createUpdateConversionSql(programId);
 
 		return sql.build(info.getDatebaseType().spec());
 	}
