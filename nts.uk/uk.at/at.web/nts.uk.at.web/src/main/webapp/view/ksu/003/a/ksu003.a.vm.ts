@@ -2148,13 +2148,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 								} else if (detail.columnKey === "endTime1") {
 									if (time == "") return;
-									ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
+									ruler.extend(detail.rowIndex, `lgc${detail.rowIndex}`, null, (time / 5 - self.dispStart));
 								} else if (detail.columnKey === "startTime2" && timeChart2 != null) {
 									if (time == "") return;
 									ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
 								} else if (detail.columnKey === "endTime2" && timeChart2 != null) {
 									if (time == "") return;
-									ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, ((time / 5 - self.dispStart) > timeRangeLimit ? timeRangeLimit : ((time / 5 - self.dispStart))));
+									ruler.extend(detail.rowIndex, `rgc${detail.rowIndex}`, null, (time / 5 - self.dispStart));
 								}
 
 							}

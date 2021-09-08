@@ -232,10 +232,10 @@ module nts.uk.at.view.ksu003.a.model {
 	export function calcAllTime(schedule: any, lstTime: any, timeRangeLimit: any, dispStart: any, dispStartHours: any) {
 		// Tính tổng thời gian làm việc
 		let totalTimeAll = 0, totalTimeWork = 0,
-			start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5, dispStartHours)) : 0,
-			end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5, dispStartHours)) : 0,
-			start2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime2 != null && schedule.workScheduleDto.startTime2 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.startTime2, timeRangeLimit * 5, dispStartHours)) : 0,
-			end2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime2 != null && schedule.workScheduleDto.endTime2 != 0) ? (model.checkTimeOfChart(schedule.workScheduleDto.endTime2, timeRangeLimit * 5, dispStartHours)) : 0;
+			start1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime1 != null && schedule.workScheduleDto.startTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.startTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
+			end1 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime1 != null && schedule.workScheduleDto.endTime1 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.endTime1, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
+			start2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.startTime2 != null && schedule.workScheduleDto.startTime2 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.startTime2, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0,
+			end2 = (schedule.workScheduleDto != null && schedule.workScheduleDto.endTime2 != null && schedule.workScheduleDto.endTime2 != 0) ? (model.checkTimeChart(schedule.workScheduleDto.endTime2, timeRangeLimit * 5 + dispStart *5, dispStartHours)) : 0;
 
 		lstTime = _.sortBy(lstTime, [function(o: any) { return o.end; }]).reverse();
 		lstTime = _.uniqWith(lstTime, function(arrVal: any, othVal: any) {
