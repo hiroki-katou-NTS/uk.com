@@ -5,7 +5,7 @@ module nts.uk.ui.at.kdw013.c {
     const DATE_TIME_FORMAT = 'YYYY-MM-DDT00:00:00.000\\Z';
 
     const style = `.edit-event {
-        width: 370px;
+        width: 380px;
     }
     .edit-event .header {
         box-sizing: border-box;
@@ -83,8 +83,8 @@ module nts.uk.ui.at.kdw013.c {
     .edit-event .time-range-control:not(.error) input.nts-input {
         border: 1px solid #999 !important;
     }
-    .edit-event table td {    
-        max-width: 80px;
+    .edit-event table tr td:first-child {    
+        max-width: 90px;
         line-break: anywhere;
     }
 
@@ -222,7 +222,7 @@ module nts.uk.ui.at.kdw013.c {
             </div>
             <table>
                 <colgroup>
-                    <col width="80px" />
+                    <col width="90px" />
                 </colgroup>
                 <tbody>
                     <tr>
