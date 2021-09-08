@@ -52,12 +52,26 @@ public class WorkspaceSql {
 	}
 	
 	/**
+	 * 古い一時テーブルをすべて削除する
+	 * @param require
+	 * @param context
+	 * @param jdbcProxy
+	 */
+	public static void cleanOldTables(Require require, ExecutionContext context, JdbcProxy jdbcProxy) {
+		
+		require.getAllImportingDomains().forEach(domain -> {
+			val tableName = tableName(context, domain);
+			TemporaryTable.dropTable(jdbcProxy, tableName.asRevised());
+			TemporaryTable.dropTable(jdbcProxy, tableName.asCanonicalized());
+		});
+	}
+	
+	/**
 	 * 編集済み用のCREATE TABLEを実行する
 	 * @param require
 	 * @return
 	 */
 	public void createTableRevised() {
-		TemporaryTable.dropTable(jdbcProxy, tableName().asRevised());
 		String sql = createTable(tableName().asRevised());
 		jdbcProxy.query(sql).execute();
 	}
@@ -68,7 +82,6 @@ public class WorkspaceSql {
 	 * @return
 	 */
 	public void createTableCanonicalized() {
-		TemporaryTable.dropTable(jdbcProxy, tableName().asCanonicalized());
 		String sql = createTable(tableName().asCanonicalized());
 		jdbcProxy.query(sql).execute();
 	}
@@ -134,9 +147,12 @@ public class WorkspaceSql {
 			
 			String pkName = "PK_" + tableName;
 			
-			String keys = workspace.getItemsPk().stream()
-					.map(item -> item.getName())
-					.collect(Collectors.joining(", "));
+			// 正準化時にうまれる項目を主キーに指定できない（編集時にはNULLである）ので、一旦ROW_NOを固定で主キーとする
+			// 必要なら主キーではなくインデックスにすることを検討する
+			
+			//String keys = workspace.getItemsPk().stream()
+			//		.map(item -> item.getName())
+			//		.collect(Collectors.joining(", "));
 			
 			sql.append("constraint ").append(pkName).append(" primary key nonclustered (").append(CommonColumns.ROW_NO.name).append(")");
 		}
@@ -153,12 +169,7 @@ public class WorkspaceSql {
 			sql.append(item.getName()).append(" ");
 			
 			dataType(item.getDataTypeConfig());
-			
-			if (isPK) {
-				sql.append(" not null,");
-			} else {
-				sql.append(" null,");
-			}
+			sql.append(" null,");
 		}
 		
 		void dataType(DataTypeConfiguration config) {
@@ -342,6 +353,10 @@ public class WorkspaceSql {
 	}
 	
 	private WorkspaceTableName tableName() {
+		return tableName(context, domain);
+	}
+	
+	private static WorkspaceTableName tableName(ExecutionContext context, ImportingDomain domain) {
 		return new WorkspaceTableName(context, domain.getName());
 	}
 }

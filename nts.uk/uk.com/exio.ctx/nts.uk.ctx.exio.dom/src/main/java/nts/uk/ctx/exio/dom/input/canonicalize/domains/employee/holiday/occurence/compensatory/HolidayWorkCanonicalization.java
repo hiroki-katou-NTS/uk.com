@@ -22,8 +22,9 @@ public class HolidayWorkCanonicalization extends OccurenceHolidayCanonicalizatio
 			ExecutionContext context, IntermediateResult interm) {
 		
 		return interm
+				.addCanonicalized(CanonicalItem.of(100, 0))
 				// 代休消化区分
-				.addCanonicalized(CanonicalItem.of(100, 0));
+			    .addCanonicalized(CanonicalItem.of(103, 0));
 	}
 	
 	public static interface RequireAdjust {

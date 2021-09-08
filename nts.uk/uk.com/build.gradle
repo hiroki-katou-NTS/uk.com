@@ -1755,6 +1755,7 @@ project (':exio.ctx:nts.uk.ctx.exio.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':exio.ctx:nts.uk.ctx.exio.dom')
+		compile group: 'cnv.core', name: 'nts.uk.cnv.core', version: version
 	}
 }
 

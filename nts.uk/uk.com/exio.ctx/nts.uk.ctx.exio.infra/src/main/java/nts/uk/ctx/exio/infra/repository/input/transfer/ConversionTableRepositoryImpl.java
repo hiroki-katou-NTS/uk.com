@@ -11,12 +11,14 @@ import nemunoki.oruta.shr.tabledefinetype.databasetype.DatabaseType;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.core.dom.conversiontable.ConversionCodeType;
 import nts.uk.cnv.core.dom.conversiontable.ConversionInfo;
+import nts.uk.cnv.core.dom.conversiontable.ConversionRecord;
 import nts.uk.cnv.core.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.core.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.core.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionRecord;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionSources;
+import nts.uk.cnv.core.infra.entity.conversiontable.ScvmtConversionTable;
 import nts.uk.ctx.exio.dom.input.transfer.ConversionTableRepository;
-import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionSources;
-import nts.uk.ctx.exio.infra.entity.input.transfer.conversion.ScvmtConversionTable;
 
 @Stateless
 public class ConversionTableRepositoryImpl extends JpaRepository implements ConversionTableRepository {
@@ -33,6 +35,22 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 			.get();
 	}
 	
+	@Override
+	public List<ConversionRecord> getRecords(String category, String tableName) {
+		String query =
+				  "SELECT c FROM ScvmtConversionRecord c"
+				+ " WHERE c.pk.categoryName = :category"
+				+ " AND c.pk.targetTableName = :table";
+		List<ScvmtConversionRecord> entity = this.queryProxy().query(query, ScvmtConversionRecord.class)
+			.setParameter("category", category)
+			.setParameter("table", tableName)
+			.getList();
+
+		return entity.stream()
+			.map(e -> e.toDomain())
+			.collect(Collectors.toList());
+	}
+	
 	private List<String> getPkColumns(String tableName) {
 //		String sql = "SELECT cd FROM ScvmtErpColumnDesign cd"
 //				+ " WHERE cd.scvmtErpColumnDesignPk.tableName = :tableName"
@@ -41,7 +59,7 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 //				.setParameter("tableName", tableName)
 //				.getList(cd -> cd.getName());
 		
-		//TODO fix
+		//TODO fix Update取り込みの際に使用する
 		return new ArrayList<>();
 	}
 
@@ -50,28 +68,30 @@ public class ConversionTableRepositoryImpl extends JpaRepository implements Conv
 		String query =
 				  "SELECT c FROM ScvmtConversionTable c"
 				+ " WHERE c.pk.categoryName = :category";
-		List<ScvmtConversionTable> entities = this.queryProxy().query(query, ScvmtConversionTable.class)
+		List<ScvmtConversionTable> converionTables = this.queryProxy().query(query, ScvmtConversionTable.class)
 			.setParameter("category", domainName)
 			.getList();
 		
 		DatabaseType type = DatabaseType.parse(this.database());
 		
-		val entitiesByTable = entities.stream()
-				.collect(Collectors.groupingBy(e -> e.pk.getTargetTableName()));
+		List<String> domainTables = converionTables.stream()
+				.map(e -> e.pk.getTargetTableName())
+				.distinct()
+				.collect(Collectors.toList());
 		
 		List<ConversionTable> results = new ArrayList<>();
+		ConversionInfo info = new ConversionInfo(type, "", "", "" , "", "", "", "", cct);
 		
-		for (val entry : entitiesByTable.entrySet()) {
-			
-			String targetTableName = entry.getKey();
-			val entitiesOfTable = entry.getValue();
-			
-			ConversionInfo info = new ConversionInfo(type, "", "", "" , "", "", "", "", cct);
-			List<OneColumnConversion> columns = entitiesOfTable.stream()
-					.map(entity -> entity.toDomain(info, info.getJoin(source)))
-					.collect(Collectors.toList());
-			
-			results.add(ScvmtConversionTable.toDomain(targetTableName, info, columns, source));
+		for (String targetTableName : domainTables) {
+			val records = getRecords(domainName, targetTableName);
+			for(ConversionRecord record : records) {
+				List<OneColumnConversion> columns = converionTables.stream()
+						.filter(ct -> ct.pk.getTargetTableName().equals(targetTableName) && ct.pk.getRecordNo() == record.getRecordNo())
+						.map(ct -> ct.toDomain(info, info.getJoin(source)))
+						.collect(Collectors.toList());
+
+				results.add(ScvmtConversionTable.toDomain(targetTableName, info, columns, source, record));
+			}
 		}
 
 		return results;

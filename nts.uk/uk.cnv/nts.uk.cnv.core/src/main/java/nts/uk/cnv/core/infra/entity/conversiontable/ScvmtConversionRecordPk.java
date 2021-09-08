@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.transfer.conversion;
+package nts.uk.cnv.core.infra.entity.conversiontable;
 
 import java.io.Serializable;
 
@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScvmtConversionTablePk implements Serializable{
+public class ScvmtConversionRecordPk implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "CATEGORY_NAME")
@@ -24,7 +25,4 @@ public class ScvmtConversionTablePk implements Serializable{
 
 	@Column(name = "RECORD_NO")
 	private int recordNo;
-
-	@Column(name = "TARGET_COLUMN_NAME")
-	private String targetColumnName;
 }

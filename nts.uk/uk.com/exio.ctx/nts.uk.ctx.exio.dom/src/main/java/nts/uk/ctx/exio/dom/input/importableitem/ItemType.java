@@ -71,8 +71,8 @@ public enum ItemType {
 					.mapLeft(ex -> new ErrorMessage("数値ではありません。"));
 		case DATE:
 			if (StringUtil.isNullOrEmpty(value, false)) return Either.right(null);
-			return Either.tryCatch(() -> GeneralDate.fromString(value, "yyyyMMdd"), DateTimeParseException.class)
-					.mapLeft(ex -> new ErrorMessage("日付データは8桁の整数(YYYYMMDD)の形式にしてください。"));
+			return Either.tryCatch(() -> GeneralDate.fromString(value, "yyyy/MM/dd"), DateTimeParseException.class)
+					.mapLeft(ex -> new ErrorMessage("日付データはYYYY/MM/DDの形式にしてください。"));
 		case STRING:
 			return Either.right(value);
 		default:

@@ -371,7 +371,10 @@ public class EmployeeBasicCanonicalization implements DomainCanonicalization {
 
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return source;
+		return source
+				.addItem("SID")
+				.addItem("PID")
+				.addItem("USER_ID");
 	}
 
 	@Override

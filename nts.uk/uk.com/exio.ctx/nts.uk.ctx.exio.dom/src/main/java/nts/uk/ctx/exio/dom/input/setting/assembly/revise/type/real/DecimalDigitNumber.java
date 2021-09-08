@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * 少数桁数
+ * 小数桁数
  */
 @IntegerMaxValue(10)
 @IntegerMinValue(0)
