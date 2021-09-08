@@ -160,6 +160,7 @@ module nts.uk.com.view.cas014.b {
         createNewRoleSetPerson() {
             let self = this;
             nts.uk.ui.errors.clearAll();
+            self.backFromCDL009 = false;
             self.selectedEmployeeCode(null);
         }
 
