@@ -1701,6 +1701,14 @@ module nts.uk.ui.at.kdw013.calendar {
                             return;
                         }
                         
+                        const events = vm.calendar.getEvents();
+                        
+                        let isHasTask = _.find(events, (e) => { return moment(e.start).isSameOrBefore(moment(info.date)) && moment(e.end).isSameOrAfter(moment(info.date)) });
+                        
+                        if (isHasTask) {
+                            return;
+                        }
+                        
 
                         const event = vm.calendar
                             .addEvent({
