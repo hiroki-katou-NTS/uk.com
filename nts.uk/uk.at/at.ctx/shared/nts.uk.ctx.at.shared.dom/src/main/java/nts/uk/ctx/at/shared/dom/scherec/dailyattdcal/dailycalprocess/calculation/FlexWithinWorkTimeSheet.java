@@ -872,7 +872,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 		if (!integrationOfWorkTime.getFlexWorkSetting().isPresent()) return deductionTimeSheet;
 		// フレックス勤務設定
 		FlexWorkSetting flexWorkSet = integrationOfWorkTime.getFlexWorkSetting().get();
-		if (!flexWorkSet.isDeductGoOutWithinCoreFromWorkTime()) return deductionTimeSheet;
+		if (flexWorkSet.isDeductGoOutWithinCoreFromWorkTime()) return deductionTimeSheet;
 		TimeSheet coreTimeSetting = flexWorkSet.getCoreTimeSetting().getCoreTimeSheet();
 		// コアタイム時間帯
 		TimeSpanForDailyCalc coreTimeSheet = new TimeSpanForDailyCalc(
