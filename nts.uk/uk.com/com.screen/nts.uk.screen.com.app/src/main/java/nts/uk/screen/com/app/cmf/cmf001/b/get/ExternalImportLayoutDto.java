@@ -15,61 +15,63 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Value
 public class ExternalImportLayoutDto {
-	
+
 	/** 項目NO */
 	private int itemNo;
-	
+
 	/** 項目名 */
 	private String name;
-	
+
 	/** 必須項目 */
 	private boolean required;
-	
-	/** 削除可否 */
-	private boolean deletable;
-	
+
 	/** 項目型 */
 	private String type;
-	
+
 	/** 受入元 */
 	private String source;
-	
-	/** 詳細設定の有無 */
-	private boolean alreadyDetail;
-	
-	public static ExternalImportLayoutDto fromDomain(Require require, ExternalImportCode settingCode, ImportingDomainId domainId, ImportingItemMapping domain) {
+
+
+	public static ExternalImportLayoutDto fromDomain(Require require,
+			ExternalImportCode settingCode,
+			ImportingDomainId domainId,
+			ImportingItemMapping domain) {
+
 		return new ExternalImportLayoutDto(
-				domain.getItemNo(), 
+				domain.getItemNo(),
 				getItemName(require, domainId, domain),
-				checkRequired(require, domainId, domain), 
-				checkDeletable(require, domainId, domain), 
+				checkRequired(require, domainId, domain),
 				getItemType(require, domainId, domain),
-				checkImportSource(domain),
-				checkAlreadyDetail(require, settingCode, domain));
+				checkImportSource(domain));
 	}
-	
+
 	private static String getItemName(Require require, ImportingDomainId domainId, ImportingItemMapping mapping) {
 		val importableItems = require.getImportableItems(domainId);
 		return importableItems.stream()
 				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemName();
 	}
-	
+
 	private static String getItemType(Require require, ImportingDomainId domainId, ImportingItemMapping mapping) {
 		val importableItems = require.getImportableItems(domainId);
 		return importableItems.stream()
 				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).getItemType().getResourceText();
 	}
-	
+
 	private static boolean checkRequired(Require require, ImportingDomainId domainId, ImportingItemMapping mapping) {
 		val importableItems = require.getImportableItems(domainId);
-		return importableItems.stream()
-				.filter(i -> i.getItemNo() == mapping.getItemNo()).collect(Collectors.toList()).get(0).isRequired();
+
+		boolean required = importableItems.stream()
+								.filter(i -> i.getItemNo() == mapping.getItemNo())
+								.collect(Collectors.toList()).get(0).isRequired();
+
+		boolean primary = importableItems.stream()
+								.filter(i -> i.getItemNo() == mapping.getItemNo())
+								.collect(Collectors.toList()).get(0).isPrimaryKey();
+
+
+		return required || primary;
 	}
-	
-	private static boolean checkDeletable(Require require, ImportingDomainId domainId, ImportingItemMapping mapping) {
-		return !checkRequired(require, domainId, mapping);
-	}
-	
+
 	private static String checkImportSource(ImportingItemMapping mapping) {
 		val optCsvColumnNo = mapping.getCsvColumnNo();
 		val optFixedValue = mapping.getFixedValue();
@@ -83,13 +85,9 @@ public class ExternalImportLayoutDto {
 			return "未設定";
 		}
 	}
-	
-	private static boolean checkAlreadyDetail(Require require, ExternalImportCode settingCode, ImportingItemMapping mapping) {
-		return require.getRevise(AppContexts.user().companyId(), settingCode, mapping.getItemNo()).isPresent();
-	}
-	
+
+
 	public static interface Require {
 		List<ImportableItem> getImportableItems(ImportingDomainId domainId);
-		Optional<ReviseItem> getRevise(String companyId, ExternalImportCode settingCode, int itemNo);
 	}
 }

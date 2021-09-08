@@ -29,8 +29,11 @@ module nts.uk.com.cmf001.x {
 		// エラー出力
 		isPreparedSuccess: KnockoutObservable<boolean> = ko.observable();
 
+		// 実行エラー有無
+		executionError: KnockoutObservable<boolean> = ko.observable(false);
+
 		// 処理中フラグ
-		isProcessing: KnockoutObservable<boolean> = ko.observable(false);
+		processing: KnockoutObservable<boolean> = ko.observable(false);
 
 		constructor() {
 			super();
@@ -85,6 +88,11 @@ module nts.uk.com.cmf001.x {
 										requestCount++;
 										// エラーの問い合わせ
 										return ajax("/exio/input/errors/" + nts.uk.ui._viewModel.content.selectedSettingCode() + "/" + requestCount).done((result) => {
+											// 実行エラーがないかチェック
+											if(result.execution){
+												// 実行エラーあり
+												nts.uk.ui._viewModel.content.executionError(true);
+											}
 											// 取得したエラーを蓄積
 											nts.uk.ui._viewModel.content.errorMessage(nts.uk.ui._viewModel.content.errorMessage() + result.text);
 										});
@@ -150,32 +158,31 @@ module nts.uk.com.cmf001.x {
 				nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
 				nts.uk.ui._viewModel.content.processEnd();
 			})
-
 		}
 
 		processStart(){
 			nts.uk.ui._viewModel.content.errorMessage("");
-			nts.uk.ui._viewModel.content.messageBox("");			
-			nts.uk.ui._viewModel.content.isProcessing(true);
+			nts.uk.ui._viewModel.content.messageBox("");
+			nts.uk.ui._viewModel.content.executionError(false);
+			nts.uk.ui._viewModel.content.processing(true);
 		}
 
 		processEnd(){
-			nts.uk.ui._viewModel.content.isProcessing(false);
+			nts.uk.ui._viewModel.content.processing(false);
 		}
 		
-
 		canPrepare =  ko.computed(() => 
 		  // ファイルが指定されていること
 			this.csvFileName() && 
 			// 処理中でないこと
-			!this.isProcessing());
+			!this.processing());
 		
 		canExecute = ko.computed(() => 
 			// ファイルがアップロードされていること
 			this.csvFileId() && 
-			// エラーメッセージが発生していないこと
-			!this.errorMessage() && 
 			// 処理中でないこと
-			!this.isProcessing());
+			!this.processing() && 
+			// 実行エラーが発生していないこと
+			!nts.uk.ui._viewModel.content.executionError());
 	}
 }

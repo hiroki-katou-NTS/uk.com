@@ -62,7 +62,7 @@ public class TempAbsenceHistoryCanonicalization extends EmployeeHistoryCanonical
 	@Override
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
-				new DomainDataColumn("社員コード", DataType.STRING),
+				DomainDataColumn.SID,
 				new DomainDataColumn("開始日", DataType.DATE),
 				new DomainDataColumn("終了日", DataType.DATE)
 		);

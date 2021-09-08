@@ -14,6 +14,25 @@
   /* max-width: 1000px; */
 }
 
+#importDomain{
+ width:250px;
+}
+
+#importMode{
+ width:400px;
+}
+
+#settingName{
+ width:300px;
+}
+
+#itemNameRow{
+ width:27px;
+}
+
+#importStartRow{
+ width:27px;
+}
 .cell-left {
   width: 100px;
 }
@@ -24,7 +43,7 @@
 
 .table .domain .cell-left {
   width: 180px;
-} 
+}
 .sidebar-content {
   height: 100%;
 }

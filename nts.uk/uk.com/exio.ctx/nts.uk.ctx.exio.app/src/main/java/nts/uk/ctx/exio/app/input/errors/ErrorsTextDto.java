@@ -4,7 +4,8 @@ import lombok.Value;
 
 @Value
 public class ErrorsTextDto {
-
+	
+	boolean execution;
 	int pageNo;
 	int errorsCount;
 	String text;

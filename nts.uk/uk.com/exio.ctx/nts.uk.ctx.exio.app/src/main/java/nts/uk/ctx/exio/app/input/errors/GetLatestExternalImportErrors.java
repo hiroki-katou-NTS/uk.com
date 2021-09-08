@@ -56,7 +56,7 @@ public class GetLatestExternalImportErrors {
 		int startErrorNo = MAX_PAGE_SIZE * (pageNo - 1);
 		val errors = errorsRepo.find(context, startErrorNo, MAX_PAGE_SIZE);
 		
-		return new ErrorsTextDto(pageNo, errors.count(), errorsToText(context, errors));
+		return new ErrorsTextDto(errors.isExecution(), pageNo, errors.count(), errorsToText(context, errors));
 	}
 	
 	private String errorsToText(ExecutionContext context, ExternalImportErrors errors) {

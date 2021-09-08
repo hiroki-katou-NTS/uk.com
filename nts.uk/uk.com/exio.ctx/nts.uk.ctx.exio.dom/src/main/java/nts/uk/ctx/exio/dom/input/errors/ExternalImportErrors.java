@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
@@ -21,6 +22,13 @@ public class ExternalImportErrors {
 	
 	public int count() {
 		return errors.size();
+	}
+	
+	public boolean isExecution() {
+		return errors.stream()
+				.filter(e -> e.isExecution() == true)
+				.collect(Collectors.toList())
+				.size() > 0;
 	}
 	
 	public String toText(RequireToText require, ExecutionContext context) {

@@ -39,11 +39,11 @@ public class ConversionTable {
 
 	private boolean removeDuplicate;
 
-	public ConversionSQL createConversionSql() {
+	public ConversionSQL createConversionSql(String programId) {
 		val newWhereList = new ArrayList<WhereSentence>(whereList);
 		addPeriodCondition(spec, newWhereList);
 
-		ConversionSQL result = new ConversionInsertSQL(targetTableName, newWhereList);
+		ConversionSQL result = new ConversionInsertSQL(targetTableName, newWhereList, spec, programId);
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
 			result = oneColumnConversion.apply(targetTableName.getAlias(), result, removeDuplicate);
@@ -52,11 +52,11 @@ public class ConversionTable {
 		return result;
 	}
 
-	public ConversionSQL createUpdateConversionSql() {
+	public ConversionSQL createUpdateConversionSql(String programId) {
 		val newWhereList = new ArrayList<WhereSentence>(whereList);
 		addPeriodCondition(spec, newWhereList);
 
-		ConversionSQL result = new ConversionUpdateSQL(targetTableName, newWhereList);
+		ConversionSQL result = new ConversionUpdateSQL(targetTableName, newWhereList, spec, programId);
 		result.addJoin(Join.createMain(targetTableName));
 
 		for(OneColumnConversion oneColumnConversion : conversionMap) {

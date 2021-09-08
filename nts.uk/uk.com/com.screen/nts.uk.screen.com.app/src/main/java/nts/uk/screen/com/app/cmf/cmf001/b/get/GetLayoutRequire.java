@@ -23,38 +23,34 @@ import nts.uk.screen.com.app.cmf.cmf001.b.get.GetLayout.Require;
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class GetLayoutRequire {
-	
+
 	@Inject
 	private ImportableItemsRepository importableItemsRepo;
-	
+
 	@Inject
 	private ExternalImportSettingRepository externalImportSettingRepo;
-	
+
 	@Inject
 	private ReviseItemRepository reviseItemRepo;
-	
+
 	public Require create() {
-		
+
 		return EmbedStopwatch.embed(new RequireImpl());
 	}
-	
+
 	@RequiredArgsConstructor
 	public class RequireImpl implements Require {
-		
+
 		@Override
 		public Optional<ExternalImportSetting> getSetting(String companyId, ExternalImportCode settingCode) {
 			return externalImportSettingRepo.get(companyId, settingCode);
 		}
-		
+
 		@Override
 		public List<ImportableItem> getImportableItems(ImportingDomainId domainId) {
 			return importableItemsRepo.get(domainId);
 		}
 
-		@Override
-		public Optional<ReviseItem> getRevise(String companyId, ExternalImportCode settingCode, int itemNo) {
-			return reviseItemRepo.get(companyId, settingCode, itemNo);
-		}
 	}
 
 }

@@ -30,6 +30,8 @@ import nts.uk.ctx.exio.dom.input.workspace.WorkspaceTableName;
  */
 public class TransferCanonicalData {
 	
+	private static final String programId = "CMF001";
+	
 	/**
 	 * 全データを一括で移送する
 	 * @param require
@@ -121,10 +123,10 @@ public class TransferCanonicalData {
 			);
 		
 		if(convertCodeType == ConversionCodeType.INSERT) {
-			return filteredConversionTable.createConversionSql();
+			return filteredConversionTable.createConversionSql(programId);
 		}
 		else {
-			return filteredConversionTable.createUpdateConversionSql();
+			return filteredConversionTable.createUpdateConversionSql(programId);
 		}
 	}
 	
