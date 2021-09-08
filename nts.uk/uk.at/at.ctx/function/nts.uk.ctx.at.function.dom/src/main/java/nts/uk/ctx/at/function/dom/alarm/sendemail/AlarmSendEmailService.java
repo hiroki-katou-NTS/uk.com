@@ -1,10 +1,6 @@
 package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -94,19 +90,10 @@ public class AlarmSendEmailService implements SendEmailService {
 		String companyId = AppContexts.user().companyId();
 		List<String> errors = new ArrayList<>();
 		Integer functionID = 9; //function of Alarm list = 9
-//		List<String> listEmpAdminError = new ArrayList<>();
 		List<String> listworkplaceError = new ArrayList<>();
-		boolean isErrorSendMailEmp = false;
 
 		// Send mail for employee
 		if (!CollectionUtil.isEmpty(employeeTagetIds)) {
-			if (!isAuto) {
-				val alarmMailSetPerson = alarmExeMailSetting.stream().filter(x -> x.getPersonalManagerClassify().value ==
-						PersonalManagerClassification.EMAIL_SETTING_FOR_PERSON.value).findFirst();
-				if (alarmMailSetPerson.isPresent()) {
-					senderAddress = Optional.ofNullable(alarmMailSetPerson.get().getSenderAddress().isPresent() ? alarmMailSetPerson.get().getSenderAddress().get().v() : null);
-				}
-			}
 			for (String employeeId : employeeTagetIds) {
 				// 本人送信対象のアラーム抽出結果を抽出する
 				List<ValueExtractAlarmDto> valueExtractAlarmEmpDtos = valueExtractAlarmDtos.stream()
@@ -132,17 +119,10 @@ public class AlarmSendEmailService implements SendEmailService {
 		// ロールにより管理対象者を調整
 		Map<String, List<String>> managerTargetMap = this.adjustManagerByRole(companyId, managerTargetList, alarmExeMailSetting, executeDate);
 		// 取得したMap＜管理者ID、List＜対象者ID＞＞をチェック
-		if (managerTargetMap != null) {
-			if (!isAuto) {
-				val alarmMailSetAdmin = alarmExeMailSetting.stream().filter(x -> x.getPersonalManagerClassify().value ==
-						PersonalManagerClassification.EMAIL_SETTING_FOR_ADMIN.value).findFirst();
-				if (alarmMailSetAdmin.isPresent()) {
-					senderAddress = Optional.ofNullable(alarmMailSetAdmin.get().getSenderAddress().isPresent() ? alarmMailSetAdmin.get().getSenderAddress().get().v() : null);
-				}
-			}
+		if (managerTargetMap != null && managerTargetMap.size() > 0) {
 			// 管理者送信対象のアラーム抽出結果を抽出する
 			for (val entry : managerTargetMap.entrySet()) {
-				val targetPersonIds = entry.getValue(); //List＜対象者ID＞
+				val targetPersonIds = entry.getValue().stream().filter(Objects::nonNull).collect(Collectors.toList()); //List＜対象者ID＞
 				for (val empId : targetPersonIds) {
 					// ＜抽出元＞: INPUT.アラーム抽出結果, ＜条件＞: 社員ID＝　ループ中のList＜対象者ID＞
 					List<ValueExtractAlarmDto> valueExtractAlarmManagers = valueExtractAlarmDtos.stream()
@@ -162,62 +142,7 @@ public class AlarmSendEmailService implements SendEmailService {
 			}
 		}
 
-//		if (!isErrorSendMailEmp && !CollectionUtil.isEmpty(managerTagetIds)) {
-//			// 管理者送信対象のアラーム抽出結果を抽出する
-//			List<ValueExtractAlarmDto> valueExtractAlarmManagerDtos = new ArrayList<>();
-//			Map<String, List<ValueExtractAlarmDto>> mapCheckAlarm = new HashMap<>();
-//			List<ValueExtractAlarmDto> listTemp = null;
-//			// Get list workplace to send
-//			List<String> workplaceIds = new ArrayList<>();
-//			for (ValueExtractAlarmDto obj : valueExtractAlarmDtos) {
-//				if(managerTagetIds.contains(obj.getEmployeeID())){
-//					String workplaceID = obj.getWorkplaceID();
-//					// 管理者送信対象のアラーム抽出結果を職場でグループ化する
-//					if(!mapCheckAlarm.containsKey(workplaceID)){
-//						workplaceIds.add(workplaceID);
-//						// New list alarm to send
-//						listTemp = new ArrayList<>();
-//					}else{
-//						listTemp = mapCheckAlarm.get(workplaceID);
-//					}
-//					listTemp.add(obj);
-//					mapCheckAlarm.put(workplaceID, listTemp);
-//				}
-//			}
-//
-//			for (String workplaceId : workplaceIds) {
-//				List<String> listEmpAdminError = new ArrayList<>();
-//				// Call request list 218 return list employee Id
-//				List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(workplaceId,executeDate);
-//				// 抽出結果：ループ中の職場単位のアラーム抽出結果
-//				valueExtractAlarmManagerDtos = mapCheckAlarm.get(workplaceId);
-//				if (!CollectionUtil.isEmpty(listEmployeeId)) {
-//					// loop send mail
-//					for (String employeeId : listEmployeeId) {
-//						try {
-//							// Get subject , body mail
-//							boolean isSucess = sendMail(companyID, employeeId, functionID,
-//									valueExtractAlarmManagerDtos,mailSettingsParamDto.getSubjectAdmin(),
-//									mailSettingsParamDto.getTextAdmin(),currentAlarmCode,
-//									useAuthentication,mailSettingAdmins,senderAddress);
-//							if (!isSucess) {
-//								//errors.add(employeeId);
-//								listEmpAdminError.add(employeeId);
-//							}
-//						} catch (SendMailFailedException e) {
-//							throw e;
-//						}
-//					}
-//					mapWorkplaceAndListSid.put(workplaceId, listEmpAdminError);
-//
-//				}else {
-//					listworkplaceError.add(workplaceId);
-//				}
-//			}
-//		}
-
 		//String empployeeNameError = isErrorSendMailEmp + ";";// return status check display alert error
-		
 //		if (!CollectionUtil.isEmpty(errors)) {
 //			int index = 0;
 //			int errorsSize = errors.size();
@@ -229,8 +154,8 @@ public class AlarmSendEmailService implements SendEmailService {
 //				}
 //				index++;
 //				if(index != errorsSize){
-//					empployeeNameError += "<br/>";        
-//                }   
+//					empployeeNameError += "<br/>";
+//                }
 //			}
 //		}
 		OutputErrorInfo outputErrorInfo = createErrorInfo.getErrorInfo(GeneralDate.today(),errors,mapWorkplaceAndListSid,listworkplaceError);
@@ -253,8 +178,7 @@ public class AlarmSendEmailService implements SendEmailService {
 	 */
 	private Map<String, List<String>> adjustManagerByRole(String cid, List<ManagerTagetDto> managerTargetList,
 														  List<AlarmListExecutionMailSetting> alarmExeMailSetting, GeneralDate executeDate) {
-		if (CollectionUtil.isEmpty(managerTargetList)) return null;
-		Map<String, List<String>> managerMap = new HashMap<>();
+		if (CollectionUtil.isEmpty(managerTargetList)) return Collections.emptyMap();
 
 		// 管理者宛メール設定を探す
 		val alarmMailSettingAdmin = alarmExeMailSetting.stream().filter(x -> x.getPersonalManagerClassify().value ==
@@ -265,22 +189,22 @@ public class AlarmSendEmailService implements SendEmailService {
 		}
 
 		// ドメインモデル「職場管理者」を取得
-//　		・職場ID　＝　Input．List＜職場ID,List＜社員ID＞＞の職場ID
-//　		・履歴期間．開始日＜＝　システム日付＜＝履歴期間．終了日
 		val wkpIds = managerTargetList.stream().map(ManagerTagetDto::getWorkplaceID).distinct().collect(Collectors.toList());
 		List<WkpManagerImport> wkplManagerList = workplaceAdapter.findByWkpIdsAndDate(wkpIds, executeDate);
 
 		// Map＜管理者ID、List＜対象者ID＞＞にデータを追加
-//		Input．List＜管理者に送信する社員＞：List＜職場ID、社員ID＞と取得したList＜職場管理者＞からMap＜管理者ID、List＜対象者ID＞＞にデータを作成する
-//　		・管理者ID　＝　取得したList＜職場管理者＞の社員ID
-//　		・対象者ID　＝　担当の管理者の職場のInput．List＜管理者に送信する社員＞の社員ID
-		wkplManagerList.forEach(wkp -> {
-			val personIdList = managerTargetList.stream().filter(x -> x.getWorkplaceID().equals(wkp.getWorkplaceId()))
-					.map(ManagerTagetDto::getEmployeeID).collect(Collectors.toList());
-			if (!CollectionUtil.isEmpty(personIdList)) {
-				managerMap.put(wkp.getWorkplaceId(), personIdList);
-			}
-		});
+		Map<String, List<String>> managerMap = wkplManagerList.stream()
+				.collect(Collectors.groupingBy(
+						WkpManagerImport::getEmployeeId,
+						Collectors.mapping(
+								i -> managerTargetList.stream()
+										.filter(a -> a.getWorkplaceID().equals(i.getWorkplaceId()))
+										.map(ManagerTagetDto::getEmployeeID)
+										.findFirst()
+										.orElse(null),
+								Collectors.toList()
+						)
+				));
 
 		// ドメインモデル「アラームメール送信ロール」を取得する
 		val mailSendingRole = alarmMailSendingRoleRepo.find(cid, IndividualWkpClassification.INDIVIDUAL.value);
@@ -305,7 +229,7 @@ public class AlarmSendEmailService implements SendEmailService {
 								return roleAdapter.getRoleSetFromUserId(userId, baseDate);
 							}
 						},
-						item.getValue(),
+						Arrays.asList(item.getKey()),
 						executeDate
 				);
 				for (val entry : empRoleMap.entrySet()) {

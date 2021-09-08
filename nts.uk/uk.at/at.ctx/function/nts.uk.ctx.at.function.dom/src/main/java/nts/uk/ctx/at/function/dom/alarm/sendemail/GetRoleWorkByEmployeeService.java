@@ -1,11 +1,8 @@
 package nts.uk.ctx.at.function.dom.alarm.sendemail;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportDto;
-import nts.uk.ctx.at.function.dom.adapter.user.UserEmployeeAdapter;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
