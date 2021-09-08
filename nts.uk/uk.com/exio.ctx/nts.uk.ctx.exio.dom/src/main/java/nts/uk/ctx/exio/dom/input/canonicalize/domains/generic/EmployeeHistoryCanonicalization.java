@@ -306,11 +306,11 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		
 		return AtomTask.of(() -> {
 
-			for (val record : recordsToDelete) {
+			for (AnyRecordToDelete record : recordsToDelete) {
 				toDomainDataIds(record).forEach(id -> require.delete(id));
 			}
 
-			for (val record : recordsToChange) {
+			for (AnyRecordToChange record : recordsToChange) {
 				//項目Noから何をどの値に変更するのか特定できないとここから進めない
 				val period = new DatePeriod(
 						record.getChange(this.itemNoStartDate).asGeneralDate(),
@@ -321,7 +321,21 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		});
 	}
 	
-	private List<DomainDataId> toDomainDataIds(AnyRecordTo record) {
+	private List<DomainDataId> toDomainDataIds(AnyRecordToDelete toDelete) {
+
+		val keyValues = new KeyValues(toKeyValueObjects(toDelete));
+		
+		List<String> tableNames = new ArrayList<>();
+		tableNames.add(getParentTableName());
+		tableNames.addAll(getChildTableNames());
+		
+		val keys = getDomainDataKeys();
+		return tableNames.stream()
+				.map(tn -> DomainDataId.createDomainDataId(tn, keys, keyValues))
+				.collect(toList());
+	}
+	
+	private List<DomainDataId> toDomainDataIds(AnyRecordToChange record) {
 		
 		val keyValues = new KeyValues(toKeyValueObjects(record));
 		
