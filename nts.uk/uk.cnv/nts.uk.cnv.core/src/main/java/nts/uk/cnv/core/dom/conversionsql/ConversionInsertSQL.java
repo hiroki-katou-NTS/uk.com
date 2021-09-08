@@ -47,6 +47,7 @@ public class ConversionInsertSQL implements ConversionSQL {
 		this.from = new FromSentence();
 		this.where = whereList;
 		this.groupingColumns = new ArrayList<>();
+		this.programId = programId;
 
 		addFixedColumns(spec);
 	}
