@@ -35,11 +35,18 @@ module nts.uk.com.cmf001.x {
 		// 処理中フラグ
 		processing: KnockoutObservable<boolean> = ko.observable(false);
 
+		// 準備完了フラグ
+		prepared: KnockoutObservable<boolean> = ko.observable(false);
+
 		constructor() {
 			super();
 		}
 
 		mounted() {
+			this.selectedSettingCode.subscribe(() => {
+				this.prepared(false);
+			});
+
 			this.loadSettings().done(() => {
 				$("body").removeClass("ko-cloak");
 			});
@@ -58,18 +65,28 @@ module nts.uk.com.cmf001.x {
 			return dfd.promise();
 		}
 
-		csvFileSelected() {}
+		csvFileSelected() {
+			nts.uk.ui._viewModel.content.prepared(false);
+		}
 
 		csvFileUploaded() {}
 
+		clearFile() {
+			this.csvFileName(null);
+			this.csvFileId(null);
+		}
+
 		prepare(){
-			nts.uk.ui._viewModel.content.processStart();
+
+			let vm = nts.uk.ui._viewModel.content;
+
+			vm.processStart();
 			// ファイルのアップロード
 			$("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
-				nts.uk.ui._viewModel.content.csvFileId(res[0].id)
+				vm.csvFileId(res[0].id)
 				let prepareCommand = {
-					settingCode: nts.uk.ui._viewModel.content.selectedSettingCode(), 
-					uploadedCsvFileId: nts.uk.ui._viewModel.content.csvFileId()};
+					settingCode: vm.selectedSettingCode(), 
+					uploadedCsvFileId: vm.csvFileId()};
 				ajax("/exio/input/prepare", prepareCommand).done((prepareResult) => {
 					// サーバーへタスクの進捗問い合わせ
 					nts.uk.deferred.repeat(conf => conf
@@ -82,54 +99,59 @@ module nts.uk.com.cmf001.x {
 							if(info.status ==="COMPLETED"){
 								// 正常に完了していればエラーチェック
 								let requestCount: number = 0;
-								nts.uk.ui._viewModel.content.messageBox("");
+								vm.messageBox("");
 								nts.uk.deferred.repeat(conf => conf
 									.task(() => {
 										requestCount++;
 										// エラーの問い合わせ
-										return ajax("/exio/input/errors/" + nts.uk.ui._viewModel.content.selectedSettingCode() + "/" + requestCount).done((result) => {
+										return ajax("/exio/input/errors/" + vm.selectedSettingCode() + "/" + requestCount).done((result) => {
 											// 実行エラーがないかチェック
 											if(result.execution){
 												// 実行エラーあり
-												nts.uk.ui._viewModel.content.executionError(true);
+												vm.executionError(true);
 											}
 											// 取得したエラーを蓄積
-											nts.uk.ui._viewModel.content.errorMessage(nts.uk.ui._viewModel.content.errorMessage() + result.text);
+											vm.errorMessage(vm.errorMessage() + result.text);
 										});
 									})
 									// エラー件数が0件になるまで繰り返す
 									.while (result => result.errosCount === 0)).done(() => {
-										if(nts.uk.ui._viewModel.content.errorMessage()){
-											nts.uk.ui._viewModel.content.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。\r\n" + nts.uk.ui._viewModel.content.errorMessage());
+										if(vm.errorMessage()){
+											vm.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。\r\n" + vm.errorMessage());
 										}else{
-											nts.uk.ui._viewModel.content.messageBox("受入準備が完了しました。");
+											vm.messageBox("受入準備が完了しました。");
 										}
+										vm.prepared(true);
 									});
 							}else{
-								nts.uk.ui._viewModel.content.errorMessage(info.error.message);
+								vm.errorMessage(info.error.message);
 								if(info.error.businessException){
 									// 業務エラーの場合は画面に表示
-									nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
+									vm.messageBox(vm.errorMessage());
 								}else{
 									// システムエラーの場合はエラーダイアログを表示
 									(<any>nts).uk.request.specials.errorPages.systemError()
 								}
 							}
 							// 処理終了
-							nts.uk.ui._viewModel.content.processEnd();
+							vm.processEnd();
 						});
 				}).fail(function(err) {
 					// 受入準備に失敗
-					nts.uk.ui._viewModel.content.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
-					nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
-					nts.uk.ui._viewModel.content.processEnd();
-				})
+					vm.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+					vm.messageBox(vm.errorMessage());
+					vm.processEnd();
+				}).always(function () {
+					// 一度アップロードしたファイルを変更後、再度アップロードするとブラウザでエラーになってしまう
+					// その問題を避けるためここで消す
+					vm.clearFile();
+				});
 			}).fail(function(err) {
 				// ファイルのアップロードに失敗
-				nts.uk.ui._viewModel.content.csvFileId("");
-				nts.uk.ui._viewModel.content.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
-				nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
-				nts.uk.ui._viewModel.content.processEnd();
+				vm.csvFileId("");
+				vm.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+				vm.messageBox(vm.errorMessage());
+				vm.processEnd();
 			});
 		}
 
@@ -178,11 +200,11 @@ module nts.uk.com.cmf001.x {
 			!this.processing());
 		
 		canExecute = ko.computed(() => 
-			// ファイルがアップロードされていること
-			this.csvFileId() && 
+			// 準備完了していること
+			this.prepared() &&
 			// 処理中でないこと
 			!this.processing() && 
 			// 実行エラーが発生していないこと
-			!nts.uk.ui._viewModel.content.executionError());
+			!this.executionError());
 	}
 }
