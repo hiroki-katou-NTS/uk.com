@@ -3,6 +3,11 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculatio
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.CompanyHolidayPriorityOrder;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.holidaypriorityorder.HolidayPriorityOrder;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 控除相殺時間
@@ -39,6 +44,49 @@ public class DeductionOffSetTime  implements Cloneable {
 	 */
 	public static DeductionOffSetTime createAllZero() {
 		return new DeductionOffSetTime(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO);
+	}
+	
+	/**
+	 * 作る
+	 * @param priorityOrder 時間休暇相殺優先順位
+	 * @param useTime 日別実績の時間休暇使用時間
+	 * @param remainingTime	 時間休暇使用残時間
+	 */
+	public static DeductionOffSetTime create(CompanyHolidayPriorityOrder priorityOrder, TimevacationUseTimeOfDaily useTime, AttendanceTime remainingTime) {
+		int annualHoliday = 0;
+		int subHoliday = 0;
+		int sixtyhourHoliday = 0;
+		int specialHoliday = 0;
+		
+		// 時間休暇の優先順に処理
+		for (HolidayPriorityOrder holiday : priorityOrder.getHolidayPriorityOrders()) {
+			if(remainingTime.lessThanOrEqualTo(AttendanceTime.ZERO)) {
+				break;
+			}
+			switch (holiday) {
+			case ANNUAL_HOLIDAY:
+				annualHoliday = Math.min(useTime.getTimeAnnualLeaveUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(annualHoliday);
+				break;
+			case SUB_HOLIDAY:
+				subHoliday = Math.min(useTime.getTimeCompensatoryLeaveUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(subHoliday);
+				break;
+			case SIXTYHOUR_HOLIDAY:
+				sixtyhourHoliday = Math.min(useTime.getSixtyHourExcessHolidayUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(sixtyhourHoliday);
+				break;
+			case SPECIAL_HOLIDAY:
+				specialHoliday = Math.min(useTime.getTimeSpecialHolidayUseTime().valueAsMinutes(), remainingTime.valueAsMinutes());
+				remainingTime = remainingTime.minusMinutes(specialHoliday);
+				break;
+			}
+		}
+		return new DeductionOffSetTime(
+				new AttendanceTime(annualHoliday),
+				new AttendanceTime(subHoliday),
+				new AttendanceTime(sixtyhourHoliday),
+				new AttendanceTime(specialHoliday));
 	}
 	
 	/**

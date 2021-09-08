@@ -335,15 +335,15 @@ module nts.uk.at.view.kmk017.a {
           vm.gridListHeader([
             { headerText: vm.$i18n('KMK017_7'), key: 'code', width: 70 },
             { headerText: vm.$i18n('KMK017_8'), key: 'name', width: 120 },
-            { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 120 },
+            { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 130 },
             { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 310, columnCssClass: 'limited-label' },
           ]);
         } else
           vm.gridListHeader([
             { headerText: vm.$i18n('KMK017_7'), key: 'code', width: 70 },
             { headerText: vm.$i18n('KMK017_8'), key: 'name', width: 120 },
-            { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 120 },
-            { headerText: vm.$i18n('KMK017_10'), key: 'workingTime2', width: 120 },
+            { headerText: vm.$i18n('KMK017_9'), key: 'workingTime1', width: 130 },
+            { headerText: vm.$i18n('KMK017_10'), key: 'workingTime2', width: 130 },
             { headerText: vm.$i18n('KMK017_11'), key: 'remarks', width: 190, columnCssClass: 'limited-label' },
           ]);
       });

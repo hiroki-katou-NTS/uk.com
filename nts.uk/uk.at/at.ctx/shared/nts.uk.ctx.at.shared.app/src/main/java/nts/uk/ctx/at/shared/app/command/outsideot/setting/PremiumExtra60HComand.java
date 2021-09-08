@@ -41,6 +41,6 @@ public class PremiumExtra60HComand {
 
         return new SuperHD60HConMed(AppContexts.user().companyId(),
                 new TimeRoundingSetting(roundingTime, rounding),
-                new SuperHDOccUnit(superHolidayOccurrenceUnit));
+                new SuperHDOccUnit(superHolidayOccurrenceUnit != null ? superHolidayOccurrenceUnit : 0));
     }
 }

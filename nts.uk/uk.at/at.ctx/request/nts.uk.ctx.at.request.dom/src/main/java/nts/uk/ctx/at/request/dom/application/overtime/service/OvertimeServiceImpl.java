@@ -411,8 +411,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				companyId,
 				workTypeCode,
 				workTimeCode,
-				startTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
-				endTimeSPR.map(x -> Optional.of(new TimeWithDayAttr(x))).orElse(Optional.empty()),
+				workHoursOp.flatMap(x -> x.getStartTimeOp1()),
+				workHoursOp.flatMap(x -> x.getEndTimeOp1()),
 				actualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty()));
 		// 07-02_実績取得・状態チェック
 		ApplicationTime applicationTime = preActualColorCheck.checkStatus(
@@ -473,13 +473,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				}
 			}
 		}
-		if(!opIntegrationOfDaily.isPresent() && reasonDissociation.isPresent()) {
-			// エラーメッセージ（Msg_1298）を表示する
-			throw new BusinessException("Msg_1298");
-		}
+		String errorMessage = "";
 		if(opIntegrationOfDaily.isPresent()) {
 			// エラーメッセージを表示する
-			String errorMessage = "";
 			if(opIntegrationOfDaily.isPresent()) {
 				List<EmployeeDailyPerError> employeeDailyPerErrorLst = new ArrayList<>();
 				if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
@@ -524,6 +520,10 @@ public class OvertimeServiceImpl implements OvertimeService {
 			if(Strings.isNotBlank(errorMessage)) {
 				throw new BusinessException(errorMessage);
 			}
+		}
+		if(Strings.isBlank(errorMessage) && reasonDissociation.isPresent()) {
+			// エラーメッセージ（Msg_1298）を表示する
+			throw new BusinessException("Msg_1298");
 		}
 	}
 	

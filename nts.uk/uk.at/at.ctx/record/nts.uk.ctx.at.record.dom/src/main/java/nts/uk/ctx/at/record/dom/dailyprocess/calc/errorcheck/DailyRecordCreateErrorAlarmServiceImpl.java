@@ -98,7 +98,7 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 				integrationOfDaily.getWorkInformation());
 		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(empId,
 				targetDate, integrationOfDaily.getAttendanceLeave().orElse(null));
-		// 出勤系打刻漏れをチェックする
+		// 出勤系打刻漏れをチェックする - (出退勤打刻漏れ(sót chấm công vào-tan làm))
 		this.lackOfStamping.lackOfStamping(companyId, empId, targetDate, workInfoOfDailyPerformance,timeLeavingOfDailyPerformance).ifPresent(c -> {
 			returnList.add(c);
 		});

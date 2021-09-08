@@ -71,7 +71,7 @@ public class KscdtSchGoingOutTs extends ContractUkJpaEntity {
 		KscdtSchGoingOutTs entity =  new KscdtSchGoingOutTs(
 				new KscdtSchGoingOutTsPK(sid, ymd, outingTimeSheet.getOutingFrameNo().v()), 
 				cid, 
-				outingTimeSheet.getOutingFrameNo().v(),
+				outingTimeSheet.getReasonForGoOut().value,
 				outingTimeSheet.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
 				outingTimeSheet.getComeBack().get().getTimeDay().getTimeWithDay().get().v());
 		return entity;

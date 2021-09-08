@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
+import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.BreakDownTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.PredetemineTimeSettingDto;
@@ -24,6 +27,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -67,6 +71,11 @@ public class AppWorkChangeDispInfoDto {
 //	勤務変更申請の反映
 	public ReflectWorkChangeAppDto reflectWorkChangeAppDto;
 	
+	// 申請中の勤務情報.勤務種類
+	public String worktype;
+	// 申請中の勤務情報.就業時間帯
+	public String worktime;
+	
 	
 	
 	public static AppWorkChangeDispInfoDto fromDomain(AppWorkChangeDispInfo appWorkChangeDispInfo) {
@@ -87,6 +96,16 @@ public class AppWorkChangeDispInfoDto {
 			result.workTimeCD = appWorkChangeDispInfo.getWorkTimeCD().get();			
 		}
 		result.reflectWorkChangeAppDto = ReflectWorkChangeAppDto.fromDomain(appWorkChangeDispInfo.getReflectWorkChangeApp());
+		
+		Optional<WorkInformationForApplication> workinfoAppOp = appWorkChangeDispInfo.getWorkInformationForApplication();
+		if (workinfoAppOp.isPresent()) {
+			Optional<WorkTypeCode> workTypeOp = Optional.ofNullable(workinfoAppOp.get().getWorkTypeCode());
+			result.worktype = workTypeOp.map(x -> x.v()).orElse(null);
+			
+			Optional<WorkTimeCode> workTimeCode = Optional.ofNullable(workinfoAppOp.get().getWorkTimeCode());
+			result.worktime = workTimeCode.map(x -> x.v()).orElse(null);
+		}
+		
 		return result;
 	}
 	public AppWorkChangeDispInfo toDomain() {
@@ -135,6 +154,12 @@ public class AppWorkChangeDispInfoDto {
 		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(workTypeCD));
 		appWorkChangeDispInfo.setWorkTimeCD(Optional.ofNullable(workTimeCD));
 		appWorkChangeDispInfo.setReflectWorkChangeApp(reflectWorkChangeAppDto.toDomain());
+		Optional<WorkInformationForApplication> workInfo = Optional.empty();
+		if (!StringUtils.isBlank(worktype) || !StringUtils.isBlank(worktime)) {
+			workInfo = 
+					Optional.of(WorkInformationForApplication.create(workTypeCD, workTimeCD));
+		}
+		appWorkChangeDispInfo.setWorkInformationForApplication(workInfo);
 		return appWorkChangeDispInfo;
 	}
 	 

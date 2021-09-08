@@ -16,10 +16,10 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area-bottom">
+			<!-- <div id="functions-area-bottom">
 				<button tabindex="2" class="x-large proceed" data-bind="click: confirmLinking">#{i18n.getText('KDL036_10')}</button>
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDL036_11')}</button>
-			</div>
+			</div> -->
 			<div id="contents-area" style="margin: 0 10px">
 				<div class="control-group valign-center">
 					<div class="label">#{i18n.getText('KDL036_1')}</div>
@@ -57,6 +57,10 @@
                         </tr>
                     </tbody>
                 </table>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="2" class="x-large proceed" data-bind="click: confirmLinking">#{i18n.getText('KDL036_10')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDL036_11')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

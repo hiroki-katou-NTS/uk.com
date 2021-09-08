@@ -39,7 +39,7 @@ module nts.uk.com.view.cmm001.e {
                 self.selectedCopyItems = ko.computed(function() {
                     return self.dataSource().filter(function(item) {
                         if (item.flag() === true) {
-                            if (item.copyMethod != self.switchHeader())
+                            if (item.copyMethod() != self.switchHeader())
                                 item.copyMethod(self.switchHeader());
                             return item;
                         }

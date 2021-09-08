@@ -20,8 +20,8 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.VerticalTotalOfMonthlyDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
@@ -46,53 +46,53 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/***/
 	private static final long serialVersionUID = 1L;
 	
-	private long version;
+	protected long version;
 	
 	/** 会社ID */
-	private String companyId;
+	protected String companyId;
 
 	/** 社員ID: 社員ID */
-	private String employeeId;
+	protected String employeeId;
 
 	/** 年月: 年月 */
-	private YearMonth ym;
+	protected YearMonth ym;
 
 	/** 締めID: 締めID */
 	// @AttendanceItemValue
 	// @AttendanceItemLayout(jpPropertyName = "締めID", layout = "A")
-	private int closureID = 1;
+	protected int closureID = 1;
 
 	/** 締め日: 日付 */
 	// @AttendanceItemLayout(jpPropertyName = "締め日", layout = "B")
-	private ClosureDateDto closureDate;
+	protected ClosureDateDto closureDate;
 
 	/** 期間: 期間 */
 	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_C)
-	private DatePeriodDto datePeriod;
+	protected DatePeriodDto datePeriod;
 
 	/** 月の計算: 月別実績の月の計算 */
 	@AttendanceItemLayout(jpPropertyName = CALC, layout = LAYOUT_D)
-	private MonthlyCalculationDto monthlyCalculation;
+	protected MonthlyCalculationDto monthlyCalculation;
 
 	/** 時間外超過: 月別実績の時間外超過 */
 	@AttendanceItemLayout(jpPropertyName = EXCESS, layout = LAYOUT_E)
-	private ExcessOutsideWorkOfMonthlyDto excessOutsideWork;
+	protected ExcessOutsideWorkOfMonthlyDto excessOutsideWork;
 
 	/** 集計日数: 勤怠月間日数 */
 	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = AGGREGATE + DAYS, layout = LAYOUT_F)
-	private double aggregateDays;
+	protected double aggregateDays;
 
 	/** 縦計: 期間別の縦計 */
 	@AttendanceItemLayout(jpPropertyName = VERTICAL_TOTAL, layout = LAYOUT_G)
-	private VerticalTotalOfMonthlyDto verticalTotal;
+	protected VerticalTotalOfMonthlyDto verticalTotal;
 
 	/** 回数集計: 期間別の回数集計 */
 	@AttendanceItemLayout(jpPropertyName = COUNT + AGGREGATE, layout = LAYOUT_H)
-	private TotalCountByPeriodDto totalCount;
+	protected TotalCountByPeriodDto totalCount;
 	
 	@AttendanceItemLayout(jpPropertyName = OUEN, layout = LAYOUT_I)
-	private OuenTimeOfMonthlyDto ouen;
+	protected OuenTimeOfMonthlyDto ouen;
 
 	@Override
 	public String employeeId() {
@@ -253,6 +253,4 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	public String rootName() {
 		return MONTHLY_ATTENDANCE_TIME_NAME;
 	}
-
-	
 }

@@ -9,9 +9,12 @@ module nts.uk.at.view.ksu001.a {
         
         nts.uk.ui.block.grayout();
         __viewContext.viewModel.viewA.startPage().done(() => {
+            
+            document.getElementById("main-area").style.display = '';
+            
             __viewContext.bind(__viewContext.viewModel);
 
-            __viewContext.viewModel.viewA.setIconEventHeader();
+            //__viewContext.viewModel.viewA.setIconEventHeader();
 
             if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
                 $('.ntsButtonTableButton').addClass('nowithContent');
@@ -27,6 +30,13 @@ module nts.uk.at.view.ksu001.a {
                 setTimeout(() => {
                     __viewContext.viewModel.viewA.setStyler();
                 }, 800);
+            }
+            
+            if (userInfor.disPlayFormat == 'shift') {
+                setTimeout(() => {
+                     __viewContext.viewModel.viewAC.setStyleBtn();
+                     __viewContext.viewModel.viewAC.setLinkSelected(userInfor.shiftPalletUnit == 2 ? (userInfor.shiftPalettePageNumberOrg -1) : (userInfor.shiftPalettePageNumberCom-1));
+                }, 100);
             }
             
             __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();

@@ -104,7 +104,8 @@ module nts.uk.at.view.kwr005.b {
       vm.currentCodeListSwap.removeAll();
       vm.clearSelection();
       vm.resetListItemsSwap();
-      vm.printPropertyCode.valueHasMutated();
+      //vm.printPropertyCode.valueHasMutated();
+      vm.printPropertyCode(-1);
       vm.isEnableDuplicateButton(false);
       vm.isEnableDeleteButton(false);
       vm.isEnableAttendanceCode(true);
@@ -266,7 +267,7 @@ module nts.uk.at.view.kwr005.b {
      */
     getSettingListItemsDetails(settingId: string) {
       const vm = this;
-
+      vm.printPropertyCode(-1);
       vm.currentCodeListSwap([]);
       vm.resetListItemsSwap();
       vm.clearSelection();

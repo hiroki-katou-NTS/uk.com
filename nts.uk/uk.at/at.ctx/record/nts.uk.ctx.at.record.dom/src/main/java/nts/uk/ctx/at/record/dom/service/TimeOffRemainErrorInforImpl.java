@@ -40,8 +40,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDa
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByRecordData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.EmployeeMonthlyPerError;
@@ -61,16 +61,17 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 	private RecordDomRequireService requireService;
 	@Inject
 	private NumberRemainVacationLeaveRangeProcess numberRemainVacationLeaveRangeProcess;
+	@Inject
+	private RemainCreateInforByRecordData remainCreateInforByRecordData;
 	@Override
 	public List<EmployeeMonthlyPerError> getErrorInfor(TimeOffRemainErrorInputParam param) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
 		//残数作成元情報を作成する
-		List<RecordRemainCreateInfor> recordInfor = RemainNumberCreateInformation.createRemainInfor(
+		List<RecordRemainCreateInfor> recordInfor = remainCreateInforByRecordData.lstResultFromRecord(
 				param.getSid(),
-				param.getLstAttendanceTimeData().stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getTime())),
-				param.getLstWorkInfor().stream().collect(Collectors.toMap(c -> c.getYmd(), c -> c.getWorkInformation())));
+				DailyResultCreator.create(param.getLstWorkInfor(), param.getLstAttendanceTimeData()));
 		//指定期間の暫定残数管理データを作成する（差分のみ）
 		InterimRemainCreateDataInputPara createInterimDataParam = new InterimRemainCreateDataInputPara(param.getCid(),
 				param.getSid(),
@@ -82,7 +83,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		Map<GeneralDate, DailyInterimRemainMngData> interimRemainData = InterimRemainOffPeriodCreateData
 				.createInterimRemainByScheRecordApp(require, cacheCarrier, createInterimDataParam);
 		Optional<DailyInterimRemainMngData> optDaily = Optional.empty();
-		
+
 		/** 大塚モードかを確認する */
 		if(param.getOptMonthlyData().isPresent() && AppContexts.optionLicense().customize().ootsuka()) {
 			//月別実績(Work)から年休フレックス補填分の暫定年休管理データを作成する
@@ -101,8 +102,8 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		List<TempAnnualLeaveMngs> annualHolidayData = eachData.getAnnualHolidayData();
 		List<InterimRemain> annualMng = eachData.getAnnualMng();
 		if(optDaily.isPresent()
-				&& optDaily.get().getAnnualHolidayData().isPresent()) {
-			TempAnnualLeaveMngs flexAnnual = optDaily.get().getAnnualHolidayData().map(x-> x).orElse(null);
+				&& !optDaily.get().getAnnualHolidayData().isEmpty()) {
+			TempAnnualLeaveMngs flexAnnual = optDaily.get().getAnnualHolidayData().stream().filter(c->c.getUsedNumber().isUseDay()).map(x-> x).findFirst().orElse(null);
 			List<InterimRemain> lstAnnualMng = optDaily.get().getRecAbsData().stream()
 					.filter(x -> x.getRemainManaID().equals(flexAnnual.getRemainManaID()))
 					.collect(Collectors.toList());

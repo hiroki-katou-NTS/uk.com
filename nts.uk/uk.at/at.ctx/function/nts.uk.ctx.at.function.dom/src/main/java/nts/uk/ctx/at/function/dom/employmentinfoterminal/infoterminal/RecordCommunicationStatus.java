@@ -27,22 +27,27 @@ public class RecordCommunicationStatus {
 			return task;
 
 		// 就業情報端末通信状況を取得する
-		EmpInfoTerminalComStatus empTerComstatus = require.getEmpTerComStatus(contractCode, terCode)
-				.orElse(new EmpInfoTerminalComStatus(contractCode, terCode, systemTime));
+		Optional<EmpInfoTerminalComStatus> empTerComstatus = require.getEmpTerComStatus(contractCode, terCode);
+		if(!empTerComstatus.isPresent()) {
+			empTerComstatus = Optional.of(new EmpInfoTerminalComStatus(contractCode, terCode, systemTime));
+			val  empTerComstatusNew = empTerComstatus.get();
+			task = task.then(() -> require.insertEmpTerStatus(empTerComstatusNew));
+		}
 
 		// 通信異常があったか判断する
-		if (empTerComstatus.isCommunicationError(new MonitorIntervalTime(empTerInfo.get().getIntervalTime()), systemTime)) {
-			val empTerComStsNew = empTerComstatus.createAbnormalPeriod(systemTime);
+		if (empTerComstatus.get().isCommunicationError(new MonitorIntervalTime(empTerInfo.get().getIntervalTime()), systemTime)) {
+			val empTerComStsNew = empTerComstatus.get().createAbnormalPeriod(systemTime);
 
-			task.then(() -> {
+			task = task.then(() -> {
 				require.insertEmpComAbPeriod(empTerComStsNew);
 			});
 
 		}
 
 		// $就業情報端末通信状況Update ＝ $就業情報端末通信状況.最終通信日時を更新する($システム日時)
-		task.then(() -> {
-			require.updateEmpTerStatus(empTerComstatus.updateLastTime(systemTime));
+		val  empTerComstatusNew = empTerComstatus.get();
+		task = task.then(() -> {
+			require.updateEmpTerStatus(empTerComstatusNew.updateLastTime(systemTime));
 
 			// 過去の「就業情報端末通信異常期間」は削除する。
 			require.deleteEmpTerComAbPast(contractCode, terCode, EmpInfoTerComAbPeriod.getDayRemoveInfo());
@@ -69,9 +74,11 @@ public class RecordCommunicationStatus {
 		// [R-4]就業情報端末通信状況をUpdateする
 		// EmpInfoTerminalComStatusRepository.update
 		public void updateEmpTerStatus(EmpInfoTerminalComStatus empInfoTerComStatus);
-
+		
 		// [R-5]過去の就業情報端末通信異常期間をDeleteする
 		// EmpInfoTerComAbPeriodRepository.deletePast
 		void deleteEmpTerComAbPast(ContractCode contractCode, EmpInfoTerminalCode code, GeneralDate dateDelete);
+		
+	    void insertEmpTerStatus(EmpInfoTerminalComStatus empInfoTerComStatus);
 	}
 }

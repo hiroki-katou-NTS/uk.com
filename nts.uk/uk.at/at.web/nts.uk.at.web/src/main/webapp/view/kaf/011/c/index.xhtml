@@ -12,6 +12,10 @@
 			<com:stylefile path="../shr/kaf011.shr.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
 			<com:scriptfile path="kaf011.c.vm.js" />
+			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
+			<com:stylefile path="/view/kaf/011/component6/kaf011.a.component6.css" />
+			<com:stylefile path="/view/kaf/011/c/kaf011.c.css" />
+			<com:scriptfile path="/view/kaf/011/component6/kaf011.a.component6.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
@@ -51,12 +55,17 @@
 											required: displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason,
 		                                    option: {
 		                                        resizeable: false,
-		                                        width: '360',
+		                                        width: '359',
 		                                        textalign: 'left'
 		                                    }
 	                                    }"/>
 							</div>
 						</com:ko-if>
+						<div style="margin-top: 12px" data-bind="component: { name: 'kaf011-a-component6', 
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
 					</div>
 				</div>
 			</div>

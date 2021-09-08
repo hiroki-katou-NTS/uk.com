@@ -8,8 +8,12 @@ module nts.uk.at.view.kmf002.f {
             findAll: "at/shared/publicholidaymanagementusageunit/find",            
         };
         
-        export function save(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", path.save);
+        export function saveManageUnit(isManageEmployeePublicHd: number, isManageWkpPublicHd: number, isManageEmpPublicHd: number): JQueryPromise<any> {
+          let data: any = {};
+          data.isManageEmployeePublicHd = isManageEmployeePublicHd; 
+          data.isManageWkpPublicHd = isManageWkpPublicHd;
+          data.isManageEmpPublicHd = isManageEmpPublicHd;
+          return nts.uk.request.ajax("at", path.save, data);
         }
         
         export function findAll(): JQueryPromise<any> {

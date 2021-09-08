@@ -15,7 +15,7 @@
 }
 
 #check-condition-text{
-	width: 855px;
+	width: 865px;
 	margin-bottom: 10px;
 	display: inline-block;
 }
@@ -58,4 +58,7 @@
 
 #swap-list-grid1_scrollContainer {
 	min-height: 212.6px !important;
+}
+.ntsMoveDataArea {
+	width: 95px !important;
 }

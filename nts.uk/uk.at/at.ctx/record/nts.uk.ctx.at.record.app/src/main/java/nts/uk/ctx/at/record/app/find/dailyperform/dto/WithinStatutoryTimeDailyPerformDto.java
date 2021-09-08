@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -40,15 +40,6 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst, Attendance
 	/** 所定内深夜時間: 所定内深夜時間 */
 	@AttendanceItemLayout(layout = LAYOUT_D, jpPropertyName = LATE_NIGHT)
 	private CalcAttachTimeDto withinStatutoryMidNightTime;
-
-	/** 休暇加算時間: 勤怠時間 */
-	// TODO: Check id
-	// 日別実績の勤怠時間．実績時間．総労働時間．所定内時間．休暇加算時間 年休加算時間 576
-	// 日別実績の勤怠時間．実績時間．総労働時間．所定内時間．休暇加算時間 特別休暇加算時間 577
-	// 日別実績の勤怠時間．実績時間．総労働時間．所定内時間．休暇加算時間 積立年休加算時間 578
-	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = HOLIDAY + ADD)
-	@AttendanceItemValue(type = ValueType.TIME)
-	private Integer vacationAddTime;
 
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
@@ -82,8 +73,6 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst, Attendance
 			return Optional.of(ItemValue.builder().value(workTimeIncludeVacationTime).valueType(ValueType.TIME));
 		case PREMIUM:
 			return Optional.of(ItemValue.builder().value(withinPrescribedPremiumTime).valueType(ValueType.TIME));
-		case (HOLIDAY + ADD):
-			return Optional.of(ItemValue.builder().value(vacationAddTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -100,9 +89,6 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst, Attendance
 			break;
 		case PREMIUM:
 			this.withinPrescribedPremiumTime = value.valueOrDefault(null);
-			break;
-		case (HOLIDAY + ADD):
-			this.vacationAddTime = value.valueOrDefault(null);
 			break;
 		default:
 			break;
@@ -128,8 +114,7 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst, Attendance
 						getAttendanceTime(domain.getWorkTime()),
 						getAttendanceTime(domain.getActualWorkTime()),
 						getAttendanceTime(domain.getWithinPrescribedPremiumTime()),
-						getWithStatutory(domain.getWithinStatutoryMidNightTime()),
-						getAttendanceTime(domain.getVacationAddTime()));
+						getWithStatutory(domain.getWithinStatutoryMidNightTime()));
 	}
 	
 	@Override
@@ -137,8 +122,7 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst, Attendance
 		return new WithinStatutoryTimeDailyPerformDto(workTime,
 									workTimeIncludeVacationTime,
 									withinPrescribedPremiumTime,
-									withinStatutoryMidNightTime == null ? null : withinStatutoryMidNightTime.clone(),
-									vacationAddTime);
+									withinStatutoryMidNightTime == null ? null : withinStatutoryMidNightTime.clone());
 	}
 
 	private static CalcAttachTimeDto getWithStatutory(WithinStatutoryMidNightTime domain) {
@@ -151,8 +135,7 @@ public class WithinStatutoryTimeDailyPerformDto implements ItemConst, Attendance
 				toAttendanceTime(workTimeIncludeVacationTime), 
 				toAttendanceTime(withinPrescribedPremiumTime),
 				new WithinStatutoryMidNightTime(withinStatutoryMidNightTime == null ? TimeDivergenceWithCalculation.defaultValue()
-							: withinStatutoryMidNightTime.createTimeDivWithCalc()),
-				toAttendanceTime(vacationAddTime));
+							: withinStatutoryMidNightTime.createTimeDivWithCalc()));
 	}
 	
 	private static Integer getAttendanceTime(AttendanceTime domain) {

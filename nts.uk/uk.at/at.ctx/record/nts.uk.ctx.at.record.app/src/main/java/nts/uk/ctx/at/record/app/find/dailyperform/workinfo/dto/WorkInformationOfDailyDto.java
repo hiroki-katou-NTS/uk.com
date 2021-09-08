@@ -15,10 +15,12 @@ import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -216,7 +218,6 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	@Override
 	public boolean isRoot() { return true; }
-	
 
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
@@ -240,11 +241,40 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 
 	@Override
 	public PropType typeOf(String path) {
-		if (path.equals(PLAN + TIME_ZONE)) {
+		switch (path) {
+		case PLAN + TIME_ZONE:
 			return PropType.IDX_LIST;
+		case STRAIGHT_GO:
+		case STRAIGHT_BACK:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
 		}
-		
-		return PropType.OBJECT;
+	}
+
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case STRAIGHT_GO:
+			return Optional.of(ItemValue.builder().value(this.goStraightAtr).valueType(ValueType.ATTR));
+		case STRAIGHT_BACK:
+			return Optional.of(ItemValue.builder().value(this.backStraightAtr).valueType(ValueType.ATTR));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case STRAIGHT_GO:
+			this.goStraightAtr = value.valueOrDefault(0); break;
+		case STRAIGHT_BACK:
+			this.backStraightAtr = value.valueOrDefault(0); break;
+		default:
+			break;
+		}
 	}
 	
 }

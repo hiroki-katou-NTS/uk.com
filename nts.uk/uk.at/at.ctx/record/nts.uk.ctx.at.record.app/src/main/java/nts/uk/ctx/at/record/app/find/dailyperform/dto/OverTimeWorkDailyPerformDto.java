@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -177,7 +177,7 @@ public class OverTimeWorkDailyPerformDto implements ItemConst, AttendanceItemDat
 										c -> new OverTimeFrameTimeSheetDto(
 												new TimeSpanForCalcDto(getAttendanceTime(c.getTimeSpan() == null ? null : c.getTimeSpan().getStart()),
 														getAttendanceTime(c.getTimeSpan() == null ? null : c.getTimeSpan().getEnd())),
-												c.getFrameNo().v())),
+												c.getFrameNo().v(), c.getOverTimeCalc().v(), c.getTranferTimeCalc().v())),
 						ExcessOverTimeWorkMidNightTimeDto
 								.fromOverTimeWorkDailyPerform(domain.getExcessOverTimeWorkMidNightTime().isPresent()
 																? domain.getExcessOverTimeWorkMidNightTime().get() : null),
@@ -211,16 +211,18 @@ public class OverTimeWorkDailyPerformDto implements ItemConst, AttendanceItemDat
 		return new OverTimeOfDaily(
 				ConvertHelper.mapTo(overTimeFrameTimeSheet,
 						(c) -> new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(createTimeSheet(c.getTimeSheet())),
-								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
+								new OverTimeFrameNo(c.getOvertimeFrameNo()), new AttendanceTime(c.getOverTimeCalc()),
+								new AttendanceTime(c.getTranferTimeCalc()))),
 				ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),
 								createTimeWithCalc(c.getOvertime()), createTimeWithCalc(c.getTransferTime()),
 								toAttendanceTime(c.getBeforeApplicationTime()), toAttendanceTime(c.getOrderTime()))),
-				excessOfStatutoryMidNightTime == null ? Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue())) 
-													  : Finally.of(excessOfStatutoryMidNightTime.toDomain()),
+				excessOfStatutoryMidNightTime == null
+						? Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue()))
+						: Finally.of(excessOfStatutoryMidNightTime.toDomain()),
 				toAttendanceTime(irregularWithinPrescribedOverTimeWork),
-				new FlexTime(createTimeWithCalcMinus(), 
-				flexTime == null ? AttendanceTime.ZERO : toAttendanceTime(flexTime.getBeforeApplicationTime())),
+				new FlexTime(createTimeWithCalcMinus(),
+						flexTime == null ? AttendanceTime.ZERO : toAttendanceTime(flexTime.getBeforeApplicationTime())),
 				toAttendanceTime(overTimeSpentAtWork));
 	}
 

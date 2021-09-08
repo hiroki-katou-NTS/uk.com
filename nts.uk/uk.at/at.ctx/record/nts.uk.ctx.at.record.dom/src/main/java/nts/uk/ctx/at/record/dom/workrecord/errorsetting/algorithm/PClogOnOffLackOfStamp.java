@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,9 +15,12 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 
 /**
- * 打刻漏れ(PCログオンオグオフ)
+ * 打刻漏れ(PCログオンオグオフ) - PCログオン打刻漏れ
  * @author nampt
  *
  */
@@ -25,6 +29,10 @@ public class PClogOnOffLackOfStamp {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+	
 // fix bug 106204
 //	@Inject
 //	private ManagedParallelWithContext managedParallelWithContext;
@@ -41,42 +49,59 @@ public class PClogOnOffLackOfStamp {
 			if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo().isEmpty()) {
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				
+				//所定時間設定を取得
+				Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
+				if(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().isPresent()) {
+					predetemineTimeSet = predetemineTimeSettingRepository.findByWorkTimeCode(
+							companyId,
+							workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().get().v());
+				}
+				
+				//所定労働時間帯の件数を取得
+				int predTimeSpanCount = predetemineTimeSet.isPresent()
+						? predetemineTimeSet.get().getTimezoneByAmPmAtrForCalc(workStyle.toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size()
+						: 0;
+				
 				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo();
-				// fix bug 106204
-				logOnInfos.forEach(logOnInfo ->  {
-					// ログオフのみ存在している(only has Logoff time)
-					if ((logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent() && !logOnInfo.getLogOn().isPresent())
-							|| (logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent()
-								&& logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() == null)) {
-						if (logOnInfo.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(794);
-						} else if (logOnInfo.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(796);
+				for(int number = 1;number<=predTimeSpanCount;number++) {//start for 1
+					// fix bug 106204
+					for (LogOnInfo logOnInfo : logOnInfos) {//start for 2
+						if(logOnInfo.getWorkNo().v().intValue() == number) {
+							// ログオフのみ存在している(only has Logoff time)
+							if ((logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent() && !logOnInfo.getLogOn().isPresent())
+									|| (logOnInfo.getLogOff() != null && logOnInfo.getLogOff().isPresent()
+										&& logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOn().get() == null)) {
+								if (logOnInfo.getWorkNo().v() == 1) {
+									attendanceItemIDList.add(794);
+								} else if (logOnInfo.getWorkNo().v() == 2) {
+									attendanceItemIDList.add(796);
+								}
+							}
+							// ログオンのみ存在している(only has Logon time)
+							if ((logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
+									|| (logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() 
+									&& logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() == null)) {
+								if (logOnInfo.getWorkNo().v() == 1) {
+									attendanceItemIDList.add(795);
+								} else if (logOnInfo.getWorkNo().v() == 2) {
+									attendanceItemIDList.add(797);
+								}
+							}
+							// 両方存在しない(both has not data)
+		//					if ((!logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
+		//							|| (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOff().isPresent()
+		//							&& logOnInfo.getLogOn().get() == null && logOnInfo.getLogOff().get() == null)) {
+		//						if (logOnInfo.getWorkNo().v() == 1) {
+		//							attendanceItemIDList.add(794);
+		//							attendanceItemIDList.add(795);
+		//						} else if (logOnInfo.getWorkNo().v() == 2) {
+		//							attendanceItemIDList.add(796);
+		//							attendanceItemIDList.add(797);
+		//						}
+		//					}
 						}
 					}
-					// ログオンのみ存在している(only has Logon time)
-					if ((logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
-							|| (logOnInfo.getLogOn() != null && logOnInfo.getLogOn().isPresent() 
-							&& logOnInfo.getLogOff().isPresent() && logOnInfo.getLogOff().get() == null)) {
-						if (logOnInfo.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(795);
-						} else if (logOnInfo.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(797);
-						}
-					}
-					// 両方存在しない(both has not data)
-					if ((!logOnInfo.getLogOn().isPresent() && !logOnInfo.getLogOff().isPresent())
-							|| (logOnInfo.getLogOn().isPresent() && logOnInfo.getLogOff().isPresent()
-							&& logOnInfo.getLogOn().get() == null && logOnInfo.getLogOff().get() == null)) {
-						if (logOnInfo.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(794);
-							attendanceItemIDList.add(795);
-						} else if (logOnInfo.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(796);
-							attendanceItemIDList.add(797);
-						}
-					}
-				});
+				}
 
 				if (!attendanceItemIDList.isEmpty()){
 					employeeDailyPerError = new EmployeeDailyPerError(companyId,

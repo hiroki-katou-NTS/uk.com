@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresults;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,6 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.acceptance.ExtBudgetNumericalVal;
@@ -102,15 +102,24 @@ public class JpaExternalBudgetActualResultRepository extends JpaRepository imple
 
 	@Override
 	public List<ExternalBudgetActualResult> getAllByPeriod(List<TargetOrgIdenInfor> lstTargetOrg, DatePeriod datePeriod) {
-		List<Integer> listTargetUnit = lstTargetOrg.stream().map(c -> c.getUnit().value).collect(Collectors.toList());
-		List<String> listTargetID = lstTargetOrg.stream().map(c -> c.getTargetId()).collect(Collectors.toList());
+		if (CollectionUtil.isEmpty(lstTargetOrg))
+			return new ArrayList<>();
 
-		return this.queryProxy().query(GetDailyByListTarget,  KscdtExtBudgetDailyNew.class)
-				.setParameter("listTargetUnit", listTargetUnit)
-				.setParameter("listTargetID", listTargetID)
-				.setParameter("startDate", datePeriod.start())
-				.setParameter("endDate", datePeriod.end())
-				.getList(c -> toDomain(c));
+		List<ExternalBudgetActualResult> results = new ArrayList<>();
+		for (TargetOrganizationUnit unit : TargetOrganizationUnit.values()) {
+			List<TargetOrgIdenInfor> lstWkp = lstTargetOrg.stream().filter(t -> t.getUnit() == unit).collect(Collectors.toList());
+			if (!lstWkp.isEmpty()) {
+				List<String> listTargetID = lstWkp.stream().map(TargetOrgIdenInfor::getTargetId).filter(Objects::nonNull).collect(Collectors.toList());
+				results.addAll(this.queryProxy().query(GetDailyByListTarget,  KscdtExtBudgetDailyNew.class)
+						.setParameter("listTargetUnit", Collections.singletonList(unit.value))
+						.setParameter("listTargetID", listTargetID)
+						.setParameter("startDate", datePeriod.start())
+						.setParameter("endDate", datePeriod.end())
+						.getList(JpaExternalBudgetActualResultRepository::toDomain));
+			}
+		}
+
+		return results;
 	}
 
 	@Override

@@ -112,10 +112,16 @@ public class StandardMenuFinder {
 	//get pg-name by programId, screenId, queryString
 	public String getPgNameByQry(String programId, String screenId, String queryString) {
 		String companyId = AppContexts.user().companyId();
-		Optional<StandardMenu> standardMenu = standardMenuRepository.getPgName(companyId, programId, screenId, queryString);
-		if(!standardMenu.isPresent()){
-			return null;
+		Optional<StandardMenu> optStandardMenu = Optional.empty();
+		if (queryString != null) {
+			optStandardMenu = this.standardMenuRepository
+					.getMenuDisplayNameHasQuery(companyId, programId, queryString, screenId);
+		} else {
+			optStandardMenu = this.standardMenuRepository
+					.getMenuDisplayNameNoQuery(companyId, programId, screenId);
 		}
-		return programId + screenId + " " + standardMenu.get().getDisplayName().v();
+		return optStandardMenu
+				.map(standardMenu -> programId + screenId + " " + standardMenu.getDisplayName().v())
+				.orElse(null);
 	}
 }

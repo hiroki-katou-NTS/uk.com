@@ -337,15 +337,20 @@ public class AsposeApplyForLeave {
 //        }
         
         if (!printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().isWorkHoursDisp()) {
-            if (!printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()) {
-                cells.deleteRow(12);
-                deleteCnt++;
-            }
+            
+        	cells.deleteRow(12);
+        	deleteCnt++;
             cells.deleteRow(11);
             deleteCnt++;
             cells.deleteRow(10);
             deleteCnt++;
+        } else {   	
+        	if (!printContentOfApplyForLeave.getAppAbsenceStartInfoOutput().getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()) {
+                cells.deleteRow(12);
+                deleteCnt++;
+            }
         }
+        
         
         if (!printContentOfApplyForLeave.getApplyForLeave().getVacationInfo().getHolidayApplicationType()
                 .equals(HolidayAppType.DIGESTION_TIME)) {

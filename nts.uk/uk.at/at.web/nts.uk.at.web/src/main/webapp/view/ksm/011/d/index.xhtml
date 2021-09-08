@@ -286,14 +286,17 @@
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: completionExecutionMethod,
-											enable: completionFunction() === 1
+											enable: enableCompletionExecutionMethod
 										}"
                     ></div>
                   </div>
-                  <div
-                    class="divi"
-                    data-bind="text: $vm.$i18n('KSM011_82')"
-                  ></div>
+                  <div class="divi" data-bind="text: $vm.$i18n('KSM011_82')" style="display: inline-block"></div>
+                  <button tabindex="14" style="vertical-align: bottom; margin-left: 10px;"
+                          data-bind="ntsHelpButton: {
+                                      textId: 'KSM011_119',
+                                      position: 'right center',
+                                      enable: enablePreMethod
+                                }">？</button>
                   <hr />
                   <div class="sub-group">
                     <div class="table mb-5">
@@ -306,7 +309,7 @@
                       <div class="cell">
                         <div
                           class="cf"
-                          tabindex="14"
+                          tabindex="15"
                           data-bind="ntsSwitchButton: {
 													name: '#[KSM011_83]',
 													options: switchItems1,
@@ -314,7 +317,7 @@
 													optionsText: 'name',
 													value: confirm,
 													required: true,
-													enable: completionFunction() === 1 &amp;&amp; completionExecutionMethod() === 1
+													enable: enablePreMethod
 												 }"
                         ></div>
                       </div>
@@ -329,7 +332,7 @@
                       <div class="cell">
                         <div
                           class="cf"
-                          tabindex="15"
+                          tabindex="16"
                           data-bind="ntsSwitchButton: {
 														name: '#[KSM011_85]',
 														options: switchItems1,
@@ -337,7 +340,7 @@
 														optionsText: 'name',
 														value: alarmCheck,
 														required: true,
-														enable: completionFunction() === 1 &amp;&amp; completionExecutionMethod() === 1 
+														enable: enablePreMethod
 													}"
                         ></div>
                       </div>
@@ -353,9 +356,9 @@
                         <div class="tabl">
                           <div class="cell">
                             <button
-                              tabindex="16" id="KSM011_D6_14"
+                              tabindex="17" id="KSM011_D6_14"
                               data-bind="text: $vm.$i18n('KSM011_48'), click: openDialogScreenF,
-															enable: completionFunction() === 1 &amp;&amp; completionExecutionMethod() === 1 &amp;&amp; alarmCheck() === 1"
+															enable: enablePreMethod() &amp;&amp; alarmCheck() == 1"
                             ></button>
                           </div>
                           <div class="cell valign-center">
@@ -387,13 +390,13 @@
               </div>
               <div class="cell">
                 <div
-                  id="swap-list" tabindex="17"
+                  id="swap-list" tabindex="18"
                   data-bind="ntsSwapList: {
 									name: '#[KSM011_90]',
 									leftName: '#[KSM011_92]',
 									rightName: '#[KSM011_94]',
 									showSearchBox: { showLeft : false, showRight: false},
-									height: 119,
+									height: 182,
 									dataSource: conditionWorkSchedule,								
 									primaryKey: 'code',
 									leftColumns: ko.observableArray([

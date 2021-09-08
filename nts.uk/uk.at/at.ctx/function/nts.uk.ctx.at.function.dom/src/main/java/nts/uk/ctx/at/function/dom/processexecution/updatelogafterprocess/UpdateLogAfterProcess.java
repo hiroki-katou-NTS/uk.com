@@ -165,7 +165,7 @@ public class UpdateLogAfterProcess {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
 						task.setLastEndExecDateTime(GeneralDateTime.now());
 						task.setErrorSystem(false);
-						task.setErrorBusiness(false);
+						task.setErrorBusiness(true);
 						task.setStatus(isStopExec ? EndStatus.FORCE_END : EndStatus.SUCCESS);
 					}
 				});

@@ -1,6 +1,6 @@
 package nts.uk.screen.at.app.find.ktg.ktg005.b;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,11 +8,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApplicationStatusWidgetItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApproveWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.StandardWidgetType;
 import nts.uk.screen.at.app.find.ktg.ktg005.a.ApplicationStatusDetailedSettingDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.i18n.TextResource;
 
 /**
  * 
@@ -33,7 +36,11 @@ public class StartScreenB {
 				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS, AppContexts.user().companyId());
 		
 		if (!standardWigetOpt.isPresent()) {
-			return new StartScreenBResult("", Collections.emptyList());
+			List<ApplicationStatusDetailedSettingDto> applicationStatusDetailedSettings = new ArrayList<>();
+			for (ApplicationStatusWidgetItem value : ApplicationStatusWidgetItem.values()) {
+				applicationStatusDetailedSettings.add(new ApplicationStatusDetailedSettingDto(NotUseAtr.USE.value, value.value));
+			}
+			return new StartScreenBResult(TextResource.localize("KTG005_15"), applicationStatusDetailedSettings);
 		}
 
 		List<ApplicationStatusDetailedSettingDto> appSettings = standardWigetOpt.get().getAppStatusDetailedSettingList()

@@ -54,12 +54,12 @@ public class ChangeWorkToHalfdayLeave {
 				.collect(Collectors.toList());
 		Optional<WorkType> workType = Optional.empty();
 		// 「打刻。時刻変更区分」を確認する
-		if (stamp.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK) {
+		if (stamp.getType().getChangeClockArt() == ChangeClockArt.WORKING_OUT) {
 			workType = listWorkType.stream()
 					.filter(c -> c.getDailyWork().getMorning() == WorkTypeClassification.Attendance
 							&& c.getDailyWork().getAfternoon() == WorkTypeClassification.AnnualHoliday)
 					.findFirst();
-		} else if (stamp.getType().getChangeClockArt() == ChangeClockArt.WORKING_OUT) {
+		} else if (stamp.getType().getChangeClockArt() == ChangeClockArt.GOING_TO_WORK) {
 			workType = listWorkType.stream()
 					.filter(c -> c.getDailyWork().getMorning() == WorkTypeClassification.AnnualHoliday
 							&& c.getDailyWork().getAfternoon() == WorkTypeClassification.Attendance)

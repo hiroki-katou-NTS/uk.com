@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyattendance.timesheet.ouen.dto.OuenWorkTimeSheetOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.attendanceleavinggate.dto.AttendanceLeavingGateOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.calculationattribute.dto.CalcAttrOfDailyPerformanceDto;
@@ -26,8 +27,10 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeB
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConverterCommonService;
+import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -35,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
@@ -47,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Spe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
@@ -69,10 +72,15 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 	
 	@Override
 	public IntegrationOfDaily toDomain() {
-		return new IntegrationOfDaily(this.employeeId, this.ymd, workInfo(), calcAttr(), affiliationInfo(), pcLogInfo(),
+		IntegrationOfDaily rs =  new IntegrationOfDaily(this.employeeId, this.ymd, workInfo(), calcAttr(), affiliationInfo(), pcLogInfo(),
 				this.errors, outingTime(), breakTime(), attendanceTime(), timeLeaving(),
 				shortTime(), specificDateAttr(), attendanceLeavingGate(), anyItems(), editStates(), temporaryTime(),
 				remarks(), snapshot());
+		
+		if(!ouenSheet().isEmpty())
+		rs.setOuenTimeSheet(ouenSheet());
+		
+		return rs;
 	}
 
 	@Override
@@ -100,6 +108,7 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		this.withPCLogInfo(domain.getPcLogOnInfo().orElse(null));
 		this.withRemarks(domain.getRemarks());
 		this.withSnapshot(domain.getSnapshot().orElse(null));
+		this.withOuenSheet(domain.getOuenTimeSheet());
 		return this;
 	}
 
@@ -273,6 +282,16 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 		this.ymd = (workingDate);
 		return this;
 	}
+	
+	@Override
+	public DailyRecordToAttendanceItemConverter withOuenSheet(List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet) {
+		//this.ouenSheets = new ArrayList<>(ouenSheet);
+		OuenWorkTimeSheetOfDaily daily = new OuenWorkTimeSheetOfDaily(this.employeeId,this.ymd, ouenSheet);
+			this.domainSource.put(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME, daily);
+			this.dtoSource.put(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME, null);
+			this.itemValues.put(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME, null);
+		return this;
+	}
 
 	public DailyRecordToAttendanceItemConverter completed() {
 		return this;
@@ -375,6 +394,17 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 
 		return Optional.ofNullable((SnapShot) getDomain(ItemConst.DAILY_SNAPSHOT_NAME));
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<OuenWorkTimeSheetOfDailyAttendance> ouenSheet() {
+		val rs = getDomains(ItemConst.DAILY_SUPPORT_TIMESHEET_NAME);
+		if(rs instanceof OuenWorkTimeSheetOfDaily){
+			return ((OuenWorkTimeSheetOfDaily) rs).getOuenTimeSheet();
+		} else {
+			return (List<OuenWorkTimeSheetOfDailyAttendance>) rs;
+		}
+	}
 
 	@Override
 	protected boolean isOpyionalItem(String type) {
@@ -453,6 +483,9 @@ public class DailyRecordToAttendanceItemConverterImpl extends AttendanceItemConv
 			break;
 		case ItemConst.DAILY_SNAPSHOT_NAME:
 			processOnDomain(type, c -> SnapshotDto.from(this.employeeId, this.ymd, (SnapShot) c));
+			break;
+		case ItemConst.DAILY_SUPPORT_TIMESHEET_NAME:
+			processOnDomain(type, c -> OuenWorkTimeSheetOfDailyDto.getDto(this.employeeId, this.ymd, (OuenWorkTimeSheetOfDaily) c));
 			break;
 		default:
 			break;

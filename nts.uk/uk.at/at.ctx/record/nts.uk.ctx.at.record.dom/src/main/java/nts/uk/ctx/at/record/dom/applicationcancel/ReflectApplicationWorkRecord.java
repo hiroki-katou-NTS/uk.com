@@ -10,10 +10,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectStatusResult;
 import nts.uk.ctx.at.record.dom.adapter.request.application.state.RCReflectedState;
-import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
@@ -39,8 +38,8 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkRecord {
 
-	public static Pair<RCReflectStatusResult, Optional<AtomTask>> process(Require require,
-			ApplicationShare application, GeneralDate date, RCReflectStatusResult reflectStatus) {
+	public static Pair<RCReflectStatusResult, Optional<AtomTask>> process(Require require, ApplicationShare application,
+			GeneralDate date, RCReflectStatusResult reflectStatus, GeneralDateTime reflectTime) {
 
 		// [input.申請.打刻申請モード]をチェック
 		GeneralDate dateTarget = date;
@@ -72,7 +71,7 @@ public class ReflectApplicationWorkRecord {
 		ChangeDailyAttendance changeAtt;
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
-			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD);
+			changeAtt = new ChangeDailyAttendance(true, true, false, false, ScheduleRecordClassifi.RECORD, true);
 			/// 打刻申請（NRモード）を反映する -- itemId
 			TimeStampApplicationNRMode.process(require, dateTarget,
 					(AppRecordImageShare) application, dailyRecordApp, stamp, changeAtt);
@@ -109,7 +108,7 @@ public class ReflectApplicationWorkRecord {
 
 			// 申請反映履歴を作成する
 			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.RECORD,
-					dailyRecordApp, domainBeforeReflect);
+					dailyRecordApp, domainBeforeReflect, reflectTime);
 
 		});
 		// [input.勤務実績の反映状態]を「反映済み」に更新する
@@ -125,7 +124,10 @@ public class ReflectApplicationWorkRecord {
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD);
+		boolean directBounceClassifi = lstItemId.stream()
+				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
+				.findFirst().isPresent();
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.RECORD, directBounceClassifi);
 	}
 
 	private static IntegrationOfDaily createDailyDomain(Require require, IntegrationOfDaily domainDaily) {

@@ -105,6 +105,14 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
 			Element.PAYLOAD, Element.BCC);
 	
+	public static final List<String> APP_REASON_REQ_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
+			Element.BCC);
+
+	public static final List<String> APP_REASON_RES_ORDER = Arrays.asList(Element.SOH, Element.HDR, Element.LENGTH,
+			Element.VERSION, Element.FLAG, Element.FRAGMENT_NUMBER, Element.NRL_NO, Element.MAC_ADDR, Element.CONTRACT_CODE , Element.PADDING,
+			Element.PAYLOAD, Element.BCC);
+	
 	/**
 	 * From map.
 	 * 
@@ -157,7 +165,7 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			break;
 
 		case WORKTIME_INFO:
-			orders = request ? WORKTIME_INFO_REQ_ORDER : PERSONAL_INFO_RES_ORDER;
+			orders = request ? WORKTIME_INFO_REQ_ORDER : WORKTIME_INFO_RES_ORDER;
 			break;
 
 		case RESERVATION_INFO:
@@ -169,11 +177,16 @@ public abstract class ItemSequence<T extends MeanCarryable> implements Sequentia
 			break;
 
 		case TIMESET_INFO:
-			orders = request ? PERSONAL_INFO_REQ_ORDER : TIMESET_INFO_RES_ORDER;
+			orders = request ? TIMESET_INFO_REQ_ORDER : TIMESET_INFO_RES_ORDER;
 			break;
 			
 		case TR_REMOTE:
 			orders = TR_REMOTE;
+			break;
+			
+		case APPLICATION_INFO:
+			orders = request ? APP_REASON_REQ_ORDER : APP_REASON_RES_ORDER;
+			break;
 			
 		default:
 			return Optional.empty();

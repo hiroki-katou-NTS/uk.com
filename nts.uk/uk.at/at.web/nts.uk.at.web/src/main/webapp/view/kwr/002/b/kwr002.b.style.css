@@ -13,8 +13,9 @@
 	padding-bottom:15px;
 }
 
-.switch-btn>button{
+.switchbox-wrappers .radio-wrapper span {
 	width: 80px;
+	text-align: center;
 }
 
 #switchhelpbtn {

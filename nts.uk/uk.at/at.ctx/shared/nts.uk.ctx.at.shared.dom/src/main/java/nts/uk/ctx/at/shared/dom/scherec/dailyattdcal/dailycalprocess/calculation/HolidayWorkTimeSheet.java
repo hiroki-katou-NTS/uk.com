@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,15 +29,20 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet.TransProcRequire;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.TimeSeriesDivision;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.service.ActualWorkTimeSheetListService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.GetSubHolOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkHolidayTimeZone;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -76,71 +79,26 @@ public class HolidayWorkTimeSheet{
 	 */
 	public List<HolidayWorkFrameTime> collectHolidayWorkTime(
 			OverTimeSheet.TransProcRequire require,
+			String cid, 
 			AutoCalSetting holidayAutoCalcSetting,
 			WorkType workType,
-			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			Optional<String> workTimeCode,
 			IntegrationOfDaily integrationOfDaily,
 			DeclareTimezoneResult declareResult,
 			boolean upperControl){
 		
-		Map<Integer,HolidayWorkFrameTime> holidayTimeFrameList = new HashMap<Integer, HolidayWorkFrameTime>();
-		//枠時間のソート
-		val sortedFrameTimeSheet = sortFrameTime(
-				require, this.workHolidayTime, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
-				workType, eachWorkTimeSet, eachCompanyTimeSet);
-		
-		List<HolidayWorkFrameNo> numberOrder = new ArrayList<>();
-		
-		for(HolidayWorkFrameTimeSheetForCalc holidayWorkFrameTime:sortedFrameTimeSheet) {
-			TimeDivergenceWithCalculation time = holidayWorkFrameTime.correctCalculationTime(holidayAutoCalcSetting);
-			if(!numberOrder.contains(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo()))
-				numberOrder.add(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo());
-			//加算だけ
-			if(holidayTimeFrameList.containsKey(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v())) {
-				val frame = holidayTimeFrameList.get(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v());
-				val addFrame = frame.addHolidayTimeExistReturn(time.getTime(), time.getCalcTime());
-				holidayTimeFrameList.replace(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(), addFrame);
-			}
-			//枠追加
-			else {
-				holidayTimeFrameList.put(holidayWorkFrameTime.getFrameTime().getHolidayFrameNo().v(),
-										holidayWorkFrameTime.getFrameTime().addHolidayTimeExistReturn(time.getTime(), time.getCalcTime()));
-			}
-		}
-		//Map→List変換
-		List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList = new ArrayList<>(holidayTimeFrameList.values()); 
-		//staticがついていなので、4末緊急対応
-		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()
-			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null
-			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime() != null
-			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getActualTime() != null
-			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily() != null
-			&& integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
-			calcHolidayTimeWorkTimeList.forEach(ts -> {
-				val wantAddTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().get().getHolidayWorkFrameTime()
-									.stream()
-									.filter(tc -> tc.getHolidayFrameNo().equals(ts.getHolidayFrameNo()))
-									.findFirst();
-				if(wantAddTime.isPresent())
-					ts.addBeforeTime(wantAddTime.get().getBeforeApplicationTime().isPresent()?wantAddTime.get().getBeforeApplicationTime().get():new AttendanceTime(0));
-			});
-			List<HolidayWorkFrameTime> reOrderList = new ArrayList<>();
-			for(HolidayWorkFrameNo no : numberOrder){
-				val item = calcHolidayTimeWorkTimeList.stream().filter(tc -> tc.getHolidayFrameNo().equals(no)).findFirst();
-				item.ifPresent(tc -> reOrderList.add(tc));
-			}
-			calcHolidayTimeWorkTimeList = reOrderList;
-		}
-		List<HolidayWorkFrameTime> afterCalcUpperTimeList = calcHolidayTimeWorkTimeList;
-		if (upperControl){
-			//staticがついていなので、4末緊急対応
-			//事前申請を上限とする制御
-			afterCalcUpperTimeList = afterUpperControl(calcHolidayTimeWorkTimeList, holidayAutoCalcSetting);
-		}
-		//振替処理
-		val aftertransTimeList = transProcess(require, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
-				workType, afterCalcUpperTimeList, eachWorkTimeSet, eachCompanyTimeSet);
+		HolidayWorkTimeOfDaily holidayWorkTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance()
+				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
+						.getWorkHolidayTime()).orElse(HolidayWorkTimeOfDaily.createDefaultBeforeApp(
+					workHolidayTime.stream().map(x -> x.getFrameTime().getHolidayFrameNo().v()).collect(Collectors.toList())));
+		List<HolidayWorkFrameTime> aftertransTimeList  = new ArrayList<HolidayWorkFrameTime>();
+		// 時間帯毎に休出時間を計算する(補正、制御含む)
+		calculateHolidayEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				workType.getWorkTypeCode().v(), workTimeCode, holidayWorkTime, holidayAutoCalcSetting,
+				upperControl);
+		//時間帯毎の時間から休出枠毎の時間を集計
+		aftertransTimeList.addAll(this.aggregateTimeForHol(holidayWorkTime));
+
 		if (declareResult.getCalcRangeOfOneDay().isPresent()){
 			//ループ処理
 			CalculationRangeOfOneDay declareCalcRange = declareResult.getCalcRangeOfOneDay().get();
@@ -151,10 +109,10 @@ public class HolidayWorkTimeSheet{
 				CalAttrOfDailyAttd declareCalcSet = CalAttrOfDailyAttd.createAllCalculate();
 				List<HolidayWorkFrameTime> declareFrameTimeList = declareSheet.collectHolidayWorkTime(
 						require,
+						cid, 
 						declareCalcSet.getHolidayTimeSetting().getRestTime(),
 						workType,
-						eachWorkTimeSet,
-						eachCompanyTimeSet,
+						workTimeCode,
 						integrationOfDaily,
 						new DeclareTimezoneResult(),
 						false);
@@ -168,30 +126,309 @@ public class HolidayWorkTimeSheet{
 		return aftertransTimeList;
 	}
 	
-	private List<HolidayWorkFrameTimeSheetForCalc> sortFrameTime(
-			OverTimeSheet.TransProcRequire require,
-			List<HolidayWorkFrameTimeSheetForCalc> frameTimeSheets,
-			String employeeId,
-			GeneralDate ymd,
-			WorkType workType,
-			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet) {
+
+	/**
+	 * 時間帯毎に休出時間を計算する(補正、制御含む)
+	 * 
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param date 年月日
+	 * @param workTimeCode 就業時間帯コード：Optional<就業時間帯コード>
+	 * 	@param overTimeOfDaily 日別勤怠の休出時間
+	 * @param autoCalcSetting 自動計算設定：休出時間の自動計算設定
+	 */
+	public void calculateHolidayEachTimeZone(TransProcRequire require, String cid, String sid, GeneralDate date,
+			String workTypeCode, Optional<String> workTimeCode, HolidayWorkTimeOfDaily holidayWorkTime,
+			AutoCalSetting autoCalcSetting, boolean upperControl) {
 		
-		val useSetting = decisionUseSetting(
-				require, employeeId, ymd, workType, eachWorkTimeSet, eachCompanyTimeSet);
-		if(!useSetting.isPresent())
-			return frameTimeSheets;
-		//指定した時間分振り替える
-		//開始時刻のASC
-		//&& 普通残業を優先するであれば普通残業、早出残業順になるようにする
-		if(useSetting.get().getSubHolTransferSetAtr().isSpecifiedTimeSubHol()) {
-			return frameTimeSheets.stream().sorted((first,second) -> first.getTimeSheet().getStart().compareTo(second.getTimeSheet().getStart())).collect(Collectors.toList());
+		//時間帯毎に休出時間を計算する
+		calculateProcess(autoCalcSetting);
+		
+		//事前申請上限制御
+		if(upperControl) {
+			advanceAppUpperLimitControl(holidayWorkTime, autoCalcSetting);
 		}
-		//一定時間
-		//開始時刻のDESC
-		else {
-			return frameTimeSheets.stream().sorted((first,second) -> second.getTimeSheet().getStart().compareTo(first.getTimeSheet().getStart())).collect(Collectors.toList());
+		
+		//代休への振替処理
+		transferProcSubHol(require, cid, sid, date, workTypeCode, workTimeCode);
+
+	}
+	
+	//時間帯毎に休出時間を計算する
+	public void calculateProcess(AutoCalSetting autoCalcSetting) {
+		//休出時間帯の時間枠を取得
+		this.workHolidayTime.forEach(frameTime ->{
+			//休出時間帯の計算
+			frameTime.getFrameTime().setHolidayWorkTime(Finally.of(frameTime.correctCalculationTime(autoCalcSetting)));
+		});
+		return;
+	}
+	
+	/**
+	 * 事前申請上限制御
+	 * @param overTimeOfDaily 日別勤怠の休出時間
+	 * 	@param autoCalcSet 休出時間の自動計算設定
+	 */
+	private void advanceAppUpperLimitControl(HolidayWorkTimeOfDaily holidayOfDaily, AutoCalSetting autoCalcSet) {
+		
+		val holiday = holidayOfDaily.clone();
+		//各時間ごとの制御する時間を計算
+		List<HolTimeDeductByPriorAppOutput> lstTimeDeductOut = calculateTimeToControlEachTime(holiday, autoCalcSet);
+		
+		//休出枠時間帯(WORK)を時系列の逆順に取得
+		 this.workHolidayTime.sort((x, y) -> y.getTimeSheet().getStart().v() - x.getTimeSheet().getStart().v());
+		
+		// loop
+		 this.workHolidayTime.forEach(frameSheet -> {
+			// 控除する時間を計算
+			Optional<HolTimeDeductByPriorAppOutput> frameSheetOpt = lstTimeDeductOut.stream()
+					.filter(frame -> frame.getHolidayTimeNo().v().intValue() == frameSheet.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
+
+			AttendanceTime timeDeductCalc = new AttendanceTime(
+					Math.min(frameSheetOpt.map(x -> x.getTimeDeduct().v()).orElse(0),
+							(frameSheet.getFrameTime().getHolidayWorkTime().isPresent()
+									? frameSheet.getFrameTime().getHolidayWorkTime().get().getTime().v()
+									: 0)));
+			// 時間帯から控除
+			if (frameSheet.getFrameTime().getHolidayWorkTime().isPresent()) {
+				frameSheet.getFrameTime().getHolidayWorkTime().get().setTime(new AttendanceTime(
+						frameSheet.getFrameTime().getHolidayWorkTime().get().getTime().v() - timeDeductCalc.v()));
+			}
+			// 控除する時間を減算
+			frameSheetOpt.ifPresent(x -> {
+				x.setTimeDeduct(new AttendanceTime(x.getTimeDeduct().v() - timeDeductCalc.v()));
+			});
+		});
+		return;
+	}
+	
+	/**
+	 * 代休への振替処理
+	 * @param cid 会社ID
+	 * @param sid 社員ID
+	 * @param date 年月日
+	 * @param workTypeCode 勤務種類コード
+	 * @param workTimeCode 就業時間帯コード:Optional<就業時間帯コード>
+	 */
+	public void transferProcSubHol(TransProcRequire require, String cid, String sid, GeneralDate date,
+			String workTypeCode, Optional<String> workTimeCode) {
+
+		// 勤務種類を取得
+		// ○平日かどうか判断
+		Optional<WorkType> workTypeOpt = require.findByPK(cid, workTypeCode);
+		if (!workTypeOpt.isPresent())
+			return;
+		AttendanceDayAttr  workStype = workTypeOpt.get().chechAttendanceDay();
+		if(workStype != AttendanceDayAttr.HOLIDAY_WORK){
+			return;
 		}
+
+		// ○当日が代休管理する日かどうかを判断する
+		boolean checkDateForMag = require.checkDateForManageCmpLeave(require, cid, sid, date);
+		if (!checkDateForMag) {
+			return;
+		}
+		
+		// 代休発生設定を取得する
+		Optional<SubHolTransferSet> subHolTransSet = GetSubHolOccurrenceSetting.process(require, cid, workTimeCode,
+				CompensatoryOccurrenceDivision.WorkDayOffTime);
+		if(!subHolTransSet.isPresent()){
+			return;
+		}
+		
+		if (subHolTransSet.get().getSubHolTransferSetAtr() == SubHolTransferSetAtr.CERTAIN_TIME_EXC_SUB_HOL) {
+			//休出時間を代休へ振り替える(一定時間)
+			this.transProcesCertainPeriod(require, cid, workTimeCode);
+		} else {
+			// 休出時間を代休へ振り替える(指定時間)
+			this.transferProcessSpecifi(require, cid, workTimeCode);
+		}
+	}
+	
+	//休出時間を代休へ振り替える(一定時間)
+	private void transProcesCertainPeriod(TransProcRequire require, String cid, Optional<String> workTimeCode) {
+		//振替可能時間を計算
+		AttendanceTime sumTime = calculateTransferableTime(require, cid, workTimeCode, UseTimeAtr.TIME);
+		
+		//残業時間を代休へ振り替える
+		transferOvertimeSubsHol(sumTime, UseTimeAtr.TIME, TimeSeriesDivision.TIME_SERIES_REVERSE);
+		
+		//振替可能時間を計算
+		AttendanceTime sumCalcTime = calculateTransferableTime(require, cid, workTimeCode, UseTimeAtr.CALCTIME);
+		
+		//残業時間を代休へ振り替える
+		transferOvertimeSubsHol(sumCalcTime, UseTimeAtr.CALCTIME, TimeSeriesDivision.TIME_SERIES_REVERSE);
+		
+	}
+	
+	
+	// 振替可能時間を計算
+	private AttendanceTime calculateTransferableTime(TransProcRequire require, String cid, Optional<String> workTimeCode, UseTimeAtr atr) {
+
+		//代休発生設定を取得する
+		Optional<SubHolTransferSet> subHolidayTrans = GetSubHolOccurrenceSetting.process(require, cid, workTimeCode, CompensatoryOccurrenceDivision.WorkDayOffTime);
+		
+		//休出時間を合計する
+		AttendanceTime sumTime = totalTimeTransferOfHoliday(atr);
+		
+		//代休振替可能時間を取得
+		return subHolidayTrans.map(x -> x.getTransferTime(sumTime)).orElse(new AttendanceTime(0));
+	}
+	
+	// 休出時間を代休へ振り替える
+	private AttendanceTime totalTimeTransferOfHoliday(UseTimeAtr atr) {
+		int time = this.workHolidayTime.stream().collect(Collectors.summingInt(x -> {
+			if (atr == UseTimeAtr.TIME) {
+				return x.getFrameTime().getHolidayWorkTime().isPresent()
+						? x.getFrameTime().getHolidayWorkTime().get().getTime().v()
+						: 0;
+			} else {
+				return x.getFrameTime().getHolidayWorkTime().isPresent()
+						? x.getFrameTime().getHolidayWorkTime().get().getCalcTime().v()
+						: 0;
+			}
+		}));
+		return new AttendanceTime(time);
+	}
+	
+	// 休出時間を代休へ振り替える
+	private void transferOvertimeSubsHol(AttendanceTime sumTime, UseTimeAtr atr,
+			TimeSeriesDivision timeSeries) {
+		// 休出時間帯をソート
+		val lstFrameSheetDom = this.workHolidayTime.stream().sorted((x, y) -> {
+			if (timeSeries == TimeSeriesDivision.TIME_SERIES) {
+				return x.getTimeSheet().getStart().v() - y.getTimeSheet().getStart().v();
+			} else {
+				return y.getTimeSheet().getStart().v() - x.getTimeSheet().getStart().v();
+			}
+		}).collect(Collectors.toList());
+
+		int transferableTime = sumTime.v();
+		int transferTime = 0;
+		for (HolidayWorkFrameTimeSheetForCalc sheetForCalc : lstFrameSheetDom) {
+			if (transferableTime == 0)
+				break;
+			int timeUseForCalc = 0;
+			if (atr == UseTimeAtr.TIME) {
+				timeUseForCalc = sheetForCalc.getFrameTime().getHolidayWorkTime().isPresent()
+						? sheetForCalc.getFrameTime().getHolidayWorkTime().get().getTime().v()
+						: 0;
+				// ○振替可能残時間と残業時間を比較して振替時間を計算
+				transferTime = Math.min(timeUseForCalc, transferableTime);
+				// ○振替
+				if (sheetForCalc.getFrameTime().getHolidayWorkTime().isPresent())
+					sheetForCalc.getFrameTime().getHolidayWorkTime().get()
+							.replaceTime(new AttendanceTime(timeUseForCalc - transferTime));
+				if (sheetForCalc.getFrameTime().getTransferTime().isPresent())
+					sheetForCalc.getFrameTime().getTransferTime().get().replaceTime(new AttendanceTime(transferTime));
+				// ○振替可能残時間から振替時間を減算
+				transferableTime -= transferTime;
+			} else {
+				timeUseForCalc = sheetForCalc.getFrameTime().getHolidayWorkTime().isPresent()
+						?  sheetForCalc.getFrameTime().getHolidayWorkTime().get().getCalcTime().v() : 0;
+				// ○振替可能残時間と残業時間を比較して振替時間を計算
+				// ○振替可能残時間と残業時間を比較して振替時間を計算
+				transferTime = Math.min(timeUseForCalc, transferableTime);
+				// ○振替
+				if(sheetForCalc.getFrameTime().getHolidayWorkTime().isPresent())
+					sheetForCalc.getFrameTime().getHolidayWorkTime().get()
+						.replaceCalcTime(new AttendanceTime(timeUseForCalc - transferTime));
+				if (sheetForCalc.getFrameTime().getTransferTime().isPresent())
+					sheetForCalc.getFrameTime().getTransferTime().get().replaceCalcTime(new AttendanceTime(transferTime));
+				// ○振替可能残時間から振替時間を減算
+				transferableTime -= transferTime;
+			}
+		}
+	}
+	
+	// 休出時間を代休へ振り替える(指定時間)
+	private void transferProcessSpecifi(TransProcRequire require, String cid, Optional<String> workTimeCode) {
+		// 振替可能時間を計算
+		AttendanceTime sumTime = calculateTransferableTime(require, cid, workTimeCode, UseTimeAtr.TIME);
+
+		// 休出時間を代休へ振り替える
+		transferOvertimeSubsHol(sumTime, UseTimeAtr.TIME, TimeSeriesDivision.TIME_SERIES);
+
+		// 振替可能時間を計算
+		AttendanceTime sumCalcTime = calculateTransferableTime(require, cid, workTimeCode,
+				UseTimeAtr.CALCTIME);
+
+		// 休出時間を代休へ振り替える
+		transferOvertimeSubsHol(sumCalcTime, UseTimeAtr.CALCTIME,
+				TimeSeriesDivision.TIME_SERIES);
+
+	}
+
+	/**
+	 * 各時間ごとの制御する時間を計算
+	 * @param overTimeOfDaily 日別勤怠の休出時間
+	 * @param autoCalcSet 休出時間の自動計算設定
+	 * @return
+	 */
+	private List<HolTimeDeductByPriorAppOutput> calculateTimeToControlEachTime(HolidayWorkTimeOfDaily holidayOfDaily,
+			AutoCalSetting autoCalcSet) {
+		//時間帯毎の時間から休出枠毎の時間を集計
+		List<HolidayWorkFrameTime>aggTime = aggregateTimeForHol(holidayOfDaily);
+		//後で比較する為の時間create
+		List<HolidayWorkFrameTime>aggTimeAfterA = aggTime.stream().map(x -> {
+			 return x.clone();
+		 }).collect(Collectors.toList());
+		
+     	//事前休出時間をセットする
+		aggTime.forEach(holTime -> {
+			val beforeApp = holidayOfDaily.getHolidayWorkFrameTime().stream()
+					.filter(x -> x.getHolidayFrameNo().v().intValue() == holTime.getHolidayFrameNo().v().intValue()).findFirst()
+					.map(x -> x.getBeforeApplicationTime()).orElse(Finally.of(new AttendanceTime(0)));
+			holTime.addBeforeTime(beforeApp.isPresent() ? beforeApp.get() : new AttendanceTime(0));
+		});
+		
+		//補正処理を実行する為に、日別勤怠の休出時間のインスタンスを作成
+		//事前申請を上限とする補正処理
+		List<HolidayWorkFrameTime> lstB =  new HolidayWorkFrameTimeList(aggTime).afterUpperControl(autoCalcSet);
+		
+		// 制御する前の時間と比較して制御する時間を計算
+		return aggTimeAfterA.stream().map(x -> {
+			val valueB = lstB.stream().filter(b -> b.getHolidayFrameNo().v().intValue() == x.getHolidayFrameNo().v().intValue()).findFirst();
+			if (!valueB.isPresent())
+				return new HolTimeDeductByPriorAppOutput(x.getHolidayFrameNo(), new AttendanceTime(0));
+
+			val finalTime = (x.getHolidayWorkTime().isPresent() ? x.getHolidayWorkTime().get().getTime().v() : 0)
+					- (valueB.get().getHolidayWorkTime().isPresent()
+							? valueB.get().getHolidayWorkTime().get().getTime().v()
+							: 0);
+			return new HolTimeDeductByPriorAppOutput(x.getHolidayFrameNo(), new AttendanceTime(finalTime));
+
+		}).collect(Collectors.toList());
+
+	}
+
+	// 時間帯毎の時間から休出枠毎の時間を集計
+	public List<HolidayWorkFrameTime> aggregateTimeForHol(HolidayWorkTimeOfDaily holidayOfDaily) {
+		val hol = holidayOfDaily.clone();
+		//clean time old
+		hol.getHolidayWorkFrameTime().forEach(x -> x.cleanTimeAndTransfer());
+		// 休出時間帯でループ
+		this.workHolidayTime.forEach(frameTime -> {
+			// 休出時間へ加算
+			val holTime = hol.getHolidayWorkFrameTime().stream()
+					.filter(x -> x.getHolidayFrameNo().v().intValue() == frameTime.getFrameTime().getHolidayFrameNo().v().intValue()).findFirst();
+			holTime.ifPresent(data -> {
+				// B休出時間+=A.休出時間
+				if (data.getHolidayWorkTime().isPresent()
+						&& frameTime.getFrameTime().getHolidayWorkTime().isPresent()) {
+					data.getHolidayWorkTime().get()
+							.addMinutesNotReturn(frameTime.getFrameTime().getHolidayWorkTime().get());
+				}
+				if (data.getTransferTime().isPresent() && frameTime.getFrameTime().getTransferTime().isPresent()) {
+					// B.振替時間+=A.振替時間
+					data.getTransferTime().get().addMinutesNotReturn(frameTime.getFrameTime().getTransferTime().get());
+				}
+			});
+		});
+
+		// 休出枠時間を返す
+
+		return hol.getHolidayWorkFrameTime();
 	}
 	
 	/**
@@ -235,8 +472,36 @@ public class HolidayWorkTimeSheet{
 	 * アルゴリズム：休出枠時間帯の作成
 	 * @return　休出枠時間帯List
 	 */
-	public List<HolidayWorkFrameTimeSheet> changeHolidayWorkTimeFrameTimeSheet(){
-		return this.workHolidayTime.stream().map(tc -> tc.changeNotWorkFrameTimeSheet())
+	public List<HolidayWorkFrameTimeSheet> changeHolidayWorkTimeFrameTimeSheet(OverTimeSheet.TransProcRequire require,
+			String cid, 
+			AutoCalSetting holidayAutoCalcSetting,
+			WorkType workType,
+			Optional<String> workTimeCode,
+			IntegrationOfDaily integrationOfDaily,
+			boolean upperControl){
+		//時間帯毎に休出時間を計算する(補正、制御含む)
+		HolidayWorkTimeOfDaily holidayWorkTime = integrationOfDaily.getAttendanceTimeOfDailyPerformance()
+				.flatMap(x -> x.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily()
+						.getWorkHolidayTime()).orElse(HolidayWorkTimeOfDaily.createDefaultBeforeApp(
+					workHolidayTime.stream().map(x -> x.getFrameTime().getHolidayFrameNo().v()).collect(Collectors.toList())));
+		// 時間帯毎に休出時間を計算する(補正、制御含む)
+		calculateHolidayEachTimeZone(require, cid, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
+				workType.getWorkTypeCode().v(), workTimeCode, holidayWorkTime, holidayAutoCalcSetting,
+				upperControl);
+
+		
+		return this.workHolidayTime.stream()
+											.map(tc -> {
+												val mapData = tc.changeNotWorkFrameTimeSheet();
+												//B.計算休出時間←A.枠時間.休出時間.時間
+												if(tc.getFrameTime().getHolidayWorkTime().isPresent())
+													mapData.setHdTimeCalc(tc.getFrameTime().getHolidayWorkTime().get().getTime());
+												//B.計算振替時間←A.枠時間.振替時間.時間
+												if(tc.getFrameTime().getTransferTime().isPresent())
+													mapData.setTranferTimeCalc(tc.getFrameTime().getTransferTime().get().getTime());
+												//休出枠時間帯を作成
+												return mapData;
+											})
 											.sorted((first,second) -> first.getHolidayWorkTimeSheetNo().v().compareTo(second.getHolidayWorkTimeSheetNo().v()))
 											.collect(Collectors.toList());
 	}
@@ -344,30 +609,6 @@ public class HolidayWorkTimeSheet{
 		return bonusPayTime.stream().filter(tc -> tc.getBonusPayTimeItemNo() == bonusPayNo).collect(Collectors.toList());
 	}
 
-	
-	/**
-	 * 事前申請上限制御処理
-	 * @param calcHolidayTimeWorkTimeList 残業時間枠リスト
-	 * @param autoCalcSet 残業時間の自動計算設定
-	 * @return 休出枠時間(List)
-	 */
-	private List<HolidayWorkFrameTime> afterUpperControl(List<HolidayWorkFrameTime> calcHolidayTimeWorkTimeList,AutoCalSetting autoCalcSet) {
-		List<HolidayWorkFrameTime> returnList = new ArrayList<>();
-		for(HolidayWorkFrameTime loopHolidayTimeFrame:calcHolidayTimeWorkTimeList) {
-			//時間の上限時間算出
-			AttendanceTime upperTime = desictionUseUppserTime(autoCalcSet, loopHolidayTimeFrame,loopHolidayTimeFrame.getHolidayWorkTime().get().getTime());
-			//振替処理
-			loopHolidayTimeFrame = loopHolidayTimeFrame.changeOverTime(
-					TimeDivergenceWithCalculation.createTimeWithCalculation(
-							upperTime.greaterThan(loopHolidayTimeFrame.getHolidayWorkTime().get().getTime())
-								?loopHolidayTimeFrame.getHolidayWorkTime().get().getTime()
-								:upperTime,
-							loopHolidayTimeFrame.getHolidayWorkTime().get().getCalcTime()));
-			
-			returnList.add(loopHolidayTimeFrame);
-		}
-		return returnList;
-	}
 	
 	public AttendanceTime desictionUseUppserTime(AutoCalSetting autoCalcSet, HolidayWorkFrameTime loopHolidayTimeFrame,AttendanceTime attendanceTime) {
 		switch(autoCalcSet.getUpLimitORtSet()) {
@@ -666,7 +907,7 @@ public class HolidayWorkTimeSheet{
 		for (HolidayWorkFrameTime record : recordList){
 			// 処理中の休出枠NOが申告用Listに存在するか確認
 			Optional<HolidayWorkFrameTime> declare = declareList.stream()
-					.filter(c -> c.getHolidayFrameNo().v() == record.getHolidayFrameNo().v()).findFirst();
+					.filter(c -> c.getHolidayFrameNo().v().intValue() == record.getHolidayFrameNo().v().intValue()).findFirst();
 			if (declare.isPresent()){
 				// 処理中の休出枠時間に申告用の計算時間を反映
 				record.getHolidayWorkTime().get().replaceTimeWithCalc(declare.get().getHolidayWorkTime().get().getCalcTime());
@@ -682,7 +923,7 @@ public class HolidayWorkTimeSheet{
 		for (HolidayWorkFrameTime declare : declareList){
 			// 処理中の休出枠NOが申告用Listに存在するか確認
 			Optional<HolidayWorkFrameTime> record = recordList.stream()
-					.filter(c -> c.getHolidayFrameNo().v() == declare.getHolidayFrameNo().v()).findFirst();
+					.filter(c -> c.getHolidayFrameNo().v().intValue() == declare.getHolidayFrameNo().v().intValue()).findFirst();
 			if (!record.isPresent()){
 				// 処理中の休出枠時間を反映後Listに追加
 				recordList.add(new HolidayWorkFrameTime(

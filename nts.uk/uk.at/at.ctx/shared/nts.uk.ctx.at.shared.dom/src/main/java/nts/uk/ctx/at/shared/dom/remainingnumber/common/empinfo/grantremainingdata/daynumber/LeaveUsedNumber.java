@@ -176,4 +176,12 @@ public class LeaveUsedNumber{
 		return cloned;
 	}
 
+	/**
+	 * 日数単位で使用しているかどうかを確認する
+	 * @return
+	 */
+	public boolean isUseDay() {
+		return this.getDays().greaterThan(0.0);
+	}
+
 }

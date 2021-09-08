@@ -69,13 +69,6 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	public String textColor;
 	
 	/**
-	 * 背景色
-	 */
-	@Basic(optional = false)
-	@Column(name = "BACK_GROUND_COLOR")
-	public String backGroundColor;
-	
-	/**
 	 * 出退勤ボタンを強調する
 	 */
 	@Basic(optional = false)
@@ -88,6 +81,20 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 	@Basic(optional = false)
 	@Column(name = "TOPPAGE_LINK_ART")
 	public int toppageLinkArt;
+	
+	/**
+	 * 外出打刻を利用する
+	 */
+	@Basic(optional = false)
+	@Column(name = "GOOUT_USE_ATR")
+	public int goOutUseAtr;
+	
+	/**
+	 * 打刻一覧を表示する
+	 */
+	@Basic(optional = false)
+	@Column(name = "DISPLAY_STAMP_LIST")
+	public int displayStampList;
 	
 	@OneToMany(mappedBy = "krcmtSrampPortal", cascade = CascadeType.ALL, fetch = FetchType.LAZY,  orphanRemoval = true)
 	public List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail;
@@ -108,9 +115,10 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 				domain.getDisplaySettingsStampScreen().getCorrectionInterval().v(), 
 				domain.getDisplaySettingsStampScreen().getResultDisplayTime().v(), 
 				domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getTextColor().v(), 
-				domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v(), 
 				domain.isButtonEmphasisArt() ? 1 : 0, 
 				domain.isToppageLinkArt() ? 1 : 0, 
+				domain.isGoOutUseAtr() ? 1 : 0, 
+				domain.isDisplayStampList() ? 1 : 0, 
 				domain.getButtonSettings().stream().map(c-> KrcmtStampLayoutDetail.toEntity(c, domain.getCid(), 0/*confirm with amid-mizutani, Vu Tuan is 1*/,4)).collect(Collectors.toList()));
 	}
 	
@@ -120,25 +128,27 @@ public class KrcmtSrampPortal extends ContractUkJpaEntity implements Serializabl
 				new DisplaySettingsStampScreen(
 						new CorrectionInterval(this.correctionInterval), 
 						new SettingDateTimeColorOfStampScreen(
-							new ColorCode(this.textColor),
-							new ColorCode(this.backGroundColor)),
+							new ColorCode(this.textColor)),
 						new ResultDisplayTime(this.resultDisplayTime)), 
 				this.krcmtStampLayoutDetail.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
 				this.buttonEmphasisArt == 1, 
-				this.toppageLinkArt == 1);
+				this.toppageLinkArt == 1,
+				this.goOutUseAtr == 1, 
+				this.displayStampList == 1);
 	}
 
 	public KrcmtSrampPortal(String cid, int correctionInterval, int resultDisplayTime, String textColor,
-			String backGroundColor, int buttonEmphasisArt, int toppageLinkArt,
+			int buttonEmphasisArt, int toppageLinkArt, int goOutUseAtr, int displayStampList,
 			List<KrcmtStampLayoutDetail> krcmtStampLayoutDetail) {
 		super();
 		this.cid = cid;
 		this.correctionInterval = correctionInterval;
 		this.resultDisplayTime = resultDisplayTime;
 		this.textColor = textColor;
-		this.backGroundColor = backGroundColor;
 		this.buttonEmphasisArt = buttonEmphasisArt;
 		this.toppageLinkArt = toppageLinkArt;
+		this.goOutUseAtr = goOutUseAtr;
+		this.displayStampList = displayStampList;
 		this.krcmtStampLayoutDetail = krcmtStampLayoutDetail;
 	}
 	

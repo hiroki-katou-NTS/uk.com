@@ -67,7 +67,8 @@ export class KafS00CComponent extends Vue {
             if (defaultReasonCD) {
                 self.opAppStandardReasonCD = defaultReasonCD.appStandardReasonCD;  
             } else {
-                self.opAppStandardReasonCD = _.head(self.dropdownList).appStandardReasonCD;
+                let headItem = _.head(self.dropdownList);
+                self.opAppStandardReasonCD = headItem ? headItem.appStandardReasonCD : '';
             }
         }
         if (self.params.opAppReason) {

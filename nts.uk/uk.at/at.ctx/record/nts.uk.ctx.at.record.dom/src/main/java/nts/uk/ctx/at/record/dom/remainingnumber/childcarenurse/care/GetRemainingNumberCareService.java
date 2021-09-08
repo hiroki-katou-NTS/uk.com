@@ -271,13 +271,15 @@ public class GetRemainingNumberCareService {
 		}
 
 		// 上書きフラグを確認
-		if (isOverWrite.isPresent()) {
+		if (isOverWrite.orElse(false)){
 			// 上書き用暫定残数データで置き換える
 			// 残数共通処理にする：一時対応
 
 			//ドメインモデル「暫定子の看護介護管理データ」．作成元区分 = パラメータ「作成元区分」
 			//	パラメータ「上書き対象期間．開始日」 <= ドメインモデル「暫定子の看護介護管理データ」．年月日 <= パラメータ「上書き対象期間．終了日」
-			val noOverwriteRemains = interimDate.stream().filter(c -> !periodOverWrite.get().contains(c.getYmd())).collect(Collectors.toList()); //上書き用の暫定管理データから上書対象でない暫定データを退避
+			val noOverwriteRemains = interimDate.stream()
+					.filter(c -> !periodOverWrite.isPresent() || !periodOverWrite.get().contains(c.getYmd()))
+					.collect(Collectors.toList()); //上書き用の暫定管理データから上書対象でない暫定データを退避
 			for(TempCareManagement dom : tempCareDataforOverWriteList)
 				noOverwriteRemains.add(dom);
 			return noOverwriteRemains;

@@ -29,6 +29,9 @@ html {
 .panel-footer button {
     width: 150px;
 }
+.panel-footer .caret-right {
+    left: 3px;
+}
 .label-custom {
     font-size: 2em;
 }

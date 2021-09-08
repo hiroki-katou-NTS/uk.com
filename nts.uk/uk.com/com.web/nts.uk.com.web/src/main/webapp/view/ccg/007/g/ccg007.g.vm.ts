@@ -1,83 +1,66 @@
 module nts.uk.pr.view.ccg007.g {
     export module viewmodel {
-        import blockUI = nts.uk.ui.block;
-        import CallerParameter = service.CallerParameter;
-        import SendMailInfoFormGCommand = service.SendMailInfoFormGCommand;
-        
+        type CallerParameter = service.CallerParameter;
 
-        export class ScreenModel {
-            companyName: KnockoutObservable<string>;
-            employeeCode: KnockoutObservable<string>;
-            
-            // Parameter from caller screen.
-            callerParameter: CallerParameter;
-            
-            constructor(parentData: CallerParameter) {
-                var self = this;
-                
-                self.companyName = ko.observable(null);
-                self.employeeCode = ko.observable(null);
-                
-                //parent data
-                self.callerParameter = parentData;
+        @bean()
+        export class ScreenModel extends ko.ViewModel {
+            companyName: KnockoutObservable<string | null> = ko.observable(null);
+            employeeCode: KnockoutObservable<string | null> = ko.observable(null);
+
+            constructor(private callerParameter: CallerParameter) {
+                super();
             }
-            
+
             /**
              * Start page.
              */
-            public startPage(): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
+            mounted() {
+                const vm = this;
 
-                // block ui
-                nts.uk.ui.block.invisible();
-                
-                //set infor sendMail
-                self.companyName(self.callerParameter.companyName);
-                self.employeeCode(self.callerParameter.employeeCode);
-                
-                dfd.resolve();
-                
-                //clear block
-                nts.uk.ui.block.clear();
-
-                return dfd.promise();
+                vm
+                    .$blockui('show')
+                    .then(() => {
+                        //set infor sendMail
+                        vm.companyName(vm.callerParameter.companyName);
+                        vm.employeeCode(vm.callerParameter.employeeCode);
+                    })
+                    .then(() => $('#subSendMail').focus())
+                    .always(() => vm.$blockui('clear'));
             }
-            
+
             /**
              * Submit
              */
-            public submit(): void{
-                let self = this;
-                
-                blockUI.invisible();
-                
-                //add command
-                let command: SendMailInfoFormGCommand = new SendMailInfoFormGCommand(self.callerParameter.companyCode, 
-                    self.callerParameter.employeeCode, self.callerParameter.contractCode);
-                
-                //sendMail
-                service.submitSendMail(command).done(function (data) {
-                    if (data.length > 0 && !nts.uk.util.isNullOrEmpty(data[0].url)){
-                        nts.uk.ui.dialog.info({ messageId: "Msg_207" }).then(() =>{
-                            nts.uk.ui.windows.close();
-                        });
-                    }else{
-                        nts.uk.ui.windows.close();
-                    }
-                    blockUI.clear();
-                }).fail(function(res) {
-                    //Return Dialog Error
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                    blockUI.clear();
-                });
+            public submit(): void {
+                const vm = this;
+                const { callerParameter } = vm;
+
+                vm.$blockui('grayout')
+                    .then(() => service.submitSendMail(callerParameter))
+                    //sendMail
+                    .then((data: any[]) => {
+                        const [first] = data;
+
+                        if (first && !_.isNil(first.url)) {
+                            vm.$dialog.info({ messageId: "Msg_207" }).then(() => vm.closeDialog());
+                        } else {
+                            vm.closeDialog();
+                        }
+                    })
+                    .fail(function (res) {
+                        //Return Dialog Error
+                        vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                    })
+                    .always(() => vm.$blockui('clear'));
             }
-            
+
             /**
              * close dialog
              */
             public closeDialog(): void {
-                nts.uk.ui.windows.close();
+                const vm = this;
+
+                vm.$window.close();
             }
         }
     }

@@ -10,7 +10,7 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1030,
+					width : 1040,
 					height : 300
 				};
 			</script>
@@ -30,7 +30,7 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="valign-center control-group mb-20">
+				<div class="valign-center control-group mb-20 d-flex">
 					<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KDW007_93')}</div>
 					<div id="conditionAtr-cbb"
 						data-bind="ntsComboBox: {
@@ -75,7 +75,7 @@
 							value: currentAtdItemCondition.compareOperator,
 							optionsText: 'name',
 							enable: true,
-							width: '265px',
+							width: '300px',
 							visibleItemsCount: 6,
 							dropDownAttachedToBody: true,
 							columns: [

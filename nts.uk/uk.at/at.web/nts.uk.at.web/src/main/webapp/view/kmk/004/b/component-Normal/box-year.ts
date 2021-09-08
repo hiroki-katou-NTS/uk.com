@@ -19,7 +19,7 @@ module nts.uk.at.view.kmk004.b {
 
     const template = `
         <div tabindex="6" class="listbox">
-            <div id="list-box" data-bind="ntsListBox: {
+            <div id="year-list" data-bind="ntsListBox: {
                 options: itemList,
                 optionsValue: 'year',
                 optionsText: 'nameYear',

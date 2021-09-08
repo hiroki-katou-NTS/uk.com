@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+template<ui:composition template="../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:scriptfile path="test.template.vm.js"/>
+        <com:scriptfile path="test.template.start.js"/>
+    </ui:define>
+    <ui:define name="content">
+        <div style="padding: 10px">
+            <div style="margin-top: 50px; width: 350px; display: flex; justify-content: space-between">
+                <div data-bind="ntsFormLabel: {}">Choose file</div>
+                <div id="file-upload" data-bind="ntsFileUpload:{
+                filename: fileName,
+                accept: accept
+                }">
+                </div>
+            </div>
+            <div style="margin-top: 20px">
+                <div data-bind="ntsFormLabel: {}">File type</div>
+                <div class="cf" data-bind="ntsSwitchButton: {
+                name: 'File type',
+                options: [{code: 1, name: 'Excel'}, {code: 2, name: 'PDF'}],
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: fileType }"></div>
+            </div>
+            <div style="margin-top: 20px;" class="table">
+                <div class="cell" data-bind="ntsFormLabel: {}">Edit Approver</div>
+                <div class="cell">
+                    <div>
+                        <span>Name</span>
+                        <input style="width: 70px" data-bind="ntsTextEditor: {value: approverName}"/>
+                    </div>
+                    <div>
+                        <span>Status</span>
+                        <input style="width: 70px" data-bind="ntsTextEditor: {value: status}"/>
+                    </div>
+                </div>
+            </div>
+            <!-- <div style="margin-top: 20px">
+                <div data-bind="ntsFormLabel: {}">Edit cell</div>
+                <button data-bind="click: addChange">Add</button>
+                <div style="width: 650px" data-bind="foreach: changeList">
+                    <div style="margin-top: 10px; display: flex; justify-content: space-between">
+                        <div>
+                            <span>Cell ID</span>
+                            <input style="width: 70px" data-bind="ntsTextEditor: {value: id}"/>
+                        </div>
+                        <div style="margin-left: 10px">
+                            <span>Cell content</span>
+                            <input style="width: 400px" data-bind="ntsTextEditor: {value: content}"/>
+                        </div>
+                        <button style="margin-top: 15px" data-bind="click: function(){ $parent.removeChange($index())}">X</button>
+                    </div>
+                </div>
+            </div> -->
+            <div class="table">
+                <div class="cell" style="margin-top: 20px;">
+                    <button data-bind="click: upload">Upload</button>
+                </div>
+                <div class="cell" style="margin-top: 20px;">
+                    <button data-bind="click: download, enable: fileId">Download</button>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

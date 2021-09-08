@@ -10,7 +10,7 @@
 			<script>
 				var dialogSize = {
 					width : 580,
-					height : 350
+					height : 399
 				};
 			</script>
 			<com:scriptfile path="viewmodel.js" />
@@ -27,7 +27,7 @@
 						data-bind=" click:function(){closeDialog('retry')},  hasFocus: hasFocus">#{i18n.getText('KDP004_3')}</button>
 					<com:ko-if bind="displayLoginBtn ">
 						<button class="password-login-btn proceed x-large"
-							data-bind="click:function(){closeDialog('loginPass')}">#{i18n.getText('KDP004_4')}</button>
+							data-bind="click:function(){closeDialog('loginPass')}, style:{display: displayLoginBtn()? '': 'none'}" style="display: none;">#{i18n.getText('KDP004_4')}</button>
 					</com:ko-if>
 					<button class="cancel-btn x-large"
 						data-bind="click:function(){closeDialog('cancel')}">#{i18n.getText('KDP004_5')}</button>

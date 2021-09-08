@@ -105,18 +105,18 @@ module nts.uk.at.view.kdw008.a {
                 self.columns1 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
                 self.columns2 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
 
                 self.columns3 = ko.observableArray([
                     { headerText: getText('KDW008_7'), key: 'attendanceItemDisplayNumber', width: 70 },
                     { headerText: 'number', key: 'attendanceItemId', hidden: true, width: 100 },
-                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 100, formatter: _.escape }
+                    { headerText: getText('KDW008_8'), key: 'attendanceItemName', width: 200, formatter: _.escape }
                 ]);
 
                 //swap list 2
@@ -135,8 +135,14 @@ module nts.uk.at.view.kdw008.a {
                     { id: 'tab-3', title: getText('KDW008_13'), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(!self.isDaily()) }
                 ]);
                 
-                self.selectedTab = ko.observable('tab-1');
-                self.selectedMobileTab = ko.observable('tab-1');
+                if (self.isDaily()) {
+                    self.selectedTab = ko.observable('tab-1');
+                    self.selectedMobileTab = ko.observable('tab-1');
+                } else {
+                    self.selectedTab = ko.observable('tab-3');
+                    self.selectedMobileTab = ko.observable('tab-3');
+                }
+                
 
                 //combobox select sheetNo tab2
                 self.sheetNoList = ko.observableArray([
@@ -273,6 +279,7 @@ module nts.uk.at.view.kdw008.a {
                                     let formatCodeItem: FormatCode = self.formatCodeItems()[this.getIndex(oldIndex)];
                                     self.initSelectedCodeHasMutated(formatCodeItem.formatCode);
                                 } else {
+                                    self.formatCodeItems([]);
                                     self.setNewMode();
                                 }
                             }).always(() => {

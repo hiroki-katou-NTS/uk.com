@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.DeleteInfoAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.TopPageAlarmAdapter;
@@ -56,6 +55,7 @@ public class TopPageAlarmAdapterImpl implements TopPageAlarmAdapter {
 		alarmInformation.setOccurrenceDateTime(alarmInfo.getOccurrenceDateTime());
 		alarmInformation.setDisplaySId(alarmInfo.getDisplaySId());
 		alarmInformation.setDisplayEmpClassfication(EnumAdaptor.valueOf(alarmInfo.getDisplayAtr(), DisplayEmpClassfication.class));
+		alarmInformation.setSubSids(alarmInfo.getSubEmployeeIds()); //#116503
 		alarmInformation.setPatternCode(alarmInfo.getPatternCode());
 		alarmInformation.setPatternName(alarmInfo.getPatternName());
 		alarmInformation.setLinkUrl(alarmInfo.getLinkUrl());

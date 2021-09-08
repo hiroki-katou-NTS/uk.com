@@ -13,7 +13,11 @@
       ></a>
       <button tabindex="3"
         class="proceed"
-        data-bind="text: $vm.$i18n('KSM011_18'), click: registerRulesCompanyShiftTable"
+        data-bind="text: $vm.$i18n('KSM011_18'), click: registerRulesCompanyShiftTable, enable: $root.errors.isEmpty"
+      ></button>
+      <button tabindex="3"
+              class="danger"
+              data-bind="text: $vm.$i18n('KSM011_118'), click: deleteRulesCompanyShiftTable, enable: enableDeleteButton"
       ></button>
     </div>
     <div class="contents-area fixed-flex-layout">
@@ -50,7 +54,7 @@
             ></div>
           </div>
           <div class="cell valign-center">
-            <div tabindex="5"
+            <div tabindex="5" id="Bb3_2"
               class="cf"
               data-bind="ntsSwitchButton: {
               name: '#[KSM011_19]',
@@ -90,8 +94,7 @@
               <div class="table  mb-5">
                 <div class="cell cell-left">
                   <div class="normal"
-                    data-bind="ntsFormLabel: { required: false, constraint: 'HolidayAvailabilityMaxdays' }">
-                    <span data-bind="text: $vm.$i18n('KSM011_26')"></span>
+                    data-bind="ntsFormLabel: { required: false, constraint: 'HolidayAvailabilityMaxdays', text: $vm.$i18n('KSM011_26') }">
                   </div>
                 </div>
                 <div class="cell valign-center">
@@ -179,7 +182,7 @@
                     optionsText: 'name',
                     value: workRequestInputSelected,
                     required: true,
-                    enable: workRequest() === 1 }"
+                    enable: enableWorkRequestInput }"
                   ></div>
                 </div>
               </div>

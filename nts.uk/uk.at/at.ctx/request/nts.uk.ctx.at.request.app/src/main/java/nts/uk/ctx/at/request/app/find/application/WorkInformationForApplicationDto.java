@@ -35,6 +35,6 @@ public class WorkInformationForApplicationDto {
     }
     
     public static WorkInformationForApplicationDto fromDomain(WorkInformationForApplication domain) {
-        return new WorkInformationForApplicationDto(domain.getWorkTypeCode().v(), domain.getWorkTimeCode().v());
+        return new WorkInformationForApplicationDto(domain.getWorkTimeCode().v(), domain.getWorkTypeCode().v());
     }
 }

@@ -19,8 +19,8 @@ module nts.uk.at.view.kal001.d.service {
         let def = $.Deferred(), toStopForWriteData = ko.observable(false),
             secondForLoop = listEmployee.length > 50 ? 5000 : 1000;
         let periodCategory = _.find(listPeriodByCategory, function (o) {
-            return (o.category == 2 || o.category == 9);
-        });//スケジュール4週,　複数月次
+            return (o.category == 2 || o.category == 9 || o.category == 4);
+        });//スケジュール4週,　複数月次, スケジュール年間
         nts.uk.request.ajax("at", paths.extractAlarm, command).done(function (task: any) {
             taskId(task.id);
             nts.uk.deferred.repeat(conf => conf.task(() => {
@@ -85,7 +85,7 @@ module nts.uk.at.view.kal001.d.service {
                                             alarmDate = alarmDate + "～" + periodCategory.endDate;
                                         } else if (item[8] == 3 || item[8] == 7) { //スケジュール月次,月次
                                             alarmDate = alarmDate.substr(0, 7);
-                                        } else if (item[8] == 9) { //複数月次
+                                        } else if (item[8] == 9 || item[8] == 4) { //複数月次,スケジュール年間
                                             alarmDate = alarmDate.substr(0, 7) + "～"
                                                 + periodCategory.endDate.substr(0, 4) + "/" + periodCategory.endDate.substr(4);
                                         }
@@ -160,7 +160,7 @@ module nts.uk.at.view.kal001.d.service {
 
             } else if (p.category == 7 || p.category == 9 || p.category == 3 || p.category == 4) { //月次、複数月次
                 let sDate = p.startDate + '01';
-                let eDate = p.endDate + '01';
+                let eDate = new Date(p.endDate.substr(0,4), parseInt(p.endDate.substr(4,2)), 0);
                 this.startDate = nts.uk.time.parseMoment(sDate).momentObject.toISOString();
                 this.endDate = nts.uk.time.parseMoment(eDate).momentObject.toISOString();
 

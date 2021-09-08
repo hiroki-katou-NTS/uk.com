@@ -8,19 +8,26 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import lombok.val;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 public final class AttendanceItemUtilRes {
 	
 	private AttendanceItemUtilRes () {}
+
+	public static <T extends AttendanceItemDataGate> List<ItemValue> collect(T sources, AttendanceItemType type) {
+		
+		return collect(sources, new ArrayList<>(), type);
+	}
 	
 	public static <T extends AttendanceItemDataGate> List<ItemValue> collect(T sources, 
 			Collection<Integer> itemIds, AttendanceItemType type) {
@@ -38,19 +45,21 @@ public final class AttendanceItemUtilRes {
 		
 		collect(result, sources, items, layout, Optional.empty(), Optional.empty(), 0);
 		
-		return result;
+		return pathCorrect(type, result);
 	}
 	
-	public static <T extends AttendanceItemDataGate> T merge(T sources, Collection<ItemValue> itemIds,
+	public static <T extends AttendanceItemDataGate> T merge(T sources, Collection<ItemValue> itemValues,
 			AttendanceItemType type) {
 		
 		if (sources == null) {
 			return sources;
 		}
 		
+		itemValues = pathReverseCorrect(itemValues, type);
+		
 		int layout = sources.isContainer() ? ItemConst.DEFAULT_IDX : ItemConst.DEFAULT_NEXT_IDX;
 		
-		Map<String, List<ItemValue>> items = itemIds.stream().collect(Collectors.groupingBy(c -> {
+		Map<String, List<ItemValue>> items = itemValues.stream().collect(Collectors.groupingBy(c -> {
 											if (StringUtil.isNullOrEmpty(c.path(), false)) {
 												c.withPath(AttendanceItemIdContainer.getPath(c.itemId(), type));
 											}
@@ -92,6 +101,12 @@ public final class AttendanceItemUtilRes {
 
 				if (current == null) {
 					AttendanceItemDataGate emptyData = source.newInstanceOf(prop);
+					
+					if (emptyData == null) {
+						/** マッピング不足かマッピング不正ののケース */
+						return;
+					}
+					
 					collect(result, emptyData, 
 							groupNext(nextLayout, i.getValue(), idxLayout), 
 							nextLayout, enumPlus, idxPlus, idxLayout);
@@ -418,17 +433,6 @@ public final class AttendanceItemUtilRes {
 		}));
 	}
 	
-//	private static List<String> splitRes(String longString, String sepe) {
-//		List<String> stringSplit = new ArrayList<>();
-//	    int pos = 0, end;
-//	    while ((end = longString.indexOf(sepe, pos)) >= 0) {
-//	        stringSplit.add(longString.substring(pos, end));
-//	        pos = end + 1;
-//	    }
-//	    stringSplit.add(longString.substring(pos));
-//	    return stringSplit;
-//	}
-	
 	private static String getCurrentPath(int layout, String path, int idxLayout) {
 		String prop = getAfter(path, ItemConst.DEFAULT_SEPERATOR, layout);
 		prop = getAfter(prop, ItemConst.DEFAULT_ENUM_SEPERATOR, 0);
@@ -481,4 +485,73 @@ public final class AttendanceItemUtilRes {
 		} 
 //		return key.replaceAll(ItemConst.DEFAULT_NUMBER_REGEX, ItemConst.EMPTY_STRING);
 	} 
+
+	private static List<ItemValue> pathCorrect(AttendanceItemType type, Collection<ItemValue> items) {
+		if (type != AttendanceItemType.WEEKLY_ITEM) {
+			return new ArrayList<>(items);
+		}
+		
+		return changePathToWeekly(items);
+	}
+	
+
+	private static Collection<ItemValue> pathReverseCorrect(Collection<ItemValue> itemValues, AttendanceItemType type) {
+		if(type == AttendanceItemType.WEEKLY_ITEM) {
+
+			return changePathToMonthly(itemValues);
+		}
+		
+		return itemValues;
+	}
+	
+	private static List<ItemValue> changePathToWeekly(Collection<ItemValue> items) {
+		return items.stream().map(i -> {
+			
+			val clone = i.clone();
+			
+			if (clone.path() == null) {
+				
+				return clone;
+			}
+
+			if (clone.path().startsWith(ItemConst.WEEKLY_ATTENDANCE_TIME_EXESS)) {
+				return clone;
+			}
+			
+			if (clone.path().startsWith(ItemConst.MONTHLY_ATTENDANCE_TIME_NAME)) {
+				clone.withPath(clone.path().replaceFirst(Pattern.quote(ItemConst.MONTHLY_ATTENDANCE_TIME_NAME), ItemConst.WEEKLY_ATTENDANCE_TIME_NAME));
+			} else if (clone.path().startsWith(ItemConst.MONTHLY_OPTIONAL_ITEM_NAME)) {
+				clone.withPath(clone.path().replaceFirst(Pattern.quote(ItemConst.MONTHLY_OPTIONAL_ITEM_NAME), ItemConst.WEEKLY_ATTENDANCE_TIME_NAME));
+			} 
+			
+			return clone;
+		}).collect(Collectors.toList());
+	}
+
+	private static Collection<ItemValue> changePathToMonthly(Collection<ItemValue> items) {
+		
+		return items.stream().map(i -> {
+
+			val clone = i.clone();
+			
+			if (clone.path() == null) {
+				return clone;
+			}
+			
+			if (clone.path().startsWith(ItemConst.WEEKLY_ATTENDANCE_TIME_EXESS)) {
+				return clone;
+			}
+			
+			if (clone.path().startsWith(WEEK_OPT)) {
+				clone.withPath(clone.path().replaceFirst(Pattern.quote(ItemConst.WEEKLY_ATTENDANCE_TIME_NAME), ItemConst.MONTHLY_OPTIONAL_ITEM_NAME));
+			} else if (clone.path().startsWith(ItemConst.WEEKLY_ATTENDANCE_TIME_NAME)) {
+				clone.withPath(clone.path().replaceFirst(Pattern.quote(ItemConst.WEEKLY_ATTENDANCE_TIME_NAME), ItemConst.MONTHLY_ATTENDANCE_TIME_NAME));
+			}  
+			
+			return clone;
+		}).collect(Collectors.toList());
+	}
+	
+	private static String WEEK_OPT = AttendanceItemIdContainer.join(ItemConst.WEEKLY_ATTENDANCE_TIME_NAME, ItemConst.OPTIONAL_ITEM_VALUE);
+	
 }

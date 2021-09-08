@@ -16,7 +16,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
     //favorite
     favoriteList: KnockoutObservableArray<FavoriteSpecifyData> = ko.observableArray([]);
     favoriteName: KnockoutObservable<string> = ko.observable("");
-    selectedFavoriteOrder: KnockoutObservable<number> = ko.observable();
+    selectedFavoriteInputDate: KnockoutObservable<string> = ko.observable();
     selectedFavorite: KnockoutObservable<FavoriteSpecifyData> = ko.observable();
 
     //work place
@@ -36,7 +36,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
 
     //grid column
     columns: KnockoutObservableArray<any> = ko.observableArray([
-      { headerText: "id", key: "order", width: 150, hidden: true },
+      { headerText: "id", key: "inputDate", width: 150, hidden: true },
       { headerText: this.$i18n("CCG005_11"), key: "favoriteName", width: 150 },
     ]);
 
@@ -50,18 +50,18 @@ module nts.uk.at.view.ccg005.d.screenModel {
       vm.$ajax(API.getFavoriteInformation).then((data: FavoriteSpecifyData[]) => {
         vm.favoriteList(data);
         if (!(_.isEmpty(data))) {
-          const firstOrder = data[0].order;
-          vm.selectedFavoriteOrder(firstOrder);
-          vm.bindingData(firstOrder);
+          const first = data[0].inputDate;
+          vm.selectedFavoriteInputDate(first);
+          vm.bindingData(first);
           vm.mode(Mode.UPDATE);
         }
         vm.$blockui("clear");
       })
       .always(() => vm.$blockui("clear"));
 
-      vm.selectedFavoriteOrder.subscribe((order: number) => {
+      vm.selectedFavoriteInputDate.subscribe((inputDate: string) => {
         vm.mode(Mode.UPDATE);
-        vm.bindingData(order);
+        vm.bindingData(inputDate);
       });
 
       vm.selectedRuleCode.subscribe((selectRule: number) => {
@@ -72,10 +72,10 @@ module nts.uk.at.view.ccg005.d.screenModel {
       $("#D5_1").focus();
     }
 
-    private bindingData(order: number) {
+    private bindingData(inputDate: string) {
       const vm = this;
       vm.$errors("clear");
-      const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(order)));
+      const currentFavor = _.find(vm.favoriteList(), (item => item.inputDate === inputDate));
       vm.favoriteName('');
       if (currentFavor) {
         vm.selectedFavorite(currentFavor);
@@ -90,9 +90,17 @@ module nts.uk.at.view.ccg005.d.screenModel {
       const vm = this;
       vm.$blockui("grayout");
       vm.$ajax(API.getFavoriteInformation).then((data: FavoriteSpecifyData[]) => {
-        vm.favoriteList(data);
-        vm.bindingData(vm.selectedFavoriteOrder());
-        vm.$blockui("clear");
+        if (data) {
+          vm.favoriteList(data);
+          if(vm.mode() === Mode.INSERT) {
+            const inputDate = data[data.length - 1].inputDate
+            vm.selectedFavoriteInputDate(inputDate);
+            vm.bindingData(inputDate);
+            vm.mode(Mode.UPDATE);
+            return;
+          }
+          vm.bindingData(vm.selectedFavoriteInputDate());
+        }
       })
       .always(() => vm.$blockui("clear"));
     }
@@ -104,7 +112,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
 
     public createNewFavorite() {
       const vm = this;
-      vm.selectedFavoriteOrder(-1);
+      vm.selectedFavoriteInputDate('');
       vm.favoriteName("");
       vm.choosenWkspNames([]);
       vm.workPlaceIdList([]);
@@ -136,22 +144,16 @@ module nts.uk.at.view.ccg005.d.screenModel {
               wkspNames: vm.choosenWkspNames()
             });
             vm.favoriteList.push(favoriteSpecify);
-            //Update UI
-            vm.selectedFavoriteOrder(favoriteSpecify.order);
-            vm.mode(Mode.UPDATE);
           } else {
-            _.map(vm.favoriteList(), (item => {
-              if (item.order === Number(vm.selectedFavoriteOrder())) {
+            _.map(vm.favoriteList(), (item, index) => {
+              if (item.inputDate === vm.selectedFavoriteInputDate()) {
                 item.favoriteName = vm.favoriteName();
                 item.targetSelection = vm.selectedRuleCode();
                 item.workplaceId = vm.selectedRuleCode() === TargetSelection.WORKPLACE ? vm.workPlaceIdList() : [];
               }
-            }));
+              item.order = index;
+            });
           }
-          //re set order for item
-          _.map(vm.favoriteList(), (item, index) => {
-            item.order = index;
-          });
           //Call API
           vm.$blockui("grayout");
           vm.$ajax(API.save, vm.favoriteList()).then(() => {
@@ -176,8 +178,8 @@ module nts.uk.at.view.ccg005.d.screenModel {
       const vm = this;
       vm.$dialog.confirm({ messageId: "Msg_18" }).then((result) => {
         if (result === "yes") {
-          const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(vm.selectedFavoriteOrder())));
-          const index = _.findIndex(vm.favoriteList(), (item => Number(item.order) === Number(vm.selectedFavoriteOrder())));
+          const currentFavor = _.find(vm.favoriteList(), (item => item.inputDate === vm.selectedFavoriteInputDate()));
+          const index = _.findIndex(vm.favoriteList(), (item => item.inputDate === vm.selectedFavoriteInputDate()));
           if (currentFavor) {
             const favoriteSpecify = new FavoriteSpecifyDelCommand({
               creatorId: currentFavor.creatorId,
@@ -192,9 +194,9 @@ module nts.uk.at.view.ccg005.d.screenModel {
                   vm.createNewFavorite();
                 }
                 if (index >= vm.favoriteList().length) {
-                  vm.selectedFavoriteOrder(vm.favoriteList()[index - 1].order);
+                  vm.selectedFavoriteInputDate(vm.favoriteList()[index - 1].inputDate);
                 } else {
-                  vm.selectedFavoriteOrder(vm.favoriteList()[index].order);
+                  vm.selectedFavoriteInputDate(vm.favoriteList()[index].inputDate);
                 }
               });
             })

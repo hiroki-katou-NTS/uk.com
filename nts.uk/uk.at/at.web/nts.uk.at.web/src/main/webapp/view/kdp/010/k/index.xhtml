@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.PasswordForRICOH
+			</com:ValidatorScript>
+	
+			<com:stylefile path="../main.css"/>
+			<com:scriptfile path="kdp010.k.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KDP010_144')}</a>
+				<button tabindex="1" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
+			</div>
+
+			<div id="contents-area">
+				<div class="label-top">
+					<label>#{i18n.getText('KDP010_295')}</label>
+				</div>
+				<table class="form-data" >
+					<tr data-bind="with: stampSettingOfRICOHCopier.displaySettingsStampScreen">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_296')}</div>
+							<div class="inline-display row-data">
+								<input tabindex="2" class="number-input" id="c-serverCorrectionInterval" data-bind="ntsNumberEditor: {name: '#[KDP010_297]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
+							</div>
+						</td>
+					</tr>
+					<tr data-bind="with: stampSettingOfRICOHCopier.displaySettingsStampScreen.settingDateTimeColor">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_298')}</div> 
+							<label>#{i18n.getText('KDP010_299')}</label>
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: textColor, enable: true, width: 50, name:'#[KDP010_300]' }"></div> 
+						</td>
+					</tr>
+					<tr data-bind="with: stampSettingOfRICOHCopier.displaySettingsStampScreen">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_303')}</div> 
+							<div class="inline-display row-data vertical-align-top">
+								<input tabindex="3" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_304]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_305')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr data-bind="with: stampSettingOfRICOHCopier">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'PasswordForRICOH' }">#{i18n.getText('KDP010_306')}</div> 
+							<div class="inline-display row-data ntsControl">
+								<input tabindex="4" data-bind="ntsTextEditor: {name: '#[KDP010_306]', value: icCardPassword, constraint: 'PasswordForRICOH', required: true, option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({textmode: 'password', width: '105px'}))}" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="label-middle">
+								<label>#{i18n.getText('KDP010_307')}</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="row-label">
+								<button tabindex="5" data-bind="click: openHDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+								<com:ko-if bind = "stampSettingOfRICOHCopier.pageLayoutSettings().length > 0">
+									<label style="color: #0033cc; margin-left: 10px; vertical-align: super;">#{i18n.getText('KDP010_52')}</label>
+								</com:ko-if>
+								<com:ko-if bind = "stampSettingOfRICOHCopier.pageLayoutSettings().length == 0">
+									<label style="color: #ff0000; margin-left: 10px; vertical-align: super;">#{i18n.getText('KDP010_53')}</label>
+								</com:ko-if>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

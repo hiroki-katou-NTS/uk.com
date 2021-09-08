@@ -25,6 +25,7 @@
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode
           nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName
           nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName
+          nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedgerDaily
           nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger
         </com:ValidatorScript>
       </ui:define>
@@ -69,7 +70,7 @@
             />
           </div>
           <!-- A1_2-->
-          <div id="content-area" class="cf">
+          <div id="contents-area" class="cf">
             <div class="pull-left">
               <div
                 data-bind="ntsPanel:{direction: 'right', showIcon: true, visible: true}"
@@ -103,7 +104,7 @@
                 ></table>
               </div>
             </div>
-            <div class="pull-left pullRight">
+            <div class="pull-right">
               <div class="row d-flex">
                 <div
                   class="form-label required broken"
@@ -149,7 +150,7 @@
                     <colgroup>
                       <col width="35px" />
                       <col width="114px" />
-                      <col width="240px" />
+                      <col width="270px" />
                       <col width="305px" />
                     </colgroup>
                     <thead>
@@ -200,7 +201,7 @@
                                     value: name,
                                     required: isChecked,
                                     name: '#[KWR004_66]',
-                                    constraint: $index() &gt; 1 ? 'FormOutputItemName' : 'OutputItemNameOfAnnualWorkLedger'
+                                   constraint: $index() &lt; 2 ? 'OutputItemNameOfAnnualWorkLedgerDaily' : 'OutputItemNameOfAnnualWorkLedger'
                                   }"
                           />
                         </td>

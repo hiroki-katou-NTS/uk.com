@@ -77,6 +77,7 @@ module nts.uk.at.view.kmk004.b {
 		</div>
 		<!-- /ko -->
         <style type="text/css" rel="stylesheet">
+						.content-tab { white-space: nowrap; }
             .table-view{
                 padding: 15px;
                 border: 2px solid #B1B1B1;

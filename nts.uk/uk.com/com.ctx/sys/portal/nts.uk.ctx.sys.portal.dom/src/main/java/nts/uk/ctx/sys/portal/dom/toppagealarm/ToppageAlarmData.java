@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -52,6 +53,10 @@ public class ToppageAlarmData extends AggregateRoot {
 	 * 表示メッセージ
 	 */
 	private DisplayMessage displayMessage;
+	
+	
+	//部下の社員ID
+	private List<String> subSids; //#116503
 
 	/**
 	 * リンクURL
@@ -80,6 +85,15 @@ public class ToppageAlarmData extends AggregateRoot {
 	public void updateOccurrenceDateTime(GeneralDateTime dateTime) {
 		this.isResolved = false;
 		this.occurrenceDateTime = dateTime;
+	}
+	
+	/*
+	 * [3] 部下の社員IDを変更する
+	 */
+	public void changeSubSids(List<String> newSubSid) {
+		if (this.displayAtr == DisplayAtr.SUPERIOR) {
+			this.subSids = newSubSid;
+		}
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.ActualWorkingTimeOfDailyImp
 import nts.uk.ctx.at.record.dom.adapter.workschedule.AttendanceTimeOfDailyAttendanceImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeOfDailyAttdImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.BreakTimeSheetImport;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.NumberOfDaySuspensionImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.ReasonTimeChangeImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeActualStampImport;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeLeavingOfDailyAttdImport;
@@ -48,15 +49,23 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 							.map(x -> new BreakTimeSheetImport(x.getBreakFrameNo(), x.getStartTime(),
 									x.getEndTime(), x.getBreakTime()))
 							.collect(Collectors.toList()));
+			
+			Optional<NumberOfDaySuspensionImport> numberOfDaySuspension = Optional.empty();
+			if(data.get().getNumberDaySuspension().isPresent()) {
+				numberOfDaySuspension = Optional
+						.of(new NumberOfDaySuspensionImport(data.get().getNumberDaySuspension().get().getDays(),
+								data.get().getNumberDaySuspension().get().getClassifiction()));
+			}
+			
 			return Optional.of(new WorkScheduleWorkInforImport(data.get().getEmployeeId(),
-					data.get().getConfirmedATR(), data.get().getWorkTyle(), data.get().getWorkTime(),
+					data.get().getConfirmedATR(), data.get().getWorkType(), data.get().getWorkTime(),
 					data.get().getGoStraightAtr(), data.get().getBackStraightAtr(),
 					!data.get().getTimeLeavingOfDailyAttd().isPresent() ? null
 							: new TimeLeavingOfDailyAttdImport(
 							data.get().getTimeLeavingOfDailyAttd().get().getTimeLeavingWorks().stream()
 									.map(c -> convertToTimeLeavingWork(c)).collect(Collectors.toList()),
 							data.get().getTimeLeavingOfDailyAttd().get().getWorkTimes()),
-					listBreakTimeOfDailyAttdImport, ymd, null));
+					listBreakTimeOfDailyAttdImport, ymd, null,numberOfDaySuspension));
 		}
 		return Optional.empty();
 	}
@@ -86,8 +95,14 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 					.actualWorkingTimeOfDaily(actualWorkingTimeOfDaily)
 					.build();
 		}
+		Optional<NumberOfDaySuspensionImport> numberOfDaySuspension = Optional.empty();
+		if(data.getNumberDaySuspension().isPresent()) {
+			numberOfDaySuspension = Optional
+					.of(new NumberOfDaySuspensionImport(data.getNumberDaySuspension().get().getDays(),
+							data.getNumberDaySuspension().get().getClassifiction()));
+		}
 		
-		return new WorkScheduleWorkInforImport(data.getEmployeeId(), data.getConfirmedATR(), data.getWorkTyle(),
+		return new WorkScheduleWorkInforImport(data.getEmployeeId(), data.getConfirmedATR(), data.getWorkType(),
 				data.getWorkTime(), data.getGoStraightAtr(), data.getBackStraightAtr(),
 				!data.getTimeLeavingOfDailyAttd().isPresent() ? null
 						: new TimeLeavingOfDailyAttdImport(
@@ -96,7 +111,8 @@ public class WorkScheduleWorkInforAcFinder implements WorkScheduleWorkInforAdapt
 						data.getTimeLeavingOfDailyAttd().get().getWorkTimes()),
 				listBreakTimeOfDailyAttdImport.orElse(null),
 				data.getYmd(),
-				attendanceImport);
+				attendanceImport,
+				numberOfDaySuspension);
 	}
 
 	private TimeLeavingWorkImport convertToTimeLeavingWork(TimeLeavingWorkExport domain) {

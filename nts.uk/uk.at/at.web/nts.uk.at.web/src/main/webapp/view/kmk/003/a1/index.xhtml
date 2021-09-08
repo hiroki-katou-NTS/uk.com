@@ -49,6 +49,7 @@
 			constraint: 'OneDayRange',
 			required: true}"
             />
+            <label>#{i18n.getText('KMK003_211')}</label>
         </div>
     </com:ko>
     <com:ko tag="if" bind="isDiffTimeMode">
@@ -154,7 +155,7 @@
         </com:ko>
     </com:ko>
     <com:ko tag="if" bind="isFlexMode">
-        <div class="setting_rows mt-25" >
+        <div class="setting_rows mt-25 tab-rows" >
             <div class="setting_header_tab1" style="width: 120px"
                  data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK003_157')}</div>
             <div tabindex="36" data-bind="ntsSwitchButton: {
@@ -166,9 +167,9 @@
             </div>
 
         </div>
-        <div class="mt-25" style=" margin-left: 115px">
+        <div class="mt-25" style=" margin-left: 15px">
             <div class="table">
-                    <div class="cell">
+                    <div class="cell" style="width: 282px">
                         <div>
                             <span>#{i18n.getText('KMK003_318')}</span>
                             <input id="coreTimeStart" tabindex="37" data-bind="ntsTimeWithDayEditor: {

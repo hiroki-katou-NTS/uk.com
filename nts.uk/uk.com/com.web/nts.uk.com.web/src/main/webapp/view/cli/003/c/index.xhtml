@@ -12,7 +12,7 @@
         <script>
           var dialogSize = {
             width: 800,
-            height: 550,
+            height: 590,
           };
         </script>
         <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
@@ -28,22 +28,24 @@
         </com:ValidatorScript>
       </ui:define>
       <ui:define name="content">
-        <div id="ccgComponent" tabindex="2" />
-        <div class="ScreenC">
-          <div class="panel panel-frame" >
-            <table>
-              <tr>
-                <div id="C2" data-bind=" ntsFormLabel: {text: formLabelTitle}" />
-              </tr>
-              <tr>
-                <div id="C2_3" tabindex="4" class="selectionEmployee">
-                  <div id="employeeSearch"></div>
-                </div>
-              </tr>
-            </table>
+        <div id="contents-area">
+          <div id="ccgComponent" tabindex="2" />
+          <div class="ScreenC">
+            <div class="panel panel-frame" >
+              <table>
+                <tr>
+                  <div id="C2" data-bind=" ntsFormLabel: {text: formLabelTitle}" />
+                </tr>
+                <tr>
+                  <div id="C2_3" tabindex="4" class="selectionEmployee">
+                    <div id="employeeSearch"></div>
+                  </div>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
-        <div id="bottomButton">
+        <div id="functions-area-bottom">
           <hr/>
           <button id="C4_1" class="large proceed" tabindex="5" data-bind="click: setEmployee">
             #{i18n.getText('CLI003_50')}

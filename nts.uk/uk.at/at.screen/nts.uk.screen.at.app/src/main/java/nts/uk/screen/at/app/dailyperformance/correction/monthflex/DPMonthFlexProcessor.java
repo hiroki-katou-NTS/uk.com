@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthDto;
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
@@ -187,7 +187,7 @@ public class DPMonthFlexProcessor {
 		
 		if (param.getDailyPerformanceDto().getSettingUnit() == SettingUnitType.AUTHORITY) {
 			return authorityFormatMonthlyRepository
-					.getListAuthorityFormatDaily(companyId, param.getFormatCode()).stream()
+					.getListAuthorityFormatDailyByCollection(companyId, param.getFormatCode()).stream()
 					.map(x -> new FormatDailyDto(x.getDailyPerformanceFormatCode().v(), new Integer(x.getAttendanceItemId()),
 							x.getColumnWidth() == null ? BigDecimal.valueOf(100l): x.getColumnWidth(), x.getDisplayOrder()))
 					.collect(Collectors.toList());

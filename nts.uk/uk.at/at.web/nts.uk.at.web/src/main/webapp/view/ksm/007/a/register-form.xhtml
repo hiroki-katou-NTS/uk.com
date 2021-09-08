@@ -15,7 +15,7 @@
         name: '#[KSM007_6]',
         constraint: 'WorkplaceGroupCode',
         value: registerForm().workplaceGroupCd,
-        option: { width: '120px', textalign: 'left' },
+        option: { width: '80px', textalign: 'left' },
         enable: registerForm().newMode,
         required: true}"
     />
@@ -34,7 +34,7 @@
         name: '#[KSM007_7]',
         value: registerForm().workplaceGroupName,
         constraint: 'WorkplaceGroupName',
-        option: { width: '222px', textalign: 'left' },
+        option: { width: '156px', textalign: 'left' },
         required: true}"
     />
   </div>
@@ -43,7 +43,7 @@
     class="valign-center control-group"
     data-bind="if: registerForm().workplaceGroupTypes().length &gt; 0"
   >
-    <div data-bind="ntsFormLabel: {required: true, enable: true}">
+    <div data-bind="ntsFormLabel: {required: true, enable: true}" class="label-float-left">
       #{i18n.getText('KSM007_50')}
     </div>
     <div

@@ -1,17 +1,16 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <head>
-<link rel="stylesheet"
-	href="path/to/font-awesome/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css" />
 </head>
+
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 630 };</script>
+			<script>var dialogSize = { width: 450, height: 560 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kdp/002/c/main.css" />
 			<com:scriptfile path="kdp002.c.vm.js" />
@@ -21,118 +20,112 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="right-area">
-					<table class="basic-items">
-						<tr>
-							<td><span id="label-b1-1">#{i18n.getText('KDP002_50')}</span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="item-screen">
-									<!-- C2_1 -->
-									<div id="label-b2-2"
-										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_51')}</div>
-									<!-- C2_2 -->
-									<span id="text-b2-2" data-bind="text: employeeCodeName"></span>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="item-screen">
-									<!-- B3_1 -->
-									<div id="correc-label1"
-										data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KDP002_52')}
-									</div>
-									<!-- B3_2 -->
-									<span id="label-b3-2" data-bind="html: dayName"></span>
-									<!-- B3_3 -->
-									<span id="text-b3-3" style="font-size: 15px;font-weight: bold;" data-bind="text: timeName"></span>
-								</div>
-							</td>
-
-						</tr>
-						<tr>
-							<!-- B4_1 -->
-							<td>
-								<div class="item-screen">
-									<div id="label-b3-1"
-										data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_53')}</div>
-									<!-- B4_2 -->
-									<span id="text-b4-2" style="color:#0033cc; font-size: 15px;font-weight: bold;" data-bind="text: checkHandName"></span>
-								</div>
-
-							</td>
-						</tr>
-						<tr>
-							<!-- B6_1 -->
-							<td>
-								<div class="item-screen">
-									<div id="color" data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_54')}</div>
-									<!-- B6_2 -->
-									<span id="text-b6-2" data-bind="text: laceName"></span>
-								</div>
-							</td>
-						</tr>
-
-					</table>
-
-				</div>
-				<!-- G7 -->
-				<div>
-					<table id="fixed-table">
-						<thead>
-							<tr>
-								<th id="item-table" class="ui-widget-header" colspan="2">#{i18n.getText('KDP002_56')}</th>
-							</tr>
-							<tr>
-								<th id="item-table-2" class="ui-widget-header">
-									<div id="text-adt" class="pull-left" style="width: 175px" data-bind="text: workName1"></div> 
-									<div id="text-adt" class="pull-left" data-bind="text: workName2"></div>
-								</th>
-							</tr>
-							<tr>
-								<th id="item-table-2" class="ui-widget-header">#{i18n.getText('KDP002_57')}
-									
-									<span id="text-adt-1" data-bind="text: timeName1"></span><span
-									id="text-adt" data-bind="text: timeName2"></span>
-								</th>
-								
-							</tr>
-							
-						</thead>
-					</table>
-					<table id="single-list"
-						data-bind="ntsGridList: {								
-								height: 150,
-								dataSource: items,
-								primaryKey: 'itemId',
-								columns: columns2,
-								multiple: false,
-								value: currentCode
-							}"></table>
-					<div id="text-b20">
-						<!-- C21_1 -->
-						<span id="text-b20-1"
-							data-bind="visible : permissionCheck() &amp;&amp; displayButton &amp;&amp; !isNoData()">#{i18n.getText('KDP002_61')}</span>
-						<!-- C21_2 -->
-						<span id="text-b20-2"
-							data-bind="visible : (!permissionCheck() &amp;&amp; displayButton) 	&#124;&#124; (isNoData() &amp;&amp; displayButton) ">
-							#{i18n.getText('KDP002_99')}</span>
+				<div class="kdp002-c">
+					<div id="right-area">
+						<div style="text-align: center;" class="title">
+							<div class="date" data-bind="date: $vm.time.now, format: 'YYYY/MM/DD(ddd)'"></div>
+							<div style="font-size: 35px; font-weight: bold; line-height: 1.2;" class="time"
+								data-bind="date: $vm.time.now, format: 'HH:mm'"></div>
+							<div style="font-size: 30px; color: blue; line-height: 1.3; margin-top: 10px; font-weight: bold;"
+								class="commuting" data-bind="text: checkHandName"></div>
+						</div>
 					</div>
-
+					<!-- G7 -->
+					<div class="table-content">
+						<table>
+							<tbody>
+								<tr>
+									<td colspan="2" data-bind="i18n: employeeCodeName"></td>
+								</tr>
+								<tr data-bind="visible: $vm.laceName() != ''">
+									<td colspan="2" data-bind="i18n: $vm.laceName"></td>
+								</tr>
+								<tr>
+									<td>
+										<div data-bind="ntsFormLabel: { required: false}">#{i18n.getText('KDP002_56')}
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td data-bind="i18n: $vm.workName1">
+									</td>
+								</tr>
+								<tr style="margin-top: 10px;">
+									<td data-bind="i18n: $vm.workName2"></td>
+									<td>
+										<span data-bind="i18n: $vm.timeName1"></span>
+										<span data-bind="i18n: $vm.timeName2"></span>
+									</td>
+								</tr>
+								<tr>
+									<td data-bind="i18n: $vm.item1"></td>
+									<td data-bind="i18n: $vm.value1"></td>
+								</tr>
+								<tr>
+									<td data-bind="i18n: $vm.item2"></td>
+									<td data-bind="i18n: $vm.value2"></td>
+								</tr>
+								<tr>
+									<td data-bind="i18n: $vm.item3"></td>
+									<td data-bind="i18n: $vm.value3"></td>
+								</tr>
+								<tr>
+									<td data-bind="i18n: $vm.item4"></td>
+									<td data-bind="i18n: $vm.value4"></td>
+								</tr>
+								<tr>
+									<td data-bind="i18n: $vm.item5"></td>
+									<td data-bind="i18n: $vm.value5"></td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- <table id="single-list" data-bind="ntsGridList: {								
+									height: 150,
+									dataSource: items,
+									primaryKey: 'itemId',
+									columns: columns2,
+									multiple: false,
+									value: currentCode
+								}"></table> -->
+						<div>
+							<div data-bind="if: $vm.showBtnNoti" style="position: relative;">
+								<button data-bind="click: openDialogU" class="large" style="width: 130px;">
+									<i style="float: left;" data-bind="ntsIcon: { no: 164, width: 28, height: 28 }">
+									</i>
+									<div style="margin-top: 5px;">#{i18n.getText('KDP002_103')}</div>
+								</button>
+								<div data-bind="if: $vm.modeShowPointNoti" style="box-sizing: border-box;">
+									<i style="left: 29px; top: 20px; position: absolute;"
+										data-bind="ntsIcon: { no: 165, width: 8, height: 8 }"></i>
+								</div>
+							</div>
+							<div id="text-b20">
+								<!-- C21_1 -->
+								<span id="text-b20-1"
+									data-bind="visible : permissionCheck() &amp;&amp; displayButton &amp;&amp; !isNoData()">#{i18n.getText('KDP002_61')}</span>
+								<!-- C21_2 -->
+								<span id="text-b20-2"
+									data-bind="visible : (!permissionCheck() &amp;&amp; displayButton) 	&#124;&#124; (isNoData() &amp;&amp; displayButton) ">
+									#{i18n.getText('KDP002_99')}</span>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-			<!-- C30_1 -->
+				<!-- C30_1 -->
 				<button class="proceed x-large" tabindex="9" id="close-button"
-					data-bind="click: registerDailyIdentify, disable : (!permissionCheck() &#124;&#124; isNoData() ), visible: displayButton ">#{i18n.getText('KDP002_62')}</button>
+					data-bind="click: registerDailyIdentify,
+						disable : (!permissionCheck() &#124;&#124; isNoData() ),
+						visible: displayButton,
+						css: { 'has-info': $vm.displayButton} ">#{i18n.getText('KDP002_62')}</button>
 
 				<button tabindex="9" id="close-button"
-					data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>
+					data-bind="click: closeDialog, 
+					css: { 'has-info1': $vm.displayButton}">#{i18n.getText('KDP002_63')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>

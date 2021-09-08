@@ -18,6 +18,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -564,9 +565,15 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public void addTaskScheduleWithTimeSpan(Require require, TimeSpanForCalc targetTimeSpan, TaskCode taskCode) {
 		
-		List<TaskScheduleDetail> addingDetails = 
-				this.getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan(require, targetTimeSpan).stream()
-				.map( timeSpan -> new TaskScheduleDetail(taskCode, timeSpan))
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
+		if ( workingTimeSpanList.isEmpty() ) {
+			throw new BusinessException("Msg_2103");
+		}
+		
+		List<TaskScheduleDetail> addingDetails = workingTimeSpanList.stream()
+				.map( workingTimeSpan -> workingTimeSpan.getDuplicatedWith(targetTimeSpan))
+				.flatMap(OptionalUtil::stream)
+				.map( timeSpan -> new TaskScheduleDetail(taskCode, timeSpan) )
 				.collect( Collectors.toList() );
 		
 		addingDetails.forEach( detail -> {

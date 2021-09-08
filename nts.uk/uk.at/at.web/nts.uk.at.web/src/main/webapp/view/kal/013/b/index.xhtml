@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 1100,
+                width: 1110,
                 height: 400
             };
         </script>
@@ -56,7 +56,7 @@
                     <tr class="row">
                         <td class="pad_left_20px">
                             <!--B1_1-->
-                            <div class="label" data-bind="text: $vm.$i18n('KAL003_26')"></div>
+                            <div class="label" data-bind="ntsFormLabel: {required: true, text: $vm.$i18n('KAL003_26')}"></div>
                         </td>
                         <td class="pad_left_5px">
                             <!--B1_2-->
@@ -78,7 +78,7 @@
                     <tr  class="row">
                         <td class="pad_left_20px">
                             <!--B2_1-->
-                            <div class="label" data-bind="text: $vm.$i18n('KAL003_58')"></div>
+                            <div class="label" data-bind="ntsFormLabel: {required: true, text: $vm.$i18n('KAL003_58')}"></div>
                         </td>
                         <com:ko-if bind="$vm.switchPatternA()">
                             <td class="pad_left_5px">
@@ -175,7 +175,7 @@
                     <tr class="last-row">
                         <td class="pad_left_20px">
                             <!--B3_1-->
-                            <div class="label" data-bind="text: $vm.$i18n('KAL003_25')"></div>
+                            <div class="label" data-bind="ntsFormLabel: {required: false, text: $vm.$i18n('KAL003_25')}"></div>
                         </td>
                         <td colspan="4" class="pad_left_5px">
                             <!--B3_2-->

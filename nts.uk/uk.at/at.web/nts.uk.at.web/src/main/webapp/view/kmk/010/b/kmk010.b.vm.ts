@@ -144,16 +144,16 @@ module nts.uk.at.view.kmk010.b {
                     $('#overtimeNum_' + model.overtimeNo()).ntsError("clear");
                 }
                 for (var model of self.lstOvertimeModel) {
-                    if (model.requiredText()) {
+                    //if (model.requiredText()) {
                         $('#overtimeNo_' + model.overtimeNo()).ntsEditor("validate");
-                    }
+                    //}
 
-                    if (model.requiredOverTime()) {
+                    //if (model.requiredOverTime()) {
                         $('#overtimeNum_' + model.overtimeNo()).ntsEditor("validate");
-                    }
+                   // }
                 }
                 for (var model of self.lstOvertimeModel) {
-                    if (model.requiredText() && $('#overtimeNo_' + model.overtimeNo()).ntsError('hasError')) {
+                    if ($('#overtimeNo_' + model.overtimeNo()).ntsError('hasError')) {
                         return true;
                     }
                 }

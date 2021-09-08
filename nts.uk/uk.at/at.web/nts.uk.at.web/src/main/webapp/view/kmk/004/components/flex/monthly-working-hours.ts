@@ -5,7 +5,7 @@ import YearItem = nts.uk.at.kmk004.components.flex.YearItem;
 const template = `
 	
 	
-	<div data-bind="ntsFormLabel: {inline:true} , i18n: 'KMK004_232'"></div>
+	<div data-bind="ntsFormLabel: {inline:true , text: $i18n('KMK004_232') }"></div>
 	
 	<div style="padding-left:10px;"> 
 		<div class="div_line">
@@ -36,7 +36,7 @@ const template = `
 										<tr style="background-color:#92D050">
 											<th data-bind="visible: screenMode == 'Com_Person'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_263'"></th>
-											<th data-bind="visible:showScheduled(),i18n: 'KMK004_264'" style="text-align:center;"></th>
+											<!-- ko if: showScheduled() --><th data-bind="i18n: 'KMK004_264'" style="text-align:center;"></th><!-- /ko -->
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_265'"></th>
 											<th style="text-align:center;" data-bind="i18n: 'KMK004_266'"></th>
 											
@@ -47,7 +47,7 @@ const template = `
 											<tr>
 												<td  data-bind="visible: $parent.screenMode == 'Com_Person' "><div data-bind="ntsCheckBox: { checked:$data.laborTime().checkbox }"></div></td>
 												<td class="bg-green" style="text-align:center;" ><span data-bind="text: $data.yearMonthText + '月度'"></span></td>
-												<td data-bind="visible:$parent.showScheduled()"><input  data-bind="
+												<!-- ko if: $parent.showScheduled() --><td><input  data-bind="
 												ntsTimeEditor: {
 														name:'#[KMK004_264]',
 														value: $data.laborTime().withinLaborTime,
@@ -57,7 +57,7 @@ const template = `
 														mode: 'time',
 														option: {textalign: 'center',width: '80px'}
 														}"
-												/></td>
+												/></td><!-- /ko -->
 												<td ><input  data-bind="
 												ntsTimeEditor: {name:'#[KMK004_265]',
 														value: $data.laborTime().legalLaborTime,
@@ -80,12 +80,14 @@ const template = `
 												/></td>
 											</tr>
 								</tbody>
-								<tr data-bind="visible: screenMode != 'Com_Person' " >
+                                <tbody data-bind="if:notPerson() ">
+								<tr >
 									<td style="padding: 5px;text-align:center" class="bg-green" style="text-align:center;" data-bind="i18n: 'KMK004_267'" ></td>
-									<td data-bind="visible:showScheduled(),text:calTotalTime('withinLaborTime')" style="text-align:center;"></td>
+									<!-- ko if: showScheduled()--> <td data-bind="text:calTotalTime('withinLaborTime')" style="text-align:center;"></td> <!-- /ko -->
 									<td style="text-align:center;" data-bind="text:calTotalTime('legalLaborTime')" ></td>
 									<td style="text-align:center;" data-bind="text:calTotalTime('weekAvgTime')" ></td>
 								</tr>
+                                </tbody>
 									
 				</table>		
 			</div>
@@ -133,6 +135,10 @@ class MonthlyWorkingHours extends ko.ViewModel {
 			$(".popup-area1").ntsPopup("show");
 		});
 	}
+    notPerson(){
+        const vm = this;
+        return vm.screenMode != 'Com_Person';
+    }
 
 	enableQButton() {
 		const vm = this;
@@ -142,9 +148,9 @@ class MonthlyWorkingHours extends ko.ViewModel {
 		return vm.screenData().selected() != null;
 	}
 
-	mounted() {
-
-	}
+    mounted() {
+        
+    }
 
 	showScheduled() {
 		const vm = this;

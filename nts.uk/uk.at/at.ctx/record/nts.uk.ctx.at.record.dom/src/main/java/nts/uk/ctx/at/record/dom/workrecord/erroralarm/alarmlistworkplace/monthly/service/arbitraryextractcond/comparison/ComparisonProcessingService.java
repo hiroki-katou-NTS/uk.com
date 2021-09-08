@@ -50,7 +50,7 @@ public class ComparisonProcessingService {
         String message;
         if (checkConditions.isSingleValue()) {
             CompareSingleValue compareSingleValue = ((CompareSingleValue) checkConditions);
-            if (check) return null;
+            if (!check) return null;
             String time = compareSingleValue.getValue().toString();
             try {
                 if(condition.getCheckMonthlyItemsType() == AVERAGE_TIME) {
@@ -66,7 +66,7 @@ public class ComparisonProcessingService {
                     avgTime.toString());
         } else {
             CompareRange compareRange = ((CompareRange) checkConditions);
-            if (check) return null;
+            if (!check) return null;
 
             message = TextResource.localize("KAL020_403", averageTimeName, getFormula(compareRange,condition),
                     avgTime.toString());

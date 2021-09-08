@@ -6,11 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -18,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWork;
 
-@Data
 /** 時間外超過 */
 @NoArgsConstructor
 public class ExcessOutsideWorkDto implements ItemConst, AttendanceItemDataGate {
@@ -33,6 +33,8 @@ public class ExcessOutsideWorkDto implements ItemConst, AttendanceItemDataGate {
 	private int excessNo;
 
 	/** 超過時間: 勤怠月間時間 */
+	@Getter
+	@Setter
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	private int breakdown;
@@ -65,8 +67,7 @@ public class ExcessOutsideWorkDto implements ItemConst, AttendanceItemDataGate {
 	}
 
 	public ExcessOutsideWork toDomain() {
-//		return ExcessOutsideWork.of((no / 10) + 1, no % 10, new AttendanceTimeMonth(breakdown));
-		return ExcessOutsideWork.of(calcBreakDownNo(no), calcExcessNo(no), new AttendanceTimeMonth(breakdown));
+		return ExcessOutsideWork.of(getBreakdownNo(), getExcessNo(), new AttendanceTimeMonth(breakdown));
 	}
 
 	public static ExcessOutsideWorkDto from(ExcessOutsideWork domain) {
@@ -109,5 +110,31 @@ public class ExcessOutsideWorkDto implements ItemConst, AttendanceItemDataGate {
 		}
 	}
 
-	
+	public int getExcessNo() {
+		return calcExcessNo(this.no);
+	}
+
+	public void setExcessNo(int excessNo) {
+		this.excessNo = excessNo;
+		this.no = calcFakeNo(this.excessNo, this.breakdownNo);
+	}
+
+	public int getBreakdownNo() {
+		return calcBreakDownNo(this.no);
+	}
+
+	public void setBreakdownNo(int breakdownNo) {
+		this.breakdownNo = breakdownNo;
+		this.no = calcFakeNo(this.excessNo, this.breakdownNo);
+	}
+
+	public int getNo() {
+		return no;
+	}
+
+	public void setNo(int no) {
+		this.no = no;
+//		this.excessNo = calcExcessNo(this.no);
+//		this.breakdownNo = calcBreakDownNo(this.no);
+	}
 }

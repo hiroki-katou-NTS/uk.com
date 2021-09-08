@@ -351,7 +351,7 @@ public class JpaSettingTimeZoneRepository extends JpaRepository implements Setti
             stmt.setString(1,companyId);
             stmt.setString(2,companyId);
             stmt.setString(3,companyId);
-            stmt.setString(4,companyId);
+//            stmt.setString(4,companyId);
             datas = new NtsResultSet(stmt.executeQuery()).getList(x -> toMasterDataOfSetSubUseWorkPlace(x));
         }
         return datas;

@@ -12,15 +12,11 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -174,108 +170,60 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 		return pk;
 	}
 	
-	public OuenWorkTimeOfDaily domain() {
+	public static List<KrcdtDayOuenTime> convert(OuenWorkTimeOfDaily domain) {
 		
-		List<MedicalCareTimeEachTimeSheet> medicalTimes = new ArrayList<>();
-		medicalTimes.add(MedicalCareTimeEachTimeSheet.create(
-										FullTimeNightShiftAttr.DAY_SHIFT,
-										new AttendanceTime(normalWorkTime), 
-										new AttendanceTime(normalBreakTime), 
-										new AttendanceTime(normalDeductionTime)));
-		medicalTimes.add(MedicalCareTimeEachTimeSheet.create(
-										FullTimeNightShiftAttr.NIGHT_SHIFT,
-										new AttendanceTime(nightWorkTime), 
-										new AttendanceTime(nightBreakTime), 
-										new AttendanceTime(nightDeductionTime)));
-		
-		return OuenWorkTimeOfDaily.create(pk.sid, pk.ymd, 
-				OuenWorkTimeOfDailyAttendance.create(pk.ouenNo, 
-						OuenAttendanceTimeEachTimeSheet.create(
-								new AttendanceTime(totalTime), 
-								new AttendanceTime(breakTime), 
-								new AttendanceTime(withinTime),
-								medicalTimes, 
-								premiumTime(premiumTime1, premiumTime2, premiumTime3, premiumTime4, premiumTime5, 
-											premiumTime6, premiumTime7, premiumTime8, premiumTime9, premiumTime10)),
-						OuenMovementTimeEachTimeSheet.create(
-								new AttendanceTime(moveTotalTime), 
-								new AttendanceTime(moveBreakTime), 
-								new AttendanceTime(moveWithinTime), 
-								premiumTime(movePremiumTime1, movePremiumTime2, movePremiumTime3, movePremiumTime4, movePremiumTime5, 
-											movePremiumTime6, movePremiumTime7, movePremiumTime8, movePremiumTime9, movePremiumTime10)), 
-						new AttendanceAmountDaily(amount), 
-						new PriceUnit(priceUnit)));
-	}
-	
-	public List<PremiumTime> premiumTime(int no1, int no2, int no3, 
-			int no4, int no5, int no6, int no7, 
-			int no8, int no9, int no10){
-		
-		List<PremiumTime> premiumTimes = new ArrayList<>();
-		
-		premiumTimes.add(new PremiumTime(1, new AttendanceTime(no1)));
-		premiumTimes.add(new PremiumTime(2, new AttendanceTime(no2)));
-		premiumTimes.add(new PremiumTime(3, new AttendanceTime(no3)));
-		premiumTimes.add(new PremiumTime(4, new AttendanceTime(no4)));
-		premiumTimes.add(new PremiumTime(5, new AttendanceTime(no5)));
-		premiumTimes.add(new PremiumTime(6, new AttendanceTime(no6)));
-		premiumTimes.add(new PremiumTime(7, new AttendanceTime(no7)));
-		premiumTimes.add(new PremiumTime(8, new AttendanceTime(no8)));
-		premiumTimes.add(new PremiumTime(9, new AttendanceTime(no9)));
-		premiumTimes.add(new PremiumTime(10, new AttendanceTime(no10)));
-		
-		return premiumTimes;
-	}
-	
-	public static KrcdtDayOuenTime convert(OuenWorkTimeOfDaily domain) {
-		KrcdtDayOuenTime entity = new KrcdtDayOuenTime();
-		
-		entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), 
-				domain.getYmd(), domain.getOuenTime().getWorkNo());
-		
-		entity.amount = domain.getOuenTime().getAmount().v();
-		entity.priceUnit = domain.getOuenTime().getPriceUnit().v();
-		entity.totalTime = domain.getOuenTime().getWorkTime().getTotalTime().valueAsMinutes();
-		entity.breakTime = domain.getOuenTime().getWorkTime().getBreakTime().valueAsMinutes();
-		entity.withinTime = domain.getOuenTime().getWorkTime().getWithinTime().valueAsMinutes();
-		entity.premiumTime1 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 1);
-		entity.premiumTime2 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 2);
-		entity.premiumTime3 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 3);
-		entity.premiumTime4 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 4);
-		entity.premiumTime5 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 5);
-		entity.premiumTime6 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 6);
-		entity.premiumTime7 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 7);
-		entity.premiumTime8 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 8);
-		entity.premiumTime9 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 9);
-		entity.premiumTime10 = getPremiumTime(domain.getOuenTime().getWorkTime().getPremiumTime(), 10);
-		entity.moveTotalTime = domain.getOuenTime().getMoveTime().getTotalMoveTime().valueAsMinutes();
-		entity.moveBreakTime = domain.getOuenTime().getMoveTime().getBreakTime().valueAsMinutes();
-		entity.moveWithinTime = domain.getOuenTime().getMoveTime().getWithinMoveTime().valueAsMinutes();
-		entity.movePremiumTime1 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 1);
-		entity.movePremiumTime2 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 2);
-		entity.movePremiumTime3 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 3);
-		entity.movePremiumTime4 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 4);
-		entity.movePremiumTime5 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 5);
-		entity.movePremiumTime6 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 6);
-		entity.movePremiumTime7 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 7);
-		entity.movePremiumTime8 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 8);
-		entity.movePremiumTime9 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 9);
-		entity.movePremiumTime10 = getPremiumTime(domain.getOuenTime().getMoveTime().getPremiumTime(), 10);
-		
-		getMedicalTime(domain.getOuenTime().getWorkTime().getMedicalTime(), FullTimeNightShiftAttr.DAY_SHIFT).ifPresent(m -> {
+		List<KrcdtDayOuenTime> rs = new ArrayList<>();
 
-			entity.normalWorkTime = m.getWorkTime().valueAsMinutes();
-			entity.normalBreakTime = m.getBreakTime().valueAsMinutes();
-			entity.normalDeductionTime = m.getDeductionTime().valueAsMinutes();
-		});
-		getMedicalTime(domain.getOuenTime().getWorkTime().getMedicalTime(), FullTimeNightShiftAttr.NIGHT_SHIFT).ifPresent(m -> {
+		for (OuenWorkTimeOfDailyAttendance oTimeOfDaily : domain.getOuenTimes()) {
+			KrcdtDayOuenTime entity = new KrcdtDayOuenTime();
+			entity.pk = new KrcdtDayOuenTimePK(domain.getEmpId(), domain.getYmd(), oTimeOfDaily.getWorkNo());
 
-			entity.nightWorkTime = m.getWorkTime().valueAsMinutes();
-			entity.nightBreakTime = m.getBreakTime().valueAsMinutes();
-			entity.nightDeductionTime = m.getDeductionTime().valueAsMinutes();
-		});
-		
-		return entity;
+			entity.amount = oTimeOfDaily.getAmount().v();
+			entity.priceUnit = oTimeOfDaily.getPriceUnit().v();
+			entity.totalTime = oTimeOfDaily.getWorkTime().getTotalTime().valueAsMinutes();
+			entity.breakTime = oTimeOfDaily.getWorkTime().getBreakTime().valueAsMinutes();
+			entity.withinTime = oTimeOfDaily.getWorkTime().getWithinTime().valueAsMinutes();
+			entity.premiumTime1 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 1);
+			entity.premiumTime2 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 2);
+			entity.premiumTime3 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 3);
+			entity.premiumTime4 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 4);
+			entity.premiumTime5 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 5);
+			entity.premiumTime6 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 6);
+			entity.premiumTime7 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 7);
+			entity.premiumTime8 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 8);
+			entity.premiumTime9 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 9);
+			entity.premiumTime10 = getPremiumTime(oTimeOfDaily.getWorkTime().getPremiumTime(), 10);
+			entity.moveTotalTime = oTimeOfDaily.getMoveTime().getTotalMoveTime().valueAsMinutes();
+			entity.moveBreakTime = oTimeOfDaily.getMoveTime().getBreakTime().valueAsMinutes();
+			entity.moveWithinTime = oTimeOfDaily.getMoveTime().getWithinMoveTime().valueAsMinutes();
+			entity.movePremiumTime1 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 1);
+			entity.movePremiumTime2 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 2);
+			entity.movePremiumTime3 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 3);
+			entity.movePremiumTime4 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 4);
+			entity.movePremiumTime5 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 5);
+			entity.movePremiumTime6 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 6);
+			entity.movePremiumTime7 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 7);
+			entity.movePremiumTime8 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 8);
+			entity.movePremiumTime9 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 9);
+			entity.movePremiumTime10 = getPremiumTime(oTimeOfDaily.getMoveTime().getPremiumTime(), 10);
+
+			getMedicalTime(oTimeOfDaily.getWorkTime().getMedicalTime(), FullTimeNightShiftAttr.DAY_SHIFT)
+					.ifPresent(m -> {
+
+						entity.normalWorkTime = m.getWorkTime().valueAsMinutes();
+						entity.normalBreakTime = m.getBreakTime().valueAsMinutes();
+						entity.normalDeductionTime = m.getDeductionTime().valueAsMinutes();
+					});
+			getMedicalTime(oTimeOfDaily.getWorkTime().getMedicalTime(), FullTimeNightShiftAttr.NIGHT_SHIFT)
+					.ifPresent(m -> {
+
+						entity.nightWorkTime = m.getWorkTime().valueAsMinutes();
+						entity.nightBreakTime = m.getBreakTime().valueAsMinutes();
+						entity.nightDeductionTime = m.getDeductionTime().valueAsMinutes();
+					});
+			rs.add(entity);
+		}
+		return rs;
 	}
 	
 	private static Optional<MedicalCareTimeEachTimeSheet> getMedicalTime(

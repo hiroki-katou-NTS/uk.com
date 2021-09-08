@@ -45,52 +45,52 @@
 
 
 		<ui:define name="content">
-			<div data-bind="let: { selected: ko.observable('Com_Company') }">
-				<div id="sidebar-area"
-					style="height: calc(100vh - 142px); float: left"
-					data-bind="component: {
-						name: 'ko-panel',
-						params:{ 
-							model: selected
-						}
-					}">
-				</div>
-				<div data-bind="if: selected() === 'Com_Company'">
-					<div
+			<div id="contents-area" style="padding: 0; overflow: hidden;">
+				<div data-bind="let: { selected: ko.observable('Com_Company') }">
+					<div id="sidebar-area"
+						style="height: calc(100vh - 142px); float: left"
 						data-bind="component: {
-								name: 'screen-g-component',
-								params:{screenMode:selected(),startYM:startYM}
+							name: 'ko-panel',
+							params:{ 
+								model: selected
+							}
 						}">
 					</div>
-				</div>
-				<div data-bind="if: selected() === 'Com_Workplace'">
-					<div
-						data-bind="component: {
-								name: 'screen-h-component',
-								params:{screenMode:selected(),startYM:startYM}
-						}">
+					<div data-bind="if: selected() === 'Com_Company'">
+						<div
+							data-bind="component: {
+									name: 'screen-g-component',
+									params:{screenMode:selected(),startYM:startYM}
+							}">
+						</div>
 					</div>
-				</div>
-				<div data-bind="if: selected() === 'Com_Employment'">
-					<div
-						data-bind="component: {
-								name: 'screen-i-component',
-								params:{screenMode:selected(),startYM:startYM}
-						}">
+					<div data-bind="if: selected() === 'Com_Workplace'">
+						<div
+							data-bind="component: {
+									name: 'screen-h-component',
+									params:{screenMode:selected(),startYM:startYM}
+							}">
+						</div>
 					</div>
-				</div>
-				<div data-bind="if: selected() === 'Com_Person'">
-					<div
-						data-bind="component: {
-								name: 'screen-j-component',
-								params:{screenMode:selected(),startYM:startYM}
-						}">
+					<div data-bind="if: selected() === 'Com_Employment'">
+						<div
+							data-bind="component: {
+									name: 'screen-i-component',
+									params:{screenMode:selected(),startYM:startYM}
+							}">
+						</div>
+					</div>
+					<div data-bind="if: selected() === 'Com_Person'">
+						<div
+							data-bind="component: {
+									name: 'screen-j-component',
+									params:{screenMode:selected(),startYM:startYM}
+							}">
+						</div>
 					</div>
 				</div>
 			</div>
 		</ui:define>
-
-
 	</ui:composition>
 </body>
 </html>

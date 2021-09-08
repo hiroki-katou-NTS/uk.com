@@ -22,6 +22,8 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		isSendMail = ko.observable(false);
 		remainDays = ko.observable('');
 		comment = new Comment();
+
+		remainDayList: KnockoutObservableArray<RemainDays> = ko.observableArray([]);
 		
 		appCombinaSelected = ko.observable(0);
 		appCombinaDipslay = ko.observable(false);
@@ -33,17 +35,34 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		
 		settingCheck = ko.observable(true);
 		isFromOther: boolean = false;
+
+		bindRemainDays() {
+			const vm = this;
+
+			const remainDayList = [] as RemainDays[];
+			
+			const item = {
+				label: vm.$i18n('KAF011_64'),
+				name: vm.$i18n('KAF011_65'),
+				content: vm.remainDays()
+			} as RemainDays;
+
+			remainDayList.push(item);
+			vm.remainDayList(remainDayList);
+			
+		}
 		
 		created(params?: AppInitParam) {
 			const vm = this;
-			if(params){
-				vm.params = params;	
+			if(nts.uk.request.location.current.isFromMenu) {
+				sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');	
+			} else {
+				if(!_.isNil(__viewContext.transferred.value)) {
+					vm.isFromOther = true;
+					params = __viewContext.transferred.value;
+					vm.params = params;
+				}
 			}
-			
-			if(!_.isNil(__viewContext.transferred.value)) {
-				vm.isFromOther = true;
-			}
-			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let paramDate;
 			if(vm.params){
 				if (!_.isEmpty(vm.params.baseDate)) {
@@ -70,6 +89,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
+					vm.bindRemainDays();
 					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
@@ -235,6 +255,10 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 		absAppDate: string;
 		
 	}
-	
+	export interface RemainDays {
+		label: string;
+		name: string;
+		content: string;
+	}
 
 }

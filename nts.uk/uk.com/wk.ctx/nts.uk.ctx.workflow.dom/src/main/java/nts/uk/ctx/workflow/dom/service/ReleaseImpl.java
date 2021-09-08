@@ -15,6 +15,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalComment;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootStateRepository;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
@@ -63,7 +64,7 @@ public class ReleaseImpl implements ReleaseService {
 						approverInfor.setApprovalAtr(ApprovalBehaviorAtr.UNAPPROVED);
 						approverInfor.setAgentID("");
 						approverInfor.setApprovalDate(null);
-						approverInfor.setApprovalReason("");
+						approverInfor.setApprovalReason(new ApprovalComment(""));
 					}
 				});
 			});

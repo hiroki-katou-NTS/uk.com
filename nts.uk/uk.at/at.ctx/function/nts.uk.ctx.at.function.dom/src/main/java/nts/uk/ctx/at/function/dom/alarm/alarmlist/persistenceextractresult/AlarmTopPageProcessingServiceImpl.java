@@ -80,11 +80,11 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     return;
                 }
 
+                List<AlarmEmployeeList> lstExtractResultDB = new ArrayList<>();
                 for (PeriodByAlarmCategory p : lstCategoryPeriod) {//永続化のアラームリスト抽出結果を絞り込む
                     List<AlarmExtractionCondition> extractConds = alarmExtractConds.stream()
                             .filter(e -> e.getAlarmCategory().value == p.getCategory()).collect(Collectors.toList());
 
-                    List<AlarmEmployeeList> lstExtractResultDB = new ArrayList<>();
                     for (AlarmExtractionCondition c : extractConds) {
                         val temp = persisAlarmExtract.getAlarmListExtractResults().stream()
                                 .filter(x -> x.getAlarmExtractInfoResults().stream()
@@ -96,7 +96,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                                             if (c.getAlarmCategory().value == AlarmCategory.MONTHLY.value) {
                                                 return z.getPeriodDate().getStartDate().get().compareTo(p.getStartDate()) == 0;
                                             } else {
-                                                if (z.getPeriodDate() == null) {
+                                                if (z.getPeriodDate() == null || c.getAlarmCategory().value == AlarmCategory.MASTER_CHECK.value) {
                                                     return true;
                                                 } else if (!z.getPeriodDate().getEndDate().isPresent()) {
                                                     return z.getPeriodDate().getStartDate().get().afterOrEquals(p.getStartDate()) && z.getPeriodDate().getStartDate().get().beforeOrEquals(p.getEndDate());
@@ -116,13 +116,15 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                             .collect(Collectors.toList());
 
                     dataProcessingInputOutput(p, lstExtractResultInput, lstExtractResultDB, lstExResultInsert, lstExResultDelete);
+                }
 
-                    for (val exDb : lstExtractResultDB) {
-                        List<AlarmEmployeeList> tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
-                                !x.getEmployeeID().equals(exDb.getEmployeeID())).collect(Collectors.toList());
-                        if (!tempDbRemain.isEmpty()) {
-                            lstExResultDelete.addAll(tempDbRemain);
-                        }
+                // Lấy các record còn sót lại sau khi đã lọc theo extractConds để xoá ra khỏi Db
+                val empIdOfDbRemains = lstExtractResultDB.stream().map(AlarmEmployeeList::getEmployeeID).collect(Collectors.toList());
+                if (!empIdOfDbRemains.isEmpty()) {
+                    val tempDbRemain = persisAlarmExtract.getAlarmListExtractResults().stream().filter(x ->
+                            !empIdOfDbRemains.contains(x.getEmployeeID())).collect(Collectors.toList());
+                    if (!tempDbRemain.isEmpty()) {
+                        lstExResultDelete.addAll(tempDbRemain);
                     }
                 }
 

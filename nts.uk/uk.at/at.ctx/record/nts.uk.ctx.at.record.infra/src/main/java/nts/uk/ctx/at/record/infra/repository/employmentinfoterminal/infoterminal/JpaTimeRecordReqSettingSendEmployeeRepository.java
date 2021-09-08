@@ -22,7 +22,7 @@ public class JpaTimeRecordReqSettingSendEmployeeRepository extends JpaRepository
 	public void insert(TimeRecordReqSetting reqSetting) {
 		List<KrcmtTrSendEmployee> employeeList = reqSetting.getEmployeeIds().stream()
 				.map(e -> toEntity(reqSetting, e.v())).collect(Collectors.toList());
-
+		
 		this.commandProxy().insertAll(employeeList);
 	}
 

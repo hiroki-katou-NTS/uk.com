@@ -1,280 +1,315 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.koExtentions {
+    export module radio {
+        interface RadioBoxAccessor {
+            name: string | KnockoutObservable<string>;
+            group: string | KnockoutObservable<string>;
+            option: string | KnockoutObservable<string>;
+            checkedValue: string | KnockoutObservable<string>;
+            optionText: string | KnockoutObservable<string>;
+            optionValue: string | KnockoutObservable<string>;
+            enable: boolean | KnockoutObservable<boolean>;
+            checked: any | KnockoutObservable<any>;
+            tabindex?: number | string | KnockoutObservable<number | string>;
+            hasFocus: boolean | KnockoutObservable<boolean>;
+            required: boolean | KnockoutObservable<boolean>;
+            dataBind: any;
+        }
 
-    class NtsRadioBoxBindingHandler implements KnockoutBindingHandler {
+        @handler({
+            bindingName: 'ntsRadioButton',
+            validatable: true,
+            virtual: false
+        })
+        export class NtsRadioBoxBindingHandler implements KnockoutBindingHandler {
+            init(element: HTMLElement, valueAccessor: () => RadioBoxAccessor, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+                const $element = $(element);
+                const accessor = valueAccessor();
+                const innerText = $(element).text();
 
-        constructor() { }
+                const hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
 
-        /**
-         * Init
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
-            var data = valueAccessor();
-            var optionValue: string = ko.unwrap(data.optionValue);
-            var optionText: string = ko.unwrap(data.optionText);
-            var dataName: string = ko.unwrap(data.name);
-            var option: string = ko.unwrap(data.option);
-            var group: string = ko.unwrap(data.group);
-            let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                const $label = element.tagName === 'LABEL' ? element : $('<label>').appendTo(element).get(0);
 
-            var selectedValue: any = ko.unwrap(data.checked);
-            var container = $(element);
-            container.addClass("ntsControl radio-wrapper");
-            container.data("enable", enable);
+                const text = ko.computed({
+                    read: () => {
+                        const option = ko.unwrap(accessor.option);
+                        const optionText = ko.unwrap(accessor.optionText);
 
-            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
-                container.attr("tabindex", "0");
-            }
+                        const text = (_.get(option, optionText, optionText) || innerText).trim();
 
-            container.data("tabindex", container.attr("tabindex"));
-
-            container.keydown(function(evt, ui) {
-                let code = evt.which || evt.keyCode;
-                if (code === 32) {
-                    evt.preventDefault();
-                }
-            });
-
-            container.keyup(function(evt, ui) {
-                if (container.data("enable") !== false) {
-                    let code = evt.which || evt.keyCode;
-                    if (code === 32) {
-                        let checkitem = container.find("input[type='radio']");
-                        if (!container.find("input[type='radio']").is(":checked")) {
-                            checkitem.prop("checked", true);
-                            data.checked(container.find("input[type='radio']").data("value"));
+                        if (!text) {
+                            element.classList.remove('with-text');
+                            element.classList.add('without-text');
                         } else {
-                            checkitem.prop("checked", false);
-                            data.checked(undefined);
+                            element.classList.remove('without-text');
+                            element.classList.add('with-text');
                         }
 
-                        container.focus();
-                    }
-                }
-            });
-            var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, false);
-            radioBoxLabel.appendTo(container);
-            let radio = container.find("input[type='radio']");
-            radio.attr("name", group).bind('selectionchanged', () => {
-                data.checked(radio.data("value"));
-            });
-            // Default value
-            new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data
-            var data = valueAccessor();
-            var option: any = data.option === undefined ? [] : ko.unwrap(data.option);
-            var optionValue: string = ko.unwrap(data.optionValue);
-            var optionText: string = ko.unwrap(data.optionText);
-            var selectedValue: any = data.checked;
-            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-
-            // Container
-            var container = $(element);
-
-            container.data("enable", enable);
-            container.find(".label").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]);
-
-            if (selectedValue() === getOptionValue(option, optionValue)) {
-                container.find("input[type='radio']").prop("checked", true);
-            } else {
-                container.find("input[type='radio']").prop("checked", false);
-            }
-            // Enable
-            if (enable === true) {
-                container.find("input[type='radio']").removeAttr("disabled");
-                container.attr("tabindex", container.data("tabindex"));
-            } else if (enable === false) {
-                container.find("input[type='radio']").attr("disabled", "disabled");
-                if (!nts.uk.util.isNullOrUndefined(data.value)) {
-                    new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
-                }
-
-                container.attr("tabindex", "-1");
-            }
-            //            }
-        }
-    }
-
-    /**
-     * RadioBoxGroup binding handler
-     */
-    class NtsRadioBoxGroupBindingHandler implements KnockoutBindingHandler {
-
-        constructor() { }
-
-        /**
-         * Init
-         */
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
-            var data = valueAccessor();
-            var optionValue: string = ko.unwrap(data.optionsValue);
-            let enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-
-
-            var container = $(element);
-            container.addClass("ntsControl radio-wrapper");
-            container.data("enable", enable);
-            if (nts.uk.util.isNullOrUndefined(container.attr("tabindex"))) {
-                container.attr("tabindex", "0");
-            }
-
-            container.data("tabindex", container.attr("tabindex"));
-
-            container.keydown(function(evt, ui) {
-                let code = evt.which || evt.keyCode;
-                if (code === 32) {
-                    evt.preventDefault();
-                }
-            });
-
-            container.keyup(function(evt, ui) {
-                if (container.data("enable") !== false) {
-                    let code = evt.which || evt.keyCode;
-                    let checkitem;
-                    if (code === 32) {
-                        checkitem = $(_.find(container.find("input[type='radio']"), function(radio, idx) {
-                            return $(radio).attr("disabled") !== "disabled";
-                        }));
-                    } else if (code === 37 || code === 38) {
-                        let inputList = _.filter(container.find("input[type='radio']"), function(radio, idx) {
-                            return $(radio).attr("disabled") !== "disabled";
-                        });
-                        //                        let inputList = container.find("input[type='radio']");
-                        let currentSelect = _.findIndex(inputList, function(item) {
-                            return $(item).is(":checked");
-                        });
-                        checkitem = $(inputList[currentSelect - 1]);
-                    } else if (code === 39 || code === 40) {
-                        let inputList = _.filter(container.find("input[type='radio']"), function(radio, idx) {
-                            return $(radio).attr("disabled") !== "disabled";
-                        });
-                        let currentSelect = _.findIndex(inputList, function(item) {
-                            return $(item).is(":checked");
-                        });
-                        checkitem = $(inputList[currentSelect + 1])
-                    }
-                    if (checkitem !== undefined && checkitem.length > 0) {
-                        checkitem.prop("checked", true);
-                        data.value(optionValue === undefined ? checkitem.data("option") : checkitem.data("option")[optionValue]);
-                    }
-                    container.focus();
-                }
-            });
-            //            container.find(".ntsRadioBox").focus(function (evt, ui){
-            //                console.log(evt);            
-            //            });
-            // Default value
-            new nts.uk.util.value.DefaultValue().onReset(container, data.value);
-        }
-
-        /**
-         * Update
-         */
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            // Get data
-            var data = valueAccessor();
-            var options: any = data.options === undefined ? [] : JSON.parse(ko.toJSON(data.options));
-            var optionValue: string = ko.unwrap(data.optionsValue);
-            var optionText: string = ko.unwrap(data.optionsText);
-            var selectedValue: any = data.value;
-            var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-
-            // Container
-            var container = $(element);
-
-            container.data("enable", enable);
-            // Render
-            if (!_.isEqual(container.data("options"), options)) {
-                var radioName = util.randomId();
-                container.empty();
-                _.forEach(options, (option) => {
-                    var radioBoxLabel = drawRadio(selectedValue, option, radioName, optionValue, option["enable"], optionText, false);
-                    radioBoxLabel.appendTo(container);
+                        return text;
+                    },
+                    disposeWhenNodeIsRemoved: element
                 });
 
-                // Save a clone
-                container.data("options", _.cloneDeep(options));
-            }
+                const $input = $('<input>', { type: 'radio' })
+                    .appendTo($label)
+                    .on('change', () => {
+                        if (ko.isObservable(accessor.checked)) {
+                            const option = ko.unwrap(accessor.option) || ko.unwrap(accessor.checkedValue);
+                            const optionValue = ko.unwrap(accessor.optionValue);
 
-            // Checked
-            //var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
-            //    return _.isEqual(selectedValue(), $(item).data("value"));
-            //});
-            //if (checkedRadio !== undefined)
-            //    $(checkedRadio).prop("checked", true);
-            if(!nts.uk.util.isNullOrUndefined(selectedValue())){  
-                // Checked
-                var checkedRadio = _.find(container.find("input[type='radio']"), (item) => {
-                    return _.isEqual(JSON.parse(ko.toJSON(selectedValue())), $(item).data("value"));
-                });
-                if (checkedRadio !== undefined)
-                    $(checkedRadio).prop("checked", true);
-            }
+                            const value = optionValue !== undefined ? _.get(option, optionValue, optionValue) : (option !== undefined ? option : $input.is(':checked'));
 
-            // Enable
-            if (enable === true) {
-                _.forEach(container.find("input[type='radio']"), function(radio) {
-                    let dataOpion = $(radio).data("option");
-                    if (dataOpion["enable"] !== false) {
-                        $(radio).removeAttr("disabled");
-                    }
-                });
-                container.attr("tabindex", container.data("tabindex"));
-            } else if (enable === false) {
-                container.find("input[type='radio']").attr("disabled", "disabled");
-                new nts.uk.util.value.DefaultValue().applyReset(container, data.value);
-                container.attr("tabindex", "-1");
-            }
-            //            }
-        }
-    }
-
-    function getOptionValue(item: any, optionValue: string) {
-        if (nts.uk.util.isNullOrUndefined(item)) {
-            return nts.uk.util.isNullOrUndefined(optionValue) ? true : optionValue;
-        }
-        return (optionValue === undefined) ? item : item[optionValue];
-    };
-
-    function drawRadio(selectedValue: Function, option: any, radioName: string, optionValue: string, disableOption: boolean, optionText: string, booleanValue: boolean): JQuery {
-        var radioBoxLabel = $("<label class='ntsRadioBox'></label>").on('click', function() {
-                        $(this).parent().focus();
+                            accessor.checked(value);
+                        }
                     });
-        var radioBox = $('<input type="radio">').data("option", option).addClass("unselectable").attr("name", radioName)
-                                            .data("value", getOptionValue(option, optionValue)).attr("unselectable", "on")
-                                            .on("change", function() {
-            var self = $(this);
-            if (self.is(":checked") && !booleanValue) {
-                selectedValue(self.data("value"));
-            } else if (booleanValue) {
-                let name = self.attr("name");
-                if (nts.uk.util.isNullOrUndefined(name)) {
-                    selectedValue(self.is(":checked"));
+
+                const $span = $('<span>').appendTo($label).get(0);
+
+                const isHTML = (str: any) => {
+                    var a = document.createElement('div');
+                    a.innerHTML = str;
+                  
+                    for (var c = a.childNodes, i = c.length; i--; ) {
+                      if (c[i].nodeType == 1) return true; 
+                    }
+                  
+                    return false;
+                }
+                
+                if(isHTML(text())){
+                    $span.innerHTML = text();
                 } else {
-                    let selector = 'input[name=' + name + ']';
-                    $(selector).each(function(idx, e) {
-                        $(e).triggerHandler('selectionchanged');
+                    ko.applyBindingsToNode($span, { i18n: text }, bindingContext);
+                }
+
+                if (accessor.dataBind) {
+                    $span.classList.add('button');
+                    ko.applyBindingsToNode($span, accessor.dataBind, bindingContext);
+                }
+
+                if ($element.attr('tabindex')) {
+                    const tabindex = $element.attr('tabindex');
+
+                    $input.attr('tabindex', tabindex);
+                }
+
+                $element
+                    .attr('tabindex', -1)
+                    .removeAttr('data-bind')
+                    .addClass('radio-wrapper nts-input')
+                    .on('validate', () => {
+                        if (ko.unwrap(accessor.required) === true && ko.unwrap(accessor.enable) !== false) {
+                            const checked = ko.unwrap(accessor.checked);
+
+                            if (_.isNil(checked)) {
+                                $element
+                                    .addClass('error')
+                                    .ntsError("set", resource.getMessage("MsgB_2", [ko.unwrap(accessor.name) || '']), "MsgB_2");
+                            } else {
+                                $element
+                                    .removeClass('error')
+                                    .ntsError("clear");
+                            }
+                        } else {
+                            $element
+                                .removeClass('error')
+                                .ntsError("clear");
+                        }
                     });
+
+                if (ko.isObservable(accessor.checked)) {
+                    accessor.checked
+                        .subscribe(() => $element.trigger('validate'));
+                }
+
+                ko.applyBindingsToNode($input.get(0), { hasFocus }, bindingContext);
+
+                return { controlsDescendantBindings: true };
+            }
+            update(element: HTMLElement, valueAccessor: () => RadioBoxAccessor, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void {
+                const accessor = valueAccessor();
+                const name = ko.unwrap(accessor.name);
+                const group = ko.unwrap(accessor.group);
+                const enable = ko.unwrap(accessor.enable) !== false;
+                const tabindex = ko.unwrap(accessor.tabindex);
+                const checked = ko.unwrap(accessor.checked);
+                const option = ko.unwrap(accessor.option) || ko.unwrap(accessor.checkedValue);
+                const optionValue = ko.unwrap(accessor.optionValue);
+                const $input = $(element).find('input');
+
+                const value = optionValue !== undefined ? _.get(option, optionValue, optionValue) : (option !== undefined ? option : undefined);
+
+                if (!_.isNil(checked) && !_.isNil(value)) {
+                    if (!_.isEqual(ko.toJS(checked), ko.toJS(value))) {
+                        $input.removeAttr('checked');
+                    } else {
+                        $input.attr('checked', 'checked');
+                    }
+
+                    $input.prop('checked', _.isEqual(ko.toJS(checked), ko.toJS(value)));
+                }
+
+                if (!group) {
+                    $input.attr('name', name);
+                } else {
+                    $input.attr('name', group);
+                }
+
+                $input
+                    .prop('disabled', !enable);
+
+                if (enable) {
+                    $input.removeAttr('disabled');
+                    element.setAttribute('tabindex', '-1');
+                } else {
+                    $input.attr('disabled', 'disabled');
+                    element.removeAttribute('tabindex');
+                }
+
+                if (tabindex !== undefined) {
+                    $input.attr('tabindex', tabindex);
                 }
             }
-        });
-        if (!nts.uk.util.isNullOrUndefined(disableOption) && (disableOption === false)) {
-            radioBox.attr("disabled", "disabled");
         }
-        radioBox.appendTo(radioBoxLabel);
-        var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
-        //        if (option[optionText] && option[optionText].length > 0)
-        var label = $("<span class='label'></span>").text(nts.uk.util.isNullOrUndefined(option) ? optionText : option[optionText]).appendTo(radioBoxLabel);
-        return radioBoxLabel;
-    }
 
-    ko.bindingHandlers['ntsRadioButton'] = new NtsRadioBoxBindingHandler();
-    ko.bindingHandlers['ntsRadioBoxGroup'] = new NtsRadioBoxGroupBindingHandler();
+        type RadioOption = any & { enable: boolean | KnockoutObservable<boolean> };
+
+        interface RadioBoxGroupAccessor {
+            name: string | KnockoutObservable<string>;
+            options: RadioOption[] | KnockoutObservableArray<RadioOption>;
+            optionsText: string | KnockoutObservable<string>;
+            optionsValue: string | KnockoutObservable<string>;
+            value: KnockoutObservable<any>;
+            enable: boolean | KnockoutObservable<boolean>;
+            tabindex: string | number | KnockoutObservable<string | number>;
+            hasFocus: boolean | KnockoutObservable<boolean>;
+            required: boolean | KnockoutObservable<boolean>;
+        }
+
+        @handler({
+            bindingName: 'ntsRadioBoxGroup',
+            validatable: true,
+            virtual: false
+        })
+        export class NtsRadioBoxGroupBindingHandler implements KnockoutBindingHandler {
+            init(element: HTMLElement, valueAccessor: () => RadioBoxGroupAccessor, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+                const $element = $(element);
+                const accessor = valueAccessor();
+                const $tabindex = element.getAttribute('tabindex');
+                const group = Math.random().toString(36).substr(2, 9);
+                const hasFocus = accessor.hasFocus || allBindingsAccessor.get('hasFocus');
+
+                const $options = ko.computed({
+                    read: () => {
+                        const checked = accessor.value;
+                        const name = ko.unwrap(accessor.name);
+                        const enable = ko.unwrap(accessor.enable);
+                        const tabindex = ko.unwrap(accessor.tabindex);
+                        const options = ko.unwrap<any[]>(accessor.options);
+                        const optionText = ko.unwrap(accessor.optionsText);
+                        const optionValue = ko.unwrap(accessor.optionsValue);
+
+                        return options
+                            .map((option) => ({
+                                name,
+                                group,
+                                option,
+                                checked,
+                                optionText,
+                                optionValue,
+                                tabindex: tabindex !== undefined ? tabindex : $tabindex,
+                                enable: enable === false ? enable : option.enable !== undefined ? option.enable : enable,
+                                dataBind: option.dataBind
+                            }));
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                $('<label>', { 'data-bind': 'ntsRadioButton: $data' }).appendTo(element);
+
+                ko.applyBindingsToNode(element, { foreach: $options }, bindingContext);
+
+                $element
+                    .on('focus', () => {
+                        if (ko.isObservable(hasFocus)) {
+                            hasFocus(true);
+                        } else {
+                            const focuseds = $element.find('input:not(:disabled)');
+                            const checkeds = $element.find('input:not(:disabled):checked');
+
+                            if (checkeds.length) {
+                                checkeds.focus();
+                            } else {
+                                focuseds.first().focus();
+                            }
+                        }
+                    })
+                    .on('focus', 'input', () => {
+                        if (ko.isObservable(hasFocus)) {
+                            hasFocus(true);
+                        }
+                    })
+                    .on('blur', 'input', () => {
+                        if (ko.isObservable(hasFocus)) {
+                            hasFocus(false);
+                        }
+                    })
+                    .on('validate', () => {
+                        if (ko.unwrap(accessor.required) === true && ko.unwrap(accessor.enable) !== false) {
+                            const checked = ko.unwrap(accessor.value);
+
+                            if (_.isNil(checked)) {
+                                $element
+                                    .addClass('error')
+                                    .ntsError("set", resource.getMessage("MsgB_2", [ko.unwrap(accessor.name) || '']), "MsgB_2");
+                            } else {
+                                $element
+                                    .removeClass('error')
+                                    .ntsError("clear");
+                            }
+                        } else {
+                            $element
+                                .removeClass('error')
+                                .ntsError("clear");
+                        }
+                    })
+                    .attr('tabindex', -1)
+                    .removeAttr('data-bind')
+                    .addClass('radio-wrappers nts-input');
+
+                ko.computed({
+                    read: () => {
+                        const focus = ko.unwrap(hasFocus);
+                        const focuseds = $element.find('input:not(:disabled)');
+                        const checkeds = $element.find('input:not(:disabled):checked');
+
+                        if (!focus) {
+                            focuseds.blur();
+                        } else {
+                            const focus = $element.find(':focus');
+
+                            if (!focus.length) {
+                                if (checkeds.length) {
+                                    checkeds.focus();
+                                } else {
+                                    focuseds.first().focus();
+                                }
+                            }
+                        }
+                    },
+                    disposeWhenNodeIsRemoved: element
+                });
+
+                if (ko.isObservable(accessor.value)) {
+                    accessor.value
+                        .subscribe(() => $element.trigger('validate'));
+                }
+
+                return { controlsDescendantBindings: true };
+            }
+            update() { }
+        }
+    }
 }

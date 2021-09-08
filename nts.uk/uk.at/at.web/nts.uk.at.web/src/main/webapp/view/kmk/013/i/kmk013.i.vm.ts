@@ -33,7 +33,7 @@ module nts.uk.at.view.kmk013.i {
                     let data = arr[0];
                     if(data != null) {
                         // 変形法定内残業を計算する
-                        self.selectedRuleCode(data.legalOtCalc);
+                        self.selectedRuleCode(data.legalOtCalc == "NOT_USE" ? 0 : 1);
                         self.isCreated(true);
                     }
                     dfd.resolve();

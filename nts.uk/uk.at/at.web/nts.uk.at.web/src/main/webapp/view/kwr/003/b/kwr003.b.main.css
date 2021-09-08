@@ -4,42 +4,49 @@
   overflow: hidden;
 }
 
-.kwr-003b #content-area {
-  padding: 30px 37px;
-  overflow: hidden;
+.kwr003-contents .nts-searchbbox-wrapper input.ntsSearchBox {
+  width: 232px !important;
 }
 
-.kwr-003b .nts-searchbbox-wrapper input.ntsSearchBox {
-  width: 250px !important;
-}
-
-.kwr-003b .d-flex {
+.kwr003-contents .d-flex {
   display: flex;
   align-items: center;
   margin-bottom: 5px;
 }
-.kwr-003b .d-flex:first-child {
+.kwr003-contents .d-flex:first-child {
   margin-bottom: 15px;
 }
-.kwr-003b .d-flex .form-label {
+.kwr003-contents .d-flex .form-label {
   margin-right: 32px;
 }
-.kwr-003b .d-flex .code {
+.kwr003-contents .d-flex .code {
   width: 50px;
 }
 
-.kwr-003b .pull-left .panel.ntsPanel {
+.kwr003-contents .pull-left .panel.ntsPanel {
   height: 390px;
 }
 
-.kwr-003b .nts-editor-wrapped .nts-editor {
+.kwr003-contents .nts-editor-wrapped .nts-editor {
   width: auto !important;
 }
-.kwr-003b .nts-editor-wrapped .nts-editor.code {
+.kwr003-contents .nts-editor-wrapped .nts-editor.code {
   max-width: 30px;
   margin-right: 15px;
 }
-.kwr-003b th.text-center,
-.kwr-003b td.text-center {
+.kwr003-contents th.text-center,
+.kwr003-contents td.text-center {
   text-align: center;
+}
+.btn-setting {
+  height: 32px;
+}
+.kwr003-contents .nts-fixed-body-wrapper {
+  height: 331px !important;
+}
+.kwr003-contents .pull-left {
+  padding-left: 15px;
+}
+ td.text-center .nts-editor-wrapped .text-input-kwr{
+  width: 130px !important;
 }

@@ -36,11 +36,11 @@ public class ToppageAlarmDataFinder {
 			// 2: 表示モード＝未読のみ: get未読(ログイン会社ID、ログイン社員ID): トップページアラームデータ
 			listAlarmData = this.toppageAlarmDataRepo.getUnread(currentUser.companyId(), currentUser.employeeId());
 		} else { //表示モード＝全て表示
-			// 2.1: 表示モード＝全て表示: get未読と既読(ログイン会社ID,ログイン社員ID): トップページアラームデータ
+			// 3: 表示モード＝全て表示: get未読と既読(ログイン会社ID,ログイン社員ID): トップページアラームデータ
 			listAlarmData = this.toppageAlarmDataRepo.getAll(currentUser.companyId(), currentUser.employeeId());
 		}
 
-		//3.
+		//4.
 		return listAlarmData.stream()
 				.map(item -> AlarmDisplayDataDto.builder()
 							.alarmClassification(item.getAlarmClassification().value)
@@ -49,11 +49,12 @@ public class ToppageAlarmDataFinder {
 							.companyId(item.getCid())
 							.sId(item.getDisplaySId())
 							.displayAtr(item.getDisplayAtr().value)
+							.subSids(item.getSubSids())
 							.patternCode(item.getPatternCode().map(AlarmListPatternCode::v).orElse(null))
 							.linkUrl(item.getLinkUrl().map(LinkURL::v).orElse(null))
 							.alreadyDatetime(item.getReadDateTime().map(i -> i).orElse(null))
 							.notificationId(item.getNotificationId().map(NotificationId::v).orElse(null))
 							.build())
 				.collect(Collectors.toList());
-	}	
+	}
 }

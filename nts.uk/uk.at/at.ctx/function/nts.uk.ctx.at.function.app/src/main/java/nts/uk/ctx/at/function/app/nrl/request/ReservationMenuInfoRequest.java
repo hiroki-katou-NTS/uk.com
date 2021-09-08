@@ -41,7 +41,7 @@ public class ReservationMenuInfoRequest extends NRLRequest<Frame> {
 				contractCode);
 		String payload = toStringObject(lstInfo);
 		byte[] payloadBytes = Codryptofy.decode(payload);
-		int length = payloadBytes.length + 40;
+		int length = payloadBytes.length + 52;
 		items.add(new MapItem(Element.LENGTH, Integer.toHexString(length)));
 		items.add(FrameItemArranger.Version());
 		items.add(FrameItemArranger.FlagEndNoAck());

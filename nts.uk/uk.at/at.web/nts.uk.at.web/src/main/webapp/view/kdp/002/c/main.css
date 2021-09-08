@@ -1,5 +1,10 @@
+.kdp002-c {
+	padding: 0 11px;
+}
+
 #contents-area{
 	overflow: hidden !important;
+	padding-top: 2px !important;
 }
 .item-screen, #single-list_container {
 	margin-top: 10px !important;
@@ -15,10 +20,6 @@
 
 #text-b4-2 {
 	margin-left: 43px;
-}
-
-#contents-area {
-	margin-left: 25px !important;
 }
 
 #single-list_container {
@@ -66,4 +67,24 @@ td[aria-describedby="single-list_name"] {
 }
 #text-adt-1{
 	margin-left: 100px;
+}
+
+.table-content tr {
+	height: 30px;
+}
+
+.btn-close {
+	margin-left: 100px;
+}
+
+#functions-area-bottom .has-info {
+	margin-left: -100px;
+}
+
+#functions-area-bottom .has-info1{
+	margin-left: 70px;
+}
+
+.table-content td {
+	min-width: 175px;
 }

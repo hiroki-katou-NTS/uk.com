@@ -1,8 +1,8 @@
 {
     "jp": {
-        "kafs12a": "kafs12a (jp)"
+        "kafs12a": "#{KAFS12_56}"
     },
     "vi": {
-        "kafs12a": "kafs12a (vi)"
+        "kafs12a": "#{KAFS12_56}"
     }
 }

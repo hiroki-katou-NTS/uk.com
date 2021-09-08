@@ -140,10 +140,6 @@ export class KdlS35Component extends Vue {
             managementData: _.cloneDeep(vm.managementData),
         };
 
-        initParams.actualContentDisplayList.forEach((i) => {
-            i.date = new Date(i.date).toISOString();
-        });
-
         initParams.managementData.forEach((e) => {
             e.outbreakDay = new Date(e.outbreakDay).toISOString();
             e.dateOfUse = new Date(e.dateOfUse).toISOString();

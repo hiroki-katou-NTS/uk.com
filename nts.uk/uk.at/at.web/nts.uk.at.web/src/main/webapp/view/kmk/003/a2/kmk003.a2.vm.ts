@@ -116,8 +116,8 @@ module a2 {
             self.setFixedTableOptions();
 
             // force to update value in tab 2
-            document.querySelector('#ui-id-2').addEventListener('click', () =>
-                self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated());
+            // document.querySelector('#ui-id-2').addEventListener('click', () =>
+            //     self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftOne.valueChangedNotifier.valueHasMutated());
         }
 
         private setFixedTableDatasource(): void {

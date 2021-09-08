@@ -17,6 +17,7 @@ import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
@@ -44,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.scherec.application.stamp.TimeZoneStampClassific
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
@@ -377,8 +377,8 @@ public class ReflectApplicationHelper {
 		// 日別勤怠の応援作業時間帯
 		List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 		ouenTimeSheet.add(OuenWorkTimeSheetOfDailyAttendance.create(no,
-				WorkContent.create("1", WorkplaceOfWorkEachOuen.create("11111", new WorkLocationCD("AAAA")),
-						Optional.empty()),
+				WorkContent.create(WorkplaceOfWorkEachOuen.create(new WorkplaceId("11111"), new WorkLocationCD("AAAA")),
+						Optional.empty(), Optional.empty()),
 				TimeSheetOfAttendanceEachOuenSheet.create(new WorkNo(no),
 						Optional.of(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 								new TimeWithDayAttr(480))),
@@ -513,7 +513,7 @@ public class ReflectApplicationHelper {
 				new DestinationTimeAppShare(TimeStampAppEnumShare.ATTEENDENCE_OR_RETIREMENT, no, startOrEnd,
 						Optional.of(no)),
 				new TimeWithDayAttr(time), Optional.of(new WorkLocationCD(location)),
-				Optional.empty(), Optional.of(new WorkplaceId(wpl)));
+				Optional.empty(), Optional.of(new  nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.WorkplaceId(wpl)));
 
 		lstResult.add(timeStamp);
 

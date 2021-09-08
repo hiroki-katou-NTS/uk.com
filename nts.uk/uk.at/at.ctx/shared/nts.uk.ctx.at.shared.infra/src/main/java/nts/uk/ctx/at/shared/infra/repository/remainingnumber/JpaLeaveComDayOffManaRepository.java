@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.subhdmana.KrcmtLeaveDayOffMana;
@@ -25,6 +26,9 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 
 	private static final String QUERY_BY_COMDAYOFFID = String.join(" ", QUERY,
 			" WHERE lc.krcmtLeaveDayOffManaPK.sid =:sid and lc.krcmtLeaveDayOffManaPK.digestDate = :digestDate");
+	
+	private static final String QUERY_BY_COMDAYOFFID_TARGET = String.join(" ", QUERY,
+            " WHERE lc.krcmtLeaveDayOffManaPK.sid =:sid and lc.krcmtLeaveDayOffManaPK.digestDate = :digestDate and lc.targetSelectionAtr = :target");
 
 	private static final String QUERY_BY_LIST_LEAVEID = String.join(" ", QUERY,
 			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate <= : endDate and  lc.krcmtLeaveDayOffManaPK.occDate >= startDate");
@@ -44,6 +48,13 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 			+ " WHERE (a.krcmtLeaveDayOffManaPK.sid = :sid1 OR a.krcmtLeaveDayOffManaPK.sid = :sid2)"
 			+ " AND (a.krcmtLeaveDayOffManaPK.occDate IN :occDates"
 			+ " OR a.krcmtLeaveDayOffManaPK.digestDate IN :digestDates)";
+	
+	private static final String QUERY_BY_DIGEST_OCC = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate = :digestDate and lc.krcmtLeaveDayOffManaPK.occDate >= :baseDate");
+	
+	private static final String QUERY_BY_OCC_DIGEST = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate = :occDate and lc.krcmtLeaveDayOffManaPK.digestDate >= :baseDate");
+	
 	
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
@@ -174,6 +185,17 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		this.commandProxy().removeAll(data);
 		this.getEntityManager().flush();
 	}
+	
+	@Override
+	public void deleteByDigestTarget(String sid, GeneralDate digestDate, TargetSelectionAtr target) {
+	    List<KrcmtLeaveDayOffMana> data = this.queryProxy().query(QUERY_BY_COMDAYOFFID_TARGET,KrcmtLeaveDayOffMana.class)
+                .setParameter("sid", sid)
+                .setParameter("digestDate", digestDate)
+                .setParameter("target", target.value)
+                .getList();
+        this.commandProxy().removeAll(data);
+        this.getEntityManager().flush();
+	}
 
 	
 	@Override
@@ -233,5 +255,25 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 			.setParameter("occDates", occDates)
 			.setParameter("digestDates", digestDates)
 			.executeUpdate();
+	}
+
+	@Override
+	public List<LeaveComDayOffManagement> getLeaveComWithDateUse(String sid, GeneralDate dateOfUse,
+			GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_DIGEST_OCC, KrcmtLeaveDayOffMana.class)
+				.setParameter("sid", sid)
+				.setParameter("digestDate", dateOfUse)
+				.setParameter("baseDate", baseDate).getList().stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<LeaveComDayOffManagement> getLeaveComWithOutbreakDay(String sid, GeneralDate outbreakDay,
+			GeneralDate baseDate) {
+		return this.queryProxy().query(QUERY_BY_OCC_DIGEST, KrcmtLeaveDayOffMana.class)
+				.setParameter("sid", sid)
+				.setParameter("occDate", outbreakDay)
+				.setParameter("baseDate", baseDate).getList().stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
 	}
 }

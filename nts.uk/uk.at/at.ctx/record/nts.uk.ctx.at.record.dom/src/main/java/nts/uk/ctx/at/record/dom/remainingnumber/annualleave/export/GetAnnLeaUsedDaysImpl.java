@@ -34,39 +34,39 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 	/** 期間内の年休使用明細を取得する */
 	@Inject
 	private GetAnnualHolidayGrantInfor getAnnualHolidayGrantInfor;
-	@Inject 
+	@Inject
 	private RecordDomRequireService requireService;
 
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	@Override
 	public Optional<AnnualLeaveUsedDayNumber> ofGrantPeriod(String employeeId, GeneralDate criteria,
 			ReferenceAtr referenceAtr, boolean fixedOneYear, SpecDateAtr specDateAtr) {
-		
+
 		// 社員の前回付与日から次回付与日までの年休使用日数を取得
 		val tmpAnnLeaMngExportList = this.ofGrantPeriodProc(
 				employeeId, criteria, referenceAtr, fixedOneYear, specDateAtr);
-		
+
 		// 年休使用数を合計
 		double annualLeaveUseDays = 0.0;
 		for (val tmpAnnLeaMngExport : tmpAnnLeaMngExportList) {
 			annualLeaveUseDays += tmpAnnLeaMngExport.getUseDays().v();
 		}
-		
+
 		// 年休使用合計数を返す
 		return Optional.of(new AnnualLeaveUsedDayNumber(annualLeaveUseDays));
 	}
-	
+
 	/** 指定した期間の年休使用数を取得する */
 	@Override
 	public Optional<AnnualLeaveUsedDayNumber> ofPeriod(String employeeId, DatePeriod period,
 			ReferenceAtr referenceAtr) {
-		
+
 		// 期間内の年休使用明細を取得する
 		val domReferenceAtr = EnumAdaptor.valueOf(referenceAtr.value,
 				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr.class);
 		val dailyInterimRemainMngDatas = this.getAnnualHolidayGrantInfor.lstRemainData(
 				AppContexts.user().companyId(), employeeId, period, domReferenceAtr);
-		
+
 		// 年休使用数を合計
 		double annualLeaveUseDays = 0.0;
 		for (val dailyInterimRemainMngData : dailyInterimRemainMngDatas) {
@@ -75,16 +75,17 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			val interimRemainOpt = dailyInterimRemainMngData.getData().getRecAbsData().stream()
 					.filter(c -> c.getRemainType() == RemainType.ANNUAL).findFirst();
 			if (!interimRemainOpt.isPresent()) continue;
-			if (!dailyInterimRemainMngData.getData().getAnnualHolidayData().isPresent()) continue;
-			val tmpAnnLeaMng = dailyInterimRemainMngData.getData().getAnnualHolidayData().get();
-			
-			annualLeaveUseDays += tmpAnnLeaMng.getAppTimeType().map(x -> x.getAppTimeType().map(time -> Double.valueOf(time.value)).orElse(0d)).orElse(0d);
+			if (dailyInterimRemainMngData.getData().getAnnualHolidayData().isEmpty()) continue;
+			val tmpAnnLeaMng = dailyInterimRemainMngData.getData().getAnnualHolidayData().stream().filter(c->c.getUsedNumber().isUseDay()).findFirst();
+			if(tmpAnnLeaMng.isPresent()) {
+				annualLeaveUseDays += tmpAnnLeaMng.get().getAppTimeType().map(x -> x.getAppTimeType().map(time -> Double.valueOf(time.value)).orElse(0d)).orElse(0d);
+			}
 		}
-		
+
 		// 年休使用合計数を返す
 		return Optional.of(new AnnualLeaveUsedDayNumber(annualLeaveUseDays));
 	}
-	
+
 	/**
 	 *  社員の前回付与日から次回付与日までの年休使用日数を取得
 	 *  @param employeeId 社員ID
@@ -98,26 +99,26 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			ReferenceAtr referenceAtr, boolean fixedOneYear, SpecDateAtr specDateAtr) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-	
+
 		List<TmpAnnualLeaveMngExport> results = new ArrayList<>();
-		
+
 		// 指定日　←　基準日
 		GeneralDate specDate = criteria;
-		
+
 		// 指定日区分から指定日を判断
 		if (specDateAtr == SpecDateAtr.CURRENT_CLOSURE_END) {	// 当月の締め終了日時点
-			
+
 			// 社員に対応する締め期間を取得する
 			DatePeriod closurePeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, criteria);
 			if (closurePeriod == null) return results;
-			
+
 			// 指定日　←　取得した締め期間．終了日
 			specDate = closurePeriod.end();
 		}
-		
+
 		DatePeriod usedPeriod = null;
 		if (fixedOneYear) {
-			
+
 			// 指定した年月日を基準に、前回付与日から1年後までの期間を取得
 			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodAfterOneYear(
 					AppContexts.user().companyId(), employeeId, specDate, null, null);
@@ -125,7 +126,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			usedPeriod = usedPeriodOpt.get().getPeriod();
 		}
 		else {
-			
+
 			// 指定した年月日を基準に、前回付与日から次回付与日までの期間を取得
 			val usedPeriodOpt = this.getPeriodFromPreviousToNextGrantDate.getPeriodYMDGrant(
 					AppContexts.user().companyId(), employeeId, specDate, null, null);
@@ -133,7 +134,7 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 			usedPeriod = usedPeriodOpt.get().getPeriod();
 		}
 		if (usedPeriod == null) return results;
-		
+
 		// 期間内の年休使用明細を取得する
 		val domReferenceAtr = EnumAdaptor.valueOf(referenceAtr.value,
 				nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr.class);
@@ -142,15 +143,16 @@ public class GetAnnLeaUsedDaysImpl implements GetAnnLeaUsedDays {
 
 		// 暫定年休管理データ(List)を返す
 		for (val dailyInterimRemainMngData: dailyInterimRemainMngDatas) {
-			
+
 			// 年休が存在するか確認する
 			val interimRemainOpt = dailyInterimRemainMngData.getData().getRecAbsData().stream()
 					.filter(c -> c.getRemainType() == RemainType.ANNUAL).findFirst();
 			if (!interimRemainOpt.isPresent()) continue;
-			if (!dailyInterimRemainMngData.getData().getAnnualHolidayData().isPresent()) continue;
-			val tmpAnnLeaMng = dailyInterimRemainMngData.getData().getAnnualHolidayData().get();
-			
-			results.add(TmpAnnualLeaveMngExport.of(interimRemainOpt.get(), tmpAnnLeaMng));
+			if (dailyInterimRemainMngData.getData().getAnnualHolidayData().isEmpty()) continue;
+			val tmpAnnLeaMng = dailyInterimRemainMngData.getData().getAnnualHolidayData().stream().filter(c->c.getUsedNumber().isUseDay()).findFirst();
+			if(tmpAnnLeaMng.isPresent()) {
+				results.add(TmpAnnualLeaveMngExport.of(interimRemainOpt.get(), tmpAnnLeaMng.get()));
+			}
 		}
 		return results;
 	}

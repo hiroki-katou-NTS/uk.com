@@ -1,9 +1,10 @@
 import { component, Prop, Watch } from '@app/core/component';
 import * as _ from 'lodash';
+import { vmOf } from 'vue/types/umd';
 import { KafS00AComponent, KafS00BComponent, KAFS00BParams, KafS00CComponent, KAFS00CParams } from '../../s00';
 import { AppType, KafS00ShrComponent, Application } from '../../s00/shr';
 import { KafS00SubP1Component, KAFS00P1Params, ExcessTimeStatus } from '../../s00/sub/p1';
-
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 import {
     ITime,
@@ -31,12 +32,13 @@ import {
         'kaf-s00-c': KafS00CComponent,
         'kaf-s00-shr': KafS00ShrComponent,
         'kaf-s00-p1': KafS00SubP1Component,
+        'cmms45c': CmmS45CComponent
     },
     constraints: []
 })
 export class KafS04AComponent extends KafS00ShrComponent {
     @Prop({ default: null })
-    public readonly params: Params;
+    public params: Params;
     public title: string = 'KafS04A';
     public isValidateAll: Boolean = true;
     public user: any = null;
@@ -108,6 +110,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public mode: boolean = true;
     private errorInfo: string = null;
+    private init: boolean = true;
 
     @Prop({ default: () => ({}) }) public readonly res: IResDetail;
 
@@ -115,81 +118,95 @@ export class KafS04AComponent extends KafS00ShrComponent {
         const vm = this;
 
         if (vm.params) {
-            vm.mode = false;
-            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
-            vm.application = vm.appDispInfoStartupOutput.appDetailScreenInfo.application;
-            vm.infoOutPut.lateEarlyCancelAppSet = vm.params.lateEarlyCancelAppSet;
-            vm.cancelAtr = vm.params.lateEarlyCancelAppSet.cancelAtr;
-            vm.conditionLateEarlyLeave2Show = !!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
-
-            vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
-                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.NONE;
-                vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.NONE;
-                vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.NONE;
-                vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.NONE;
-                vm.kafS00P1Params1.scheduleTime = null;
-                vm.kafS00P1Params2.scheduleTime = null;
-                vm.kafS00P1Params3.scheduleTime = null;
-                vm.kafS00P1Params4.scheduleTime = null;
-                
-                if (item.opAchievementDetail != null) {
-                    const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2} = item.opAchievementDetail;
-                    const {scheAttendanceTime1, scheDepartureTime1, scheAttendanceTime2, scheDepartureTime2} = item.opAchievementDetail.achievementEarly;
-
-                    vm.kafS00P1Params1.scheduleTime = scheAttendanceTime1;
-                    vm.kafS00P1Params2.scheduleTime = scheDepartureTime1;
-                    vm.kafS00P1Params3.scheduleTime = scheAttendanceTime2;
-                    vm.kafS00P1Params4.scheduleTime = scheDepartureTime2;
-
-                    if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
-                        vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
-                    }
-                    if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
-                        vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
-                    }
-                    if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
-                        vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
-                    }
-                    if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
-                        vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
-                    }
-                }
-            });
-            vm.params.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
-                if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
-                    vm.time.attendanceTime = item.timeWithDayAttr;
-                }
-                if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
-                    vm.time.leaveTime = item.timeWithDayAttr;
-                }
-                if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
-                    vm.time.attendanceTime2 = item.timeWithDayAttr;
-                }
-                if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
-                    vm.time.leaveTime2 = item.timeWithDayAttr;
-                }
-            });
-
-            vm.params.arrivedLateLeaveEarly.lateCancelation.forEach((item) => {
-                if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
-                    vm.check.cbCancelLate.value = 'Attendance';
-                }
-                if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
-                    vm.check.cbCancelEarlyLeave.value = 'Early';
-                }
-                if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
-                    vm.check.cbCancelLate2.value = 'Attendance2';
-                }
-                if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
-                    vm.check.cbCancelEarlyLeave2.value = 'Early2';
-                }
-            });
-        } else {
-            // vm.application
+           vm.initFromParam(); 
         }
     }
 
+    public initFromParam() {
+        const vm = this;
+        vm.mode = false;
+        vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+        vm.application = vm.appDispInfoStartupOutput.appDetailScreenInfo.application;
+        vm.infoOutPut.lateEarlyCancelAppSet = vm.params.lateEarlyCancelAppSet;
+        vm.cancelAtr = vm.params.lateEarlyCancelAppSet.cancelAtr;
+        vm.conditionLateEarlyLeave2Show = !!vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles;
+
+        const opAchievementDetail = _.isEmpty(vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst)
+            ? null
+            : vm.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail;
+        vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.NONE;
+        vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.NONE;
+        vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.NONE;
+        vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.NONE;
+        vm.kafS00P1Params1.scheduleTime = null;
+        vm.kafS00P1Params2.scheduleTime = null;
+        vm.kafS00P1Params3.scheduleTime = null;
+        vm.kafS00P1Params4.scheduleTime = null;    
+
+        if (opAchievementDetail != null) {
+            const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2} = opAchievementDetail;
+            const {scheAttendanceTime1, scheDepartureTime1, scheAttendanceTime2, scheDepartureTime2} = opAchievementDetail.achievementEarly;
+
+            vm.kafS00P1Params1.scheduleTime = scheAttendanceTime1;
+            vm.kafS00P1Params2.scheduleTime = scheDepartureTime1;
+            vm.kafS00P1Params3.scheduleTime = scheAttendanceTime2;
+            vm.kafS00P1Params4.scheduleTime = scheDepartureTime2;
+
+            if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
+                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+            }
+            if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
+                vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
+            }
+            if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
+                vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
+            }
+            if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
+                vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+            }
+        }
+
+        vm.params.arrivedLateLeaveEarly.lateOrLeaveEarlies.forEach((item) => {
+            if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
+                vm.time.attendanceTime = item.timeWithDayAttr;
+            }
+            if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
+                vm.time.leaveTime = item.timeWithDayAttr;
+            }
+            if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
+                vm.time.attendanceTime2 = item.timeWithDayAttr;
+            }
+            if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
+                vm.time.leaveTime2 = item.timeWithDayAttr;
+            }
+        });
+
+        vm.params.arrivedLateLeaveEarly.lateCancelation.forEach((item) => {
+            if (item.workNo == 1 && item.lateOrEarlyClassification == 0) {
+                vm.time.attendanceTime = opAchievementDetail ? opAchievementDetail.opWorkTime : null;
+                vm.check.cbCancelLate.value = 'Attendance';
+            }
+            if (item.workNo == 1 && item.lateOrEarlyClassification == 1) {
+                vm.time.leaveTime = opAchievementDetail ? opAchievementDetail.opLeaveTime : null;
+                vm.check.cbCancelEarlyLeave.value = 'Early';
+            }
+            if (item.workNo == 2 && item.lateOrEarlyClassification == 0) {
+                vm.time.attendanceTime2 = opAchievementDetail ? opAchievementDetail.opWorkTime2 : null;
+                vm.check.cbCancelLate2.value = 'Attendance2';
+            }
+            if (item.workNo == 2 && item.lateOrEarlyClassification == 1) {
+                vm.time.leaveTime2 = opAchievementDetail ? opAchievementDetail.opDepartureTime2 : null;
+                vm.check.cbCancelEarlyLeave2.value = 'Early2';
+            }
+        });
+    }
+
     public mounted() {
+        const vm = this;
+        vm.initService();
+    }
+
+    public initService() {
         const vm = this;
         vm.$mask('show');
         vm.$auth.user.then((user: any) => {
@@ -231,7 +248,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
             }
         }).catch((error: any) => {
             vm.handleErrorCommon(error);
-        }).then(() => vm.$mask('hide'));
+        }).then(() => {
+            vm.init = false;
+            vm.$mask('hide');
+        });
     }
 
     @Watch('application.prePostAtr')
@@ -406,28 +426,38 @@ export class KafS04AComponent extends KafS00ShrComponent {
         });
     }
 
-    public checkValidAll() {
+    public handleClickRegister() {
         const vm = this;
-        let validAll: boolean = true;
+        if (vm.checkValidAll()) {
+            if (vm.application.prePostAtr == 1 && vm.errorInfo) {
+                vm.$modal.error({ messageId: vm.errorInfo, messageParams: [vm.application.opAppStartDate] });
+
+                return;
+            }
+            vm.checkBeforeRegister();
+        }
+    }
+
+    private checkValidAll(component?: string) {
+        const vm = this;
+        let validAllChild: boolean = true;
         for (let child of vm.$children) {
-            child.$validate();
+            if (!component || child.$vnode.componentOptions.tag == component) {
+                child.$validate();
+            }
             if (!child.$valid) {
-                validAll = false;
+                validAllChild = false;
             }
         }
-        vm.isValidateAll = validAll;
+        vm.isValidateAll = validAllChild;
         vm.$validate();
-        if (!vm.$valid || !validAll) {
+        if (!vm.$valid || !validAllChild) {
             window.scrollTo(500, 0);
 
-            return;
+            return false;
         }
-        if (vm.application.prePostAtr == 1 && vm.errorInfo) {
-            vm.$modal.error({ messageId: vm.errorInfo, messageParams: [vm.application.opAppStartDate] });
 
-            return;
-        }
-        vm.checkBeforeRegister();
+        return true;
     }
 
     public register() {
@@ -474,6 +504,18 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public handleErrorMessage(res: any) {
         const vm = this;
         vm.$mask('hide');
+        if (res.messageId == 'Msg_197') {
+            vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: Params) => {
+                    vm.params = newData;
+                    vm.initFromParam();
+                    vm.initService();
+                });
+            });
+
+            return;
+        }
         if (res.messageId) {
             return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
@@ -494,6 +536,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
                 vm.application.appDate = appDatesLst[0];
                 vm.application.opAppStartDate = appDatesLst[0];
                 vm.application.opAppEndDate = appDatesLst[0];
+                vm.checkValidAll('kaf-s00-b');
             }
             let params = {
                 appDates: appDatesLst,
@@ -525,29 +568,32 @@ export class KafS04AComponent extends KafS00ShrComponent {
                     vm.time.leaveTime2 = null;
 
                     if (item.opAchievementDetail) {
-                        const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2} = item.opAchievementDetail;
+                        const {opWorkTime, opLeaveTime, opWorkTime2, opDepartureTime2, trackRecordAtr} = item.opAchievementDetail;
                         const {scheAttendanceTime1, scheDepartureTime1, scheAttendanceTime2, scheDepartureTime2} = item.opAchievementDetail.achievementEarly;
 
                         vm.kafS00P1Params1.scheduleTime = scheAttendanceTime1;
                         vm.kafS00P1Params2.scheduleTime = scheDepartureTime1;
                         vm.kafS00P1Params3.scheduleTime = scheAttendanceTime2;
                         vm.kafS00P1Params4.scheduleTime = scheDepartureTime2;
-                        vm.time.attendanceTime = opWorkTime;
-                        vm.time.leaveTime = opLeaveTime;
-                        vm.time.attendanceTime2 = opWorkTime2;
-                        vm.time.leaveTime2 = opDepartureTime2;
 
-                        if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
-                            vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
-                        }
-                        if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
-                            vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
-                        }
-                        if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
-                            vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
-                        }
-                        if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
-                            vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+                        if (trackRecordAtr == 0) {
+                            vm.time.attendanceTime = opWorkTime;
+                            vm.time.leaveTime = opLeaveTime;
+                            vm.time.attendanceTime2 = opWorkTime2;
+                            vm.time.leaveTime2 = opDepartureTime2;
+
+                            if (opWorkTime != null && scheAttendanceTime1 != null && scheAttendanceTime1 < opWorkTime) {
+                                vm.kafS00P1Params1.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
+                            if (opLeaveTime != null && scheDepartureTime1 != null && scheDepartureTime1 > opLeaveTime) {
+                                vm.kafS00P1Params2.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
+                            if (opWorkTime2 != null && scheAttendanceTime2 != null && scheAttendanceTime2 < opWorkTime2) {
+                                vm.kafS00P1Params3.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
+                            if (opDepartureTime2 != null && scheDepartureTime2 != null && scheDepartureTime2 > opDepartureTime2) {
+                                vm.kafS00P1Params4.scheduleExcess = ExcessTimeStatus.ALARM;
+                            }
                         }
                     }
                 });
@@ -559,19 +605,22 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public handleChangeAppReason(appReason) {
         const vm = this;
-
         vm.application.opAppReason = appReason;
+        vm.checkValidAll('kaf-s00-c');
     }
 
     public handleChangeReasonCD(reasonCD) {
         const vm = this;
-
         vm.application.opAppStandardReasonCD = reasonCD;
+        if (!vm.init) {
+            vm.checkValidAll('kaf-s00-c');
+        }
     }
 
     public handleChangePrePost(prePost) {
         const vm = this;
         vm.application.prePostAtr = prePost;
+        vm.checkValidAll('kaf-s00-b');
     }
 }
 

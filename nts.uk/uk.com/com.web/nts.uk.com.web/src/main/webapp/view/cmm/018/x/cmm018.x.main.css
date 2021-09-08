@@ -5,7 +5,7 @@
     box-shadow: 0 0px rgb(192, 192, 192);
     display: inline-table;
     background-color: white;
-    margin-top:20px;
+    margin-top:5px;
     margin-left:20px;
     width:320px !important;
     height:400px !important;
@@ -14,7 +14,7 @@
 }
 .btnInPanel {
 	width: 200px; 
-	margin: 20px
+	margin: 12px
 }
 .panelFirstJinji{
 	 border-style: solid;
@@ -23,7 +23,7 @@
     box-shadow: 0 0px rgb(192, 192, 192);
     display: inline-table;
     background-color: white;
-    margin-top:20px;
+    margin-top:5px;
     margin-left:20px;
     width:320px !important;
     height:250px !important;

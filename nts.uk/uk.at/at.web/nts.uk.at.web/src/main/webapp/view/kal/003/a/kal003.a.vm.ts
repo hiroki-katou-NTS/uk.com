@@ -509,7 +509,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             if (self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS) {
                 self.tabCheckCondition.listMulMonCheckSet().forEach((x: model.MulMonCheckCondSet) => {
                     if (_.isNil(x.erAlAtdItem())) {
-                        let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(0);
+                        let e: model.ErAlAtdItemCondition = shareutils.getDefaultCondition(x.rowId());
                         e.compareStartValue(0);
                         e.compareEndValue(0);
                         x.erAlAtdItem(e);

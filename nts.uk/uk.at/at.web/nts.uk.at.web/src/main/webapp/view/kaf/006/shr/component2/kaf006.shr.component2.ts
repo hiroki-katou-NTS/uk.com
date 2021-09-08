@@ -4,11 +4,11 @@ module nts.uk.at.view.kaf006.shr.component2.viewmodel {
         name: 'kaf006-shr-component2',
         template: `
         <div id="kaf006component2">
-            <div class = "table">
+            <div class = "table" style="margin: 10px 0;">
                 <div class="cell col-1">
                     <div class="cell valign-center" data-bind="ntsFormLabel:{ required: false }, text: $i18n('KAF006_15')"></div>
                 </div>
-                <div class="cell">
+                <div class="cell" style="vertical-align: middle;">
                     <div data-bind="ntsSwitchButton: { 
                         name: $i18n('KAF006_15'),
                         options: hdAppSet,

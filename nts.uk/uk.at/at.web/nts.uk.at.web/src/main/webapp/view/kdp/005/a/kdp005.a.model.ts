@@ -70,13 +70,19 @@ class StampTab {
 			let layout = _.find(layouts, (ly) => { return ly.pageNo === idx });
 			if (layout) {
 				tabs.push({
-					id: 'tab-' + idx,
-					title: layout ? layout.stampPageName : '',
-					content: layout ? '.tab-content-' + layout.pageNo : '',
+					// id: 'tab-' + idx,
+					// title: layout ? layout.stampPageName : '',
+					// content: layout ? '.tab-content-' + layout.pageNo : '',
+					// stampPageComment: layout.stampPageComment,
+					// color: layout.stampPageCommentColor,
+					// enable: ko.observable(true),
+					// visible: ko.observable(true)
+					buttonLayoutType: layout.buttonLayoutType,
+					pageNo: layout.pageNo,
 					stampPageComment: layout.stampPageComment,
-					color: layout.stampPageCommentColor,
-					enable: ko.observable(true),
-					visible: ko.observable(true)
+					stampPageCommentColor: layout.stampPageCommentColor,
+					stampPageName: layout ? layout.stampPageName : '',
+					buttonSettings: layout.buttonSettings
 				});
 			}
 		};

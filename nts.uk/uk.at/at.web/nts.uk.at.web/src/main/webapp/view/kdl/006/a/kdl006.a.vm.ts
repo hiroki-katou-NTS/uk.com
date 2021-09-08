@@ -105,9 +105,8 @@ module nts.uk.at.view.kdl006.a {
                 if(w && row.confirmEmployment() != w.confirmEmployment){
                     row.closureId = self.selectedId();
                     row.currentMonth = _.find(self.tighteningList(), ['closureId', self.selectedId()]).yearMonth;
-					let tg = ko.toJS(row);
-					tg.confirmEmployment = tg.confirmEmployment?false:true;
-					workPlaces.push(tg);
+                    row.confirmEmployment(row.confirmEmployment()?false:true);
+					workPlaces.push(row);
                 }    
             });
             if(workPlaces.length > 0){

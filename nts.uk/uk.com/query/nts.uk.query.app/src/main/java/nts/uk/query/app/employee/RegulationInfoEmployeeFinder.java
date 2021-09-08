@@ -196,7 +196,6 @@ public class RegulationInfoEmployeeFinder {
         } else {
             // Set list department
             queryParam.setDepartmentCodes(depList);
-            queryParam.setFilterByDepartment(true);
         }
     }
 

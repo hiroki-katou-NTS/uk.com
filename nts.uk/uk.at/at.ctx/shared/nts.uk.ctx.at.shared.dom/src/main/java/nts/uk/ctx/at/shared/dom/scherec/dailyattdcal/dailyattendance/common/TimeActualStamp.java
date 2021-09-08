@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -198,4 +200,9 @@ public class TimeActualStamp {
 				Optional.empty());
 	}
 	
+	//時刻変更手段とデフォルトを作成する
+	public static TimeActualStamp createDefaultWithReason(TimeChangeMeans reason) {
+		return new TimeActualStamp(null, new WorkStamp(
+				new WorkTimeInformation(new ReasonTimeChange(reason, null), null), Optional.empty()), 0);
+	}
 }

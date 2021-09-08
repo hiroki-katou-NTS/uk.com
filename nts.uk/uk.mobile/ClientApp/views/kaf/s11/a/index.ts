@@ -12,6 +12,7 @@ import { Kdl001Component } from 'views/kdl/001';
 import { KDL002Component } from 'views/kdl/002';
 import { KdlS35Component } from 'views/kdl/s35';
 import { KdlS36Component } from 'views/kdl/s36';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs11a',
@@ -74,7 +75,8 @@ import { KdlS36Component } from 'views/kdl/s36';
         'kdls01': Kdl001Component,
         'kdls02': KDL002Component,
         'kdls35': KdlS35Component,
-        'kdls36': KdlS36Component
+        'kdls36': KdlS36Component,
+        'cmms45c': CmmS45CComponent
     }
 })
 export class KafS11AComponent extends KafS00ShrComponent {
@@ -130,6 +132,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
     }
 
     public mounted() {
+        const vm = this;
+        vm.initFromParam();
+    }
+
+    public initFromParam() {
         const vm = this;
         vm.$mask('show');
         if (vm.mode == ScreenMode.NEW) {
@@ -795,8 +802,8 @@ export class KafS11AComponent extends KafS00ShrComponent {
         if (workType.workAtr == 0) {
             return false;
         }
-        if ((workType.morningCls == 6 && vm.displayInforWhenStarting.holidayManage == 1) ||
-            (workType.afternoonCls == 6 && vm.displayInforWhenStarting.holidayManage == 1)) {
+        if ((workType.morningCls == 8 && vm.displayInforWhenStarting.holidayManage == 1) ||
+            (workType.afternoonCls == 8 && vm.displayInforWhenStarting.holidayManage == 1)) {
             return true;
         }
 
@@ -1213,6 +1220,32 @@ export class KafS11AComponent extends KafS00ShrComponent {
             
             return;
         }
+        if (vm.mode == ScreenMode.NEW) {
+            if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT_LEAVE) {
+                if (_.isEmpty(vm.complementWorkInfo.workTypeCD) || _.isEmpty(vm.complementWorkInfo.workTimeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_9')] });
+        
+                    return;
+                }
+                if (_.isEmpty(vm.leaveWorkInfo.workTypeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_16')] });
+                    
+                    return;
+                }
+            } else if (vm.complementLeaveAtr == ComplementLeaveAtr.COMPLEMENT) {
+                if (_.isEmpty(vm.complementWorkInfo.workTypeCD) || _.isEmpty(vm.complementWorkInfo.workTimeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_9')] });
+        
+                    return;
+                }
+            } else {
+                if (_.isEmpty(vm.leaveWorkInfo.workTypeCD)) {
+                    vm.$modal.error({ messageId: 'Msg_218', messageParams: [vm.$i18n('KAFS11_16')] });
+                    
+                    return;
+                }
+            }
+        }
         vm.$mask('show');
         let command = vm.getCommandSubmit();
         vm.$http.post('at', API.checkBeforeSubmit, command)
@@ -1256,6 +1289,17 @@ export class KafS11AComponent extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
+            if (failData.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.mode == ScreenMode.NEW ? '' : vm.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: KAFS11Params) => {
+                        vm.params = newData;
+                        vm.initFromParam();
+                    });
+                });
+    
+                return;
+            }
             if (failData.messageId == 'Msg_323') {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                 .then(() => {

@@ -45,11 +45,11 @@ export class KafS12OutingComponent extends Vue {
 
     get switchOptions() {
         if (this.params.appTimeType == GoingOutReason.PUBLIC) {
-            return [{ id: GoingOutReason.PUBLIC, name: 'KAF012_52' }];
+            return [{ id: GoingOutReason.PUBLIC, name: 'KAFS12_53' }];
         }
 
         if (this.params.appTimeType == GoingOutReason.COMPENSATION) {
-            return [{ id: GoingOutReason.COMPENSATION, name: 'KAF012_51' }];
+            return [{ id: GoingOutReason.COMPENSATION, name: 'KAFS12_52' }];
         }
 
         return [

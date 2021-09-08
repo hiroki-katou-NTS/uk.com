@@ -15,6 +15,7 @@ import {
 } from 'views/kaf/s00/sub/p3';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
 import { xor } from 'lodash';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
     name: 'kafs02a',
@@ -37,6 +38,7 @@ import { xor } from 'lodash';
         'worktime': Kdl001Component,
         'to-top': TotopComponent,
         'kafs00subp3': KafS00SubP3Component,
+        'cmms45c': CmmS45CComponent
     },
 })
 export class KafS02AComponent extends KafS00ShrComponent {
@@ -1046,6 +1048,19 @@ export class KafS02AComponent extends KafS00ShrComponent {
 
     public handleErrorMessage(res: any) {
         const self = this;
+        if (res.messageId == 'Msg_197') {
+            self.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                let appID = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                self.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData) => {
+                    self.mode = false;
+                    self.data = newData;
+                    self.application = self.data.appDispInfoStartupOutput.appDetailScreenInfo.application;
+                    self.fetchDataEdit();
+                });
+            });
+
+            return;
+        }	
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
@@ -1147,6 +1162,18 @@ export class KafS02AComponent extends KafS00ShrComponent {
         }
     }
 
+    public getValidAllValue() {
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        
+        return validAll;
+    }
+
     public register() {
         const self = this;
         let validAll: boolean = true;
@@ -1190,7 +1217,7 @@ export class KafS02AComponent extends KafS00ShrComponent {
                     console.log(result);
                     self.$http.post('at', API.reflectApp, result.data.reflectAppIdLst);
                     self.$mask('hide');
-                    self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appIDLst[0] });
+                    self.$goto('kafs02a1', { mode: self.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: result.data.appIDLst[0], modeS02: 0 });
                 }
             }).catch((err) => {
                 if (err) {
@@ -1717,6 +1744,16 @@ export class KafS02AComponent extends KafS00ShrComponent {
     public kaf000CChangeAppReason(opAppReason) {
         const self = this;
         self.application.opAppReason = opAppReason;
+    }
+
+    public kafs00BValid(kafs00BValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
+    }
+
+    public kafs00CValid(kafs00CValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
     }
 }
 

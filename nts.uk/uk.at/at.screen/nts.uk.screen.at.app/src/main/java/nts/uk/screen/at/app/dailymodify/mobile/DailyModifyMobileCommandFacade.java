@@ -36,8 +36,8 @@ import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -139,6 +139,10 @@ public class DailyModifyMobileCommandFacade {
 				.collect(Collectors.groupingBy(x -> Pair.of(x.getEmployeeId(), x.getDate())));
 
 		dCCalcTimeService.getWplPosId(dataParent.getItemValues());
+		Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
+				.findAll(AppContexts.user().companyId()).stream()
+				.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+		
 		List<DailyModifyQuery> querys = dailyRCommandFacade.createQuerys(mapSidDate);
 		List<DailyModifyQuery> queryNotChanges = dailyRCommandFacade.createQuerys(mapSidDateNotChange);
 		// map to list result -> check error;
@@ -187,7 +191,7 @@ public class DailyModifyMobileCommandFacade {
 		if (dataParent.isCheckDailyChange()) {
 			//勤怠ルールの補正処理
 			//2021/03/19 - 日別修正から補正処理を実行する対応
-			val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD);
+			val changeSetting = new ChangeDailyAttendance(false, false, false, true, ScheduleRecordClassifi.RECORD, false);
 			List<DailyRecordDto> dtoOldTemp = dailyOlds;
 			dailyEdits = dailyEdits.stream().map(x -> {
 				val domDaily = CorrectDailyAttendanceService.processAttendanceRule(
@@ -203,7 +207,7 @@ public class DailyModifyMobileCommandFacade {
 				if (AppContexts.optionLicense().customize().ootsuka()) {
 					 List<DPItemValue> lstItemValue = mapSidDateNotChange.get(Pair.of(x.getEmployeeId(), x.getDate()));
 					 if(lstItemValue.isEmpty()) {
-						 return  DailyRecordDto.from(domDaily);
+						 return  DailyRecordDto.from(domDaily, optionalMaster);
 					 }
 					 val itemValues = lstItemValue.stream()
 								.map(it -> new ItemValue(it.getValue(),
@@ -213,11 +217,12 @@ public class DailyModifyMobileCommandFacade {
 
 					DailyModifyRCResult updatedOoTsuka = DailyModifyRCResult.builder().employeeId(x.getEmployeeId())
 							.workingDate(x.getDate()).items(itemValues).completed();
-					EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(DailyRecordDto
-							.from(domDaily), updatedOoTsuka, AppContexts.user().companyId());
+					EventCorrectResult result = dailyCorrectEventServiceCenter.correctRunTime(
+							DailyRecordDto.from(domDaily, optionalMaster),
+							updatedOoTsuka, AppContexts.user().companyId());
 					return result.getCorrected();
 				}
-				return DailyRecordDto.from(domDaily);
+				return DailyRecordDto.from(domDaily, optionalMaster);
 			}).collect(Collectors.toList());
 			DailyCalcResult daiCalcResult = processDailyCalc.processDailyCalc(
 					new DailyCalcParam(mapSidDate, dataParent.getLstNotFoundWorkType(), resultOlds,
@@ -342,9 +347,7 @@ public class DailyModifyMobileCommandFacade {
 				errorMonthAfterCalc = errorMonth.getHasError();
 				if (!errorMonthAfterCalc) {
 					this.insertAllData.handlerInsertAllMonth(resultMonth.getLstMonthDomain(), monthParam);
-					Map<Integer, OptionalItem> optionalMaster = optionalMasterRepo
-							.findAll(AppContexts.user().companyId()).stream()
-							.collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c));
+					
 					dataResultAfterIU.setDomainMonthOpt(resultMonth.getLstMonthDomain().isEmpty() ? Optional.empty()
 							: resultMonth.getLstMonthDomain().stream()
 									.map(x -> MonthlyRecordWorkDto.fromDtoWithOptional(x, optionalMaster)).findFirst());

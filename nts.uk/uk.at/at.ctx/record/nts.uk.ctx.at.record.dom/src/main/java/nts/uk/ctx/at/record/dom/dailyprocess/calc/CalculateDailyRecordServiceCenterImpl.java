@@ -33,12 +33,12 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemService;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemService;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
@@ -494,17 +494,20 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			if(nowWorkingItem.isPresent()) {
 				
 				Optional<ManagePerPersonDailySet> personSetting = factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, record, nowWorkingItem.get().getValue());
-				if(!personSetting.isPresent())
-					continue;
-		
-				//実績計算
-				ManageCalcStateAndResult result = calculate.calculate(calcOption, record, 
-													companyCommonSetting,
-													personSetting.get(),
-													justCorrectionAtr,
-													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
-													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
-
+				
+				ManageCalcStateAndResult result;
+				if(personSetting.isPresent()) {
+					//実績計算
+					result = calculate.calculate(calcOption, record, 
+														companyCommonSetting,
+														personSetting.get(),
+														justCorrectionAtr,
+														findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
+														findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
+				} else {
+					result = ManageCalcStateAndResult.failCalc(record, attendanceItemConvertFactory);
+				}
+				
 				if(result.isCalc()) {
 					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 				}

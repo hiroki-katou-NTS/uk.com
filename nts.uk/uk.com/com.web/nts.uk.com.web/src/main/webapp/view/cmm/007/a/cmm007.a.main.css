@@ -18,3 +18,13 @@ td#sidebar-area {
 .fixed-flex-layout > .fixed-flex-layout-right {
 	flex: 1 1 auto;
 }
+
+#functions-area {
+	min-height: 0px !important;
+	padding: 0px !important;
+	top: 25px;
+}
+
+#functions-area > button.btn-error {
+	left: 310px !important;
+}

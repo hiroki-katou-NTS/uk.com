@@ -1,6 +1,3 @@
-.kwr-003 {
-  margin-top: 10px;
-}
 .kwr-003 .fixed-flex-layout-left {
   margin-right: 10px;
   margin-left: 80px;
@@ -41,11 +38,11 @@
   width: calc(100% - 140px);
 }
 .kwr-003 .panel .row-right .radios-group {
-  padding-top: 5px;
+  padding-top: 3px;
   width: 110px;
 }
-.kwr-003 .panel .row-right .radios-group .ntsRadioBox:first-child {
-  margin-bottom: 20px;
+.kwr-003 .panel .row-right .radios-group :first-child {
+  margin-bottom: 10px;
 }
 .kwr-003 .panel .row-right .text-box-button {
   flex: 2;
@@ -61,4 +58,17 @@
 }
 .kwr-003 .panel .switchButton-wrapper button {
   width: 65px;
+}
+.w-50 {
+  width: 50px;
+}
+.kwr-005a  {
+  height: 578px;
+}
+.kwr-003  {
+   margin-top: 5px;
+ }
+.kwr-003 .panel .switchbox-wrappers .radio-wrapper span {
+  width: 65px;
+  text-align: center;
 }

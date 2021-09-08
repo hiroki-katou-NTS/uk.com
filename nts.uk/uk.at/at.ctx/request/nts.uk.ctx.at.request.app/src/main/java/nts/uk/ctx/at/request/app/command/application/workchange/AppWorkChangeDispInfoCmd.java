@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.ReflectWorkChangeAppDto;
+import nts.uk.ctx.at.request.dom.application.WorkInformationForApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
 import nts.uk.ctx.at.shared.app.command.worktime.predset.dto.PredetemineTimeSettingDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
@@ -57,6 +60,12 @@ public class AppWorkChangeDispInfoCmd {
 	 */
 	public String workTimeCD;
 	
+	// 申請中の勤務情報.勤務種類
+	public String worktype;
+	
+	// 申請中の勤務情報.就業時間帯
+	public String worktime;
+	
 //	勤務変更申請の反映
 	public ReflectWorkChangeAppDto reflectWorkChangeAppDto;
 	
@@ -78,6 +87,13 @@ public class AppWorkChangeDispInfoCmd {
 		appWorkChangeDispInfo.setWorkTypeCD(Optional.ofNullable(workTypeCD));
 		appWorkChangeDispInfo.setWorkTimeCD(Optional.ofNullable(workTimeCD));
 		appWorkChangeDispInfo.setReflectWorkChangeApp(reflectWorkChangeAppDto.toDomain());
+		Optional<WorkInformationForApplication> workInfo = Optional.empty();
+		if (!StringUtils.isBlank(worktype) || !StringUtils.isBlank(worktime)) {
+			workInfo = 
+					Optional.of(WorkInformationForApplication.create(worktype, worktime));
+		}
+		appWorkChangeDispInfo.setWorkInformationForApplication(workInfo);
+		
 		return appWorkChangeDispInfo;
 	}
 }

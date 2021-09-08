@@ -8,13 +8,13 @@
 	<ui:composition>
 		<div class="sidebar-content-header">
 			<ui:insert name="title" />
-			<span class="action-bar">
+			<div class="action-bar" style="display: inline-block;">
 			<ui:insert name="extended-action-bar" />
 			<!-- <button tabindex="1" class="proceed" data-bind="click: saveCompanyEstablishment">#{i18n.getText('KSM001_1')}</button> -->
 			<!-- <button tabindex="5" data-bind="click: openDialogCommonSetting">#{i18n.getText('KSM001_51')}</button> -->
-			</span>
+			</div>
 		</div>
-		<div class="contents-area cf" data-bind="visible: true" style="display: none">
+		<div id="contents-area" class="cf" data-bind="visible: true" style="display: none">
 			<div class="lineContent">
 				<ui:insert name="extended-111" />
 			</div>

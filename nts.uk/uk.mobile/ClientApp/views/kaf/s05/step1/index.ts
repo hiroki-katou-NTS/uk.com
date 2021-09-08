@@ -11,7 +11,6 @@ import { KafS05Component} from '../a/index';
     route: '/kaf/s05/step1',
     style: require('./style.scss'),
     template: require('./index.vue'),
-    resource: require('./resources.json'),
     validations: {
         workHours1: {
             required: false,
@@ -104,6 +103,14 @@ export class KafS05Step1Component extends Vue {
 
     public created() {
         const self = this;
+
+        if (self.$appContext.getoverTimeClf == 0) {
+            self.pgName = 'kafs05step1';
+        } else if (self.$appContext.getoverTimeClf == 1) {
+            self.pgName = 'kafs05step2';
+        } else {
+            self.pgName = 'kafs05step3';
+        }
         self.loadData();     
     }
 

@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
 
 /**
  * @author anhdt
@@ -23,7 +21,6 @@ public class StampSettingDto {
 	private Integer historyDisplayMethod;
 	private Integer correctionInterval;
 	private String textColor;
-	private String backGroundColor;
 	private Integer resultDisplayTime;
 	private List<StampPageLayoutDto> pageLayouts = new ArrayList<>();
 	public StampSettingDto (Optional<StampSettingPerson> oDomain) {
@@ -31,13 +28,11 @@ public class StampSettingDto {
 			StampSettingPerson domain = oDomain.get();
 			this.buttonEmphasisArt = domain.isButtonEmphasisArt();
 			
-			StampingScreenSet screenSet =  domain.getStampingScreenSet();
-			this.historyDisplayMethod = screenSet.getHistoryDisplayMethod().value;
+			DisplaySettingsStampScreen screenSet =  domain.getStampingScreenSet();
+			this.historyDisplayMethod = domain.getHistoryDisplayMethod().value;
 			this.correctionInterval = screenSet.getCorrectionInterval().v();
 			
-			ColorSetting colorSetting =  screenSet.getColorSetting();
-			this.textColor = colorSetting.getTextColor().v();
-			this.backGroundColor = colorSetting.getBackGroundColor().v();
+			this.textColor = screenSet.getSettingDateTimeColor().getTextColor().v();
 			this.resultDisplayTime = screenSet.getResultDisplayTime().v();
 			
 			List<StampPageLayout> layouts = domain.getLstStampPageLayout();
@@ -56,7 +51,6 @@ public class StampSettingDto {
 		
 		SettingDateTimeColorOfStampScreen colorSetting =  screenSet.getSettingDateTimeColor();
 		this.textColor = colorSetting.getTextColor().v();
-		this.backGroundColor = colorSetting.getBackGroundColor().v();
 		this.resultDisplayTime = screenSet.getResultDisplayTime().v();
 		
 		List<StampPageLayout> layouts = domain.getLstStampPageLayout();

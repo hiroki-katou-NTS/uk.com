@@ -254,6 +254,7 @@ module nts.uk.at.view.kmk004 {
             </table>
         </div>
         <style type="text/css" rel="stylesheet">
+					.content1 { white-space: nowrap; }
             .table-view {
                 padding: 15px;
                 border: 2px solid #B1B1B1;

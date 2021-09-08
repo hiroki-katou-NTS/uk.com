@@ -10,7 +10,6 @@ tr {
 
 #contents-area {
 	padding: 17px 32px;
-	height: auto !important;
 }
 
 .cal-panel {
@@ -23,9 +22,10 @@ tr {
 }
 
 .panel.panel-frame {
-	width: 300px;
+	width: 315px;
     float: right;
-    margin: -85px 0px;
+    margin: -80px 0px;
+	padding: 15px;
 }
 
 .cal-value {
@@ -40,7 +40,7 @@ tr {
 }
 
 .bound {
-	height: 62px;
+	height: 80px;
 	z-index: -999999;
 }
 
@@ -61,7 +61,7 @@ table.contents-header td.input-units {
 }
 
 table.contents-header td.base-date {
-	width: 150px;
+	width: 144px;
 }
 
 table.contents-header td.allow-pay {
@@ -99,10 +99,6 @@ table.contents-data td.input-units {
 	width: 69px;
 }
 
-table.contents-data td.base-date {
-	width: 156px;
-}
-
 table.contents-data td.allow-pay {
 	width: 40px;
 }
@@ -112,7 +108,7 @@ table.contents-data thead, table.contents-data tbody {
 }
 
 table.contents-data tbody {
-    height: 245px;   
+    height: 235px;
     overflow-y: auto;   
     overflow-x: hidden; 
     border: 1px solid #CCC;
@@ -139,11 +135,6 @@ td.ui-widget-header {
 	padding-top: 25px;
 }
 
-#contents-area {
-	padding: 17px 32px;
-	height: auto !important;
-}
-
 .cal-panel {
 	float: right;
 }
@@ -151,12 +142,6 @@ td.ui-widget-header {
 .btn-cal {
 	width: 80px;
     height: 36px;
-}
-
-.panel.panel-frame {
-	width: 300px;
-    float: right;
-    margin: -85px 0px;
 }
 
 .cal-value {
@@ -170,11 +155,6 @@ td.ui-widget-header {
     padding: 5px 3px;
 }
 
-.bound {
-	height: 62px;
-	z-index: -999999;
-}
-
 span.nts-editor-wrapped.ntsControl.symbol.symbol-right {
     width: auto !important;
 }
@@ -185,4 +165,8 @@ td.numbers {
 
 td.input-units {
 	text-align: center;
+}
+
+.nts-combo-item .nts-column {
+	margin-right: 30px !important;
 }

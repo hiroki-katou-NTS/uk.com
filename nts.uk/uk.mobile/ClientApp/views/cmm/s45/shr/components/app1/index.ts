@@ -348,8 +348,12 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
     }
     // 選択している続柄に対する「3親等以内とする」情報を確認する
     public get c20() {
+
         const self = this;
-        let c20 = _.get(self.dataOutput, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst[0].threeParentOrLess');
+        const dateSpecHdRelationLst = _.get(self.dataOutput, 'appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst');
+        const relationCDOp = _.get(self.dataOutput, 'applyForLeaveDto.vacationInfo.info.applyForSpeLeave.relationshipCD');
+        const indexSelect = _.findLastIndex(dateSpecHdRelationLst , (o: any) => o.relationCD == relationCDOp);
+        const c20 = _.get(self.dataOutput, `appAbsenceStartInfoDto.specAbsenceDispInfo.dateSpecHdRelationLst[${indexSelect == -1 ? 0 : indexSelect}].threeParentOrLess`);
 
         return c20;
     }

@@ -23,7 +23,9 @@ public class SettingsUsingEmbossingCommand {
 	
 	private Boolean smart_phone;
 	
+	private Boolean ricohStamp;
+	
 	public SettingsUsingEmbossing toDomain() {
-		return new SettingsUsingEmbossing(AppContexts.user().companyId(), this.name_selection, this.finger_authc, this.ic_card, this.indivition, this.portal, this.smart_phone);
+		return new SettingsUsingEmbossing(AppContexts.user().companyId(), this.name_selection, this.finger_authc, this.ic_card, this.indivition, this.portal, this.smart_phone, this.ricohStamp);
 	}
 }

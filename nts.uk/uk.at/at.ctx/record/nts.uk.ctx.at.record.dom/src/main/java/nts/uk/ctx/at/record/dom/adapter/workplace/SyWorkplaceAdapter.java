@@ -23,6 +23,10 @@ public interface SyWorkplaceAdapter {
 	
 	List<SWkpHistRcImported> findBySid(List<String>employeeIds, GeneralDate baseDate);
 
+	
+	List<WorkplaceInforImport> getWorkplaceInforByWkpIds(String companyId, List<String> listWorkplaceId,
+			GeneralDate baseDate);
+
 	/**
 	 * [No.597]職場の所属社員を取得する
 	 */

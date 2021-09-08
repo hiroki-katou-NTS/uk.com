@@ -3,17 +3,16 @@
 }
 
 #content-left {
-  float: left;
-  margin-top: 35px;
   width: 350px;
+  position: absolute;
+  top: 130px;
 }
 
 #content-mid {
-  float: left;
-  margin-top: 215px;
-  margin-left: 15px;
   width: 60px;
-  height: 300px;
+  position: absolute;
+  top: 300px;
+  left: 400px;
 }
 
 #button {
@@ -31,7 +30,6 @@
 
 .ntsPanel {
   width: 350px;
-  height: 450px;
 }
 
 .combo {
@@ -56,9 +54,9 @@ display: inline-flex;
 }
 
 #content-right {
-  float: left;
-  margin-left: 15px;
-  margin-top: 160px;
+  position: absolute;
+  left: 475px;
+  top: 230px;
 }
 #content-top {
   float: top;

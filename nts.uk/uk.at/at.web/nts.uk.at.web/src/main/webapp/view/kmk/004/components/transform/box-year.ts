@@ -17,7 +17,7 @@ module nts.uk.at.view.kmk004.components.transform {
 	const template = `
 		<button id = "btn_year" data-bind="enable: initBtnEnable , click: $component.openQDialog, i18n: 'KMK004_233'"></button>
         <div tabindex="6" class="listbox">
-            <div id="list-box" data-bind="ntsListBox: {
+            <div id="year-list" data-bind="ntsListBox: {
                 options: $component.params.years,
                 optionsValue: 'year',
                 optionsText: 'yearName',

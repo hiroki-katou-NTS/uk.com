@@ -23,11 +23,6 @@
           path="/view/ccg/025/component/component.vm.js"
           of="/nts.uk.com.web"
         />
-
-        <com:stylefile
-          path="/view/ccg/026/component/component.css"
-          of="/nts.uk.com.web"
-        />      
         <com:scriptfile
           path="/view/ccg/026/component.js"
           of="/nts.uk.com.web"
@@ -50,8 +45,8 @@
             data-bind="text: $vm.$i18n('KSM011_18'), click: saveData, enable: $root.errors.isEmpty"
           ></button>
         </div>
-        <div id="contents-area" class="ksm-011">
-          <div class="pull-left">
+        <div id="contents-area" class="fixed-flex-layout">
+          <div class="fixed-flex-layout-left">
             <div class="nts-panel"
               data-bind="ntsPanel:{ width: '330px', height: '380px', direction: 'right', showIcon: true, visible: true }"
             >
@@ -66,7 +61,7 @@
               </div>
             </div>
           </div>
-          <div class="pull-left">
+          <div class="fixed-flex-layout-right">
             <div class="title">
               <span data-bind="text: roleName"></span>
             </div>
@@ -76,83 +71,79 @@
               data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
             >
               <div class="tab-content-1">
-								<ccg026-component params="{
-									roleId: roleId,
-									roleType: roleType,
-									changeData: permissionCommon,
-									maxRow: 2
-								}"></ccg026-component>
+								<div id="permissionCommon" data-bind="component: {
+								    name: 'ccg026-component',
+								    params: {
+								        compId: 'permissionCommon',
+									    roleId: roleId,
+									    roleType: roleType,
+									    changeData: permissionCommon,
+									    maxRow: 2
+                                    }
+								}"> </div>
                 <div class="divi">
                   <div class="title">
                     <span data-bind="text: $vm.$i18n('KSM011_99')"></span>
                   </div>
                   <hr />
-                  <div class="table">
-                    <div class="cell valign-top">
-                      <div
-                              data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KSM011_100')"
-                      ></div>
-                    </div>
-                    <div class="cell">
-                      <div
-                              class="cf"
-                              id="KSM011_D24"
-                              tabindex="7"
-                              data-bind="ntsSwitchButton: {
+                  <div class="control-group valign-center">
+                    <div data-bind="ntsFormLabel: { required: true, text: $vm.$i18n('KSM011_100') }"></div>
+                    <div id="KSM011_D24"
+                         tabindex="7"
+                         data-bind="ntsSwitchButton: {
 										name: '#[KSM011_100]',
 										options: switchItems,
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: basicFunctionControl,
 										required: true,
-										enable: true }"
-                      ></div>
-                      <div class="table mt-5">
-                        <div class="cell valign-center">
-                          <label data-bind="text: $vm.$i18n('KSM011_102')"></label>
-                        </div>
-                        <div class="cell valign-center">
-                          <div
-                                  tabindex="8"
-                                  id="combo-box"
-                                  class="comboBox"
-                                  data-bind="ntsComboBox: {
-													name: '#[KSM011_103]',
-													options: daysList,
-													optionsValue: 'day',
-													visibleItemsCount: 5,
-													value: dateSelected,
-													optionsText: 'name',
-													editable: false,
-													enable: basicFunctionControl() === 1,
-													required: true,
-													selectFirstIfNull: true
-												}"
-                          ></div>
-                        </div>
-                        <div class="cell valign-center">
-                          <span data-bind="text: $vm.$i18n('KSM011_104')"></span>
-                        </div>
-                      </div>
-                    </div>
+										enable: true
+                                  }"></div>
+                  </div>
+                  <div class="control-group valign-center">
+                    <span class="label" data-bind="text: $vm.$i18n('KSM011_102')"></span>
+                    <div tabindex="8"
+                         id="combo-box"
+                         class="comboBox"
+                         data-bind="ntsComboBox: {
+                                        name: '#[KSM011_103]',
+                                        options: daysList,
+                                        optionsValue: 'day',
+                                        visibleItemsCount: 5,
+                                        value: dateSelected,
+                                        optionsText: 'name',
+                                        editable: false,
+                                        enable: basicFunctionControl() === 1,
+                                        required: true,
+                                        selectFirstIfNull: true
+                                  }"></div>
+                    <span class="label" data-bind="text: $vm.$i18n('KSM011_104')"></span>
                   </div>
                 </div>
               </div>
               <div class="tab-content-2">
-								<ccg026-component params="{
-									roleId: roleId,
-									roleType: roleType1,
-									changeData: permissionByWorkplace,
-									maxRow: 16
-								}"></ccg026-component>
+								<div id="permissionByWorkplace" data-bind="component: {
+								    name: 'ccg026-component',
+								    params: {
+								        compId: 'permissionByWorkplace',
+									    roleId: roleId,
+									    roleType: roleType1,
+									    changeData: permissionByWorkplace,
+									    maxRow: 16
+                                    }
+								}"> </div>
 							</div>
               <div class="tab-content-3">
-								<ccg026-component params="{
-									roleId: roleId,
-									roleType: roleType2,
-									changeData: permissionByIndividual,
-									maxRow: 2
-								}"></ccg026-component>
+                                <div id="permissionByIndividual" data-bind="component: {
+								    name: 'ccg026-component',
+								    params: {
+								        compId: 'permissionByIndividual',
+									    roleId: roleId,
+									    roleType: roleType2,
+									    changeData: permissionByIndividual,
+									    maxRow: 2
+                                    }
+								}"> </div>
 							</div>
             </div>
           </div>

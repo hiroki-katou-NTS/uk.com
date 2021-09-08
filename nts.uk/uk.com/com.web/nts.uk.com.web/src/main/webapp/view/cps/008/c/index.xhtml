@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 700,
-					height : 270
+					width : 500,
+					height : 255
 				};
 			</script>
 			<com:ValidatorScript>
@@ -29,8 +29,8 @@
 				<div data-bind="with: layout">
 					<table class="table_content">
 						<colgroup>
-							<col width="150px" />
-							<col width="250px" />
+							<col width="100px" />
+							<col width="120px" />
 							<col width="260px" />
 						</colgroup>
 						<tr>
@@ -80,7 +80,7 @@
 					</table>
 				</div>
 			</div>
-			<div id="functions-area-bottom" style="height: 100px !important">
+			<div id="functions-area-bottom">
 
 				<div style="margin-left: -10px"
 					data-bind="ntsCheckBox: { checked: overrideMode, enable: true, text: '#{i18n.getText('CPS008_43')}' , style: 'warnpanel'}"></div>

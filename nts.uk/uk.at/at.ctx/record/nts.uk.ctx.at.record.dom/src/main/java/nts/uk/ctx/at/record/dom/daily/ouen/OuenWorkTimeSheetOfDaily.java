@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.dom.daily.ouen;
 
+
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -16,9 +19,9 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 	private GeneralDate ymd;
 	
 	/** 応援時間帯: 日別勤怠の応援作業時間帯 */
-	private OuenWorkTimeSheetOfDailyAttendance ouenTimeSheet;
+	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet;
 
-	private OuenWorkTimeSheetOfDaily(String empId, GeneralDate ymd, OuenWorkTimeSheetOfDailyAttendance ouenTimeSheet) {
+	public OuenWorkTimeSheetOfDaily(String empId, GeneralDate ymd, List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet) {
 		super();
 		this.empId = empId;
 		this.ymd = ymd;
@@ -26,7 +29,7 @@ public class OuenWorkTimeSheetOfDaily extends AggregateRoot {
 	}
 	
 	public static OuenWorkTimeSheetOfDaily create(String empId, GeneralDate ymd,
-			OuenWorkTimeSheetOfDailyAttendance ouenTimeSheet) {
+			List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet) {
 
 		return new OuenWorkTimeSheetOfDaily(empId, ymd, ouenTimeSheet);
 	}

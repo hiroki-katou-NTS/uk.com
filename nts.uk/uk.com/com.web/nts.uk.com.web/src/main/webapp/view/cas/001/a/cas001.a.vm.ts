@@ -732,15 +732,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
             }).always(() => {
                 //register click change all event
                 $(() => {
-                    $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
-                        let id = $(this).parent().attr('id');
-                        screenModel.changeAll(id, id === 'anotherSelectedAll_auth' ? screenModel.anotherSelectedAll() : screenModel.seftSelectedAll());
+                    
+                    $('#anotherSelectedAll_auth').on('click', 'label input', (e) => {
+                        // find index of selected input
+                        const index = Array.prototype.indexOf.call($('#anotherSelectedAll_auth')[0].childNodes, $(e.currentTarget).parent()[0]);
+                        screenModel.changeAll('anotherSelectedAll_auth', index + 1);
+                    });
 
+                    $('#seftSelectedAll_auth').on('click', 'label input', (e) => {
+                        // find index of selected input
+                        const index = Array.prototype.indexOf.call($('#seftSelectedAll_auth')[0].childNodes, $(e.currentTarget).parent()[0]);
+                        screenModel.changeAll('seftSelectedAll_auth', index + 1);
                     });
 
                     $('.ui-iggrid-header').on('focus', function() {
 
-                        if ($(this).find('.nts-switch-button').is(':enabled')) {
+                        if ($(this).find('label input').is(':enabled')) {
                             $(this).find('.selected_all_auth').focus();
                         }
                     });

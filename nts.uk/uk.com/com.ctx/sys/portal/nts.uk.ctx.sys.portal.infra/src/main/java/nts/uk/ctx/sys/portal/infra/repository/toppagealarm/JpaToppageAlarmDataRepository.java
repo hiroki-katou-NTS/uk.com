@@ -16,6 +16,8 @@ import nts.uk.ctx.sys.portal.dom.toppagealarm.LinkURL;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.NotificationId;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmData;
 import nts.uk.ctx.sys.portal.dom.toppagealarm.ToppageAlarmDataRepository;
+import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtTopAlarmSubSya;
+import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtTopAlarmSubSyaPK;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarm;
 import nts.uk.ctx.sys.portal.infra.entity.toppagealarm.SptdtToppageAlarmPK;
 
@@ -136,18 +138,28 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 				.setParameter("patternCode", domain.getPatternCode().map(AlarmListPatternCode::v).orElse(""))
 				.setParameter("notificationId", domain.getNotificationId().map(NotificationId::v).orElse(""))
 				.getSingle();
+	
+		if (oldEntity.isPresent()) {
+			
+			List<SptdtTopAlarmSubSya> listSubSids = SptdtToppageAlarm.subSidsToEntity(domain.getCid(), domain.getDisplaySId(), domain.getSubSids());
 
-		oldEntity.ifPresent(updateEntity -> {
-			updateEntity.setPatternCode(domain.getPatternCode().map(AlarmListPatternCode::v).orElse(null));
-			updateEntity.setNotificationId(domain.getNotificationId().map(NotificationId::v).orElse(null));
-			updateEntity.setCrtDatetime(domain.getOccurrenceDateTime());
-			updateEntity.setMessege(domain.getDisplayMessage().v());
-			updateEntity.setLinkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null));
-			updateEntity.setReadDateTime(domain.getReadDateTime().orElse(null));
-			updateEntity.setResolved(domain.getIsResolved() ? 1 : 0);
+			//delete subSids
+			List<SptdtTopAlarmSubSyaPK> listPk = listSubSids.stream().map(sub -> sub.getPk()).collect(Collectors.toList());
+			this.commandProxy().removeAll(SptdtTopAlarmSubSya.class, listPk);
+			this.getEntityManager().flush();
+			
+			oldEntity.get().setPatternCode(domain.getPatternCode().map(AlarmListPatternCode::v).orElse(null));
+			oldEntity.get().setNotificationId(domain.getNotificationId().map(NotificationId::v).orElse(null));
+			oldEntity.get().setCrtDatetime(domain.getOccurrenceDateTime());
+			oldEntity.get().setMessege(domain.getDisplayMessage().v());
+			oldEntity.get().setLinkUrl(domain.getLinkUrl().map(LinkURL::v).orElse(null));
+			oldEntity.get().setReadDateTime(domain.getReadDateTime().orElse(null));
+			oldEntity.get().setResolved(domain.getIsResolved() ? 1 : 0);
+			oldEntity.get().setSubSids(listSubSids);
+			
 			// Update entity
-			this.commandProxy().update(updateEntity);
-		});
+			this.commandProxy().update(oldEntity.get());
+		};
 
 	}
 	
@@ -232,6 +244,7 @@ public class JpaToppageAlarmDataRepository extends JpaRepository implements Topp
 				oldEntity.setLinkUrl(updateEntity.getLinkUrl());
 				oldEntity.setReadDateTime(updateEntity.getReadDateTime());
 				oldEntity.setResolved(updateEntity.getResolved());
+				oldEntity.setSubSids(updateEntity.getSubSids());
 				
 				// Update entity
 				updateEntities.add(oldEntity);

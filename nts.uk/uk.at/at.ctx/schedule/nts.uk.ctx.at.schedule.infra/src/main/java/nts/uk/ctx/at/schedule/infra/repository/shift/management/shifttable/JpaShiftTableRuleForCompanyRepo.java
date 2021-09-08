@@ -42,7 +42,7 @@ public class JpaShiftTableRuleForCompanyRepo extends JpaRepository implements Sh
 				oldEntity.kscmtShiftTableRuleForCompanyAvai.weekSetStart = newEntity.kscmtShiftTableRuleForCompanyAvai.weekSetStart;
 				oldEntity.kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr = newEntity.kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineAtr;
 				oldEntity.kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek = newEntity.kscmtShiftTableRuleForCompanyAvai.weekSetDeadlineWeek;
-			} else {
+			} else if (newEntity.kscmtShiftTableRuleForCompanyAvai != null) {
 				oldEntity.kscmtShiftTableRuleForCompanyAvai = newEntity.kscmtShiftTableRuleForCompanyAvai;
 			}
 			this.commandProxy().update(oldEntity);

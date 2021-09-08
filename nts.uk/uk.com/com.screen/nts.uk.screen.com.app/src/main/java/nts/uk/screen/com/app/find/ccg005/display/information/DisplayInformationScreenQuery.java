@@ -58,9 +58,6 @@ public class DisplayInformationScreenQuery {
 	
 	@Inject
 	private PersonalInformationAdapter personalInformationAdapter;
-	
-	@Inject
-	private AttendanceInformationScreenQuery attendanceScreenQuery;
 
 	public DisplayInformationDto getDisplayInfoAfterSelect(List<String> wkspIds, GeneralDate baseDate, boolean emojiUsage) {
 		String loginCid = AppContexts.user().companyId();
@@ -83,18 +80,8 @@ public class DisplayInformationScreenQuery {
 				rankOfPositionAdapter,
 				personalInformationAdapter);
 		List<EmployeeBasicImport> listPersonalInfo = PersonalInfomationDomainService.getPersonalInfomation(rq, getDeterEmployeeIdList, baseDate);
-		List<EmpIdParam> empIds = listPersonalInfo.stream()
-				.map(item -> EmpIdParam.builder()
-						.sid(item.getEmployeeId())
-						.pid(item.getPersonalId())
-						.build())
-				.collect(Collectors.toList());
-		
-		// 4:在席情報を取得する(社員ID, 年月日, するしない区分): List<在席情報DTO>
-		List<AttendanceInformationDto> attendanceInformationDtos  = attendanceScreenQuery.getAttendanceInformation(empIds, baseDate, emojiUsage);
 		
 		return DisplayInformationDto.builder()
-				.attendanceInformationDtos(attendanceInformationDtos)
 				.listPersonalInfo(listPersonalInfo)
 				.build();
 	}

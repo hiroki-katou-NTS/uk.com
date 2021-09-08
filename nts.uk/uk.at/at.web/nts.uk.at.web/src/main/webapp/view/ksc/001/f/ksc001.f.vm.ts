@@ -124,7 +124,7 @@ import kibanTimer = nts.uk.ui.sharedvm.KibanTimer;
                             let windowSize = nts.uk.ui.windows.getSelf();
                             windowSize.$dialog.dialog('option', {
                                 width: 750,
-                                height: 640
+                                height: 630
                             });
                             $("#exportButton").focus();
 //                            windowSize.$dialog.resize();

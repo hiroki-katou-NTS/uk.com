@@ -28,9 +28,9 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
@@ -256,13 +256,13 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 												integrationOfDaily.getYmd(),
 												fixedErrorAlarmCode.get(),
 												CheckExcessAtr.LEAVE_EARLY);
-			//出勤打刻漏れ
+			//出勤打刻漏れ - 出退勤打刻漏れ
 			case TIME_LEAVING_STAMP_LEAKAGE:
 				return dailyRecordCreateErrorAlermService.lackOfTimeLeavingStamping(integrationOfDaily);
-			//入退門漏
+			//入退門漏 - 入退門打刻漏れ
 			case ENTRANCE_STAMP_LACKING:
 				return dailyRecordCreateErrorAlermService.lackOfAttendanceGateStamping(integrationOfDaily);
-			//PCログ打刻漏れ
+			//PCログ打刻漏れ - PCログオン打刻漏れ
 			case PCLOG_STAMP_LEAKAGE:
 				return dailyRecordCreateErrorAlermService.lackOfAttendancePCLogOnStamping(integrationOfDaily);
 			//打刻順序不正

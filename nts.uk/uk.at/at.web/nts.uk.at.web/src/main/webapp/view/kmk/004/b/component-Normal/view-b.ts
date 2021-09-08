@@ -13,7 +13,7 @@ module nts.uk.at.view.kmk004.b {
 			<div class="title" data-bind="i18n: 'KMK004_228'"></div>
 			<hr></hr>
 			<div class="header_title">
-				<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_229'"></div>
+				<div data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_229')"></div>
 				<button tabindex="4" data-bind="i18n: 'KMK004_231', click: openDialogF"></button>
 			</div>
 			<div class="header_content">
@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk004.b {
 					}
 				}"></div>
 			</div>
-			<div data-bind="ntsFormLabel: {inline: true}, i18n: 'KMK004_232'"></div>
+			<div data-bind="ntsFormLabel: {inline: true}, text: $i18n('KMK004_232')"></div>
 		</div>
 		<div class="content">
 			<div>

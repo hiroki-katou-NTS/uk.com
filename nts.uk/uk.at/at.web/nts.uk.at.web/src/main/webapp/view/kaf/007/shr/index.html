@@ -2,12 +2,12 @@
 	<div class="table" style="margin-bottom: 5px;">
 		<div class="cell" style="position: absolute; margin-left: 120px; margin-top: 4px;">
 			<!--A6_5 勤務就業選択-->
-			<button style="height: 70px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
+			<button style="width:45px; height: 60px;" id="workSelect-kaf007" data-bind="text: $i18n('KAF007_24'),
 						click: openKDL003Click, 
 						enable: true">
 			</button>
 		</div>
-		<div class="cell valign-center">
+		<div class="cell valign-center" style="padding-left: 15px; padding-bottom: 5px">
 			<div class="table" style="margin-bottom: 5px;">
 				<div class="cell col-1">
 					<!--A6_1 勤務種類-->
@@ -31,7 +31,7 @@
 				</div>
 				<div class="cell col-2" style="margin-top: 5px;">
 					<!--A6_4 就業時間帯名-->
-					<div class="cell valign-center">
+					<div class="cell valign-center" style="padding-top: 15px">
 						<span data-bind="text: appWorkChange.workTimeCode"></span>
 						<span data-bind="text: ' '"></span>
 						<span data-bind="text: appWorkChange.workTimeName"></span>

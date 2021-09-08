@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,9 +15,12 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 
 /**
- * 打刻漏れ(入退門)
+ * 打刻漏れ(入退門)  -  入退門打刻漏れ
  * 
  * @author nampt
  *
@@ -26,6 +30,9 @@ public class ExitStampCheck {
 
 	@Inject
 	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 
 	public EmployeeDailyPerError exitStampCheck(String companyId, String employeeId, GeneralDate processingDate,
 			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily,
@@ -42,51 +49,64 @@ public class ExitStampCheck {
 					&& !attendanceLeavingGateOfDaily.getTimeZone().getAttendanceLeavingGates().isEmpty()) {
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 
+				//所定時間設定を取得
+				Optional<PredetemineTimeSetting> predetemineTimeSet = Optional.empty();
+				if(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().isPresent()) {
+					predetemineTimeSet = predetemineTimeSettingRepository.findByWorkTimeCode(
+							companyId,
+							workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().get().v());
+				}
+				
+				//所定労働時間帯の件数を取得
+				int predTimeSpanCount = predetemineTimeSet.isPresent()
+						? predetemineTimeSet.get().getTimezoneByAmPmAtrForCalc(workStyle.toAmPmAtr().orElse(AmPmAtr.ONE_DAY)).size()
+						: 0;
+						
 				List<AttendanceLeavingGate> attendanceLeavingGates = attendanceLeavingGateOfDaily
 						.getTimeZone().getAttendanceLeavingGates();
-				for (AttendanceLeavingGate attendanceLeavingGate : attendanceLeavingGates) {
-					
-					// 退門のみ存在している(only has attendance time)
-					if (attendanceLeavingGate.getAttendance().isPresent()
-							&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()
-							&& (!attendanceLeavingGate.getLeaving().isPresent()
-									|| (attendanceLeavingGate.getLeaving().isPresent()
-											&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay() == null))) {
-						if (attendanceLeavingGate.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(77);
-						} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(81);
+				for(int number = 1;number<=predTimeSpanCount;number++) {//start for 1
+					for (AttendanceLeavingGate attendanceLeavingGate : attendanceLeavingGates) {//start for 2
+						if(attendanceLeavingGate.getWorkNo().v().intValue() == number) {
+							// 退門のみ存在している(only has attendance time)
+							if (attendanceLeavingGate.getAttendance().isPresent()
+									&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()
+									&& (!attendanceLeavingGate.getLeaving().isPresent()
+											|| (attendanceLeavingGate.getLeaving().isPresent()
+													&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay() == null))) {
+								if (attendanceLeavingGate.getWorkNo().v() == 1) {
+									attendanceItemIDList.add(77);
+								} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
+									attendanceItemIDList.add(81);
+								}
+							}
+							// 入門のみ存在している(only has leaving time)
+							else if ((!attendanceLeavingGate.getAttendance().isPresent()
+									|| (attendanceLeavingGate.getAttendance().isPresent()
+											&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()))
+									&& (attendanceLeavingGate.getLeaving().isPresent()
+											&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent())) {
+								if (attendanceLeavingGate.getWorkNo().v() == 1) {
+									attendanceItemIDList.add(75);
+								} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
+									attendanceItemIDList.add(79);
+								}
+							}
+							// 両方存在しない(both has not data)
+//							else if (!attendanceLeavingGate.getAttendance().isPresent() && !attendanceLeavingGate.getLeaving().isPresent()
+//									|| ((attendanceLeavingGate.getAttendance().isPresent() && !attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent())
+//											&& (attendanceLeavingGate.getLeaving().isPresent() && !attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent()))) {
+//								if (attendanceLeavingGate.getWorkNo().v() == 1) {
+//									attendanceItemIDList.add(75);
+//									attendanceItemIDList.add(77);
+//								} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
+//									attendanceItemIDList.add(79);
+//									attendanceItemIDList.add(81);
+//								}
+//							}
 						}
-					}
-					// 入門のみ存在している(only has leaving time)
-					else if ((!attendanceLeavingGate.getAttendance().isPresent()
-							|| (attendanceLeavingGate.getAttendance().isPresent()
-									&& attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent()))
-							&& (attendanceLeavingGate.getLeaving().isPresent()
-									&& attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent())) {
-						if (attendanceLeavingGate.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(75);
-						} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(79);
-						}
-					}
-					// 両方存在しない(both has not data)
-					else if (!attendanceLeavingGate.getAttendance().isPresent() && !attendanceLeavingGate.getLeaving().isPresent()
-							|| ((attendanceLeavingGate.getAttendance().isPresent() && !attendanceLeavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent())
-									&& (attendanceLeavingGate.getLeaving().isPresent() && !attendanceLeavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent()))) {
-						if (attendanceLeavingGate.getWorkNo().v() == 1) {
-							attendanceItemIDList.add(75);
-							attendanceItemIDList.add(77);
-						} else if (attendanceLeavingGate.getWorkNo().v() == 2) {
-							attendanceItemIDList.add(79);
-							attendanceItemIDList.add(81);
-						}
-					}
-//					if (!attendanceItemIDList.isEmpty()) {
-//						createEmployeeDailyPerError.createEmployeeDailyPerError(companyId, employeeId, processingDate,
-//								new ErrorAlarmWorkRecordCode("S003"), attendanceItemIDList);
-//					}
-				}
+					}//end for 2
+				}//end for 1
+				
 				if (!attendanceItemIDList.isEmpty()){
 					employeeDailyPerError = new EmployeeDailyPerError(companyId,
 							employeeId, processingDate, new ErrorAlarmWorkRecordCode("S003"),

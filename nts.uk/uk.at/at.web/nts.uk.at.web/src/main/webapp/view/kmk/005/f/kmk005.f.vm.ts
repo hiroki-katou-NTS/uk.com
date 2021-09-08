@@ -123,15 +123,15 @@ module nts.uk.at.view.kmk005.f {
                     self.currentSpecBonusPayTimesheets.removeAll();
                     if (nts.uk.util.isNullOrEmpty(dfdTimesheetListData) || nts.uk.util.isNullOrEmpty(dfdGetSpecTimesheetListData)) {
                         for (let i = 0; i < 10; i++) {
-                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
-                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
+                            self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', (i + 1)+"", 0, (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
+                            self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', (i + 1)+"", 0, (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
                         }
                     } else {
                         dfdTimesheetListData.forEach(function(item) {
                             self.currentBonusPayTimesheets.push(new BonusPayTimesheet(
                                 item.companyId,
                                 item.timeSheetNO,
-                                item.useAtr,
+                                item.useAtr+'',
                                 item.bonusPaySettingCode,
                                 item.timeItemID,
                                 item.startTime,
@@ -144,7 +144,7 @@ module nts.uk.at.view.kmk005.f {
                             self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet(
                                 item.companyId,
                                 item.timeSheetNO,
-                                item.useAtr,
+                                item.useAtr+'',
                                 item.bonusPaySettingCode,
                                 item.timeItemID,
                                 item.startTime,
@@ -171,15 +171,51 @@ module nts.uk.at.view.kmk005.f {
                 self.currentBPSetCode(self.currentBonusPaySetting().code());
                 self.currentBonusPayTimesheets.removeAll();
                 self.currentSpecBonusPayTimesheets.removeAll();
-                for (let i = 0; i < 10; i++) {
-                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
-                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, 0, (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
+                if (self.bonusPayTimeItemList().length == 0) {
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 1, '0', 1, 1, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 2, '0', 2, 2, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 3, '0', 3, 3, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 4, '0', 4, 4, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 5, '0', 5, 5, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 6, '0', 6, 6, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', 7, '0', 7, 7, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('',  8, '0', 8, 8, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('',  9, '0', 9, 9, 0, 0, 0, 0));
+                    self.currentBonusPayTimesheets.push(new BonusPayTimesheet('',  10, '0',10, 10, 0, 0, 0, 0));
                 }
+                else {
+                    for (let i = 0; i < 10; i++) {
+                        self.currentBonusPayTimesheets.push(new BonusPayTimesheet('', i + 1, '0', (i + 1).toString(), self.bonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0));
+                        //  self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('',  i + 1, '0', (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
+                    }
+                }
+
+                if (self.specBonusPayTimeItemList().length == 0) {
+                   self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 1, '0', 1, 1, 0, 0, 0, 0, 0));
+                   self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 2, '0', 2, 2, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 3, '0', 3, 3, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 4, '0', 4, 4, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 5, '0', 5, 5, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 6, '0', 6, 6, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 7, '0', 7, 7, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 8, '0', 8, 8, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 9, '0', 9, 9, 0, 0, 0, 0, 0));
+                    self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', 10, '0', 10, 10, 0, 0, 0, 0, 0));
+                }
+                else {
+                    for (let i = 0; i < 10; i++) {
+                        self.currentSpecBonusPayTimesheets.push(new SpecBonusPayTimesheet('', i + 1, '0', (i + 1).toString(), self.specBonusPayTimeItemList()[0].timeItemNo, 0, 0, 0, 0, 0));
+                    }
+                }
+
+
+
+
             }
 
             submitData(): void {
                 nts.uk.ui.block.invisible();
-                var self = this;
+                var self = this; 
                 $(".inputRequired").trigger("validate");
                 if (!nts.uk.ui.errors.hasError()) {
                     if (self.isUpdate()) {
@@ -242,10 +278,17 @@ module nts.uk.at.view.kmk005.f {
                         fService.deleteBonusPaySetting(
                             self.createCommand(self.currentBonusPaySetting(), self.currentBonusPayTimesheets(), self.currentSpecBonusPayTimesheets())
                         ).done((data) => {
-                            if (i >= self.bonusPaySettingList().length - 1)
-                                self.getBonusPaySetting(self.bonusPaySettingList()[i - 1].code);
-                            else
-                                self.getBonusPaySetting(self.bonusPaySettingList()[i + 1].code);
+							if(self.bonusPaySettingList().length == 1 && i == 0){
+								 self.isUpdate(false);
+	                            self.bonusPaySettingList([]);
+	                            self.createData(false);
+							}else{
+								 if (i >= self.bonusPaySettingList().length - 1)
+	                                self.getBonusPaySetting(self.bonusPaySettingList()[i - 1].code);
+	                            else
+	                                self.getBonusPaySetting(self.bonusPaySettingList()[i + 1].code);
+							}
+                           
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             nts.uk.ui.block.clear();
                         }).fail((res) => {
@@ -322,14 +365,14 @@ module nts.uk.at.view.kmk005.f {
         export class BonusPayTimesheet {
             companyId: KnockoutObservable<string>;
             timeSheetNO: KnockoutObservable<number>;
-            useAtr: KnockoutObservable<number>;
+            useAtr: KnockoutObservable<string>;
             bonusPaySettingCode: KnockoutObservable<string>;
             timeItemID: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             endTime: KnockoutObservable<number>;
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: number,
+            constructor(companyId: string, timeSheetNO: number, useAtr: string, bonusPaySettingCode: string, timeItemID: number,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);
@@ -346,7 +389,7 @@ module nts.uk.at.view.kmk005.f {
         export class SpecBonusPayTimesheet {
             companyId: KnockoutObservable<string>;
             timeSheetNO: KnockoutObservable<number>;
-            useAtr: KnockoutObservable<number>;
+            useAtr: KnockoutObservable<string>;
             bonusPaySettingCode: KnockoutObservable<string>;
             timeItemID: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
@@ -354,7 +397,7 @@ module nts.uk.at.view.kmk005.f {
             roundingTimeAtr: KnockoutObservable<number>;
             roundingAtr: KnockoutObservable<number>;
             specialDateItemNO: KnockoutObservable<number>;
-            constructor(companyId: string, timeSheetNO: number, useAtr: number, bonusPaySettingCode: string, timeItemID: number,
+            constructor(companyId: string, timeSheetNO: number, useAtr: string, bonusPaySettingCode: string, timeItemID: number,
                 startTime: number, endTime: number, roundingTimeAtr: number, roundingAtr: number, specialDateItemNO: number) {
                 this.companyId = ko.observable(companyId);
                 this.timeSheetNO = ko.observable(timeSheetNO);

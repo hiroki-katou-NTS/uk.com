@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 
@@ -9,7 +10,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
  *
  */
 @Getter
-public class TimeDivergenceWithCalculationMinusExist {
+@AllArgsConstructor
+public class TimeDivergenceWithCalculationMinusExist implements Cloneable{
 	//時間
 	private AttendanceTimeOfExistMinus time;
 	//計算時間
@@ -70,5 +72,11 @@ public class TimeDivergenceWithCalculationMinusExist {
 	public void replaceCalcTimeAndCalcDiv(AttendanceTimeOfExistMinus calcTime) {
 		this.calcTime = calcTime;
 		this.calcDiv();
+	}
+	
+	@Override
+	public TimeDivergenceWithCalculationMinusExist clone() {
+		return new TimeDivergenceWithCalculationMinusExist(new AttendanceTimeOfExistMinus(time.v()),
+				new AttendanceTimeOfExistMinus(calcTime.v()), new AttendanceTimeOfExistMinus(divergenceTime.v()));
 	}
 }

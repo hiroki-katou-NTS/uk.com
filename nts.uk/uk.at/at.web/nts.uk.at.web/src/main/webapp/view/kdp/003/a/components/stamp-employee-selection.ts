@@ -242,18 +242,40 @@ module nts.uk.at.kdp003.a {
 			/**
 			 * trigger resize and show row on grid by window height
 			 */
-			$(window)
-				.on('resize', () => {
-					const grid = $grid.get(0);
+			// $(window)
+			// 	.on('resize', () => {
+			// 		const grid = $grid.get(0);
 
-					if (grid && $grid.data('igGrid')) {
-						const top = grid.getBoundingClientRect().top;
-						const maxHeight = window.innerHeight - top - 25;
+			// 		if (grid && $grid.data('igGrid')) {
+			// 			const top = grid.getBoundingClientRect().top;
+			// 			const maxHeight = window.innerHeight - top - 25;
 
-						$grid.igGrid('option', 'height', `${Math.max(MIN_HEIGHT, maxHeight)}px`);
+			// 			$grid.igGrid('option', 'height', `${Math.max(MIN_HEIGHT, maxHeight)}px`);
+			// 		}
+			// 	})
+			// 	.trigger('resize');
+
+			setInterval(function () {
+
+				var paramSize = 0;
+
+				const grid = $grid.get(0);
+
+				if (grid && $grid.data('igGrid')) {
+					// const top = grid.getBoundingClientRect().top;
+					// const maxHeight = size.y + size.height;
+					let param: number = $('#contents-area').height() - 178;
+					if(param <  ($('#stamp-input').height() - 178)){
+						param = ($('#stamp-input').height() - 178);
 					}
-				})
-				.trigger('resize');
+
+					if (paramSize !== param) {
+						paramSize = param;
+						$grid.igGrid('option', 'height', param + 'px');
+					}
+				}
+			}, 100);
+
 		}
 
 		loginEmployeeNotInList() {

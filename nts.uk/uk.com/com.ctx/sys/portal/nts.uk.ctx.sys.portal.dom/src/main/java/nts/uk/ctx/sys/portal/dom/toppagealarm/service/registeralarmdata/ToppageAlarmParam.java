@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.toppagealarm.service.registeralarmdata;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
@@ -33,6 +34,9 @@ public class ToppageAlarmParam {
 	 * 表示社員区分
 	 */
 	private DisplayAtr displayEmpClassfication;
+	
+	//部下の社員ID
+	private List<String> subSids; //#116503
 
 	/*
 	 * パターンコード

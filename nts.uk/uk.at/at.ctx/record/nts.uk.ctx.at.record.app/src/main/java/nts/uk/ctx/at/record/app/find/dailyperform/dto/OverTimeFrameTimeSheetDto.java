@@ -19,8 +19,15 @@ public class OverTimeFrameTimeSheetDto {
 //	@AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer overtimeFrameNo;
 	
+	// 【追加予定】計算残業時間
+	private Integer overTimeCalc;
+
+	// 【追加予定】計算振替残業時間
+	private Integer tranferTimeCalc;
+	
 	@Override
 	public OverTimeFrameTimeSheetDto clone() {
-		return new OverTimeFrameTimeSheetDto(timeSheet == null ? null : timeSheet.clone(), overtimeFrameNo);
+		return new OverTimeFrameTimeSheetDto(timeSheet == null ? null : timeSheet.clone(), overtimeFrameNo,
+				overTimeCalc, tranferTimeCalc);
 	}
 }

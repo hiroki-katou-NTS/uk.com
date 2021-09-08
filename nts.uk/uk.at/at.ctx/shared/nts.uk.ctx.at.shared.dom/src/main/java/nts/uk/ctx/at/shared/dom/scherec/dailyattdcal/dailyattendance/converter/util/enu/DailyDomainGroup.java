@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu;
 
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 
 public enum DailyDomainGroup {
 
@@ -20,7 +20,9 @@ public enum DailyDomainGroup {
 	EDIT_STATE(14, ItemConst.DAILY_EDIT_STATE_NAME),
 	TEMPORARY_TIME(15, ItemConst.DAILY_TEMPORARY_TIME_NAME),
 	PC_LOG_INFO(16, ItemConst.DAILY_PC_LOG_INFO_NAME),
-	REMARKS(17, ItemConst.DAILY_REMARKS_NAME);
+	REMARKS(17, ItemConst.DAILY_REMARKS_NAME),
+	SUPPORT_TIME(18, ItemConst.DAILY_SUPPORT_TIME_NAME),
+	SUPPORT_TIMESHEET(19, ItemConst.DAILY_SUPPORT_TIMESHEET_NAME);
 	
 	public final int value;
 	public final String name;

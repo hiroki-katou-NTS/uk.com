@@ -81,3 +81,7 @@
 .ui-tabs-panel {
 	width: 725px !important;
 }
+
+.switchbox-wrappers {
+	display: inline-block;
+}

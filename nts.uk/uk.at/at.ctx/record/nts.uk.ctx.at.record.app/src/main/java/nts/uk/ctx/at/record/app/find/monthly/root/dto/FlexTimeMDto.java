@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculationAndMinus;
@@ -127,9 +127,9 @@ public class FlexTimeMDto implements ItemConst, AttendanceItemDataGate {
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
 		case CUR_MONTH:
-			currentMonth = (FlexCurrentMonthDto) value;
+			currentMonth = (FlexCurrentMonthDto) value; break;
 		case TIME:
-			flexTime = (TimeMonthWithCalculationDto) value;
+			flexTime = (TimeMonthWithCalculationDto) value; break;
 		default:
 		}
 	}

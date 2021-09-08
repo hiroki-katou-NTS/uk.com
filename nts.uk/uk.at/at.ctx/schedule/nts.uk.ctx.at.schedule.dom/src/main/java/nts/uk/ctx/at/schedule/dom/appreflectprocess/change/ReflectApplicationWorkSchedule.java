@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.SCAppReflectionSetting;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectStatusResult;
 import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.state.SCReflectedState;
@@ -113,7 +114,7 @@ public class ReflectApplicationWorkSchedule {
 
 			// 申請反映履歴を作成する
 			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.SCHEDULE,
-					dailyRecordApp, domainBeforeReflect);
+					dailyRecordApp, domainBeforeReflect, GeneralDateTime.now());
 		});
 
 		reflectStatus.setReflectStatus(SCReflectedState.REFLECTED);
@@ -135,7 +136,10 @@ public class ReflectApplicationWorkSchedule {
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE);
+		boolean directBounceClassifi = lstItemId.stream()
+				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
+				.findFirst().isPresent();
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi);
 	}
 
 	public static interface Require extends CorrectDailyAttendanceService.Require,

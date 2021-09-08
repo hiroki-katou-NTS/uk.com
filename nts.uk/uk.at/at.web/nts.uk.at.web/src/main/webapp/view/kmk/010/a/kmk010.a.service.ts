@@ -5,7 +5,8 @@ module nts.uk.at.view.kmk010.a {
             findAllOvertimeCalculationMethod: "ctx/at/shared/outsideot/setting/findAll/method",
             findAllAttendanceItemOvertime: "at/share/attendanceType/getAtdId",
             findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
-            findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
+            // findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
+            findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/roundingOfExcessOutsideTime",
             findAllOvertimeRoundingSub: "ctx/at/shared/outsideot/setting/findAll/roundingsub",
             findByIdOutsideOTSetting: "ctx/at/shared/outsideot/setting/findById",
             findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/holiday/findAll/premiumExtra",
@@ -135,7 +136,7 @@ module nts.uk.at.view.kmk010.a {
          */
         
         export function exportOutsideOTSettingExcelMasterList(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcelMasterList, { domainId: "outsideot", domainType: "マスタリスト_時間外超過設定", languageId: languageId, reportType: 0, data: [] });
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcelMasterList, { domainId: "outsideot", domainType: "マスタリスト_時間外超過の登録", languageId: languageId, reportType: 0, data: [] });
         }
 
 

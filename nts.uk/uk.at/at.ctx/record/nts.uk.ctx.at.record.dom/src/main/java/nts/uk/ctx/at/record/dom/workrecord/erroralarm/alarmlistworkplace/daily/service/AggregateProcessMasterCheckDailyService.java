@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.EmployeeInfoImported;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.*;
@@ -45,7 +46,10 @@ public class AggregateProcessMasterCheckDailyService {
     public List<AlarmListExtractionInfoWorkplaceDto> process(String cid, DatePeriod period, List<String> alarmCheckWkpId,
                                                              List<String> workplaceIds) {
         // 職場ID一覧から社員情報を取得する。
-        Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(workplaceIds, period);
+        Map<String, List<EmployeeInfoImported>> empInfosByWpMap = employeeInfoByWorkplaceService.get(
+                workplaceIds,
+                new DatePeriod(period.start().addMonths(-1), GeneralDate.ymd(9999, 12, 31))
+        );
 
         // 取得したList＜社員情報＞をチェック
         if (empInfosByWpMap.size() == 0) {

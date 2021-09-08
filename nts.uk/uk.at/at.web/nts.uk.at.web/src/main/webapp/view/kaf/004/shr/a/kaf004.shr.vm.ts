@@ -1,24 +1,24 @@
 module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
 
     const template = `
-                    <div class="fixed-flex-layout-left">
+                <div class="cell" style="width: 120px; vertical-align: top;">
                     <!-- A6_1 -->
                     <div data-bind="ntsFormLabel: {
                             required: true,
                             text: $i18n('KAF004_13')
                         }"></div>
                 </div>
-                <div class="fixed-flex-layout-right">
+                <div class="cell">
                     <table class="table_content">
                         <tr>
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_2 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_69')"></span>
 
                                 <!-- A6_3 -->
                                 <span class="label" id="label-A6_3" data-bind="text: $vm.workManagement.scheAttendanceTime"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_4 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
@@ -33,7 +33,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                 <!-- A6_5 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_54')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_6 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8()"></span>
 
@@ -45,14 +45,14 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                         </tr>
                         <tr>
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_8 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_70')"></span>
 
                                 <!-- A6_9 -->
                                 <span class="label" id="label-A6_9" data-bind="text: $vm.workManagement.scheWorkTime"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_10 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                 <!-- A6_11 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_55')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_12 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8()"></span>
 
@@ -79,14 +79,14 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                         </tr>
                         <tr data-bind="visible: $vm.condition2()">
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_14 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_68')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_71')"></span>
 
                                 <!-- A6_15 -->
                                 <span class="label" id="label-A6_15" data-bind="text: $vm.workManagement.scheAttendanceTime2"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_16 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
@@ -101,7 +101,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                 <!-- A6_17 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_54')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_18 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2() && $vm.condition8()"></span>
 
@@ -113,14 +113,14 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                         </tr>
                         <tr data-bind="visible: $vm.condition2()">
-                            <td class="padding-5">
+                            <td class="time-padding" style="width: 125px">
                                 <!-- A6_20 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_68')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_72')"></span>
 
                                 <!-- A6_21 -->
                                 <span class="label" id="label-A6_21" data-bind="text: $vm.workManagement.scheWorkTime2"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_22 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
@@ -135,7 +135,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                 <!-- A6_23 -->
                                 <span class="label" data-bind="text: $i18n('KAF004_55')"></span>
                             </td>
-                            <td class="padding-5">
+                            <td class="time-padding">
                                 <!-- A6_24 -->
                             <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2() && $vm.condition8()"></span>
 

@@ -50,27 +50,14 @@ public class ShiftTableRuleForCompanyDto {
      */
     public static ShiftTableRuleForCompanyDto fromDomain(ShiftTableRuleForOrganization domain) {
         if (domain == null || domain.getShiftTableRule() == null) return null;
-
-        /** TH シフト表のルール．勤務希望運用区分 = する、vì 「シフト表のルール．シフト表の設定」ko empty nên chắc chắn có thể mapping */
-        if (domain.getShiftTableRule().getUseWorkAvailabilityAtr().value == 1) {
-            val shiftTableRule = (WorkAvailabilityRuleDateSetting) domain.getShiftTableRule().getShiftTableSetting().get();
-            return new ShiftTableRuleForCompanyDto(
-                    domain.getShiftTableRule().getUsePublicAtr().value
-                    , domain.getShiftTableRule().getUseWorkAvailabilityAtr().value
-                    , shiftTableRule.getHolidayMaxDays().v()
-                    , shiftTableRule.getClosureDate().getClosingDate().getDay()
-                    , shiftTableRule.getAvailabilityDeadLine().getDay()
-                    , domain.getShiftTableRule().getAvailabilityAssignMethodList().stream().filter(x -> x == AssignmentMethod.HOLIDAY).findFirst().isPresent() ? 0 : 1
-            );
-        }
-
+        val shiftTableRule = (WorkAvailabilityRuleDateSetting) domain.getShiftTableRule().getShiftTableSetting().orElse(null);
         return new ShiftTableRuleForCompanyDto(
-                domain.getShiftTableRule().getUsePublicAtr().value
-                , domain.getShiftTableRule().getUseWorkAvailabilityAtr().value
-                , 0
-                , 0
-                , 0
-                , domain.getShiftTableRule().getAvailabilityAssignMethodList().stream().filter(x -> x == AssignmentMethod.HOLIDAY).findFirst().isPresent() ? 0 : 1
+                domain.getShiftTableRule().getUsePublicAtr().value,
+                domain.getShiftTableRule().getUseWorkAvailabilityAtr().value,
+                shiftTableRule == null ? 0 : shiftTableRule.getHolidayMaxDays().v(),
+                shiftTableRule == null ? 0 : shiftTableRule.getClosureDate().getClosingDate().getDay(),
+                shiftTableRule == null ? 0 : shiftTableRule.getAvailabilityDeadLine().getDay(),
+                domain.getShiftTableRule().getAvailabilityAssignMethodList().stream().anyMatch(x -> x == AssignmentMethod.HOLIDAY) ? 0 : 1
         );
     }
 }

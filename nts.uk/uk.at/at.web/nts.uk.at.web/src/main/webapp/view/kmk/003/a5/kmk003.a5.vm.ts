@@ -159,8 +159,9 @@ module a5 {
                 input.roundType = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding();
             }
 
+            let dialogHPath = self.isFlex() ? "/view/kmk/003/h/index.xhtml" : "/view/kmk/003/h/index2.xhtml";
             nts.uk.ui.windows.setShared("KMK003_DIALOG_H_INPUT", input);
-            _.defer(() => nts.uk.ui.windows.sub.modal("/view/kmk/003/h/index2.xhtml").onClosed(() => {
+            _.defer(() => nts.uk.ui.windows.sub.modal(dialogHPath).onClosed(() => {
                 let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_OUTPUT");
                 if (!dto) {
                     return;
@@ -469,9 +470,9 @@ module a5 {
                         //固定の場合の実績の休憩計算方法
                         fixedCalcMethod: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(),
                         //私用外出の計上方法
-                        usePrivateGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
+                        usePrivateGoOutRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
                         //組合外出の計上方法
-                        useAssoGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(),
+                        useAssoGoOutRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(),
                     }
                 } else {//flex
                     dataFlexFlow = {
@@ -490,7 +491,8 @@ module a5 {
                 }
 
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFlexFlow);
-                nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml").onClosed(() => {
+                let dialogGPath = self.isFlex() ? "/view/kmk/003/g/index3.xhtml" : "/view/kmk/003/g/index.xhtml";
+                nts.uk.ui.windows.sub.modal(dialogGPath).onClosed(() => {
                     var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
                     //if case flex
                     if (self.isFlex()) {

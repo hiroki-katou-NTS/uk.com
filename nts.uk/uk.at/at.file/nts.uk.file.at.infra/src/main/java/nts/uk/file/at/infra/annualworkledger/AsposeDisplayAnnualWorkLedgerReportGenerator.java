@@ -1,6 +1,3 @@
-
-
-
 package nts.uk.file.at.infra.annualworkledger;
 
 import com.aspose.cells.*;
@@ -12,10 +9,13 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerContent;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerExportDataSource;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
+import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.file.at.app.export.annualworkledger.DisplayAnnualWorkLedgerReportGenerator;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 
 import javax.ejb.Stateless;
 import java.text.DecimalFormat;
@@ -28,13 +28,14 @@ import java.util.Locale;
 @Stateless
 public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsReportGenerator
         implements DisplayAnnualWorkLedgerReportGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR0004.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR004_v3.xlsx";
     private static final String PDF_EXT = ".pdf";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int EXPORT_PDF = 1;
     private static final int EXPORT_EXCEL = 2;
     private static final int NUMBER_ROW_OF_PAGE = 47;
     private static final int MAX_DAY_IN_MONTH = 31;
+
 
     @Override
     public void generate(FileGeneratorContext generatorContext, AnnualWorkLedgerExportDataSource dataSource) {
@@ -54,6 +55,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             reportContext.processDesigner();
             String fileName = dataSource.getOutputSetting().getName().v() + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
             if (dataSource.getMode() == EXPORT_EXCEL) {
+
                 // save as excel file
                 reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
             } else if (dataSource.getMode() == EXPORT_PDF) {
@@ -69,15 +71,19 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setHeader(0, "&7&\"ＭＳ フォントサイズ\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"ＭＳ フォントサイズ\""
+        pageSetup.setFitToPagesTall(0);
+        pageSetup.setFitToPagesWide(0);
+        pageSetup.setCenterHorizontally(true);
+        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
                 + dataSource.getOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
 
         pageSetup.setHeader(2,
-                "&7&\"MS フォントサイズ\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&7&\"MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
+        pageSetup.setPrintArea("A1:Z" + dataSource.getLstAnnualWorkLedgerContent().size()*NUMBER_ROW_OF_PAGE);
     }
 
     private void printContents(Worksheet worksheet, AnnualWorkLedgerExportDataSource dataSource) throws Exception {
@@ -104,13 +110,13 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void printEmployeeInfor(Worksheet worksheet, int firstRow, AnnualWorkLedgerExportDataSource dataSource, AnnualWorkLedgerContent empInfo) {
         Cells cells = worksheet.getCells();
         // B1_1 B1_2 B1_3
-        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + "　" + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
+        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
         // B2_1 B2_2 B2_3
-        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") + "　" + empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
-        // B3_1 B3_2 B3_3
-        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") + "　" + empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
-        // B4_1 B4_2
-        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") + "　" + empInfo.getClosureDate());
+        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") +empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
+//        // B3_1 B3_2 B3_3
+//        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") +empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
+//        // B4_1 B4_2
+//        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") +empInfo.getClosureDate());
         // B5_1 B5_2
         cells.get(firstRow, 10).setValue(TextResource.localize("KWR004_205") +
                 TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
@@ -126,7 +132,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         // Daily data
         val dailyData = empInfo.getDailyData();
         // C1_1
-        cells.get(firstRow + 3, 0).setValue(TextResource.localize("KWR004_206"));
+        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_206"));
         val lastDateInMonth = dataSource.getDatePeriod().start().lastDateInMonth();
 
         val closureDay = dataSource.getDatePeriod().start().day() == lastDateInMonth ? 0 : dataSource.getDatePeriod().start().day() - 1;
@@ -137,35 +143,43 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                     TextResource.localize("KWR004_209", String.valueOf(yearMonth.year()), String.valueOf(yearMonth.month())) :
                     TextResource.localize("KWR004_210", String.valueOf(yearMonth.month()));
             // C2_1
-            cells.get(firstRow + 4, 2 + mi * 2).setValue(yearMonthString);
+            cells.get(firstRow + 3, 2 + mi * 2).setValue(yearMonthString);
             // C2_2
-            cells.get(firstRow + 5, 2 + mi * 2).setValue(dailyData.getLeftColumnName());
+            cells.get(firstRow + 4, 2 + mi * 2).setValue(dailyData.getLeftColumnName());
             // C2_3
-            cells.get(firstRow + 5, 3 + mi * 2).setValue(dailyData.getRightColumnName());
+            cells.get(firstRow + 4, 3 + mi * 2).setValue(dailyData.getRightColumnName());
 
             // 日次項目では固定３１行であり
             for (int di = 0; di < MAX_DAY_IN_MONTH; di++) {
                 val day = (closureDay + di) % MAX_DAY_IN_MONTH + 1;
                 // D1_1
-                cells.get(firstRow + 6 + di, 0).setValue(TextResource.localize("KWR004_211", String.valueOf(day)));
+                cells.get(firstRow + 5 + di, 0).setValue(TextResource.localize("KWR004_211", String.valueOf(day)));
 
                 try {
                     val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), day);
                     val leftData = dailyData.getLstLeftValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
                     if (leftData.isPresent() && dailyData.getLeftAttribute() != null) {
                         // D2_1
-                        cells.get(firstRow + 6 + di, 2 + mi * 2)
+                        cells.get(firstRow + 5 + di, 2 + mi * 2)
                                 .setValue(this.formatValue(leftData.get().getActualValue(), leftData.get().getCharacterValue(), dailyData.getLeftAttribute(), dataSource.isZeroDisplay()));
+                        Cell cell = cells.get(firstRow + 5 + di, 2 + mi * 2);
+                        Style style =   cell.getStyle();
+                        style.setHorizontalAlignment(checkText(dailyData.getLeftAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
+                        cell.setStyle(style);
                     }
 
                     val rightData = dailyData.getLstRightValue().stream().filter(x -> x.getDate().compareTo(date) == 0).findFirst();
                     if (rightData.isPresent() && dailyData.getRightAttribute() != null) {
-                        cells.get(firstRow + 6 + di, 3 + mi * 2)
+                        cells.get(firstRow + 5 + di, 3 + mi * 2)
                                 .setValue(this.formatValue(rightData.get().getActualValue(), rightData.get().getCharacterValue(), dailyData.getRightAttribute(), dataSource.isZeroDisplay()));
+                        Cell cell =  cells.get(firstRow + 5 + di, 3 + mi * 2);
+                        Style style =  cell.getStyle();
+                        style.setHorizontalAlignment(checkText(dailyData.getRightAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
+                        cell.setStyle(style);
                     }
                 } catch (DateTimeException ex) {
-                    cells.merge(firstRow + 6 + di, 2 + mi * 2, 1, 2);
-                    this.setLineDiagonal(cells.get(firstRow + 6 + di, 2 + mi * 2));
+                    cells.merge(firstRow + 5 + di, 2 + mi * 2, 1, 2);
+                    this.setLineDiagonal(cells.get(firstRow + 5 + di, 2 + mi * 2));
                 }
             }
 
@@ -186,9 +200,12 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                     // F2_1
                     cells.get(rowIndex, 2 + mi * 2)
                             .setValue(this.formatValue(monthlyData.get().getActualValue(), monthlyData.get().getCharacterValue(), dataRow.getAttribute(), dataSource.isZeroDisplay()));
+                    Cell cell =  cells.get(rowIndex, 2 + mi * 2);
+                    Style style =  cell.getStyle();
+                    style.setHorizontalAlignment(checkText(dataRow.getAttribute())?ColumnTextAlign.LEFT.value:ColumnTextAlign.RIGHT.value);
+                    cell.setStyle(style);
                 }
             }
-
         }
     }
 
@@ -262,12 +279,23 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         }
         return rs;
     }
+    public boolean checkText(CommonAttributesOfForms attributes){
+        return attributes == CommonAttributesOfForms.WORK_TYPE
+              ||attributes == CommonAttributesOfForms.WORKING_HOURS
+              ||attributes == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+              ||attributes == CommonAttributesOfForms.OTHER_CHARACTERS
+              ||attributes == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE;
+
+    }
 
     /**
      * Convert minute to HH:mm
      */
     private String convertToTime(int minute) {
-        val minuteAbs = Math.abs(minute);
+        int minuteAbs = Math.abs(minute);
+        if (minute < 0) {
+            minuteAbs = Math.abs(minute +1440);
+        }
         int hours = minuteAbs / 60;
         int minutes = minuteAbs % 60;
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);

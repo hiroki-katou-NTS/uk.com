@@ -10,8 +10,8 @@
     <ui:define name="htmlHead">
         <script>
             var dialogSize = {
-                width: 460,
-                height: 410
+                width: 510,
+                height: 460
             };
         </script>
         <com:scriptfile set="IGNITE"/>
@@ -24,7 +24,11 @@
             <div data-bind="with: operationSetting">
                 <div class="label">#{i18n.getText('KMK008_5')}</div>
                 <hr/>
-                <table>
+                <table class="mt-10">
+                    <colgroup>
+                        <col width="30%"/>
+                        <col width="70%"/>
+                    </colgroup>
                     <tr>
                         <td>
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_32')}</div>
@@ -64,7 +68,7 @@
                     <tr>
                         <td></td>
                         <td>
-                            <div class="label">#{i18n.getText('KMK008_184')}</div>
+                            <span id="G1_7" class="label">#{i18n.getText('KMK008_184')}</span>
                         </td>
                     </tr>
                     <tr>
@@ -72,7 +76,7 @@
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_157')}</div>
                         </td>
                         <td>
-                            <div tabindex="3" data-bind="ntsRadioBoxGroup: {
+                            <div tabindex="3" class="w-cb-fixed" data-bind="ntsRadioBoxGroup: {
                                 options: $parent.specialConditionList,
                                 optionsValue: 'value',
                                 optionsText: 'localizedName',
@@ -85,7 +89,7 @@
                             <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_179')}</div>
                         </td>
                         <td>
-                            <div tabindex="5" data-bind="ntsRadioBoxGroup: {
+                            <div tabindex="5" class="w-cb-fixed" data-bind="ntsRadioBoxGroup: {
                                 options: $parent.yearSpecialConditionList,
                                 optionsValue: 'value',
                                 optionsText: 'localizedName',

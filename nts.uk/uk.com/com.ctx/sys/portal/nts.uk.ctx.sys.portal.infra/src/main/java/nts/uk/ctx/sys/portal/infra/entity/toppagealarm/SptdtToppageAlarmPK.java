@@ -20,6 +20,9 @@ import lombok.NonNull;
 public class SptdtToppageAlarmPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	/*
+	 * 会社ID
+	 */
 	@NonNull
 	@Column(name = "CID")
 	private String cId;
@@ -45,6 +48,9 @@ public class SptdtToppageAlarmPK implements Serializable {
 	@Column(name = "DISP_ATR")
 	private Integer dispAtr;
 
+	/*
+	 * 登録用の番号（一意を保証）
+	 */
 	@NonNull
 	@Column(name = "INDEX_NO")
 	private Integer indexNo;

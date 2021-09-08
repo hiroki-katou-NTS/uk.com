@@ -19,13 +19,16 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.WorkScheduleWorkInforImport
 import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -66,13 +69,13 @@ public class WorkScheduleReflected {
 		GeneralDate ymd = integrationOfDaily.getYmd();
 		//「勤務予定」ドメインを取得する
 		Optional<WorkScheduleWorkInforImport> scheduleWorkInfor = workScheduleWorkInforAdapter.get(employeeId, ymd);
-		if (!scheduleWorkInfor.isPresent() || scheduleWorkInfor.get().getWorkTyle() == null) {
+		if (!scheduleWorkInfor.isPresent() || scheduleWorkInfor.get().getWorkType() == null) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("006"), new ErrMessageContent(TextResource.localize("Msg_431"))));
 			return listErrorMessageInfo;
 		}
 		WorkInfoOfDailyAttendance workInformation = integrationOfDaily.getWorkInformation();
-		WorkInformation wi =  scheduleWorkInfor.map(m -> new WorkInformation(m.getWorkTyle(), m.getWorkTime())).orElse(null);
+		WorkInformation wi =  scheduleWorkInfor.map(m -> new WorkInformation(m.getWorkType(), m.getWorkTime())).orElse(null);
 		
 		//勤務情報をコピーする (Copy thông tin 勤務)
 		workInformation.setRecordInfo(wi);
@@ -84,6 +87,19 @@ public class WorkScheduleReflected {
 		
 		//計算状態を未計算にする
 		workInformation.setCalculationState(CalculationState.No_Calculated);
+		
+		//振休振出として扱う日数をコピーするかを確認する
+		if (scheduleWorkInfor.get().getNumberOfDaySuspension().isPresent()
+				&& scheduleWorkInfor.get().getNumberOfDaySuspension().get()
+						.getDays() != 0
+				&& workInformation.getNumberDaySuspension().isPresent()
+				&& workInformation.getNumberDaySuspension().get().getDays().v() == 0) {
+			//振休振出として扱う日数をコピーする
+			workInformation.setNumberDaySuspension(Optional.of(new NumberOfDaySuspension(
+					new UsedDays(scheduleWorkInfor.get().getNumberOfDaySuspension().get().getDays()),
+					scheduleWorkInfor.get().getNumberOfDaySuspension().get().getClassifiction() == 0? FuriClassifi.SUSPENSION:FuriClassifi.DRAWER
+					))); 
+		}
 		
 		//ドメインモデル「勤務種類」を取得する-(Lấy domain 「WorkType」) // trả về list 1 phần tử or empty
 		List<WorkType> wkTypeOpt = wkTypeRepo.findNotDeprecatedByListCode(companyId,

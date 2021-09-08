@@ -8,6 +8,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
@@ -90,9 +91,7 @@ public class LateTimeSheet {
 		if(dedAtr.isAppropriate()) {
 			this.forRecordTimeSheet = forTimeSheet;
 		}
-		if(dedAtr.isDeduction()) {
-			this.forDeducationTimeSheet = forTimeSheet;
-		}
+		this.forDeducationTimeSheet = forTimeSheet;
 	}
 	
 	/**
@@ -161,20 +160,18 @@ public class LateTimeSheet {
 					predetermineTimeSetForCalc,
 					otherEmTimezoneLateEarlySet);
 		}else {
-			if(!otherEmTimezoneLateEarlySet.getGraceTimeSet().isIncludeWorkingHour()){//猶予時間を加算しない場合
-				//遅刻控除時間帯の作成
-				lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(
-						DeductionAtr.Deduction,
-						timeLeavingWork,
-						integrationOfWorkTime,
-						integrationOfDaily,
-						predetermineTimeSet.get(),
-						withinWorkTimeFrame,
-						deductionTimeSheet,
-						workType,
-						predetermineTimeSetForCalc,
-						otherEmTimezoneLateEarlySet);
-			}
+			//遅刻控除時間帯の作成
+			lateDeductTimeSheet = createLateLeaveEarlyTimeSheet(
+					DeductionAtr.Deduction,
+					timeLeavingWork,
+					integrationOfWorkTime,
+					integrationOfDaily,
+					predetermineTimeSet.get(),
+					withinWorkTimeFrame,
+					deductionTimeSheet,
+					workType,
+					predetermineTimeSetForCalc,
+					otherEmTimezoneLateEarlySet);
 		}
 		if(!lateAppTimeSheet.isPresent() && !lateDeductTimeSheet.isPresent()) {
 			return Optional.empty();
@@ -763,18 +760,16 @@ public class LateTimeSheet {
 	 * @param companyholidayPriorityOrder 時間休暇相殺優先順位
 	 * @param timeVacationUseTime 日別実績の時間休暇使用時間
 	 */
-	public void calcLateOffsetTime(
-		DeductionAtr deductionAtr,
-		CompanyHolidayPriorityOrder companyholidayPriorityOrder,
-		TimevacationUseTimeOfDaily timeVacationUseTime) {
+	public void setOffsetTime(
+			DeductionAtr deductionAtr,
+			CompanyHolidayPriorityOrder companyholidayPriorityOrder,
+			TimevacationUseTimeOfDaily timeVacationUseTime) {
 		if(!this.getDecitionTimeSheet(deductionAtr).isPresent()) {
 			return;
 		}
-		
-		this.getDecitionTimeSheet(deductionAtr).get().offsetProcessInPriorityOrder(
-				deductionAtr,
+		this.OffsetTime = Optional.of(this.getDecitionTimeSheet(deductionAtr).get().offsetProcess(
 				companyholidayPriorityOrder,
 				timeVacationUseTime,
-				this.OffsetTime.isPresent()?this.OffsetTime.get():DeductionOffSetTime.createAllZero());
+				NotUseAtr.NOT_USE));
 	}
 }

@@ -2,6 +2,8 @@
 
 module nts.uk.com.view.ccg020.a {
 
+  import ukText = nts.uk.text;
+
   const API = {
     get10LastResults: "sys/portal/generalsearch/history/get-10-last-result",
     getByContent: "sys/portal/generalsearch/history/get-by-content",
@@ -17,11 +19,14 @@ module nts.uk.com.view.ccg020.a {
     name: 'ccg020-component',
     template: `<div id="ccg020"><div id="search-bar" class="cf">
     <ccg003-component></ccg003-component>
-    <i id="search-icon" data-bind="ntsIcon: { no: 19, width: 30, height: 30 }" class="img-icon"></i>
+    <div id="ccg002-panel" class="panel ccg002-panel">
+      <i id="search-icon" data-bind="ntsIcon: { no: 1, width: 22, height: 25 }" class="img-icon"></i>
+      <i id="ccg002-arrow-icon" data-bind="ntsIcon: { no: 135, width: 10, height: 23 }"></i>
+    </div>
+    <!-- This input is CCG002 -->
     <input id="search-input" autocomplete="off" data-bind="ntsTextEditor: {
       value: valueSearch,
       enterkey: submit,
-      constraint: 'SearchContent',
       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
         textmode: 'text',
         width: '162px',
@@ -42,14 +47,7 @@ module nts.uk.com.view.ccg020.a {
     <div id="popup-result"></div>
     <div id="popup-search"></div>
   </div>
-  <div id="message" class="cf">
-    <i class="img-ccg020" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, visible: isEmployee"></i>
-    <i class="img-ccg020" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
-  </div></div>
-  <div style="max-width: 700px; min-width: 350px; max-height: 600px; overflow-y: auto;" class="ccg020-warning">
-    <label class="ccg020-warning-label" style="display: inline-flex; white-space: pre-wrap; word-break: break-all;" data-bind="html: warningMsg()"></label>
-  </div>`
+  `
   })
   export class CCG020Screen extends ko.ViewModel {
     treeMenu: KnockoutObservableArray<TreeMenu> = ko.observableArray([]);
@@ -62,7 +60,6 @@ module nts.uk.com.view.ccg020.a {
     searchCategoryList: KnockoutObservableArray<any> = ko.observableArray([]);
     isDisplayWarningMsg: KnockoutObservable<boolean> = ko.observable(false);
     isDisplayNewNotice: KnockoutObservable<boolean> = ko.observable(false);
-    avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
     isEmployee: KnockoutComputed<boolean> = ko.computed(() => __viewContext.user.isEmployee);
     warningMsg: KnockoutObservable<string> = ko.observable('');
 
@@ -76,13 +73,6 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       vm.addSearchBar();
       vm.getListMenu();
-      vm.isDisplayWarning();
-      vm.isDisplayNewNoticeFunc();
-      vm.initWarningMsg();
-      $('#user-image').ready(() => {
-        $('#user-image').removeClass('ui-icon ui-icon-person');
-        vm.$nextTick(() => vm.getAvatar());
-      });
       
       $('#radio-search-category').on('click', () => {
         $("#popup-search-category").ntsPopup("hide");
@@ -93,28 +83,40 @@ module nts.uk.com.view.ccg020.a {
       $("#search-icon").on('click', () => {
         $("#popup-search-category").ntsPopup("toggle");
       });
+      $("#ccg002-arrow-icon").on('click', () => {
+        $("#popup-search-category").ntsPopup("toggle");
+      });
+
+      $(window).on('wd.setAvatar', () => vm.getAvatar());
     }
 
     private getAvatar() {
       const vm = this;
-      const $userImage = $('#user-image');
+      const setAvatarByName = () => 
+        vm.$ajax('com', '/sys/portal/webmenu/username')
+        .then(username => {
+          $('<div/>')
+          .attr('id', 'avatar_id_ccg020')
+          .text(username.replace(/\s/g, '').substring(0, 2))
+          .appendTo($('#notice-msg'));
+        });
+      if (!__viewContext.user.isEmployee) {
+        setAvatarByName();
+        return;
+      }
       vm.$ajax('com', API.getAvatar)
         .then((data) => {
-          vm.avatarInfo(data);
-          if (vm.avatarInfo().fileId && vm.avatarInfo().fileId !== null) {
+          if (data && data.fileId !== null) {
             $('<img/>')
               .attr('id', 'img-avatar')
-              .attr('src', (nts.uk.request as any).liveView(vm.avatarInfo().fileId))
-              .appendTo($('#user-image'));
-            $('#search-bar').attr('style', 'bottom: 2px; position: relative;');
+              .attr('src', (nts.uk.request as any).liveView(data.fileId))
+              .appendTo($('#notice-msg'));
+            $('#search-bar').attr('style', 'position: relative;');
           } else {
-            $userImage.ready(() => {
-              $('<div/>')
-                .attr('id', 'avatar_id_ccg020')
-                .text($('#user-name').text().replace(/\s/g, '').substring(0, 2))
-                .appendTo($('#user-image'));
-            });
+            setAvatarByName();
           }
+
+          $(window).trigger('wd.resize');
         })
     }
 
@@ -144,9 +146,9 @@ module nts.uk.com.view.ccg020.a {
         showOnStart: false,
         dismissible: true,
         position: {
-          my: 'left top',
-          at: 'left bottom',
-          of: '#search-input'
+          my: 'right top',
+          at: 'right bottom',
+          of: '#ccg002-panel'
         }
       });
       $('#popup-search').ntsPopup({
@@ -164,11 +166,11 @@ module nts.uk.com.view.ccg020.a {
         position: {
           my: 'right top',
           at: 'right bottom',
-          of: '#search-icon'
+          of: '#ccg002-arrow-icon'
         }
       });
 
-      $('#list-box').on('selectionChanging', (event: any) => {
+      $('#popup-result #list-box').on('selectionChanging', (event: any) => {
         window.location.href = event.detail.url;
       });
     }
@@ -208,13 +210,22 @@ module nts.uk.com.view.ccg020.a {
       const vm = this;
       $('#list-box').remove();
       $('#popup-search').ntsPopup('hide');
+      if (_.isEmpty(vm.treeMenu())) {
+        vm.getListMenu();
+      }
       vm.treeMenuResult([]);
       vm.$validate('#search-input')
         .then((valid) => {
           if (!valid) {
             return;
           }
+          
           if (vm.valueSearch() !== '') {
+            const valueSearch = vm.valueSearch();
+            if (ukText.countHalf(valueSearch) > 50) {
+              vm.valueSearch(vm.subString(valueSearch, 50));
+            }
+
             vm.treeMenuResult(vm.filterItems(vm.valueSearch(), vm.treeMenu()));
             const $tableResult = $('<div/>').attr('id', 'list-box');
             const list = vm.treeMenuResult();
@@ -243,6 +254,19 @@ module nts.uk.com.view.ccg020.a {
           }
         });
     }
+
+    private subString(value: string, length: number): string {
+      let maxCountHalfSizeCharacter = length;
+      let valueTemp = "";
+      const valueSplip = value.split("");
+      valueSplip.forEach((character: string) => {
+          maxCountHalfSizeCharacter -= ukText.countHalf(character);
+          if (maxCountHalfSizeCharacter >= 0) {
+              valueTemp += character;
+          }
+      });
+      return valueTemp;
+  }
 
     private addHistoryResult() {
       const vm = this;
@@ -332,21 +356,11 @@ module nts.uk.com.view.ccg020.a {
         })
     }
 
-    private isDisplayNewNoticeFunc() {
-      const vm = this;
-      if (!vm.isEmployee()) {
-        const ccg020w = $('#ccg020').width();
-        $('#ccg020').width(ccg020w - 50);
-        return;
-      }
-      vm.$ajax('com', API.isDisplayNewNotice)
-        .then((response) => {
-          vm.isDisplayNewNotice(response);
-        })
-    }
-
     private checkCanSearchManual() {
       const vm = this;
+      if (!__viewContext.user.companyId) {
+        return;
+      }
       vm.$ajax('com', API.checkSearchManual)
         .then((response) => {
           if (response) {

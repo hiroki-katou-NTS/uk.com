@@ -29,6 +29,10 @@
                             <div data-bind="ntsCheckBox: { checked: multiple }"/>
                         </div>
                         <div class="control-group valign-center">
+                            <div data-bind="ntsFormLabel: {}">Show No Selection Item:</div>
+                            <div data-bind="ntsCheckBox: { checked: showNoSelectionItem, enable: !multiple() }"/>
+                        </div>
+                        <div class="control-group valign-center">
                             <div data-bind="ntsFormLabel: {}">On Dialog:</div>
                             <div data-bind="ntsCheckBox: { checked: onDialog }"/>
                         </div>
@@ -57,6 +61,7 @@
                             name: componentName,
                             params: {
                                 multiple: multiple(),
+                                showNoSelectionItem: showNoSelectionItem(),
                                 onDialog: onDialog(),
                                 selectType: selectType(),
                                 rows: rows(),

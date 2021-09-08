@@ -10,7 +10,7 @@ public class DefaultValue {
 	public static final String SOH = "3b";
 	public static final String HDR_ACK = "01";
 	public static final String HDR_NAK = "02";
-	public static final String LENGTH_NAK = "0020";
+	public static final String LENGTH_NAK = "002C";
 	public static final String VERSION = "01";
 	public static final String FLAG_CONT_NOACK = "20";
 	public static final String FLAG_CONT_ACK = "a0";
@@ -32,6 +32,7 @@ public class DefaultValue {
 	public static final int SINGLE_FRAME_LEN_32 = 32;
 	public static final int SINGLE_FRAME_LEN_48 = 48;
 	public static final int SINGLE_FRAME_LEN_80 = 80;
+	public static final int DEFAULT_LENGTH = 42;
 	
 	public static final String HEAD_TYPE = "head";
 	public static final String DATA_TYPE = "data";

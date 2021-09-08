@@ -21,18 +21,19 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ColorSetting;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.HistoryDisplayMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -75,10 +76,8 @@ public class StampSettingPersonHelper {
 	
 	public static class StampScreen {
 		
-		public static StampingScreenSet DUMMY = new StampingScreenSet(
-				EnumAdaptor.valueOf(0, HistoryDisplayMethod.class), 
-				new CorrectionInterval(1), 
-				Color.DUMMY, 
+		public static DisplaySettingsStampScreen DUMMY = new DisplaySettingsStampScreen(new CorrectionInterval(1),
+				new SettingDateTimeColorOfStampScreen(new ColorCode("DUMMY")),
 				new ResultDisplayTime(1));
 		
 		public static class Color {
@@ -104,7 +103,8 @@ public class StampSettingPersonHelper {
 					ButtonSet.DUMMY, 
 					Type.DUMMY, 
 					EnumAdaptor.valueOf(0, NotUseAtr.class),
-					EnumAdaptor.valueOf(0, AudioType.class));
+					EnumAdaptor.valueOf(0, AudioType.class),
+					Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE));
 		}
 		
 		public static class ButtonSet {
@@ -143,7 +143,8 @@ public class StampSettingPersonHelper {
 				ButtonSet.DUMMY, 
 				Type.DUMMY,
 				EnumAdaptor.valueOf(0, NotUseAtr.class), 
-				EnumAdaptor.valueOf(0, AudioType.class)));
+				EnumAdaptor.valueOf(0, AudioType.class),
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 
 		lstStampPage.add(new StampPageLayout(
 				new PageNo(1), 
@@ -200,7 +201,8 @@ public class StampSettingPersonHelper {
 				ButtonSet.DUMMY, 
 				Type.DUMMY,
 				EnumAdaptor.valueOf(0, NotUseAtr.class), 
-				EnumAdaptor.valueOf(0, AudioType.class)));
+				EnumAdaptor.valueOf(0, AudioType.class),
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lst.add(new StampPageLayout(new PageNo(1),
 				new StampPageName("DUMMY"),
@@ -222,7 +224,8 @@ public class StampSettingPersonHelper {
 				ButtonSet.DUMMY, 
 				Type.DUMMY,
 				EnumAdaptor.valueOf(0, NotUseAtr.class), 
-				EnumAdaptor.valueOf(0, AudioType.class)));
+				EnumAdaptor.valueOf(0, AudioType.class),
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		StampPageLayout pageLayout = new StampPageLayout(
 				new PageNo(pageNo), 
 				new StampPageName("NEW_DUMMY2"),
@@ -241,13 +244,15 @@ public class StampSettingPersonHelper {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, null),
 				NotUseAtr.USE,
-				AudioType.GOOD_MORNING));
+				AudioType.GOOD_MORNING,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstBS.add(new ButtonSettings(new ButtonPositionNo(2),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, null),
 				NotUseAtr.USE,
-				AudioType.GOOD_MORNING));
+				AudioType.GOOD_MORNING,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		return lstBS;
 	}

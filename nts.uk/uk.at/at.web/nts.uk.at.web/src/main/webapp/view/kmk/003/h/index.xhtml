@@ -1,75 +1,139 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:com="http://xmlns.jcp.org/jsf/component"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 500,
-					height : 450
-				};
-			</script>
-			
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk003.h.style.css" />			
-			<com:scriptfile path="kmk003.h.vm.js" />
-			<com:scriptfile path="kmk003.h.start.js" />
-		</ui:define>
-	
-		<ui:define name="content">
+<ui:composition template="../../../../master/dialog.xhtml">
+	<ui:define name="htmlHead">
+		<script>
+			var dialogSize = {
+				width: 500,
+				height: 590
+			};
+		</script>
 
-			<div id="contents-area" style="display: none"
-				data-bind="visible: true">
-				<div class="main-container">
-					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_238')}</div>
-					<hr />
-					<div id="component-uk" tabindex="1" data-bind="foreach: option">
-						<div class="style-radio-btn">
-							<span class="ntsControl"> <label class="ntsRadioBox">
-									<input type="radio" name="textRadio"
-									data-bind="checkedValue: value, checked: $parent.calcMethodFixed, enable: true" />
-									<span class="box"></span><span class="label"
-									data-bind="text: text"></span>
-							</label>
-							</span>
+		<com:scriptfile set="IGNITE"/>
+		<com:stylefile path="kmk003.h.style.css"/>
+		<com:scriptfile path="kmk003.h.vm.js"/>
+		<com:scriptfile path="kmk003.h.start.js"/>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<div id="contents-area" style="display: none" data-bind="visible: true">
+			<div class="main-container">
+				<!-- H4 Group start -->
+				<!-- START form label -  -->
+				<div class="dialog-rows">
+					<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_234')}</div>
+				</div>
+				<div>
+					<hr/>
+				</div>
+				<!-- END form label -  -->
+				<!-- START setting items -  -->
+				<div class="dialog-block">
+					<div id="calculate-method" class="margin-first-child" tabindex="1" data-bind="ntsRadioBoxGroup: {
+                                            options: calcMethodLst,
+                                            name: '#[KMK003_234]',
+                                            optionsValue: 'id',
+                                            optionsText: 'name',
+                                            value: selectedCalcMethod,
+                                            enable: true}"></div>
+
+				</div>
+				<!-- END setting items -  -->
+				<!--END Group-->
+
+				<!-- H5 Group start -->
+				<div data-bind="visible: isFlow">
+					<!-- START form label -  -->
+					<div class="dialog-rows">
+						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_230')}</div>
+					</div>
+
+					<hr/>
+
+					<!-- END form label -  -->
+
+					<!-- START setting items -  -->
+
+					<div class="dialog-rows">
+						<div class="margin-first-child" tabindex="2" data-bind="ntsCheckBox: { checked: useRest }">#{i18n.getText('KMK003_231')}</div>
+					</div>
+					<div class="dialog-rows margin-second-child" style="width: 70%">
+						<label>#{i18n.getText('KMK003_324')}</label>
+						<div class="control-warp" style="width: 70px;">
+							<div tabindex="3" style="width: 70px;" data-bind="ntsComboBox: {
+										options: unitComboBoxOptions,
+										name: '#[KMK003_232]',
+										optionsValue: 'code',
+										visibleItemsCount: 8,
+										value: unitValue,
+										optionsText: 'name',
+										dropDownAttachedToBody: true,
+										editable: false,
+										enable: useRest }"></div>
 						</div>
-						<!-- <div data-bind="if:value==1">
-							<div class="style-checkbox-btn">
-								<div class="checkbox_display control-group" tabindex="2"
-									data-bind="ntsCheckBox: { checked: $parent.isCalcFromSchedule, enable: $parent.calcMethodFixed() == 1 }">
-									#{i18n.getText('KMK003_293')}</div>
-								<br />
-								<div class="checkbox_display control-group" tabindex="3"
-									data-bind="ntsCheckBox: { checked: $parent.isReferRestTime, enable: $parent.calcMethodFixed() == 1 }">
-									#{i18n.getText('KMK003_294')}</div>
-								<br />
-							</div>
-						</div> -->
-
-						<div data-bind="if:value==1">
-							<div class="style-checkbox-btn">
-								<div class="checkbox_display control-group" tabindex="4"
-									data-bind="ntsCheckBox: { checked: $parent.usePrivateGoOutRest, enable: $parent.calcMethodFixed() == 1 }">
-									#{i18n.getText('KMK003_250')}</div>
-								<br />
-								<div class="checkbox_display control-group" tabindex="5"
-									data-bind="ntsCheckBox: { checked: $parent.useAssoGoOutRest, enable: $parent.calcMethodFixed() == 1 }">
-									#{i18n.getText('KMK003_251')}</div>
-							</div>
+						<div class="control-warp" style="width: 170px;">
+							<div tabindex="4" style="width: 170px;" data-bind="ntsComboBox: {
+										options: roundingComboBoxOptions,
+										name: '#[KMK003_233]',
+										optionsValue: 'code',
+										visibleItemsCount: 8,
+										value: roundingValue,
+										optionsText: 'name',
+										dropDownAttachedToBody: true,
+										editable: false,
+										enable: useRest }"></div>
 						</div>
 					</div>
-				</div>
-			</div>
 
-			<div id="functions-area-bottom">
-				<button tabindex="6" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
-				<button tabindex="7" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+					<!-- END setting items -  -->
+				</div>
+				<!-- H5 Group end-->
+
+				<!-- H2_8 -> H2_20 Group start-->
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_256')}</div>
+				<hr/>
+				<div class="margin-first-child">
+					<div class="checkbox_display control-group" tabindex="5"
+						 data-bind="ntsCheckBox: { checked: useStamp }">#{i18n.getText('KMK003_255')}
+					</div>
+				</div>
+				<div tabindex="6" class="margin-second-child" style="width: 200px" data-bind="ntsRadioBoxGroup: {
+						options: [
+							{value: 1, text: nts.uk.resource.getText('KMK003_257')},
+							{value: 0, text: nts.uk.resource.getText('KMK003_258')}
+						],
+						optionsValue: 'value',
+						optionsText: 'text',
+						value: useStampCalcMethod,
+						enable: useStamp}"></div>
+				<br/>
+				<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_259')}</div>
+				<hr/>
+				<div tabindex="7" class="margin-first-child" data-bind="ntsRadioBoxGroup: {
+						options: [
+							{value: 0, text: nts.uk.resource.getText('KMK003_260')},
+							{value: 1, text: nts.uk.resource.getText('KMK003_261')}
+						],
+						optionsValue: 'value',
+						optionsText: 'text',
+						value: timeManagerSetAtr}">
+
+				</div>
+				<!-- H2_8 -> H2_20 Group end-->
 			</div>
-		</ui:define>
-	</ui:composition>
+		</div>
+
+		<div id="functions-area-bottom">
+			<button tabindex="8" data-bind="click: save" class="x-large proceed">#{i18n.getText('KMK003_229')}</button>
+			<button tabindex="9" data-bind="click: close" class="large">#{i18n.getText('KMK003_180')}</button>
+		</div>
+	</ui:define>
+</ui:composition>
 </body>
 </html>

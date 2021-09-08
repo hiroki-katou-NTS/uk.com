@@ -40,9 +40,9 @@ module nts.uk.at.view.ksm013.a {
                 });
 
                 self.lstLicense = ko.observableArray([
-                    { licenseCode: '0', licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE') },
-                    { licenseCode: '1', licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSOCIATE') },
-                    { licenseCode: '2', licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSIST') }
+                    { licenseCode: 0, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE') },
+                    { licenseCode: 1, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSOCIATE') },
+                    { licenseCode: 2, licenseName: nts.uk.resource.getText('Enum_LicenseClassification_NURSE_ASSIST') }
                 ]);
                 //self.selectedLicense = ko.observable(0);
             }

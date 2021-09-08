@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.at.function.app.nrl.Command;
+import nts.uk.ctx.at.function.app.nrl.DefaultValue;
 import nts.uk.ctx.at.function.app.nrl.crypt.Codryptofy;
 import nts.uk.ctx.at.function.app.nrl.data.FrameItemArranger;
 import nts.uk.ctx.at.function.app.nrl.data.ItemSequence.MapItem;
@@ -43,7 +44,7 @@ public class OverTimeInfoRequest extends NRLRequest<Frame> {
 				contractCode);
 		String payload = info.isPresent() ? toStringObject(info.get()) : "";
 		byte[] payloadBytes = Codryptofy.decode(payload);
-		int length = payloadBytes.length + 32;
+		int length = payloadBytes.length + DefaultValue.DEFAULT_LENGTH;
 		items.add(new MapItem(Element.LENGTH, Integer.toHexString(length)));
 		items.add(FrameItemArranger.Version());
 		items.add(FrameItemArranger.FlagEndNoAck());

@@ -48,3 +48,4 @@ nts.uk/uk.repo/*
 **/.DS_Store
 
 *.log
+**/.sass-cache/*

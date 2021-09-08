@@ -1,4 +1,4 @@
-import { _, Vue } from '@app/provider';
+import { _} from '@app/provider';
 import { TrackRecordAtr, OverTimeShiftNight, BreakTime, TimeZoneNew, TimeZoneWithWorkNo, AppOverTime, ParamCalculateMobile, ParamSelectWorkMobile, InfoWithDateApplication, ParamStartMobile, OvertimeAppAtr, Model, DisplayInfoOverTime, NotUseAtr, ApplicationTime, OvertimeApplicationSetting, AttendanceType, HolidayMidNightTime, StaturoryAtrOfHolidayWork, ParamBreakTime, WorkInformation, WorkHoursDto, AppDateContradictionAtr, ExcessState } from '../a/define.interface';
 import { component, Prop } from '@app/core/component';
 import { StepwizardComponent } from '@app/components';
@@ -10,9 +10,10 @@ import { Kdl001Component } from '../../../kdl/001';
 import { KafS00ShrComponent, AppType, Application, InitParam } from 'views/kaf/s00/shr';
 import { OverTime } from '../step2/index';
 import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
+import { CmmS45CComponent } from '../../../cmm/s45/c/index';
 
 @component({
-    name: 'kafs05',
+    name: 'kafs05a',
     route: '/kaf/s05/a',
     style: require('./style.scss'),
     template: require('./index.vue'),
@@ -26,6 +27,7 @@ import { OverTimeWorkHoursDto } from '../../s00/sub/p2';
         'kafS05Step3Component': KafS05Step3Component,
         'worktype': KDL002Component,
         'worktime': Kdl001Component,
+        'cmms45c': CmmS45CComponent
     }
 
 })
@@ -51,10 +53,34 @@ export class KafS05Component extends KafS00ShrComponent {
     public isMsg_1556: boolean = false;
 
     @Prop()
-    public readonly params: InitParam;
+    public params: InitParam;
+
+    public get getoverTimeClf(): number {
+        const self = this;
+
+        return self.overTimeClf;
+    }
+
+    // @Watch('numb', {deep: true})
+    // public changeoverTimeClf(data: any) {
+    //     const self = this;
+
+    //     if (self.numb == 1) {
+    //         self.pgName = 'kafs05step1';
+    //     } else if (self.numb == 2) {
+    //         self.pgName = 'kafs05step2';
+    //     } else {
+    //         self.pgName = 'kafs05step3';
+    //     }
+    // }
+   
 
     public get step() {
-        return `step_${this.numb}`;
+
+        const self = this;
+        
+
+        return `step_${self.numb}`;
     }
     public get overTimeWorkHoursDto(): OverTimeWorkHoursDto {
         const self = this;
@@ -342,6 +368,9 @@ export class KafS05Component extends KafS00ShrComponent {
     public created() {
         const vm = this;
 
+
+        
+
         if (!_.isNil(vm.params)) {
             vm.modeNew = false;
             let model = {} as Model;
@@ -349,6 +378,29 @@ export class KafS05Component extends KafS00ShrComponent {
             model.displayInfoOverTime = vm.params.appDetail.displayInfoOverTime as DisplayInfoOverTime;
             vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
             vm.model = model;
+        }
+
+        if (vm.modeNew) {
+            if (vm.$route.query.overworkatr == '0') {
+                vm.overTimeClf = 0;
+            } else if (vm.$route.query.overworkatr == '1') {
+                vm.overTimeClf = 1;
+            } else {
+                vm.overTimeClf = 2;
+            }
+        } else {
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
+        }
+
+        if (_.isNil(vm.overTimeClf)) {
+            vm.overTimeClf = 2;
+        }
+        if (vm.overTimeClf == 0) {
+            vm.pgName = 'kafs05step1';
+        } else if (vm.overTimeClf == 1) {
+            vm.pgName = 'kafs05step2';
+        } else {
+            vm.pgName = 'kafs05step3';
         }
     }
     public mounted() {
@@ -362,15 +414,15 @@ export class KafS05Component extends KafS00ShrComponent {
             vm.date = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appDate;
         }
         if (vm.modeNew) {
-            if (vm.$route.query.a == '0') {
+            if (vm.$route.query.overworkatr == '0') {
                 vm.overTimeClf = 0;
-            } else if (vm.$route.query.a == '1') {
+            } else if (vm.$route.query.overworkatr == '1') {
                 vm.overTimeClf = 1;
             } else {
                 vm.overTimeClf = 2;
             }
         } else {
-            vm.overTimeClf = vm.model.displayInfoOverTime.overtimeAppAtr;
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf') || 2;
         }
         if (vm.modeNew) {
             vm.application = vm.createApplicationInsert(AppType.OVER_TIME_APPLICATION);
@@ -850,6 +902,37 @@ export class KafS05Component extends KafS00ShrComponent {
         const vm = this;
 
         return new Promise((resolve) => {
+            if (failData.messageId == 'Msg_197') {
+                vm.$modal.error({ messageId: 'Msg_197', messageParams: [] }).then(() => {
+                    let appID = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.appID;
+                    vm.$modal('cmms45c', { 'listAppMeta': [appID], 'currentApp': appID }).then((newData: InitParam) => {
+                        vm.params = newData;
+                        if (!_.isNil(vm.params)) {
+                            vm.modeNew = false;
+                            let model = {} as Model;
+                            model.appOverTime = vm.params.appDetail.appOverTime as AppOverTime;
+                            model.displayInfoOverTime = vm.params.appDetail.displayInfoOverTime as DisplayInfoOverTime;
+                            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+                            vm.model = model;
+                        }
+                        vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
+                        if (_.isNil(vm.overTimeClf)) {
+                            vm.overTimeClf = 2;
+                        }
+                        if (vm.overTimeClf == 0) {
+                            vm.pgName = 'kafs05step1';
+                        } else if (vm.overTimeClf == 1) {
+                            vm.pgName = 'kafs05step2';
+                        } else {
+                            vm.pgName = 'kafs05step3';
+                        }
+                        vm.fetchData();
+                    });
+                });
+    
+                return resolve(false);
+            }
+
             if (failData.messageId == 'Msg_26') {
                 vm.$modal.error({ messageId: failData.messageId, messageParams: failData.parameterIds })
                     .then(() => {
@@ -1106,6 +1189,8 @@ export class KafS05Component extends KafS00ShrComponent {
 
     public backToStep1(res: InitParam) {
         const vm = this;
+
+        
         vm.toStep(1);
         vm.modeNew = false;
         let model = {} as Model;
@@ -1113,6 +1198,28 @@ export class KafS05Component extends KafS00ShrComponent {
         model.displayInfoOverTime = res.appDetail.displayInfoOverTime as DisplayInfoOverTime;
         vm.appDispInfoStartupOutput = res.appDispInfoStartupOutput;
         vm.model = model;
+
+        if (vm.modeNew) {
+            if (vm.$route.query.overworkatr == '0') {
+                vm.overTimeClf = 0;
+            } else if (vm.$route.query.overworkatr == '1') {
+                vm.overTimeClf = 1;
+            } else {
+                vm.overTimeClf = 2;
+            }
+        } else {
+            vm.overTimeClf = _.get(vm.model, 'appOverTime.overTimeClf');
+        }
+        if (_.isNil(vm.overTimeClf)) {
+            vm.overTimeClf = 2;
+        }
+        if (vm.overTimeClf == 0) {
+            vm.pgName = 'kafs05step1';
+        } else if (vm.overTimeClf == 1) {
+            vm.pgName = 'kafs05step2';
+        } else {
+            vm.pgName = 'kafs05step3';
+        }
         vm.fetchData();
     }
 

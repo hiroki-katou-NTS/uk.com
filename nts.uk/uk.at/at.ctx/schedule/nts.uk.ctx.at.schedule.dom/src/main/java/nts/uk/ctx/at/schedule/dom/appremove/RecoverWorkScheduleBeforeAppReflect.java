@@ -100,7 +100,10 @@ public class RecoverWorkScheduleBeforeAppReflect {
 		boolean attendance = lstItemId.stream()
 				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
 				.findFirst().isPresent();
-		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE);
+		boolean directBounceClassifi = lstItemId.stream()
+				.filter(x -> x.intValue() == 859 || x.intValue() == 860)
+				.findFirst().isPresent();
+		return new ChangeDailyAttendance(workInfo, attendance, false, workInfo, ScheduleRecordClassifi.SCHEDULE, directBounceClassifi);
 	}
 
 	public static interface Require extends WorkingConditionService.RequireM1, CancellationOfApplication.Require {

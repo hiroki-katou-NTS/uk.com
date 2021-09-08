@@ -36,6 +36,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.ctx.at.record.dom.stamp.management.StampSettingPersonHelper.StampScreen;
@@ -123,7 +124,8 @@ public class StampSettingPersonTest {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, null),
 				NotUseAtr.USE,
-				AudioType.GOOD_MORNING));
+				AudioType.GOOD_MORNING,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		assertThat(stambutton).isNotEqualTo(buttonSettings);
 
@@ -141,7 +143,7 @@ public class StampSettingPersonTest {
 		StampSettingPerson settingPerson = StampSettingPersonHelper.settingPerson();
 		StampPageLayout pageLayout = StampSettingPersonHelper.crePageLayout(2, 3);
 
-		settingPerson.insert(pageLayout);
+		settingPerson.addPage(pageLayout);
 		assertThat(settingPerson.getLstStampPageLayout().stream().filter(x -> x.getPageNo().v() == 3)).isNotEmpty();
 	}
 	
@@ -151,7 +153,7 @@ public class StampSettingPersonTest {
 		StampSettingPerson settingPerson = StampSettingPersonHelper.settingPerson();
 		StampPageLayout pageLayout = StampSettingPersonHelper.crePageLayout(1, 1);
 
-		settingPerson.update(pageLayout);
+		settingPerson.updatePage(pageLayout);
 		assertThat(settingPerson.getLstStampPageLayout().stream().filter(x -> x.getStampPageName().v().equals("NEW_DUMMY2"))).isNotEmpty();
 	}
 

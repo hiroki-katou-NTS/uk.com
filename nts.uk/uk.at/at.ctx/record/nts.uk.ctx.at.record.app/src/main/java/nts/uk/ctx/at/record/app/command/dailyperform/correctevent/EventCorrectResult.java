@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.record.app.command.dailyperform.checkdata.DailyModifyRCResult;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtilRes;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
@@ -30,7 +31,7 @@ public class EventCorrectResult {
 	public List<ItemValue> getCanBeCorrectedItems(){
 		List<Integer> canBeUpdated = AttendanceItemIdContainer.getItemIdByDailyDomains(correctedType);
 		
-		return AttendanceItemUtil.toItemValues(corrected, canBeUpdated);
+		return AttendanceItemUtilRes.collect(corrected, canBeUpdated, AttendanceItemType.DAILY_ITEM);
 	}
 	
 	public List<ItemValue> getCorrectedItemsWithStrict(){
@@ -42,8 +43,8 @@ public class EventCorrectResult {
 			return true;
 		});
 		
-		List<ItemValue> canBeCorrected = AttendanceItemUtil.toItemValues(corrected, canBeUpdated);
-		List<ItemValue> beforeCorrect = AttendanceItemUtil.toItemValues(base, canBeUpdated);
+		List<ItemValue> canBeCorrected = AttendanceItemUtilRes.collect(corrected, canBeUpdated, AttendanceItemType.DAILY_ITEM);
+		List<ItemValue> beforeCorrect = AttendanceItemUtilRes.collect(base, canBeUpdated, AttendanceItemType.DAILY_ITEM);
 		
 		canBeCorrected.removeAll(beforeCorrect);
 		

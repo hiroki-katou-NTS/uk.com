@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 
@@ -13,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWork
  *
  */
 @Getter
-public class HolidayWorkFrameTime {
+public class HolidayWorkFrameTime implements Cloneable{
 	//休出枠時間No
 	private HolidayWorkFrameNo holidayFrameNo;
 	//休出時間
@@ -171,4 +172,35 @@ public class HolidayWorkFrameTime {
 				Finally.of(TimeDivergenceWithCalculation.defaultValue()), Finally.of(new AttendanceTime(0)));
 	}
 	
+	@Override
+	public HolidayWorkFrameTime clone() {
+		return new HolidayWorkFrameTime(new HolidayWorkFrameNo(this.getHolidayFrameNo().v()),
+				this.holidayWorkTime.isPresent()
+						? Finally.of(new TimeDivergenceWithCalculation(
+								new AttendanceTime(this.holidayWorkTime.get().getTime().v()),
+								new AttendanceTime(this.holidayWorkTime.get().getCalcTime().v()),
+								new AttendanceTimeOfExistMinus(this.holidayWorkTime.get().getDivergenceTime().v())))
+						: Finally.empty(),
+
+				this.holidayWorkTime.isPresent()
+						? Finally.of(new TimeDivergenceWithCalculation(
+								new AttendanceTime((this.transferTime.get().getTime().v())),
+								new AttendanceTime(this.transferTime.get().getCalcTime().v()),
+								new AttendanceTimeOfExistMinus((this.transferTime.get().getDivergenceTime().v()))))
+						: Finally.empty(),
+
+				this.beforeApplicationTime.isPresent()
+						? Finally.of(new AttendanceTime(this.beforeApplicationTime.get().v()))
+						: Finally.empty());
+	}
+	
+	public void cleanTimeAndTransfer() {
+		if(holidayWorkTime.isPresent()) {
+			holidayWorkTime.get().resetDefaultValue();
+		}
+		
+		if(transferTime.isPresent()) {
+			transferTime.get().resetDefaultValue();
+		}
+	}
 }

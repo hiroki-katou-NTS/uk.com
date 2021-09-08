@@ -7,13 +7,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.RegAndIrgTimeOfWeekly;
 
 @Data
 @NoArgsConstructor
@@ -53,7 +54,22 @@ public class RegularAndIrregularTimeOfMonthlyDto implements ItemConst, Attendanc
 		}
 		return dto;
 	}
+	
+	public static RegularAndIrregularTimeOfMonthlyDto from(RegAndIrgTimeOfWeekly domain) {
+		RegularAndIrregularTimeOfMonthlyDto dto = new RegularAndIrregularTimeOfMonthlyDto();
+		if(domain != null) {
+//			dto.setIrregularWorkingTime(new IrregularWorkingTimeOfMonthlyDto(0, 0, 0, 
+//											new TimeMonthWithCalculationDto(domain., calcTime)));
+			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
+					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
+		}
+		return dto;
+	}
 
+	public RegAndIrgTimeOfWeekly toDomainWeekly() {
+		return RegAndIrgTimeOfWeekly.of(new AttendanceTimeMonth(weeklyTotalPremiumTime));
+	}
+	
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {

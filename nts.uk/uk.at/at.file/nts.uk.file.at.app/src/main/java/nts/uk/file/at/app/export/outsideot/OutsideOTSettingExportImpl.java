@@ -5,8 +5,7 @@
 package nts.uk.file.at.app.export.outsideot;
 
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
@@ -16,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.file.at.app.export.outsideot.data.OutsideOTBRDItemNameLangData;
 import nts.uk.file.at.app.export.outsideot.data.OvertimeNameLanguageData;
 import nts.uk.shr.com.context.AppContexts;
@@ -60,14 +60,20 @@ public class OutsideOTSettingExportImpl implements MasterListData {
     /**
      * The daily attendance item repository.
      */
-    @Inject
-    private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+//    @Inject
+//    private DailyAttendanceItemRepository dailyAttendanceItemRepository;
+//
+//    @Inject
+//    private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
     /**
      * The outside OT setting repository.
      */
     @Inject
     private OutsideOTSettingRepository outsideOTSettingRepository;
+
+    @Inject
+    private CompanyMonthlyItemService companyMonthlyItemService;
 
     /**
      * The Constant TOTA_NUMBER_COLS_A9_5.
@@ -265,8 +271,10 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                 dataA61.put(NUMBER_COLS_4, TextResource.localize(toEnumRouding(unit)));
             }
 
-
-            masterDatas.add(new MasterData(dataA61, null, ""));
+            MasterData masterData = new MasterData(dataA61, null, "");
+            Map<String, MasterCellData> rowData = masterData.getRowData();
+            rowData.get(NUMBER_COLS_1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            masterDatas.add(masterData);
         }
         return masterDatas;
     }
@@ -419,6 +427,10 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             }
             MasterData masterData = new MasterData(dataA71, null, "");
             Map<String, MasterCellData> rowData = masterData.getRowData();
+            rowData.get(NUMBER_COLS_1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+            rowData.get(NUMBER_COLS_2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            rowData.get(NUMBER_COLS_3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+            rowData.get(NUMBER_COLS_4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
             rowData.get(NUMBER_COLS_5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
             masterDatas.add(masterData);
         });
@@ -459,11 +471,12 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             language.setIsUse(false);
             breakdownNameLanguageData.add(language);
         }
-        Map<Integer, DailyAttendanceItem> mapAttendanceItem = this.dailyAttendanceItemRepository
-                .getList(companyId).stream().collect(Collectors.toMap((attendanceItem -> {
-                    return attendanceItem.getAttendanceItemId();
-                }), Function.identity()));
 
+        Map<Integer, AttendanceNameDivergenceDto> mapAttendanceItem = companyMonthlyItemService
+                .getMonthlyItems(companyId, Optional.empty(), Collections.emptyList(), Collections.emptyList())
+                .stream().map(x -> new AttendanceNameDivergenceDto(x.getAttendanceItemId(),
+                        x.getAttendanceItemName(), x.getAttendanceItemDisplayNumber()))
+                .collect(Collectors.toMap((AttendanceNameDivergenceDto::getAttendanceItemId), Function.identity()));
 
         if (!this.isLanugeJapan(query.getLanguageId())) {
             this.outsideOTBRDItemLangRepository.findAll(companyId, query.getLanguageId())
@@ -490,6 +503,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             dataA91.put(NUMBER_COLS_3, this.toUse(breakdownItemLange.getIsUse()));
             dataA91.put(NUMBER_COLS_2, breakdownItemLange.getLanguage());
             dataA91.put(NUMBER_COLS_4, breakdownItemLange.getProductNumber());
+            List<String> dynamicColumns = new ArrayList<>();
             if (breakdownItemLange.getIsUse()) {
                 outsideOTSetting.getBreakdownItems().forEach(breakdownItem -> {
                     if (breakdownItem.getBreakdownItemNo().value == breakdownItemLange.getBreakdownItemNo()) {
@@ -497,9 +511,10 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                         breakdownItem.getAttendanceItemIds().forEach(attendanceItemId -> {
                             String attendanceItemName = "";
                             if (mapAttendanceItem.containsKey(attendanceItemId)) {
-                                attendanceItemName = mapAttendanceItem.get(attendanceItemId).getAttendanceName().v();
+                                attendanceItemName = mapAttendanceItem.get(attendanceItemId).getAttendanceItemName();
                             }
                             startCol++;
+                            dynamicColumns.add(NUMBER_COLS + startCol);
                             dataA91.put(NUMBER_COLS + startCol, attendanceItemName);
                         });
                         if (!this.isLanugeJapan(query.getLanguageId())) {
@@ -509,7 +524,16 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                 });
 
             }
-            masterDatas.add(new MasterData(dataA91, null, ""));
+            MasterData masterData = new MasterData(dataA91, null, "");
+            Map<String, MasterCellData> rowData = masterData.getRowData();
+            rowData.get(NUMBER_COLS_1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+            rowData.get(NUMBER_COLS_2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            rowData.get(NUMBER_COLS_3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            rowData.get(NUMBER_COLS_4).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+            dynamicColumns.forEach(c -> {
+                rowData.get(c).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            });
+            masterDatas.add(masterData);
         });
 
         return masterDatas;
@@ -539,16 +563,24 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 //		List<PremiumExtra60HRate> lstExtra60Rate = this.outsideOTSettingRepository.fin(companyId);
         this.outsideOTSettingRepository.findAllBRDItem(companyId).forEach(breakdownItem -> {
             Map<String, Object> dataA141 = new HashMap<>();
+            List<String> overTimeColumns = new ArrayList<>();
             dataA141.put(NUMBER_COLS_START, breakdownItem.getName().v());
             if (breakdownItem.isUseClass()) {
                 breakdownItem.getPremiumExtra60HRates().forEach(extraRate -> {
 //					if (extraRate.get == breakdownItem.getBreakdownItemNo()) {
+                    overTimeColumns.add(NUMBER_COLS + extraRate.getOvertimeNo().value);
                     dataA141.put(NUMBER_COLS + extraRate.getOvertimeNo().value,
                             this.toPercent(extraRate.getPremiumRate().v()));
 //					}
                 });
             }
-            masterDatas.add(new MasterData(dataA141, null, ""));
+            MasterData masterData2 = new MasterData(dataA141, null, "");
+            Map<String, MasterCellData> rowData2 = masterData2.getRowData();
+            rowData2.get(NUMBER_COLS_START).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            overTimeColumns.forEach(c -> {
+                rowData2.get(c).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+            });
+            masterDatas.add(masterData2);
         });
 
         return masterDatas;
@@ -570,7 +602,12 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             dataA161.put(NUMBER_COLS_2, superHD60HConMed.getTimeRoundingSetting().getRounding().nameId);
             dataA161.put(NUMBER_COLS_3, this.toTimeView(superHD60HConMed.getSuperHolidayOccurrenceUnit().v()));
         }
-        masterDatas.add(new MasterData(dataA161, null, ""));
+        MasterData masterData = new MasterData(dataA161, null, "");
+        Map<String, MasterCellData> rowData = masterData.getRowData();
+        rowData.get(NUMBER_COLS_1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        rowData.get(NUMBER_COLS_2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        rowData.get(NUMBER_COLS_3).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.RIGHT));
+        masterDatas.add(masterData);
         return masterDatas;
     }
 
@@ -596,7 +633,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
      */
     public List<MasterHeaderColumn> getHeaderColumnOnes(MasterListExportQuery query) {
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A7_1), ColumnTextAlign.RIGHT,
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A7_1), ColumnTextAlign.LEFT,
                 "", true));
         columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize(NAME_VALUE_A7_3), ColumnTextAlign.LEFT,
                 "", true));
@@ -604,7 +641,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                 "", true));
         columns.add(new MasterHeaderColumn(NUMBER_COLS_4, TextResource.localize(NAME_VALUE_A7_2), ColumnTextAlign.LEFT,
                 "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_5, TextResource.localize("KMK010_86"), ColumnTextAlign.LEFT,
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_5, TextResource.localize("KMK010_20"), ColumnTextAlign.LEFT,
                 "", true));
         if (!this.isLanugeJapan(query.getLanguageId())) {
             columns.add(new MasterHeaderColumn(NUMBER_COLS_END, TextResource.localize(NAME_VALUE_A7_5),
@@ -630,7 +667,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
      */
     public List<MasterHeaderColumn> getHeaderColumnTwos(MasterListExportQuery query) {
         List<MasterHeaderColumn> columns = new ArrayList<>();
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A9_1), ColumnTextAlign.RIGHT,
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize(NAME_VALUE_A9_1), ColumnTextAlign.LEFT,
                 "", true));
         columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize(NAME_VALUE_A9_3), ColumnTextAlign.LEFT,
                 "", true));
@@ -680,7 +717,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
                 "", true));
         columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize(NAME_VALUE_A15_2), ColumnTextAlign.LEFT,
                 "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_3, TextResource.localize(NAME_VALUE_A15_3), ColumnTextAlign.RIGHT,
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_3, TextResource.localize(NAME_VALUE_A15_3), ColumnTextAlign.LEFT,
                 "", true));
         return columns;
     }

@@ -72,11 +72,11 @@ public class CardUnregistered {
 		
 		if (!stamps.isEmpty()) {
 			for (int i = 0; i < stamps.size(); i++) {
-				if (!stamps.get(i).getRefActualResults().getWorkLocationCD().isPresent()) {
+				if (!stamps.get(i).getRefActualResults().getWorkInforStamp().isPresent() || !stamps.get(i).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
 					continue;
 				}
 				Optional<WorkLocation> work = workLocationRepo.findByCode(companyID,
-						stamps.get(i).getRefActualResults().getWorkLocationCD().get().v());
+						stamps.get(i).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v());
 				if(work.isPresent()) {
 					nameWorks.add(work.get().getWorkLocationName().v());
 				}

@@ -16,10 +16,12 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AnyItemByPeriod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
@@ -75,6 +77,22 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 				Optional.of(any.getMonthlyAmountOrDefault())));
 		
 	}
+	
+
+	public AnyItemByPeriod toDomainPeriod() {
+		if(!this.isHaveData()) {
+			return new AnyItemByPeriod();
+		}
+		
+		values.removeIf(item -> !item.isHaveData());
+		
+		return AnyItemByPeriod.of(ConvertHelper.mapTo(values, 
+				any -> AggregateAnyItem.of(any.getNo(),
+											Optional.of(any.getMonthlyTimeOrDefault()),
+											Optional.of(any.getMonthlyTimesOrDefault()), 
+											Optional.of(any.getMonthlyAmountOrDefault()))));
+		
+	}
 
 	@Override
 	public YearMonth yearMonth() {
@@ -82,16 +100,28 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	}
 	
 	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
-		values.stream().filter(item -> item != null).forEach(item -> {
+		values.removeIf(item -> !optionalMaster.containsKey(item.getNo()) || item == null || !item.isHaveData());
+		
+		values.stream().forEach(item -> {
 //			if(item.isNeedCorrect()) {
 				item.correctItem(getAttrFromMaster(optionalMaster, item.getNo()));
 //			}
 		});
-		values.removeIf(item -> item == null || !item.isHaveData());
 	}
 
 	public static AnyItemOfMonthlyDto from(AnyItemOfMonthly domain) {
 		return from(domain, null);
+	}
+
+	public static AnyItemOfMonthlyDto from(AnyItemByPeriod domain, Map<Integer, OptionalItem> master) {
+		AnyItemOfMonthlyDto dto = new AnyItemOfMonthlyDto();
+		if (domain != null) {
+			domain.getAnyItemValues().entrySet().stream().forEach(d -> {
+				dto.getValues().add(OptionalItemValueDto.from(d.getValue(), getAttrFromMaster(master, d.getValue().getAnyItemNo())));
+			});
+			dto.exsistData();
+		}
+		return dto;
 	}
 	
 	public static AnyItemOfMonthlyDto from(AnyItemOfMonthly domain, Map<Integer, OptionalItem> master) {

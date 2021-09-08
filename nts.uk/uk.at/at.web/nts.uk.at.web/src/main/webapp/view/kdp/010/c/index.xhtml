@@ -4,77 +4,114 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
 <body>
-	<ui:composition>
-		<div class="sidebar-content-header">
-			<span class="title" data-bind="text: '#{i18n.getText('KDP010_4')}'.trim()"></span>
-			<button tabindex="2" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
-		</div>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.CorrectionInterval
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime
+				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.NumberAuthenfailures
+			</com:ValidatorScript>
+	
+			<com:stylefile path="../main.css"/>
+			<com:scriptfile path="kdp010.c.vm.js" />
+		</ui:define>
 
-		<div class="contents-area">
-			<div class="label-top">
-				<label>#{i18n.getText('KDP010_175')}</label>
+		<ui:define name="content">
+			<div id="functions-area">
+				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KDP010_144')}</a>
+				<button tabindex="1" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
 			</div>
-			<table class="form-data" >
-				<tr data-bind="with: settingsSmartphoneStamp.displaySettingsStampScreen">
-					<td>
-						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_176')}</div>
-						<div class="inline-display row-data">
-							<input tabindex="3" class="nts-input" id="c-serverCorrectionInterval" data-bind="ntsNumberEditor: {name: '#[KDP010_177]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
-						</div>
-					</td>
-				</tr>
-				<tr data-bind="with: settingsSmartphoneStamp.displaySettingsStampScreen.settingDateTimeColor">
-					<td>
-						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_178')}</div> 
-						<label>#{i18n.getText('KDP010_179')}</label>
-						<div class="colorpicker" data-bind="ntsColorPicker: {value: textColor, enable: true, width: 50, name:'#[KDP010_180]' }"></div> 
-						<label class="margin-left5">#{i18n.getText('KDP010_181')}</label>
-						<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50, name:'#[KDP010_182]' }"></div>
-					</td>
-				</tr>
-				<tr data-bind="with: settingsSmartphoneStamp.displaySettingsStampScreen">
-					<td>
-						<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_183')}</div> 
-						<div class="inline-display row-data">
-							<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_184]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
-							<label class="text-note">#{i18n.getText('KDP010_185')}</label>
-						</div>
-					</td>
-				</tr>
-				<tr data-bind="with: settingsSmartphoneStamp">
-					<td>
-						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_240')}</div> 
-						<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.buttonEmphasisArtOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row-label">
-							<button tabindex="6" data-bind="click: openIDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
-							<com:ko-if bind = "settingsSmartphoneStamp.pageLayoutSettings().length > 0">
-								<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_52')}</label>
+			<div id="contents-area">
+				<!-- B2_1 -->
+				<div id="label-title">
+					<label class="basic-label">#{i18n.getText('KDP010_12')}</label>
+				</div>
+				<!-- Item on Screen -->
+				<table class="basic-items form-data">
+					<tr>
+						<td>
+							<!-- B4_1 -->
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_15')}
+							</div>
+							<div class="inline-display">
+								<!-- B4_2 -->
+								<input tabindex="3" id="correc-input" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_16]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B5_1 -->
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_18')}
+							</div> <!-- B5_2 -->
+							<div class="inline-display" tabindex="4" data-bind="ntsRadioBoxGroup: {
+																					options: optionStamping,
+																					optionsValue: 'id',
+																					optionsText: 'name',
+																					value: selectedStamping,
+																					enable: true }">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B6_1 -->
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_22')}</div> 
+							<!-- B6_2 --> 
+							<label>#{i18n.getText('KDP010_23')}</label>
+							<!-- B6_3 -->
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_24]' }">
+							</div> 
+						</td>
+					</tr>
+					<tr>
+						<td class="form-data">
+							<!-- B7_1 -->
+							<div class="row-label row-data" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_27')}</div> 
+							<div class="inline-display vertical-align-top row-data">
+								<!-- B7_2 --> 
+								<input tabindex="5" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+								<!-- B7_3 -->
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_30')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B10_1 -->
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_38')}
+							</div> <!-- B10_2 -->
+							<div class="inline-display" tabindex="6" data-bind="ntsRadioBoxGroup: {
+													options: optionHighlight,
+													optionsValue: 'id',
+													optionsText: 'name',
+													value: selectedHighlight,
+													enable: true }">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- B20_1 -->
+							<button tabindex="7" id="stamp-button" data-bind="click: openHDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button> <!-- B20_2 -->
+							<!-- B20_2 -->	
+							<com:ko-if bind = "checkInUp() == true">
+							<label id="background-color" tabindex="7" style="color: #0033cc;; vertical-align: super;">#{i18n.getText('KDP010_52')}</label>
 							</com:ko-if>
-							<com:ko-if bind = "settingsSmartphoneStamp.pageLayoutSettings().length == 0">
-								<label style="color: #ff0000; margin-left: 10px">#{i18n.getText('KDP010_53')}</label>
+							<com:ko-if bind = "checkInUp() == false">
+							<label id="background-color" tabindex="7" style="color: #ff0000; vertical-align: super;">#{i18n.getText('KDP010_53')}</label>
 							</com:ko-if>
-						</div>
-					</td>
-				</tr>
-			</table>
-			<div class="label-middle">
-				<label>#{i18n.getText('KDP010_243')}</label>
+							
+						</td>
+					</tr>
+				</table>
 			</div>
-			<table class="form-data" data-bind="with: settingsSmartphoneStamp">
-				<tr>
-					<td>
-						<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_186')}</div> 
-						<div tabindex="7" data-bind="ntsRadioBoxGroup: {options: $parent.googleMapOption, optionsValue: 'id', optionsText: 'name', value: googleMap, enable: true }"></div>
-					</td>
-				</tr>	
-			</table> 
-		</div>
+		</ui:define>
 	</ui:composition>
 </body>
 </html>

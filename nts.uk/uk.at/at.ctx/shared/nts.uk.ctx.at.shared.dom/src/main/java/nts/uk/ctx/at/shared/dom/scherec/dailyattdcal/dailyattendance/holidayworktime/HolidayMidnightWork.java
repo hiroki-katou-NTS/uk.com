@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @AllArgsConstructor
-public class HolidayMidnightWork {
+public class HolidayMidnightWork implements Cloneable{
 	//休出深夜時間
 	private List<HolidayWorkMidNightTime> holidayWorkMidNightTime;
 	
@@ -120,5 +120,13 @@ public class HolidayMidnightWork {
 		});
 		
 		this.holidayWorkMidNightTime = changeList;
+	}
+	
+	@Override
+	public HolidayMidnightWork clone() {
+		List<HolidayWorkMidNightTime> holidayWorkMidNightTimeClone = this.holidayWorkMidNightTime.stream().map(x -> {
+			return x.clone();
+		}).collect(Collectors.toList());
+		return new HolidayMidnightWork(holidayWorkMidNightTimeClone);
 	}
 }

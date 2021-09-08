@@ -58,7 +58,7 @@ public class InterimRemainOffPeriodCreateData {
 				employmentHolidaySetting = lstEmploymentSetting.get(0);
 			}
 		}
-		
+
 		for (int i = 0; sStartDate.daysTo(sEndDate) - i >= 0; i++) {
 			//作成対象日を設定する
 			GeneralDate loopDate = inputParam.getDateData().start().addDays(i);
@@ -72,7 +72,7 @@ public class InterimRemainOffPeriodCreateData {
 			if(employmentHolidaySetting == null || employmentHolidaySetting.getEmploymentCode() == null) {
 				lstDateEmployment = lstEmployment.stream()
 						.filter(x -> x.getPeriod().start().beforeOrEquals(loopDate) && x.getPeriod().end().afterOrEquals(loopDate))
-						.collect(Collectors.toList());			
+						.collect(Collectors.toList());
 				if(!lstDateEmployment.isEmpty()) {
 					AffPeriodEmpCodeImport dateEmployment = lstDateEmployment.get(0);
 					List<EmploymentHolidayMngSetting> lstEmploymentSetting = lstEmplSetting.stream()
@@ -86,12 +86,12 @@ public class InterimRemainOffPeriodCreateData {
 			//対象日のデータを抽出する
 			InterimRemainCreateInfor dataCreate = extractDataOfDate(require, cacheCarrier, inputParam.getCid(),
 					loopDate, inputParam);
-			
-			
+
+
 			//アルゴリズム「指定日の暫定残数管理データを作成する」
 			DailyInterimRemainMngData outPutdata = InterimRemainOffDateCreateData.createData(
 					require,
-					inputParam.getCid(), 
+					inputParam.getCid(),
 					inputParam.getSid(),
 					loopDate,
 					inputParam.isDayOffTimeIsUse(),
@@ -100,10 +100,10 @@ public class InterimRemainOffPeriodCreateData {
 					employmentHolidaySetting,
 					inputParam.getCallFunction());
 			if(outPutdata != null) {
-				dataOutput.put(loopDate, outPutdata);	
-			}			
+				dataOutput.put(loopDate, outPutdata);
+			}
 		}
-		
+
 		return dataOutput;
 	}
 
@@ -124,7 +124,7 @@ public class InterimRemainOffPeriodCreateData {
 		if(!recordData.isEmpty()) {
 			detailData.setRecordData(Optional.of(recordData.get(0)));
 		}
-		
+
 		//対象日の予定を抽出する
 		List<ScheRemainCreateInfor> scheData = inputInfor.getScheData().stream()
 				.filter(z -> z.getSid().equals(inputInfor.getSid()) && z.getYmd().equals(baseDate))
@@ -134,8 +134,8 @@ public class InterimRemainOffPeriodCreateData {
 		}
 		//対象日の申請を抽出する
 		List<AppRemainCreateInfor> appData = inputInfor.getAppData().stream()
-				.filter(y -> y.getSid().equals(inputInfor.getSid()) 
-						&& (y.getAppDate().equals(baseDate)	
+				.filter(y -> y.getSid().equals(inputInfor.getSid())
+						&& (y.getAppDate().equals(baseDate)
 								|| (y.getStartDate().isPresent()
 										&& y.getEndDate().isPresent()
 										&& y.getStartDate().get().beforeOrEquals(baseDate)
@@ -148,7 +148,7 @@ public class InterimRemainOffPeriodCreateData {
 //		if(!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.WORK_CHANGE_APPLICATION) {
 //			//excludeHolidayAtr = require.excludeHolidayAtr(cacheCarrier, cid, appData.get(0).getAppId());
 //		}
-		//申請：　勤務変更申請、休日を除外する		
+		//申請：　勤務変更申請、休日を除外する
 		//又は　休暇申請
 //		if((excludeHolidayAtr != null && excludeHolidayAtr == 1)
 //				|| (!appData.isEmpty() && appData.get(0).getAppType() == ApplicationType.ABSENCE_APPLICATION)) {
@@ -160,7 +160,7 @@ public class InterimRemainOffPeriodCreateData {
 //		}
 		detailData.setAppData(appData);
 		return detailData;
-		
+
 	}
 
 	/**
@@ -220,24 +220,26 @@ public class InterimRemainOffPeriodCreateData {
 	}
 
 	public static interface RequireM4 extends RequireM1, RequireM3, InterimRemainOffDateCreateData.RequireM9 {
-		
+
 		List<SharedSidPeriodDateEmploymentImport> employmentHistory(CacheCarrier cacheCarrier, List<String> sids , DatePeriod datePeriod);
+
+		List<RecordRemainCreateInfor> lstResultFromRecord(String sid, List<DailyResult> dailyResults);
 	}
-	
+
 	public static interface RequireM3 extends WorkTypeIsClosedService.RequireM1 {
-		
+
 		//Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid,String appID);
 	}
-	
+
 	public static interface RequireM2 extends RequireM4 {
 		List<ScheRemainCreateInfor> scheRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
-		
+
 		List<RecordRemainCreateInfor> recordRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
-		
+
 		List<AppRemainCreateInfor> appRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData);
-		
+
 		Optional<ComSubstVacation> comSubstVacation(String companyId);
-		
+
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting(String companyId);
 	}
 
@@ -246,7 +248,7 @@ public class InterimRemainOffPeriodCreateData {
 		Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode);
 
 		CompensatoryLeaveEmSetting compensatoryLeaveEmSetting(String companyId, String employmentCode);
-		
+
 	}
 
 }

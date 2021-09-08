@@ -46,7 +46,7 @@ module cmm001.a {
             ];
             self.selectedTab = ko.observable('tab-1');
             self.gridColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CMM001_7"), key: 'companyCode', width: 70 },
+                { headerText: nts.uk.resource.getText("CMM001_7"), key: 'companyCode', width: 90 },
                 { headerText: nts.uk.resource.getText("CMM001_8"), key: 'companyName', width: 180, formatter: _.escape },
                 {
                     headerText: nts.uk.resource.getText("CMM001_9"), key: 'isAbolition', width: 60,

@@ -38,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryO
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -139,10 +138,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 				vacationClass,
 				statutoryDivision,
 				siftCode,
-				recordReget.getSubHolTransferSetList() == null
-					? Optional.empty()
-					: recordReget.getSubHolTransferSetList().stream().filter(tc -> tc.getOriginAtr().isOverTime()).findFirst(),
-				eachCompanyTimeSet.stream().filter(tc -> tc.getOccurrenceType().isOverTime()).findFirst(),
 				flexPreAppTime,conditionItem,predetermineTimeSetByPersonInfo,coreTimeSetting,beforeApplicationTime,
 				declareResult);
 		
@@ -151,10 +146,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 				recordReget,
 				recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getRestTime(),
 				workType,
-				recordReget.getSubHolTransferSetList() == null
-					? Optional.empty()
-					: recordReget.getSubHolTransferSetList().stream().filter(tc -> !tc.getOriginAtr().isOverTime()).findFirst(),
-				eachCompanyTimeSet.stream().filter(tc -> !tc.getOccurrenceType().isOverTime()).findFirst(),
+				siftCode.map(x -> x.v()),
 				recordReget.getIntegrationOfDaily(),beforeApplicationTime,
 				declareResult);
 		
@@ -192,8 +184,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 			Optional<SettingOfFlexWork> flexCalcMethod,
 			VacationClass vacationClass,
 			StatutoryDivision statutoryDivision,Optional<WorkTimeCode> siftCode,
-			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
 			AttendanceTime flexPreAppTime,
 			WorkingConditionItem conditionItem,
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
@@ -211,8 +201,6 @@ public class ExcessOfStatutoryTimeOfDaily {
 						vacationClass,
 						statutoryDivision,
 						siftCode,
-						eachWorkTimeSet,
-						eachCompanyTimeSet,
 						flexPreAppTime,
 						conditionItem,
 						predetermineTimeSetByPersonInfo,
@@ -249,8 +237,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 			ManageReGetClass recordReget,
 			AutoCalSetting autoCalSetting,
 			WorkType workType,
-			Optional<WorkTimezoneOtherSubHolTimeSet> eachWorkTimeSet,
-			Optional<CompensatoryOccurrenceSetting> eachCompanyTimeSet,
+			Optional<String> workTimeCode,
 			IntegrationOfDaily integrationOfDaily,
 			AttendanceTime beforeApplicationTime,
 			DeclareTimezoneResult declareResult) {
@@ -262,8 +249,7 @@ public class ExcessOfStatutoryTimeOfDaily {
 						recordReget.getCalculationRangeOfOneDay().getOutsideWorkTimeSheet().get().getHolidayWorkTimeSheet().get(),
 						autoCalSetting,
 						workType,
-						eachWorkTimeSet,
-						eachCompanyTimeSet,
+						workTimeCode,
 						integrationOfDaily,
 						beforeApplicationTime,
 						recordReget.getIntegrationOfDaily().getCalAttr().getHolidayTimeSetting().getLateNightTime(),

@@ -151,7 +151,7 @@ module nts.uk.com.view.cmf004.j {
         height: 800,
         subHeight: 575,
         headerHeight: "40px",
-        autoFitWindow: true,
+        autoFitWindow: false,
         dataSource: vm.resultItems(),
         primaryKey: 'id',
         primaryKeyDataType: 'number',

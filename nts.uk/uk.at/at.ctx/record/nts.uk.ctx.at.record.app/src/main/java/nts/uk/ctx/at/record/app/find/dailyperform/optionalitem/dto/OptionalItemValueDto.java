@@ -7,13 +7,14 @@ import java.util.function.Supplier;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 
@@ -49,6 +51,7 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 	private String value;
 
 	@Getter
+	@Setter
 	private int no;
 
 	private OptionalItemAtr itemAttr;
@@ -69,6 +72,18 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 	
 	public static OptionalItemValueDto from(AnyItemValue c) {
 		return from(c, null);
+	}
+
+	public static OptionalItemValueDto from(AggregateAnyItem c, OptionalItemAtr attr) {
+		if (c != null) {
+			OptionalItemValueDto dto = new OptionalItemValueDto();
+			dto.no = c.getAnyItemNo();
+			dto.internalCorrect(attr, () -> c.getAmount().orElseGet(() -> ANY_AMOUNT_MONTH).v(), 
+					() -> c.getTimes().orElseGet(() -> ANY_TIMES_MONTH).v(), 
+					() -> c.getTime().orElseGet(() -> ANY_TIME_MONTH).valueAsMinutes());
+			return dto;
+		}
+		return null;
 	}
 
 	public static OptionalItemValueDto from(AnyItemValue c, OptionalItemAtr attr) {
@@ -247,7 +262,7 @@ public class OptionalItemValueDto implements ItemConst, AttendanceItemDataGate {
 				() -> c.getTime().orElse(ANY_TIME_MONTH).valueAsMinutes());
 	}
 	
-	private void internalCorrect(OptionalItemAtr attr, IntSupplier amountOrDef, 
+	protected void internalCorrect(OptionalItemAtr attr, IntSupplier amountOrDef, 
 			Supplier<BigDecimal> countOrDef, IntSupplier timeOrDef){
 		Integer amount = amountOrDef.getAsInt();
 		BigDecimal count = countOrDef.get();

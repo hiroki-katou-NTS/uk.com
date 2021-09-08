@@ -9,7 +9,6 @@ import { ScreenMode } from '../../s00/b';
     route: '/kaf/s10/step3',
     style: require('./style.scss'),
     template: require('./index.vue'),
-    resource: require('./resources.json'),
     validations: {},
     constraints: [],
     components : {
@@ -27,6 +26,14 @@ export class KafS10Step3Component extends Vue {
 
     public created() {
         const self = this;
+
+        if (self.$appContext.getNumb == 1) {
+            self.pgName = 'kafs10step1';
+        } else if (self.$appContext.getNumb == 2) {
+            self.pgName = 'kafs10step2';
+        } else {
+            self.pgName = 'kafs10step3';
+        }
         self.setParam();
     }
     get $appContext(): KafS10Component {

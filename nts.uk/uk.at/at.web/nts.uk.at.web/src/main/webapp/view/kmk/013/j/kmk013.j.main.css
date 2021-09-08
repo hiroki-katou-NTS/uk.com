@@ -45,8 +45,8 @@
 	width: 250px;
 }
 
-#J4_2 {
-	width: 410px;
+#J4_2 label.radio-wrapper {
+	display: block;
 }
 
 #J6_1 {
@@ -57,9 +57,9 @@
 	display: inline;
 }
 
-#J7_3 {
-	width: 450px;
-}
+/*#J7_3 {*/
+	/*width: 450px;*/
+/*}*/
 
 #J7_3 .ntsRadioBox {
 	margin: 0 2px;
@@ -74,8 +74,16 @@ table td {
 }
 
 #J8_7, #J8_11 {
-	width: 200px;
+	width: 300px;
 	padding-left: 65px;
-	padding-bottom: 10px;
+}
+
+.switchbox-wrappers {
 	display: inline-block;
+}
+
+.switchbox-wrappers .radio-wrapper span {
+	width: 70px;
+	text-align: center;
+	margin: 0 -3px;
 }

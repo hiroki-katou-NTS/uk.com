@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -31,5 +33,9 @@ public class ButtonSettings {
 	/** 音声使用方法 */
 	@Getter
 	private AudioType audioType;
+	
+	/** 応援職場設定方法 */
+	@Getter
+	private Optional<SupportWplSet> supportWplSet; 
 
 }

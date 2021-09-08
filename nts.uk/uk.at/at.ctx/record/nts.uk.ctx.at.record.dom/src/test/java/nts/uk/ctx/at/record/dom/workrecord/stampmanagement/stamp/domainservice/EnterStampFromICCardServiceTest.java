@@ -22,7 +22,9 @@ import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.EnterStampForSharedStampService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromICCardService.Require;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
@@ -61,7 +63,9 @@ public class EnterStampFromICCardServiceTest {
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(1));
 		OvertimeDeclaration declaration = new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(1));
-		RefectActualResult result = new RefectActualResult("DUMMY", new WorkLocationCD("DUMMY"),
+		RefectActualResult result = new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				Optional.of(new WorkLocationCD("workLocationCD")), 
+				Optional.of(new SupportCardNumber(9999))),
 				new WorkTimeCode("DUMMY"), declaration);
 		
 		new Expectations() {
@@ -81,7 +85,9 @@ public class EnterStampFromICCardServiceTest {
 		GeneralDateTime dateTime = GeneralDateTime.now();
 		StampButton stampButton = new StampButton(new PageNo(1), new ButtonPositionNo(2));
 		OvertimeDeclaration declaration = new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(1));
-		RefectActualResult result = new RefectActualResult("DUMMY", new WorkLocationCD("DUMMY"),
+		RefectActualResult result = new RefectActualResult(new WorkInformationStamp(Optional.empty(), Optional.empty(),
+				Optional.of(new WorkLocationCD("workLocationCD")), 
+				Optional.of(new SupportCardNumber(9999))),
 				new WorkTimeCode("DUMMY"), declaration);
 		AtomTask atomTask = AtomTask.of(() -> {});// dummy
 

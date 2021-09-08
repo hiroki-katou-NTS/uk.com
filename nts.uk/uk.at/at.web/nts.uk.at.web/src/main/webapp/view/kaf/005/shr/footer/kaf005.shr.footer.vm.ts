@@ -1,12 +1,15 @@
 module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	const template = `
-<div id="kaf005-footer" data-bind="with: $parent">
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c11_1()">
-		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {}, text: $i18n('KAF005_90', [messageInfos()[0].titleDrop()])"></div>
+<div id="kaf005-footer" data-bind="with: $parent, visible: $parent.visibleModel.c11_1() || $parent.visibleModel.c11_2() || $parent.visibleModel.c12_1() || $parent.visibleModel.c12_2()">
+	<div class="table" style="margin-bottom: 7px;" data-bind="if: visibleModel.c11_1()">
+		
+		<div style="width: 120px" class="cell valign-top cm-column2">
+				<div
+					data-bind="ntsFormLabel: {text: titleLabel1}"
+					></div>
 		</div>
 		<div class="cell valign-center">
-			<div id="combo-box" data-bind="ntsComboBox: {
+			<div id="combo-box" style="width: 472px" data-bind="ntsComboBox: {
 					enable: outputMode,
 					options: messageInfos()[0].listDrop,
 					optionsValue: 'code',
@@ -19,11 +22,11 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 	</div>
 	
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c11_2()">
+	<div class="table" style="margin-bottom: 12px;" data-bind="if: visibleModel.c11_2()">
 		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center labelCustom" data-bind="ntsFormLabel: {
+			<div class="cell valign-center" data-bind="ntsFormLabel: {
 				constraint: 'DivergenceReason',
-				text: $i18n('KAF005_92', [messageInfos()[0].titleInput()])
+				text: titleLabelInput1
 			}"></div>
 		</div>
 		<div class="cell valign-center">
@@ -34,20 +37,21 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 											constraint: 'DivergenceReason',
 											option: {
 												textalign: 'left',
-												width: '445px'
+												width: '449px'
 												}
 											}" />
 		</div>
 	</div>
 	
 	
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_1()">
-		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center" data-bind="ntsFormLabel: {
-			}, text: $i18n('KAF005_90', [messageInfos()[1].titleDrop()])"></div>
+	<div class="table" style="margin-bottom: 7px;" data-bind="if: visibleModel.c12_1()">
+		<div style="width: 120px" class="cell valign-top cm-column2">
+				<div
+					data-bind="ntsFormLabel: {text: titleLabel2}"
+					></div>
 		</div>
 		<div class="cell valign-center">
-			<div id="combo-box" data-bind="ntsComboBox: {
+			<div id="combo-box" style="width: 472px" data-bind="ntsComboBox: {
 					enable: outputMode,
 					options: messageInfos()[1].listDrop,
 					optionsValue: 'code',
@@ -60,11 +64,11 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		</div>
 	</div>
 	
-	<div class="table" style="margin-bottom: 5px;" data-bind="if: visibleModel.c12_2()">
+	<div class="table" style="margin-bottom: 12px;" data-bind="if: visibleModel.c12_2()">
 		<div style="width: 120px" class="cell col-1">
-			<div class="cell valign-center labelCustom" data-bind="ntsFormLabel: {
+			<div class="cell valign-center" data-bind="ntsFormLabel: {
 				constraint: 'DivergenceReason',
-				text: $i18n('KAF005_92', [messageInfos()[1].titleInput()])
+				text: titleLabelInput2
 			}"></div>
 		</div>
 		<div class="cell valign-center">
@@ -75,7 +79,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 														constraint: 'DivergenceReason',
 														option: {
 															textalign: 'left',
-															width: '445px'
+															width: '449px'
 															}
 														}" />
 		</div>
@@ -83,6 +87,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 	
 	
 </div>
+
 
 
 	`

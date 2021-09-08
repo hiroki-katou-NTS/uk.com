@@ -7,65 +7,8 @@ module nts.uk.at.view.kaf020.c.viewmodel {
 
     @component({
         name: 'kaf020-c',
-        template: `<div>
-    <div data-bind="component: { name: 'kaf000-b-component1',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component2',
-                                params: {
-                                    appType: appType,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div data-bind="component: { name: 'kaf000-b-component3',
-                                params: {
-                                    appType: appType,
-                                    approvalReason: approvalReason,
-                                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                                } }"></div>
-    <div class="table">
-        <div class="cell" style="width: 825px; padding-right: 10px;">
-            <div data-bind="component: { name: 'kaf000-b-component4',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: appDispInfoStartupOutput
-                            } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component5',
-                params: {
-                    appType: appType,
-                    application: application,
-                    appDispInfoStartupOutput: appDispInfoStartupOutput
-                } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component6',
-                                        params: {
-                                            appType: appType,
-                                            application: application,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf020-share', params: {dataFetch: dataFetch }}"></div>
-            <div data-bind="component: { name: 'kaf000-b-component7',
-                                        params: {
-                                            appType: appType,
-                                            application: application,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-            <div data-bind="component: { name: 'kaf000-b-component8',
-                                        params: {
-                                            appType: appType,
-                                            appDispInfoStartupOutput: appDispInfoStartupOutput
-                                        } }"></div>
-        </div>
-        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
-                            params: {
-                                appType: appType,
-                                application: application,
-                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
-                            } }"></div>
-    </div>
-</div>`,
-    })
+        template: `/nts.uk.at.web/view/kaf/020/c/index.html`,
+        })
 
     export class Kaf020CViewModel extends ko.ViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.OPTIONAL_ITEM_APPLICATION);

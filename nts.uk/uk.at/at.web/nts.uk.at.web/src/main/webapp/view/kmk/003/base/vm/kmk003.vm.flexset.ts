@@ -252,12 +252,16 @@ module nts.uk.at.view.kmk003.a {
                     let goWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
                     goWork2Stamp.workNo(2);
                     goWork2Stamp.classification(0);
+                    goWork2Stamp.startTime(null);
+                    goWork2Stamp.endTime(null);
                     let leaveWork1Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
                     leaveWork1Stamp.workNo(1);
                     leaveWork1Stamp.classification(1);
                     let leaveWork2Stamp: StampReflectTimezoneModel = new StampReflectTimezoneModel();
                     leaveWork2Stamp.workNo(2);
                     leaveWork2Stamp.classification(1);
+                    leaveWork2Stamp.startTime(null);
+                    leaveWork2Stamp.endTime(null);
                     self.lstStampReflectTimezone.push(goWork1Stamp);
                     self.lstStampReflectTimezone.push(leaveWork1Stamp);   
                     self.lstStampReflectTimezone.push(goWork2Stamp);
@@ -289,7 +293,12 @@ module nts.uk.at.view.kmk003.a {
                     self.getHDWtzMorning().resetData();
                     self.getHDWtzAfternoon().resetData();
                     self.lstStampReflectTimezone.forEach(function(item, index) {
-                        item.resetData();
+                        if (item.workNo() === 1) {
+                            item.resetData();
+                        } else {
+                            item.startTime(null);
+                            item.endTime(null);
+                        }
                     });
                 }
 

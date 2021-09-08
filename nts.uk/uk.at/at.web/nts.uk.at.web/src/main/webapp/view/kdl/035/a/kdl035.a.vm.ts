@@ -56,12 +56,12 @@ module nts.uk.at.view.kdl035.a.viewmodel {
 
             self.legendOptions = {
                 items: [
-                    {labelText: nts.uk.resource.getText("KDL009_29")},
-                    {labelText: nts.uk.resource.getText("KDL009_30")}
+                    {labelText: nts.uk.resource.getText("KDL035_6")},
+                    {labelText: nts.uk.resource.getText("KDL035_7")}
                 ],
                 template : '<div class="label">#{labelText}</div>'
             };
-            $("#fixed-table").ntsFixedTable({ height: 315 });
+            $("#fixed-table").ntsFixedTable({ height: 314 });
         }
 
         startPage(): JQueryPromise<any> {
@@ -86,8 +86,9 @@ module nts.uk.at.view.kdl035.a.viewmodel {
                 self.targetSelectionAtr = result.targetSelectionAtr;
                 self.substituteHolidayList(result.substituteHolidayList);
                 self.substituteWorkInfoList(result.substituteWorkInfoList.map(info => {
-                    const tmp = _.find(self.managementData, d => d.outbreakDay == info.substituteWorkDate);
-                    return new SubstituteWorkInfo(!!tmp, info, self.requiredNumberOfDays, self.startDate(), tmp ? tmp.dayNumberUsed : 0);
+                    const tmp = _.filter(self.managementData, d => d.outbreakDay == info.substituteWorkDate);
+                    const totalUsed = _.sum(tmp.map(i => i.dayNumberUsed));
+                    return new SubstituteWorkInfo(!_.isEmpty(tmp), info, self.requiredNumberOfDays, self.startDate(), totalUsed);
                 }));
                 dfd.resolve();
             }).fail(function(error: any) {
@@ -213,11 +214,11 @@ module nts.uk.at.view.kdl035.a.viewmodel {
             this.enabled = ko.observable(new Date(params.expirationDate).getTime() >= new Date(startDate).getTime());
             this.checked = ko.observable(checked);
             this.substituteDate = params.substituteWorkDate;
-            this.displayedSubstituteDate = (params.expiringThisMonth ? "［" : "")
+            this.displayedSubstituteDate = (params.expiringThisMonth ? "【" : "")
                 + (params.dataType == DataType.APPLICATION_OR_SCHEDULE ? "〈" : "")
                 + nts.uk.time.formatPattern(params.substituteWorkDate, "YYYY/MM/DD", "YYYY/MM/DD(ddd)")
                 + (params.dataType == DataType.APPLICATION_OR_SCHEDULE ? "〉" : "")
-                + (params.expiringThisMonth ? "］" : "");
+                + (params.expiringThisMonth ? "】" : "");
             this.remainingNumber = params.remainingNumber;
             this.displayedRemainingNumber = getText("KDL035_4", [nts.uk.ntsNumber.formatNumber(this.remainingNumber, {decimallength: 1})]);
             this.expiredDate = params.expirationDate;

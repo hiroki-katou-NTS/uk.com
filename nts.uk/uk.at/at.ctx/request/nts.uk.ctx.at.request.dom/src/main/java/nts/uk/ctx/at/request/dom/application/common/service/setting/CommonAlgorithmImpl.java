@@ -549,7 +549,11 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				
 			} else { // Listに存在しない
 				// INPUT「就業時間帯リスト」Listの先頭の就業時間帯を選択する
-				processWorkTime = workTimeLst.get(0).getWorktimeCode().v();
+				if (CollectionUtil.isEmpty(workTimeLst)) {
+					processWorkTime = null;
+				} else {
+					processWorkTime = workTimeLst.get(0).getWorktimeCode().v();	
+				}
 			}
 			
 		} else {

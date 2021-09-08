@@ -46,9 +46,6 @@
 #functions-area-bottom button {
 	margin-left: 0px;
 }
-#functions-area-bottom {
-  height: 45px;
-}
 
 .div-line {
 	margin-top: 10px;
@@ -69,6 +66,7 @@
 
 #contents-area {
 	padding: 20px 0px 0px 20px;
+  height: calc(100vh - 55px) !important;
 }
 
 .float_left {

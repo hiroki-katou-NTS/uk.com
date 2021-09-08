@@ -145,7 +145,7 @@ module kdl012.test.viewmodel {
         constructor(code: string | number, taskName: string, expirationStartDate?: string, expirationEndDate?: string, remark?: string) {
             this.code = code;
             this.taskName = taskName;
-            // this.taskAbName = this.taskAbName;
+            this.taskAbName = this.taskAbName;
             this.expirationStartDate = expirationStartDate;
             this.expirationEndDate = expirationEndDate;
             this.expireDate = expirationStartDate + ' ～ ' + expirationEndDate;

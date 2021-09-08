@@ -1,57 +1,88 @@
-<div class="panel" data-bind="visible: stampGrid().displayMethod() !== 0">
-  <table id="stamp-history-tbl">
-    <tr>
-      <th id="tbl-header">
-        <span data-bind="visible: stampGrid().displayMethod() === 1">#{i18n.getText('KDP002_25')}</span>
-        <span data-bind="visible: stampGrid().displayMethod() === 2">#{i18n.getText('KDP002_28')}</span>
-      </th>
-    </tr>
-    <tr>
-      <td id="tbl-header-time" data-bind="visible: stampGrid().displayMethod() === 1">
-        <div
-          id="daterangepicker"
-          tabindex="1"
-          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: stampGrid().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
-        ></div>
-        <button class="small" id="get-stamp-data" style="margin-top: 3px;" data-bind="click: getStampData " >
-          #{i18n.getText('KDP002_27')}
-        </button>
-      </td>
-      <td id="tbl-header-time" data-bind="visible: stampGrid().displayMethod() === 2">
-        <div data-bind="ntsDatePicker: { value: stampGrid().yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYY/MM', showJumpButtons: true }"></div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <div class="full-width" data-bind="visible: stampGrid().displayMethod() === 1">
-          <table
-            id="stamp-history-list"
-            data-bind="ntsGridList: {
-            width: 400,								
-            height: 392,
-            dataSource: stampGrid().items,
-            primaryKey: 'code',
-            columns: stampGrid().columns,
-            multiple: false,
-            value: stampGrid().currentCode
-          }"
-          ></table>
-        </div>
-        <div class="full-width" data-bind="visible: stampGrid().displayMethod() === 2">
-          <table
-            id="time-card-list"
-            data-bind="ntsGridList: {
-            width: 400,								
-            height: 370,
-            dataSource: stampGrid().items,
-            primaryKey: 'code',
-            columns: stampGrid().columns,
-            multiple: false,
-            value: stampGrid().currentCode
-          }"
-          ></table>
-        </div>
-      </td>
-    </tr>
-  </table>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">	
+	<div class="panel" data-bind="visible: stampGrid().displayMethod() !== 0">
+	  <table id="stamp-history-tbl">
+	    <!-- <tr>
+	      <th id="tbl-header">
+	        <span data-bind="visible: stampGrid().displayMethod() === 1">#{i18n.getText('KDP002_25')}</span>
+	        <span data-bind="visible: stampGrid().displayMethod() === 2">#{i18n.getText('KDP002_28')}</span>
+	      </th>
+	    </tr> -->
+	    <tr>
+	      <com:ko-if bind="stampGrid().displayMethod() === 1">
+		      <td id="tbl-header-time">
+		        <div id="daterangepicker" tabindex="1"
+		          data-bind="ntsDateRangePicker: { required: true, enable: true, showNextPrevious: true, value: stampGrid().dateValue, maxRange: 'oneMonth', name: '#[KDP002_26]'}"
+		        ></div>
+		        <button class="small" id="get-stamp-data" style="margin-top: 6px; vertical-align: top;" data-bind="click: getStampData, i18n: 'KDP002_27'" ></button>
+		      </td>
+	      </com:ko-if>
+	      <com:ko-if bind="stampGrid().displayMethod() === 2">
+		      <td id="tbl-header-time">
+		        <div data-bind="ntsDatePicker: { value: stampGrid().yearMonth, dateFormat: 'yearmonth', valueFormat: 'YYYY/MM', showJumpButtons: true }"></div>
+		      </td>
+	      </com:ko-if>
+	    </tr>
+	    <tr>
+	      <td>
+	      	<com:ko-if bind="stampGrid().displayMethod() === 1">
+		        <div class="full-width">
+		          <table
+		            id="stamp-history-list"
+		            data-bind="ntsGridList: {
+		            width: 440,								
+		            height: 415,
+		            dataSource: stampGrid().items,
+		            primaryKey: 'code',
+		            columns: stampGrid().columns,
+		            multiple: false,
+		            value: stampGrid().currentCode
+		          }"
+		          ></table>
+		        </div>
+		    </com:ko-if>
+	        <com:ko-if bind="!workManagementMultiple() &amp;&amp; stampGrid().displayMethod() === 2">
+		        <div>
+		          <div class="full-width">
+		            <table
+		              id="time-card-list"
+		              data-bind="ntsGridList: {
+		              width: 440,								
+		              height: 340,
+		              dataSource: stampGrid().items,
+		              primaryKey: 'code',
+		              columns: stampGrid().columns,
+		              multiple: false,
+		              value: stampGrid().currentCode
+		            }"
+		            ></table>
+		        </div>
+		      </div>
+	      </com:ko-if>
+	      <com:ko-if bind="workManagementMultiple() &amp;&amp; stampGrid().displayMethod() === 2">
+	      	<div>
+	          <div class="full-width">
+	            <table
+	              id="time-card-list"
+	              data-bind="ntsGridList: {
+	              width: 260,								
+	              height: 340,
+	              dataSource: stampGrid().items,
+	              primaryKey: 'code',
+	              columns: stampGrid().columns,
+	              multiple: false,
+	              value: stampGrid().currentCode
+	            }"
+	            ></table>
+	          </div>
+	      	</div>
+	      </com:ko-if>	
+	      </td>
+	    </tr>
+	  </table>
 </div>
+</html>

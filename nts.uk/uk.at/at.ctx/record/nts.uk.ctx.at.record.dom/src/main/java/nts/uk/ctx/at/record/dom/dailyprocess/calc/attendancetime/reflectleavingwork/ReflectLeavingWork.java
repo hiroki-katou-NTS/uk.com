@@ -34,16 +34,16 @@ public class ReflectLeavingWork {
 		OutputCheckRangeReflectAttd outputCheckRangeReflectAttd = checkRangeReflectLeavingWork
 				.checkRangeReflectAttd(stamp, stampReflectRangeOutput, integrationOfDaily);
 		if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.FIRST_TIME) {
-			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP_REAL, 1,
-					integrationOfDaily);
 			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP, 1,
+					integrationOfDaily);
+			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP_REAL, 1,
 					integrationOfDaily);
 
 			// 2回目勤務の出勤打刻反映範囲内 (出勤打刻反映範囲内 của worktype lần 2)
 		} else if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.SECOND_TIME) {
-			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP_REAL, 2,
-					integrationOfDaily);
 			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP, 2,
+					integrationOfDaily);
+			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP_REAL, 2,
 					integrationOfDaily);
 		}
 		return reflectStampOuput;

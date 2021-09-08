@@ -8,7 +8,6 @@
 }
 
 #list_role {
-	background-color: #E0F59E;
 	margin-top: 10px;
 	border-radius: 7px;
 	padding: 20px;
@@ -27,4 +26,8 @@
 
 table.control-group {
 	min-width: 570px;
+}
+
+#roleName {
+  width: 200px !important;
 }

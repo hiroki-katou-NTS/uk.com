@@ -10,13 +10,12 @@
 	
 		<div class="sidebar-content-header">
 			<span>#{i18n.getText('Com_Employment')}</span>
+        <!-- D5_1 -->
+        <a class="goback" data-bind="ntsLinkButton: { jump: '../g/index.xhtml' }">#{i18n.getText('KMF002_95')}</a>
    			<!-- D1_1 -->
    			<button class="proceed" tabindex="1" data-bind="click: save, enable: enableSave">#{i18n.getText('KMF002_2')}</button>
    			<!-- D1_2 -->
    			<button class="danger" tabindex="2" data-bind="click: remove, enable: enableDelete">#{i18n.getText('KMF002_11')}</button>
-   			
-   			<button tabindex="3" id = "opencdl028Dialog" data-bind="click: opencdl028Dialog3">#{i18n.getText('KSM004_100')}</button>
-   			
 		</div>
 		
 		<div id="scrD" class="contents-area fixed-flex-layout" >

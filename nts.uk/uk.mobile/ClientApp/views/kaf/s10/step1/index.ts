@@ -12,7 +12,6 @@ import { KafS10Component} from '../a/index';
     route: '/kaf/s10/step1',
     style: require('./style.scss'),
     template: require('./index.vue'),
-    resource: require('./resources.json'),
     validations: {
         // breakTimes: {
         //     valueHours: {
@@ -81,6 +80,14 @@ export class KafS10Step1Component extends Vue {
 
     public created() {
         const self = this;  
+
+        if (self.$appContext.getNumb == 1) {
+            self.pgName = 'kafs10step1';
+        } else if (self.$appContext.getNumb == 2) {
+            self.pgName = 'kafs10step2';
+        } else {
+            self.pgName = 'kafs10step3';
+        }
         self.isGoWorkResource = [{
             code: true,
             text: 'KAFS07_11'

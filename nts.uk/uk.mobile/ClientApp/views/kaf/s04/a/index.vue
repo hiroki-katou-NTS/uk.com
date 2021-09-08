@@ -125,14 +125,14 @@
         v-if="mode"
         type="button"
         class="btn btn-primary btn-block"
-        v-on:click="checkValidAll()"
+        v-on:click="handleClickRegister()"
       >{{'KAFS04_13' | i18n}}</button>
       <!-- 画面モード = 編集モード -->
       <button
         v-else
         type="button"
         class="btn btn-primary btn-block"
-        v-on:click="checkValidAll()"
+        v-on:click="handleClickRegister()"
       >{{'KAFS04_4' | i18n}}</button>
   </div>
 </template>

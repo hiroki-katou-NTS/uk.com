@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.Time
  *
  */
 @Getter
-public class FlexTime {
+public class FlexTime implements Cloneable{
 	//フレックス時間
 	private TimeDivergenceWithCalculationMinusExist flexTime;
 	//申請時間
@@ -95,5 +95,10 @@ public class FlexTime {
 	public FlexTime calcDiverGenceTime() {
 		TimeDivergenceWithCalculationMinusExist calcedDiverGenceTime = this.flexTime==null?this.flexTime:this.flexTime.calcDiverGenceTime();
 		return new FlexTime(calcedDiverGenceTime,this.beforeApplicationTime);
+	}
+	
+	@Override
+	public FlexTime clone() {
+		return new FlexTime(flexTime.clone(), new AttendanceTime(beforeApplicationTime.v()));
 	}
 }

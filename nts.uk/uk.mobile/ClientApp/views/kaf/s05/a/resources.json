@@ -1,8 +1,12 @@
 {
     "jp": {
-        "kafs05": "kafs05 (jp)"
+        "kafs05step1": "#{KAFS05_1000}",
+        "kafs05step2": "#{KAFS05_1001}",
+        "kafs05step3": "#{KAFS05_1002}"
     },
     "vi": {
-        "kafs05": "kafs05 (vi)"
+        "kafs05step1": "#{KAFS05_1000}",
+        "kafs05step2": "#{KAFS05_1001}",
+        "kafs05step3": "#{KAFS05_1002}"
     }
 }

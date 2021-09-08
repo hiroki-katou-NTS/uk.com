@@ -1124,10 +1124,10 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				appDispInfoStartup,
 				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
 		if (CollectionUtil.isEmpty(displayInfoOverTime.getInfoBaseDateOutput().getWorktypes())) {
-			throw new BusinessException("Msg_1568");
+			throw new BusinessException("Msg_1567");
 		}
 		if (CollectionUtil.isEmpty(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()))) {
-			throw new BusinessException("Msg_1567");
+			throw new BusinessException("Msg_1568");
 		}
 		
 		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));

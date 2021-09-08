@@ -80,8 +80,7 @@ public class WorkTimeOfTimeSeries implements Serializable{
 				new WithinStatutoryMidNightTime(
 						this.legalTime.getWithinStatutoryMidNightTime().getTime().addMinutes(
 								addTime.getWithinStatutoryMidNightTime().getTime().getTime(),
-								addTime.getWithinStatutoryMidNightTime().getTime().getCalcTime())),
-				this.legalTime.getVacationAddTime().addMinutes(addTime.getVacationAddTime().v()));
+								addTime.getWithinStatutoryMidNightTime().getTime().getCalcTime())));
 	}
 	
 	/**
