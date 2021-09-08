@@ -41,8 +41,8 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 	public int creatorAtr;
 	
 	/** 使用日数 */
-	@Column(name ="USE_DAYS")
-	public double useDays;
+	@Column(name ="USED_DAYS")
+	public double usedDays;
 	
 	@Override
 	protected Object getKey() {
@@ -56,7 +56,7 @@ public class KshdtInterimHdpub extends ContractUkJpaEntity {
 				pk.ymd,
 				EnumAdaptor.valueOf(creatorAtr, CreateAtr.class),
 				RemainType.PUBLICHOLIDAY,
-				new DayOfVacationUse(useDays));
+				new DayOfVacationUse(usedDays));
 	}
 	
 	public static KshdtInterimHdpub toEntity(TempPublicHolidayManagement domain){

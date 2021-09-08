@@ -86,13 +86,13 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 
 	private static final String DELETE_DAYOFFMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcmtInterimDayOffMng c "
 			+ "WHERE c.pk.sid = :sid "
-			+ " AND c.ymd >= :startDate"
-			+ " AND c.ymd <= :endDate";
+			+ " AND c.pk.ymd >= :startDate"
+			+ " AND c.pk.ymd <= :endDate";
 	
 	private static final String DELETE_BREAKMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcdtInterimHdwkMng c "
 			+ "WHERE c.pk.sid = :sid "
-			+ " AND c.ymd >= :startDate"
-			+ " AND c.ymd <= :endDate";
+			+ " AND c.pk.ymd >= :startDate"
+			+ " AND c.pk.ymd <= :endDate";
 
 
 	

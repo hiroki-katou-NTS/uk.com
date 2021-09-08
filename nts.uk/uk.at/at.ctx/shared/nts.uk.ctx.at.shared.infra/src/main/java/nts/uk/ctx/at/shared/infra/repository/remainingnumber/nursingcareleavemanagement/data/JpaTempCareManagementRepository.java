@@ -39,8 +39,8 @@ public class JpaTempCareManagementRepository extends JpaRepository implements Te
 	
 	private static final String DELETE_BY_SID_PERIOD = "DELETE FROM KshdtInterimCareData a"
 			+ " WHERE a.pk.sid = :sid"
-			+ "AND a.pk.ymd >= :startYmd "
-			+ "AND a.pk.ymd <= :endYmd ";
+			+ " AND a.pk.ymd >= :startYmd "
+			+ " AND a.pk.ymd <= :endYmd ";
 
 
 	/** 検索 */

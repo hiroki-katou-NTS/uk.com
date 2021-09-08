@@ -18,11 +18,11 @@ public class JpaPublicHolidayCarryForwardHistoryRepo extends JpaRepository imple
 
 	
 	private static final String REMOVE_BY_SID_YM_CLOSUREId_CLOSUREDATE = "DELETE FROM KshdtHdpubRemHist a"
-			+ " WHERE a.pk.employeeId = :employeeId"
-			+"AND a.pk.yearMonth >= :yearMonth "
-			+"AND a.pk.closureId = :closureId"
-			+"AND a.pk.closeDay = :closeDay"
-			+"AND a.pk.isLastDay = :isLastDay";
+			+" WHERE a.pk.sid = :employeeId"
+			+" AND a.pk.yearMonth >= :yearMonth "
+			+" AND a.pk.closureId = :closureId"
+			+" AND a.pk.closeDay = :closeDay"
+			+" AND a.pk.isLastDay = :isLastDay";
 	
 	/*
 	 * (非 Javadoc)
@@ -62,8 +62,8 @@ public class JpaPublicHolidayCarryForwardHistoryRepo extends JpaRepository imple
 		this.queryProxy().query(REMOVE_BY_SID_YM_CLOSUREId_CLOSUREDATE,KshdtHdpubRemHist.class)
 		.setParameter("employeeId", employeeId)
 		.setParameter("yearMonth", yearMonth)
-		.setParameter("closureId", closureId)
-		.setParameter("closeDay", closureDate.getClosureDay())
-		.setParameter("isLastDay", closureDate.getLastDayOfMonth());
+		.setParameter("closureId", closureId.value)
+		.setParameter("closeDay", closureDate.getClosureDay().v())
+		.setParameter("isLastDay", closureDate.getLastDayOfMonth() ? 1 : 0);
 	}
 }

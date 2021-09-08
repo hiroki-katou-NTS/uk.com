@@ -40,7 +40,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	
 	private static final String DELETE_BY_SID_CD_PERIOD = "DELETE FROM KrcdtInterimHdSpMng c"
 			+ " WHERE c.pk.sid = :sid "
-			+ " AND c.specialHolidayCode = :specialHolidayCode"
+			+ " AND c.pk.specialHolidayCode = :specialHolidayCode"
 			+ " AND c.pk.ymd >= :startDate "
 			+ " AND c.pk.ymd <= :endDate";
 	

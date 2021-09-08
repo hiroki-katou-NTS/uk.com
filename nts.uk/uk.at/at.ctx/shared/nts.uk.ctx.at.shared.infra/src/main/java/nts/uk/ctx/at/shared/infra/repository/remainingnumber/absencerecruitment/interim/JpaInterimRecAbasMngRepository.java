@@ -102,13 +102,13 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 	
 	private static final String DELETE_RECMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcdtInterimRecMng c "
 			+ " WHERE c.pk.sid = :sid"
-			+ " AND c.ymd >= :startDate"
-			+ " AND c.ymd <= :endDate";
+			+ " AND c.pk.ymd >= :startDate"
+			+ " AND c.pk.ymd <= :endDate";
 	
 	private static final String DELETE_ABSMNG_BY_SID_AND_DATEPERIOD = "DELETE FROM KrcdtInterimHdSubMng c "
 			+ " WHERE c.pk.sid = :sid"
-			+ " AND c.ymd >= :startDate"
-			+ " AND c.ymd <= :endDate";
+			+ " AND c.pk.ymd >= :startDate"
+			+ " AND c.pk.ymd <= :endDate";
 
 	@Override
 	public Optional<InterimRecMng> getReruitmentById(String recId) {
