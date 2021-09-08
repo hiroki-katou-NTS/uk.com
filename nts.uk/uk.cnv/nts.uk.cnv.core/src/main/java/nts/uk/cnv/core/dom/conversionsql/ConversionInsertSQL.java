@@ -16,6 +16,8 @@ public class ConversionInsertSQL implements ConversionSQL {
 	private FromSentence from;
 	private List<WhereSentence> where;
 	private List<String> groupingColumns;	
+	
+	private String programId;
 
 	public ConversionInsertSQL(
 			InsertSentence insert,
@@ -23,12 +25,14 @@ public class ConversionInsertSQL implements ConversionSQL {
 			FromSentence from,
 			List<WhereSentence> where,
 			List<String> groupingColumns,
-			DatabaseSpec spec) {
+			DatabaseSpec spec,
+			String programId) {
 		this.insert = insert;
 		this.select = select;
 		this.from = from;
 		this.where = where;
 		this.groupingColumns = groupingColumns;
+		this.programId = programId;
 		
 		addFixedColumns(spec);
 	}
@@ -36,7 +40,8 @@ public class ConversionInsertSQL implements ConversionSQL {
 	public ConversionInsertSQL(
 			TableFullName table,
 			List<WhereSentence> whereList,
-			DatabaseSpec spec) {
+			DatabaseSpec spec,
+			String programId) {
 		this.insert = new InsertSentence(table);
 		this.select = new ArrayList<>();
 		this.from = new FromSentence();
@@ -101,7 +106,7 @@ public class ConversionInsertSQL implements ConversionSQL {
 		String sysDatetime = spec.sysDatetime();
 		 String ccd = "NULL";
 		String scd = "NULL";
-		String pg = "'" + programId() + "'";
+		String pg = "'" + programId + "'";
 		return Collections.unmodifiableMap( new LinkedHashMap<ColumnExpression, SelectSentence>() {
 		    {
 		        put (new ColumnExpression("", "INS_DATE"), SelectSentence.createNotFormat("", sysDatetime, "INS_DATE"));
@@ -114,9 +119,5 @@ public class ConversionInsertSQL implements ConversionSQL {
 		        put (new ColumnExpression("", "UPD_PG"), SelectSentence.createNotFormat("", pg, "UPD_PG"));
 		        put (new ColumnExpression("", "EXCLUS_VER"), SelectSentence.createNotFormat("", "0", "EXCLUS_VER"));
 		    }} );
-	}
-	
-	protected String programId() {
-		return "CNV001";
 	}
 }
