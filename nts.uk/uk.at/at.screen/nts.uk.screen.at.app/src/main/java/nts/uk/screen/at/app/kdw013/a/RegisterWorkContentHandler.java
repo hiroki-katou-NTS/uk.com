@@ -61,8 +61,8 @@ public class RegisterWorkContentHandler {
 		// 1: <call>() 日別実績の作成
 		OutputCreateDailyResult outputCreateDailyOneDay = createDailyResultDomainServiceNew.createDataNewNotAsync(
 				command.getEmployeeId(), 
-				new DatePeriod(command.getChangedDate(), 
-				command.getChangedDate()), 
+				new DatePeriod(command.getChangedDates().get(0), 
+				command.getChangedDates().get(command.getChangedDates().size()-1)), 
 				ExecutionAttr.MANUAL, 
 				AppContexts.user().companyId(),
 				ExecutionTypeDaily.CREATE, 
