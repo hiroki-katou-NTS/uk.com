@@ -1,26 +1,29 @@
 package nts.uk.screen.at.app.ksc001.d;
 
-import lombok.AllArgsConstructor;
-import lombok.val;
-import nts.arc.task.parallel.ManagedParallelWithContext;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeaveHolidayAdapter;
-import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeavePeriodAdapter;
-import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.WorkPlaceHistAdapter;
-import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.*;
-import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
-import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.val;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeaveHolidayAdapter;
+import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeavePeriodAdapter;
+import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.WorkPlaceHistAdapter;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeaveHolidayPeriod;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.LeavePeriod;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.WorkPlaceHist;
+import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistoryRepository;
+import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
 /**
  * ScreenQuery: 設定した要件によると対象社員を取得する
@@ -38,8 +41,7 @@ public class GetEligibleEmployeesScreenQuery {
     private LeaveHolidayAdapter leaveHolidayAdapter;
     @Inject
     private LeavePeriodAdapter leavePeriodAdapter;
-    @Inject
-    private ManagedParallelWithContext parallel;
+
     public List<String> getListEmployeeId(ConditionDto conditionDto){
         List<String> rs = new ArrayList<>();
         ImplRequire require = new ImplRequire(sWorkTimeHistoryRepository,workingConditionItemRepository,syWorkplaceAdapter
@@ -49,7 +51,7 @@ public class GetEligibleEmployeesScreenQuery {
                     conditionDto.isShortWorkingHours(),conditionDto.isChangedWorkingConditions());
             val listId = conditionDto.getListEmployeeId();
             val period = new DatePeriod(conditionDto.getStartDate(),conditionDto.getEndDate());
-            this.parallel.forEach(listId,e ->{
+            listId.forEach(e -> {
                 if(checkEmployee.CheckEmployeesAreEligible(require,e,period)){
                     rs.add(e);
                 }

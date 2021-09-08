@@ -54,23 +54,24 @@ module cps003.c.vm {
             
             if (paramB && paramB.headDatas) {
                 self.convertData(paramB).done((errs) => {
-                    self.loadGrid();
-                    self.initDs = _.cloneDeep(self.gridOptions.dataSource);
-                    let $grid = $("#grid");
-//                    $grid.mGrid("validate", null, () => true);
-//                    self.validateSpecial(null, self.gridOptions.dataSource);
-                    forEach(errs, e => {
-                        if (_.isNil(e.id)) {
-                            let rec = self.initDs[e.index];
-                            if (rec) {
-                                e.id = rec.id;
-                            }            
-                        }                    
-                    });
-                    
-                    if (errs && errs.length > 0) {
-                        $grid.mGrid("setErrors", errs);
-                    }
+                    setTimeout(() => {
+						self.loadGrid();
+	                    self.initDs = _.cloneDeep(self.gridOptions.dataSource);
+	                    let $grid = $("#grid");
+	//                    $grid.mGrid("validate", null, () => true);
+	//                    self.validateSpecial(null, self.gridOptions.dataSource);
+	                    forEach(errs, e => {
+	                        if (_.isNil(e.id)) {
+	                            let rec = self.initDs[e.index];
+	                            if (rec) {
+	                                e.id = rec.id;
+	                            }            
+	                        }                    
+	                    });
+	                    
+	                    if (errs && errs.length > 0) {
+	                        $grid.mGrid("setErrors", errs);
+	                    }
                     
 //                    let errors = $grid.mGrid("errors");
 //                    if (errors.length > 0) {
@@ -79,7 +80,7 @@ module cps003.c.vm {
 //                            $grid.mGrid("updateCell", id, "status", "エラー(" + errGroup[id].length + "件)", true);
 //                        });
 //                    }
-                    
+                    }, 100);
                     unblock();
                 });
             }

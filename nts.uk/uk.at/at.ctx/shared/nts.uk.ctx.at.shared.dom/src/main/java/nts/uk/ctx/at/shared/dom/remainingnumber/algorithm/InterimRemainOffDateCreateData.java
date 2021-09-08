@@ -69,10 +69,6 @@ public class InterimRemainOffDateCreateData {
 		//時間休暇使用時間を作成
 		formerRemainData = createUsageHolidayTimes(require, cid, sid, baseDate, detailData, formerRemainData);
 
-		if (formerRemainData.getWorkTypeRemain().isEmpty()) {
-			return null;
-		}
-
 		//残数作成元情報から暫定残数管理データを作成する
 		DailyInterimRemainMngData createDataInterimRemain = createDataInterimRemain(require, formerRemainData);
 		return createDataInterimRemain;
@@ -1068,7 +1064,7 @@ public class InterimRemainOffDateCreateData {
 		List<OccurrenceUseDetail> occList = inforData.getWorkTypeRemain().stream().map(x -> x.getOccurrenceDetailData())
 				.flatMap(List::stream).collect(Collectors.toList());
 
-		occList.forEach(x -> {
+		occList.stream().filter(x -> x.getDays() > 0).forEach(x -> {
 			WorkTypeClassification wkCls = x.getWorkTypeAtr();
 
 			switch (wkCls) {

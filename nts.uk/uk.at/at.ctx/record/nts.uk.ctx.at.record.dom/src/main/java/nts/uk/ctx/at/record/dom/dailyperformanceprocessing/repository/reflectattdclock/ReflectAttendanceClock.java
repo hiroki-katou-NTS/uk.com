@@ -126,7 +126,7 @@ public class ReflectAttendanceClock {
 			if(!timeActualStamp.isPresent()) {
 				return null;
 			}
-			Optional<WorkStamp> workStamp = timeActualStamp.get().getActualStamp();
+			Optional<WorkStamp> workStamp = actualStampAtr == ActualStampAtr.STAMP_REAL ? timeActualStamp.get().getActualStamp() : timeActualStamp.get().getStamp();
 			//fixbug 115441
 //			if(actualStampAtr == ActualStampAtr.STAMP ) {
 //				workStamp = timeActualStamp.get().getStamp();

@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  * @author tutk
  *
  */
-public class RefectActualResult implements DomainValue {
+public class RefectActualResult implements DomainValue, Cloneable {
 
 	/**
 	 * 勤務先情報
@@ -45,5 +45,12 @@ public class RefectActualResult implements DomainValue {
 		this.workInforStamp = Optional.ofNullable(workInforStamp);
 		this.workTimeCode = Optional.ofNullable(workTimeCode);
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
+	}
+	
+	@Override
+	public RefectActualResult clone() {
+		return new RefectActualResult(workInforStamp.map(x -> x.clone()).orElse(null),
+				workTimeCode.map(x -> new WorkTimeCode(x.v())).orElse(null), overtimeDeclaration
+						.map(x -> new OvertimeDeclaration(x.getOverTime(), x.getOverLateNightTime())).orElse(null));
 	}
 }

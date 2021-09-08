@@ -369,7 +369,7 @@ module nts.uk.at.view.kwr007.b {
             listItemsSwap.push(Item);
           });
 
-          listItemsSwap = _.orderBy(listItemsSwap, ['attendanceItemId', 'asc']);
+          //listItemsSwap = _.orderBy(listItemsSwap, ['attendanceItemId', 'asc']);
 
           vm.keepListItemsSwap(listItemsSwap); //base
           vm.resetListItemsSwap();

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -47,6 +48,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.care.interimdata.TempCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.interimdata.TempChildCareManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
@@ -358,7 +360,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
 			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
 				continue;
-			interimMng.addAll(dailyInterimRemainMng.getRecAbsData());
+			interimMng.addAll(dailyInterimRemainMng.getRecAbsData().stream()
+					.filter(x -> x.getRemainType() == RemainType.PAUSE || x.getRemainType() == RemainType.PICKINGUP)
+					.collect(Collectors.toList()));
 
 			// 振休
 			if (dailyInterimRemainMng.getInterimAbsData().isPresent()) {
@@ -379,7 +383,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				useAbsMng, interimMng, useRecMng,
 				Optional.empty(),
 				Optional.empty(),
-				Optional.empty(),
+				Optional.of(period),
 				new FixedManagementDataMonth());
 		val aggrResult = NumberCompensatoryLeavePeriodQuery.process(require, inputParam);
 		if (aggrResult != null) {
@@ -420,7 +424,9 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		for (val dailyInterimRemainMng : this.dailyInterimRemainMngs) {
 			if (dailyInterimRemainMng.getRecAbsData().size() <= 0)
 				continue;
-			interimMng.addAll(dailyInterimRemainMng.getRecAbsData());
+			interimMng.addAll(dailyInterimRemainMng.getRecAbsData().stream()
+					.filter(x -> x.getRemainType() == RemainType.BREAK || x.getRemainType() == RemainType.SUBHOLIDAY)
+					.collect(Collectors.toList()));
 
 			// 休出
 			if (dailyInterimRemainMng.getBreakData().isPresent()) {
@@ -440,9 +446,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 				this.isOverWriteRemain,
 				interimMng,
 				Optional.empty(),
-				Optional.empty(),
-				breakMng,
-				dayOffMng,
+				Optional.of(period),
 				Optional.empty(), new FixedManagementDataMonth());
 		//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
 		val aggrResult = 	NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(require, inputRefactor);

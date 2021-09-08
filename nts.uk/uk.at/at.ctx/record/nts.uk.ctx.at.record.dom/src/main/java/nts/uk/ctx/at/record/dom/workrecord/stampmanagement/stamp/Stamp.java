@@ -24,7 +24,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @AllArgsConstructor
-public class Stamp implements DomainAggregate {
+public class Stamp implements DomainAggregate, Cloneable {
 
 	/**
 	 * 契約コード
@@ -133,5 +133,12 @@ public class Stamp implements DomainAggregate {
 	public void setReflectedCategory(boolean reflectedCategory) {
 		this.imprintReflectionStatus.setReflectedCategory(reflectedCategory);
 	}
-	
+
+	@Override
+	public Stamp clone() {
+		return new Stamp(new ContractCode(contractCode.v()), new StampNumber(cardNumber.v()), stampDateTime,
+				relieve.clone(), type.clone(), refActualResults.clone(), reflectedCategory,
+				locationInfor.map(x -> new GeoCoordinate(x.getLatitude(), x.getLongitude())),
+				attendanceTime.map(x -> new AttendanceTime(x.v())));
+	}
 }
