@@ -142,13 +142,13 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 
 		// 追加する分と重複する未来の履歴は全て削除
 		removeDuplications(require, context, employeeId, containers, existingHistory);
-
-		//既存データと受入れようとしてるデータで補正
-		//未来履歴は↑で消えているため、
-		//既存データの一番未来のやつと受入れようとしてる一番過去のやつを見て、補正すればいい
-		adjustExistingHistory(require, context, containers.get(0).addingHistoryItem, existingHistory);
 		
 		try {
+			//既存データと受入れようとしてるデータで補正
+			//未来履歴は↑で消えているため、
+			//既存データの一番未来のやつと受入れようとしてる一番過去のやつを見て、補正すればいい
+			adjustExistingHistory(require, context, containers.get(0).addingHistoryItem, existingHistory);
+			
 			//受入れようとしてる履歴同士で補正
 			adjustAddingHistory(existingHistory, containers);
 		} catch (BusinessException ex) {
@@ -156,6 +156,8 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 			containers.forEach(c -> require.add(
 					context,
 					ExternalImportError.record(c.interm.getRowNo(), ex.getMessage())));
+			
+			return Collections.emptyList();
 		}
 		
 		val newContainers = canonicalizeExtends(require, context, employeeId, containers);
