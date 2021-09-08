@@ -162,10 +162,13 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         //作成したMap＜職場ID、List＜社員ID＞　！＝　Empty
         Map<String, List<String>> managerErrorList = new HashMap<>();
         List<String> personError = new ArrayList<>();
+        val exportWkrPl = command.listValueExtractAlarmDto.stream().filter(x -> {
+            return command.getWorkplaceIds().stream().anyMatch(y -> y.equals(x.getWorkplaceID()));
+        }).collect(Collectors.toList());
         if (!employeeIdMap.isEmpty()) {            //アルゴリズム「メール送信処理」を実行する。
             managerErrorList = workplaceSendEmailService.alarmWorkplacesendEmail(
                     employeeIdMap,
-                    command.listValueExtractAlarmDto,
+                    exportWkrPl,
                     exMailListNOrmal.get(),
                     command.getCurrentAlarmCode(),
                     useAuthentication
@@ -174,7 +177,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         //取得したList<メール送信社員ID>　！＝　Empty
         if (!empIdList.isEmpty()) {
             personError = workplaceSendEmailService.alarmWorkplacesendEmail(empIdList,
-                    command.listValueExtractAlarmDto,
+                    exportWkrPl,
                     exMailListNOrmal.get(),
                     command.getCurrentAlarmCode(),
                     useAuthentication);
