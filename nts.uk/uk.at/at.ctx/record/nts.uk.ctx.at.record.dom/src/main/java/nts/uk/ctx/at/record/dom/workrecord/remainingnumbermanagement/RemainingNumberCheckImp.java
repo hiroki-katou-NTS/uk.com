@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.workrecord.remainingnumbermanagement;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,6 +21,9 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
     
     @Inject
     private WorkTypeRepository workTypeRepository;
+    
+    @Inject
+    private DetermineCareNursingCheck determineCareNursingCheck;
 
     @Override
     public RemainNumberClassification determineCheckRemain(String cId, List<String> workTypeCodes,
@@ -67,6 +71,12 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
             workTypeLst.forEach(workType -> {
                 // ＠勤務種類からどんな休暇種類を含むか判断する
                 Holiday holiday = workType.getDailyWork().determineHolidayByWorkType();
+                
+                // 介護看護がチェックするか判断する
+                determineCareNursingCheck.determineCareNursingCheck(
+                        cId, 
+                        workType.getWorkTypeSetList().stream().map(wts -> wts.getSumAbsenseNo()).collect(Collectors.toList()), 
+                        workType.getWorkTypeSetList().stream().map(wts -> wts.getSumSpHodidayNo()).collect(Collectors.toList()));
                 
                 // 時間消化休暇か判断する
                 if (holiday.isTimeDigestVacation() && timeDigest.isPresent()) {

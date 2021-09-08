@@ -12,7 +12,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class RemainNumberClassification {
     /** ・代休チェック区分 */
     private boolean chkSubHoliday;
@@ -33,7 +32,7 @@ public class RemainNumberClassification {
     /** 介護チェック区分 */
     private boolean chkLongTermCare;
     
-    public RemainNumberClassification(boolean chkChildNursing, boolean chkLongTermCare) {
+    public RemainNumberClassification() {
     	this.chkSubHoliday = true;
     	this.chkPause = true;
     	this.chkAnnual = true;
@@ -41,7 +40,7 @@ public class RemainNumberClassification {
     	this.chkSpecial = true;
     	this.chkPublicHoliday = true;
     	this.chkSuperBreak = true;
-    	this.chkChildNursing = chkChildNursing;
-    	this.chkLongTermCare = chkLongTermCare;
+    	this.chkChildNursing = true;
+    	this.chkLongTermCare = true;
     }
 }

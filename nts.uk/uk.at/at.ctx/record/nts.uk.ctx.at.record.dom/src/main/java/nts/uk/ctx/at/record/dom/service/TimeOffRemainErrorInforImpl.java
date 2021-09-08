@@ -102,8 +102,7 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		
 		RemainInputParam inputParam = new RemainInputParam(param.getCid(), param.getSid(), param.getAggDate(), false,
 				param.getObjDate().end(), param.getObjDate(), Optional.of(CreateAtr.RECORD));
-		Optional<RemainNumberClassification> remainNumberClassification = Optional.of(new RemainNumberClassification(
-				param.getChkChildNursing().orElse(false), param.getChkLongTermCare().orElse(false)));
+		Optional<RemainNumberClassification> remainNumberClassification = Optional.of(new RemainNumberClassification());
 		RemainErrors lstError = InterimRemainCheckRegister.getError(inputParam, eachData, remainNumberClassification);
 		
 		List<EmployeeMonthlyPerError> outPutData = new ArrayList<>();
