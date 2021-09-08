@@ -221,10 +221,11 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 						self.importStartRow(),
 						self.layoutItemNoList()),
 				};
-				ajax("screen/com/cmf/cmf001/b/save", saveContents);
-				info(nts.uk.resource.getMessage("Msg_15", []));
-				self.reloadPage();
-				self.selectedCode(self.settingCode());
+				ajax("screen/com/cmf/cmf001/b/save", saveContents).done(() => {
+					info(nts.uk.resource.getMessage("Msg_15", []));
+					self.reloadPage();
+					self.selectedCode(self.settingCode());
+                });
 			}
 		}
 
@@ -233,10 +234,16 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		remove(){
 			let self = this;
 			let target = {code: self.selectedCode()};
-			ajax("exio/input/setting/remove", target);
-			info(nts.uk.resource.getMessage("Msg_16", []));
-			self.reloadPage();
-			self.selectedCode("");
+
+			
+
+            ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                this.$ajax("exio/input/setting/remove", target).done(() => {
+					info(nts.uk.resource.getMessage("Msg_16", []));
+					self.reloadPage();
+					self.selectedCode("");
+                });
+            });
 		}
 
 		gotoDetailSetting() {

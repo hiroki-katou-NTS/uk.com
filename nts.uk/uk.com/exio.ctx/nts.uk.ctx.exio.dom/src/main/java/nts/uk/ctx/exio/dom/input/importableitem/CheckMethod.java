@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.HalfIntegerPrimitiveValue;
@@ -21,7 +20,6 @@ public enum CheckMethod {
 	
 	PRIMITIVE_VALUE(1) {
 		@Override
-		@SneakyThrows
 		public Optional<ErrorMessage> validate(Class<?> pvClass, Object value) {
 			
 			if (value == null) {
@@ -38,7 +36,13 @@ public enum CheckMethod {
 				value = new Double(value.toString());
 			}
 			
-			PrimitiveValue<?> pv = (PrimitiveValue<?>) pvClass.getConstructors()[0].newInstance(value);
+			PrimitiveValue<?> pv;
+			try {
+				pv = (PrimitiveValue<?>) pvClass.getConstructors()[0].newInstance(value);
+			} catch (Exception ex) {
+				throw new RuntimeException("PVインスタンス生成に失敗：" + pvClass.getName());
+			}
+			
 			try {
 				pv.validate();
 			} catch (Exception ex) {
