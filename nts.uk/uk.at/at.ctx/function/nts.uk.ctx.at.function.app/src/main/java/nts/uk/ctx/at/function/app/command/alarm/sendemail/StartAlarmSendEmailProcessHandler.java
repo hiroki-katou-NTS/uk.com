@@ -78,7 +78,7 @@ public class StartAlarmSendEmailProcessHandler extends CommandHandlerWithResult<
 
 		return sendEmailService.alarmSendEmail(companyID, executeDate, listEmployeeTagetId, listManagerTagetId,
 				listValueExtractAlarmDto, mailSettingsParamDto, currentAlarmCode,
-				useAuthentication, mailSettingPerson, mailSettingAdmin, Optional.empty(), managerTargetList, alarmExeMailSetting, false);
+				useAuthentication, mailSettingPerson, mailSettingAdmin, Optional.empty(), managerTargetList, alarmExeMailSetting);
 	}
 
 	private MailSettingsParamDto buildMailSend(Optional<MailSettings> mailSetingPerson, Optional<MailSettings> mailSetingAdmin) {
