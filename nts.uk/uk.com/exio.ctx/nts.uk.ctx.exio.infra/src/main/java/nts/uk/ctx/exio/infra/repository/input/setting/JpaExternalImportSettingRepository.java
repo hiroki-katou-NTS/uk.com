@@ -1,10 +1,13 @@
 package nts.uk.ctx.exio.infra.repository.input.setting;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -26,15 +29,29 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 
 	@Override
 	public void update(ExternalImportSetting domain) {
-		this.commandProxy().update(toEntitiy(domain));
-
+		delete(domain.getCompanyId(), domain.getCode());
+		insert(domain);
 	}
 
 	@Override
 	public void delete(String companyId, ExternalImportCode settingCode) {
-		val pk = new XimmtImportSettingPK(companyId, settingCode.toString());
-		this.commandProxy().remove(XimmtImportSetting.class, pk);
+		
+		
+		val tables = Arrays.asList(
+				Pair.of("XIMMT_IMPORT_SETTING", "CODE"),
+				Pair.of("XIMMT_ITEM_MAPPING", "SETTING_CODE"));
+		
+		tables.forEach(table -> {
+			
+			String sql = "delete from " + table.getLeft()
+					+ " where CID = @cid"
+					+ " and " + table.getRight() + " = @code";
 
+			this.jdbcProxy().query(sql)
+				.paramString("cid", companyId)
+				.paramString("code", settingCode.v())
+				.execute();
+		});
 	}
 
 	@Override

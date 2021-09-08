@@ -15,6 +15,7 @@ import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
+import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
 import nts.uk.ctx.exio.dom.input.validation.ValidateData;
 
 /**
@@ -49,8 +50,20 @@ public class ExternalImportSetting implements DomainAggregate {
 	 * @param itemList
 	 */
 
-	public void merge(List<Integer> itemList) {
-		this.assembly.merge(itemList);
+	public void merge(RequireMerge require, List<Integer> itemList) {
+		
+		val mappingRequire = new ImportingMapping.RequireMerge() {
+			@Override
+			public void deleteReviseItems(List<Integer> itemNos) {
+				require.deleteReviseItems(code, itemNos);
+			}
+		};
+		
+		this.assembly.merge(mappingRequire, itemList);
+	}
+	
+	public static interface RequireMerge {
+		void deleteReviseItems(ExternalImportCode settingCode, List<Integer> itemNos);
 	}
 
 	/**
@@ -58,9 +71,16 @@ public class ExternalImportSetting implements DomainAggregate {
 	 * @param domainId
 	 * @param items
 	 */
-	public void changeDomain(ImportingDomainId domainId, List<Integer> items) {
+	public void changeDomain(RequireChangeDomain require, ImportingDomainId domainId, List<Integer> items) {
 		externalImportDomainId = domainId;
 		assembly = ExternalImportAssemblyMethod.create(assembly.getCsvFileInfo(), items);
+		
+		// 受入ドメインが変わるので既存の編集設定はすべて削除
+		require.deleteReviseItems(code);
+	}
+	
+	public static interface RequireChangeDomain {
+		void deleteReviseItems(ExternalImportCode settingCode);
 	}
 
 

@@ -102,9 +102,22 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 
 	@Override
 	public void delete(String companyId, ExternalImportCode settingCode, int importItemNumber) {
+		delete(new XimmtReviseItemPK(companyId, settingCode.v(), importItemNumber));
+	}
 
-		val pk = new XimmtReviseItemPK(companyId, settingCode.v(), importItemNumber);
-		delete(pk);
+	@Override
+	public void delete(String companyId, ExternalImportCode settingCode) {
+		
+		deleteEntity(XimmtCodeConvertDetail.class.getSimpleName(), companyId, settingCode);
+		deleteEntity(XimmtCodeConvert.class.getSimpleName(), companyId, settingCode);
+		deleteEntity(XimmtReviseItem.class.getSimpleName(), companyId, settingCode);
+	}
+
+	@Override
+	public void delete(String companyId, ExternalImportCode settingCode, List<Integer> itemNos) {
+		itemNos.stream()
+				.map(itemNo -> new XimmtReviseItemPK(companyId, settingCode.v(), itemNo))
+				.forEach(this::delete);
 	}
 	
 	private void delete(XimmtReviseItemPK pk) {
@@ -125,6 +138,18 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 				.setParameter("companyId", reviseItem.getCompanyId())
 				.setParameter("settingCode", reviseItem.getSettingCode())
 				.setParameter("itemNo", reviseItem.getItemNo())
+				.executeUpdate();
+	}
+	
+	private void deleteEntity(String entityName, String companyId, ExternalImportCode settingCode) {
+		
+		String jpql = " delete from " + entityName + " f"
+				+ " where f.pk.companyId = :companyId "
+				+ " and f.pk.settingCode = :settingCode ";
+		
+		this.getEntityManager().createQuery(jpql)
+				.setParameter("companyId", companyId)
+				.setParameter("settingCode", settingCode.v())
 				.executeUpdate();
 	}
 	

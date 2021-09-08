@@ -32,7 +32,7 @@ public class ImportingMapping {
 	 * マッピング一覧の値を更新する
 	 * @param itemList
 	 */
-	public void merge(List<Integer> itemList) {
+	public void merge(RequireMerge require, List<Integer> itemList) {
 
 		List<ImportingItemMapping> newMappings = new ArrayList<>();
 
@@ -40,19 +40,33 @@ public class ImportingMapping {
 
 			val found = mappings.stream().filter(m -> m.getItemNo() == itemNo).findFirst();
 
-
 			if(found.isPresent()) { //値を変えないやつら
 				newMappings.add(found.get());
 			} else { //新しく追加されたやつら
 				newMappings.add(ImportingItemMapping.noSetting(itemNo));
 			}
 		}
-
+		
+		// 不要になった「項目の編集」を削除
+		{
+			List<Integer> newItems = newMappings.stream().map(m -> m.getItemNo()).collect(toList());
+			List<Integer> deletingItems = mappings.stream()
+					.map(m -> m.getItemNo())
+					.filter(m -> !newItems.contains(m))
+					.collect(toList());
+			
+			require.deleteReviseItems(deletingItems);
+		}
+		
 		mappings.clear();
-
 		mappings.addAll(newMappings);
 
 	}
+	
+	public static interface RequireMerge {
+		void deleteReviseItems(List<Integer> itemNos);
+	}
+	
 	/**
 	 * 新しくマッピングを作ったときに初期値を設定する
 	 * @param items

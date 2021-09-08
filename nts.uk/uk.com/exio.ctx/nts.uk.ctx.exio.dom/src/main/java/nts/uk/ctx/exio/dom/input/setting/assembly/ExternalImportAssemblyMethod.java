@@ -25,8 +25,8 @@ public class ExternalImportAssemblyMethod {
 	/** マッピング */
 	private ImportingMapping mapping;
 
-	public void merge(List<Integer> itemList) {
-		mapping.merge(itemList);
+	public void merge(ImportingMapping.RequireMerge require, List<Integer> itemList) {
+		mapping.merge(require, itemList);
 	}
 
 

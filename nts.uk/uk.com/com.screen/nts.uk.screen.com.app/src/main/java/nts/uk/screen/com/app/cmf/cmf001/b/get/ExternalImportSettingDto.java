@@ -1,23 +1,17 @@
 package nts.uk.screen.com.app.cmf.cmf001.b.get;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
-import lombok.val;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
-import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
-import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
-import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
 import nts.uk.shr.com.context.AppContexts;
 
 @Value
@@ -47,20 +41,23 @@ public class ExternalImportSettingDto {
 	/** レイアウト項目リスト */
 	private List<Integer> itemNoList;
 
-	public void merge(ExternalImportSetting domain) {
+	public void merge(RequireMerge require, ExternalImportSetting domain) {
 
 		domain.setName(new ExternalImportName(name));
 		domain.setImportingMode(ImportingMode.valueOf(mode));
 		domain.getAssembly().setCsvFileInfo(toCsvFileInfo());
 
-		if(this.domain == domain.getExternalImportDomainId().value) {
-			domain.merge(itemNoList);
+		if (this.domain == domain.getExternalImportDomainId().value) {
+			domain.merge(require, itemNoList);
 
-		}else {
-			domain.changeDomain(ImportingDomainId.valueOf(this.domain), itemNoList);
+		} else {
+			domain.changeDomain(require, ImportingDomainId.valueOf(this.domain), itemNoList);
 		}
-
-
+	}
+	
+	public static interface RequireMerge extends
+		ExternalImportSetting.RequireMerge,
+		ExternalImportSetting.RequireChangeDomain {
 	}
 
 	public static ExternalImportSettingDto fromDomain(ExternalImportSetting domain) {

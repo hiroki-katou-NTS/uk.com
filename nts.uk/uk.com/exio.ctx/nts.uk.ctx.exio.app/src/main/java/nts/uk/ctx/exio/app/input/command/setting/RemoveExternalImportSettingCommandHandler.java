@@ -9,25 +9,28 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class RemoveExternalImportSettingCommandHandler extends CommandHandler<RemoveExternalImportSettingCommand> {
+
+	@Inject
+	private ExternalImportSettingRepository externalImportSettingRepo;
 	
 	@Inject
-	private RemoveExternalImportSettingCommandRequire require;
-	
+	private ReviseItemRepository reviseItemRepo;
 	
 	@Override
 	protected void handle(CommandHandlerContext<RemoveExternalImportSettingCommand> context) {
-		val require = this.require.create();
-		val targetCode = context.getCommand().getCode();
-		require.delete(AppContexts.user().companyId(), new ExternalImportCode(targetCode));
-	}
-	
-	public static interface Require {
-		void delete(String companyId, ExternalImportCode code);
+		
+		String companyId = AppContexts.user().companyId();
+		val settingCode = new ExternalImportCode(context.getCommand().getCode());
+		
+		externalImportSettingRepo.delete(companyId, settingCode);
+		reviseItemRepo.delete(companyId, settingCode);
 	}
 
 }
