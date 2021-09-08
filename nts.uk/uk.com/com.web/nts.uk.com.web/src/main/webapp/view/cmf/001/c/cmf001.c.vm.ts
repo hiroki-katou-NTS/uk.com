@@ -181,6 +181,21 @@ module nts.uk.com.cmf001.c {
             this.$ajax(path).done(res => {
                 let mapping = this.currentItem().csvMapping;
 
+                let r = mapping.revisingValue;
+                r.usePadding(null);
+                r.paddingLength(null);
+                r.paddingMethod(null);
+                r.useCodeConvert(null);
+                r.codeConvert.importWithoutSetting(null);
+                r.codeConvert.convertDetailsText("");
+                r.isDecimalization(null);
+                r.decimalizationLength(null);
+                r.timeHourlySegment(null);
+                r.timeBaseNumber(null);
+                r.timeDelimiter(null);
+                r.timeRounding(null);
+                r.dateFormat(null);
+                
                 (<any> ko).mapping.fromJS(res.revisingValue, {}, mapping.revisingValue);
 
                 if (res.revisingValue && res.revisingValue.codeConvert) {
@@ -212,7 +227,22 @@ module nts.uk.com.cmf001.c {
 				}
 			}
 
-			let revisingValue = (<any> ko).mapping.toJS(item.csvMapping.revisingValue);
+			let s = item.csvMapping.revisingValue;
+            let revisingValue = (<any> ko).mapping.toJS({
+                usePadding: s.usePadding,
+                paddingLength: s.paddingLength,
+                paddingMethod: s.paddingMethod,
+                useCodeConvert: s.useCodeConvert,
+                codeConvert: s.codeConvert,
+                isDecimalization: s.isDecimalization,
+                decimalizationLength: s.decimalizationLength,
+                timeHourlySegment: s.timeHourlySegment,
+                timeBaseNumber: s.timeBaseNumber,
+                timeDelimiter: s.timeDelimiter,
+                timeRounding: s.timeRounding,
+                dateFormat: s.dateFormat,
+            });
+
 			if (revisingValue.codeConvert) {
 				let convertDetailsText = revisingValue.codeConvert.convertDetailsText;
 				if(convertDetailsText){
