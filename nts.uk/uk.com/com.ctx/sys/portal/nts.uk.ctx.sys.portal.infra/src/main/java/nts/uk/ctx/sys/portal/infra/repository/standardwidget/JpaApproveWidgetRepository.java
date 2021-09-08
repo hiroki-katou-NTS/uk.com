@@ -59,15 +59,16 @@ public class JpaApproveWidgetRepository extends JpaRepository implements Approve
 	@Override
 
 	public void saveWorkStatus(StandardWidget domain) {
-		if(domain.getStandardWidgetType() == StandardWidgetType.WORK_STATUS) {
-			Optional<SptmtWidgetWork> e = this.queryProxy().find(domain.getCompanyID(), SptmtWidgetWork.class);
-			if(e.isPresent()) {
-				this.commandProxy().update(new SptmtWidgetWork(domain));
-			}else {
-				this.commandProxy().insert(new SptmtWidgetWork(domain));
+		domain.getDetailSettingStandardWidgetTypes().stream().forEach(x -> {
+			if(x.getStandardWidgetType() == StandardWidgetType.WORK_STATUS) {
+				Optional<SptmtWidgetWork> e = this.queryProxy().find(domain.getCompanyID(), SptmtWidgetWork.class);
+				if(e.isPresent()) {
+					this.commandProxy().update(new SptmtWidgetWork(domain));
+				}else {
+					this.commandProxy().insert(new SptmtWidgetWork(domain));
+				}
 			}
-		}
-		
+		});
 	}
 	
 

@@ -7,6 +7,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,7 +21,7 @@ import java.util.List;
 public class CreateAnualWorkLedgerDomainService {
     public static AtomTask createSetting(Require require, OutputItemSettingCode code,
                                          OutputItemSettingName name, SettingClassificationCommon settingCategory,
-                                         List<DailyOutputItemsAnnualWorkLedger> dailyOutputItems, List<OutputItem> monthlyOutputItems) {
+                                         List<DailyOutputItemsAnnualWorkLedger> dailyOutputItems, List<OutputItemWorkLedger> monthlyOutputItems) {
 
         Boolean checkDuplicate = false;
         String empId = AppContexts.user().employeeId();

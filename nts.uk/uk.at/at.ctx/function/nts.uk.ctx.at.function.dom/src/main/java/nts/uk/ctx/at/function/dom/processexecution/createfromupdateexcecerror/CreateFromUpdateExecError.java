@@ -46,7 +46,7 @@ public class CreateFromUpdateExecError {
 					alarmFlag = rq.isPassAverageExecTimeExceeded(cid, item.getExecItemCd(),	item.getLastExecDateTime().get());
 				}
 
-				if (item.getCurrentStatus().get() == CurrentExecutionStatus.WAITING) {
+				if (item.getCurrentStatus().get() == CurrentExecutionStatus.WAITING && executionTaskSettingMap.get(item.getExecItemCd()) != null) {
 					// 次回実行日時作成処理
 					GeneralDateTime nextTime = executionTaskSettingMap.get(item.getExecItemCd()) != null
 							? rq.processNextExecDateTimeCreation(executionTaskSettingMap.get(item.getExecItemCd()))

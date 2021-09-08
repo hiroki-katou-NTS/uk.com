@@ -266,6 +266,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 				}
 			}
 		}
+		// 暫定データの登録
+		// đoạn thêm này tôi không chắc chắn lắm vì tôi đối chiếu thiết kế EA không giống lắm. Nhưng test thì thấy chạy được theo yêu cầu của bug 118478
+		this.interimData.registerDateChange(cid, employeeId, datePeriod.datesBetween());
 		return Pair.of(check, afterCalcRecord);
 	}
 	

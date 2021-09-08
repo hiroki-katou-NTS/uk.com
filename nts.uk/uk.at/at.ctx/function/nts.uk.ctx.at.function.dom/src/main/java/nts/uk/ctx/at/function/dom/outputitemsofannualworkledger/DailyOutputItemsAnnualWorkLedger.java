@@ -21,7 +21,7 @@ public class DailyOutputItemsAnnualWorkLedger extends ValueObject {
     private int rank;
 
     //  名称
-    private OutputItemNameOfAnnualWorkLedger name;
+    private OutputItemNameOfAnnualWorkLedgerDaily name;
 
     //  印刷対象フラグ
     private boolean printTargetFlag;

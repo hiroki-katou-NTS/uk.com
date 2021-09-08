@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface AffCompanyHistRepository {

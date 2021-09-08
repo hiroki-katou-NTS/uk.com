@@ -77,7 +77,8 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		// 対象期間区分=１年経過時点の場合 ( AFTER_1_YEAR ) 
 		if(periodOutput == AFTER_1_YEAR) {
 			// 指定した期間を基準に、前回付与日から次回付与日までの期間を取得
-			Optional<DatePeriod> dateRange = Optional.of(new DatePeriod(fromTo.get().start().addYears(-1), fromTo.get().end().addYears(-1)));
+			Optional<DatePeriod> dateRange = fromTo
+					.map(data -> new DatePeriod(data.start().addYears(-1), data.end().addYears(-1)));
 			periodGrant = this.getPeriodYMDGrant(cid, sid, null, periodOutput, dateRange);
 		}
 		

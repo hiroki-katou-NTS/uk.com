@@ -4,13 +4,17 @@ package nts.uk.ctx.at.function.ws.outputworkstatustable;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.function.app.command.outputworkstatustable.*;
 import nts.uk.ctx.at.function.app.query.outputworkstatustable.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.*;
-import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.*;
+import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.RoleIdAndCidParams;
+import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.RoleIdParams;
+import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingIdParams;
+import nts.uk.ctx.at.function.ws.outputworkstatustable.dto.SettingParams;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -48,6 +52,8 @@ public class OutputItemSettingWebService extends WebService {
     @Inject
     private CheckDailyPerformAuthorQuery checkDailyPerformAuthorQuery;
 
+    @Inject
+    private GetInitDateLoginEmployeeQuery loginEmployeeQuery;
     @POST
     @Path("003/a/listworkstatus")
     public List<WorkStatusOutputDto> getListWorkStatus(SettingParams params) {
@@ -178,8 +184,10 @@ public class OutputItemSettingWebService extends WebService {
         this.duplicateSettingDetailCommandHandler.handle(command);
     }
 
-
-
-
-
+    @POST
+    @Path("/initdateloginemployee")
+    public String getInitDateLoginEmployee() {
+        YearMonth ym = loginEmployeeQuery.getInitDateLoginEmployee();
+        return ym.toString();
+    }
 }

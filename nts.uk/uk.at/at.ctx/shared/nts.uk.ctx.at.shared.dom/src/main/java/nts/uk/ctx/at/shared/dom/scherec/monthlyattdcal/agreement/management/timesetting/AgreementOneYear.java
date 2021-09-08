@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
-import org.apache.commons.lang3.tuple.Pair;
 
 /** ３６協定1年間 */
 @AllArgsConstructor
@@ -17,7 +17,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public class AgreementOneYear {
 
 	/** 基本設定 */
-	@Setter
 	private OneYearErrorAlarmTime basic;
 	/** 特例条項による上限 */
 	private OneYearTime specConditionLimit;
@@ -25,6 +24,12 @@ public class AgreementOneYear {
 	public AgreementOneYear() {
 		this.basic = new OneYearErrorAlarmTime();
 		this.specConditionLimit = new OneYearTime();
+	}
+	
+	/**　３６協定年度設定を取り込む　*/
+	public void updateWithEmpSet(OneYearErrorAlarmTime erAlTime) {
+		
+		this.specConditionLimit = OneYearTime.of(erAlTime, this.specConditionLimit.getUpperLimit());
 	}
 	
 	/** エラーチェック */

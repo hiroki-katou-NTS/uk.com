@@ -19,11 +19,13 @@ public class DailyAttendanceUpdateStatus {
 	/**
 	 * 実績反映日時
 	 */
+	@Setter
 	private Optional<GeneralDateTime> opActualReflectDateTime;
 	
 	/**
 	 * 予定反映日時
 	 */
+	@Setter
 	private Optional<GeneralDateTime> opScheReflectDateTime;
 	
 	/**

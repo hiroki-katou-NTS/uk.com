@@ -141,10 +141,10 @@
     border: 2px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
-    width: 810px;
+    min-width: 810px;
     margin-left: 16px;
     margin-top: 10px;
-    height: 620px;
+    height: 560px;
 }
 
 

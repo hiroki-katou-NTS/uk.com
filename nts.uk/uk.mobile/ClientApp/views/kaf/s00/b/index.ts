@@ -113,9 +113,22 @@ export class KafS00BComponent extends Vue {
                 self.prePostAtr = null;
             }
             if (self.params.newModeContent.initSelectMultiDay) {
+                if (self.params.newModeContent.dateRange) {
+                    self.dateRange = self.params.newModeContent.dateRange;
+                } else {
+                    self.dateRange = {
+                        start: null,
+                        end: null
+                    };
+                }
                 self.$updateValidator('dateRange', { validate: true });
                 self.$updateValidator('date', { validate: false });
             } else {
+                if (self.params.newModeContent.appDate) {
+                    self.date = self.params.newModeContent.appDate;
+                } else {
+                    self.date = null;
+                }
                 self.$updateValidator('dateRange', { validate: false });
                 self.$updateValidator('date', { validate: true });
             }
@@ -200,6 +213,15 @@ export class KafS00BComponent extends Vue {
     @Watch('date')
     public dateWatcher(value) {
         const self = this;
+        if (!value) {
+            self.$emit('kaf000BChangeDate',
+            {
+                startDate: value,
+                endDate: value
+            }); 
+
+            return;
+        }
         if (!self.params.appDispInfoStartupOutput) {
             self.$emit('kaf000BChangeDate',
             {
