@@ -70,12 +70,6 @@ public class DailyModifyResCommandFacade {
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
 		boolean onlyErrorOld = true;
-		boolean chkChildNursing = lstItemEdits.stream()
-	            .filter(x -> (x.getItemId() == 1125 || x.getItemId() == 1129 || x.getItemId() == 1133 || x.getItemId() == 1137 || x.getItemId() == 1140 || x.getItemId() == 1142))
-	            .findFirst().isPresent();
-	        boolean chkLongTermCare = lstItemEdits.stream()
-	                .filter(x -> (x.getItemId() == 1126 || x.getItemId() == 1130 || x.getItemId() == 1134 || x.getItemId() == 1138 || x.getItemId() == 1141 || x.getItemId() == 1143))
-	                .findFirst().isPresent();
 		val cacheCarrier = new CacheCarrier();
 		val require = requireService.createRequire();
 		for (String emp : employeeIds) {
