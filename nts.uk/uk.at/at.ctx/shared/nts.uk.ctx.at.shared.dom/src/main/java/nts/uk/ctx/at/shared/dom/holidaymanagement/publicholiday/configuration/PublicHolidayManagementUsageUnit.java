@@ -83,7 +83,7 @@ public class PublicHolidayManagementUsageUnit extends AggregateRoot{
 		}
 		
 		//年月リストから会社月間日数日数設定を取得する
-		GetCompanyMonthDaySettingFromTheYearMonthList.get(companyID, 
+		publicHolidayMonthSetting = GetCompanyMonthDaySettingFromTheYearMonthList.get(companyID, 
 				periodList.stream().map(x ->x.getYearMonth()).collect(Collectors.toList()),
 				require);
 	

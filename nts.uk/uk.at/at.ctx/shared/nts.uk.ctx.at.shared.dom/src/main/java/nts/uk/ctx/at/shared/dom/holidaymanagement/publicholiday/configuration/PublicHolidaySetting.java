@@ -135,7 +135,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 			RequireM1 require){
 		
 		//INPUT．Require締め日を取得
-		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, this.companyID, criteriaDate);
+		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, criteriaDate);
 		
 		//締めが取得できたか
 		if(closure == null){
@@ -146,19 +146,30 @@ public class PublicHolidaySetting extends AggregateRoot {
 		if(this.publicHolidayPeriod == PublicHolidayPeriod.CLOSURE_PERIOD){
 			List<AggregationPeriod> periodList = new ArrayList<>();
 			//管理期間 = 締め期間
-			//締め開始日と締め日を取得する
-			Optional<ClosureStartEndOutput> startDayAndClosureDay = closure.getClosureStartDayAndClosureDay();
+
 			
-			if(!startDayAndClosureDay.isPresent()){
+			//当月の締め日を取得する
+			Optional<ClosureDate> closureDate = closure.getClosureDateOfCurrentMonth();
+			
+			if(!closureDate.isPresent()){
 				return new ArrayList<>();
 			}
 			
 			//年月の件数ループ
 			for(val yearMonth : yearMonths){
 				
+				//締め開始日と締め日を取得する
+				Optional<ClosureStartEndOutput> startDayAndClosureDay = closure.getClosureStartDayAndClosureDay(yearMonth);
+				
+				if(!startDayAndClosureDay.isPresent()){
+					return new ArrayList<>();
+				}
+				
+				
 				//年月＋締め開始日、年月＋締め日の期間を作成
 				DatePeriod period = new DatePeriod(
-						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().getStart().v().intValue()),
+						GeneralDate.ymd(closureDate.get().getLastDayOfMonth() ? yearMonth:yearMonth.previousMonth(),
+								startDayAndClosureDay.get().getStart().v().intValue()),
 						GeneralDate.ymd(yearMonth,startDayAndClosureDay.get().getClosure().v().intValue()));
 				
 				//List<集計期間>に追加
@@ -172,7 +183,7 @@ public class PublicHolidaySetting extends AggregateRoot {
 			Optional<ClosureDate> closureDate = closure.getClosureDateOfCurrentMonth();
 			if(closureDate.isPresent()){
 			//締め日が末日か
-				if(closureDate.get().getLastDayOfMonth() == true){
+				if(closureDate.get().getLastDayOfMonth() == false){
 					//年月の月を1か月前にする
 					yearMonths = yearMonths.stream().map(c->c.previousMonth()).collect(Collectors.toList());
 					
