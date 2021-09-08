@@ -538,9 +538,9 @@ module nts.uk.ui.at.kdw013.a {
             let editStateSetting = !vm.employee() ? HAND_CORRECTION_MYSELF : vm.employee() == vm.$user.employeeId ? HAND_CORRECTION_MYSELF : HAND_CORRECTION_OTHER;
     
             let mode =  vm.editable() ? 0 : vm.employee() === vm.$user.employeeId ? 0 : 1;
-
+            
             const command: RegisterWorkContentCommand = {
-                changedDate: moment().format(DATE_TIME_FORMAT),
+                changedDates: dateRanges().map((date) => {return moment(date).format(DATE_TIME_FORMAT);}),
                 editStateSetting,
                 employeeId: sid,
                 mode,

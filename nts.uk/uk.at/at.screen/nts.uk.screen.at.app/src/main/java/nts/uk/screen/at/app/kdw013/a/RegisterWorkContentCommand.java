@@ -28,6 +28,6 @@ public class RegisterWorkContentCommand {
 	private int mode;
 	
 	/** 変更対象日 */
-	private GeneralDate changedDate;
+	private List<GeneralDate> changedDates;
 	
 }
