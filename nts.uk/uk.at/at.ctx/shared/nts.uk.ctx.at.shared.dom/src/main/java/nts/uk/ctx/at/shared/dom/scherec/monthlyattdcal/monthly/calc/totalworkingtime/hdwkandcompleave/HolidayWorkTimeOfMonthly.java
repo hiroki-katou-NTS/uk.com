@@ -214,9 +214,7 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 		// 休出・振替の処理順序を取得する
 		if (workInfo.getWorkTimeCode() == null) return;
 		val workTimeCode = workInfo.getWorkTimeCode().v();
-		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(companyId, 
-																		companySets.getWorkTimeCommonSetMap(require, workTimeCode), 
-																		false);
+		val holidayWorkAndTransferAtrs = GetHolidayWorkAndTransferOrder.get(require, companyId, workTimeCode, false);
 		
 		val statutoryHolAggrAtr = aggregateAtr == MonthlyAggregateAtr.MONTHLY 
 				? StatutoryHolidayAggregateAtr.AGGREGATE_STATUTORY_HOLIDAYS : StatutoryHolidayAggregateAtr.NO_AGGREGATE_STATUTORY_HOLIDAYS;
@@ -596,7 +594,8 @@ public class HolidayWorkTimeOfMonthly implements Cloneable, Serializable {
 	public static interface RequireM2 extends MonAggrCompanySettings.RequireM1 {
 	}
 	
-	public static interface RequireM3 extends RequireM1, RequireM2, MonAggrCompanySettings.RequireM3 {
+	public static interface RequireM3 extends RequireM1, RequireM2, 
+		MonAggrCompanySettings.RequireM3, GetHolidayWorkAndTransferOrder.RequireM1 {
 
 	}
 
