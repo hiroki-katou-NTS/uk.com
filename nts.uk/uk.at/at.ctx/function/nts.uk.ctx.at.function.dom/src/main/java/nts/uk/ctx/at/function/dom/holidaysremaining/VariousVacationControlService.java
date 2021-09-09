@@ -72,7 +72,7 @@ public class VariousVacationControlService {
 		// 積立年休設定
 		val retentionYearly = retentionYearlySettingRepository.findByCompanyId(companyId);
 		//val emptYearlyRetentionSetting = employmentSettingRepository.findAll(companyId);
-		if ( retentionYearly.get().getManagementCategory() == ManageDistinct.YES) {
+		if ( retentionYearly.isPresent() && retentionYearly.get().getManagementCategory() == ManageDistinct.YES) {
 			yearlyReservedSetting = true;
 		}
 

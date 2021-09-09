@@ -566,10 +566,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 cells.get(firstRow + (isTime ? 2 * i:i), 3).setValue(TextResource.localize("KDR001_57",
                         listAnnLeaGrant.get(i).getGrantDate().toString("yyyy/MM/dd")));
 
-                Style styleDate = cells.get(firstRow + (isTime ? 2 * i:i), 3).getStyle();
-                styleDate.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-                cells.get(firstRow  + (isTime ? 2 * i:i), 3).setStyle(styleDate);
-
                 // E1_3
                 val vlaueE13 = listAnnLeaGrant.get(i).getGrantDays();
                 Double days_Granted = checkShowAreaAnnualBreak1(
@@ -578,9 +574,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 cells.get(firstRow + (isTime ? 2 * i:i), 4).setValue(days_Granted == null ? "" : df.format(days_Granted.doubleValue()));
                 // E1_16
                 if(!isTime){
-                    Style style = cells.get(firstRow + (isTime ? 2 * i:i), 4).getStyle();
+                    Style style = cells.get(firstRow + i, 4).getStyle();
                     style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-                    cells.get(firstRow + (isTime ? 2 * i:i), 4).setStyle(style);
+                    cells.get(firstRow + i, 4).setStyle(style);
                 }
                 val valueE116 = listAnnLeaGrant.get(i).getGrantTime();
                 Integer time_Granted = checkShowAreaAnnualBreak1(
