@@ -54,11 +54,8 @@ module nts.uk.com.cmf001.c {
 
     function renderConfiguredIcon(configured) {
         if (configured === "true") {
-            return '<div class="icon-configured" style="text-align: center;">' 
-                + '<span id="icon-configured" style="'
-                + 'background: url(\'' + ICON_CONFIGURED + '\');'
-                + 'background-size: 20px 20px; width: 20px; height: 20px;'
-                + 'display: inline-block;"></span></div>';
+            return '<div class="icon-configured"><span id="icon-configured" style="'
+                + 'background-image: url(\'' + ICON_CONFIGURED + '\');"></span></div>';
         } else {
             return '';
         }
@@ -86,8 +83,6 @@ module nts.uk.com.cmf001.c {
             { code: "CSV", name: "CSV" },
             { code: "固定値", name: "固定値" },
         ];
-
-        hoge = 2;
 
         selectedItemNo: KnockoutObservable<number> = ko.observable(null);
 
@@ -157,6 +152,9 @@ module nts.uk.com.cmf001.c {
                 this.currentItem().def.required(res.required);
 
                 if (res.constraint !== null) {
+                    if (res.constraint.charType === null) {
+                        res.constraint.charType = undefined; // util.getConstraintMesはundefined前提の設計なので
+                    }
                     __viewContext.primitiveValueConstraints[res.constraint.name] = res.constraint;
                     let constraintText = (<any> util).getConstraintMes(res.constraint.name) + "　";
                     if (res.constraint.domainType === "Enum") {
