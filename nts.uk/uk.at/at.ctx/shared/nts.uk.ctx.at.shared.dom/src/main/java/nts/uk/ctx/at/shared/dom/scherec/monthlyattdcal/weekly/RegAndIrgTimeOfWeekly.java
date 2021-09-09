@@ -288,13 +288,20 @@ public class RegAndIrgTimeOfWeekly implements Cloneable {
 		/** 最終週かを確認する */
 		if (weekPeriod.end().equals(period.end())) {
 			
+			/** 週割増に前月の最終週を含めて計算するかを確認する */
+			if (!verticalSetting.isCalcWithPreviousMonthLastWeek()) {
+				/** 按分すべきか */
+				return shouldDistributeStatutoryWorkTime(weekPeriod);
+			}
+			
 			/** 次の期間の労働制が処理期間と一緒かを確認する */
 			if (WorkingSystemChangeCheckService.isSameWorkingSystemWithNextPeriod(require, sid, weekPeriod, workingSystem) == WorkingSystemChangeState.CHANGED) {
 				/** 按分すべきか */
 				return shouldDistributeStatutoryWorkTime(weekPeriod);
 			}
 		} else {
-			
+
+			/** 週割増に前月の最終週を含めて計算するかを確認する */
 			if (!verticalSetting.isCalcWithPreviousMonthLastWeek()) {
 				/** 按分すべきか */
 				return shouldDistributeStatutoryWorkTime(weekPeriod);
