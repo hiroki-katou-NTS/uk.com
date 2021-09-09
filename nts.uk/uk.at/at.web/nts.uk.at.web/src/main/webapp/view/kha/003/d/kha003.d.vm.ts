@@ -100,6 +100,20 @@ module nts.uk.at.kha003.d {
             });
         }
 
+        widthOfCoulmn() {
+            let vm = this;
+            let totalHeaders = vm.dateHeaders().length
+            let width = "70px";
+
+            if (totalHeaders <= 5) {
+                width = '400px';
+            }
+            if (totalHeaders == 6) {
+                width = '280px';
+            }
+            return width;
+        }
+
         initGrid() {
             const vm = this;
             const columns: Array<any> = [
@@ -110,15 +124,26 @@ module nts.uk.at.kha003.d {
                     headerText: vm.dateHeaders()[i].text,
                     key: "c" + (i + 1),
                     dataType: "object",
-                    width: i < vm.level || i == vm.dateHeaders().length - 1 ? '130px' : '70px'
+                    width: i < vm.level ? '130px' : i == vm.dateHeaders().length - 1 ? '80px' : '70px'
                 });
+            }
+            let size = vm.dateHeaders().length;
+            let withd = Math.floor(38 / 5 * vm.dateHeaders().length);
+            if (withd > 100) {
+                withd = 100;
+            }
+            if (withd < 43) {
+                withd = 43;
+            }
+            if (size == 13) {
+                withd = 93;
             }
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
-                width: '100%',
+                width: withd + '%',
                 height: '470px',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
