@@ -73,10 +73,17 @@ public class RemainingNumberCheckImp implements RemainingNumberCheck {
                 Holiday holiday = workType.getDailyWork().determineHolidayByWorkType();
                 
                 // 介護看護がチェックするか判断する
-                determineCareNursingCheck.determineCareNursingCheck(
+                ChildCareNurseCheck childCareNurseCheck = determineCareNursingCheck.determineCareNursingCheck(
                         cId, 
                         workType.getWorkTypeSetList().stream().map(wts -> wts.getSumAbsenseNo()).collect(Collectors.toList()), 
                         workType.getWorkTypeSetList().stream().map(wts -> wts.getSumSpHodidayNo()).collect(Collectors.toList()));
+                
+                if (childCareNurseCheck.childCareCheck) {
+                    remainNumberClassification.setChkChildNursing(true);
+                }
+                if (childCareNurseCheck.nursingCheck) {
+                    remainNumberClassification.setChkLongTermCare(true);
+                }
                 
                 // 時間消化休暇か判断する
                 if (holiday.isTimeDigestVacation() && timeDigest.isPresent()) {
