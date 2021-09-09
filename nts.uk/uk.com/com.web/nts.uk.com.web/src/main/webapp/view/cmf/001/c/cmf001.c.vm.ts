@@ -87,8 +87,6 @@ module nts.uk.com.cmf001.c {
             { code: "固定値", name: "固定値" },
         ];
 
-        hoge = 2;
-
         selectedItemNo: KnockoutObservable<number> = ko.observable(null);
 
         isItemSelected = ko.computed(() => !util.isNullOrEmpty(this.selectedItemNo()));
