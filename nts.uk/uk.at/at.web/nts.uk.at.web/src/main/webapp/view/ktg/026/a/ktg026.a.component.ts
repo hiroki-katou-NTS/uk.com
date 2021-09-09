@@ -106,6 +106,10 @@ module nts.uk.at.view.ktg026.a {
             return 'special-exceeding-limit';
         }
 
+        if (state === 8) {
+            return 'bg-exceed-special-upperlimit color-exceed-special-upperlimit'
+        }
+
         return '';
     }
 
