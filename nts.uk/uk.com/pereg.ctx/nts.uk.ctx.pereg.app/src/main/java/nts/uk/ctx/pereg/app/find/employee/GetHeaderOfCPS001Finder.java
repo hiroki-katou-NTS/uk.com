@@ -80,24 +80,19 @@ public class GetHeaderOfCPS001Finder {
 		String roleId = AppContexts.user().roles().forPersonalInfo();
 		Optional<EmployeeInfo> empInfo = this.employeeMngRepo.findById(sid);
 		
-		boolean isDepartment = false;
-		
-		if (isSelfAuth(roleId, "CS00015", "IS00073", AppContexts.user().employeeId().equals(sid))) {
-			isDepartment = true;
-		} else {
-			isDepartment = isSelfAuth(roleId, "CS00017", "IS00084", AppContexts.user().employeeId().equals(sid));
-		}
-		
+		boolean isDepartment = isSelfAuth(roleId, "CS00015", "IS00073", AppContexts.user().employeeId().equals(sid));
 		boolean isPosition = isSelfAuth(roleId, "CS00016", "IS00079", AppContexts.user().employeeId().equals(sid));
 		boolean isEmployeement = isSelfAuth(roleId, "CS00014", "IS00068", AppContexts.user().employeeId().equals(sid));
 		boolean isJobEntryRef = isSelfAuth(roleId, "CS00003", "IS00020", AppContexts.user().employeeId().equals(sid));
 		boolean isBirthdayRef = isSelfAuth(roleId, "CS00002", "IS00017", AppContexts.user().employeeId().equals(sid));
+		boolean isIS00084 = isSelfAuth(roleId, "CS00017", "IS00084", AppContexts.user().employeeId().equals(sid));
 
 		if (!empInfo.isPresent())
 			return new EmployeeInfo();
 
 		EmployeeInfo _emp = empInfo.get();
 		Optional<TempAbsenceHistory> tempHist = this.tempHistRepo.getBySidAndLeave(cid, sid);
+		Optional<SWkpHistExport> wkp = workplacePub.findBySid(sid, date);
 
 		if (tempHist.isPresent()) {
 			_emp.setNumberOfTempHist(tempHist.get().items().stream()
@@ -126,16 +121,22 @@ public class GetHeaderOfCPS001Finder {
 					}
 				}
 			} else {
-				Optional<SWkpHistExport> wkp = workplacePub.findBySid(sid, date);
-
-				wkp.ifPresent(wk -> {
-					_emp.setDepartmentCode(wk.getWorkplaceCode());
-					_emp.setDepartmentName(wk.getWkpDisplayName());
-				});
+				if (isIS00084) {
+					_emp.setDepartmentCode(wkp.map(m -> m.getWorkplaceCode()).orElse(""));
+					_emp.setDepartmentName(wkp.map(m -> m.getWkpDisplayName()).orElse(""));
+				}else {
+					_emp.setDepartmentCode(" ");
+					_emp.setDepartmentName(" ");
+				}
 			}
 		} else {
-			_emp.setDepartmentCode(" ");
-			_emp.setDepartmentName(" ");
+			if (isIS00084) {
+				_emp.setDepartmentCode(wkp.map(m -> m.getWorkplaceCode()).orElse(""));
+				_emp.setDepartmentName(wkp.map(m -> m.getWkpDisplayName()).orElse(""));
+			} else {
+				_emp.setDepartmentCode(" ");
+				_emp.setDepartmentName(" ");
+			}
 		}
 
 		if (!isBirthdayRef) {
@@ -216,5 +217,5 @@ public class GetHeaderOfCPS001Finder {
 			return false;
 		}
 	}
-
+	
 }
