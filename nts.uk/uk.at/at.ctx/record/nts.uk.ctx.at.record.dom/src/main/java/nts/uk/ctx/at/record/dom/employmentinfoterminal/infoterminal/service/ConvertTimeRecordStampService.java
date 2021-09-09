@@ -128,7 +128,7 @@ public class ConvertTimeRecordStampService {
 	}
 	
 	//日別実績を処理する
-	private static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
+	public static Optional<StampDataReflectResult> createDailyData(Require require, Optional<String> cid,
 			Optional<String> sid, Optional<Stamp> stamp, AtomTask atomTask) {
 
 		if (!sid.isPresent() || !cid.isPresent()) {
@@ -149,7 +149,6 @@ public class ConvertTimeRecordStampService {
 						ExecutionType.NORMAL_EXECUTION);
 				AtomTask task = atomTask.then(() -> {
 					require.addAllDomain(domAfterCalc.get(0), true);
-					require.loggedOut();
 				});
 				return Optional.of(new StampDataReflectResult(reflectDate, task));
 			}
