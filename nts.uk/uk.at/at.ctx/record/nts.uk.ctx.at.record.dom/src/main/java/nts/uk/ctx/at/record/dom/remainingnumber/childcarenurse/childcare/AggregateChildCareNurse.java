@@ -110,7 +110,7 @@ public class AggregateChildCareNurse {
 		}
 
 		// 翌年の期間の「子の看護介護集計期間WORK」を取得する
-		Optional<AggregateChildCareNurseWork> nextYearPeriodWork = period.stream().filter(c -> c.isNextYear() && !c.getNextDayAfterPeriodEnd().isNextPeriodEndAtr()).findFirst();
+		Optional<AggregateChildCareNurseWork> nextYearPeriodWork = period.stream().filter(c -> c.isNextYear()).findFirst();
 
 		// 取得した値を「起算日からの休暇情報」に設定
 		//	===起算日からの休暇情報．本年 = 本年期間の「起算日からの休暇情報」
@@ -213,9 +213,9 @@ public class AggregateChildCareNurse {
 		// 次回起算日を求める
 		GeneralDate nextStartMonthDay = nursingLeaveSetting.getNextStartMonthDay(addperiod.start());
 
-		// 期間に次回起算日が含まれているか
+		// 変更後期間内に求めた次回起算日が含まれているか
 		// ===開始日＜＝次回起算日＜＝終了日
-		if (period.contains(nextStartMonthDay)) {
+		if (addperiod.contains(nextStartMonthDay)) {
 
 			// 起算日で期間を区切る
 			DividedDayEachProcess dividedDay = DividedDayEachProcess.of(new ArrayList<>(), //暫定データ＝空白
@@ -236,7 +236,7 @@ public class AggregateChildCareNurse {
 	private static void flagSplitEnd(List<DividedDayEachProcess> dividedDayEachProcess, GeneralDate end) {
 
 		// 一番年月日が大きい分割日を取得
-		Optional<DividedDayEachProcess> largest = dividedDayEachProcess.stream()
+		Optional<DividedDayEachProcess> largest = dividedDayEachProcess.stream().filter(x -> !(x.getYmd().equals(end.addDays(1))))
 				.sorted((c1, c2) -> c2.getYmd().compareTo(c1.getYmd())).findFirst();
 		// 終了日期間として扱う
 		largest.ifPresent(x -> x.treatAsPeriodEnd());
@@ -256,11 +256,11 @@ public class AggregateChildCareNurse {
         }
 
         // 終了日翌日の処理単位分割日を取得
-        Optional<DividedDayEachProcess> splitEndNext = dividedDayEachProcess.stream().filter(c -> c.getYmd().equals(end))
+        Optional<DividedDayEachProcess> splitEndNext = dividedDayEachProcess.stream().filter(c -> c.getYmd().equals(end.addDays(1)))
                                                                                        .findFirst();
 
         if(splitEndNext.isPresent()) {
-        	splitEndNext.get().getEndDate().setPeriodEndAtr(true);
+        	splitEndNext.get().getEndDate().setNextPeriodEndAtr(true);
 
         	return dividedDayEachProcess;
 		}else {
@@ -393,7 +393,7 @@ public class AggregateChildCareNurse {
 	 * 集計結果を作成する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param period 集計期間
+	 * @param aggregatePeriod 集計期間
 	 * @param criteriaDate 基準日
 	 * @param startUsed 月初時点の使用数
 	 * @param Require｛
@@ -410,7 +410,7 @@ public class AggregateChildCareNurse {
 	 *
 	 */
 	public AggrResultOfChildCareNurse createAggrResult(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			String employeeId, DatePeriod aggregatePeriod, GeneralDate criteriaDate,
 			ChildCareNurseUsedNumber startUsed, NursingCategory nursingCategory, Require require) {
 
 			// 子の看護介護集計期間．期間の件数ループ
@@ -419,7 +419,7 @@ public class AggregateChildCareNurse {
 				val currentDayProcess = this.period.get(idx);
 
 				// 残数と使用数を計算する
-				currentDayProcess.calcRemainingUsed(companyId, employeeId, period, criteriaDate, startUsed, nursingCategory, require);
+				currentDayProcess.calcRemainingUsed(companyId, employeeId, aggregatePeriod, criteriaDate, startUsed, nursingCategory, require);
 			}
 
 			// 子の看護介護休暇集計結果をセットする

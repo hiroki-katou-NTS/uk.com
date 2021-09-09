@@ -64,6 +64,7 @@ public class ChildCareCheckOverUsedNumberWork {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間
+	 * @param aggregatePeriod　集計期間
 	 * @param criteriaDate 基準日
 	 * @param interimDate 暫定子の看護介護管理データ
 	 * @param require
@@ -76,15 +77,15 @@ public class ChildCareCheckOverUsedNumberWork {
 	 * @return 子の看護介護残数不足数
 	 */
 	public ChildCareShortageRemainingNumberWork calcShortageRemainingNumber(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			String employeeId, DatePeriod period, DatePeriod aggregatePeriod,GeneralDate criteriaDate,
 			TempChildCareNurseManagement interimDate, NursingCategory nursingCategory, RequireM4 require) {
 
 		// 子の看護介護残数不足数
 		ChildCareShortageRemainingNumberWork shortageRemainingNumberWork = new ChildCareShortageRemainingNumberWork();
 
 		// インスタンスをコピーで作成（加算後使用数）
-		ChildCareCheckOverUsedNumberWork resultCheckOverUsedNumberWork = ChildCareCheckOverUsedNumberWork.of(
-																																		ChildCareNurseUsedNumber.of(this.usedNumber.getUsedDay(), this.usedNumber.getUsedTimes()));
+		ChildCareCheckOverUsedNumberWork resultCheckOverUsedNumberWork = ChildCareCheckOverUsedNumberWork
+				.of(ChildCareNurseUsedNumber.of(this.usedNumber.getUsedDay(), this.usedNumber.getUsedTimes()));
 
 		// 使用数に暫定管理データ使用数を加算
 		resultCheckOverUsedNumberWork.usedNumber.add(interimDate.getUsedNumber());
@@ -103,32 +104,40 @@ public class ChildCareCheckOverUsedNumberWork {
 		// 期間ごとの上限日数を求める
 		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
 		
-			childCareNurseUpperLimitPeriod= employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
+		childCareNurseUpperLimitPeriod = employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId,
+				aggregatePeriod, criteriaDate, require);
 
 		// 期間終了日時点の上限日数を確認
-		ChildCareNurseUpperLimitPeriod upperLimitPeriod =childCareNurseUpperLimitPeriod.stream().
-																								filter(x -> x.getPeriod().start().beforeOrEquals(period.end())
-																								&&  x.getPeriod().end().afterOrEquals(period.end())).findFirst().get();
+		ChildCareNurseUpperLimitPeriod upperLimitPeriod = childCareNurseUpperLimitPeriod.stream()
+				.filter(x -> x.getPeriod().start().beforeOrEquals(period.end())
+						&& x.getPeriod().end().afterOrEquals(period.end()))
+				.findFirst().get();
 
 		// 子の看護介護残数が上限超過していないか
-		boolean checkRemainingNumber = resultCheckOverUsedNumberWork.checkRemainingNumber(companyId, employeeId, upperLimitPeriod, criteriaDate, require);
+		boolean checkRemainingNumber = resultCheckOverUsedNumberWork.checkRemainingNumber(companyId, employeeId,
+				upperLimitPeriod, criteriaDate, require);
 
 		if(checkRemainingNumber) {
 			// true
 			// 子の看護介護残数不足数．使用可能数＝暫定管理データの使用数
 			shortageRemainingNumberWork.setAvailable(interimDate.getUsedNumber());
-			shortageRemainingNumberWork.setShortageRemNum(ChildCareNurseRemainingNumber.of(new DayNumberOfRemain(0.0), Optional.of(new TimeOfRemain(0))));
+			shortageRemainingNumberWork.setShortageRemNum(
+					ChildCareNurseRemainingNumber.of(new DayNumberOfRemain(0.0), Optional.of(new TimeOfRemain(0))));
 		} else {
 			// falseの場合
 			// 暫定管理データ使用数の内上限超過しないまでの値を求める
-			ChildCareNurseUsedNumber childCareNurseUsedNumber = interimDateUpperLimit(companyId, employeeId,  criteriaDate, upperLimitPeriod, interimDate, require); //一時対応　要確認
+			ChildCareNurseUsedNumber childCareNurseUsedNumber = interimDateUpperLimit(companyId, employeeId,
+					criteriaDate, upperLimitPeriod, interimDate, require); // 一時対応
+																			// 要確認
 			shortageRemainingNumberWork.setAvailable(childCareNurseUsedNumber);
 
 			// 残数不足数を求める
 			// ===子の看護介護残数不足数．残数不足数 = 暫定管理データの使用数 ー 子の看護介護残数不足数．使用可能数
-			val remainDays = new DayNumberOfRemain(interimDate.getUsedNumber().getUsedDay().v() - shortageRemainingNumberWork.getAvailable().getUsedDay().v());
+			val remainDays = new DayNumberOfRemain(interimDate.getUsedNumber().getUsedDay().v()
+					- shortageRemainingNumberWork.getAvailable().getUsedDay().v());
 			val remainTimes = new TimeOfRemain(interimDate.getUsedNumber().getUsedTimes().map(c -> c.valueAsMinutes()).orElse(0)
-																		- shortageRemainingNumberWork.getAvailable().getUsedTimes().map(c -> c.valueAsMinutes()).orElse(0));
+					- shortageRemainingNumberWork.getAvailable().getUsedTimes().map(c -> c.valueAsMinutes()).orElse(0));
+			
 			shortageRemainingNumberWork.getShortageRemNum().setRemainDay(remainDays);
 			shortageRemainingNumberWork.getShortageRemNum().setRemainTimes(Optional.of(remainTimes));
 		}
@@ -234,14 +243,14 @@ public class ChildCareCheckOverUsedNumberWork {
 	 * 上限超過チェック
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param period 期間
+	 * @param aggregatePeriod 集計期間
 	 * @param criteriaDate 基準日
 	 * @param interimDate 暫定子の看護介護管理データ
 	 * @param require
 	 * @return ChildCareNurseErrors 子の看護介護エラー情報
 	 */
 	public List<ChildCareNurseErrors> checkOverUsedNumberWork(String companyId,
-			String employeeId, DatePeriod period, GeneralDate criteriaDate,
+			String employeeId, DatePeriod aggregatePeriod, GeneralDate criteriaDate,
 			TempChildCareNurseManagement interimDate, NursingCategory nursingCategory, Require require){
 
 		List<ChildCareNurseErrors> childCareNurseErrors = new ArrayList<>();
@@ -265,7 +274,7 @@ public class ChildCareCheckOverUsedNumberWork {
 		// 期間ごとの上限日数を求める
 		List<ChildCareNurseUpperLimitPeriod> childCareNurseUpperLimitPeriod = new ArrayList<>();
 		childCareNurseUpperLimitPeriod =
-				employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, period, criteriaDate, require);
+				employeeInfo.get().childCareNurseUpperLimitPeriod(companyId,employeeId, aggregatePeriod, criteriaDate, require);
 	
 
 		// 対象日の上限日数を確認
