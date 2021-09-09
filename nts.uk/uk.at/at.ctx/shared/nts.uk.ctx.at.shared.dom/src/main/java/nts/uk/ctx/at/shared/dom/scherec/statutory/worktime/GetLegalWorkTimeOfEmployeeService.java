@@ -39,11 +39,11 @@ public class GetLegalWorkTimeOfEmployeeService {
 				.findFirst().get().getEmploymentCd();					
 
 		
-		val wkCondItemOfEmp = require.getHistoryItemBySidAndBaseDate(sid, period.start());
+		val wkCondItemOfEmp = require.getHistoryItemBySidAndBaseDate(sid, period.end());
 		if(!wkCondItemOfEmp.isPresent()) 
 			return Optional.empty();
 		
-		return getLegalWorkTimeOfEmployee(require, sid, period.start(), wkCondItemOfEmp.get().getLaborSystem(), employementCd);
+		return getLegalWorkTimeOfEmployee(require, sid, period.end(), wkCondItemOfEmp.get().getLaborSystem(), employementCd);
 	}
 	
 	/**
