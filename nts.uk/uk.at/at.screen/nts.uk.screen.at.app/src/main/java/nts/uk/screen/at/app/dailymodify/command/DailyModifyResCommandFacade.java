@@ -69,7 +69,7 @@ public class DailyModifyResCommandFacade {
 		String companyId = AppContexts.user().companyId();
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
-		boolean onlyErrorOld = true;
+		boolean onlyErrorOld = false;
 		val cacheCarrier = new CacheCarrier();
 		val require = requireService.createRequire();
 		for (String emp : employeeIds) {
@@ -140,10 +140,12 @@ public class DailyModifyResCommandFacade {
 			}
 			// boolean hasErrorInDB = !lstEmpMonthError.stream().filter(x ->
 			// x.getErrorType()).collect(Collectors.toList()).isEmpty();
-			lstEmpMonthError = lstWTClassification.isEmpty() ? lstEmpMonthError
-					: lstEmpMonthError.stream()
-							.filter(lstErrorTemp -> lstWTClassification.contains(lstErrorTemp.getErrorType()))
-							.collect(Collectors.toList());
+            lstEmpMonthError = lstWTClassification.isEmpty() ? lstEmpMonthError
+                    : lstEmpMonthError.stream()
+                            .filter(lstErrorTemp -> lstWTClassification.contains(lstErrorTemp.getErrorType())
+                                    || lstErrorTemp.getErrorType() == ErrorType.CHILDCARE_HOLIDAY
+                                    || lstErrorTemp.getErrorType() == ErrorType.CARE_HOLIDAY)
+                            .collect(Collectors.toList());
 
 			monthPer.addAll(lstEmpMonthError);
 			// });
