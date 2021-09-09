@@ -23,8 +23,8 @@ public class TempAnnualLeaveMngs extends InterimRemain{
 	/** 勤務種類 */
 	private WorkTypeCode workTypeCode;
 	/** 年休使用数 */
-	private TempAnnualLeaveUsedNumber usedNumber;
 	/** 時間休暇種類 */
+	private TempAnnualLeaveUsedNumber usedNumber;
 	private  Optional<DigestionHourlyTimeType> appTimeType;
 
 	/**
