@@ -78,7 +78,7 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	
 	@Override
 	protected List<Integer> getPrimaryKeyItemNos(DomainWorkspace workspace){
-		return Arrays.asList(101);
+		return Arrays.asList(102);// 社員ID
 	}
 	
 	@Override
