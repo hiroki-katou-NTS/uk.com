@@ -266,7 +266,12 @@ public class WorkspaceSql {
 				WorkspaceItem workspaceItem) {
 			
 			String param = paramItem(workspaceItem.getItemNo());
-			dataType.getType().setParam(statement, param, value);
+			
+			try {
+				dataType.getType().setParam(statement, param, value);
+			} catch (Exception ex) {
+				throw new RuntimeException("パラメータ設定に失敗：" + value + ", " + dataType + ", " + workspaceItem, ex);
+			}
 		}
 		
 		static String paramItem(int itemNo) {
