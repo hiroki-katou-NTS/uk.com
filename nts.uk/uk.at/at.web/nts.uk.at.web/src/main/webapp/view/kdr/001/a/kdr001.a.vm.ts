@@ -8,6 +8,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
+    import hasError = nts.uk.ui.errors.hasError;
 
     export class ScreenModel {
 
@@ -450,10 +451,22 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             }
             let data = new ReportInfor(holidayRemainingOutputCondition, lstSelected);
             if (nts.uk.util.isNullOrUndefined(data.holidayRemainingOutputCondition.layOutId)) {
-                $('#listFreeSetting').ntsError('set', {messageId: 'Msg_880'});
-                $('#listFreeSetting').focus();
-                $('#residence-code').ntsError('set', {messageId: 'Msg_880'});
-                nts.uk.ui.block.clear();
+
+                if (self.selectedId() === 0 && nts.uk.util.isNullOrEmpty(self.standardCode()))
+                 {
+                     $('#KDR001_30').ntsError('set', {messageId: 'Msg_1141'});
+                     $('#KDR001_30').focus();
+                     $('#residence-code').ntsError('set', {messageId: 'Msg_1141'});
+
+                     nts.uk.ui.block.clear();
+
+                }
+                if(self.selectedId() === 1 && nts.uk.util.isNullOrEmpty(self.freeCode())){
+                    $('#KDR001_60').ntsError('set', {messageId: 'Msg_1141'});
+                    $('#KDR001_60').focus();
+                    $('#residence-code').ntsError('set', {messageId: 'Msg_1141'});
+                    nts.uk.ui.block.clear();
+                }
             } else {
                 service.saveAsExcel(data).always(() => {
 
