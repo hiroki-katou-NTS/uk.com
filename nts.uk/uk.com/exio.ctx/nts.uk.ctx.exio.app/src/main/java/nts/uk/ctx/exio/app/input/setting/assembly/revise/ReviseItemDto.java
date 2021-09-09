@@ -83,8 +83,8 @@ public class ReviseItemDto {
 			if (revisingValue instanceof StringRevise) {
 				val rev = (StringRevise) revisingValue;
 				dto.usePadding = rev.isUsePadding();
-				dto.paddingLength = rev.getPadding().get().getLength().v();
-				dto.paddingMethod = rev.getPadding().get().getMethod().value;
+				dto.paddingLength = rev.getPadding().map(v -> v.getLength().v()).orElse(null);
+				dto.paddingMethod = rev.getPadding().map(v -> v.getMethod().value).orElse(-1);
 				rev.getCodeConvert().ifPresent(c -> {
 					dto.useCodeConvert = true;
 					dto.codeConvert = CodeConvertDto.of(c);
@@ -148,11 +148,12 @@ public class ReviseItemDto {
 		
 		private StringRevise toDomainStringRevise() {
 			
-			if (usePadding == null || paddingLength == null || paddingMethod == -1) {
+			if ((usePadding == null || paddingLength == null || paddingMethod == -1)
+					&& !useCodeConvert) {
 				return null;
 			}
 			
-			return new StringRevise(usePadding, toDomainPadding(), toDomainCodeConvert());
+			return new StringRevise((usePadding == null ? false : usePadding), toDomainPadding(), toDomainCodeConvert());
 		}
 		
 		private IntegerRevise toDomainIntegerRevise() {
@@ -192,8 +193,8 @@ public class ReviseItemDto {
 		}
 		
 		private Optional<Padding> toDomainPadding() {
-			
-			if (!usePadding) {
+
+			if (BooleanUtils.isNotTrue(usePadding)) {
 				return Optional.empty();
 			}
 			
