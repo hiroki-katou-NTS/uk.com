@@ -54,11 +54,8 @@ module nts.uk.com.cmf001.c {
 
     function renderConfiguredIcon(configured) {
         if (configured === "true") {
-            return '<div class="icon-configured" style="text-align: center;">' 
-                + '<span id="icon-configured" style="'
-                + 'background: url(\'' + ICON_CONFIGURED + '\');'
-                + 'background-size: 20px 20px; width: 20px; height: 20px;'
-                + 'display: inline-block;"></span></div>';
+            return '<div class="icon-configured"><span id="icon-configured" style="'
+                + 'background-image: url(\'' + ICON_CONFIGURED + '\');"></span></div>';
         } else {
             return '';
         }
