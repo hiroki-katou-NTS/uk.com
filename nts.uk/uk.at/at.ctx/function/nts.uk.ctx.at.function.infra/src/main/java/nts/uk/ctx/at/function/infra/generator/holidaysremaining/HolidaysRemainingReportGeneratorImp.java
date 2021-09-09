@@ -3417,7 +3417,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
     private int countH(HolidayRemainingDataSource dataSource, HolidaysRemainingEmployee employee) {
         int firstRow = 0;
-        if (!checkYearlyLeave(dataSource.getHolidaysRemainingManagement(), employee.getEmployeeCode(),
+        if (!checkYearlyLeave(dataSource.getHolidaysRemainingManagement(), employee.getEmploymentCode(),
                 dataSource.getVariousVacationControl())) {
             return firstRow;
         }
