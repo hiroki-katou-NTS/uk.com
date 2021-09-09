@@ -65,6 +65,6 @@ public interface CareLeaveRemainingInfoRepository {
 	 * 上限日数更新
 	 * @param ThisFiscalYear 本年度上限日数
 	 */
-	void updateMaxDay(String cId, ChildCareNurseUpperLimit ThisFiscalYear);
+	void updateMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear);
 
 }

@@ -239,14 +239,13 @@ public class JpaCareLeaveRemainingInfoRepository extends JpaChildCareNurseLevRem
 	
 	
 	@Override
-	public void updateMaxDay(String cId, ChildCareNurseUpperLimit ThisFiscalYear) {
-		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(cId, NursingCategory.Nursing.value);
+	public void updateMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear) {
+		KrcdtHdNursingInfoPK key = new KrcdtHdNursingInfoPK(sid, NursingCategory.Nursing.value);
 		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
 		if (entityOpt.isPresent()) {
 			KrcdtHdNursingInfo entity = entityOpt.get();
-			entity.setCId(cId);
-			entity.setMaxDayNextFiscalYear(ThisFiscalYear.v());
-			entity.setMaxDayThisFiscalYear(null);
+			entity.setMaxDayNextFiscalYear(null);
+			entity.setMaxDayThisFiscalYear(ThisFiscalYear.v());
 			this.commandProxy().update(entity);
 		}
 	}

@@ -106,8 +106,8 @@ public class JpaChildCareLevRemainInfoRepo extends JpaChildCareNurseLevRemainInf
 		Optional<KrcdtHdNursingInfo> entityOpt = this.queryProxy().find(key, KrcdtHdNursingInfo.class);
 		if (entityOpt.isPresent()) {
 			KrcdtHdNursingInfo entity = entityOpt.get();
-			entity.setMaxDayNextFiscalYear(ThisFiscalYear.v());
-			entity.setMaxDayThisFiscalYear(null);
+			entity.setMaxDayNextFiscalYear(null);
+			entity.setMaxDayThisFiscalYear(ThisFiscalYear.v());
 			this.commandProxy().update(entity);
 		}
 	}
