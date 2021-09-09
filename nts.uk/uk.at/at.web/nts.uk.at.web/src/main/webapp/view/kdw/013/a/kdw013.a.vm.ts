@@ -297,10 +297,10 @@ module nts.uk.ui.at.kdw013.a {
                 confirm: ko.computed({
                     read: () => {
                         let confirms = _.get(vm.$datas(),'lstComfirmerDto');
-                        if (!_.isEmpty(confirms) && confirms.length === 5) {
+                        if (!_.isEmpty(confirms) && confirms.length >= 5) {
                             return false;
                         }
-                        if (vm.employee() == vm.$user.employeeId) {
+                        if (_.find(confirms, { confirmSID: vm.$user.employeeId })) {
                             return false;
                         }
                         const editable = ko.unwrap(vm.editable);
