@@ -73,26 +73,20 @@ public class SpecialLeaveAggregatePeriodWork {
 
 	/**
 	 * 付与前付与後を判断する
-	 * @param atr 処理タイミング
 	 * @param entryDate 入社日
 	 * @return 付与前か付与後か
 	 */
-	public GrantPeriodAtr judgeGrantPeriodAtr(ProcessTiming atr, GeneralDate entryDate) {
-		switch(atr) {
-			case LASPED :// 消滅のとき
-				if ( grantWork.isFirstGrant() ) { // 初回付与のとき
-					return GrantPeriodAtr.BEFORE_GRANT;
-				} else {
-					return grantPeriodAtr;
-				}
-			default:
-				if ( this.grantWork.getTypeTime().isPresent()
-						&& this.grantWork.getTypeTime().get().equals(TypeTime.GRANT_PERIOD)
-						&& this.period.start().equals(entryDate)) {
-					return GrantPeriodAtr.BEFORE_GRANT;
-				} else {
-					return grantPeriodAtr;
-				}
+	public GrantPeriodAtr judgeGrantPeriodAtr(GeneralDate entryDate) {
+		
+		if ( grantWork.getTypeTime().isPresent() ){
+			
+			// 付与するタイミングの種類　==　期間で付与する and @期間．開始日 == 入社日						
+			if ( grantWork.getTypeTime().get().equals(TypeTime.GRANT_PERIOD)
+					&& this.period.start().equals(entryDate)){
+				return GrantPeriodAtr.BEFORE_GRANT;				
+			}
 		}
+		
+		return this.getGrantPeriodAtr();
 	}
 }

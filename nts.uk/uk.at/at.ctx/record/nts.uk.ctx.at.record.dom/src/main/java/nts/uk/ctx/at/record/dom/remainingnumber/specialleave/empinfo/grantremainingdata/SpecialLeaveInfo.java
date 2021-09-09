@@ -234,8 +234,8 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		// 付与前付与後を判断する
 		GrantPeriodAtr grantPeriodAtr
-			= aggregatePeriodWork.judgeGrantPeriodAtr(ProcessTiming.LASPED, entryDate);
-
+			= aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
+		
 		// 特別休暇情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);
 
@@ -320,8 +320,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		grantSpecialHoliday(require, companyId, employeeId, aggregatePeriodWork, specialLeaveCode);
 
 		/** 付与前付与後を判断する */
-		GrantPeriodAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(
-				ProcessTiming.GRANT, entryDate);
+		GrantPeriodAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 
 		/** 特別休暇情報残数を更新 */
 		this.updateRemainingNumber(grantPeriodAtr);
@@ -469,8 +468,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		}
 
 		/** 付与前付与後を判断する */
-		GrantPeriodAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(
-				ProcessTiming.DIGEST, entryDate);
+		GrantPeriodAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 
 		// 時間休暇消化日一覧（List）
 		List<GeneralDate> digestDateList = new ArrayList<GeneralDate>();
@@ -588,7 +586,7 @@ public class SpecialLeaveInfo implements Cloneable {
 
 				// 付与前付与後を判断する
 				GrantPeriodAtr grantPeriodAtr
-					= specialLeaveAggregatePeriodWork.judgeGrantPeriodAtr(ProcessTiming.ERROR_CHECK, entryDate);
+					= specialLeaveAggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 
 				if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
 					// 「特休不足エラー（付与後）」を追加
