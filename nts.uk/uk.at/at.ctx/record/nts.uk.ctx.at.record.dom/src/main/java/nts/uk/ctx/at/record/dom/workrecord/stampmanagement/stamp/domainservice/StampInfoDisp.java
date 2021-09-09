@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
@@ -38,7 +39,7 @@ public class StampInfoDisp implements DomainValue {
 	 * 打刻
 	 */
 	@Getter
-	private final List<Stamp> stamp;
+	private final Optional<Stamp> stamp;
 
 	/**
 	 * [C-0] 打刻区分を作成する
@@ -49,16 +50,16 @@ public class StampInfoDisp implements DomainValue {
 	 *            打刻日時
 	 * @param stampTypeDisplay
 	 *            表示する打刻区分
-	 * @param stamps
+	 * @param stamp
 	 *            打刻リスト
 	 */
 	public StampInfoDisp(StampNumber stampNumber, GeneralDateTime stampDatetime, String stampTypeDisplay,
-			List<Stamp> stamps) {
+			Optional<Stamp> stamp) {
 		super();
 		this.stampNumber = stampNumber;
 		this.stampDatetime = stampDatetime;
 		this.stampAtr = stampTypeDisplay;
-		this.stamp = stamps;
+		this.stamp = stamp;
 	}
 
 }
