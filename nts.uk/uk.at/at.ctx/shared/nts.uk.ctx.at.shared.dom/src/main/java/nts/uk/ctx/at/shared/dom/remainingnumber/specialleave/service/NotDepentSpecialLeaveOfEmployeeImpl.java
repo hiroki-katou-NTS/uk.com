@@ -33,7 +33,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 	public InforSpecialLeaveOfEmployee getNotDepentInfoSpecialLeave(NotDepentSpecialLeaveOfEmployeeInput param) {
 		InforSpecialLeaveOfEmployee outputData = new InforSpecialLeaveOfEmployee(InforStatus.NOTUSE, Optional.empty(), new ArrayList<>(), false);
 		//ドメインモデル「特別休暇」を取得する
-		Optional<SpecialHoliday> optSpeHolidayInfor = speHolidayRepos.findByCode(param.getCid(), param.getSpecialLeaveCode());
+		Optional<SpecialHoliday> optSpeHolidayInfor = speHolidayRepos.findBySingleCD(param.getCid(), param.getSpecialLeaveCode());
 		if(!optSpeHolidayInfor.isPresent()) {
 			return outputData;
 		}
@@ -264,7 +264,7 @@ public class NotDepentSpecialLeaveOfEmployeeImpl implements NotDepentSpecialLeav
 		 String cid = AppContexts.user().companyId();
 		 int specialLeaveCodde = param.get(0).getSpecialLeaveCode();
 		//ドメインモデル「特別休暇」を取得する
-		Optional<SpecialHoliday> optSpeHolidayInfor = speHolidayRepos.findByCode(cid, specialLeaveCodde);
+		Optional<SpecialHoliday> optSpeHolidayInfor = speHolidayRepos.findBySingleCD(cid, specialLeaveCodde);
 		if(!optSpeHolidayInfor.isPresent()) {
 			return new HashMap<>();
 		}

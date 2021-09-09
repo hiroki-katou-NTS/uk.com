@@ -62,7 +62,27 @@ public class SpecialLeaveRestriction extends DomainObject {
 	public void validate() {
 		super.validate();
 	}
-
+	
+	/** 分類条件を使用するときはTrueを返す */
+	public boolean isRestrictionCls(){
+		return this.getRestrictionCls().equals(UseAtr.USE);
+	}
+	
+	/** 年齢条件を使用するときはTrueを返す */
+	public boolean isAgeLimit(){
+		return this.getAgeLimit().equals(UseAtr.USE);
+	}
+	
+	/** 性別条件を使用するときはTrueを返す */
+	public boolean isGenderRest(){
+		return this.getGenderRest().equals(UseAtr.USE);
+	}
+	
+	/** 雇用条件を使用するときはTrueを返す */
+	public boolean isRestEmp(){
+		return this.getRestEmp().equals(UseAtr.USE);
+	}
+	
 	/**
 	 * Validate input data
 	 */

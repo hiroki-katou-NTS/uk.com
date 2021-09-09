@@ -215,7 +215,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 		//Imported(就業)「社員」を取得する
 		EmployeeRecordImport empInfor = require.employeeFullInfo(cacheCarrier, sid);
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．性別条件」をチェックする
-		if(specialLeaveRestric.getGenderRest() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.isGenderRest()) {
 			//性別が一致するかチェックする
 			if(empInfor.getGender() != specialLeaveRestric.getGender().value) {
 				//パラメータ「エラーフラグ．性別条件に一致しない」にTRUEをセットする
@@ -223,7 +223,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			}
 		}
 		//取得しているドメインモデル「定期付与．特別休暇利用条件．雇用条件」をチェックする
-		if(specialLeaveRestric.getRestEmp() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.isRestEmp()) {
 			//アルゴリズム「社員所属雇用履歴を取得」を実行する
 			Optional<BsEmploymentHistoryImport> findEmploymentHistory = require.employmentHistory(cacheCarrier, cid, sid, baseDate);
 			if(!findEmploymentHistory.isPresent()) {
@@ -244,7 +244,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			}
 		}
 		//ドメインモデル「特別休暇利用条件」．分類条件をチェックする
-		if(specialLeaveRestric.getRestrictionCls() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.isRestrictionCls()) {
 			//アルゴリズム「社員所属分類履歴を取得」を実行する
 			List<String> lstSids = new ArrayList<>();
 			lstSids.add(sid);
@@ -268,7 +268,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			}
 		}
 		//ドメインモデル「特別休暇利用条件」．年齢条件をチェックする
-		if(specialLeaveRestric.getAgeLimit() == nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.UseAtr.USE) {
+		if(specialLeaveRestric.isAgeLimit()) {
 			GeneralDate ageBase = baseDate;
 			//年齢基準日を求める
 			MonthDay ageBaseDate = specialLeaveRestric.getAgeStandard().getAgeBaseDate();
