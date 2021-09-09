@@ -133,22 +133,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.resetTimeAssignment = ko.observable(false);
             self.copyStartDate = ko.observable(new Date());
 
-            ko.computed({
-                read: () => {
-                    let start = ko.toJS(self.dateValue().startDate),
-                        end = ko.toJS(self.dateValue().endDate),
-                        elm = document.querySelector('#ccg001-search-period'),
-                        ccgVM = elm && ko.dataFor(elm);
-
-                    if (ccgVM && ko.isObservable(ccgVM.inputPeriod)) {
-                        ccgVM.inputPeriod({startDate: start, endDate: end});
-                    }
-                }
-            });
-
             //radio test
             self.selectedId = ko.observable(0);
-            // self.enable = ko.observable(true);
             self.selectedId.subscribe((value) => {
                 self.enable(value === StandardOrFree.Standard);
             });
@@ -248,10 +234,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.dateValue().endDate = moment(data.periodEnd).format("YYYY/MM/DD");
                     self.dateValue.valueHasMutated();
                     self.applyKCP005ContentSearch(data.listEmployee);
-                    /*
-                    self.startDateString(data.periodStart);
-                    self.endDateString(data.periodEnd);
-                    */
                     self.closureId(data.closureId);
                 }
             }
