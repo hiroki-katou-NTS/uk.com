@@ -13,7 +13,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
 import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
@@ -63,8 +62,7 @@ public class TempAbsenceHistoryCanonicalization extends EmployeeHistoryCanonical
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(
 				DomainDataColumn.SID,
-				new DomainDataColumn("開始日", DataType.DATE),
-				new DomainDataColumn("終了日", DataType.DATE)
+				DomainDataColumn.HIST_ID
 		);
 	}
 	
