@@ -31,6 +31,7 @@ module nts.uk.at.kha003.a {
         isUpdateMode: KnockoutObservable<boolean>;
         isExecutionMode: KnockoutObservable<boolean>;
         isOutPutAll: KnockoutObservable<boolean>;
+        isFromDScreen: boolean = false;
 
         created() {
             const vm = this;
@@ -63,7 +64,7 @@ module nts.uk.at.kha003.a {
                         $('#A4_3').focus();
                     });
                 } else {
-                    vm.$window.storage('kha003AShareData_OLD', {isNewCode:true}).then(()=>{
+                    vm.$window.storage('kha003AShareData_OLD', {isNewCode: true}).then(() => {
                         vm.manHour.code('');
                         vm.manHour.name('');
                         vm.summaryItems([]);
@@ -108,6 +109,15 @@ module nts.uk.at.kha003.a {
                 });
                 $("#append_area").width(Math.min(newValue.length + 1, 4) * 124);
                 $("#free_area").width(Math.min(newValue.length + 1, 4) * 124);
+            });
+
+            vm.$window.storage('dScreenCode').done((data) => {
+                if (data.code != null) {
+                    vm.isFromDScreen = true;
+                    vm.$window.storage('dScreenCode', {code: null}).then(() => {
+                        vm.currentCode(data.code);
+                    });
+                }
             });
 
             $(document).ready(function () {
@@ -249,13 +259,15 @@ module nts.uk.at.kha003.a {
                 vm.layoutSettings(_.map(data.manHoursSummaryTables, function (item: any) {
                     return new ItemModel(item.code, item.name)
                 }));
-                if (data.manHoursSummaryTables.length > 0) {
-                    if (codeToSelect)
-                        vm.currentCode() == codeToSelect ? vm.currentCode.valueHasMutated() : vm.currentCode(codeToSelect);
-                    else
-                        vm.currentCode() == data.manHoursSummaryTables[0].code ? vm.currentCode.valueHasMutated() : vm.currentCode(data.manHoursSummaryTables[0].code);
-                } else {
-                    vm.currentCode() == "" ? vm.currentCode.valueHasMutated() : vm.currentCode("");
+                if (!vm.isFromDScreen) {
+                    if (data.manHoursSummaryTables.length > 0) {
+                        if (codeToSelect)
+                            vm.currentCode() == codeToSelect ? vm.currentCode.valueHasMutated() : vm.currentCode(codeToSelect);
+                        else
+                            vm.currentCode() == data.manHoursSummaryTables[0].code ? vm.currentCode.valueHasMutated() : vm.currentCode(data.manHoursSummaryTables[0].code);
+                    } else {
+                        vm.currentCode() == "" ? vm.currentCode.valueHasMutated() : vm.currentCode("");
+                    }
                 }
 
                 $("#appen-area-one .panel_padding").draggable({

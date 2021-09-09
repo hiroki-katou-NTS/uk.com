@@ -696,7 +696,9 @@ module nts.uk.at.kha003.d {
          */
         backToAScreen() {
             let vm = this;
-            vm.$jump('/view/kha/003/a/index.xhtml');
+            vm.$window.storage('dScreenCode', {code: vm.cScreenData().code}).then(() => {
+                vm.$jump('/view/kha/003/a/index.xhtml');
+            });
         }
 
         /**
