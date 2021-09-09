@@ -15,6 +15,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
         application: KnockoutObservable<Application>;
         appDispInfoStartupOutput: any;
         data: any = null;
+		workTypeOrigin: any = null;
+		workTimeOrigin: any = null;
 		hdAppSet: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedType: KnockoutObservable<any> = ko.observable();
 		workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -572,6 +574,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				return x;
 			});
 
+			if ((!(vm.workTypeOrigin == null && vm.workTimeOrigin == null))) {
+				commandCheckUpdate.appAbsenceStartInfoDto.workInfomationForApplication = {workTypeCode: vm.workTypeOrigin, workTimeCode: vm.workTimeOrigin};
+			}
+
 			commandCheckUpdate.application.opAppReason = vm.application().opAppReason();
             commandCheckUpdate.application.opAppStandardReasonCD = vm.application().opAppStandardReasonCD();
             commandCheckUpdate.application.opReversionReason = vm.application().opReversionReason();
@@ -686,6 +692,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 .done((success) => {
 					vm.data = success.appAbsenceStartInfo;
 					let hdAppSetInput: any[] = vm.data.hdAppSet.dispNames;
+					vm.workTypeOrigin = success.appAbsenceStartInfo.selectedWorkTypeCD;
+					vm.workTimeOrigin = success.appAbsenceStartInfo.selectedWorkTimeCD;
 					// B3_2
 					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
 					vm.fetchData(success.appAbsenceStartInfo);
