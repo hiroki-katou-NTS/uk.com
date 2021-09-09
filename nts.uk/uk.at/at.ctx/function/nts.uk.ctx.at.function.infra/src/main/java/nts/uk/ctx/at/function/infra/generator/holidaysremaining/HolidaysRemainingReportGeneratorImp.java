@@ -982,7 +982,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         Integer count = dtoCheck.getCount();
         Integer first = firstRow;
         NumberFormat df = new DecimalFormat("#0.0");
-        if (!checkYearlyLeave(dataSource.getHolidaysRemainingManagement(), employee.getEmployeeCode(),
+        if (!checkYearlyLeave(dataSource.getHolidaysRemainingManagement(), employee.getEmploymentCode(),
                 dataSource.getVariousVacationControl())) {
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
@@ -3205,18 +3205,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             if ((checkLeave == null || checkLeave.getYearManageType() == ManageDistinct.NO)) {
                 return false;
             } else {
-                if (!checkByScd.isPresent() || checkByScd.get().getManagementCategory() == ManageDistinct.NO) {
-                    if (vacationControl.isYearlyReservedSetting()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                if (checkByScd.isPresent() ) {
+                    return  checkByScd.get().getManagementCategory() == ManageDistinct.YES
+                            && vacationControl.isYearlyReservedSetting() ;
                 } else {
-                    if (vacationControl.isYearlyReservedSetting()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                   return vacationControl.isYearlyReservedSetting();
                 }
             }
         }
