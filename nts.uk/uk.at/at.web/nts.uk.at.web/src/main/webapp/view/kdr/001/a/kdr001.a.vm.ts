@@ -525,11 +525,13 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                         return e.layoutId === data.standardSelectedCode
                     });
                     let freeCode = _.find(vm.listFreeSetting(), (e)=>{
-                        return e.layoutId = data.freeSelectedCode
+                        return e.layoutId === data.freeSelectedCode
                     });
                     vm.selectedId(!vm.getCheckauthor() ? 0 : data.itemSelection); //項目選択
-                    vm.standardCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
-                    vm.freeCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
+                    let  idSt= !_.isNil(standardCode) ? data.standardSelectedCode: null;
+                    let  idFree= !_.isNil(freeCode) ? data.freeSelectedCode : null;
+                    vm.freeCode(idFree);
+                    vm.standardCode(idSt);
                     vm.selectedCode(data.selectedCode)
                 }
                 dfd.resolve();

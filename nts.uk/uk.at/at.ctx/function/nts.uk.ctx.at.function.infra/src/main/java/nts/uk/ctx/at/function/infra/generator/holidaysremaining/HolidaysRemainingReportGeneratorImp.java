@@ -579,11 +579,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                     cells.get(firstRow + i, 4).setStyle(style);
                 }
                 val valueE116 = listAnnLeaGrant.get(i).getGrantTime();
-                Integer time_Granted = checkShowAreaAnnualBreak1(
+                Integer time_Granted =  checkShowAreaAnnualBreak1(
                         dataSource.getHolidaysRemainingManagement()) ?
                         (Integer) valueE116 : null;
                 cells.get(firstRow + (isTime ? 2 * i : i) + 1, 4)
-                        .setValue(time_Granted == null ? "" : convertToTime(time_Granted));
+                        .setValue((time_Granted == null || !isTime) ? "" : convertToTime(time_Granted));
 
 
             }
