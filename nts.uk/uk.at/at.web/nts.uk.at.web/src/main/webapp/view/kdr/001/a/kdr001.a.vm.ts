@@ -105,7 +105,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.showClosure(true);
                 }
             });
-            self.isEmployee(__viewContext.user.isEmployee);
+            self.isEmployee(__viewContext.user.role.isInCharge.attendance);
             self.dateValue = ko.observable("");
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
