@@ -157,6 +157,9 @@ module nts.uk.com.cmf001.c {
                 this.currentItem().def.required(res.required);
 
                 if (res.constraint !== null) {
+                    if (res.constraint.charType === null) {
+                        res.constraint.charType = undefined; // util.getConstraintMesはundefined前提の設計なので
+                    }
                     __viewContext.primitiveValueConstraints[res.constraint.name] = res.constraint;
                     let constraintText = (<any> util).getConstraintMes(res.constraint.name) + "　";
                     if (res.constraint.domainType === "Enum") {
