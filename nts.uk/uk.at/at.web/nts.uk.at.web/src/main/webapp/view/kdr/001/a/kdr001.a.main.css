@@ -1,62 +1,81 @@
-
-.ccg001searchkcp005{
-	float:unset;
-	margin-left: 90px;
-	height: 417px;
+.kdr-001 .fixed-flex-layout-left {
+	margin-right: 10px;
+	margin-left: 80px;
+}
+.kdr-001 .fixed-flex-layout-left .employees-list {
+	width: 525px;
+}
+.kdr-001 .employees-list .date-time-picker {
+	margin-bottom: 10px;
+	display: flex;
+}
+.kdr-001 .employees-list .date-time-picker-label {
+	margin-right: 32px;
+	line-height: 37px;
+	padding-left: 10px !important;
+}
+.kdr-001 .fixed-flex-layout-right {
+	width: 575px;
+	padding-top: 71px;
 }
 
-.holidayAction {
-	margin-left: 10px;
-	z-index: 100;
-	padding-left: 30px;
-	height: 200px;
+.kdr-001 .panel > div {
+	padding: 0 !important;
 }
-.holidayAction table {
-	margin-top: 20px;
-}
-.holidayAction table tr {
+.kdr-001 .panel .panel-row {
 	display: flex;
 	margin-bottom: 20px;
+	margin-top: 20px ;
 }
 
-.holidayAction table tr td {
-	display: inline-flex;
+.kdr-001 .panel .panel-row .row-left {
+	width: 100px;
+	padding-left: 20px;
 }
-
-.periodCovered {
-	display: inline-flex;
+.kdr-001 .panel .panel-row .row-left .label {
+	display: flex;
+	align-items: center;
+    padding-top: 3px;
+}
+.kdr-001 .panel .panel-row .row-right {
+	display: flex;
+	width: calc(100% - 140px);
+}
+.kdr-001 .panel .row-right .radios-group {
+	padding-top: 3px;
+	width: 110px;
+}
+.kdr-001 .panel .row-right .radios-group :first-child {
 	margin-bottom: 10px;
 }
-
-.selectionHoliday {
-	border-radius: 5px;
+.kdr-001 .panel .row-right .text-box-button {
+	flex: 2;
 }
-
-#contents-area {
-	display: unset;
+.kdr-001 .panel .text-box-button .item {
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
 }
-.panel.panel-frame {
-	width: 525px;
-	min-width: 525px;
-	margin-top: 15px;
+.kdr-001 .panel .text-box-button .item .ui-igcombo-wrapper {
+	margin-right: 10px;
+	width: calc(100% - 30px);
 }
-body {
-	-ms-overflow-x: hidden;
-}
-.fixed-panel-dayselected {
-	height: 150px;
-}
-
-.radios label {
-	padding-bottom: 20px;
-	margin-top: 5px;
-}
-#combo-box2 button{
+.kdr-001 .panel .switchButton-wrapper button {
 	width: 65px;
 }
-.form-panel {
-	display: flex;
+.w-50 {
+	width: 50px;
 }
-div.form-label.required {
-	border-color: #97D155; !important;
+
+.kdr-001  {
+	margin-top: 5px;
+}
+.kdr-001 .panel .switchbox-wrappers .radio-wrapper span {
+	text-align: center;
+}
+#employeeSearch{
+	height: 400px;
+}
+#switch-62{
+	margin-left: 25px;
 }

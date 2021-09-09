@@ -1,9 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:com="http://xmlns.jcp.org/jsf/component"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:com="http://xmlns.jcp.org/jsf/component"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
 <body>
 <ui:composition template="../../../../master/base.xhtml">
     <ui:define name="htmlHead">
@@ -23,146 +25,153 @@
     <ui:define name="content">
         <div id="functions-area">
             <!-- A1_1 -->
-            <button id="A1_1"  class="proceed"
-                    data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) ">#{i18n.getText('KDR001_25')}</button>
+            <button tabindex="1"
+                    id="btnExportExcel"
+                    class="proceed"
+                    data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError()) ">#{i18n.getText('KDR001_25')}
+            </button>
         </div>
-
-        <div  id="contents-area" style="position: absolute">
-            <!-- A2_1  CCG001-->
-            <div id="ccgcomponent" tabindex="-1"></div>
-            <div style="margin-top: 10px">
-                <!-- A3_0 -->
-                <div class="panel panel-frame fixed-panel-dayselected" style="margin-left: 90px; height:35px;margin-top:-15px">
-                    <div class="table valign-center control-group" style="margin-top: 4px; margin-left: 40px;">
-                        <div class="cell" >
-                            <!-- A3_1 -->
-                            <div class="labelRangeDate"
-                                 data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
+        <!-- A1_2-->
+        <div id="contents-area" class="kdr-001">
+            <!-- A3_1-->
+            <div class="container">
+                <div id="ccgcomponent" tabindex="-1"></div>
+                <div class="pull-left fixed-flex-layout-left">
+                    <div class="employees-list">
+                        <!-- A2_1, A2_2, A2_3 -->
+                        <div class="panel panel-frame date-time-picker">
+                            <div
+                                    class="date-time-picker-label"
+                                    data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_26')}
                             </div>
-                        </div>
-                        <div class="cell valign-center control-group">
-                            <div id="daterangepicker"
+                            <!-- YearMonth Picker -->
+                            <div tabindex="3"
                                  data-bind="ntsDateRangePicker: {
 								required: true,
+								name :'#[KDR001_26]',
 								enable: true,
 								showNextPrevious: true,
 								value: dateValue,
 								maxRange: '13',
-								type: 'yearmonth'}"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-panel">
-                    <div class="panel panel-frame ccg001searchkcp005">
-                        <!-- A2_2  -->
-                        <div class="employeeInfoSearch">
-                            <div class="selectionHoliday">
-                                <div id="employeeSearch"  style="margin-top: -5px;"></div>
+								type: 'yearmonth'}">
                             </div>
                         </div>
+                        <!-- A3_2-->
+                        <div tabindex="4" id="employeeSearch" class="panel panel-frame"></div>
                     </div>
-                    <div class="panel panel-frame holidayAction">
-                        <div class="table valign-center control-group">
-                            <div class="cell" style="width:110px">
-                                <!-- A4_1  -->
-                                <div class="labelRangeDate"
+                </div>
+                <div class="pull-left fixed-flex-layout-right">
+
+                    <!-- A4_1-->
+                    <div class="panel panel-frame kdr-005a">
+                        <div class="panel-row">
+                            <div class="row-left">
+                                <!-- A5_1-->
+                                <div class="label"
                                      data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_30')}
                                 </div>
                             </div>
-                            <!--A4_4-->
-                            <div class="radios"  data-bind="ntsRadioBoxGroup: {
-	                    options:  [
-                          { id: 0, name: '#{i18n.getText('KDR001_66')}'},
-                          { id: 1, name: '#{i18n.getText('KDR001_67')}', enable: $vm.getCheckauthor()}
-                        ],
-	                    optionsValue: 'id',
-	                    optionsText: 'name',
-	                    value: $vm.selectedId,
-	                    enable: true,
-	                    name: '#{i18n.getText('KDR001_59')}'
-	                    }" style="width:100px; position: relative; top: 25px;">
-                            </div>
-                            <div class="cell valign-center control-group" style="position: relative; top: 25px;">
-                                <!-- A4_2  -->
-                                <div >
-                                    <div style="display: inline-block;"
-                                         data-bind="ntsComboBox: {
-						    name:'#[KDR001_30]',
-							options:listStandard ,
-							optionsValue: 'layoutId',
-							value: standardCode,
-							optionsText: 'name',
-							editable: false,
-							enable: enable(),
-							columns: [
-								{ prop: 'cd', length: 1 },
-								{ prop: 'name', length: 14}
-
-							]}">
-                                    </div>
-                                    <!-- A4_3  -->
-                                    <div style="display: inline-block">
-                                        <button data-bind="click: function(){ return openKDR001b(0)},enable: enable()"
-
-                                                style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_31')}</button>
+                            <div class="row-right">
+                                <div class="radios-group">
+                                    <!-- A5_2 -->
+                                    <div tabindex="5"
+                                         data-bind="ntsRadioBoxGroup: {
+                                    options:[
+                                      { id: 0, name: '#{i18n.getText('KDR001_66')}'},
+                                      { id: 1, name: '#{i18n.getText('KDR001_67')}', enable: $vm.getCheckauthor()}
+                                    ],
+                                    optionsValue: 'id',
+                                    optionsText: 'name',
+                                    value: $vm.selectedId,
+                                    enable: true,
+                                    name: '#{i18n.getText('KDR001_59')}'}">
                                     </div>
                                 </div>
-                                <div id ='listFreeSetting'>
-                                    <!-- A4_5 -->
-                                    <div style="display: inline-block;"
-                                         data-bind="ntsComboBox: {
-						    name:'#[KDR001_60]',
-							options: listFreeSetting,
-							optionsValue: 'layoutId',
-							value: freeCode,
-							optionsText: 'name',
-							editable: false,
-							enable: !enable() &amp;&amp; $vm.getCheckauthor,
-							columns: [
-								{ prop: 'cd', length: 1 },
-								{ prop: 'name', length: 14 }
-							]}">
+                                <div class="text-box-button">
+                                    <div class="item item-1">
+                                        <!-- A5_3_2 - KWR005_105-->
+                                        <div
+                                                tabindex="6"
+                                                id="KWR005_105"
+                                                data-bind="ntsComboBox: {
+                                            name:'#[KDR001_30]',
+                                        options:listStandard ,
+                                        optionsValue: 'layoutId',
+                                        value: standardCode,
+                                        optionsText: 'name',
+                                        editable: false,
+                                        enable: enable(),
+                                        columns: [
+                                        { prop: 'cd', length: 1 },
+                                        { prop: 'name', length: 14}]}">
+                                        </div>
+                                        <!-- A5_3_3-->
+                                        <button tabindex="7" class="w-50"
+                                                data-bind="click: function(){ return openKDR001b(0)},enable: enable()">
+                                            #{i18n.getText('KDR001_31')}
+                                        </button>
                                     </div>
-                                    <!-- A4_6  -->
-                                    <div style="display: inline-block">
-                                        <button data-bind="click: function(){return openKDR001b(1) } , enable: !enable()&amp;&amp; $vm.getCheckauthor"
-
-                                                style="margin-left: 20px; position: relative; top: -12px;">#{i18n.getText('KDR001_61')}</button>
+                                    <div class="item item-2">
+                                        <!-- A5_4_2 - KWR005_106-->
+                                        <div
+                                                tabindex="8"
+                                                id="KWR005_106"
+                                                data-bind="ntsComboBox: {
+                                            name:'#[KDR001_60]',
+                                            options: listFreeSetting,
+                                            optionsValue: 'layoutId',
+                                            value: freeCode,
+                                            optionsText: 'name',
+                                            editable: false,
+                                            enable: !enable() &amp;&amp; $vm.getCheckauthor,
+                                            columns: [
+                                                { prop: 'cd', length: 1 },
+                                                { prop: 'name', length: 14 }
+                                            ]}">
+                                        </div>
+                                        <!-- A5_3_3-->
+                                        <button
+                                                tabindex="9" class="w-50"
+                                                data-bind="click: function(){return openKDR001b(1) } ,
+                                             enable: !enable()&amp;&amp; $vm.getCheckauthor"
+                                        >#{i18n.getText('KDR001_61')}</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="table valign-center control-group" style="margin-top: 40px;">
-                            <div class="cell" style="width:110px">
-                                <!-- A6_1  -->
-                                <div class="labelRangeDate"
-                                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
+                        <div class="panel-row">
+                            <div class="row-left">
+                                <!-- A6_1-->
+                                <div
+                                        class="label"
+                                        data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDR001_35')}
                                 </div>
                             </div>
-                            <div class="cell valign-center control-group" style="padding-left: 20px">
-                                <!-- A6_2  -->
-                                <div id="combo-box2"
-                                     data-bind="ntsSwitchButton: {
-							required: true,
-							name: '#{i18n.getText('KDR001_62')}',
-							options:  [
-                              { code: 0, name: '#{i18n.getText('KDR001_63')}'},
-                              { code: 1, name: '#{i18n.getText('KDR001_64')}'},
-                              { code: 2, name: '#{i18n.getText('KDR001_65')}'}
-                            ],
-							optionsValue: 'code',
-							value: selectedCode,
-							optionsText: 'name',
-							editable: false,
-							enable: true
-							}">
+                            <div class="row-right row-switch-button">
+                                <!-- A6_2 -->
+                                <div    id="switch-62"
+                                        tabindex="10"
+                                        class="cf"
+                                        data-bind="ntsSwitchButton: {
+                                    required: true,
+                                    name: '#{i18n.getText('KDR001_62')}',
+                                    options:  [
+                                      { code: 0, name: '#{i18n.getText('KDR001_63')}'},
+                                      { code: 1, name: '#{i18n.getText('KDR001_64')}'},
+                                      { code: 2, name: '#{i18n.getText('KDR001_65')}'}
+                                    ],
+                                    optionsValue: 'code',
+                                    value: selectedCode,
+                                    optionsText: 'name',
+                                    editable: false,
+                                    enable: true
+                                    }">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </ui:define>
 </ui:composition>

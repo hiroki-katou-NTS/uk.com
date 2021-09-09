@@ -64,7 +64,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         lstPersonComponentOption: any;
         selectedEmployeeCode: KnockoutObservableArray<string>;
         employeeName: KnockoutObservable<string>;
-        employeeList: KnockoutObservableArray<UnitModel>;
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
         ccgcomponentPerson: GroupOption;
 
@@ -344,7 +344,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
          */
         public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
             var self = this;
-            self.employeeList([]);
             var employeeSearchs: UnitModel[] = [];
             self.selectedEmployeeCode([]);
             for (var employeeSearch of dataList) {
