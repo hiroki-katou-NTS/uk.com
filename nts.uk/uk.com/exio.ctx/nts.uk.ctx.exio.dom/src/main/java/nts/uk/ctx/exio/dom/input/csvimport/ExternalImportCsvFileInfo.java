@@ -54,7 +54,7 @@ public class ExternalImportCsvFileInfo {
 				InputStream inputStream,
 				Consumer<CsvRecord> readRecords) {
 			
-			try (val reader = new InputStreamReader(inputStream);
+			try (val reader = new InputStreamReader(inputStream, "SJIS");
 					val parser = new CSVParser(reader, CSVFormat.EXCEL)) {
 				
 				this.iterator = parser.iterator();
