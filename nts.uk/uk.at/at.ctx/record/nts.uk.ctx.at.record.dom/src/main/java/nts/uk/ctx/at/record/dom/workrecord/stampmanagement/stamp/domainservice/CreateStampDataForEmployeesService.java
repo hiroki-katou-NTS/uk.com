@@ -32,6 +32,8 @@ public class CreateStampDataForEmployeesService {
 	 * @param require
 	 * @param contractCode
 	 *            契約コード
+	 * @param companyID
+	 *            会社ID
 	 * @param employeeId
 	 *            社員ID
 	 *@param stampNumber
@@ -50,7 +52,7 @@ public class CreateStampDataForEmployeesService {
 	 */
 	
 	
-	public static TimeStampInputResult create(Require require, String cid, ContractCode contractCode, String employeeId,
+	public static TimeStampInputResult create(Require require, String cid, ContractCode contractCode, String companyId, String employeeId,
 			Optional<StampNumber> stampNumber, GeneralDateTime stampDateTime, Relieve relieve, ButtonType buttonType,
 			RefectActualResult refActualResults, Optional<GeoCoordinate> stampLocationInfor) {
 		//	$打刻カード作成結果 = [prv-1] 打刻カード番号を取得する(require, 社員ID, 打刻カード番号, 打刻する方法.打刻手段)	
@@ -73,7 +75,7 @@ public class CreateStampDataForEmployeesService {
 		}
 		//	$打刻データ = 打刻#初回打刻データを作成する(契約コード, $打刻カード作成結果.打刻カード番号, 打刻日時, 打刻する方法,ボタン種類.打刻種類, 実績への反映内容, 打刻場所情報)	
 		Stamp stamp = new Stamp(contractCode, new StampNumber(stampResult.getCardNumber()), stampDateTime, relieve,
-				buttonType.getStampType().get(), refActualResults, stampLocationInfor);
+				buttonType.getStampType().get(), refActualResults, stampLocationInfor, stampRecord.getStampRecordId());
 		
 		//	$打刻反映結果 = 打刻データ反映処理#反映する(require, 社員ID, $打刻記録, $打刻データ)			
 		
