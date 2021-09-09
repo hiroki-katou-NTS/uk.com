@@ -117,9 +117,9 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		
 		outPutData.addAll(getDayOffErrors(param.getSid(), lstError));
 		
-		//outPutData.addAll(getChildCareErrors(param.getSid(), lstError));
+		outPutData.addAll(getChildCareErrors(param.getSid(), lstError));
 
-		//outPutData.addAll(getNurseErrors(param.getSid(), lstError));
+		outPutData.addAll(getNurseErrors(param.getSid(), lstError));
 		
 		return outPutData;
 	}

@@ -350,9 +350,9 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			}).collect(Collectors.toList()));
 		}
 		// 子の看護チェック区分をチェックする
-		if (remainNumberClassification.map(x -> x.isChkChildNursing()).orElse(true)) {
+//		if (remainNumberClassification.map(x -> x.isChkChildNursing()).orElse(true)) {
 		    // [NO.206]期間中の子の看護休暇残数を取得
-		    AggrResultOfChildCareNurse result =
+		    AggrResultOfChildCareNurse resultChildcare =
 		            GetRemainingNumberChildCareService.getChildCareRemNumWithinPeriod(
 	                        inputParam.getCid(), 
 	                        inputParam.getSid(), 
@@ -367,13 +367,13 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	                        cache, 
 	                        childCareNurseRequireImplFactory.createRequireImpl());
 		    
-		        outputData.setChildCareErrors(result.getChildCareNurseErrors());
-		}
+		        outputData.setChildCareErrors(resultChildcare.getChildCareNurseErrors());
+//		}
 		
 		// 介護チェック区分をチェックする
-		if (remainNumberClassification.map(x -> x.isChkLongTermCare()).orElse(true)) {
+//		if (remainNumberClassification.map(x -> x.isChkLongTermCare()).orElse(true)) {
 		    // [NO.207]期間中の介護休暇残数を取得
-		    AggrResultOfChildCareNurse result = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
+		    AggrResultOfChildCareNurse resultNursing = GetRemainingNumberCareService.getCareRemNumWithinPeriod(
 		            inputParam.getCid(), 
                     inputParam.getSid(), 
                     inputParam.getDatePeriod(),
@@ -387,8 +387,8 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
                     cache, 
                     childCareNurseRequireImplFactory.createRequireImpl());
 		    
-		       outputData.setNurseErrors(result.getChildCareNurseErrors());
-		}
+		       outputData.setNurseErrors(resultNursing.getChildCareNurseErrors());
+//		}
 		return outputData;
 	}
 	
