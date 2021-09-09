@@ -9,8 +9,8 @@ module nts.uk.at.view.kdr001.a.viewmodel {
     import modal = nts.uk.ui.windows.sub.modal;
     import getText = nts.uk.resource.getText;
     import hasError = nts.uk.ui.errors.hasError;
-
-    export class ScreenModel {
+    const KDR001_SAVE_DATA = 'OUTPUT_CONDITIONS';
+    export class ScreenModel extends ko.ViewModel{
 
         ccgcomponent: GroupOption;
 
@@ -86,9 +86,11 @@ module nts.uk.at.view.kdr001.a.viewmodel {
         listStandard: KnockoutObservableArray<ItemNewModel> = ko.observableArray([]);
 
         getCheckauthor: KnockoutObservable<boolean> = ko.observable(false);
+        isEmployee : KnockoutObservable<boolean> = ko.observable(false);
 
         //end
         constructor() {
+            super();
             var self = this;
             self.systemType = ko.observableArray([
                 {name: 'システム管理者', value: 1}, // PERSONAL_INFORMATION
@@ -103,7 +105,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                     self.showClosure(true);
                 }
             });
-
+            self.isEmployee(__viewContext.user.isEmployee);
             self.dateValue = ko.observable("");
             self.selectedEmployeeCode = ko.observableArray([]);
             self.alreadySettingPersonal = ko.observableArray([]);
@@ -311,6 +313,7 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 // Init component.
                 self.reloadCcg001();
                 dfd.resolve(self);
+                self.getWorkScheduleOutputConditions();
 
             }).fail(function (res) {
                 nts.uk.ui.dialog.alertError({messageId: res.messageId});
@@ -488,9 +491,52 @@ module nts.uk.at.view.kdr001.a.viewmodel {
             self.standardCode.subscribe(() => {
                 nts.uk.ui.errors.clearAll();
             })
-
+            self.saveWorkScheduleOutputConditions();
         }
+        saveWorkScheduleOutputConditions(): JQueryPromise<void> {
+            let vm = this,
+                dfd = $.Deferred<void>(),
+                companyId: string = vm.$user.companyId,
+                employeeId: string = vm.$user.employeeId;
+            let data: any = {
+                itemSelection: this.selectedId(), //項目選択
+                standardSelectedCode: vm.standardCode(), //定型選択
+                freeSelectedCode: vm.freeCode(), //自由設定
+                selectedCode:    vm.selectedCode(),
+            };
 
+            let storageKey: string = KDR001_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
+            vm.$window.storage(storageKey, data).then(() => {
+                dfd.resolve();
+            });
+
+            return dfd.promise();
+        }
+        getWorkScheduleOutputConditions() {
+            const vm = this,
+                dfd = $.Deferred<void>(),
+                companyId: string = vm.$user.companyId,
+                employeeId: string = vm.$user.employeeId;
+            let storageKey: string = KDR001_SAVE_DATA + "_companyId_" + companyId + "_employeeId_" + employeeId;
+
+            vm.$window.storage(storageKey).then((data: any) => {
+                if (!_.isNil(data)) {
+                    let standardCode = _.find(vm.listStandard(),(e)=>{
+                        return e.layoutId === data.standardSelectedCode
+                    });
+                    let freeCode = _.find(vm.listFreeSetting(), (e)=>{
+                        return e.layoutId = data.freeSelectedCode
+                    });
+                    vm.selectedId(!vm.getCheckauthor() ? 0 : data.itemSelection); //項目選択
+                    vm.standardCode(!_.isNil(standardCode) ? data.standardSelectedCode : null); //定型選択
+                    vm.freeCode(!_.isNil(freeCode) ? data.freeSelectedCode : null); //自由設定
+                    vm.selectedCode(data.selectedCode)
+                }
+                dfd.resolve();
+            }).always(() => {
+                dfd.resolve();
+            });
+        }
         /**
          * Open dialog B
          */
