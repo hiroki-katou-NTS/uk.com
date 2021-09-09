@@ -16,7 +16,7 @@ public enum TimeBase60Delimiter {
 	NONE(0, "Enum_TimeBase60Delimiter_NO_DELIMITER", ""), 
 
 	/** 小数点 */
-	DECIMAL_POINT(1, "Enum_TimeBase60Delimiter_SEPARATE_BY_DECIMAL", "."), 
+	DECIMAL_POINT(1, "Enum_TimeBase60Delimiter_SEPARATE_BY_DECIMAL", "\\."), 
 
 	/** コロン */
 	COLON(2, "Enum_TimeBase60Delimiter_SEPARATE_BY_COLON", ":");

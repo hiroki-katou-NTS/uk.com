@@ -39,16 +39,17 @@ public class TimeRevise implements ReviseValue {
 		if (hourly == HourlySegment.MINUTE) {
 			return Either.tryCatch(() -> Integer.parseInt(target), NumberFormatException.class)
 					.mapLeft(ex -> new ErrorMessage("受入データが整数ではありません"))
-					.map(min -> hourly.toMinutesDecimal(new BigDecimal(min)));
+					.map(min -> hourly.toMinutesDecimal(new BigDecimal(min)).longValue());
 		}
 		
 		if (baseNumber.get() == TimeBaseNumber.SEXAGESIMAL) {
 			// 60進数は、区切り文字を用いて時分→分変換
-			return delimiter.get().toMinutes(target);
+			return delimiter.get().toMinutes(target)
+					.map(i -> (long) (int) i);
 		} else {
 			// 10進数は、分に変換して端数処理
 			BigDecimal minutes = hourly.toMinutesDecimal(new BigDecimal(target));
-			return Either.right(rounding.get().round(minutes));
+			return Either.right((long) rounding.get().round(minutes));
 		}
 	}
 }
