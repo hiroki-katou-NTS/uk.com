@@ -81,7 +81,7 @@ public class RemainCareUpdating {
 	
 	public static interface Require{
 		void persistAndUpdateUseCare(String employeeId, CareUsedNumberData domain);
-		void updateCareMaxDay(String cId, ChildCareNurseUpperLimit ThisFiscalYear);
+		void updateCareMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear);
 	}
 		
 		

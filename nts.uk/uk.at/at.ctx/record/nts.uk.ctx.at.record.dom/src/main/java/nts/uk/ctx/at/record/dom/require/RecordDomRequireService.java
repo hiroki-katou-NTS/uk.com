@@ -2835,8 +2835,8 @@ public class RecordDomRequireService {
 			this.careUsedNumberRepo.persistAndUpdate(employeeId, domain);
 		}
 		
-		public void updateCareMaxDay(String cId, ChildCareNurseUpperLimit ThisFiscalYear){
-			this.careLeaveRemainingInfoRepo.updateMaxDay(cId, ThisFiscalYear);
+		public void updateCareMaxDay(String sid, ChildCareNurseUpperLimit ThisFiscalYear){
+			this.careLeaveRemainingInfoRepo.updateMaxDay(sid, ThisFiscalYear);
 		}
 		
 		public void deleteTempCareByPeriod(String sid, DatePeriod period){
