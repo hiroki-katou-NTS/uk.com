@@ -54,5 +54,23 @@ public interface EquipmentClassificationRepository {
 	 * @return 設備分類リスト
 	 */
 	List<EquipmentClassification> getFromClsCodeList(String contractCd, List<String> clsCds); 
+
+	/**
+	 * [7] 最小の設備分類を取得する
+	 * 最小の設備分類コードの設備分類を取得する																					
+	 * @param contractCd 契約コード
+	 * @return 設備分類
+	 */
+	Optional<EquipmentClassification> getFirst(String contractCd);
 	
+	/**
+	 * [8] 初期の設備分類を取得する
+	 * 設備分類コードがないけれど、最小の設備分類コードの設備分類を取得する
+	 * 設備分類コードがあって、DBにはなくて、最小の設備分類コードの設備分類を取得する
+	 * 設備分類コードがあって、DBにもあって、もらう分類コードの設備分類を取得する
+	 * @param contractCd 契約コード
+	 * @param optClsCd コード
+	 * @return 設備分類
+	 */
+	Optional<EquipmentClassification> getByOptionalCode(String contractCd, Optional<String> optClsCd);
 }

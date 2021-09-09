@@ -3,6 +3,8 @@ package nts.uk.ctx.office.dom.equipment.information;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface EquipmentInformationRepository {
 	
 	//[1] Insert(設備情報)																							
@@ -25,4 +27,7 @@ public interface EquipmentInformationRepository {
 	
 	//[7] Get*																							
 	List<EquipmentInformation> findByCidAndCodes(String cid, List<String> codes);
+	
+	//[8] 分類コードの有効の設備情報を取得する
+	List<EquipmentInformation> findByClsCodeAndDate(String cid, String equipmentClsCode, GeneralDate date);
 }

@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
 import nts.uk.ctx.office.infra.entity.equipment.information.OfidtEquipment;
@@ -17,13 +18,16 @@ public class EquipmentInformationRepositoryImpl extends JpaRepository
 												implements EquipmentInformationRepository {
 	
 	private static final String FIND_BY_CID = "SELECT t FROM OfidtEquipment t "
-			+ "WHERE t.pk.cid = :cid";
+			+ "WHERE t.pk.cid = :cid ";
 	
 	private static final String FIND_BY_CID_AND_CLS_CODE = "SELECT t FROM OfidtEquipment t "
-			+ "WHERE t.pk.cid = :cid AND t.equipmentClsCode = :clsCode";
+			+ "WHERE t.pk.cid = :cid AND t.equipmentClsCode = :clsCode ";
 	
 	private static final String FIND_BY_CID_AND_CODES = "SELECT t FROM OfidtEquipment t "
-			+ "WHERE t.pk.cid = :cid AND t.pk.code IN :codes";
+			+ "WHERE t.pk.cid = :cid AND t.pk.code IN :codes ";
+	
+	private static final String FIND_BY_CID_AND_CLS_CODE_AND_DATE = FIND_BY_CID_AND_CLS_CODE
+			+ "AND t.effectiveStartDate <= :date AND t.effectiveEndDate >= :date";
 	
 	public OfidtEquipment toEntity(EquipmentInformation domain) {
 		OfidtEquipment entity = new OfidtEquipment();
@@ -71,6 +75,14 @@ public class EquipmentInformationRepositoryImpl extends JpaRepository
 	public List<EquipmentInformation> findByCidAndCodes(String cid, List<String> codes) {
 		return this.queryProxy().query(FIND_BY_CID_AND_CODES, OfidtEquipment.class)
 				.setParameter("cid", cid).setParameter("codes", codes)
+				.getList(EquipmentInformation::createFromMemento);
+	}
+
+	@Override
+	public List<EquipmentInformation> findByClsCodeAndDate(String cid, String equipmentClsCode, GeneralDate date) {
+		return this.queryProxy().query(FIND_BY_CID_AND_CLS_CODE_AND_DATE, OfidtEquipment.class)
+				.setParameter("cid", cid).setParameter("clsCode", equipmentClsCode)
+				.setParameter("date", date.toLocalDate())
 				.getList(EquipmentInformation::createFromMemento);
 	}
 

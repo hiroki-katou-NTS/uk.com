@@ -20,6 +20,7 @@ public class JpaEquipmentClassificationRepo extends JpaRepository implements Equ
 	private static final String FIND_ALL = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd";
 	private static final String FIND_BY_CLS_CD = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd AND e.pk.code = :code";
 	private static final String FIND_FROM_CLS_CDS = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd AND e.pk.code IN :codeList";
+	private static final String FIND_TOP_1 = "SELECT TOP 1 e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd ORDER BY e.pk.code ASC";
 	
 	private EquipmentClassification toDomain(OfidtEquipmentCls entity) {
 		return new EquipmentClassification(
@@ -81,6 +82,31 @@ public class JpaEquipmentClassificationRepo extends JpaRepository implements Equ
 				.setParameter("contractCd", contractCd)
 				.setParameter("codeList", clsCds)
 				.getList(e -> this.toDomain(e));
+	}
+
+	@Override
+	public Optional<EquipmentClassification> getFirst(String contractCd) {
+		return this.queryProxy().query(FIND_TOP_1, OfidtEquipmentCls.class)
+				.setParameter("contractCd", contractCd)
+				.getSingle(this::toDomain);
+	}
+
+	@Override
+	public Optional<EquipmentClassification> getByOptionalCode(String contractCd, Optional<String> optClsCd) {
+		// if　コード.isEmpty()
+		if (!optClsCd.isPresent()) {
+			// return　[7] 最小の設備分類を取得する
+			return this.getFirst(contractCd);
+		}
+		// $設備分類　＝　[5] Get(契約コード、コード)
+		Optional<EquipmentClassification> optEquipmentCls = this.getByClassificationCode(contractCd, optClsCd.get());
+		// if　$設備分類.isEmpty()
+		if (!optEquipmentCls.isPresent()) {
+			// return　[7] 最小の設備分類を取得する
+			return this.getFirst(contractCd);
+		}
+		// return　$設備分類
+		return optEquipmentCls;
 	}
 	
 }

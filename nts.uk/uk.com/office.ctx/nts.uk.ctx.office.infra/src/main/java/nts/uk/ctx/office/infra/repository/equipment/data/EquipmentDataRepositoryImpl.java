@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -20,6 +22,7 @@ import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
 import nts.uk.ctx.office.infra.entity.equipment.data.OfidtEquipmentDayAtd;
 import nts.uk.ctx.office.infra.entity.equipment.data.OfidtEquipmentDayAtdPK;
 
+@Stateless
 public class EquipmentDataRepositoryImpl extends JpaRepository implements EquipmentDataRepository {
 
 	// Maximum number of value for each item type
@@ -63,6 +66,10 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	@Override
 	public List<EquipmentData> findByEquipmentCodeAndPeriod(String cid, String equipmentCode, DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_EQ_CD_AND_PERIOD, OfidtEquipmentDayAtd.class)
+				.setParameter("cid", cid)
+				.setParameter("equipmentCode", equipmentCode)
+				.setParameter("startDate", period.start().toLocalDate())
+				.setParameter("endDate", period.end().toLocalDate())
 				.getList(this::toDomain);
 	}
 
@@ -70,6 +77,11 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	public List<EquipmentData> findByEquipmentClsCodeAndEquipmentCodeAndPeriod(String cid, String equipmentClsCode,
 			String equipmentCode, DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_EQ_CLS_CD_AND_EQ_CD_AND_PERIOD, OfidtEquipmentDayAtd.class)
+				.setParameter("cid", cid)
+				.setParameter("equipmentClsCode", equipmentClsCode)
+				.setParameter("equipmentCode", equipmentCode)
+				.setParameter("startDate", period.start().toLocalDate())
+				.setParameter("endDate", period.end().toLocalDate())
 				.getList(this::toDomain);
 	}
 
@@ -77,18 +89,30 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	public Optional<EquipmentData> findByPeriodAndUsageInfo(String cid, DatePeriod period, GeneralDate useDate,
 			String sid, GeneralDateTime inputDate) {
 		return this.queryProxy().query(SELECT_BY_INFO, OfidtEquipmentDayAtd.class)
+				.setParameter("cid", cid)
+//				.setParameter("equipmentCode", equipmentCode)
+				.setParameter("sid", sid)
+				.setParameter("useDate", useDate.toLocalDate())
+				.setParameter("inputDate", inputDate.localDateTime())
 				.getSingle(this::toDomain);
 	}
 
 	@Override
 	public List<EquipmentData> findByEquipmentClsCodeAndPeriod(String cid, String equipmentClsCode, DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_EQ_CLS_CD_AND_PERIOD, OfidtEquipmentDayAtd.class)
+				.setParameter("cid", cid)
+				.setParameter("equipmentClsCode", equipmentClsCode)
+				.setParameter("startDate", period.start().toLocalDate())
+				.setParameter("endDate", period.end().toLocalDate())
 				.getList(this::toDomain);
 	}
 
 	@Override
 	public List<EquipmentData> findByPeriod(String cid, DatePeriod period) {
 		return this.queryProxy().query(SELECT_BY_PERIOD, OfidtEquipmentDayAtd.class)
+				.setParameter("cid", cid)
+				.setParameter("startDate", period.start().toLocalDate())
+				.setParameter("endDate", period.end().toLocalDate())
 				.getList(this::toDomain);
 	}
 
