@@ -190,18 +190,4 @@ public interface InterimRecAbasMngRepository {
 	// [5] Insert(List<暫定振休管理データ>) 暫定振休管理データ
 	void insertAbsMngList(List<InterimAbsMng> lstDomain);
 	
-	/**
-	 * 暫定振休管理データ 削除　期間
-	 * @param sId
-	 * @param period
-	 */
-	void deleteInterimAbsMngBySidDatePeriod(String sid, DatePeriod period);
-	
-	/**
-	 * 暫定振出管理データ 削除　期間
-	 * @param sId
-	 * @param period
-	 */
-	void deleteInterimRecMngBySidDatePeriod(String sid, DatePeriod period);
-	
 }
