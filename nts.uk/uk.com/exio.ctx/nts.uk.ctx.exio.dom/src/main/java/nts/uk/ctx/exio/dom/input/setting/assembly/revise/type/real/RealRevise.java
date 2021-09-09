@@ -54,6 +54,6 @@ public class RealRevise implements ReviseValue {
 	public BigDecimal decimalize(Long target) {
 		BigDecimal result = BigDecimal.valueOf(target);
 		// 10のLength乗で割ることで小数化する
-		return result.divide(BigDecimal.valueOf(Math.pow(10, Double.valueOf(length.toString()))));
+		return result.divide(BigDecimal.valueOf(Math.pow(10, Double.valueOf(length.get().v()))));
 	}
 }
