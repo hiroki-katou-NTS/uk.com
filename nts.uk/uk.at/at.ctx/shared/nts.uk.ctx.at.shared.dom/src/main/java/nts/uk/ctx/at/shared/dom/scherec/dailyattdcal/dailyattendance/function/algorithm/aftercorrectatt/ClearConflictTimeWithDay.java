@@ -44,9 +44,10 @@ public class ClearConflictTimeWithDay {
 		Pair<Optional<TimeLeavingOfDailyAttd>, List<EditStateOfDailyAttd>> result;
 		/** input.予定実績区分を確認 */
 		if (classification == ScheduleRecordClassifi.RECORD) {
+			/** 実績の時刻の矛盾を補正した時間帯を取得する */
 			result = getCorrectForRecord(companyId, workCondItem, domainDaily);
 		} else {
-			
+			/** 予定の時刻の矛盾を補正した時間帯を取得する */
 			result = getCorrectForSche(companyId, domainDaily);
 		}
 		
