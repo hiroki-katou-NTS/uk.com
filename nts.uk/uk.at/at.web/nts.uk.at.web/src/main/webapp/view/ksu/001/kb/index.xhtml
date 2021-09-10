@@ -124,7 +124,7 @@
                                                         optionsText: 'name',
                                                         value: displayShiftBackgroundColor,
                                                         required: false,
-                                                        enable: true }">
+                                                        enable: isEnableDisplayShiftBackgroundColor }">
                                 </div>
                             </div>
                             <div class="control-group valign-center">
@@ -232,7 +232,6 @@
                                                                     visibleItemsCount: 5,
                                                                     value: attendanceItem,
                                                                     optionsText: 'name',
-                                                                    enable: $parent.isEnableAttendanceItem,
                                                                     columns: [
                                                                         { prop: 'name', length: 10 },
                                                                     ]}">

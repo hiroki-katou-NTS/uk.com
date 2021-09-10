@@ -40,22 +40,18 @@ module nts.uk.at.view.ksu001.k.b {
 
         countNumberRow: number = 1;
         checkAll: KnockoutObservable<boolean> = ko.observable(false); 
-        checkOne: KnockoutObservable<boolean> = ko.observable(false); 
-        screenItem: KnockoutObservableArray<ScreenItem> = ko.observableArray([]);
+        checkOne: KnockoutObservable<boolean> = ko.observable(false);
 
         personalInfoItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTablePersonalInfoItem.map(i => ({value: i.value, name: this.$i18n(i.name)})));
 	    attendanceItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTableAttendanceItem.map(i => ({value: i.value, name: this.$i18n(i.name)})));
         workplaceCounterCategories: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory.map(i => ({value: i.value, name: this.$i18n(i.name)})));
         personalCounterCategory: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.PersonalCounterCategory.map(i => ({value: i.value, name: this.$i18n(i.name)})));
-        
-        selectedPersonalInfoItem: KnockoutObservable<string> = ko.observable("");        
-        selectedAdditionalInfoItem: KnockoutObservable<string> = ko.observable("");
-        selectedAttendanceItem: KnockoutObservable<string> = ko.observable("");
 
-        isEnableAddBtn :KnockoutObservable<boolean> = ko.observable(true);
+        isEnableAddBtn: KnockoutComputed<boolean>;
         isEnableDelBtn :KnockoutObservable<boolean> = ko.observable(false);
         isEnableAdditionInfo :KnockoutObservable<boolean> = ko.observable(true);
-        isEnableAttendanceItem :KnockoutObservable<boolean> = ko.observable(true);
+        // isEnableAttendanceItem :KnockoutObservable<boolean> = ko.observable(true);
+        isEnableDisplayShiftBackgroundColor: KnockoutComputed<boolean>;
         scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());        
         isReload :KnockoutObservable<boolean> = ko.observable(false);
         exitStatus: KnockoutObservable<string> = ko.observable("Cancel"); 
@@ -105,28 +101,21 @@ module nts.uk.at.view.ksu001.k.b {
             self.scheduleTableOutputSetting().shiftBackgroundColor.subscribe((value)=>{
                 self.displayShiftBackgroundColor(value);
             });
-            self.displayShiftBackgroundColor.subscribe((value) => {     
-                if(self.isReload()) {
-                    self.isReload(false);
-                    return;
-                } else {
-                    if (value == 1) {
-                        self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, true);
-                        self.isEnableDelBtn(false);
-                        self.isEnableAttendanceItem(false);
-                        self.isEnableAddBtn(false);
-                    } else {                    
-                        self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, false);
-                        self.isEnableAttendanceItem(true);
-                        self.isEnableAddBtn(true);
-                    }
-                    if(self.countNumberRow < 10){
-                        value == 1 ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
-                    } else {
-                        self.isEnableAddBtn(false)
-                    }      
-                }                
-            });            
+            // self.displayShiftBackgroundColor.subscribe((value) => {
+            //     if(self.isReload()) {
+            //         self.isReload(false);
+            //         return;
+            //     } else {
+            //         if (value == 1) {
+            //             self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, true);
+            //             self.isEnableDelBtn(false);
+            //             // self.isEnableAttendanceItem(false);
+            //         } else {
+            //             self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, false);
+            //             // self.isEnableAttendanceItem(true);
+            //         }
+            //     }
+            // });
 
             self.checkAll.subscribe((value) => {     
                 isCheckAll = true;           
@@ -197,7 +186,15 @@ module nts.uk.at.view.ksu001.k.b {
                     self.isEnableDelBtn(false);
                 }
                 self.$blockui("hide");
-            });        
+            });
+
+            self.isEnableAddBtn = ko.computed(() => {
+                return self.itemList().length < 10;
+            });
+            self.isEnableDisplayShiftBackgroundColor = ko.computed(() => {
+                const rowOne: ScreenItem = _.find(self.itemList(), (i: ScreenItem) => i.isNumberOne());
+                return rowOne && rowOne.attendanceItem() == "0";
+            });
             self.loadData();
         }
 
@@ -220,21 +217,17 @@ module nts.uk.at.view.ksu001.k.b {
 
                         
                         self.scheduleTableOutputSetting().isEnableCode(false);
-                        self.isEnableAddBtn(data.shiftBackgroundColor == 0);
                         if(self.displayShiftBackgroundColor() != data.shiftBackgroundColor){                               
                             self.isReload(true);            
                             self.displayShiftBackgroundColor(data.shiftBackgroundColor);
                         }                        
-                        self.isEnableAttendanceItem(self.displayShiftBackgroundColor() == 0);
+                        // self.isEnableAttendanceItem(self.displayShiftBackgroundColor() == 0);
     
                         datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
                             data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
                             data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
                         for (let i = 1; i < maxLength; i++) {
                             self.countNumberRow = self.countNumberRow + 1;
-                            if(self.countNumberRow >= 10) {
-                                self.isEnableAddBtn(false);
-                            }
                             datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
                                 data.additionalInfo[i] != null ? data.additionalInfo[i].toString() : null,
                                 data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));                                    
@@ -277,7 +270,6 @@ module nts.uk.at.view.ksu001.k.b {
             let datas: Array<any> = [];
           
             if(checkShiftBgColor) {
-                self.isEnableAddBtn(false);
                 self.isEnableDelBtn(false);
             }
             checkAddInfo ? self.isEnableAdditionInfo(true) : self.isEnableAdditionInfo(false);
@@ -285,7 +277,7 @@ module nts.uk.at.view.ksu001.k.b {
             datas.push(new ScreenItem(true, self.countNumberRow,
                                 self.personalInfoItems()[1].value,
                                 self.itemList()[0].additionInfo(),
-                                self.attendanceItems()[1].value));
+                                self.attendanceItems()[0].value));
 
             self.itemList(datas);  
             $('#outputSettingName').focus();
@@ -489,9 +481,6 @@ module nts.uk.at.view.ksu001.k.b {
         addItem(){
             let self = this;
             self.countNumberRow = self.countNumberRow + 1;
-            if(self.countNumberRow >= 10) {
-                self.isEnableAddBtn(false);
-            }
             let item: ScreenItem = new ScreenItem(false, self.countNumberRow);
             if(self.checkAll()){
                 item.checked(true);
@@ -513,7 +502,6 @@ module nts.uk.at.view.ksu001.k.b {
             self.itemList(evens);    
             self.checkAll(false);
             self.isEnableDelBtn(false);
-            self.isEnableAddBtn(true);
         }
 
         clearData(): void {
@@ -523,8 +511,7 @@ module nts.uk.at.view.ksu001.k.b {
             self.isEditing(false);
             self.enableDelete(false);
             self.isEnableDelBtn(false);
-            self.isEnableAddBtn(true);
-            self.isEnableAttendanceItem(true);
+            // self.isEnableAttendanceItem(true);
             self.displayShiftBackgroundColor(0);
             self.initialData();
             self.clearError();
@@ -649,8 +636,6 @@ module nts.uk.at.view.ksu001.k.b {
         rowNo: KnockoutObservable<number>;
         checked: KnockoutObservable<boolean>;
         
-        personalInfos: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        attendanceItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string>;
         isNumberOne: KnockoutObservable<boolean> = ko.observable(false);
         personalInfo: KnockoutObservable<string> = ko.observable("-1");
@@ -743,7 +728,6 @@ module nts.uk.at.view.ksu001.k.b {
         workplaceCounterCategories: KnockoutObservableArray<number> = ko.observableArray([]);
         /** 個人計出力設定名称 */
         personalCounterCtegories: KnockoutObservableArray<number> = ko.observableArray([]);
-        listWkpCounterCategories : KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory);
        
         isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
         constructor(params?: IScheduleTableOutputSetting) {
