@@ -1896,7 +1896,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -30662,7 +30662,10 @@ var nts;
                                 }
                                 else if (txt) {
                                     if (controlDef_1.pattern && controlDef_1.list) {
-                                        var itemList = controlDef_1.pattern[controlDef_1.list[id]], item = _.find(itemList, function (i) { return i[controlDef_1.optionsValue || "code"] === val; });
+                                        var itemList = controlDef_1.pattern[controlDef_1.list[id]];
+                                        if (!itemList)
+                                            itemList = controlDef_1.pattern[controlDef_1.list["null"]];
+                                        var item = _.find(itemList, function (i) { return i[controlDef_1.optionsValue || "code"] === val; });
                                         if (item)
                                             content = item[controlDef_1.optionsText || "name"];
                                     }
@@ -40423,8 +40426,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
