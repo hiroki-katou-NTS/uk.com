@@ -42,7 +42,7 @@ module nts.uk.at.view.ksu001.k.b {
         checkAll: KnockoutObservable<boolean> = ko.observable(false); 
         checkOne: KnockoutObservable<boolean> = ko.observable(false);
 
-        personalInfoItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTablePersonalInfoItem.map(i => ({value: i.value, name: this.$i18n(i.name)})));
+        personalInfoItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTablePersonalInfoItem.filter(i => i.value != 0).map(i => ({value: i.value, name: this.$i18n(i.name)})));
 	    attendanceItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTableAttendanceItem.map(i => ({value: i.value, name: this.$i18n(i.name)})));
         workplaceCounterCategories: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory.map(i => ({value: i.value, name: this.$i18n(i.name)})));
         personalCounterCategory: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.PersonalCounterCategory.map(i => ({value: i.value, name: this.$i18n(i.name)})));
@@ -59,8 +59,8 @@ module nts.uk.at.view.ksu001.k.b {
         constructor() {            
             super();
             const self = this;                    
-            self.personalInfoItems.splice(0, 0, {value: -1 , name:getText('KSU005_68')})
-            self.attendanceItems.splice(0, 0, {value: -1 , name:getText('KSU005_68')}) 
+            self.personalInfoItems.splice(0, 0, {value: -1 , name:getText('KSU005_68')});
+            self.attendanceItems.splice(0, 0, {value: -1 , name:getText('KSU005_68')});
             self.personalCounterCategory.splice(0, 0, {value: -1 , name:getText('KSU005_68')});
 
             self.columns = ko.observableArray([
@@ -207,9 +207,9 @@ module nts.uk.at.view.ksu001.k.b {
                     self.countNumberRow = 1;
                     if (!_.isNull(data) && !_.isEmpty(data)) {
                         self.clearError();
-                        let personalInfoItemsSize = data.personalInfo.length;
-                        let additionalItemsSize = data.attendanceItem.length;
-                        let attendanceItemSize = data.attendanceItem.length;
+                        let personalInfoItemsSize = _.size(data.personalInfo);
+                        let additionalItemsSize = _.size(data.attendanceItem);
+                        let attendanceItemSize = _.size(data.attendanceItem);
                         let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
                         let datas = [];
                         let tempSelected: Array<any> = [];
@@ -223,7 +223,7 @@ module nts.uk.at.view.ksu001.k.b {
                         }                        
                         // self.isEnableAttendanceItem(self.displayShiftBackgroundColor() == 0);
     
-                        datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
+                        datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : __viewContext.enums.ScheduleTablePersonalInfoItem[0].value,
                             data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
                             data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
                         for (let i = 1; i < maxLength; i++) {
@@ -269,13 +269,13 @@ module nts.uk.at.view.ksu001.k.b {
             self.clearError();
             let datas: Array<any> = [];
           
-            if(checkShiftBgColor) {
-                self.isEnableDelBtn(false);
-            }
+            // if(checkShiftBgColor) {
+            //     self.isEnableDelBtn(false);
+            // }
             checkAddInfo ? self.isEnableAdditionInfo(true) : self.isEnableAdditionInfo(false);
             
             datas.push(new ScreenItem(true, self.countNumberRow,
-                                self.personalInfoItems()[1].value,
+                                __viewContext.enums.ScheduleTablePersonalInfoItem[0].value,
                                 self.itemList()[0].additionInfo(),
                                 self.attendanceItems()[0].value));
 
@@ -287,7 +287,7 @@ module nts.uk.at.view.ksu001.k.b {
             const self = this;
             let data = [];
             self.countNumberRow = 1;
-            data.push(new ScreenItem(true, self.countNumberRow, self.personalInfoItems()[1].value, self.attendanceItems()[0].value, self.attendanceItems()[0].value));
+            data.push(new ScreenItem(true, self.countNumberRow, __viewContext.enums.ScheduleTablePersonalInfoItem[0].value, self.attendanceItems()[0].value, self.attendanceItems()[0].value));
             self.itemList.removeAll();
             self.itemList (data);
 
@@ -319,6 +319,11 @@ module nts.uk.at.view.ksu001.k.b {
             if(self.condition3()) {
                 self.$dialog.error({messageId: 'Msg_1973'});
                 return;                                
+            }
+
+            if (self.condition4()) {
+                self.$dialog.error({messageId: 'Msg_2209'});
+                return;
             }
 
             self.$blockui("invisible");
@@ -599,6 +604,14 @@ module nts.uk.at.view.ksu001.k.b {
             if(count >= 1){
                 return true;
             }
+            return false;
+        }
+
+        private condition4(): boolean {
+            const self = this;
+            const rowShift: ScreenItem = _.find(self.itemList(), (i: ScreenItem) => i.attendanceItem() == '0');
+            const rowWorkingTimeZone: ScreenItem = _.find(self.itemList(), (i: ScreenItem) => i.attendanceItem() == '2');
+            if (rowShift && rowWorkingTimeZone) return true;
             return false;
         }
 
