@@ -387,43 +387,43 @@ module nts.layout {
                 radios: Array<IGrandRadio> = [{
                     ctgCode: 'CS00025',
                     radioCode: 'IS00296',
-                    relateCode: ['IS00297', 'IS00298', 'IS00299', 'IS00300', 'IS00301']
+                    relateCode: ['IS00297', 'IS00298', 'IS00299', 'IS00300']
                 }, {
                         ctgCode: 'CS00026',
                         radioCode: 'IS00303',
-                        relateCode: ['IS00304', 'IS00305', 'IS00306', 'IS00307', 'IS00308']
+                        relateCode: ['IS00304', 'IS00305', 'IS00306', 'IS00307']
                     }, {
                         ctgCode: 'CS00027',
                         radioCode: 'IS00310',
-                        relateCode: ['IS00311', 'IS00312', 'IS00313', 'IS00314', 'IS00315']
+                        relateCode: ['IS00311', 'IS00312', 'IS00313', 'IS00314']
                     }, {
                         ctgCode: 'CS00028',
                         radioCode: 'IS00317',
-                        relateCode: ['IS00318', 'IS00319', 'IS00320', 'IS00321', 'IS00322']
+                        relateCode: ['IS00318', 'IS00319', 'IS00320', 'IS00321']
                     }, {
                         ctgCode: 'CS00029',
                         radioCode: 'IS00324',
-                        relateCode: ['IS00325', 'IS00326', 'IS00327', 'IS00328', 'IS00329']
+                        relateCode: ['IS00325', 'IS00326', 'IS00327', 'IS00328']
                     }, {
                         ctgCode: 'CS00030',
                         radioCode: 'IS00331',
-                        relateCode: ['IS00332', 'IS00333', 'IS00334', 'IS00335', 'IS00336']
+                        relateCode: ['IS00332', 'IS00333', 'IS00334', 'IS00335']
                     }, {
                         ctgCode: 'CS00031',
                         radioCode: 'IS00338',
-                        relateCode: ['IS00339', 'IS00340', 'IS00341', 'IS00342', 'IS00343']
+                        relateCode: ['IS00339', 'IS00340', 'IS00341', 'IS00342']
                     }, {
                         ctgCode: 'CS00032',
                         radioCode: 'IS00345',
-                        relateCode: ['IS00346', 'IS00347', 'IS00348', 'IS00349', 'IS00350']
+                        relateCode: ['IS00346', 'IS00347', 'IS00348', 'IS00349']
                     }, {
                         ctgCode: 'CS00033',
                         radioCode: 'IS00352',
-                        relateCode: ['IS00353', 'IS00354', 'IS00355', 'IS00356', 'IS00357']
+                        relateCode: ['IS00353', 'IS00354', 'IS00355', 'IS00356']
                     }, {
                         ctgCode: 'CS00034',
                         radioCode: 'IS00359',
-                        relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363', 'IS00364']
+                        relateCode: ['IS00360', 'IS00361', 'IS00362', 'IS00363']
                     }, {
                         ctgCode: 'CS00035',
                         radioCode: 'IS00370',
@@ -439,39 +439,39 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',
-                        relateCode: ['IS00561', 'IS00562', 'IS00563', 'IS00564', 'IS00565']
+                        relateCode: ['IS00561', 'IS00562', 'IS00563', 'IS00564']
                     }, {
                         ctgCode: 'CS00050',
                         radioCode: 'IS00567',
-                        relateCode: ['IS00568', 'IS00569', 'IS00570', 'IS00571', 'IS00572']
+                        relateCode: ['IS00568', 'IS00569', 'IS00570', 'IS00571']
                     }, {
                         ctgCode: 'CS00051',
                         radioCode: 'IS00574',
-                        relateCode: ['IS00575', 'IS00576', 'IS00577', 'IS00578', 'IS00579']
+                        relateCode: ['IS00575', 'IS00576', 'IS00577', 'IS00578']
                     }, {
                         ctgCode: 'CS00052',
                         radioCode: 'IS00581',
-                        relateCode: ['IS00582', 'IS00583', 'IS00584', 'IS00585', 'IS00586']
+                        relateCode: ['IS00582', 'IS00583', 'IS00584', 'IS00585']
                     }, {
                         ctgCode: 'CS00053',
                         radioCode: 'IS00588',
-                        relateCode: ['IS00589', 'IS00590', 'IS00591', 'IS00592', 'IS00593']
+                        relateCode: ['IS00589', 'IS00590', 'IS00591', 'IS00592']
                     }, {
                         ctgCode: 'CS00054',
                         radioCode: 'IS00595',
-                        relateCode: ['IS00596', 'IS00597', 'IS00598', 'IS00599', 'IS00600']
+                        relateCode: ['IS00596', 'IS00597', 'IS00598', 'IS00599']
                     }, {
                         ctgCode: 'CS00055',
                         radioCode: 'IS00602',
-                        relateCode: ['IS00603', 'IS00604', 'IS00605', 'IS00606', 'IS00607']
+                        relateCode: ['IS00603', 'IS00604', 'IS00605', 'IS00606']
                     }, {
                         ctgCode: 'CS00056',
                         radioCode: 'IS00609',
-                        relateCode: ['IS00610', 'IS00611', 'IS00612', 'IS00613', 'IS00614']
+                        relateCode: ['IS00610', 'IS00611', 'IS00612', 'IS00613']
                     }, {
                         ctgCode: 'CS00057',
                         radioCode: 'IS00616',
-                        relateCode: ['IS00617', 'IS00618', 'IS00619', 'IS00620', 'IS00621']
+                        relateCode: ['IS00617', 'IS00618', 'IS00619', 'IS00620']
                     }, {
                         ctgCode: 'CS00058',
                         radioCode: 'IS00623',
