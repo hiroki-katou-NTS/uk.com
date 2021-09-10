@@ -78,40 +78,38 @@ module nts.uk.com.cmf001.x {
 
 		prepare(){
 
-			let vm = nts.uk.ui._viewModel.content;
-
-			vm.processStart();
+			this.processStart();
 			// ファイルのアップロード
-			$("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done(function(res) {
-				vm.csvFileId(res[0].id)
+			$("#file-upload").ntsFileUpload({ stereoType: "csvfile" }).done((res) => {
+				this.csvFileId(res[0].id)
 				let prepareCommand = {
-					settingCode: vm.selectedSettingCode(), 
-					uploadedCsvFileId: vm.csvFileId()};
+					settingCode: this.selectedSettingCode(), 
+					uploadedCsvFileId: this.csvFileId(),
+				};
 				ajax("/exio/input/prepare", prepareCommand).done((prepareResult) => {
 					// サーバーへタスクの進捗問い合わせ
-					vm.observeExecution(prepareResult);
+					this.observeExecution(prepareResult);
 				}).fail(function(err) {
 					// 受入準備に失敗
-					vm.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
-					vm.messageBox(vm.errorMessage());
-					vm.processEnd();
+					this.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+					this.messageBox(this.errorMessage());
+					this.processEnd();
 				}).always(function () {
 					// 一度アップロードしたファイルを変更後、再度アップロードするとブラウザでエラーになってしまう
 					// その問題を避けるためここで消す
-					vm.clearFile();
+					this.clearFile();
 				});
 			}).fail(function(err) {
 				// ファイルのアップロードに失敗
-				vm.csvFileId("");
-				vm.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
-				vm.messageBox(vm.errorMessage());
-				vm.processEnd();
+				this.csvFileId("");
+				this.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+				this.messageBox(this.errorMessage());
+				this.processEnd();
 			});
 		}
 
 		// 処理が終わるまで監視する
 		observeExecution(prepareResult: any) {
-			let vm = this;
 
 			nts.uk.deferred.repeat(conf => conf
 				.task(() => {
@@ -124,63 +122,65 @@ module nts.uk.com.cmf001.x {
 					let process = info.taskDatas.find(d => d.key === "process");
 					if (process.valueAsString === "failed") {
 						ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
-						vm.processEnd();
+						this.processEnd();
 						return;
 					}
 
 					if (info.status === "COMPLETED") {
 						// 正常に完了していればエラーチェック
-						vm.loadErrors();
+						this.loadErrors();
 					} else {
-						vm.errorMessage(info.error.message);
+						this.errorMessage(info.error.message);
 						if (info.error.businessException) {
 							// 業務エラーの場合は画面に表示
-							vm.messageBox(vm.errorMessage());
+							this.messageBox(this.errorMessage());
 						} else {
 							// システムエラーの場合はエラーダイアログを表示
 							(<any>nts).uk.request.specials.errorPages.systemError();
 						}
 					}
 					// 処理終了
-					vm.processEnd();
+					this.processEnd();
 				});
 		}
 
 		// エラーメッセージを取得して表示する
 		loadErrors() {
-			let vm = this;
 
 			let requestCount: number = 0;
-			vm.messageBox("");
+			this.messageBox("");
 			nts.uk.deferred.repeat(conf => conf
 				.task(() => {
 					requestCount++;
 					// エラーの問い合わせ
-					return ajax("/exio/input/errors/" + vm.selectedSettingCode() + "/" + requestCount).done((result) => {
+					return ajax("/exio/input/errors/" + this.selectedSettingCode() + "/" + requestCount).done((result) => {
 						// 実行エラーがないかチェック
 						if (result.execution) {
 							// 実行エラーあり
-							vm.executionError(true);
+							this.executionError(true);
 						}
 						// 取得したエラーを蓄積
-						vm.errorMessage(vm.errorMessage() + result.text);
+						this.errorMessage(this.errorMessage() + result.text);
 					});
 				})
 				// エラー件数が0件になるまで繰り返す
 				.while(result => result.errosCount === 0))
 				.done(result => {
-					if (vm.errorMessage()) {
-						vm.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。\r\n" + vm.errorMessage());
+					if (this.errorMessage()) {
+						this.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。\r\n" + this.errorMessage());
 					} else {
-						vm.messageBox("受入準備が完了しました。");
+						this.messageBox("受入準備が完了しました。");
 					}
-					vm.prepared(true);
+					this.prepared(true);
 				});
 		}
 
 		execute(){
-			nts.uk.ui._viewModel.content.processStart();
-			let executeCommand = {settingCode: nts.uk.ui._viewModel.content.selectedSettingCode()};
+			this.processStart();
+			let executeCommand = {
+				settingCode: this.selectedSettingCode()
+			};
+			
 			ajax("/exio/input/execute", executeCommand).done((executeResult) => {
 				// サーバーへタスクの進捗問い合わせ
 				nts.uk.deferred.repeat(conf => conf
@@ -200,29 +200,29 @@ module nts.uk.com.cmf001.x {
 						}
 						
 						if(info.status ==="COMPLETED"){
-							nts.uk.ui._viewModel.content.messageBox("受入処理が完了しました。");
+							this.messageBox("受入処理が完了しました。");
 						}else{
-							nts.uk.ui._viewModel.content.messageBox("受入処理が失敗しました。");
+							this.messageBox("受入処理が失敗しました。");
 						}
-						nts.uk.ui._viewModel.content.processEnd();
+						this.processEnd();
 					});
 			}).fail(function(err) {
 				// 受入実行に失敗
-				nts.uk.ui._viewModel.content.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
-				nts.uk.ui._viewModel.content.messageBox(nts.uk.ui._viewModel.content.errorMessage());
-				nts.uk.ui._viewModel.content.processEnd();
+				this.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
+				this.messageBox(this.errorMessage());
+				this.processEnd();
 			})
 		}
 
 		processStart(){
-			nts.uk.ui._viewModel.content.errorMessage("");
-			nts.uk.ui._viewModel.content.messageBox("");
-			nts.uk.ui._viewModel.content.executionError(false);
-			nts.uk.ui._viewModel.content.processing(true);
+			this.errorMessage("");
+			this.messageBox("");
+			this.executionError(false);
+			this.processing(true);
 		}
 
 		processEnd(){
-			nts.uk.ui._viewModel.content.processing(false);
+			this.processing(false);
 		}
 		
 		canPrepare =  ko.computed(() => 
