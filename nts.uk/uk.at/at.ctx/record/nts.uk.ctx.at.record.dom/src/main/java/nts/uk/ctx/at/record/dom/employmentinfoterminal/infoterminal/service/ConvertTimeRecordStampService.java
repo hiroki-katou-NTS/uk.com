@@ -156,10 +156,11 @@ public class ConvertTimeRecordStampService {
 		return Optional.of(new StampDataReflectResult(Optional.empty(), atomTask));
 	}
 	
-    //[pvt-5] チェック日が当月かどうかを確認する
+    //[pvt-6] チェック日が当月以降かどうかを確認する
 	private static boolean checkInClosurePeriod(Require require, String sid, GeneralDate date) {
 		DatePeriod period = ClosureService.findClosurePeriod(require, new CacheCarrier(), sid, date);
-		return period == null ? false : period.contains(date);
+		
+		return period == null ? false : date.afterOrEquals(period.start());
 	}
 	
 	// [pvt-2] 就業情報端末通信用トップページアラームを作る
