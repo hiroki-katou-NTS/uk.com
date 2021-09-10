@@ -87,7 +87,7 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 		// 子の看護介護残数が上限超過していないか
 		// trueの場合：子の看護介護残数不足数．使用可能数＝暫定管理データの使用数、残数不足数←0　もセットする
 		val childCare2 = checkOverUsedNumberWork(0.0, 0); //超過確認用使用数
-		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
+		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period,period, criteriaDate, interimDate, category, require);
 
 		val expect = shortageWork(0, 0, 0, null); //期待値：子の看護介護残数不足数
 		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
@@ -123,7 +123,7 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 		};
 
 		val childCare2 = checkOverUsedNumberWork(2.5, 0);//超過確認用使用数（日数、時間）
-		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
+		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, period, criteriaDate, interimDate, category, require);
 
 		val expect = shortageWork(0, 0, 0, 0); //期待値：子の看護介護残数不足数
 		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());

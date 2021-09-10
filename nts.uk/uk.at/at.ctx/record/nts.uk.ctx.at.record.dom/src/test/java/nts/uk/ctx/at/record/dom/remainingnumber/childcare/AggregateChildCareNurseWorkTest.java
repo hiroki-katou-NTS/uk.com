@@ -290,7 +290,6 @@ public class AggregateChildCareNurseWorkTest {
 	public void testCalcUsed1() {
 		val childCare = createChildCare11(0, 0, 0, null, 0, true);	//終了日の翌日の期間 = true
 		val nextPeriodEndAtr = childCare.calcUsed("0001", "000001",
-												new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
 												ymd(2020,10, 16),
 												usedNumber(0.0, 0),	// 起算日からの使用数
 												require);
@@ -312,7 +311,6 @@ public class AggregateChildCareNurseWorkTest {
 
 		val expect = calcUsedNumber(4.0, 180, 1, 1, 1.0, 60);//期待値：起算日からの使用数、時間休暇使用回数、時間休暇使用日数、集計期間の使用数
 		val calcUsed = childCare.calcUsed("0001", "000001",
-				new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
 				ymd(2020,10, 16),
 				usedNumber(3.0, 120),	// 起算日からの使用数（日数、時間）
 				require);

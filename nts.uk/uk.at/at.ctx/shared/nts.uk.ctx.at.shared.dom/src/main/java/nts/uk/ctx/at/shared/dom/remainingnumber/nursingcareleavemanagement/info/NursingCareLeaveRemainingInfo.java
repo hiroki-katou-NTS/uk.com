@@ -123,7 +123,7 @@ public abstract class NursingCareLeaveRemainingInfo{
 					calcPeriod ,criteriaDate, nextStartMonthDay,require);
 			
 			//上限日数分割日から上限日数期間を作成
-			return limitSplitTolimitPeriod(calcPeriod,childCareNurseUpperLimitSplit);
+			return limitSplitTolimitPeriod(new DatePeriod(calcPeriod.start(), nextCalcPeriod.end()),childCareNurseUpperLimitSplit);
 		}
 
 	}
@@ -166,16 +166,27 @@ public abstract class NursingCareLeaveRemainingInfo{
 		// ===個人情報を参照（本年度のみ利用）
 		if (upperlimitSetting == UpperLimitSetting.PER_INFO_FISCAL_YEAR){
 			// 期間に次回起算日が含まれているか
-			if (period.contains(nextStartMonthDay) && maxDayForNextFiscalYear.isPresent()) {
+			if (period.contains(nextStartMonthDay)) {
 				// 上限日数分割日に上限日数を設定
 				// ===年月日＝パラメータ「期間．開始日」
 				// ===上限日数＝次年度上限日数を設定
-				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForNextFiscalYear.get(), period.start()));
-			}else if(!period.contains(nextStartMonthDay) && maxDayForThisFiscalYear.isPresent()){
+				if(maxDayForNextFiscalYear.isPresent())
+				{
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForNextFiscalYear.get(), period.start()));
+				}else{
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(
+							new ChildCareNurseUpperLimit(0), period.start()));
+				}
+			}else if(!period.contains(nextStartMonthDay)){
 				// ===期間に次回起算日が含まれていない
 				// ===年月日＝パラメータ「期間．開始日」
 				// ===上限日数＝本年度上限日数を設定
-				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
+				if(maxDayForThisFiscalYear.isPresent()){
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
+				}else{
+					childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(
+							new ChildCareNurseUpperLimit(0), period.start()));
+				}
 			}
 			// 「上限日数分割日（List）」を返す
 			return childCareNurseUpperLimitSplit;
@@ -184,7 +195,12 @@ public abstract class NursingCareLeaveRemainingInfo{
 		if(upperlimitSetting == UpperLimitSetting.PER_INFO_EVERY_YEAR){
 			// ===年月日＝パラメータ「期間．開始日」
 			// ===上限日数＝本年度上限日数を設定
-			childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
+			if(maxDayForThisFiscalYear.isPresent()){			
+				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(maxDayForThisFiscalYear.get(), period.start()));
+			}else{
+				childCareNurseUpperLimitSplit.add(ChildCareNurseUpperLimitSplit.of(
+						new ChildCareNurseUpperLimit(0), period.start()));
+			}
 			
 			// 「上限日数分割日（List）」を返す
 			return childCareNurseUpperLimitSplit;
