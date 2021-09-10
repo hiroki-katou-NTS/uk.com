@@ -127,8 +127,8 @@ public class ChildCareCheckOverUsedNumberWork {
 			// falseの場合
 			// 暫定管理データ使用数の内上限超過しないまでの値を求める
 			ChildCareNurseUsedNumber childCareNurseUsedNumber = interimDateUpperLimit(companyId, employeeId,
-					criteriaDate, upperLimitPeriod, interimDate, require); // 一時対応
-																			// 要確認
+					criteriaDate, upperLimitPeriod, interimDate, require); 
+																			
 			shortageRemainingNumberWork.setAvailable(childCareNurseUsedNumber);
 
 			// 残数不足数を求める
