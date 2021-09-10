@@ -149,7 +149,7 @@ public class ReviseItemDto {
 		private StringRevise toDomainStringRevise() {
 			
 			if ((usePadding == null || paddingLength == null || paddingMethod == -1)
-					&& !useCodeConvert) {
+					&& BooleanUtils.isNotTrue(useCodeConvert)) {
 				return null;
 			}
 			
