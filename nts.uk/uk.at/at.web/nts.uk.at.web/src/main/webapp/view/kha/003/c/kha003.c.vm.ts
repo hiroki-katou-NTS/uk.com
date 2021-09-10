@@ -121,7 +121,12 @@ module nts.uk.at.kha003.c {
                             || data.c31.type != oldData.c31.type
                             || data.c41.type != oldData.c41.type
                             || data.c51.type != oldData.c51.type)) {
-                        vm.$dialog.error({messageId: "Msg_2168"});
+                        vm.$dialog.error({messageId: "Msg_2168"}).then(() => {
+                            vm.c24CurrentCodeList(_.map(vm.c24Items(), x => x.code));
+                            vm.c34CurrentCodeList(_.map(vm.c34Items(), x => x.code));
+                            vm.c44CurrentCodeList(_.map(vm.c44Items(), x => x.code));
+                            vm.c54CurrentCodeList(_.map(vm.c54Items(), x => x.code));
+                        });
                         vm.$window.storage('kha003CShareData_' + data.code, {});
                     } else {
                         vm.$window.storage('kha003CShareData_' + data.code).done(savedDataC => {
@@ -238,7 +243,7 @@ module nts.uk.at.kha003.c {
                         c54CurrentCodeList: vm.c54CurrentCodeList(),
                         dateRange: vm.dateRange()
                     };
-					vm.$window.storage('kha003CShareData_' + vm.code, shareData);
+                    vm.$window.storage('kha003CShareData_' + vm.code, shareData);
                     vm.$window.storage('kha003CShareData', shareData).then(() => {
                         vm.$jump('/view/kha/003/d/index.xhtml');
                         nts.uk.ui.windows.close();
