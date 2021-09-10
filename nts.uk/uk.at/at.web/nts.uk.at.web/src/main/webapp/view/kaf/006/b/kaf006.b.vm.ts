@@ -1376,16 +1376,14 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 						vm.annualTime(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement === 1) {
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
 						vm.condition19ChildNursing(true);
 					} else {
 						vm.condition19ChildNursing(false);
 						vm.childNursing(null);
 					}
 				if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1 
-					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement === 1) {
+					&& vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
 						vm.condition19Nursing(true);
 					} else {
 						vm.condition19Nursing(false);
