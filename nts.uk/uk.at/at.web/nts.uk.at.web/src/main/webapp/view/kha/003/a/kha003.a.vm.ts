@@ -541,9 +541,17 @@ module nts.uk.at.kha003.a {
                             var link = window.document.createElement("a");
                             link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csvContent));
                             var currentdate = new Date();
+                            let month: any = (currentdate.getMonth() + 1);
+                            let day: any = currentdate.getDate();
+                            if (month < 10) {
+                                month = '0' + month;
+                            }
+                            if (day < 10) {
+                                day = '0' + day;
+                            }
                             var pathSuffix = currentdate.getFullYear() + ""
-                                + (currentdate.getMonth() + 1) + ""
-                                + currentdate.getDate() + "  "
+                                + month + ""
+                                + day + ""
                                 + currentdate.getHours() + ""
                                 + currentdate.getMinutes() + ""
                                 + currentdate.getSeconds()
