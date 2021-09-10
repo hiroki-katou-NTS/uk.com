@@ -19,7 +19,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ImprintReflectionState implements DomainValue {
+public class ImprintReflectionState implements DomainValue, Cloneable {
 
 	//反映済み区分
 	private boolean reflectedCategory;
@@ -43,6 +43,11 @@ public class ImprintReflectionState implements DomainValue {
 		if(!this.reflectedCategory)
 			return;
 		this.reflectedDate = Optional.of(baseDate);
+	}
+	
+	@Override
+	public ImprintReflectionState clone() {
+		return new ImprintReflectionState(reflectedCategory, reflectedDate);
 	}
 	
 }
