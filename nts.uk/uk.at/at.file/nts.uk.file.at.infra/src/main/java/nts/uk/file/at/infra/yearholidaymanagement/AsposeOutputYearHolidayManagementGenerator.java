@@ -147,7 +147,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	/** The Constant MAX_COL. */
 	private static final int MAX_COL = 23;
 	/** The Constant MAX_ROW. */
-	private static final int MAX_ROW = 28;
+	private static final int MAX_ROW = 34;
 	/** The Constant NORMAL_FONT_SIZE. */
 	private static final int NORMAL_FONT_SIZE = 9;
 	/** The Constant WORKPLACE_TITLE */
