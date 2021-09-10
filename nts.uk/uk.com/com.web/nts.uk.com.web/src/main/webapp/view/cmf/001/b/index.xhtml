@@ -100,12 +100,8 @@
 									value: importMode,  
 									required: true}"></div>
 							</div>
-						</div>
-
-						<div class="domain">
-							<div class="divi">CSVファイルの情報</div><hr />
 							<div class="item-name-row">
-								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">項目名の行</div>
+								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの項目名の行</div>
 								<input class="check-target" id="itemNameRow" data-bind="ntsTextEditor: {
 									name: '項目名の行', 
 									value: itemNameRow,  
@@ -113,7 +109,7 @@
 									constraint: ['ExternalImportRowNumber']}" />
 							</div>
 							<div class="import-start-row">
-								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">受入開始行</div>
+								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの受入開始行</div>
 								<input class="check-target" id="importStartRow" data-bind="ntsTextEditor: {
 									name: '受入開始行', 
 									value: importStartRow,  
@@ -125,7 +121,7 @@
 						<div class="domain">
 							<div class="divi">受入レイアウト</div><hr />
 							<button class="normal" data-bind="click: selectLayout, text: '項目を追加する'" ></button>
-							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting" ></button>
+							<button class="normal" data-bind="text: '受入項目の詳細設定', click: gotoDetailSetting, enable: canEditDetail" ></button>
 							<table class="check-target" id="layout-list" data-bind="ntsGridList: {
 								height: '300px',
 								dataSource: layout,
