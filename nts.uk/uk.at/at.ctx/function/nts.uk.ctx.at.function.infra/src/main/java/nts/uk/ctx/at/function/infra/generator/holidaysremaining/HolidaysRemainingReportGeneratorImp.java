@@ -572,12 +572,11 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         dataSource.getHolidaysRemainingManagement()) ?
                         (Double) vlaueE13 : null;
                 cells.get(firstRow + (isTime ? 2 * i:i), 4).setValue(days_Granted == null ? "" : df.format(days_Granted.doubleValue()));
-                // E1_16
+
                 if(!isTime){
-                    Style style = cells.get(firstRow + i, 4).getStyle();
-                    style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-                    cells.get(firstRow + i, 4).setStyle(style);
+                   setBottomBorderStyle(cells.get(firstRow + i, 4));
                 }
+                // E1_16
                 val valueE116 = listAnnLeaGrant.get(i).getGrantTime();
                 Integer time_Granted =  checkShowAreaAnnualBreak1(
                         dataSource.getHolidaysRemainingManagement()) ?
@@ -654,7 +653,9 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
 
             // E1_13; SUM VALUE 281
             if(isTime){
-                Double valueE113 = listAnnLeaGrant.stream().mapToDouble(AnnLeaGrantNumberImported::getRemainTime).sum();
+                Double valueE113 = listAnnLeaGrant.stream()
+                        .filter(x->x.getRemainTime()!=null)
+                        .mapToDouble(AnnLeaGrantNumberImported::getRemainTime).sum();
                 Double leave_Hours = isTime ?
                         valueE113 : null;
                 val e113 = leave_Hours != null ? convertToTime((int) (leave_Hours.doubleValue())) : "";
