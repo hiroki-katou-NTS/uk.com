@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.dom.equipment.data;
+package nts.uk.ctx.office.dom.equipment.achievement;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

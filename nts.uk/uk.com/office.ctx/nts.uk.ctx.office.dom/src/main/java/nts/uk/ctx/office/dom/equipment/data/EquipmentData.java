@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
 import nts.uk.ctx.office.dom.equipment.data.ItemData.Require;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
