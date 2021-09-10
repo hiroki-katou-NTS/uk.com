@@ -574,6 +574,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                 cells.get(firstRow + (isTime ? 2 * i:i), 4).setValue(days_Granted == null ? "" : df.format(days_Granted.doubleValue()));
 
                 if(!isTime){
+                   setBottomBorderStyle(cells.get(firstRow + i, 3));
                    setBottomBorderStyle(cells.get(firstRow + i, 4));
                 }
                 // E1_16
