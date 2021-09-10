@@ -88,6 +88,14 @@ module nts.uk.at.kha003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
+                if (data.summaryTableFormat.totalUnit == 1) {
+                    for (let contentItem of data.outputContent.verticalTotalValues) {
+                        let date = contentItem.yearMonth.toString();
+                        vm.dateHeaders.push(
+                            new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
+                        );
+                    }
+                }
                 vm.agCommand(data);
                 vm.printContents(data);
                 vm.initGrid();
@@ -816,14 +824,14 @@ module nts.uk.at.kha003.d {
                         vm.maxDateRange++;
                     }
                     break;
-                case 1:
+                /*case 1:
                     const fromYear = fromDate.getFullYear();
                     const fromMonth = fromDate.getMonth() + 1;
                     const toYear = toDate.getFullYear();
                     const toMonth = toDate.getMonth() + 1;
                     const months = [];
                     for (let year = fromYear; year <= toYear; year++) {
-                        let month = year === fromYear ? fromMonth : 0;
+                        let month = year === fromYear ? fromMonth : 12;
                         const monthLimit = year === toYear ? toMonth : 11;
                         for (; month <= monthLimit; month++) {
                             if (month < 10) {
@@ -834,7 +842,7 @@ module nts.uk.at.kha003.d {
                             );
                         }
                     }
-                    break;
+                    break;*/
             }
             dfd.resolve();
             return dfd.promise();
