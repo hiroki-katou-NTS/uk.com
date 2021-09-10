@@ -16,7 +16,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.NextDayAfterPeriodEndWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -41,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.残数管理.特別休暇管理.Export
@@ -56,7 +57,7 @@ public class SpecialLeaveManagementService {
 			//AggregateMonthlyRecordServiceProc.RequireM8 require,
 			CacheCarrier cacheCarrier,
 			ComplileInPeriodOfSpecialLeaveParam param) {
-
+			
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
@@ -126,7 +127,9 @@ public class SpecialLeaveManagementService {
 					aggregatePeriodWork,
 					specialHolidayInterimMngData,
 					param.getSpecialLeaveCode(),
-					outputData);
+					employee.getEntryDate(),
+					outputData
+					);
 		}
 
 		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）
@@ -241,8 +244,6 @@ public class SpecialLeaveManagementService {
 			int specialLeaveCode,
 			Optional<DatePeriod> isOverWritePeriod){
 
-		SpecialLeaveInfo emptyInfo = new SpecialLeaveInfo();
-		emptyInfo.setYmd(aggrPeriod.start());
 
 		// 集計開始日時点の前回の特休の集計結果が存在するかチェック
 		// 「前回の特休情報」を確認　（前回の特休の集計結果．特休情報（期間終了日の翌日開始時点））
@@ -559,6 +560,15 @@ public class SpecialLeaveManagementService {
 				.filter(c -> c.getGrantDate().beforeOrEquals(nextDayEnd))
 				.collect(Collectors.toList());
 
+		// 特別休暇コードから設定を取得（会社設定）
+		Optional<SpecialHoliday> specialHolidayOpt
+			= require.specialHoliday(companyId, specialLeaveCode);
+		if (!specialHolidayOpt.isPresent()) {
+			return new ArrayList<>();
+		}
+		// 付与するタイミングの種類を取得
+		TypeTime typeTime = specialHolidayOpt.get().getGrantRegular().getTypeTime();
+
 		// 付与情報WORKを作成
 		//int grantNumber = 1; // 期間中、何回目の付与かをカウント
 		nextSpecialLeaveGrantList_period
@@ -567,6 +577,8 @@ public class SpecialLeaveManagementService {
 
 				// 付与情報WORK.期間の開始日に付与があるかどうか←true
 				specialLeaveGrantWork.setGrantAtr(true);
+				// 付与情報WORK.付与するタイミングの種類←取得した「付与するタイミングの種類」
+				specialLeaveGrantWork.setTypeTime(Optional.of(typeTime));
 				// 付与情報WORK.特休付与←次回特別休暇付与
 				specialLeaveGrantWork.setSpecialLeaveGrant(Optional.of(c));
 
@@ -660,14 +672,10 @@ public class SpecialLeaveManagementService {
 		boolean isFirst = true;
 		GeneralDate preYmd = null;
 
-
 		if (dividedDayList.size() <= 0)
 			return new ArrayList<>();
 
 		List<SpecialLeaveAggregatePeriodWork> aggregatePeriodWorks = new ArrayList<>();
-//		SpecialLeaveAggregatePeriodWork firstPeriod = new SpecialLeaveAggregatePeriodWork(
-//				new DatePeriod(aggrPeriod.start(),dividedDayList.get(0).getYmd().addDays(-1)));
-//		aggregatePeriodWorks.add(firstPeriod);
 
 		for( SpecialLeaveDividedDayEachProcess c : dividedDayList ){
 
@@ -677,7 +685,7 @@ public class SpecialLeaveManagementService {
 				= SpecialLeaveAggregatePeriodWork.of(
 					new DatePeriod(aggrPeriod.start(), c.getYmd().addDays(-1)),
 					new NextDayAfterPeriodEndWork(),
-					new SpecialLeaveLapsedWork(false),
+					c.getLapsedWork(),
 					new SpecialLeaveGrantWork(),
 					GrantPeriodAtr.BEFORE_GRANT);
 
@@ -688,12 +696,10 @@ public class SpecialLeaveManagementService {
 				continue;
 			}
 
-			new SpecialLeaveLapsedWork();
-
 			// 期間．開始日←「処理単位分割日．年月日」
 			// 期間．終了日←次の「処理単位分割日．年月日」の前日
 			// 　　　　※次の処理単位分割日がない場合、パラメータ「終了日」の翌日
-			// 消滅←「処理単位分割日.消滅情報WORK」
+			// 消滅←次の「処理単位分割日.消滅情報WORK」
 			// 付与←「処理単位分割日.付与情報WORK」
 			// 終了日←「処理単位分割日.終了日の翌日情報WORK」
 			// 付与前か付与後か←「処理単位分割日.付与前、付与後の期間区分」
@@ -704,7 +710,7 @@ public class SpecialLeaveManagementService {
 //					specialLeaveDividedDayEachProcess_pre.get().isNextDayAfterPeriodEnd(),
 //					specialLeaveDividedDayEachProcess_pre.get().isAfterGrant(),
 					specialLeaveDividedDayEachProcess_pre.get().getEndDay(),
-					specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
+					c.getLapsedWork(),
 					specialLeaveDividedDayEachProcess_pre.get().getGrantWork(),
 					specialLeaveDividedDayEachProcess_pre.get().getGrantPeriodAtr());
 
@@ -723,11 +729,16 @@ public class SpecialLeaveManagementService {
 
 		// 期間．開始日←最後の「処理単位分割日．年月日」
 		// 期間．終了日←パラメータ「終了日」の翌日
+		// 消滅←次の「処理単位分割日.消滅情報WORK」
+		// ※次の処理単位分割日がない場合、「期間の開始日に消滅するかどうか」をfalseで消滅情報WORKを作成
+		// 付与←「処理単位分割日.付与情報WORK」
+		// 終了日←「処理単位分割日.終了日の翌日情報WORK」
+		// 付与前か付与後か←「処理単位分割日.付与前、付与後の期間区分」
 		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
 		= SpecialLeaveAggregatePeriodWork.of(
 			new DatePeriod(preYmd, nextDayOfPeriodEnd),
 			specialLeaveDividedDayEachProcess_pre.get().getEndDay(),
-			specialLeaveDividedDayEachProcess_pre.get().getLapsedWork(),
+			new SpecialLeaveLapsedWork(false),
 			specialLeaveDividedDayEachProcess_pre.get().getGrantWork(),
 			specialLeaveDividedDayEachProcess_pre.get().getGrantPeriodAtr());
 
@@ -738,7 +749,10 @@ public class SpecialLeaveManagementService {
 		for( SpecialLeaveAggregatePeriodWork nowWork : aggregatePeriodWorks ){
 			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
 			{
-				nowWork.getGrantWork().setGrantNumber(grantNumber.get());
+				if ( !nowWork.getGrantWork().getSpecialLeaveGrant().isPresent() ) {
+					nowWork.getGrantWork().setSpecialLeaveGrant(Optional.of(new NextSpecialLeaveGrant()));
+				}
+				nowWork.getGrantWork().getSpecialLeaveGrant().get().setTimes(new GrantNum(grantNumber.get()));
 				grantNumber.incrementAndGet();
 			}
 		}
@@ -805,7 +819,7 @@ public class SpecialLeaveManagementService {
 //		}
 
 		// 特休情報残数を更新
-		specialLeaveInfo.updateRemainingNumber(false);
+		specialLeaveInfo.updateRemainingNumber(GrantPeriodAtr.BEFORE_GRANT);
 
 		// 特休情報を返す
 		return specialLeaveInfo;

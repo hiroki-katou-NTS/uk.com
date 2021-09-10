@@ -2354,8 +2354,7 @@ public class RecordDomRequireService {
 
 		@Override
 		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-
-			return this.specialHolidayRepo.findByCode(companyID, specialHolidayCD);
+			return this.specialHolidayRepo.findBySingleCD(companyID, specialHolidayCD);
 		}
 
 		@Override

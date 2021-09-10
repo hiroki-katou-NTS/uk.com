@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 
 /**
  * 特別休暇使用情報
@@ -18,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
  *
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional {
 
@@ -31,17 +31,29 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 	private SpecialLeaveUseNumber usedNumber;
 
 	/** 付与前 */
+	@Setter
 	private SpecialLeaveUseNumber usedNumberBeforeGrant;
 
 	/** 特休使用回数 （1日2回使用した場合２回でカウント）*/
+	@Setter
 	private UsedTimes specialLeaveUsedTimes;
 
 	/** 特休使用日数 （1日2回使用した場合１回でカウント） */
+	@Setter
 	private UsedTimes specialLeaveUsedDayTimes;
 
 	/** 付与後 */
+	@Setter
 	private Optional<SpecialLeaveUseNumber> usedNumberAfterGrantOpt;
 
+	/** 合計をセット */
+	public void setTotal() {
+		usedNumber = new SpecialLeaveUseNumber();
+		usedNumber.addUsedNumber(usedNumberBeforeGrant);
+		if (usedNumberAfterGrantOpt.isPresent()) {
+			usedNumber.addUsedNumber(usedNumberAfterGrantOpt.get());
+		}
+	}
 
 	/**
 	 * ファクトリ
@@ -111,15 +123,12 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 	/**
 	 * 使用数を加算する
 	 * @param usedNumber 使用数
-	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantPeriodAtr 付与前付与後
 	 */
-	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, boolean afterGrantAtr){
-
-		// 使用数に加算
-		this.usedNumber.addUsedNumber(usedNumber);
+	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, GrantPeriodAtr grantPeriodAtr){
 
 		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
+		if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
 
 			// 使用日数付与後に加算
 			if ( this.usedNumberAfterGrantOpt.isPresent() ){
@@ -132,8 +141,10 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 
 			// 使用日数付与前に加算
 			this.usedNumberBeforeGrant.addUsedNumber(usedNumber);
-
 		}
+
+		// 合計を求める
+		this.setTotal();
 	}
 
 	/**

@@ -40,7 +40,7 @@ public class EditSpecialHolidayCommandHandler extends CommandHandlerWithResult<S
 
 		if (errList.isEmpty()) {
 			// call event
-			Optional<SpecialHoliday> oldDomain =  sphdRepo.findByCode(companyId, domain.getSpecialHolidayCode().v());
+			Optional<SpecialHoliday> oldDomain =  sphdRepo.findBySingleCD(companyId, domain.getSpecialHolidayCode().v());
 			if(oldDomain.isPresent()){
 				boolean isNewChanged = isNameChanged(oldDomain.get(),domain);
 

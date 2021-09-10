@@ -47,7 +47,7 @@ public class SpecialLeaveRemainingNumberDto implements ItemConst, AttendanceItem
 		}
 
 		return new SpecialLeaveRemainingNumberDto(
-				dom.getDayNumberOfRemain().v(), 
+				dom.getDayNumberOfRemain().v(),
 				dom.getTimeOfRemain().map(x -> x.v()).orElse(null),
 				dom.getDetails().stream().map(x -> new SpecialLeaveRemainingDetailDto(x.getGrantDate(), x.getDays().v(),
 																						x.getTime().map(y -> y.v()).orElse(null)))
@@ -59,7 +59,7 @@ public class SpecialLeaveRemainingNumberDto implements ItemConst, AttendanceItem
 		return new SpecialLeaveRemainingNumber(new DayNumberOfRemain(dayNumberOfRemain),
 				Optional.ofNullable(timeOfRemain == null ? null : new TimeOfRemain(timeOfRemain)),
 				details.stream().map(x -> SpecialLeaveRemainingDetail.of(x.getGrantDate(),
-																		new DayNumberOfRemain(x.getDays()), 
+																		new DayNumberOfRemain(x.getDays()),
 																		Optional.ofNullable(x.getTime() == null ? null : new TimeOfRemain(x.getTime()))))
 						.collect(Collectors.toList()));
 	}

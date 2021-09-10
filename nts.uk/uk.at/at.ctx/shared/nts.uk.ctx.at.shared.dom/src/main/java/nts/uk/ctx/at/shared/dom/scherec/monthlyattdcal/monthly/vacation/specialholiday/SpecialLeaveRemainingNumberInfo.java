@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 /**
@@ -15,9 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 @Getter
 @AllArgsConstructor
 public class SpecialLeaveRemainingNumberInfo implements Cloneable {
-
-	/** 合計 */
-	private SpecialLeaveRemainingNumber remainingNumber;
 
 	/** 付与前 */
 	private SpecialLeaveRemainingNumber remainingNumberBeforeGrant;
@@ -33,13 +31,11 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	 * @return
 	 */
 	public static SpecialLeaveRemainingNumberInfo of(
-			SpecialLeaveRemainingNumber remainingNumber,
 			SpecialLeaveRemainingNumber remainingNumberBeforeGrant,
 			Optional<SpecialLeaveRemainingNumber> remainingNumberAfterGrantOpt
 			){
 
 		SpecialLeaveRemainingNumberInfo domain = new SpecialLeaveRemainingNumberInfo();
-		domain.remainingNumber = remainingNumber;
 		domain.remainingNumberBeforeGrant = remainingNumberBeforeGrant;
 		domain.remainingNumberAfterGrantOpt= remainingNumberAfterGrantOpt;
 		return domain;
@@ -47,7 +43,6 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 
 	/** コンストラクタ  */
 	public SpecialLeaveRemainingNumberInfo(){
-		this.remainingNumber = new SpecialLeaveRemainingNumber();
 		this.remainingNumberBeforeGrant = new SpecialLeaveRemainingNumber();
 		this.remainingNumberAfterGrantOpt = Optional.empty();
 	}
@@ -55,23 +50,24 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	/**
 	 * 特別休暇付与残数データから実特別休暇の特別休暇残数を作成
 	 * @param remainingDataList 特休付与残数データリスト
-	 * @param afterGrantAtr 付与後フラグ
+	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void createRemainingNumberFromGrantRemaining(
 			List<SpecialLeaveGrantRemainingData> remainingDataList,
-			boolean afterGrantAtr){
+			GrantPeriodAtr grantPeriodAtr){
 
-		// 特休付与残数データから残数を作成
-		this.remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
+		// 特別休暇付与残数データから特別休暇残数を作成
+		SpecialLeaveRemainingNumber remainingNumber = new SpecialLeaveRemainingNumber();
+		remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
 
 		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
+		if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
 			// 残数付与後　←　残数
-			this.remainingNumberAfterGrantOpt = Optional.of(this.remainingNumber.clone());
+			this.remainingNumberAfterGrantOpt = Optional.of(remainingNumber);
 		}
 		else {
 			// 残数付与前　←　残数
-			this.remainingNumberBeforeGrant = this.remainingNumber.clone();
+			this.remainingNumberBeforeGrant = remainingNumber;
 		}
 	}
 
@@ -83,9 +79,6 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 
 		if ( remainingNumberBeforeGrant != null ){
 			cloned.remainingNumberBeforeGrant = this.remainingNumberBeforeGrant.clone();
-		}
-		if ( remainingNumber != null ){
-			cloned.remainingNumber = this.remainingNumber.clone();
 		}
 
 		if (this.remainingNumberAfterGrantOpt.isPresent()){
@@ -99,36 +92,31 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	 * クリア
 	 */
 	public void clear(){
-		remainingNumber.clear();
+//		remainingNumber.clear();
 		remainingNumberBeforeGrant.clear();
 		remainingNumberAfterGrantOpt = Optional.empty();
-	}
-
-	/**
-	 * 付与前退避処理
-	 */
-	public void saveStateBeforeGrant(){
-		// 合計残数を付与前に退避する
-		remainingNumberBeforeGrant = remainingNumber.clone();
-	}
-
-	/**
-	 * 付与後退避処理
-	 */
-	public void saveStateAfterGrant(){
-		// 合計残数を付与後に退避する
-		remainingNumberAfterGrantOpt = Optional.of(remainingNumber.clone());
 	}
 
 	/**
 	 * 明細をクリア。（要素数を０にする）
 	 */
 	public void clearDetails(){
-		remainingNumber.clearDetails();
+//		remainingNumber.clearDetails();
 		remainingNumberBeforeGrant.clearDetails();
 		if ( remainingNumberAfterGrantOpt.isPresent() ){
 			remainingNumberAfterGrantOpt.get().clearDetails();
 		}
+	}
+
+	/**
+	 * 合計を取得
+	 * @return
+	 */
+	public SpecialLeaveRemainingNumber getRemainingNumber(){
+		if(this.remainingNumberAfterGrantOpt.isPresent()) {
+			return this.remainingNumberAfterGrantOpt.get();
+		}
+		return this.remainingNumberBeforeGrant;
 	}
 
 }

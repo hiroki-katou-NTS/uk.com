@@ -10,7 +10,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
@@ -117,10 +119,10 @@ public class AnnualLeaveRemaining implements Cloneable {
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void updateRemainingNumber(
-			List<AnnualLeaveGrantRemainingData> remainingDataList, boolean afterGrantAtr){
+			List<AnnualLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
 
 		// 年休付与残数データから年休（マイナスあり）を作成
-		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
+		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 
 		// 年休（マイナスなし）を年休（マイナスあり）で上書き　＆　年休からマイナスを削除
 		this.annualLeaveNoMinus = updateRemainingNumberNoMinus(this.annualLeaveWithMinus);
@@ -139,10 +141,10 @@ public class AnnualLeaveRemaining implements Cloneable {
 		// 年休からマイナスを削除
 		// 「年休．残数」「年休．残数付与前」「年休．残数付与後」をそれぞれ処理
 
-		// 残数
-		updateRemainingNumberWithMinusToNoMinus(
-				annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumber(),
-				annualLeaveNoMinus.getUsedNumberInfo().getUsedNumber());
+//		// 残数
+//		updateRemainingNumberWithMinusToNoMinus(
+//				annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumber(),
+//				annualLeaveNoMinus.getUsedNumberInfo().getUsedNumber());
 
 		// 残数付与前
 		updateRemainingNumberWithMinusToNoMinus(
@@ -156,6 +158,10 @@ public class AnnualLeaveRemaining implements Cloneable {
 				annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get(),
 				annualLeaveNoMinus.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get());
 		}
+
+		// 合計使用数を求める
+		// 年休(マイナスなし)．使用数．合計 ← 年休(マイナスなし)．使用数．付与前 + 年休(マイナスなし)．使用数．付与後
+		annualLeaveNoMinus.getUsedNumberInfo().setTotal();
 
 		return annualLeaveNoMinus;
 	}
@@ -218,6 +224,35 @@ public class AnnualLeaveRemaining implements Cloneable {
 			this.annualLeaveUndigestNumber = Optional.of(new AnnualLeaveUndigestNumber());
 		}
 		this.annualLeaveUndigestNumber.get().add(undigestNumber);
+	}
+
+	/**
+	 * 年休残数不足エラーチェック
+	 * @param aggregatePeriodWork 年休集計期間WORK
+	 * @return
+	 */
+	public Optional<AnnualLeaveError> remainShortageCheck(AggregatePeriodWork aggregatePeriodWork){
+
+		// 年休残数がマイナスかチェック
+		// 年休(マイナスあり)．残数．合計をチェック
+
+		// 合計残日数>=0
+		if ( !annualLeaveWithMinus.getRemainingNumberInfo().getRemainingNumber().isMinus() ) {
+			return Optional.empty();
+		}
+
+		// 合計残日数<0
+
+		// 付与前付与後を判断する
+		if ( aggregatePeriodWork.getGrantWork().getGrantPeriodAtr()
+				== GrantPeriodAtr.BEFORE_GRANT ) { // 付与前
+			// 「年休エラー．年休不足エラー（付与前）」を返す
+			return Optional.of(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT);
+
+		} else { // 付与後
+			// 「年休エラー．年休不足エラー（付与後）」を返す
+			return Optional.of(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT);
+		}
 	}
 
 }

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.dtoexport.temp.Temp
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;;
 
 @Stateless
 public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnualLeaveMngsFromUsedNumberPub {
@@ -34,6 +34,9 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 
 		LeaveUsedNumber usedNumberDom = LeaveUsedNumber.createFromJavaType(usedNumber.getDays(),
 				usedNumber.getMinutes().orElse(null), usedNumber.getStowageDays().orElse(null));
+		
+		//TODO:付与残数データからパラメータで渡された使用数を減算して、返すように修正すること
+		
 		return GetTempAnnualLeaveMngsFromUsedNumberService.tempAnnualLeaveMngs(employeeId, usedNumberDom).stream()
 				.map(x -> convert(x)).collect(Collectors.toList());
 	}
@@ -53,16 +56,23 @@ public class GetTempAnnualLeaveMngsFromUsedNumberPubImpl implements GetTempAnnua
 			}
 		}
 		);
+
+		//TODO:付与残数データからパラメータで渡された使用数を減算して、返すように修正すること
+		LeaveUsedNumber temp = new LeaveUsedNumber();
 		
 		return new TempAnnualLeaveMngsExport(domain.getRemainManaID(), domain.getSID(), domain.getYmd(),
 				EnumAdaptor.valueOf(domain.getCreatorAtr().value, CreateAtrExport.class),
 				EnumAdaptor.valueOf(domain.getRemainType().value, RemainType.class),
 				domain.getWorkTypeCode().v(),
-				new LeaveUsedNumberExport(domain.getUsedNumber().getDays().v(),
-						domain.getUsedNumber().getMinutes().map(x -> x.v()),
-						domain.getUsedNumber().getStowageDays().map(x -> x.v()),
-						domain.getUsedNumber().getLeaveOverLimitNumber()
-								.map(x -> new LeaveOverNumberExport(x.numberOverDays.v(), x.timeOver.map(y -> y.v())))),
+//				new TempAnnualLeaveUsedNumberExport(
+//						domain.getUsedNumber().getUsedDayNumber().map(mapper->mapper.v()).orElse(0.0),
+//						domain.getUsedNumber().getUsedTime().map(x -> x.v())),
+				
+                new LeaveUsedNumberExport(temp.getDays().v(),
+                		temp.getMinutes().map(x -> x.v()),
+                		temp.getStowageDays().map(x -> x.v()),
+                		temp.getLeaveOverLimitNumber()
+                        	.map(x -> new LeaveOverNumberExport(x.numberOverDays.v(), x.timeOver.map(y -> y.v())))),
 				timeTypeExport
 				);
 	}

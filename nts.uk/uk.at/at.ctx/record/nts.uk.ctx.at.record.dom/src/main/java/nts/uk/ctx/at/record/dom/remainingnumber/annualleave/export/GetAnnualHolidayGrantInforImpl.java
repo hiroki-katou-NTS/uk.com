@@ -40,6 +40,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.DailyIn
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
@@ -348,7 +350,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			if (x.getAnnualHolidayData().isEmpty()) continue;
 			double usedDays = x.getAnnualHolidayData().stream()
 					.filter(c->c.getUsedNumber().isUseDay())
-					.map(c->c.getUsedNumber().getDays().v())
+					.map(c->c.getUsedNumber().getUsedDayNumber().map(mapper->mapper.v()).orElse(0.0))
 					.findFirst().orElse(0.0);
 			if(usedDays <= 0) {
 				continue;
@@ -379,9 +381,11 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 //				annualInterimTmp.setAnnualId(annualInterim.getAnnualId());
 				annualInterimTmp.setWorkTypeCode(annualInterim.getWorkTypeCode());
 
-				val usedNumber = LeaveUsedNumber.of(new LeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5),
-						Optional.empty(), Optional.empty(), Optional.empty());
+				val usedNumber = new TempAnnualLeaveUsedNumber(
+						Optional.of(new TmpDailyLeaveUsedDayNumber(usedDays - i >= 1 ? 1.0 : 0.5)),
+						Optional.empty());
 				annualInterimTmp.setUsedNumber(usedNumber);
+
 				flexTmp.getAnnualHolidayData().add(annualInterimTmp);
 
 				lstOutputData.add(new DailyInterimRemainMngDataAndFlg(flexTmp, true));

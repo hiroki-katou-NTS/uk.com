@@ -14,6 +14,9 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.interim.InterimHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpDailyLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
@@ -82,7 +85,9 @@ public class TempRemainCreateEachData {
 				inforData.getWorkTypeRemainInfor(workTypeClass).get().getCreateData(),
 				RemainType.ANNUAL,
 				new WorkTypeCode(inforData.getWorkTypeRemainInfor(workTypeClass).get().getWorkTypeCode()),
-				new LeaveUsedNumber(occUseDetail.get().getDays(), null, null),
+				//new LeaveUsedNumber(occUseDetail.get().getDays(), null, null),
+				new TempAnnualLeaveUsedNumber(
+						Optional.of(new TmpDailyLeaveUsedDayNumber(occUseDetail.get().getDays())), Optional.empty()),
 				Optional.empty());
 		mngData.getRecAbsData().add(annualMng);
 
@@ -438,7 +443,8 @@ public class TempRemainCreateEachData {
 				WorkTypeRemainInfor.getCreateData(),
 				RemainType.ANNUAL,
 				new WorkTypeCode(WorkTypeRemainInfor.getWorkTypeCode()),
-				new LeaveUsedNumber(0d, usageTimeDetail.getTimes(), 0d),
+				new TempAnnualLeaveUsedNumber(
+						Optional.empty(), Optional.of(new TmpDailyLeaveUsedTime(usageTimeDetail.getTimes()))),
 				Optional.of(DigestionHourlyTimeType.of(true, Optional.empty())));
 
 	}
@@ -542,7 +548,7 @@ public class TempRemainCreateEachData {
 		//日　＝　次の期首月－１の月末の日
 		int endPeriodDay = nextPeriod.addMonths(-1).lastDateInMonth();
 
-		String endPeriodYear = ""; 
+		String endPeriodYear = "";
 
 		//年月日．月　＜　次の期首月
 		if(date.month() < startMonth){
@@ -637,7 +643,8 @@ public class TempRemainCreateEachData {
 					vac.getCreateData(),
 					RemainType.ANNUAL,
 					new WorkTypeCode(vac.getWorkTypeCode()),
-					new LeaveUsedNumber(0d, vac.getTotalTimes(), null),
+					new TempAnnualLeaveUsedNumber(
+							Optional.empty(), Optional.of(new TmpDailyLeaveUsedTime(vac.getTotalTimes()))),
 					Optional.ofNullable(DigestionHourlyTimeType.of(false, Optional.ofNullable(vac.getTimeType()))))
 					);
 		});

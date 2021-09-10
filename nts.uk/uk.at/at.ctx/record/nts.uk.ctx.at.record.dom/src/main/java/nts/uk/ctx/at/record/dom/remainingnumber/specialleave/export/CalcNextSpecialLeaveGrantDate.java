@@ -1029,7 +1029,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			EmployeeRecordImport empInfor = require.employeeFullInfo(cacheCarrier, employeeId);
 
 			// 取得しているドメインモデル「定期付与．特別休暇利用条件．性別条件」をチェックする
-			if(specialLeaveRestric.getGenderRest().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isGenderRest()){ // 利用するとき
 
 				// 性別が一致するかチェックする
 				if(empInfor.getGender() == specialLeaveRestric.getGender().value) {
@@ -1045,7 +1045,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 
 			// 取得しているドメインモデル「定期付与．特別休暇利用条件．雇用条件」をチェックする
-			if(specialLeaveRestric.getRestEmp().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isRestEmp()){ // 利用するとき
 
 				// アルゴリズム「社員所属雇用履歴を取得」を実行する
 				Optional<BsEmploymentHistoryImport> employmentHistory
@@ -1074,7 +1074,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 
 			// ドメインモデル「特別休暇利用条件」．分類条件をチェックする
-			if(specialLeaveRestric.getRestrictionCls().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isRestrictionCls()){ // 利用するとき
 
 				// アルゴリズム「社員所属分類履歴を取得」を実行する
 				List<String> emploeeIdList = new ArrayList<>();
@@ -1114,7 +1114,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			}
 
 			// ドメインモデル「特別休暇利用条件」．年齢条件をチェックする
-			if(specialLeaveRestric.getAgeLimit().equals(UseAtr.USE)){ // 利用するとき
+			if(specialLeaveRestric.isAgeLimit()){ // 利用するとき
 
 				GeneralDate ageBase = ymd;
 

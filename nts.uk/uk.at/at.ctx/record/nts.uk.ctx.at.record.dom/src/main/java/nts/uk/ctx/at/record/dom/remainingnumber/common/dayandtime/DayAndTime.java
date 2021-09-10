@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.remainingnumber.common;
+package nts.uk.ctx.at.record.dom.remainingnumber.common.dayandtime;
 
 import lombok.Getter;
 import lombok.Setter;
