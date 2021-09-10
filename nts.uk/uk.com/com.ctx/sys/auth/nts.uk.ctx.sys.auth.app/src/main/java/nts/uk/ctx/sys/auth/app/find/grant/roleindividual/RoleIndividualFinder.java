@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
@@ -28,8 +29,11 @@ import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.app.find.company.CompanyDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
+import nts.uk.ctx.sys.auth.dom.GetPersonalEmployeeInfoByUserIdService;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.PersonalEmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonImport;
@@ -76,6 +80,9 @@ public class RoleIndividualFinder {
 
     @Inject
     private SyEmployeePub syEmployeePub;
+
+    @Inject
+    private GetPersonalEmployeeInfoByUserIdService infoByUserIdService;
 
 
 
@@ -185,6 +192,8 @@ public class RoleIndividualFinder {
         if (userId.size() == 0) {
             return rGrants;
         }
+
+
         Map<String,User> mapUser = userRepo.getByListUser(userId)
                 .stream().collect(Collectors.toMap(User::getUserID, e->e));
 
@@ -356,5 +365,25 @@ public class RoleIndividualFinder {
             Function<? super T, ?> keyExtractor) {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+    @AllArgsConstructor
+    public class RequireImpl implements GetPersonalEmployeeInfoByUserIdService.Require{
+        private UserRepository userRepo;
+        private EmployeeAdapter employeeAdapter;
+        @Override
+        public Optional<User> getUser(String userId) {
+            return userRepo.getByUserID(userId);
+        }
+
+        @Override
+        public Optional<PersonalEmployeeInfoImport> getPersonalEmployeeInfo(String personId) {
+            val rs =   employeeAdapter.getPersonalEmployeeInfo(Arrays.asList(personId));
+            if(rs.isEmpty()){
+                return Optional.empty();
+            }
+            else {
+                return Optional.of(rs.get(0));
+            }
+        }
     }
 }
