@@ -31,6 +31,8 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			double usedDays,
 			Integer usedMinutes,
 			Double stowageDays,
+			Double numberOverDays,
+			Integer timeOver,
 			double remainDays,
 			Integer remainMinutes,
 			double usedPercent,
@@ -45,7 +47,8 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
 		domain.details = new SpecialLeaveNumberInfo(
 				grantDays, grantMinutes, usedDays, usedMinutes,
-				stowageDays, remainDays, remainMinutes, usedPercent);
+				stowageDays, numberOverDays,
+				timeOver, remainDays, remainMinutes, usedPercent);
 
 		domain.specialLeaveCode = specialLeaveCode;
 
