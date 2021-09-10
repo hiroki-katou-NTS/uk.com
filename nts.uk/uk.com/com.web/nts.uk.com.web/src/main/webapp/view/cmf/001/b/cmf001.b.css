@@ -4,7 +4,7 @@
 }
 
 .form-label {
-  width: 300px;
+  width: 250px;
 }
 
 
@@ -16,6 +16,13 @@
 
 #importDomain{
  width:250px;
+ position: relative;
+ top: 15px;
+ margin-top: -15px;
+}
+
+.import-mode{
+ display:none;
 }
 
 #importMode{

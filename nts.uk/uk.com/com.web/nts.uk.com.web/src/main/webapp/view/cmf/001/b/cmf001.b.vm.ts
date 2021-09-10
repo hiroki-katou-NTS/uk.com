@@ -58,6 +58,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 		layout: KnockoutObservableArray<Layout> = ko.observableArray([]);
 		selectedItem: KnockoutObservable<string> = ko.observable();
 
+	    canEditDetail = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+	    
 		settingListColumns: KnockoutObservableArray<any> = ko.observableArray([
 			{ headerText: "コード", 				key: "code", 					width: 50 	},
 			{ headerText: "名称", 					key: "name", 					width: 200 	},

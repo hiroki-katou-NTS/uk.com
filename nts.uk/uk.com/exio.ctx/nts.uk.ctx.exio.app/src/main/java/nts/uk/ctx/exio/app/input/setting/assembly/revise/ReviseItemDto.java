@@ -75,6 +75,41 @@ public class ReviseItemDto {
 		
 		// 日付型
 		private int dateFormat = -1;
+
+		
+		public RevisingValue() {
+		}
+		public RevisingValue(
+				Boolean usePadding,
+				Integer paddingLength,
+				int paddingMethod,
+				Boolean useCodeConvert,
+				CodeConvertDto codeConvert,
+				Boolean isDecimalization,
+				Integer decimalizationLength,
+				int timeHourlySegment,
+				int timeBaseNumber,
+				int timeDelimiter,
+				int timeRounding,
+				int dateFormat) {
+
+			this.usePadding = usePadding;
+			this.paddingLength = paddingLength;
+			this.paddingMethod = paddingMethod;
+			this.useCodeConvert = useCodeConvert;
+			this.codeConvert = codeConvert;
+			this.isDecimalization = isDecimalization;
+			this.decimalizationLength = decimalizationLength;
+			this.timeHourlySegment = timeHourlySegment;
+			this.timeBaseNumber = timeBaseNumber;
+			this.timeDelimiter = timeDelimiter;
+			this.timeRounding = (timeRounding == 0) ? -1 : timeRounding;
+			this.dateFormat = dateFormat;
+		}
+
+		public void setTimeRounding(int timeRounding) {
+			this.timeRounding = (timeRounding == 0) ? -1 : timeRounding;
+		}
 		
 		static RevisingValue of(ReviseValue revisingValue) {
 			
@@ -149,7 +184,7 @@ public class ReviseItemDto {
 		private StringRevise toDomainStringRevise() {
 			
 			if ((usePadding == null || paddingLength == null || paddingMethod == -1)
-					&& !useCodeConvert) {
+					&& BooleanUtils.isNotTrue(useCodeConvert)) {
 				return null;
 			}
 			

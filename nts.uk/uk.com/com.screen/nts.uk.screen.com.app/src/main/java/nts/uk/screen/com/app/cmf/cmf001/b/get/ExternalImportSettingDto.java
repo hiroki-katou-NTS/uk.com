@@ -54,7 +54,7 @@ public class ExternalImportSettingDto {
 			domain.changeDomain(require, ImportingDomainId.valueOf(this.domain), itemNoList);
 		}
 	}
-	
+
 	public static interface RequireMerge extends
 		ExternalImportSetting.RequireMerge,
 		ExternalImportSetting.RequireChangeDomain {
@@ -81,7 +81,7 @@ public class ExternalImportSettingDto {
 				new ExternalImportCode(code),
 				new ExternalImportName(name),
 				ImportingDomainId.valueOf(domain),
-				ImportingMode.valueOf(mode),
+				ImportingMode.DELETE_RECORD_BEFOREHAND,
 				ExternalImportAssemblyMethod.create(
 						toCsvFileInfo(),
 						itemNoList));

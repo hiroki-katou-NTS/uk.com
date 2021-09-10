@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
@@ -60,18 +61,18 @@ public enum TimeBase60Delimiter {
 		}
 		
 		if (target.length() < 4) {
-			return Either.left(new ErrorMessage("時間の区切り文字無しの設定ですが、受入データの桁数が足りません。"));
+			target = PaddingMethod.ZERO_BEFORE.complement(target, 4);
 		}
 		
 		return convert(
-				target.substring(0, target.length() - 2),
-				target.substring(target.length() - 2));
+				target.substring(0, 2),
+				target.substring(2));
 	}
 	
 	// 区切り文字あり
 	private Either<ErrorMessage, Integer> convertDelimiter(String target) {
 		// 区切り文字で文字列を2分割
-		String[] strParts = target.split(character, 2);
+		String[] strParts = target.split(character);
 		
 		if (strParts.length != 2) {
 			return Either.left(new ErrorMessage("時間の区切り文字が正しく含まれていません。"));
@@ -81,6 +82,9 @@ public enum TimeBase60Delimiter {
 	}
 
 	private static Either<ErrorMessage, Integer> convert(String hourString, String minString) {
+		if (minString.length() < 2) {
+			return Either.left(new ErrorMessage("受入データの時間値が正しくありません。"));
+		}
 		
 		int hour;
 		int min;
