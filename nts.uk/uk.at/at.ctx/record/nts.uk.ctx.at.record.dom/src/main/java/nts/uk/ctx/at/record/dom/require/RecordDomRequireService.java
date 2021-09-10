@@ -2732,10 +2732,10 @@ public class RecordDomRequireService {
 		}
 		
 		public void deleteInterimAbsMngBySidDatePeriod(String sId, DatePeriod period){
-			this.interimRecAbasMngRepo.deleteInterimAbsMngBySidDatePeriod(sId, period);
+			this.interimRecAbasMngRepo.deleteAbsMngWithPeriod(sId, period);
 		}
 		public void deleteInterimRecMngBySidDatePeriod(String sId, DatePeriod period){
-			this.interimRecAbasMngRepo.deleteInterimRecMngBySidDatePeriod(sId, period);
+			this.interimRecAbasMngRepo.deleteRecMngWithPeriod(sId, period);
 		}
 		public void deleteTempChildCareByPeriod(String sid, DatePeriod period){
 			this.tempChildCareManagementRepo.deleteByPeriod(sid, period);
@@ -2844,11 +2844,11 @@ public class RecordDomRequireService {
 		}
 		
 		public	void deleteInterimDayOffMngBySidDatePeriod(String sid, DatePeriod period){
-			this.interimBreakDayOffMngRepo.deleteInterimDayOffMngBySidDatePeriod(sid, period);
+			this.interimBreakDayOffMngRepo.deleteDayoffWithPeriod(sid, period);
 		}
 		
 		public void deleteInterimBreakMngBySidDatePeriod(String sid, DatePeriod period){
-			this.interimBreakDayOffMngRepo.deleteInterimBreakMngBySidDatePeriod(sid, period);
+			this.interimBreakDayOffMngRepo.deleteBreakoffWithPeriod(sid, period);
 		}
 		
 		public void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period){

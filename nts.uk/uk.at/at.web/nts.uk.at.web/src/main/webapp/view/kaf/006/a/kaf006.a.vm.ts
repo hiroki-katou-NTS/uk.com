@@ -1157,10 +1157,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             const vm = this;
             if (time) {
                 let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
-                if (day) {
-                    return vm.$i18n('KAF006_100', [day.toString(), timeString]);
-                }
-                return timeString;
+                return vm.$i18n('KAF006_100', [day.toString(), timeString]);
             }
 
             return vm.$i18n('KAF006_46', [day.toString()]);
@@ -1250,15 +1247,13 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                     vm.condition19Annual(false);
                 }
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement === 1) {
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1) {
                     vm.condition19ChildNursing(true);
                 } else {
                     vm.condition19ChildNursing(false);
                 }
                 if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1
-                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement === 1) {
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1) {
                     vm.condition19Nursing(true);
                 } else {
                     vm.condition19Nursing(false);
