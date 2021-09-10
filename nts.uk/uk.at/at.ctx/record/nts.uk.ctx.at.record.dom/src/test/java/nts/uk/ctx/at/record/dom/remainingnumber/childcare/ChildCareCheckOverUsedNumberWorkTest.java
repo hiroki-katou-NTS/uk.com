@@ -63,74 +63,74 @@ public class ChildCareCheckOverUsedNumberWorkTest {
 	// 翌年の場合
 	// 超過確認用使用数．使用数．日数　＝　0
 	// 超過確認用使用数．使用数．時間　＝　0
-	public void testShortageRemNumNextYear() {
+//	public void testShortageRemNumNextYear() {
+//
+//		String companyId = "0001";
+//		String employeeId = "000001";
+//		DatePeriod period = new DatePeriod(ymd(2020, 10, 16), ymd(2020, 11, 15));
+//		GeneralDate criteriaDate = ymd(2020, 10, 16); //基準日
+//		TempChildCareNurseManagement interimDate = new TempChildCareNurseManagement("000001", employeeId, criteriaDate, null, null);
+//
+//		new Expectations() {
+//			{
+//				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する（社員ID）
+//				result = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.PER_INFO_EVERY_YEAR);
+//
+////				require.contractTime(companyId, employeeId, criteriaDate); // 年休の契約時間を取得する（会社ID、社員ID、基準日）
+////				result = new LaborContractTime(480); //8時間
+//
+//				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
+//				result = nursingLeaveSet(NursingCategory.ChildNursing);
+//			}
+//		};
+//
+//		// 子の看護介護残数が上限超過していないか
+//		// trueの場合：子の看護介護残数不足数．使用可能数＝暫定管理データの使用数、残数不足数←0　もセットする
+//		val childCare2 = checkOverUsedNumberWork(0.0, 0); //超過確認用使用数
+//		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
+//
+//		val expect = shortageWork(0, 0, 0, null); //期待値：子の看護介護残数不足数
+//		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
+//		assertThat(shortRemNum.getShortageRemNum().getRemainTimes()).isEqualTo(expect.getShortageRemNum().getRemainTimes());
+//		assertThat(shortRemNum.getAvailable().getUsedDay()).isEqualTo(expect.getAvailable().getUsedDay());
+//		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(expect.getAvailable().getUsedTimes());
+//
+//	}
 
-		String companyId = "0001";
-		String employeeId = "000001";
-		DatePeriod period = new DatePeriod(ymd(2020, 10, 16), ymd(2020, 11, 15));
-		GeneralDate criteriaDate = ymd(2020, 10, 16); //基準日
-		TempChildCareNurseManagement interimDate = new TempChildCareNurseManagement("000001", employeeId, criteriaDate, null, null);
-
-		new Expectations() {
-			{
-				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する（社員ID）
-				result = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.PER_INFO_EVERY_YEAR);
-
-//				require.contractTime(companyId, employeeId, criteriaDate); // 年休の契約時間を取得する（会社ID、社員ID、基準日）
-//				result = new LaborContractTime(480); //8時間
-
-				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
-				result = nursingLeaveSet(NursingCategory.ChildNursing);
-			}
-		};
-
-		// 子の看護介護残数が上限超過していないか
-		// trueの場合：子の看護介護残数不足数．使用可能数＝暫定管理データの使用数、残数不足数←0　もセットする
-		val childCare2 = checkOverUsedNumberWork(0.0, 0); //超過確認用使用数
-		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
-
-		val expect = shortageWork(0, 0, 0, null); //期待値：子の看護介護残数不足数
-		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
-		assertThat(shortRemNum.getShortageRemNum().getRemainTimes()).isEqualTo(expect.getShortageRemNum().getRemainTimes());
-		assertThat(shortRemNum.getAvailable().getUsedDay()).isEqualTo(expect.getAvailable().getUsedDay());
-		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(expect.getAvailable().getUsedTimes());
-
-	}
-
-	@Test
+//	@Test
 	// 本年の場合
 	// 超過確認用使用数．使用数．日数　＝　INPUT．月初時点の使用数．使用日数
 	// 超過確認用使用数．使用数．時間　＝　INPUT．月初時点の使用数．使用時間
-	public void testShortageRemNumThisYear() {
-		String companyId = "0001";
-		String employeeId = "000001";
-		DatePeriod period = new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15));
-		GeneralDate criteriaDate = ymd(2020, 10, 16); //基準日
-		TempChildCareNurseManagement interimDate = new TempChildCareNurseManagement("000001", employeeId, criteriaDate, null, null);
-
-
-		new Expectations() {
-			{
-				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する（社員ID）
-				result = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.PER_INFO_EVERY_YEAR);
-
-//				require.contractTime(companyId, employeeId, criteriaDate); // 年休の契約時間を取得する（会社ID、社員ID、基準日）
-//				result = new LaborContractTime(480); //8時間
-
-				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
-				result = nursingLeaveSet(NursingCategory.ChildNursing);
-			}
-		};
-
-		val childCare2 = checkOverUsedNumberWork(2.5, 0);//超過確認用使用数（日数、時間）
-		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
-
-		val expect = shortageWork(0, 0, 0, 0); //期待値：子の看護介護残数不足数
-		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
-		assertThat(shortRemNum.getShortageRemNum().getRemainTimes()).isEqualTo(expect.getShortageRemNum().getRemainTimes());
-		assertThat(shortRemNum.getAvailable().getUsedDay()).isEqualTo(expect.getAvailable().getUsedDay());
-		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(Optional.empty());
-	}
+//	public void testShortageRemNumThisYear() {
+//		String companyId = "0001";
+//		String employeeId = "000001";
+//		DatePeriod period = new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15));
+//		GeneralDate criteriaDate = ymd(2020, 10, 16); //基準日
+//		TempChildCareNurseManagement interimDate = new TempChildCareNurseManagement("000001", employeeId, criteriaDate, null, null);
+//
+//
+//		new Expectations() {
+//			{
+//				require.employeeInfo(employeeId, NursingCategory.ChildNursing); // 子の看護・介護休暇基本情報を取得する（社員ID）
+//				result = nursingInfo(NursingCategory.ChildNursing, UpperLimitSetting.PER_INFO_EVERY_YEAR);
+//
+////				require.contractTime(companyId, employeeId, criteriaDate); // 年休の契約時間を取得する（会社ID、社員ID、基準日）
+////				result = new LaborContractTime(480); //8時間
+//
+//				require.nursingLeaveSetting(companyId, NursingCategory.ChildNursing); // 介護看護休暇設定を取得する（会社ID、介護看護区分）
+//				result = nursingLeaveSet(NursingCategory.ChildNursing);
+//			}
+//		};
+//
+//		val childCare2 = checkOverUsedNumberWork(2.5, 0);//超過確認用使用数（日数、時間）
+//		val shortRemNum = childCare2.calcShortageRemainingNumber(companyId, employeeId, period, criteriaDate, interimDate, category, require);
+//
+//		val expect = shortageWork(0, 0, 0, 0); //期待値：子の看護介護残数不足数
+//		assertThat(shortRemNum.getShortageRemNum().getRemainDay()).isEqualTo(expect.getShortageRemNum().getRemainDay());
+//		assertThat(shortRemNum.getShortageRemNum().getRemainTimes()).isEqualTo(expect.getShortageRemNum().getRemainTimes());
+//		assertThat(shortRemNum.getAvailable().getUsedDay()).isEqualTo(expect.getAvailable().getUsedDay());
+//		assertThat(shortRemNum.getAvailable().getUsedTimes()).isEqualTo(Optional.empty());
+//	}
 
 	// 子の看護介護残数
 	private ChildCareNurseRemainingNumber remainingNumber(double useDay, Integer usedTimes) {

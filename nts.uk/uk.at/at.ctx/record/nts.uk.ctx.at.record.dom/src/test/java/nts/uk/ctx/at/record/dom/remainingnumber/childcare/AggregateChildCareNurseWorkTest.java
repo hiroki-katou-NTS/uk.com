@@ -284,46 +284,46 @@ public class AggregateChildCareNurseWorkTest {
 	/**
 	 * 4.使用数計算
 	 */
-	@Test
+//	@Test
 	// 集計期間の翌日を集計する時は、処理は行わない
 	// trueの場合：ChildCareNurseRemainingNumberCalcWorkの初期値で返す
-	public void testCalcUsed1() {
-		val childCare = createChildCare11(0, 0, 0, null, 0, true);	//終了日の翌日の期間 = true
-		val nextPeriodEndAtr = childCare.calcUsed("0001", "000001",
-												new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
-												ymd(2020,10, 16),
-												usedNumber(0.0, 0),	// 起算日からの使用数
-												require);
+//	public void testCalcUsed1() {
+//		val childCare = createChildCare11(0, 0, 0, null, 0, true);	//終了日の翌日の期間 = true
+//		val nextPeriodEndAtr = childCare.calcUsed("0001", "000001",
+//												new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
+//												ymd(2020,10, 16),
+//												usedNumber(0.0, 0),	// 起算日からの使用数
+//												require);
+//
+//		val expect = calcUsedNumber(0.0, null, 0, 0, 0.0, null);		//期待値：起算日からの使用数、時間休暇使用回数、時間休暇使用日数、集計期間の使用数
+//		assertThat(nextPeriodEndAtr.getStartdateInfo().getUsedDay()).isEqualTo(expect.getStartdateInfo().getUsedDay());
+//		assertThat(nextPeriodEndAtr.getStartdateInfo().getUsedTimes()).isEqualTo(expect.getStartdateInfo().getUsedTimes());
+//		assertThat(nextPeriodEndAtr.getUsedCount()).isEqualTo(expect.getUsedCount());
+//		assertThat(nextPeriodEndAtr.getUsedDays()).isEqualTo(expect.getUsedDays());
+//		assertThat(nextPeriodEndAtr.getAggrPeriodUsedNumber().getUsedDay()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedDay());
+//		assertThat(nextPeriodEndAtr.getAggrPeriodUsedNumber().getUsedTimes()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedTimes());
+//	}
 
-		val expect = calcUsedNumber(0.0, null, 0, 0, 0.0, null);		//期待値：起算日からの使用数、時間休暇使用回数、時間休暇使用日数、集計期間の使用数
-		assertThat(nextPeriodEndAtr.getStartdateInfo().getUsedDay()).isEqualTo(expect.getStartdateInfo().getUsedDay());
-		assertThat(nextPeriodEndAtr.getStartdateInfo().getUsedTimes()).isEqualTo(expect.getStartdateInfo().getUsedTimes());
-		assertThat(nextPeriodEndAtr.getUsedCount()).isEqualTo(expect.getUsedCount());
-		assertThat(nextPeriodEndAtr.getUsedDays()).isEqualTo(expect.getUsedDays());
-		assertThat(nextPeriodEndAtr.getAggrPeriodUsedNumber().getUsedDay()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedDay());
-		assertThat(nextPeriodEndAtr.getAggrPeriodUsedNumber().getUsedTimes()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedTimes());
-	}
-
-	@Test
+//	@Test
 	// 集計期間の翌日を集計する時は、処理は行わない
 	// falseの場合：処理続行　
-	public void testCalcUsed2() {
-		val childCare = createChildCare11(0, 0, 0, null, 0, false); //終了日の翌日の期間 = false
-
-		val expect = calcUsedNumber(4.0, 180, 1, 1, 1.0, 60);//期待値：起算日からの使用数、時間休暇使用回数、時間休暇使用日数、集計期間の使用数
-		val calcUsed = childCare.calcUsed("0001", "000001",
-				new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
-				ymd(2020,10, 16),
-				usedNumber(3.0, 120),	// 起算日からの使用数（日数、時間）
-				require);
-
-		assertThat(calcUsed.getStartdateInfo().getUsedDay()).isEqualTo(expect.getStartdateInfo().getUsedDay());
-		assertThat(calcUsed.getStartdateInfo().getUsedTimes()).isEqualTo(expect.getStartdateInfo().getUsedTimes());
-		assertThat(calcUsed.getUsedCount()).isEqualTo(expect.getUsedCount());
-		assertThat(calcUsed.getUsedDays()).isEqualTo(expect.getUsedDays());
-		assertThat(calcUsed.getAggrPeriodUsedNumber().getUsedDay()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedDay());
-		assertThat(calcUsed.getAggrPeriodUsedNumber().getUsedTimes()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedTimes());
-	}
+//	public void testCalcUsed2() {
+//		val childCare = createChildCare11(0, 0, 0, null, 0, false); //終了日の翌日の期間 = false
+//
+//		val expect = calcUsedNumber(4.0, 180, 1, 1, 1.0, 60);//期待値：起算日からの使用数、時間休暇使用回数、時間休暇使用日数、集計期間の使用数
+//		val calcUsed = childCare.calcUsed("0001", "000001",
+//				new DatePeriod(ymd(2020, 10, 16),ymd(2020, 11, 15)),
+//				ymd(2020,10, 16),
+//				usedNumber(3.0, 120),	// 起算日からの使用数（日数、時間）
+//				require);
+//
+//		assertThat(calcUsed.getStartdateInfo().getUsedDay()).isEqualTo(expect.getStartdateInfo().getUsedDay());
+//		assertThat(calcUsed.getStartdateInfo().getUsedTimes()).isEqualTo(expect.getStartdateInfo().getUsedTimes());
+//		assertThat(calcUsed.getUsedCount()).isEqualTo(expect.getUsedCount());
+//		assertThat(calcUsed.getUsedDays()).isEqualTo(expect.getUsedDays());
+//		assertThat(calcUsed.getAggrPeriodUsedNumber().getUsedDay()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedDay());
+//		assertThat(calcUsed.getAggrPeriodUsedNumber().getUsedTimes()).isEqualTo(expect.getAggrPeriodUsedNumber().getUsedTimes());
+//	}
 
 	// 子の看護介護使用数
 	private ChildCareNurseUsedNumber usedNumber(double useDay, Integer usedTimes) {
