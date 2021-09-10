@@ -61,6 +61,7 @@ import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.MailAddress;
+import nts.uk.ctx.bs.employee.pub.employee.PersonalEmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.PersonInfoJhn001Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest596Export;
 import nts.uk.ctx.bs.employee.pub.employee.ResultRequest600Export;
@@ -1165,6 +1166,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return personRepository.getByPersonId(personId);
 		}
 
+	}
+
+	@Override
+	public List<PersonalEmployeeInfoExport> getPersonEmployeeInfosByPersonId(List<String> personIds) {
+		// TODO dev code
+		return null;
 	}
 
 }
