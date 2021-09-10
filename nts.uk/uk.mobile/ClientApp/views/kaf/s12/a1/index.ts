@@ -66,7 +66,7 @@ export class KafS12A1Component extends Vue {
                 } else {
                     i.timeZones.forEach((j) => {
                         maxWorkNoHasData = Math.max(j.workNo, maxWorkNoHasData);
-                        vm.outingTimeZones[j.workNo - 1].appTimeType = i.appTimeType;
+                        vm.outingTimeZones[j.workNo - 1].appTimeType = i.appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION;
                         vm.outingTimeZones[j.workNo - 1].timeZone.start = j.startTime;
                         vm.outingTimeZones[j.workNo - 1].timeZone.end = j.endTime;
                     });

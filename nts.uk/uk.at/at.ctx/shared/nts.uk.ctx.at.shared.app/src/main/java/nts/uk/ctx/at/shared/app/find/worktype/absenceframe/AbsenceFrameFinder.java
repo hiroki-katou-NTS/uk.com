@@ -22,6 +22,9 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AbsenceFrameFinder {
+	public static int USE = 1;
+	public static int NOT_USE = 0;
+	
 	@Inject
 	private AbsenceFrameRepository absenceFrameRepository;
 	
@@ -38,6 +41,14 @@ public class AbsenceFrameFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		return this.absenceFrameRepository.findAll(companyId).stream().map(c -> AbsenceFrameDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
+	
+	public List<AbsenceFrameDto> findByClassification() {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+		
+		return this.absenceFrameRepository.findByCompanyIdAndDeprecateClassification(companyId, USE).stream().map(c -> AbsenceFrameDto.fromDomain(c))
 				.collect(Collectors.toList());
 	}
 	
