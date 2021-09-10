@@ -221,19 +221,24 @@ public class AggregateChildCareNurseWork {
 		childCareNurseUpperLimitPeriod = employeeInfo.get().childCareNurseUpperLimitPeriod(companyId, employeeId,
 				aggregatePeriod, criteriaDate, require);
 
+		
 		// 期間終了日時点の上限日数を確認
 		// ===上限日数期間．期間．開始日 <= 「子の看護介護休暇 集計期間WORK.期間．終了日」<= 上限日数期間．期間．終了日
-		ChildCareNurseUpperLimitPeriod upperLimitPeriod = childCareNurseUpperLimitPeriod.stream()
-				.filter(x -> x.getPeriod().contains(this.period.end())).findFirst().get();
+		Optional<ChildCareNurseUpperLimitPeriod> upperLimitPeriod = childCareNurseUpperLimitPeriod.stream()
+				.filter(x -> x.getPeriod().contains(this.period.end())).findFirst();
 
+		if(!upperLimitPeriod.isPresent()){
+			return new ChildCareNurseRemainingNumberCalcWork();
+		}
+		
 		// 上限日数を設定
 		// ===子の看護介護計算残数．上限日数←取得した「上限日数」
 		ChildCareNurseRemainingNumberCalcWork upperLimit = new ChildCareNurseRemainingNumberCalcWork();
-		upperLimit.setUpperLimit(upperLimitPeriod.getLimitDays());
+		upperLimit.setUpperLimit(upperLimitPeriod.get().getLimitDays());
 
 		// 子の看護介護残数を求める
 		ChildCareNurseRemainingNumber calcRemainingNumber = calcRemainingNumber(companyId,
-				employeeId, upperLimitPeriod.getLimitDays(), startDateUsed.getStartdateInfo(), criteriaDate, require);
+				employeeId, upperLimitPeriod.get().getLimitDays(), startDateUsed.getStartdateInfo(), criteriaDate, require);
 
 		// 残数を使い過ぎていないか
 		boolean checkRemainingNumber = calcRemainingNumber.checkOverUpperLimit();
