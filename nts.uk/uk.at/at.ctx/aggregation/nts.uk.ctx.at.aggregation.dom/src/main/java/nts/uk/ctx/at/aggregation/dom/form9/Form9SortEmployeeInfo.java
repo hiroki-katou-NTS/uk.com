@@ -13,7 +13,7 @@ public class Form9SortEmployeeInfo {
 	private final String employeeId;
 	
 	/** 免許区分 **/
-	private final LicenseClassification licenseCls;
+	private final LicenseClassification licenseClassification;
 	
 	/** 職位コード **/
 	private final String jobTitleCode;
