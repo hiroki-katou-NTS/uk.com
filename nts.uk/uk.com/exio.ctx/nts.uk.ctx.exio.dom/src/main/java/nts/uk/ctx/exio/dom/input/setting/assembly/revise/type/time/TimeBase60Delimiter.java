@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
+import nts.uk.ctx.exio.dom.input.setting.assembly.revise.type.string.PaddingMethod;
 import nts.uk.ctx.exio.dom.input.util.Either;
 
 /**
@@ -60,7 +61,7 @@ public enum TimeBase60Delimiter {
 		}
 		
 		if (target.length() < 4) {
-			return Either.left(new ErrorMessage("時間の区切り文字無しの設定ですが、受入データの桁数が足りません。"));
+			target = PaddingMethod.ZERO_BEFORE.complement(target, 4);
 		}
 		
 		return convert(
