@@ -74,9 +74,9 @@ public class SpecialHolidayFinder {
 		List<SpecialHolidayFrameDto> result = new ArrayList<SpecialHolidayFrameDto>();
 		// Group A
 		// ドメインモデル「特別休暇枠」を取得する
-		List<SpecialHolidayFrameDto> shFrames = this.shFrameFinder.findAll();
+		List<SpecialHolidayFrameDto> shFrames = this.shFrameFinder.findByUseCls();
 		// ドメインモデル「欠勤枠」を取得する
-		List<SpecialHolidayFrameDto> absenceFrames = this.absenceFrameFinder.findAll().stream()
+		List<SpecialHolidayFrameDto> absenceFrames = this.absenceFrameFinder.findByClassification().stream()
 				.map(x -> SpecialHolidayFrameDto.fromAbsenDto(x)).collect(Collectors.toList());
 
 		result.addAll(shFrames);
