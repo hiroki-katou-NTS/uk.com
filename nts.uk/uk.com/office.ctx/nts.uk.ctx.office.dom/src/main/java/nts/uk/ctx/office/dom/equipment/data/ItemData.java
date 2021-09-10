@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
+import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備利用実績データ.実績データ

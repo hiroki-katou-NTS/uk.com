@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.dom.equipment.data;
+package nts.uk.ctx.office.dom.equipment.achievement;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.実績項目設定.項目分類

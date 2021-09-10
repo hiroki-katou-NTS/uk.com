@@ -11,12 +11,12 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
+import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
-import nts.uk.ctx.office.dom.equipment.data.EquipmentItemNo;
-import nts.uk.ctx.office.dom.equipment.data.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.data.ItemData;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
 import nts.uk.ctx.office.infra.entity.equipment.data.OfidtEquipmentDayAtd;
@@ -86,11 +86,11 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	}
 
 	@Override
-	public Optional<EquipmentData> findByPeriodAndUsageInfo(String cid, DatePeriod period, GeneralDate useDate,
+	public Optional<EquipmentData> findByPeriodAndUsageInfo(String cid, String equipmentCode, GeneralDate useDate,
 			String sid, GeneralDateTime inputDate) {
 		return this.queryProxy().query(SELECT_BY_INFO, OfidtEquipmentDayAtd.class)
 				.setParameter("cid", cid)
-//				.setParameter("equipmentCode", equipmentCode)
+				.setParameter("equipmentCode", equipmentCode)
 				.setParameter("sid", sid)
 				.setParameter("useDate", useDate.toLocalDate())
 				.setParameter("inputDate", inputDate.localDateTime())
