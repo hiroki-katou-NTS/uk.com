@@ -120,24 +120,31 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         //ドメインモデル「アラームメール送信ロール」を取得する
         val sendingRole = sendingRoleRepository.find(companyId, IndividualWkpClassification.WORKPLACE.value);
 
+        //取得したMap＜職場ID、List＜管理者ID＞＞をループする
+        Map<String, List<String>> mapFiler = new HashMap<>();
+        boolean mailSendFlag = true;
         List<String> empIdList = new ArrayList<>();
         //[ロール設定=true]
         if (sendingRole.isPresent() && sendingRole.get().isRoleSetting()) {
-            //取得したMap＜職場ID、List＜管理者ID＞＞をループする
-            Map<String, String> mapFiler = new HashMap<>();
             for (Map.Entry<String, List<String>> entry : employeeIdMap.entrySet()) {
+                if (!mailSendFlag) {
+                    break;
+                }
                 Map<String, String> roleMap = roleIdWorkDomService(entry.getValue());
+                List<String> filterManager = new ArrayList<>();
                 //取得したMap＜社員ID、ロールID＞をループする
                 for (Map.Entry<String, String> role : roleMap.entrySet()) {
                     //管理者のロールはアラームメール送信ロールに設定するかチェック
                     if (isRoleExistInAlarmMail(sendingRole, role.getValue())) {
                         OptionalInt range = roleAdaptor.findEmpRangeByRoleID(role.getValue());
-                        if (range.isPresent() && range.getAsInt() != EmployeeReferenceRange.ONLY_MYSELF.value) {
-                            mapFiler.put(entry.getKey(), role.getKey());
-                            empIdList.add(role.getKey());
+                        if (range.isPresent() && range.getAsInt() == EmployeeReferenceRange.ONLY_MYSELF.value) {
+                            // filterManager.add(role.getKey());
+                            mailSendFlag = false;
+                            break;
                         }
                     }
                 }
+                mapFiler.put(entry.getKey(), filterManager);
             }
             //取得したアラームメール送信ロール．マスタチェック結果を就業担当へ送信をチェックする
             if (sendingRole.isPresent() && sendingRole.get().isSendResult()) {
@@ -165,7 +172,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         val exportWkrPl = command.listValueExtractAlarmDto.stream().filter(x -> {
             return command.getWorkplaceIds().stream().anyMatch(y -> y.equals(x.getWorkplaceID()));
         }).collect(Collectors.toList());
-        if (!employeeIdMap.isEmpty()) {            //アルゴリズム「メール送信処理」を実行する。
+        if (mailSendFlag && !employeeIdMap.isEmpty()) {            //アルゴリズム「メール送信処理」を実行する。
             managerErrorList = workplaceSendEmailService.alarmWorkplacesendEmail(
                     employeeIdMap,
                     exportWkrPl,
@@ -175,7 +182,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             );
         }
         //取得したList<メール送信社員ID>　！＝　Empty
-        if (!empIdList.isEmpty()) {
+        if (mailSendFlag && !empIdList.isEmpty()) {
             personError = workplaceSendEmailService.alarmWorkplacesendEmail(empIdList,
                     exportWkrPl,
                     exMailListNOrmal.get(),
