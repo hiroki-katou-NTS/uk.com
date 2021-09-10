@@ -73,7 +73,7 @@ public class ExternalImportPrepareRequire {
 			PrepareImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
 		
-		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 		
 		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
 	}
@@ -149,6 +149,11 @@ public class ExternalImportPrepareRequire {
 		
 		
 		/***** 外部受入関連 *****/
+		
+		@Override
+		public void add(ExecutionContext context, ExternalImportError error) {
+			errorsRepo.add(context, error);
+		}
 
 		@Override
 		public ExternalImportCurrentState getExternalImportCurrentState(String companyId) {
@@ -161,8 +166,9 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
-			return settingRepo.get(companyId, settingCode);
+		public ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
+			return settingRepo.get(companyId, settingCode)
+						.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
 
 		@Override
@@ -280,11 +286,6 @@ public class ExternalImportPrepareRequire {
 		@Override
 		public ExternalImportHistory getHistory(DomainDataId id, HistoryType historyType, HistoryKeyColumnNames keyColumnNames) {
 			return domainDataRepo.getHistory(id, historyType, keyColumnNames);
-		}
-
-		@Override
-		public void add(ExecutionContext context, ExternalImportError error) {
-			errorsRepo.add(context, error);
 		}
 
 		@Override

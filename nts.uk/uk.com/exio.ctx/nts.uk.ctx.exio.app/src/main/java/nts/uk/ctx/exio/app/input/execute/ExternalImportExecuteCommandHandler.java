@@ -8,9 +8,9 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.task.tran.TransactionService;
 import nts.uk.ctx.exio.dom.input.ExecuteImporting;
+import nts.uk.ctx.exio.dom.input.manage.ExternalImportStateException;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -30,21 +30,24 @@ public class ExternalImportExecuteCommandHandler extends AsyncCommandHandler<Ext
 		String companyId = AppContexts.user().companyId();
 		
 		val require = this.require.create(companyId);
-		
+		val setting = require.getExternalImportSetting(companyId, command.getExternalImportCode());
 		val currentState = require.getExternalImportCurrentState(companyId);
-		currentState.execute(require, () -> run(require, command, companyId));
-	}
-
-	private void run(ExternalImportExecuteRequire.Require require,
-			ExternalImportExecuteCommand command,
-			String companyId) {
 		
-		Iterable<AtomTask> atomTasks = ExecuteImporting.execute(
-				require,
-				companyId,
-				command.getExternalImportCode());
-		
-		transaction.separateForEachTask(atomTasks);
+		val taskData = context.asAsync().getDataSetter();
+		try {
+			
+			currentState.execute(require, setting, () -> {
+				val atomTasks = ExecuteImporting.execute(require, setting);
+				transaction.separateForEachTask(atomTasks);
+			});
+			
+			taskData.setData("process", "done");
+			
+		} catch (ExternalImportStateException ex) {
+			
+			taskData.setData("process", "failed");
+			taskData.setData("message", ex.getMessage());
+		}
 	}
 
 }

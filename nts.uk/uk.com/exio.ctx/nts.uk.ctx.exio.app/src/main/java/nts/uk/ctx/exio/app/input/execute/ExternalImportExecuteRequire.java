@@ -1,7 +1,6 @@
 package nts.uk.ctx.exio.app.input.execute;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -33,6 +32,8 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRepository;
 import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentState;
 import nts.uk.ctx.exio.dom.input.manage.ExternalImportCurrentStateRepository;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -61,11 +62,16 @@ public class ExternalImportExecuteRequire {
 			ExecuteImporting.Require,
 			ExternalImportWorkspaceRepository.Require {
 		
+		ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode);
+		
 		ExternalImportCurrentState getExternalImportCurrentState(String companyId);
 	}
 	
 	@Inject
 	private ExternalImportCurrentStateRepository currentStateRepo;
+	
+	@Inject
+	private ExternalImportErrorsRepository errorsRepo;
 	
 	@Inject
 	private ExternalImportSettingRepository settingRepo;
@@ -136,8 +142,14 @@ public class ExternalImportExecuteRequire {
 		}
 
 		@Override
-		public Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
-			return settingRepo.get(companyId, settingCode);
+		public void add(ExecutionContext context, ExternalImportError error) {
+			errorsRepo.add(context, error);
+		}
+		
+		@Override
+		public ExternalImportSetting getExternalImportSetting(String companyId, ExternalImportCode settingCode) {
+			return settingRepo.get(companyId, settingCode)
+					.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		}
 
 		@Override

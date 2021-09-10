@@ -4,10 +4,8 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeRevisedData;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
-import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
@@ -21,32 +19,19 @@ public class PrepareImporting {
 
 	public static void prepare(
 			Require require,
-			String companyId,
-			ExternalImportCode settingCode,
+			ExternalImportSetting setting,
 			InputStream csvFileStream) {
-		
-		val setting = require.getExternalImportSetting(companyId, settingCode)
-				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
+
 		val context = ExecutionContext.create(setting);
 		
-		try {
-			require.setupWorkspace(context);
-			
-			// 受入データの組み立て
-			setting.assemble(require, context, csvFileStream);
-			
-			// 編集済みデータの正準化
-			val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
-			CanonicalizeRevisedData.canonicalize(require, context, meta);
-			
-		} catch (BusinessException bex) {
-			
-			require.add(context, ExternalImportError.execution(bex.getMessage()));
-			
-			// このケースはもう実行不可能
-			// その制御は実行管理に処理を任せるために再スロー
-			throw bex;
-		}
+		require.setupWorkspace(context);
+		
+		// 受入データの組み立て
+		setting.assemble(require, context, csvFileStream);
+		
+		// 編集済みデータの正準化
+		val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
+		CanonicalizeRevisedData.canonicalize(require, context, meta);
 	}
 	
 	public static interface Require extends
@@ -56,8 +41,6 @@ public class PrepareImporting {
 		
 		void setupWorkspace(ExecutionContext context);
 		
-		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
-
 		ImportableItem getImportableItem(ImportingDomainId domainId, int itemNo);
 	}
 }

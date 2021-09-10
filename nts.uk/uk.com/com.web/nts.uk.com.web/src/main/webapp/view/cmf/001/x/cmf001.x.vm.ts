@@ -89,53 +89,7 @@ module nts.uk.com.cmf001.x {
 					uploadedCsvFileId: vm.csvFileId()};
 				ajax("/exio/input/prepare", prepareCommand).done((prepareResult) => {
 					// サーバーへタスクの進捗問い合わせ
-					nts.uk.deferred.repeat(conf => conf
-						.task(() => {
-							return (<any>nts).uk.request.asyncTask.getInfo(prepareResult.id);
-						})
-						// 完了するまで問い合わせ続ける
-						.while (info => info.pending || info.running)
-						.pause(1000)).done((info: any) => {
-							if(info.status ==="COMPLETED"){
-								// 正常に完了していればエラーチェック
-								let requestCount: number = 0;
-								vm.messageBox("");
-								nts.uk.deferred.repeat(conf => conf
-									.task(() => {
-										requestCount++;
-										// エラーの問い合わせ
-										return ajax("/exio/input/errors/" + vm.selectedSettingCode() + "/" + requestCount).done((result) => {
-											// 実行エラーがないかチェック
-											if(result.execution){
-												// 実行エラーあり
-												vm.executionError(true);
-											}
-											// 取得したエラーを蓄積
-											vm.errorMessage(vm.errorMessage() + result.text);
-										});
-									})
-									// エラー件数が0件になるまで繰り返す
-									.while (result => result.errosCount === 0)).done(() => {
-										if(vm.errorMessage()){
-											vm.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。\r\n" + vm.errorMessage());
-										}else{
-											vm.messageBox("受入準備が完了しました。");
-										}
-										vm.prepared(true);
-									});
-							}else{
-								vm.errorMessage(info.error.message);
-								if(info.error.businessException){
-									// 業務エラーの場合は画面に表示
-									vm.messageBox(vm.errorMessage());
-								}else{
-									// システムエラーの場合はエラーダイアログを表示
-									(<any>nts).uk.request.specials.errorPages.systemError()
-								}
-							}
-							// 処理終了
-							vm.processEnd();
-						});
+					vm.observeExecution(prepareResult);
 				}).fail(function(err) {
 					// 受入準備に失敗
 					vm.errorMessage(nts.uk.resource.getMessage(err.messageId, []));
@@ -155,6 +109,75 @@ module nts.uk.com.cmf001.x {
 			});
 		}
 
+		// 処理が終わるまで監視する
+		observeExecution(prepareResult: any) {
+			let vm = this;
+
+			nts.uk.deferred.repeat(conf => conf
+				.task(() => {
+					return (<any>nts).uk.request.asyncTask.getInfo(prepareResult.id);
+				})
+				// 完了するまで問い合わせ続ける
+				.while(info => info.pending || info.running)
+				.pause(1000)).done((info: any) => {
+
+					let process = info.taskDatas.find(d => d.key === "process");
+					if (process.valueAsString === "failed") {
+						ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
+						vm.processEnd();
+						return;
+					}
+
+					if (info.status === "COMPLETED") {
+						// 正常に完了していればエラーチェック
+						vm.loadErrors();
+					} else {
+						vm.errorMessage(info.error.message);
+						if (info.error.businessException) {
+							// 業務エラーの場合は画面に表示
+							vm.messageBox(vm.errorMessage());
+						} else {
+							// システムエラーの場合はエラーダイアログを表示
+							(<any>nts).uk.request.specials.errorPages.systemError();
+						}
+					}
+					// 処理終了
+					vm.processEnd();
+				});
+		}
+
+		// エラーメッセージを取得して表示する
+		loadErrors() {
+			let vm = this;
+
+			let requestCount: number = 0;
+			vm.messageBox("");
+			nts.uk.deferred.repeat(conf => conf
+				.task(() => {
+					requestCount++;
+					// エラーの問い合わせ
+					return ajax("/exio/input/errors/" + vm.selectedSettingCode() + "/" + requestCount).done((result) => {
+						// 実行エラーがないかチェック
+						if (result.execution) {
+							// 実行エラーあり
+							vm.executionError(true);
+						}
+						// 取得したエラーを蓄積
+						vm.errorMessage(vm.errorMessage() + result.text);
+					});
+				})
+				// エラー件数が0件になるまで繰り返す
+				.while(result => result.errosCount === 0))
+				.done(result => {
+					if (vm.errorMessage()) {
+						vm.messageBox("受入準備が完了しましたが、以下のエラーが発生しています。\r\n" + vm.errorMessage());
+					} else {
+						vm.messageBox("受入準備が完了しました。");
+					}
+					vm.prepared(true);
+				});
+		}
+
 		execute(){
 			nts.uk.ui._viewModel.content.processStart();
 			let executeCommand = {settingCode: nts.uk.ui._viewModel.content.selectedSettingCode()};
@@ -166,7 +189,16 @@ module nts.uk.com.cmf001.x {
 					})
 					// 完了するまで問い合わせ続ける
 					.while (info => info.pending || info.running)
-					.pause(1000)).done((info: any) => {
+					.pause(1000))
+					.done((info: any) => {
+						
+						let process = info.taskDatas.find(d => d.key === "process");
+						if (process.valueAsString === "failed") {
+							ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
+							this.processEnd();
+							return;
+						}
+						
 						if(info.status ==="COMPLETED"){
 							nts.uk.ui._viewModel.content.messageBox("受入処理が完了しました。");
 						}else{

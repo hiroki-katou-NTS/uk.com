@@ -4,9 +4,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.exio.dom.input.ExecutionContext;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
+import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRequire;
+import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 
 /**
  * 外部受入の現在の状態
@@ -31,49 +36,63 @@ public class ExternalImportCurrentState implements DomainAggregate {
 	 * 「受入処理の準備」の状態を制御する
 	 * @param require
 	 * @param prepare
+	 * @throws ExternalImportStateException 
 	 */
-	public void prepare(Require require, Runnable prepare) {
+	public void prepare(Require require, ExternalImportSetting setting, Runnable prepare)
+			throws ExternalImportStateException {
+
+		preparing(require);
 		
-		try {
-			preparing(require);
+		handle(require, setting, () -> {
 			prepare.run();
 			prepared(require);
-		} catch (BusinessException ex) {
-			abortedByBusinessError(require);
-		} catch (Exception ex) {
-			log.error("受入処理の準備に失敗: " + companyId, ex);
-			abortedBySystemError(require);
-			throw ex;
-		}
+		});
 	}
 	
 	/**
 	 * 「受入処理の実行」の状態を制御する
 	 * @param require
 	 * @param prepare
+	 * @throws ExternalImportStateException 
 	 */
-	public void execute(Require require, Runnable execute) {
+	public void execute(Require require, ExternalImportSetting setting, Runnable execute)
+			throws ExternalImportStateException {
+
+		executing(require);
 		
-		try {
-			executing(require);
+		handle(require, setting, () -> {
 			execute.run();
 			executed(require);
+		});
+	}
+	
+	private void handle(Require require, ExternalImportSetting setting, Runnable mainProcess) {
+		
+		val context = ExecutionContext.create(setting);
+		
+		try {
+			
+			mainProcess.run();
+			
 		} catch (BusinessException ex) {
+			
+			require.add(context, ExternalImportError.execution(ex.getMessage()));
 			abortedByBusinessError(require);
+			
 		} catch (Exception ex) {
-			log.error("受入処理の実行に失敗: " + companyId, ex);
+			
+			log.error("外部受入システムエラー: " + context, ex);
 			abortedBySystemError(require);
 			throw ex;
 		}
 	}
 	
-	public static interface Require {
+	public static interface Require extends ExternalImportErrorsRequire {
 		
 		void update(ExternalImportCurrentState currentState);
-		
 	}
 	
-	private void preparing(Require require) {
+	private void preparing(Require require) throws ExternalImportStateException {
 		executionState.checkIfCanPrepare();
 		changeState(require, ExecutionState.ON_PREPARE);
 	}
@@ -82,7 +101,7 @@ public class ExternalImportCurrentState implements DomainAggregate {
 		changeState(require, ExecutionState.PREPARED);
 	}
 	
-	private void executing(Require require) {
+	private void executing(Require require) throws ExternalImportStateException {
 		executionState.checkIfCanExecute();
 		changeState(require, ExecutionState.ON_EXECUTE);
 	}

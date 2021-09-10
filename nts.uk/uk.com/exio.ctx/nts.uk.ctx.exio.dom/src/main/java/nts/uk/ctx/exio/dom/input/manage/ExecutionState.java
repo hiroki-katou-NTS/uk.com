@@ -2,8 +2,6 @@ package nts.uk.ctx.exio.dom.input.manage;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 
 /**
  * 外部受入の実行状態
@@ -31,21 +29,21 @@ public enum ExecutionState {
 		return EnumAdaptor.valueOf(value, ExecutionState.class);
 	}
 	
-	public void checkIfCanPrepare() {
+	public void checkIfCanPrepare() throws ExternalImportStateException {
 		
 		if (this == ON_PREPARE || this == ON_EXECUTE) {
-			throw new BusinessException(new RawErrorMessage("他の受入処理を実行中です。処理が完了するまでお待ちください。"));
+			throw new ExternalImportStateException("他の受入処理を実行中です。処理が完了するまでお待ちください。");
 		}
 	}
 	
-	public void checkIfCanExecute() {
+	public void checkIfCanExecute() throws ExternalImportStateException {
 		
 		if (this == ON_PREPARE || this == ON_EXECUTE) {
-			throw new BusinessException(new RawErrorMessage("他の受入処理を実行中です。処理が完了するまでお待ちください。"));
+			throw new ExternalImportStateException("他の受入処理を実行中です。処理が完了するまでお待ちください。");
 		}
 		
 		if (this == IDLE) {
-			throw new BusinessException(new RawErrorMessage("受入の準備処理が未実行です。先に準備処理を実行してください。"));
+			throw new ExternalImportStateException("受入の準備処理が未実行です。先に準備処理を実行してください。");
 		}
 	}
 }

@@ -1,14 +1,12 @@
 package nts.uk.ctx.exio.dom.input;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AdjustExistingData;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomain;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
-import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalData;
 
@@ -17,10 +15,8 @@ import nts.uk.ctx.exio.dom.input.transfer.TransferCanonicalData;
  */
 public class ExecuteImporting {
 
-	public static Iterable<AtomTask> execute(Require require, String companyId, ExternalImportCode settingCode) {
+	public static Iterable<AtomTask> execute(Require require, ExternalImportSetting setting) {
 		
-		val setting = require.getExternalImportSetting(companyId, settingCode)
-				.orElseThrow(() -> new RuntimeException("not found: " + companyId + ", " + settingCode));
 		val context = ExecutionContext.create(setting);
 		
 		val transactionUnit = require.getImportingDomain(context.getDomainId())
@@ -78,8 +74,6 @@ public class ExecuteImporting {
 			AdjustExistingData.RequireAll,
 			AdjustExistingData.RequireEmployee,
 			TransferCanonicalData.Require {
-		
-		Optional<ExternalImportSetting> getExternalImportSetting(String companyId, ExternalImportCode settingCode);
 
 		ImportingDomain getImportingDomain(ImportingDomainId domainId);
 		
