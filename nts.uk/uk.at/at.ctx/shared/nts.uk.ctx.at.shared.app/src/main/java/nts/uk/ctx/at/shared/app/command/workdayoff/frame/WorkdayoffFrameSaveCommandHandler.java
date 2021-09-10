@@ -50,6 +50,9 @@ public class WorkdayoffFrameSaveCommandHandler extends CommandHandler<Workdayoff
 			if(optWorkdayoffFr.isPresent()) {
 				workdayoffFrame = optWorkdayoffFr.get();
 				workdayoffFrame.setUseClassification(item.getUseClassification());
+				workdayoffFrame.setTransferFrName(item.getTransferFrameName());
+				workdayoffFrame.setWorkdayoffFrName(item.getWorkdayoffFrameName());
+				
 				this.repository.update(workdayoffFrame);
 			}
 

@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -136,7 +137,8 @@ public class DeductionTotalTimeForFluidCalc {
 			Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets, DeductionTotalTimeForFluidCalc breakTime) {
 		
 		/** △流動休憩開始までの間にある外出分、休憩をズラす */
-		val breakTimeStart = reassignBreakTime(dayStart, goOutGetStartTime, flowBreakSet, deductionTotal, deductTimeSheet, betweenWorkTimeSheets);
+		val breakTimeStart = reassignBreakTime(dayStart, goOutGetStartTime, flowBreakSet, deductionTotal, deductTimeSheet, betweenWorkTimeSheets,
+				workTime.getFlowWorkRestSetting().getFlowRestSetting().getFlowRestSetting());
 		breakTime.copyFrom(breakTimeStart);
 		
 		/** 丸め←後で入れる */
@@ -163,7 +165,8 @@ public class DeductionTotalTimeForFluidCalc {
 															rounding, new ArrayList<>(), new ArrayList<>(), 
 															WorkingBreakTimeAtr.NOTWORKING, Finally.empty(), 
 															Finally.of(BreakClassification.BREAK), 
-															Optional.empty(), DeductionClassification.BREAK, Optional.empty());
+															Optional.empty(), DeductionClassification.BREAK, Optional.empty(),
+															false);
 	}
 	
 	private Optional<TimeLeavingWork> getLastLeave(TimeLeavingOfDailyAttd timeLeave) {
@@ -182,7 +185,8 @@ public class DeductionTotalTimeForFluidCalc {
 			TimeWithDayAttr goOutGetStartTime, FlowRestSetting flowBreakSet, 
 			DeductionTotalTimeLocal deductionTotal,
 			List<TimeSheetOfDeductionItem> deductTimeSheet,
-			Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets) {
+			Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets,
+			FlowRestSet flowRestSet) {
 		
 		/** ○流動休憩開始時刻を計算 */
 		val breakPassageTime = flowBreakSet.getFlowPassageTime().addMinutes(deductionTotal.totalTime.valueAsMinutes());
@@ -198,7 +202,7 @@ public class DeductionTotalTimeForFluidCalc {
 		
 		/** ○ズラした事によって間に外出が増えた場合は追加 */
 		flowStartTime = reassignFlowBreakTime(new TimeSpanForCalc(goOutGetStartTime, flowStartTime), 
-												flowStartTime, deductTimeSheet, deductionTotal);
+												flowStartTime, deductTimeSheet, deductionTotal, flowRestSet);
 		
 		/** 休憩時間分を合計時間に加算する */
 		deductionTotal.totalTime = deductionTotal.totalTime.addMinutes(flowBreakSet.getFlowRestTime().valueAsMinutes());
@@ -209,10 +213,10 @@ public class DeductionTotalTimeForFluidCalc {
 
 	/** △流動休憩開始時刻までの間にある外出を取得 */
 	private List<TimeSheetOfDeductionItem> getGoOutBeforeStartTime(List<TimeSheetOfDeductionItem> goOutTimeSheet, 
-			TimeSpanForCalc goOutGetRange) {
+			TimeSpanForCalc goOutGetRange, FlowRestSet flowRestSet) {
 		
 		return goOutTimeSheet.stream().filter(c -> isResignTargetDeduction(c)
-				&& c.getTimeSheet().getStart().lessThanOrEqualTo(goOutGetRange.getEnd())
+				&& flowRestSet.isGoOutBeforeBreak(c.getTimeSheet().getStart(), goOutGetRange.getEnd())
 				&& c.getTimeSheet().getEnd().greaterThan(goOutGetRange.getStart()))
 				.collect(Collectors.toList());
 	}
@@ -225,10 +229,10 @@ public class DeductionTotalTimeForFluidCalc {
 
 	/** ○ズラした事によって間に外出が増えた場合は追加 */
 	private TimeWithDayAttr reassignFlowBreakTime(TimeSpanForCalc goOutGetRange, TimeWithDayAttr flowStartTime,
-			List<TimeSheetOfDeductionItem> deductTimeSheet, DeductionTotalTimeLocal deductionTotal) {
+			List<TimeSheetOfDeductionItem> deductTimeSheet, DeductionTotalTimeLocal deductionTotal, FlowRestSet flowRestSet) {
 
 		/** △流動休憩開始時刻までの間にある外出を取得 */
-		val goOut = getGoOutBeforeStartTime(deductTimeSheet, goOutGetRange);
+		val goOut = getGoOutBeforeStartTime(deductTimeSheet, goOutGetRange, flowRestSet);
 		
 		for(val c : goOut) {
 			
@@ -244,7 +248,7 @@ public class DeductionTotalTimeForFluidCalc {
 			if (goOutTime.greaterThan(0)) {
 				
 				return reassignFlowBreakTime(new TimeSpanForCalc(c.getTimeSheet().getEnd(), flowStartTime), 
-											flowStartTime, deductTimeSheet, deductionTotal);
+											flowStartTime, deductTimeSheet, deductionTotal, flowRestSet);
 			}
 		}
 		return flowStartTime;
@@ -350,7 +354,8 @@ public class DeductionTotalTimeForFluidCalc {
 				
 				val breakTime = TimeSheetOfDeductionItem.createTimeSheetOfDeductionItem(new TimeSpanForDailyCalc(dts.getTimeSheet().getStart(), endTime.get()),
 											dts.getRounding(), new ArrayList<>(), new ArrayList<>(), WorkingBreakTimeAtr.NOTWORKING, Finally.empty(), 
-											Finally.of(BreakClassification.BREAK_STAMP), Optional.empty(), DeductionClassification.BREAK, Optional.empty());
+											Finally.of(BreakClassification.BREAK_STAMP), Optional.empty(), DeductionClassification.BREAK, Optional.empty(),
+											false);
 				deductTimeSheet.add(breakTime);
 				dts.shiftTimeSheet(new TimeSpanForDailyCalc(endTime.get(), dts.getTimeSheet().getEnd()));
 			} else {

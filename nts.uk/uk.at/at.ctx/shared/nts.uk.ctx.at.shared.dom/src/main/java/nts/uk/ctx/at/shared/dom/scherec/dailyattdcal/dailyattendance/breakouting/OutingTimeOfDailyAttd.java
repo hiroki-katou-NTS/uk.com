@@ -111,7 +111,8 @@ public class OutingTimeOfDailyAttd {
 																							  Finally.of(BreakClassification.BREAK_STAMP),
 																							  deductionItem.getShortTimeSheetAtr(),
 																							  DeductionClassification.BREAK,
-																							  deductionItem.getChildCareAtr()));
+																							  deductionItem.getChildCareAtr(),
+																							  deductionItem.isRecordOutside()));
 			} else {
 				returnList.add(deductionItem);
 			}

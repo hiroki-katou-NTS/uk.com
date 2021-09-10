@@ -44,7 +44,7 @@ public class UpdateEmployeeDataMngInfoCommandHandler extends CommandHandler<Upda
 			throw  new BusinessException("Msg_345");
 		}
 		
-		EmployeeDataMngInfo domain = new EmployeeDataMngInfo(companyId,command.getPersonId(), command.getEmployeeId(),command.getEmployeeCode(), command.getExternalCode().equals("") == true? null: command.getExternalCode());
+		EmployeeDataMngInfo domain = new EmployeeDataMngInfo(companyId,command.getPersonId(), command.getEmployeeId(),command.getEmployeeCode(), command.getExternalCode() == null ? null : command.getExternalCode().equals("") == true? null: command.getExternalCode());
 		
 		employeeDataMngInfoRepository.update(domain);
 	}
