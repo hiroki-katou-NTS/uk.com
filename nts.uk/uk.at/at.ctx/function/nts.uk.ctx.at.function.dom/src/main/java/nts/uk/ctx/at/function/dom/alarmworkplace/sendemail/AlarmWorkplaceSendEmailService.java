@@ -153,7 +153,7 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                             currentAlarmCode,
                             useAuthentication,
                             mailSettingsNormal.getContentMailSettings(),
-                            senderAddress
+                            Optional.empty()
                     );
                     ;
                     if (!isSucess) {
@@ -166,9 +166,10 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                     throw e;
                 }
             }
-            errorTadmin.put(target.getKey().getWorkplaceID(), errorsAdmin);
-            errorsAdmin.clear();
-
+            if (!errorsAdmin.isEmpty()) {
+                errorTadmin.put(target.getKey().getWorkplaceID(), errorsAdmin);
+                errorsAdmin.clear();
+            }
         }
         return errorTadmin;
     }
@@ -179,35 +180,34 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                                                 AlarmListExecutionMailSetting mailSettingsNormal,
                                                 String currentAlarmCode,
                                                 boolean useAuthentication) {
-        val companyId = AppContexts.user().companyId();
+
         List<String> errorsPerson = new ArrayList<>();
-        Optional<String> senderAddress = Optional.ofNullable(mailSettingsNormal.getSenderAddress().isPresent() ? mailSettingsNormal.getSenderAddress().get().v() : "");
-        empList.forEach(emId -> {
-            listValueExtractAlarmDto.forEach(ext -> {
-                try {
-                    boolean isSucess = this.sendMail(companyId,
-                            emId,
-                            9,
-                            listValueExtractAlarmDto,
-                            mailSettingsNormal.getContentMailSettings().get().getSubject().get().v(),
-                            mailSettingsNormal.getContentMailSettings().get().getText().get().v(),
-                            currentAlarmCode,
-                            useAuthentication,
-                            mailSettingsNormal.getContentMailSettings(),
-                            senderAddress
-                    );
-                    ;
-                    if (!isSucess) {
-                        errorsPerson.add(emId);
-                        System.out.println("send failed");
-                    } else {
-                        System.out.println("success send email");
-                    }
-                } catch (SendMailFailedException e) {
-                    throw e;
+        empList = empList.stream().filter(x -> x != null).collect(Collectors.toList());
+        val companyId = AppContexts.user().companyId();
+        for (String emId : empList) {
+            try {
+                boolean isSucess = this.sendMail(companyId,
+                        emId,
+                        9,
+                        listValueExtractAlarmDto,
+                        mailSettingsNormal.getContentMailSettings().get().getSubject().get().v(),
+                        mailSettingsNormal.getContentMailSettings().get().getText().get().v(),
+                        currentAlarmCode,
+                        useAuthentication,
+                        mailSettingsNormal.getContentMailSettings(),
+                        Optional.empty()
+                );
+                ;
+                if (!isSucess) {
+                    errorsPerson.add(emId);
+                    System.out.println("send failed");
+                } else {
+                    System.out.println("success send email");
                 }
-            });
-        });
+            } catch (SendMailFailedException e) {
+                throw e;
+            }
+        }
         return errorsPerson;
     }
 
@@ -304,6 +304,7 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
 
                     }
                 } catch (SendMailFailedException e) {
+                    System.out.println(e.getMessage());
                     throw e;
                 }
 

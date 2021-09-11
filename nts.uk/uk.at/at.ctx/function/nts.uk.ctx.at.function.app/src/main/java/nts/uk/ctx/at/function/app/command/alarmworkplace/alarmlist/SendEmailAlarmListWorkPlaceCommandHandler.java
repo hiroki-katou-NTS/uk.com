@@ -170,7 +170,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         Map<String, List<String>> managerErrorList = new HashMap<>();
         List<String> personError = new ArrayList<>();
         val exportWkrPl = command.listValueExtractAlarmDto.stream().filter(x -> {
-            return command.getWorkplaceIds().stream().anyMatch(y -> y.equals(x.getWorkplaceID()));
+            return isCategoryMatch(command.getWorkplaceIds(), x.getWorkplaceID());
         }).collect(Collectors.toList());
         if (mailSendFlag && !employeeIdMap.isEmpty()) {            //アルゴリズム「メール送信処理」を実行する。
             managerErrorList = workplaceSendEmailService.alarmWorkplacesendEmail(
@@ -187,7 +187,8 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                     exportWkrPl,
                     exMailListNOrmal.get(),
                     command.getCurrentAlarmCode(),
-                    useAuthentication);
+                    useAuthentication
+            );
         }
 
         if (!personError.isEmpty() || !managerErrorList.isEmpty()) {
@@ -215,6 +216,10 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             errorInfo += outputErrorInfo.getErrorWkp();
         }
         return errorInfo;
+    }
+
+    private boolean isCategoryMatch(List<String> workplaceIds, String wkpId) {
+        return workplaceIds.stream().anyMatch(y -> y.equals(wkpId));
     }
 
     private boolean isRoleExistInAlarmMail(Optional<AlarmMailSendingRole> alarmMailSendingRole, String role) {
