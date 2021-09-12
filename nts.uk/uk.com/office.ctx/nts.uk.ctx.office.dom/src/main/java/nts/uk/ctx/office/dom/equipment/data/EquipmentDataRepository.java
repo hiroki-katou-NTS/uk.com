@@ -26,7 +26,7 @@ public interface EquipmentDataRepository {
 			String equipmentCode, DatePeriod period);
 
 	// [6] Get
-	Optional<EquipmentData> findByPeriodAndUsageInfo(String cid, DatePeriod period, GeneralDate useDate, String sid,
+	Optional<EquipmentData> findByPeriodAndUsageInfo(String cid, String equipmentCode, GeneralDate useDate, String sid,
 			GeneralDateTime inputDate);
 
 	// [7] Get*

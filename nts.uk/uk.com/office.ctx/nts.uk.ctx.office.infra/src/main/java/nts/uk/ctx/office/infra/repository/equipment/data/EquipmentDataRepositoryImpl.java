@@ -86,11 +86,11 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	}
 
 	@Override
-	public Optional<EquipmentData> findByPeriodAndUsageInfo(String cid, DatePeriod period, GeneralDate useDate,
+	public Optional<EquipmentData> findByPeriodAndUsageInfo(String cid, String equipmentCode, GeneralDate useDate,
 			String sid, GeneralDateTime inputDate) {
 		return this.queryProxy().query(SELECT_BY_INFO, OfidtEquipmentDayAtd.class)
 				.setParameter("cid", cid)
-//				.setParameter("equipmentCode", equipmentCode)
+				.setParameter("equipmentCode", equipmentCode)
 				.setParameter("sid", sid)
 				.setParameter("useDate", useDate.toLocalDate())
 				.setParameter("inputDate", inputDate.localDateTime())
