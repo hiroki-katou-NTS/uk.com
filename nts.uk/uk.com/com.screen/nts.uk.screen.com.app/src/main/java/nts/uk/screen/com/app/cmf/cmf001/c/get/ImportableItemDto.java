@@ -20,7 +20,7 @@ public class ImportableItemDto {
 		
 		val dto = new ImportableItemDto();
 		
-		dto.required = domain.isRequired();
+		dto.required = domain.isPrimaryKey() || domain.isRequired();
 		dto.constraint = domain.getDomainConstraint().map(DomainConstraintDto::of).orElse(null);
 		
 		return dto;
