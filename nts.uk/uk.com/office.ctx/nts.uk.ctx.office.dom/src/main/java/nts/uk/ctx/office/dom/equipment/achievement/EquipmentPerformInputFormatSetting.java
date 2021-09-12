@@ -2,6 +2,8 @@ package nts.uk.ctx.office.dom.equipment.achievement;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
@@ -15,6 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @AllArgsConstructor
 public class EquipmentPerformInputFormatSetting extends AggregateRoot {
 	// 会社ID
+	@NotNull
 	private String cid;
 	
 	// 項目表示設定
