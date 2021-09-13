@@ -172,8 +172,15 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 	 */
 	@Override
 	public WorkStyle checkWorkDay(String workTypeCode) {
-		String companyId = AppContexts.user().companyId();
-		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(companyId, workTypeCode);
+		return checkWorkDay(AppContexts.user().companyId(), workTypeCode);
+	}
+	
+	/**
+	 * 1日半日出勤・1日休日系の判定
+	 */
+	@Override
+	public WorkStyle checkWorkDay(String cid, String workTypeCode) {
+		Optional<WorkType> workTypeOpt = workTypeRepo.findByPK(cid, workTypeCode);
 
 		if (!workTypeOpt.isPresent()) {
 			return null;
@@ -392,9 +399,9 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 				return workTypeCd;
 			}
 			// パラメータ「労働条件項目」．区分別勤務．休日時を取得する
-			if(optWorkingConditionItem.get().getWorkCategory().getHolidayTime() != null){
+			if(optWorkingConditionItem.get().getWorkCategory().getWorkType().getHolidayTimeWTypeCode() != null){
 				// 取得できた
-				return optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get().v();
+				return optWorkingConditionItem.get().getWorkCategory().getWorkType().getHolidayTimeWTypeCode().v();
 			}
 			
 		} else {

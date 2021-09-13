@@ -186,16 +186,16 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.bcmmtCompanyInforPK = new BcmmtCompanyInforPK(domain.getCompanyId());
 		entity.companyCode = domain.getCompanyCode().v();
 		entity.contractCd = domain.getContractCd().v();
-		entity.repname = domain.getRepname().v();
-		entity.repost = domain.getRepjob().v();
+		entity.repname = domain.getRepname().isPresent() ? domain.getRepname().get().v() : null;
+		entity.repost = domain.getRepjob().isPresent() ? domain.getRepjob().get().v() : null;
 		entity.companyName = domain.getCompanyName().v();
-		entity.comNameKana = domain.getComNameKana().v();
-		entity.shortComName = domain.getShortComName().v();
+		entity.comNameKana = domain.getComNameKana().isPresent() ? domain.getComNameKana().get().v() : null;
+		entity.shortComName = domain.getShortComName().isPresent() ? domain.getShortComName().get().v() : null;
 		entity.isAbolition = domain.getIsAbolition().value;
 		entity.startMonth = domain.getStartMonth().value;
-		entity.taxNo = domain.getTaxNo() != null && !StringUtil.isNullOrEmpty(domain.getTaxNo().v(), true) ? domain.getTaxNo().v() : null;
-		if (domain.getAddInfor() != null) {
-			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor());
+		entity.taxNo = domain.getTaxNo().isPresent() && !StringUtil.isNullOrEmpty(domain.getTaxNo().get().v(), true) ? domain.getTaxNo().get().v() : null;
+		if (domain.getAddInfor().isPresent()) {
+			entity.bcmmtAddInfor = toEntityAdd(domain.getAddInfor().get());
 		}
 		return entity;
 	}

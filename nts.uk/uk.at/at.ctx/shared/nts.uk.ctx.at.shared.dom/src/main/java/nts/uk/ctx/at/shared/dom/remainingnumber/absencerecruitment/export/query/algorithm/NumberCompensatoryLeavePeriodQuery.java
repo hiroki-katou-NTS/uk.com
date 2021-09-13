@@ -1,18 +1,19 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsDaysRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.PauseError;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.ResultAndError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenSuspensionAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.vacationdetail.CalcNumCarryAtBeginMonthFromHol;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.vacationdetail.GetSequentialVacationDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.AccumulationAbsenceDetailComparator;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
@@ -38,28 +39,17 @@ public class NumberCompensatoryLeavePeriodQuery {
 	public static CompenLeaveAggrResult process(Require require, AbsRecMngInPeriodRefactParamInput inputParam) {
 
 		CompenLeaveAggrResult result = new CompenLeaveAggrResult();
-		// パラメータ「前回振休の集計結果」をチェックする
-		ResultAndError carryForwardDays = new ResultAndError(0.0, false);
-		List<AccumulationAbsenceDetail> lstAbsRec = new ArrayList<>();
-		if (!inputParam.getOptBeforeResult().isPresent()
-				|| (inputParam.getOptBeforeResult().get().getNextDay().isPresent() && !inputParam.getOptBeforeResult()
-						.get().getNextDay().get().equals(inputParam.getDateData().start()))) {
-			// 月初時点の情報を整える
-			AbsDaysRemain absDaysRemain = PrepareInfoBeginOfMonth.prepare(require, inputParam.getCid(),
-					inputParam.getSid(), inputParam.getDateData().start(), inputParam.getDateData().end(),
-					inputParam.isMode(), lstAbsRec, inputParam.getFixManaDataMonth());
-			result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(absDaysRemain.getRemainDays()));
-		} else {
-			// 「繰越日数」に前回の修正結果の残数を格納
-			CompenLeaveAggrResult beforeResult = inputParam.getOptBeforeResult().get();
-			carryForwardDays.setRerultDays(beforeResult.getCarryoverDay().v());
-			result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(carryForwardDays.getRerultDays()));
-			lstAbsRec.addAll(beforeResult.getVacationDetails().getLstAcctAbsenDetail());
-		}
+		//逐次発生の休暇明細一覧を取得
+		val sequentialVacaDetail = GetSequentialVacationDetail.process(require, inputParam.getCid(),
+				inputParam.getSid(), inputParam.getDateData(), inputParam.getFixManaDataMonth(),
+				inputParam.getInterimMng(), inputParam.getProcessDate(), inputParam.getOptBeforeResult());
+		List<AccumulationAbsenceDetail> lstAbsRec = sequentialVacaDetail.getLstAcctAbsenDetail();
 
-		// 今から処理が必要な振出振休を全て集める
-		lstAbsRec.addAll(ProcessCompenSuspensionAll.process(require, inputParam));
-
+		// 振休振出から月初の繰越数を計算
+		val calcNumCarry = CalcNumCarryAtBeginMonthFromHol.calculate(require, inputParam.getCid(), inputParam.getSid(),
+				inputParam.getDateData(), sequentialVacaDetail, inputParam.isMode());
+		result.setCarryoverDay(calcNumCarry);
+	
 		// 「振出振休明細」をソートする
 		lstAbsRec.sort(new AccumulationAbsenceDetailComparator());
 
@@ -89,7 +79,7 @@ public class NumberCompensatoryLeavePeriodQuery {
 
 	}
 
-	public static interface Require extends PrepareInfoBeginOfMonth.Require, ProcessCompenSuspensionAll.Require,
+	public static interface Require extends GetSequentialVacationDetail.Require, CalcNumCarryAtBeginMonthFromHol.Require,
 			CompenSuspensionOffsetProcess.Require {
 
 	}

@@ -45,7 +45,7 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                     width: '60px',
                     template: '<div style="text-align: right">${displayOrder}</div>',
                 },
-                { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '200px' }
+                { headerText: nts.uk.resource.getText("CCG013_27"), prop: 'displayName', key: 'displayName', width: '240px' }
             ]);
             self.selectedStandardMenuKey = ko.observable('');
             //Follow SystemSelect

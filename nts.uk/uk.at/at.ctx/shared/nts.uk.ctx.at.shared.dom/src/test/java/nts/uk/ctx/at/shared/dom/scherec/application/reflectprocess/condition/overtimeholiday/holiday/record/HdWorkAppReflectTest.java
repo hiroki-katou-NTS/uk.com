@@ -60,8 +60,6 @@ public class HdWorkAppReflectTest {
 	public void test1() {
 
 		val dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
-		int breakTimeStartBefore = dailyApp.getBreakTime().getBreakTimeSheets().get(0).getStartTime().v();
-		int breakTimeEndBefore = dailyApp.getBreakTime().getBreakTimeSheets().get(0).getEndTime().v();
 		AppHolidayWorkShare holidayApp = createAppHoliday(PrePostAtrShare.PREDICT, // 事前事後区分=事前
 				"005", // 勤務種類コード
 				"006", // 就業時間帯コード
@@ -78,7 +76,7 @@ public class HdWorkAppReflectTest {
 		assertThat(dailyApp.getBreakTime().getBreakTimeSheets())
 				.extracting(x -> x.getBreakFrameNo().v(), x -> x.getStartTime().v(), // 休憩時間帯-開始時刻
 						x -> x.getEndTime().v()) // 休憩時間帯-終了時刻
-				.containsExactly(Tuple.tuple(1, breakTimeStartBefore, breakTimeEndBefore));
+				.containsExactly(Tuple.tuple(1, 600, 660));
 
 	}
 

@@ -15,9 +15,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 public class TimeZone extends DomainObject {
 
-	/** The use atr. */
-	// 使用区分
-	private NotUseAtr useAtr;
+	
 
 	/** The cnt. */
 	// 勤務NO
@@ -58,7 +56,6 @@ public class TimeZone extends DomainObject {
 	 *            the memento
 	 */
 	public TimeZone(TimezoneGetMemento memento) {
-		this.useAtr = memento.getUseAtr();
 		this.cnt = memento.getCnt();
 		this.start = memento.getStart();
 		this.end = memento.getEnd();
@@ -71,7 +68,6 @@ public class TimeZone extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(TimezoneSetMemento memento) {
-		memento.setUseAtr(this.useAtr);
 		memento.setCnt(this.cnt);
 		memento.setStart(this.start);
 		memento.setEnd(this.end);
@@ -79,7 +75,6 @@ public class TimeZone extends DomainObject {
 
 	public TimeZone(NotUseAtr useAtr, int cnt, int start, int end) {
 		super();
-		this.useAtr = useAtr;
 		this.cnt = cnt;
 		this.start = new TimeWithDayAttr(start);
 		this.end = new TimeWithDayAttr(end);

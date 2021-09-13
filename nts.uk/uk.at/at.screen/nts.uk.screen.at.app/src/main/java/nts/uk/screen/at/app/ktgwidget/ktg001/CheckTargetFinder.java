@@ -31,7 +31,7 @@ public class CheckTargetFinder {
 		Integer closureId = closingPeriod.getClosureId();
 		
 		if (EnumAdaptor.valueOf(yearMonth,
-				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.THIS_MONTH_DISPLAY) {
+				TopPageDisplayYearMonthEnum.class) == TopPageDisplayYearMonthEnum.THIS_MONTH_DISPLAY || yearMonth == null) {
 			return new CheckTarget(closureId, processingYm);
 
 		} else if (EnumAdaptor.valueOf(yearMonth,
@@ -39,7 +39,7 @@ public class CheckTargetFinder {
 			return new CheckTarget(closureId, processingYm.addMonths(1));
 
 		} else {
-			return new CheckTarget(closureId, null);
+			return new CheckTarget(closureId, processingYm);
 		}
 
 	}

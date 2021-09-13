@@ -43,5 +43,4 @@ public class CompanyInforImport {
 	public boolean isAbolished() {
 		return isAbolition == 1;
 	}
-	
 }

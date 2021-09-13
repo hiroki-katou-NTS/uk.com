@@ -99,14 +99,6 @@ public class ScheCreExeBasicWorkSettingHandler {
 			}
 		}
 
-		// find calendar company by id
-		Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
-				.findCalendarCompanyByDate(command.getBaseGetter().getCompanyId(), command.getBaseGetter().getToDate());
-
-		// check exist data calendar company
-		if (optionalCalendarCompany.isPresent()) {
-			return Optional.of(optionalCalendarCompany.get().getWorkDayDivision().value);
-		}
 		// add error messageId Msg_588
 		this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_588");
 		return Optional.empty();
@@ -147,18 +139,10 @@ public class ScheCreExeBasicWorkSettingHandler {
 			if (optionalWorkplaceBasicWork.isPresent()) {
 				return this.toBasicWorkSetting(optionalWorkplaceBasicWork.get(), command.getWorkdayDivision());
 			}
-		}
+		} 
 
-		Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
-				.findById(command.getBaseGetter().getCompanyId(), command.getWorkdayDivision());
-		// check not exist data
-		if (!optionalCompanyBasicWork.isPresent()) {
-			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_589");
-			return Optional.empty();
-		}
-
-		// return optional
-		return this.toBasicWorkSettingCompany(optionalCompanyBasicWork.get(), command.getWorkdayDivision());
+		this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_589");
+		return Optional.empty();
 	}
 
 	/**
@@ -295,22 +279,10 @@ public class ScheCreExeBasicWorkSettingHandler {
 		// check exist data
 		if (optionalCalendarClass.isPresent()) {
 			return Optional.ofNullable(optionalCalendarClass.get().getWorkDayDivision().value);
-		} else {
-
-			// find calendar company by id
-			Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
-					.findCalendarCompanyByDate(command.getBaseGetter().getCompanyId(),
-							command.getBaseGetter().getToDate());
-
-			// check exits data
-			if (optionalCalendarCompany.isPresent()) {
-				return Optional.ofNullable(optionalCalendarCompany.get().getWorkDayDivision().value);
-			}
-
-			// add error messageId Msg_588
-			this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_588");
-			return Optional.empty();
-		}
+		} 
+	// add error messageId Msg_588
+	this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_588");
+	return Optional.empty();
 	}
 
 	/**

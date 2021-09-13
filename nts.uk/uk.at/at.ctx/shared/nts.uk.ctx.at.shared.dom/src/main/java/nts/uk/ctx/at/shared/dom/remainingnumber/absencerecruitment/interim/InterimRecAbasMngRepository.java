@@ -3,9 +3,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 
 public interface InterimRecAbasMngRepository {
 	
@@ -167,4 +167,16 @@ public interface InterimRecAbasMngRepository {
 	void deleteInterimAbsMngBySidAndYmd(String sId, GeneralDate ymd);
 
 	void deleteInterimRecMngBySidAndYmd(String sid, GeneralDate ymd);
+
+	// [4] 削除する暫定振出管理データ
+	void deleteRecMngWithPeriod(String sid, DatePeriod period);
+
+	// [5] Insert(List<暫定振出管理データ>) 暫定振出管理データ
+	void insertRecMngList(List<InterimRecMng> lstDomain);
+
+	// [4] 削除する 暫定振休管理データ
+	void deleteAbsMngWithPeriod(String sid, DatePeriod period);
+
+	// [5] Insert(List<暫定振休管理データ>) 暫定振休管理データ
+	void insertAbsMngList(List<InterimAbsMng> lstDomain);
 }

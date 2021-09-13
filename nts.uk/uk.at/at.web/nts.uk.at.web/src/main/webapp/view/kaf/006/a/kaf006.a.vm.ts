@@ -44,17 +44,21 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
         isEnableSwitchBtn: boolean = true;
         updateMode: KnockoutObservable<boolean> = ko.observable(true);
         isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
+        grantDate: KnockoutObservable<string> = ko.observable(null);
+        grantDays: KnockoutObservable<number> = ko.observable(0);
+        grantDaysOfYear: KnockoutComputed<string>;
 
         // appDate
         checkAppDate: KnockoutObservable<boolean> = ko.observable(true);
 
-        yearRemain: KnockoutObservable<number> = ko.observable();
-        subHdRemain: KnockoutObservable<number> = ko.observable();
-        subVacaRemain: KnockoutObservable<number> = ko.observable();
-        remainingHours: KnockoutObservable<number> = ko.observable();
+        yearRemain: KnockoutObservable<string> = ko.observable();
+        subHdRemain: KnockoutObservable<string> = ko.observable();
+        // subVacaRemain: KnockoutObservable<string> = ko.observable();
+        remainingHours: KnockoutObservable<string> = ko.observable();
 
         over60HHourRemain: KnockoutObservable<string> = ko.observable();
         subVacaHourRemain: KnockoutObservable<string> = ko.observable();
+        subVacaRemain: KnockoutObservable<string> = ko.observable();
         timeYearLeave: KnockoutObservable<string> = ko.observable();
         childNursingRemain: KnockoutObservable<string> = ko.observable();
         nursingRemain: KnockoutObservable<string> = ko.observable();
@@ -204,6 +208,14 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
                 return vm.$i18n("KAF006_21");
             });
+
+            vm.grantDaysOfYear = ko.computed(() => {
+                if (vm.grantDate()) {
+                    return vm.$i18n('KAF006_98') + moment(vm.grantDate()).format('YYYY/MM/DD') + '　' + vm.grantDays() + '日';
+                }
+
+                return vm.$i18n('KAF006_98') + vm.$i18n('KAF006_99');
+            })
 
             vm.selectedDateSpec.subscribe(() => {
                 if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
@@ -586,10 +598,12 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }
 
             if (data.remainVacationInfo) {
-                vm.yearRemain(data.remainVacationInfo.yearRemain);
-                vm.subHdRemain(data.remainVacationInfo.subHdRemain);
-                vm.subVacaRemain(data.remainVacationInfo.subVacaRemain);
-                vm.remainingHours(data.remainVacationInfo.remainingHours);
+                // vm.yearRemain(data.remainVacationInfo.yearRemain);
+                // vm.subHdRemain(data.remainVacationInfo.subHdRemain);
+                // vm.subVacaRemain(data.remainVacationInfo.subVacaRemain);
+                // vm.remainingHours(data.remainVacationInfo.remainingHours);
+                vm.grantDate(data.remainVacationInfo.grantDate);
+                vm.grantDays(data.remainVacationInfo.grantDays);
                 vm.fetchRemainTime(data.remainVacationInfo);
             }
             if (data.requiredVacationTime) {
@@ -1057,51 +1071,108 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
+        // fetchRemainTime(remainVacationInfo: any) {
+        //     const vm = this;
+
+        //     // set over60HHourRemain
+        //     if (remainVacationInfo.over60HHourRemain) {
+        //         vm.over60HHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.over60HHourRemain));
+        //     } else {
+        //         vm.over60HHourRemain(nts.uk.time.format.byId("Clock_Short_HM", 0));
+        //     }
+
+        //     // set subVacaHourRemain
+        //     if (remainVacationInfo.subVacaHourRemain) {
+        //         vm.subVacaHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.subVacaHourRemain));
+        //     } else {
+        //         vm.subVacaHourRemain(nts.uk.time.format.byId("Clock_Short_HM", 0));
+        //     }
+
+        //     // set yearRemain
+        //     if (remainVacationInfo.yearRemain && remainVacationInfo.yearRemain > 0) {
+        //         if (remainVacationInfo.yearHourRemain && remainVacationInfo.yearHourRemain > 0) {
+        //             vm.timeYearLeave(remainVacationInfo.yearRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.yearHourRemain)));
+        //         } else {
+        //             vm.timeYearLeave(remainVacationInfo.yearRemain.toString().concat("日"));
+        //         }
+        //     } else {
+        //         vm.timeYearLeave(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.yearHourRemain));
+        //     }
+
+        //     // set childNursingRemain
+        //     if (remainVacationInfo.childNursingRemain && remainVacationInfo.childNursingRemain > 0) {
+        //         if (remainVacationInfo.childNursingHourRemain && remainVacationInfo.childNursingHourRemain > 0) {
+        //             vm.childNursingRemain(remainVacationInfo.childNursingRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.childNursingHourRemain)));
+        //         } else {
+        //             vm.childNursingRemain(remainVacationInfo.childNursingRemain.toString().concat("日"));
+        //         }
+        //     } else {
+        //         vm.childNursingRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.childNursingHourRemain));
+        //     }
+
+        //     // set nursingRemain
+        //     if (remainVacationInfo.nursingRemain && remainVacationInfo.nursingRemain > 0) {
+        //         if (remainVacationInfo.nursingRemain && remainVacationInfo.nirsingHourRemain > 0) {
+        //             vm.nursingRemain(remainVacationInfo.nursingRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.nirsingHourRemain)));
+        //         } else {
+        //             vm.nursingRemain(remainVacationInfo.nursingRemain.toString().concat("日"));
+        //         }
+        //     } else {
+        //         vm.nursingRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.nirsingHourRemain));
+        //     }
+        // }
+
         fetchRemainTime(remainVacationInfo: any) {
             const vm = this;
 
             // set over60HHourRemain
-            if (remainVacationInfo.over60HHourRemain) {
-                vm.over60HHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.over60HHourRemain));
-            }
+            vm.over60HHourRemain(vm.formatRemainNumber(0, remainVacationInfo.over60HHourRemain));
 
             // set subVacaHourRemain
-            if (remainVacationInfo.subVacaHourRemain) {
-                vm.subVacaHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.subVacaHourRemain));
-            }
+            vm.subVacaHourRemain(vm.formatRemainNumber(remainVacationInfo.subHdRemain, remainVacationInfo.subVacaHourRemain));
+
+            // set subVacaRemain
+            vm.subVacaRemain(vm.formatRemainNumber(remainVacationInfo.subVacaRemain, 0));
 
             // set yearRemain
-            if (remainVacationInfo.yearRemain && remainVacationInfo.yearRemain > 0) {
-                if (remainVacationInfo.yearHourRemain && remainVacationInfo.yearHourRemain > 0) {
-                    vm.timeYearLeave(remainVacationInfo.yearRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.yearHourRemain)));
-                } else {
-                    vm.timeYearLeave(remainVacationInfo.yearRemain.toString().concat("日"));
-                }
-            } else {
-                vm.timeYearLeave(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.yearHourRemain));
-            }
+            vm.timeYearLeave(vm.formatRemainNumber(remainVacationInfo.yearRemain, remainVacationInfo.yearHourRemain));
 
             // set childNursingRemain
-            if (remainVacationInfo.childNursingRemain && remainVacationInfo.childNursingRemain > 0) {
-                if (remainVacationInfo.childNursingHourRemain && remainVacationInfo.childNursingHourRemain > 0) {
-                    vm.childNursingRemain(remainVacationInfo.childNursingRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.childNursingHourRemain)));
-                } else {
-                    vm.childNursingRemain(remainVacationInfo.childNursingRemain.toString().concat("日"));
-                }
-            } else {
-                vm.childNursingRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.childNursingHourRemain));
-            }
+            vm.childNursingRemain(vm.formatRemainNumber(remainVacationInfo.childNursingRemain, remainVacationInfo.childNursingHourRemain));
 
             // set nursingRemain
-            if (remainVacationInfo.nursingRemain && remainVacationInfo.nursingRemain > 0) {
-                if (remainVacationInfo.nursingRemain && remainVacationInfo.nirsingHourRemain > 0) {
-                    vm.nursingRemain(remainVacationInfo.nursingRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.nirsingHourRemain)));
-                } else {
-                    vm.nursingRemain(remainVacationInfo.nursingRemain.toString().concat("日"));
+            vm.nursingRemain(vm.formatRemainNumber(remainVacationInfo.nursingRemain, remainVacationInfo.nirsingHourRemain));
+
+            // set yearRemain
+            vm.yearRemain(vm.formatRemainNumber(remainVacationInfo.yearRemain, remainVacationInfo.yearHourRemain));
+
+            // set remainingHours
+            vm.remainingHours(vm.formatRemainNumber(remainVacationInfo.remainingHours, 0));
+
+            // set subHdRemain
+            vm.subHdRemain(vm.formatSubHdRemain(remainVacationInfo.subHdRemain, 0, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
+        }
+
+        formatRemainNumber(day: any, time: any): string {
+            const vm = this;
+            if (time) {
+                let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
+                if (day) {
+                    return vm.$i18n('KAF006_100', [day.toString(), timeString]);
                 }
-            } else {
-                vm.nursingRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.nirsingHourRemain));
+                return timeString;
             }
+
+            return vm.$i18n('KAF006_46', [day.toString()]);
+        }
+
+        formatSubHdRemain(day: any, time: any, manage: any) {
+            const vm = this;
+             if (manage) {
+                 return nts.uk.time.format.byId("Clock_Short_HM", time);
+             } else {
+                 return vm.$i18n('KAF006_46', [day.toString()]);
+             }
         }
 
         checkCondition10(data: any) {
@@ -1235,7 +1306,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                 }
             }
 
-            if (vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
+            if (vm.data && workType) {
                 if (workType.workAtr === 0 && workType.oneDayCls === 8) {
                     vm.condition14(true);
                     return true;

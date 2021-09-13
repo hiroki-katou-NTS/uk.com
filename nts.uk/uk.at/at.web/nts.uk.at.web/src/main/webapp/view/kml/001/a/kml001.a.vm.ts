@@ -75,9 +75,6 @@ module nts.uk.at.view.kml001.a {
             self.setPremiumTo100();
           else
             self.currentPersonCost().unitPrice.valueHasMutated();
-            _.defer(() => {
-                $("#premium-set-div .nts-fixed-body-container").height(newValue === 1 ? 441 : 401);
-            });
         });
 
         self.getDefaultPremiumSetting();

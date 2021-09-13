@@ -11,12 +11,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 @Getter
 public class DivergenceTime {
 
-	//控除後乖離時間
-	private AttendanceTimeOfExistMinus divTimeAfterDeduction;
-	
-	//控除時間
-	private AttendanceTimeOfExistMinus deductionTime;
-	
 	//乖離時間
 	private AttendanceTimeOfExistMinus divTime;
 	
@@ -31,22 +25,26 @@ public class DivergenceTime {
 	@Setter
 	private Optional<DiverdenceReasonCode> divResonCode;
 
-	public DivergenceTime(AttendanceTimeOfExistMinus divTimeAfterDeduction, AttendanceTimeOfExistMinus deductionTime, AttendanceTimeOfExistMinus divTime,
-			int divTimeId, DivergenceReasonContent divReason, DiverdenceReasonCode divResonCode) {
+	public DivergenceTime(
+			AttendanceTimeOfExistMinus divTime,
+			int divTimeId,
+			DivergenceReasonContent divReason,
+			DiverdenceReasonCode divResonCode) {
+		
 		super();
-		this.divTimeAfterDeduction = divTimeAfterDeduction;
-		this.deductionTime = deductionTime;
 		this.divTime = divTime;
 		this.divTimeId = divTimeId;
 		this.divReason = Optional.ofNullable(divReason);
 		this.divResonCode = Optional.ofNullable(divResonCode);
 	}
 	
-	public DivergenceTime(AttendanceTimeOfExistMinus divTimeAfterDeduction, AttendanceTimeOfExistMinus deductionTime, AttendanceTimeOfExistMinus divTime,
-			int divTimeId, Optional<DivergenceReasonContent> divReason, Optional<DiverdenceReasonCode> divResonCode) {
+	public DivergenceTime(
+			AttendanceTimeOfExistMinus divTime,
+			int divTimeId,
+			Optional<DivergenceReasonContent> divReason,
+			Optional<DiverdenceReasonCode> divResonCode) {
+		
 		super();
-		this.divTimeAfterDeduction = divTimeAfterDeduction;
-		this.deductionTime = deductionTime;
 		this.divTime = divTime;
 		this.divTimeId = divTimeId;
 		this.divReason = (divReason);
@@ -62,7 +60,6 @@ public class DivergenceTime {
 	}
 	
 	public static DivergenceTime createDefaultWithNo(int no) {
-		return new DivergenceTime(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0),
-				new AttendanceTimeOfExistMinus(0), no, Optional.empty(), Optional.empty());
+		return new DivergenceTime(new AttendanceTimeOfExistMinus(0), no, Optional.empty(), Optional.empty());
 	}
 }
