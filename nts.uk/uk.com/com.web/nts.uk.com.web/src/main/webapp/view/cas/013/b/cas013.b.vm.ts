@@ -2,10 +2,6 @@
 module nts.uk.com.view.cas013.b {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
-    import dialog = nts.uk.ui.dialog;
-    import windows = nts.uk.ui.windows;
-    import resource = nts.uk.resource;
-    import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     import isNullOrEmpty = nts.uk.util.isNullOrEmpty;
     import isNullOrUndefined = nts.uk.util.isNullOrUndefined;
     var format = nts.uk.text.format;
@@ -77,26 +73,21 @@ module nts.uk.com.view.cas013.b {
             vm.isShowSelectAllButton = ko.observable(false);
             vm.disableSelection = ko.observable(false);
             vm.employeeList = ko.observableArray<UnitModel>([]);
-            let dfd = $.Deferred();
             block.invisible();
             vm.$ajax('com', API.getCompanyIdOfLoginUser).done((data) => {
                 if (isNullOrUndefined(data)) {
                     vm.backToTopPage();
-                    dfd.resolve();
                 } else {
                     vm.loginCid(data);
                 }
-                vm.getListCompany(dfd);
-                dfd.resolve();
+                vm.getListCompany();
             }).fail(error => {
                 vm.backToTopPage();
-                dfd.reject();
             })
             vm.KCP005_load()
         }
-        created(params: any) {
+        created() {
             let vm = this;
-            let dfd = $.Deferred();
             vm.companyId.subscribe((cid) => {
                 if (cid){
                     vm.getListEmployee(cid);
@@ -109,9 +100,7 @@ module nts.uk.com.view.cas013.b {
             vm.setFocus();
         }
         setFocus() {
-            let vm = this;
                 $('#combo-box2').focus();
-            errors.clearAll();
         }
         getListEmployee(cid : string):JQueryPromise<any>{
             let vm = this,
@@ -119,7 +108,7 @@ module nts.uk.com.view.cas013.b {
              block.invisible();
                 let _path = format(API.getEmployeeList,cid);
                 vm.$ajax('com',_path ).done((data) => {
-                    if(!isNullOrUndefined(data)){
+                    if(!isNullOrEmpty(data)){
                         let emps : any = [];
                         let job : any = [];
                         for (let i =0; i<data.length;i++) {
@@ -138,9 +127,8 @@ module nts.uk.com.view.cas013.b {
                         vm.optionalColumnDatasource(job);
                         vm.employInfors(emps);
                         vm.listEmployee(data);
-                        // if(!isNullOrEmpty(emps)){
-                        //     vm.multiSelectedCode(emps[0].code)
-                        // }
+                    }else {
+                        block.clear()
                     }
                 }).always(()=>{
                     block.clear()
@@ -150,7 +138,7 @@ module nts.uk.com.view.cas013.b {
                 });
             return dfd.promise();
         }
-        getListCompany(dfd : any):JQueryPromise<any> {
+        getListCompany(){
             let vm = this,
             cid: string = nts.uk.ui.windows.getShared("cid_from_a");
             block.invisible();
@@ -161,25 +149,19 @@ module nts.uk.com.view.cas013.b {
                         let item = data[i];
                         companys.push( new ItemModel(item.companyCode,item.companyName,item.companyId) )
                     }
-                    vm.companyId(cid);
                     vm.listCompany(companys);
                     if(isNullOrUndefined(cid) || cid == ""){
                         cid = vm.loginCid();
                     }
                     vm.companyId(cid);
                 }
-                dfd.resolve();
             }).fail(()=>{
                 vm.backToTopPage();
-                dfd.reject();
             }).always(()=>{
-                block.clear()
             });
-            return dfd.promise();
         }
         KCP005_load() {
             let vm = this;
-            // Start define KCP005
             vm.baseDate = ko.observable(new Date());
             vm.isShowAlreadySet = ko.observable(false);
             vm.alreadySettingPersonal = ko.observableArray([]);
