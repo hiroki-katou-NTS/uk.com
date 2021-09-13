@@ -19,13 +19,6 @@ public class UsedTimes extends IntegerPrimitiveValue<UsedTimes> implements Seria
 		super(rawValue);
 	}
 
-	/**
-	 * クローン
-	 */
-	public UsedTimes clone() {
-		return new UsedTimes(this.v());
-	}
-
 	@Override
 	protected Integer reviseRawValue(Integer rawValue) {
 		if (rawValue == null) return super.reviseRawValue(rawValue);

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
  * @author masaaki_jinno
  *
  */
-@HalfIntegerRange(min = 0, max = 999.5)
+@HalfIntegerRange(min = 0, max = 1.0)
 public class TmpDailyLeaveUsedDayNumber extends HalfIntegerPrimitiveValue<LeaveGrantDayNumber>{
 
 	private static final long serialVersionUID = 8330575130887144971L;
@@ -21,7 +21,7 @@ public class TmpDailyLeaveUsedDayNumber extends HalfIntegerPrimitiveValue<LeaveG
 	@Override
 	protected Double reviseRawValue(Double rawValue) {
 		if (rawValue == null) return super.reviseRawValue(rawValue);
-		if (rawValue > 999.5) rawValue = 999.5;
+		if (rawValue > 1.0) rawValue = 1.0;
 		if (rawValue < 0.0) rawValue = 0.0;
 		return super.reviseRawValue(rawValue);
 	}

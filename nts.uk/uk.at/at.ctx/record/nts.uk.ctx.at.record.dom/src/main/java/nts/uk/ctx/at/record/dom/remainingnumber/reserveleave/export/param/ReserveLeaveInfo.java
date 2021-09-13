@@ -13,7 +13,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
@@ -259,8 +258,8 @@ public class ReserveLeaveInfo implements Cloneable {
 		}
 
 		// 付与前付与後を判断する
-				GrantPeriodAtr grantPeriodAtr
-					= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.LASPED);
+		GrantPeriodAtr grantPeriodAtr
+			= aggrPeriodWork.judgeGrantPeriodAtr();
 
 		// 積立年休情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);
@@ -329,7 +328,7 @@ public class ReserveLeaveInfo implements Cloneable {
 
 		// 付与前付与後を判断する
 		GrantPeriodAtr grantPeriodAtr
-			= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.GRANT);
+			= aggrPeriodWork.judgeGrantPeriodAtr();
 
 
 		// 積立年休情報残数を更新
@@ -396,7 +395,7 @@ public class ReserveLeaveInfo implements Cloneable {
 
 			// 付与前付与後を判断する
 			GrantPeriodAtr grantPeriodAtr
-				= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.LASPED);
+				= aggrPeriodWork.judgeGrantPeriodAtr();
 
 
 			// 積立年休情報残数を更新
@@ -442,7 +441,7 @@ public class ReserveLeaveInfo implements Cloneable {
 
 		// 付与前付与後を判断する
 		GrantPeriodAtr grantPeriodAtr
-			= aggrPeriodWork.judgeGrantPeriodAtr(ProcessTiming.DIGEST);
+			= aggrPeriodWork.judgeGrantPeriodAtr();
 
 		for (val tmpReserveLeaveMng : targetList){
 

@@ -744,19 +744,6 @@ public class SpecialLeaveManagementService {
 
 		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 
-		// 処理期間内で何回目の付与なのかを保持。（一回目の付与を判断したい）
-		AtomicInteger grantNumber = new AtomicInteger(1);
-		for( SpecialLeaveAggregatePeriodWork nowWork : aggregatePeriodWorks ){
-			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
-			{
-				if ( !nowWork.getGrantWork().getSpecialLeaveGrant().isPresent() ) {
-					nowWork.getGrantWork().setSpecialLeaveGrant(Optional.of(new NextSpecialLeaveGrant()));
-				}
-				nowWork.getGrantWork().getSpecialLeaveGrant().get().setTimes(new GrantNum(grantNumber.get()));
-				grantNumber.incrementAndGet();
-			}
-		}
-
 		for(SpecialLeaveAggregatePeriodWork work : aggregatePeriodWorks) {
 			if(work.getPeriod().contains(aggrPeriod.end()))
 				work.getEndDay().setPeriodEndAtr(true);

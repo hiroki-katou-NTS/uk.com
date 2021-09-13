@@ -1,18 +1,10 @@
 package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.NextDayAfterPeriodEndWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantWork;
-import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveLapsedWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
-import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 
 /**
  * 年休集計期間WORK

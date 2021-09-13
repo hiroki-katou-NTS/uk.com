@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 
@@ -72,7 +71,7 @@ public class SpecialLeaveAggregatePeriodWork {
 	}
 
 	/**
-	 * 付与前付与後を判断する
+	 * 付与前付与後を判断
 	 * @param entryDate 入社日
 	 * @return 付与前か付与後か
 	 */

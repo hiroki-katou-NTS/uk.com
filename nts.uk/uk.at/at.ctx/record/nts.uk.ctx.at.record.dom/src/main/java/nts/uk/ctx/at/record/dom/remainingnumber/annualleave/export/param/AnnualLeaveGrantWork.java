@@ -38,26 +38,25 @@ public class AnnualLeaveGrantWork {
 	}
 
 	/**
-	 * 初回付与か判断
+	 * 初回付与かどうか
 	 * @return 初回付与のときはTrueを返す
 	 */
 	public boolean isFirstGrant() {
 
 		// 期間の開始日に付与があるか
-		if(this.grantAtr==false) {
-			return false;
-		}
-
-		if(!this.annualLeaveGrant.isPresent()) {
-			return false;
-		}
-
-		// 初回付与のときはTrueを返す
-		if ( annualLeaveGrant.isPresent() ) {
-			return annualLeaveGrant.get().getTimes().v() == 1;
+		if(this.grantAtr) {
+			return grantNumber==1;
 		}
 
 		return false;
+	}
+	
+	/**
+	 * 付与前か付与後を判断する
+	 * @return
+	 */
+	public GrantPeriodAtr judgeGrantPeriodAtr(){
+		return grantPeriodAtr;
 	}
 
 }

@@ -30,7 +30,7 @@ public class HalfdayAnnualLeaveMax {
 	 * 残回数
 	 */
 	private RemainingTimes remainingTimes;
-
+	
 	/**
 	 * コンストラクタ
 	 * 	[C-1] 年休付与時に作成する
@@ -151,7 +151,13 @@ public class HalfdayAnnualLeaveMax {
 			return remainingTimesOut;
 		}
 	}
-
-
+	
+	/** クローン */
+	public HalfdayAnnualLeaveMax clone() {
+		return new HalfdayAnnualLeaveMax(
+				new AnnualNumberDay(maxTimes.v()),
+				new UsedTimes(usedTimes.v()), 
+				new RemainingTimes(remainingTimes.v()));
+	}
 
 }

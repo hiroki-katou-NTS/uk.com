@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.common.ProcessTiming;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
@@ -82,21 +81,10 @@ public class RsvLeaAggrPeriodWork {
 	}
 
 	/**
-	 * 付与前付与後を判断する
-	 * @param atr 処理タイミング
-	 * @param entryDate 入社日
+	 * 付与前付与後か判断
 	 * @return 付与前か付与後か
 	 */
-	public GrantPeriodAtr judgeGrantPeriodAtr(ProcessTiming atr) {
-		switch(atr) {
-			case LASPED :// 消滅のとき
-				if (grantNumber == 1 ) { // 初回付与のとき
-					return GrantPeriodAtr.BEFORE_GRANT;
-				} else {
-					return grantPeriodAtr;
-				}
-			default:
-				return grantPeriodAtr;
-		}
+	public GrantPeriodAtr judgeGrantPeriodAtr() {		
+		return grantPeriodAtr;
 	}
 }

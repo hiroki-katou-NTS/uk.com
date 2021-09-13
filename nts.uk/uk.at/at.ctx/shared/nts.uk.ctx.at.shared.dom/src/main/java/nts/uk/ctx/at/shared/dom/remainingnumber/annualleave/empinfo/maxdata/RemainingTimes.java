@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualNumberDay;
 
 /**
  * 休暇残回数
@@ -25,6 +26,11 @@ public class RemainingTimes extends IntegerPrimitiveValue<RemainingTimes> implem
 		if (rawValue > 99) rawValue = 99;
 		if (rawValue < 0) rawValue = 0;
 		return super.reviseRawValue(rawValue);
+	}
+	
+    /** クローン */
+	public RemainingTimes clone() {
+		return new RemainingTimes(this.v());
 	}
 }
 

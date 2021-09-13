@@ -60,23 +60,11 @@ public class AnnualLeaveMaxData extends AggregateRoot {
 		// 社員ID
 		employeeId = employeeIdIn;
 
-		// if	上限回数isPresent()
-		if ( halfdayAnnualLeaveMaxIn.isPresent() ) {
-			halfdayAnnualLeaveMax = Optional.of(
-					new HalfdayAnnualLeaveMax(halfdayAnnualLeaveMaxIn.get().getMaxTimes()) );
-		} else {
-			halfdayAnnualLeaveMax = Optional.empty();
-		}
-
-		// if	上限時間isPresent()
-		if ( timeAnnualLeaveMaxIn.isPresent() ) {
-			timeAnnualLeaveMax 
-				= Optional.of(new TimeAnnualLeaveMax(
-					timeAnnualLeaveMaxIn.get().getMaxMinutes(), 
-					timeAnnualLeaveMaxIn.get().getUsedMinutes()));
-		} else {
-			timeAnnualLeaveMax = Optional.empty();
-		}
+		// 上限回数
+		halfdayAnnualLeaveMax = halfdayAnnualLeaveMaxIn.map(mapper->mapper.clone());
+		
+		// 上限時間
+		timeAnnualLeaveMax = timeAnnualLeaveMaxIn.map(mapper->mapper.clone());
 	}
 
 	/**

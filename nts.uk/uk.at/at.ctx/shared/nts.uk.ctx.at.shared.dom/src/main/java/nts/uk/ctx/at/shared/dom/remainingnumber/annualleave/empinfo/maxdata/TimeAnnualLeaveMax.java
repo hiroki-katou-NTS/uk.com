@@ -31,6 +31,14 @@ public class TimeAnnualLeaveMax {
 	 * 残時間
 	 */
 	private LeaveRemainingTime remainingMinutes;
+	
+	/** クローン */
+	public TimeAnnualLeaveMax clone() {
+		return new TimeAnnualLeaveMax(
+				new MaxMinutes(maxMinutes.v()),
+				new LeaveUsedTime(usedMinutes.v()), 
+				new LeaveRemainingTime(remainingMinutes.v()));
+	}
 
 	/**
 	 * コンストラクタ
@@ -61,11 +69,11 @@ public class TimeAnnualLeaveMax {
 	 * コンストラクタ
 	 * [C-2] 年休使用時に作成する
 	 */
-	public TimeAnnualLeaveMax(MaxMinutes maxMinutesIn, LeaveUsedTime usedMinutes2) {
+	public TimeAnnualLeaveMax(MaxMinutes maxMinutesIn, LeaveUsedTime usedMinutes) {
 		// 上限時間
 		maxMinutes = new MaxMinutes(maxMinutesIn.v());
 		// 使用時間
-		usedMinutes = new LeaveUsedTime(usedMinutes2.v());
+		usedMinutes = new LeaveUsedTime(usedMinutes.v());
 		// 残時間更新
 		remainingMinutes = calcRemainMinutess(maxMinutes, usedMinutes);
 	}
