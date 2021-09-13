@@ -9,5 +9,5 @@ public interface ImportableItemsRepository {
 	
 	Optional<ImportableItem> get(ImportingDomainId domainId, int itemNo);
 	
-	public List<ImportableItem> get(ImportingDomainId categoryId);
+	List<ImportableItem> get(ImportingDomainId categoryId);
 }
