@@ -22,7 +22,7 @@ public class ItemInputControl extends ValueObject {
 	private ItemClassification itemCls;
 	
 	// 必須
-	private boolean mandatory;
+	private boolean require;
 	
 	// 桁数
 	private Optional<Integer> digitsNo;
@@ -43,7 +43,7 @@ public class ItemInputControl extends ValueObject {
 	 */
 	public ItemInputControl(
 			ItemClassification itemCls,
-			boolean mandatory,
+			boolean require,
 			Optional<Integer> digitsNo,
 			Optional<MaximumUsageRecord> maximum,
 			Optional<MinimumUsageRecord> minimum) {
@@ -64,7 +64,7 @@ public class ItemInputControl extends ValueObject {
 		
 		// [mapping]
 		this.itemCls = itemCls;
-		this.mandatory = mandatory;
+		this.require = require;
 		this.digitsNo = digitsNo;
 		this.maximum = maximum;
 		this.minimum = minimum;
@@ -78,7 +78,7 @@ public class ItemInputControl extends ValueObject {
 	 * @return エラー
 	 */
 	public Optional<ErrorMessage> checkErrors(EquipmentItemNo itemNo, UsageItemName itemName, Optional<ActualItemUsageValue> inputVal) {
-		if (this.mandatory && !inputVal.isPresent()) {
+		if (this.require && !inputVal.isPresent()) {
 			return Optional.of(new I18NErrorMessage(I18NText.main("Msg_2228").addRaw(itemName.v()).build()));
 		}
 		
