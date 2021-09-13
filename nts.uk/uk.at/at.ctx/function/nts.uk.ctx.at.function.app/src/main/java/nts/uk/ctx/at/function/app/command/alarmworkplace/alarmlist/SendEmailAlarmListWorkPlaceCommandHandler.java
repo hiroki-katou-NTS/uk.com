@@ -7,6 +7,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
+import nts.uk.ctx.at.function.dom.adapter.alarm.EmployeeAlarmListAdapter;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.mailserver.MailServerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.role.RoleSetExportAdapter;
@@ -83,6 +84,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     @Inject
     private UserEmployeeAdapter userEmployeeAdapter;
 
+    @Inject
+    private EmployeeAlarmListAdapter employeeAlarmListAdapter;
+
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -154,8 +158,11 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                         .anyMatch(x -> x.getCategory() == WorkplaceCategory.MASTER_CHECK_BASIC.value);
 
                 if (isExtractData) {
-                    //担当者を取得する。
-                    empIdList = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
+                    for (String wolPlaceId : command.getWorkplaceIds()) {
+                        val empList = employeeAlarmListAdapter.getListEmployeeId(wolPlaceId, GeneralDate.today());
+                        if (!empList.isEmpty())
+                            empIdList.addAll(empList);
+                    }
                 }
             }
         }
