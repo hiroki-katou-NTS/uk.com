@@ -42,7 +42,6 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
 		switch (path) {
-		case DAYS:
 		case BEFORE:
 		case AFTER:
 			return new RsvLeaveRemainingNumberDto();
@@ -55,9 +54,6 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
 		switch (path) {
-		case DAYS:
-			//return Optional.ofNullable(totalRemainingDays);
-			return Optional.empty();
 		case BEFORE:
 			return Optional.ofNullable(before);
 		case AFTER:
@@ -71,7 +67,6 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	@Override
 	public PropType typeOf(String path) {
 		switch (path) {
-		case DAYS:
 		case BEFORE:
 		case AFTER:
 			return PropType.OBJECT;
@@ -83,9 +78,6 @@ public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItem
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
-		case DAYS:
-			//totalRemainingDays = (RsvLeaveRemainingNumberDto) value;
-			break;
 		case BEFORE:
 			before = (RsvLeaveRemainingNumberDto) value;
 			break;

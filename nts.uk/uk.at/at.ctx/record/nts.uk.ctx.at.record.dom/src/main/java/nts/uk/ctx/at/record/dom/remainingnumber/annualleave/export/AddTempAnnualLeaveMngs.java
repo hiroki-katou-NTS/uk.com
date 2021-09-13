@@ -55,7 +55,7 @@ public class AddTempAnnualLeaveMngs {
 				break;
 			}
 
-			// 期間．開始日から暫定年休管理データの取得日がかぶっていない日を求める//要確認
+			// 期間．開始日から暫定年休管理データの取得日がかぶっていない日を求める
 			val remainDates = interimRemain.stream().map(c -> c.getYmd()).collect(Collectors.toList());
 			val nextDate = period.stream().filter(c -> !remainDates.contains(c)).findFirst();
 
@@ -63,7 +63,7 @@ public class AddTempAnnualLeaveMngs {
 			//	※残数処理では勤務種類は使用しないためダミーデータ
 			nextDate.ifPresent(c -> {
 				interimRemain.add(TempAnnualLeaveMngs.of(
-						"",									// 	残数管理データID // 要確認
+						"",									// 	残数管理データID
 						employeeId, 						//		社員ID ←パラメータ「社員ID」
 						c, 										//		対象日　←求めた対象日
 						CreateAtr.RECORD, 			//		作成元区分　←実績

@@ -34,24 +34,6 @@ public class AggregatePeriodWork {
 	/**終了日 */
 	private AnnualNextDayAfterPeriodEndWork endWork;
 
-//	/** 期間終了内 */
-//	private boolean dayBeforePeriodEnd;
-//	/** 期間終了後翌日 */
-//	private boolean nextDayAfterPeriodEnd;
-//
-//	/** 付与フラグ */
-//	private boolean grantAtr;
-//	/** 何回目の付与なのか */
-//	private int grantNumber = 0;
-//	/** 付与後 */
-//	private boolean afterGrant;
-//
-//	/** 消滅フラグ */
-//	//private boolean lapsedAtr;
-//
-//	/** 年休付与 */
-//	private Optional<NextAnnualLeaveGrant> annualLeaveGrant;
-
 	/**
 	 * コンストラクタ
 	 */
