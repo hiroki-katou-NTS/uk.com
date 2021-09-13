@@ -1175,6 +1175,7 @@ module nts.uk.ui.at.kdw013.c {
 
                             event.setExtendedProp('sId', employeeId);
                             event.setExtendedProp('workLocationCD', ko.unwrap(workplace));
+                          
 
                             event.setExtendedProp('remarks', descriptions());
                             event.setExtendedProp('workingHours', tr.end - tr.start);
@@ -1186,7 +1187,7 @@ module nts.uk.ui.at.kdw013.c {
                 });
         }
     
-        changed(pos:'TIME'|'TASK'|'DES'){
+        changed(pos:'TIME'|'TASK'|'DES'|'ALL'){
             const vm = this;
             const { params, model} = vm;
             const { data } = params;
@@ -1199,9 +1200,9 @@ module nts.uk.ui.at.kdw013.c {
                 const { start, end } = event;
                 const task = vm.getTaskInfo();
 
-                if (pos == 'TIME') {
+                if (pos == 'TIME' || pos == 'ALL') {
                     if (start.getTime() != setTimeOfDate(start, tr.start).getTime()) {
-                        console.log('time changed');
+                        event.setExtendedProp('isChanged', true);
                         return true;
                     }
 
@@ -1211,33 +1212,34 @@ module nts.uk.ui.at.kdw013.c {
                     }
                 }
                 
-                if (pos == 'TASK') {
+                if (pos == 'TASK'|| pos == 'ALL') {
                     if (task) {
                         const { displayInfo } = task;
 
                         if (displayInfo) {
                             const { color, taskName } = displayInfo;
                             if (vm.isTaskChanged(event)) {
-                                console.log('task changed');
+                                event.setExtendedProp('isChanged', true);
                                 return true;
                             }
                         }
                     }
                 }
                 
-                if (pos == 'WORKLOC') {
+                if (pos == 'WORKLOC'|| pos == 'ALL') {
                     const {workplace} = model;
                     const wkp = ko.unwrap(workplace);
                     if (wkp) {
                         if (wkp != _.get(event,'extendedProps.workLocationCD')) {
+                            event.setExtendedProp('isChanged', true);
                             return true;
                         }
                     }
                 }
 
-                if (pos == 'DES') {
+                if (pos == 'DES'|| pos == 'ALL') {
                     if (_.get(event, 'extendedProps.remarks') != descriptions()) {
-                         console.log('DES changed');
+                         event.setExtendedProp('isChanged', true);
                         return true;
                     }
                 }
