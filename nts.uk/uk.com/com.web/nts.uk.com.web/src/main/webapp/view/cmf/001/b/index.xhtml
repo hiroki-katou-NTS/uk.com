@@ -64,7 +64,7 @@
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportCode'] }">コード</div>
 								<input class="check-target" id="settingCode" data-bind="ntsTextEditor: { 
 									name: 'コード',
-									value: settingCode,  
+									value: settingCode,
 									enable: isNewMode,
 									required: true, 
 									constraint: ['ExternalImportCode']}" />
@@ -80,13 +80,14 @@
 							<div class="import-domain">
 								<div class="formLabel" data-bind="ntsFormLabel: { required: true }">受入ドメイン</div>
 								<div class="check-target" id="importDomain" data-bind="ntsComboBox: {
-									name: '受入グループ', 
+									name: '受入ドメイン', 
 									options: $root.content.importDomainOption,
 									optionsValue: 'value',
 									visibleItemsCount: 10,
 									optionsText: 'name',
 									selectFirstIfNull: false,
-									value: importDomain,  
+									value: importDomain,
+									enable: isNewMode,
 									required: true}"></div>
 							</div>
 							<div class="import-mode">
