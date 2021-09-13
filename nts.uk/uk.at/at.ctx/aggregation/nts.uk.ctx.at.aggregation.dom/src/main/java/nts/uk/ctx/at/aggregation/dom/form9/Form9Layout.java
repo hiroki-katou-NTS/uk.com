@@ -60,17 +60,27 @@ public class Form9Layout implements DomainAggregate {
 			,	Form9NursingAssitantTable nursingAssitant
 			,	Optional<String> tempalteFileId) {
 		if(isSystemFixed && tempalteFileId.isPresent()) {
-			//TODO
-			throw new BusinessException("");
+			throw new BusinessException("Msg_2279");
 		}
 		
 		if(!isSystemFixed && !tempalteFileId.isPresent()) {
-			//TODO
-			throw new BusinessException("");
+			throw new BusinessException("Msg_2280");
 		}
 		
 		return new Form9Layout(code, name, isSystemFixed, isUse
 				,	cover, nursingStaff, nursingAssitant, tempalteFileId);
+	}
+	
+	public Form9Layout copy(Require require, Form9Code destinationCode, Form9Name destinationName) {
+		
+		if(!this.isSystemFixed) {
+			
+			return new Form9Layout(destinationCode, destinationName, false, true, this.cover, this.nursingStaff, this.nursingAssitant, this.tempalteFileId);
+			
+		}
+		
+		
+		return null;
 	}
 	
 	/**

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 /**
  * 社員コードと表示名
@@ -9,8 +8,7 @@ import lombok.Data;
  * @author lan_lt
  *
  */
-@Builder
-@Data
+@Value
 public class EmployeeCodeAndDisplayNameImport {
 	/** 社員ID **/
 	private String employeeId;

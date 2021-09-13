@@ -2,7 +2,6 @@ package nts.uk.ctx.at.aggregation.dom.form9;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
@@ -12,14 +11,13 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  *
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class Form9DetailOutputSetting  implements DomainAggregate{
 	
 	/** 時間丸め設定 **/
 	private Form9TimeRoundingSetting timeRoundingSetting;
 	
-	/** 対象時間内に出力情報がない場合、出力しない **/
-	private boolean isNotPrint;
+	/** 勤務時間がない場合に属性を空白とするか **/
+	private boolean allZeroIsAttributeBlank;
 	
 }

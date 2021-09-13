@@ -13,9 +13,9 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 public class Form9TimeRoundingSetting implements DomainValue{
 	
 	/** 小数点以下 **/
-	private final RoundingUnit  roundingUnit;
+	private final RoundingUnit roundingUnit;
 	
 	/** 端数処理  **/
-	private Rounding roundingMethod;
+	private final Rounding roundingMethod;
 
 }

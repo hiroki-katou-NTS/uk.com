@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.GetEmpLicenseClassificationService;
-import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.EmployeeCodeAndDisplayNameImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.jobtitle.EmployeeJobTitleImport;
 
@@ -31,25 +30,26 @@ public class SortByForm9Service {
 		val empBasicInfos = require.getEmployeeCodeAndDisplayNameImportByEmployeeIds(employeeIds);
 		
 		val sortEmpInfos = employeeIds.stream().map(employeeId ->{
-			LicenseClassification licenseCls = empLicenseClassifications.stream()
+			val licenseCls = empLicenseClassifications.stream()
 					.filter(license -> license.getEmpID().equals(employeeId)
 							&& license.getOptLicenseClassification().isPresent())
-					.findFirst().map(c -> c.getOptLicenseClassification()).orElse(null).get();
+					.findFirst()
+					.map(c -> c.getOptLicenseClassification().get()).orElse(null);
 			val jobTitleCode = empJobTitleHistories.stream()
 					.filter(job -> job.getEmployeeId().equals(employeeId))
-					.findFirst().map(job -> job.getJobTitleCode()).orElse("");
+					.findFirst().map(job -> job.getJobTitleCode()).orElse(null);
 			val employeeCode = empBasicInfos.stream()
 					.filter(emp -> emp.getEmployeeId().equals(employeeId))
-					.findFirst().map(c -> c.getEmployeeCode()).orElse("");
+					.findFirst().map(c -> c.getEmployeeCode()).orElse(null);
 			
 			return new Form9SortEmployeeInfo(employeeId, licenseCls, jobTitleCode, employeeCode);
 			
 		}).collect(Collectors.toList());
 		
 		Comparator<Form9SortEmployeeInfo> compare;
-		compare = Comparator.comparing(Form9SortEmployeeInfo::getLicenseClassification);
-		compare = compare.thenComparing(Form9SortEmployeeInfo::getJobTitleCode);
-		compare = compare.thenComparing(Form9SortEmployeeInfo::getEmployeeCode);
+		compare = Comparator.comparing(Form9SortEmployeeInfo::getLicenseClassification, Comparator.nullsLast(Comparator.naturalOrder()));
+		compare = compare.thenComparing(Form9SortEmployeeInfo::getJobTitleCode, Comparator.nullsLast(Comparator.naturalOrder()));
+		compare = compare.thenComparing(Form9SortEmployeeInfo::getEmployeeCode, Comparator.nullsLast(Comparator.naturalOrder()));
 		
 		return sortEmpInfos.stream().sorted(compare)
 				.map(c -> c.getEmployeeId())

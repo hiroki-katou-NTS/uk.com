@@ -18,7 +18,7 @@ public class DetailSettingOfForm9 implements DomainValue {
 	private final OutputRow detailStartLine;
 	
 	/** 表示人数 **/
-	private final OnePageDisplayNumerOfPeople displayNumerOfPeople;
+	private final OnePageDisplayNumerOfPeople maxNumerOfPeople;
 	
 	/** 日にち行 **/
 	private final OutputRow dateLine;

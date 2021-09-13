@@ -24,13 +24,13 @@ public class Form9NursingStaffTable implements DomainValue{
 	private final OutputColumn fullName;
 	
 	/** 1日目開始列 **/
-	private final OutputColumn firstDayStartColumn;
+	private final OutputColumn startColumn;
 	
 	/** 明細設定 **/
 	private final DetailSettingOfForm9 detailSetting;
 	
 	/** 種別 **/
-	private final Optional<OutputColumn> type;
+	private final Optional<OutputColumn> license;
 	
 	/** 病棟名 **/
 	private Optional<OutputColumn> hospitalWardName;
@@ -45,7 +45,7 @@ public class Form9NursingStaffTable implements DomainValue{
 	private Optional<OutputColumn> partTime;
 	
 	/** 他部署兼務 **/
-	private Optional<OutputColumn> concurrentlyInOtherDeparments;
+	private Optional<OutputColumn> concurrentPost;
 	
 	/** 夜勤専従 **/
 	private Optional<OutputColumn> nightShiftOnly;
@@ -53,30 +53,30 @@ public class Form9NursingStaffTable implements DomainValue{
 	/**
 	 * 作る
 	 * @param fullName 氏名
-	 * @param firstDayStartColumn 1日目開始列
+	 * @param startColumn 1日目開始列
 	 * @param detailSetting 明細設定
-	 * @param type 種別
+	 * @param license 種別
 	 * @param hospitalWardName 病棟名
 	 * @param fullTime 常勤
 	 * @param shortTime 短時間
 	 * @param partTime 非常勤
-	 * @param concurrentlyInOtherDeparments 他部署兼務
+	 * @param concurrentPost 他部署兼務
 	 * @param nightShiftOnly 夜勤専従
 	 * @return
 	 */
 	public static Form9NursingStaffTable create(
-				OutputColumn fullName, OutputColumn firstDayStartColumn
-			,	DetailSettingOfForm9 detailSetting, Optional<OutputColumn> type
+				OutputColumn fullName, OutputColumn startColumn
+			,	DetailSettingOfForm9 detailSetting, Optional<OutputColumn> license
 			,	Optional<OutputColumn> hospitalWardName, Optional<OutputColumn> fullTime
 			,	Optional<OutputColumn> shortTime, Optional<OutputColumn> partTime
-			,	Optional<OutputColumn> concurrentlyInOtherDeparments
+			,	Optional<OutputColumn> concurrentPost
 			,	Optional<OutputColumn> nightShiftOnly
 				){
 		
 		val items = Arrays.asList(
-					Optional.of(fullName), Optional.of(firstDayStartColumn)
-				,	type, hospitalWardName, fullTime, shortTime, partTime
-				,	concurrentlyInOtherDeparments, nightShiftOnly)
+					Optional.of(fullName), Optional.of(startColumn)
+				,	license, hospitalWardName, fullTime, shortTime, partTime
+				,	concurrentPost, nightShiftOnly)
 				.stream()
 				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
@@ -89,9 +89,9 @@ public class Form9NursingStaffTable implements DomainValue{
 			throw new BusinessException("Msg_2244");
 		}
 		
-		return new Form9NursingStaffTable(fullName, firstDayStartColumn
-				,	detailSetting, type
+		return new Form9NursingStaffTable(fullName, startColumn
+				,	detailSetting, license
 				,	hospitalWardName, fullTime, shortTime, partTime
-				,	concurrentlyInOtherDeparments, nightShiftOnly);
+				,	concurrentPost, nightShiftOnly);
 	}
 }

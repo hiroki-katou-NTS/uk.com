@@ -45,8 +45,9 @@ public class Form9Cover implements DomainValue{
 			,	Optional<OutputColumn> cellTitle
 			,	Optional<OutputColumn> cellPrintPeriod) {
 		
-		val items = Arrays
-				.asList(cellYear, cellMonth, cellStartTime, cellEndTime, cellTitle, cellPrintPeriod).stream()
+		val items = Arrays.asList(cellYear, cellMonth, cellStartTime
+					, cellEndTime,cellTitle, cellPrintPeriod)
+				.stream()
 				.flatMap(OptionalUtil::stream).collect(Collectors.toList());
 		val itemsDistinct = items.stream().distinct().collect(Collectors.toList());
 		

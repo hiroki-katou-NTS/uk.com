@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -11,9 +9,7 @@ import nts.arc.time.GeneralDate;
  * @author lan_lt
  *
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 public class EmployeeIdAndYmd {
 	
 	/** 社員ID **/

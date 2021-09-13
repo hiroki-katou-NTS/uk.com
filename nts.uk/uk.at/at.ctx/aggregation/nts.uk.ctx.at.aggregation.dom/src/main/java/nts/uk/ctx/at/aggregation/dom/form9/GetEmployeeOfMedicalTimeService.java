@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecAtr;
@@ -25,18 +25,22 @@ public class GetEmployeeOfMedicalTimeService {
 	 * @param require
 	 * @param empIds 社員IDリスト
 	 * @param period 期間
-	 * @param targetGet 取得対象
+	 * @param target 取得対象
 	 * @return
 	 */
 	public static Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> get(Require require, List<EmployeeId> empIds
 			, DatePeriod period
-			, ScheRecGettingAtr targetGet){
+			, ScheRecGettingAtr target){
 		
-		Map<ScheRecGettingAtr, List<IntegrationOfDaily>> dailyMaps = DailyAttendanceGettingService.get(require, empIds, period, targetGet);
+		Map<ScheRecGettingAtr, List<IntegrationOfDaily>> dailyMaps = DailyAttendanceGettingService.get(require, empIds, period, target);
 		
-		List<IntegrationOfDaily> scheduleList = targetGet.isNeedSchedule()? dailyMaps.get(ScheRecGettingAtr.ONLY_SCHEDULE)
+		if(dailyMaps.isEmpty())
+			return Collections.emptyMap();
+		
+		
+		List<IntegrationOfDaily> scheduleList = target.isNeedSchedule()? dailyMaps.get(ScheRecGettingAtr.ONLY_SCHEDULE)
 				: Collections.emptyList();
-		List<IntegrationOfDaily> recordList = targetGet.isNeedRecord()? dailyMaps.get(ScheRecGettingAtr.ONLY_RECORD)
+		List<IntegrationOfDaily> recordList = target.isNeedRecord()? dailyMaps.get(ScheRecGettingAtr.ONLY_RECORD)
 				: Collections.emptyList();
 		
 		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfscheduleMedicalTimes = scheduleList.stream()
@@ -49,7 +53,7 @@ public class GetEmployeeOfMedicalTimeService {
 						c ->  new EmployeeIdAndYmd(c.getEmployeeId(), c.getYmd()),
 						c ->  EmployeeOfMedicalTime.create(c, ScheRecAtr.RECORD)));
 		
-		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfMedicalTimes = Collections.emptyMap();
+		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfMedicalTimes = new HashMap<>();
 		empOfMedicalTimes.putAll(empOfscheduleMedicalTimes);
 		empOfMedicalTimes.putAll(empOfRecordMedicalTimes);
 		
