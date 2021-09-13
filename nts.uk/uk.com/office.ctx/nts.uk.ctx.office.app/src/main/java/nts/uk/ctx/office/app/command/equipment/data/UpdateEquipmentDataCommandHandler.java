@@ -13,6 +13,7 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
+import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentRecordItemSettingRepository;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
@@ -30,13 +31,16 @@ public class UpdateEquipmentDataCommandHandler extends CommandHandler<EquipmentD
 
 	@Inject
 	private EquipmentDataRepository equipmentDataRepository;
+	
+	@Inject
+	private EquipmentRecordItemSettingRepository equipmentRecordItemSettingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<EquipmentDataCommand> context) {
 		String cid = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 
-		Require require = new RequireImpl();
+		Require require = new RequireImpl(equipmentRecordItemSettingRepository);
 		EquipmentDataCommand command = context.getCommand();
 		// 1.get(設備コード、ログイン社員ID、利用日、入力日)
 		Optional<EquipmentData> optEquipmentData = this.equipmentDataRepository.findByUsageInfo(cid,

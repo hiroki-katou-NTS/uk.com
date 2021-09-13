@@ -9,6 +9,7 @@ import nts.arc.error.BundledBusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
+import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentRecordItemSettingRepository;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
 import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
@@ -23,10 +24,13 @@ public class InsertEquipmentDataCommandHandler extends CommandHandler<EquipmentD
 	
 	@Inject
 	private EquipmentDataRepository equipmentDataRepository;
+	
+	@Inject
+	private EquipmentRecordItemSettingRepository equipmentRecordItemSettingRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<EquipmentDataCommand> context) {
-		Require require = new RequireImpl();
+		Require require = new RequireImpl(equipmentRecordItemSettingRepository);
 		EquipmentDataCommand command = context.getCommand();
 		EquipmentClassificationCode equipmentClsCode = new EquipmentClassificationCode(
 				command.getEquipmentClassificationCode());
