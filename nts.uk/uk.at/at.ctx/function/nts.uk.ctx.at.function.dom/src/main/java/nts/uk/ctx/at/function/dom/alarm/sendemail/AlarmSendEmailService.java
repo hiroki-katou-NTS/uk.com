@@ -232,14 +232,18 @@ public class AlarmSendEmailService implements SendEmailService {
 						Arrays.asList(item.getKey()),
 						executeDate
 				);
-				for (val entry : empRoleMap.entrySet()) {
-					val roleValue = entry.getValue();
-					val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
-					if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) { // case false
-						// Map＜管理者ID、List＜対象者ID＞＞にループ中管理者IDのRecordを除く
-						managerMap.remove(item.getKey());
-					}
-				}
+                if (empRoleMap.size() == 0) {
+                    managerMap.remove(item.getKey());
+                } else {
+                    for (val entry : empRoleMap.entrySet()) {
+                        val roleValue = entry.getValue();
+                        val roleIdFiltered = roleList.stream().filter(x -> x.getRoleId().equals(roleValue)).findFirst();
+                        if (!isRoleValid(mailSendingRole, roleIdFiltered, roleValue)) { // case false
+                            // Map＜管理者ID、List＜対象者ID＞＞にループ中管理者IDのRecordを除く
+                            managerMap.remove(item.getKey());
+                        }
+                    }
+                }
 			}
 		}
 
