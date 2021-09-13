@@ -19,7 +19,7 @@ public class DisplayOfItems extends ValueObject {
 	private UsageItemName itemName;
 	
 	// 単位
-	private UsageRecordUnit unit;
+	private Optional<UsageRecordUnit> unit;
 	
 	// 説明
 	private Optional<ItemDescription> memo;
