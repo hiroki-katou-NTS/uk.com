@@ -71,6 +71,13 @@ public class Form9Layout implements DomainAggregate {
 				,	cover, nursingStaff, nursingAssitant, tempalteFileId);
 	}
 	
+	/**
+	 * 複製する
+	 * @param require
+	 * @param destinationCode 複製先コード
+	 * @param destinationName 複製先名称
+	 * @return
+	 */
 	public Form9Layout copy(Require require, Form9Code destinationCode, Form9Name destinationName) {
 		
 		if(!this.isSystemFixed) {
@@ -78,7 +85,6 @@ public class Form9Layout implements DomainAggregate {
 			return new Form9Layout(destinationCode, destinationName, false, true, this.cover, this.nursingStaff, this.nursingAssitant, this.tempalteFileId);
 			
 		}
-		
 		
 		return null;
 	}
