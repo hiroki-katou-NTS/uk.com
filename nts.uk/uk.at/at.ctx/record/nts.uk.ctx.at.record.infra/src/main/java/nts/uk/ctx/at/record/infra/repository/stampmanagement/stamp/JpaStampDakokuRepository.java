@@ -179,7 +179,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						: null,  // WORKPLACE_ID
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString()
-						: null); // TIME_RECORD_CODE		
+						: null, // TIME_RECORD_CODE
+				stamp.getStampRecordId()); 
 		
 		
 		
@@ -215,7 +216,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						stampNumber, 
 						entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						entity.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty());
+						entity.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty(), entity.stampRecordId);
 
 	}
 	
@@ -244,7 +245,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				entity.reflectedAtr,
 				Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null ) ? null
 						: new GeoCoordinate(entity.locationLat.doubleValue(), entity.locationLon.doubleValue())), 
-				Optional.empty());
+				Optional.empty(),
+				entity.stampRecordId);
 		return stamp;
 	}
 
@@ -276,7 +278,8 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 					entity.reflectedAtr,
 					Optional.ofNullable(( entity.locationLat == null && entity.locationLon == null) ? null :
 						new GeoCoordinate(entity.locationLat.doubleValue(),entity.locationLon.doubleValue())),
-					Optional.empty()
+					Optional.empty(),
+					entity.stampRecordId
 			);
 		return stamp;
 	}

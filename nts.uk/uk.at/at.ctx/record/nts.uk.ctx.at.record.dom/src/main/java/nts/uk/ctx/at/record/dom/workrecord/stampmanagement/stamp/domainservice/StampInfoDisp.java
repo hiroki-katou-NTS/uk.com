@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -39,7 +38,7 @@ public class StampInfoDisp implements DomainValue {
 	 * 打刻
 	 */
 	@Getter
-	private final Optional<Stamp> stamp;
+	private Optional<Stamp> stamp;
 
 	/**
 	 * [C-0] 打刻区分を作成する
