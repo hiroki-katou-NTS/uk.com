@@ -10,14 +10,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.office.dom.equipment.achievement.DisplayWidth;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentPerformInputFormatSetting;
-import nts.uk.ctx.office.dom.equipment.achievement.EquipmentPerformInputFormatSettingRepository;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemDisplay;
+import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentFormatSettingRepository;
 import nts.uk.ctx.office.infra.entity.equipment.achievement.OfimtEquipmentDayFormat;
 import nts.uk.ctx.office.infra.entity.equipment.achievement.OfimtEquipmentDayFormatPK;
 
 @Stateless
 public class EquipmentPerformInputFormatSettingRepositoryImpl extends JpaRepository
-		implements EquipmentPerformInputFormatSettingRepository {
+		implements EquipmentFormatSettingRepository {
 
 	private static final String SELECT_BY_CID = "SELECT t FROM OfimtEquipmentDayFormat t " + "WHERE t.pk.cid = :cid";
 
@@ -51,7 +51,7 @@ public class EquipmentPerformInputFormatSettingRepositoryImpl extends JpaReposit
 	}
 
 	@Override
-	public Optional<EquipmentPerformInputFormatSetting> findByCid(String cid) {
+	public Optional<EquipmentPerformInputFormatSetting> get(String cid) {
 		List<OfimtEquipmentDayFormat> entities = this.queryProxy().query(SELECT_BY_CID, OfimtEquipmentDayFormat.class)
 				.getList();
 		if (entities.isEmpty()) {

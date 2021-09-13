@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentFormSetting;
-import nts.uk.ctx.office.dom.equipment.achievement.EquipmentFormSettingRepository;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentFormTitle;
+import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentFormSettingRepository;
 import nts.uk.ctx.office.infra.entity.equipment.achievement.OfimtEquipmentDayRpt;
 
 @Stateless

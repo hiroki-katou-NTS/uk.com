@@ -11,7 +11,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.office.dom.equipment.achievement.DisplayOfItems;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
-import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSettingRepository;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemDescription;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemInputControl;
@@ -19,12 +18,13 @@ import nts.uk.ctx.office.dom.equipment.achievement.MaximumUsageRecord;
 import nts.uk.ctx.office.dom.equipment.achievement.MinimumUsageRecord;
 import nts.uk.ctx.office.dom.equipment.achievement.UsageItemName;
 import nts.uk.ctx.office.dom.equipment.achievement.UsageRecordUnit;
+import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentRecordItemSettingRepository;
 import nts.uk.ctx.office.infra.entity.equipment.achievement.OfimtEquipmentDayItem;
 import nts.uk.ctx.office.infra.entity.equipment.achievement.OfimtEquipmentDayItemPK;
 
 @Stateless
 public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
-		implements EquipmentUsageRecordItemSettingRepository {
+		implements EquipmentRecordItemSettingRepository {
 
 	private static final String SELECT_BY_CID = "SELECT t FROM OfimtEquipmentDayItem t " + "WHERE t.pk.cid = :cid";
 
@@ -35,7 +35,8 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 				Optional.ofNullable(entity.getMaxValue()).map(MaximumUsageRecord::new),
 				Optional.ofNullable(entity.getMinValue()).map(MinimumUsageRecord::new));
 		DisplayOfItems items = new DisplayOfItems(new UsageItemName(entity.getItemName()),
-				new UsageRecordUnit(entity.getUnit()), Optional.ofNullable(entity.getMemo()).map(ItemDescription::new));
+				Optional.ofNullable(entity.getUnit()).map(UsageRecordUnit::new),
+				Optional.ofNullable(entity.getMemo()).map(ItemDescription::new));
 		return new EquipmentUsageRecordItemSetting(entity.getPk().getCid(),
 				new EquipmentItemNo(String.valueOf(entity.getPk().getItemNo())), inputControl, items);
 	}
@@ -52,7 +53,7 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 		entity.setMinValue(domain.getInputcontrol().getMinimum().map(MinimumUsageRecord::v).orElse(null));
 		entity.setMemo(domain.getItems().getMemo().map(ItemDescription::v).orElse(null));
 		entity.setRequire(domain.getInputcontrol().isRequire() ? 1 : 0);
-		entity.setUnit(domain.getItems().getUnit().v());
+		entity.setUnit(domain.getItems().getUnit().map(UsageRecordUnit::v).orElse(null));
 		return entity;
 	}
 
