@@ -16,17 +16,17 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class DeleteEquipmentDataCommandHandler extends CommandHandler<EquipmentDataCommand> {
+public class DeleteEquipmentDataCommandHandler extends CommandHandler<DeleteEquipmentDataCommand> {
 
 	@Inject
 	private EquipmentDataRepository equipmentDataRepository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<EquipmentDataCommand> context) {
+	protected void handle(CommandHandlerContext<DeleteEquipmentDataCommand> context) {
 		String cid = AppContexts.user().companyId();
 		String sid = AppContexts.user().employeeId();
 
-		EquipmentDataCommand command = context.getCommand();
+		DeleteEquipmentDataCommand command = context.getCommand();
 		// 1.get(設備コード、ログイン社員ID、利用日、入力日)
 		Optional<EquipmentData> optEquipmentData = this.equipmentDataRepository.findByUsageInfo(cid,
 				command.getEquipmentCode(), command.getUseDate(), sid, command.getInputDate());
