@@ -71,9 +71,9 @@ public class DisplayScreenStampingResultFinder {
 				//// Get distinct WorkLocationCD
 				val listStamp = stamp.getListStampInfoDisp();
 				for (val item : listStamp) {
-					if (!item.getStamp().isEmpty()) {
-						if (item.getStamp().get(0).getRefActualResults().getWorkInforStamp().isPresent()) {
-							val workLocationCD = item.getStamp().get(0).getRefActualResults().getWorkInforStamp().get()
+					if (item.getStamp().isPresent()) {
+						if (item.getStamp().get().getRefActualResults().getWorkInforStamp().isPresent()) {
+							val workLocationCD = item.getStamp().get().getRefActualResults().getWorkInforStamp().get()
 									.getWorkLocationCD();
 							if (workLocationCD.isPresent()) {
 								listWorkLocationCode.add(workLocationCD.get().v());
@@ -94,9 +94,9 @@ public class DisplayScreenStampingResultFinder {
 			String workLocationName = ""; 
 			if (!stampDataOfEmployees.getListStampInfoDisp().isEmpty()) {
 				StampInfoDisp info = stampDataOfEmployees.getListStampInfoDisp().get(0);
-				if (!info.getStamp().isEmpty()) {
-					if (info.getStamp().get(0).getRefActualResults().getWorkInforStamp().isPresent()) {
-						val workLocationCD = info.getStamp().get(0).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD();
+				if (info.getStamp().isPresent()) {
+					if (info.getStamp().get().getRefActualResults().getWorkInforStamp().isPresent()) {
+						val workLocationCD = info.getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD();
 						if (workLocationCD.isPresent()) {
 							val workLocationCode = workLocationCD.get();
 
@@ -108,22 +108,24 @@ public class DisplayScreenStampingResultFinder {
 			}
 			
 			//職場ID
-			String wkpId =  listStampDataOfEmployees.stream()
+			Optional<StampInfoDisp> stampInfo = listStampDataOfEmployees.stream()
 					.map(x -> x.getListStampInfoDisp())
 					.flatMap(Collection::stream)
 					.sorted(Comparator.comparing(StampInfoDisp::getStampDatetime).reversed())
-					.findFirst()
-					.map(x -> x.getStamp()
-							.stream()
-							.findFirst()
-							.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
-									.map(wInfo -> wInfo.getWorkplaceID()
-											.map(w -> w!= null ? w : null)
-											.orElse(null))
-											.orElse(null))
-										.orElse(null))
-								.orElse(null);
-							
+					.findFirst();
+			
+			// 職場ID
+			String wkpId = null;
+			if (stampInfo.isPresent()){
+				if (stampInfo.get().getStamp().isPresent()) {
+					if (stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().isPresent()) {
+						if (stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkplaceID().isPresent()) {
+							wkpId = stampInfo.get().getStamp().get().getRefActualResults().getWorkInforStamp().get().getWorkplaceID().get();
+						}
+					}
+				}
+			}
+
 			//基準日
 			GeneralDate refDate = listStampDataOfEmployees.stream()
 					.map(x -> x.getListStampInfoDisp())
