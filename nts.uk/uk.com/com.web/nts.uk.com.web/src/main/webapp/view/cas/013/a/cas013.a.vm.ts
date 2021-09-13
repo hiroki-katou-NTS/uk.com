@@ -73,7 +73,7 @@ module nts.uk.com.view.cas013.a {
         isShowSelectAllButton: KnockoutObservable<boolean>;
         disableSelection: KnockoutObservable<boolean>;
 
-        employeeList: KnockoutObservableArray<UnitModel>;
+        employeeList: KnockoutObservableArray<UnitModel> =  ko.observableArray<UnitModel>([]);
 
         optionalColumnDatasource: KnockoutObservableArray<any> = ko.observableArray([]);
         baseDate: KnockoutObservable<Date>;
@@ -177,7 +177,6 @@ module nts.uk.com.view.cas013.a {
                 vm.selectRole(roleId.toString(), '');
                 vm.isSelectedUser(false);
                 vm.isDelete(false);
-                console.log(roleId);
             });
         }
 
@@ -273,7 +272,6 @@ module nts.uk.com.view.cas013.a {
             vm.isShowWorkPlaceName = ko.observable(false);
             vm.isShowSelectAllButton = ko.observable(false);
             vm.disableSelection = ko.observable(false);
-            vm.employeeList = ko.observableArray<UnitModel>([]);
             vm.listComponentOption = {
                 isShowAlreadySet: false,
                 isMultiSelect: false,
@@ -397,11 +395,11 @@ module nts.uk.com.view.cas013.a {
 
                         if (index >= 0 && index < vm.employeeList().length && indexNew < 0) {
                             vm.multiSelectedCode(vm.employeeList()[index].code);
-                            // vm.multiSelectedCode.valueHasMutated();
+                            vm.KCP005_load();
                         }
                         if ((index) == vm.employeeList().length && indexNew < 0) {
                             vm.multiSelectedCode(vm.employeeList()[index - 1].code);
-                            // vm.multiSelectedCode.valueHasMutated();
+                            vm.KCP005_load();
                         }
                         if (index < 0 && indexNew >= 0) {
                             vm.multiSelectedCode(vm.employeeList()[indexNew].code);
