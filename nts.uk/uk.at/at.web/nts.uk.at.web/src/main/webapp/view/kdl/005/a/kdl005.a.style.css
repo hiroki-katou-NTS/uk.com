@@ -1,0 +1,44 @@
+#A2_3, #A2_6 {
+	font-size: 18px !important;
+	margin-top: 10px;
+}
+
+#btn-help-1 {
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+#btn-help-2 {
+	margin-left: 92px;
+	margin-top: 10px;
+}
+
+#area-left {
+	float: left;
+	margin-left: 50px;
+}    
+
+#A2_23{
+	float: right;
+    margin-right: 65px;
+    margin-top: 18px;
+}
+
+#A2_10 {
+	float: right;
+    margin-right: 147px;
+}
+
+#A2_21 {
+	float: right;
+    margin-right: -220px;
+}
+
+#A6_3 {
+	float: right;
+    margin-top: -21px;
+}
+
+#single-list > tbody > tr > td {
+	border-bottom : 1px #CCC dotted;
+}
