@@ -29,10 +29,12 @@ import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.sys.auth.app.find.company.CompanyDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
+import nts.uk.ctx.sys.auth.app.query.GetEmployeeIDFromUserIDQuery;
 import nts.uk.ctx.sys.auth.dom.GetPersonalEmployeeInfoByUserIdService;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.company.CompanyImport;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeAdapter;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.PersonalEmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
 import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
@@ -83,6 +85,9 @@ public class RoleIndividualFinder {
 
     @Inject
     private GetPersonalEmployeeInfoByUserIdService infoByUserIdService;
+
+    @Inject
+    private GetEmployeeIDFromUserIDQuery userIDQuery;
 
 
 
@@ -180,47 +185,31 @@ public class RoleIndividualFinder {
     }
 
     public List<RoleIndividualGrantDto> getRoleGrants(String roleId) {
-        String companyId = AppContexts.user().companyId();
-        if (companyId == null)
-            return null;
+
         List<RoleIndividualGrantDto> rGrants = new ArrayList<>();
         if (roleId == null)
             return rGrants;
-        List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
-        ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
-        List<String> userId = ListRoleGrants.stream().map(RoleIndividualGrant::getUserId).distinct().collect(Collectors.toList());
-        if (userId.size() == 0) {
+        List<RoleIndividualGrant> listRoleGrants = this.roleIndividualGrantRepo.findByRoleId(roleId);
+        if (listRoleGrants.size() == 0) {
             return rGrants;
         }
 
-
-        Map<String,User> mapUser = userRepo.getByListUser(userId)
-                .stream().collect(Collectors.toMap(User::getUserID, e->e));
-
-        List<String> userIdRequest = mapUser.values().stream()
-                .filter(User::hasAssociatedPersonID)
-                .map(e->e.getAssociatedPersonID().get()).collect(Collectors.toList());
-        Map<String,PersonImport> mapPerson = personAdapter.findByPersonIds(userIdRequest).stream()
-                .filter(distinctByKey(PersonImport::getPersonId))
-                .collect(Collectors.toMap(PersonImport::getPersonId,i->i));
-        for (RoleIndividualGrant rGrant : ListRoleGrants) {
-            String userName = "";
-            String employeeName = "";
-            User user = mapUser.getOrDefault(rGrant.getUserId(),null);
-            if (user != null) {
-                val pid = user.getAssociatedPersonID();
-                if(pid.isPresent()){
-                    val employeeDataMngInfoOptional = employeeInfoPub
-                            .getEmployeeInfoByCidPid(rGrant.getCompanyId(),pid.get());
-                    val person = mapPerson.get(pid.get());
-                    if ( employeeDataMngInfoOptional.isPresent()){
-                        val employeeDataMngInfo = employeeDataMngInfoOptional.get();
-                        userName = user.getUserName().isPresent()? user.getUserName().get().v(): null ;
-                        employeeName = person.getPersonName();
-                        rGrants.add(RoleIndividualGrantDto.fromDomain(rGrant, userName, user.getLoginID().v(),
-                                employeeDataMngInfo.getEmployeeId(),employeeDataMngInfo.getEmployeeCode(),employeeName));
-                    }
-                }
+        for (val grant: listRoleGrants) {
+            val uid = grant.getUserId();
+            Optional<PersonalEmployeeInfoImport> optEmployeeInfoImport =
+                    userIDQuery.getEmployeeIDFromUserID(uid);
+            if(optEmployeeInfoImport.isPresent()){
+                PersonalEmployeeInfoImport employeeInfoImport = optEmployeeInfoImport.get();
+                List<EmployeeInfoImport> employeeInfos = employeeInfoImport.getEmployeeInfos();
+                employeeInfos.forEach(e->{
+                    rGrants.add( RoleIndividualGrantDto.fromDomain(
+                            grant,
+                            "",
+                            "",
+                            e.getEmployeeId(),
+                            e.getEmployeeCode(),
+                            employeeInfoImport.getBussinessName()));
+                });
             }
         }
         return rGrants;
@@ -228,7 +217,6 @@ public class RoleIndividualFinder {
     public RoleIndividualGrantDto getRoleGrant(String userId, String roleId,String companyId) {
         if (userId == null || roleId == null)
             return null;
-
         Optional<RoleIndividualGrant> rGrant = this.roleIndividualGrantRepo.findByKey(userId, companyId, roleId);
         if (!rGrant.isPresent()) {
             return null;
@@ -258,19 +246,16 @@ public class RoleIndividualFinder {
                 employeeName);
 
     }
-    public CompanyInfo getCompanyInfo() {
-        val cid = AppContexts.user().companyId();
+    public CompanyInfo getCompanyInfo(String cid) {
         CompanyImport companyInfo = companyAdapter.findCompanyByCid(cid);
         return new CompanyInfo(companyInfo.getCompanyCode(),
                 companyInfo.getCompanyName(),
                 companyInfo.getCompanyId(),
                 companyInfo.getIsAbolition());
     }
-    public WorkPlaceInfo GetWorkPlaceInfo(String employeeID) {
-        String cid = AppContexts.user().companyId();
+    public WorkPlaceInfo GetWorkPlaceInfo(String employeeID,String cid) {
 
         GeneralDate baseDate = GeneralDate.today();
-
         Optional<SWkpHistExport> sWkpHistExport = workplacePub.findBySidNew(cid, employeeID, baseDate);
         if(sWkpHistExport.isPresent()){
             SWkpHistExport export = sWkpHistExport.get();
@@ -366,24 +351,5 @@ public class RoleIndividualFinder {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>();
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
-    @AllArgsConstructor
-    public class RequireImpl implements GetPersonalEmployeeInfoByUserIdService.Require{
-        private UserRepository userRepo;
-        private EmployeeAdapter employeeAdapter;
-        @Override
-        public Optional<User> getUser(String userId) {
-            return userRepo.getByUserID(userId);
-        }
 
-        @Override
-        public Optional<PersonalEmployeeInfoImport> getPersonalEmployeeInfo(String personId) {
-            val rs =   employeeAdapter.getPersonalEmployeeInfo(Arrays.asList(personId));
-            if(rs.isEmpty()){
-                return Optional.empty();
-            }
-            else {
-                return Optional.of(rs.get(0));
-            }
-        }
-    }
 }

@@ -11,11 +11,6 @@ public class UpdateRoleIndividualGrantCommandHandler {
 	private RoleIndividualGrantRepository roleIndividualGrantRepository;
 	
 	public String UpDateRoleGrant(UpdateRoleIndividualGrantCommand roleGrant){
-		String companyId = AppContexts.user().companyId();
-		if (companyId == null)
-			return null;
-		roleGrant.setCompanyID(companyId);
-		
 		if(roleGrant.userID == null)
 			return null;
 		

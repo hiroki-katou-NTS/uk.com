@@ -124,16 +124,15 @@ public class RoleIndividualWebService extends WebService {
 	@POST
 	@Path("getRoleGrants")
 	public List<RoleIndividualGrantDto> GetRoleGrants(String Role){
-		if(Role == "") return null;
 		return this.roleIndividualFinder.getRoleGrants(Role);
 	}
-	
+
 	@POST
 	@Path("getRoleGrant")
 	public RoleIndividualGrantDto GetRoleGrant(RoleIndividualGrantDto rDto){
 		return this.roleIndividualFinder.getRoleGrant(rDto.getUserID(), rDto.getRoleID(),rDto.getCompanyID());
 	}
-	
+
 	@POST
 	@Path("insertRoleGrant")
 	public JavaTypeResult<String> InsertRoleGrant(CreateRoleIndividualGrantCommand roleGrant){
@@ -161,14 +160,14 @@ public class RoleIndividualWebService extends WebService {
 
     @POST
     @Path("getCompanyInfo")
-    public CompanyInfo GetEmployy() {
-	    return this.roleIndividualFinder.getCompanyInfo();
+    public CompanyInfo GetEmployy(String cid) {
+	    return this.roleIndividualFinder.getCompanyInfo(cid);
 	}
 
 	@POST
 	@Path("getWorkPlaceInfo")
-	public WorkPlaceInfo GetWorkPlaceInfo(String employeeID){
-		return this.roleIndividualFinder.GetWorkPlaceInfo(employeeID);
+	public WorkPlaceInfo GetWorkPlaceInfo(WorkPlaceDto dto){
+		return this.roleIndividualFinder.GetWorkPlaceInfo(dto.getEmployeeID(),dto.getCid());
 	}
 
 	@POST

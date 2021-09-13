@@ -1185,7 +1185,6 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			return getEmpDataMngRepo.getByPersonIdList(personIdList);
 		}
 	}
-
 	@Override
 	public List<PersonalEmployeeInfoExport> getPersonEmployeeInfosByPersonId(List<String> personIds) {
 		List<PersonalEmployeeInfoExport> rs = new ArrayList<>();
@@ -1203,8 +1202,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 						e.getEmployeeCode().v(),
 						e.getDeletedStatus().value,
 						e.getDeleteDateTemporary(),
-						e.getRemoveReason().v(),
-						e.getExternalCode().v()
+							e.getRemoveReason()!=null?e.getRemoveReason().v():"",
+							e.getExternalCode()!=null?e.getExternalCode().v():""
 					))
 					.collect(Collectors.toList());
 			rs.add( new PersonalEmployeeInfoExport(
@@ -1213,9 +1212,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 					per.getPersonNameGroup().getBusinessName().v(),
 					employeeInfos
 			));
-
 		}
 		return rs;
 	}
-
 }
