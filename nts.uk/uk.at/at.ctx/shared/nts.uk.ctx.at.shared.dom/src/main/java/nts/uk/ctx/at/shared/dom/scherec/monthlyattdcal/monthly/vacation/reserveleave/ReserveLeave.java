@@ -132,31 +132,6 @@ public class ReserveLeave implements Cloneable {
 			remainingNumberInfoAfterGrantValue.setTotalRemainingDays(new ReserveLeaveRemainingDayNumber(0.0));
 		}
 	}
-
-	/**
-	 * 積立年休付与残数データから積立年休残数を作成
-	 * @param remainingDataList 積立年休付与残数データリスト
-	 * @param grantPeriodAtr 付与前付与後
-	 */
-//	public void createRemainingNumberFromGrantRemaining(
-//			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
-//
-//		// 積立年休付与残数データから残数を作成
-////		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList);
-//		this.remainingNumberInfo.getRemainingNumber().createRemainingNumberFromGrantRemaining(remainingDataList);
-//
-//		// 「付与後フラグ」をチェック
-//		if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
-//			// 残数付与後　←　残数
-//			//this.remainingNumberInfoAfterGrant = Optional.of(this.remainingNumberInfo.clone());
-//			saveStateAfterGrant();
-//		}
-//		else {
-//			// 残数付与前　←　残数
-//			//this.remainingNumberInfoBeforeGrant = this.remainingNumberInfo.clone();
-//			saveStateBeforeGrant();
-//		}
-//	}
 	
 	public void createRemainingNumberFromGrantRemaining(
 			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
@@ -164,23 +139,5 @@ public class ReserveLeave implements Cloneable {
 		remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 
 	}
-
-//	/**
-//	 * 付与前退避処理
-//	 */
-//	public void saveStateBeforeGrant(){
-//		// 合計残数を付与前に退避する
-//		this.usedNumber.saveStateBeforeGrant();
-//		this.remainingNumberInfo.saveStateBeforeGrant();
-//	}
-//
-//	/**
-//	 * 付与後退避処理
-//	 */
-//	public void saveStateAfterGrant(){
-//		// 合計残数を付与後に退避する
-//		this.usedNumber.saveStateAfterGrant();
-//		this.remainingNumberInfo.saveStateAfterGrant();
-//	}
 
 }

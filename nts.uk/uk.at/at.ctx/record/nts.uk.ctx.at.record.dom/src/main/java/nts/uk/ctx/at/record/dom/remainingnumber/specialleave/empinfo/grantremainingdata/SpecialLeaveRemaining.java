@@ -106,11 +106,6 @@ public class SpecialLeaveRemaining implements Cloneable {
 
 		// 「残数．付与前」「残数．付与後」をそれぞれ処理
 
-//		// 残数
-//		updateRemainingNumberWithMinusToNoMinus(
-//				specialLeaveNoMinus.getRemainingNumberInfo().getRemainingNumber(),
-//				specialLeaveNoMinus.getUsedNumberInfo().getUsedNumber());
-
 		// 残数付与前
 		updateRemainingNumberWithMinusToNoMinus(
 				specialLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberBeforeGrant(),
@@ -151,21 +146,6 @@ public class SpecialLeaveRemaining implements Cloneable {
 		if ( remainDays < 0 || remainTimes < 0 ){
 
 			// 特別休暇．使用数からマイナス分を引く
-
-//			・処理中の特別休暇残数が「特別休暇．残数．付与前」の場合かつ日数 < 0
-//			特別休暇．使用数．付与前. 使用日数←特別休暇．残数．付与前．日数を加算
-//
-//			・処理中の特別休暇残数が「特別休暇．残数．付与前」の場合かつ時間 < 0
-//			特別休暇．使用数．付与前. 使用時間←特別休暇．残数．付与前．時間を加算
-//
-//			・処理中の特別休暇残数が「特別休暇．残数．付与後」の場合かつ日数<0
-//			特別休暇．使用数．付与後.　使用日数←特別休暇．残数．付与後．残数を加算
-//
-//			・処理中の特別休暇残数が「特別休暇．残数．付与後」の場合かつ時間<0
-//			特別休暇．使用数．付与後.　使用時間←特別休暇．残数．付与後．時間を加算
-//
-//			※いずれも、結果がマイナスなら0にする
-
 			if ( remainDays < 0 ){
 				double useDays = specialLeaveUseNumber.getUseDays().map(x -> x.v()).orElse(0.0) + remainDays;
 				specialLeaveUseNumber.setUseDays(Optional.of(new SpecialLeaveUseDays(useDays)));

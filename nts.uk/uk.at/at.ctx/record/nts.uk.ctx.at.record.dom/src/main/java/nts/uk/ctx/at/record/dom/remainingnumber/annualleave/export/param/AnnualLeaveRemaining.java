@@ -139,12 +139,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 		AnnualLeave annualLeaveNoMinus = annualLeaveWithMinus.clone();
 
 		// 年休からマイナスを削除
-		// 「年休．残数」「年休．残数付与前」「年休．残数付与後」をそれぞれ処理
-
-//		// 残数
-//		updateRemainingNumberWithMinusToNoMinus(
-//				annualLeaveNoMinus.getRemainingNumberInfo().getRemainingNumber(),
-//				annualLeaveNoMinus.getUsedNumberInfo().getUsedNumber());
+		// 「年休．残数付与前」「年休．残数付与後」をそれぞれ処理
 
 		// 残数付与前
 		updateRemainingNumberWithMinusToNoMinus(
@@ -178,7 +173,6 @@ public class AnnualLeaveRemaining implements Cloneable {
 		// パラメータ「年休残数．合計残日数」と「年休残数．合計残時間」をチェック
 
 		// 合計残日数<0　or 合計残時間 < 0
-//		double remainDays = annualLeaveUsedNumber.getUsedDays().map(c -> c.v()).orElse(0d);
 		double remainDays = annualLeaveRemainingNumber.getTotalRemainingDays().v();
 		int remainTimes = 0;
 		if ( annualLeaveRemainingNumber.getTotalRemainingTime().isPresent() ){

@@ -66,7 +66,6 @@ public class ReserveLeaveInfo implements Cloneable {
 		this.remainingNumber = new ReserveLeaveRemainingNumberInfo();
 		this.grantRemainingList = new ArrayList<>();
 		this.usedDays = new ReserveLeaveUsedDayNumber(0.0);
-//		this.afterGrantAtr = false;
 		this.grantInfo = Optional.empty();
 	}
 
@@ -85,7 +84,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			ReserveLeaveRemainingNumberInfo remainingNumber,
 			List<ReserveLeaveGrantRemainingData> grantRemainingList,
 			ReserveLeaveUsedDayNumber usedDays,
-//			boolean afterGrantAtr,
 			Optional<ReserveLeaveGrantInfo> grantInfo){
 
 		ReserveLeaveInfo domain = new ReserveLeaveInfo();
@@ -93,7 +91,6 @@ public class ReserveLeaveInfo implements Cloneable {
 		domain.remainingNumber = remainingNumber;
 		domain.grantRemainingList = grantRemainingList;
 		domain.usedDays = usedDays;
-//		domain.afterGrantAtr = afterGrantAtr;
 		domain.grantInfo = grantInfo;
 		return domain;
 	}
@@ -122,11 +119,9 @@ public class ReserveLeaveInfo implements Cloneable {
 								detail.getUsedNumber().getDays().v(),
 								overLimitDays,
 								detail.getRemainingNumber().getDays().v());
-				//newRemainData.setDummyAtr(grantRemainingNumber.isDummyAtr());
 				cloned.grantRemainingList.add(newRemainData);
 			}
 			cloned.usedDays = new ReserveLeaveUsedDayNumber(this.usedDays.v());
-//			cloned.afterGrantAtr = this.afterGrantAtr;
 			if (this.grantInfo.isPresent()){
 				cloned.grantInfo = Optional.of(this.grantInfo.get().clone());
 			}
@@ -322,13 +317,9 @@ public class ReserveLeaveInfo implements Cloneable {
 				0.0,
 				null,
 				grantDays);
-		//newRemainData.setDummyAtr(false);
 
 		// 作成した「積立年休付与残数データ」を付与残数データリストに追加
 		this.grantRemainingList.add(newRemainData);
-
-//		// 付与後フラグ　←　true
-//		this.afterGrantAtr = true;
 
 		// 付与情報に付与時の情報をセット
 		double infoDays = 0.0;
@@ -389,16 +380,12 @@ public class ReserveLeaveInfo implements Cloneable {
 				// 積立年休残日数と上限超過日数を比較
 				val details = remainingData.getDetails();
 				if (excessDays <= details.getRemainingNumber().getDays().v()){
-//					details.addDaysToRemainingNumber(-excessDays);
-//					details.addDaysToOverLimitDays(excessDays);
 					details.getRemainingNumber().add(new LeaveRemainingNumber(-excessDays, 0) );
 					details.getUsedNumber().leaveOverLimitNumber = Optional.of(new LeaveOverNumber(excessDays,0));
 					excessDays = 0.0;
 				}
 				else {
 					excessDays -= details.getRemainingNumber().getDays().v();
-//					details.addDaysToOverLimitDays(details.getRemainingNumber().get.v());
-//					details.addDaysToRemainingNumber(-details.getRemainingNumber().v());
 					details.getRemainingNumber().add(new LeaveRemainingNumber(-excessDays, 0) );
 					details.getUsedNumber().leaveOverLimitNumber = Optional.of(new LeaveOverNumber(excessDays,0));
 				}
@@ -463,11 +450,6 @@ public class ReserveLeaveInfo implements Cloneable {
 			{
 				// 年休使用数WORK
 				ReserveLeaveUsedNumber usedNumber = new ReserveLeaveUsedNumber();
-
-//				// 積立年休使用数WORK
-//				double useDaysWork = tmpReserveLeaveMng.getUseDays().v();
-//				// 積立年休使用残数WORK
-//				double remainDaysWork = tmpReserveLeaveMng.getUseDays().v();
 
 				// 積立年休付与残数を取得
 				List<LeaveGrantRemainingData> targetRemainingDatas = new ArrayList<>();
@@ -546,61 +528,6 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 「積立年休の集計結果」を返す
 		return aggrResult;
 	}
-
-//	/**
-//	 * 不足分を付与残数データとして作成・削除する
-//	 * @param isOutputForShortage 不足分付与残数データ出力区分
-//	 * @param isCreate 作成するかどうか
-//	 */
-//	public void createShortageData(Optional<Boolean> isOutputForShortage, boolean isCreate){
-//
-//		if (isCreate){
-//
-//			// 「不足分付与残数データ出力区分」をチェック
-//			boolean isOutput = false;
-//			if (isOutputForShortage.isPresent()) isOutput = isOutputForShortage.get();
-//			if (isOutput){
-//
-//				// ダミーとして作成した「付与残数データ」を合計
-//				ReserveLeaveGrantRemainingData dummyData = null;
-//				double usedDays = 0.0;
-//				double remainDays = 0.0;
-//				for (val grantRemaining : this.grantRemainingList){
-//					if (!grantRemaining.isShortageRemain() ) continue;
-//					if (dummyData == null) dummyData = grantRemaining;
-//					usedDays += grantRemaining.getDetails().getUsedNumber().getDays().v();
-//					remainDays += grantRemaining.getDetails().getRemainingNumber().getDays().v();
-//				}
-//
-//				if (dummyData != null){
-//					// 「積立年休付与残数データ」を作成する
-//					val dummyRemainData = ReserveLeaveGrantRemainingData.createFromJavaType(
-//							"",
-//							dummyData.getEmployeeId(),
-//							dummyData.getGrantDate(),
-//							dummyData.getDeadline(),
-//							LeaveExpirationStatus.AVAILABLE.value,
-//							GrantRemainRegisterType.MONTH_CLOSE.value,
-//							0.0,
-//							usedDays,
-//							null,
-//							remainDays);
-//					//dummyRemainData.setDummyAtr(false);
-//
-//					// 付与残数データに追加
-//					this.grantRemainingList.add(dummyRemainData);
-//				}
-//			}
-//		}
-//
-//		// 不足分として作成した付与残数データを削除する
-//		val itrGrantRemaining = this.grantRemainingList.listIterator();
-//		while (itrGrantRemaining.hasNext()){
-//			val grantRemaining = itrGrantRemaining.next();
-//			if (grantRemaining.isShortageRemain()) itrGrantRemaining.remove();
-//		}
-//	}
-
 
 	/**
 	 * マイナス分の年休付与残数を1レコードにまとめる

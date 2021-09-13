@@ -16,10 +16,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reservel
 @AllArgsConstructor
 public class RsvLeaveRemainingNumberInfoDto implements ItemConst, AttendanceItemDataGate {
 
-//	/** 合計残日数 */
-//	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
-//	private RsvLeaveRemainingNumberDto totalRemainingDays;
-
 	/** 付与前 */
 	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private RsvLeaveRemainingNumberDto before;

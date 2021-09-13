@@ -92,7 +92,6 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	 * クリア
 	 */
 	public void clear(){
-//		remainingNumber.clear();
 		remainingNumberBeforeGrant.clear();
 		remainingNumberAfterGrantOpt = Optional.empty();
 	}
@@ -101,7 +100,6 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	 * 明細をクリア。（要素数を０にする）
 	 */
 	public void clearDetails(){
-//		remainingNumber.clearDetails();
 		remainingNumberBeforeGrant.clearDetails();
 		if ( remainingNumberAfterGrantOpt.isPresent() ){
 			remainingNumberAfterGrantOpt.get().clearDetails();
