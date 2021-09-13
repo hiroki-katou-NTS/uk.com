@@ -70,9 +70,7 @@ public class GetRemainNumberConfirmInfo {
 			if (detail.getDateOccur().getDayoffDate().isPresent())
 				checkDate = lstDigestionDate.contains(detail.getDateOccur().getDayoffDate().get().toString());
 			// Trueの場合
-			if (detail.getOccurrentClass() == OccurrenceDigClass.DIGESTION && checkDate == true) {
-
-			} else {
+			if (detail.getOccurrentClass() != OccurrenceDigClass.DIGESTION && checkDate != true) {
 				// 以外の場合
 				if (detail.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
 
@@ -151,7 +149,7 @@ public class GetRemainNumberConfirmInfo {
 								textDay)); // ループ中の逐次発生の休暇明細一覧．年月日．年月日の曜日;
 					}
 					// ループ中の逐次発生の休暇明細一覧．発生数．時間 ！＝ Empty
-					if (detail.getNumberOccurren().getTime().isPresent()) {
+					if (detail.getNumberOccurren().getTime().isPresent() && detail.getNumberOccurren().getTime().get().v() != 0) {
 						// 残数詳細情報．発生数をセットする
 						String minu = String.valueOf(detail.getNumberOccurren().getTime().get().minute()).length() > 1
 								? String.valueOf(detail.getNumberOccurren().getTime().get().minute())
@@ -236,9 +234,9 @@ public class GetRemainNumberConfirmInfo {
 						lstDigestionDate.add(seqVacationFil.get().getOutbreakDay().toString());
 					}
 				}
+				// List<残数詳細情報>に作成した残数詳細情報を追加
+				detailedInfos.add(detailedInfo);
 			}
-			// List<残数詳細情報>に作成した残数詳細情報を追加
-			detailedInfos.add(detailedInfo);
 		}
 		// Input．逐次発生の休暇明細一覧．指定した期間内に未消化となる情報を取得するを呼び出す
 		DatePeriod dateperiod = new DatePeriod(GeneralDate.today().addMonths(-1), GeneralDate.today());
