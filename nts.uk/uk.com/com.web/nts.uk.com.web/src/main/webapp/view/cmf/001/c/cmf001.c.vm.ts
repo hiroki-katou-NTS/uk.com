@@ -135,7 +135,12 @@ module nts.uk.com.cmf001.c {
             current.def.name(selectedItem.name);
             current.def.type(selectedItem.type);
             current.selectedMappingType(selectedItem.source);
-            current.fixedMapping(selectedItem.fixedValue);
+
+            let fixedValue = selectedItem.fixedValue;
+            if (selectedItem.type === 'TIME_POINT' || selectedItem.type === 'TIME_DURATION') {
+                fixedValue = Number(fixedValue || 0);
+            }
+            current.fixedMapping(fixedValue);
 
             this.loadImportableItem();
             this.loadReviseItem();
