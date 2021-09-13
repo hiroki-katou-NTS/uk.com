@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampRecord;
-import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.KrcdtStampRecordPk;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,15 +28,22 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampRecordRepository extends JpaRepository implements StampRecordRepository {
 
 	private static final String GET_STAMP_RECORD = "select s from KrcdtStampRecord s "
-			+ " where s.pk.cardNumber in  :cardNumbers " 
-			+ " and s.pk.contractCd = :contractCd" 
-			+ " and s.pk.stampDateTime >= :startStampDate "
-			+ " and s.pk.stampDateTime <= :endStampDate " 
-			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+			+ " where s.cardNumber in  :cardNumbers " 
+			+ " and s.contractCd = :contractCd" 
+			+ " and s.stampDateTime >= :startStampDate "
+			+ " and s.stampDateTime <= :endStampDate " 
+			+ " order by s.cardNumber asc, s.stampDateTime asc";
+	
+	private static final String GET_ONE_STAMP_RECORD = "select s from KrcdtStampRecord s "
+			+ " where s.cardNumber = :cardNumbers " 
+			+ " and s.contractCd = :contractCd" 
+			+ " and s.stampDateTime >= :startStampDate "
+			+ " and s.stampDateTime <= :endStampDate " 
+			+ " order by s.cardNumber asc, s.stampDateTime asc";
 
-	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KrcmtStampCard k on s.pk.cardNumber = k.cardNo"
-			+ " where k.cardNo is NULL " + "and s.pk.contractCd = :contractCd " + " and s.pk.stampDateTime >= :startStampDate "
-			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStampRecord s left join KrcmtStampCard k on s.cardNumber = k.cardNo"
+			+ " where k.cardNo is NULL " + "and s.contractCd = :contractCd " + " and s.stampDateTime >= :startStampDate "
+			+ " and s.stampDateTime <= :endStampDate " + " order by s.cardNumber asc, s.stampDateTime asc";
 
 	// [1] insert(打刻記録)
 	@Override
@@ -49,16 +55,16 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 	// [2] delete(打刻記録)
 	@Override
 	public void delete(String contractCd, String stampNumber, GeneralDateTime stampDateTime) {
-		this.commandProxy().remove(KrcdtStampRecord.class,
-				new KrcdtStampRecordPk(contractCd, stampNumber, stampDateTime));
+		Optional<KrcdtStampRecord> entity = this.getStampRecord(contractCd, stampNumber, stampDateTime);
+		if (entity.isPresent()) {
+			this.commandProxy().remove(entity.get());
+		}
 	}
 
 	// [3] update(打刻記録)
 	@Override
 	public void update(StampRecord stampRecord) {
-		Optional<KrcdtStampRecord> entity = this.queryProxy()
-				.find(new KrcdtStampRecordPk(stampRecord.getContractCode().v(), stampRecord.getStampNumber().v(),
-						stampRecord.getStampDateTime()), KrcdtStampRecord.class);
+		Optional<KrcdtStampRecord> entity = this.getStampRecord(stampRecord.getContractCode().v(), stampRecord.getStampNumber().v(), stampRecord.getStampDateTime());
 		if (!entity.isPresent())
 			return;
 		this.commandProxy().update(entity.get().toUpdateEntity(stampRecord));
@@ -95,31 +101,47 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 	//
 	@Override
 	public Optional<StampRecord> findByKey(StampNumber stampNumber, GeneralDateTime stampDateTime) {
-		return this.queryProxy().find(
-				new KrcdtStampRecordPk(AppContexts.user().contractCode(), stampNumber.v(), stampDateTime),
-				KrcdtStampRecord.class).map(x -> toDomain(x));
+		Optional<KrcdtStampRecord> entity = this.getStampRecord(AppContexts.user().contractCode(), stampNumber.v(), stampDateTime);
+		if (!entity.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(toDomain(entity.get()));
 	}
 
 	// [6] 取得する
 	@Override
 	public Optional<StampRecord> get(String contractCd, String stampNumber, GeneralDateTime stampDateTime) {
-		return this.queryProxy()
-				.find(new KrcdtStampRecordPk(contractCd, stampNumber, stampDateTime), KrcdtStampRecord.class)
-				.map(x -> toDomain(x));
+		Optional<KrcdtStampRecord> entity = this.getStampRecord(AppContexts.user().contractCode(), stampNumber, stampDateTime);
+		if (!entity.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(toDomain(entity.get()));
 	}
 
 	public KrcdtStampRecord toEntity(StampRecord domain) {
 		return new KrcdtStampRecord(
-				new KrcdtStampRecordPk(domain.getContractCode().v(), domain.getStampNumber().v(),
-						domain.getStampDateTime()),
+				domain.getStampRecordId(),
 				AppContexts.user().companyId(),
-				domain.getStampTypeDisplay() != null ? domain.getStampTypeDisplay().v() : null);
+				domain.getStampTypeDisplay() != null ? domain.getStampTypeDisplay().v() : null,
+				domain.getContractCode().v(),
+				domain.getStampNumber().v(),
+				domain.getStampDateTime());
 	}
 
 	public StampRecord toDomain(KrcdtStampRecord entity) {
-		return new StampRecord(new ContractCode(entity.pk.contractCd), new StampNumber(entity.pk.cardNumber),
-				entity.pk.stampDateTime, new StampTypeDisplay(entity.stampTypeDisplay));
+		return new StampRecord(new ContractCode(entity.contractCd), new StampNumber(entity.cardNumber),
+				entity.stampDateTime, new StampTypeDisplay(entity.stampTypeDisplay));
 	}
+	
+	public Optional<KrcdtStampRecord> getStampRecord(String contractCd, String stampNumber, GeneralDateTime stampDateTime) {
+		GeneralDateTime start = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
+				0, 0, 0);
 
-
+		GeneralDateTime end = GeneralDateTime.ymdhms(stampDateTime.year(), stampDateTime.month(), stampDateTime.day(),
+				23, 59, 59);
+		
+		return this.queryProxy().query(GET_ONE_STAMP_RECORD, KrcdtStampRecord.class).setParameter("cardNumbers", stampNumber)
+				.setParameter("contractCd", contractCd)
+				.setParameter("startStampDate", start).setParameter("endStampDate", end).getSingle();
+	}
 }
