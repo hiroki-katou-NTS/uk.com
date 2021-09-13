@@ -118,31 +118,8 @@ public class GetRemainNumberConfirmInfo {
 							// 残数詳細情報．発生日状況をセットする - 発生日状況
 							detailedInfo.setOccurrenceDateStatus(TextResource.localize("KDL005_40"));
 						}
-						String textDay = "";
-						switch (detail.getDateOccur().getDayoffDate().get().dayOfWeek()) {
-						case 1:
-							textDay = "(月)";
-							break;
-						case 2:
-							textDay = "(火)";
-							break;
-						case 3:
-							textDay = "(水)";
-							break;
-						case 4:
-							textDay = "(木)";
-							break;
-						case 5:
-							textDay = "(金)";
-							break;
-						case 6:
-							textDay = "(土)";
-							break;	
-						default:
-							textDay = "(日)";
-							break;
-						}
-
+						
+						String textDay = this.getDayOfJapan(detail.getDateOccur().getDayoffDate().get().dayOfWeek());
 						// 残数詳細情報．発生日をセットする - 発生日
 						detailedInfo.setAccrualDate(TextResource.localize("KDL005_41",
 								detail.getDateOccur().getDayoffDate().get().toString(), // ループ中の逐次発生の休暇明細一覧．年月日．年月日
@@ -177,9 +154,16 @@ public class GetRemainNumberConfirmInfo {
 							detailedInfo.setDigestionStatus(TextResource.localize("KDL005_42"));
 						} else {
 							// ループ中の逐次発生の休暇明細一覧．休暇発生明細．期限日 > システム日付
-							String text = detail.getUnbalanceNumber().getTime().isPresent()
-									? detail.getUnbalanceNumber().getTime() + ""
-									: detail.getUnbalanceNumber().getDay() + TextResource.localize("KDL005_47");
+							String text = detail.getUnbalanceNumber().getDay() + TextResource.localize("KDL005_47");
+							
+							if (detail.getUnbalanceNumber().getTime().isPresent() && detail.getUnbalanceNumber().getTime().get().v() != 0) {
+								String minu = String.valueOf(detail.getUnbalanceNumber().getTime().get().minute()).length() > 1
+										? String.valueOf(detail.getUnbalanceNumber().getTime().get().minute())
+										: 0 + String.valueOf(detail.getUnbalanceNumber().getTime().get().minute());
+								String hoursMinu = String.valueOf(detail.getUnbalanceNumber().getTime().get().hour()) + ":"
+										+ minu;
+								text = hoursMinu;
+							} 
 
 							detailedInfo.setDigestionStatus(TextResource.localize("KDL005_51", text));
 						}
@@ -227,9 +211,9 @@ public class GetRemainNumberConfirmInfo {
 						detailedInfo.setDigestionCount(
 								TextResource.localize("KDL005_27", seqVacationFil.get().getDayNumberUsed().toString())); // 絞り込んだ逐次休暇の紐付け情報．使用日数
 						// 残数詳細情報．消化日
+						String textDay = this.getDayOfJapan(seqVacationFil.get().getDateOfUse().dayOfWeek());
 						detailedInfo.setDigestionDate(
-								TextResource.localize("KDL005_41", seqVacationFil.get().getDateOfUse().toString(),
-										seqVacationFil.get().getDateOfUse().dayOfWeek() + ""));
+								TextResource.localize("KDL005_41", seqVacationFil.get().getDateOfUse().toString(), textDay));
 
 						lstDigestionDate.add(seqVacationFil.get().getOutbreakDay().toString());
 					}
@@ -266,8 +250,8 @@ public class GetRemainNumberConfirmInfo {
 				String text = "";
 				LeaveOccurrDetail occurrDetailNew = (LeaveOccurrDetail) undigestInfoFil.get();
 				// dayCloseDeadline;
-				text = TextResource.localize("KDL005_41", occurrDetailNew.getDeadline().toString(),
-						occurrDetailNew.getDeadline().dayOfWeek() + "");
+				String textDay = this.getDayOfJapan(occurrDetailNew.getDeadline().dayOfWeek());
+				text = TextResource.localize("KDL005_41", occurrDetailNew.getDeadline().toString(), textDay);
 				// 探した逐次発生の休暇明細一覧．発生数．時間数 ！＝ Empty
 				if (undigestInfoFil.get().getNumberOccurren().getTime().isPresent()) {
 					// 探した逐次発生の休暇明細一覧．発生数．時間数 - 探した逐次発生の休暇明細一覧．未相殺数．時間数
@@ -285,5 +269,24 @@ public class GetRemainNumberConfirmInfo {
 		RemainNumberConfirmInfo confirmInfo = new RemainNumberConfirmInfo(detailedInfos, expiredWithinMonth,
 				dayCloseDeadline);
 		return confirmInfo;
+	}
+	
+	public String getDayOfJapan(int day) {
+		switch (day) {
+		case 1:
+			return "月";
+		case 2:
+			return "火";
+		case 3:
+			return "水";
+		case 4:
+			return "木";
+		case 5:
+			return "金";
+		case 6:
+			return "土";
+		default:
+			return "日";
+		}
 	}
 }
