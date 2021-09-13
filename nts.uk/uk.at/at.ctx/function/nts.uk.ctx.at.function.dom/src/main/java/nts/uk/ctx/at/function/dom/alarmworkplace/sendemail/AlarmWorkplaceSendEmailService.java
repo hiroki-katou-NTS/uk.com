@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.dom.alarmworkplace.sendemail;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailAttachedFileItf;
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.OutputErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmExportDto;
 import nts.uk.ctx.at.function.dom.alarm.export.AlarmListGenerator;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSetting;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.Content;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormal;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettings;
@@ -30,7 +33,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -53,10 +61,10 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
 
     @Override
     public String alarmWorkplacesendEmail(List<String> workplaceIds,
-                                        List<ValueExtractAlarmDto> listValueExtractAlarmDto,
-                                        MailSettingNormal mailSettingsNormal,
-                                        String currentAlarmCode,
-                                        boolean useAuthentication) {
+                                          List<ValueExtractAlarmDto> listValueExtractAlarmDto,
+                                          MailSettingNormal mailSettingsNormal,
+                                          String currentAlarmCode,
+                                          boolean useAuthentication) {
 
         Integer functionID = 9; //function of Alarm list = 9
         MailSettingsParamDto mailSettingsParamDto = buildMailSend(mailSettingsNormal);
@@ -73,7 +81,7 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
             List<String> listEmployeeId = employeePubAlarmAdapter.getListEmployeeId(i, GeneralDate.today());
 
             if (!listEmployeeId.isEmpty()) {
-                mapWorkplaceAndListSid.put(i , listEmployeeId);
+                mapWorkplaceAndListSid.put(i, listEmployeeId);
             } else {
                 listworkplaceError.add(i);
             }
@@ -106,21 +114,130 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
             });
         });
 
-        OutputErrorInfo outputErrorInfo = createErrorInfo.getErrorInfo(GeneralDate.today(),errors,mapWorkplaceAndListSid,listworkplaceError);
+        OutputErrorInfo outputErrorInfo = createErrorInfo.getErrorInfo(GeneralDate.today(), errors, mapWorkplaceAndListSid, listworkplaceError);
         String errorInfo = "";
-        if(!outputErrorInfo.getError().equals("")) {
-            errorInfo +=outputErrorInfo.getError();
+        if (!outputErrorInfo.getError().equals("")) {
+            errorInfo += outputErrorInfo.getError();
         }
-        if(!outputErrorInfo.getErrorWkp().equals("")) {
-            errorInfo +=outputErrorInfo.getErrorWkp();
+        if (!outputErrorInfo.getErrorWkp().equals("")) {
+            errorInfo += outputErrorInfo.getErrorWkp();
         }
         return errorInfo;
 
     }
 
+    @Override
+    public Map<String, List<String>> alarmWorkplacesendEmail(Map<String, List<String>> administratorTarget,
+                                                             List<ValueExtractAlarmDto> listValueExtractAlarmDto,
+                                                             AlarmListExecutionMailSetting mailSettingsNormal,
+                                                             String currentAlarmCode, boolean useAuthentication) {
+        val companyId = AppContexts.user().companyId();
+        Integer functionID = 9; //function of Alarm list = 9
+        Map<String, List<String>> errorTadmin = new HashMap<>();
+        //Map＜アラーム抽出結果、List＜管理者ID＞＞
+        val mapAlarmExtractionResult = mapAlarmExtractionResult(administratorTarget, listValueExtractAlarmDto);
+        Optional<String> senderAddress = Optional.ofNullable(mailSettingsNormal.getSenderAddress().isPresent() ? mailSettingsNormal.getSenderAddress().get().v() : "");
+        for (Map.Entry<ValueExtractAlarmDto, List<String>> target : mapAlarmExtractionResult.entrySet()) {
+            // ループ中項目のList＜管理者ID＞をループする
+
+            List<String> errorsAdmin = new ArrayList<>();
+            for (String adminID : target.getValue()) {
+
+                try {
+                    boolean isSucess = this.sendMail(companyId,
+                            adminID,
+                            functionID,
+                            listValueExtractAlarmDto,
+                            mailSettingsNormal.getContentMailSettings().get().getSubject().get().v(),
+                            mailSettingsNormal.getContentMailSettings().get().getText().get().v(),
+                            currentAlarmCode,
+                            useAuthentication,
+                            mailSettingsNormal.getContentMailSettings(),
+                            Optional.empty()
+                    );
+                    ;
+                    if (!isSucess) {
+                        errorsAdmin.add(adminID);
+                        System.out.println("send failed");
+                    } else {
+                        System.out.println("success send email");
+                    }
+                } catch (SendMailFailedException e) {
+                    throw e;
+                }
+            }
+            if (!errorsAdmin.isEmpty()) {
+                errorTadmin.put(target.getKey().getWorkplaceID(), errorsAdmin);
+                errorsAdmin.clear();
+            }
+        }
+        return errorTadmin;
+    }
+
+    @Override
+    public List<String> alarmWorkplacesendEmail(List<String> empList,
+                                                List<ValueExtractAlarmDto> listValueExtractAlarmDto,
+                                                AlarmListExecutionMailSetting mailSettingsNormal,
+                                                String currentAlarmCode,
+                                                boolean useAuthentication) {
+
+        List<String> errorsPerson = new ArrayList<>();
+        empList = empList.stream().filter(x -> x != null).collect(Collectors.toList());
+        val companyId = AppContexts.user().companyId();
+        for (String emId : empList) {
+            try {
+                boolean isSucess = this.sendMail(companyId,
+                        emId,
+                        9,
+                        listValueExtractAlarmDto,
+                        mailSettingsNormal.getContentMailSettings().get().getSubject().get().v(),
+                        mailSettingsNormal.getContentMailSettings().get().getText().get().v(),
+                        currentAlarmCode,
+                        useAuthentication,
+                        mailSettingsNormal.getContentMailSettings(),
+                        Optional.empty()
+                );
+                ;
+                if (!isSucess) {
+                    errorsPerson.add(emId);
+                    System.out.println("send failed");
+                } else {
+                    System.out.println("success send email");
+                }
+            } catch (SendMailFailedException e) {
+                throw e;
+            }
+        }
+        return errorsPerson;
+    }
+
+    /**
+     * 職場IDによってアラーム抽出結果と管理送信対象をマッピングする。
+     *
+     * @param administratorTarget
+     * @param listValueExtractAlarmDto
+     * @return Map＜アラーム抽出結果、List＜管理者ID＞＞
+     */
+    private Map<ValueExtractAlarmDto, List<String>> mapAlarmExtractionResult(Map<String, List<String>> administratorTarget,
+                                                                             List<ValueExtractAlarmDto> listValueExtractAlarmDto) {
+        Map<ValueExtractAlarmDto, List<String>> filerMap = new HashMap<>();
+
+        for (Map.Entry<String, List<String>> target : administratorTarget.entrySet()) {
+            val extractAlarmDto = listValueExtractAlarmDto.stream()
+                    .filter(x -> x.getWorkplaceID().trim().equals(target.getKey().trim()))
+                    .findFirst();
+            if (extractAlarmDto.isPresent()) {
+                filerMap.put(extractAlarmDto.get(), target.getValue());
+            }
+        }
+
+        return filerMap;
+    }
+
     /**
      * 対象者にメールを送信する
      * Send mail flow employeeId
+     *
      * @param companyID
      * @param employeeId
      * @param functionID
@@ -138,36 +255,36 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                 .getEmpEmailAddress(companyID, employeeId, functionID);
         if (mailDestinationAlarmImport != null) {
             // Get all mail address
-            List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails().stream().filter(c->c.getEmailAddress() !=null).collect(Collectors.toList());
+            List<OutGoingMailAlarm> emails = mailDestinationAlarmImport.getOutGoingMails().stream().filter(c -> c.getEmailAddress() != null).collect(Collectors.toList());
             if (CollectionUtil.isEmpty(emails)) {
                 return false;
             } else {
-                if(StringUtils.isEmpty(subjectEmail)){
+                if (StringUtils.isEmpty(subjectEmail)) {
                     subjectEmail = TextResource.localize("KAL010_300");
                 }
                 // Genarate excel
-                AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport,currentAlarmCode);
+                AlarmExportDto alarmExportDto = alarmListGenerator.generate(new FileGeneratorContext(), listDataAlarmExport, currentAlarmCode);
                 // Create file attach
                 List<MailAttachedFileItf> attachedFiles = new ArrayList<MailAttachedFileItf>();
                 attachedFiles.add(new MailAttachedFilePath(alarmExportDto.getPath(), alarmExportDto.getFileName()));
 
                 // Create mail content
                 //メール内容を作成する
-                MailContents mailContent = new MailContents(subjectEmail, bodyEmail,attachedFiles);
+                MailContents mailContent = new MailContents(subjectEmail, bodyEmail, attachedFiles);
 
                 List<String> replyToList = new ArrayList<>();
-                List<String> toList = emails.stream().map(c-> c.getEmailAddress()).collect(Collectors.toList());
+                List<String> toList = emails.stream().map(c -> c.getEmailAddress()).collect(Collectors.toList());
                 List<String> ccList = new ArrayList<>();
                 List<String> bccList = new ArrayList<>();
                 String senderAddressInput = "";
-                if(senderAddress.isPresent()) {
+                if (senderAddress.isPresent()) {
                     senderAddressInput = senderAddress.get();
                 }
-                if(mailSetting.isPresent()) {
-                    ccList = mailSetting.get().getMailAddressCC();
-                    bccList = mailSetting.get().getMailAddressBCC();
-                    if(mailSetting.get().getMailRely().isPresent()) {
-                        if(!mailSetting.get().getMailRely().get().v().equals("") && mailSetting.get().getMailRely().get().v() != null ) {
+                if (mailSetting.isPresent()) {
+                    ccList = mailSetting.get().getMailAddressCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+                    bccList = mailSetting.get().getMailAddressBCC().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+                    if (mailSetting.get().getMailRely().isPresent()) {
+                        if (!mailSetting.get().getMailRely().get().v().equals("") && mailSetting.get().getMailRely().get().v() != null) {
                             replyToList.add(mailSetting.get().getMailRely().get().v());
                         }
                     }
@@ -175,18 +292,19 @@ public class AlarmWorkplaceSendEmailService implements WorkplaceSendEmailService
                 // Do send mail
                 MailSendOptions mailSendOptions = new MailSendOptions(senderAddressInput, replyToList, toList, ccList, bccList);
                 try {
-                    if(useAuthentication) {
+                    if (useAuthentication) {
                         mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
-                    }else {
-                        if(senderAddress.isPresent() && !senderAddress.get().equals("")) {
+                    } else {
+                        if (senderAddress.isPresent() && !senderAddress.get().equals("")) {
                             mailSender.send(mailContent, companyID, mailSendOptions);
-                        }else {
+                        } else {
                             mailSender.sendFromAdmin(mailContent, companyID, mailSendOptions);
 
                         }
 
                     }
                 } catch (SendMailFailedException e) {
+                    System.out.println(e.getMessage());
                     throw e;
                 }
 
