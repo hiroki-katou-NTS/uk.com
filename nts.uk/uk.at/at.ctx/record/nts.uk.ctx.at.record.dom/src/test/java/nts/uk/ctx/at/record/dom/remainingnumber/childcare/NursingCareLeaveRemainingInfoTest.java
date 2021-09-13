@@ -217,7 +217,7 @@ public class NursingCareLeaveRemainingInfoTest {
 		val judgePeriod = childCare.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 上限日数期間
-		val expect2 = limitPeriod(new DatePeriod(ymd(2020, 10, 16), ymd(2020, 11, 15)), 5);
+		val expect2 = limitPeriod(new DatePeriod(ymd(2020, 10, 16), ymd(2020, 11, 16)), 5);
 		assertThat(judgePeriod.get(0).getPeriod()).isEqualTo(expect2.getPeriod());
 		assertThat(judgePeriod.get(0).getLimitDays()).isEqualTo(expect2.getLimitDays());
 		assertThat(judgePeriod.size()).isEqualTo(1);

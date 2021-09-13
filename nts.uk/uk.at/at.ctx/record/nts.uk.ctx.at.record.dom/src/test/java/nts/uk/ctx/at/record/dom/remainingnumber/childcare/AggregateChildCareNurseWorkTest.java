@@ -195,7 +195,7 @@ public class AggregateChildCareNurseWorkTest {
 	}
 
 	@Test
-	// 集計期間の翌日を集計する時は、処理は行わない
+	// 集計期間の翌日を集計する時は、処理は行う
 	// falseの場合：子の看護介護計算残数を返す
 	public void testCalcRemaining2() {
 		val companyId = "0001";
@@ -211,7 +211,7 @@ public class AggregateChildCareNurseWorkTest {
 			}
 		};
 
-		val expect = calcRemaining(4.0, 0, 5); //期待値：計算残数（残日数、残時間、上限日数）
+		val expect = calcRemaining(0.0, null, 0); //期待値：計算残数（残日数、残時間、上限日数）
 		val calcRemaining = childCare.calcRemaining("0001", "000001",
 				new DatePeriod(ymd(2020, 12, 1),ymd(2020, 12, 31)),
 				ymd(2021,1, 10),
