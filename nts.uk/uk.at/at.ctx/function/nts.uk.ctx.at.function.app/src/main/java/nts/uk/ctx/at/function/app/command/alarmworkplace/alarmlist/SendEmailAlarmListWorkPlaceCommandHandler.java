@@ -138,15 +138,13 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                 List<String> filterManager = new ArrayList<>();
                 //取得したMap＜社員ID、ロールID＞をループする
                 for (Map.Entry<String, String> role : roleMap.entrySet()) {
-                    //管理者のロールはアラームメール送信ロールに設定するかチェック
-                    if (isRoleExistInAlarmMail(sendingRole, role.getValue())) {
                         OptionalInt range = roleAdaptor.findEmpRangeByRoleID(role.getValue());
                         if (range.isPresent() && range.getAsInt() == EmployeeReferenceRange.ONLY_MYSELF.value) {
                             // filterManager.add(role.getKey());
                             mailSendFlag = false;
                             break;
                         }
-                    }
+
                 }
                 mapFiler.put(entry.getKey(), filterManager);
             }
