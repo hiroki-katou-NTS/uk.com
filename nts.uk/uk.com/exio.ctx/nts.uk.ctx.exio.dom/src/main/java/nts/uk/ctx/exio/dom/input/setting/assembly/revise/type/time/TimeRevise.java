@@ -48,8 +48,9 @@ public class TimeRevise implements ReviseValue {
 					.map(i -> (long) (int) i);
 		} else {
 			// 10進数は、分に変換して端数処理
-			BigDecimal minutes = hourly.toMinutesDecimal(new BigDecimal(target));
-			return Either.right((long) rounding.get().round(minutes));
+			return Either.tryCatch(() -> hourly.toMinutesDecimal(new BigDecimal(target)), NumberFormatException.class) 
+					.mapLeft(ex -> new ErrorMessage("受入データが10進数ではありません。"))
+					.map(min -> (long) rounding.get().round(min));
 		}
 	}
 }
