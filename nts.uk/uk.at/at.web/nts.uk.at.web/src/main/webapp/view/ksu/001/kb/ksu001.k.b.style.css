@@ -19,3 +19,7 @@ td[role ="rowheader"]{
 #swap-list_container, #person-list_container, .nts-fixed-table {
 	display: inline-block;
 }
+
+.tabs-panel.horizontal>.tabs-list {
+	padding: 10px;
+}

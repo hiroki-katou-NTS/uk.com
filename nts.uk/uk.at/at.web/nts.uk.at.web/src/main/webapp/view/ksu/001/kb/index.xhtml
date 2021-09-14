@@ -117,8 +117,8 @@
                                      data-bind="ntsSwitchButton: {
                                                         name: '#[KSU001_4104]',
                                                         options: [
-                                                            {code: 1, name: $vm.$i18n('KSU001_4121')},
-                                                            {code: 0, name: $vm.$i18n('KSU001_4122')}
+                                                            {code: 1, name: $vm.$i18n('KSU001_4113')},
+                                                            {code: 0, name: $vm.$i18n('KSU001_4114')}
                                                         ],
                                                         optionsValue: 'code',
                                                         optionsText: 'name',
@@ -146,13 +146,13 @@
                                 <!--B8-1-->
                                 <div data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KSU001_4105')}</div>
                                 <!--B8-2-->
-                                <button tabindex="13" id="B8_2"
+                                <button tabindex="13" id="B8_2" class="small"
                                     data-bind="click: addItem, enable:isEnableAddBtn">#{i18n.getText('KSU001_4106')}</button>
                                 <!--B8-3-->
-                                <button tabindex="14" id="B8_3" class="danger"
+                                <button tabindex="14" id="B8_3" class="danger small"
                                     data-bind="click: removeItem, enable:isEnableDelBtn">#{i18n.getText('KSU001_4107')}</button>
                             </div>
-                            <div class="control-group valign-center">
+                            <div class="valign-center">
                                 <div class="form-label"></div>
                                  <!--B8-4-->
                                 <table tabindex="15" id="fixed-table">
@@ -192,7 +192,7 @@
                                                 </com:ko-if>
                                                 <com:ko-if bind="!isNumberOne()">
                                                     <!--B8-13-->
-                                                    <div tabindex="19"
+                                                    <div tabindex="19" style="display: block"
                                                          data-bind="ntsComboBox: {
                                                                         options: $parent.personalInfoItems,
                                                                         width: 150,
@@ -208,7 +208,7 @@
                                             </td>
                                             <td>
                                                 <!--B8-10-->
-                                                <div tabindex="16"
+                                                <div tabindex="16" style="display: block"
                                                      data-bind="ntsComboBox: {
                                                                     options: $parent.personalInfoItems,
                                                                     width: 150,
@@ -224,7 +224,7 @@
                                             </td>
                                             <td>
                                                 <!--B8-11-->
-                                                <div tabindex="17"
+                                                <div tabindex="17" style="display: block"
                                                      data-bind="ntsComboBox: {
                                                                     options: $parent.attendanceItems,
                                                                     width: 150,
