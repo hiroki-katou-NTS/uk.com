@@ -8,8 +8,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.task.AsyncTaskInfo;
-import nts.uk.ctx.exio.app.input.diagnose.DiagnoseExternalImportConstants;
-import nts.uk.ctx.exio.app.input.diagnose.DiagnoseResult;
+import nts.uk.ctx.exio.app.input.develop.diagnose.DiagnoseExternalImportConstants;
+import nts.uk.ctx.exio.app.input.develop.diagnose.DiagnoseResult;
 import nts.uk.ctx.exio.app.input.errors.ErrorsTextDto;
 import nts.uk.ctx.exio.app.input.errors.GetLatestExternalImportErrors;
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommand;

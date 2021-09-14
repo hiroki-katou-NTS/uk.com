@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.app.input.diagnose;
+package nts.uk.ctx.exio.app.input.develop.diagnose;
 
 import java.util.List;
 
