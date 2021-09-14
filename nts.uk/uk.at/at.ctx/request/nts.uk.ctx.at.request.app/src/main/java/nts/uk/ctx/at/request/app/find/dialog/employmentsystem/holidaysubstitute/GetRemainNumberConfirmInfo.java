@@ -193,9 +193,9 @@ public class GetRemainNumberConfirmInfo {
 							detailedInfo.setDueDateStatus(TextResource.localize("KDL005_45"));
 						}
 					}
-
-					// 残数詳細情報．期限日状況をセットする
-					detailedInfo.setDeadline(occurrDetail.getDeadline().toString());
+					String textDayDe = this.getDayOfJapan(occurrDetail.getDeadline().dayOfWeek());
+					// 残数詳細情報．期限日をセットする
+					detailedInfo.setDeadline(TextResource.localize("KDL005_41", occurrDetail.getDeadline().toString(), textDayDe));
 
 					// 逐次休暇の紐付け情報を絞り込む
 					Optional<SeqVacationAssociationInfo> seqVacationFil = lstSeqVacation.stream()
