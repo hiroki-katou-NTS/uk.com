@@ -111,6 +111,7 @@ public class SpecialHolidayProcess {
 						/** ドメインモデル「特別休暇付与残数データ」を更新する */
 						c.setExpirationStatus(detail.getExpirationStatus());
 						c.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
+						c.setDetails(detail.getDetails());
 						return AtomTask.of(() -> require.updateSpecialLeaveGrantRemainingData(c));
 					})
 					.orElseGet(() -> {
