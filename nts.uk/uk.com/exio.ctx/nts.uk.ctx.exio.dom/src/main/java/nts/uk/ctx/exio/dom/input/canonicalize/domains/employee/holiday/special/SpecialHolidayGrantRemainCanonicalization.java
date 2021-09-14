@@ -73,7 +73,10 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 	}
 	
 	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
-		return new KeyValues(Arrays.asList(interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString()));
+		return new KeyValues(Arrays.asList(
+				interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString(),
+				interm.getItemByNo(2).get(),
+				interm.getItemByNo(3).get()));
 	}
 	
 	@Override
