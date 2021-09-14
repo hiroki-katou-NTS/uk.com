@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.child
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 
 /**
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KRCDT_HDNURSING_USE")
 @NoArgsConstructor
-public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
+public class KrcdtHdnursingUse extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -82,7 +82,8 @@ public class KrcdtHdnursingUse extends UkJpaEntity implements Serializable {
 	 * ドメインから変換
 	 * @param domain 子の看護介護休暇使用数
 	 */
-	public void fromDomain(ChildCareNurseUsedNumber domain) {
+	public void fromDomain(String cid, ChildCareNurseUsedNumber domain) {
+		this.companyID = cid;
 		this.usedDays = domain.getUsedDay().v();
 		this.usedMinutes = domain.getUsedTimes().map(mapper->mapper.v()).orElse(null);
 	}

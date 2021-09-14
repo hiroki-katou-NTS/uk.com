@@ -13,11 +13,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import nts.arc.time.GeneralDate;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.ImprintReflectionState;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -211,6 +213,12 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 	@Column(name = "TASK_CD5")
 	public String taskCd5;
 
+	// ver6	ver7		
+	// 反映された年月日
+	@Basic(optional = true)
+	@Column(name = "REFLECTED_INTO_DATE")
+	public GeneralDate reflectedIntoDate;
+
 	@Override
 	protected Object getKey() {
 		return this.pk;
@@ -223,7 +231,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.preClockArt = stamp.getType().getSetPreClockArt().value;
 		this.changeHalfDay = stamp.getType().isChangeHalfDay();
 		this.goOutArt = stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null;
-		this.reflectedAtr = stamp.isReflectedCategory();
+		this.reflectedAtr = stamp.getImprintReflectionStatus().isReflectedCategory();
 		this.suportCard = (stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
 				? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
 				: null;
@@ -249,6 +257,8 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.taskCd4 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD4().map(t -> t.v()).orElse(null)).orElse(null);
 		this.taskCd5 = stamp.getRefActualResults().getWorkGroup().map(m -> m.getWorkCD5().map(t -> t.v()).orElse(null)).orElse(null);
 		
+		// ver6,ver7
+		this.reflectedIntoDate = stamp.getImprintReflectionStatus().getReflectedDate().orElse(null);
 		return this;
 	}
 
@@ -288,11 +298,13 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 				this.workTime == null ? null : new WorkTimeCode(this.workTime),
 				overtime, workGroup );
 		
+		val imprintReflectionState = new ImprintReflectionState(this.reflectedAtr, Optional.ofNullable(this.reflectedIntoDate));
+		
 		return new Stamp(new ContractCode(this.pk.contractCode) ,
 						stampNumber, 
 						this.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-						this.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty());
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty());
 
 	}
 	

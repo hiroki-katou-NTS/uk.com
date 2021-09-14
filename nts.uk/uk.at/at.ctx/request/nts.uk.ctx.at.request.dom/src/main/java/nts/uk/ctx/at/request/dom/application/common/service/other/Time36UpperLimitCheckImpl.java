@@ -8,13 +8,21 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.Year;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.OvertimeHoursDetails;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreMaxTimeOfMonthExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreePeriodYMDExport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeOfMonthExport;
@@ -25,11 +33,24 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.Agr
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.ExcessTimesYearAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.reflect.GetApplicationReflectionResultAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppTimeItem;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36ErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.Time36UpperLimitCheckResult;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplication;
+import nts.uk.ctx.at.request.dom.application.optional.OptionalItemApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeAnnual;
@@ -37,10 +58,20 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitAverage;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitMonth;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.obtainappreflect.ObtainAppReflectResultProcess;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
@@ -89,6 +120,51 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	
 	@Inject
 	private AgreementPeriodByYMDAdapter agreementPeriodByYMDAdapter;
+	
+	@Inject
+	private AppWorkChangeRepository appWorkChangeRepository;
+	
+	@Inject
+	private GoBackDirectlyRepository goBackDirectlyRepository;
+	
+	@Inject
+	private AppStampRepository appStampRepository;
+	
+	@Inject
+	private ArrivedLateLeaveEarlyRepository arrivedLateLeaveEarlyRepository;
+	
+	@Inject
+	private BusinessTripRepository businessTripRepository;
+	
+	@Inject
+	private AppRecordImageRepository appRecordImageRepository;
+	
+	@Inject
+	private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
+	
+	@Inject
+	private AppOverTimeRepository appOverTimeRepository;
+	
+	@Inject
+	private ApplyForLeaveRepository applyForLeaveRepository;
+	
+	@Inject
+	private AppHolidayWorkRepository appHolidayWorkRepository;
+	
+	@Inject
+	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
+	
+	@Inject
+	private RecruitmentAppRepository recruitmentAppRepository;
+	
+	@Inject
+	private OptionalItemApplicationRepository optionalItemApplicationRepository;
+	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
+	@Inject
+	private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyID, String employeeID, GeneralDate appDate,
@@ -571,7 +647,46 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				companyID, application.getAppDate().getApplicationDate(), closurePeriodOpt.map(x -> x.getClosureId()).orElse(null));
 		overtimeHoursDetails.setYearMonth(agreePeriodYMDExport.getDateTime());
 		// 日別実績への申請反映結果を取得
+		Require require = new Require(
+				appWorkChangeRepository,
+				goBackDirectlyRepository,
+				appStampRepository,
+				arrivedLateLeaveEarlyRepository,
+				businessTripRepository,
+				appRecordImageRepository,
+				timeLeaveApplicationRepository,
+				appOverTimeRepository,
+				applyForLeaveRepository,
+				appHolidayWorkRepository,
+				absenceLeaveAppRepository,
+				recruitmentAppRepository,
+				optionalItemApplicationRepository,
+				applicationRepository,
+				getApplicationReflectionResultAdapter);
+		if (opAppOverTime.isPresent()) {
+			final val applicationTemp = application;
+			application = (Application)opAppOverTime.map(x -> {
+				x.setApplication(applicationTemp);
+				return x;
+			}).orElse(null);
+		} else if (opAppHolidayWork.isPresent()) {
+			final val applicationTemp = application;
+			application = (Application)opAppHolidayWork.map(x -> {
+				x.setApplication(applicationTemp);
+				return x;
+			}).orElse(null);
+		}
+		Optional<IntegrationOfDaily> dailyRecordOp = ObtainAppReflectResultProcess.process(
+				require,
+				companyID,
+				employeeID,
+				application.getAppDate().getApplicationDate(),
+				Optional.ofNullable(application)
+				);
 		List<IntegrationOfDaily> dailyRecord = new ArrayList<>();
+		if (dailyRecordOp.isPresent()) {
+			dailyRecord.add(dailyRecordOp.get());
+		}
 		// 【NO.333】36協定時間の取得
 		AgreementTimeOfManagePeriod agreementTimeOfManagePeriod = agreementTimeAdapter.getAgreementTimeOfManagePeriod(
 				employeeID, 
@@ -675,5 +790,153 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 			}
 		}
 		return time36ErrorInforList;
+	}
+	
+	@AllArgsConstructor
+	public class Require implements ObtainAppReflectResultProcess.Require {
+		
+		private AppWorkChangeRepository appWorkChangeRepository;
+		
+		private GoBackDirectlyRepository goBackDirectlyRepository;
+		
+		private AppStampRepository appStampRepository;
+		
+		private ArrivedLateLeaveEarlyRepository arrivedLateLeaveEarlyRepository;
+		
+		private BusinessTripRepository businessTripRepository;
+		
+		private AppRecordImageRepository appRecordImageRepository;
+		
+		private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
+		
+		private AppOverTimeRepository appOverTimeRepository;
+		
+		private ApplyForLeaveRepository applyForLeaveRepository;
+		
+		private AppHolidayWorkRepository appHolidayWorkRepository;
+		
+		private AbsenceLeaveAppRepository absenceLeaveAppRepository;
+		
+		private RecruitmentAppRepository recruitmentAppRepository;
+		
+		private OptionalItemApplicationRepository optionalItemApplicationRepository;
+		
+		private ApplicationRepository applicationRepository;
+		
+		private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
+		
+		
+		
+		@Override
+		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app) {
+			
+			return appWorkChangeRepository.findbyID(companyId, appID, app).flatMap(x -> {
+				x.setApplication(app);
+				return Optional.of(x);
+			});
+		}
+
+		@Override
+		public Optional<GoBackDirectly> findGoBack(String companyId, String appID, Application app) {
+			
+			return goBackDirectlyRepository.find(companyId, appID, app).flatMap(x -> {
+				x.setApplication(app);
+				return Optional.of(x);
+			});
+		}
+
+		@Override
+		public Optional<AppStamp> findAppStamp(String companyId, String appID, Application app) {
+			
+			return appStampRepository.findByAppID(companyId, appID, app).flatMap(x -> {
+				x.setApplication(app);
+				return Optional.of(x);
+			});
+		}
+
+		@Override
+		public Optional<ArrivedLateLeaveEarly> findArrivedLateLeaveEarly(String companyId, String appID,
+				Application application) {
+
+			return Optional.ofNullable(arrivedLateLeaveEarlyRepository.getLateEarlyApp(companyId, appID, application)).flatMap(x -> {
+				x.setApplication(application);
+				return Optional.of(x);
+			});
+			
+		}
+
+		@Override
+		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID, Application app) {
+			
+			return businessTripRepository.findByAppId(companyId, appID, app).flatMap(x -> {
+				x.setApplication(app);
+				return Optional.of(x);
+			});
+		}
+
+		@Override
+		public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app) {
+			
+			return appRecordImageRepository.findByAppID(companyId, appID, app).flatMap(x -> {
+				x.setApplication(app);
+				return Optional.of(x);
+			});
+		}
+
+		@Override
+		public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
+			
+			return timeLeaveApplicationRepository.findById(companyId, appId);
+		}
+
+		@Override
+		public Optional<AppOverTime> findOvertime(String companyId, String appId) {
+			
+			return appOverTimeRepository.find(companyId, appId);
+		}
+
+		@Override
+		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
+			
+			return applyForLeaveRepository.findApplyForLeave(CID, appId);
+		}
+
+		@Override
+		public Optional<AppHolidayWork> findAppHolidayWork(String companyId, String appId) {
+			
+			return appHolidayWorkRepository.find(companyId, appId);
+		}
+
+		@Override
+		public Optional<AbsenceLeaveApp> findAbsenceByID(String applicationID) {
+			
+			return absenceLeaveAppRepository.findByAppId(applicationID);
+		}
+
+		@Override
+		public Optional<RecruitmentApp> findRecruitmentByID(String applicationID) {
+			
+			return recruitmentAppRepository.findByID(applicationID);
+		}
+
+		@Override
+		public Optional<OptionalItemApplication> getOptionalByAppId(String companyId, String appId) {
+			
+			return optionalItemApplicationRepository.getByAppId(companyId, appId);
+		}
+
+		@Override
+		public List<Application> getAppForReflect(String sid, GeneralDate dateData, List<Integer> recordStatus,
+				List<Integer> scheStatus, List<Integer> appType) {
+			
+			return applicationRepository.getAppForReflect(sid, new DatePeriod(dateData, dateData), recordStatus, scheStatus, appType);
+		}
+
+		@Override
+		public Optional<IntegrationOfDaily> getAppReflectResult(String cid, ApplicationShare application,
+				GeneralDate baseDate, Optional<IntegrationOfDaily> dailyData) {
+			return getApplicationReflectionResultAdapter.getApp(cid, application, baseDate, dailyData);
+		}
+		
 	}
 }

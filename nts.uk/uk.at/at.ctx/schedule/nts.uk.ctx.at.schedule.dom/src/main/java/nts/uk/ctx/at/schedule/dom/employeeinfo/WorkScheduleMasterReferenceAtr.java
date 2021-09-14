@@ -12,11 +12,14 @@ public enum WorkScheduleMasterReferenceAtr {
 
 	/** The work place. */
 	// 職場
-	WORKPLACE(0, "Enum_WorkScheduleMasterReferenceAtr_Workplace", "職場"),
+	WORKPLACE(1, "Enum_WorkScheduleMasterReferenceAtr_Workplace", "職場"),
 
 	/** The classification. */
 	// 分類
-	CLASSIFICATION(1, "Enum_WorkScheduleMasterReferenceAtr_Classification", "分類");
+	CLASSIFICATION(2, "Enum_WorkScheduleMasterReferenceAtr_Classification", "分類"),
+	
+	//会社
+	COMPANY(0, "Enum_WorkScheduleMasterReferenceAtr_Classification", "分類");
 
 	/** The value. */
 	public final int value;

@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf022.l.service{
         addEmploymentSet: "at/request/application/common/setting/addEmploymentSetting",
         findOtKaf022: "at/screen/worktype/find-ot-kaf022",
         findAbsenceKaf022: "at/screen/worktype/find-absence-kaf022",
+        findAbsenceSpecialKaf022: "at/screen/worktype/find-absence-special-kaf022",
         findWkChangeKaf022: "at/screen/worktype/find-work-change-kaf022",
         findBounceKaf022: "at/screen/worktype/find-bounce-kaf022",
         findHdTimeKaf022: "at/screen/worktype/find-hdtime-kaf022",
@@ -37,8 +38,12 @@ module nts.uk.at.view.kaf022.l.service{
     
     export function findAbsenceKaf022(absenceKAF022: any): JQueryPromise<any> {
         return ajax("at", paths.findAbsenceKaf022, absenceKAF022); 
-    } 
-    
+    }
+
+    export function findAbsenceSpecialKaf022(): JQueryPromise<any> {
+        return ajax("at", paths.findAbsenceSpecialKaf022);
+    }
+
     export function findOtKaf022(): JQueryPromise<any> {
         return ajax("at", paths.findOtKaf022); 
     }

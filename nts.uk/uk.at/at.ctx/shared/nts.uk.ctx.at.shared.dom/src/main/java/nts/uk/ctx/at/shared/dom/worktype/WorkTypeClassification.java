@@ -158,6 +158,14 @@ public enum WorkTypeClassification {
 	}
 	
 	/**
+	 * 欠勤であるか判定する
+	 * @return true：欠勤である false：欠勤ではない
+	 */
+	public boolean isAbsence() {
+		return Absence.equals(this);
+	}
+	
+	/**
 	 * 代休であるか判定する
 	 * @return　代休である
 	 */
@@ -341,5 +349,60 @@ public enum WorkTypeClassification {
 
 		// Not found.
 		return null;
+	}
+	
+	/**
+	 * [1] どんな休暇種類か判断する
+	 * @return 休暇種類区分 HolidayTypeClassification
+	 */
+	public HolidayTypeClassification determineHolidayType() {
+	    switch (this) {
+	    // 出勤
+	    case Closure:
+	    // 休職
+	    case LeaveOfAbsence:
+	    // 休日出勤
+	    case HolidayWork:
+	    // 連続勤務
+	    case ContinuousWork:
+	    // 振出
+	    case Shooting:
+	    // 欠勤
+	    case Absence:
+	    // 出勤
+        case Attendance:
+            return HolidayTypeClassification.NoVacation;
+            
+        // 休日
+        case Holiday:
+            return HolidayTypeClassification.Holiday;
+            
+        // 年休
+        case AnnualHoliday:
+            return HolidayTypeClassification.AnnualHoliday;
+            
+        // 積立年休
+        case YearlyReserved:
+            return HolidayTypeClassification.YearlyReserved;
+            
+        // 特別休暇
+        case SpecialHoliday:
+            return HolidayTypeClassification.SpecialHoliday;
+            
+        // 代休
+        case SubstituteHoliday:
+            return HolidayTypeClassification.SubstituteHoliday;
+            
+        // 振休
+        case Pause:
+            return HolidayTypeClassification.Pause;
+            
+        // 時間消化休暇
+        case TimeDigestVacation:
+            return HolidayTypeClassification.TimeDigestVacation;
+            
+        default:
+            return HolidayTypeClassification.NoVacation;
+        }
 	}
 }
