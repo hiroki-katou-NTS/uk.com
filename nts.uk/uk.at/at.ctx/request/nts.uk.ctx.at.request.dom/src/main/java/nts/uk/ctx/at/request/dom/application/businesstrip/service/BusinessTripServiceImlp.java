@@ -53,6 +53,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.busi
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -110,6 +113,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private ApplyForLeaveRepository applyForLeaveRepository;
+    
+    @Inject
+    private PredetemineTimeSettingRepository predetemineRepo;
 
     private static final String NO_INPUT_NAME = "なし";
 
@@ -746,9 +752,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Override
     public WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTimeCd) {
+        WorkTimeGetOuput output = new WorkTimeGetOuput();
+        
         // 就業時間帯コードが存在するか
         if (workTimeCd == null) {
-            return new WorkTimeGetOuput();
+            return output;
         }
         
         // キャッシュがあれば利用する
@@ -757,9 +765,49 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         }
         
         // ドメインモデル「所定時間設定」を取得する
+        Optional<PredetemineTimeSetting> predetemineTimeSetting = this.predetemineRepo.
+                findByWorkTimeCode(AppContexts.user().companyId(), workTimeCd);
+        if (!predetemineTimeSetting.isPresent()) {
+            return output;
+        }
         
+        // 勤務種類.１日の勤務.勤務区分
+        WorkTypeUnit workTypeUnit = workType.getDailyWork().getWorkTypeUnit();
         
-        return null;
+        if (workTypeUnit.equals(WorkTypeUnit.OneDay)) {
+            // 勤務種類.1日の勤務.1日をチェック（※勤務種類の判断条件参照）
+            if (workType.getDailyWork().getMorning().isWeekDayAttendance()) {
+                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
+                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                }
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                }
+            }
+        } else if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
+            // 勤務種類.1日の勤務.午前をチェック
+            // 勤務種類.1日の勤務.午後をチェック
+            if ((workType.getDailyWork().getMorning().isHolidayWorkType() && workType.getDailyWork().getAfternoon().isWeekDayAttendance()) || 
+                    (workType.getDailyWork().getMorning().isWeekDayAttendance())) {
+                // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
+                List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
+                    output.setStartTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime1(lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().map(x -> x.getEnd().v()));
+                }
+                if (lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().isPresent()) {
+                    output.setStartTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getStart().v()));
+                    output.setEndTime2(lstTimezone.stream().filter(x -> x.getWorkNo() == 2).findFirst().map(x -> x.getEnd().v()));
+                }
+            }
+        }
+        
+        // キャッシュに結果を保存する
+        return output;
     }
 
 }

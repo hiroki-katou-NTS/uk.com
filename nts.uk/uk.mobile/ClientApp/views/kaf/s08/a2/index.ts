@@ -185,7 +185,6 @@ export class KafS08A2Component extends KafS00ShrComponent {
     
                 return;
             }
-            vm.$modal.error({ messageId: 'Msg_1912' });
         });
     }
 
@@ -289,7 +288,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             vm.$mask('hide');  
             let param;
 
-            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913'  || err.messageId == 'Msg_1685') {
+            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1913'  || err.messageId == 'Msg_1685') {
                 err.message = err.parameterIds[0] + err.message;
                 param = err;
 
@@ -345,13 +344,10 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 if (res) {
                     vm.$http.post('at', API.reflectApp, res.data.reflectAppIdLst);
                     vm.$emit('nextToStepThree', res.data.appIDLst[0]);
-                } else {
-                    vm.$modal.error({ messageId: 'Msg_1912' });
-                }
+                } 
                 vm.$mask('hide');
             }).catch(() => {
                 vm.$mask('hide');
-                vm.$modal.error({ messageId: 'Msg_1912' });
             });
         } else {
             vm.$modal.error({ messageId: 'Msg_1703' });
