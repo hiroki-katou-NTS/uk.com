@@ -171,9 +171,6 @@ public class ReserveLeaveInfo implements Cloneable {
 		// 年月日を更新　←　開始日
 		this.ymd = aggrPeriodWork.getPeriod().start();
 
-		// 消滅処理
-		aggrResult = this.lapsedProcess(aggrPeriodWork, aggrResult);
-
 		// 付与処理
 		aggrResult = this.grantProcess(require, cacheCarrier,companyId, employeeId, aggrPeriodWork, aggrResult,
 					retentionYearlySet, emptYearlyRetentionSetMap);
@@ -204,7 +201,9 @@ public class ReserveLeaveInfo implements Cloneable {
 			// 年月日を更新　←　終了日
 			this.ymd = aggrPeriodWork.getPeriod().end();
 		}
-
+		
+		// 消滅処理
+		aggrResult = this.lapsedProcess(aggrPeriodWork, aggrResult);
 
 		// 「積立年休の集計結果」を返す
 		return aggrResult;
@@ -214,12 +213,12 @@ public class ReserveLeaveInfo implements Cloneable {
 	public boolean isFirstTimeGrant(RsvLeaAggrPeriodWork aggregatePeriodWork) {
 
 		//期間開始日に付与があるか
-		if(!aggregatePeriodWork.isGrantAtr()) {
+		if(!aggregatePeriodWork.getGrantWork().isGrantAtr()) {
 			return false;
 		}
 
 		//初回付与か
-		return aggregatePeriodWork.getGrantNumber() == 1;
+		return aggregatePeriodWork.getGrantWork().getGrantNumber() == 1;
 	}
 
 	/**
@@ -233,7 +232,7 @@ public class ReserveLeaveInfo implements Cloneable {
 			AggrResultOfReserveLeave aggrResult){
 
 		// 消滅フラグを取得
-		if (!aggrPeriodWork.isLapsedAtr()) return aggrResult;
+		if (!aggrPeriodWork.getLapsedAtr().isLapsedAtr()) return aggrResult;
 
 		// 「付与残数データ」を取得
 		val itrGrantRemainingNumber = this.grantRemainingList.listIterator();
@@ -259,7 +258,7 @@ public class ReserveLeaveInfo implements Cloneable {
 
 		// 付与前付与後を判断する
 		GrantPeriodAtr grantPeriodAtr
-			= aggrPeriodWork.judgeGrantPeriodAtr();
+			= aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
 
 		// 積立年休情報残数を更新
 		this.updateRemainingNumber(grantPeriodAtr);
@@ -291,11 +290,11 @@ public class ReserveLeaveInfo implements Cloneable {
 			Optional<Map<String, EmptYearlyRetentionSetting>> emptYearlyRetentionSetMap) {
 
 		// 「付与フラグ」をチェック
-		if (!aggrPeriodWork.isGrantAtr()) return aggrResult;
+		if (!aggrPeriodWork.getGrantWork().isGrantAtr()) return aggrResult;
 
 		// 付与日から期限日を計算
-		if (!aggrPeriodWork.getReserveLeaveGrant().isPresent()) return aggrResult;
-		val reserveLeaveGrant = aggrPeriodWork.getReserveLeaveGrant().get();
+		if (!aggrPeriodWork.getGrantWork().getReserveLeaveGrant().isPresent()) return aggrResult;
+		val reserveLeaveGrant = aggrPeriodWork.getGrantWork().getReserveLeaveGrant().get();
 		val grantDate = reserveLeaveGrant.getGrantYmd();
 		val upperLimitSet = GetUpperLimitSetting.algorithm(require, cacheCarrier,
 				companyId, employeeId, grantDate, retentionYearlySet, emptYearlyRetentionSetMap);
@@ -328,7 +327,7 @@ public class ReserveLeaveInfo implements Cloneable {
 
 		// 付与前付与後を判断する
 		GrantPeriodAtr grantPeriodAtr
-			= aggrPeriodWork.judgeGrantPeriodAtr();
+			= aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
 
 
 		// 積立年休情報残数を更新
@@ -352,7 +351,7 @@ public class ReserveLeaveInfo implements Cloneable {
 	private void lapsedExcessReserveLeave(RsvLeaAggrPeriodWork aggrPeriodWork){
 
 		// 上限日数と積立年休残日数を比較
-		Integer maxDays = aggrPeriodWork.getMaxDays().v();
+		Integer maxDays = aggrPeriodWork.getGrantWork().getMaxDays().v();
 		val noMinus = this.remainingNumber.getReserveLeaveNoMinus();
 		double totalRemain = noMinus.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v();
 		if (maxDays.doubleValue() < totalRemain){
@@ -395,7 +394,7 @@ public class ReserveLeaveInfo implements Cloneable {
 
 			// 付与前付与後を判断する
 			GrantPeriodAtr grantPeriodAtr
-				= aggrPeriodWork.judgeGrantPeriodAtr();
+				= aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
 
 
 			// 積立年休情報残数を更新
@@ -441,7 +440,7 @@ public class ReserveLeaveInfo implements Cloneable {
 
 		// 付与前付与後を判断する
 		GrantPeriodAtr grantPeriodAtr
-			= aggrPeriodWork.judgeGrantPeriodAtr();
+			= aggrPeriodWork.getGrantWork().judgeGrantPeriodAtr();
 
 		for (val tmpReserveLeaveMng : targetList){
 
