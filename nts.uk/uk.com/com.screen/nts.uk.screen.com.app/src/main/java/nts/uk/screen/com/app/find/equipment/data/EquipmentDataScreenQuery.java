@@ -16,6 +16,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationQueryDtoImport;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentPerformInputFormatSetting;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
+import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentFormatSettingRepository;
+import nts.uk.ctx.office.dom.equipment.achievement.repo.EquipmentRecordItemSettingRepository;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationRepository;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
@@ -38,6 +42,12 @@ public class EquipmentDataScreenQuery {
 
 	@Inject
 	private EquipmentDataRepository equipmentDataRepository;
+	
+	@Inject
+	private EquipmentRecordItemSettingRepository equipmentRecordItemSettingRepository;
+	
+	@Inject
+	private EquipmentFormatSettingRepository equipmentFormatSettingRepository;
 
 	@Inject
 	private EmployeeInformationAdapter employeeInformationAdapter;
@@ -71,8 +81,14 @@ public class EquipmentDataScreenQuery {
 	 * @return
 	 */
 	public EquipmentInitSettingDto initEquipmentSetting() {
-		// TODO
-		return null;
+		String cid = AppContexts.user().companyId();
+		// 1.get(ログイン会社ID)
+		List<EquipmentUsageRecordItemSetting> itemSettings = this.equipmentRecordItemSettingRepository
+				.findByCid(cid);
+		// 2.get(ログイン会社ID)
+		Optional<EquipmentPerformInputFormatSetting> formatSetting = this.equipmentFormatSettingRepository
+				.get(cid);
+		return new EquipmentInitSettingDto(itemSettings, formatSetting.orElse(null));
 	}
 
 	/**
@@ -123,6 +139,5 @@ public class EquipmentDataScreenQuery {
 					.collect(Collectors.toList());
 		}
 		return equipmentInfos.stream().map(EquipmentInformationDto::fromDomain).collect(Collectors.toList());
-
 	}
 }
