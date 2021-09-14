@@ -22,14 +22,14 @@ public class Form9LayoutTest {
 	
 	@Test
 	public void testGetter(
-				@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant
+				@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable
 			,	@Injectable Form9Cover cover) {
 		
 		val result = new Form9Layout(new Form9Code("01"), new Form9Name("name")
 				,	true, false
-				,	cover, nursingStaff
-				,	nursingAssitant, Optional.of("tempalteFileId"));
+				,	cover, nursingTable
+				,	nursingAideTable, Optional.of("tempalteFileId"));
 		
 		NtsAssert.invokeGetters(result);
 		
@@ -44,8 +44,8 @@ public class Form9LayoutTest {
 	@Test
 	public void testGetFileName_layout_is_systemFixed(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		val code = new Form9Code("01");
 		val name = new Form9Name("name");
@@ -54,8 +54,8 @@ public class Form9LayoutTest {
 		val layout = new Form9Layout(code , name
 				,	true //システム固定
 				,	false
-				,	cover, nursingStaff
-				,	nursingAssitant, Optional.of("tempalteFileId"));
+				,	cover, nursingTable
+				,	nursingAideTable, Optional.of("tempalteFileId"));
 		//Act
 		val result = layout.getFileName(require);
 		
@@ -74,8 +74,8 @@ public class Form9LayoutTest {
 	@Test
 	public void testGetFileName_layout_is_user_empty(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		val code = new Form9Code("01");
 		val name = new Form9Name("name");
@@ -85,8 +85,8 @@ public class Form9LayoutTest {
 		val layout = new Form9Layout(code , name
 				,	false //ユーザー定義
 				,	false
-				,	cover, nursingStaff
-				,	nursingAssitant, Optional.of(templateId));
+				,	cover, nursingTable
+				,	nursingAideTable, Optional.of(templateId));
 		
 		new Expectations() {
 			{
@@ -112,8 +112,8 @@ public class Form9LayoutTest {
 	@Test
 	public void testGetFileName_layout_is_user_not_empty(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		val code = new Form9Code( "01" );
 		val name = new Form9Name( "name" );
@@ -128,8 +128,8 @@ public class Form9LayoutTest {
 		val layout = new Form9Layout( code , name
 				,	false //ユーザー定義
 				,	false//DUMMY
-				,	cover, nursingStaff//DUMMY
-				,	nursingAssitant//DUMMY
+				,	cover, nursingTable//DUMMY
+				,	nursingAideTable//DUMMY
 				,	Optional.of( templateId ));
 		
 		new Expectations() {
@@ -156,8 +156,8 @@ public class Form9LayoutTest {
 	@Test
 	public void testCreate_layout_is_system_templateId_not_empty(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		NtsAssert.businessException("Msg_2279", () ->{
 			Form9Layout.create(
@@ -165,8 +165,8 @@ public class Form9LayoutTest {
 					,	new Form9Name( "name" )
 					,	true //システム固定
 					,	false//DUMMY
-					,	cover, nursingStaff//DUMMY
-					,	nursingAssitant//DUMMY
+					,	cover, nursingTable//DUMMY
+					,	nursingAideTable//DUMMY
 					,	Optional.of( "templateId" ));
 		});
 		
@@ -181,8 +181,8 @@ public class Form9LayoutTest {
 	@Test
 	public void testCreate_layout_is_user_templateId_empty(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		NtsAssert.businessException("Msg_2280", () ->{
 			Form9Layout.create(
@@ -190,8 +190,8 @@ public class Form9LayoutTest {
 					,	new Form9Name( "name" )
 					,	false //ユーザー定義
 					,	false//DUMMY
-					,	cover, nursingStaff//DUMMY
-					,	nursingAssitant//DUMMY
+					,	cover, nursingTable//DUMMY
+					,	nursingAideTable//DUMMY
 					,	Optional.empty());
 		});
 	}
@@ -205,8 +205,8 @@ public class Form9LayoutTest {
 	@Test
 	public void testCreate_layout_is_user_templateId_not_empty(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 		val code = new Form9Code( "01" );
 		val name = new Form9Name( "name" );
 		val templateId = "templateId";
@@ -215,8 +215,8 @@ public class Form9LayoutTest {
 					,	name
 					,	false //ユーザー定義
 					,	true
-					,	cover, nursingStaff
-					,	nursingAssitant
+					,	cover, nursingTable
+					,	nursingAideTable
 					,	Optional.of(templateId));
 		
 		assertThat( layout.getCode()).isEqualTo( code );
@@ -224,8 +224,8 @@ public class Form9LayoutTest {
 		assertThat( layout.isSystemFixed() ).isFalse();
 		assertThat( layout.isUse() ).isTrue();
 		assertThat( layout.getCover() ).isEqualTo( cover );
-		assertThat( layout.getNursingAssitant() ).isEqualTo( nursingAssitant );
-		assertThat( layout.getNursingStaff() ).isEqualTo( nursingStaff );
+		assertThat( layout.getNursingAideTable() ).isEqualTo( nursingAideTable );
+		assertThat( layout.getNursingTable() ).isEqualTo( nursingTable );
 		assertThat( layout.getTempalteFileId().get()).isEqualTo( templateId );
 
 	}
@@ -239,8 +239,8 @@ public class Form9LayoutTest {
 	@Test
 	public void testCreate_layout_is_system_templateId_empty(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 
 		val code = new Form9Code( "01" );
 		val name = new Form9Name( "name" );
@@ -249,8 +249,8 @@ public class Form9LayoutTest {
 					,	name
 					,	true //ユーザー定義
 					,	true
-					,	cover, nursingStaff
-					,	nursingAssitant
+					,	cover, nursingTable
+					,	nursingAideTable
 					,	Optional.empty());
 		
 		assertThat( layout.getCode()).isEqualTo( code );
@@ -258,8 +258,8 @@ public class Form9LayoutTest {
 		assertThat( layout.isSystemFixed() ).isTrue();
 		assertThat( layout.isUse() ).isTrue();
 		assertThat( layout.getCover() ).isEqualTo( cover );
-		assertThat( layout.getNursingAssitant() ).isEqualTo( nursingAssitant );
-		assertThat( layout.getNursingStaff() ).isEqualTo( nursingStaff );
+		assertThat( layout.getNursingAideTable() ).isEqualTo( nursingAideTable );
+		assertThat( layout.getNursingTable() ).isEqualTo( nursingTable );
 		assertThat( layout.getTempalteFileId()).isEmpty();
 		
 	}
@@ -271,13 +271,13 @@ public class Form9LayoutTest {
 	@Test
 	public void testCopy_user(
 				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingStaffTable nursingStaff
-			,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
 		val destinationCode = new Form9Code("02");
 		val destinationName = new Form9Name("destinationName");
 		val tempalteFileId = "tempalteFileId";
 		val layout = Form9Layout.create(new Form9Code("01") , new Form9Name("name"), false, true
-					,	cover, nursingStaff, nursingAssitant, Optional.of(tempalteFileId));
+					,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId));
 		
 		val destinationLayout = layout.copy(require, destinationCode, destinationName);
 		
@@ -286,8 +286,8 @@ public class Form9LayoutTest {
 		assertThat( destinationLayout.isSystemFixed() ).isFalse();
 		assertThat( destinationLayout.isUse() ).isTrue();
 		assertThat( layout.getCover() ).isEqualTo( cover );
-		assertThat( layout.getNursingAssitant() ).isEqualTo( nursingAssitant );
-		assertThat( layout.getNursingStaff() ).isEqualTo( nursingStaff );
+		assertThat( layout.getNursingAideTable() ).isEqualTo( nursingAideTable );
+		assertThat( layout.getNursingTable() ).isEqualTo( nursingTable );
 		assertThat( layout.getTempalteFileId().get()).isEqualTo( tempalteFileId );
 		
 	}

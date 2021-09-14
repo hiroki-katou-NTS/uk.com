@@ -13,7 +13,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 
 @RunWith(JMockit.class)
-public class Form9NursingStaffTableTest {
+public class Form9NursingTableTest {
 
 	@Test
 	public void testGetter(
@@ -28,7 +28,7 @@ public class Form9NursingStaffTableTest {
 			,	@Injectable OutputColumn concurrentPost
 			,	@Injectable OutputColumn nightShiftOnly) {
 		
-		val result = new Form9NursingStaffTable(fullName, startColumn
+		val result = new Form9NursingTable(fullName, startColumn
 				,	detailSetting, Optional.of(license)
 				,	Optional.of(hospitalWardName), Optional.of(fullTime)
 				,	Optional.of(shortTime), Optional.of(partTime)
@@ -58,7 +58,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn concurrentPost = new OutputColumn("G");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(
+			Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
@@ -80,7 +80,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn startColumn = new OutputColumn("A");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(fullName, startColumn
+			Form9NursingTable.create(fullName, startColumn
 					,	detailSetting, Optional.empty()
 					,	Optional.empty(), Optional.empty()
 					,	Optional.empty(), Optional.empty()
@@ -109,7 +109,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(
+			Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
@@ -139,7 +139,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(
+			Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
@@ -169,7 +169,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");//重複
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(
+			Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
@@ -199,7 +199,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("M");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(
+			Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
@@ -229,7 +229,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("M");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(
+			Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
@@ -259,7 +259,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("M");//重複
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingStaffTable.create(
+			Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
@@ -288,7 +288,7 @@ public class Form9NursingStaffTableTest {
 		OutputColumn concurrentPost = new OutputColumn("H");
 		OutputColumn nightShiftOnly = new OutputColumn("K");
 		
-		val result = Form9NursingStaffTable.create(
+		val result = Form9NursingTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)

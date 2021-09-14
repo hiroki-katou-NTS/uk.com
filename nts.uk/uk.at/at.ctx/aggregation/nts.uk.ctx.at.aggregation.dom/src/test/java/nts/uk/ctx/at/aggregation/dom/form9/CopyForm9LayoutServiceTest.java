@@ -28,19 +28,19 @@ public class CopyForm9LayoutServiceTest {
 	@Test
 	public void copy_oldCopyDestination_system_layout(
 			@Injectable Form9Cover cover
-		,	@Injectable Form9NursingStaffTable nursingStaff
-		,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+		,	@Injectable Form9NursingTable nursingTable
+		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		
 		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingStaff, nursingAssitant, Optional.of(tempalteFileId) );
+				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
 		
 		val oldCopyDestination =  Form9Layout.create( new Form9Code("01") , new Form9Name("name")
 				,	true //システム固定
-				,	true, cover, nursingStaff, nursingAssitant, Optional.empty() );
+				,	true, cover, nursingTable, nursingAideTable, Optional.empty() );
 		
 		new Expectations() {
 			{
@@ -67,8 +67,8 @@ public class CopyForm9LayoutServiceTest {
 	@Test
 	public void copy_isOverwrite_false(
 			@Injectable Form9Cover cover
-		,	@Injectable Form9NursingStaffTable nursingStaff
-		,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+		,	@Injectable Form9NursingTable nursingTable
+		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
@@ -76,11 +76,11 @@ public class CopyForm9LayoutServiceTest {
 		val isOverwrite = false;//上書きしない
 		
 		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingStaff, nursingAssitant, Optional.of(tempalteFileId) );
+				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
 		
 		val oldCopyDestination =  Form9Layout.create( new Form9Code("01") , new Form9Name("name")
 				,	false //ユーザー定義
-				,	true, cover, nursingStaff, nursingAssitant, Optional.of(tempalteFileId) );
+				,	true, cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
 		
 		new Expectations() {
 			{
@@ -107,8 +107,8 @@ public class CopyForm9LayoutServiceTest {
 	@Test
 	public void copy_isOverwrite_true(
 			@Injectable Form9Cover cover
-		,	@Injectable Form9NursingStaffTable nursingStaff
-		,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+		,	@Injectable Form9NursingTable nursingTable
+		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
@@ -116,11 +116,11 @@ public class CopyForm9LayoutServiceTest {
 		val isOverwrite = true;//上書きする
 		
 		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingStaff, nursingAssitant, Optional.of(tempalteFileId) );
+				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
 		
 		val oldCopyDestination =  Form9Layout.create( new Form9Code("01") , new Form9Name("name")
 				,	false //ユーザー定義
-				,	true, cover, nursingStaff, nursingAssitant, Optional.of(tempalteFileId) );
+				,	true, cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
 		
 		val newLayout = copyResource.copy(require, destinationCode, destinationName);
 		
@@ -149,8 +149,8 @@ public class CopyForm9LayoutServiceTest {
 	@Test
 	public void copy_destinationCodeIsNew(
 			@Injectable Form9Cover cover
-		,	@Injectable Form9NursingStaffTable nursingStaff
-		,	@Injectable Form9NursingAssitantTable nursingAssitant) {
+		,	@Injectable Form9NursingTable nursingTable
+		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
 		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
@@ -158,7 +158,7 @@ public class CopyForm9LayoutServiceTest {
 		val isOverwrite = true;
 		
 		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingStaff, nursingAssitant, Optional.of(tempalteFileId) );
+				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
 		
 		val newLayout = copyResource.copy(require, destinationCode, destinationName);
 		

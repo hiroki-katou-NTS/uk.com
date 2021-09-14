@@ -18,7 +18,7 @@ import nts.gul.util.OptionalUtil;
  */
 @Getter
 @AllArgsConstructor
-public class Form9NursingAssitantTable implements DomainValue{
+public class Form9NursingAideTable implements DomainValue{
 	
 	/** 氏名 **/
 	private final OutputColumn fullName;
@@ -64,7 +64,7 @@ public class Form9NursingAssitantTable implements DomainValue{
 	 * @param nightShiftOnly 夜勤専従
 	 * @return
 	 */
-	public static Form9NursingAssitantTable create(
+	public static Form9NursingAideTable create(
 				OutputColumn fullName, OutputColumn startColumn
 			,	DetailSettingOfForm9 detailSetting, Optional<OutputColumn> hospitalWardName
 			,	Optional<OutputColumn> fullTime, Optional<OutputColumn> shortTime
@@ -73,7 +73,7 @@ public class Form9NursingAssitantTable implements DomainValue{
 			,	Optional<OutputColumn> nightShiftOnly
 				){
 		
-		val items = Arrays.asList(
+		val columns = Arrays.asList(
 					Optional.of(fullName), Optional.of(startColumn)
 				,	hospitalWardName, fullTime, shortTime, partTime
 				,	officeWork, concurrentPost, nightShiftOnly)
@@ -81,15 +81,15 @@ public class Form9NursingAssitantTable implements DomainValue{
 				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
 		
-		val itemsDistinct = items.stream()
+		val columnsDistinct = columns.stream()
 				.distinct()
 				.collect(Collectors.toList());
 		
-		if(items.size() != itemsDistinct.size()) {
+		if(columns.size() != columnsDistinct.size()) {
 			throw new BusinessException("Msg_2244");
 		}
 		
-		return new Form9NursingAssitantTable(fullName, startColumn, detailSetting
+		return new Form9NursingAideTable(fullName, startColumn, detailSetting
 				,	hospitalWardName, fullTime, shortTime, partTime, officeWork
 				,	concurrentPost, nightShiftOnly);
 	}

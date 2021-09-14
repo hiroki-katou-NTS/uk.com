@@ -34,10 +34,10 @@ public class Form9Layout implements DomainAggregate {
 	private Form9Cover cover;
 	
 	/** 看護職員表 **/
-	private Form9NursingStaffTable nursingStaff;
+	private Form9NursingTable nursingTable;
 	
 	/** 看護補助者表 **/
-	private Form9NursingAssitantTable nursingAssitant;
+	private Form9NursingAideTable nursingAideTable;
 	
 	/** テンプレート **/
 	private Optional<String> tempalteFileId;
@@ -49,15 +49,15 @@ public class Form9Layout implements DomainAggregate {
 	 * @param isSystemFixed システム固定か
 	 * @param isUse 利用区分
 	 * @param cover 表紙
-	 * @param nursingStaff 看護職員表
-	 * @param nursingAssitant 看護補助者表 
+	 * @param nursingTable 看護職員表
+	 * @param nursingAideTable 看護補助者表 
 	 * @param tempalteFileId テンプレート
 	 * @return
 	 */
 	public static Form9Layout create(Form9Code code
 			,	Form9Name name, boolean isSystemFixed, boolean isUse
-			,	Form9Cover cover, Form9NursingStaffTable nursingStaff
-			,	Form9NursingAssitantTable nursingAssitant
+			,	Form9Cover cover, Form9NursingTable nursingTable
+			,	Form9NursingAideTable nursingAideTable
 			,	Optional<String> tempalteFileId) {
 		if(isSystemFixed && tempalteFileId.isPresent()) {
 			throw new BusinessException("Msg_2279");
@@ -68,7 +68,7 @@ public class Form9Layout implements DomainAggregate {
 		}
 		
 		return new Form9Layout(code, name, isSystemFixed, isUse
-				,	cover, nursingStaff, nursingAssitant, tempalteFileId);
+				,	cover, nursingTable, nursingAideTable, tempalteFileId);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class Form9Layout implements DomainAggregate {
 		
 		if(!this.isSystemFixed) {
 			
-			return new Form9Layout(destinationCode, destinationName, false, true, this.cover, this.nursingStaff, this.nursingAssitant, this.tempalteFileId);
+			return new Form9Layout(destinationCode, destinationName, false, true, this.cover, this.nursingTable, this.nursingAideTable, this.tempalteFileId);
 			
 		}
 		

@@ -13,7 +13,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 
 @RunWith(JMockit.class)
-public class Form9NursingAssitantTableTest {
+public class Form9NursingAideTableTest {
 	
 	@Test
 	public void testGetter(
@@ -28,7 +28,7 @@ public class Form9NursingAssitantTableTest {
 			,	@Injectable OutputColumn concurrentPost
 			,	@Injectable OutputColumn nightShiftOnly) {
 		
-		val nursingAssitantTable = new Form9NursingAssitantTable(
+		val nursingAssitantTable = new Form9NursingAideTable(
 					fullName, startColumn
 				,	detailSetting, Optional.of(hospitalWardName)
 				,	Optional.of(fullTime), Optional.of(shortTime)
@@ -59,7 +59,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAssitantTable.create(
+			Form9NursingAideTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
@@ -89,7 +89,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAssitantTable.create(
+			Form9NursingAideTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
@@ -119,7 +119,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");//重複
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAssitantTable.create(
+			Form9NursingAideTable.create(
 						fullName, startColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
@@ -149,7 +149,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAssitantTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, startColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -178,7 +178,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("I");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAssitantTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, startColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -207,7 +207,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("I");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAssitantTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, startColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -236,7 +236,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("A");//重複
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAssitantTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, startColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -264,7 +264,7 @@ public class Form9NursingAssitantTableTest {
 		OutputColumn concurrentPost = new OutputColumn("H");
 		OutputColumn nightShiftOnly = new OutputColumn("I");
 		
-		val result = Form9NursingAssitantTable.create(fullName, startColumn
+		val result = Form9NursingAideTable.create(fullName, startColumn
 				,	detailSetting, Optional.of(hospitalWardName)
 				,	Optional.of(fullTime), Optional.of(shortTime)
 				,	Optional.of(partTime), Optional.of(officeWork)

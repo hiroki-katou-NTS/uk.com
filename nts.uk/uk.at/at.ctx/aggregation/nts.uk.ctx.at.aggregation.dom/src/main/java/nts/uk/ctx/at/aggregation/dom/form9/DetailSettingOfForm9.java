@@ -15,15 +15,15 @@ import nts.arc.layer.dom.objecttype.DomainValue;
 public class DetailSettingOfForm9 implements DomainValue {
 	
 	/** 明細開始行 **/
-	private final OutputRow detailStartLine;
+	private final OutputRow bodyStartRow;
 	
 	/** 表示人数 **/
 	private final OnePageDisplayNumerOfPeople maxNumerOfPeople;
 	
 	/** 日にち行 **/
-	private final OutputRow dateLine;
+	private final OutputRow rowDate;
 	
 	/** 曜日行 **/
-	private final OutputRow dayLine;
+	private final OutputRow rowDayOfWeek;
 	
 }

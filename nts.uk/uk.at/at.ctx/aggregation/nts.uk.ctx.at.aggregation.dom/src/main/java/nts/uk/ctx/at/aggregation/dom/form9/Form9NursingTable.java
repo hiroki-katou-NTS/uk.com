@@ -18,7 +18,7 @@ import nts.gul.util.OptionalUtil;
  */
 @Getter
 @AllArgsConstructor
-public class Form9NursingStaffTable implements DomainValue{
+public class Form9NursingTable implements DomainValue{
 	
 	/** 氏名 **/
 	private final OutputColumn fullName;
@@ -64,7 +64,7 @@ public class Form9NursingStaffTable implements DomainValue{
 	 * @param nightShiftOnly 夜勤専従
 	 * @return
 	 */
-	public static Form9NursingStaffTable create(
+	public static Form9NursingTable create(
 				OutputColumn fullName, OutputColumn startColumn
 			,	DetailSettingOfForm9 detailSetting, Optional<OutputColumn> license
 			,	Optional<OutputColumn> hospitalWardName, Optional<OutputColumn> fullTime
@@ -73,7 +73,7 @@ public class Form9NursingStaffTable implements DomainValue{
 			,	Optional<OutputColumn> nightShiftOnly
 				){
 		
-		val items = Arrays.asList(
+		val columns = Arrays.asList(
 					Optional.of(fullName), Optional.of(startColumn)
 				,	license, hospitalWardName, fullTime, shortTime, partTime
 				,	concurrentPost, nightShiftOnly)
@@ -81,15 +81,15 @@ public class Form9NursingStaffTable implements DomainValue{
 				.flatMap(OptionalUtil::stream)
 				.collect(Collectors.toList());
 		
-		val itemsDistinct = items.stream()
+		val columnsDistinct = columns.stream()
 				.distinct()
 				.collect(Collectors.toList());
 		
-		if(items.size() != itemsDistinct.size()) {
+		if(columns.size() != columnsDistinct.size()) {
 			throw new BusinessException("Msg_2244");
 		}
 		
-		return new Form9NursingStaffTable(fullName, startColumn
+		return new Form9NursingTable(fullName, startColumn
 				,	detailSetting, license
 				,	hospitalWardName, fullTime, shortTime, partTime
 				,	concurrentPost, nightShiftOnly);

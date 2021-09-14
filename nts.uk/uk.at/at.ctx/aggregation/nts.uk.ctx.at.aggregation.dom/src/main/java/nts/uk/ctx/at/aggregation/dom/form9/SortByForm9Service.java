@@ -29,7 +29,7 @@ public class SortByForm9Service {
 		val empJobTitleHistories = require.getAffJobTitleHis(baseDate, employeeIds);
 		val empBasicInfos = require.getEmployeeCodeAndDisplayNameImportByEmployeeIds(employeeIds);
 		
-		val sortEmpInfos = employeeIds.stream().map(employeeId ->{
+		List<Form9SortEmployeeInfo> sortEmpInfos = employeeIds.stream().map(employeeId ->{
 			val licenseCls = empLicenseClassifications.stream()
 					.filter(license -> license.getEmpID().equals(employeeId)
 							&& license.getOptLicenseClassification().isPresent())
@@ -41,10 +41,10 @@ public class SortByForm9Service {
 			val employeeCode = empBasicInfos.stream()
 					.filter(emp -> emp.getEmployeeId().equals(employeeId))
 					.findFirst().map(c -> c.getEmployeeCode()).orElse(null);
-			
+
 			return new Form9SortEmployeeInfo(employeeId, licenseCls, jobTitleCode, employeeCode);
 			
-		}).collect(Collectors.toList());
+			}).collect(Collectors.toList());
 		
 		Comparator<Form9SortEmployeeInfo> compare;
 		compare = Comparator.comparing(Form9SortEmployeeInfo::getLicenseClassification, Comparator.nullsLast(Comparator.naturalOrder()));

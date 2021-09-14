@@ -45,13 +45,13 @@ public class Form9Cover implements DomainValue{
 			,	Optional<OutputColumn> cellTitle
 			,	Optional<OutputColumn> cellPrintPeriod) {
 		
-		val cells = Arrays.asList(cellYear, cellMonth, cellStartTime
+		val columns = Arrays.asList(cellYear, cellMonth, cellStartTime
 					, cellEndTime,cellTitle, cellPrintPeriod)
 				.stream()
 				.flatMap(OptionalUtil::stream).collect(Collectors.toList());
-		val cellsDistinct = cells.stream().distinct().collect(Collectors.toList());
+		val columnsDistinct = columns.stream().distinct().collect(Collectors.toList());
 		
-		if(cells.size() != cellsDistinct.size()) {
+		if(columns.size() != columnsDistinct.size()) {
 			throw new BusinessException("Msg_2244");
 		}
 		
