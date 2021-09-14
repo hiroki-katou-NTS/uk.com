@@ -16,30 +16,19 @@ import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.CreateErrorInfo;
 import nts.uk.ctx.at.function.dom.alarm.createerrorinfo.OutputErrorInfo;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSetting;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmListExecutionMailSettingRepository;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRole;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.AlarmMailSendingRoleRepository;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.IndividualWkpClassification;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.MailSettingNormalRepository;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.NormalAutoClassification;
-import nts.uk.ctx.at.function.dom.alarm.mailsettings.PersonalManagerClassification;
+import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.SendEmailService;
 import nts.uk.ctx.at.function.dom.alarmworkplace.checkcondition.WorkplaceCategory;
 import nts.uk.ctx.at.function.dom.alarmworkplace.sendemail.WorkplaceSendEmailService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -137,10 +126,12 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                 Map<String, String> roleMap = roleIdWorkDomService(entry.getValue());
                 List<String> filterManager = new ArrayList<>();
                 //取得したMap＜社員ID、ロールID＞をループする
+                if (roleMap.size() == 0) {
+                    mailSendFlag = false;
+                }
                 for (Map.Entry<String, String> role : roleMap.entrySet()) {
                         OptionalInt range = roleAdaptor.findEmpRangeByRoleID(role.getValue());
-                        if (range.isPresent() && range.getAsInt() == EmployeeReferenceRange.ONLY_MYSELF.value) {
-                            // filterManager.add(role.getKey());
+                        if (!range.isPresent() || range.getAsInt() == EmployeeReferenceRange.ONLY_MYSELF.value) {
                             mailSendFlag = false;
                             break;
                         }
@@ -149,7 +140,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                 mapFiler.put(entry.getKey(), filterManager);
             }
             //取得したアラームメール送信ロール．マスタチェック結果を就業担当へ送信をチェックする
-            if (sendingRole.isPresent() && sendingRole.get().isSendResult()) {
+            if (sendingRole.get().isSendResult()) {
                 //アラームリスト抽出結果にカテゴリ「マスタチェック（基本）のデータがあるかチェック
                 boolean isExtractData = command.listValueExtractAlarmDto
                         .stream()
@@ -243,7 +234,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
             if (userId.isPresent()) {
                 //ユーザIDからロールセットを取得する
                 val role = roleAdapter.getRoleSetFromUserId(userId.get(), GeneralDate.today());
-                if (role.isPresent() && role.get().getEmploymentRoleId() != null) {
+                if (role.isPresent() && StringUtils.isNotEmpty(role.get().getEmploymentRoleId())) {
                     map.put(empId, role.get().getEmploymentRoleId());
                 }
             }
