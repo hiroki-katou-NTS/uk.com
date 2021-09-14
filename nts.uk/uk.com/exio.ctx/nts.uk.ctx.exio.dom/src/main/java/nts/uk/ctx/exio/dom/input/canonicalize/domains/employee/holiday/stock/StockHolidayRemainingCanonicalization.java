@@ -72,7 +72,8 @@ public class StockHolidayRemainingCanonicalization  extends IndependentCanonical
 	
 	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
 		//このドメインのKeyはSIDなので、Stringで取り出す。
-		return new KeyValues(Arrays.asList(interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString()));
+		return new KeyValues(Arrays.asList(interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString()
+																  ,interm.getItemByNo(2).get().getDate()));
 	}
 
 	@Override
