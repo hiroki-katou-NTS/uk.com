@@ -69,7 +69,9 @@ public class SpecialHolidayGrantRemainCanonicalization extends EmployeeIndepende
 			// 罪崩し日数
 			.add(104, new BigDecimal(0.0))
 			// 上限超過消滅日数
-			.add(105, new BigDecimal(0.0));
+			.add(105, new BigDecimal(0.0))
+			// 上限超過消滅時間
+			.add(106, 0);
 	}
 	
 	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
