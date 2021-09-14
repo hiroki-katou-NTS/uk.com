@@ -120,7 +120,7 @@ module nts.uk.com.cmf001.x {
 				.pause(1000)).done((info: any) => {
 
 					let process = info.taskDatas.find(d => d.key === "process");
-					if (process.valueAsString === "failed") {
+					if (process && process.valueAsString === "failed") {
 						ui.dialog.alert(info.taskDatas.find(d => d.key === "message").valueAsString);
 						this.processEnd();
 						return;
