@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.GrantW
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.MaxSettingPeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.NextReserveLeaveGrant;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
+import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.RsvLeaAggrPeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveAggregatePeriodWork;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -108,12 +109,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 		// 積立年休付与残数データ　取得
 		List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas = new ArrayList<>();
-//		if (monthlyCalcDailys.isPresent()){
-//			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
-//		}
-//		else {
-			rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
-//		}
+		rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId);
 
 		// 集計開始日時点の積立年休情報を作成
 		ReserveLeaveInfo reserveLeaveInfo = createInfoAsOfPeriodStart(
@@ -241,8 +237,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 			// 開始日までの積立年休残数を計算　（締め開始日～集計開始日前日）
 			val aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(
-//					require, cacheCarrier,
-					null, null,
+					require, cacheCarrier,
 					param.getCompanyId(),
 					param.getEmployeeId(),
 					new DatePeriod(closureStartOpt.get(), aggrStart.addDays(-1)), // 集計期間
@@ -460,7 +455,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 		for (val remainingData : remainingDatas){
 			val nextDayOfDeadline = remainingData.getDeadline().addDays(1);
 			dividedDayMap.putIfAbsent(nextDayOfDeadline, new RsvLeaDividedDay(nextDayOfDeadline));
-			dividedDayMap.get(nextDayOfDeadline).setLapsedAtr(true);
+			dividedDayMap.get(nextDayOfDeadline).getLapsedWork().setLapsedAtr(true);
 		}
 
 		// 「次回積立年休付与リスト」を全て「処理単位分割日リスト」に追加
@@ -470,8 +465,8 @@ public class GetRsvLeaRemNumWithinPeriod {
 			if (grantDate.after(nextDayOfPeriodEnd)) continue;
 
 			dividedDayMap.putIfAbsent(grantDate, new RsvLeaDividedDay(grantDate));
-			dividedDayMap.get(grantDate).setGrantAtr(true);
-			dividedDayMap.get(grantDate).setNextReserveLeaveGrant(Optional.of(NextReserveLeaveGrant.of(
+			dividedDayMap.get(grantDate).getGrantWork().setGrantAtr(true);
+			dividedDayMap.get(grantDate).getGrantWork().setReserveLeaveGrant(Optional.of(NextReserveLeaveGrant.of(
 					nextReserveLeaveGrant.getGrantYmd(),
 					nextReserveLeaveGrant.getGrantDays(),
 					GeneralDate.max())));
@@ -501,6 +496,9 @@ public class GetRsvLeaRemNumWithinPeriod {
 			RsvLeaAggrPeriodWork startWork = new RsvLeaAggrPeriodWork();
 			val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
 			startWork.setPeriod(new DatePeriod(period.start(), startWorkEnd));
+			// 消滅　←最初の「処理単位分割日．消滅情報WORK」
+			startWork.setLapsedAtr(dividedDayList.get(0).getLapsedWork());
+			
 			results.add(startWork);
 		}
 
@@ -513,7 +511,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 			if (index + 1 < dividedDayList.size()) nextDividedDay = dividedDayList.get(index + 1);
 
 			// 付与フラグをチェック
-			if (nowDividedDay.isGrantAtr()) {
+			if (nowDividedDay.getGrantWork().isGrantAtr()) {
 				grantPeriodAtr = GrantPeriodAtr.AFTER_GRANT;
 			}
 
@@ -532,14 +530,12 @@ public class GetRsvLeaRemNumWithinPeriod {
 			}
 
 			// 積立年休集計期間WORKを作成し、Listに追加
-			RsvLeaAggrPeriodWork nowWork = RsvLeaAggrPeriodWork.of(
+			RsvLeaAggrPeriodWork nowWork = new RsvLeaAggrPeriodWork(
 					workPeriod,
-					nowDividedDay.getEndWork(),
-					nowDividedDay.isGrantAtr(),
-					grantPeriodAtr,
-					nowDividedDay.isLapsedAtr(),
-					maxDays,
-					nowDividedDay.getNextReserveLeaveGrant());
+					nowDividedDay.getGrantWork(),
+					nextDividedDay != null ? nextDividedDay.getLapsedWork() : new ReserveLeaveLapsedWork(false),
+					nowDividedDay.getEndWork()
+				);			
 			results.add(nowWork);
 		}
 

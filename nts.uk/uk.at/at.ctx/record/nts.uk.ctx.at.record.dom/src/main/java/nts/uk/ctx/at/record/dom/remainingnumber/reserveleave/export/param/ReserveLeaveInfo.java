@@ -239,8 +239,8 @@ public class ReserveLeaveInfo implements Cloneable {
 		while (itrGrantRemainingNumber.hasNext()){
 			val grantRemainingNumber = itrGrantRemainingNumber.next();
 
-			// 期限日が積立年休集計期間WORK.期間.開始日の前日でなければ、消滅処理しない
-			if (!grantRemainingNumber.getDeadline().equals(aggrPeriodWork.getPeriod().start().addDays(-1))){
+			// 期限日=積立年休集計期間WORK．期間．終了日でなければ、消滅処理しない
+			if (!grantRemainingNumber.getDeadline().equals(aggrPeriodWork.getPeriod().end())){
 				continue;
 			}
 

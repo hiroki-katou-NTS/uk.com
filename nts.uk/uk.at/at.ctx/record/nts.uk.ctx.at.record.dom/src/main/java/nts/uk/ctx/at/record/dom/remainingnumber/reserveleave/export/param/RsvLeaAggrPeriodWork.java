@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetentio
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class RsvLeaAggrPeriodWork {
 
 	/** 期間 */
@@ -24,7 +26,7 @@ public class RsvLeaAggrPeriodWork {
 	private ReserveLeaveGrantWork grantWork;
 	
 	/** 消滅 */
-	ReserveLeaveLapsedWork lapsedAtr;
+	private ReserveLeaveLapsedWork lapsedAtr;
 	
 	/** 終了日 */
 	private RsvLeaNextDayAfterPeriodEndWork endWork;
