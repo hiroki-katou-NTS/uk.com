@@ -11,14 +11,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -31,7 +31,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -44,7 +44,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -54,7 +54,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -64,28 +64,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -108,7 +108,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -177,7 +177,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -1896,7 +1896,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -7364,7 +7364,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -17697,13 +17698,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 var nts;
 (function (nts) {
     var uk;
@@ -17768,7 +17762,7 @@ var nts;
                                         else {
                                             var exist = _.find(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
                                             if (!exist) {
-                                                accessor.checked(__spreadArrays(checkeds, [value_1]));
+                                                accessor.checked(checkeds.concat([value_1]));
                                             }
                                             else {
                                                 _.remove(checkeds, function (c) { return _.isEqual(c, ko.toJS(value_1)); });
@@ -20435,7 +20429,7 @@ var nts;
                             var delKeyCode = [46];
                             var dotWithNumpadKeyCodes = [110, 190]; //'.'
                             var minusWithNumpadKeyCodes = [109, 189]; //'-'
-                            var allowedKeyCodes = __spreadArrays(numberKeyCodes, numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
+                            var allowedKeyCodes = numberKeyCodes.concat(numberNumpadKeyCodes, backspaceKeyCode, delKeyCode, dotWithNumpadKeyCodes, minusWithNumpadKeyCodes);
                             if (allowedKeyCodes.indexOf(dorgi.keyCode) == -1) {
                                 $input.val(dval);
                                 $input.data(_kc, null);
@@ -21603,7 +21597,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -23079,7 +23073,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -23798,7 +23792,7 @@ var nts;
                                         read: function () {
                                             var ds = ko.toJS(accessor.dataSource);
                                             return ds.filter(function (d) { return d.visible !== false; })
-                                                .map(function (d) { return (__assign(__assign({}, d), { active: active,
+                                                .map(function (d) { return (__assign({}, d, { active: active,
                                                 tabindex: tabindex, dataBind: 'vertical-link' !== dir ? undefined : {
                                                     'btn-link': d.title,
                                                     icon: d.icon || 'CHECKBOX',
@@ -24152,7 +24146,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -34246,7 +34241,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -38624,7 +38620,7 @@ var nts;
                 Object.defineProperties($jump, {
                     self: {
                         value: function $to() {
-                            $jump.apply(null, __spreadArrays(Array.prototype.slice.apply(arguments, [])));
+                            $jump.apply(null, Array.prototype.slice.apply(arguments, []).slice());
                         }
                     },
                     blank: {
@@ -40277,7 +40273,7 @@ var nts;
                             return;
                         }
                         if (baseID.length >= 500) {
-                            var oldSelectedID = _.map(getSelected($grid), "id"), shouldRemove = _.difference(oldSelectedID, selectedId), shouldSelect = _.difference(selectedId, oldSelectedID);
+                            var oldSelectedID = _.map(getSelected($grid), "id"), shouldRemove = _.difference(_.isArray(oldSelectedID) ? oldSelectedID : [oldSelectedID], selectedId), shouldSelect = _.difference(_.isArray(selectedId) ? selectedId : [selectedId], oldSelectedID);
                             /** When data source large (data source > 500 (?)):
                                     if new value for select = half of data source
                                         or removed selected value = 1/3 of data source,
@@ -47970,7 +47966,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -48365,8 +48362,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
