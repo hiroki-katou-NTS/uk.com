@@ -32,6 +32,7 @@ import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -351,13 +352,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     private ResultCheckInputCode checkInputTimeCode(Integer startWorkTime, Integer endWorkTime) {
         // 出勤時刻、退勤時刻のいずれかが空白の場合
-        if (startWorkTime == null || endWorkTime == null) {
-            return new ResultCheckInputCode(false, "Msg_1912");
-        } else {
-            // 出勤時刻＞退勤時刻となっている場合
-            if (startWorkTime > endWorkTime) {
-                return new ResultCheckInputCode(false, "Msg_1913");
-            }
+        /*
+         * http://192.168.50.4:3000/issues/119775
+         * if (startWorkTime == null || endWorkTime == null) { return new
+         * ResultCheckInputCode(false, "Msg_1912"); } else { }
+         */
+        // 出勤時刻＞退勤時刻となっている場合
+        if (startWorkTime > endWorkTime) {
+            return new ResultCheckInputCode(false, "Msg_1913");
         }
         return new ResultCheckInputCode(true, null);
     }
@@ -693,6 +695,71 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         content.getOpAchievementDetail().get().setOpWorkTime(opWorkTime);
         content.getOpAchievementDetail().get().setOpLeaveTime(opLeaveTime);
 
+    }
+
+    @Override
+    public BusinessTripInfoOutput setInitValueAppWorkTime(BusinessTripInfoOutput input) {
+        val result = input;
+        
+        Optional<List<ActualContentDisplay>> opActualContentDisplayLst = result.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
+        // 申請表示情報.申請設定(基準日関連なし）.表示する実績内容.実績詳細
+        if (opActualContentDisplayLst.isPresent()) {
+            for (int i = 0; i < opActualContentDisplayLst.get().size(); i++) {
+                final int index = i;
+                
+                Optional<AchievementDetail> optAchievementDetail = opActualContentDisplayLst.get().get(index).getOpAchievementDetail();
+                if (optAchievementDetail.isPresent()) {
+                    // 対象項目いずれかが未登録の場合
+                    Optional<Integer> opWorkTime = optAchievementDetail.get().getOpWorkTime();
+                    Optional<Integer> opLeaveTime = optAchievementDetail.get().getOpLeaveTime();
+                    if (!opWorkTime.isPresent() || !opLeaveTime.isPresent()) {
+                        // アルゴリズム「出張申請就業時刻を取得する」を実行する
+                        WorkType workType = result.getWorkTypeBeforeChange().isPresent() ? 
+                                result.getWorkTypeBeforeChange().get().stream()
+                                .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
+                                .map(x -> x.getWorkType())
+                                .findFirst().orElse(null) : null;
+                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, optAchievementDetail.get().getWorkTimeCD());
+                        
+                        // 未登録の対象項目に値をセットする
+                        if (!opWorkTime.isPresent()) {
+                            optAchievementDetail.get().setOpWorkTime(workTimeGetOutput.getStartTime1());
+                        }
+                        if (!opLeaveTime.isPresent()) {
+                            optAchievementDetail.get().setOpLeaveTime(workTimeGetOutput.getEndTime1());
+                        }
+                        if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
+                            optAchievementDetail.get().setOpWorkTime2(workTimeGetOutput.getStartTime2());
+                        }
+                        if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
+                            optAchievementDetail.get().setOpDepartureTime2(workTimeGetOutput.getEndTime2());
+                        }
+                    }
+                }
+            }
+        }
+        
+        result.setActualContentDisplay(opActualContentDisplayLst);
+        
+        return result;
+    }
+
+    @Override
+    public WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTimeCd) {
+        // 就業時間帯コードが存在するか
+        if (workTimeCd == null) {
+            return new WorkTimeGetOuput();
+        }
+        
+        // キャッシュがあれば利用する
+        if (true) {
+            
+        }
+        
+        // ドメインモデル「所定時間設定」を取得する
+        
+        
+        return null;
     }
 
 }

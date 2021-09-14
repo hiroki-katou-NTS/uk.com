@@ -292,7 +292,9 @@ public class BusinessTripFinder {
         tripRequestInfoOutput.setActualContentDisplay(opActualContentDisplayLst);
         tripRequestInfoOutput.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         result.setResult(true);
-        result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(tripRequestInfoOutput));
+//        result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(tripRequestInfoOutput));
+        // アルゴリズム「出張申請就業時刻の初期値をセットする」を実行する
+        result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripService.setInitValueAppWorkTime(tripRequestInfoOutput)));
 
         return result;
     }

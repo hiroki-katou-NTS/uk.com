@@ -75,5 +75,24 @@ public interface BusinessTripService {
      * @return  infoOutput    出張申請の表示情報
      */
     BusinessTripInfoOutput checkChangeWorkTypeCode(GeneralDate inputDate, BusinessTripInfoOutput infoOutput, String inputCode);
+    
+    /**
+     * 出張申請就業時刻の初期値をセットする
+     * @param input 出張申請の表示情報
+     * @return 出張申請の表示情報
+     */
+    BusinessTripInfoOutput setInitValueAppWorkTime(BusinessTripInfoOutput input);
+    
+    /**
+     * 出張申請就業時刻を取得する
+     * @param workType 勤務種類
+     * @param workTypeCd 就業時間帯コード
+     * @return 開始時刻１(Optional）
+                                    終了時刻１(Optional）
+                                    開始時刻２(Optional）
+                                    終了時刻２(Optional）
+
+     */
+    WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTypeCd);
 
 }
