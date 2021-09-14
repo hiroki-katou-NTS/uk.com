@@ -51,7 +51,6 @@
 }
 
 .holiday-button{
-	margin-left: 50px;
 	height: 50px;
 }
 
@@ -78,4 +77,16 @@ element.style {
 	overflow: hidden;
 	width: 100px;
 	text-overflow: ellipsis;
+}
+.kdr-right{
+    float: right;
+    margin-left: 300px;
+    position: absolute;
+}
+.kdr-left{
+    position: absolute;
+    margin-left: 8px;
+}
+#holidayCode{
+	margin-left: -50px;
 }
