@@ -55,6 +55,7 @@ public class RefectActualResult implements DomainValue, Cloneable {
 	public RefectActualResult clone() {
 		return new RefectActualResult(workInforStamp.map(x -> x.clone()).orElse(null),
 				workTimeCode.map(x -> new WorkTimeCode(x.v())).orElse(null), overtimeDeclaration
-						.map(x -> new OvertimeDeclaration(x.getOverTime(), x.getOverLateNightTime())).orElse(null));
+						.map(x -> new OvertimeDeclaration(x.getOverTime(), x.getOverLateNightTime())).orElse(null),
+						workGroup.map(m -> m).orElse(null));
 	}
 }
