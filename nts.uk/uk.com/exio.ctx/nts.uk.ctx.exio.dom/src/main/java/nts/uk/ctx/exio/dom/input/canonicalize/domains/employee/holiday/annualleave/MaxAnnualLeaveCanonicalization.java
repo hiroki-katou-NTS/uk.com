@@ -1,10 +1,12 @@
 package nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.annualleave;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,19 +58,20 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 		
 		CanonicalizeUtil.forEachEmployee(require, context, employeeCodeCanonicalization, interms -> {
 			for(val interm : interms) {
-					val results = FixedItem.getLackItemError(interm);
-					if(!results.isEmpty()) {
-						results.stream().peek(result ->require.add(context, result));
+					val error = FixedItem.getLackItemError(interm);
+					if(error.isPresent()) {
+						require.add(context, error.get());
 						continue;
 					}
 					val keyValue = getPrimaryKeys(interm, workspace);
 					if (importingKeys.contains(keyValue)) {
-						require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
+						require.add(context, ExternalImportError.record(interm.getRowNo(), "社員コードが重複しています。"));
 						return; // 次のレコードへ
 					}
-					
+
 					//既存データのチェックと保存は継承先に任せる
 					super.canonicalize(require, context, interm, getPrimaryKeys(interm, workspace));
+					importingKeys.add(keyValue);
 				}
 		});
 	}
@@ -84,19 +87,17 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 	}
 
 	private static class FixedItem{
-		//半日上限回数、半休使用回数、残回数
-		private static final List<Integer> timesNumbers = new ArrayList<>();
+		private static final Map<Integer,String> timesNumbers = new HashMap<>();
 		static {
-			timesNumbers.add(2);
-			timesNumbers.add(3);
-			timesNumbers.add(4);
+			timesNumbers.put(2,"半日上限回数");
+			timesNumbers.put(3,"半休使用回数");
+			timesNumbers.put(4,"残回数");
 		}
-		//時間年休上限時間、時間年休使用時間、残時間
-		private static final List<Integer> timeNumbers = new ArrayList<>();
+		private static final Map<Integer,String> timeNumbers = new HashMap<>();
 		static {
-			timeNumbers.add(5);
-			timeNumbers.add(6);
-			timeNumbers.add(7);
+			timeNumbers.put(5,"時間年休上限時間");
+			timeNumbers.put(6,"時間年休使用時間");
+			timeNumbers.put(7,"残時間");
 		}
 		
 		/**
@@ -104,26 +105,28 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 		 * 項目を歯抜けで受入れようとしている
 		 * @param interm 
 		 */
-		public static List<ExternalImportError> getLackItemError(IntermediateResult interm) {
-			val timeErrors = hasTimeAllItemNoOrAllNothing(interm, timesNumbers)
-					.stream()
-					.map(errorItemNo -> new ExternalImportError(interm.getRowNo(), errorItemNo, "値がありません。"))
-					.collect(Collectors.toList());
-			val timesErrors = hasTimeAllItemNoOrAllNothing(interm, timeNumbers)
-					.stream()
-					.map(errorItemNo -> new ExternalImportError(interm.getRowNo(), errorItemNo, "値がありません。"))
-					.collect(Collectors.toList());
-			if(timeErrors.isEmpty() && timesErrors.isEmpty()) {
-				return Collections.emptyList();
+		public static Optional<ExternalImportError> getLackItemError(IntermediateResult interm) {
+			if(!hasTimeAllItemNoOrAllNothing(interm, timesNumbers.keySet())) {
+				return Optional.of(ExternalImportError.record(interm.getRowNo(),
+							timesNumbers.values().stream().collect(Collectors.joining("、")) 
+							+ "は同時に受入れなければなりません。"
+						));
 			}
-			return timeErrors.isEmpty() ? timesErrors : timeErrors;
+			else if(!hasTimeAllItemNoOrAllNothing(interm, timeNumbers.keySet())) {
+				return Optional.of(ExternalImportError.record(interm.getRowNo(),
+						timeNumbers.values().stream().collect(Collectors.joining("、")) 
+						+ "は同時に受入れなければなりません。"
+					));
+			}
+			return Optional.empty();
 		}
 		
 		/**
 		 * All or Nothing でTrue,歯抜けの時はは抜けてる項目名 
 		 */
-		private static List<Integer> hasTimeAllItemNoOrAllNothing(IntermediateResult interm, List<Integer> items) {
-			return items.stream().filter(t -> !interm.getItemByNo(t).isPresent()).collect(Collectors.toList());
+		private static boolean hasTimeAllItemNoOrAllNothing(IntermediateResult interm, Set<Integer> items) {
+			return (items.stream().allMatch(t -> interm.getItemByNo(t).get().isNull())
+			|| items.stream().allMatch(t -> !interm.getItemByNo(t).get().isNull()));
 		}
 	}
 	@Override
