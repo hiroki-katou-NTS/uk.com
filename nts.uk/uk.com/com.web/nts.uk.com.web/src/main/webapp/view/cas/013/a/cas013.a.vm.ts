@@ -357,7 +357,7 @@ module nts.uk.com.view.cas013.a {
                             //KCO005
                             periodDate = (entry.startValidPeriod + " ~ " + entry.endValidPeriod).toString();
                             let employee: UnitModel = {
-                                id: entry.employeeId,
+                                id: entry.userID,
                                 code: entry.employeeCode,
                                 name: entry.businessName,
                                 affiliationName: periodDate,
@@ -453,13 +453,13 @@ module nts.uk.com.view.cas013.a {
             vm.selectedUserID(UserId);
             if (roleId != '' && UserId != '') {
                 let userEmployee = _.find(vm.listRoleIndividual(), ['userId', UserId]);
-                let data = {
-                    companyID: userEmployee.cid,
-                    roleID: roleId,
-                    userID: UserId
-                };
                 let number = vm.checkFirt();
                 if(!nts.uk.text.isNullOrEmpty(userEmployee)){
+                    let data = {
+                        companyID: userEmployee.cid,
+                        roleID: roleId,
+                        userID: UserId
+                    };
                     number += 1;
                     vm.checkFirt(number);
                     vm.employyeCode(userEmployee.employeeCode);
