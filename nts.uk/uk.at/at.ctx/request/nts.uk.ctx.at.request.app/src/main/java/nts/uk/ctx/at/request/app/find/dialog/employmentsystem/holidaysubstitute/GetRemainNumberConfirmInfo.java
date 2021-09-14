@@ -70,7 +70,8 @@ public class GetRemainNumberConfirmInfo {
 			if (detail.getDateOccur().getDayoffDate().isPresent())
 				checkDate = lstDigestionDate.contains(detail.getDateOccur().getDayoffDate().get().toString());
 			// Trueの場合
-			if (detail.getOccurrentClass() != OccurrenceDigClass.DIGESTION && checkDate != true) {
+			if (detail.getOccurrentClass() == OccurrenceDigClass.DIGESTION && checkDate == true) {
+			} else {
 				// 以外の場合
 				if (detail.getOccurrentClass() == OccurrenceDigClass.DIGESTION) {
 
