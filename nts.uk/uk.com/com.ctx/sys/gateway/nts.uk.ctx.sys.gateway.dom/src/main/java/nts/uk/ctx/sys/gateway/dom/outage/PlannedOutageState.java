@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.outage;
 
 import lombok.Value;
-import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopMessage;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
@@ -36,7 +35,7 @@ public class PlannedOutageState implements DomainValue {
 		}
 		
 		if (outageMode.canUseBy(roles)) {
-			return PlannedOutage.Status.availableBut(I18NText.getText("Msg_1475"));
+			return PlannedOutage.Status.availableBut("Msg_1475");
 		}
 
 		return PlannedOutage.Status.notAvailable(outageMessage.v());

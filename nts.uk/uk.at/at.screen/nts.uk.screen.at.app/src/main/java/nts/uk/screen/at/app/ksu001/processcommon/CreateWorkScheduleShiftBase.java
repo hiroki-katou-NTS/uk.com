@@ -157,6 +157,8 @@ public class CreateWorkScheduleShiftBase {
 							.workHolidayCls(null)
 							.isEdit(false)
 							.isActive(false)
+							.conditionAa1(false)
+							.conditionAa2(false)
 							.build();
 					listWorkScheduleShift.add(dto);
 				}

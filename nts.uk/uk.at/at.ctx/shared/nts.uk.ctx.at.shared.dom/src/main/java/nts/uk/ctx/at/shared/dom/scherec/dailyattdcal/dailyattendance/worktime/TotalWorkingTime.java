@@ -168,7 +168,7 @@ public class TotalWorkingTime {
 	/*短時間勤務時間*/
 	private ShortWorkTimeOfDaily shotrTimeOfDaily;
 	
-	/*日別実績の休暇時間*/
+	/*日別実績の休暇時間 - 休暇時間*/
 	private HolidayOfDaily holidayOfDaily;
 	
 	/*休暇加算時間*/

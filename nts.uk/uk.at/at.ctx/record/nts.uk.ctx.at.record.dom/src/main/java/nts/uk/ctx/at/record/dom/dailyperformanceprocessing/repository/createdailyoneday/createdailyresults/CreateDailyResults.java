@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,10 +10,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.workschedulereflected.WorkScheduleReflected;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.EmployeeGeneralAndPeriodMaster;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.AffiliationInforState;
@@ -60,6 +64,25 @@ public class CreateDailyResults {
 
 	@Inject
 	private WorkScheduleReflected workScheduleReflected;
+	
+	@Inject
+	private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
+	
+	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+			IntegrationOfDaily integrationOfDaily) {
+		    DatePeriod period = new DatePeriod(ymd, ymd);
+		    Optional<EmployeeGeneralAndPeriodMaster> masterData = createDailyResultDomainServiceNew.getMasterData(companyId, employeeId, period);
+		if (!masterData.isPresent()) {
+			return new OutputCreateDailyOneDay(
+					Arrays.asList(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
+							new ErrMessageResource("020"), new ErrMessageContent(TextResource.localize("Msg_1156")))),
+					integrationOfDaily, new ArrayList<>());
+		}
+		return createDailyResult(companyId, employeeId, ymd, executionType, flag,
+				masterData.get().getEmployeeGeneralInfoImport(),
+				masterData.get().getPeriodInMasterList(), integrationOfDaily);
+	}
 	
 	/**
 	 * @param companyId 会社ID
@@ -114,10 +137,10 @@ public class CreateDailyResults {
 		}
 		if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE) {
 			//勤務予定反映
-			listErrorMessageInfo.addAll(workScheduleReflected.workScheduleReflected(integrationOfDaily));
+			listErrorMessageInfo.addAll(workScheduleReflected.workScheduleReflected(companyId, integrationOfDaily));
 		} else {
 			// 個人情報から勤務種類と就業時間帯を写す
-			listErrorMessageInfo.addAll(copyWorkTypeWorkTime.copyWorkTypeWorkTime(integrationOfDaily));
+			listErrorMessageInfo.addAll(copyWorkTypeWorkTime.copyWorkTypeWorkTime(companyId, integrationOfDaily));
 		}
 		if (!listErrorMessageInfo.isEmpty()) {
 			return new OutputCreateDailyOneDay(listErrorMessageInfo, integrationOfDaily, new ArrayList<>()) ;
