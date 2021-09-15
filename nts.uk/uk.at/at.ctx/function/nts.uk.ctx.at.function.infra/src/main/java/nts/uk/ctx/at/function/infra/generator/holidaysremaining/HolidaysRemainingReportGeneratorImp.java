@@ -572,9 +572,8 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         dataSource.getHolidaysRemainingManagement()) ?
                         (Double) vlaueE13 : null;
                 cells.get(firstRow + (isTime ? 2 * i:i), 4).setValue(days_Granted == null ? "" : df.format(days_Granted.doubleValue()));
-
+                setTopBorderStyle(cells.get(firstRow + i, 3));
                 if(!isTime){
-                   setBottomBorderStyle(cells.get(firstRow + i, 3));
                    setBottomBorderStyle(cells.get(firstRow + i, 4));
                 }
                 // E1_16
@@ -3299,8 +3298,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
             return firstRow;
         }
         boolean yearlyHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
-        boolean insideHours = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHours();
-        boolean insideHalfDay = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHalfDay();
         if (!(yearlyHoliday)) {
             return firstRow;
         }
@@ -3308,9 +3305,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         if (hdRemainingInfor == null) {
             return firstRow + 2;
         }
-
-        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement()) && insideHours;
-
+        val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement());
         int total = isTime ? 4 : 2 ;
         List<AnnLeaGrantNumberImported> listAnnLeaGrant = hdRemainingInfor.getListAnnLeaGrantNumber();
         Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
@@ -3324,7 +3319,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         return firstRow + total;
     }
-
     private int countF(HolidayRemainingDataSource dataSource, HolidaysRemainingEmployee employee) {
         int firstRow = 0;
         if (!checkLimitHoliday(dataSource.getHolidaysRemainingManagement())
