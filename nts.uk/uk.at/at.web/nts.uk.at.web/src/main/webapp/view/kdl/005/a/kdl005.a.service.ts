@@ -2,7 +2,8 @@ module nts.uk.at.view.kdl005.a {
     export module service {
         var paths: any = {
             getEmployeeList : "at/request/dialog/employmentsystem/getEmployeeList",
-            getDetailsConfirm : "at/request/dialog/employmentsystem/getDetailsConfirm/{0}/{1}"
+            getDetailsConfirm : "at/request/dialog/employmentsystem/getDetailsConfirm/{0}/{1}",
+            findComLeaveSetting: "ctx/at/shared/vacation/setting/compensatoryleave/find"
         }
 
         export function getEmployeeList(param: EmployeeParam): JQueryPromise<Array<EmployeeBasicInfoDto>> {
@@ -12,6 +13,10 @@ module nts.uk.at.view.kdl005.a {
         export function getDetailsConfirm(employeeId: string, baseDate: string): JQueryPromise<any> {
             var path = nts.uk.text.format(paths.getDetailsConfirm, employeeId, baseDate);
             return nts.uk.request.ajax(path);
+        }
+
+        export function findComLeaveSetting(): JQueryPromise<any> {
+          return nts.uk.request.ajax(paths.findComLeaveSetting);
         }
     }
 
