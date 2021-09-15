@@ -24,7 +24,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalizati
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 随時発生する休暇の残数データ（振休振出／代休休出）の正準化の基底クラス
@@ -33,8 +32,8 @@ public abstract class OccurenceHolidayCanonicalizationBase implements DomainCano
 
 	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
 	
-	public OccurenceHolidayCanonicalizationBase(DomainWorkspace workspace) {
-		employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+	public OccurenceHolidayCanonicalizationBase() {
+		employeeCodeCanonicalization = new EmployeeCodeCanonicalization(getItemNoMap());
 	}
 	
 	@Override

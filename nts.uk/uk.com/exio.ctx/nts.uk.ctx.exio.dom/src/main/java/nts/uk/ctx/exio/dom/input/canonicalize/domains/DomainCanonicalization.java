@@ -61,7 +61,9 @@ public interface DomainCanonicalization {
 	 * @return
 	 * @throws UnSupportedOperationException そもそも社員IDの項目が存在しないグループに対して実行した場合
 	 */
-	int getItemNoOfEmployeeId();
+	default int getItemNoOfEmployeeId() {
+		return this.getItemNoByName("SID");
+	}
 	
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethodRequire,

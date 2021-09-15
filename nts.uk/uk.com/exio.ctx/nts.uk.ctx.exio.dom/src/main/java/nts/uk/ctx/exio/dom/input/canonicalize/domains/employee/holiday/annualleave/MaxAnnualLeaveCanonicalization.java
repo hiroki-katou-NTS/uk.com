@@ -14,6 +14,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalizeUtil;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.EmployeeCodeCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -24,7 +25,30 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 /**
  * 年休上限データ 
  */
-public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
+public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization {
+	
+	/** 社員コードの正準化 */
+	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
+	
+	public MaxAnnualLeaveCanonicalization() {
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(getItemNoMap());
+	}
+
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 半日上限回数 = 2;
+		public static final int 半休使用回数 = 3;
+		public static final int 残回数 = 4;
+		public static final int 時間年休上限時間 = 5;
+		public static final int 時間年休使用時間 = 6;
+		public static final int 残時間 = 7;
+		public static final int SID = 100;
+	}
 
 	@Override
 	protected String getParentTableName() {
@@ -40,14 +64,6 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 	protected List<DomainDataColumn> getDomainDataKeys() {
 		return Arrays.asList(DomainDataColumn.SID);
 	}
-	
-	/** 社員コードの正準化 */
-	private final EmployeeCodeCanonicalization employeeCodeCanonicalization;
-	
-	public MaxAnnualLeaveCanonicalization(DomainWorkspace workspace) {
-		super(workspace);
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
-	}
 
 	@Override
 	public void canonicalize(DomainCanonicalization.RequireCanonicalize require, ExecutionContext context) {
@@ -61,21 +77,21 @@ public class MaxAnnualLeaveCanonicalization extends IndependentCanonicalization{
 						results.stream().peek(result ->require.add(context, result));
 						continue;
 					}
-					val keyValue = getPrimaryKeys(interm, workspace);
+					val keyValue = getPrimaryKeys(interm);
 					if (importingKeys.contains(keyValue)) {
 						require.add(context, ExternalImportError.record(interm.getRowNo(), "受入データの中にキーの重複があります。"));
 						return; // 次のレコードへ
 					}
 					
 					//既存データのチェックと保存は継承先に任せる
-					super.canonicalize(require, context, interm, getPrimaryKeys(interm, workspace));
+					super.canonicalize(require, context, interm, getPrimaryKeys(interm));
 				}
 		});
 	}
 	
-	private KeyValues getPrimaryKeys(IntermediateResult interm, DomainWorkspace workspace) {
+	private KeyValues getPrimaryKeys(IntermediateResult interm) {
 		//このドメインのKeyはSIDなので、Stringで取り出す。
-		return new KeyValues(Arrays.asList(interm.getItemByNo(this.getItemNoOfEmployeeId()).get().getString()));
+		return new KeyValues(Arrays.asList(interm.getItemByNo(Items.SID).get().getString()));
 	}
 	
 	@Override
