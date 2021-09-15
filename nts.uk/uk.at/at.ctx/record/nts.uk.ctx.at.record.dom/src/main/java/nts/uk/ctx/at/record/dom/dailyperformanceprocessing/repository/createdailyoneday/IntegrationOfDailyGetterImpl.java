@@ -332,14 +332,16 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 		List<OuenWorkTimeSheetOfDaily> ouenSheets = ouenSheetRepo.find(employeeId, datePeriod);
 		
 		List<DailySnapshotWorkImport> snapshots = snapshotAdapter.find(employeeId, datePeriod);
+		
+		List<EmployeeDailyPerError> employeeDailyPerError = employeeDailyPerErrorRepository.finds(employeeId, datePeriod);
 
 		for(WorkInfoOfDailyPerformance attendanceTime : attendanceTimeList) {
 			
 			GeneralDate ymd = attendanceTime.getYmd();
 			
-			Optional<WorkInfoOfDailyPerformance> workInf = workInfs.stream().filter(x-> x.getYmd().equals(ymd)).findFirst();
+			Optional<WorkInfoOfDailyPerformance> workInf = workInfs.stream().filter(x-> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst();
 			
-			Optional<AffiliationInforOfDailyPerfor> affiInfo = affiInfos.stream().filter(x-> x.getYmd().equals(ymd)).findFirst();
+			Optional<AffiliationInforOfDailyPerfor> affiInfo = affiInfos.stream().filter(x-> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst();
 
 			if(!workInf.isPresent() || !affiInfo.isPresent())//calAttr == null
 				continue;
@@ -347,52 +349,50 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 			workInf.get().getWorkInformation().setVer(workInf.get().getVersion());
 			
 			Optional<PCLogOnInfoOfDailyAttd> pCLogOnInfoOfDailyAttd = pCLogOnInfoOfDailys.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst()
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst()
 					.map(x -> Optional.ofNullable(x.getTimeZone())).orElse(Optional.empty());
 			
 			Optional<OutingTimeOfDailyAttd> outingTimeOfDailyAttd = outingTimeOfDailyPerformances.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst()
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst()
 					.map(x -> Optional.ofNullable(x.getOutingTime())).orElse(Optional.empty());
 			
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyAttd = attendanceTimeOfDailyPerformances
-					.stream().filter(x -> x.getYmd().equals(ymd)).findFirst()
+					.stream().filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst()
 					.map(x -> Optional.ofNullable(x.getTime())).orElse(Optional.empty());
 			
 			Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformances.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst().map(x -> Optional.ofNullable(x.getAttendance()))
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x -> Optional.ofNullable(x.getAttendance()))
 					.orElse(Optional.empty());
 			
 			Optional<ShortTimeOfDailyAttd> shortTimeOfDailyAttd = shortTimeOfDailyPerformances.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst().map(x -> Optional.ofNullable(x.getTimeZone()))
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x -> Optional.ofNullable(x.getTimeZone()))
 					.orElse(Optional.empty());
 			
 			Optional<SpecificDateAttrOfDailyAttd> specificDateAttrOfDailyAttd = specificDateAttrOfDailyPerfor.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst().map(x -> Optional.ofNullable(x.getSpecificDay()))
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x -> Optional.ofNullable(x.getSpecificDay()))
 					.orElse(Optional.empty());
 			
 			
 			Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGateOfDailyAttd = attendanceLeavingGateOfDailys.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst().map(x-> Optional.ofNullable(x.getTimeZone())).orElse(Optional.empty());
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x-> Optional.ofNullable(x.getTimeZone())).orElse(Optional.empty());
 			
 			Optional<AnyItemValueOfDailyAttd> anyItemValueOfDailyAttd = anyItemValueOfDailys.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst().map(x-> Optional.ofNullable(x.getAnyItem())).orElse(Optional.empty());
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x-> Optional.ofNullable(x.getAnyItem())).orElse(Optional.empty());
 			
 			
 			Optional<TemporaryTimeOfDailyAttd> temporaryTimeOfDailyAttd = temporaryTimeOfDailyPerformances.stream()
-					.filter(x -> x.getYmd().equals(ymd)).findFirst().map(x-> Optional.ofNullable(x.getAttendance())).orElse(Optional.empty());
-			
-			List<EmployeeDailyPerError> employeeDailyPerError = employeeDailyPerErrorRepository.finds(employeeId, datePeriod);
+					.filter(x -> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x-> Optional.ofNullable(x.getAttendance())).orElse(Optional.empty());
 			
 			IntegrationOfDaily daily = new IntegrationOfDaily(
 					attendanceTime.getEmployeeId(),
 					ymd,
 					workInf.get().getWorkInformation(),
-					calAttrs.stream().filter(x-> x.getYmd().equals(ymd)).findFirst().map(x-> x.getCalcategory()).orElse(null),
+					calAttrs.stream().filter(x-> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x-> x.getCalcategory()).orElse(null),
 					affiInfo.get().getAffiliationInfor(),
 					pCLogOnInfoOfDailyAttd,
 					employeeDailyPerError.stream().filter(c -> c.getEmployeeID().equals(attendanceTime.getEmployeeId()) && c.getDate().equals(attendanceTime.getYmd())).collect(Collectors.toList()),/** リポジトリ:社員の日別実績エラー一覧 */
 					outingTimeOfDailyAttd,
-					listBreakTimeOfDailyPerformances.stream().filter(x-> x.getYmd().equals(ymd)).findFirst().map(x-> x.getTimeZone()).orElse(new BreakTimeOfDailyAttd()),
+					listBreakTimeOfDailyPerformances.stream().filter(x-> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).findFirst().map(x-> x.getTimeZone()).orElse(new BreakTimeOfDailyAttd()),
 					attendanceTimeOfDailyAttd,
 //						attendanceTimeByWorkOfDailyRepository.find(employeeId, attendanceTime.getYmd()),/** リポジトリ：日別実績の作業別勤怠時間 */
 					timeLeavingOfDailyAttd,
@@ -400,12 +400,12 @@ public class IntegrationOfDailyGetterImpl implements IntegrationOfDailyGetter {
 					specificDateAttrOfDailyAttd,
 					attendanceLeavingGateOfDailyAttd,
 					anyItemValueOfDailyAttd,/** リポジトリ：日別実績の任意項目 */
-					listEditStateOfDailyPerformances.stream().filter(x-> x.getYmd().equals(ymd)).map(x-> x.getEditState()).collect(Collectors.toList()),
+					listEditStateOfDailyPerformances.stream().filter(x-> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).map(x-> x.getEditState()).collect(Collectors.toList()),
 					temporaryTimeOfDailyAttd,
-					listRemarksOfDailyPerforms.stream().filter(x-> x.getYmd().equals(ymd)).map(c->c.getRemarks()).collect(Collectors.toList()),
-					snapshots.stream().filter(x-> x.getYmd().equals(ymd)).findFirst().map(c -> c.getSnapshot().toDomain()));
+					listRemarksOfDailyPerforms.stream().filter(x-> x.getYmd().equals(ymd) && x.getEmployeeId().equals(attendanceTime.getEmployeeId())).map(c->c.getRemarks()).collect(Collectors.toList()),
+					snapshots.stream().filter(x-> x.getYmd().equals(ymd) && x.getSid().equals(attendanceTime.getEmployeeId())).findFirst().map(c -> c.getSnapshot().toDomain()));
 			
-			ouenSheets.stream().filter(x -> x.getYmd().equals(ymd)).findFirst().ifPresent(x -> {
+			ouenSheets.stream().filter(x -> x.getYmd().equals(ymd) && x.getEmpId().equals(attendanceTime.getEmployeeId())).findFirst().ifPresent(x -> {
 				daily.setOuenTimeSheet(x.getOuenTimeSheet());
 			});
 			
