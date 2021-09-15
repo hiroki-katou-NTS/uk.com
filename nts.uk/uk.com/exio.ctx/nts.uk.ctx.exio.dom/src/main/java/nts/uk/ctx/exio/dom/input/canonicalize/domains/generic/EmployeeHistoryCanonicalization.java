@@ -28,6 +28,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordTo;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -43,7 +44,6 @@ import nts.uk.ctx.exio.dom.input.errors.ErrorMessage;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.util.Either;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -70,12 +70,41 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 	/** どんな履歴か*/
 	private final HistoryType historyType;
 
-	public EmployeeHistoryCanonicalization(DomainWorkspace workspace, HistoryType historyType) {
-		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
-		itemNoEndDate = workspace.getItemByName("終了日").getItemNo();
-		itemNoHistoryId = workspace.getItemByName("HIST_ID").getItemNo();
+	public EmployeeHistoryCanonicalization(HistoryType historyType) {
+		
+		itemNoStartDate = this.getItemNoByName(Names.START);
+		itemNoEndDate = this.getItemNoByName(Names.END);
+		itemNoHistoryId = this.getItemNoByName(Names.HIST_ID);
+		
 		this.historyType = historyType;
-		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(workspace);
+		
+		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(this.getItemNoMap());
+	}
+	
+	@Override
+	public ItemNoMap getItemNoMap() {
+		return ITEM_NO_MAP.merge(getItemNoMapExtends());
+	}
+	
+	protected abstract ItemNoMap getItemNoMapExtends();
+	
+	protected static final ItemNoMap ITEM_NO_MAP;
+	static {
+		ITEM_NO_MAP = new ItemNoMap()
+				.put(Names.SCD, 1)
+				.put(Names.START, 2)
+				.put(Names.END, 3)
+				.put(Names.SID, 101)
+				.put(Names.HIST_ID, 102);
+	}
+	
+	protected static class Names {
+		protected static final String SCD = "社員コード";
+		protected static final String SID = "社員ID";
+		protected static final String HIST_ID = "HIST_ID";
+		protected static final String START = "開始日";
+		protected static final String END = "終了日";
+		
 	}
 	
 	protected abstract String getParentTableName();

@@ -8,6 +8,7 @@ import lombok.val;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.history.HistoryType;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.IntermediateResult;
@@ -15,7 +16,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.methods.WorkplaceCodeCanonicalizat
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
 import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 所属職場履歴の正準化
@@ -24,9 +24,21 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 
 	private final WorkplaceCodeCanonicalization workplaceCodeCanonicalization;
 		
-	public AffWorkplaceHistoryCanonicalization(DomainWorkspace workspace) {
-		super(workspace,HistoryType.PERSISTENERESIDENT);
-		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(workspace);
+	public AffWorkplaceHistoryCanonicalization() {
+		super(HistoryType.PERSISTENERESIDENT);
+		workplaceCodeCanonicalization = new WorkplaceCodeCanonicalization(this.getItemNoMap());
+	}
+
+	@Override
+	protected ItemNoMap getItemNoMapExtends() {
+		return new ItemNoMap()
+				.put(Names.WKP_CD, 4)
+				.put(Names.WKP_ID, 5);
+	}
+	
+	private static class Names {
+		static final String WKP_CD = "職場コード";
+		static final String WKP_ID = "WORKPLACE_ID";
 	}
 
 	@Override

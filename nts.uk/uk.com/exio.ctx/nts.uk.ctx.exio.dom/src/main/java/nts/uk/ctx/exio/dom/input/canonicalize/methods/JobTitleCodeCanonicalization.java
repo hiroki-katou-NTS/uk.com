@@ -7,9 +7,9 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfo;
 import nts.uk.ctx.exio.dom.input.canonicalize.CanonicalItem;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.errors.RecordError;
 import nts.uk.ctx.exio.dom.input.util.Either;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 /**
  * 職位コードを職位IDに正準化
  */
@@ -22,10 +22,10 @@ public class JobTitleCodeCanonicalization {
 	/** 職位IDの項目No */
 	private final int itemNoJobTitleId;
 
-	public JobTitleCodeCanonicalization(DomainWorkspace workspace) {
-		itemNoStartDate = workspace.getItemByName("開始日").getItemNo();
-		itemNoJobTitleCode = workspace.getItemByName("職位コード").getItemNo();
-		itemNoJobTitleId = workspace.getItemByName("JOB_TITLE_ID").getItemNo();
+	public JobTitleCodeCanonicalization(ItemNoMap map) {
+		itemNoStartDate = map.getItemNo("開始日");
+		itemNoJobTitleCode = map.getItemNo("職位コード");
+		itemNoJobTitleId = map.getItemNo("JOB_TITLE_ID");
 	}
 	/**
 	 * 渡された編集済みデータを正準化する

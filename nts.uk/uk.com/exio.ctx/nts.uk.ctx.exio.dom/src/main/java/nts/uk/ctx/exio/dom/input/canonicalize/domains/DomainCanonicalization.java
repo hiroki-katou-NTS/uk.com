@@ -20,6 +20,16 @@ import nts.uk.ctx.exio.dom.input.meta.ImportingDataMeta;
  * 受入グループ別の正準化
  */
 public interface DomainCanonicalization {
+	
+	ItemNoMap getItemNoMap();
+	
+	default int getItemNoByName(String itemName) {
+		return getItemNoMap().getItemNo(itemName);
+	}
+	
+	default String getItemNameByNo(int itemNo) {
+		return getItemNoMap().getItemName(itemNo);
+	}
 
 	/**
 	 * 正準化する
