@@ -558,7 +558,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         firstRow += 6;
                         count = 6;
                     }
-                    cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 5, firstRow + (isTime? i * 2 : i), (isTime? i * 2 : 1));
+                    cells.copyRows(cells, NUMBER_ROW_OF_HEADER + 5, firstRow + (isTime? i * 2 : i), (isTime? 2 : 1));
                     totalAddRows += isTime ? 2 : 1;
                 }
 
@@ -572,7 +572,7 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
                         dataSource.getHolidaysRemainingManagement()) ?
                         (Double) vlaueE13 : null;
                 cells.get(firstRow + (isTime ? 2 * i:i), 4).setValue(days_Granted == null ? "" : df.format(days_Granted.doubleValue()));
-                setTopBorderStyle(cells.get(firstRow + i, 3));
+                setTopBorderStyle(cells.get(firstRow + (isTime ? 2 * i:i), 3));
                 if(!isTime){
                    setBottomBorderStyle(cells.get(firstRow + i, 4));
                 }
@@ -2107,7 +2107,6 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         Integer first = firstRow;
         boolean yearlyHoliday = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isYearlyHoliday();
         boolean insideHours = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHours();
-        boolean insideHalfDay = dataSource.getHolidaysRemainingManagement().getListItemsOutput().getAnnualHoliday().isInsideHalfDay();
         if (!checkLimitHourlyHoliday(dataSource.getHolidaysRemainingManagement())) {
             dtoCheck.setFirstRow(firstRow);
             return dtoCheck;
@@ -3303,16 +3302,15 @@ public class HolidaysRemainingReportGeneratorImp extends AsposeCellsReportGenera
         }
         val hdRemainingInfor = dataSource.getMapEmployees().get(employee.getEmployeeId()).getHolidayRemainingInfor();
         if (hdRemainingInfor == null) {
-            return firstRow + 2;
+            return firstRow ;
         }
         val isTime = checkShowAreaAnnualBreak2(dataSource.getHolidaysRemainingManagement());
         int total = isTime ? 4 : 2 ;
         List<AnnLeaGrantNumberImported> listAnnLeaGrant = hdRemainingInfor.getListAnnLeaGrantNumber();
-        Optional<GeneralDate> grantDate = dataSource.getMapEmployees().get(employee.getEmployeeId())
-                .getHolidayRemainingInfor().getGrantDate();
-        if (listAnnLeaGrant != null && grantDate.isPresent()) {
+
+        if (listAnnLeaGrant != null) {
             for (int i = 0; i < listAnnLeaGrant.size(); i++) {
-                if (i >= 1) {
+                if (i >= 2) {
                     total += isTime ? 2 : 1;
                 }
             }
