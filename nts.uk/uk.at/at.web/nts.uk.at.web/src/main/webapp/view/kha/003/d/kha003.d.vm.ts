@@ -164,6 +164,9 @@ module nts.uk.at.kha003.d {
                         mergeType: "physical",
                         mergeStrategy: (prevRec: any, curRec: any, columnKey: string) => {
                             const idx = parseInt(columnKey.substring(1));
+                            if (idx === 4) {
+                                return false;
+                            }
                             if (idx <= vm.level) {
                                 return !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey];
                             }
