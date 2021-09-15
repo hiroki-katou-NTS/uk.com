@@ -62,7 +62,8 @@ module nts.uk.at.view.kdp002.a {
                         self.stampGrid(new EmbossGridInfo(res, ko.unwrap(self.workManagementMultiple)));
 
                         self.stampGrid().yearMonth.subscribe((val) => {
-                            self.getTimeCardData();
+                            if (_.get(res, 'stampSetting.historyDisplayMethod') == 2)
+                                self.getTimeCardData();
                         });
 
                         let stampToSuppress = res.stampToSuppress ? res.stampToSuppress : {};
