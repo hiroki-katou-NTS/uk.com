@@ -146,13 +146,14 @@ module nts.uk.at.kha003.d {
             if (size == 13) {
                 withd = 93;
             }
+            let height = (520 * $(window).height()) / 754;
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
                 width: withd + '%',
-                height: '470px',
+                height: height + 'px',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
                 virtualization: true,
