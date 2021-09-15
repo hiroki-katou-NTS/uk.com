@@ -144,7 +144,7 @@ public class ConvertTimeRecordStampService {
 						ExecutionType.NORMAL_EXECUTION);
 				AtomTask task = atomTask.then(() -> {
 					require.addAllDomain(domAfterCalc.get(0), true);
-					require.loggedOut();
+					//require.loggedOut();
 				});
 				return Optional.of(new StampDataReflectResult(reflectDate, task));
 			}
