@@ -23,6 +23,6 @@ public class ImportableItemDto {
 				domain.getItemNo(), 
 				domain.getItemName(), 
 				domain.isRequired(), 
-				domain.getItemType().name());
+				domain.getItemType().getResourceText());
 	}
 }

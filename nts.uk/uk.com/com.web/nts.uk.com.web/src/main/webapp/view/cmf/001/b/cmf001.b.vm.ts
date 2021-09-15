@@ -31,7 +31,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 	$(function() {
 		$("#layout-list").on("click",".delete-button",function(){
 			let vm = nts.uk.ui._viewModel.content;
-			console.log("さくじょ1"+ $(this).data("target"));
 			vm.removeItem($(this).data("target"));
 		});
 	})
