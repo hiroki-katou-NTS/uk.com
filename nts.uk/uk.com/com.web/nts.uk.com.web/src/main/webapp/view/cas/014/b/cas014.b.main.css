@@ -1,11 +1,19 @@
-.fixed-flex-layout-left {
-    margin-right: 0!important;
+.two-panel .left-panel {
+    padding-left: 15px !important;
 }
 
-.fixed-flex-layout-right {
-    padding-top: 20px;
+#component-items-list > div {
+    padding: 0 !important;
 }
 
-.fixed-flex-layout-right .form-label {
+.two-panel .right-panel .form-label {
     width: 75px;
+}
+
+.control-group {
+    margin-bottom: 20px;
+}
+
+.label-code, .label-name {
+    padding-left: 10px;
 }
