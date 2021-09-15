@@ -16,9 +16,9 @@ import nts.arc.time.GeneralDate;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum ExternalImportDateFormat {
 	
-	YYYY_MM_DD(0, "Enum_ExternalImportDateFormat_YYYY_MM_DD", "yyyy/MM/dd"),
+	YYYY_MM_DD(0, "Enum_ExternalImportDateFormat_YYYY_MM_DD", "yyyy/M/d"),
 	YYYYMMDD(1, "Enum_ExternalImportDateFormat_YYYYMMDD", "yyyyMMdd"),
-	YY_MM_DD(2, "Enum_ExternalImportDateFormat_YY_MM_DD", "yy/MM/dd"),
+	YY_MM_DD(2, "Enum_ExternalImportDateFormat_YY_MM_DD", "yy/M/d"),
 	YYMMDD(3, "Enum_ExternalImportDateFormat_YYMMDD", "yyMMdd"),
 	;
 	
