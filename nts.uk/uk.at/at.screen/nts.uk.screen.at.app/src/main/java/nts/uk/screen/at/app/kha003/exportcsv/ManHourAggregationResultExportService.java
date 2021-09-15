@@ -72,7 +72,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         for (SummaryItemDetailDto level1 : outputContent.getItemDetails()) {
             if (level1.getChildHierarchyList().isEmpty()) {
                 Map<String, Object> row1 = new HashMap<>();
-                row1.put(headerList.get(0), level1.getCode());
+                row1.put(headerList.get(0), level1.getDisplayInfo().getCode());
                 row1.put(headerList.get(1), level1.getDisplayInfo().getName());
 
                 val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
@@ -87,9 +87,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                 for (SummaryItemDetailDto level2 : level1.getChildHierarchyList()) {
                     if (level2.getChildHierarchyList().isEmpty()) {
                         Map<String, Object> row2 = new HashMap<>();
-                        row2.put(headerList.get(0), level1.getCode());
+                        row2.put(headerList.get(0), level1.getDisplayInfo().getCode());
                         row2.put(headerList.get(1), level1.getDisplayInfo().getName());
-                        row2.put(headerList.get(2), level2.getCode());
+                        row2.put(headerList.get(2), level2.getDisplayInfo().getCode());
                         row2.put(headerList.get(3), level2.getDisplayInfo().getName());
 
                         for (int i = 4; i < maxRangeDate + 4; i++) {
@@ -104,11 +104,11 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                         for (SummaryItemDetailDto level3 : level2.getChildHierarchyList()) {
                             if (level3.getChildHierarchyList().isEmpty()) {
                                 Map<String, Object> row3 = new HashMap<>();
-                                row3.put(headerList.get(0), level1.getCode());
+                                row3.put(headerList.get(0), level1.getDisplayInfo().getCode());
                                 row3.put(headerList.get(1), level1.getDisplayInfo().getName());
-                                row3.put(headerList.get(2), level2.getCode());
+                                row3.put(headerList.get(2), level2.getDisplayInfo().getCode());
                                 row3.put(headerList.get(3), level2.getDisplayInfo().getName());
-                                row3.put(headerList.get(4), level3.getCode());
+                                row3.put(headerList.get(4), level3.getDisplayInfo().getCode());
                                 row3.put(headerList.get(5), level3.getDisplayInfo().getName());
 
                                 for (int i = 6; i < maxRangeDate + 6; i++) {
@@ -122,13 +122,13 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                             } else {
                                 for (SummaryItemDetailDto level4 : level3.getChildHierarchyList()) {
                                     Map<String, Object> row4 = new HashMap<>();
-                                    row4.put(headerList.get(0), level1.getCode());
+                                    row4.put(headerList.get(0), level1.getDisplayInfo().getCode());
                                     row4.put(headerList.get(1), level1.getDisplayInfo().getName());
-                                    row4.put(headerList.get(2), level2.getCode());
+                                    row4.put(headerList.get(2), level2.getDisplayInfo().getCode());
                                     row4.put(headerList.get(3), level2.getDisplayInfo().getName());
-                                    row4.put(headerList.get(4), level3.getCode());
+                                    row4.put(headerList.get(4), level3.getDisplayInfo().getCode());
                                     row4.put(headerList.get(5), level3.getDisplayInfo().getName());
-                                    row4.put(headerList.get(6), level4.getCode());
+                                    row4.put(headerList.get(6), level4.getDisplayInfo().getCode());
                                     row4.put(headerList.get(7), level4.getDisplayInfo().getName());
 
                                     for (int i = 8; i < maxRangeDate + 8; i++) {
