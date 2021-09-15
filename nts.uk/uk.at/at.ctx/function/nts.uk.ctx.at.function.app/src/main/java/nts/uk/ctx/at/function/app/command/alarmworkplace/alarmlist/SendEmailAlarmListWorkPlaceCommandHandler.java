@@ -126,7 +126,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
                 Map<String, String> roleMap = roleIdWorkDomService(entry.getValue());
                 List<String> filterManager = new ArrayList<>();
                 //取得したMap＜社員ID、ロールID＞をループする
-                if (roleMap.size() == 0) {
+                if (roleMap.size() <= 0) {
                     mailSendFlag = false;
                 }
                 for (Map.Entry<String, String> role : roleMap.entrySet()) {
