@@ -122,20 +122,19 @@ module nts.uk.at.kha003.c {
                             || data.c41.type != oldData.c41.type
                             || data.c51.type != oldData.c51.type)) {
                         vm.$dialog.error({messageId: "Msg_2168"}).then(() => {
-                            vm.c24CurrentCodeList(_.map(vm.c24Items(), x => x.code));
-                            vm.c34CurrentCodeList(_.map(vm.c34Items(), x => x.code));
-                            vm.c44CurrentCodeList(_.map(vm.c44Items(), x => x.code));
-                            vm.c54CurrentCodeList(_.map(vm.c54Items(), x => x.code));
+                            vm.selectBox();
                         });
                         vm.$window.storage('kha003CShareData_' + data.code, {});
                     } else {
                         vm.$window.storage('kha003CShareData_' + data.code).done(savedDataC => {
                             const dataC = savedDataC || {};
                             if (dataC.code == data.code) {
-                                vm.c24CurrentCodeList(dataC.c24CurrentCodeList || []);
-                                vm.c34CurrentCodeList(dataC.c34CurrentCodeList || []);
-                                vm.c44CurrentCodeList(dataC.c44CurrentCodeList || []);
-                                vm.c54CurrentCodeList(dataC.c54CurrentCodeList || []);
+                                vm.c24CurrentCodeList(dataC.c24CurrentCodeList || _.map(vm.c24Items(), x => x.code));
+                                vm.c34CurrentCodeList(dataC.c34CurrentCodeList || _.map(vm.c24Items(), x => x.code));
+                                vm.c44CurrentCodeList(dataC.c44CurrentCodeList || _.map(vm.c24Items(), x => x.code));
+                                vm.c54CurrentCodeList(dataC.c54CurrentCodeList || _.map(vm.c24Items(), x => x.code));
+                            } else {
+                                vm.selectBox();
                             }
                         });
                     }
@@ -155,6 +154,14 @@ module nts.uk.at.kha003.c {
             // $(document).ready(function () {
             //     vm.gridRows((12 * $(window).height()) / 768);
             // });
+        }
+
+        selectBox() {
+            let vm = this;
+            vm.c24CurrentCodeList(_.map(vm.c24Items(), x => x.code));
+            vm.c34CurrentCodeList(_.map(vm.c34Items(), x => x.code));
+            vm.c44CurrentCodeList(_.map(vm.c44Items(), x => x.code));
+            vm.c54CurrentCodeList(_.map(vm.c54Items(), x => x.code));
         }
 
 
