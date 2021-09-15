@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.adapter.employment.rules.orgranization.empinfo;
+package nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employee.importeddto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
