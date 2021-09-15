@@ -184,28 +184,28 @@ public class RoleIndividualFinder {
         return roleTypeDtos;
     }
 
-    public List<RoleIndividualGrantDto> getRoleGrants(String roleId) {
+    public List<Cas013aDto> getRoleGrants(String roleId) {
 
-        List<RoleIndividualGrantDto> rGrants = new ArrayList<>();
+        List<Cas013aDto> rGrants = new ArrayList<>();
         if (roleId == null)
             return rGrants;
         List<RoleIndividualGrant> listRoleGrants = this.roleIndividualGrantRepo.findByRoleId(roleId);
         if (listRoleGrants.size() == 0) {
             return rGrants;
         }
-
         for (val grant: listRoleGrants) {
             val uid = grant.getUserId();
             Optional<PersonalEmployeeInfoImport> optEmployeeInfoImport =
                     userIDQuery.getEmployeeIDFromUserID(uid);
+            CompanyImport companyInfo = companyAdapter.findCompanyByCid(grant.getCompanyId());
             if(optEmployeeInfoImport.isPresent()){
                 PersonalEmployeeInfoImport employeeInfoImport = optEmployeeInfoImport.get();
                 List<EmployeeInfoImport> employeeInfos = employeeInfoImport.getEmployeeInfos();
                 employeeInfos.forEach(e->{
-                    rGrants.add( RoleIndividualGrantDto.fromDomain(
+                    rGrants.add( Cas013aDto.fromDomain(
                             grant,
-                            "",
-                            "",
+                            companyInfo.getCompanyCode(),
+                            companyInfo.getCompanyName(),
                             e.getEmployeeId(),
                             e.getEmployeeCode(),
                             employeeInfoImport.getBussinessName()));
@@ -228,7 +228,7 @@ public class RoleIndividualFinder {
         List<RoleIndividualGrant> ListRoleGrants = new ArrayList<>();
         ListRoleGrants = this.roleIndividualGrantRepo.findByCompanyRole(companyId, roleId);
 
-        List<String> uid = ListRoleGrants.stream().map(c -> c.getUserId()).distinct().collect(Collectors.toList());
+        List<String> uid = ListRoleGrants.stream().map(RoleIndividualGrant::getUserId).distinct().collect(Collectors.toList());
         List<RoleExport> roleExportList = roleAdapter.getListRole(uid);
         val listPersonOptional = roleExportList.stream().filter( c -> c.getPersonId().equals(pid.get())).findFirst();
         String userName = "";

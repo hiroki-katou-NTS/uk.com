@@ -66,7 +66,23 @@
                             <span class="caret-bottom">
                             </span>
                             <!--A6_KCP005-->
-                            <div tabindex="6" id="kcp005"  >
+                            <!--<div tabindex="6" id="kcp005"  >-->
+                            <div>
+                                <table id="role_set_grid"
+                                       data-bind="ntsGridList: {
+	                                            name:'#[CAS011_8]',
+	                                            width: 515,
+	                                            rows: 10,
+	                                            options: employeeList,
+	                                            optionsValue: multiSelectedCode,
+	                                            primaryKey: 'id',
+	                                            columns: columns,
+	                                            multiple: false,
+	                                            value: multiSelectedCode,
+	                                            showNumbering:false,
+	                                            selectFirstIfNull: false,
+	                                            enable: true}">
+                                </table>
                             </div>
                         </div>
                         <div class="right-content">

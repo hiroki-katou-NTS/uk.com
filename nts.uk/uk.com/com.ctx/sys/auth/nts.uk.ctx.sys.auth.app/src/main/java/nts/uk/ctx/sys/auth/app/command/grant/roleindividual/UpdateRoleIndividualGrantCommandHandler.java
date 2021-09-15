@@ -16,7 +16,7 @@ public class UpdateRoleIndividualGrantCommandHandler {
 		
 		if(this.roleIndividualGrantRepository.findByUserCompanyRoleType(roleGrant.userID, roleGrant.companyID, roleGrant.roleType).isPresent()){
 			this.roleIndividualGrantRepository.update(roleGrant.toDomain());
-			return roleGrant.getUserID();
+			return roleGrant.companyID + roleGrant.getUserID();
 		}else{
 			return null;
 		}

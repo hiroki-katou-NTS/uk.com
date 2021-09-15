@@ -34,6 +34,7 @@ import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividual
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.command.grant.roleindividual.UpdateSysRoleIndividualGrantCommandHandler;
 import nts.uk.ctx.sys.auth.app.find.company.CompanyDto;
+import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.Cas013aDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualDto;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.RoleIndividualFinder;
 import nts.uk.ctx.sys.auth.app.find.grant.roleindividual.dto.*;
@@ -123,7 +124,7 @@ public class RoleIndividualWebService extends WebService {
 	
 	@POST
 	@Path("getRoleGrants")
-	public List<RoleIndividualGrantDto> GetRoleGrants(String Role){
+	public List<Cas013aDto> GetRoleGrants(String Role){
 		return this.roleIndividualFinder.getRoleGrants(Role);
 	}
 

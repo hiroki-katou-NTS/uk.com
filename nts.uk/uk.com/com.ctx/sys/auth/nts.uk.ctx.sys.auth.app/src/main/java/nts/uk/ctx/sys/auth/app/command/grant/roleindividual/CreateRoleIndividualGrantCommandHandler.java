@@ -20,7 +20,7 @@ public class CreateRoleIndividualGrantCommandHandler {
 			return null;
 		}else{
 			this.roleIndividualGrantRepository.add(roleGrant.toDomain());
-			return roleGrant.getUserID();
+			return roleGrant.companyID+roleGrant.getUserID();
 		}
 	}
 }
