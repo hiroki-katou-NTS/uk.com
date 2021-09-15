@@ -6,6 +6,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.workmanagement.manhoursummarytable.TotalUnit;
+import nts.uk.screen.at.app.kha003.ManHourSummaryTableFormatDto;
 import nts.uk.screen.at.app.kha003.SummaryItemDetailDto;
 import nts.uk.screen.at.app.kha003.SummaryItemDto;
 import nts.uk.screen.at.app.kha003.VerticalValueDailyDto;
@@ -44,6 +45,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         val formatSetting = query.getSummaryTableFormat();
         val outputContent = query.getOutputContent();
         val totalUnit = formatSetting.getTotalUnit();
+        val dispFormat = formatSetting.getDisplayFormat();
         int maxRangeDate = totalUnit == TotalUnit.DATE.value ? query.getPeriod().getDateList().size() : query.getPeriod().getYearMonthList().size();
         String dateRange = totalUnit == TotalUnit.DATE.value
                 ? query.getPeriod().getDatePeriod().start().toString(DATE_FORMAT) + "　～　" + query.getPeriod().getDatePeriod().end().toString(DATE_FORMAT)
@@ -58,7 +60,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
         // Add data source
         List<Map<String, Object>> dataSource = new ArrayList<>();
         // Handle data on needed data to export
-        this.dataOutputProcessing(outputContent, isDisplayTotal, totalUnit, dataSource, headerList, maxRangeDate);
+        this.dataOutputProcessing(outputContent, isDisplayTotal, totalUnit, dataSource, headerList, maxRangeDate, dispFormat);
 
         // Execute export
         String fileName = formatSetting.getName() + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
@@ -68,7 +70,7 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
     }
 
     private void dataOutputProcessing(ManHourSummaryTableOutputContentDto outputContent, boolean isDispTotal, int unit, List<Map<String, Object>> dataSource,
-                                      List<String> headerList, int maxRangeDate) {
+                                      List<String> headerList, int maxRangeDate, int dispFormat) {
         for (SummaryItemDetailDto level1 : outputContent.getItemDetails()) {
             if (level1.getChildHierarchyList().isEmpty()) {
                 Map<String, Object> row1 = new HashMap<>();
@@ -77,10 +79,10 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
 
                 val workingTimeMap1 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
                 for (int i = 2; i < maxRangeDate + 2; i++) {
-                    row1.put(headerList.get(i), workingTimeMap1.getOrDefault(headerList.get(i), ""));
+                    row1.put(headerList.get(i), dispFormat == 2 ? removeComma(workingTimeMap1.getOrDefault(headerList.get(i), "")) : workingTimeMap1.getOrDefault(headerList.get(i), ""));
                 }
                 if (isDispTotal) {  // Tong chieu ngang
-                    row1.put(headerList.get(headerList.size() - 1), level1.getTotalPeriod());
+                    row1.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(level1.getTotalPeriod()) : level1.getTotalPeriod());
                 }
                 dataSource.add(row1);
             } else {
@@ -94,10 +96,10 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
 
                         for (int i = 4; i < maxRangeDate + 4; i++) {
                             val workingTimeMap2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
-                            row2.put(headerList.get(i), workingTimeMap2.getOrDefault(headerList.get(i), ""));
+                            row2.put(headerList.get(i), dispFormat == 2 ? removeComma(workingTimeMap2.getOrDefault(headerList.get(i), "")) : workingTimeMap2.getOrDefault(headerList.get(i), ""));
                         }
                         if (isDispTotal) {  // Tong chieu ngang
-                            row2.put(headerList.get(headerList.size() - 1), level2.getTotalPeriod());
+                            row2.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(level2.getTotalPeriod()) : level2.getTotalPeriod());
                         }
                         dataSource.add(row2);
                     } else {
@@ -113,10 +115,10 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
 
                                 for (int i = 6; i < maxRangeDate + 6; i++) {
                                     val workingTimeMap3 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
-                                    row3.put(headerList.get(i), workingTimeMap3.getOrDefault(headerList.get(i), ""));
+                                    row3.put(headerList.get(i), dispFormat == 2 ? removeComma(workingTimeMap3.getOrDefault(headerList.get(i), "")) : workingTimeMap3.getOrDefault(headerList.get(i), ""));
                                 }
                                 if (isDispTotal) { // Tong chieu ngang
-                                    row3.put(headerList.get(headerList.size() - 1), level3.getTotalPeriod());
+                                    row3.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(level3.getTotalPeriod()) : level3.getTotalPeriod());
                                 }
                                 dataSource.add(row3);
                             } else {
@@ -133,10 +135,10 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
 
                                     for (int i = 8; i < maxRangeDate + 8; i++) {
                                         val workingTimeMap4 = this.getWorkingTimeByDate(unit, level4.getVerticalTotalList());
-                                        row4.put(headerList.get(i), workingTimeMap4.getOrDefault(headerList.get(i), ""));
+                                        row4.put(headerList.get(i), dispFormat == 2 ? removeComma(workingTimeMap4.getOrDefault(headerList.get(i), "")) : workingTimeMap4.getOrDefault(headerList.get(i), ""));
                                     }
                                     if (isDispTotal) { // Tong chieu ngang
-                                        row4.put(headerList.get(headerList.size() - 1), level4.getTotalPeriod());
+                                        row4.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(level4.getTotalPeriod()) : level4.getTotalPeriod());
                                     }
                                     dataSource.add(row4);
                                 }
@@ -145,9 +147,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                                     rowTotalLv4.put(headerList.get(5), level3.getDisplayInfo().getName() + TextResource.localize(TOTAL));
                                     for (int i = 8; i < headerList.size(); i++) {
                                         val mapTotal4 = this.getWorkingTimeByDate(unit, level3.getVerticalTotalList());
-                                        rowTotalLv4.put(headerList.get(i), mapTotal4.getOrDefault(headerList.get(i), ""));
+                                        rowTotalLv4.put(headerList.get(i), dispFormat == 2 ? removeComma(mapTotal4.getOrDefault(headerList.get(i), "")) : mapTotal4.getOrDefault(headerList.get(i), ""));
                                     }
-                                    rowTotalLv4.put(headerList.get(headerList.size() - 1), level3.getTotalPeriod());
+                                    rowTotalLv4.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(level3.getTotalPeriod()) : level3.getTotalPeriod());
                                     dataSource.add(rowTotalLv4);
                                 }
                             }
@@ -157,9 +159,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                             rowTotalLv3.put(headerList.get(3), level2.getDisplayInfo().getName() + TextResource.localize(TOTAL));
                             for (int i = 6; i < headerList.size(); i++) {
                                 val mapTotal2 = this.getWorkingTimeByDate(unit, level2.getVerticalTotalList());
-                                rowTotalLv3.put(headerList.get(i), mapTotal2.getOrDefault(headerList.get(i), ""));
+                                rowTotalLv3.put(headerList.get(i), dispFormat == 2 ? removeComma(mapTotal2.getOrDefault(headerList.get(i), "")) : mapTotal2.getOrDefault(headerList.get(i), ""));
                             }
-                            rowTotalLv3.put(headerList.get(headerList.size() - 1), level2.getTotalPeriod());
+                            rowTotalLv3.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(level2.getTotalPeriod()) : level2.getTotalPeriod());
                             dataSource.add(rowTotalLv3);
                         }
                     }
@@ -169,9 +171,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
                     rowTotalLv2.put(headerList.get(1), level1.getDisplayInfo().getName() + TextResource.localize(TOTAL));
                     for (int i = 4; i < headerList.size(); i++) {
                         val mapTotal2 = this.getWorkingTimeByDate(unit, level1.getVerticalTotalList());
-                        rowTotalLv2.put(headerList.get(i), mapTotal2.getOrDefault(headerList.get(i), ""));
+                        rowTotalLv2.put(headerList.get(i), dispFormat == 2 ? removeComma(mapTotal2.getOrDefault(headerList.get(i), "")) : mapTotal2.getOrDefault(headerList.get(i), ""));
                     }
-                    rowTotalLv2.put(headerList.get(headerList.size() - 1), level1.getTotalPeriod());
+                    rowTotalLv2.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(level1.getTotalPeriod()) : level1.getTotalPeriod());
                     dataSource.add(rowTotalLv2);
                 }
             }
@@ -181,9 +183,9 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
             rowTotal.put(headerList.get(1), TextResource.localize(VERTICAL_TOTAL));
             for (int i = 2; i < headerList.size(); i++) {
                 val mapTotal = this.getWorkingTimeByDate(unit, outputContent.getVerticalTotalValues());
-                rowTotal.put(headerList.get(i), mapTotal.getOrDefault(headerList.get(i), ""));
+                rowTotal.put(headerList.get(i), dispFormat == 2 ? removeComma(mapTotal.getOrDefault(headerList.get(i), "")) : mapTotal.getOrDefault(headerList.get(i), ""));
             }
-            rowTotal.put(headerList.get(headerList.size() - 1), outputContent.getTotalPeriod());
+            rowTotal.put(headerList.get(headerList.size() - 1), dispFormat == 2 ? removeComma(outputContent.getTotalPeriod()) : outputContent.getTotalPeriod());
             dataSource.add(rowTotal);
         }
     }
@@ -233,6 +235,10 @@ public class ManHourAggregationResultExportService extends ExportService<ManHour
             lstHeader.add(TextResource.localize(HORIZONTAL_TOTAL));
         }
         return lstHeader;
+    }
+
+    private String removeComma(String total){
+        return total.contains(",") ? total.replace(",","") : total;
     }
 
     private String getCodeHeader(int num) {
