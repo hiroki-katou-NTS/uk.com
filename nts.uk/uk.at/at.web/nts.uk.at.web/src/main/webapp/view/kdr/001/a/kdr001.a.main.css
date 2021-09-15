@@ -3,7 +3,7 @@
 	margin-left: 80px;
 }
 .kdr-001 .fixed-flex-layout-left .employees-list {
-	width: 523px;
+	width: 521px;
 }
 .kdr-001 .employees-list .date-time-picker {
 	margin-bottom: 10px;
@@ -71,6 +71,7 @@
 .kdr-001 .panel .switchbox-wrappers .radio-wrapper span {
 	width: 65px;
 	text-align: center;
+	margin-left: -5px;
 }
 #employeeSearch{
 	height:  507px;

@@ -355,7 +355,6 @@ module nts.uk.at.view.kdr001.a.viewmodel {
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: true,
                 isSelectAllAfterReload: true,
-                maxWidth: 480,
                 maxRows: 20
             };
         }
