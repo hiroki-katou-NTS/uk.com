@@ -24,7 +24,7 @@
         v-bind:id="item.code"
       >
         <div class="row">
-          <div class="col-12">{{item.taskName}}</div>
+          <div class="col-11">{{item.taskName}}</div>
         </div>
       </li>
     </ul>
