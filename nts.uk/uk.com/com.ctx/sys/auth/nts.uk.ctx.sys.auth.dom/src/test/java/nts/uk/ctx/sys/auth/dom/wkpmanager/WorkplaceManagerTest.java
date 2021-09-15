@@ -22,7 +22,7 @@ public class WorkplaceManagerTest {
 	}
 	
 	@Test
-	public void createNewTest() {
+	public void testCreateNew() {
 		val workplaceId = "workplaceId";
 		val employeeId = "employeeId";
 		val workplaceManageId = "workplaceManageId";

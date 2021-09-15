@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.auth.dom.wkpmanager;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.sys.shared.dom.employee.EmpEnrollPeriodImport;
 import nts.uk.ctx.sys.shared.dom.employee.SecondSituation;
@@ -23,23 +24,13 @@ public class RegisterWorkplaceManagerServiceHelper {
 	
 	/**
 	 * create workplaceManager
-	 * @param sid
-	 * @param period
-	 * @return
-	 */
-	public static WorkplaceManager createWorkplaceManager(String sid, DatePeriod period) {
-		return WorkplaceManager.createNew("workplaceId", "sid", period);
-	}
-	
-	/**
-	 * create workplaceManager
-	 * @param sid
 	 * @param workplaceManagerId
-	 * @param period
+	 * @param startDate
+	 * @param endDate
 	 * @return
 	 */
-	public static WorkplaceManager createWorkplaceManagerById(String sid, String workplaceManagerId, DatePeriod period) {
-		return new WorkplaceManager(workplaceManagerId, "workplaceId", sid, period);
+	public static WorkplaceManager createWorkplaceManager(String workplaceManagerId, GeneralDate startDate, GeneralDate endDate) {
+		return new WorkplaceManager(workplaceManagerId, "workplaceId", "sid", new DatePeriod(startDate, endDate));
 	}
 	
 	/**

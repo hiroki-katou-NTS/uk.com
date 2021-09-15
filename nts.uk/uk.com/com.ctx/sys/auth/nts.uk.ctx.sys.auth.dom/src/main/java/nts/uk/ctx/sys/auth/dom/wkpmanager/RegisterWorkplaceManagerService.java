@@ -88,7 +88,6 @@ public class RegisterWorkplaceManagerService {
 		
 		/**
 		 * 職場管理者を追加する
-		 * add workplace manager
 		 * @param workplaceManager 職場管理者
 		 * @return 
 		 */
@@ -96,14 +95,12 @@ public class RegisterWorkplaceManagerService {
 		
 		/**
 		 * 職場管理者を登録する
-		 * update workplace manager
 		 * @param workplaceManager 職場管理者
 		 */
 		void update(WorkplaceManager workplaceManager);
 		
 		/**
 		 * 社員の所属会社履歴を取得する( 社員ID, 期間 )
-		 * get history company by sid and datePeriod
 		 * @param sid 社員ID
 		 * @param datePeriod 期間
 		 * @return

@@ -30,7 +30,6 @@ public class WorkplaceManager implements DomainAggregate{
 	
 	/**
 	 * 新規作成する
-	 * createNew
 	 * @param workplaceId 職場ID
 	 * @param employeeId 社員ID
 	 * @param historyPeriod 履歴期間

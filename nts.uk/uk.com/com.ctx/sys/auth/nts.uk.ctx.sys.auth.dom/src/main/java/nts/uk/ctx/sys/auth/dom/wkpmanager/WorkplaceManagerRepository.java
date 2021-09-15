@@ -37,12 +37,12 @@ public interface WorkplaceManagerRepository {
 	List<WorkplaceManager> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate);
 	
 	/**
-	 * 職場管理者を取得する
+	 * 職場IDと社員IDを指定して職場管理者を取得する
 	 * @param workplaceId 職場ID
 	 * @param sid 社員ID
 	 * @return List<WorkplaceManager>
 	 */
-	List<WorkplaceManager> getWkpManager(String workplaceId, String sid);
+	List<WorkplaceManager> getWkpManagerByWorkplaceIdAndSid(String workplaceId, String sid);
 	
 	/**
 	 * 社員IDを指定して職場管理者を取得する

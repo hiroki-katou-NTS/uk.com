@@ -13,7 +13,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 public interface EmpCompanyHistoryAdapter {
 	/**
 	 * 期間を指定して在籍期間を取得する 
-	 * getEnrollmentPeriod
 	 * @param lstEmpId 社員IDリスト
 	 * @param datePeriod 期間
 	 * @return List<EmpEnrollPeriodImport>
