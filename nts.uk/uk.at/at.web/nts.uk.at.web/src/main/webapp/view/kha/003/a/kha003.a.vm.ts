@@ -112,7 +112,7 @@ module nts.uk.at.kha003.a {
             });
 
             vm.$window.storage('dScreenCode').done((data) => {
-                if (data.code != null) {
+                if (data !== "undefined" && data.code != null) {
                     vm.isFromDScreen = true;
                     vm.$window.storage('dScreenCode', {code: null}).then(() => {
                         vm.currentCode(data.code);
@@ -287,19 +287,19 @@ module nts.uk.at.kha003.a {
                         const itemType = $(html).data('itemtype');
 
                         // check helper dragged into append area
-                        let isHelperInAppendArea = false;
-                        const aT1 = $("#append_area").offset().top,
-                            aT2 = $("#append_area").offset().top + $("#append_area").height(),
-                            aL1 = $("#append_area").offset().left,
-                            aL2 = $("#append_area").offset().left + $("#append_area").width(),
-                            hT1 = ui.offset.top - 20, // 20px padding
-                            hT2 = ui.offset.top + $(html).height() + 20,
-                            hL1 = ui.offset.left - 20,
-                            hL2 = ui.offset.left + $(html).width() + 20;
-                        if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
-                        if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
-                        if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
-                        if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
+                        let isHelperInAppendArea = true;
+                         const aT1 = $("#append_area").offset().top,
+                             aT2 = $("#append_area").offset().top + $("#append_area").height(),
+                             aL1 = $("#append_area").offset().left,
+                             aL2 = $("#append_area").offset().left + $("#append_area").width(),
+                             hT1 = ui.offset.top - 20, // 20px padding
+                             hT2 = ui.offset.top + $(html).height() + 20,
+                             hL1 = ui.offset.left - 20,
+                             hL2 = ui.offset.left + $(html).width() + 20;
+                         if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
+                         if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
+                         if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
+                         if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
 
                         if (isHelperInAppendArea) {
                             vm.$errors("clear", "#append_area");
