@@ -1,6 +1,8 @@
 package nts.uk.ctx.sys.gateway.dom.tenantlogin;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -9,6 +11,8 @@ import nts.gul.security.hash.password.PasswordHash;
 /**
  * テナント認証
  */
+@AllArgsConstructor
+@ToString
 public class TenantAuthentication {
 	
 	/** テナントコード（契約コード） */
@@ -22,12 +26,6 @@ public class TenantAuthentication {
 	/** 利用期間 */
 	@Getter
 	private DatePeriod availablePeriod;
-
-	public TenantAuthentication(String tenantCode, String hashedPassword, DatePeriod availablePeriod) {
-		this.tenantCode = tenantCode;
-		this.hashedPassword = hashedPassword;
-		this.availablePeriod = availablePeriod;
-	}
 	
 	/**
 	 * 作成する
@@ -44,12 +42,12 @@ public class TenantAuthentication {
 	}
 	
 	/**
-	 * パスワードを照合する
+	 * パスワードを検証する
 	 * @param String password
 	 * @return
 	 */
-	public boolean verify(String passwordToBeVerified) {
-		return PasswordHash.verifyThat(passwordToBeVerified, tenantCode)
+	public boolean verifyPassword(String passwordPlainText) {
+		return PasswordHash.verifyThat(passwordPlainText, tenantCode)
 				.isEqualTo(hashedPassword);
 	}
 	
