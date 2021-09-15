@@ -89,5 +89,8 @@ element.style {
     margin-left: 8px;
 }
 #holidayCode{
-	margin-left: -15px;
+	margin-left: -20px;
+}
+#holidayName{
+	margin-left: 5px;
 }
