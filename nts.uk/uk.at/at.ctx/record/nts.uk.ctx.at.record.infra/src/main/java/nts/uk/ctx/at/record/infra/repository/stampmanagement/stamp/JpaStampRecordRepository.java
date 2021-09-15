@@ -129,7 +129,7 @@ public class JpaStampRecordRepository extends JpaRepository implements StampReco
 	}
 
 	public StampRecord toDomain(KrcdtStampRecord entity) {
-		return new StampRecord(new ContractCode(entity.contractCd), new StampNumber(entity.cardNumber),
+		return new StampRecord(entity.stampRecordId, new ContractCode(entity.contractCd), new StampNumber(entity.cardNumber),
 				entity.stampDateTime, new StampTypeDisplay(entity.stampTypeDisplay));
 	}
 	
