@@ -244,7 +244,7 @@ public enum Unit {
 		int perUnit = timeAsMinutes / unit;
 		
 		/** 時間を切り捨て */
-		return timeAsMinutes < 0 ? unit * (perUnit + 1) : unit * perUnit;
+		return timeAsMinutes < 0 ? unit * (perUnit - 1) : unit * perUnit;
 	}
 
 	/** 時間を切り上げする */
