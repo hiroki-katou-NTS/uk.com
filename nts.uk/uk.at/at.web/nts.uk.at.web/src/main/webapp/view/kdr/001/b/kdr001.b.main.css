@@ -82,11 +82,12 @@ element.style {
     float: right;
     margin-left: 300px;
     position: absolute;
+	margin-top: -8px;
 }
 .kdr-left{
     position: absolute;
     margin-left: 8px;
 }
 #holidayCode{
-	margin-left: -50px;
+	margin-left: -15px;
 }
