@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
@@ -24,18 +25,20 @@ import nts.uk.ctx.exio.infra.entity.input.revise.type.codeconvert.XimmtCodeConve
 public class JpaReviseItemRepository extends JpaRepository implements ReviseItemRepository {
 
 	@Override
-	public Optional<ReviseItem> get(String companyId, ExternalImportCode settingCode, int importItemNumber) {
+	public Optional<ReviseItem> get(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, int importItemNumber) {
 		
 		String sql 	= " select f "
 					+ " from XimmtReviseItem f"
 					+ " where f.pk.companyId =:companyID "
 					+ " and f.pk.settingCode =:settingCD "
+					+ " and f.pk.domainId =:domainId "
 					+ " and f.pk.itemNo =:importItemNO ";
 		
 		val entitiesOpt = this.queryProxy().query(sql, XimmtReviseItem.class)
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())
 				.setParameter("importItemNO", importItemNumber)
+				.setParameter("domainId",domainId)
 				.getSingle();
 		
 		if(!entitiesOpt.isPresent()) {
@@ -47,6 +50,7 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 		return Optional.of(entitiesOpt.get().toDomain(codeConvert));
 	}
 	
+	// コード変換のDomainId追加は要否を検討中
 	private Optional<ExternalImportCodeConvert> getCodeConvert(String companyId, ExternalImportCode settingCode, int importItemNumber){
 		
 		String sql = " select f "
@@ -101,8 +105,8 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 	}
 
 	@Override
-	public void delete(String companyId, ExternalImportCode settingCode, int importItemNumber) {
-		delete(new XimmtReviseItemPK(companyId, settingCode.v(), importItemNumber));
+	public void delete(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, int importItemNumber) {
+		delete(new XimmtReviseItemPK(companyId, settingCode.v(), domainId.value, importItemNumber));
 	}
 
 	@Override
@@ -114,9 +118,9 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 	}
 
 	@Override
-	public void delete(String companyId, ExternalImportCode settingCode, List<Integer> itemNos) {
+	public void delete(String companyId, ExternalImportCode settingCode, ImportingDomainId domainId, List<Integer> itemNos) {
 		itemNos.stream()
-				.map(itemNo -> new XimmtReviseItemPK(companyId, settingCode.v(), itemNo))
+				.map(itemNo -> new XimmtReviseItemPK(companyId, settingCode.v(), domainId.value,itemNo))
 				.forEach(this::delete);
 	}
 	

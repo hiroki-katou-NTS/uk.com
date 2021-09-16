@@ -9,6 +9,7 @@ import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.StringifiedValue;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
@@ -43,7 +44,7 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 
 	private void updateSetting(String companyId, Cmf001cSaveCommand command, ExternalImportSetting setting) {
 		
-		val mapping = setting.getAssembly().getMapping();
+		val mapping = setting.getAssembly(command.getDomainId()).getMapping();
 		int itemNo = command.getItemNo();
 		
 		if (command.isFixedValue()) {
@@ -59,7 +60,7 @@ public class Cmf001cSaveCommandHandler extends CommandHandler<Cmf001cSaveCommand
 
 	private void updateReviseItem(String companyId, Cmf001cSaveCommand command, ExternalImportSetting setting) {
 
-		val importableItem = importableItemRepo.get(setting.getExternalImportDomainId(), command.getItemNo())
+		val importableItem = importableItemRepo.get(ImportingDomainId.valueOf(command.getDomainId()), command.getItemNo())
 				.orElseThrow(() -> new RuntimeException("not found: " + command.getSettingCode() + ", " + command.getItemNo()));
 
 		command.toDomainReviseItem(companyId, importableItem.getItemType())

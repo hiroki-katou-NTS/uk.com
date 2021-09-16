@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
@@ -168,6 +169,7 @@ public class XimmtReviseItem extends ContractUkJpaEntity implements Serializable
 		return new ReviseItem(
 				pk.getCompanyId(),
 				new ExternalImportCode(pk.getSettingCode()),
+				ImportingDomainId.valueOf(pk.getDomainId()),
 				pk.getItemNo(),
 				getReviseValue(codeConvert));
 	}

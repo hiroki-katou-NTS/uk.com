@@ -29,7 +29,7 @@ public class Cmf001cDeleteCommandHandler extends CommandHandler<Cmf001cDeleteCom
 		String companyId = AppContexts.user().companyId();
 		
 		val setting = settingRepo.get(companyId, command.getExternalImportCode()).get();
-		setting.getAssembly().getMapping().setNoSetting(command.getItemNo());
+		setting.getAssembly(command.getDomainId()).getMapping().setNoSetting(command.getItemNo());
 		
 		settingRepo.update(setting);
 		reviseItemRepo.delete(companyId, command.getExternalImportCode(), command.getItemNo());

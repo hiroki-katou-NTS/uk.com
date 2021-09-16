@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.app.input.errors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
@@ -15,8 +16,6 @@ import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.TransactionAttribute;
 
 /**
  * 前回実行した外部受入の出力エラーを取得する。
@@ -51,7 +50,7 @@ public class GetLatestExternalImportErrors {
 		
 		String companyId = AppContexts.user().companyId();
 		val setting = settingRepo.get(companyId, settingCode).get();
-		val context = ExecutionContext.create(setting);
+		val context = setting.getDomainSetting().get().executionContext(companyId, settingCode);
 		
 		int startErrorNo = MAX_PAGE_SIZE * (pageNo - 1);
 		val errors = errorsRepo.find(context, startErrorNo, MAX_PAGE_SIZE);

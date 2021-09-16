@@ -6,6 +6,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
@@ -21,12 +22,12 @@ public class GetImportableItemAndConstraint {
 	@Inject
 	private ImportableItemsRepository itemRepo;
 	
-	public ImportableItemDto get(String settingCode, int itemNo) {
+	public ImportableItemDto get(String settingCode, ImportingDomainId domainId, int itemNo) {
 		
 		String companyId = AppContexts.user().companyId();
 		val setting = settingRepo.get(companyId, new ExternalImportCode(settingCode)).get();
 		
-		val item = itemRepo.get(setting.getExternalImportDomainId(), itemNo).get();
+		val item = itemRepo.get(domainId, itemNo).get();
 		
 		return ImportableItemDto.of(item);
 		

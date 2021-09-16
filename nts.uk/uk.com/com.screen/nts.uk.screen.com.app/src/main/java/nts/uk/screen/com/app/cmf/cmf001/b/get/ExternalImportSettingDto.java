@@ -1,6 +1,8 @@
 package nts.uk.screen.com.app.cmf.cmf001.b.get;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -8,6 +10,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
+import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -44,12 +47,13 @@ public class ExternalImportSettingDto {
 	public void merge(RequireMerge require, ExternalImportSetting domain) {
 
 		domain.setName(new ExternalImportName(name));
-		domain.setImportingMode(ImportingMode.valueOf(mode));
-		domain.getAssembly().setCsvFileInfo(toCsvFileInfo());
 
-		if (this.domain == domain.getExternalImportDomainId().value) {
-			domain.merge(require, itemNoList);
-
+		Optional<DomainImportSetting> setting = domain.getDomainSetting(this.domain);
+			
+		if (setting.isPresent()) {
+			setting.get().merge(require, itemNoList, domain.getCode());
+			setting.get().setImportingMode(ImportingMode.valueOf(mode));
+			setting.get().getAssembly().setCsvFileInfo(toCsvFileInfo());
 		} else {
 			domain.changeDomain(require, ImportingDomainId.valueOf(this.domain), itemNoList);
 		}
@@ -60,31 +64,39 @@ public class ExternalImportSettingDto {
 		ExternalImportSetting.RequireChangeDomain {
 	}
 
-	public static ExternalImportSettingDto fromDomain(ExternalImportSetting domain) {
+	public static ExternalImportSettingDto fromDomain(ExternalImportSetting setting) {
 
+		DomainImportSetting domainSetting = setting.getDomainSetting().get();
+		
 		return new ExternalImportSettingDto(
-				domain.getCompanyId(),
-				domain.getCode().toString(),
-				domain.getName().toString(),
-				domain.getExternalImportDomainId().value,
-				domain.getImportingMode().value,
-				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(),
-				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(),
-				domain.getAssembly().getMapping().getMappings().stream()
+				setting.getCompanyId(),
+				setting.getCode().toString(),
+				setting.getName().toString(),
+				domainSetting.getDomainId().value,
+				domainSetting.getImportingMode().value,
+				domainSetting.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(),
+				domainSetting.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(),
+				domainSetting.getAssembly().getMapping().getMappings().stream()
 				.map(m -> m.getItemNo())
 				.collect(Collectors.toList()));
 	}
 
 	public ExternalImportSetting toDomain() {
+		DomainImportSetting domainSetting = new DomainImportSetting(
+			ImportingDomainId.valueOf(domain),
+			ImportingMode.DELETE_RECORD_BEFOREHAND,
+			ExternalImportAssemblyMethod.create(
+					toCsvFileInfo(),
+					itemNoList));
+		List<DomainImportSetting> domainSettings = new ArrayList<>();
+		domainSettings.add(domainSetting);
 		return new ExternalImportSetting(
 				AppContexts.user().companyId(),
 				new ExternalImportCode(code),
 				new ExternalImportName(name),
-				ImportingDomainId.valueOf(domain),
-				ImportingMode.DELETE_RECORD_BEFOREHAND,
-				ExternalImportAssemblyMethod.create(
-						toCsvFileInfo(),
-						itemNoList));
+				new ExternalImportRowNumber(itemNameRow),
+				new ExternalImportRowNumber(importStartRow),
+				domainSettings);
 	}
 
 	private ExternalImportCsvFileInfo toCsvFileInfo() {

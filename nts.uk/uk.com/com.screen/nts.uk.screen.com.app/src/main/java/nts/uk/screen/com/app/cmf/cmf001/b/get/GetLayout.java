@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
@@ -30,9 +31,10 @@ public class GetLayout {
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), query.getSettingCode());
 		if (settingOpt.isPresent()) {
 			val setting = settingOpt.get();
-			if (query.getImportingDomainId() == setting.getExternalImportDomainId()) {
+			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId().value);
+			if (domainSetting.isPresent()) {
 				// 設定されている項目
-				return setting.getAssembly().getMapping().getMappings().stream()
+				return domainSetting.get().getAssembly().getMapping().getMappings().stream()
 						.map(m -> m.getItemNo())
 						.collect(Collectors.toList());
 			}
@@ -51,7 +53,8 @@ public class GetLayout {
 		if (settingOpt.isPresent()) {
 			// 設定あり（更新モード）
 			val setting = settingOpt.get();
-			if (query.getImportingDomainId() == setting.getExternalImportDomainId()) {
+			Optional<DomainImportSetting> domainSetting = setting.getDomainSetting(query.getImportingDomainId().value);
+			if (domainSetting.isPresent()) {
 				// グループIDがマスタと一致
 				if (query.isAllItem()) {
 					// 登録済みのレイアウトを取得
@@ -80,7 +83,7 @@ public class GetLayout {
 			GetLayout.Require require,
 			GetLayoutParam query,
 			ExternalImportSetting setting) {
-		return toLayouts(require, query, setting.getAssembly().getMapping().getMappings());
+		return toLayouts(require, query, setting.getAssembly(query.getImportingDomainId().value).getMapping().getMappings());
 	}
 
 	// 指定した項目のレイアウトを取得する
@@ -89,7 +92,7 @@ public class GetLayout {
 			GetLayoutParam query,
 			ExternalImportSetting setting) {
 
-		val savedMapping = setting.getAssembly().getMapping().getMappings().stream()
+		val savedMapping = setting.getAssembly(query.getImportingDomainId().value).getMapping().getMappings().stream()
 				.filter(m -> query.getItemNoList().contains(m.getItemNo()))
 				.collect(toList());
 

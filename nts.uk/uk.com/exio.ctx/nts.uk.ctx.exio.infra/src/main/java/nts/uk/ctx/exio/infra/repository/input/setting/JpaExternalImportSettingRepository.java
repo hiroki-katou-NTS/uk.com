@@ -11,9 +11,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
+import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
+import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMapping;
@@ -60,37 +63,62 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 				+ " from XimmtImportSetting f "
 				+ " where f.pk.companyId = :companyID ";
 
-		return this.queryProxy().query(sql, XimmtImportSetting.class)
+		List<ExternalImportSetting> domains = this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
 				.getList(rec -> rec.toDomain());
+		
+		domains.forEach(d -> {
+			List<DomainImportSetting> domainImportSettings = domainImportSettings(
+					companyId, d.getCode(), d.getCsvFileInfo());
+			d.getDomainSettings().addAll(domainImportSettings);
+		});
+		return domains;
 	}
 
 	@Override
 	public Optional<ExternalImportSetting> get(String companyId, ExternalImportCode settingCode) {
+		
 		String sql 	= " select f "
 					+ " from XimmtImportSetting f "
 					+ " where f.pk.companyId = :companyID "
 					+ " and f.pk.code = :settingCD";
 
-		return this.queryProxy().query(sql, XimmtImportSetting.class)
+		Optional<ExternalImportSetting> domain = this.queryProxy().query(sql, XimmtImportSetting.class)
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())
 				.getSingle(rec -> rec.toDomain());
+		
+		if(domain.isPresent()) {
+			domain.get().getDomainSettings().addAll(domainImportSettings(companyId, settingCode, domain.get().getCsvFileInfo()));
+		}
+		return domain;
+	}
+	
+	private List<DomainImportSetting> domainImportSettings(String companyId, ExternalImportCode settingCode, ExternalImportCsvFileInfo csvFileInfo){
+		String sql 	= " select d "
+					+ " from XimmtDomainImportSetting d "
+					+ " where d.pk.companyId = :companyID "
+					+ " and d.pk.code = :settingCD";
+
+		return this.queryProxy().query(sql, XimmtDomainImportSetting.class)
+				.setParameter("companyID", companyId)
+				.setParameter("settingCD", settingCode.toString())
+				.getList(rec -> rec.toDomain(csvFileInfo));
 	}
 
 	private XimmtImportSetting toEntitiy(ExternalImportSetting domain) {
+		DomainImportSetting domainSetting = domain.getDomainSetting().get();
 		return new XimmtImportSetting(
 				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()),
 				domain.getName().toString(),
-				domain.getExternalImportDomainId().value,
-				domain.getImportingMode().value,
-				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().v(),
-				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().v(),
-				domain.getAssembly().getMapping().getMappings().stream()
+				domainSetting.getAssembly().getCsvFileInfo().getItemNameRowNumber().v(),
+				domainSetting.getAssembly().getCsvFileInfo().getImportStartRowNumber().v(),
+				domainSetting.getAssembly().getMapping().getMappings().stream()
 				.map(m -> new XimmtItemMapping(
 						new XimmtItemMappingPK(
 								domain.getCompanyId(),
 								domain.getCode().v(),
+								domainSetting.getDomainId().value,
 								m.getItemNo()),
 						m.getCsvColumnNo().isPresent()? m.getCsvColumnNo().get(): null,
 						m.getFixedValue().isPresent()? m.getFixedValue().get().getValue(): null))

@@ -1,22 +1,20 @@
 package nts.uk.ctx.exio.dom.input.setting;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
-import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
-import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
-import nts.uk.ctx.exio.dom.input.setting.assembly.RevisedDataRecord;
-import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
-import nts.uk.ctx.exio.dom.input.validation.ValidateData;
 
 /**
  * 受入設定
@@ -35,35 +33,40 @@ public class ExternalImportSetting implements DomainAggregate {
 	@Setter
 	private ExternalImportName name;
 
-	/** 受入ドメインID */
-	private ImportingDomainId externalImportDomainId;
+	/* CSV項目名取得行 */
+	private ExternalImportRowNumber itemNameRowNumber;
+	/* CSV受入開始行 */
+	private ExternalImportRowNumber importStartRowNumber;
 
-	/** 受入モード */
-	@Setter
-	private ImportingMode importingMode;
+	/** ドメイン受入設定 **/
+	private List<DomainImportSetting> domainSettings;
+	
+	public ExternalImportSetting(
+			String companyId,
+			ExternalImportCode code,
+			ExternalImportName name,
+			ImportingDomainId externalImportDomainId,
+			ImportingMode importingMode,
+			ExternalImportRowNumber itemNameRawNumber,
+			ExternalImportRowNumber importStartRawNumber,
+			ExternalImportAssemblyMethod assembly) {
 
-	/** 組立方法 */
-	private ExternalImportAssemblyMethod assembly;
+		DomainImportSetting domainSettings = new DomainImportSetting(externalImportDomainId, importingMode, assembly);
+		this.domainSettings = new ArrayList<>();
+		this.domainSettings.add(domainSettings);
+		this.companyId = companyId;
+		this.code = code;
+		this.name = name;
+		
+	}
 
 	/**
 	 * マッピングを更新する
 	 * @param itemList
 	 */
-
-	public void merge(RequireMerge require, List<Integer> itemList) {
-		
-		val mappingRequire = new ImportingMapping.RequireMerge() {
-			@Override
-			public void deleteReviseItems(List<Integer> itemNos) {
-				require.deleteReviseItems(code, itemNos);
-			}
-		};
-		
-		this.assembly.merge(mappingRequire, itemList);
-	}
-	
-	public static interface RequireMerge {
-		void deleteReviseItems(ExternalImportCode settingCode, List<Integer> itemNos);
+	public void merge(DomainImportSetting.RequireMerge require, List<Integer> itemList) {
+		if(domainSettings.size() > 1) throw new RuntimeException("複数ドメインを受け入れる場合は変更できません");
+		domainSettings.get(0).merge(require, itemList, code);
 	}
 
 	/**
@@ -71,64 +74,40 @@ public class ExternalImportSetting implements DomainAggregate {
 	 * @param domainId
 	 * @param items
 	 */
-	public void changeDomain(RequireChangeDomain require, ImportingDomainId domainId, List<Integer> items) {
-		externalImportDomainId = domainId;
-		assembly = ExternalImportAssemblyMethod.create(assembly.getCsvFileInfo(), items);
-		
-		// 受入ドメインが変わるので既存の編集設定はすべて削除
-		require.deleteReviseItems(code);
+	public void changeDomain(DomainImportSetting.RequireChangeDomain require, ImportingDomainId domainId, List<Integer> items) {
+		if(domainSettings.size() > 1) throw new RuntimeException("複数ドメインを受け入れる場合は変更できません");
+		domainSettings.get(0).changeDomain(require, domainId, items, code);
+	}
+
+	public void assemble(DomainImportSetting.RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
+		domainSettings.forEach(setting -> {
+			setting.assemble(require, context, csvFileStream);
+		});
 	}
 	
-	public static interface RequireChangeDomain {
-		void deleteReviseItems(ExternalImportCode settingCode);
+	public static interface RequireMerge extends DomainImportSetting.RequireMerge {
+	}
+	public static interface RequireChangeDomain extends DomainImportSetting.RequireChangeDomain {
+	}
+	public static interface RequireAssemble extends DomainImportSetting.RequireAssemble {
+	}
+	public ExternalImportCsvFileInfo getCsvFileInfo() {
+		return new ExternalImportCsvFileInfo(itemNameRowNumber, importStartRowNumber);
 	}
 
-
-	public void assemble(RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
-
-		assembly.getCsvFileInfo().parse(
-				csvFileStream,
-				r -> processRecord(require, context, r));
+	public ExternalImportAssemblyMethod getAssembly(int domainId) {
+		return getDomainSetting(domainId).get().getAssembly();
 	}
 
-	/**
-	 * 1レコード分の組み立て
-	 * @param require
-	 * @param context
-	 * @param columnNames
-	 * @param csvRecord
-	 */
-	private void processRecord(
-			RequireAssemble require,
-			ExecutionContext context,
-			CsvRecord csvRecord) {
-
-		val optRevisedData = assembly.assemble(require, context, csvRecord);
-		if(!optRevisedData.isPresent()) {
-			// データの組み立て結果が空の場合
-			return;
-		}
-
-		val revisedData = optRevisedData.get();
-
-		val errors = ValidateData.validate(require, context, revisedData);
-
-		if(errors.isEmpty()) {
-			require.save(context, revisedData);
-		}
-		else {
-			errors.forEach(error ->{
-				require.add(context, new ExternalImportError(revisedData.getRowNo(),
-																						   error.getItemNo(),
-																						   error.getMessage()));
-			});
-		}
+	public Optional<DomainImportSetting> getDomainSetting() {
+		return getDomainSetting(0);
 	}
-
-	public static interface RequireAssemble extends
-			ExternalImportAssemblyMethod.Require,
-			ValidateData.ValidateRequire {
-
-		void save(ExecutionContext context, RevisedDataRecord revisedDataRecord);
+	
+	public Optional<DomainImportSetting> getDomainSetting(int domain) {
+		if (this.domainSettings.size() == 1)  return Optional.of(this.domainSettings.get(0));
+		
+		return this.domainSettings.stream()
+			.filter(ds -> ds.getDomainId().value == domain)
+			.findFirst();
 	}
 }

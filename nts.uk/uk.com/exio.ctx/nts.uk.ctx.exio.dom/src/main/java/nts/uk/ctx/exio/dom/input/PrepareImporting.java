@@ -17,19 +17,21 @@ public class PrepareImporting {
 
 	public static void prepare(
 			Require require,
-			ExternalImportSetting setting,
+			ExternalImportSetting externalImportSetting,
 			InputStream csvFileStream) {
 
-		val context = ExecutionContext.create(setting);
-		
-		require.setupWorkspace(context);
-		
-		// 受入データの組み立て
-		setting.assemble(require, context, csvFileStream);
-		
-		// 編集済みデータの正準化
-		val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
-		CanonicalizeRevisedData.canonicalize(require, context, meta);
+		externalImportSetting.getDomainSettings().forEach(setting -> {	
+			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
+			
+			require.setupWorkspace(context);
+			
+			// 受入データの組み立て
+			setting.assemble(require, context, csvFileStream);
+			
+			// 編集済みデータの正準化
+			val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());
+			CanonicalizeRevisedData.canonicalize(require, context, meta);
+		});
 	}
 	
 	public static interface Require extends

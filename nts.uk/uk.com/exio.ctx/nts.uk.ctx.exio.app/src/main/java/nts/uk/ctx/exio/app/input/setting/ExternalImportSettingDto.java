@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.app.input.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
+import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
@@ -46,27 +48,24 @@ public class ExternalImportSettingDto {
 	/** レイアウト */
 	private List<ExternalImportLayoutDto> layouts;
 	
-	public static ExternalImportSettingDto fromDomain(Require require, ExternalImportSetting domain) {
+	public static ExternalImportSettingDto fromDomain(Require require, ExternalImportSetting domain, DomainImportSetting domainSetting) {
 		
 		return new ExternalImportSettingDto(
 				domain.getCompanyId(), 
 				domain.getCode().toString(), 
 				domain.getName().toString(), 
-				domain.getExternalImportDomainId().value, 
-				domain.getImportingMode().value, 
-				domain.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
-				domain.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
-				domain.getAssembly().getMapping().getMappings().stream()
-					.map(m -> ExternalImportLayoutDto.fromDomain(require, domain.getExternalImportDomainId(), m))
+				domainSetting.getDomainId().value, 
+				domainSetting.getImportingMode().value, 
+				domainSetting.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
+				domainSetting.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
+				domainSetting.getAssembly().getMapping().getMappings().stream()
+					.map(m -> ExternalImportLayoutDto.fromDomain(require, domainSetting.getDomainId(), m))
 				.collect(Collectors.toList()));
 	}
 
 	
 	public ExternalImportSetting toDomain(Require require) {
-		return new ExternalImportSetting(
-				companyId, 
-				new ExternalImportCode(code), 
-				new ExternalImportName(name), 
+		DomainImportSetting domainSetting = new DomainImportSetting (
 				ImportingDomainId.valueOf(domain), 
 				ImportingMode.valueOf(mode), 
 				new ExternalImportAssemblyMethod(
@@ -74,12 +73,22 @@ public class ExternalImportSettingDto {
 								new ExternalImportRowNumber(itemNameRow), 
 								new ExternalImportRowNumber(importStartRow)), 
 						new ImportingMapping(createMappings(require))));
+		List<DomainImportSetting> domainSettings = new ArrayList<>();
+		domainSettings.add(domainSetting);
+		
+		return new ExternalImportSetting(
+				companyId, 
+				new ExternalImportCode(code), 
+				new ExternalImportName(name), 
+				new ExternalImportRowNumber(itemNameRow), 
+				new ExternalImportRowNumber(importStartRow),
+				domainSettings);
 	}
 	
 	private List<ImportingItemMapping> createMappings(Require require){
 		val optRegisteredSetting = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(code));
 		if(optRegisteredSetting.isPresent()) {
-			val mappings = optRegisteredSetting.get().getAssembly().getMapping().getMappings();
+			val mappings = optRegisteredSetting.get().getDomainSettings().get(0).getAssembly().getMapping().getMappings();
 			if(mappings.size() > 0) {
 				return mappings;
 			}

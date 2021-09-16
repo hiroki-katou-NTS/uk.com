@@ -187,8 +187,8 @@ public class ExternalImportPrepareRequire {
 		}
 		
 		@Override
-		public Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode importCode, int importItemNumber) {
-			return reviseItemRepo.get(companyId, importCode, importItemNumber);
+		public Optional<ReviseItem> getReviseItem(String companyId, ExternalImportCode importCode, ImportingDomainId domainId, int importItemNumber) {
+			return reviseItemRepo.get(companyId, importCode, domainId, importItemNumber);
 		}
 		
 		@Override

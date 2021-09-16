@@ -7,6 +7,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import lombok.Data;
 import lombok.Value;
 import lombok.val;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
@@ -42,11 +43,12 @@ public class ReviseItemDto {
 				RevisingValue.of(domain.getRevisingValue()));
 	}
 	
-	public ReviseItem toDomain(String companyId, ItemType itemType) {
+	public ReviseItem toDomain(String companyId, int domainId,  ItemType itemType) {
 		
 		return new ReviseItem(
 				companyId,
 				new ExternalImportCode(settingCode),
+				ImportingDomainId.valueOf(domainId),
 				itemNo,
 				revisingValue.toDomain(itemType));
 	}

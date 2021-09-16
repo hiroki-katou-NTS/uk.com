@@ -25,6 +25,7 @@ public class ReviseItemTest {
 	static class Dummy{
 		private static String COM_ID = "comcomcom";
 		private static ExternalImportCode EXI_CODE = new ExternalImportCode("exiexiexi");
+		private static ImportingDomainId DOMAIN_ID = ImportingDomainId.EMPLOYEE_BASIC;
 		private static int EXI_ITEM_NO = 765;
 		private static ItemType ITEM_TYPE = ItemType.STRING;
 		private static ReviseValue REVISE_VALUE;
@@ -40,6 +41,7 @@ public class ReviseItemTest {
 		val reviseItem = new ReviseItem(
 				Dummy.COM_ID, 
 				Dummy.EXI_CODE, 
+				Dummy.DOMAIN_ID,
 				Dummy.EXI_ITEM_NO, 
 				Dummy.REVISE_VALUE);
 		

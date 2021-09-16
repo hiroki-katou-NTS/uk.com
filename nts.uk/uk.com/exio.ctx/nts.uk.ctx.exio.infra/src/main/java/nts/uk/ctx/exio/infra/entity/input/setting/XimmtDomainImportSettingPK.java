@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.entity.input.setting.assembly;
+package nts.uk.ctx.exio.infra.entity.input.setting;
 
 import java.io.Serializable;
 
@@ -8,12 +8,11 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Embeddable
-public class XimmtItemMappingPK implements Serializable{
+public class XimmtDomainImportSettingPK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -22,14 +21,10 @@ public class XimmtItemMappingPK implements Serializable{
 	private String companyId;
 	
 	/* 受入設定コード */
-	@Column(name = "SETTING_CODE")
+	@Column(name = "CODE")
 	private String code;
-
+	
 	/* 受入グループID */
 	@Column(name = "DOMAIN_ID")
-	private int domainId;
-	
-	/* 受入項目NO */
-	@Column(name = "ITEM_NO")
-	private int itemNo;
+	private int externalImportDomainId;
 }

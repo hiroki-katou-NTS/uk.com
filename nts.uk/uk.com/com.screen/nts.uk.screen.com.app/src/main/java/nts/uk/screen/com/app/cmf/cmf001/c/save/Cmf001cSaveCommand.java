@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
 public class Cmf001cSaveCommand {
 	
 	String settingCode;
+	int domainId;
 	int itemNo;
 	
 	String mappingSource;
