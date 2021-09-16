@@ -123,7 +123,7 @@ public class StampAppReflectTest {
 		application = ReflectApplicationHelper.createAppStamp(null, TimeZoneStampClassificationShare.BREAK);
 		actualResult6.addAll(reflectApp6.reflectStampApp(application, dailyApp));
 
-		assertThat(actualResult6).isEqualTo(Arrays.asList(7, 8, 157, 159));
+		assertThat(actualResult6).isEqualTo(Arrays.asList(157, 159));
 
 	}
 

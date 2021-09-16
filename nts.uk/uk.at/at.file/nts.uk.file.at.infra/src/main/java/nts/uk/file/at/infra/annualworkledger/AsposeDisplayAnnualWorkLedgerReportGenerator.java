@@ -16,6 +16,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import java.text.DecimalFormat;
@@ -71,17 +72,14 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         PageSetup pageSetup = worksheet.getPageSetup();
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         String companyName = dataSource.getCompanyName();
-        pageSetup.setFitToPagesTall(0);
-        pageSetup.setFitToPagesWide(0);
         pageSetup.setCenterHorizontally(true);
-        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\""
+        pageSetup.setHeader(0, "&7&\"ＭＳ ゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"ＭＳ ゴシック,Bold\""
                 + dataSource.getOutputSetting().getName());
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
-
         pageSetup.setHeader(2,
-                "&7&\"MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&7&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
         pageSetup.setPrintArea("A1:Z" + dataSource.getLstAnnualWorkLedgerContent().size()*NUMBER_ROW_OF_PAGE);
     }
@@ -110,14 +108,11 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
     private void printEmployeeInfor(Worksheet worksheet, int firstRow, AnnualWorkLedgerExportDataSource dataSource, AnnualWorkLedgerContent empInfo) {
         Cells cells = worksheet.getCells();
         // B1_1 B1_2 B1_3
-        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + empInfo.getWorkplaceCode() + "　" + empInfo.getWorkplaceName());
+        val wplCode  = StringUtils.deleteWhitespace(empInfo.getWorkplaceCode());
+        val emCode  = StringUtils.deleteWhitespace(empInfo.getEmployeeCode());
+        cells.get(firstRow, 0).setValue(TextResource.localize("KWR004_201") + wplCode + "　" + empInfo.getWorkplaceName());
         // B2_1 B2_2 B2_3
-        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") +empInfo.getEmployeeCode() + "　" + empInfo.getEmployeeName());
-//        // B3_1 B3_2 B3_3
-//        cells.get(firstRow + 2, 0).setValue(TextResource.localize("KWR004_203") +empInfo.getEmploymentCode() + "　" + empInfo.getEmploymentName());
-//        // B4_1 B4_2
-//        cells.get(firstRow + 2, 5).setValue(TextResource.localize("KWR004_204") +empInfo.getClosureDate());
-        // B5_1 B5_2
+        cells.get(firstRow + 1, 0).setValue(TextResource.localize("KWR004_202") + emCode + "　" + empInfo.getEmployeeName());
         cells.get(firstRow, 10).setValue(TextResource.localize("KWR004_205") +
                 TextResource.localize("KWR004_208", this.toYearMonthString(dataSource.getYearMonthPeriod().start()),
                         this.toYearMonthString(dataSource.getYearMonthPeriod().end())));
@@ -194,13 +189,13 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
             // Monthly Data
             val lstMonthlyData = empInfo.getLstMonthlyData();
             // E1_1
-            cells.get(firstRow + 37, 0).setValue(TextResource.localize("KWR004_207"));
+            cells.get(firstRow + 36, 0).setValue(TextResource.localize("KWR004_207"));
             // E2_1
-            cells.get(firstRow + 38, 2 + mi * 2).setValue(yearMonthString);
+            cells.get(firstRow + 37, 2 + mi * 2).setValue(yearMonthString);
 
             for (int i = 0; i < lstMonthlyData.size(); i++) {
                 val dataRow = lstMonthlyData.get(i);
-                val rowIndex = firstRow + 39 + i;
+                val rowIndex = firstRow + 38 + i;
                 // F1_1
                 cells.get(rowIndex, 0).setValue(dataRow.getOutputItemName());
                 val monthlyData = dataRow.getLstMonthlyValue().stream().filter(x -> x.getDate().compareTo(yearMonth) == 0).findFirst();
