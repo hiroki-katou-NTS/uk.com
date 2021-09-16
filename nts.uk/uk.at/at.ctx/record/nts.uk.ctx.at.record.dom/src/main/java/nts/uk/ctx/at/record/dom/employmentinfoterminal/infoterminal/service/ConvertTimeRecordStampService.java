@@ -148,7 +148,7 @@ public class ConvertTimeRecordStampService {
 				val domAfterCalc = require.calculatePassCompanySetting(cid.get(), Arrays.asList(domdaily.get()),
 						ExecutionType.NORMAL_EXECUTION);
 				AtomTask task = atomTask.then(() -> {
-					require.addAllDomain(domAfterCalc.get(0), true);
+					require.addAllDomain(domAfterCalc.get(0));
 					//require.loggedOut();
 				});
 				return Optional.of(new StampDataReflectResult(reflectDate, task));
