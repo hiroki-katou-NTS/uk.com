@@ -17,17 +17,22 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.experimental.var;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.PersonalScheduleByIndividualExportGenerator;
 import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.PersonalScheduleIndividualDataSource;
+import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.WorkScheduleWorkInforDto;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByIndividualExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
@@ -92,8 +97,103 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private void printContent(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource) {
-
+        val dateInfolist = dataSource.getDateInformationList();
+        var workInforDtoList = dataSource.getWorkInforDtoList();
+        int count = 0;
+        boolean isFirst = true;
+        List<PersonalScheduleByIndividualFormat> dataList = new ArrayList<>();
+        PersonalScheduleByIndividualFormat format = new PersonalScheduleByIndividualFormat();
+        for (DateInformation dateInfo : dateInfolist) {
+            if (count == 0) {
+                format.setColn1C21(getDate(dateInfo.getYmd(), isFirst));
+                format.setColn1C22(getEvenCompany(dateInfo));
+                val workDetail = getWorkDetails(dateInfo, workInforDtoList);
+                format.setColn1C231(workTypeCodeAndName(workDetail));
+                isFirst = false;
+            }
+            if (count == 1) {
+                format.setColn2C21(getDate(dateInfo.getYmd(), false));
+                format.setColn2C22(getEvenCompany(dateInfo));
+                val workDetail = getWorkDetails(dateInfo, workInforDtoList);
+                format.setColn2C231(workTypeCodeAndName(workDetail));
+            }
+            if (count == 2) {
+                format.setColn3C21(getDate(dateInfo.getYmd(), false));
+                format.setColn3C22(getEvenCompany(dateInfo));
+                val workDetail = getWorkDetails(dateInfo, workInforDtoList);
+                format.setColn3C231(workTypeCodeAndName(workDetail));
+            }
+            if (count == 3) {
+                format.setColn4C21(getDate(dateInfo.getYmd(), false));
+                format.setColn4C22(getEvenCompany(dateInfo));
+                val workDetail = getWorkDetails(dateInfo, workInforDtoList);
+                format.setColn4C231(workTypeCodeAndName(workDetail));
+            }
+            if (count == 4) {
+                format.setColn5C21(getDate(dateInfo.getYmd(), false));
+                format.setColn5C22(getEvenCompany(dateInfo));
+                val workDetail = getWorkDetails(dateInfo, workInforDtoList);
+                format.setColn5C231(workTypeCodeAndName(workDetail));
+            }
+            if (count == 5) {
+                format.setColn6C21(getDate(dateInfo.getYmd(), false));
+                format.setColn6C22(getEvenCompany(dateInfo));
+                val workDetail = getWorkDetails(dateInfo, workInforDtoList);
+                format.setColn1C231(workTypeCodeAndName(workDetail));
+            }
+            if (count == 6) {
+                format.setColn7C21(getDate(dateInfo.getYmd(), false));
+                format.setColn7C22(getEvenCompany(dateInfo));
+                val workDetail = getWorkDetails(dateInfo, workInforDtoList);
+                format.setColn6C231(workTypeCodeAndName(workDetail));
+            }
+            count++;
+            if (count > 6) {
+                dataList.add(format);
+                format = new PersonalScheduleByIndividualFormat();
+                count = 0;
+            }
+        }
     }
+
+    private String getDate(GeneralDate date, boolean isMdformat) {
+        if (date.day() == 1 || isMdformat) {
+            return (date.month() + 1) + "/" + date.day();
+        }
+        return String.valueOf(date.day());
+    }
+
+    private String getEvenCompany(DateInformation dateInformation) {
+        if (dateInformation.getOptCompanyEventName().isPresent()) {
+            return dateInformation.getOptCompanyEventName().get().v();
+        }
+        if (dateInformation.getOptWorkplaceEventName().isPresent()) {
+            return dateInformation.getOptWorkplaceEventName().get().v();
+        }
+        return "";
+    }
+
+    private Optional<WorkScheduleWorkInforDto> getWorkDetails(DateInformation dateInformation,
+                                                              List<WorkScheduleWorkInforDto> workInforDtos) {
+        return workInforDtos.stream().filter(x -> x.getDate().equals(dateInformation.getYmd())).findFirst();
+    }
+
+    private String workTypeCodeAndName(Optional<WorkScheduleWorkInforDto> workInforDto) {
+        if (!workInforDto.isPresent()) {
+            return "";
+        }
+        val inforDto = workInforDto.get();
+        if (inforDto.getWorkTypeCode().isPresent() &&
+                (inforDto.getWorkTypeName().isPresent() && inforDto.getWorkTypeName().get().isEmpty())) {
+            return inforDto.getWorkTypeCode().get() + "" + getText("KSU002_79");
+        }
+        if (inforDto.getWorkTypeCode().isPresent() &&
+                (inforDto.getWorkTypeName().isPresent() && !inforDto.getWorkTypeName().get().isEmpty())) {
+            return inforDto.getWorkTypeName().get();
+        }
+        return "";
+    }
+
 
     private void setHeaderStyle(Cell cell, DateInformation dateInfo, boolean isDate) {
         Style style = cell.getStyle();
