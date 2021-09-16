@@ -10,6 +10,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.scherec.convert.ConvertApplicationToShare;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
@@ -27,7 +28,7 @@ public class ProcessReflectWorkRecord {
 
 	public static Pair<ReflectStatusResult, Optional<AtomTask>> processReflect(Require require, String companyId,
 			int closureId, Application application, boolean isCalWhenLock,
-			GeneralDate targetDate, ReflectStatusResult statusWorkRecord) {
+			GeneralDate targetDate, ReflectStatusResult statusWorkRecord, SEmpHistImport empHist) {
 
 		// [申請反映実行条件]を取得する
 		Optional<AppReflectExecutionCondition> appReFlectExec = require.findAppReflectExecCond(companyId);
@@ -36,7 +37,7 @@ public class ProcessReflectWorkRecord {
 		if (!appReFlectExec.isPresent() || appReFlectExec.get().getEvenIfWorkRecordConfirmed() == NotUseAtr.NOT_USE) {
 			// 事前チェック処理
 			PreCheckProcessResult preCheckResult = PreCheckProcessWorkRecord.preCheck(require, companyId, application,
-					closureId, isCalWhenLock, statusWorkRecord, targetDate);
+					closureId, isCalWhenLock, statusWorkRecord, targetDate, empHist);
 			if (preCheckResult.getProcessFlag() == NotUseAtr.NOT_USE) {
 				return Pair.of(preCheckResult.getReflectStatus(), Optional.empty());
 			}
