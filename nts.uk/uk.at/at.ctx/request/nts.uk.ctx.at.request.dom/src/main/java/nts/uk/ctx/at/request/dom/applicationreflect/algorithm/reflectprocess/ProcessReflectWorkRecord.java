@@ -10,7 +10,10 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.scherec.convert.ConvertApplicationToShare;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
@@ -29,6 +32,11 @@ public class ProcessReflectWorkRecord {
 			int closureId, Application application, boolean isCalWhenLock,
 			GeneralDate targetDate, ReflectStatusResult statusWorkRecord) {
 
+		if (application.getPrePostAtr() == PrePostAtr.PREDICT && application instanceof AppRecordImage) {
+			// 勤務予定の反映状態を「反映済み」にする
+			statusWorkRecord.setReflectStatus(ReflectedState.REFLECTED);
+			return Pair.of(statusWorkRecord, Optional.empty());
+		}
 		// [申請反映実行条件]を取得する
 		Optional<AppReflectExecutionCondition> appReFlectExec = require.findAppReflectExecCond(companyId);
 

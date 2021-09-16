@@ -10,32 +10,21 @@ import lombok.AllArgsConstructor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.adapter.login.IGetInfoForLogin;
 import nts.uk.ctx.at.request.dom.adapter.employee.GetMngInfoAdapter;
 import nts.uk.ctx.at.request.dom.adapter.employee.RQEmpDataImport;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
-import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.employeemanage.EmployeeManageRQAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.infoterminal.EmpInfoTerminalAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.stamp.StampCardAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.CollectApprovalRootServiceAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootServiceImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.StampCard;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.log.TopPageAlarmEmpInfoTerRQ;
@@ -55,7 +44,6 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarl
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
-import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
@@ -71,10 +59,11 @@ import nts.uk.ctx.at.request.pub.application.infoterminal.AppWorkChangeReception
 import nts.uk.ctx.at.request.pub.application.infoterminal.AppWorkHolidayReceptionDataExport;
 import nts.uk.ctx.at.request.pub.application.infoterminal.ApplicationReceptionDataExport;
 import nts.uk.ctx.at.request.pub.application.infoterminal.ConvertTRAppServicePub;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.TimeDigestionParam;
+import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfoTimeZoneFromProcess;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -101,12 +90,6 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 
 	@Inject
 	private ArrivedLateLeaveEarlyRepository arrivedLateLeaveEarlyRepository;
-
-	@Inject
-	private CommonAlgorithm commonAlgorithm;
-
-	@Inject
-	private ApplicationApprovalService applicationApprovalService;
 
 	@Inject
 	private EmpInfoTerminalAdapter empInfoTerminalAdapter;
@@ -148,23 +131,24 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
 	@Inject
-	private CollectAchievement collectAchievement;
-
+	private CollectApprovalRootServiceAdapter collectApprovalRootServiceAdapter;
+	
 	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-
+	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
+	
 	@Inject
-	private NewBeforeRegister newBeforeRegister;
+	private GetWorkInfoTimeZoneFromProcess getWorkInfoTimeZoneFromProcess;
 
 	@Override
 	public <T extends ApplicationReceptionDataExport> Optional<AtomTask> converData(String empInfoTerCode,
 			String contractCode, T recept) {
 		RequireImpl impl = new RequireImpl(workTypeRepository, workingConditionItemRepository, applicationRepository,
-				appRecordImageRepository, appWorkChangeRepository, arrivedLateLeaveEarlyRepository, commonAlgorithm,
-				applicationApprovalService, empInfoTerminalAdapter, stampCardAdapter, topPgAlTrAdapter,
+				appRecordImageRepository, appWorkChangeRepository, arrivedLateLeaveEarlyRepository,
+				empInfoTerminalAdapter, stampCardAdapter, topPgAlTrAdapter,
 				employeeManageRQAdapter, timeLeaveApplicationRepo, appOverTimeRepo, appHolidayWorkRepo,
 				applyForLeaveRepo, companyAdapter, IGetInfoForLogin, getMngInfoAdapter, loginUserContextManager,
-				interimRemainDataMngRegisterDateChange, collectAchievement, otherCommonAlgorithm, newBeforeRegister);
+				interimRemainDataMngRegisterDateChange, collectApprovalRootServiceAdapter,
+				registerAtApproveReflectionInfoService, getWorkInfoTimeZoneFromProcess);
 
 		return ConvertTimeRecordApplicationService.converData(impl, empInfoTerCode, contractCode, covertTo(recept));
 	}
@@ -255,10 +239,6 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 
 		private final ArrivedLateLeaveEarlyRepository arrivedLateLeaveEarlyRepository;
 
-		private final CommonAlgorithm commonAlgorithm;
-
-		private final ApplicationApprovalService applicationApprovalService;
-
 		private final EmpInfoTerminalAdapter empInfoTerminalAdapter;
 
 		private final StampCardAdapter stampCardAdapter;
@@ -285,12 +265,12 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 
 		private final InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 
-		private final CollectAchievement collectAchievement;
-
-		private final OtherCommonAlgorithm otherCommonAlgorithm;
-
-		private final NewBeforeRegister newBeforeRegister;
-
+		private final CollectApprovalRootServiceAdapter collectApprovalRootServiceAdapter;
+		
+		private final RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
+		
+		private final GetWorkInfoTimeZoneFromProcess getWorkInfoTimeZoneFromProcess;
+		
 		@Override
 		public Optional<EmpInfoTerminal> getEmpInfoTerminal(String empInfoTerCode, String contractCode,
 				Optional<String> leavCategory) {
@@ -355,17 +335,6 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		}
 
 		@Override
-		public ApprovalRootContentImport_New getApprovalRoot(String cid, String employeeID, EmploymentRootAtr rootAtr,
-				ApplicationType appType, GeneralDate appDate) {
-			return commonAlgorithm.getApprovalRoot(cid, employeeID, rootAtr, appType, appDate);
-		}
-
-		@Override
-		public void insertApp(Application application, List<ApprovalPhaseStateImport_New> listApprovalPhaseState) {
-			applicationApprovalService.insertApp(application, listApprovalPhaseState);
-		}
-
-		@Override
 		public void insertLogAll(TopPageAlarmEmpInfoTerRQ alEmpInfo) {
 			topPgAlTrAdapter.insertLogAll(alEmpInfo);
 		}
@@ -408,34 +377,26 @@ public class ConvertTRAppServicePubImpl implements ConvertTRAppServicePub {
 		}
 
 		@Override
-		public List<ActualContentDisplay> getAchievementContents(String companyID, String employeeID,
-				List<GeneralDate> dateLst, ApplicationType appType) {
-			return collectAchievement.getAchievementContents(companyID, employeeID, dateLst, appType);
+		public ApprovalRootServiceImport createDefaultApprovalRootApp(String companyID, String employeeID,
+				String targetType, GeneralDate standardDate, String appId, GeneralDate appDate) {
+			return collectApprovalRootServiceAdapter.createDefaultApprovalRootApp(companyID, employeeID, targetType,
+					standardDate, appId, appDate);
 		}
 
 		@Override
-		public List<GeneralDate> lstDateIsHoliday(String sid, DatePeriod dates,
-				List<ActualContentDisplay> actualContentDisplayLst) {
-			return otherCommonAlgorithm.lstDateIsHoliday(sid, dates, actualContentDisplayLst);
+		public String newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
+			return registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(empID, application);
 		}
 
 		@Override
-		public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr,
-				boolean agentAtr, Application application, OvertimeAppAtr overtimeAppAtr,
-				List<MsgErrorOutput> msgErrorLst, List<GeneralDate> lstDateHd,
-				AppDispInfoStartupOutput appDispInfoStartupOutput, List<String> workTypeCds,
-				Optional<TimeDigestionParam> timeDigestionUsageInfor, Optional<String> workTimeCode, boolean flag) {
-			return newBeforeRegister.processBeforeRegister_New(companyID, employmentRootAtr, agentAtr, application,
-					overtimeAppAtr, msgErrorLst, lstDateHd, appDispInfoStartupOutput, workTypeCds,
-					timeDigestionUsageInfor, workTimeCode, flag);
+		public void insert(Application application) {
+			applicationRepository.insert(application);
 		}
 
 		@Override
-		public AppDispInfoStartupOutput getAppDispInfoStart(String companyID, ApplicationType appType,
-				List<String> applicantLst, List<GeneralDate> dateLst, boolean mode,
-				Optional<HolidayAppType> opHolidayAppType, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
-			return commonAlgorithm.getAppDispInfoStart(companyID, appType, applicantLst, dateLst, mode,
-					opHolidayAppType, opOvertimeAppAtr);
+		public Optional<WorkInfoAndTimeZone> getWorkInfo(String cid, String employeeId, GeneralDate baseDate,
+				Optional<WorkingConditionItem> workItem) {
+			return getWorkInfoTimeZoneFromProcess.getInfo(cid, employeeId, baseDate, workItem);
 		}
 
 	}

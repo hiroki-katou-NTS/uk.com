@@ -83,6 +83,7 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
         List<KrqdtAppTimeHdInput> details = toEntityDetail(domain);
         this.commandProxy().insertAll(entities);
         this.commandProxy().insertAll(details);
+        this.getEntityManager().flush();
     }
 
     @Override

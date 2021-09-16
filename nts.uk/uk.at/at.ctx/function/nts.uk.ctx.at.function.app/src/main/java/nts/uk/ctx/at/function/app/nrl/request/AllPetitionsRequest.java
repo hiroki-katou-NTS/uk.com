@@ -96,7 +96,7 @@ public class AllPetitionsRequest extends NRLRequest<Frame> {
 		case PetitionType.VACATION:
 			exchange.addField(FieldName.PE_YMD_START, 6).addField(FieldName.PE_YMD_END, 6)
 					.addField(FieldName.PE_BEF_AF, 1).addField(FieldName.PE_REASON, 2)
-					.addField(FieldName.PE_WORKTYPE, 2).addField(FieldName.PRELIMINARY, 13);
+					.addField(FieldName.PE_WORKTYPE, 3).addField(FieldName.PRELIMINARY, 12);
 			break;
 		case PetitionType.WORK_CHANGE:
 			exchange.addField(FieldName.PE_YMD_START, 6).addField(FieldName.PE_YMD_END, 6)

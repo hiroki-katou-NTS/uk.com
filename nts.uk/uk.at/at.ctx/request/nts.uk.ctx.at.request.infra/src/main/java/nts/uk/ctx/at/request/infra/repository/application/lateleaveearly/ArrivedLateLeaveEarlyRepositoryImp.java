@@ -143,6 +143,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 	@Override
 	public void add(String cid, ArrivedLateLeaveEarly lateOrLeaveEarly) {
 		this.commandProxy().insert(toEntity(cid, lateOrLeaveEarly.getAppID(), lateOrLeaveEarly));
+		this.getEntityManager().flush();
 	}
 	
 	private KrqdtAppLateEarly toEntity(String cid, String appId, ArrivedLateLeaveEarly arrivedLateLeaveEarly) {

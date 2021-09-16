@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.AppWorkHolidayReceptionData;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationCategory;
 import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive.ApplicationReceptionData;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -72,13 +73,18 @@ public class ConvertTimeRecordApplicationService {
 		}
 
 		// if 申請受信データ.申請区分 = ‘３’(休暇申請)
-		Optional<WorkingConditionItem> workingConItemOpt = Optional.empty();
+		Optional<WorkInfoAndTimeZone> workInfoAndTimeZone = Optional.empty();
 		if (recept.getApplicationCategory().equals(ApplicationCategory.WORK_HOLIDAY.value)) {
-			workingConItemOpt = require.getBySidAndStandardDate(sid.get(),
+			Optional<WorkingConditionItem>  workingConItemOpt = require.getBySidAndStandardDate(sid.get(),
 					NRHelper.createGeneralDate(((AppWorkHolidayReceptionData) recept).getAppYMD()));
+			workInfoAndTimeZone = require.getWorkInfo(cid.get(), sid.get(),
+					NRHelper.createGeneralDate(((AppWorkHolidayReceptionData) recept).getAppYMD()), workingConItemOpt);
+			if(!workingConItemOpt.isPresent() || !workInfoAndTimeZone.isPresent()) {
+				return Optional.empty();
+			}
 		}
 
-		Application obj = empInfoTerOpt.get().createApplication(cid.get(), recept, workTypeOpt, workingConItemOpt,
+		Application obj = empInfoTerOpt.get().createApplication(cid.get(), recept, workTypeOpt, workInfoAndTimeZone,
 				sid.get());
 		return createApplication(require, cid.get(), contractCode, recept, obj);
 	}
@@ -188,6 +194,10 @@ public class ConvertTimeRecordApplicationService {
 
 		//[R-12] ログアウト
 		void loggedOut();
+		
+		// [R-13] 実績と予定と労働条件データかで勤務情報と補正済み所定時間帯を取得する
+		public Optional<WorkInfoAndTimeZone> getWorkInfo(String cid, String employeeId, GeneralDate baseDate,
+				Optional<WorkingConditionItem> workItem);
 
 	}
 

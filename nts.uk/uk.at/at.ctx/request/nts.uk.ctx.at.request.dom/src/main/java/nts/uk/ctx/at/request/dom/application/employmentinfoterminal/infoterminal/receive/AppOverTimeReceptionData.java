@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.NRHelper;
 
 /**
  * @author ThanhNX
@@ -71,6 +74,18 @@ public class AppOverTimeReceptionData extends ApplicationReceptionData implement
 		this.reason = builder.reason;
 	}
 
+	public String getOvertimeHour1() {
+		return StringUtils.isEmpty(overtimeHour1) ? "" : NRHelper.toMinute(overtimeHour1).toString();
+	}
+
+	public String getOvertimeHour2() {
+		return StringUtils.isEmpty(overtimeHour2) ? "" : NRHelper.toMinute(overtimeHour2).toString();
+	}
+
+	public String getOvertimeHour3() {
+		return StringUtils.isEmpty(overtimeHour3) ? "" : NRHelper.toMinute(overtimeHour3).toString();
+	}
+	
 	public static class AppOverTimBuilder extends ApplicationReceptionData {
 
 		/**

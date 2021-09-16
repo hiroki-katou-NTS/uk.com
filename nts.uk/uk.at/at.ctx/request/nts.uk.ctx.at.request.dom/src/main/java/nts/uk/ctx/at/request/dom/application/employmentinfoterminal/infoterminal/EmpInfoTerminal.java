@@ -3,11 +3,11 @@ package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infotermina
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import lombok.Getter;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
@@ -40,11 +40,11 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -134,7 +134,7 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 	// [３] 申請
 	public <T extends ApplicationReceptionData> Application createApplication(String companyId, T recept,
-			Optional<WorkType> workTypeOpt, Optional<WorkingConditionItem> workingConItemOpt, String employeeId) {
+			Optional<WorkType> workTypeOpt, Optional<WorkInfoAndTimeZone> workInfoAndTimeZone, String employeeId) {
 
 		ApplicationCategory cate = ApplicationCategory.valueStringOf(recept.getApplicationCategory());
 		switch (cate) {
@@ -166,11 +166,11 @@ public class EmpInfoTerminal implements DomainAggregate {
 					Optional.of(NRHelper.createGeneralDate(appOverTimeData.getAppYMD())),	appOverTimeData.getReason());
 			List<OvertimeApplicationSetting> applicationTimeDetail = new ArrayList<OvertimeApplicationSetting>();
 			createOvertimeSetting(appOverTimeData.getOvertimeNo1(),
-					appOverTimeData.getOvertimeHour1(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> applicationTimeDetail.add(x));
+					appOverTimeData.getOvertimeHour1(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> addOvertimeAppSetting(applicationTimeDetail, x));
 			createOvertimeSetting(appOverTimeData.getOvertimeNo2(),
-					appOverTimeData.getOvertimeHour2(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> applicationTimeDetail.add(x));
+					appOverTimeData.getOvertimeHour2(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> addOvertimeAppSetting(applicationTimeDetail, x));
 			createOvertimeSetting(appOverTimeData.getOvertimeNo3(),
-					appOverTimeData.getOvertimeHour3(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> applicationTimeDetail.add(x));
+					appOverTimeData.getOvertimeHour3(), AttendanceType_Update.NORMALOVERTIME).ifPresent(x -> addOvertimeAppSetting(applicationTimeDetail, x));
 
 			ApplicationTime applicationTime = new ApplicationTime(applicationTimeDetail, Optional.empty(),
 					Optional.empty(), Optional.empty(), Optional.empty());
@@ -226,20 +226,24 @@ public class EmpInfoTerminal implements DomainAggregate {
 
 			List<OvertimeApplicationSetting> applicationTimeHolDetail = new ArrayList<OvertimeApplicationSetting>();
 			createOvertimeSetting(appHolidayData.getBreakNo1(),
-					appHolidayData.getBreakTime1(), AttendanceType_Update.BREAKTIME).ifPresent(x -> applicationTimeHolDetail.add(x));
+					appHolidayData.getBreakTime1(), AttendanceType_Update.BREAKTIME).ifPresent(x ->  addOvertimeAppSetting(applicationTimeHolDetail, x));
 			createOvertimeSetting(appHolidayData.getBreakNo2(),
-					appHolidayData.getBreakTime2(), AttendanceType_Update.BREAKTIME).ifPresent(x -> applicationTimeHolDetail.add(x));
+					appHolidayData.getBreakTime2(), AttendanceType_Update.BREAKTIME).ifPresent(x ->  addOvertimeAppSetting(applicationTimeHolDetail, x));
 			createOvertimeSetting(appHolidayData.getBreakNo3(),
-					appHolidayData.getBreakTime3(), AttendanceType_Update.BREAKTIME).ifPresent(x -> applicationTimeHolDetail.add(x));
+					appHolidayData.getBreakTime3(), AttendanceType_Update.BREAKTIME).ifPresent(x ->  addOvertimeAppSetting(applicationTimeHolDetail, x));
 
 			ApplicationTime applicationTimeHol = new ApplicationTime(applicationTimeHolDetail, Optional.empty(),
 					Optional.empty(), Optional.empty(), Optional.empty());
-			List<TimeZoneWithWorkNo> lstTimeZone = workingConItemOpt.get().getWorkCategory().getHolidayWork().getWorkingHours(
-					).stream().map(x -> new TimeZoneWithWorkNo(x.getCnt(), x.getStart().v(), x.getEnd().v())).collect(Collectors.toList());
+			List<TimeZoneWithWorkNo> lstTimeZone = new ArrayList<>();
+			for (int i = 0; i < workInfoAndTimeZone.get().getTimeZones().size(); i++) {
+				lstTimeZone.add(
+						new TimeZoneWithWorkNo(i + 1, workInfoAndTimeZone.get().getTimeZones().get(i).getStart().v(),
+								workInfoAndTimeZone.get().getTimeZones().get(i).getEnd().v()));
+			}
 			AppHolidayWork appHoliday = new AppHolidayWork(
 					new WorkInformation(
-							workingConItemOpt.get().getWorkCategory().getHolidayWork().getWorkTypeCode().orElse(null),
-							workingConItemOpt.get().getWorkCategory().getHolidayWork().getWorkTimeCode().orElse(null)),
+							workInfoAndTimeZone.get().getWorkType().getWorkTypeCode(),
+							workInfoAndTimeZone.get().getWorkTime().map(x -> x.getWorktimeCode()).orElse(null)),
 					applicationTimeHol, nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE,
 					nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr.NOT_USE, Optional.empty(), Optional.of(lstTimeZone),
 					Optional.empty());
@@ -277,11 +281,15 @@ public class EmpInfoTerminal implements DomainAggregate {
 					new TimeLeaveApplicationDetail(toAppTimeType(appAnnual.getAnnualHolidayType()), new ArrayList<>(),
 							new TimeDigestApplication(
 									check60h(appAnnual.getAnnualHolidayType())
-											? new AttendanceTime(Integer.parseInt(appAnnual.getAnnualHolidayTime()))
+											? appAnnual.getAnnualHolidayTime().isEmpty() ? AttendanceTime.ZERO
+													: new AttendanceTime(
+															NRHelper.toMinute(appAnnual.getAnnualHolidayTime()))
 											: AttendanceTime.ZERO,
 									AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO,
 									!check60h(appAnnual.getAnnualHolidayType())
-											? new AttendanceTime(Integer.parseInt(appAnnual.getAnnualHolidayTime()))
+									? appAnnual.getAnnualHolidayTime().isEmpty() ? AttendanceTime.ZERO
+											: new AttendanceTime(
+													NRHelper.toMinute(appAnnual.getAnnualHolidayTime()))
 											: AttendanceTime.ZERO,
 									Optional.empty())));
 			return new TimeLeaveApplication(appAnnualHol, leaveApplicationDetails);
@@ -298,6 +306,16 @@ public class EmpInfoTerminal implements DomainAggregate {
 						StringUtils.isEmpty(time) ? 0 : Integer.parseInt(time)));
 	}
 
+	private void addOvertimeAppSetting(List<OvertimeApplicationSetting> lstOverHd, OvertimeApplicationSetting value) {
+		val valueCheck = lstOverHd.stream().filter(x -> x.getAttendanceType().value == value.getAttendanceType().value
+				&& x.getFrameNo().v() == value.getFrameNo().v()).findFirst();
+		if(valueCheck.isPresent()) {
+			valueCheck.get().setApplicationTime(new AttendanceTime(valueCheck.get().getApplicationTime().v() + value.getApplicationTime().v()));
+		}else {
+			lstOverHd.add(value);
+		}
+	}
+	
 	private boolean check60h(String annualHolidayType) {
 		switch (AnnualHolidayType.valueStringOf(annualHolidayType)) {
 		case LATE1:

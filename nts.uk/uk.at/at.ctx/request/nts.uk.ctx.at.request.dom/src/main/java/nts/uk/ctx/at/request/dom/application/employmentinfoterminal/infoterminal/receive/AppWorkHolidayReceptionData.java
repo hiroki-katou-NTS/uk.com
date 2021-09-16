@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.receive;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.request.dom.application.employmentinfoterminal.infoterminal.NRHelper;
 
 /**
  * @author ThanhNX
@@ -71,6 +74,18 @@ public class AppWorkHolidayReceptionData extends ApplicationReceptionData implem
 		this.reason = builder.reason;
 	}
 
+	public String getBreakTime1() {
+		return StringUtils.isEmpty(breakTime1) ? "" : NRHelper.toMinute(breakTime1).toString();
+	}
+
+	public String getBreakTime2() {
+		return StringUtils.isEmpty(breakTime2) ? "" : NRHelper.toMinute(breakTime2).toString();
+	}
+
+	public String getBreakTime3() {
+		return StringUtils.isEmpty(breakTime3) ? "" : NRHelper.toMinute(breakTime3).toString();
+	}
+
 	public static class AppWorkHolidayBuilder extends ApplicationReceptionData {
 
 		private String breakTime1;
@@ -132,7 +147,7 @@ public class AppWorkHolidayReceptionData extends ApplicationReceptionData implem
 			this.reason = reason;
 			return this;
 		}
-		
+
 		public AppWorkHolidayReceptionData build() {
 			return new AppWorkHolidayReceptionData(this);
 		}
