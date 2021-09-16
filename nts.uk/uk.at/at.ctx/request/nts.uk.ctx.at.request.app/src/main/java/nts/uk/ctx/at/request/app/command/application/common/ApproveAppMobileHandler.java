@@ -11,7 +11,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.ApprovalProcessParam;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterApproval;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.AppDetailScreenInfo;
@@ -44,6 +44,10 @@ public class ApproveAppMobileHandler extends CommandHandlerWithResult<AppDetailB
 		AppDispInfoStartupOutput appDispInfoStartupOutput = cmd.getAppDispInfoStartupOutput().toDomain();
 		AppDetailScreenInfo appDetailScreenInfo = appDispInfoStartupOutput.getAppDetailScreenInfo().get();
 		Application application = appDetailScreenInfo.getApplication();
+		ApprovalProcessParam approvalProcessParam = new ApprovalProcessParam(
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet(),
+				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null));
 		ApproveProcessResult approveProcessResult = new ApproveProcessResult();
 		List<String> appIDLst = new ArrayList<>();
 		Optional<AppHdsubRec> opAppHdsubRec = appHdsubRecRepository.findByAppId(application.getAppID());
@@ -60,7 +64,7 @@ public class ApproveAppMobileHandler extends CommandHandlerWithResult<AppDetailB
 	        beforeRegisterRepo.exclusiveCheck(companyID, appID, application.getVersion());
 			
 			//8-2.詳細画面承認後の処理
-	        detailAfterApproval.doApproval(companyID, appID, opApplication.get(), appDispInfoStartupOutput, memo);
+	        detailAfterApproval.doApproval(companyID, appID, opApplication.get(), approvalProcessParam, memo);
 		}
         approveProcessResult.setProcessDone(true);
  		return approveProcessResult;

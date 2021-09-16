@@ -10,26 +10,23 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.cache.CacheCarrier;
+import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.AchievementAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.GetPeriodCanProcesse;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.creationprocess.getperiodcanprocesse.IgnoreFlagDuringLock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.CheckProcessed;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.OutputCheckProcessed;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.StatusOutput;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CreateDailyOneDay;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.deleteworkinfor.DeleteWorkInfor;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.reflectedperiod.ReflectedAtr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.reflectedperiod.ReflectedPeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.reflectedperiod.ReflectedPeriodOutput;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
-import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
-import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
+import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
@@ -41,9 +38,14 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
+
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDailyResultEmployeeDomainServiceNew {
@@ -52,31 +54,28 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 	private EmploymentAdapter employmentAdapter;
 
 	@Inject
-	private ClosureStatusManagementRepository closureStatusManagementRepository;
+	private GetPeriodCanProcesse getPeriodCanProcesse;
 
 	@Inject
-	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	private ClosureStatusManagementRepository closureStatusManagementRepo;
 
 	@Inject
-	private DetermineActualResultLock lockStatusService;
-
-//	@Inject
-//	private ClosureService closureService;
+	private ClosureEmploymentRepository closureEmploymentRepo;
 
 	@Inject
-	private CheckProcessed checkProcessed;
+	private ClosureRepository closureRepository;
+
+	@Inject
+	private ActualLockRepository actualLockRepository;
+
+	@Inject
+	private CreateDailyEmployeesByPeriod createDailyEmployeesByPeriod;
+
+	@Inject
+	private ReflectedPeriod reflectedPeriod;
 	
 	@Inject
-	private DeleteWorkInfor deleteWorkInfor;
-	
-	@Inject
-	private CreateDailyOneDay createDailyOneDay;
-	
-	@Inject
-	private RegisterDailyWork registerDailyWork;
-	
-    @Inject
-    private RecordDomRequireService requireService;
+	private RegisterDailyAchievements registerDailyAchievements; 
 
 	@Override
 	public OutputCreateDailyResult createDailyResultEmployee(AsyncCommandHandlerContext asyncContext, String employeeId,
@@ -97,90 +96,97 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(companyId,
 				employeeId);
 		if (listEmploymentHis.isEmpty()) {
-			listErrorMessageInfo.add(
-					new ErrorMessageInfo(companyId, employeeId, processingDate, ExecutionContent.DAILY_CREATION,
+			// 取得したImported(就業．勤務実績)「所属雇用履歴」が存在するか確認する
+			listErrorMessageInfo
+					.add(new ErrorMessageInfo(companyId, employeeId, processingDate, ExecutionContent.DAILY_CREATION,
 							new ErrMessageResource("010"), new ErrMessageContent(TextResource.localize("Msg_426"))));
 
 			return new OutputCreateDailyResult(ProcessState.SUCCESS, listErrorMessageInfo);
 		}
-		// ドメインモデル「締め状態管理」を取得する
-		Optional<ClosureStatusManagement> closureStatusManagement = this.closureStatusManagementRepository
-				.getLatestByEmpId(employeeId);
-//		if (!closureStatusManagement.isPresent()) {
-//			listErrorMessageInfo.add(
-//					new ErrorMessageInfo(companyId, employeeId, periodTimes.start(), ExecutionContent.DAILY_CREATION,
-//							new ErrMessageResource("010"), new ErrMessageContent(TextResource.localize("Msg_426"))));
-//
-//			return new OutputCreateDailyResult(ProcessState.SUCCESS, listErrorMessageInfo);
-//		}
-		List<GeneralDate> listDayBetween = periodTimes.datesBetween();
-		for (GeneralDate day : listDayBetween) {
-			// 処理すべきかをチェックする
-			OutputCheckProcessed outputCheckProcessed = checkProcessed.getCheckProcessed(day, listEmploymentHis);
-			if (outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_DAY)
-				continue;
-			if (outputCheckProcessed.getStatusOutput() == StatusOutput.NEXT_EMPLOYEE) {
-				return new OutputCreateDailyResult(ProcessState.SUCCESS, listErrorMessageInfo);
-			}
-//			String employmentCode = outputCheckProcessed.getEmploymentHistoryImported().get().getEmploymentCode();
-			// 締めIDを取得する
-//			Optional<ClosureEmployment> closureEmploymentOptional = this.closureEmploymentRepository
-//					.findByEmploymentCD(companyId, employmentCode);
 
-			//処理する日が締められているかチェックする
-			if (!closureStatusManagement.isPresent() || 
-					!closureStatusManagement.get().getPeriod().contains(day)) {
-				
-				LockStatus lockStatus = LockStatus.UNLOCK;
-                //「ロック中の計算/集計する」の値をチェックする
-                if(!checkLock.isPresent() || checkLock.get() == false) {
-                    Closure closureData = ClosureService.getClosureDataByEmployee(
-                    		requireService.createRequire(), new CacheCarrier(), employeeId, day);
-                    //アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
-                    lockStatus = lockStatusService.getDetermineActualLocked(companyId, 
-                            day, closureData.getClosureId().value, PerformanceType.DAILY);
-                }
-                if(lockStatus == LockStatus.LOCK) {
-                    continue;
-                }
-                EmbossingExecutionFlag flag = EmbossingExecutionFlag.NOT_REFECT_ONLY;
-                //「実行タイプ」をチェックする
-                //実行タイプが「実績を削除する」の場合
-                if( executionType  == ExecutionTypeDaily.DELETE_ACHIEVEMENTS) {
-                	//日別実績の前データを削除する
-                	deleteWorkInfor.deleteWorkInfor(companyId, employeeId, day);
-                	flag = EmbossingExecutionFlag.ALL;
-                }
-                //一日の日別実績の作成処理（New）
-                OutputCreateDailyOneDay outputCreateDailyOneDay = createDailyOneDay.createDailyOneDay(companyId, employeeId, day,
-						reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType,
-						flag, employeeGeneralInfoImport, periodInMasterList);
-                if(!outputCreateDailyOneDay.getListErrorMessageInfo().isEmpty()) {
-                	//エラー一覧にエラー入れる
-    				listErrorMessageInfo.addAll(outputCreateDailyOneDay.getListErrorMessageInfo());
-                }else {
-                	if(outputCreateDailyOneDay.getIntegrationOfDaily() != null) {
-                		//登録する (Đăng ký) 
-                		registerDailyWork.register(outputCreateDailyOneDay.getIntegrationOfDaily(), outputCreateDailyOneDay.getListStamp());
-                		
-                	}
-                	
-                }
-                if(empCalAndSumExeLog.isPresent()) {
-	                //ドメインモデル「就業計算と集計実行ログ」を取得し、実行状況を確認する
-					Optional<EmpCalAndSumExeLog> logOptional = this.empCalAndSumExeLogRepository
-							.getByEmpCalAndSumExecLogID(empCalAndSumExeLog.get().getEmpCalAndSumExecLogID());
-					// 実行状況.中断開始 の場合
-					if (logOptional.isPresent() && logOptional.get().getExecutionStatus().isPresent()
-							&& logOptional.get().getExecutionStatus().get() == ExeStateOfCalAndSum.START_INTERRUPTION) {
-						asyncContext.finishedAsCancelled();
-						return new OutputCreateDailyResult(ProcessState.INTERRUPTION, listErrorMessageInfo);
-					}
-                }
+		GetPeriodCanProcesseRequireImpl require = new GetPeriodCanProcesseRequireImpl(closureStatusManagementRepo,
+				closureEmploymentRepo, closureRepository, actualLockRepository);
+		IgnoreFlagDuringLock ignoreFlagDuringLock = checkLock.isPresent() && checkLock.get().booleanValue()
+				? IgnoreFlagDuringLock.CAN_CAL_LOCK
+				: IgnoreFlagDuringLock.CANNOT_CAL_LOCK;
+		// 作成できる期間一覧を求める
+		@SuppressWarnings("static-access")
+		List<DatePeriod> listPeriod = getPeriodCanProcesse.get(require, employeeId, periodTimes, listEmploymentHis,
+				ignoreFlagDuringLock, AchievementAtr.DAILY);
 
+		// 取得できた期間一覧をループする
+		for (DatePeriod period : listPeriod) {
+			Optional<String> empCalAndSumExecLogId = empCalAndSumExeLog.isPresent()
+					? Optional.of(empCalAndSumExeLog.get().getEmpCalAndSumExecLogID())
+					: Optional.empty();
+			// 期間で社員の日別実績を作成する
+			CreateDailyOuput createDailyOuput = createDailyEmployeesByPeriod.create(period, employeeId, executionType,
+					empCalAndSumExecLogId, employeeGeneralInfoImport, periodInMasterList);
+			listErrorMessageInfo.addAll(createDailyOuput.getListError());
+			if (createDailyOuput.getReflectedPeriod() == ReflectedAtr.SUSPENDED) {
+				new OutputCreateDailyResult(ProcessState.INTERRUPTION, listErrorMessageInfo);
 			}
+			//打刻を反映する
+			ReflectedPeriodOutput reflectedPeriodOutput = reflectedPeriod.reflect(employeeId, period, executionType, createDailyOuput.getListIntegrationOfDaily(),
+					listErrorMessageInfo, createDailyOuput.getChangedDailyAttendance(), empCalAndSumExecLogId);
+			
+			if(reflectedPeriodOutput.getReflectedAtr() == ReflectedAtr.SUSPENDED ) {
+				new OutputCreateDailyResult(ProcessState.INTERRUPTION, listErrorMessageInfo); 
+			}
+			
+			//日別実績を登録する
+			registerDailyAchievements.register(createDailyOuput.getListIntegrationOfDaily(),
+					createDailyOuput.getListError(), reflectedPeriodOutput.getListStamp(), empCalAndSumExecLogId);
 		}
+
 		return new OutputCreateDailyResult(ProcessState.SUCCESS, listErrorMessageInfo);
+	}
+
+	@AllArgsConstructor
+	private class GetPeriodCanProcesseRequireImpl implements GetPeriodCanProcesse.Require {
+		@Inject
+		private ClosureStatusManagementRepository closureStatusManagementRepo;
+
+		@Inject
+		private ClosureEmploymentRepository closureEmploymentRepo;
+
+		@Inject
+		private ClosureRepository closureRepository;
+
+		@Inject
+		private ActualLockRepository actualLockRepository;
+
+		@Override
+		public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
+			// 指定した年月の期間を算出する
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+					ClosureService.createRequireM1(closureRepository, closureEmploymentRepo), closureId, processYm);
+			return datePeriodClosure;
+		}
+
+		@Override
+		public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
+			return closureStatusManagementRepo.getAllByEmpId(employeeId);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> findByEmploymentCD(String employmentCode) {
+			String companyId = AppContexts.user().companyId();
+			return closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode);
+		}
+
+		@Override
+		public Optional<ActualLock> findById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return actualLockRepository.findById(companyId, closureId);
+		}
+
+		@Override
+		public Closure findClosureById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return closureRepository.findById(companyId, closureId).get();
+		}
+
 	}
 
 }

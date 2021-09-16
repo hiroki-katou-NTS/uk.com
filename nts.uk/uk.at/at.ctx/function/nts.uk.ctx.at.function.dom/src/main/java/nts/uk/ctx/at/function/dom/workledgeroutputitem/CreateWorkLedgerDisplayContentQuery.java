@@ -69,7 +69,9 @@ public class CreateWorkLedgerDisplayContentQuery {
 
         Map<String, List<MonthlyRecordValueImport>> actualMultipleMonth =
                 require.getActualMultipleMonth(listSid, yearMonthPeriod, listAttIds);
-
+        if (actualMultipleMonth.isEmpty() || actualMultipleMonth.values().isEmpty()) {
+            throw new BusinessException("Msg_1926");
+        }
         // 4    ④月次の勤怠項目を取得する
         val attendanceItemList = require.findByAttendanceItemId(cid, listAttIds)
                 .stream().filter(distinctByKey(MonthlyAttendanceItem::getAttendanceItemId))
@@ -85,7 +87,7 @@ public class CreateWorkLedgerDisplayContentQuery {
         }
 
         List<AffiliationStatusDto> affiliationStatus = listEmployeeStatus.getAffiliationStatus();
-        affiliationStatus.parallelStream().forEach((AffiliationStatusDto e) -> {
+        affiliationStatus.forEach((AffiliationStatusDto e) -> {
             val item = new WorkLedgerDisplayContent();
             val eplInfo = mapSids.getOrDefault(e.getEmployeeID(), null);
             if (eplInfo != null) {

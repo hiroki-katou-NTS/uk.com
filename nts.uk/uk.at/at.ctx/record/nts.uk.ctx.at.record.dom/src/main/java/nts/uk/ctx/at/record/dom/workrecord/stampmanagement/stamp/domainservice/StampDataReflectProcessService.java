@@ -168,7 +168,7 @@ public class StampDataReflectProcessService {
 		// if 打刻.isEmpty
 		if (!employeeId.isPresent() || !stamp.isPresent())
 			return Optional.empty();
-		return ReflectDataStampDailyService.getJudgment(require, cid, employeeId.get(), stamp.get());
+		return ReflectDataStampDailyService.getJudgment(require, cid, employeeId.get(), stamp.map(x -> x.clone()).get());
 	}
 
 	private static IntegrationOfDaily createNull(String sid, GeneralDate dateData) {

@@ -20,9 +20,9 @@ module nts.uk.com.view.cps009.b.viewmodel {
 
             let self = this;
             self.roundingRules = ko.observableArray([
-                { code: '1', name: ReferenceMethodType.NOSETTING },
-                { code: '2', name: ReferenceMethodType.FIXEDVALUE },
-                { code: '3', name: ReferenceMethodType.SAMEASLOGIN }
+                { code: 1, name: ReferenceMethodType.NOSETTING },
+                { code: 2, name: ReferenceMethodType.FIXEDVALUE },
+                { code: 3, name: ReferenceMethodType.SAMEASLOGIN }
             ]);
 
             self.itemColumns = [

@@ -83,7 +83,7 @@ export class KafS10Component extends KafS00ShrComponent {
     public created() {
         const vm = this;
 
-        if (!_.isNil(vm.params)) {
+        if (!_.isNil(vm.params) && vm.params.isDetailMode) {
             vm.modeNew = false;
             let model = {} as Model;
             model.appHolidayWork = vm.params.appDetail.appHolidayWork as AppHolidayWork;
@@ -101,6 +101,8 @@ export class KafS10Component extends KafS00ShrComponent {
         vm.$mask('show');
         if (vm.modeNew) {
             vm.application = vm.createApplicationInsert(AppType.LEAVE_TIME_APPLICATION);
+            vm.application.employeeIDLst = _.get(vm.params, 'employeeID') ? [_.get(vm.params, 'employeeID')] : [];
+            vm.application.appDate = _.get(vm.params, 'date');
         } else {
             vm.application = vm.createApplicationUpdate(vm.appDispInfoStartupOutput.appDetailScreenInfo);
         }
@@ -108,14 +110,19 @@ export class KafS10Component extends KafS00ShrComponent {
             vm.user = user;
         }).then(() => {
             if (vm.modeNew) {
-                return vm.loadCommonSetting(AppType.LEAVE_TIME_APPLICATION);
+                return vm.loadCommonSetting(
+                    AppType.LEAVE_TIME_APPLICATION,
+                    _.isEmpty(vm.application.employeeIDLst) ? null : vm.application.employeeIDLst[0], 
+                    null, 
+                    vm.application.appDate ? [vm.application.appDate] : [], 
+                    null);
             }
 
             return true;
         }).then((loadData: any) => {
             if (loadData) {
                 vm.updateKaf000_A_Params(vm.user);
-                vm.updateKaf000_B_Params(vm.modeNew);
+                vm.updateKaf000_B_Params(vm.modeNew, vm.application.appDate);
                 vm.updateKaf000_C_Params(vm.modeNew);
                 if (vm.modeNew) {
                     vm.kaf000_B_Params.newModeContent.useMultiDaySwitch = false;
@@ -124,8 +131,9 @@ export class KafS10Component extends KafS00ShrComponent {
                 let url = self.location.search.split('=')[1];
                 command.mode = vm.modeNew;
                 command.companyId = vm.user.companyId;
-                command.employeeId = vm.user.employeeId;
+                command.employeeId = !_.isEmpty(vm.application.employeeIDLst) ? vm.application.employeeIDLst[0] : vm.user.employeeId;
                 command.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
+                command.appDate = vm.application.appDate;
 
                 if (vm.modeNew) {
                     return vm.$http.post('at', API.start, command);
@@ -1032,6 +1040,34 @@ export class KafS10Component extends KafS00ShrComponent {
         let timeCalUse = _.get(model, 'appHdWorkDispInfo.holidayWorkAppSet.applicationDetailSetting.timeCalUse');
 
         return useDirectBounceFunction == NotUseAtr.USE && timeCalUse == NotUseAtr.USE;
+    }
+
+
+    //  「休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分」が利用する
+    public get c15() {
+        const self = this;
+        const {model} = self;
+        const timeCalUse = _.get(model, 'appHdWorkDispInfo.holidayWorkAppSet.applicationDetailSetting.timeCalUse');
+
+        return timeCalUse == NotUseAtr.USE;
+
+    }
+
+
+    @Watch('params')
+    public paramsWatcher() {
+        const vm = this;
+        if (!_.isNil(vm.params) && vm.params.isDetailMode) {
+            vm.modeNew = false;
+            let model = {} as Model;
+            model.appHolidayWork = vm.params.appDetail.appHolidayWork as AppHolidayWork;
+            model.appHdWorkDispInfo = vm.params.appDetail.appHdWorkDispInfo as AppHdWorkDispInfo;
+            vm.appDispInfoStartupOutput = vm.params.appDispInfoStartupOutput;
+            vm.model = model;
+        } else {
+            vm.modeNew = true;
+        }
+        vm.fetchData();
     }
 }
 

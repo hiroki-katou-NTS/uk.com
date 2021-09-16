@@ -14,3 +14,7 @@ table th, td {
 .dipsRed {
 	color: red;
 }
+
+#A1_1 {
+  border-collapse: collapse;
+}

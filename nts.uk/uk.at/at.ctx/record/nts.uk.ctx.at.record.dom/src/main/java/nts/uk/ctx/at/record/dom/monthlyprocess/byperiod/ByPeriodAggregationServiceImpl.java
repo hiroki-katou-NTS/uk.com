@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.Aggr
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforRepository;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTarget;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodTargetRepository;
+import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionAtr;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodinfor.ErrorMess;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -165,8 +166,20 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	
 		val dataSetter = async.getDataSetter();
 		
+		// Check for automatic execution from KBT002
+		Optional<AggrPeriodExcution> optAggrPeriodExecution = this.executionRepo.findByAggrId(companyId, executeId);
+		if (optAggrPeriodExecution.isPresent()) {
+			AggrPeriodExcution domain = optAggrPeriodExecution.get();
+			// 終了状態 ＝ 中断　の場合(state = pause)
+			if (domain.getExecutionAtr().equals(ExecutionAtr.AUTOMATIC_EXECUTION)
+					&& domain.getExecutionStatus().isPresent()
+					&& domain.getExecutionStatus().get().equals(ExecutionStatus.START_OF_INTERRUPTION)) {
+				return ProcessState.INTERRUPTION;
+			}
+		}
+		
 		// 中断依頼が出されているかチェックする
-		if (async.hasBeenRequestedToCancel()) {
+		if (async.hasBeenRequestedToCancel() ) {
 			//async.finishedAsCancelled();
 			return ProcessState.INTERRUPTION;
 		}

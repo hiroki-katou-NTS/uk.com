@@ -5,9 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.aftercorrectwork.startendwork.CorrectStartEndWorkForWorkInfo;
@@ -52,17 +54,25 @@ public class CorrectionAfterChangeWorkInfo {
 	private BasicScheduleService basicScheduleService;
 	@Inject
 	private TimeCorrectionProcess timeCorrectionProcess;
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
 
 	public IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily,
 			Optional<WorkingConditionItem> workCondition, ChangeDailyAttendance changeDailyAttendance) {
-
-		if (changeDailyAttendance.workInfo) {
+		
+		val require = createRequire(companyId);
+		
+		/** 日別勤怠の何が変更されたか.勤務情報=true　＆＆　日別勤怠の何が変更されたか。勤務予定から移送した値も補正する＝True */
+		if (changeDailyAttendance.workInfo && changeDailyAttendance.correctValCopyFromSche) {
 			/** 始業終業時刻の補正 */
-			CorrectStartEndWorkForWorkInfo.correctStartEndWork(createRequire(companyId), domainDaily);
+			domainDaily.setWorkInformation(CorrectStartEndWorkForWorkInfo.correctStartEndWork(require, domainDaily.getWorkInformation(), domainDaily.getEditState()));
 		}
 		
 		//時刻の補正
 		timeCorrectionProcess.process(companyId, workCondition, domainDaily, changeDailyAttendance.getClassification());
+		
+		/** 勤務回数の補正 */
+		AttendanceTimesCorrector.correct(require, domainDaily);
 		
 		// 短時間勤務の補正
 		IntegrationOfDaily domainCorrect = correctShortWorkingHour.correct(companyId, domainDaily);
@@ -74,9 +84,9 @@ public class CorrectionAfterChangeWorkInfo {
 		return domainCorrect;
 	}
 	
-	private CorrectStartEndWorkForWorkInfo.Require createRequire(String companyId) {
+	private Require createRequire(String companyId) {
 		
-		return new CorrectStartEndWorkForWorkInfo.Require() {
+		return new Require() {
 			
 			@Override
 			public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
@@ -112,7 +122,15 @@ public class CorrectionAfterChangeWorkInfo {
 			public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
 				return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 			}
+
+			@Override
+			public DailyRecordToAttendanceItemConverter createDailyConverter() {
+				return attendanceItemConvertFactory.createDailyConverter();
+			}
 		};
 	}
 
+	public static interface Require extends CorrectStartEndWorkForWorkInfo.Require, AttendanceTimesCorrector.Require {
+		
+	}
 }

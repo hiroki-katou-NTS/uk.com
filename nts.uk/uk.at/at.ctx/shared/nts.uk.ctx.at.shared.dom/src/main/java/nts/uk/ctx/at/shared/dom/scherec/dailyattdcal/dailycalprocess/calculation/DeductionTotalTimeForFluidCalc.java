@@ -139,11 +139,13 @@ public class DeductionTotalTimeForFluidCalc {
 		/** 休憩時間帯クラスを作成 */
 		val breakTimeSheet = createBreakTimeSheet(flowBreakSet, breakTime, rounding);
 		
-		/** 休憩と外出の重複処理 */
-		duplicationProcessingOfFluidBreakTime(breakTimeSheet, deductTimeSheet, workTime, workType);
+		/** 勤務間休憩を追加した控除項目の時間帯(List) */
+		List<TimeSheetOfDeductionItem> addedBetween = new ArrayList<>();
+		addedBetween.addAll(deductTimeSheet);
+		betweenWorkTimeSheets.ifPresent(b -> addedBetween.add(b));
 		
-		/** 勤務間の補正 */
-		return correctIfDupWithBetweenWorkTimeSheets(breakTimeSheet, betweenWorkTimeSheets);
+		/** 流動休憩の重複処理 */
+		return duplicationProcessingOfFluidBreakTime(breakTimeSheet, addedBetween, workType, workTime);
 	}
 
 	private TimeSheetOfDeductionItem createBreakTimeSheet(FlowRestSetting flowBreakSet,
@@ -157,40 +159,6 @@ public class DeductionTotalTimeForFluidCalc {
 															Finally.of(BreakClassification.BREAK), 
 															Optional.empty(), DeductionClassification.BREAK, Optional.empty());
 	}
-	
-	/** 勤務間の補正 */
-	private List<TimeSheetOfDeductionItem> correctIfDupWithBetweenWorkTimeSheets(TimeSheetOfDeductionItem breakTime,
-			Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets) {
-		
-		List<TimeSheetOfDeductionItem> deducts = new ArrayList<>();
-		val bwts = betweenWorkTimeSheets.orElse(null);
-		
-		/** 勤務間を確認する */
-		if(bwts != null) {
-			
-			/** 休憩と勤務間を比較する */
-			if (bwts.start().greaterThan(breakTime.start()) && bwts.start().lessThan(breakTime.end())) {
-
-				/** 勤務間でずれてる時間を計算する */
-				int ajustMinutes = breakTime.end().valueAsMinutes() - bwts.start().valueAsMinutes();
-				
-				/** 補正された休憩を計算する */
-				deducts.add(breakTime.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(breakTime.start(), bwts.start()))));
-				deducts.add(breakTime.cloneWithNewTimeSpan(Optional.of(new TimeSpanForDailyCalc(bwts.end(), bwts.end().forwardByMinutes(ajustMinutes)))));
-				
-			} else {
-				
-				deducts.add(breakTime);
-			}
-			
-		} else {
-			
-			deducts.add(breakTime);
-		}
-		
-		/** 控除項目の時間帯を返す */
-		return deducts;
-	} 
 	
 	private Optional<TimeLeavingWork> getLastLeave(TimeLeavingOfDailyAttd timeLeave) {
 		if (timeLeave.getTimeLeavingWorks().size() == 2) {
@@ -278,38 +246,34 @@ public class DeductionTotalTimeForFluidCalc {
 	
 	/**
 	 * 流動休憩の重複処理
-	 * @param ｔimeSheetOfDeductionItem 「休憩時間帯クラスを作成」で作成した休憩
-	 * @param deductionTimeList 外出時間帯のみの控除時間帯
-	 * @return
+	 * @param targetDeductSheet 休憩時間帯
+	 * @param deductionTimeList 控除時間帯(List)
+	 * @param workTime 統合就業時間帯
+	 * @return 外出と勤務間休憩で補正した休憩時間帯
 	 */
-	private void duplicationProcessingOfFluidBreakTime(TimeSheetOfDeductionItem targetDeductSheet,
-														List<TimeSheetOfDeductionItem> deductionTimeList,
-														IntegrationOfWorkTime workTime, WorkType workType) {
+	private List<TimeSheetOfDeductionItem> duplicationProcessingOfFluidBreakTime(TimeSheetOfDeductionItem targetDeductSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeList, WorkType workType,
+			IntegrationOfWorkTime workTime) {
 		
-		/** ○休憩時間帯と重複している控除時間帯を取得 */
-		List<TimeSheetOfDeductionItem> duplicateList = deductionTimeList.stream().filter(ts -> isResignTargetDeduction(ts) && 
-																								targetDeductSheet.getTimeSheet().checkDuplication(ts.getTimeSheet()) != TimeSpanDuplication.NOT_DUPLICATE )
-																					.collect(Collectors.toList());
-		/** 〇控除時間帯の重複処理 */
-		for(val dts : duplicateList) { 
-			
-			/** 〇控除時間帯の重複処理 */
-			val result = dts.deplicateBreakGoOut(targetDeductSheet, WorkTimeMethodSet.FLOW_WORK, workTime.getRestClockManageAtr(), 
-												workTime.isFixBreak(workType), FluidFixedAtr.FluidWork, 
-												workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
-			
-			if (!result.isEmpty()) {
-				/** 重複時間帯を置き換え*/
-				Optional<TimeSheetOfDeductionItem> correctedBreak = result.stream().filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK).findFirst();
-				if (correctedBreak.isPresent()){
-					targetDeductSheet.shiftTimeSheet(correctedBreak.get().getTimeSheet());
-					
-					/** ○ループ最初からやり直し */
-					duplicationProcessingOfFluidBreakTime(targetDeductSheet, deductionTimeList, workTime, workType);
-					return;
-				}
-			}
-		}
+		//休憩時間帯と重複している控除項目の時間帯(List)を取得
+		List<TimeSheetOfDeductionItem> duplicateList = deductionTimeList.stream()
+				.filter(ts -> (ts.getDeductionAtr().isGoOut() || ts.getWorkingBreakAtr().isWorking())
+						&& targetDeductSheet.getTimeSheet().checkDuplication(ts.getTimeSheet()).isDuplicated())
+				.collect(Collectors.toList());
+		
+		//休憩時間帯を追加する
+		duplicateList.add(targetDeductSheet);
+		
+		//控除時間帯同士の重複部分を補正
+		List<TimeSheetOfDeductionItem> result = new DeductionTimeSheetAdjustDuplicationTime(duplicateList).reCreate(
+				workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
+				workTime.getRestClockManageAtr(),
+				FluidFixedAtr.of(workTime.getFlowWorkRestTimezone(workType)),
+				workTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeDailyAtr());
+		
+		return result.stream()
+				.filter(c -> c.getDeductionAtr() == DeductionClassification.BREAK)
+				.collect(Collectors.toList());
 	}
 	
 	/**
