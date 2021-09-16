@@ -134,11 +134,6 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 }
             });
 
-
-            setTimeout(() => {
-                self.selectWorkLocation(ko.unwrap(self.workLocationCD))
-            }, 1000);
-
         }
 
         startPage(): JQueryPromise<any> {
@@ -152,6 +147,7 @@ module nts.uk.com.view.cmm040.a.viewmodel {
                 setTimeout(function () {
                     let datas = _.orderBy(self.items, ['companyCode'], ['asc']);
                     dfd.resolve();
+                    self.selectWorkLocation(ko.unwrap(self.workLocationCD));
                 }, 100);
             });
 
