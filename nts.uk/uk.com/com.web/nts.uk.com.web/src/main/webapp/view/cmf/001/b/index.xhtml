@@ -102,16 +102,16 @@
 									required: false}"></div>
 							</div>
 							<div class="item-name-row">
-								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの項目名の行</div>
-								<input class="check-target" id="itemNameRow" data-bind="ntsTextEditor: {
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの項目名の行</div>
+								<input class="check-target" id="itemNameRow" data-bind="ntsNumberEditor: {
 									name: '項目名の行', 
 									value: itemNameRow,  
 									required: true, 
 									constraint: ['ExternalImportRowNumber']}" />
 							</div>
 							<div class="import-start-row">
-								<div data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの受入開始行</div>
-								<input class="check-target" id="importStartRow" data-bind="ntsTextEditor: {
+								<div class="formLabel" data-bind="ntsFormLabel: { required: true , constraint: ['ExternalImportRowNumber']　}">CSVファイルの受入開始行</div>
+								<input class="check-target" id="importStartRow" data-bind="ntsNumberEditor: {
 									name: '受入開始行', 
 									value: importStartRow,  
 									required: true, 
