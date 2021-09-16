@@ -18,7 +18,7 @@ public class ItemNoMap {
 		for (val field : itemsClass.getDeclaredFields()) {
 			
 			if (field.getType() != int.class
-					|| Modifier.isStatic(field.getModifiers())) {
+					|| !Modifier.isStatic(field.getModifiers())) {
 				continue;
 			}
 			

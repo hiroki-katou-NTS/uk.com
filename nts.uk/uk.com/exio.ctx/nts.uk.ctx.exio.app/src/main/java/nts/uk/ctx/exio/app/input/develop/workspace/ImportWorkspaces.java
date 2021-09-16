@@ -21,7 +21,6 @@ import nts.uk.ctx.exio.app.input.develop.workspace.oruta.detail.OrutaTable;
 import nts.uk.ctx.exio.app.input.develop.workspace.oruta.detail.OrutaTableColumn;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainRepository;
-import nts.uk.ctx.exio.dom.input.importableitem.ImportableItemsRepository;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -32,9 +31,6 @@ public class ImportWorkspaces {
 	@Inject
 	private ImportingDomainRepository domainRepo;
 	
-	@Inject
-	private ImportableItemsRepository importableItemRepo;
-
 	public String createCsvItems(ImportingDomainId domainId) {
 		
 		val client = DefaultNtsHttpClient.createDefault();
@@ -43,11 +39,9 @@ public class ImportWorkspaces {
 		
 		val table = getTable(client, domain.getName()).get();
 		
-		val items = importableItemRepo.get(domainId);
-		
 		List<String> lines = new ArrayList<>();
 		lines.add(OrutaTableColumn.toCsvHeaderXimctWorkspaceItem());
-		lines.addAll(table.toCsvXimctWorkspaceItem(domainId, items));
+		lines.addAll(table.toCsvXimctWorkspaceItem(domainId));
 		
 		return String.join("\r\n", lines);
 	}

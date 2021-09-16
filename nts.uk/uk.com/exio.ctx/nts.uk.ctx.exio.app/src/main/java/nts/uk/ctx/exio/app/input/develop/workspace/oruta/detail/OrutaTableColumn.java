@@ -2,11 +2,9 @@ package nts.uk.ctx.exio.app.input.develop.workspace.oruta.detail;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
-import nts.uk.ctx.exio.dom.input.importableitem.ImportableItem;
 
 @Value
 public class OrutaTableColumn {
@@ -33,7 +31,7 @@ public class OrutaTableColumn {
 		return String.join(",", values);
 	}
 	
-	public String toCsvXimctWorkspaceItem(ImportingDomainId domainId, Optional<ImportableItem> item) {
+	public String toCsvXimctWorkspaceItem(ImportingDomainId domainId, int itemNo) {
 		
 		List<String> values = Arrays.asList(
 				"", "", "", "",
@@ -41,7 +39,7 @@ public class OrutaTableColumn {
 				"0",
 				quote(name),
 				domainId.value + "",
-				item.map(i -> i.getItemNo() + "").orElse(""),
+				itemNo + "",
 				type.convertDataType().value + "",
 				type.getLength() + "",
 				type.getScale() + ""
