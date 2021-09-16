@@ -24,6 +24,6 @@ public class WorkplaceInformationAdapterIml implements WorkplaceInformationAdapt
         return listWorkPlaceInfoExport.stream().map(e -> new WorkplaceInfor(e.getWorkplaceId(),
                 e.getHierarchyCode(), e.getWorkplaceCode(), e.getWorkplaceName(), e.getWorkplaceDisplayName(),
                 e.getWorkplaceGenericName(), e.getWorkplaceExternalCode()
-        )).sorted(Comparator.comparing(WorkplaceInfor::getWorkplaceId)).collect(Collectors.toList());
+        )).sorted(Comparator.comparing(WorkplaceInfor::getWorkplaceCode)).collect(Collectors.toList());
     }
 }

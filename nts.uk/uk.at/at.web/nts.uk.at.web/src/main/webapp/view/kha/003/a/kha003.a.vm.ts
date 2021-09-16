@@ -31,6 +31,7 @@ module nts.uk.at.kha003.a {
         isUpdateMode: KnockoutObservable<boolean>;
         isExecutionMode: KnockoutObservable<boolean>;
         isOutPutAll: KnockoutObservable<boolean>;
+        isFromDScreen: boolean = false;
 
         created() {
             const vm = this;
@@ -63,7 +64,7 @@ module nts.uk.at.kha003.a {
                         $('#A4_3').focus();
                     });
                 } else {
-                    vm.$window.storage('kha003AShareData_OLD', {isNewCode:true}).then(()=>{
+                    vm.$window.storage('kha003AShareData_OLD', {isNewCode: true}).then(() => {
                         vm.manHour.code('');
                         vm.manHour.name('');
                         vm.summaryItems([]);
@@ -108,6 +109,15 @@ module nts.uk.at.kha003.a {
                 });
                 $("#append_area").width(Math.min(newValue.length + 1, 4) * 124);
                 $("#free_area").width(Math.min(newValue.length + 1, 4) * 124);
+            });
+
+            vm.$window.storage('dScreenCode').done((data) => {
+                if (data !== "undefined" && data.code != null) {
+                    vm.isFromDScreen = true;
+                    vm.$window.storage('dScreenCode', {code: null}).then(() => {
+                        vm.currentCode(data.code);
+                    });
+                }
             });
 
             $(document).ready(function () {
@@ -249,13 +259,15 @@ module nts.uk.at.kha003.a {
                 vm.layoutSettings(_.map(data.manHoursSummaryTables, function (item: any) {
                     return new ItemModel(item.code, item.name)
                 }));
-                if (data.manHoursSummaryTables.length > 0) {
-                    if (codeToSelect)
-                        vm.currentCode() == codeToSelect ? vm.currentCode.valueHasMutated() : vm.currentCode(codeToSelect);
-                    else
-                        vm.currentCode() == data.manHoursSummaryTables[0].code ? vm.currentCode.valueHasMutated() : vm.currentCode(data.manHoursSummaryTables[0].code);
-                } else {
-                    vm.currentCode() == "" ? vm.currentCode.valueHasMutated() : vm.currentCode("");
+                if (!vm.isFromDScreen) {
+                    if (data.manHoursSummaryTables.length > 0) {
+                        if (codeToSelect)
+                            vm.currentCode() == codeToSelect ? vm.currentCode.valueHasMutated() : vm.currentCode(codeToSelect);
+                        else
+                            vm.currentCode() == data.manHoursSummaryTables[0].code ? vm.currentCode.valueHasMutated() : vm.currentCode(data.manHoursSummaryTables[0].code);
+                    } else {
+                        vm.currentCode() == "" ? vm.currentCode.valueHasMutated() : vm.currentCode("");
+                    }
                 }
 
                 $("#appen-area-one .panel_padding").draggable({
@@ -275,7 +287,7 @@ module nts.uk.at.kha003.a {
                         const itemType = $(html).data('itemtype');
 
                         // check helper dragged into append area
-                        let isHelperInAppendArea = false;
+                        let isHelperInAppendArea = true;
                         const aT1 = $("#append_area").offset().top,
                             aT2 = $("#append_area").offset().top + $("#append_area").height(),
                             aL1 = $("#append_area").offset().left,
@@ -494,6 +506,7 @@ module nts.uk.at.kha003.a {
                                     '総労働時間'
                                 ]
                             );
+                            let sortableArray: any = [];
                             data.workDetailDataList.forEach((data: any) => {
                                 let affWorkPlace = this.getcodeAndName(data.affWorkplaceId, masterNameInfo.affWorkplaceInfoList, 0);
                                 let workPlace = this.getcodeAndName(data.workplaceId, masterNameInfo.affWorkplaceInfoList, 1);
@@ -503,7 +516,7 @@ module nts.uk.at.kha003.a {
                                 let task3 = this.getcodeAndName(data.workCode3, masterNameInfo.task3List, null);
                                 let task4 = this.getcodeAndName(data.workCode4, masterNameInfo.task4List, null);
                                 let task5 = this.getcodeAndName(data.workCode5, masterNameInfo.task5List, null);
-                                rows.push([
+                                sortableArray.push([
                                     empInfo ? empInfo.employeeCode : '',
                                     empInfo ? empInfo.employeeName : '',
                                     data.date,
@@ -525,16 +538,48 @@ module nts.uk.at.kha003.a {
                                     data.totalWorkingHours
                                 ])
                             });
+                            let sortData = sortableArray.sort((a: any, b: any) =>
+                                a[0].localeCompare(b[0])
+                                || a[2].localeCompare(b[2])
+                                || a[3].localeCompare(b[3])
+                                || a[5].localeCompare(b[5])
+                                || a[8].localeCompare(b[8])
+                                || a[10].localeCompare(b[10])
+                                || a[12].localeCompare(b[12])
+                                || a[14].localeCompare(b[14])
+                                || a[16].localeCompare(b[16])
+                            );
+                            rows = rows.concat(sortData);
                             var csvContent = rows.join("\n");
                             var link = window.document.createElement("a");
                             link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csvContent));
                             var currentdate = new Date();
+                            let month: any = (currentdate.getMonth() + 1);
+                            let day: any = currentdate.getDate();
+                            let hour: any = currentdate.getHours();
+                            let minutes: any = currentdate.getMinutes();
+                            let second: any = currentdate.getSeconds();
+                            if (month < 10) {
+                                month = '0' + month;
+                            }
+                            if (day < 10) {
+                                day = '0' + day;
+                            }
+                            if (hour < 10) {
+                                hour = '0' + hour;
+                            }
+                            if (minutes < 10) {
+                                minutes = '0' + minutes;
+                            }
+                            if (second < 10) {
+                                second = '0' + second;
+                            }
                             var pathSuffix = currentdate.getFullYear() + ""
-                                + (currentdate.getMonth() + 1) + ""
-                                + currentdate.getDate() + "  "
-                                + currentdate.getHours() + ""
-                                + currentdate.getMinutes() + ""
-                                + currentdate.getSeconds()
+                                + month + ""
+                                + day + ""
+                                + hour + ""
+                                + minutes + ""
+                                + second
                             link.setAttribute("download", "全て出力_" + pathSuffix + ".csv");
                             link.click();
                         }

@@ -88,6 +88,16 @@ module nts.uk.at.kha003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
+                if (data.summaryTableFormat.totalUnit == 1) {
+                    let dateHeaders: Array<DateHeader> = [];
+                    for (let contentItem of data.outputContent.verticalTotalValues) {
+                        let date = contentItem.yearMonth.toString();
+                        dateHeaders.push(
+                            new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
+                        );
+                    }
+                    vm.dateHeaders(dateHeaders);
+                }
                 vm.agCommand(data);
                 vm.printContents(data);
                 vm.initGrid();
@@ -100,6 +110,20 @@ module nts.uk.at.kha003.d {
             });
         }
 
+        widthOfCoulmn() {
+            let vm = this;
+            let totalHeaders = vm.dateHeaders().length
+            let width = "70px";
+
+            if (totalHeaders <= 5) {
+                width = '400px';
+            }
+            if (totalHeaders == 6) {
+                width = '280px';
+            }
+            return width;
+        }
+
         initGrid() {
             const vm = this;
             const columns: Array<any> = [
@@ -110,16 +134,28 @@ module nts.uk.at.kha003.d {
                     headerText: vm.dateHeaders()[i].text,
                     key: "c" + (i + 1),
                     dataType: "object",
-                    width: i < vm.level || i == vm.dateHeaders().length - 1 ? '130px' : '70px'
+                    width: i < vm.level ? '130px' : i == vm.dateHeaders().length - 1 ? '80px' : '70px'
                 });
             }
+            let size = vm.dateHeaders().length;
+            let withd = Math.floor(38 / 5 * vm.dateHeaders().length);
+            if (withd > 100) {
+                withd = 100;
+            }
+            if (withd < 43) {
+                withd = 43;
+            }
+            if (size == 13) {
+                withd = 93;
+            }
+            let height = (520 * $(window).height()) / 754;
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
-                width: '100%',
-                height: '470px',
+                width: withd + '%',
+                height: height + 'px',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
                 virtualization: true,
@@ -131,6 +167,9 @@ module nts.uk.at.kha003.d {
                         mergeType: "physical",
                         mergeStrategy: (prevRec: any, curRec: any, columnKey: string) => {
                             const idx = parseInt(columnKey.substring(1));
+                            if (idx === 4) {
+                                return false;
+                            }
                             if (idx <= vm.level) {
                                 return !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey];
                             }
@@ -696,7 +735,9 @@ module nts.uk.at.kha003.d {
          */
         backToAScreen() {
             let vm = this;
-            vm.$jump('/view/kha/003/a/index.xhtml');
+            vm.$window.storage('dScreenCode', {code: vm.cScreenData().code}).then(() => {
+                vm.$jump('/view/kha/003/a/index.xhtml');
+            });
         }
 
         /**
@@ -789,14 +830,14 @@ module nts.uk.at.kha003.d {
                         vm.maxDateRange++;
                     }
                     break;
-                case 1:
+                /*case 1:
                     const fromYear = fromDate.getFullYear();
                     const fromMonth = fromDate.getMonth() + 1;
                     const toYear = toDate.getFullYear();
                     const toMonth = toDate.getMonth() + 1;
                     const months = [];
                     for (let year = fromYear; year <= toYear; year++) {
-                        let month = year === fromYear ? fromMonth : 0;
+                        let month = year === fromYear ? fromMonth : 12;
                         const monthLimit = year === toYear ? toMonth : 11;
                         for (; month <= monthLimit; month++) {
                             if (month < 10) {
@@ -807,7 +848,7 @@ module nts.uk.at.kha003.d {
                             );
                         }
                     }
-                    break;
+                    break;*/
             }
             dfd.resolve();
             return dfd.promise();
