@@ -22,9 +22,8 @@ public class SubstituteHolidayCanonicalization extends OccurenceHolidayCanonical
 			DomainCanonicalization.RequireCanonicalize require,
 			ExecutionContext context, IntermediateResult interm) {
 		
-		return interm
-				// 振休消化区分
-				.addCanonicalized(CanonicalItem.of(103, 0));
+		// 追加処理不要
+		return interm;
 	}
 	
 	public static interface RequireAdjust {
@@ -40,6 +39,6 @@ public class SubstituteHolidayCanonicalization extends OccurenceHolidayCanonical
 	
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
-		return super.appendMeta(source).addItem("振出データID");
+		return super.appendMeta(source).addItem("振休データID");
 	}
 }
