@@ -335,11 +335,6 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		}
 
 		@Override
-		public void addAllDomain(IntegrationOfDaily domain, boolean removeError) {
-			dailyRecordAdUpService.addAllDomain(domain, removeError);
-		}
-
-		@Override
 		public List<EmpDataImport> getEmpData(List<String> empIDList) {
 			return getMngInfoFromEmpIDListAdapter.getEmpData(empIDList);
 		}
@@ -385,6 +380,11 @@ public class RegisterStampDataCommandHandler extends CommandHandlerWithResult<Re
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
+		}
+
+		@Override
+		public void addAllDomain(IntegrationOfDaily domain) {
+			dailyRecordAdUpService.addAllDomain(domain);
 		}
 	}
 }
