@@ -20,8 +20,17 @@ public class AffClassHistoryCanonicalization extends EmployeeHistoryCanonicaliza
 	}
 
 	@Override
-	protected ItemNoMap getItemNoMapExtends() {
-		return new ItemNoMap();
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
+	}
+	
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 開始日 = 2;
+		public static final int 終了日 = 3;
+		public static final int 分類コード = 4;
+		public static final int SID = 101;
+		public static final int HIST_ID = 102;
 	}
 	
 	@Override

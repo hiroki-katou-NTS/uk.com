@@ -21,6 +21,7 @@ import nts.uk.ctx.exio.dom.input.workspace.datatype.DataType;
  * 所属職位履歴グループの正準化用定義 
  */
 public class AffJobTitleHistoryCanonicalization extends EmployeeHistoryCanonicalization {
+	
 	private final JobTitleCodeCanonicalization jobTitleCodeCanonicalization;
 
 	public AffJobTitleHistoryCanonicalization() {
@@ -29,13 +30,18 @@ public class AffJobTitleHistoryCanonicalization extends EmployeeHistoryCanonical
 	}
 	
 	@Override
-	protected ItemNoMap getItemNoMapExtends() {
+	public ItemNoMap getItemNoMap() {
 		return ItemNoMap.reflection(Items.class);
 	}
 	
 	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 開始日 = 2;
+		public static final int 終了日 = 3;
 		public static final int 職位コード = 4;
 		public static final int JOB_TITLE_ID = 5;
+		public static final int SID = 101;
+		public static final int HIST_ID = 102;
 	}
 	
 	@Override

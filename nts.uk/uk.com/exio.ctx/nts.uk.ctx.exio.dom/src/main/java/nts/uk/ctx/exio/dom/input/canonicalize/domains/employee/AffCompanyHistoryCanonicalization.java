@@ -29,12 +29,17 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 	}
 
 	@Override
-	protected ItemNoMap getItemNoMapExtends() {
+	public ItemNoMap getItemNoMap() {
 		return ItemNoMap.reflection(Items.class);
 	}
 	
 	public static class Items {
-		public static final int 退職日 = 3;
+		public static final int 社員コード = 1;
+		public static final int 開始日 = 2;
+		public static final int 終了日 = 3;
+		public static final int CID = 100;
+		public static final int SID = 101;
+		public static final int HIST_ID = 102;
 		public static final int PID = 103;
 		public static final int 出向先データである = 104;
 		public static final int 採用区分コード = 105;
@@ -80,7 +85,7 @@ public class AffCompanyHistoryCanonicalization extends EmployeeHistoryCanonicali
 					);
 			
 			// 退職日の既定値
-			interm = interm.optionalItem(CanonicalItem.of(Items.退職日, GeneralDate.ymd(9999, 12, 31)));
+			interm = interm.optionalItem(CanonicalItem.of(Items.終了日, GeneralDate.ymd(9999, 12, 31)));
 			
 			results.add(new Container(interm, container.getAddingHistoryItem()));
 		}

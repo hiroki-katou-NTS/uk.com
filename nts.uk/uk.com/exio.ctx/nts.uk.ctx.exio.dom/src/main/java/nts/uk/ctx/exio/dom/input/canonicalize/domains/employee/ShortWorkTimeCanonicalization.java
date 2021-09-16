@@ -33,7 +33,7 @@ public class ShortWorkTimeCanonicalization extends EmployeeHistoryCanonicalizati
 	}
 
 	@Override
-	protected ItemNoMap getItemNoMapExtends() {
+	public ItemNoMap getItemNoMap() {
 		return ItemNoMap.reflection(Items.class);
 	}
 	

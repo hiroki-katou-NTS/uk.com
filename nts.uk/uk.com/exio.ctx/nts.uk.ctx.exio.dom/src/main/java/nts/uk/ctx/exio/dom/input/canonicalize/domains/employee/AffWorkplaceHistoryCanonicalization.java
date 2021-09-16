@@ -30,15 +30,18 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 	}
 
 	@Override
-	protected ItemNoMap getItemNoMapExtends() {
-		return new ItemNoMap()
-				.put(Names.WKP_CD, 4)
-				.put(Names.WKP_ID, 5);
+	public ItemNoMap getItemNoMap() {
+		return ItemNoMap.reflection(Items.class);
 	}
 	
-	private static class Names {
-		static final String WKP_CD = "職場コード";
-		static final String WKP_ID = "WORKPLACE_ID";
+	public static class Items {
+		public static final int 社員コード = 1;
+		public static final int 開始日 = 2;
+		public static final int 終了日 = 3;
+		public static final int 職場コード = 4;
+		public static final int WORKPLACE_ID = 5;
+		public static final int SID = 101;
+		public static final int HIST_ID = 102;		
 	}
 
 	@Override
@@ -79,7 +82,7 @@ public class AffWorkplaceHistoryCanonicalization extends EmployeeHistoryCanonica
 	@Override
 	public ImportingDataMeta appendMeta(ImportingDataMeta source) {
 		return super.appendMeta(source)
-				.addItem("WORKPLACE_ID");
+				.addItem(this.getItemNameByNo(Items.WORKPLACE_ID));
 	}
 
 	public interface RequireCanonicalize extends WorkplaceCodeCanonicalization.Require{

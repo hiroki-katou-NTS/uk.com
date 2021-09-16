@@ -11,6 +11,7 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.EmployeeBasicCano
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence.OccurenceHolidayCanonicalizationBase;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
+import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.EmployeeIndependentCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToDelete;
 import nts.uk.ctx.exio.dom.input.canonicalize.methods.CanonicalizationMethodRequire;
@@ -68,6 +69,7 @@ public interface DomainCanonicalization {
 	public static interface RequireCanonicalize extends
 		CanonicalizationMethodRequire,
 		IndependentCanonicalization.RequireCanonicalize,
+		EmployeeIndependentCanonicalization.RequireCanonicalize,
 		EmployeeBasicCanonicalization.RequireCanonicalize,
 		EmployeeHistoryCanonicalization.RequireCanonicalize,
 		AffJobTitleHistoryCanonicalization.RequireCanonicalize,

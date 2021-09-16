@@ -28,7 +28,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataRepository;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.KeyValues;
 import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.SystemImportingItems;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.ItemNoMap;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordTo;
 import nts.uk.ctx.exio.dom.input.canonicalize.existing.AnyRecordToChange;
@@ -79,23 +78,6 @@ public abstract class EmployeeHistoryCanonicalization implements DomainCanonical
 		this.historyType = historyType;
 		
 		this.employeeCodeCanonicalization = new EmployeeCodeCanonicalization(this.getItemNoMap());
-	}
-	
-	@Override
-	public ItemNoMap getItemNoMap() {
-		return ITEM_NO_MAP.merge(getItemNoMapExtends());
-	}
-	
-	protected abstract ItemNoMap getItemNoMapExtends();
-	
-	protected static final ItemNoMap ITEM_NO_MAP;
-	static {
-		ITEM_NO_MAP = new ItemNoMap()
-				.put(Names.SCD, 1)
-				.put(Names.START, 2)
-				.put(Names.END, 3)
-				.put(Names.SID, 101)
-				.put(Names.HIST_ID, 102);
 	}
 	
 	protected static class Names {
