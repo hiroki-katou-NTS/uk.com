@@ -4,5 +4,5 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 
 public interface EquipmentDataExportFileQuery {
 	void handle(ExportServiceContext<EquipmentDataQuery> context, EquipmentDataQuery query);
-	EquipmentDataExportDataSource getData(EquipmentDataQuery query);
+	EquipmentDataExportDataSource getExportData(EquipmentDataQuery query);
 }

@@ -1,11 +1,16 @@
 package nts.uk.file.com.app.equipment.data;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.bs.company.dom.company.Company;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentFormSetting;
+import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassification;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
+import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
+import nts.uk.query.model.employee.EmployeeInformation;
 
 @Data
 @Builder
@@ -18,8 +23,26 @@ public class EquipmentDataExportDataSource {
 	/**
 	 * 会社情報
 	 */
-	private Company companyInfo;
+	private Optional<Company> companyInfo;
 	
-	//TODO
+	/**
+	 * 設備帳票設定
+	 */
+	private Optional<EquipmentFormSetting> formSetting;
+	
+	/**
+	 * 設備情報<List>
+	 */
+	private List<EquipmentInformation> equipmentInfos;
+	
+	/**
+	 * 設備分類<List>
+	 */
+	private List<EquipmentClassification> equipmentClassifications;
+	
+	/**
+	 * 社員情報<List>
+	 */
+	private List<EmployeeInformation> employees;
 }
 
