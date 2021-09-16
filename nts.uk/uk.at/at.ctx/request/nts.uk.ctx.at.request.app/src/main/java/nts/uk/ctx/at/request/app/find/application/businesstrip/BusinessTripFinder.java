@@ -205,6 +205,10 @@ public class BusinessTripFinder {
         BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
+        Optional<WorkTimeCode> optWorkTimeCode = businessTrip.getInfos().stream()
+                .filter(x -> x.getWorkInformation().getWorkTimeCode() != null)
+                .map(x -> x.getWorkInformation().getWorkTimeCode())
+                .findFirst();
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
                 AppContexts.user().companyId(),
                 EmploymentRootAtr.APPLICATION,
@@ -216,7 +220,7 @@ public class BusinessTripFinder {
                 output.getAppDispInfoStartup(), 
                 businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList()), 
                 Optional.empty(), 
-                businessTrip.getInfos().stream().map(x -> x.getWorkInformation().getWorkTimeCode()).findFirst().map(WorkTimeCode::v), 
+                optWorkTimeCode.isPresent() ? optWorkTimeCode.map(WorkTimeCode::v) : Optional.empty(), 
                 false
         );
 
