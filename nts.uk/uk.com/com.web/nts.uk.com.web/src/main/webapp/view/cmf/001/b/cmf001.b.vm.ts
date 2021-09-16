@@ -5,21 +5,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 	import setShared = nts.uk.ui.windows.setShared;
 	import getShared = nts.uk.ui.windows.getShared;
 
-	let ICON_CONFIGURED = nts.uk.request.resolvePath(
-		__viewContext.rootPath + "../" + (<any> nts).uk.request.WEB_APP_NAME.comjs
-		 + "/lib/nittsu/ui/style/stylesheets/images/icons/numbered/78.png");
-
-	function renderConfiguredIcon(configured) {
-		if (configured) {
-				return '<div class="icon-configured" style="text-align: center;">'
-						+ '<span id="icon-configured" style="'
-						+ 'background: url(\'' + ICON_CONFIGURED + '\');'
-						+ 'background-size: 20px 20px; width: 20px; height: 20px;'
-						+ 'display: inline-block;"></span></div>';
-		} else {
-				return '';
-		}
-	}
 	function deleteButton(required, data) {
 		if (required === "false") {
 				return '<button type="button" class="delete-button" data-target="'+ data.itemNo +'">削除</button>';
@@ -150,6 +135,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			let self = this;
 			ajax("com", "screen/com/cmf/cmf001/b/get/setting/" + self.selectedCode()).done((infoData: viewmodel.SettingInfo) => {
 				self.setInfo(infoData);
+				self.setLayout(infoData.itemNoList);
 				self.isNewMode(false);
 				self.checkError();
 			});
@@ -168,8 +154,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			self.importMode(info.mode);
 			self.itemNameRow(info.itemNameRow);
 			self.importStartRow(info.importStartRow);
-			// importDomainの変更にトリガして自動でセットされるため不要
-			// self.layoutItemNoList(info.itemNoList);
+			//self.layoutItemNoList(info.itemNoList);
 		}
 
 		setLayout(itemNoList: number[]){
@@ -185,23 +170,6 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			}else{
 				self.layout([]);
 			}
-		}
-
-		selectLayout() {
-			let self = this;
-			setShared('CMF001DParams', {
-					domainId: self.importDomain(),
-					selectedItems: self.layoutItemNoList()
-			}, true);
-
-			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
-				// ダイアログを閉じたときの処理
-				if(!getShared('CMF001DCancel')){
-					let ItemNoList: string[] = getShared('CMF001DOutput')
-					console.log("closed: " + ItemNoList)
-					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
-				}
-			});
 		}
 
 		canSave = ko.computed(() => !nts.uk.ui.errors.hasError() );
@@ -230,7 +198,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 			}
 		}
 
-    canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
+    	canRemove = ko.computed(() => !util.isNullOrEmpty(this.selectedCode()));
 
 		remove(){
 			let self = this;
@@ -245,6 +213,23 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 					self.selectedCode("");
                 });
             });
+		}
+
+		selectLayout() {
+			let self = this;
+			setShared('CMF001DParams', {
+					domainId: self.importDomain(),
+					selectedItems: self.layoutItemNoList()
+			}, true);
+
+			nts.uk.ui.windows.sub.modal("/view/cmf/001/d/index.xhtml").onClosed(function() {
+				// ダイアログを閉じたときの処理
+				if(!getShared('CMF001DCancel')){
+					let ItemNoList: string[] = getShared('CMF001DOutput')
+					console.log("closed: " + ItemNoList)
+					ko.utils.arrayPushAll(self.layoutItemNoList, ItemNoList.map(n => Number(n)));
+				}
+			});
 		}
 
 		gotoDetailSetting() {
