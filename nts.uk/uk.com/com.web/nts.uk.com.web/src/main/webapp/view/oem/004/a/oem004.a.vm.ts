@@ -43,6 +43,7 @@ module nts.uk.com.view.oem004.a {
         .then(() => vm.getEquipmentList())
         .then(() => {
           if (_.isEmpty(vm.equipmentList())) {
+            $('#equipment-code').focus();
             vm.isNewMode(true);
             return;
           }
@@ -148,10 +149,10 @@ module nts.uk.com.view.oem004.a {
         .then((result: 'no' | 'yes' | 'cancel') => {
           if (result !== 'yes') return;
           index = _.findIndex(vm.equipmentList(), item => item.code === vm.selectedCode());
-          return vm.$ajax('com', API.deleteEquipment, vm.code());
+          return vm.$ajax('com', API.deleteEquipment, vm.code())
+            .then(() => vm.$dialog.info({ messageId: 'Msg_16' }))
         })
         .then(() => vm.getEquipmentList())
-        .then(() => vm.$dialog.info({ messageId: 'Msg_16' }))
         .then(() => vm.setSelectedAfterDelete(index))
         .fail(error => vm.$dialog.error(error))
         .always(() => vm.$blockui('clear'));

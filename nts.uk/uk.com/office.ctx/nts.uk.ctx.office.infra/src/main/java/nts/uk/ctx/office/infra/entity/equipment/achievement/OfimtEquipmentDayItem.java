@@ -9,17 +9,21 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * UKDesign.データベース.ER図.オフィス支援.設備管理.実績項目設定.OFIMT_EQUIPMENT_DAY_ITEM
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "OFIDT_EQUIPMENT_DAY_ITEM")
+@Table(name = "OFIMT_EQUIPMENT_DAY_ITEM")
 public class OfimtEquipmentDayItem extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -20,9 +20,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "OFIDT_EQUIPMENT_DAY_FORMAT")
+@Table(name = "OFIMT_EQUIPMENT_DAY_FORMAT")
 public class OfimtEquipmentDayFormat extends ContractUkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
