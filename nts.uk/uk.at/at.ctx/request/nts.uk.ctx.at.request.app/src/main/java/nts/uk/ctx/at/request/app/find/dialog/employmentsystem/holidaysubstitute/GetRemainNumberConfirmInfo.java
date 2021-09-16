@@ -30,7 +30,7 @@ import nts.uk.shr.com.i18n.TextResource;
 public class GetRemainNumberConfirmInfo {
 	// List＜逐次休暇の紐付け情報＞, List＜逐次発生の休暇明細一覧＞
 	public RemainNumberConfirmInfo getRemainNumberConfirmInfo(List<SeqVacationAssociationInfo> lstSeqVacation,
-			VacationDetails vacationDetails) {
+			VacationDetails vacationDetails, boolean unit) {
 		// List＜逐次発生の休暇明細一覧＞
 
 		List<AccumulationAbsenceDetail> lstAcctAbsenDetail = vacationDetails.getLstAcctAbsenDetail();
@@ -54,9 +54,10 @@ public class GetRemainNumberConfirmInfo {
 
 		// List<消化日>を作成
 		List<String> lstDigestionDate = new ArrayList<>();
-
+		
+		// 最初の値をセット
 		// 1ヶ月以内期限切れ数 ＝ ０
-		String expiredWithinMonth = "0" + TextResource.localize("KDL005_47");
+		String expiredWithinMonth = "0" + (!unit ? TextResource.localize("KDL005_47") : "");
 
 		// 期限の一番近い日 ＝ Empty
 		String dayCloseDeadline = "";
@@ -86,15 +87,15 @@ public class GetRemainNumberConfirmInfo {
 							// 残数詳細情報．消化日状況をセットする - 消化日状況
 							detailedInfo.setDigestionDateStatus(TextResource.localize("KDL005_40"));
 						}
-
+						String textDayoff = this.getDayOfJapan(detail.getDateOccur().getDayoffDate().get().dayOfWeek());
 						// 残数詳細情報．消化日をセットする - 消化日
 						detailedInfo.setDigestionDate(TextResource.localize("KDL005_41",
 								detail.getDateOccur().getDayoffDate().get().toString(), // ループ中の逐次発生の休暇明細一覧．年月日．年月日
-								String.valueOf(detail.getDateOccur().getDayoffDate().get().dayOfWeek()))); // ループ中の逐次発生の休暇明細一覧．年月日．年月日の曜日
+								textDayoff)); // ループ中の逐次発生の休暇明細一覧．年月日．年月日の曜日
 					}
 
 					// ループ中の逐次発生の休暇明細一覧．発生数．時間 ！＝ Empty
-					if (detail.getNumberOccurren().getTime().isPresent()) {
+					if (unit) {
 						// 残数詳細情報．消化数をセットする
 						String minu = String.valueOf(detail.getNumberOccurren().getTime().get().minute()).length() > 1
 								? String.valueOf(detail.getNumberOccurren().getTime().get().minute())
@@ -127,7 +128,7 @@ public class GetRemainNumberConfirmInfo {
 								textDay)); // ループ中の逐次発生の休暇明細一覧．年月日．年月日の曜日;
 					}
 					// ループ中の逐次発生の休暇明細一覧．発生数．時間 ！＝ Empty
-					if (detail.getNumberOccurren().getTime().isPresent() && detail.getNumberOccurren().getTime().get().v() != 0) {
+					if (unit) {
 						// 残数詳細情報．発生数をセットする
 						String minu = String.valueOf(detail.getNumberOccurren().getTime().get().minute()).length() > 1
 								? String.valueOf(detail.getNumberOccurren().getTime().get().minute())
@@ -147,17 +148,19 @@ public class GetRemainNumberConfirmInfo {
 					if (occurrDetail.getDigestionCate() == DigestionAtr.USED) {
 						detailedInfo.setDigestionStatus(TextResource.localize("KDL005_44"));
 					}
+					
+					// ループ中の逐次発生の休暇明細一覧．休暇発生明細．消化区分　＝　消滅　＃119869
+					if (occurrDetail.getDigestionCate() == DigestionAtr.EXPIRED) {
+						detailedInfo.setDigestionStatus(TextResource.localize("KDL005_42"));
+					}
 
 					// ループ中の逐次発生の休暇明細一覧．休暇発生明細．消化区分 ＝ 未消化
 					if (occurrDetail.getDigestionCate() == DigestionAtr.UNUSED) {
-						// ループ中の逐次発生の休暇明細一覧．休暇発生明細．期限日 ＜ システム日付
-						if (occurrDetail.getDeadline().before(GeneralDate.today())) {
-							detailedInfo.setDigestionStatus(TextResource.localize("KDL005_42"));
-						} else {
-							// ループ中の逐次発生の休暇明細一覧．休暇発生明細．期限日 > システム日付
+							// Input．時間管理区分　＝　False
 							String text = detail.getUnbalanceNumber().getDay() + TextResource.localize("KDL005_47");
 							
-							if (detail.getUnbalanceNumber().getTime().isPresent() && detail.getUnbalanceNumber().getTime().get().v() != 0) {
+							// Input．時間管理区分　＝　True
+							if (unit) {
 								String minu = String.valueOf(detail.getUnbalanceNumber().getTime().get().minute()).length() > 1
 										? String.valueOf(detail.getUnbalanceNumber().getTime().get().minute())
 										: 0 + String.valueOf(detail.getUnbalanceNumber().getTime().get().minute());
@@ -167,7 +170,6 @@ public class GetRemainNumberConfirmInfo {
 							} 
 
 							detailedInfo.setDigestionStatus(TextResource.localize("KDL005_51", text));
-						}
 					}
 
 					// 残数詳細情報．期限日状況をセットする - 期限日状況
@@ -216,7 +218,7 @@ public class GetRemainNumberConfirmInfo {
 						detailedInfo.setDigestionDate(
 								TextResource.localize("KDL005_41", seqVacationFil.get().getDateOfUse().toString(), textDay));
 
-						lstDigestionDate.add(seqVacationFil.get().getOutbreakDay().toString());
+						lstDigestionDate.add(seqVacationFil.get().getDateOfUse().toString());
 					}
 				}
 				// List<残数詳細情報>に作成した残数詳細情報を追加
@@ -229,12 +231,12 @@ public class GetRemainNumberConfirmInfo {
 		VacationDetails vacationDetailsNew = new VacationDetails(undigestInfoInPeriod);
 		// 1ヶ月以内期限切れ数をセットする
 		UnoffsetNumSeqVacation totalUnoffset = vacationDetailsNew.getTotalUnoffset();
-		if (totalUnoffset.getDays() != null) {
+		if (!unit) {
 			expiredWithinMonth = totalUnoffset.getDays() + TextResource.localize("KDL005_47");
-		}
-
-		if (totalUnoffset.getRemainTime() != null) {
-			expiredWithinMonth = totalUnoffset.getRemainTime() + "";
+		} else {
+			String minu = String.valueOf(totalUnoffset.getRemainTime().v() % 60).length() > 1 ? String.valueOf(totalUnoffset.getRemainTime().v() % 60)
+					: 0 + String.valueOf(totalUnoffset.getRemainTime().v() % 60);
+			expiredWithinMonth = String.valueOf(totalUnoffset.getRemainTime().v() / 60) + ":" + minu;
 		}
 
 		// 期限の一番近い日をセットする
@@ -244,25 +246,29 @@ public class GetRemainNumberConfirmInfo {
 			Optional<AccumulationAbsenceDetail> undigestInfoFil = accAbsDetail.stream().filter(x -> {
 				return x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE && // 逐次発生の休暇明細一覧．発生消化区分 ＝＝ 発生
 				((LeaveOccurrDetail) x).getDigestionCate() == DigestionAtr.UNUSED && // 逐次発生の休暇明細一覧．発生数．消化区分 ＝＝ 未消化 -
-				!x.getDateOccur().isUnknownDate();
-			}) // 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
-					.findFirst();
+				!x.getDateOccur().isUnknownDate(); // 逐次発生の休暇明細一覧．年月日．日付不明 ＝＝ False
+			}).findFirst();
+			
 			if (undigestInfoFil.isPresent()) {
+				// 2.取得した逐次発生の休暇明細一覧　があるの場合
 				String text = "";
 				LeaveOccurrDetail occurrDetailNew = (LeaveOccurrDetail) undigestInfoFil.get();
-				// dayCloseDeadline;
+				
+				// 2.1.↑の条件で探した逐次発生の休暇明細一覧があるの場合
 				String textDay = this.getDayOfJapan(occurrDetailNew.getDeadline().dayOfWeek());
 				text = TextResource.localize("KDL005_41", occurrDetailNew.getDeadline().toString(), textDay);
-				// 探した逐次発生の休暇明細一覧．発生数．時間数 ！＝ Empty
-				if (undigestInfoFil.get().getNumberOccurren().getTime().isPresent()) {
+				// Input．時間管理区分　＝　Trueの場合　＃119874
+				if (unit) {
 					// 探した逐次発生の休暇明細一覧．発生数．時間数 - 探した逐次発生の休暇明細一覧．未相殺数．時間数
 					Integer time = undigestInfoFil.get().getNumberOccurren().getTime().get().v()
 							- undigestInfoFil.get().getUnbalanceNumber().getTime().get().v();
 					String minu = String.valueOf(time % 60).length() > 1 ? String.valueOf(time % 60)
 							: 0 + String.valueOf(time % 60);
-					text = text + String.valueOf(time / 60) + ":" + minu;
+					text = text + " " + String.valueOf(time / 60) + ":" + minu;
 					// 探した逐次発生の休暇明細一覧．発生数．日数 - 探した逐次発生の休暇明細一覧．未相殺数．日数
 					dayCloseDeadline = text;
+				} else {
+					dayCloseDeadline = text + " " + undigestInfoFil.get().getNumberOccurren().getDay() + TextResource.localize("KDL005_47");
 				}
 			}
 		}

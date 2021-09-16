@@ -163,12 +163,12 @@ public class GetInfoRemainSubstituteHoliday {
 			
 			// 残数確認情報を調整 - to do
 			result = numberConfirmInfo.getRemainNumberConfirmInfo(substituteHolidayAggrResult.getLstSeqVacation(), 	   // List＜逐次休暇の紐付け情報＞
-									substituteHolidayAggrResult.getVacationDetails()); // 逐次発生の休暇明細一覧
+									substituteHolidayAggrResult.getVacationDetails(), subHd.isTimeOfPeriodFlg()); // 逐次発生の休暇明細一覧
 		}
 		
 		String currentRemainNumber = "";
 		if (consecutiveVacation != null) {
-			if (consecutiveVacation.getRemainTime() != null) {
+			if (consecutiveVacation.getRemainTime() != null && subHd.isTimeOfPeriodFlg()) {
 				currentRemainNumber = consecutiveVacation.getRemainTime() + "";
 			} else {
 				currentRemainNumber = consecutiveVacation.getDays() + TextResource.localize("KDL005_47");

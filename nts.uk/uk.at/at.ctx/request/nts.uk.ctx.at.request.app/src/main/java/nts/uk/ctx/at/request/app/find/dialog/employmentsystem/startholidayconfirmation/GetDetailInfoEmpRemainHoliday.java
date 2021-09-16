@@ -177,7 +177,7 @@ public class GetDetailInfoEmpRemainHoliday {
 			
 			//残数確認情報を調整
 			remainNumberConfirmInfo  = numberConfirmInfo.getRemainNumberConfirmInfo(compenLeaveAggrResult.getLstSeqVacation(),
-					compenLeaveAggrResult.getVacationDetails()); 
+					compenLeaveAggrResult.getVacationDetails(), false); 
 		}	
 		// 残数確認ダイアログDTOを作成して返す
 		RemainNumberConfirmDto confirmDto = new RemainNumberConfirmDto (
