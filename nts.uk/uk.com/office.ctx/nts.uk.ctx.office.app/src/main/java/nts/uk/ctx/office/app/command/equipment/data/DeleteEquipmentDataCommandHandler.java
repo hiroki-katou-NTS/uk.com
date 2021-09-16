@@ -14,6 +14,9 @@ import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備利用実績データ.APP.利用実績の削除をする.利用実績の削除をする
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeleteEquipmentDataCommandHandler extends CommandHandler<DeleteEquipmentDataCommand> {

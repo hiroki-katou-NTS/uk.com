@@ -3,6 +3,9 @@ package nts.uk.ctx.office.app.command.equipment.data;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BundledBusinessException;
@@ -20,6 +23,11 @@ import nts.uk.ctx.office.dom.equipment.data.RequireImpl;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備利用実績データ.APP.利用実績の新規登録をする.利用実績の新規登録をする
+ */
+@Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class InsertEquipmentDataCommandHandler extends CommandHandler<EquipmentDataCommand> {
 	
 	@Inject
