@@ -44,6 +44,13 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 
 		checkSolid: number = 0;
 
+		//
+		currentRemainNumber: KnockoutObservable<string> = ko.observable('');
+		expiredWithinMonth: KnockoutObservable<string> = ko.observable('');
+		dayCloseDeadline: KnockoutObservable<string> = ko.observable('');
+
+		searchText: KnockoutObservable<string> = ko.observable('');
+
 		constructor() {
 			let self = this;
 			self.date = ko.observable(new Date());
@@ -66,10 +73,10 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 
 			//
 			self.columns = ko.observableArray([
-				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 170 },
-				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 130 },
+				{ headerText: nts.uk.resource.getText('KDL005_61'), key: 'accrualDate', width: 200 },
+				{ headerText: nts.uk.resource.getText('KDL005_64'), key: 'digestionStatus', width: 150 },
 				{ headerText: nts.uk.resource.getText('KDL005_53'), key: 'deadline', width: 130 },
-				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 180 }
+				{ headerText: nts.uk.resource.getText('KDL005_54'), key: 'digestionDate', width: 220 }
 			]);
 
 			self.switchOptions = ko.observableArray([
@@ -111,7 +118,9 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 					return _.isEqual(x.code, value);
 				});
 				self.employeeCodeName(name[0].code + " " + name[0].name);
-				self.bindDataToGrid(value);
+				self.bindDataToGrid(value).done(() => {
+					self.selectedCodeCbb("1");
+				});
 			})
 
 			//
@@ -127,7 +136,10 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			self.selectedCodeCbb.subscribe((value: any) => {
 				self.holidayData([]);
 				if (value == 1) {
-					self.bindDataToGrid(self.listComponentOption.selectedCode);
+					_.each(self.holidayDataOld(), (x: any) => {
+						self.holidayData.push(x);
+					});
+					console.log(self.holidayData());
 				} else {
 					let data = (_.filter(self.dataHoliday().remainNumConfirmDto.detailRemainingNumbers, (x: any) => {
 						return _.includes(x.digestionStatus, "残り");
@@ -143,6 +155,13 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 					$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
 				}
 			})
+
+			$("#search-btn").on({
+				"click": function() {
+					console.log("");
+				}
+			})
+
 		}
 
 		startPage(): JQueryPromise<any> {
@@ -153,11 +172,17 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			};
 			service.getHolidaySub(param).done((data: any) => {
 				self.dataHoliday(data);
+				if (data.remainNumConfirmDto != null) {
+					self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
+					self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
+					self.dayCloseDeadline(data.remainNumConfirmDto.dayCloseDeadline);
+				}
+
 				_.forEach(data.empImport, (a: any, ind) => {
 					self.employeeList.push({ id: ind, code: a.employeeCode, name: a.employeeName, workplaceName: 'HN' })
 				});
 				self.listComponentOption.selectedCode(self.employeeList()[0].code);
-
+				$(".search-btn").hide();
 				if (self.checkSolid != 0) {
 					$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
 				}
@@ -166,32 +191,48 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			return dfd.promise();
 		}
 
-		bindDataToGrid(value: any) {
-			let self = this;
+		bindDataToGrid(value: any): JQueryPromise<any>  {
+			let self = this, dfd = $.Deferred<any>();
 			if (_.isNil(self.dataHoliday())) return;
 			self.holidayData([]);
-			if (self.dataHoliday().remainNumConfirmDto == null) {
-				let sid = _.map(_.filter(self.dataHoliday().empImport, (o: any) => _.isEqual(o.employeeCode, value)), (z: any) => {
-					return z.employeeId;
+			if (self.dataHoliday().remainNumConfirmDto == null || (self.dataHoliday().remainNumConfirmDto != null && !_.includes(self.dataHoliday().remainNumConfirmDto.employeeId.slice(-12), value))) {
+				let sid = _.map(_.filter(self.paramData, (o: any) => _.isEqual(o.slice(-12), value)), (z: any) => {
+					return z;
 				})
 				let param = {
 					employeeIds: sid,
 					baseDate: ""
 				};
 				service.getHolidaySub(param).done((data: any) => {
-					_.forEach(data.remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
-						self.bindDataToText(z, index);
-					});
-					self.showHideItem(data);
-					self.holidayDataOld = self.holidayData;
+					self.dataHoliday(data);
+					
+					if (data.remainNumConfirmDto != null) {
+						self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
+						self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
+						self.dayCloseDeadline(data.remainNumConfirmDto.dayCloseDeadline);
+						
+						_.forEach(data.remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
+							self.bindDataToText(z, index);
+						});
+						self.showHideItem(data);
+						self.holidayDataOld({...self.holidayData()});
+						dfd.resolve();
+					}
+
+					if (self.checkSolid != 0) {
+						$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
+					}
 				});
 			} else {
 				_.forEach(self.dataHoliday().remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
 					self.bindDataToText(z, index);
 				});
 				self.showHideItem(self.dataHoliday());
-				self.holidayDataOld = self.holidayData;
+				self.holidayDataOld({...self.holidayData()});
+				dfd.resolve();
 			}
+			
+			return dfd.promise();
 		}
 
 		bindDataToText(z: any, index: number) {
@@ -203,12 +244,12 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + " " + z.digestionCount
 
 			self.holidayData.push(new HolidayInfo(textA3_11_12_13, z.digestionStatus, text_A3_31_32, text_A4_41_42_43));
-
-			if (z.dueDateStatus.length > 0 && (_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40')) 
+			
+			if (z.dueDateStatus.length > 0 && (_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
 				|| _.includes(z.digestionDateStatus, nts.uk.resource.getText('KDL005_40')))) {
-				if (self.checkSolid != 0) return;
-				
-				self.checkSolid = index;
+				if (self.checkSolid == 0) {
+					self.checkSolid = index;
+				}
 			}
 		}
 
@@ -243,6 +284,25 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				$("#A6_1").show();
 				$("#A6_2").show();
 				$("#A6_3").show();
+			}
+		}
+
+		findData() {
+			let self = this;
+			
+			let text = $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").val()
+			if (text == "") {
+				nts.uk.ui.dialog.info({ messageId: "MsgB_24" });
+			} else {
+				let lstFil = _.filter(self.employeeList(), (z: any) => {
+					return _.includes(z.code, text);
+				})
+
+				if (lstFil.length > 0) {
+					self.listComponentOption.selectedCode(lstFil[0].code);
+				} else {
+					nts.uk.ui.dialog.info({ messageId: "MsgB_25" });
+				}
 			}
 		}
 

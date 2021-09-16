@@ -24,16 +24,19 @@
 				<div id="contents-area">
 					<!-- Search Box -->
 					<div id="area-right" style="float: left;">
-						<div style="margin-bottom: 0px; margin-left: 20px; width: 274px"
-							data-bind="ntsSearchBox: {
-								searchMode: 'filter',
-								targetKey: 'code', 
-								comId: 'multi-list', 
-								items: listComponentOption.employeeInputList(),
-								selected: listComponentOption.selectedCode(),  
-								selectedKey: 'code', 
-								fields: ['code', 'name'], 
-								mode: 'igGrid'}" />
+						<div>
+							<div class="input-wrapper">
+								<span class="nts-editor-wrapped ntsControl"> 
+								<input id = "input-search"
+									data-bind="text:searchText"
+									class="ntsSearchBox nts-editor ntsSearchBox_Component"
+									type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
+									tabindex="0" style="width: 187px;"></input>
+								</span> 
+								<i id="search-icon-new" class="img-icon"></i>
+							</div>
+							<button id="search-btn" data-bind=" click: findData" class="caret-bottom " tabindex="0">検索</button>
+						</div>
 						<!-- KCP005 -->
 						<div id="kcp005component"></div>
 					</div>
@@ -55,16 +58,11 @@
 								<button id="btn-help-1"
 									data-bind="ntsHelpButton: {textId: 'KDL005_58', textParams:['{#KDL005_58}', '', '', ''], position: 'right center' }">？</button>
 								<!-- A2_5 -->
-								<com:ko-if bind="dataHoliday.remainNumConfirmDto != null">
-									<label id="A2_5" style="margin-left: 10px;"
-										data-bind="text:dataHoliday.remainNumConfirmDto.currentRemainNumber"></label>
-								</com:ko-if>
-								<com:ko-if bind="dataHoliday.remainNumConfirmDto == null">
-									<label id="A2_5" style="margin-left: 10px;">2日</label>
-								</com:ko-if>
-								<label id="A6_1" style="font-size: 18px; margin-left: 10px;">#{i18n.getText('KDL005_56')}</label>
+								<label id="A2_5" style="margin-left: 10px;"
+									data-bind="text:currentRemainNumber"></label> <label id="A6_1"
+									style="font-size: 18px; margin-left: 10px;">#{i18n.getText('KDL005_56')}</label>
 								<!-- A2_23 -->
-								<label id="A2_23" style="margin-left: 10px;">#{i18n.getText('KDL005_65')}</label>
+								<label id="A2_23">#{i18n.getText('KDL005_65')}</label>
 							</div>
 							<div>
 								<!-- A2_6 -->
@@ -77,24 +75,13 @@
 								<!-- A2_8 -->
 								<label id="A2_8">#{i18n.getText('KDL005_62')}</label>
 								<!-- A2_9 -->
-								<com:ko-if bind="dataHoliday.remainNumConfirmDto != null">
-									<label id="A2_9" style="margin-left: 10px;"
-										data-bind="text:dataHoliday.remainNumConfirmDto.expiredWithinMonth"></label>
-								</com:ko-if>
-								<com:ko-if bind="dataHoliday.remainNumConfirmDto == null">
-									<label id="A2_9" style="margin-left: 10px;">2日</label>
-								</com:ko-if>
-								<label id="A6_2" style="margin-left: 10px;">#{i18n.getText('KDL005_56')}</label>
+								<label id="A2_9" style="margin-left: 10px;"
+									data-bind="text:expiredWithinMonth"></label> <label id="A6_2"
+									style="margin-left: 10px;">#{i18n.getText('KDL005_56')}</label>
 								<!-- A2_10 -->
 								<label id="A2_10">#{i18n.getText('KDL005_59')}</label>
 								<!-- A2_21 -->
-								<com:ko-if bind="dataHoliday.remainNumConfirmDto != null">
-									<label id="A2_21"
-										data-bind="text:dataHoliday.remainNumConfirmDto.dayCloseDeadline"></label>
-								</com:ko-if>
-								<com:ko-if bind="dataHoliday.remainNumConfirmDto == null">
-									<label id="A2_21">2日</label>
-								</com:ko-if>
+								<label id="A2_21" data-bind="text:dayCloseDeadline"></label>
 							</div>
 							<div>
 								<div id="combo-box" style="width: 145px; margin-top: 10px;"
@@ -121,7 +108,7 @@
 							columns: columns,
 							multiple: false,
 							value: currentCode,
-							rows : 15}">
+							rows : 10}">
 								</table>
 							</div>
 							<div>
@@ -132,7 +119,7 @@
 
 					</div>
 				</div>
-				<div id="functions-area-bottom" style = "background-color: white;">
+				<div id="functions-area-bottom" style="background-color: white;">
 					<button tabindex="4" id="cancel-btn" data-bind="click: cancel"
 						class="large">#{i18n.getText('KDL005_17')}</button>
 				</div>
