@@ -540,7 +540,7 @@ module nts.uk.at.kha003.a {
                             });
                             let sortData = sortableArray.sort((a: any, b: any) =>
                                 a[0].localeCompare(b[0])
-                                || a[2] - b[2]
+                                || a[2].localeCompare(b[2])
                                 || a[3].localeCompare(b[3])
                                 || a[5].localeCompare(b[5])
                                 || a[8].localeCompare(b[8])
