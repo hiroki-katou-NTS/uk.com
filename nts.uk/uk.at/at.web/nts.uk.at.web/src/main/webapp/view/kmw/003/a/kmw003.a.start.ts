@@ -1,16 +1,27 @@
 module nts.uk.at.view.kmw003.a {
     let __viewContext: any = window["__viewContext"] || {};
     __viewContext.ready(function() {
-        let value = __viewContext.transferred.value;
-        if(value == undefined || value == null){
-           value = false; 
+        let data = __viewContext.transferred.value, value,
+        param = null;
+        // if(value == undefined || value == null){
+        //    value = false; 
+        // } else {
+        //    value =  value.isKmwCall;
+        // }
+
+        if (data == undefined || data == null) {
+            value = false;             
         } else {
-           value =  value.isKmwCall;
+            value =  data.isKmwCall;
+            param = {
+                closureId: data.closureId,
+                yearMonth: data.yearMonth
+            };
         }
         let screenModel = __viewContext.vm = new nts.uk.at.view.kmw003.a.viewmodel.ScreenModel(value);
         // set pg-name if pg-name = ''
         if ($("#pg-name").text() == '') $("#pg-name").text("KMW003A " + nts.uk.resource.getText("KMW003_1"));
-        screenModel.startPage().done(() => {
+        screenModel.startPage(param).done(() => {
             
             let dialogOptions = {
                forGrid: true,

@@ -18,6 +18,8 @@ public class ScheduleExecuteCommand {
 	
 	private GeneralDateTime nextDate;
 	
+	private String companyCd;
+	
 	@Data
 	public static class ForBatchServer {
 		private ScheduleExecuteCommand command;

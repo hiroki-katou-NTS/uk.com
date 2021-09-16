@@ -80,4 +80,5 @@ public interface AggrPeriodExcutionRepository {
 	
 	void updateAll(List<AggrPeriodExcution> domains);
 	
+	Optional<AggrPeriodExcution> findByAggrId(String cid, String aggrId);
 }

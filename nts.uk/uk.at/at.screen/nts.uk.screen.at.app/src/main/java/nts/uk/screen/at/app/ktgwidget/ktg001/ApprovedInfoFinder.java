@@ -33,7 +33,7 @@ public class ApprovedInfoFinder {
 	// .承認すべきデータのウィジェットを起動する
 	public ApprovedDataExecutionResultDto get(ApprovedDataExecutionResultDto approvedDataExecutionResultDto,
 			List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList, List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId,
-			String companyId, Integer yearMonth, Integer closureId) {
+			String companyId, Integer yearMonth) {
 
 		// 3.1.承認すべき申請データの取得
 		// 承認すべき申請データ有無表示_（3次用）
@@ -41,12 +41,12 @@ public class ApprovedInfoFinder {
 				appDisplayAtr.get(approvedAppStatusDetailedSettingList, closingPeriods, employeeId, companyId));
 
 		// 3.2. 日別実績の承認すべきデータの取得
-		approvedDataExecutionResultDto.setDayDisplayAtr(dayDisplayAtr.get(approvedAppStatusDetailedSettingList,
-				closingPeriods, employeeId, companyId, yearMonth, closureId));
+		approvedDataExecutionResultDto.setDayDisplayAtrList(dayDisplayAtr.get(approvedAppStatusDetailedSettingList,
+				closingPeriods, employeeId, companyId, yearMonth));
 
 		// 3.3. 月別実績の承認すべきデータの取得
-		approvedDataExecutionResultDto.setMonthDisplayAtr(monthDisplayAtr.get(approvedAppStatusDetailedSettingList,
-				closingPeriods, employeeId, companyId, yearMonth, closureId));
+		approvedDataExecutionResultDto.setMonthDisplayAtrList(monthDisplayAtr.get(approvedAppStatusDetailedSettingList,
+				closingPeriods, employeeId, companyId, yearMonth));
 
 		// 3.4. 4.36協定申請の承認すべきデータの取得
 		approvedDataExecutionResultDto.setAgrDisplayAtr(argDisplayAtr.get(approvedAppStatusDetailedSettingList,

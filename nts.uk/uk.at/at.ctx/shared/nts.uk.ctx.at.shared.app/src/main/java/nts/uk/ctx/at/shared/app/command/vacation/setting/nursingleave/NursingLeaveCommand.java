@@ -15,9 +15,9 @@ import nts.uk.ctx.at.shared.app.command.vacation.setting.nursingleave.dto.Nursin
 @Getter
 public class NursingLeaveCommand {
     
-    /** The nursing setting. */
+    /** The child nursing setting. */   //because in frontend code, nursingSetting.nursingCategory = 1 (ChildNursing)
     private NursingLeaveSettingDto nursingSetting;
     
-    /** The child nursing setting. */
+    /** The nursing setting. */			//because in frontend code, childNursingSetting.nursingCategory = 0 (Nursing)
     private NursingLeaveSettingDto childNursingSetting;
 }
