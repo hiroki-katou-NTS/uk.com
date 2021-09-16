@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import lombok.NoArgsConstructor;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentFormSetting;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentPerformInputFormatSetting;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
-import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.実績項目設定.設備項目設定マスタを登録する
@@ -39,10 +39,11 @@ public class RegisterEquipmentItemSettingMaster {
 		// 設備利用実績の項目設定 - Start
 		List<AtomTask> itemSettingTasks = new ArrayList<AtomTask>();
 		List<EquipmentUsageRecordItemSetting> itemSettings = require.getEURItemSettings(cid);
-		List<String> delItemNo = itemSettings.stream()
-			.map(x -> x.getItemNo().v()).collect(Collectors.toList());
+		List<EquipmentItemNo> delItemNo = itemSettings.stream()
+			.map(x -> x.getItemNo())
+			.collect(Collectors.toList());
 		if (!delItemNo.isEmpty()) {
-			// itemSettingTasks.add(AtomTask.of(require.deleteAllEURItemSettings(cid, itemCls)));
+			 itemSettingTasks.add(AtomTask.of(() -> require.deleteAllEURItemSettings(cid, delItemNo)));
 		}
 		if (!items.isEmpty()) {
 			itemSettingTasks.add(AtomTask.of(() -> require.insertAllEURItemSettings(items)));
@@ -82,7 +83,7 @@ public class RegisterEquipmentItemSettingMaster {
 		void insertAllEURItemSettings(List<EquipmentUsageRecordItemSetting> items);
 		
 		// [R-3] 設備利用実績の項目設定をDeleteAllする
-		void deleteAllEURItemSettings(String cid, List<ItemClassification> itemCls);
+		void deleteAllEURItemSettings(String cid, List<EquipmentItemNo> itemNos);
 		
 		// [R-4] 設備の実績入力フォーマット設定を取得する
 		Optional<EquipmentPerformInputFormatSetting> getEURInputFormatSetting(String cid);
