@@ -11,6 +11,8 @@ import lombok.Data;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.holidaysubstitute.HolidaySubstituteDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.holidaysubstitute.HolidaySubstituteFinder;
+import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.holidaysubstitute.RemainNumberConfirmDto;
+import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.startholidayconfirmation.GetDetailInfoEmpRemainHoliday;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.startholidayconfirmation.StartHolidayConfDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.startholidayconfirmation.StartHolidayConfirmation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
@@ -28,6 +30,10 @@ public class HolidaySubstituteServices {
 	
 	@Inject
 	private StartHolidayConfirmation startHolidayConfirmation;
+	
+	@Inject
+	private GetDetailInfoEmpRemainHoliday getDetailInfoEmpRemainHoliday;
+	
 	@POST
 	@Path("getHolidaySub")
 	public HolidaySubstituteDto getHolidaySubstitute(ParamKdl005 param) {		
@@ -39,6 +45,13 @@ public class HolidaySubstituteServices {
 	@Path("getStartHolidayConf")
 	public StartHolidayConfDto getStartHolidayConf(List<String> listEmployeeId) {		
 		StartHolidayConfDto result = startHolidayConfirmation.get(listEmployeeId);
+		return result;
+	}
+	
+	@POST
+	@Path("getHolidayConfByEmp")
+	public RemainNumberConfirmDto getHolidayConfByEmp(String employeeId) {		
+		RemainNumberConfirmDto result = getDetailInfoEmpRemainHoliday.getByEmpId(employeeId);
 		return result;
 	}
 	
