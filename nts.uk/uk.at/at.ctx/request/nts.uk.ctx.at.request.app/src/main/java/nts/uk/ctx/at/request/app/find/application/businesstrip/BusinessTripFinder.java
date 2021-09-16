@@ -526,9 +526,13 @@ public class BusinessTripFinder {
                     businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpMsgErrorLst().orElse(Collections.emptyList()),
                     Collections.emptyList(),
                     businessTripInfoOutput.getAppDispInfoStartup(),
-                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()), 
+                    param.getBusinessTrip() != null ? 
+                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTypeCd()).collect(Collectors.toList()) : 
+                            new ArrayList<String>(),
                     Optional.empty(), 
-                    param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst(), 
+                    param.getBusinessTrip() != null ? 
+                            param.getBusinessTrip().getTripInfos().stream().map(x -> x.getWkTimeCd()).findFirst() : 
+                            Optional.empty(), 
                     false
             );
 
@@ -571,7 +575,7 @@ public class BusinessTripFinder {
 
                 result.setResult(true);
                 result.setConfirmMsgOutputs(confirmMsgOutputs);
-                result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput));
+                result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripService.setInitValueAppWorkTime(businessTripInfoOutput)));
             }
         }
         return result;

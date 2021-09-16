@@ -93,6 +93,6 @@ public interface BusinessTripService {
                                     終了時刻２(Optional）
 
      */
-    WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTypeCd);
+    WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTypeCd, List<BusinessTripWorkingHours> workingHours);
 
 }

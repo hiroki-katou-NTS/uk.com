@@ -364,7 +364,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
          * ResultCheckInputCode(false, "Msg_1912"); } else { }
          */
         // 出勤時刻＞退勤時刻となっている場合
-        if (startWorkTime > endWorkTime) {
+        if (startWorkTime != null && endWorkTime != null && startWorkTime > endWorkTime) {
             return new ResultCheckInputCode(false, "Msg_1913");
         }
         return new ResultCheckInputCode(true, null);
@@ -710,6 +710,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         Optional<List<ActualContentDisplay>> opActualContentDisplayLst = result.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
         // 申請表示情報.申請設定(基準日関連なし）.表示する実績内容.実績詳細
         if (opActualContentDisplayLst.isPresent()) {
+//            List<BusinessTripWorkingHours> workingHours = opActualContentDisplayLst.get().stream()
+//                    .filter(x -> x.getOpAchievementDetail().isPresent())
+//                    .map(x -> BusinessTripWorkingHours.fromAchievementDetail(x.getOpAchievementDetail().get()))
+//                    .collect(Collectors.toList());
+            List<BusinessTripWorkingHours> workingHours = new ArrayList<BusinessTripWorkingHours>();
             for (int i = 0; i < opActualContentDisplayLst.get().size(); i++) {
                 final int index = i;
                 
@@ -725,8 +730,10 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                                 .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
                                 .map(x -> x.getWorkType())
                                 .findFirst().orElse(null) : null;
-                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, optAchievementDetail.get().getWorkTimeCD());
-                        
+                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, optAchievementDetail.get().getWorkTimeCD(), workingHours);
+                        if (!workTimeGetOutput.getWorkingHours().isEmpty()) {
+                            workingHours = workTimeGetOutput.getWorkingHours();
+                        }
                         // 未登録の対象項目に値をセットする
                         if (!opWorkTime.isPresent()) {
                             optAchievementDetail.get().setOpWorkTime(workTimeGetOutput.getStartTime1());
@@ -751,17 +758,23 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTimeCd) {
+    public WorkTimeGetOuput getWorkTimeBusinessTrip(WorkType workType, String workTimeCd, List<BusinessTripWorkingHours> workingHours) {
         WorkTimeGetOuput output = new WorkTimeGetOuput();
+        output.setWorkingHours(workingHours);
         
         // 就業時間帯コードが存在するか
         if (workTimeCd == null) {
             return output;
         }
         
-        // キャッシュがあれば利用する
-        if (true) {
-            
+        // List＜出張申請就業時間帯時刻＞の内容をチェックする
+        if (workingHours.stream().filter(x -> x.getWorkTypeCd().equals(workType.getWorkTypeCode().v()) && x.getWorkTimeCd().equals(workTimeCd)).findFirst().isPresent()) {
+            BusinessTripWorkingHours workingHour = workingHours.stream().findFirst().get();
+            output.setStartTime1(Optional.of(workingHour.getStartTime1()));
+            output.setEndTime1(Optional.of(workingHour.getEndTime1()));
+            output.setStartTime2(Optional.of(workingHour.getStartTime2()));
+            output.setEndTime2(Optional.of(workingHour.getEndTime2()));
+            return output;
         }
         
         // ドメインモデル「所定時間設定」を取得する
@@ -776,7 +789,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         
         if (workTypeUnit.equals(WorkTypeUnit.OneDay)) {
             // 勤務種類.1日の勤務.1日をチェック（※勤務種類の判断条件参照）
-            if (workType.getDailyWork().getMorning().isWeekDayAttendance()) {
+            if (isWorkTypeWork(workType.getDailyWork().getMorning())) {
                 // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
                 List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
                 if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
@@ -791,8 +804,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         } else if (workTypeUnit.equals(WorkTypeUnit.MonringAndAfternoon)) {
             // 勤務種類.1日の勤務.午前をチェック
             // 勤務種類.1日の勤務.午後をチェック
-            if ((workType.getDailyWork().getMorning().isHolidayWorkType() && workType.getDailyWork().getAfternoon().isWeekDayAttendance()) || 
-                    (workType.getDailyWork().getMorning().isWeekDayAttendance())) {
+            if ((isWorkTypeHoliday(workType.getDailyWork().getMorning()) && isWorkTypeWork(workType.getDailyWork().getAfternoon())) || 
+                    (isWorkTypeWork(workType.getDailyWork().getMorning()))) {
                 // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
                 List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
                 if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
@@ -807,7 +820,46 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         }
         
         // キャッシュに結果を保存する
+        output.getWorkingHours().addAll(Arrays.asList(new BusinessTripWorkingHours(
+                workType.getWorkTypeCode().v(), 
+                workTimeCd, 
+                output.getStartTime1().orElse(0), 
+                output.getEndTime1().orElse(0), 
+                output.getStartTime2().orElse(0), 
+                output.getEndTime2().orElse(0))));
+        System.out.println(output.getWorkingHours().size());
         return output;
+    }
+    
+    public boolean isWorkTypeWork(WorkTypeClassification workTypeAtr) {
+        switch (workTypeAtr) {
+        case Attendance:
+        case Shooting: 
+        case HolidayWork:
+            return true;
+
+        default:
+            return false;
+        }
+    }
+    
+    public boolean isWorkTypeHoliday(WorkTypeClassification workTypeAtr) {
+        switch (workTypeAtr) {
+        case Holiday:
+        case AnnualHoliday: 
+        case YearlyReserved: 
+        case SpecialHoliday: 
+        case Absence: 
+        case SubstituteHoliday: 
+        case Pause: 
+        case TimeDigestVacation: 
+        case LeaveOfAbsence: 
+        case Closure:
+            return true;
+
+        default:
+            return false;
+        }
     }
 
 }
