@@ -288,18 +288,18 @@ module nts.uk.at.kha003.a {
 
                         // check helper dragged into append area
                         let isHelperInAppendArea = true;
-                         const aT1 = $("#append_area").offset().top,
-                             aT2 = $("#append_area").offset().top + $("#append_area").height(),
-                             aL1 = $("#append_area").offset().left,
-                             aL2 = $("#append_area").offset().left + $("#append_area").width(),
-                             hT1 = ui.offset.top - 20, // 20px padding
-                             hT2 = ui.offset.top + $(html).height() + 20,
-                             hL1 = ui.offset.left - 20,
-                             hL2 = ui.offset.left + $(html).width() + 20;
-                         if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
-                         if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
-                         if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
-                         if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
+                        const aT1 = $("#append_area").offset().top,
+                            aT2 = $("#append_area").offset().top + $("#append_area").height(),
+                            aL1 = $("#append_area").offset().left,
+                            aL2 = $("#append_area").offset().left + $("#append_area").width(),
+                            hT1 = ui.offset.top - 20, // 20px padding
+                            hT2 = ui.offset.top + $(html).height() + 20,
+                            hL1 = ui.offset.left - 20,
+                            hL2 = ui.offset.left + $(html).width() + 20;
+                        if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
+                        if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL1 && hL1 <= aL2) isHelperInAppendArea = true;
+                        if (aT1 <= hT1 && hT1 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
+                        if (aT1 <= hT2 && hT2 <= aT2 && aL1 <= hL2 && hL2 <= aL2) isHelperInAppendArea = true;
 
                         if (isHelperInAppendArea) {
                             vm.$errors("clear", "#append_area");
@@ -506,6 +506,7 @@ module nts.uk.at.kha003.a {
                                     '総労働時間'
                                 ]
                             );
+                            let sortableArray: any = [];
                             data.workDetailDataList.forEach((data: any) => {
                                 let affWorkPlace = this.getcodeAndName(data.affWorkplaceId, masterNameInfo.affWorkplaceInfoList, 0);
                                 let workPlace = this.getcodeAndName(data.workplaceId, masterNameInfo.affWorkplaceInfoList, 1);
@@ -515,7 +516,7 @@ module nts.uk.at.kha003.a {
                                 let task3 = this.getcodeAndName(data.workCode3, masterNameInfo.task3List, null);
                                 let task4 = this.getcodeAndName(data.workCode4, masterNameInfo.task4List, null);
                                 let task5 = this.getcodeAndName(data.workCode5, masterNameInfo.task5List, null);
-                                rows.push([
+                                sortableArray.push([
                                     empInfo ? empInfo.employeeCode : '',
                                     empInfo ? empInfo.employeeName : '',
                                     data.date,
@@ -537,6 +538,18 @@ module nts.uk.at.kha003.a {
                                     data.totalWorkingHours
                                 ])
                             });
+                            let sortData = sortableArray.sort((a: any, b: any) =>
+                                a[0].localeCompare(b[0])
+                                || a[2] - b[2]
+                                || a[3].localeCompare(b[3])
+                                || a[5].localeCompare(b[5])
+                                || a[8].localeCompare(b[8])
+                                || a[10].localeCompare(b[10])
+                                || a[12].localeCompare(b[12])
+                                || a[14].localeCompare(b[14])
+                                || a[16].localeCompare(b[16])
+                            );
+                            rows = rows.concat(sortData);
                             var csvContent = rows.join("\n");
                             var link = window.document.createElement("a");
                             link.setAttribute("href", "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(csvContent));
