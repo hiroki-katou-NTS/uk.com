@@ -212,6 +212,8 @@ module nts.layout {
         get_calDayTime: (sid: string, specialCd: number) => ajax('com', `ctx/pereg/layout/calDayTime/${sid}/${specialCd}`),
         check_remain_days: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainDays/${sid}`),
         check_remain_left: (sid: string) => ajax('com', `ctx/pereg/person/common/checkEnableRemainLeft/${sid}`),
+        get_remain_days: (sid: string) => ajax('at', `at/record/remainnumber/getRemainDays/${sid}`),
+        get_remain_left: (sid: string) => ajax('at', `at/record/remainnumber/getRemainLeft/${sid}`),
         perm: (rid, cid) => ajax(`ctx/pereg/roles/auth/category/find/${rid}/${cid}`),
         get_sphd_nextGrantDate: (param: ISpeacialParam) => ajax('com', `ctx/pereg/layout/getSPHolidayGrantDate`, param),
         checkFunctionNo: () => ajax(`ctx/pereg/functions/auth/find-with-role-person-info`),
@@ -371,12 +373,22 @@ module nts.layout {
             if (CS00035_IS00366) {
                 fetch.check_remain_days(empId).done(x => {
                     CS00035_IS00366.data.numberedit(x);
+                    if (!x) {
+                        fetch.get_remain_days(empId).done(value => {
+                            CS00035_IS00366.data.value(value);
+                        })
+                    }
                 });
             }
 
             if (CS00035_IS00368) {
                 fetch.check_remain_left(empId).done(x => {
                     CS00035_IS00368.data.numberedit(x);
+                    if (!x) {
+                        fetch.get_remain_left(empId).done(value => {
+                            CS00035_IS00368.data.value(value);
+                        })
+                    }
                 });
             }
         }
