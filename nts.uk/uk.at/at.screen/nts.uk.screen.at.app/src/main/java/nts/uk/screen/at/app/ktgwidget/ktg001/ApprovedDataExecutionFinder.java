@@ -53,7 +53,7 @@ public class ApprovedDataExecutionFinder {
 	 * @param closureId
 	 * @return
 	 */
-	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth, Integer closureId) {
+	public ApprovedDataExecutionResultDto getApprovedDataExecutionResult(Integer yearMonth) {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -84,7 +84,7 @@ public class ApprovedDataExecutionFinder {
 
 		// 3. 全ての承認すべき情報を取得する
 		approvedDataExecutionResultDto = approvedInfoFinder.get(approvedDataExecutionResultDto, approvedAppStatusDetailedSettingList,
-				closingPeriods, employeeId, companyId, yearMonth, closureId);
+				closingPeriods, employeeId, companyId, yearMonth);
 
 		// set response
 		List<ClosureIdPresentClosingPeriodDto> closingPeriodDtos = new ArrayList<>();
@@ -97,7 +97,7 @@ public class ApprovedDataExecutionFinder {
 				.collect(Collectors.toList());
 
 		approvedDataExecutionResultDto.setHaveParticipant(haveParticipant);
-		approvedDataExecutionResultDto.setTopPagePartName(standardWidgetOpt.isPresent() ? "" : I18NText.getText("KTG001_12") );
+		approvedDataExecutionResultDto.setTopPagePartName(standardWidgetOpt.isPresent() ? standardWidgetOpt.get().getName().v() : I18NText.getText("KTG001_12") );
 		approvedDataExecutionResultDto.setClosingPeriods(closingPeriodDtos);
 
 		approvedDataExecutionResultDto

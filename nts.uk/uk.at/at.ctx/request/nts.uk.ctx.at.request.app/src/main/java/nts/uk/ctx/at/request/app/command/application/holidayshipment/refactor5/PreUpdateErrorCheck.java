@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 
 /**
  * @author thanhpv
@@ -43,7 +46,8 @@ public class PreUpdateErrorCheck {
 	 * @param rec 振出申請
 	 * @param displayInforWhenStarting 振休振出申請起動時の表示情報
 	 */
-	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, DisplayInforWhenStarting displayInforWhenStarting) {
+	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, DisplayInforWhenStarting displayInforWhenStarting, 
+	        List<PayoutSubofHDManagement> payoutSubofHDManagements, boolean checkFlag) {
 		//アルゴリズム「登録前エラーチェック（更新）」を実行する
 		this.preRegistrationErrorCheck.preconditionCheck(abs, rec, 
 		        Optional.ofNullable(displayInforWhenStarting.getApplicationForHoliday() == null ? null : displayInforWhenStarting.getApplicationForHoliday().getWorkInformationForApplication()), 
@@ -69,8 +73,16 @@ public class PreUpdateErrorCheck {
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput()
 						.getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
 
+		boolean existFlag = false;
+		if (rec.isPresent() && abs.isPresent()) {
+		    existFlag = true;
+		}
 		//振休残数不足チェック
-		 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
+//		 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
+		// INPUT．振出申請がNULL　AND　INPUT．振休申請がNULLじゃない　AND　INPUT.振休申請.振出振休紐付け管理＝設定なし
+        if (!rec.isPresent() && abs.isPresent() && checkFlag && payoutSubofHDManagements.isEmpty()) {
+            throw new BusinessException("Msg_2223");
+        }
 	 
 		 if(rec.isPresent()) {
 
@@ -84,7 +96,10 @@ public class PreUpdateErrorCheck {
 					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
 					 null,
 					 null,
-					 displayInforWhenStarting.appDispInfoStartup.toDomain());
+					 displayInforWhenStarting.appDispInfoStartup.toDomain(), 
+					 Arrays.asList(rec.get().getWorkInformation().getWorkTypeCode().v()), 
+					 Optional.empty(), 
+					 existFlag);
 		 }
 		 if(abs.isPresent()) {
 			 //アルゴリズム「登録前共通処理（更新）」を実行する
@@ -97,7 +112,10 @@ public class PreUpdateErrorCheck {
 					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
 					 null,
 					 null,
-					 displayInforWhenStarting.appDispInfoStartup.toDomain());
+					 displayInforWhenStarting.appDispInfoStartup.toDomain(), 
+					 Arrays.asList(abs.get().getWorkInformation().getWorkTypeCode().v()), 
+					 Optional.empty(), 
+					 existFlag);
 		 }
 		
 	}

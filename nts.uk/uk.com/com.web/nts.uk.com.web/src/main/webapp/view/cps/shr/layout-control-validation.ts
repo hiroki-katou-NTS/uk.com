@@ -96,6 +96,9 @@ module nts.layout {
                     }
 
                     if (element && !!x.editable) {
+                        if ((x.itemCode == 'IS00379' || x.itemCode == 'IS01101' || x.itemCode == 'IS00384' || x.itemCode == 'IS01102') && !!x.readonly) {
+                            return;
+                        }
                         if (element.tagName.toUpperCase() == "INPUT") {
                             $element
                                 .trigger('blur')
@@ -431,11 +434,11 @@ module nts.layout {
                     }, {
                         ctgCode: 'CS00036',
                         radioCode: 'IS00375',
-                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379']
+                        relateCode: ['IS00376', 'IS00377', 'IS00378', 'IS00379', 'IS01101']
                     }, {
                         ctgCode: 'CS00036',
                         radioCode: 'IS00380',
-                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384']
+                        relateCode: ['IS00381', 'IS00382', 'IS00383', 'IS00384', 'IS01102']
                     }, {
                         ctgCode: 'CS00049',
                         radioCode: 'IS00560',
@@ -1052,6 +1055,44 @@ module nts.layout {
                     }
 
                     if (!workType) {
+                        if(workTime) {
+                            // handle click event of workTime
+                            workTime.ctrl
+                            .data('safeClick', new Date().getTime())
+                            .on('click', () => {
+                                let timeClick = new Date().getTime(),
+                                    safeClick = workTime.ctrl.data('safeClick');
+
+                                // prevent multi click
+                                workTime.ctrl.data('safeClick', timeClick);
+                                if (timeClick - safeClick <= 500) {
+                                    return;
+                                }
+                                setShared("kdl00showNoSelectionRow", workTime.data.required == true ? false: true);
+                                setShared("kml001multiSelectMode", false);
+                                setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
+                                setShared("kml001isSelection", true);
+                                setShared("kml001selectAbleCodeList", _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue), true);
+
+                                modal('at', '/view/kdl/001/a/index.xhtml').onClosed(() => {
+                                    let childData: Array<any> = getShared('kml001selectedTimes');
+                                    if (childData) {
+                                        if (childData.length > 0) {
+                                            let data: any = childData[0];
+                                            setData(workTime, data.selectedWorkTimeCode);
+
+                                            firstTimes && setData(firstTimes.start, data.first && data.first.start);
+                                            firstTimes && setData(firstTimes.end, data.first && data.first.end);
+
+                                            secondTimes && setData(secondTimes.start, data.second && data.second.start);
+                                            secondTimes && setData(secondTimes.end, data.second && data.second.end);
+
+                                            validateEditable(group, workTime.data.value);
+                                        }
+                                    }
+                                });
+                            });
+                        }
                         return;
                     }
 
@@ -1068,10 +1109,16 @@ module nts.layout {
                                 if (timeClick - safeClick <= 500) {
                                     return;
                                 }
+                                let possibleItems = _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue);
+                                possibleItems.sort();
                                 setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false:true);
                                 setShared("KDL002_Multiple", false, true);
                                 setShared('kdl002isSelection', false, true);
-                                setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                setShared("KDL002_SelectedItemId", 
+                                    _.isNil(workType.data.value()) 
+                                    ? (workType.data.required && possibleItems.length > 0 ? possibleItems[0] : []) 
+                                    : [workType.data.value()], 
+                                    true);
                                 setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                 modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1103,7 +1150,8 @@ module nts.layout {
                                         workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                                         selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
                                         workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value,
+                                        showNone: false
                                     }, true);
 
                                     modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -1124,10 +1172,16 @@ module nts.layout {
                                         }
                                     });
                                 } else {
+                                    let possibleItems = _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue);
+                                    possibleItems.sort();
                                     setShared("KDL002_isShowNoSelectRow", workType.data.required == true? false: true);
                                     setShared("KDL002_Multiple", false, true);
                                     setShared('kdl002isSelection', true, true);
-                                    setShared("KDL002_SelectedItemId", _.isNil(workType.data.value()) ? [] : [workType.data.value()], true);
+                                    setShared("KDL002_SelectedItemId", 
+                                        _.isNil(workType.data.value()) 
+                                        ? (workType.data.required && possibleItems.length > 0 ? possibleItems[0] : []) 
+                                        : [workType.data.value()], 
+                                        true);
                                     setShared("KDL002_AllItemObj", _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue), true);
 
                                     modal('at', '/view/kdl/002/a/index.xhtml').onClosed(() => {
@@ -1158,7 +1212,8 @@ module nts.layout {
                                         workTypeCodes: workType && _.map(ko.toJS(workType.data).lstComboBoxValue, x => x.optionValue),
                                         selectedWorkTypeCode: workType && ko.toJS(workType.data).value,
                                         workTimeCodes: workTime && _.map(ko.toJS(workTime.data).lstComboBoxValue, x => x.optionValue),
-                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value
+                                        selectedWorkTimeCode: workTime && ko.toJS(workTime.data).value,
+                                        showNone: false
                                     }, true);
 
                                     modal('at', '/view/kdl/003/a/index.xhtml').onClosed(() => {
@@ -1180,7 +1235,7 @@ module nts.layout {
                                     });
                                 } else {
 
-
+                                    setShared("kdl00showNoSelectionRow", workTime.data.required == true ? false: true);
                                     setShared("kml001multiSelectMode", false);
                                     setShared("kml001selectedCodeList", _.isNil(workTime.data.value()) ? [] : [workTime.data.value()]);
                                     setShared("kml001isSelection", true);
@@ -1395,18 +1450,20 @@ module nts.layout {
                 CS00020_IS00123.data.value.subscribe(v => {
                     switch (v) {
                         case "0":
+                        case "1":
+                        case "2":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(true);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(true);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(true);
                             CS00020_IS00127 && CS00020_IS00127.data.editable(false);
                             break;
-                        case "1":
+                        case "3":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(false);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(false);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(true);
                             CS00020_IS00127 && CS00020_IS00127.data.editable(true);
                             break;
-                        case "2":
+                        case "4":
                             CS00020_IS00124 && CS00020_IS00124.data.editable(false);
                             CS00020_IS00125 && CS00020_IS00125.data.editable(false);
                             CS00020_IS00126 && CS00020_IS00126.data.editable(false);

@@ -3,14 +3,8 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
-import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * @author ThanhNX
@@ -88,14 +82,14 @@ public class StampReceptionData implements ReceptionData {
 
 	public String getOverTimeHours() {
 		if (overTimeHours.trim().isEmpty())
-			return overTimeHours;
+			return "";
 		return String.valueOf(
 				(Integer.parseInt(overTimeHours.trim()) / 100) * 60 + (Integer.parseInt(overTimeHours.trim()) % 100));
 	}
 
 	public String getMidnightTime() {
 		if (midnightTime.trim().isEmpty())
-			return midnightTime;
+			return "";
 		return String.valueOf(
 				(Integer.parseInt(midnightTime.trim()) / 100) * 60 + (Integer.parseInt(midnightTime.trim()) % 100));
 	}
@@ -106,6 +100,10 @@ public class StampReceptionData implements ReceptionData {
 
 	public String getShift() {
 		return shift.trim();
+	}
+	
+	public String getIdNumber() {
+		return idNumber.trim();
 	}
 
 	// 認証方法
@@ -150,92 +148,6 @@ public class StampReceptionData implements ReceptionData {
 		default:
 			return ChangeCalArt.NONE;
 		}
-	}
-
-	// 出退区分
-	public ChangeClockArt convertChangeClockArt(EmpInfoTerminal empInfo) {
-		switch (LeaveCategory.valueStringOf(leavingCategory.trim())) {
-
-		case WORK:
-		case WORK_HALF:
-		case WORK_FLEX:
-			if (empInfo.getCreateStampInfo().getConvertEmbCate().getEntranceExit() == NotUseAtr.USE)
-				return ChangeClockArt.OVER_TIME;
-			return ChangeClockArt.GOING_TO_WORK;
-
-		case EARLY:
-		case VACATION:
-			return ChangeClockArt.GOING_TO_WORK;
-
-		case LEAVE:
-		case LEAVE_HALF:
-		case LEAVE_OVERTIME:
-		case LEAVE_FLEX:
-			if (empInfo.getCreateStampInfo().getConvertEmbCate().getEntranceExit() == NotUseAtr.USE)
-				return ChangeClockArt.OVER_TIME;
-			return ChangeClockArt.WORKING_OUT;
-
-		case GO_OUT:
-			if (empInfo.getCreateStampInfo().getConvertEmbCate().getOutSupport() == NotUseAtr.USE)
-				return ChangeClockArt.START_OF_SUPPORT;
-			return ChangeClockArt.GO_OUT;
-
-		case RETURN:
-			if (empInfo.getCreateStampInfo().getConvertEmbCate().getOutSupport() == NotUseAtr.USE)
-				return ChangeClockArt.END_OF_SUPPORT;
-			return ChangeClockArt.RETURN;
-
-		case WORK_TEMPORARY:
-			return ChangeClockArt.TEMPORARY_WORK;
-
-		case RETURN_START:
-			return ChangeClockArt.START_OF_SUPPORT;
-
-		case GO_EN:
-			return ChangeClockArt.END_OF_SUPPORT;
-
-		case WORK_ENTRANCE:
-		case WORK_HALF_ENTRANCE:
-		case WORK_FLEX_ENTRANCE:
-			return ChangeClockArt.SUPPORT;
-
-		case VACATION_ENTRANCE:
-		case EARLY_ENTRANCE:
-			return ChangeClockArt.START_OF_SUPPORT;
-
-		case TEMPORARY_ENTRANCE:
-			return ChangeClockArt.TEMPORARY_SUPPORT_WORK;
-
-//		case RETIRED_TEMPORARY:
-//			return ChangeClockArt.TEMPORARY_LEAVING;
-
-		default:
-			return ChangeClockArt.TEMPORARY_LEAVING;
-		}
-	}
-
-	public StampType createStampType(EmpInfoTerminal empInfo) {
-		String category = leavingCategory.trim();
-		// 勤務種類を半休に変更する
-		boolean changeHalfDay = false;
-		if (category.equals(LeaveCategory.WORK_HALF.value) || category.equals(LeaveCategory.LEAVE_HALF.value)
-				|| category.equals(LeaveCategory.WORK_HALF_ENTRANCE.value)) {
-			changeHalfDay = true;
-		}
-
-		// 外出理由
-		GoingOutReason goOutArt = null;
-		if (empInfo.getCreateStampInfo().getWorkLocationCd().isPresent()
-				&& empInfo.getCreateStampInfo().getOutPlaceConvert().getReplace() == NotUseAtr.USE
-				&& empInfo.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().isPresent()) {
-			goOutArt = GoingOutReason
-					.valueOf(empInfo.getCreateStampInfo().getOutPlaceConvert().getGoOutReason().get().value);
-		} else if (category.equals(LeaveCategory.GO_OUT.value) && !getShift().isEmpty()) {
-			goOutArt = GoingOutReason.valueOf(Integer.parseInt(getShift().substring(0, 1)));
-		}
-
-		return new StampType(changeHalfDay, goOutArt, SetPreClockArt.NONE, convertChangeClockArt(empInfo),
-				convertChangeCalArt());
 	}
 
 	public static class StampDataBuilder {

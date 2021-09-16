@@ -81,6 +81,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepos
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
@@ -670,6 +672,8 @@ public class RecordDomRequireService {
 	private CheckCareService checkChildCareService;
 	@Inject
 	private WorkingConditionItemService workingConditionItemService;
+	@Inject 
+	private ExecutionLogRepository executionLogRepo;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2, CalcAnnLeaAttendanceRate.RequireM3,
 		GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1, CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
@@ -711,7 +715,7 @@ public class RecordDomRequireService {
 				comRegulaMonthActCalSetRepo, shaDeforLaborMonthActCalSetRepo, shaRegulaMonthActCalSetRepo, wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, monthlyWorkTimeSetRepo,
 				verticalTotalMethodOfMonthlyRepo, stampCardRepo, bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, elapseYearRepository, syCompanyRecordAdapter, snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber,
-				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService);
+				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService,executionLogRepo);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -758,7 +762,7 @@ public class RecordDomRequireService {
 				BentoReservationRepository bentoReservationRepo, BentoMenuRepository bentoMenuRepo, IntegrationOfDailyGetter integrationOfDailyGetter, WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo, ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter, DailySnapshotWorkAdapter snapshotAdapter,
 				SuperHD60HConMedRepository superHD60HConMedRepo, MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber, PayoutSubofHDManaRepository payoutSubofHDManaRepo,
-				LeaveComDayOffManaRepository leaveComDayOffManaRepo,CheckCareService checkChildCareService,WorkingConditionItemService workingConditionItemService) {
+				LeaveComDayOffManaRepository leaveComDayOffManaRepo,CheckCareService checkChildCareService,WorkingConditionItemService workingConditionItemService,ExecutionLogRepository executionLogRepo) {
 
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo, specialLeaveBasicInfoRepo,
 					interimRecAbasMngRepo, empSubstVacationRepo, substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo, comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter,
@@ -888,6 +892,7 @@ public class RecordDomRequireService {
 			this.elapseYearRepository = elapseYearRepo;
 			this.leaveComDayOffManaRepo = leaveComDayOffManaRepo;
 			this.payoutSubofHDManaRepo = payoutSubofHDManaRepo;
+			this.executionLogRepo = executionLogRepo;
 		}
 
 		private SuperHD60HConMedRepository superHD60HConMedRepo;
@@ -1128,6 +1133,8 @@ public class RecordDomRequireService {
 
 
 		private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
+		
+		private ExecutionLogRepository executionLogRepo;
 
 		HashMap<String,Optional<PredetemineTimeSetting>> predetemineTimeSetting = new HashMap<String, Optional<PredetemineTimeSetting>>();
 		HashMap<String, Optional<RegularLaborTimeEmp>> regularLaborTimeEmpMap = new HashMap<String, Optional<RegularLaborTimeEmp>>();
@@ -2443,17 +2450,52 @@ public class RecordDomRequireService {
 
 		@Override
 		public void addPayoutSubofHDManagement(PayoutSubofHDManagement domain) {
-			payoutSubofHDManaRepo.add(domain);
+			payoutSubofHDManaRepo.updateOrInsert(domain);
 		}
 
 		@Override
 		public void addLeaveComDayOffManagement(LeaveComDayOffManagement domain) {
-			leaveComDayOffManaRepo.add(domain);
+			leaveComDayOffManaRepo.updateOrInsert(domain);
 		}
 
 		@Override
 		public void deleteSpecialLeaveGrantRemainAfter(String sid, int specialCode, GeneralDate targetDate) {
 				specialLeaveGrantRepo.deleteAfter(sid, specialCode, targetDate);
+		}
+
+		@Override
+		public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
+			return closureStatusManagementRepo.getAllByEmpId(employeeId);
+		}
+
+		@Override
+		public Optional<ClosureEmployment> findByEmploymentCD(String employmentCode) {
+			String companyId = AppContexts.user().companyId();
+			return closureEmploymentRepo.findByEmploymentCD(companyId, employmentCode);
+		}
+
+		@Override
+		public Optional<ActualLock> findById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return actualLockRepo.findById(companyId, closureId);
+		}
+
+		@Override
+		public DatePeriod getClosurePeriod(int closureId, YearMonth processYm) {
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+					ClosureService.createRequireM1(closureRepo,closureEmploymentRepo), closureId, processYm);
+			return datePeriodClosure;
+		}
+
+		@Override
+		public Optional<ExecutionLog> getByExecutionContent(String empCalAndSumExecLogID, int executionContent) {
+			return executionLogRepo.getByExecutionContent(empCalAndSumExecLogID, executionContent);
+		}
+
+		@Override
+		public Closure findClosureById(int closureId) {
+			String companyId = AppContexts.user().companyId();
+			return closureRepo.findById(companyId, closureId).get();
 		}
 	}
 }

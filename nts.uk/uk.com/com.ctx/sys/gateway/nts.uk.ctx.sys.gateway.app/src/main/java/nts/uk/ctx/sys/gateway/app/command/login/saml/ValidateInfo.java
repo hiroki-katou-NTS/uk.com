@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.login.saml;
 
+import java.util.Optional;
+
 import lombok.Data;
 
 @Data
@@ -28,8 +30,8 @@ public class ValidateInfo {
 		return new ValidateInfo(true, false, null, errorMessage);
 	}
 
-	public static ValidateInfo successToValidSaml(String requestUrl) {
-		return new ValidateInfo(true, true, requestUrl, null);
+	public static ValidateInfo successToValidSaml(String requestUrl, Optional<String> msg) {
+		return new ValidateInfo(true, true, requestUrl, msg.orElse(null));
 	}
 
 

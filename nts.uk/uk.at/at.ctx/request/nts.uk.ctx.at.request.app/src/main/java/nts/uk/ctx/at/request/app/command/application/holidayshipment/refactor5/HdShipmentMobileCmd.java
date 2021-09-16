@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -41,15 +42,17 @@ public class HdShipmentMobileCmd {
 	/**
 	 * 振出_休出代休紐付け管理<List>
 	 */
-	private List<LeaveComDayOffManaDto> recHolidayMngLst;
+	private List<LeaveComDayOffManaDto> recHolidayMngLst = new ArrayList<LeaveComDayOffManaDto>();
 	
 	/**
 	 * 振休_休出代休紐付け管理<List>
 	 */
-	private List<LeaveComDayOffManaDto> absHolidayMngLst;
+	private List<LeaveComDayOffManaDto> absHolidayMngLst = new ArrayList<LeaveComDayOffManaDto>();
 	
 	/**
 	 * 振休_振出振休紐付け管理<List>
 	 */
-	private List<PayoutSubofHDManagementDto> absWorkMngLst;
+	private List<PayoutSubofHDManagementDto> absWorkMngLst = new ArrayList<PayoutSubofHDManagementDto>();
+	
+	private boolean checkFlag = true;
 }

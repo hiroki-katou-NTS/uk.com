@@ -47,6 +47,6 @@ public class StartScreenB {
 				.stream().map(x -> new ApplicationStatusDetailedSettingDto(x.getDisplayType().value, x.getItem().value))
 				.collect(Collectors.toList());
 
-		return new StartScreenBResult("", appSettings);
+		return new StartScreenBResult(standardWigetOpt.get().getName().v(), appSettings);
 	}
 }

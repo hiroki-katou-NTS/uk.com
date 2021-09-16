@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
  * @author tutk
  *
  */
-public class Relieve implements DomainValue {
+public class Relieve implements DomainValue, Cloneable{
 
 	/**
 	 * 認証方法
@@ -47,5 +47,12 @@ public class Relieve implements DomainValue {
 		ReasonTimeChange reasonTimeChange =  new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
 		return reasonTimeChange;
 	}
+
+	@Override
+	public Relieve clone() {
+		return new Relieve(AuthcMethod.valueOf(authcMethod.value), StampMeans.valueOf(stampMeans.value));
+	}
+	
+	
 	
 }

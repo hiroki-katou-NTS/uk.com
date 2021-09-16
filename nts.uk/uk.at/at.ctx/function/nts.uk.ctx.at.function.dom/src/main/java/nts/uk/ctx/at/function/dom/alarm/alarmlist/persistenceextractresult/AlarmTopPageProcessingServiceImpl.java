@@ -67,9 +67,7 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
         if (!optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
             return;
         } else {
-            if(optPersisAlarmExtractResult.isPresent() && CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())){
-                alarmExtractResultRepo.delete(optPersisAlarmExtractResult.get());
-            } else if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
+            if (!optPersisAlarmExtractResult.isPresent() && !CollectionUtil.isEmpty(alarmResult.getAlarmListExtractResults())) {
                 alarmExtractResultRepo.insert(alarmResult);
             } else {
                 List<AlarmEmployeeList> lstExResultInsert = new ArrayList<>();
@@ -151,22 +149,20 @@ public class AlarmTopPageProcessingServiceImpl implements AlarmTopPageProcessing
                     );
                     alarmExtractResultRepo.insert(persisExtractResultInsert);
                 }
-
-                if (!CollectionUtil.isEmpty(lstExResultDelete) || !CollectionUtil.isEmpty(lstExResultInsert)) {
-                    //アラームリストからトップページアラームデータに変換する
-                    RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
-                    List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
-                            new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
-
-                    if (!atomTasks.isEmpty()) {
-                        transaction.execute(() -> {
-                            for (AtomTask atomTask : atomTasks) {
-                                atomTask.run();
-                            }
-                        });
-                    }
-                }
             }
+        }
+
+        //アラームリストからトップページアラームデータに変換する
+        RequireImpl require = new RequireImpl(alarmExtractResultRepo, topPageAlarmAdapter, employeeWorkplaceAdapter, employeeAlarmListAdapter);
+        List<AtomTask> atomTasks = ConvertAlarmListToTopPageAlarmDataService.convert(require, AppContexts.user().companyId(), lstSid,
+                new AlarmPatternCode(pattentCd), new ExecutionCode(runCode), isDisplayByAdmin, isDisplayByPerson);
+
+        if (!atomTasks.isEmpty()) {
+            transaction.execute(() -> {
+                for (AtomTask atomTask : atomTasks) {
+                    atomTask.run();
+                }
+            });
         }
     }
 

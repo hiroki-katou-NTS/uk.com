@@ -31,8 +31,7 @@
           <div class="col-9">
             <span class="ml-1">{{ appState.getNote | i18n }}</span>
             <br />
-            <span class="uk-text-blue" v-on:click="reverseApproval" v-bind:class="appState.appStatus == 3 || appState.appStatus == 4">
-              {{'CMMS45_20' | i18n}}
+            <span class="uk-text-blue" v-on:click="reverseApproval">{{'CMMS45_20' | i18n}}
               <i class="uk-text-blue"
                 v-bind:class="{ 'fas fa-chevron-down': !showApproval, 'fas fa-chevron-up': showApproval}"
               ></i>
@@ -129,6 +128,7 @@
             <div class="row ml-2 mr-2 pt-1 pb-1" style="word-break: break-word">{{ reversionReason || 'CMMS45_15' | i18n }}</div>
           </div>
         </div>
+        <div class="pl-3 pr-3 mb-2 uk-bg-orange" v-if="!displayCancelButton">{{'CMMS45_93' | i18n}}</div>
       </div> 
     </div>
     <div class="row mt-1 content-div uk-bg-headline border-top uk-border-light-gray">{{'CMMS45_21' | i18n}}</div>
@@ -224,11 +224,15 @@
       v-float-action="{ icon: 'fas fa-pen', background: 'uk-bg-sea-green', forceground: 'uk-text-dark-gray' }"
     >
       <ul>
-        <li class="uk-bg-white" v-on:click="deleteApp" v-show="displayDeleteButton">
+        <!-- <li class="uk-bg-white" v-on:click="cancelApp" v-if="displayCancelButton">
+          <span class="uk-text-dark-gray">{{'CMMS45_92' | i18n}}</span>
+          <i class="far fa-times-circle uk-text-dark-gray"></i>
+        </li> -->
+        <li class="uk-bg-white" v-on:click="deleteApp" v-if="displayDeleteButton">
           <span class="uk-text-dark-gray">{{'CMMS45_60' | i18n}}</span>
           <i class="fas fa-trash-alt uk-text-dark-gray"></i>
         </li>
-        <li class="uk-bg-white" v-on:click="updateApp" v-show="displayUpdateButton">
+        <li class="uk-bg-white" v-on:click="updateApp" v-if="displayUpdateButton">
           <span class="uk-text-dark-gray">{{'CMMS45_61' | i18n}}</span>
           <i class="fas fa-pen uk-text-dark-gray"></i>
         </li>
