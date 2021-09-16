@@ -2,22 +2,21 @@ package nts.uk.file.at.app.export.schedule.personalschedulebydate.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.dailyperform.dto.TimeSpanForCalcDto;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.screen.at.app.ksu003.start.dto.ChangeableWorkTimeDto;
+import nts.uk.screen.at.app.ksu003.start.dto.TimeShortDto;
+import nts.uk.screen.at.app.ksu003.start.dto.TimeVacationAndTypeDto;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 社員勤務予定・実績dto
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class EmployeeWorkScheduleResultDto {
     //年月日
@@ -27,21 +26,25 @@ public class EmployeeWorkScheduleResultDto {
     private String employeeId;
 
     // List<休憩時間帯>
-    private List<TimeSpanForCalcDto> timeSpanForCalcList;
+    private List<BreakTimeSheet> breakTimeList;
 
     // List<実績休憩時間帯>
     @Setter
-    private List<BreakTimeSheet> breakTimeSheetList;
+    private List<BreakTimeSheet> actualBreakTimeList;
 
     // List<残業時間帯>
-//    private List<OverTimeSheet> overTimeSheetList;
-    private List<ChangeableWorkTimeDto> overTimeSheetList;
+    private List<ChangeableWorkTimeDto> overTimeList;
+
+//    // List<実績残業時間帯>
+//    private List<ChangeableWorkTimeDto> actualOverTimeList;
 
     // List<育児介護短時間帯> : ★時間帯(実装コードなし/使用不可)
-    private List<ShortWorkingTimeSheet> shortWorkingTimeList;
+//    private List<ShortWorkingTimeSheet> shortTimeChildCareList;
+    private List<TimeShortDto> childCareShortTimeList;
 
     // Map<時間休暇種類, 時間休暇>
-    private Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap;
+//    private Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap;
+    private List<TimeVacationAndTypeDto> listTimeVacationAndType;
 
     //コア開始時刻
     private Integer coreStartTime;
@@ -61,21 +64,21 @@ public class EmployeeWorkScheduleResultDto {
     // 勤務種類名称
     private String workTypeName;
 
-    // 実績開始時刻１
+    // 実績開始時刻1
     @Setter
     private Integer actualStartTime1;
 
-    // 実績終了時刻１
+    // 実績終了時刻1
     @Setter
-    private Integer achievementEndTime1;
+    private Integer actualEndTime1;
 
-    // 実績開始時刻２
+    // 実績開始時刻2
     @Setter
     private Integer actualStartTime2;
 
-    // 実績終了時刻２
+    // 実績終了時刻2
     @Setter
-    private Integer achievementEndTime2;
+    private Integer actualEndTime2;
 
     // 就業時間合計
     private Integer totalWorkingHours;
@@ -86,15 +89,15 @@ public class EmployeeWorkScheduleResultDto {
     // 就業時間帯名称
     private String workTimeName;
 
-    // 開始時刻１
+    // 開始時刻1
     private Integer startTime1;
 
-    // 開始時刻２
-    private Integer startTime2;
-
-    // 終了時刻１
+    // 終了時刻1
     private Integer endTime1;
 
-    // 終了時刻２
+    // 開始時刻2
+    private Integer startTime2;
+
+    // 終了時刻2
     private Integer endTime2;
 }

@@ -10,10 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimeVacation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeSheet;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
@@ -29,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.file.at.app.export.schedule.personalschedulebydate.dto.EmployeeWorkScheduleResultDto;
-import nts.uk.screen.at.app.ksu003.start.dto.ChangeableWorkTimeDto;
+import nts.uk.screen.at.app.ksu003.start.dto.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -106,7 +103,7 @@ public class ScheduleInformationByDateFileQuery {
             }
 
             // 4.3. 就業時間帯の勤務形態 == 固定勤務
-            List<TimeSpanForCalcDto> timeSpanForCalcList = new ArrayList<>();
+            List<TimeSpanForCalc> lstOver = new ArrayList<>();
             if (workTimeForm == WorkTimeForm.FIXED) {
                 // 4.3.1. get(会社ID, 就業時間帯コード): return Optional<固定勤務設定>
                 val fixedWorkSettingOpt = fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
@@ -116,13 +113,26 @@ public class ScheduleInformationByDateFileQuery {
 
                 // 4.3.3. 固定勤務設定.isPresent: 指定した午前午後区分の残業時間帯を取得する(午前午後区分): param 出勤日区分.午前午後区分に変換() : return List<計算用時間帯>
                 if (fixedWorkSettingOpt.isPresent()) {
-                    timeSpanForCalcList = fixedWorkSettingOpt.get().getTimeZoneOfOvertimeWorkByAmPmAtr(dayAttr.toAmPmAtr().get())
-                            .stream().map(x -> new TimeSpanForCalcDto(x.start(), x.end())).collect(Collectors.toList());
+                    lstOver = fixedWorkSettingOpt.get().getTimeZoneOfOvertimeWorkByAmPmAtr(dayAttr.toAmPmAtr().get());
                 }
             }
 
             // 4.4. グラフ休暇表示==true: 時間休暇を取得する() : return Map<時間休暇種類, 時間休暇>
             Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = graphVacationDisplay ? dailyInfo.getTimeVacation() : new HashMap<>();
+            List<TimeVacationAndTypeDto> timeVacationList = new ArrayList<>();
+            if (!timeVacationMap.isEmpty()) {
+                // ※存在しない場合はempty
+                timeVacationList = timeVacationMap.entrySet().stream().map(x ->
+                        new TimeVacationAndTypeDto(x.getKey().value, new TimeVacationDto(
+                                x.getValue().getTimeList().stream().map(y -> new TimeSpanForCalcDto(y.getStart().v(), y.getEnd().v())).collect(Collectors.toList()),
+                                new DailyAttdTimeVacationDto(x.getValue().getUseTime().getTimeAnnualLeaveUseTime().v(),
+                                        x.getValue().getUseTime().getTimeCompensatoryLeaveUseTime().v(),
+                                        x.getValue().getUseTime().getSixtyHourExcessHolidayUseTime().v(),
+                                        x.getValue().getUseTime().getTimeSpecialHolidayUseTime().v(),
+                                        x.getValue().getUseTime().getSpecialHolidayFrameNo().isPresent() ? x.getValue().getUseTime().getSpecialHolidayFrameNo().get().v() : null,
+                                        x.getValue().getUseTime().getTimeChildCareHolidayUseTime().v(),
+                                        x.getValue().getUseTime().getTimeCareHolidayUseTime().v())))).collect(Collectors.toList());
+            }
 
             // 4.5. create()
             String employeeId = dailyInfo.getEmployeeId();
@@ -130,9 +140,16 @@ public class ScheduleInformationByDateFileQuery {
             Integer startTime1 = null, startTime2 = null, endTime1 = null, endTime2 = null;
 
             // List<育児介護短時間帯>= 日別勤怠(Work)．短時間勤務時間帯．時間帯 : ※項目の値は存在しない場合はempty
-            List<ShortWorkingTimeSheet> shortWorkingTimeSheets = dailyInfo.getShortTime().isPresent()
-                    ? dailyInfo.getShortTime().get().getShortWorkingTimeSheets()
-                    : Collections.emptyList();
+//            List<ShortWorkingTimeSheet> shortWorkingTimeSheets = dailyInfo.getShortTime().isPresent()
+//                    ? dailyInfo.getShortTime().get().getShortWorkingTimeSheets()
+//                    : Collections.emptyList();
+            List<TimeShortDto> shortWorkingTimeSheets = !dailyInfo.getShortTime().isPresent()
+                    ? Collections.emptyList()
+                    : dailyInfo.getShortTime().get().getShortWorkingTimeSheets().stream().map(x -> new TimeShortDto(
+                    x.getStartTime().v(),
+                    x.getEndTime().v(),
+                    x.getChildCareAttr().value,
+                    x.getShortWorkTimeFrameNo().v())).collect(Collectors.toList());
 
             // List＜休憩時間帯＞＝日別勤怠(Work)．日別勤怠の休憩時間帯．時間帯
             List<BreakTimeSheet> breakTimeSheets = graphVacationDisplay ? dailyInfo.getBreakTime().getBreakTimeSheets() : Collections.emptyList();
@@ -150,10 +167,8 @@ public class ScheduleInformationByDateFileQuery {
             // 終了時刻 2= 日別勤怠(Work)．出退勤．出退勤．退勤  : ※勤務NO = 2のもの。
             val timeLeavingWork2 = dailyInfo.getAttendanceLeave().get().getTimeLeavingWorks()
                     .stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
-            if (timeLeavingWork2.isPresent()) {
-                if (doubleWorkDisplay) {
-                    startTime2 = timeLeavingWork2.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
-                }
+            if (timeLeavingWork2.isPresent() && doubleWorkDisplay) {
+                startTime2 = timeLeavingWork2.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
                 endTime2 = timeLeavingWork2.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
             }
 
@@ -181,16 +196,16 @@ public class ScheduleInformationByDateFileQuery {
                     .getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v();
 
             // List<残業時間帯>
-            val overTimeSheetList = this.getOverTimeSheets(workTimeForm, timeSpanForCalcList);
+            val overTimeSheets = this.getOverTimeSheets(workTimeForm, lstOver);
 
             empWorkScheduleResults.add(new EmployeeWorkScheduleResultDto(
                     date,
                     employeeId,
-                    timeSpanForCalcList,
-                    breakTimeSheets,   // TODO: bị override ở 日付別実績情報を取得する sau khi merge ???
-                    overTimeSheetList,
+                    breakTimeSheets,          // breakTimeList
+                    Collections.emptyList(),  // actualBreakTimeList
+                    overTimeSheets,           // overTimeList
                     shortWorkingTimeSheets,
-                    timeVacationMap,
+                    timeVacationList, // timeVacationMap,
                     coreStartTime,
                     coreEndTime,
                     totalBreakTime,
@@ -205,15 +220,15 @@ public class ScheduleInformationByDateFileQuery {
                     workTimeCode,
                     workTimeName,
                     startTime1,
-                    startTime2,
                     endTime1,
+                    startTime2,
                     endTime2
             ));
         }
-        return empWorkScheduleResults;
+        return empWorkScheduleResults.stream().sorted(Comparator.comparing(EmployeeWorkScheduleResultDto::getEmployeeId)).collect(Collectors.toList());
     }
 
-    private List<ChangeableWorkTimeDto> getOverTimeSheets(WorkTimeForm form, List<TimeSpanForCalcDto> lstOver) {
+    private List<ChangeableWorkTimeDto> getOverTimeSheets(WorkTimeForm form, List<TimeSpanForCalc> lstOver) {
         List<ChangeableWorkTimeDto> lstOverTime = new ArrayList<>();
         switch (form) {
             case FLEX: //フレックス勤務
@@ -221,7 +236,7 @@ public class ScheduleInformationByDateFileQuery {
                 return lstOverTime;
             case FIXED:
                 for (int i = 1; i <= lstOver.size(); i++) {
-                    lstOverTime.add(new ChangeableWorkTimeDto(i, lstOver.get(i - 1).getStart(), lstOver.get(i - 1).getEnd()));
+                    lstOverTime.add(new ChangeableWorkTimeDto(i, lstOver.get(i - 1).getStart().v(), lstOver.get(i - 1).getEnd().v()));
                 }
                 return lstOverTime;
             default:

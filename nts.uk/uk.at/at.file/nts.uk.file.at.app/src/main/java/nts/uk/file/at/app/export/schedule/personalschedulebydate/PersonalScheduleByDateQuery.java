@@ -3,7 +3,6 @@ package nts.uk.file.at.app.export.schedule.personalschedulebydate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 import java.util.List;
 
@@ -17,15 +16,10 @@ public class PersonalScheduleByDateQuery {
     private String orgId;
 
     /* 年月日 */
-    private GeneralDate baseDate;
-//    private GeneralDate periodStart;
-//    private GeneralDate periodEnd;
+    private String baseDate;
 
     /* 並び順社員リスト */
     private List<String> sortedEmployeeIds;
-
-    // 実績表示できるか
-    private boolean displayActual;
 
     /*グラフスタート時刻  D2_2_2*/
     private int graphStartTime;
@@ -34,7 +28,9 @@ public class PersonalScheduleByDateQuery {
     private boolean graphVacationDisplay;
 
     /*実績グラフ表示 D2_4_1 */
-    private boolean achievementGraphDisplay;
+    // 実績表示できるか
+    private boolean displayActual;
+//    private boolean achievementGraphDisplay;
 
     /*勤務表示 D3_2_1 */
     private boolean workDisplay;
@@ -43,7 +39,7 @@ public class PersonalScheduleByDateQuery {
     private boolean doubleWorkDisplay;
 
     /*合計時間表示 D4_2_1 */
-    private boolean TotalTimeDisplay;
+    private boolean totalTimeDisplay;
 
     /*合計金額表示 D4_3_1 */
     private boolean totalAmountDisplay;
@@ -52,5 +48,5 @@ public class PersonalScheduleByDateQuery {
     private boolean scheduledToSupport;
 
     /*応援者の職場名表示 D5_2_4 */
-    private boolean wkpNameDisplayOfSupporters;
+    private boolean wkpNameDisplayOfSupporter;
 }

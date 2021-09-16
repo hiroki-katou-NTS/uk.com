@@ -11,8 +11,10 @@ import nts.uk.file.at.app.export.schedule.personalschedulebydate.dto.EmployeeWor
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 個人スケジュール表(日付別)を作成する
@@ -73,7 +75,8 @@ public class CreatePersonalScheduleByDateFileQuery {
                 basicInformation.getDisplayInfoOrganization(),
                 basicInformation.getDateInformation(),
                 basicInformation.getEmployeeInfoList(),
-                employeeWorkScheduleResultList);
+                employeeWorkScheduleResultList,
+                null);
     }
 
     /**
@@ -87,16 +90,16 @@ public class CreatePersonalScheduleByDateFileQuery {
         scheduleDailies.forEach(daily -> {
             val scheduleAchievementOpt = scheduleAchievements.stream().filter(achievement -> achievement.getEmployeeId().equals(daily.getEmployeeId())).findFirst();
             if (scheduleAchievementOpt.isPresent()) {
-                daily.setBreakTimeSheetList(scheduleAchievementOpt.get().getBreakTimeSheetList());
+                daily.setActualBreakTimeList(scheduleAchievementOpt.get().getActualBreakTimeList());
                 daily.setActualStartTime1(scheduleAchievementOpt.get().getActualStartTime1());
-                daily.setAchievementEndTime1(scheduleAchievementOpt.get().getAchievementEndTime1());
+                daily.setActualEndTime1(scheduleAchievementOpt.get().getActualEndTime1());
                 daily.setActualStartTime2(scheduleAchievementOpt.get().getActualStartTime2());
-                daily.setAchievementEndTime2(scheduleAchievementOpt.get().getAchievementEndTime2());
+                daily.setActualEndTime2(scheduleAchievementOpt.get().getActualEndTime2());
             }
 //            mergedResultList.add(daily);
         });
 
 //        return mergedResultList;
-        return scheduleDailies;
+        return scheduleDailies.stream().sorted(Comparator.comparing(EmployeeWorkScheduleResultDto::getEmployeeId)).collect(Collectors.toList());
     }
 }

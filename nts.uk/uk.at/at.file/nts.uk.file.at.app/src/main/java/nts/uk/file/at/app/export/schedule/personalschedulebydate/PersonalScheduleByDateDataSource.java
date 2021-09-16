@@ -3,6 +3,7 @@ package nts.uk.file.at.app.export.schedule.personalschedulebydate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
@@ -29,4 +30,6 @@ public class PersonalScheduleByDateDataSource {
 
     /* List< 社員勤務予定・実績 dto> */
     private List<EmployeeWorkScheduleResultDto> employeeWorkScheduleList;
+
+    private PersonalScheduleByDateQuery query;
 }
