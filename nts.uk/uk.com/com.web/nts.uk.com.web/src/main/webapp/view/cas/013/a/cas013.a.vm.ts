@@ -477,8 +477,6 @@ module nts.uk.com.view.cas013.a {
                     vm.workplaceCode(employeeInf.workplaceCode);
                     vm.workplaceName(employeeInf.workplaceName);
                     vm.selectedUserID(employeeInf.userId);
-                    vm.dateValue().startDate = null;
-                    vm.dateValue().endDate = null;
                 }
                 if (!isNullOrUndefined(cidSelected)) {
                     vm.companyName(cidSelected.name);

@@ -212,7 +212,8 @@ public class RoleIndividualFinder {
                 });
             }
         }
-        return rGrants;
+        return rGrants.stream().sorted(Comparator.comparing(Cas013aDto::getEmployeeCode))
+                .collect(Collectors.toList());
     }
     public RoleIndividualGrantDto getRoleGrant(String userId, String roleId,String companyId) {
         if (userId == null || roleId == null)
