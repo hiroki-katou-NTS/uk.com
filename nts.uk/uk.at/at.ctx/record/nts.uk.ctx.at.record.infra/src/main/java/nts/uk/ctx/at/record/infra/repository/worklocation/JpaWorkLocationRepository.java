@@ -12,6 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocation;
 import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkLocationRepository;
+import nts.uk.ctx.at.record.dom.stampmanagement.workplace.WorkplacePossible;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtIP4Address;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtIP4AddressPK;
 import nts.uk.ctx.at.record.infra.entity.worklocation.KrcmtWorkLocation;
@@ -58,9 +59,10 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 			+ " AND c.krcmtWorkplacePossible.workplaceId = :workplaceId";
 
 	private static final String SELECT_BY_WORKPLACE = SELECT
+			+ " INNER JOIN KrcmtWorkplacePossible p on p.krcmtWorkplacePossiblePK.workLocationCD = c.kwlmtWorkLocationPK.workLocationCD"
 			+ " WHERE c.kwlmtWorkLocationPK.contractCode = :contractCode"
 			+ " AND c.kwlmtWorkLocationPK.workLocationCD = :workLocationCD"
-			+ " AND c.krcmtWorkplacePossible.krcmtWorkplacePossiblePK.cid = :cid";
+			+ " AND p.krcmtWorkplacePossiblePK.cid = :cid";
 
 	@Override
 	public List<WorkLocation> findAll(String contractCode) {
@@ -215,9 +217,18 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	@Override
 	public Optional<WorkLocation> findByWorkLocationCd(String contractCode, String cid, String workLocationCD) {
+		String SELECT = "SELECT c FROM KrcmtWorkplacePossible c where c.krcmtWorkplacePossiblePK.cid = :cid and c.krcmtWorkplacePossiblePK.workLocationCD = :workLocationCD";
 		Optional<WorkLocation> result = this.queryProxy().query(SELECT_BY_WORKPLACE, KrcmtWorkLocation.class)
 				.setParameter("contractCode", contractCode).setParameter("workLocationCD", workLocationCD)
 				.setParameter("cid", cid).getSingle(c -> c.toDomain());
+		
+		Optional<WorkplacePossible> workplacePossible = this.queryProxy().query(SELECT, KrcmtWorkplacePossible.class)
+				.setParameter("cid", cid).setParameter("workLocationCD", workLocationCD).getSingle(c -> c.toDomain());
+		
+		if (workplacePossible.isPresent()) {
+			result.get().setWorkplace(workplacePossible);
+		}
+		
 		return result;
 	}
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -35,6 +36,7 @@ public class WorkLocation extends AggregateRoot {
 	private List<Ipv4Address> listIPAddress;
 	
 	/** 職場*/
+	@Setter
 	private Optional<WorkplacePossible> workplace;
 	
 	/**
