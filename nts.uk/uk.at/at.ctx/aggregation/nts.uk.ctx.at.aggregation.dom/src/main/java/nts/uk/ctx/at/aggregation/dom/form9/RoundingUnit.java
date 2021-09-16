@@ -12,17 +12,21 @@ import nts.arc.enums.EnumAdaptor;
 @RequiredArgsConstructor
 public enum RoundingUnit {
 	/** 1桁目 **/
-	ONE_DIGIT(1),
+	ONE_DIGIT(0, "Enum_RoundingUnit_ONE_DIGIT"),
 	/** 2桁目 **/
-	TWO_DIGIT(2),
+	TWO_DIGIT(1, "Enum_RoundingUnit_TWO_DIGIT"),
 	/** 3桁目 **/
-	THREE_DIGIT(3),
+	THREE_DIGIT(2, "Enum_RoundingUnit_THREE_DIGIT"),
 	/** 4桁目 **/
-	FOUR_DIGIT(4),
+	FOUR_DIGIT(3, "Enum_RoundingUnit_FOUR_DIGIT"),
 	/** 5桁目 **/
-	FIVE_DIGIT(5);
+	FIVE_DIGIT(4, "Enum_RoundingUnit_FIVE_DIGIT");
 	
+	/** The value. */
 	public final int value;
+	
+	/** The name id. */
+	public final String nameId;
 	
 	public static RoundingUnit of(int value) {
 		return EnumAdaptor.valueOf(value, RoundingUnit.class);

@@ -34,119 +34,7 @@ public class Form9LayoutTest {
 		NtsAssert.invokeGetters(result);
 		
 	}
-	
-	/**
-	 * target: getFileName
-	 * pattern: 出力レイアウはシステム固定 
-	 * except: ファイル名 = コード＋ 名称 + ".xlsx"
-	 * 
-	 */
-	@Test
-	public void testGetFileName_layout_is_systemFixed(
-				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingTable nursingTable
-			,	@Injectable Form9NursingAideTable nursingAideTable) {
-		
-		val code = new Form9Code("01");
-		val name = new Form9Name("name");
-		val exceptResult = code.v() + name.v() + ".xlsx";
-		
-		val layout = new Form9Layout(code , name
-				,	true //システム固定
-				,	false
-				,	cover, nursingTable
-				,	nursingAideTable, Optional.of("tempalteFileId"));
-		//Act
-		val result = layout.getFileName(require);
-		
-		
-		//Assert
-		assertThat( result.get()).isEqualTo( exceptResult );
-		
-	}
-	
-	/**
-	 * target: getFileName
-	 * pattern: 出力レイアウはユーザー定義
-	 * except: empty
-	 * 
-	 */
-	@Test
-	public void testGetFileName_layout_is_user_empty(
-				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingTable nursingTable
-			,	@Injectable Form9NursingAideTable nursingAideTable) {
-		
-		val code = new Form9Code("01");
-		val name = new Form9Name("name");
-		val templateId = "templateId";
-		
-		
-		val layout = new Form9Layout(code , name
-				,	false //ユーザー定義
-				,	false
-				,	cover, nursingTable
-				,	nursingAideTable, Optional.of(templateId));
-		
-		new Expectations() {
-			{
-				require.getInfo(templateId);
-			
-			}
-		};
-		
-		//Act
-		val result = layout.getFileName(require);
-		
-		//Assert
-		assertThat( result ).isEmpty();
-		
-	}
-	
-	/**
-	 * target: getFileName
-	 * pattern: 出力レイアウはユーザー定義
-	 * except: ファイルIDの名称
-	 * 
-	 */
-	@Test
-	public void testGetFileName_layout_is_user_not_empty(
-				@Injectable Form9Cover cover
-			,	@Injectable Form9NursingTable nursingTable
-			,	@Injectable Form9NursingAideTable nursingAideTable) {
-		
-		val code = new Form9Code( "01" );
-		val name = new Form9Name( "name" );
-		val templateId = "templateId";
-		val templateName =  "template.xlsx";
-		val storeFileInfo = StoredFileInfo.createNewTemporaryWithId(
-					templateId, templateName
-				,	"mimeType"//DUMMY
-				,	2300);//DUMMY
-				
-		
-		val layout = new Form9Layout( code , name
-				,	false //ユーザー定義
-				,	false//DUMMY
-				,	cover, nursingTable//DUMMY
-				,	nursingAideTable//DUMMY
-				,	Optional.of( templateId ));
-		
-		new Expectations() {
-			{
-				require.getInfo(templateId);
-				result = Optional.of( storeFileInfo );
-			}
-		};
-		
-		//Act
-		val result = layout.getFileName(require);
-		
-		//Assert
-		assertThat( result.get() ).isEqualTo( templateName );
-		
-	}
-	
+
 	/**
 	 * target: create
 	 * pattern: 出力レイアウはシステム固定, テンプレートIDがある
@@ -161,13 +49,13 @@ public class Form9LayoutTest {
 		
 		NtsAssert.businessException("Msg_2279", () ->{
 			Form9Layout.create(
-						new Form9Code( "01" )
-					,	new Form9Name( "name" )
+						new Form9Code( "01" )//DUMMY
+					,	new Form9Name( "name" )//DUMMY
 					,	true //システム固定
 					,	false//DUMMY
 					,	cover, nursingTable//DUMMY
 					,	nursingAideTable//DUMMY
-					,	Optional.of( "templateId" ));
+					,	Optional.of( "templateId" ));//テンプレートIDがある
 		});
 		
 	}
@@ -186,13 +74,13 @@ public class Form9LayoutTest {
 		
 		NtsAssert.businessException("Msg_2280", () ->{
 			Form9Layout.create(
-						new Form9Code( "01" )
-					,	new Form9Name( "name" )
+						new Form9Code( "01" )//DUMMY
+					,	new Form9Name( "name" )//DUMMY
 					,	false //ユーザー定義
 					,	false//DUMMY
 					,	cover, nursingTable//DUMMY
 					,	nursingAideTable//DUMMY
-					,	Optional.empty());
+					,	Optional.empty());//テンプレートIDがempty
 		});
 	}
 		
@@ -211,14 +99,16 @@ public class Form9LayoutTest {
 		val name = new Form9Name( "name" );
 		val templateId = "templateId";
 		
-		val layout = Form9Layout.create( code
-					,	name
+		//Act
+		val layout = Form9Layout.create( code//DUMMY
+					,	name//DUMMY
 					,	false //ユーザー定義
-					,	true
-					,	cover, nursingTable
-					,	nursingAideTable
-					,	Optional.of(templateId));
+					,	true//DUMMY
+					,	cover, nursingTable//DUMMY
+					,	nursingAideTable//DUMMY
+					,	Optional.of(templateId));//テンプレートID not empty
 		
+		//Assert
 		assertThat( layout.getCode()).isEqualTo( code );
 		assertThat( layout.getName() ).isEqualTo( name );
 		assertThat( layout.isSystemFixed() ).isFalse();
@@ -245,14 +135,16 @@ public class Form9LayoutTest {
 		val code = new Form9Code( "01" );
 		val name = new Form9Name( "name" );
 		
-		val layout = Form9Layout.create( code
-					,	name
+		//Act
+		val layout = Form9Layout.create( code//DUMMY
+					,	name//DUMMY
 					,	true //ユーザー定義
-					,	true
-					,	cover, nursingTable
-					,	nursingAideTable
-					,	Optional.empty());
+					,	true//DUMMY
+					,	cover, nursingTable//DUMMY
+					,	nursingAideTable//DUMMY
+					,	Optional.empty());//テンプレートIDはempty
 		
+		//Assert
 		assertThat( layout.getCode()).isEqualTo( code );
 		assertThat( layout.getName() ).isEqualTo( name );
 		assertThat( layout.isSystemFixed() ).isTrue();
@@ -276,20 +168,181 @@ public class Form9LayoutTest {
 		val destinationCode = new Form9Code("02");
 		val destinationName = new Form9Name("destinationName");
 		val tempalteFileId = "tempalteFileId";
-		val layout = Form9Layout.create(new Form9Code("01") , new Form9Name("name"), false, true
-					,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId));
+		val copyResource = Form9Layout.create(
+						new Form9Code("01") , new Form9Name("name"), false, true
+					,	cover, nursingTable, nursingAideTable
+					,	Optional.of(tempalteFileId));
 		
-		val destinationLayout = layout.copy(require, destinationCode, destinationName);
+		//Act
+		val destinationLayout = copyResource.copy(require, destinationCode, destinationName);
 		
+		//Assert
 		assertThat( destinationLayout.getCode()).isEqualTo( destinationCode );
 		assertThat( destinationLayout.getName() ).isEqualTo( destinationName );
 		assertThat( destinationLayout.isSystemFixed() ).isFalse();
 		assertThat( destinationLayout.isUse() ).isTrue();
-		assertThat( layout.getCover() ).isEqualTo( cover );
-		assertThat( layout.getNursingAideTable() ).isEqualTo( nursingAideTable );
-		assertThat( layout.getNursingTable() ).isEqualTo( nursingTable );
-		assertThat( layout.getTempalteFileId().get()).isEqualTo( tempalteFileId );
+		assertThat( destinationLayout.getCover() ).isEqualTo( cover );
+		assertThat( destinationLayout.getNursingAideTable() ).isEqualTo( nursingAideTable );
+		assertThat( destinationLayout.getNursingTable() ).isEqualTo( nursingTable );
+		assertThat( destinationLayout.getTempalteFileId().get()).isEqualTo( tempalteFileId );
 		
 	}
 	
+	/**
+	 * target: copy
+	 * pattern: 出力レイアウはシステム固定
+	 */
+	@Test
+	public void testCopy_system(
+				@Injectable Form9Cover cover
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
+		val destinationCode = new Form9Code("02");
+		val destinationName = new Form9Name("destinationName");
+		val fileId = "fileId";
+		val copyResource = Form9Layout.create(
+						new Form9Code("01")
+					,	new Form9Name("name")
+					,	true//システム固定
+					,	true//DUMMY
+					,	cover, nursingTable, nursingAideTable
+					,	Optional.empty());
+		
+		val storeFileInfo = Helper.createStoredFileInfo( fileId );
+		
+		new Expectations() {
+			{
+				require.saveFile((String) any);
+				result = storeFileInfo;
+			}
+		};
+		
+		//Act
+		val destinationLayout = copyResource.copy(require, destinationCode, destinationName);
+		
+		//Assert
+		assertThat( destinationLayout.getCode()).isEqualTo( destinationCode );
+		assertThat( destinationLayout.getName() ).isEqualTo( destinationName );
+		assertThat( destinationLayout.isSystemFixed() ).isFalse();
+		assertThat( destinationLayout.isUse() ).isTrue();
+		assertThat( destinationLayout.getCover() ).isEqualTo( cover );
+		assertThat( destinationLayout.getNursingAideTable() ).isEqualTo( nursingAideTable );
+		assertThat( destinationLayout.getNursingTable() ).isEqualTo( nursingTable );
+		assertThat( destinationLayout.getTempalteFileId().get()).isEqualTo( fileId );
+		
+	}
+	
+	
+	/**
+	 * target: getFileName
+	 * pattern: 出力レイアウはシステム固定 
+	 * except: ファイル名 = コード ＋ "_" + 名称 + ".xlsx"
+	 * 
+	 */
+	@Test
+	public void testGetFileName_layout_is_systemFixed(
+				@Injectable Form9Cover cover
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
+		
+		val code = new Form9Code("01");
+		val name = new Form9Name("name");
+		// 期待値
+		val exceptResult = "01_name.xlsx";
+		
+		val layout = Helper.createForm9Layout(
+					code , name
+				,	true //システム固定
+				,	Optional.empty());
+		//Act
+		val result = layout.getFileName(require);
+		
+		//Assert
+		assertThat( result ).isEqualTo( exceptResult );
+		
+	}
+	
+	/**
+	 * target: getFileName
+	 * pattern: 出力レイアウはユーザー定義
+	 * except: ファイルIDの名称
+	 * 
+	 */
+	@Test
+	public void testGetFileName_layout_is_user(
+				@Injectable Form9Cover cover
+			,	@Injectable Form9NursingTable nursingTable
+			,	@Injectable Form9NursingAideTable nursingAideTable) {
+		
+		val code = new Form9Code( "01" );
+		val name = new Form9Name( "name" );
+		val templateId = "templateId";
+		// 期待値
+		val fileNameExcepted = "template.xlsx";
+		val storeFileInfo = StoredFileInfo.createNewTemporaryWithId(
+					templateId, fileNameExcepted
+				,	"mimeType"//DUMMY
+				,	2300);//DUMMY
+				
+		
+		val layout = Helper.createForm9Layout(code
+				,	name
+				,	false //ユーザー定義
+				,	Optional.of( templateId ));
+		
+		new Expectations() {
+			{
+				require.getInfo((String) any);
+				result = Optional.of( storeFileInfo );
+			}
+		};
+		
+		//Act
+		val result = layout.getFileName(require);
+		
+		//Assert
+		assertThat( result ).isEqualTo( fileNameExcepted );
+		
+	}
+	
+	private static class Helper{
+		@Injectable
+		private static Form9Cover cover;
+			
+		@Injectable
+		private static Form9NursingTable nursingTable;
+			
+		@Injectable
+		private static Form9NursingAideTable nursingAideTable;
+		
+		/**
+		 * 様式９の出力レイアウトを作る
+		 * @param code コード
+		 * @param name 名称
+		 * @param isSystemFixed システム固定か
+		 * @param tempalteFileId テンプレート ファイルID
+		 * @return
+		 */
+		public static Form9Layout createForm9Layout(Form9Code code, Form9Name name
+				, boolean isSystemFixed, Optional<String> tempalteFileId) {
+			
+			return Form9Layout.create(
+						code, name, isSystemFixed, true
+					,	cover, nursingTable, nursingAideTable
+					,	tempalteFileId);
+		}
+		
+		/**
+		 * ファイル情報を作る
+		 * @param fileId ファイルID
+		 * @return
+		 */
+		public static StoredFileInfo createStoredFileInfo(String fileId) {
+			return StoredFileInfo.createNewTemporaryWithId(
+					fileId
+				,	"fileName"//DUMMY
+				,	"mimeType"//DUMMY
+				,	2300);//DUMMY
+		}
+	}
 }

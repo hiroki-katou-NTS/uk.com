@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 /**
  * 様式９の出力医療時間
@@ -9,8 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
  * @author lan_lt
  *
  */
-@Getter
-@AllArgsConstructor
+@Value
 public class Form9OutputMedicalTime {
 	
 	/** 時間 **/

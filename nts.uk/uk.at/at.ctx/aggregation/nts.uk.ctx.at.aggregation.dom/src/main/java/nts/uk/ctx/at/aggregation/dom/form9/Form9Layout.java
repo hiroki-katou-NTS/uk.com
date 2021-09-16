@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
@@ -82,11 +83,13 @@ public class Form9Layout implements DomainAggregate {
 		
 		if(!this.isSystemFixed) {
 			
-			return new Form9Layout(destinationCode, destinationName, false, true, this.cover, this.nursingTable, this.nursingAideTable, this.tempalteFileId);
-			
+			return Form9Layout.create(destinationCode, destinationName, false, true, this.cover, this.nursingTable, this.nursingAideTable, this.tempalteFileId);
 		}
 		
-		return null;
+		val fileName = this.getFileName(require);
+		val fileInfo = require.saveFile(fileName);
+		
+		return Form9Layout.create(destinationCode, destinationName, false, true, this.cover, this.nursingTable, this.nursingAideTable, Optional.of(fileInfo.getId()) );
 	}
 	
 	/**
@@ -94,16 +97,14 @@ public class Form9Layout implements DomainAggregate {
 	 * @param require
 	 * @return
 	 */
-	public Optional<String> getFileName(Require require){
+	public String getFileName(Require require){
 		if(this.isSystemFixed) {
-			return Optional.of(this.code.v() + this.name.v() + ".xlsx");
+			return this.code.v() + "_" + this.name.v() + ".xlsx";
 		}
 		
 		Optional<StoredFileInfo> fileInfo = require.getInfo(this.tempalteFileId.get());
-		if(!fileInfo.isPresent())
-			return Optional.empty();
 		
-		return Optional.of(fileInfo.get().getOriginalName());
+		return fileInfo.get().getOriginalName();
 	}
 	
 	public static interface Require{
@@ -113,5 +114,12 @@ public class Form9Layout implements DomainAggregate {
 		 * @return
 		 */
 		Optional<StoredFileInfo> getInfo(String fileId);
+		
+		/**
+		 * ファイルを保存する
+		 * @param fileName ファイル名
+		 * @return
+		 */
+		StoredFileInfo saveFile(String fileName);
 	}
 }

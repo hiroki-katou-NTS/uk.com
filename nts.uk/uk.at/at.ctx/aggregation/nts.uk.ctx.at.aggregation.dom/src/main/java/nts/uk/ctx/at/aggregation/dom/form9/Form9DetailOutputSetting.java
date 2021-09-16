@@ -12,7 +12,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @AllArgsConstructor
 @Getter
-public class Form9DetailOutputSetting  implements DomainAggregate{
+public class Form9DetailOutputSetting implements DomainAggregate{
 	
 	/** 時間丸め設定 **/
 	private Form9TimeRoundingSetting timeRoundingSetting;

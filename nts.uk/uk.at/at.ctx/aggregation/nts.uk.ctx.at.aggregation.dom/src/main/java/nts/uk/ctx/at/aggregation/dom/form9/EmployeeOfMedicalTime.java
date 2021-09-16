@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -14,9 +12,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  * @author lan_lt
  *
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Value
 public class EmployeeOfMedicalTime {
 	
 	/** 社員ID **/

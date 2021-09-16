@@ -3,9 +3,7 @@ package nts.uk.ctx.at.aggregation.dom.form9;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
 /**
  * 様式９の出力社員情報リスト
@@ -13,9 +11,7 @@ import lombok.Setter;
  * @author lan_lt
  *
  */
-@Setter
-@Getter
-@AllArgsConstructor
+@Value
 public class Form9OutputEmployeeInfoList {
 	
 	/** 社員情報リスト **/

@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.LicenseClassification;
-@Setter
-@Getter
-@AllArgsConstructor
+/**
+ * 様式９のソートの社員情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.様式９.様式９で並び替える.様式９のソートの社員情報
+ * @author lan_lt
+ *
+ */
+@Value
 public class Form9SortEmployeeInfo {
 	
 	/** 社員ID **/
