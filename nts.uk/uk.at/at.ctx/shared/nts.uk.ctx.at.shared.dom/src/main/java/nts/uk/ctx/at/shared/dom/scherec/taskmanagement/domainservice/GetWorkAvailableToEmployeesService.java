@@ -84,7 +84,7 @@ public class GetWorkAvailableToEmployeesService {
     	if(!childTaskList.isEmpty() && !listTaskCode.isEmpty())
     		//$利用可能作業 = $子作業：filter $絞込作業.contains($)
     		childTaskListfilter = childTaskList.stream().filter(o->listTaskCode.contains(o)).collect(Collectors.toList());
-    	else 
+    	else {
     		//$利用可能作業 = $子作業.追加($絞込作業)
     		childTaskList.addAll(listTaskCode);
     		childTaskListfilter = childTaskList;
