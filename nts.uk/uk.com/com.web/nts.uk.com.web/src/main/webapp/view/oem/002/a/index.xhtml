@@ -42,7 +42,7 @@
             fields: ['equipmentClsCode', 'code', 'name']
           }" tabindex="6"></div>
           <table id="A2_1" data-bind="ntsGridList: {
-            name: '#OEM002_8',
+            name: '#[OEM002_8]',
             options: equipmentInfoList,
             optionsValue: 'code',
             columns: columns,
@@ -55,25 +55,25 @@
           <div class="flex valign-center">
             <div id="A2_8" class="form-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('OEM002_12')}</div>
             <input id="A2_9" class="mr-10" data-bind="ntsTextEditor: {
-              name: '#OEM002_13',
+              name: '#[OEM002_13]',
               value: equipmentClsName,
               required: true,
-              readonly: true,
               option: { width: '200px' }
-            }" tabindex="8" />
+            }" readonly="readonly" tabindex="8" />
             <button id="A2_10" data-bind="click: $parent.openDialogB.bind($parent)" tabindex="9">#{i18n.getText('OEM002_14')}</button>
           </div>
           <div class="flex valign-center">
             <div id="A3_1" class="form-label" data-bind="ntsFormLabel: { required: true, constraint: ['EquipmentCode', 'EquipmentName'] }">#{i18n.getText('OEM002_15')}</div>
             <input id="A3_2" class="mr-10" data-bind="ntsTextEditor: {
-              name: '#OEM002_16',
+              name: '#[OEM002_16]',
               constraint: 'EquipmentCode',
               value: code,
+              enable: $parent.isNewMode,
               required: true,
               option: { width: '40px' }
-            }, enable: $parent.isNewMode" tabindex="10" />
+            }" tabindex="10" />
             <input id="A3_3" data-bind="ntsTextEditor: {
-              name: '#OEM002_17',
+              name: '#[OEM002_17]',
               constraint: 'EquipmentName',
               value: name,
               required: true,
@@ -83,7 +83,7 @@
           <div class="flex valign-center">
             <div id="A3_4" class="form-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('OEM002_18')}</div>
             <div id="A3_5" data-bind="ntsDateRangePicker: {
-              name: '#OEM002_19',
+              name: '#[OEM002_19]',
               required: true,
               showNextPrevious: false,
               value: validPeriod
@@ -92,7 +92,7 @@
           <div class="flex valign-top">
             <div id="A3_6" class="form-label" data-bind="ntsFormLabel: { constraint: 'EquipmentRemark' }">#{i18n.getText('OEM002_20')}</div>
             <textarea id="A3_7" data-bind="ntsMultilineEditor: { 
-              name: '#OEM002_21',
+              name: '#[OEM002_21]',
               value: remark,
               constraint: 'EquipmentRemark',
               option: { width: '270px' }
