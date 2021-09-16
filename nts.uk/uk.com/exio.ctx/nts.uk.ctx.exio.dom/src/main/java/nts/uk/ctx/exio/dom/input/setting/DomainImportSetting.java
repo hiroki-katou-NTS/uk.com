@@ -25,7 +25,6 @@ import nts.uk.ctx.exio.dom.input.validation.ValidateData;
 @Getter
 @AllArgsConstructor
 public class DomainImportSetting implements DomainAggregate {
-
 	/** 受入ドメインID */
 	private ImportingDomainId domainId;
 

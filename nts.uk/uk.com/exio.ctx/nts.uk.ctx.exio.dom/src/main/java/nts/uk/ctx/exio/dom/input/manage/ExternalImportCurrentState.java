@@ -67,7 +67,7 @@ public class ExternalImportCurrentState implements DomainAggregate {
 	
 	private void handle(Require require, ExternalImportSetting externalImportSetting, Runnable mainProcess) {
 		
-		externalImportSetting.getDomainSettings().forEach(setting -> {
+		externalImportSetting.getDomainSettings().forEach((domainId, setting) -> {
 		val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
 			try {
 				

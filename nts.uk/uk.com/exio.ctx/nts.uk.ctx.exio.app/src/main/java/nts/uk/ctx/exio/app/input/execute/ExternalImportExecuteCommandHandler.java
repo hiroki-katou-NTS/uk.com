@@ -37,7 +37,7 @@ public class ExternalImportExecuteCommandHandler extends AsyncCommandHandler<Ext
 		try {
 			
 			currentState.execute(require, externalImportSetting, () -> {
-				externalImportSetting.getDomainSettings().forEach(setting -> {
+				externalImportSetting.getDomainSettings().forEach((domainId, setting) -> {
 					val atomTasks = ExecuteImporting.execute(
 							require,externalImportSetting.getCompanyId(), externalImportSetting.getCode(), setting);
 					transaction.separateForEachTask(atomTasks);

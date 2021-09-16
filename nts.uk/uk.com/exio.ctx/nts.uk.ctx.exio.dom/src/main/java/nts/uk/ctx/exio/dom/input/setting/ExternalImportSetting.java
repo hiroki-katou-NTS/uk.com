@@ -1,18 +1,15 @@
 package nts.uk.ctx.exio.dom.input.setting;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
-import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
-import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 
@@ -20,8 +17,9 @@ import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
  * 受入設定
  */
 @Getter
-@AllArgsConstructor
 public class ExternalImportSetting implements DomainAggregate {
+	/**設定ベース種類*/
+	private ImportSettingBaseType baseType;
 
 	/** 会社ID */
 	private String companyId;
@@ -34,28 +32,26 @@ public class ExternalImportSetting implements DomainAggregate {
 	private ExternalImportName name;
 
 	/** CSVファイル情報 */
+	@Setter
 	private ExternalImportCsvFileInfo csvFileInfo;
 
 	/** ドメイン受入設定 **/
-	private List<DomainImportSetting> domainSettings;
+	private Map<ImportingDomainId, DomainImportSetting> domainSettings;
 	
 	public ExternalImportSetting(
+			ImportSettingBaseType baseType,
 			String companyId,
 			ExternalImportCode code,
 			ExternalImportName name,
-			ImportingDomainId externalImportDomainId,
-			ImportingMode importingMode,
-			ExternalImportRowNumber itemNameRawNumber,
-			ExternalImportRowNumber importStartRawNumber,
-			ExternalImportAssemblyMethod assembly) {
+			ExternalImportCsvFileInfo csvFileInfo,
+			Map<ImportingDomainId, DomainImportSetting> domainSettings) {
 
-		DomainImportSetting domainSettings = new DomainImportSetting(externalImportDomainId, importingMode, assembly);
-		this.domainSettings = new ArrayList<>();
-		this.domainSettings.add(domainSettings);
+		this.baseType = baseType;
 		this.companyId = companyId;
 		this.code = code;
 		this.name = name;
-		
+		this.csvFileInfo = csvFileInfo;
+		this.domainSettings = domainSettings;
 	}
 
 	/**
@@ -78,7 +74,7 @@ public class ExternalImportSetting implements DomainAggregate {
 	}
 
 	public void assemble(DomainImportSetting.RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
-		domainSettings.forEach(setting -> {
+		domainSettings.forEach((domainId, setting) -> {
 			setting.assemble(require, context, csvFileInfo, csvFileStream);
 		});
 	}
@@ -99,10 +95,11 @@ public class ExternalImportSetting implements DomainAggregate {
 	}
 	
 	public Optional<DomainImportSetting> getDomainSetting(int domain) {
-		if (this.domainSettings.size() == 1)  return Optional.of(this.domainSettings.get(0));
-		
-		return this.domainSettings.stream()
-			.filter(ds -> ds.getDomainId().value == domain)
-			.findFirst();
+		if (baseType == ImportSettingBaseType.DOMAIN_BASE)  return Optional.of(this.domainSettings.get(0));
+
+		ImportingDomainId domainId = ImportingDomainId.valueOf(domain);
+		return this.domainSettings.containsKey(domainId)
+				? Optional.of(this.domainSettings.get(domainId))
+				: Optional.empty();
 	}
 }

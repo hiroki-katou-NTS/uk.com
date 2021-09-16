@@ -3,7 +3,6 @@ package nts.uk.ctx.exio.infra.repository.input.setting;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -19,8 +18,6 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSettingPK;
-import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMapping;
-import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMappingPK;
 
 @Stateless
 public class JpaExternalImportSettingRepository extends JpaRepository implements ExternalImportSettingRepository {
@@ -70,7 +67,9 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 		domains.forEach(d -> {
 			List<DomainImportSetting> domainImportSettings = domainImportSettings(
 					companyId, d.getCode(), d.getCsvFileInfo());
-			d.getDomainSettings().addAll(domainImportSettings);
+			domainImportSettings.forEach(domainImportSetting ->{
+				d.getDomainSettings().put(domainImportSetting.getDomainId(), domainImportSetting);
+			});
 		});
 		return domains;
 	}
@@ -89,7 +88,10 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 				.getSingle(rec -> rec.toDomain());
 		
 		if(domain.isPresent()) {
-			domain.get().getDomainSettings().addAll(domainImportSettings(companyId, settingCode, domain.get().getCsvFileInfo()));
+			List<DomainImportSetting> domainImportSettings = domainImportSettings(companyId, settingCode, domain.get().getCsvFileInfo());
+			domainImportSettings.forEach(domainImportSetting -> {
+				domain.get().getDomainSettings().put(domainImportSetting.getDomainId(), domainImportSetting);
+			});
 		}
 		return domain;
 	}
@@ -107,22 +109,12 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	}
 
 	private XimmtImportSetting toEntitiy(ExternalImportSetting domain) {
-		DomainImportSetting domainSetting = domain.getDomainSetting().get();
 		return new XimmtImportSetting(
 				new XimmtImportSettingPK(domain.getCompanyId(), domain.getCode().toString()),
+				domain.getBaseType().value,
 				domain.getName().toString(),
 				domain.getCsvFileInfo().getItemNameRowNumber().v(),
-				domain.getCsvFileInfo().getImportStartRowNumber().v(),
-				domainSetting.getAssembly().getMapping().getMappings().stream()
-				.map(m -> new XimmtItemMapping(
-						new XimmtItemMappingPK(
-								domain.getCompanyId(),
-								domain.getCode().v(),
-								domainSetting.getDomainId().value,
-								m.getItemNo()),
-						m.getCsvColumnNo().isPresent()? m.getCsvColumnNo().get(): null,
-						m.getFixedValue().isPresent()? m.getFixedValue().get().getValue(): null))
-				.collect(Collectors.toList()));
+				domain.getCsvFileInfo().getImportStartRowNumber().v());
 	}
 
 	@Override

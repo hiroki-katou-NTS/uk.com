@@ -1,7 +1,8 @@
 package nts.uk.ctx.exio.app.input.setting;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import nts.uk.ctx.exio.dom.input.setting.DomainImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
+import nts.uk.ctx.exio.dom.input.setting.ImportSettingBaseType;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingItemMapping;
 import nts.uk.ctx.exio.dom.input.setting.assembly.mapping.ImportingMapping;
@@ -70,10 +72,11 @@ public class ExternalImportSettingDto {
 				ImportingMode.valueOf(mode), 
 				new ExternalImportAssemblyMethod(
 						new ImportingMapping(createMappings(require))));
-		List<DomainImportSetting> domainSettings = new ArrayList<>();
-		domainSettings.add(domainSetting);
+		Map<ImportingDomainId, DomainImportSetting> domainSettings = new HashMap<>();
+		domainSettings.put(ImportingDomainId.valueOf(domain), domainSetting);
 		
 		return new ExternalImportSetting(
+				ImportSettingBaseType.DOMAIN_BASE,
 				companyId, 
 				new ExternalImportCode(code), 
 				new ExternalImportName(name), 

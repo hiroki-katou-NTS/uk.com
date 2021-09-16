@@ -20,7 +20,7 @@ public class PrepareImporting {
 			ExternalImportSetting externalImportSetting,
 			InputStream csvFileStream) {
 
-		externalImportSetting.getDomainSettings().forEach(setting -> {	
+		externalImportSetting.getDomainSettings().forEach((domainId, setting) -> {	
 			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
 			
 			require.setupWorkspace(context);
