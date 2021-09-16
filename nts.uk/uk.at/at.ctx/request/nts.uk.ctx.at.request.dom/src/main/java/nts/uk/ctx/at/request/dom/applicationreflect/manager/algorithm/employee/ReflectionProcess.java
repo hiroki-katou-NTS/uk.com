@@ -55,7 +55,7 @@ public class ReflectionProcess {
 		// 勤務実績への反映処理-- in processing
 		Pair<ReflectStatusResult, Optional<AtomTask>> resultRecord = ProcessReflectWorkRecord.processReflect(require,
 				companyId, closureEmpOpt.get().getClosureId(), application, isCalWhenLock, targetDate,
-				result.getStatusWorkRecord());
+				result.getStatusWorkRecord(), empHist);
 		result.setStatusWorkRecord(resultRecord.getLeft());
 		resultRecord.getRight().ifPresent(x -> tasks.add(x));
 
