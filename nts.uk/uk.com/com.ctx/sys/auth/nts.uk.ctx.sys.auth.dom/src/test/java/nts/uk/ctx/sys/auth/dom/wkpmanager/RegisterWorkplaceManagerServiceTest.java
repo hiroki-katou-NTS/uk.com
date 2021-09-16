@@ -227,7 +227,6 @@ public class RegisterWorkplaceManagerServiceTest {
 			return periods.stream()
 					.map(c -> WorkplaceManager.createNew("workplaceId", sid, c))
 					.collect(Collectors.toList());
-
 		}
 		
 		/**
@@ -260,7 +259,6 @@ public class RegisterWorkplaceManagerServiceTest {
 		public static List<EmpEnrollPeriodImport> createEmpEnrollPeriodImports(String sid, List<DatePeriod> periods) {
 			return periods.stream().map(c -> createEmpEnrollPeriodImport(sid, c)).collect(Collectors.toList());
 		}	
-		
 	}
 	
 }
