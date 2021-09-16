@@ -352,8 +352,8 @@ public class RegisterFingerStampCommandHandler
 		}
 
 		@Override
-		public void addAllDomain(IntegrationOfDaily domain, boolean removeError) {
-			dailyRecordAdUpService.addAllDomain(domain, removeError);
+		public void addAllDomain(IntegrationOfDaily domain) {
+			dailyRecordAdUpService.addAllDomain(domain);
 		}
 
 		@Override
