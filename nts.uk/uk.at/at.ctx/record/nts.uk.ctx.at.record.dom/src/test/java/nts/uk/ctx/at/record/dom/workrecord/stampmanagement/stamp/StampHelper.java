@@ -48,7 +48,8 @@ public class StampHelper {
 								new AttendanceTime(0),
 								new AttendanceTime(0))),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty()
+				Optional.empty(),
+				"DUMMY"
 				);
 	}
 	
@@ -74,7 +75,8 @@ public class StampHelper {
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
 				true,Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty());
+				Optional.empty(),
+				"DUMMY");
 	}
 	
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
@@ -99,7 +101,8 @@ public class StampHelper {
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty()
+				Optional.empty(),
+				"DUMMY"
 				);
 	}
 	public static List<Stamp> getListStampDefault() {
@@ -115,7 +118,8 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty())
+				Optional.empty(),
+				"DUMMY")
 				);
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
@@ -127,7 +131,8 @@ public class StampHelper {
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				false,Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty())
+				Optional.empty(),
+				"DUMMY")
 				);
 		return data;
 	}

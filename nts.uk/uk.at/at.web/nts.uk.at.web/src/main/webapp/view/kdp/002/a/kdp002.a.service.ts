@@ -10,7 +10,6 @@ module nts.uk.at.view.kdp002.a {
 			stampInput: 'at/record/stamp/management/personal/stamp/input',
 			getError: 'at/record/stamp/management/personal/getDailyError',
 			workManagementMultiple: 'at/record/stamp/work_management_multiple',
-			createDaily: 'at/record/stamp/craeteDaily',
 			getHighlightSetting: 'at/record/stamp/management/personal/stamp/getHighlightSetting'
 		}
 
@@ -37,10 +36,6 @@ module nts.uk.at.view.kdp002.a {
 
 		export function getWorkManagementMultiple(): JQueryPromise<any> {
 			return ajax("at", url.workManagementMultiple);
-		}
-		
-		export function createDaily(data): JQueryPromise<any> {
-			return ajax("at", url.createDaily, data);
 		}
 
 		export function getHighlightSetting(): JQueryPromise<any> {

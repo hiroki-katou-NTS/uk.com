@@ -72,7 +72,7 @@ public class GetTargetDateRecordApplicationTest {
 						ChangeClockArt.GOING_TO_WORK,//時刻変更区分
 						ChangeCalArt.NONE),//計算区分変更対象
 				new RefectActualResult(null, null, null), 
-				Optional.empty());
+				Optional.empty(), "DUMMY");
 
 		assertStamp(actualResult.getRight().get(), expectedResult);
 
