@@ -540,7 +540,7 @@ module nts.uk.at.kha003.a {
                             });
                             let sortData = sortableArray.sort((a: any, b: any) =>
                                 a[0].localeCompare(b[0])
-                                || a[2] - b[2]
+                                || a[2].localeCompare(b[2])
                                 || a[3].localeCompare(b[3])
                                 || a[5].localeCompare(b[5])
                                 || a[8].localeCompare(b[8])
@@ -556,18 +556,30 @@ module nts.uk.at.kha003.a {
                             var currentdate = new Date();
                             let month: any = (currentdate.getMonth() + 1);
                             let day: any = currentdate.getDate();
+                            let hour: any = currentdate.getHours();
+                            let minutes: any = currentdate.getMinutes();
+                            let second: any = currentdate.getSeconds();
                             if (month < 10) {
                                 month = '0' + month;
                             }
                             if (day < 10) {
                                 day = '0' + day;
                             }
+                            if (hour < 10) {
+                                hour = '0' + hour;
+                            }
+                            if (minutes < 10) {
+                                minutes = '0' + minutes;
+                            }
+                            if (second < 10) {
+                                second = '0' + second;
+                            }
                             var pathSuffix = currentdate.getFullYear() + ""
                                 + month + ""
                                 + day + ""
-                                + currentdate.getHours() + ""
-                                + currentdate.getMinutes() + ""
-                                + currentdate.getSeconds()
+                                + hour + ""
+                                + minutes + ""
+                                + second
                             link.setAttribute("download", "全て出力_" + pathSuffix + ".csv");
                             link.click();
                         }
