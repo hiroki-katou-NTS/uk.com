@@ -99,7 +99,7 @@
 									<div class="inline detail">
 										<input id="padding-length" data-bind="ntsNumberEditor: {
 											value: paddingLength,
-											enable: usePadding,
+											enable: usePadding() === true,
 											constraint: 'PaddingLength',
 											option: {
 												symbolChar: '桁'

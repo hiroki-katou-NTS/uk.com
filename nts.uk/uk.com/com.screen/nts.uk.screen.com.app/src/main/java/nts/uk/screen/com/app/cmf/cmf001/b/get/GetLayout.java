@@ -73,7 +73,9 @@ public class GetLayout {
 		
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), query.getSettingCode());
 		if (settingOpt.isPresent()) {
-			results.addAll(getSaved(require, query, settingOpt.get()));
+			results.addAll(getSaved(require, query, settingOpt.get()).stream()
+					.filter(s -> query.getItemNoList().contains(s.getItemNo()))
+					.collect(toList()));
 		}
 		
 		val savedItemNos = results.stream().map(l -> l.getItemNo()).collect(Collectors.toSet());
