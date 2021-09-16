@@ -1,16 +1,9 @@
 package nts.uk.ctx.exio.dom.input.domain;
 
-import static nts.uk.ctx.exio.dom.input.workspace.datatype.DataType.*;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.exio.dom.input.canonicalize.domaindata.DomainDataColumn;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.DomainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffClassHistoryCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.AffCompanyHistoryCanonicalization;
@@ -30,8 +23,6 @@ import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.occurence
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantRemainCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.special.SpecialHolidayGrantSettingCanonicalization;
 import nts.uk.ctx.exio.dom.input.canonicalize.domains.employee.holiday.stock.StockHolidayRemainingCanonicalization;
-import nts.uk.ctx.exio.dom.input.canonicalize.domains.generic.IndependentCanonicalization;
-import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 
 /**
  * 受入グループID
@@ -40,7 +31,7 @@ import nts.uk.ctx.exio.dom.input.workspace.domain.DomainWorkspace;
 public enum ImportingDomainId {
 	
 	/** 個人基本情報 */
-	EMPLOYEE_BASIC(100, w -> new EmployeeBasicCanonicalization()),
+	EMPLOYEE_BASIC(100, EmployeeBasicCanonicalization::new),
 
 	/** 入社退職履歴 */
 	AFF_COMPANY_HISTORY(101, AffCompanyHistoryCanonicalization::new),
@@ -93,44 +84,17 @@ public enum ImportingDomainId {
 	/** 休出管理データ */
 	HOLIDAY_WORK(121, HolidayWorkCanonicalization::new),
 	
-	/** 作業 */
-	TASK(200, w -> new IndependentCanonicalization(w) {
-		@Override
-		protected String getParentTableName() {
-			return "KSRMT_TASK_MASTER";
-		}
-		
-		@Override
-		protected List<String> getChildTableNames() {
-			return Collections.emptyList();
-		}
-		
-		@Override
-		protected List<DomainDataColumn> getDomainDataKeys() {
-			return Arrays.asList(
-					DomainDataColumn.CID,
-					new DomainDataColumn("FRAME_NO", INT),
-					new DomainDataColumn("CD", STRING));
-		}
-	}),
-	
 	;
 	
 	public final int value;
 	
-	private final Function<DomainWorkspace, DomainCanonicalization> createCanonicalization;
+	private final Supplier<DomainCanonicalization> createCanonicalization;
 	
 	public static ImportingDomainId valueOf(int value) {
 		return EnumAdaptor.valueOf(value, ImportingDomainId.class);
 	}
 	
-	public DomainCanonicalization createCanonicalization(RequireCreateCanonicalization require) {
-		val workspace = require.getDomainWorkspace(this);
-		return createCanonicalization.apply(workspace);
-	}
-	
-	public static interface RequireCreateCanonicalization {
-		
-		DomainWorkspace getDomainWorkspace(ImportingDomainId domainId);
+	public DomainCanonicalization createCanonicalization() {
+		return createCanonicalization.get();
 	}
 }
