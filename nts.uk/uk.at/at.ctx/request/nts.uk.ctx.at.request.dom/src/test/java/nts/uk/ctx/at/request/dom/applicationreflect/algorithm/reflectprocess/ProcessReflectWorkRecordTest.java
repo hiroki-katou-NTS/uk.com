@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.applicationreflect.AppReflectExecutionCondition;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
@@ -89,7 +90,7 @@ public class ProcessReflectWorkRecordTest {
 		};
 
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId,  stamp,
-				true, dateRefer, statusWorkRecord);
+				true, dateRefer, statusWorkRecord, new SEmpHistImport());
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
 	}
@@ -121,13 +122,13 @@ public class ProcessReflectWorkRecordTest {
 						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
-						(ReflectStatusResult) any, dateRefer);
+						(ReflectStatusResult) any, dateRefer, (SEmpHistImport)any);
 				result = new PreCheckProcessResult(NotUseAtr.NOT_USE, statusWorkRecord);
 			}
 		};
 
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp,
-				true, dateRefer, statusWorkRecord);
+				true, dateRefer, statusWorkRecord, new SEmpHistImport());
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.NOTREFLECTED);
 	}
@@ -159,7 +160,7 @@ public class ProcessReflectWorkRecordTest {
 						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
-						(ReflectStatusResult) any, dateRefer);
+						(ReflectStatusResult) any, dateRefer, (SEmpHistImport) any);
 				result = new PreCheckProcessResult(NotUseAtr.USE, statusWorkRecord);
 				
 				require.processWork((ApplicationShare)any, dateRefer, (ReflectStatusResult) any, (GeneralDateTime) any);
@@ -169,7 +170,7 @@ public class ProcessReflectWorkRecordTest {
 		};
 
 		val actualResult = ProcessReflectWorkRecord.processReflect(require, companyId, closureId, stamp,
-				true, dateRefer, statusWorkRecord);
+				true, dateRefer, statusWorkRecord, new SEmpHistImport());
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(ReflectedState.REFLECTED);
 	}
