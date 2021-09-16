@@ -140,10 +140,11 @@ public class StringifiedValue {
 	public Object asTypeOf(ItemType type) {
 		switch (type) {
 		case STRING: return asString();
-		case INT: return asLong();
 		case REAL: return asBigDecimal();
-		case TIME_DURATION: return asInteger();
-		case TIME_POINT: return asInteger();
+		case INT:
+		case TIME_DURATION:
+		case TIME_POINT:
+			return asLong();
 		case DATE: return asGeneralDate();
 		default: throw new RuntimeException("unknown: " + type);
 		}
