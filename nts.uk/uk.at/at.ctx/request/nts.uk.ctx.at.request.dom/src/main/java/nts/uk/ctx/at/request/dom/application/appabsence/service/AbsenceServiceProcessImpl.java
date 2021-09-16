@@ -1200,17 +1200,17 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
         }
 
         // INPUT．「労働条件項目」をチェックする
-        if (workingCondition.isPresent() && workingCondition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
+        if (workingCondition.isPresent() && workingCondition.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()) {
             // INPUT．「労働条件項目．区分別勤務．平日時．就業時間帯コード」を返す
-            return Optional.of(workingCondition.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
+            return Optional.of(workingCondition.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get().v());
         }
 
         // 社員の労働条件を取得する
         Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, date);
 
         // 取得した「労働条件項目」をチェックする
-        if (opWorkingConditionItem.isPresent() && opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().isPresent()) {
-            return Optional.of(opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().get().v());
+        if (opWorkingConditionItem.isPresent() && opWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().isPresent()) {
+            return Optional.of(opWorkingConditionItem.get().getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode().get().v());
         }
 
         // Emptyを返す
