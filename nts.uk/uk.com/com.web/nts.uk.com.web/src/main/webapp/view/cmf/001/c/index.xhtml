@@ -67,22 +67,22 @@
 						</div>
 						<div class="inline" data-bind="if: selectedMappingType() == '固定値'">
 							<div class="inline" data-bind="if: def.type() == 'STRING'">
-								<input data-bind="ntsTextEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName }" />
+								<input class="check-target" data-bind="ntsTextEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName, required: selectedMappingType() == '固定値' }" />
 							</div>
 							<div class="inline" data-bind="if: def.type() == 'INT'">
-								<input data-bind="ntsNumberEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName }" />
+								<input class="check-target" data-bind="ntsNumberEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName, required: selectedMappingType() == '固定値' }" />
 							</div>
 							<div class="inline" data-bind="if: def.type() == 'REAL'">
-								<input data-bind="ntsNumberEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName }" />
+								<input class="check-target" data-bind="ntsNumberEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName, required: selectedMappingType() == '固定値' }" />
 							</div>
 							<div class="inline" data-bind="if: def.type() == 'DATE'">
-								<div data-bind="ntsDatePicker: {value: fixedMapping, name: def.name }"></div>
+								<div class="check-target" data-bind="ntsDatePicker: {value: fixedMapping, name: def.name, required: selectedMappingType() == '固定値' }"></div>
 							</div>
 							<div class="inline" data-bind="if: def.type() == 'TIME_DURATION'">
-								<input data-bind="ntsTimeEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName, inputFormat: 'time', mode: 'time' }" />
+								<input class="check-target" data-bind="ntsTimeEditor: {value: fixedMapping, name: def.name, constraint: def.constraintName, inputFormat: 'time', mode: 'time', required: selectedMappingType() == '固定値' }" />
 							</div>
 							<div class="inline" data-bind="if: def.type() == 'TIME_POINT'">
-								<input data-bind="ntsTimeWithDayEditor: {value: fixedMapping, name: def.name }" />
+								<input class="check-target" data-bind="ntsTimeWithDayEditor: {value: fixedMapping, name: def.name, required: selectedMappingType() == '固定値' }" />
 							</div>
 						</div>
 					</div>
@@ -97,10 +97,11 @@
 										<div data-bind="ntsCheckBox: { checked: usePadding, text: '桁埋めする' }"></div>
 									</div>
 									<div class="inline detail">
-										<input id="padding-length" data-bind="ntsNumberEditor: {
+										<input class="check-target" id="padding-length" data-bind="ntsNumberEditor: {
 											value: paddingLength,
 											enable: usePadding() === true,
 											constraint: 'PaddingLength',
+											required: usePadding, 
 											option: {
 												symbolChar: '桁'
 											}
@@ -122,7 +123,7 @@
 										<div data-bind="ntsCheckBox: { checked: isDecimalization, text: '小数点を付与する' }"></div>
 									</div>
 									<div class="inline detail">
-										<input data-bind="ntsNumberEditor: {value: decimalizationLength, enable: isDecimalization }" />
+										<input class="check-target" data-bind="ntsNumberEditor: {value: decimalizationLength, enable: isDecimalization, required: isDecimalization }" />
 										桁目に付与
 									</div>
 								</div>
