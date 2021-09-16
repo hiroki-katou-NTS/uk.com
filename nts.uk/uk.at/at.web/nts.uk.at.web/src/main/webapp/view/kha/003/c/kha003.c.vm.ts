@@ -129,10 +129,22 @@ module nts.uk.at.kha003.c {
                         vm.$window.storage('kha003CShareData_' + data.code).done(savedDataC => {
                             const dataC = savedDataC || {};
                             if (dataC.code == data.code) {
-                                vm.c24CurrentCodeList(dataC.c24CurrentCodeList || _.map(vm.c24Items(), x => x.code));
-                                vm.c34CurrentCodeList(dataC.c34CurrentCodeList || _.map(vm.c24Items(), x => x.code));
-                                vm.c44CurrentCodeList(dataC.c44CurrentCodeList || _.map(vm.c24Items(), x => x.code));
-                                vm.c54CurrentCodeList(dataC.c54CurrentCodeList || _.map(vm.c24Items(), x => x.code));
+                                let list24: Array<string> = _.map(vm.c24Items(), x => x.code);
+                                let list34: Array<string> = _.map(vm.c34Items(), x => x.code);
+                                let list44: Array<string> = _.map(vm.c44Items(), x => x.code);
+                                let list54: Array<string> = _.map(vm.c54Items(), x => x.code);
+                                vm.c24CurrentCodeList(_.remove(dataC.c24CurrentCodeList, (x:any)=>{
+                                    return _.findIndex(list24,function(y){ return y == x })  != -1;
+                                }) || list24);
+                                vm.c34CurrentCodeList(_.remove(dataC.c34CurrentCodeList, (x:any)=>{
+                                    return _.findIndex(list34,function(y){ return y == x })  != -1;
+                                }) || list34);
+                                vm.c44CurrentCodeList(_.remove(dataC.c44CurrentCodeList, (x:any)=>{
+                                    return _.findIndex(list44,function(y){ return y == x })  != -1;
+                                }) || list44);
+                                vm.c54CurrentCodeList(_.remove(dataC.c54CurrentCodeList, (x:any)=>{
+                                    return _.findIndex(list54,function(y){ return y == x })  != -1;
+                                }) || list54);
                             } else {
                                 vm.selectBox();
                             }

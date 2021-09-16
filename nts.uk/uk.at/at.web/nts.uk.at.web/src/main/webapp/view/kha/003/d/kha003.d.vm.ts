@@ -89,12 +89,14 @@ module nts.uk.at.kha003.d {
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
                 if (data.summaryTableFormat.totalUnit == 1) {
+                    let dateHeaders: Array<DateHeader> = [];
                     for (let contentItem of data.outputContent.verticalTotalValues) {
                         let date = contentItem.yearMonth.toString();
-                        vm.dateHeaders.push(
+                        dateHeaders.push(
                             new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
                         );
                     }
+                    vm.dateHeaders(dateHeaders);
                 }
                 vm.agCommand(data);
                 vm.printContents(data);
