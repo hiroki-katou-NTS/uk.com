@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 特別休暇残数情報
@@ -54,14 +54,14 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	 */
 	public void createRemainingNumberFromGrantRemaining(
 			List<SpecialLeaveGrantRemainingData> remainingDataList,
-			GrantPeriodAtr grantPeriodAtr){
+			GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 特別休暇付与残数データから特別休暇残数を作成
 		SpecialLeaveRemainingNumber remainingNumber = new SpecialLeaveRemainingNumber();
 		remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
 
 		// 「付与後フラグ」をチェック
-		if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
+		if (grantPeriodAtr.equals(GrantBeforeAfterAtr.AFTER_GRANT)){
 			// 残数付与後　←　残数
 			this.remainingNumberAfterGrantOpt = Optional.of(remainingNumber);
 		}

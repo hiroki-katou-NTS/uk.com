@@ -11,7 +11,7 @@ import lombok.Setter;
 import lombok.val;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 特別休暇使用情報
@@ -125,10 +125,10 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 	 * @param usedNumber 使用数
 	 * @param grantPeriodAtr 付与前付与後
 	 */
-	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, GrantPeriodAtr grantPeriodAtr){
+	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 「付与後フラグ」をチェック
-		if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
+		if (grantPeriodAtr.equals(GrantBeforeAfterAtr.AFTER_GRANT)){
 
 			// 使用日数付与後に加算
 			if ( this.usedNumberAfterGrantOpt.isPresent() ){

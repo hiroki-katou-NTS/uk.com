@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 特別休暇
@@ -82,7 +82,7 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<SpecialLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
+			List<SpecialLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 特別休暇付与残数データから特別休暇残数を作成
 		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
@@ -93,7 +93,7 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	 * @param days 日数
 	 * @param grantPeriodAtr 付与前付与後
 	 */
-	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, GrantPeriodAtr grantPeriodAtr){
+	public void addUsedNumber(SpecialLeaveUseNumber usedNumber, GrantBeforeAfterAtr grantPeriodAtr){
 
 		this.usedNumberInfo.addUsedNumber(usedNumber, grantPeriodAtr);
 

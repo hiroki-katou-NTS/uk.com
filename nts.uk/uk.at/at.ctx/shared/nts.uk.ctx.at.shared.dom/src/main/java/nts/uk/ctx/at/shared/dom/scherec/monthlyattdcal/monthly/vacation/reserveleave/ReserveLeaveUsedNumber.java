@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 
 /**
@@ -104,11 +104,11 @@ public class ReserveLeaveUsedNumber implements Cloneable {
 	 * @param days 日数
 	 * @param grantPeriodAtr 付与前付与後
 	 */
-	public void addUsedDays(double days, GrantPeriodAtr grantPeriodAtr){
+	public void addUsedDays(double days, GrantBeforeAfterAtr grantPeriodAtr){
 
 		addUsedDays(days);
 
-		if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
+		if (grantPeriodAtr.equals(GrantBeforeAfterAtr.AFTER_GRANT)){
 			addUsedDaysAfterGrant(days);
 		} else {
 			addUsedDaysBeforeGrant(days);

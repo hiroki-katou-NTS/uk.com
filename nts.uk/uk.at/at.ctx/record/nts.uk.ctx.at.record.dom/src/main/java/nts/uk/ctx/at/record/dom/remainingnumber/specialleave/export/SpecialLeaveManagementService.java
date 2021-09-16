@@ -26,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
@@ -36,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecia
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
@@ -650,10 +650,10 @@ public class SpecialLeaveManagementService {
 		specialLeaveGrantList4.sort((a,b)->a.getYmd().compareTo(b.getYmd()));
 
 		// 付与前か付与後か = 付与前
-		GrantPeriodAtr afterGrant = GrantPeriodAtr.BEFORE_GRANT;
+		GrantBeforeAfterAtr afterGrant = GrantBeforeAfterAtr.BEFORE_GRANT;
 		for(SpecialLeaveDividedDayEachProcess c: specialLeaveGrantList4){
 			if (c.getGrantWork().isGrantAtr()){ // 付与フラグ
-				afterGrant = GrantPeriodAtr.AFTER_GRANT;
+				afterGrant = GrantBeforeAfterAtr.AFTER_GRANT;
 			}
 			c.setGrantPeriodAtr(afterGrant);
 		}
@@ -687,7 +687,7 @@ public class SpecialLeaveManagementService {
 					new NextDayAfterPeriodEndWork(),
 					c.getLapsedWork(),
 					new SpecialLeaveGrantWork(),
-					GrantPeriodAtr.BEFORE_GRANT);
+					GrantBeforeAfterAtr.BEFORE_GRANT);
 
 				aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 
@@ -806,7 +806,7 @@ public class SpecialLeaveManagementService {
 //		}
 
 		// 特休情報残数を更新
-		specialLeaveInfo.updateRemainingNumber(GrantPeriodAtr.BEFORE_GRANT);
+		specialLeaveInfo.updateRemainingNumber(GrantBeforeAfterAtr.BEFORE_GRANT);
 
 		// 特休情報を返す
 		return specialLeaveInfo;

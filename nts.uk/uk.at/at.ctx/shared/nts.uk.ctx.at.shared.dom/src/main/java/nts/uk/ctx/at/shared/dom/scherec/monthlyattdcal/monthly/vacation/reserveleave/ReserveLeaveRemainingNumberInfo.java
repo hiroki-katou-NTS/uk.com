@@ -3,8 +3,8 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserve
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 
 /**
@@ -69,7 +69,7 @@ public class ReserveLeaveRemainingNumberInfo implements Cloneable {
 	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void updateRemainingNumber(
-			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
+			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 積立年休付与残数データから積立年休（マイナスあり）を作成
 		this.reserveLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);

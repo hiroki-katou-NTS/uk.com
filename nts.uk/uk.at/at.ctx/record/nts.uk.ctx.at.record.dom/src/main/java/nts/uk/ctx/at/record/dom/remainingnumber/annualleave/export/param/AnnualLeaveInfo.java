@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TempAnnualLeaveMngs;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
@@ -34,6 +33,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
@@ -194,7 +194,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	/**
 	 * 年休付与残数を更新
 	 */
-	public void updateRemainingNumber(GrantPeriodAtr grantPeriodAtr){
+	public void updateRemainingNumber(GrantBeforeAfterAtr grantPeriodAtr){
 		this.remainingNumber.updateRemainingNumber(this.grantRemainingDataList, grantPeriodAtr);
 	}
 
@@ -622,10 +622,10 @@ public class AnnualLeaveInfo implements Cloneable {
 		if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
 
 			// 付与前付与後を判断する
-			GrantPeriodAtr grantPeriodAtr
+			GrantBeforeAfterAtr grantPeriodAtr
 				= aggregatePeriodWork.getGrantWork().getGrantPeriodAtr();
 		
-			if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
+			if (grantPeriodAtr.equals(GrantBeforeAfterAtr.AFTER_GRANT)){
 				// 「日単位年休不足エラー（付与後）」を追加
 				annualLeaveErrors.add(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT);
 			}

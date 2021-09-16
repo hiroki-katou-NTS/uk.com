@@ -39,10 +39,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
@@ -657,7 +657,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		}
 
 		// 年休情報残数を更新
-		returnInfo.updateRemainingNumber(GrantPeriodAtr.BEFORE_GRANT);
+		returnInfo.updateRemainingNumber(GrantBeforeAfterAtr.BEFORE_GRANT);
 
 		// 年休情報を返す
 		return returnInfo;
@@ -735,7 +735,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		// 付与後フラグ
 		/**付与前か付与後か */
-		GrantPeriodAtr grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		GrantBeforeAfterAtr grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 
 		for (int index = 0; index < dividedDayList.size(); index++){
 			val nowDividedDay = dividedDayList.get(index);
@@ -744,7 +744,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 			// 付与フラグをチェック
 			if (nowDividedDay.getGrantWork().isGrantAtr()) {
-				grantPeriodAtr = GrantPeriodAtr.AFTER_GRANT;
+				grantPeriodAtr = GrantBeforeAfterAtr.AFTER_GRANT;
 			}
 
 			// 年休集計期間WORKを作成し、Listに追加

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +23,7 @@ public class AnnualLeaveGrantWork {
 	private boolean grantAtr;
 
 	/**付与前か付与後か */
-	private GrantPeriodAtr grantPeriodAtr;
+	private GrantBeforeAfterAtr grantPeriodAtr;
 
 	/** 年休付与 */
 	private Optional<NextAnnualLeaveGrant> annualLeaveGrant;
@@ -33,7 +33,7 @@ public class AnnualLeaveGrantWork {
 	 */
 	public AnnualLeaveGrantWork(){
 		grantAtr = false;
-		grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 		annualLeaveGrant = Optional.empty();
 	}
 
@@ -55,7 +55,7 @@ public class AnnualLeaveGrantWork {
 	 * 付与前か付与後を判断する
 	 * @return
 	 */
-	public GrantPeriodAtr judgeGrantPeriodAtr(){
+	public GrantBeforeAfterAtr judgeGrantPeriodAtr(){
 		return grantPeriodAtr;
 	}
 

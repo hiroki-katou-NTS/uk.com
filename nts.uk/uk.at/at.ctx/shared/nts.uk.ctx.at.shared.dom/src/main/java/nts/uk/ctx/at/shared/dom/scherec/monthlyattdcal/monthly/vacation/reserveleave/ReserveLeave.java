@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 積立年休
@@ -134,7 +134,7 @@ public class ReserveLeave implements Cloneable {
 	}
 	
 	public void createRemainingNumberFromGrantRemaining(
-			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
+			List<ReserveLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
 
 		remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 

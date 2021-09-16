@@ -9,11 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseNumber;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
@@ -97,7 +97,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * 特休付与残数を更新
 	 * @param grantPeriodAtr　付与前付与後
 	 */
-	public void updateRemainingNumber(GrantPeriodAtr grantPeriodAtr){
+	public void updateRemainingNumber(GrantBeforeAfterAtr grantPeriodAtr){
 		this.remainingNumber.updateRemainingNumber(
 				this.getGrantRemainingDataList(), grantPeriodAtr);
 	}
@@ -228,7 +228,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		this.decreaseSpecicalHoliday(aggregatePeriodWork);
 
 		// 付与前付与後を判断する
-		GrantPeriodAtr grantPeriodAtr
+		GrantBeforeAfterAtr grantPeriodAtr
 			= aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 		
 		// 特別休暇情報残数を更新
@@ -315,7 +315,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		grantSpecialHoliday(require, companyId, employeeId, aggregatePeriodWork, specialLeaveCode);
 
 		/** 付与前付与後を判断する */
-		GrantPeriodAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
+		GrantBeforeAfterAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 
 		/** 特別休暇情報残数を更新 */
 		this.updateRemainingNumber(grantPeriodAtr);
@@ -463,7 +463,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		}
 
 		/** 付与前付与後を判断する */
-		GrantPeriodAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
+		GrantBeforeAfterAtr grantPeriodAtr = aggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 
 		// 時間休暇消化日一覧（List）
 		List<GeneralDate> digestDateList = new ArrayList<GeneralDate>();
@@ -580,10 +580,10 @@ public class SpecialLeaveInfo implements Cloneable {
 			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
 
 				// 付与前付与後を判断する
-				GrantPeriodAtr grantPeriodAtr
+				GrantBeforeAfterAtr grantPeriodAtr
 					= specialLeaveAggregatePeriodWork.judgeGrantPeriodAtr(entryDate);
 
-				if (grantPeriodAtr.equals(GrantPeriodAtr.AFTER_GRANT)){
+				if (grantPeriodAtr.equals(GrantBeforeAfterAtr.AFTER_GRANT)){
 					// 「特休不足エラー（付与後）」を追加
 					errors.add(SpecialLeaveError.AFTERGRANT);
 				}

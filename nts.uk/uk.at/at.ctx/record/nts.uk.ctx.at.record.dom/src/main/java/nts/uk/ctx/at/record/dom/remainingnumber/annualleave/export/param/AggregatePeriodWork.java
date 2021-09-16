@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 年休集計期間WORK
@@ -39,7 +39,7 @@ public class AggregatePeriodWork {
 	}
 
 	public AggregatePeriodWork(DatePeriod period, AnnualLeaveLapsedWork lapsedAtr, AnnualLeaveGrantWork grantWork,
-			AnnualNextDayAfterPeriodEndWork endWork, GrantPeriodAtr grantPeriodAtr) {
+			AnnualNextDayAfterPeriodEndWork endWork, GrantBeforeAfterAtr grantPeriodAtr) {
 		super();
 		this.period = period;
 		this.lapsedAtr = lapsedAtr;

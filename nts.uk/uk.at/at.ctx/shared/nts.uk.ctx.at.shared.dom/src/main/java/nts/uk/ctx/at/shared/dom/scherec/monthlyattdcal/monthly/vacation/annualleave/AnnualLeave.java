@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 
 /**
  * 年休
@@ -71,7 +71,7 @@ public class AnnualLeave implements Cloneable, Serializable {
 	 * @param grantPeriodAtr 付与前付与後
 	 */
 	public void createRemainingNumberFromGrantRemaining(
-			List<AnnualLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
+			List<AnnualLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
 
 		remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
 
@@ -82,7 +82,7 @@ public class AnnualLeave implements Cloneable, Serializable {
 	 * @param usedNumber 使用数
 	 * @param grantPeriodAtr 付与前付与後
 	 */
-	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber, GrantPeriodAtr grantPeriodAtr){
+	public void addUsedNumber(AnnualLeaveUsedNumber usedNumber, GrantBeforeAfterAtr grantPeriodAtr){
 
 		this.usedNumberInfo.addUsedNumber(usedNumber, grantPeriodAtr);
 

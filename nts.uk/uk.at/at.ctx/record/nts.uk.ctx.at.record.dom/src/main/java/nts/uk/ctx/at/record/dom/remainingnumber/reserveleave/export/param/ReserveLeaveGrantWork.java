@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 
 /**
@@ -20,10 +20,8 @@ public class ReserveLeaveGrantWork {
 	private boolean grantAtr;
 	/** 付与回数 */
 	private int grantNumber = 0;
-	/** 上限日数 */
-	private MaxDaysRetention maxDays;
 	/** 付与前か付与後か */
-	private GrantPeriodAtr grantPeriodAtr;
+	private GrantBeforeAfterAtr grantPeriodAtr;
 	/** 積立年休付与 */
 	private Optional<NextReserveLeaveGrant> reserveLeaveGrant;
 
@@ -33,8 +31,7 @@ public class ReserveLeaveGrantWork {
 	public ReserveLeaveGrantWork(){
 		grantAtr = false;
 		reserveLeaveGrant = Optional.empty();
-		maxDays = new MaxDaysRetention(0);
-		grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
+		grantPeriodAtr = GrantBeforeAfterAtr.BEFORE_GRANT;
 		reserveLeaveGrant = Optional.empty();
 	}
 	
@@ -42,13 +39,12 @@ public class ReserveLeaveGrantWork {
 			boolean grantAtr,
 			int grantNumber,
 			MaxDaysRetention maxDays,
-			GrantPeriodAtr grantPeriodAtr,
+			GrantBeforeAfterAtr grantPeriodAtr,
 			Optional<NextReserveLeaveGrant> reserveLeaveGrant){
 		
 		ReserveLeaveGrantWork domain = new ReserveLeaveGrantWork();
 		domain.grantAtr = grantAtr;
 		domain.grantNumber = grantNumber;
-		domain.maxDays = maxDays;
 		domain.grantPeriodAtr = grantPeriodAtr;
 		domain.reserveLeaveGrant = reserveLeaveGrant;
 		
@@ -72,7 +68,7 @@ public class ReserveLeaveGrantWork {
 	 * 付与前か付与後を判断する
 	 * @return
 	 */
-	public GrantPeriodAtr judgeGrantPeriodAtr(){
+	public GrantBeforeAfterAtr judgeGrantPeriodAtr(){
 		return grantPeriodAtr;
 	}
 }

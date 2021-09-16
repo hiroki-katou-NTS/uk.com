@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.MaxDaysRetention;
 
 /**
@@ -56,7 +56,7 @@ public class RsvLeaAggrPeriodWork {
 			DatePeriod period,
 			RsvLeaNextDayAfterPeriodEndWork endWork,
 			boolean grantAtr,
-			GrantPeriodAtr grantPeriodAtr,
+			GrantBeforeAfterAtr grantPeriodAtr,
 			boolean lapsedAtr,
 			MaxDaysRetention maxDays,
 			Optional<NextReserveLeaveGrant> reserveLeaveGrant){

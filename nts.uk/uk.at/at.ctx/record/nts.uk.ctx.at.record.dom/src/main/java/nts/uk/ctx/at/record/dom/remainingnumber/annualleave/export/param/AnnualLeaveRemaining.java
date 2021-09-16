@@ -10,9 +10,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.GrantPeriodAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.GrantBeforeAfterAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
@@ -119,7 +119,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void updateRemainingNumber(
-			List<AnnualLeaveGrantRemainingData> remainingDataList, GrantPeriodAtr grantPeriodAtr){
+			List<AnnualLeaveGrantRemainingData> remainingDataList, GrantBeforeAfterAtr grantPeriodAtr){
 
 		// 年休付与残数データから年休（マイナスあり）を作成
 		this.annualLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, grantPeriodAtr);
@@ -239,7 +239,7 @@ public class AnnualLeaveRemaining implements Cloneable {
 
 		// 付与前付与後を判断する
 		if ( aggregatePeriodWork.getGrantWork().getGrantPeriodAtr()
-				== GrantPeriodAtr.BEFORE_GRANT ) { // 付与前
+				== GrantBeforeAfterAtr.BEFORE_GRANT ) { // 付与前
 			// 「年休エラー．年休不足エラー（付与前）」を返す
 			return Optional.of(AnnualLeaveError.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT);
 
