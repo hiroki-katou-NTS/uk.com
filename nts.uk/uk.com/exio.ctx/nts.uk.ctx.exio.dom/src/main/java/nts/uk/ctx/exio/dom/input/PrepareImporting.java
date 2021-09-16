@@ -26,7 +26,7 @@ public class PrepareImporting {
 			require.setupWorkspace(context);
 			
 			// 受入データの組み立て
-			setting.assemble(require, context, csvFileStream);
+			setting.assemble(require, context, externalImportSetting.getCsvFileInfo(), csvFileStream);
 			
 			// 編集済みデータの正準化
 			val meta = ImportingDataMeta.create(require, context, setting.getAssembly().getAllItemNo());

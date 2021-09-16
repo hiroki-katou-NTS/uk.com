@@ -33,10 +33,8 @@ public class ExternalImportSetting implements DomainAggregate {
 	@Setter
 	private ExternalImportName name;
 
-	/* CSV項目名取得行 */
-	private ExternalImportRowNumber itemNameRowNumber;
-	/* CSV受入開始行 */
-	private ExternalImportRowNumber importStartRowNumber;
+	/** CSVファイル情報 */
+	private ExternalImportCsvFileInfo csvFileInfo;
 
 	/** ドメイン受入設定 **/
 	private List<DomainImportSetting> domainSettings;
@@ -81,7 +79,7 @@ public class ExternalImportSetting implements DomainAggregate {
 
 	public void assemble(DomainImportSetting.RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
 		domainSettings.forEach(setting -> {
-			setting.assemble(require, context, csvFileStream);
+			setting.assemble(require, context, csvFileInfo, csvFileStream);
 		});
 	}
 	
@@ -90,9 +88,6 @@ public class ExternalImportSetting implements DomainAggregate {
 	public static interface RequireChangeDomain extends DomainImportSetting.RequireChangeDomain {
 	}
 	public static interface RequireAssemble extends DomainImportSetting.RequireAssemble {
-	}
-	public ExternalImportCsvFileInfo getCsvFileInfo() {
-		return new ExternalImportCsvFileInfo(itemNameRowNumber, importStartRowNumber);
 	}
 
 	public ExternalImportAssemblyMethod getAssembly(int domainId) {

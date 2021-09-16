@@ -59,7 +59,6 @@ public class XimmtDomainImportSetting extends ContractUkJpaEntity implements Ser
 				ImportingDomainId.valueOf(pk.getExternalImportDomainId()),
 				EnumAdaptor.valueOf(importingMode, ImportingMode.class), 
 				new ExternalImportAssemblyMethod(
-						csvFileInfo, 
 						new ImportingMapping(mappings.stream()
 								.map(m -> m.toDomain())
 								.collect(Collectors.toList()))));

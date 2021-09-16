@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportRowNumber;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportName;
@@ -64,8 +65,9 @@ public class XimmtImportSetting extends ContractUkJpaEntity implements Serializa
 				this.pk.getCompanyId(), 
 				new ExternalImportCode(this.pk.getCode()), 
 				new ExternalImportName(this.name),
-				new ExternalImportRowNumber(this.itemNameRowNumber),
-				new ExternalImportRowNumber(importStartRowNumber),
+				new ExternalImportCsvFileInfo(
+						new ExternalImportRowNumber(this.itemNameRowNumber),
+						new ExternalImportRowNumber(importStartRowNumber)),
 				new ArrayList<>());
 	}
 }

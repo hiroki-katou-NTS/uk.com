@@ -11,6 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.CsvRecord;
+import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.errors.ExternalImportError;
 import nts.uk.ctx.exio.dom.input.setting.assembly.ExternalImportAssemblyMethod;
@@ -63,7 +64,7 @@ public class DomainImportSetting implements DomainAggregate {
 	 */
 	public void changeDomain(RequireChangeDomain require, ImportingDomainId domainId, List<Integer> items, ExternalImportCode settingCode) {
 		this.domainId = domainId;
-		assembly = ExternalImportAssemblyMethod.create(assembly.getCsvFileInfo(), items);
+		assembly = ExternalImportAssemblyMethod.create(items);
 		
 		// 受入ドメインが変わるので既存の編集設定はすべて削除
 		require.deleteReviseItems(settingCode);
@@ -74,9 +75,8 @@ public class DomainImportSetting implements DomainAggregate {
 	}
 
 
-	public void assemble(RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
-
-		assembly.getCsvFileInfo().parse(
+	public void assemble(RequireAssemble require, ExecutionContext context, ExternalImportCsvFileInfo csvFileInfo,InputStream csvFileStream) {
+		csvFileInfo.parse(
 				csvFileStream,
 				r -> processRecord(require, context, r));
 	}

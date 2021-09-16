@@ -56,8 +56,8 @@ public class ExternalImportSettingDto {
 				domain.getName().toString(), 
 				domainSetting.getDomainId().value, 
 				domainSetting.getImportingMode().value, 
-				domainSetting.getAssembly().getCsvFileInfo().getItemNameRowNumber().hashCode(), 
-				domainSetting.getAssembly().getCsvFileInfo().getImportStartRowNumber().hashCode(), 
+				domain.getCsvFileInfo().getItemNameRowNumber().hashCode(), 
+				domain.getCsvFileInfo().getImportStartRowNumber().hashCode(), 
 				domainSetting.getAssembly().getMapping().getMappings().stream()
 					.map(m -> ExternalImportLayoutDto.fromDomain(require, domainSetting.getDomainId(), m))
 				.collect(Collectors.toList()));
@@ -69,9 +69,6 @@ public class ExternalImportSettingDto {
 				ImportingDomainId.valueOf(domain), 
 				ImportingMode.valueOf(mode), 
 				new ExternalImportAssemblyMethod(
-						new ExternalImportCsvFileInfo(
-								new ExternalImportRowNumber(itemNameRow), 
-								new ExternalImportRowNumber(importStartRow)), 
 						new ImportingMapping(createMappings(require))));
 		List<DomainImportSetting> domainSettings = new ArrayList<>();
 		domainSettings.add(domainSetting);
@@ -80,8 +77,9 @@ public class ExternalImportSettingDto {
 				companyId, 
 				new ExternalImportCode(code), 
 				new ExternalImportName(name), 
-				new ExternalImportRowNumber(itemNameRow), 
-				new ExternalImportRowNumber(importStartRow),
+				new ExternalImportCsvFileInfo(
+						new ExternalImportRowNumber(itemNameRow), 
+						new ExternalImportRowNumber(importStartRow)),
 				domainSettings);
 	}
 	
