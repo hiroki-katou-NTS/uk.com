@@ -23,6 +23,9 @@ import nts.uk.ctx.office.dom.equipment.data.RequireImpl;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備利用実績データ.APP.利用実績の新規登録をする.利用実績の新規登録をする
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class InsertEquipmentDataCommandHandler extends CommandHandler<EquipmentDataCommand> {

@@ -9,16 +9,15 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * UKDesign.データベース.ER図.オフィス支援.設備管理.実績項目設定.OFIMT_EQUIPMENT_DAY_RPT
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

@@ -45,7 +45,7 @@ module nts.uk.com.view.oem002.a {
           vm.selectedEquipmentInfo.valueHasMutated();
         }
       });
-      vm.isNewMode.subscribe(() => $("#A2_10").focus());
+      vm.isNewMode.subscribe(() => vm.$nextTick(() => $("#A2_10").focus()));
 
       vm.$blockui("grayout");
       vm.getAll().always(() => vm.$blockui("clear"));
