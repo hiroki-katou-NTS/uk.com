@@ -226,5 +226,22 @@ public class StampTest {
 		assertThat(wt.getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.REAL_STAMP);
 		assertThat(wt.getReasonTimeChange().getEngravingMethod().get()).isEqualTo(EngravingMethod.TIME_RECORD_ID_INPUT);
 	}
+	
+	@Test
+	public void testC2() {
+		
+		StampNumber cardNumber = new StampNumber("cardNumber");//dummy
+		GeneralDateTime stampDateTime = GeneralDateTime.now();
+		Relieve relieve =  StampHelper.getRelieveDefault();
+		StampType type = StampHelper.getStampTypeDefault();
+		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();
+		Optional<GeoCoordinate> locationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault()) ;
+		ContractCode contactCode = new ContractCode("DUMMY");
+		StampTypeDisplay stampTypeDisplay = new StampTypeDisplay("DUMMY");
+		StampRecord stampRecord = new StampRecord(contactCode, cardNumber, stampDateTime, stampTypeDisplay);
+		Stamp stamp = new Stamp(stampRecord, relieve, type, refActualResults, locationInfor);
+		assertThat(stamp.isReflectedCategory()).isFalse();
+		NtsAssert.invokeGetters(stamp);
+	}
 
 }
