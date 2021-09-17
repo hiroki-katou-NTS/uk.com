@@ -90,16 +90,16 @@ module nts.uk.at.kha003.d {
             let dfd = $.Deferred<any>();
             vm.$blockui("invisible");
             vm.$ajax(API.aggregation, command).done((data) => {
-                if (data.summaryTableFormat.totalUnit == 1) {
-                    let dateHeaders: Array<DateHeader> = [];
-                    for (let contentItem of data.outputContent.verticalTotalValues) {
-                        let date = contentItem.yearMonth.toString();
-                        vm.dateHeaders.push(
-                            new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
-                        );
-                    }
-                    // vm.dateHeaders(dateHeaders);
-                }
+                /* if (data.summaryTableFormat.totalUnit == 1) {
+                     let dateHeaders: Array<DateHeader> = [];
+                     for (let contentItem of data.outputContent.verticalTotalValues) {
+                         let date = contentItem.yearMonth.toString();
+                         vm.dateHeaders.push(
+                             new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
+                         );
+                     }
+                     // vm.dateHeaders(dateHeaders);
+                 }*/
                 vm.agCommand(data);
                 vm.printContents(data);
                 vm.initGrid();
@@ -146,15 +146,17 @@ module nts.uk.at.kha003.d {
             let widthScreen = $(document).width();
             let height = (520 * $(window).height()) / 754;
             let width = Math.min(widthScreen, colWidth);
+            let widthInPX = width + "px";
             if (width === widthScreen) {
-                width = width - 15;
+                // width = width - 15;
+                widthInPX = '100%';
             }
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
-                width: width + "px",
+                width: widthInPX,
                 height: height + 'px',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
@@ -811,6 +813,8 @@ module nts.uk.at.kha003.d {
         getDateRange(fromDate: any, toDate: any, displayFormat: any, steps = 1): JQueryPromise<any> {
             let vm = this;
             let dfd = $.Deferred<any>();
+            let fromDateParam = fromDate;
+            let toDateParam = toDate;
             if (displayFormat === 1) {
                 fromDate = vm.correctformat(fromDate);
                 toDate = vm.correctformat(toDate);
@@ -831,28 +835,38 @@ module nts.uk.at.kha003.d {
                         vm.maxDateRange++;
                     }
                     break;
-                /*case 1:
-                    const fromYear = fromDate.getFullYear();
-                    const fromMonth = fromDate.getMonth() + 1;
-                    const toYear = toDate.getFullYear();
-                    const toMonth = toDate.getMonth() + 1;
-                    const months = [];
-                    for (let year = fromYear; year <= toYear; year++) {
-                        let month = year === fromYear ? fromMonth : 12;
-                        const monthLimit = year === toYear ? toMonth : 11;
-                        for (; month <= monthLimit; month++) {
-                            if (month < 10) {
-                                month = '0' + month;
-                            }
-                            vm.dateHeaders.push(
-                                new DateHeader('', '', '' + year + '/' + month)
-                            );
-                        }
-                    }
-                    break;*/
+                case 1:
+                    vm.dateRangeYerMonth(fromDateParam, toDateParam);
+
+                    break;
             }
             dfd.resolve();
             return dfd.promise();
+        }
+
+        dateRangeYerMonth(startDate: any, endDate: any) {
+            let vm = this;
+            startDate = startDate.substring(0, 4) + '-' + startDate.substring(4);
+            endDate = endDate.substring(0, 4) + '-' + endDate.substring(4);
+            var start = startDate.split('-');
+            var end = endDate.split('-');
+            var startYear = parseInt(start[0]);
+            var endYear = parseInt(end[0]);
+           // var dates = [];
+
+            for (var i = startYear; i <= endYear; i++) {
+                var endMonth = i != endYear ? 11 : parseInt(end[1]) - 1;
+                var startMon = i === startYear ? parseInt(start[1]) - 1 : 0;
+                for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
+                    var month = j + 1;
+                    var displayMonth = month < 10 ? '0' + month : month;
+                  //  dates.push([i, displayMonth, '01'].join('-'));
+                    vm.dateHeaders.push(
+                        new DateHeader(null, null, [i, displayMonth].join('/'))
+                    )
+                }
+            }
+           // return dates;
         }
 
         mounted() {
