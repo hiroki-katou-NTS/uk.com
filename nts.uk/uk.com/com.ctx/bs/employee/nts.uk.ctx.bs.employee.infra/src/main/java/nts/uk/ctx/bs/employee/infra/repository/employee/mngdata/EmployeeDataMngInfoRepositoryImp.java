@@ -907,7 +907,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	private static final String FIND_EMPLOYEE_BY_CODE = "SELECT e FROM BsymtEmployeeDataMngInfo e "
 			+ "WHERE e.companyId = :companyId "
 			+ "AND e.employeeCode = :employeeCode "
-			+ "AND e.delStatus != 0";
+			+ "AND e.delStatus = 0";
 
 	@Override
 	public Optional<EmployeeDataMngInfo> findByScdNotDel(String employeeCd, String companyId) {

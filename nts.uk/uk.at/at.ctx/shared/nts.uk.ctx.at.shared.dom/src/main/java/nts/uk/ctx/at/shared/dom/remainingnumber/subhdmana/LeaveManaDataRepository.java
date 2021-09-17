@@ -74,6 +74,9 @@ public interface LeaveManaDataRepository {
 	 * @param leaveId ID
 	 */
 	void deleteByLeaveId(String leaveId);
+	
+	void deleteAllByEmployeeId(String employeeId);
+	
 	/**
 	 * ドメインモデル「休出管理データ」を取得する
 	 * @param sid

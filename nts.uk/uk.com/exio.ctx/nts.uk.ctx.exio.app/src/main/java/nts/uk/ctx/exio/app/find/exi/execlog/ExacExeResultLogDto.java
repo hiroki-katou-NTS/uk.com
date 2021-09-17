@@ -75,7 +75,7 @@ public class ExacExeResultLogDto {
 	/**
 	 * 結果状態
 	 */
-	private int resultStatus;
+	private Integer resultStatus;
 
 	/**
 	 * 処理終了日時
@@ -87,14 +87,23 @@ public class ExacExeResultLogDto {
 	 */
 	private int processAtr;
 
-	private Long version;
 
 	public static ExacExeResultLogDto fromDomain(ExacExeResultLog domain) {
-		return new ExacExeResultLogDto(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId(),
-				domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(),
-				domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(),
-				domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(),
-				domain.getProcessAtr(), domain.getVersion());
+		return new ExacExeResultLogDto(domain.getCid(),
+				domain.getConditionSetCd(),
+				domain.getExternalProcessId(),
+				domain.getExecutorId(),
+				domain.getUserId(),
+				domain.getProcessStartDatetime(),
+				domain.getStandardAtr().value,
+				domain.getExecuteForm().value,
+				domain.getTargetCount(),
+				domain.getErrorCount(),
+				domain.getFileName(),
+				domain.getSystemType().value,
+				domain.getResultStatus().isPresent() ? domain.getResultStatus().get().value : 0,
+				domain.getProcessEndDatetime().isPresent() ? domain.getProcessEndDatetime().get() : null,
+				domain.getProcessAtr().value);
 	}
 
 }

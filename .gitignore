@@ -1,5 +1,5 @@
 #ignore project build folders
-**/build*
+**/build/*
 **/bin*
 
 #ignore node_modules
@@ -10,6 +10,8 @@
 **/.nb-gradle*
 **/.settings*
 **/.ide*
+**/.sts4-cache*
+!build.gradle
 
 #ignore spotlight cache
 **/.DS_Store
@@ -35,6 +37,7 @@
 # except all js, map in base.web
 !**/base.web/**/*.js*
 **/base.web/**/*bundles.js*
+!**/nts.uk.cnv.web/**/*.js*
 
 nts.uk/uk.repo/*
 
@@ -46,6 +49,7 @@ nts.uk/uk.repo/*
 **/main-server*
 **/wwwroot/*
 **/.DS_Store
+uk.repo/
 
 *.log
 **/.sass-cache/*

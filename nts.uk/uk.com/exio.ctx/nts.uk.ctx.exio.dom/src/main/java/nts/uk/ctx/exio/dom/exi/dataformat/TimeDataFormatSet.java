@@ -1,9 +1,12 @@
 package nts.uk.ctx.exio.dom.exi.dataformat;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionTime;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -45,7 +48,7 @@ public class TimeDataFormatSet extends DataFormatSetting {
 	/**
 	 * 固定値の値
 	 */
-	private Optional<DataSettingFixedValue> valueOfFixedValue;
+	private Optional<AcceptanceConditionTime> valueOfFixedValue;
 
 	/**
 	 * 有効桁数開始桁
@@ -63,7 +66,7 @@ public class TimeDataFormatSet extends DataFormatSetting {
 	private Optional<TimeRounding> roundProcCls;
 
 	public TimeDataFormatSet(int itemType, int delimiterSet, int fixedValue, int hourMinSelect,
-			int effectiveDigitLength, int roundProc, int decimalSelect, String valueOfFixedValue, Integer startDigit,
+			int effectiveDigitLength, int roundProc, int decimalSelect, Integer valueOfFixedValue, Integer startDigit,
 			Integer endDigit, Integer roundProcCls) {
 		super(itemType);
 		this.delimiterSet = EnumAdaptor.valueOf(delimiterSet, DelimiterSetting.class);
@@ -72,21 +75,77 @@ public class TimeDataFormatSet extends DataFormatSetting {
 		this.hourMinSelect = EnumAdaptor.valueOf(hourMinSelect, HourlySegment.class);
 		this.roundProc = EnumAdaptor.valueOf(roundProc, NotUseAtr.class);
 		this.decimalSelect = EnumAdaptor.valueOf(decimalSelect, DecimalSelection.class);
-		if (valueOfFixedValue == null)
-			this.valueOfFixedValue = Optional.empty();
-		else
-			this.valueOfFixedValue = Optional.of(new DataSettingFixedValue(valueOfFixedValue));
-		if (startDigit == null)
-			this.startDigit = Optional.empty();
-		else
-			this.startDigit = Optional.of(new AcceptedDigit(startDigit));
-		if (endDigit == null)
-			this.endDigit = Optional.empty();
-		else
-			this.endDigit = Optional.of(new AcceptedDigit(endDigit));
-		if (roundProcCls == null)
-			this.roundProcCls = Optional.empty();
-		else
-			this.roundProcCls = Optional.of(EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
+		this.valueOfFixedValue = Optional.ofNullable(valueOfFixedValue == null ? null : new AcceptanceConditionTime(valueOfFixedValue));
+		this.startDigit = Optional.ofNullable(startDigit == null ? null : new AcceptedDigit(startDigit));
+		this.endDigit =  Optional.ofNullable(endDigit == null ? null : new AcceptedDigit(endDigit));
+		this.roundProcCls =  Optional.ofNullable(roundProcCls == null ? null : EnumAdaptor.valueOf(roundProcCls, TimeRounding.class));
+	}
+
+	/**
+	 * 時刻型編集
+	 * @param timeValue
+	 * @return
+	 */
+	public Double editTimeValue(String timeValue) {
+		Double result = null;
+		//固定値使用する/しないを判別
+		if(this.fixedValue == NotUseAtr.USE) {
+			result = Double.valueOf(this.valueOfFixedValue.get().v());
+		}
+		//有効桁長あり/なしを判別
+		if(this.effectiveDigitLength == NotUseAtr.USE) {
+			//「値」から有効桁を切り出し「編集値」とする
+			timeValue = timeValue.substring(this.startDigit.get().v(), this.endDigit.get().v());
+		}
+		//数値のみまたは数値と区切り文字:「.」 or 「：」
+		Pattern pattern = Pattern.compile("-?\\d+(\\:\\d+)?\\-?\\d+(\\.\\d+)?");
+		Matcher matcher = pattern.matcher(timeValue);  
+		boolean matchFound = matcher.matches(); 
+		if(!matchFound) {
+			return result;
+		}
+		//60進数/10進数を判別する
+		if(this.decimalSelect == DecimalSelection.DECIMAL) {
+			//区切り文字を判別する
+			Pattern patternColon = Pattern.compile(":");
+		    Matcher matcherColon = patternColon.matcher(timeValue);
+		    boolean matchFoundColon = matcherColon.find();
+		    if(matchFoundColon) {
+		    	return result;
+		    }
+		    //10進数→分に変換（端数処理行わず端数含めてセットする）「編集値」とする
+		    result = Double.valueOf(timeValue)*60;
+		    //端数処理を使用する/使用しないを判別
+		    if(this.roundProc == NotUseAtr.USE) {
+		    	if(this.roundProcCls.get() == TimeRounding.DOWN_LESS_1_MINUTE) {
+		    		//10進→分に変換（1分未満切り捨て）「編集値」とする
+		    		result = Math.floor(result);
+		    	} else if (this.roundProcCls.get() == TimeRounding.LESS_1_MINUTE){
+		    		result = Math.ceil(result);
+		    	} else {
+		    		result = Double.valueOf(Math.round(result));
+		    	}
+		    }
+		} else {
+			//時分/分を判別する
+			if(this.hourMinSelect == HourlySegment.HOUR_MINUTE) {
+				//区切り文字（ピリオド、コロン）で上位＝時、下位＝分として分に変換し」「編集値」とする
+				String[] stringSepa = timeValue.split(":");
+				if(stringSepa.length == 1) {
+					stringSepa = timeValue.split(".");
+				}
+				int hour = Integer.valueOf(stringSepa[0]) * 60;
+				result = Double.valueOf(hour + Integer.valueOf(stringSepa[1]));					
+			} else {
+				try {
+					//そのまま分として受け入れる　「編集値」とする
+					result = Double.valueOf(timeValue);
+				} catch (Exception e) {
+					return null;
+				}
+			}
+		}
+		return result;
+		
 	}
 }
