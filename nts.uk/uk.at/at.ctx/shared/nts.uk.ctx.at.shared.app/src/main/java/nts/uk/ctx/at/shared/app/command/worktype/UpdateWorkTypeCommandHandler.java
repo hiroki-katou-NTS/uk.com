@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.shared.app.command.worktype;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 //import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.shared.app.service.worktype.WorkTypeService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -23,6 +27,9 @@ public class UpdateWorkTypeCommandHandler extends CommandHandler<WorkTypeCommand
 
 	@Inject
 	private WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private WorkTypeService workTypeService;
 
 	@Override
 	protected void handle(CommandHandlerContext<WorkTypeCommandBase> context) {
@@ -30,9 +37,14 @@ public class UpdateWorkTypeCommandHandler extends CommandHandler<WorkTypeCommand
 		String companyId = AppContexts.user().companyId();
 		WorkTypeCommandBase workTypeCommandBase = context.getCommand();
 		// Check work type code is present
-		if (workTypeRepo.findByPK(companyId, workTypeCommandBase.getWorkTypeCode()).isPresent()) {
+		Optional<WorkType> optEntity = workTypeRepo.findByPK(companyId, workTypeCommandBase.getWorkTypeCode());
+		if (optEntity.isPresent()) {
 			WorkType workType = workTypeCommandBase.toDomain(companyId);
 			workType.validate();
+			if (workTypeService.isExistingCloseAtr(workType, workTypeCommandBase)) {
+				// エラーメッセージ(#Msg_2207)を表示する
+				throw new BusinessException("Msg_2207");
+			}
 			workTypeRepo.update(workType);
 			// Remove data before add new data work type set
 			workTypeRepo.removeWorkTypeSet(companyId, workTypeCommandBase.getWorkTypeCode());

@@ -17,7 +17,6 @@ import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * The Class HolidayAddtionSet.
@@ -108,22 +107,29 @@ public class HolidayAddtionSet extends AggregateRoot implements SerializableWith
 
 	/**
 	 * 時間休暇加算時間を取得する
-	 * @param daily 時間休暇使用時間
-	 * @param time 相殺対象時間
+	 * @param useTime 時間休暇使用時間
+	 * @param offsetTarget 相殺対象時間
 	 * @param workTimeForm 就業時間帯の勤務形態
 	 * @return 時間休暇加算時間
 	 */
-	public AttendanceTime getAddTime(TimevacationUseTimeOfDaily daily, AttendanceTime time, WorkTimeForm workTimeForm) {
-		//加算使用時間の計算
-		AttendanceTime dailyTime = new AttendanceTime(daily.calcTotalVacationAddTime(Optional.of(this), AdditionAtr.WorkingHoursOnly));
+	public AttendanceTime getAddTime(
+			TimevacationUseTimeOfDaily useTime,
+			AttendanceTime offsetTarget,
+			WorkTimeForm workTimeForm) {
 		
+		// 加算使用時間の計算
+		int addUseMinutes = useTime.calcTotalVacationAddTime(Optional.of(this), AdditionAtr.WorkingHoursOnly);
+		// 相殺時間を計算する
+		int offsetMinutes = Math.min(addUseMinutes, offsetTarget.valueAsMinutes());
+		// 時間休暇加算設定を取得する
 		Optional<TimeHolidayAdditionSet> flowSet = this.getTimeHolidayAdditionSet(workTimeForm);
-		if(!flowSet.isPresent() && workTimeForm.isFixed()) {
-			//固定勤務の場合は設定がない為、常に相殺時間
-			return new AttendanceTime(Math.min(dailyTime.valueAsMinutes(), time.valueAsMinutes()));
+		if (!flowSet.isPresent()){
+			// 固定勤務の時、相殺時間を返す
+			if (workTimeForm.isFixed()) return new AttendanceTime(offsetMinutes);
+			throw new RuntimeException("TimeHolidayAdditionSet not exist");
 		}
-		//フレックス・流動の場合は、設定を参照して加算する時間を判断する
-		return flowSet.get().getAddTime(dailyTime, time); //必須の初期データである為、get()している。
+		// 加算する時間を判断する
+		return flowSet.get().getAddTime(new AttendanceTime(addUseMinutes), new AttendanceTime(offsetMinutes));
 	}
 	
 	/**

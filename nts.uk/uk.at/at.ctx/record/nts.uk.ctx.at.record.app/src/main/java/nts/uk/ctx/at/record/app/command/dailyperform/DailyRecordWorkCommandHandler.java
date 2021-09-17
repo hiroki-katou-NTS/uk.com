@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import lombok.val;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -77,10 +78,15 @@ import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.scherec.attendanceitem.converter.util.RecordHandler;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.CommonCompanySettingForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
@@ -275,6 +281,9 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	
 	@Inject
 	private DailyRecordAdUpService dailyRecordAdUpService;
+	
+	@Inject
+	private AttendanceItemConvertFactory convertFactory;
 
 	private static final List<String> DOMAIN_CHANGED_BY_CALCULATE = Arrays.asList(DAILY_ATTENDANCE_TIME_NAME, DAILY_OPTIONAL_ITEM_NAME, DAILY_WORK_INFO_NAME);
 	
@@ -331,7 +340,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		if (!items.isEmpty()) {
 			return items;
 		}
-		registerNotCalcDomain(commands, isUpdate);
+		registerNotCalcDomain(commands, new ArrayList<>(), isUpdate);
 		updateDomainAfterCalcAndRunStored(calced, null);
 
 		registerErrorWhenCalc(toMapParam(commands),
@@ -364,8 +373,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 		if (!items.isEmpty()) {
 			return items;
 		}
-		// TODO update data
-		registerNotCalcDomain(commandNewAfter, isUpdate);
+
+		registerNotCalcDomain(commandNewAfter, commandOld, isUpdate);
 		List<IntegrationOfDaily> lastDt = updateDomainAfterCalcAndRunStored(domainDailyNew, correctResult);
 
 		registerErrorWhenCalc(domainDailyNew);
@@ -462,10 +471,11 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			//employeeErrorRepo.removeParam(toMapParam(commandNew));
 			hasRemoveError = true;
 		}
-		registerNotCalcDomain(commandNew, isUpdate);
+		registerNotCalcDomain(commandNew, commandOld, isUpdate);
 		List<IntegrationOfDaily> lastDt =  updateDomainAfterCalc(domainDailyNew);
 		
-		dailyRecordAdUpService.removeConfirmApproval(domainDailyNew, Optional.empty(), Optional.empty());
+		// エラーで本人確認と上司承認を解除する
+		dailyRecordAdUpService.removeConfirmApproval(domainDailyNew);
 		if (month != null && month.getEmployeeId() != null) {
 			// val error = x.getEmployeeMonthlyPerErrorList().get(0);
 			employeeMonthlyPerErrorRepository.removeAll(month.getEmployeeId(), new YearMonth(month.getYearMonth()),
@@ -507,7 +517,7 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 	private void excuteLog(List<IntegrationOfDaily> lastDt, Map<Integer, DPAttendanceItemRC> lstAttendanceItem, List<DailyRecordWorkCommand> commandOld, 
 			List<DailyRecordWorkCommand> commandNew, List<DailyItemValue> dailyItems){
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
-		AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(false).threadName(this.getClass().getName())
+		AsyncTask task = AsyncTask.builder().keepsTrack(false).threadName(this.getClass().getName())
 				.build(() -> {
 //					Map<Integer, OptionalItemAtr> optionalMaster = optionalMasterRepo.findAll(AppContexts.user().companyId())
 //							.stream().collect(Collectors.toMap(c -> c.getOptionalItemNo().v(), c -> c.getOptionalItemAtr()));
@@ -588,11 +598,16 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 
 	@SuppressWarnings({ "unchecked" })
 	private <T extends DailyWorkCommonCommand> void registerNotCalcDomain(List<DailyRecordWorkCommand> commands,
-			boolean isUpdate) {
+			List<DailyRecordWorkCommand> commandOlds, boolean isUpdate) {
+		val converter = convertFactory.createDailyConverter();
+		
 		commands.stream().forEach(command -> {
 			handleEditStates(isUpdate, command);
-
-			List<String> mapped = command.itemValues().stream().map(c -> getGroup(c)).distinct()
+			
+			val changedItems = command.itemValues();
+			changedItems.addAll(getChangedItems(converter, command, commandOlds));
+			
+			List<String> mapped = changedItems.stream().map(c -> getGroup(c)).distinct()
 					.collect(Collectors.toList());
 			Set<String> layoutAll = new HashSet<>();
 			mapped.stream().filter(c -> !DOMAIN_CHANGED_BY_CALCULATE.contains(c)).forEach(c -> {
@@ -618,6 +633,28 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 				}
 			});
 		});
+	}
+	
+	private List<ItemValue> getChangedItems(DailyRecordToAttendanceItemConverter  converter, DailyRecordWorkCommand command,
+			List<DailyRecordWorkCommand> commandOlds) {
+		
+		/** 補正で修正された可能性がある項目：　休憩、出退勤、応援時間帯のIDを取得する */
+		val itemChangeByCorrection = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.BREAK_TIME, 
+				DailyDomainGroup.SUPPORT_TIMESHEET, DailyDomainGroup.ATTENDACE_LEAVE);
+		
+		converter.setData(command.toDomain());
+		val newValues = converter.convert(itemChangeByCorrection);
+		
+		commandOlds.stream().filter(c -> c.getWorkDate().equals(command.getWorkDate()) && c.getEmployeeId().equals(command.getEmployeeId()))
+			.findFirst().ifPresent(c -> {
+
+				converter.setData(c.toDomain());
+				val oldValues = converter.convert(itemChangeByCorrection);
+				
+				newValues.removeAll(oldValues);
+			});
+		
+		return newValues;
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -674,6 +711,8 @@ public class DailyRecordWorkCommandHandler extends RecordHandler {
 			return isUpdate ? this.remarksUpdateHandler : this.remarksAddHandler;
 		case DAILY_SUPPORT_TIMESHEET_NAME:
 			return isUpdate ? this.supportUpdateHandler : this.supportAddHandler;
+		case DAILY_SNAPSHOT_NAME:
+			return isUpdate ? this.snapshotUpdateHandler : this.snapshotAddHandler;
 		default:
 			return null;
 		}

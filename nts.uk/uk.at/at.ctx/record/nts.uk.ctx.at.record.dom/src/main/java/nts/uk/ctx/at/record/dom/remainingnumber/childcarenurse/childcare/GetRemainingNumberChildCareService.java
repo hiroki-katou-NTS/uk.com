@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -13,8 +12,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.remainingnumber.childcarenurse.GetRemainingNumberChildCareNurseService.Require;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.export.GetRemNumClosureStart;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.childcare.ChildCareUsedNumberData;
@@ -27,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettin
  * 実装：期間中の子の看護休暇残数を取得
  * @author yuri_tamakoshi
  */
-@Stateless
 public class GetRemainingNumberChildCareService {
 
 	/**
@@ -44,7 +42,7 @@ public class GetRemainingNumberChildCareService {
 	 * @param periodOverWrite 上書き対象期間(Optional)
 	 * @return 子の看護介護休暇集計結果
 	 */
-	public AggrResultOfChildCareNurse getChildCareRemNumWithinPeriod(
+	public static AggrResultOfChildCareNurse getChildCareRemNumWithinPeriod(
 			String companyId,
 			String employeeId,
 			DatePeriod period,
@@ -122,7 +120,7 @@ public class GetRemainingNumberChildCareService {
 	 * @param nursingCategory 介護看護区分
 	 * @return 子の看護介護休暇集計結果
 	 */
-	public ChildCareNurseUsedNumber aggregateStartDateChildCareInfo (String companyId, String employeeId,DatePeriod period,
+	public static ChildCareNurseUsedNumber aggregateStartDateChildCareInfo (String companyId, String employeeId,DatePeriod period,
 			InterimRemainMngMode performReferenceAtr,
 			GeneralDate criteriaDate,
 			Optional<Boolean> isOverWrite,
@@ -174,7 +172,7 @@ public class GetRemainingNumberChildCareService {
 	 * @param closureStartDate 締め開始日
 	 * @return ChildCareNurseUsedNumber 子の看護介護使用数
 	 */
-	public ChildCareNurseUsedNumber childCareEmployeeUsedNumber(
+	public static ChildCareNurseUsedNumber childCareEmployeeUsedNumber(
 			String companyId,
 			String employeeId,
 			DatePeriod period,
@@ -239,7 +237,7 @@ public class GetRemainingNumberChildCareService {
 	 * @param periodOverWrite 上書き対象期間(Optional)
 	 * @return 暫定子の看護管理データ
 	 */
-	public List<TempChildCareManagement> tempChildCareManagement(String employeeId,DatePeriod period,
+	public static List<TempChildCareManagement> tempChildCareManagement(String employeeId,DatePeriod period,
 			Optional<Boolean> isOverWrite,
 			List<TempChildCareManagement> tempChildCareDataforOverWriteList,
 			InterimRemainMngMode performReferenceAtr,

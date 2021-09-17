@@ -555,6 +555,13 @@ module nts.uk.com.view.cps005.b {
                     $('#numericItemMin, #numericItemMax').trigger('blur');
                 };
 
+            self.numericItemAmount.subscribe((val) => {
+                if (!ko.toJS(val)) {
+                    $('#numericItemMin').parent().removeClass('symbol symbol-right');
+                    $('#numericItemMax').parent().removeClass('symbol symbol-right');
+                }
+            })
+
             if (data) {
                 let currentItemData = ko.toJS(window['__viewContext']['screenModelB'].currentItemData);
 
@@ -587,7 +594,7 @@ module nts.uk.com.view.cps005.b {
                     writeConstraint("NumericItemMin", {
                         mantissaMaxLength: !decimalPart ? 0 : decimalPart,
                         min: Number(!!numericItemMinus ? maxValue * (-1) : 0),
-                        max: _.isNil(numericItemMax) ? Number(maxValue) : _.min([Number(numericItemMax), Number(maxValue)])
+                        max: _.isNil(numericItemMax) || _.isEmpty(numericItemMax) ? Number(maxValue) : _.min([Number(numericItemMax), Number(maxValue)])
                     });
 
                     writeConstraint("NumericItemMax", {

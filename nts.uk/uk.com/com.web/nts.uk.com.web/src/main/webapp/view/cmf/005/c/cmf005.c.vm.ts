@@ -166,8 +166,8 @@ module nts.uk.com.view.cmf005.c {
     rightColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: '', key: 'id', hidden: true },
       { headerText: getText('CMF005_19'), key: 'categoryId', width: 70 },
-      { headerText: getText('CMF005_226'), key: 'displayName', width: 180 },
-      { headerText: getText('CMF005_25'), key: 'retentionPeriod', width: 100 }
+      { headerText: getText('CMF005_226'), key: 'displayName', width: 250 },
+      { headerText: getText('CMF005_25'), key: 'retentionPeriod', width: 70 }
     ]);
     currentCateSelected: KnockoutObservableArray<Category> = ko.observableArray([]);
     systemTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -253,7 +253,6 @@ module nts.uk.com.view.cmf005.c {
           $("#C10_4 input").focus();
         }
       });
-
       vm.initDisplay();
     }
 
@@ -291,6 +290,8 @@ module nts.uk.com.view.cmf005.c {
           }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
       }).always(() => {
         vm.$blockui("clear");
+        // Move C3_2 into position
+        $("#C3_2").appendTo("#C4-search-area");
       });
     }
 

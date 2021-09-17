@@ -37,6 +37,13 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	
 	private static final String DELETE_BY_SID_YMD = "DELETE FROM KrcdtInterimHdSpMng c"
 			+ " WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
+	
+	private static final String DELETE_BY_SID_CD_PERIOD = "DELETE FROM KrcdtInterimHdSpMng c"
+			+ " WHERE c.pk.sid = :sid "
+			+ " AND c.pk.specialHolidayCode = :specialHolidayCode"
+			+ " AND c.pk.ymd >= :startDate "
+			+ " AND c.pk.ymd <= :endDate";
+	
 
 	private InterimSpecialHolidayMng toDomain(KrcdtInterimHdSpMng c) {
 		
@@ -75,7 +82,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 			entity.usedTime = domain.getUseTimes().map(x -> x.v() == 0 ? null : x.v()).orElse(null);
 			entity.remainMngId = domain.getRemainManaID();
 			entity.pk = key;
-			this.getEntityManager().persist(entity);
+			this.commandProxy().insert(entity);
 		} else {
 			entity.createAtr = domain.getCreatorAtr().value;
 			entity.mngAtr = domain.getMngAtr().value;
@@ -103,6 +110,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 		.setParameter("sid", sId)
 		.setParameter("ymd", ymd)
 		.executeUpdate();
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -112,6 +120,20 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 				.setParameter("startDate", period.start())
 				.setParameter("endDate", period.end())
 				.getList(c -> toDomain(c));
+	}
+	
+	/*
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository#deleteSpecialHolidayBySidAndPeriod(java.lang.String, int, nts.arc.time.calendar.period.DatePeriod)
+	 */
+	@Override
+	public void deleteBySidAndPeriod(String sid ,int specialCd,  DatePeriod period){
+		this.getEntityManager().createQuery(DELETE_BY_SID_CD_PERIOD)
+		.setParameter("sid", sid)
+		.setParameter("specialHolidayCode", specialCd)
+		.setParameter("startDate", period.start())
+		.setParameter("endDate", period.end())
+		.executeUpdate();
 	}
 
 }

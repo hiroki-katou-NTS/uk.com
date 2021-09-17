@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * 打刻順序不正(入退門)
+ * 打刻順序不正(入退門) - 入退門打刻順序不正
  * 
  * @author nampt
  *
@@ -196,7 +196,7 @@ public class ExitStampIncorrectOrderCheck {
 			// 2回目の入門と出勤．打刻が存在するか確認する(check second stamp attendance has data or
 			// not)
 			TimeWithDayAttr secondAttendanceTime = attendanceLeavingGates.get(1).getAttendance().get().getTimeDay().getTimeWithDay().isPresent()?
-					attendanceLeavingGates.get(0).getAttendance().get().getTimeDay().getTimeWithDay().get():null;
+					attendanceLeavingGates.get(1).getAttendance().get().getTimeDay().getTimeWithDay().get():null;
 			if (secondAttendanceTime != null) {
 				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().size()>1
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getAttendanceStamp().isPresent()
@@ -216,7 +216,7 @@ public class ExitStampIncorrectOrderCheck {
 			// 2回目の退門と退勤．打刻が存在するか確認する(check second stamp leaving has data or
 			// not)
 			TimeWithDayAttr secondLeavingTime = attendanceLeavingGates.get(1).getLeaving().get().getTimeDay().getTimeWithDay().isPresent()?
-					attendanceLeavingGates.get(0).getLeaving().get().getTimeDay().getTimeWithDay().get():null;
+					attendanceLeavingGates.get(1).getLeaving().get().getTimeDay().getTimeWithDay().get():null;
 			if (secondLeavingTime != null) {
 				if (timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().size()>1 
 						&& timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().get(1).getLeaveStamp().isPresent()

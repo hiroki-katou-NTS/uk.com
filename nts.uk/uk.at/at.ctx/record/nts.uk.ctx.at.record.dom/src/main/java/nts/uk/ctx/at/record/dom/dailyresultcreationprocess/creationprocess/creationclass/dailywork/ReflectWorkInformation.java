@@ -12,6 +12,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdail
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.reflectcalcategory.ReflectCalCategory;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.reflectworktimestamp.ReflectWorkTimeStamp;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.updateifnotmanaged.UpdateIfNotManaged;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.updateifnotmanaged.UpdateIfNotManagedOutput;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
@@ -48,10 +49,12 @@ public class ReflectWorkInformation {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		if (isReflectStampGoingToWork) {
 			// スケジュール管理しない場合勤務情報を更新
-			boolean updated = updateIfNotManaged.update(AppContexts.user().companyId(), integrationOfDaily.getEmployeeId(), 
+			UpdateIfNotManagedOutput updated = updateIfNotManaged.update(AppContexts.user().companyId(), integrationOfDaily.getEmployeeId(), 
 														integrationOfDaily.getYmd(), integrationOfDaily);
-			if (updated) {
-				changeDailyAtt.setFixBreakCorrect(true);
+
+			listErrorMessageInfo.addAll(updated.getListError());
+			if (updated.isCheckUpdated()) {
+				changeDailyAtt.setCorrectValCopyFromSche(true);
 				changeDailyAtt.setWorkInfo(true);
 			}
 		}
@@ -64,7 +67,7 @@ public class ReflectWorkInformation {
 		if (stamp.getRefActualResults().getWorkTimeCode().isPresent()) {
 			// 打刻の就業時間帯を反映
 			reflectWorkTimeStamp.reflectStamp(stamp.getRefActualResults().getWorkTimeCode().get(), integrationOfDaily);
-			changeDailyAtt.setFixBreakCorrect(true);
+			changeDailyAtt.setCorrectValCopyFromSche(true);
 			changeDailyAtt.setWorkInfo(true);
 		}
 		// 計算区分に反映する

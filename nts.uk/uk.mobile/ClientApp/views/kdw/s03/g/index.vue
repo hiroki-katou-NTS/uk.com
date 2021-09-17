@@ -26,13 +26,27 @@
                 <!-- G3_1: 年休残 -->
                 <div class="col-9">{{'KDWS03_47' | i18n}}</div>
                 <!-- G3_2: 年休残数 -->
-                <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.yearRemain)}}</div>
+                <div class="col-3 text-right">
+                  <div v-if="remainNumber.yearRemainTime">
+                    {{'KDWS03_80' | i18n([remainNumber.yearRemain, remainNumber.yearRemainTime])}}   
+                  </div>
+                  <div v-else>
+                    {{'KDWS03_52' | i18n(remainNumber.yearRemain)}}
+                  </div>
+                </div>
               </div>
               <div class="row" v-if="remainNumber.manageYear" v-bind:class="{'pt-3': remainNumber.manageYear}">
                 <!-- G4_1: 次回付与 -->
                 <div class="col-7">{{'KDWS03_51' | i18n}}</div>
                 <!-- G4_2: 次回付与日 -->
-                <div class="col-5 text-right">{{remainNumber.nextGrantDate}}</div>
+                <div class="col-5 text-right">
+                  <div v-if="remainNumber.nextGrantDate">
+                    {{nextGrantDateStr}}    
+                  </div>
+                  <div v-else>
+                    {{'KDWS03_79' | i18n}}
+                  </div>
+                </div>
               </div>
               <div class="row" v-if="remainNumber.manageReserve && remainNumber.manageYear" v-bind:class="{'pt-3': remainNumber.manageYear}">
                 <!-- G5_1: 積立年休残 -->
@@ -44,7 +58,14 @@
                 <!-- G6_1: 代休残 -->
                 <div class="col-9">{{'KDWS03_49' | i18n}}</div>
                 <!-- G6_2: 代休残数 -->
-                <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.compensatoryRemain)}}</div>
+                <div class="col-3 text-right">
+                  <div v-if="remainNumber.compensatoryRemainTime">
+                    {{'KDWS03_80' | i18n([remainNumber.compensatoryRemain, remainNumber.compensatoryRemainTime])}}   
+                  </div>
+                  <div v-else>
+                    {{'KDWS03_52' | i18n(remainNumber.compensatoryRemain)}}
+                  </div>
+                </div>
               </div>
               <div class="row" v-if="remainNumber.manageSubStitute" 
                 v-bind:class="{'pt-3': remainNumber.manageCompensatory || remainNumber.manageReserve || remainNumber.manageYear}">
@@ -52,6 +73,32 @@
                 <div class="col-9">{{'KDWS03_50' | i18n}}</div>
                 <!-- G7_2: 振休残数 -->
                 <div class="col-3 text-right">{{'KDWS03_52' | i18n(remainNumber.substituteRemain)}}</div>
+              </div>
+              <div class="row pt-3" v-if="remainNumber.manageChildCare">
+                <!-- G12_1: 振休残 -->
+                <div class="col-9">{{'KDWS03_77' | i18n}}</div>
+                <!-- G12_2: 振休残数 -->
+                <div class="col-3 text-right">
+                  <div v-if="remainNumber.childCareTime">
+                    {{'KDWS03_80' | i18n([remainNumber.childCareDay, remainNumber.childCareTime])}}   
+                  </div>
+                  <div v-else>
+                    {{'KDWS03_52' | i18n(remainNumber.childCareDay)}}
+                  </div>
+                </div>
+              </div>
+              <div class="row pt-3" v-if="remainNumber.manageLongTermCare">
+                <!-- G13_1: 振休残 -->
+                <div class="col-9">{{'KDWS03_78' | i18n}}</div>
+                <!-- G13_2: 振休残数 -->
+                <div class="col-3 text-right">
+                  <div v-if="remainNumber.longTermCareTime">
+                    {{'KDWS03_80' | i18n([remainNumber.longTermCareDay, remainNumber.longTermCareTime])}}   
+                  </div>
+                  <div v-else>
+                    {{'KDWS03_52' | i18n(remainNumber.longTermCareDay)}}
+                  </div>
+                </div>
               </div>
           </div>
         </div>

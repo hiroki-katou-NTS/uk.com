@@ -43,12 +43,14 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.MsgErrorOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.AppReasonOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.output.DeadlineLimitCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentService;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
@@ -63,6 +65,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -205,6 +208,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	@Override
 	public AppDispInfoWithDateOutput getAppDispInfoWithDate(String companyID, ApplicationType appType, List<GeneralDate> dateLst,
 			AppDispInfoNoDateOutput appDispInfoNoDateOutput, boolean mode, Optional<OvertimeAppAtr> opOvertimeAppAtr) {
+		List<MsgErrorOutput> msgErrorLst = new ArrayList<>();
 		// 基準日=INPUT．「申請対象日リスト」の1個目
 		Optional<GeneralDate> targetDate = Optional.empty();
 		if(!CollectionUtil.isEmpty(dateLst)) {
@@ -229,10 +233,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		ApprovalFunctionSet approvalFunctionSet = this.getApprovalFunctionSet(companyID, employeeID, baseDate, appType);
 		// 取得したドメインモデル「申請承認機能設定．申請利用設定．利用区分」をチェックする
 		// xử lý trên UI
-		/*if (mode && approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
+		if (mode && approvalFunctionSet.getAppUseSetLst().get(0).getUseDivision() == UseDivision.NOT_USE) {
 			// エラーメッセージ(Msg_323)を返す
-			throw new BusinessException("Msg_323", String.valueOf(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate().value));
-		}*/
+			msgErrorLst.add(new MsgErrorOutput("Msg_323", Collections.emptyList()));
+		}
 		// 使用可能な就業時間帯を取得する
 		List<WorkTimeSetting> workTimeLst = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID, baseDate);
 		// 社員所属雇用履歴を取得する
@@ -280,7 +284,22 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				deadlineLimitCurrentMonth.isUseAtr() ? NotUseAtr.USE : NotUseAtr.NOT_USE);
 		appDispInfoWithDateOutput.setOpEmploymentSet(opAppEmploymentSet);
 		appDispInfoWithDateOutput.setOpListApprovalPhaseState(opListApprovalPhaseState);
-		appDispInfoWithDateOutput.setOpErrorFlag(opErrorFlag);
+		if(opErrorFlag.isPresent()) {
+			switch (opErrorFlag.get()) {
+			case NO_CONFIRM_PERSON:
+				msgErrorLst.add(new MsgErrorOutput("Msg_238", Collections.emptyList()));
+				break;
+			case APPROVER_UP_10:
+				msgErrorLst.add(new MsgErrorOutput("Msg_237", Collections.emptyList()));
+				break;
+			case NO_APPROVER:
+				msgErrorLst.add(new MsgErrorOutput("Msg_324", Collections.emptyList()));
+				break;
+			default:
+				break;
+			}
+		}
+		appDispInfoWithDateOutput.setOpMsgErrorLst(Optional.of(msgErrorLst));
 		appDispInfoWithDateOutput.setOpActualContentDisplayLst(
 				CollectionUtil.isEmpty(appDispInfoRelatedDateOutput.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(appDispInfoRelatedDateOutput.getActualContentDisplayLst()));
 		appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(
@@ -473,7 +492,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		// 法定区分のチェック
 		HolidayAtrOutput holidayAtrOutput = judgmentOneDayHoliday.checkHolidayAtr(
 				companyID, 
-				actualContentDisplayLst.stream().findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
+				actualContentDisplayLst.stream().filter(x -> x.getDate().equals(dateLst.stream().findFirst().orElse(null)))
+					.findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
 				workTypeLst.get(1));
 		if(!holidayAtrOutput.isCheckResult()) {
 			String msgParam = Strings.EMPTY;
@@ -504,7 +524,9 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			List<WorkType> workTypeLst,
 			List<WorkTimeSetting> workTimeLst,
 			AchievementDetail achievementDetail) {
+		
 		String companyID = AppContexts.user().companyId();
+		
 		// 申請日付チェック
 		if(inputDate != null && achievementDetail != null) {
 			// INPUT．「実績詳細」をチェックする
@@ -527,34 +549,51 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, paramDate);
 		String processWorkType = null;
 		String processWorkTime = null; 
+		
 		if(opWorkingConditionItem.isPresent()) {
-			// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
-			Optional<WorkTypeCode> opConditionWktypeCD = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTypeCode();
-			List<String> workTypeCDLst = workTypeLst.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-			if(opConditionWktypeCD.isPresent() && workTypeCDLst.contains(opConditionWktypeCD.get().v())) {
-				// ドメインモデル「個人勤務日区分別勤務」．平日時．勤務種類コードを選択する(chọn cai loai di lam)
-				processWorkType = opConditionWktypeCD.get().v();
+			
+			WorkingConditionItem workingConditionItem = opWorkingConditionItem.get();
+			
+			// $勤務情報　＝　労働条件項目.区分別勤務.出勤日の勤務情報を取得する()
+			WorkInformation workInformation =
+					workingConditionItem.getWorkCategory()
+										.getWorkInformationWorkDay();
+			// $勤務情報．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
+			String workType = workInformation.getWorkTypeCode().v();
+			
+			// $勤務情報．勤務種類コードが【07_勤務種類取得】取得した勤務種類Listにあるかをチェックする
+			if (workTypeLst.stream().anyMatch(x -> x.getWorkTypeCode().v().equals(workType))) {
+				// $勤務情報.勤務種類コードを選択する
+				processWorkType = workType;
+				
 			} else {
-				// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)
+				// 先頭の勤務種類を選択する
 				processWorkType = workTypeLst.stream().findFirst().map(x -> x.getWorkTypeCode().v()).orElse(null);
 			}
-			// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードがINPUT「就業時間帯リスト」Listに含まれているかをチェックする
-			processWorkTime = opWorkingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null);
+			// $勤務情報.就業時間帯コードがINPUT「就業時間帯リスト」Listに含まれているかをチェックする
+			String workTime = 
+					opWorkingConditionItem.get()
+										  .getWorkCategory()
+										  .getWorkTime()
+										  .getWeekdayTime()
+										  .getWorkTimeCode()
+										  .map(x -> x.v())
+										  .orElse(null);
 			
-			final String workTime = processWorkTime;
-			
-			if (workTimeLst.stream().map(x -> x.getWorktimeCode().v()).filter(x -> x.equals(workTime)).findFirst().isPresent()) { // Listに存在する
-				// ドメインモデル「個人勤務日区分別勤務」．平日時．就業時間帯コードを選択する
+			if (workTimeLst.stream().anyMatch(x -> x.getWorktimeCode().v().equals(workTime))) {
+				// $勤務情報.就業時間帯コードを選択する
 				processWorkTime = workTime;
-				
-			} else { // Listに存在しない
+			} else {
 				// INPUT「就業時間帯リスト」Listの先頭の就業時間帯を選択する
 				if (CollectionUtil.isEmpty(workTimeLst)) {
+					// 就業時間帯コード　＝　NULL(WorktimeCode = NULL)
 					processWorkTime = null;
 				} else {
+					// 先頭の就業時間帯を選択する(chọn mui giờ làm đầu tiên)
 					processWorkTime = workTimeLst.get(0).getWorktimeCode().v();	
 				}
 			}
+			
 			
 		} else {
 			// 先頭の勤務種類を選択する(chon cai dau tien trong list loai di lam)

@@ -25,12 +25,12 @@ public class StandardWidgetDto {
 	public static StandardWidgetDto fromDomain(StandardWidget domain) {
 		return new StandardWidgetDto(
 			domain.getCompanyID(),
-			domain.getToppagePartID(),
-			domain.getCode().v(),
-			domain.getName().v(),
-			domain.getType().value,
-			domain.getWidth().v(),
-			domain.getHeight().v()
+			"",
+			"",
+			"",
+			0,
+			0,
+			0
 			);
 	}
 

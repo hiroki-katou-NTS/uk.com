@@ -27,7 +27,7 @@ public interface WorkingConditionItemService {
 	 * @return the holiday work schedule
 	 */
 	// 休日出勤時の勤務情報を取得する (Lấy 休日出勤時の勤務情報)
-	Optional<SingleDaySchedule> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
+	Optional<WorkInformation> getHolidayWorkSchedule(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode);
 	
 	/**
 	 * 出勤時の勤務情報を取得する (new_2020)
@@ -44,9 +44,17 @@ public interface WorkingConditionItemService {
 	/**
 	 * @name <<Public>> 社員（List）の労働条件を期間で取得する
 	 * @param sIds ・対象社員一覧：Input「社員一覧」
-	 * @param datePeriod ・対象期間：Input「基準日」
+	 * @param datePeriod ・対象期間：Input「基準日」 
 	 * @return ・労働条件項目
 	 */
 	List<WorkingConditionItem> getEmployeesIdListByPeriod(List<String> sIds, DatePeriod datePeriod);
 
+	/**
+	 * 
+	 * @param employeeId 社員ID
+	 * @param ymd 基準日
+	 * @return 就業時間帯コード
+	 */
+	String getWorkTimeWorkHoliday(String employeeId, GeneralDate ymd);
+	
 }

@@ -167,7 +167,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 			if (workConditionItemOpt.isPresent()) {
 				val workCategory = workConditionItemOpt.get().getWorkCategory();
 				if (workCategory != null) {
-					val weekdayTime = workCategory.getWeekdayTime();
+					val weekdayTime = workCategory.getWorkTime().getWeekdayTime();
 					if (weekdayTime != null) {
 						if (weekdayTime.getWorkTimeCode().isPresent()) {
 							predTimeSetOnWeekday = companySets.getPredetemineTimeSetMap(

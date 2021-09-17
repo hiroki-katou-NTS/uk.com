@@ -23,7 +23,7 @@ public class RemainingDaysAndTimeDto {
 	public RemainingDaysAndTimeDto(double day, AttendanceTime time) {
 		super();
 		this.day = day;
-		this.time = time.toString();
+		this.time = time.hour() + ":" + (time.minute() < 10 ? ("0" + time.minute()) : time.minute());
 	}
 	
 }

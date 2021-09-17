@@ -129,11 +129,15 @@ public class UpdateAllDomainMonthServiceImpl implements UpdateAllDomainMonthServ
 				// 上で全削除しているので、INSERTのみ
 				d.getAttendanceTimeOfWeek().stream().forEach(atw -> this.timeWeekRepo.persist(atw));
 				
-				this.storedProcedureProcess.monthlyProcessing(
-						companyId, employeeId, yearMonth, closureId, closureDate,
-						d.getAttendanceTime(), d.getAnyItemList());
-				
-//				anyItemRepo.persistAndUpdate(d.getAnyItemList());
+				if (AppContexts.optionLicense().customize().ootsuka()) {
+					
+					this.storedProcedureProcess.monthlyProcessing(
+							companyId, employeeId, yearMonth, closureId, closureDate,
+							d.getAttendanceTime(), d.getAnyItemList());
+				} else {
+
+					anyItemRepo.persistAndUpdate(d.getAnyItemList());	
+				}
 				
 				d.getAgreementTime().ifPresent(c ->  this.agreementRepo.persistAndUpdate(c));
 				

@@ -55,7 +55,8 @@ public class MonthlyCorrectionLogParameter implements Serializable {
 		
 		private Object valueTimeMoney(int valueType, String value) {
 			if (valueType == DataValueAttribute.TIME.value || valueType == DataValueAttribute.CLOCK.value) {
-				return Integer.parseInt(value);
+				double d = Double.parseDouble(value);
+				return (int) d;
 			} else if (valueType == DataValueAttribute.MONEY.value) {
 				return Double.parseDouble(value);
 			} else {

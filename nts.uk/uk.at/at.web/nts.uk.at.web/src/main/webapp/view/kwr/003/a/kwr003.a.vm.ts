@@ -17,7 +17,7 @@ module nts.uk.at.view.kwr003.a {
     closureId: KnockoutObservable<number> = ko.observable(null);
     // end variable of CCG001
     //panel left
-    dpkYearMonth: KnockoutObservable<any> = ko.observable(moment());
+    dpkYearMonth: KnockoutObservable<any> = ko.observable(null);
     //panel right
     rdgSelectedId: KnockoutObservable<number> = ko.observable(0);
     standardSelectedCode: KnockoutObservable<string> = ko.observable(null);
@@ -135,7 +135,7 @@ module nts.uk.at.view.kwr003.a {
         returnDataFromCcg001: function (data: common.Ccg001ReturnedData) {
           vm.closureId(data.closureId);
           vm.getListEmployees(data);
-          let date  = moment(data.periodStart).format('YYYYMM')
+          let date = moment(data.periodStart).format('YYYYMM');
           vm.dpkYearMonth(date)
         }
       }
@@ -368,7 +368,6 @@ module nts.uk.at.view.kwr003.a {
         } else {
           findObj = _.find(vm.settingListItems2(), (x) => x.code === vm.freeSelectedCode());
         }
-
         let params = {
           mode: mode, //ExcelPdf区分
           lstEmpIds: lstEmployeeIds, //社員リスト

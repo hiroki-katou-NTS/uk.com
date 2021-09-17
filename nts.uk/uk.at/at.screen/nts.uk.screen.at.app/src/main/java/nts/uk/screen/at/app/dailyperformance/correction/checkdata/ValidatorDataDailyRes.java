@@ -89,8 +89,8 @@ public class ValidatorDataDailyRes {
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
 
-	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762 };
-	private static final Integer[] CARE = { 763, 764, 765, 766 };
+	private static final Integer[] CHILD_CARE = { 759, 760, 761, 762, 580 };
+	private static final Integer[] CARE = { 763, 764, 765, 766, 586 };
 	private static final Integer[] INPUT_CHECK = { 759, 760, 761, 762, 763, 764, 765, 766, 157, 159, 163, 165, 171, 169,
 			177, 175, 183, 181, 189, 187, 195, 193, 199, 201, 205, 207, 211, 213, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 			17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
@@ -139,14 +139,14 @@ public class ValidatorDataDailyRes {
 	private List<DPItemValue> hasChildCare(List<DPItemValue> items) {
 		List<DPItemValue> itemChild = items.stream()
 				.filter(x -> x.getValue() != null && (x.getItemId() == CHILD_CARE[0] || x.getItemId() == CHILD_CARE[1]
-						|| x.getItemId() == CHILD_CARE[2] || x.getItemId() == CHILD_CARE[3]))
+						|| x.getItemId() == CHILD_CARE[2] || x.getItemId() == CHILD_CARE[3] || x.getItemId() == CHILD_CARE[4]))
 				.collect(Collectors.toList());
 		return itemChild.isEmpty() ? new ArrayList<>() : itemChild;
 	}
 
 	private List<DPItemValue> hasCare(List<DPItemValue> items) {
 		List<DPItemValue> itemCare = items.stream().filter(x -> x.getValue() != null && (x.getItemId() == CARE[0]
-				|| x.getItemId() == CARE[1] || x.getItemId() == CARE[2] || x.getItemId() == CARE[3]))
+				|| x.getItemId() == CARE[1] || x.getItemId() == CARE[2] || x.getItemId() == CARE[3] || x.getItemId() == CARE[4]))
 				.collect(Collectors.toList());
 		return itemCare.isEmpty() ? new ArrayList<>() : itemCare;
 	}
@@ -162,6 +162,7 @@ public class ValidatorDataDailyRes {
 			boolean childCare760 = childMap.containsKey(CHILD_CARE[1]);
 			boolean childCare761 = childMap.containsKey(CHILD_CARE[2]);
 			boolean childCare762 = childMap.containsKey(CHILD_CARE[3]);
+			boolean childCare580 = childMap.containsKey(CHILD_CARE[4]);
 			if (!(childCare759 && childCare760)) {
 				if (childCare759) {
 					result.add(childMap.get(CHILD_CARE[0]));
@@ -176,6 +177,8 @@ public class ValidatorDataDailyRes {
 					result.add(childMap.get(CHILD_CARE[3]));
 				}
 			}
+			
+			if(!childCare580) result.add(childMap.get(CHILD_CARE[4]));
 			return result;
 		} else if (!cares.isEmpty()) {
 			Map<Integer, DPItemValue> caresMap = cares.stream()
@@ -184,6 +187,7 @@ public class ValidatorDataDailyRes {
 			boolean care764 = caresMap.containsKey(CARE[1]);
 			boolean care765 = caresMap.containsKey(CARE[2]);
 			boolean care766 = caresMap.containsKey(CARE[3]);
+			boolean care586 = caresMap.containsKey(CARE[4]);
 			if (!(care763 && care764)) {
 				if (care763) {
 					result.add(caresMap.get(CARE[0]));
@@ -198,6 +202,8 @@ public class ValidatorDataDailyRes {
 					result.add(caresMap.get(CARE[3]));
 				}
 			}
+			
+			if(!care586) result.add(caresMap.get(CARE[4]));
 			return result;
 		}
 		return Collections.emptyList();
@@ -648,7 +654,11 @@ public class ValidatorDataDailyRes {
 			messageIds.add("Msg_1415");
 		} else if(errroType.value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value){
 			messageIds.add("Msg_1414");
-		}
+		} else if(errroType.value == ErrorType.CHILDCARE_HOLIDAY.value){
+            messageIds.add("Msg_2264");
+        } else if(errroType.value == ErrorType.CARE_HOLIDAY.value){
+            messageIds.add("Msg_2265");
+        }
 
 		return messageIds;
 	}
