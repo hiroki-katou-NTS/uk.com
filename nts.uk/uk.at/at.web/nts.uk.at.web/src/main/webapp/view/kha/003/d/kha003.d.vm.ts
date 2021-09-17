@@ -25,6 +25,7 @@ module nts.uk.at.kha003.d {
         preriod: KnockoutObservable<any>;
         maxDateRange: any = 0;
         level: number = 1;
+        girdWidth: KnockoutObservable<any>;
 
         constructor() {
             super();
@@ -44,6 +45,7 @@ module nts.uk.at.kha003.d {
             vm.agCommand = ko.observable();
             vm.preriod = ko.observable();
             vm.contents = ko.observableArray([]);
+            vm.girdWidth = ko.observable("100%")
         }
 
         created() {
@@ -92,11 +94,11 @@ module nts.uk.at.kha003.d {
                     let dateHeaders: Array<DateHeader> = [];
                     for (let contentItem of data.outputContent.verticalTotalValues) {
                         let date = contentItem.yearMonth.toString();
-                        dateHeaders.push(
+                        vm.dateHeaders.push(
                             new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
                         );
                     }
-                    vm.dateHeaders(dateHeaders);
+                    // vm.dateHeaders(dateHeaders);
                 }
                 vm.agCommand(data);
                 vm.printContents(data);
@@ -129,37 +131,32 @@ module nts.uk.at.kha003.d {
             const columns: Array<any> = [
                 {headerText: "", key: "ID", dataType: "string", hidden: true, width: '0px'}
             ];
+            let colWidth: any = 0;
             for (let i = 0; i < vm.dateHeaders().length; i++) {
-                columns.push({
+                let column = {
                     headerText: vm.dateHeaders()[i].text,
                     key: "c" + (i + 1),
                     dataType: "object",
-                    width: i < vm.level ? '130px' : i == vm.dateHeaders().length - 1 ? '80px' : '70px'
-                });
+                    width: i < vm.level ? '130px' : i == vm.dateHeaders().length - 1 ? '85px' : '70px',
+                    height: '30px'
+                }
+                columns.push(column);
+                colWidth += parseInt(column.width)
             }
-            let size = vm.dateHeaders().length;
-            let withd = Math.floor(38 / 5 * vm.dateHeaders().length);
-            if (withd > 100) {
-                withd = 100;
-            }
-            if (withd < 43) {
-                withd = 43;
-            }
-            if (size == 13) {
-                withd = 93;
-            }
+            let widthScreen=$(window).width();
             let height = (520 * $(window).height()) / 754;
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
-                width: withd + '%',
+                width: Math.min(widthScreen, colWidth) + "px",
                 height: height + 'px',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
+                
                 features: [
                     {
                         name: "CellMerging",

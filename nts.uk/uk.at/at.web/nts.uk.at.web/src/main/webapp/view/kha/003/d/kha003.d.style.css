@@ -26,6 +26,7 @@ thead tr td {
 
 tbody.ui-ig-record.ui-iggrid-record tr td {
     padding: 5px;
+    white-space: nowrap;
 }
 
 .ui-iggrid table tr td, .ui-iggrid table tr th {
