@@ -40,37 +40,39 @@ public class JpaTimeLeaveApplicationRepository extends JpaRepository implements 
         List<KrqdtAppTimeHdInput> appTimeEntities = this.queryProxy().query(SELECT_APP_TIME_HD_INPUT, KrqdtAppTimeHdInput.class)
                 .setParameter("companyId", companyId)
                 .setParameter("appId", appId).getList();
-
+        
+        Set<Integer> hdTypes = timeZoneEntities.stream().map(x -> x.pk.timeHdType).collect(Collectors.toSet());
+        hdTypes.addAll(appTimeEntities.stream().map(x -> x.pk.timeHdType).collect(Collectors.toSet()));
         List<TimeLeaveApplicationDetail> details = new ArrayList<>();
-        Map<Integer, List<KrqdtAppTimeHd>> mapTimeZone = timeZoneEntities.stream().collect(Collectors.groupingBy(i -> i.pk.timeHdType));
-        mapTimeZone.forEach((timeHdType, frames) -> {
-            TimeLeaveApplicationDetail detail = new TimeLeaveApplicationDetail(
-                    EnumAdaptor.valueOf(timeHdType, AppTimeType.class),
-                    frames.stream().map(i -> new TimeZoneWithWorkNo(i.pk.frameNo, i.workTimeStart, i.workTimeEnd)).collect(Collectors.toList()),
-                    appTimeEntities
-                            .stream()
-                            .filter(i -> i.pk.timeHdType == timeHdType)
-                            .findFirst()
-                            .map(i -> new TimeDigestApplication(
-                                    new AttendanceTime(i.sixtyHOvertime),
-                                    new AttendanceTime(i.nursingTime),
-                                    new AttendanceTime(i.childNursingTime),
-                                    new AttendanceTime(i.hoursOfSubHoliday),
-                                    new AttendanceTime(i.timeSpecialVacation),
-                                    new AttendanceTime(i.hoursOfHoliday),
-                                    Optional.ofNullable(i.specialHdFrameNo)
-                            ))
-                            .orElse(new TimeDigestApplication(
-                                    new AttendanceTime(0),
-                                    new AttendanceTime(0),
-                                    new AttendanceTime(0),
-                                    new AttendanceTime(0),
-                                    new AttendanceTime(0),
-                                    new AttendanceTime(0),
-                                    Optional.empty()
-                            ))
-            );
-            details.add(detail);
+        hdTypes.stream().forEach(hdType -> {
+        	TimeLeaveApplicationDetail detail = new TimeLeaveApplicationDetail(
+                    EnumAdaptor.valueOf(hdType, AppTimeType.class),
+					timeZoneEntities.stream().filter(timeZone -> timeZone.pk.timeHdType == hdType)
+							.map(i -> new TimeZoneWithWorkNo(i.pk.frameNo, i.workTimeStart, i.workTimeEnd))
+							.collect(Collectors.toList()),
+							 appTimeEntities
+	                            .stream()
+	                            .filter(i -> i.pk.timeHdType == hdType)
+	                            .findFirst()
+	                            .map(i -> new TimeDigestApplication(
+	                                    new AttendanceTime(i.sixtyHOvertime),
+	                                    new AttendanceTime(i.nursingTime),
+	                                    new AttendanceTime(i.childNursingTime),
+	                                    new AttendanceTime(i.hoursOfSubHoliday),
+	                                    new AttendanceTime(i.timeSpecialVacation),
+	                                    new AttendanceTime(i.hoursOfHoliday),
+	                                    Optional.ofNullable(i.specialHdFrameNo)
+	                            ))
+	                            .orElse(new TimeDigestApplication(
+	                                    new AttendanceTime(0),
+	                                    new AttendanceTime(0),
+	                                    new AttendanceTime(0),
+	                                    new AttendanceTime(0),
+	                                    new AttendanceTime(0),
+	                                    new AttendanceTime(0),
+	                                    Optional.empty()
+	                            )));
+        	   details.add(detail);
         });
         TimeLeaveApplication result = new TimeLeaveApplication(application.get(), details);
         return Optional.of(result);
