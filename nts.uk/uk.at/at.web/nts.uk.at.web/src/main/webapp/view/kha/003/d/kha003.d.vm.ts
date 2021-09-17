@@ -100,6 +100,11 @@ module nts.uk.at.kha003.d {
                      }
                      // vm.dateHeaders(dateHeaders);
                  }*/
+                if(!data){
+                    vm.$dialog.error({messageId: 'Msg_2171'}).then(() => {
+                        vm.displayKha003CScreen();
+                    });
+                }
                 vm.agCommand(data);
                 vm.printContents(data);
                 vm.initGrid();
