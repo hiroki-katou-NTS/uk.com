@@ -26,6 +26,8 @@ import nts.uk.ctx.office.dom.equipment.data.EquipmentData;
 import nts.uk.ctx.office.dom.equipment.data.EquipmentDataRepository;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformation;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentInformationRepository;
+import nts.uk.screen.com.app.find.equipment.achievement.EquipmentPerformInputFormatSettingDto;
+import nts.uk.screen.com.app.find.equipment.achievement.EquipmentUsageRecordItemSettingDto;
 import nts.uk.screen.com.app.find.equipment.classification.EquipmentClassificationDto;
 import nts.uk.screen.com.app.find.equipment.information.EquipmentInformationDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,10 +44,10 @@ public class EquipmentDataScreenQuery {
 
 	@Inject
 	private EquipmentDataRepository equipmentDataRepository;
-	
+
 	@Inject
 	private EquipmentRecordItemSettingRepository equipmentRecordItemSettingRepository;
-	
+
 	@Inject
 	private EquipmentFormatSettingRepository equipmentFormatSettingRepository;
 
@@ -83,12 +85,12 @@ public class EquipmentDataScreenQuery {
 	public EquipmentInitSettingDto initEquipmentSetting() {
 		String cid = AppContexts.user().companyId();
 		// 1.get(ログイン会社ID)
-		List<EquipmentUsageRecordItemSetting> itemSettings = this.equipmentRecordItemSettingRepository
-				.findByCid(cid);
+		List<EquipmentUsageRecordItemSetting> itemSettings = this.equipmentRecordItemSettingRepository.findByCid(cid);
 		// 2.get(ログイン会社ID)
-		Optional<EquipmentPerformInputFormatSetting> formatSetting = this.equipmentFormatSettingRepository
-				.get(cid);
-		return new EquipmentInitSettingDto(itemSettings, formatSetting.orElse(null));
+		Optional<EquipmentPerformInputFormatSetting> formatSetting = this.equipmentFormatSettingRepository.get(cid);
+		return new EquipmentInitSettingDto(
+				itemSettings.stream().map(EquipmentUsageRecordItemSettingDto::fromDomain).collect(Collectors.toList()),
+				formatSetting.map(EquipmentPerformInputFormatSettingDto::fromDomain).orElse(null));
 	}
 
 	/**

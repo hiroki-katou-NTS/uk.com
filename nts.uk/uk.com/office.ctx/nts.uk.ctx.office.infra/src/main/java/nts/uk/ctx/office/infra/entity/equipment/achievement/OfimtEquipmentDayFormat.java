@@ -18,6 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * UKDesign.データベース.ER図.オフィス支援.設備管理.実績項目設定.OFIMT_EQUIPMENT_DAY_FORMAT
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
