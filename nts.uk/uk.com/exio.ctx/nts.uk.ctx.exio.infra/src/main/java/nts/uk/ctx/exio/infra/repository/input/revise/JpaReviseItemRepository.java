@@ -38,7 +38,7 @@ public class JpaReviseItemRepository extends JpaRepository implements ReviseItem
 				.setParameter("companyID", companyId)
 				.setParameter("settingCD", settingCode.toString())
 				.setParameter("importItemNO", importItemNumber)
-				.setParameter("domainId",domainId)
+				.setParameter("domainId", domainId.value)
 				.getSingle();
 		
 		if(!entitiesOpt.isPresent()) {

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -32,7 +33,7 @@ public class Cmf001cDeleteCommandHandler extends CommandHandler<Cmf001cDeleteCom
 		setting.getAssembly(command.getDomainId()).getMapping().setNoSetting(command.getItemNo());
 		
 		settingRepo.update(setting);
-		reviseItemRepo.delete(companyId, command.getExternalImportCode(), command.getItemNo());
+		reviseItemRepo.delete(companyId, command.getExternalImportCode(), ImportingDomainId.valueOf(command.getDomainId()), command.getItemNo());
 	}
 
 }

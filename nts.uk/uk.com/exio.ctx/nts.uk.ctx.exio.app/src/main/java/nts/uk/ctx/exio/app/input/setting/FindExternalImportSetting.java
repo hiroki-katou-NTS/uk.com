@@ -28,7 +28,7 @@ public class FindExternalImportSetting {
 	public ExternalImportSettingDto find(String settingCode) {
 		val require = this.createRequire();
 		val settingOpt = require.getSetting(AppContexts.user().companyId(), new ExternalImportCode(settingCode));
-		return ExternalImportSettingDto.fromDomain(require, settingOpt.get(), settingOpt.get().getDomainSettings().get(0));
+		return ExternalImportSettingDto.fromDomain(require, settingOpt.get(), settingOpt.get().getDomainSetting().get());
 	}
 	
 	public Require createRequire() {

@@ -21,10 +21,10 @@ public class XimmtDomainImportSettingPK implements Serializable{
 	private String companyId;
 	
 	/* 受入設定コード */
-	@Column(name = "CODE")
+	@Column(name = "SETTING_CODE")
 	private String code;
 	
 	/* 受入グループID */
 	@Column(name = "DOMAIN_ID")
-	private int externalImportDomainId;
+	private int domainId;
 }

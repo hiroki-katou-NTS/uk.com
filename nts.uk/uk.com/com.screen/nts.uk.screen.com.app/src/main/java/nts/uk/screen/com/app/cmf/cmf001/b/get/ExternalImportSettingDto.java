@@ -52,12 +52,11 @@ public class ExternalImportSettingDto {
 
 		DomainImportSetting setting = domain.getDomainSetting(this.domain).get();
 		setting.setImportingMode(ImportingMode.valueOf(mode));
-		setting.merge(require, itemNoList, domain.getCode());
+		setting.merge(require, itemNoList, domain.getCode(), setting.getDomainId());
 	}
 
 	public static interface RequireMerge extends
-		ExternalImportSetting.RequireMerge,
-		ExternalImportSetting.RequireChangeDomain {
+		ExternalImportSetting.RequireMerge{
 	}
 
 	public static ExternalImportSettingDto fromDomain(ExternalImportSetting setting) {

@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.exio.dom.input.canonicalize.ImportingMode;
 import nts.uk.ctx.exio.dom.input.csvimport.ExternalImportCsvFileInfo;
 import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
@@ -44,7 +43,7 @@ public class XimmtDomainImportSetting extends ContractUkJpaEntity implements Ser
 	@Column(name = "IMPORTING_MODE")
 	private int importingMode;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="importSetting", orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="domainSetting", orphanRemoval = true)
 	public List<XimmtItemMapping> mappings;
 	
 	@Override
@@ -52,11 +51,9 @@ public class XimmtDomainImportSetting extends ContractUkJpaEntity implements Ser
 		return pk;
 	}
 	
-	public static final JpaEntityMapper<XimmtDomainImportSetting> MAPPER = new JpaEntityMapper<>(XimmtDomainImportSetting.class);
-	
 	public DomainImportSetting toDomain(ExternalImportCsvFileInfo csvFileInfo) {
 		return new DomainImportSetting(
-				ImportingDomainId.valueOf(pk.getExternalImportDomainId()),
+				ImportingDomainId.valueOf(pk.getDomainId()),
 				EnumAdaptor.valueOf(importingMode, ImportingMode.class), 
 				new ExternalImportAssemblyMethod(
 						new ImportingMapping(mappings.stream()

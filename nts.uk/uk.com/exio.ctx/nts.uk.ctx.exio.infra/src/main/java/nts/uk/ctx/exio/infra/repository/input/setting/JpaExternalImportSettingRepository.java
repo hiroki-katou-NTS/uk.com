@@ -3,6 +3,7 @@ package nts.uk.ctx.exio.infra.repository.input.setting;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -16,8 +17,11 @@ import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSetting;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportSettingRepository;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSetting;
+import nts.uk.ctx.exio.infra.entity.input.setting.XimmtDomainImportSettingPK;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSetting;
 import nts.uk.ctx.exio.infra.entity.input.setting.XimmtImportSettingPK;
+import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMapping;
+import nts.uk.ctx.exio.infra.entity.input.setting.assembly.XimmtItemMappingPK;
 
 @Stateless
 public class JpaExternalImportSettingRepository extends JpaRepository implements ExternalImportSettingRepository {
@@ -25,6 +29,9 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 	@Override
 	public void insert(ExternalImportSetting domain) {
 		this.commandProxy().insert(toEntitiy(domain));
+		domain.getDomainSettings().forEach((domainId, setting) -> {
+			this.commandProxy().insert(toEntitiy(domain.getCompanyId(), domain.getCode().v(), setting));
+		});
 	}
 
 	@Override
@@ -35,10 +42,9 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 
 	@Override
 	public void delete(String companyId, ExternalImportCode settingCode) {
-		
-		
 		val tables = Arrays.asList(
 				Pair.of("XIMMT_IMPORT_SETTING", "CODE"),
+				Pair.of("XIMMT_DOMAIN_IMPORT_SETTING", "SETTING_CODE"),
 				Pair.of("XIMMT_ITEM_MAPPING", "SETTING_CODE"));
 		
 		tables.forEach(table -> {
@@ -115,6 +121,22 @@ public class JpaExternalImportSettingRepository extends JpaRepository implements
 				domain.getName().toString(),
 				domain.getCsvFileInfo().getItemNameRowNumber().v(),
 				domain.getCsvFileInfo().getImportStartRowNumber().v());
+	}
+
+	private XimmtDomainImportSetting toEntitiy(String cid, String settingCode, DomainImportSetting domain) {
+		List<XimmtItemMapping> mappings = domain.getAssembly().getMapping().getMappings().stream()
+		.map(m -> new XimmtItemMapping(
+				new XimmtItemMappingPK(cid, settingCode, domain.getDomainId().value, m.getItemNo()),
+				m.getCsvColumnNo().orElse(null),
+				m.getFixedValue().map(fv -> fv.getValue()).orElse(null)
+		))
+		.collect(Collectors.toList());
+		
+		return new XimmtDomainImportSetting(
+				new XimmtDomainImportSettingPK(cid, settingCode, domain.getDomainId().value),
+				domain.getImportingMode().value,
+				mappings
+			);
 	}
 
 	@Override

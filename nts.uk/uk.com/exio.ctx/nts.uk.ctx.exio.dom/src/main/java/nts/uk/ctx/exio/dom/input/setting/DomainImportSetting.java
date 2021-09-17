@@ -40,12 +40,12 @@ public class DomainImportSetting implements DomainAggregate {
 	 * @param itemList
 	 */
 
-	public void merge(RequireMerge require, List<Integer> itemList, ExternalImportCode settingCode) {
+	public void merge(RequireMerge require, List<Integer> itemList, ExternalImportCode settingCode, ImportingDomainId domainID) {
 		
 		val mappingRequire = new ImportingMapping.RequireMerge() {
 			@Override
 			public void deleteReviseItems(List<Integer> itemNos) {
-				require.deleteReviseItems(settingCode, itemNos);
+				require.deleteReviseItems(settingCode, domainID, itemNos);
 			}
 		};
 		
@@ -53,20 +53,7 @@ public class DomainImportSetting implements DomainAggregate {
 	}
 	
 	public static interface RequireMerge {
-		void deleteReviseItems(ExternalImportCode settingCode, List<Integer> itemNos);
-	}
-
-	/**
-	 * ドメインが変更されたのでマッピングを作り直す
-	 * @param domainId
-	 * @param items
-	 */
-	public void changeDomain(RequireChangeDomain require, ImportingDomainId domainId, List<Integer> items, ExternalImportCode settingCode) {
-		this.domainId = domainId;
-		assembly = ExternalImportAssemblyMethod.create(items);
-		
-		// 受入ドメインが変わるので既存の編集設定はすべて削除
-		require.deleteReviseItems(settingCode);
+		void deleteReviseItems(ExternalImportCode settingCode, ImportingDomainId domainId, List<Integer> itemNos);
 	}
 	
 	public static interface RequireChangeDomain {

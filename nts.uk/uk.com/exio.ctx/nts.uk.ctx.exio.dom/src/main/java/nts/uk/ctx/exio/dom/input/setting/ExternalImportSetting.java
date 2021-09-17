@@ -58,19 +58,8 @@ public class ExternalImportSetting implements DomainAggregate {
 	 * マッピングを更新する
 	 * @param itemList
 	 */
-	public void merge(DomainImportSetting.RequireMerge require, List<Integer> itemList) {
-		if(domainSettings.size() > 1) throw new RuntimeException("複数ドメインを受け入れる場合は変更できません");
-		domainSettings.get(0).merge(require, itemList, code);
-	}
-
-	/**
-	 * ドメインが変更されたのでマッピングを作り直す
-	 * @param domainId
-	 * @param items
-	 */
-	public void changeDomain(DomainImportSetting.RequireChangeDomain require, ImportingDomainId domainId, List<Integer> items) {
-		if(domainSettings.size() > 1) throw new RuntimeException("複数ドメインを受け入れる場合は変更できません");
-		domainSettings.get(0).changeDomain(require, domainId, items, code);
+	public void merge(DomainImportSetting.RequireMerge require, ImportingDomainId domainId, List<Integer> itemList) {
+		domainSettings.get(domainId).merge(require, itemList, code, domainId);
 	}
 
 	public void assemble(DomainImportSetting.RequireAssemble require, ExecutionContext context, InputStream csvFileStream) {
@@ -80,8 +69,6 @@ public class ExternalImportSetting implements DomainAggregate {
 	}
 	
 	public static interface RequireMerge extends DomainImportSetting.RequireMerge {
-	}
-	public static interface RequireChangeDomain extends DomainImportSetting.RequireChangeDomain {
 	}
 	public static interface RequireAssemble extends DomainImportSetting.RequireAssemble {
 	}
@@ -95,7 +82,7 @@ public class ExternalImportSetting implements DomainAggregate {
 	}
 	
 	public Optional<DomainImportSetting> getDomainSetting(int domain) {
-		if (baseType == ImportSettingBaseType.DOMAIN_BASE)  return Optional.of(this.domainSettings.get(0));
+		if (baseType == ImportSettingBaseType.DOMAIN_BASE)  return this.domainSettings.entrySet().stream().findFirst().map(es-> es.getValue());
 
 		ImportingDomainId domainId = ImportingDomainId.valueOf(domain);
 		return this.domainSettings.containsKey(domainId)

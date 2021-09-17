@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Value;
 import lombok.val;
 import nts.uk.ctx.exio.app.input.setting.assembly.revise.ReviseItemDto;
+import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.importableitem.ItemType;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 import nts.uk.ctx.exio.dom.input.setting.assembly.revise.ReviseItem;
@@ -46,6 +47,7 @@ public class Cmf001cSaveCommand {
 		val domain = new ReviseItem(
 				companyId,
 				getExternalImportCode(),
+				ImportingDomainId.valueOf(domainId),
 				itemNo,
 				revisingValueDomain);
 		
