@@ -369,7 +369,9 @@ module nts.uk.at.kha003.a {
                     vm.$ajax(vm.isUpdateMode() ? API.UPDATE : API.REGISTER, command).done((data) => {
                         vm.$dialog.info({messageId: "Msg_15"})
                             .then(() => {
-                                vm.loadScreenListData(command.code);
+                                vm.loadScreenListData(command.code).then(() => {
+                                    vm.isExecutionMode(true);
+                                });
                             });
                     }).fail(function (error) {
                         vm.$dialog.error({messageId: error.messageId});

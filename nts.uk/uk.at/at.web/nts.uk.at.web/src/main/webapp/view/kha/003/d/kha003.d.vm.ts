@@ -92,11 +92,11 @@ module nts.uk.at.kha003.d {
                     let dateHeaders: Array<DateHeader> = [];
                     for (let contentItem of data.outputContent.verticalTotalValues) {
                         let date = contentItem.yearMonth.toString();
-                        dateHeaders.push(
+                        vm.dateHeaders.push(
                             new DateHeader('', '', '' + date.substring(0, 4) + '/' + date.substring(4))
                         );
                     }
-                    vm.dateHeaders(dateHeaders);
+                   // vm.dateHeaders(dateHeaders);
                 }
                 vm.agCommand(data);
                 vm.printContents(data);
@@ -134,7 +134,8 @@ module nts.uk.at.kha003.d {
                     headerText: vm.dateHeaders()[i].text,
                     key: "c" + (i + 1),
                     dataType: "object",
-                    width: i < vm.level ? '130px' : i == vm.dateHeaders().length - 1 ? '80px' : '70px'
+                    width: i < vm.level ? '130px' : i == vm.dateHeaders().length - 1 ? '80px' : '70px',
+                    height:'30px'
                 });
             }
             let size = vm.dateHeaders().length;
@@ -154,7 +155,7 @@ module nts.uk.at.kha003.d {
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
-                width: withd + '%',
+                width: '100%',
                 height: height + 'px',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
