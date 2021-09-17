@@ -3,6 +3,8 @@ package nts.uk.ctx.exio.dom.input.errors;
 import nts.uk.ctx.exio.dom.input.ExecutionContext;
 
 public interface ExternalImportErrorsRepository {
+
+	void cleanOldTables(String companyId);
 	
 	void setup(ExecutionContext context);
 

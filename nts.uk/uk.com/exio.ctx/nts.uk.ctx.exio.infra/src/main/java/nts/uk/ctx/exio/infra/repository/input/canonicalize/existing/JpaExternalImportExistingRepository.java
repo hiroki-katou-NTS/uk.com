@@ -15,6 +15,13 @@ import nts.uk.ctx.exio.dom.input.canonicalize.existing.ExternalImportExistingRep
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaExternalImportExistingRepository extends JpaRepository implements ExternalImportExistingRepository {
+
+	@Override
+	public void cleanOldTables(String companyId) {
+		ExecutionContext context = new ExecutionContext(companyId, "", null, null);
+		new LayoutAnyRecordToChange(jdbcProxy(), context).dropTable();
+		new LayoutAnyRecordToDelete(jdbcProxy(), context).dropTable();
+	}
 	
 	@Override
 	public void setup(ExecutionContext context) {

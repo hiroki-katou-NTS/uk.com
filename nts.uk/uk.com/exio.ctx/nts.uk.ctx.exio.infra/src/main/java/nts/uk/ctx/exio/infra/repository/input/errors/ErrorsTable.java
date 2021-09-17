@@ -22,12 +22,15 @@ public class ErrorsTable {
 	private static final String ROW_NO = "ROW_NO";
 	private static final String ITEM_NO = "ITEM_NO";
 	private static final String MESSAGE = "MESSAGE";
+
+	public void dropTable() {
+		String tableName = tableName();
+		TemporaryTable.dropTable(jdbcProxy, tableName);
+	}
 	
 	public void createTable() {
 		
 		String tableName = tableName();
-		
-		TemporaryTable.dropTable(jdbcProxy, tableName);
 		
 		createTable(tableName);
 	}

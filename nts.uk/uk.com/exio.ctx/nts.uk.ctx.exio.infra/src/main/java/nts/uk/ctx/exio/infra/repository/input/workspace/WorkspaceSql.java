@@ -57,9 +57,10 @@ public class WorkspaceSql {
 	 * @param context
 	 * @param jdbcProxy
 	 */
-	public static void cleanOldTables(Require require, ExecutionContext context, JdbcProxy jdbcProxy) {
+	public static void cleanOldTables(Require require, String companyId, JdbcProxy jdbcProxy) {
 		
 		require.getAllImportingDomains().forEach(domain -> {
+			val context = new ExecutionContext(companyId, "", domain.getDomainId(), null); // 現状companyIdしか使っていない
 			val tableName = tableName(context, domain);
 			TemporaryTable.dropTable(jdbcProxy, tableName.asRevised());
 			TemporaryTable.dropTable(jdbcProxy, tableName.asCanonicalized());

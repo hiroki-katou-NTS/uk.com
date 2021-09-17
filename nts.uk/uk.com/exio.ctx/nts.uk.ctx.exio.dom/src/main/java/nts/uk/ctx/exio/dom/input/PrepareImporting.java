@@ -20,6 +20,8 @@ public class PrepareImporting {
 			ExternalImportSetting externalImportSetting,
 			InputStream csvFileStream) {
 
+		require.cleanOldTables(externalImportSetting.getCompanyId());
+		
 		externalImportSetting.getDomainSettings().forEach((domainId, setting) -> {	
 			val context = setting.executionContext(externalImportSetting.getCompanyId(), externalImportSetting.getCode());
 			
@@ -38,6 +40,8 @@ public class PrepareImporting {
 			ExternalImportErrorsRequire,
 			ExternalImportSetting.RequireAssemble,
 			CanonicalizeRevisedData.Require {
+
+		void cleanOldTables(String companyId);
 		
 		void setupWorkspace(ExecutionContext context);
 		

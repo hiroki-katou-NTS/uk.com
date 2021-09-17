@@ -207,6 +207,14 @@ public class ExternalImportPrepareRequire {
 		/***** Workspace *****/
 		
 		@Override
+		public void cleanOldTables(String companyId) {
+			workspaceRepo.cleanOldTables(this, companyId);
+			existingRepo.cleanOldTables(companyId);
+			metaRepo.cleanOldTables(companyId);
+			errorsRepo.cleanOldTables(companyId);
+		}
+		
+		@Override
 		public void setupWorkspace(ExecutionContext context) {
 			workspaceRepo.setup(this, context);
 			existingRepo.setup(context);

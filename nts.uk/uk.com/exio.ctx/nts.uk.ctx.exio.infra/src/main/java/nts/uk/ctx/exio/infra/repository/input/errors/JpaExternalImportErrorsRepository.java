@@ -16,6 +16,12 @@ import nts.uk.ctx.exio.dom.input.errors.ExternalImportErrorsRepository;
 public class JpaExternalImportErrorsRepository extends JpaRepository implements ExternalImportErrorsRepository {
 
 	@Override
+	public void cleanOldTables(String companyId) {
+		ExecutionContext context = new ExecutionContext(companyId, "", null, null);
+		table(context).dropTable();
+	}
+
+	@Override
 	public void setup(ExecutionContext context) {
 		table(context).createTable();
 	}
