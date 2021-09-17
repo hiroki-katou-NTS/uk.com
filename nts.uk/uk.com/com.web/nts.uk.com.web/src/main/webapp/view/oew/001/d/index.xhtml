@@ -14,34 +14,33 @@
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="oem002.b.style.css" />
-			<com:scriptfile path="oem002.b.vm.js" />
+			<com:stylefile path="oew001.d.style.css" />
+			<com:scriptfile path="oew001.d.vm.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
-        <div id="B1_1" data-bind="ntsSearchBox: {
+        <div id="D1_1" data-bind="ntsSearchBox: {
           mode: 'igGrid',
-          comId: 'B1_2',
+          comId: 'D2',
           targetKey: 'code',
           items: equipmentClsList,
           selected: selectedEquipmentClsCode,
           selectedKey: 'code',
           fields: ['code', 'name']
-        }" tabindex="1"></div>
-        <table id="A2_1" data-bind="ntsGridList: {
-          name: '#[OEM002_22]',
+        }"></div>
+        <table id="D2" data-bind="ntsGridList: {
           options: equipmentClsList,
           optionsValue: 'code',
           columns: columns,
           multiple: false,
           value: selectedEquipmentClsCode,
           rows: 10
-        }" tabindex="2"></table>
+        }" tabindex="1"></table>
       </div>
       <div id="functions-area-bottom">
-        <button id="B2_1" class="x-large proceed" data-bind="click: closeDialog, enable: enableSave" tabindex="3">#{i18n.getText('OEM002_25')}</button>
-        <button id="B2_2" class="large" data-bind="click: cancel" tabindex="4">#{i18n.getText('OEM002_26')}</button>
+        <button id="D4_1" class="x-large proceed" data-bind="click: closeDialog, enable: enableSave" tabindex="2">#{i18n.getText('OEW001_52')}</button>
+        <button id="D4_2" class="large" data-bind="click: cancel" tabindex="3">#{i18n.getText('OEW001_53')}</button>
       </div>
     </ui:define>
   </ui:composition>

@@ -155,4 +155,41 @@ module nts.uk.com.view.oew001.share.model {
     // 説明
     memo: string;
   }
+
+  /**
+   * 社員
+   */
+  export class EmployeeInfoDto {
+    
+    // 社員ID
+    employeeId: string; 
+
+    // 社員コード
+    employeeCode: string; 
+
+    // ビジネスネーム
+    businessName: string; 
+  }
+
+  export function getDataType(itemCls: number) {
+    switch (itemCls) {
+      case enums.ItemClassification.TEXT, enums.ItemClassification.TIME:
+        return "string";
+      case enums.ItemClassification.NUMBER:
+        return "number";
+    }
+  }
+}
+
+module nts.uk.com.view.oew001.share.model.enums {
+  export enum ItemClassification {
+    // 文字
+    TEXT = 0,
+
+    // 数字
+    NUMBER = 1,
+
+    // 時間
+    TIME = 2
+  }
 }

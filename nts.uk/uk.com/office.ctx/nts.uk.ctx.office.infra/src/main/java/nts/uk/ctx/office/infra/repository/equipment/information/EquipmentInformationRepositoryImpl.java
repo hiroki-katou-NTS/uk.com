@@ -82,7 +82,7 @@ public class EquipmentInformationRepositoryImpl extends JpaRepository
 	public List<EquipmentInformation> findByClsCodeAndDate(String cid, String equipmentClsCode, GeneralDate date) {
 		return this.queryProxy().query(FIND_BY_CID_AND_CLS_CODE_AND_DATE, OfidtEquipment.class)
 				.setParameter("cid", cid).setParameter("clsCode", equipmentClsCode)
-				.setParameter("date", date.toLocalDate())
+				.setParameter("date", date)
 				.getList(EquipmentInformation::createFromMemento);
 	}
 

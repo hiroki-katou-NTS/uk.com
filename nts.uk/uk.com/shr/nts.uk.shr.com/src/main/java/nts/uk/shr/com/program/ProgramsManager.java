@@ -3898,6 +3898,15 @@ public class ProgramsManager {
     public static final Program OEM004A = new Program(WebAppId.COM, ProgramIdConsts.OEM004A, "OEM004_1",
             "/view/oem/004/a/index.xhtml");
     
+    public static final Program OEW001A = new Program(WebAppId.COM, ProgramIdConsts.OEW001A, "OEW001_1",
+            "/view/oew/001/a/index.xhtml");
+    public static final Program OEW001B = new Program(WebAppId.COM, ProgramIdConsts.OEW001B, "OEW001_2",
+            "/view/oew/001/b/index.xhtml");
+    public static final Program OEW001C = new Program(WebAppId.COM, ProgramIdConsts.OEW001C, "OEW001_3",
+            "/view/oew/001/c/index.xhtml");
+    public static final Program OEW001D = new Program(WebAppId.COM, ProgramIdConsts.OEW001D, "OEW001_4",
+            "/view/oew/001/d/index.xhtml");
+    
     /**
      * All programs map.
      */

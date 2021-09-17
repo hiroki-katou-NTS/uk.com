@@ -53,7 +53,7 @@ public class EquipmentPerformInputFormatSettingRepositoryImpl extends JpaReposit
 	@Override
 	public Optional<EquipmentPerformInputFormatSetting> get(String cid) {
 		List<OfimtEquipmentDayFormat> entities = this.queryProxy().query(SELECT_BY_CID, OfimtEquipmentDayFormat.class)
-				.getList();
+				.setParameter("cid", cid).getList();
 		if (entities.isEmpty()) {
 			return Optional.empty();
 		}
