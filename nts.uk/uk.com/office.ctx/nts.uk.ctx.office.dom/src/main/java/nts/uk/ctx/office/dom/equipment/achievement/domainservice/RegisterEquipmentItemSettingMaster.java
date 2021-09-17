@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.NoArgsConstructor;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentFormSetting;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
@@ -17,9 +16,10 @@ import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetti
  * @author NWS-DungDV
  *
  */
-@NoArgsConstructor
 public class RegisterEquipmentItemSettingMaster {
-
+	
+	private RegisterEquipmentItemSettingMaster() {}
+	
 	/**
 	 * [1] 登録する
 	 * @param require
@@ -29,7 +29,7 @@ public class RegisterEquipmentItemSettingMaster {
 	 * @param formSetting 設備帳票設定
 	 * @return 永続化処理
 	 */
-	public PersistenceProcess register(
+	public static PersistenceProcess register(
 		Require require,
 		String cid,
 		List<EquipmentUsageRecordItemSetting> items,

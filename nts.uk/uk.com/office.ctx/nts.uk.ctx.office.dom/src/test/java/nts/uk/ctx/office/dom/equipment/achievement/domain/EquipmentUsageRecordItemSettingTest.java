@@ -1,0 +1,37 @@
+package nts.uk.ctx.office.dom.equipment.achievement.domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import mockit.integration.junit4.JMockit;
+import nts.arc.error.ErrorMessage;
+import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
+import nts.uk.ctx.office.dom.equipment.data.ActualItemUsageValue;
+
+@RunWith(JMockit.class)
+public class EquipmentUsageRecordItemSettingTest {
+	
+	@Test
+	public void getters() {
+		EquipmentUsageRecordItemSetting domain = EquipmentUsageRecordItemSettingTestHelper.createDoamin();
+		
+		NtsAssert.invokeGetters(domain);
+	}
+	
+	/**
+	 * [1] 入力した値の制御をチェックする
+	 */
+	@Test
+	public void testCheck() {
+		EquipmentUsageRecordItemSetting domain = EquipmentUsageRecordItemSettingTestHelper.createDoamin();
+		ActualItemUsageValue inputVal = new ActualItemUsageValue("input value");
+		
+		Optional<ErrorMessage> actual = domain.check(inputVal);
+		assertThat(actual).isNotPresent();
+	}
+}
