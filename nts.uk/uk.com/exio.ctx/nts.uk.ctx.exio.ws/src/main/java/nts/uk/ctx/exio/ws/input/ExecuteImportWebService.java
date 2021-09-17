@@ -1,24 +1,18 @@
 package nts.uk.ctx.exio.ws.input;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import nts.arc.task.AsyncTaskInfo;
-import nts.uk.ctx.exio.app.input.develop.diagnose.DiagnoseExternalImportConstants;
-import nts.uk.ctx.exio.app.input.develop.diagnose.DiagnoseResult;
-import nts.uk.ctx.exio.app.input.develop.workspace.ImportWorkspaces;
 import nts.uk.ctx.exio.app.input.errors.ErrorsTextDto;
 import nts.uk.ctx.exio.app.input.errors.GetLatestExternalImportErrors;
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommand;
 import nts.uk.ctx.exio.app.input.execute.ExternalImportExecuteCommandHandler;
 import nts.uk.ctx.exio.app.input.prepare.ExternalImportPrepareCommand;
 import nts.uk.ctx.exio.app.input.prepare.ExternalImportPrepareCommandHandler;
-import nts.uk.ctx.exio.dom.input.domain.ImportingDomainId;
 import nts.uk.ctx.exio.dom.input.setting.ExternalImportCode;
 
 @Path("exio/input")
@@ -54,30 +48,4 @@ public class ExecuteImportWebService {
 		
 		return errors.getTextPage(new ExternalImportCode(settingCode), pageNo);
 	}
-	
-	@Inject
-	private DiagnoseExternalImportConstants diagnose;
-	
-	@GET
-	@Path("diagnose")
-	public DiagnoseResult diagnose() {
-		return diagnose.diagnose();
-	}
-	
-	@Inject
-	private ImportWorkspaces importWorkspaces;
-
-	@GET
-	@Path("import-workspace/{domainId}")
-	public Response importWorkspace(@PathParam("domainId") int domainId) {
-		
-		String csv = importWorkspaces.createCsvItems(ImportingDomainId.valueOf(domainId));
-
-        return Response.ok(csv)
-				  .header(
-						  "Content-Disposition",
-						  "attachment; filename=XIMCT_WORKSPACE_ITEM_ " + domainId + "_.csv")
-				  .build();
-	}
-	
 }
