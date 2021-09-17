@@ -258,7 +258,7 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 					// 総取得結果＝0
 					Double totalTime = 0.0;
 					
-					Closure cloure = getClosure(cid, sid);
+					Closure cloure = getClosure(require, cid, sid);
 					PresentClosingPeriodImport presentClosingPeriod = getPresentClosingPeriod(cid, sid, cloure);
 					String checkCondTypeName = Strings.EMPTY;
 					
@@ -642,9 +642,8 @@ public class ScheYearCheckServiceImpl implements ScheYearCheckService {
 		return Double.valueOf(String.valueOf(totalTime));
 	}
 	
-	private Closure getClosure(String cid, String sid) {
+	private Closure getClosure(Require require, String cid, String sid) {
 		// 社員に対応する処理締めを取得する
-		val require = requireService.createRequire();
         val cacheCarrier = new CacheCarrier();
         GeneralDate criteriaDate = GeneralDate.today();
 		return ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, criteriaDate);
