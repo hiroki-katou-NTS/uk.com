@@ -371,6 +371,7 @@ module nts.uk.at.kha003.a {
                             .then(() => {
                                 vm.loadScreenListData(command.code).then(() => {
                                     vm.isExecutionMode(true);
+                                    vm.currentCode(command.code);
                                 });
                             });
                     }).fail(function (error) {
