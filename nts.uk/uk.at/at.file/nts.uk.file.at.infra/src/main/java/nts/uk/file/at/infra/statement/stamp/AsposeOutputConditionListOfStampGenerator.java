@@ -199,9 +199,14 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 		Map<String, List<StampList>> cardGroup = employeeInfor.getStampList().stream()
 				.collect(Collectors.groupingBy(StampList::getCardNo));
 		
+		Map<String, List<StampList>> cardGroupSort = new HashMap<String, List<StampList>>();
+		cardGroup.entrySet().stream().map(c->c.getKey()).sorted().collect(Collectors.toList()).forEach(card ->{
+			cardGroupSort.put(card, cardGroup.get(card));
+		});
+		
 		AtomicInteger rows = new AtomicInteger(startRow);
 		
-		cardGroup.forEach((k, v) -> {
+		cardGroupSort.forEach((k, v) -> {
 			int height = 0;
 			this.pageBreaks(rows, cell, employeeInfor, v.get(0));
 			for (StampList data : v) {
