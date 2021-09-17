@@ -47,7 +47,7 @@ public class SortByForm9ServiceTest {
 		 * sid2, sid6, sid9 : NURSE
 		 * sid4, sid7, sid8 : NURSE_ASSOCIATE
 		 * sid3, sid5 : NURSE_ASSIST
-		 * sid1, sid10: 免許区分がない
+		 * sid1, sid10, sid11, sid12: 免許区分がない
 		 * 
 		 */
 		val empLicenses = new ArrayList<>( Arrays.asList(
@@ -61,6 +61,8 @@ public class SortByForm9ServiceTest {
 				,	Helper.createEmpLicenseClassification( "sid8", LicenseClassification.NURSE_ASSOCIATE )
 				,	Helper.createEmpLicenseClassification( "sid9", LicenseClassification.NURSE )
 				,	Helper.createEmpLicenseClassification( "sid10")
+				,	Helper.createEmpLicenseClassification( "sid11")
+				,	Helper.createEmpLicenseClassification( "sid12")
 					));
 		
 		/**
@@ -69,7 +71,7 @@ public class SortByForm9ServiceTest {
 		 * sid3, sid9: J02
 		 * sid4, sid8: J08
 		 * sid5: J04
-		 * sid6: empty
+		 * sid6, sid11, sid12: empty
 		 */
 		val empJobTitles = new ArrayList<>( Arrays.asList(
 					Helper.createEmployeeJobTitleImport( "sid1", "J01" )
@@ -82,6 +84,7 @@ public class SortByForm9ServiceTest {
 				,	Helper.createEmployeeJobTitleImport( "sid8", "J08" )
 				,	Helper.createEmployeeJobTitleImport( "sid9", "J02" )
 				,	Helper.createEmployeeJobTitleImport( "sid10", "J03" )
+				// sid11, sid12 empty
 					));
 		
 		val personInfos = new ArrayList<>( Arrays.asList(
@@ -95,6 +98,8 @@ public class SortByForm9ServiceTest {
 				,	Helper.createPersonInfo( "sid8", "E08" )
 				,	Helper.createPersonInfo( "sid9", "E09" )
 				,	Helper.createPersonInfo( "sid10", "E10" )
+				,	Helper.createPersonInfo( "sid11", "E11" )
+				,	Helper.createPersonInfo( "sid12", "E12" )
 					));
 		
 		new Expectations(GetEmpLicenseClassificationService.class) {
@@ -127,6 +132,8 @@ public class SortByForm9ServiceTest {
 								,	"sid5" //NURSE_ASSIST, J04
 								,	"sid1" //empty, J02
 								,	"sid10"//empty, J03
+								,	"sid11"//empty, empty, E11
+								,	"sid12"//empty, empty, E12
 									);
 	}
 	
