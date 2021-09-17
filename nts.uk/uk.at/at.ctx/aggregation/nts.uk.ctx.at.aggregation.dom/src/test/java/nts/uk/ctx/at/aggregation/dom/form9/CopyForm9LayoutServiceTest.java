@@ -35,15 +35,22 @@ public class CopyForm9LayoutServiceTest {
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		
-		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
+		val copyResource = Form9Layout.create(
+					new Form9Code("01")
+				,	new Form9Name("name")
+				,	false, true
+				,	cover, nursingTable, nursingAideTable
+				,	Optional.of(tempalteFileId));
 		
-		val oldCopyDestination =  Form9Layout.create( new Form9Code("01") , new Form9Name("name")
+		val oldCopyDestination =  Form9Layout.create(
+					new Form9Code("01")
+				,	new Form9Name("name")
 				,	true //システム固定
 				,	true, cover, nursingTable, nursingAideTable, Optional.empty() );
 		
 		new Expectations() {
 			{
+				//複製先のコードが登録された(重複)
 				require.getForm9Layout( destinationCode );
 				result = Optional.of( oldCopyDestination );
 			}

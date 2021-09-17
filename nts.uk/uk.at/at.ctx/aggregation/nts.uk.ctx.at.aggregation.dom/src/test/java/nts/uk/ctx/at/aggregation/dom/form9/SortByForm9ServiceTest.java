@@ -51,7 +51,7 @@ public class SortByForm9ServiceTest {
 		 * 
 		 */
 		val empLicenses = new ArrayList<>( Arrays.asList(
-					Helper.createEmpLicenseClassification( "sid1" )//sid1 empty
+					Helper.createEmpLicenseClassification( "sid1" )
 				,	Helper.createEmpLicenseClassification( "sid2", LicenseClassification.NURSE )
 				,	Helper.createEmpLicenseClassification( "sid3", LicenseClassification.NURSE_ASSIST )
 				,	Helper.createEmpLicenseClassification( "sid4", LicenseClassification.NURSE_ASSOCIATE )
@@ -60,9 +60,7 @@ public class SortByForm9ServiceTest {
 				,	Helper.createEmpLicenseClassification( "sid7", LicenseClassification.NURSE_ASSOCIATE )
 				,	Helper.createEmpLicenseClassification( "sid8", LicenseClassification.NURSE_ASSOCIATE )
 				,	Helper.createEmpLicenseClassification( "sid9", LicenseClassification.NURSE )
-				,	Helper.createEmpLicenseClassification( "sid10")//sid10 empty
-				,	Helper.createEmpLicenseClassification( "sid11")//sid11 empty
-				,	Helper.createEmpLicenseClassification( "sid12")//sid12 empty
+				,	Helper.createEmpLicenseClassification( "sid10")
 					));
 		
 		/**
@@ -71,7 +69,7 @@ public class SortByForm9ServiceTest {
 		 * sid3, sid9: J02
 		 * sid4, sid8: J08
 		 * sid5: J04
-		 * sid6, sid11, sid12: empty
+		 * sid6: empty
 		 */
 		val empJobTitles = new ArrayList<>( Arrays.asList(
 					Helper.createEmployeeJobTitleImport( "sid1", "J01" )
@@ -97,8 +95,6 @@ public class SortByForm9ServiceTest {
 				,	Helper.createPersonInfo( "sid8", "E08" )
 				,	Helper.createPersonInfo( "sid9", "E09" )
 				,	Helper.createPersonInfo( "sid10", "E10" )
-				,	Helper.createPersonInfo( "sid11", "E11" )
-				,	Helper.createPersonInfo( "sid12", "E12" )
 					));
 		
 		new Expectations(GetEmpLicenseClassificationService.class) {
@@ -131,13 +127,11 @@ public class SortByForm9ServiceTest {
 								,	"sid5" //NURSE_ASSIST, J04
 								,	"sid1" //empty, J02
 								,	"sid10"//empty, J03
-								,	"sid11"//empty, empty, E11
-								,	"sid12"//empty, empty, E12
 									);
 	}
 	
 	/**
-	 * target: sort
+	 * target: createForm9SortEmployeeInfo
 	 */
 	@Test
 	public void testCreateForm9SortEmployeeInfo() {
@@ -172,7 +166,6 @@ public class SortByForm9ServiceTest {
 				,	sids, empLicenses
 				,	empJobTitles, personInfos );
 		
-		
 		//Assert
 		assertThat(result)
 			.extracting(
@@ -182,16 +175,13 @@ public class SortByForm9ServiceTest {
 				,	d -> d.getEmployeeCode()
 					)
 			.containsExactly(
-					Tuple.tuple("sid1", null, "J01", "E01")
-				,	Tuple.tuple("sid2", LicenseClassification.NURSE, null, "E02")	
+					Tuple.tuple("sid1", null, "J01", "E01")//license empty
+				,	Tuple.tuple("sid2", LicenseClassification.NURSE, null, "E02")//jobtitle empty
 				,	Tuple.tuple("sid3", LicenseClassification.NURSE_ASSIST, "J03", "E03")
 				,	Tuple.tuple("sid4", LicenseClassification.NURSE_ASSOCIATE, "J04", "E04")
 					);
-		
-		
 	}
 	
-
 	private static class Helper{
 		
 		/**
