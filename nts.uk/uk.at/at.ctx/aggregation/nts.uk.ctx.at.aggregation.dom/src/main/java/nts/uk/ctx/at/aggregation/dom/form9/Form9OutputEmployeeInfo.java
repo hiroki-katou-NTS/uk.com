@@ -1,14 +1,7 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
-/**
- * 様式９の出力社員情報
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.様式９.様式９の出力社員情報を取得する.様式９の出力社員情報
- * @author lan_lt
- *
- */
-
-import java.util.Optional;
 
 import lombok.Value;
+import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.MedicalCareWorkStyle;
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.EmpMedicalWorkStyleHistoryItem;
@@ -17,35 +10,41 @@ import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.Nur
 import nts.uk.ctx.at.shared.dom.employeeworkway.medicalcare.medicalworkstyle.NurseClassification;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistoryItem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.EmployeeCodeAndDisplayNameImport;
+/**
+ * 様式９の出力社員情報
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.様式９.様式９の出力社員情報を取得する.様式９の出力社員情報
+ * @author lan_lt
+ *
+ */
 @Value
 public class Form9OutputEmployeeInfo {
 
 	/** 社員ID **/
-	private String employeeId;
+	private final String employeeId;
 	
 	/** 種別 **/
-	private LicenseClassification license;
+	private final LicenseClassification license;
 	
 	/** 氏名 **/
-	private String fullName;
+	private final String fullName;
 	
 	/** 常勤 **/
-	private boolean fullTime;
+	private final boolean fullTime;
 	
 	/** 非常勤 **/
-	private boolean partTime;
+	private final boolean partTime;
 	
 	/** 短時間勤務 **/
-	private boolean shortTime;
+	private final boolean shortTime;
 	
 	/** 他部署兼務 **/
-	private boolean concurrentPost;
+	private final boolean concurrentPost;
 	
 	/** 夜勤専従 **/
-	private boolean nightShiftOnly;
+	private final boolean nightShiftOnly;
 	
 	/** 事務的業務従事者 **/
-	private boolean officeWorker;
+	private final boolean officeWorker;
 	
 	/**
 	 * 作成する

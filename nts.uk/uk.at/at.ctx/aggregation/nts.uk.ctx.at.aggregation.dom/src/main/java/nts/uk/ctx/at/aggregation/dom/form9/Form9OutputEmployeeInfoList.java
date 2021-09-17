@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,13 +16,18 @@ import lombok.Value;
 public class Form9OutputEmployeeInfoList {
 	
 	/** 社員情報リスト **/
-	private List<Form9OutputEmployeeInfo> employeeInfoList;
+	private final List<Form9OutputEmployeeInfo> employeeInfoList;
 	
 	/**
 	 * 社員IDリストを取得する
 	 * 
 	 */
 	public List<String> getEmployeeIdList() {
-		return this.employeeInfoList.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+		
+		List<String> employeeIdList = this.employeeInfoList.stream()
+				.map(c -> c.getEmployeeId())
+				.collect(Collectors.toList());
+		
+		return Collections.unmodifiableList( employeeIdList );
 	}
 }

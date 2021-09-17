@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,52 +42,42 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 	public void testGet_schedule_only() {
 		
 		//取得対象＝予定
-		val target = ScheRecGettingAtr.ONLY_SCHEDULE;
+		val acquireTarget = ScheRecGettingAtr.ONLY_SCHEDULE;
 		// 社員IDリスト
 		val empIds = Arrays.asList(
 					new EmployeeId("sid_1")
 				,	new EmployeeId("sid_2")
-				,	new EmployeeId("sid_3")
-				,	new EmployeeId("sid_4")
-				,	new EmployeeId("sid_5")
-				,	new EmployeeId("sid_6")
-				,	new EmployeeId("sid_7")
-				,	new EmployeeId("sid_8")
-				,	new EmployeeId("sid_9")
-				,	new EmployeeId("sid_10"));
+				,	new EmployeeId("sid_3"));
 		
 		// 期待値：予定
 		val empIdsHasData = Arrays.asList(
 				new EmployeeId("sid_1")
-			,	new EmployeeId("sid_2")
-			,	new EmployeeId("sid_3"));
-		
-		val today = GeneralDate.today();
+			,	new EmployeeId("sid_2"));
 		// 期間
 		val period = new DatePeriod(
-						GeneralDate.ymd( today.year(), today.month(), 1 )
-					,	GeneralDate.ymd( today.year(), today.month(), 5 )
+						GeneralDate.ymd( 2021, 9, 1 )
+					,	GeneralDate.ymd( 2021, 9, 5 )
 				);
 		// 予定リスト
 		val scheduleDatas = new HashMap<ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			/** serialVersionUID **/
 			private static final long serialVersionUID = 1L;
 			{
-				// 予定：1日～5日
-				put( target, Helper.createDlyAtdList(empIdsHasData, 1, 5) );
+				// 予定：2021/09/01～2021/09/05
+				put( acquireTarget, Helper.createDlyAtdList(empIdsHasData, period));
 			}
 			
 		};
 		
 		new Expectations(DailyAttendanceGettingService.class) {
 			{
-				DailyAttendanceGettingService.get(require, empIds, period, target);
+				DailyAttendanceGettingService.get(require, empIds, period, acquireTarget);
 				result = scheduleDatas;
 			}
 		};
 		
 		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, target);
+		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, acquireTarget);
 		
 		//Assert
 		assertThat( result.entrySet() )
@@ -102,64 +91,17 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 					,	c -> c.getValue().getTotalNightShiftHours().getTime().v()
 					,	c -> c.getValue().getTotalNightShiftHours().isDeductionDateFromDeliveryTime())
 		.containsExactlyInAnyOrder(
-						tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_2", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_2", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_2", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_2", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_2", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
+						tuple("sid_1", GeneralDate.ymd( 2021, 9, 1), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 2), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 3), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 1), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 2), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 3), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true )
 				);
-	}
-	
-	/**
-	 * Target	: get
-	 * Pattern	: 取得対象＝予定
-	 */
-	@Test
-	public void testGet_schedule_only_not_data() {
-		
-		//取得対象＝予定
-		val target = ScheRecGettingAtr.ONLY_SCHEDULE;
-		// 社員IDリスト
-		val empIds = Arrays.asList(
-					new EmployeeId("sid_1")
-				,	new EmployeeId("sid_2")
-				,	new EmployeeId("sid_3")
-				,	new EmployeeId("sid_4")
-				,	new EmployeeId("sid_5")
-				,	new EmployeeId("sid_6")
-				,	new EmployeeId("sid_7")
-				,	new EmployeeId("sid_8")
-				,	new EmployeeId("sid_9")
-				,	new EmployeeId("sid_10"));
-		
-		val today = GeneralDate.today();
-		// 期間
-		val period = new DatePeriod(
-						GeneralDate.ymd( today.year(), today.month(), 1 )
-					,	GeneralDate.ymd( today.year(), today.month(), 5 )
-				);
-		
-		new Expectations(DailyAttendanceGettingService.class) {
-			{
-				DailyAttendanceGettingService.get(require, empIds, period, target);
-			}
-		};
-		
-		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, target);
-		
-		//Assert
-		assertThat( result ).isEmpty();
 	}
 	
 	/**
@@ -169,56 +111,43 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 	@Test
 	public void testGet_record_only() {
 		//取得対象＝実績
-		val target = ScheRecGettingAtr.ONLY_RECORD;
+		val acquireTarget = ScheRecGettingAtr.ONLY_RECORD;
 		
 		// 社員IDリスト
 		val empIds = Arrays.asList(
 					new EmployeeId("sid_1")
 				,	new EmployeeId("sid_2")
-				,	new EmployeeId("sid_3")
-				,	new EmployeeId("sid_4")
-				,	new EmployeeId("sid_5")
-				,	new EmployeeId("sid_6")
-				,	new EmployeeId("sid_7")
-				,	new EmployeeId("sid_8")
-				,	new EmployeeId("sid_9")
-				,	new EmployeeId("sid_10"));
+				,	new EmployeeId("sid_3"));
 		
 		// 期待値：実績
 		val empIdsHasData = Arrays.asList(
 				new EmployeeId("sid_1")
-			,	new EmployeeId("sid_3")
-			,	new EmployeeId("sid_4")
-			,	new EmployeeId("sid_7")
-			,	new EmployeeId("sid_9"));
-		
-		val today = GeneralDate.today();
+			,	new EmployeeId("sid_3"));
 		
 		// 期間
-		val period = new DatePeriod(
-						GeneralDate.ymd( today.year(), today.month(), 1 )
-					,	GeneralDate.ymd( today.year(), today.month(), 5 )
-				);
+		val period = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ) );
+		
+		//期間に実績がある
+		val recordPeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 3 ) );
 		
 		val recordDatas = new HashMap<ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			/** serialVersionUID **/
 			private static final long serialVersionUID = 1L;
 			{
-				// 実績：1日～3日
-				put( target, Helper.createDlyAtdList(empIdsHasData, 1, 3) );
+				// 実績：2021/9/1～2021/9/3
+				put( acquireTarget, Helper.createDlyAtdList(empIdsHasData, recordPeriod) );
 			}
-			
 		};
 		
-		new Expectations(DailyAttendanceGettingService.class) {
+		new Expectations( DailyAttendanceGettingService.class ) {
 			{
-				DailyAttendanceGettingService.get(require, empIds, period, target);
+				DailyAttendanceGettingService.get(require, empIds, period, acquireTarget);
 				result = recordDatas;
 			}
 		};
 		
 		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, target);
+		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, acquireTarget);
 		
 		//Assert
 		assertThat( result.entrySet() )
@@ -232,65 +161,13 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 					,	c -> c.getValue().getTotalNightShiftHours().getTime().v()
 					,	c -> c.getValue().getTotalNightShiftHours().isDeductionDateFromDeliveryTime())
 		.containsExactlyInAnyOrder(
-						tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-				);
-	}
-	
-	/**
-	 * Target	: get
-	 * Pattern	: 取得対象＝実績
-	 */
-	@Test
-	public void testGet_record_only_not_data() {
-		//取得対象＝実績
-		val target = ScheRecGettingAtr.ONLY_RECORD;
-		
-		// 社員IDリスト
-		val empIds = Arrays.asList(
-					new EmployeeId("sid_1")
-				,	new EmployeeId("sid_2")
-				,	new EmployeeId("sid_3")
-				,	new EmployeeId("sid_4")
-				,	new EmployeeId("sid_5")
-				,	new EmployeeId("sid_6")
-				,	new EmployeeId("sid_7")
-				,	new EmployeeId("sid_8")
-				,	new EmployeeId("sid_9")
-				,	new EmployeeId("sid_10"));
-		
-		val today = GeneralDate.today();
-		
-		// 期間
-		val period = new DatePeriod(
-						GeneralDate.ymd( today.year(), today.month(), 1 )
-					,	GeneralDate.ymd( today.year(), today.month(), 5 )
-				);
-		
-		new Expectations(DailyAttendanceGettingService.class) {
-			{
-				DailyAttendanceGettingService.get(require, empIds, period, target);
-			}
-		};
-		
-		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, target);
-		
-		//Assert
-		assertThat( result ).isEmpty();
+						tuple("sid_1", GeneralDate.ymd( 2021, 9, 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_3", GeneralDate.ymd( 2021, 9, 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_3", GeneralDate.ymd( 2021, 9, 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_3", GeneralDate.ymd( 2021, 9, 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+						);
 	}
 	
 	/**
@@ -300,62 +177,55 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 	@Test
 	public void testGet_scheduleWithRecord() {
 		//取得対象＝実績
-		val target = ScheRecGettingAtr.SCHEDULE_WITH_RECORD;
+		val acquireTarget = ScheRecGettingAtr.SCHEDULE_WITH_RECORD;
 		
 		// 社員IDリスト
 		val empIds = Arrays.asList(
 					new EmployeeId("sid_1")
 				,	new EmployeeId("sid_2")
-				,	new EmployeeId("sid_3")
-				,	new EmployeeId("sid_4")
-				,	new EmployeeId("sid_5")
-				,	new EmployeeId("sid_6")
-				,	new EmployeeId("sid_7")
-				,	new EmployeeId("sid_8")
-				,	new EmployeeId("sid_9")
-				,	new EmployeeId("sid_10"));
+				,	new EmployeeId("sid_3"));
 		
 		// 期待値：実績
 		val empIdsHasData = Arrays.asList(
 				new EmployeeId("sid_1")
-			,	new EmployeeId("sid_3")
-			,	new EmployeeId("sid_4")
-			,	new EmployeeId("sid_7")
-			,	new EmployeeId("sid_9"));
-		
-		val today = GeneralDate.today();
+			,	new EmployeeId("sid_2"));
 		
 		// 期間
-		val period = new DatePeriod(
-						GeneralDate.ymd( today.year(), today.month(), 1 )
-					,	GeneralDate.ymd( today.year(), today.month(), 5 )
-				);
+		val period = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ));
+		
+		//期間予定
+		val schedulePeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ));
+		
+		//期間実績
+		val recordPeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 3 ));
+		
+		//期間予定・実績
+		val recordSchedulePeriod = new DatePeriod( GeneralDate.ymd( 2021, 9, 1 ), GeneralDate.ymd( 2021, 9, 5 ));
 		
 		val scheduleWithRecordDatas = new HashMap<ScheRecGettingAtr, List<IntegrationOfDaily>>() {
 			/** serialVersionUID **/
 			private static final long serialVersionUID = 1L;
 			{
-				// 予定：1日～5日
-				put( ScheRecGettingAtr.ONLY_SCHEDULE, Helper.createDlyAtdList(empIdsHasData, 1, 5) );
+				// 予定：2021/09/01 ～ 2021/09/05
+				put( ScheRecGettingAtr.ONLY_SCHEDULE, Helper.createDlyAtdList(empIdsHasData, schedulePeriod ) );
 				
-				// 実績：1日～3日
-				put( ScheRecGettingAtr.ONLY_RECORD, Helper.createDlyAtdList(empIdsHasData, 1, 3) );
+				// 実績：2021/09/01 ～ 2021/09/03
+				put( ScheRecGettingAtr.ONLY_RECORD, Helper.createDlyAtdList(empIdsHasData, recordPeriod ) );
 				
-				// 予定＋実績
-				put( ScheRecGettingAtr.SCHEDULE_WITH_RECORD, Helper.createDlyAtdList(empIdsHasData, 1, 5) );
+				// 予定＋実績：2021/09/01 ～ 2021/09/05
+				put( ScheRecGettingAtr.SCHEDULE_WITH_RECORD, Helper.createDlyAtdList(empIdsHasData, recordSchedulePeriod ) );
 			}
-			
 		};
 		
 		new Expectations(DailyAttendanceGettingService.class) {
 			{
-				DailyAttendanceGettingService.get(require, empIds, period, target);
+				DailyAttendanceGettingService.get(require, empIds, period, acquireTarget);
 				result = scheduleWithRecordDatas;
 			}
 		};
 		
 		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, target);
+		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, acquireTarget);
 		
 		//Assert
 		assertThat( result.entrySet() )
@@ -369,31 +239,16 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 					,	c -> c.getValue().getTotalNightShiftHours().getTime().v()
 					,	c -> c.getValue().getTotalNightShiftHours().isDeductionDateFromDeliveryTime())
 		.containsExactlyInAnyOrder(
-						tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_1", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_3", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_4", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_7", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
-					,	tuple("sid_9", GeneralDate.ymd(today.year(), today.month(), 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
+						tuple("sid_1", GeneralDate.ymd( 2021, 9, 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 1), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 2), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 3), ScheRecAtr.RECORD, 480, true, 480, true, 480, true)
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
+					,	tuple("sid_1", GeneralDate.ymd( 2021, 9, 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 4), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
+					,	tuple("sid_2", GeneralDate.ymd( 2021, 9, 5), ScheRecAtr.SCHEDULE, 480, true, 480, true, 480, true)
 				);
 	}
 	
@@ -405,16 +260,15 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 		/**
 		 * 日別勤怠(Work)リストを作成する
 		 * @param empIds 作成対象の社員IDリスト
-		 * @param startDay 開始日 ※年月はGeneralDate.today()より取得
-		 * @param endDay 終了日 ※年月はGeneralDate.today()より取得
+		 * @param startDate 開始日
+		 * @param endDate 終了日
 		 * @return 対象社員の開始日～終了日までの日別勤怠(Work)リスト
 		 */
-		public static List<IntegrationOfDaily> createDlyAtdList(List<EmployeeId> empIds, int startDay, int endDay) {
-			val today = GeneralDate.today();
+		public static List<IntegrationOfDaily> createDlyAtdList(List<EmployeeId> empIds, DatePeriod period) {
 			return empIds.stream()
 					.flatMap( empId -> {
-						return IntStream.rangeClosed( startDay, endDay).boxed()
-								.map( day -> createDailyWorks( empId.v(), GeneralDate.ymd( today.year(), today.month(), day ) ) );
+						return period.stream()
+								.map( date -> createDailyWorks( empId.v(), date ) );
 					}).collect(Collectors.toList());
 		}
 		

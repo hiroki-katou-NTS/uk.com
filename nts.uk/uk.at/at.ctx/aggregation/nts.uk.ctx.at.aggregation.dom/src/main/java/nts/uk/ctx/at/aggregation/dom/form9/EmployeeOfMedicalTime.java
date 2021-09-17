@@ -16,22 +16,22 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 public class EmployeeOfMedicalTime {
 	
 	/** 社員ID **/
-	private String employeeId;
+	private final String employeeId;
 	
 	/** 年月日 **/
-	private GeneralDate ymd;
+	private final GeneralDate ymd;
 	
 	/** 予実区分**/
-	private ScheRecAtr scheRecAtr;
+	private final ScheRecAtr scheRecAtr;
 	
 	/** 日勤時間 **/
-	private Form9OutputMedicalTime dayShiftHours;
+	private final Form9OutputMedicalTime dayShiftHours;
 	
 	/** 夜勤時間 **/
-	private Form9OutputMedicalTime nightShiftHours;
+	private final Form9OutputMedicalTime nightShiftHours;
 	
 	/** 総夜勤時間 **/
-	private Form9OutputMedicalTime totalNightShiftHours;
+	private final Form9OutputMedicalTime totalNightShiftHours;
 	
 	/**
 	 * 作る

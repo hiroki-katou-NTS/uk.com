@@ -25,33 +25,29 @@ public class GetEmployeeOfMedicalTimeService {
 	 * @param require
 	 * @param empIds 社員IDリスト
 	 * @param period 期間
-	 * @param target 取得対象
+	 * @param acquireTarget 取得対象
 	 * @return
 	 */
 	public static Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> get(Require require, List<EmployeeId> empIds
 			, DatePeriod period
-			, ScheRecGettingAtr target){
+			, ScheRecGettingAtr acquireTarget){
 		
-		Map<ScheRecGettingAtr, List<IntegrationOfDaily>> dailyMaps = DailyAttendanceGettingService.get(require, empIds, period, target);
+		Map<ScheRecGettingAtr, List<IntegrationOfDaily>> dailyMap = DailyAttendanceGettingService.get(require, empIds, period, acquireTarget);
 		
-		if(dailyMaps.isEmpty())
-			return Collections.emptyMap();
-		
-		
-		List<IntegrationOfDaily> scheduleList = target.isNeedSchedule()? dailyMaps.get(ScheRecGettingAtr.ONLY_SCHEDULE)
+		List<IntegrationOfDaily> scheduleList = acquireTarget.isNeedSchedule()? dailyMap.get(ScheRecGettingAtr.ONLY_SCHEDULE)
 				: Collections.emptyList();
-		List<IntegrationOfDaily> recordList = target.isNeedRecord()? dailyMaps.get(ScheRecGettingAtr.ONLY_RECORD)
+		List<IntegrationOfDaily> recordList = acquireTarget.isNeedRecord()? dailyMap.get(ScheRecGettingAtr.ONLY_RECORD)
 				: Collections.emptyList();
 		
 		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfscheduleMedicalTimes = scheduleList.stream()
 				.collect(Collectors.toMap(
-						c ->  new EmployeeIdAndYmd(c.getEmployeeId(), c.getYmd()),
-						c ->  EmployeeOfMedicalTime.create(c, ScheRecAtr.SCHEDULE)));
+						schedule ->  new EmployeeIdAndYmd( schedule.getEmployeeId(), schedule.getYmd() )
+					,	schedule ->  EmployeeOfMedicalTime.create(schedule, ScheRecAtr.SCHEDULE)) );
 		
 		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfRecordMedicalTimes = recordList.stream()
 				.collect(Collectors.toMap(
-						c ->  new EmployeeIdAndYmd(c.getEmployeeId(), c.getYmd()),
-						c ->  EmployeeOfMedicalTime.create(c, ScheRecAtr.RECORD)));
+						record ->  new EmployeeIdAndYmd( record.getEmployeeId(), record.getYmd() )
+					,	record ->  EmployeeOfMedicalTime.create( record, ScheRecAtr.RECORD)) );
 		
 		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfMedicalTimes = new HashMap<>();
 		empOfMedicalTimes.putAll(empOfscheduleMedicalTimes);

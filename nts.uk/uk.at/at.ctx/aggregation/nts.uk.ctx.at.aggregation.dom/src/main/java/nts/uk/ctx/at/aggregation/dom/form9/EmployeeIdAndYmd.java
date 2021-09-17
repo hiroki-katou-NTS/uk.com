@@ -13,9 +13,9 @@ import nts.arc.time.GeneralDate;
 public class EmployeeIdAndYmd {
 	
 	/** 社員ID **/
-	private String employeeId;
+	private final String employeeId;
 	
 	/** 年月日 **/
-	private GeneralDate ymd;
+	private final GeneralDate ymd;
 
 }

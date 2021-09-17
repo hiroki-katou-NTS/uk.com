@@ -12,9 +12,9 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class Form9OutputMedicalTime {
 	
 	/** 時間 **/
-	private AttendanceTime time;
+	private final AttendanceTime time;
 	
 	/** 申し送り時間控除日か **/
-	private boolean isDeductionDateFromDeliveryTime;
+	private final boolean isDeductionDateFromDeliveryTime;
 
 }
