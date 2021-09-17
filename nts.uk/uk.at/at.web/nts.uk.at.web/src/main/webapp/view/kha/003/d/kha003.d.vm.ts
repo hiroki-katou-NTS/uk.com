@@ -143,20 +143,24 @@ module nts.uk.at.kha003.d {
                 columns.push(column);
                 colWidth += parseInt(column.width)
             }
-            let widthScreen=$(window).width();
+            let widthScreen = $(document).width();
             let height = (520 * $(window).height()) / 754;
+            let width = Math.min(widthScreen, colWidth);
+            if (width === widthScreen) {
+                width = width - 15;
+            }
             $("#grid1").igGrid({
                 dataSource: vm.contents(),
                 primaryKey: "ID",
                 autoGenerateColumns: false,
                 columns: columns,
-                width: Math.min(widthScreen, colWidth) + "px",
+                width: width + "px",
                 height: height + 'px',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
-                
+
                 features: [
                     {
                         name: "CellMerging",
