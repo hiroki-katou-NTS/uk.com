@@ -18,7 +18,7 @@ module nts.uk.com.view.oem002.a {
     selectedEquipmentInfo: KnockoutObservable<EquipmentInformation> = ko.observable(new EquipmentInformation());
     selectedEquipmentInfoCode: KnockoutObservable<string> = ko.observable(null);
     columns: KnockoutObservableArray<any> = ko.observableArray([]);
-    isNewMode: KnockoutObservable<boolean> = ko.observable(true);
+    isNewMode: KnockoutObservable<boolean> = ko.observable(true).extend({ notify: 'always' });
 
     created() {
       const vm = this;
@@ -38,11 +38,19 @@ module nts.uk.com.view.oem002.a {
             vm.isNewMode(false);
             vm.$errors("clear");
             vm.selectedEquipmentInfo(EquipmentInformation.createFromDto(result, vm.equipmentClsList()));
+
+            // Fix bug A2_9
+            // Avoid using readonly attr because of tabindex
+            vm.$nextTick(() => $("#A2_9").attr("readonly", "readonly"));
           })
         } else {
           vm.isNewMode(true);
           vm.selectedEquipmentInfo(new EquipmentInformation());
           vm.selectedEquipmentInfo.valueHasMutated();
+
+          // Fix bug A2_9
+          // Avoid using readonly attr because of tabindex
+          vm.$nextTick(() => $("#A2_9").attr("readonly", "readonly"));
         }
       });
       vm.isNewMode.subscribe(() => vm.$nextTick(() => $("#A2_10").focus()));
@@ -52,7 +60,7 @@ module nts.uk.com.view.oem002.a {
       $("#A2_10").focus();
     }
 
-    private getAll(): JQueryPromise<any> {
+    private getAll(selectedCode?: string): JQueryPromise<any> {
       const vm = this;
       return vm.$ajax(API.initScreen).then(result => {
         vm.isNewMode.valueHasMutated();
@@ -60,7 +68,11 @@ module nts.uk.com.view.oem002.a {
         _.forEach(result.equipmentInformationList, data => data.equipmentClsName = _.find(vm.equipmentClsList(), { code: data.equipmentClsCode }).name);
         vm.equipmentInfoList(result.equipmentInformationList);
         if (vm.equipmentInfoList().length > 0) {
-          vm.selectedEquipmentInfoCode(vm.equipmentInfoList()[0].code);
+          if (!!selectedCode) {
+            vm.selectedEquipmentInfoCode(selectedCode);
+          } else {
+            vm.selectedEquipmentInfoCode(vm.equipmentInfoList()[0].code);
+          }
         }
       });
     }
@@ -68,7 +80,6 @@ module nts.uk.com.view.oem002.a {
     public resetNewMode(): void {
       const vm = this;
       vm.isNewMode(true);
-      vm.isNewMode.valueHasMutated();
       vm.selectedEquipmentInfoCode(null);
       vm.selectedEquipmentInfoCode.valueHasMutated();
     }
@@ -82,8 +93,7 @@ module nts.uk.com.view.oem002.a {
           const code = param.code;
           const api = vm.isNewMode() ? API.insert : API.update;
           vm.$ajax(api, param)
-              .then(() => vm.$dialog.info({ messageId: "Msg_15" })
-                .then(() => vm.getAll().then(() => vm.selectedEquipmentInfoCode(code))))
+              .then(() => vm.$dialog.info({ messageId: "Msg_15" }).then(() => vm.getAll(code)))
               .fail(err => vm.$dialog.error({ messageId: err.messageId }))
               .always(() => vm.$blockui("clear"));
         }
@@ -92,22 +102,24 @@ module nts.uk.com.view.oem002.a {
 
     public processDelete(): void {
       const vm = this;
-      vm.$blockui("grayout");
-      const length = vm.equipmentInfoList().length;
-      const index = _.findIndex(vm.equipmentInfoList(), { "code": vm.selectedEquipmentInfoCode() });
-      const api = nts.uk.text.format(API.delete, vm.selectedEquipmentInfoCode());
-      vm.$ajax(api).then(() => {
-        vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-          const newIndex = length === 1 ? null : (length === index ? index - 1 : index);
-          vm.getAll().then(() => {
-            if (newIndex) {
-              vm.selectedEquipmentInfoCode(vm.equipmentClsList()[newIndex].code)
-            } else {
-              vm.resetNewMode();
-            }
-          });
-        })
-      }).always(() => vm.$blockui("clear"));
+      vm.$dialog.confirm({ messageId: "Msg_18" }).then((result: "yes" | "no") => {
+        if (result === "yes") {
+          vm.$blockui("grayout");
+          const length = vm.equipmentInfoList().length;
+          const index = _.findIndex(vm.equipmentInfoList(), { "code": vm.selectedEquipmentInfoCode() });
+          const api = nts.uk.text.format(API.delete, vm.selectedEquipmentInfoCode());
+          vm.$ajax(api).then(() => {
+            vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+              const newIndex = length === 1 ? null : (length === index + 1 ? index - 1 : index + 1);
+              if (!!newIndex) {
+                return vm.getAll(vm.equipmentInfoList()[newIndex].code);
+              } else {
+                return vm.getAll().then(() => vm.resetNewMode());
+              }
+            })
+          }).always(() => vm.$blockui("clear"));
+        }
+      });
     }
 
     public processExport(): void {
@@ -129,7 +141,7 @@ module nts.uk.com.view.oem002.a {
 
     public openDialogB(): void {
       const vm = this;
-      vm.$window.modal("/view/oem/002/b/index.xhtml", vm.selectedEquipmentInfoCode())
+      vm.$window.modal("/view/oem/002/b/index.xhtml", vm.selectedEquipmentInfo().equipmentClsCode())
         .then(result => {
           if (result) {
             vm.selectedEquipmentInfo().equipmentClsCode(result.code);
@@ -213,8 +225,8 @@ module nts.uk.com.view.oem002.a {
       info.code(data.code);
       info.name(data.name);
       info.validPeriod({
-        startDate: moment.utc(data.effectiveStartDate),
-        endDate: moment.utc(data.effectiveEndDate)
+        startDate: moment.utc(data.effectiveStartDate, "YYYY/MM/DD"),
+        endDate: moment.utc(data.effectiveEndDate, "YYYY/MM/DD")
       })
       info.equipmentClsCode(data.equipmentClsCode);
       info.equipmentClsName(_.find(clsList, { "code" : data.equipmentClsCode }).name);

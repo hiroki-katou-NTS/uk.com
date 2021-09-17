@@ -30,7 +30,7 @@ module nts.uk.com.view.oem002.b {
       vm.$ajax(API.getEquipmentClsList)
         .then(result => vm.equipmentClsList(result))
         .then(() => {
-          if (vm.equipmentClsList().length > 0) {
+          if (vm.equipmentClsList().length > 0 && !vm.selectedEquipmentClsCode()) {
             vm.selectedEquipmentClsCode(vm.equipmentClsList()[0].code);
           }
         })

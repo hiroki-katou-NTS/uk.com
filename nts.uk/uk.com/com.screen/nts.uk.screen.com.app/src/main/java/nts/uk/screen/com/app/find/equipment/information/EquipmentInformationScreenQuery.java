@@ -1,6 +1,7 @@
 package nts.uk.screen.com.app.find.equipment.information;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,8 @@ public class EquipmentInformationScreenQuery {
 			equipmentClassifications = this.equipmentClassificationRepository
 					.getFromClsCodeList(AppContexts.user().contractCode(), clsCodes);
 		}
+		equipmentInformations.sort(Comparator.comparing(data -> ((EquipmentInformation) data).getEquipmentClsCode().v())
+				.thenComparing(data -> ((EquipmentInformation) data).getEquipmentCode().v()));
 		return EquipmentInformationStartupDto.fromDomains(equipmentInformations, equipmentClassifications);
 	}
 	
