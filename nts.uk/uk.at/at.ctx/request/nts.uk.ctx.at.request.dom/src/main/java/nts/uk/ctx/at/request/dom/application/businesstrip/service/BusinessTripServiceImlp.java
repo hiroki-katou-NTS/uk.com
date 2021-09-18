@@ -789,7 +789,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         
         if (workTypeUnit.equals(WorkTypeUnit.OneDay)) {
             // 勤務種類.1日の勤務.1日をチェック（※勤務種類の判断条件参照）
-            if (isWorkTypeWork(workType.getDailyWork().getMorning())) {
+            if (isWorkTypeWork(workType.getDailyWork().getOneDay())) {
                 // 取得した「所定時間設定」の「午前午後区分に応じた所定時間帯」を実施
                 List<TimezoneUse> lstTimezone = predetemineTimeSetting.get().getPrescribedTimezoneSetting().getLstTimezone();
                 if (lstTimezone.stream().filter(x -> x.getWorkNo() == 1).findFirst().isPresent()) {
