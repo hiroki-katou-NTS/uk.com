@@ -80,6 +80,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState_New.REMAND.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = new ArrayList<>();
 		if(!lstAppType.isEmpty()) {
