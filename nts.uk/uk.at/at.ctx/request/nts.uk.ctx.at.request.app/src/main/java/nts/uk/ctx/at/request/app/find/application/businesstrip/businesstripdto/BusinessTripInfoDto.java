@@ -3,8 +3,11 @@ package nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
+import nts.uk.ctx.at.request.dom.application.businesstrip.service.WorkingTime;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,9 +33,12 @@ public class BusinessTripInfoDto {
     private Integer endWorkTime;
 
     public BusinessTripInfo toDomain() {
-        Optional<List<TimeZoneWithWorkNo>> workingHours = Optional.empty();
+        Optional<List<WorkingTime>> workingHours = Optional.empty();
         if (startWorkTime != null && endWorkTime != null) {
-            workingHours = Optional.of(Arrays.asList(new TimeZoneWithWorkNo(1, startWorkTime, endWorkTime)));
+            workingHours = Optional.of(Arrays.asList(new WorkingTime(
+                    new WorkNo(1), 
+                    startWorkTime == null ? Optional.empty() : Optional.ofNullable(new TimeWithDayAttr(startWorkTime)), 
+                    endWorkTime == null ? Optional.empty() : Optional.ofNullable(new TimeWithDayAttr(endWorkTime)))));
         }
         return new BusinessTripInfo(
                 new WorkInformation(this.wkTypeCd, this.wkTimeCd),
@@ -45,8 +51,8 @@ public class BusinessTripInfoDto {
         Integer begin = null;
         Integer end = null;
         if (domain.getWorkingHours().isPresent() && !domain.getWorkingHours().get().isEmpty()) {
-            begin = domain.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
-            end = domain.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+            begin = domain.getWorkingHours().get().get(0).getStartTime().map(TimeWithDayAttr::v).orElse(null);
+            end = domain.getWorkingHours().get().get(0).getEndTime().map(TimeWithDayAttr::v).orElse(null);
         }
         return new BusinessTripInfoDto(
                 domain.getDate().toString(),

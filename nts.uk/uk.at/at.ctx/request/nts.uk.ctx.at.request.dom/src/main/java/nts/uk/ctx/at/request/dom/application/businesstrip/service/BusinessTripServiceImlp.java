@@ -65,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class BusinessTripServiceImlp implements BusinessTripService {
@@ -438,8 +439,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             Integer workTimeEnd = null;
 
             if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
-                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
-                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+                workTimeStart = i.getWorkingHours().get().get(0).getStartTime().map(TimeWithDayAttr::v).orElse(null);
+                workTimeEnd = i.getWorkingHours().get().get(0).getEndTime().map(TimeWithDayAttr::v).orElse(null);
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
@@ -650,8 +651,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     if (info.isPresent()) {
                         wkTimeCd = info.get().getWorkInformation().getWorkTimeCode() == null ? null : info.get().getWorkInformation().getWorkTimeCode().v();
                         wkTypeCd = info.get().getWorkInformation().getWorkTypeCode().v();
-                        opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime().v()) : Optional.empty();
-                        opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime().v()) : Optional.empty();
+                        opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getStartTime().map(TimeWithDayAttr::v).orElse(null)) : Optional.empty();
+                        opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getEndTime().map(TimeWithDayAttr::v).orElse(null)) : Optional.empty();
                     }
                 }
                 break;

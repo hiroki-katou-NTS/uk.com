@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.service.WorkingTime;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.ApplicationForHolidays;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -133,7 +134,7 @@ public class ConvertApplicationToShare {
 			return new BusinessTripShare(
 					bussinessTrip.getInfos().stream()
 							.map(x -> new BusinessTripInfoShare(x.getWorkInformation(), x.getDate(),
-									x.getWorkingHours()))
+									x.getWorkingHours().map(y -> y.stream().map(WorkingTime::toShare).collect(Collectors.toList()))))
 							.collect(Collectors.toList()),
 					bussinessTrip.getDepartureTime().map(x -> x.v()).orElse(null),
 					bussinessTrip.getReturnTime().map(x -> x.v()).orElse(null), appShare);

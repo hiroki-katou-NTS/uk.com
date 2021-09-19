@@ -18,11 +18,14 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
+import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.WorkingTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.reflectprocess.common.ReflectApplicationHelper;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author thanh_nx
@@ -121,14 +124,14 @@ public class ReflectBusinessTripAppTest {
 
 	private BusinessTripShare createTripInfoWorkHour() {
 
-		List<TimeZoneWithWorkNo> workingHours = new ArrayList<>();
-		workingHours.add(new TimeZoneWithWorkNo(1, 1, 1));
-		workingHours.add(new TimeZoneWithWorkNo(2, 2, 2));
+	    List<WorkingTimeShare> workingHours = new ArrayList<>();
+        workingHours.add(new WorkingTimeShare(new WorkNo(1), Optional.of(new TimeWithDayAttr(1)), Optional.of(new TimeWithDayAttr(1))));
+        workingHours.add(new WorkingTimeShare(new WorkNo(2), Optional.of(new TimeWithDayAttr(2)), Optional.of(new TimeWithDayAttr(2))));
 
-		return createTripInfo(workingHours);
+        return createTripInfo(workingHours);
 	}
 
-	private BusinessTripShare createTripInfo(List<TimeZoneWithWorkNo> workingHours) {
+	private BusinessTripShare createTripInfo(List<WorkingTimeShare> workingHours) {
 		List<BusinessTripInfoShare> lstResult = new ArrayList<>();
 		BusinessTripInfoShare info = new BusinessTripInfoShare(new WorkInformation("1", "2"),
 				GeneralDate.ymd(2020, 10, 10), Optional.of(workingHours));

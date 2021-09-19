@@ -36,6 +36,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDi
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -134,8 +135,8 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
             Integer workTimeEnd = null;
 
             if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
-                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
-                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+                workTimeStart = i.getWorkingHours().get().get(0).getStartTime().map(TimeWithDayAttr::v).orElse(null);
+                workTimeEnd = i.getWorkingHours().get().get(0).getEndTime().map(TimeWithDayAttr::v).orElse(null);
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
