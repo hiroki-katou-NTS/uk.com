@@ -724,6 +724,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     // 対象項目いずれかが未登録の場合
                     Optional<Integer> opWorkTime = optAchievementDetail.get().getOpWorkTime();
                     Optional<Integer> opLeaveTime = optAchievementDetail.get().getOpLeaveTime();
+                    String workTimeCd = optAchievementDetail.get().getWorkTimeCD();
                     if (!opWorkTime.isPresent() || !opLeaveTime.isPresent()) {
                         // アルゴリズム「出張申請就業時刻を取得する」を実行する
                         WorkType workType = result.getWorkTypeBeforeChange().isPresent() ? 
@@ -731,22 +732,22 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                                 .filter(x -> x.getDate().equals(opActualContentDisplayLst.get().get(index).getDate()))
                                 .map(x -> x.getWorkType())
                                 .findFirst().orElse(null) : null;
-                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, optAchievementDetail.get().getWorkTimeCD(), workingHours);
+                        WorkTimeGetOuput workTimeGetOutput = getWorkTimeBusinessTrip(workType, workTimeCd, workingHours);
                         if (!workTimeGetOutput.getWorkingHours().isEmpty()) {
                             workingHours = workTimeGetOutput.getWorkingHours();
                         }
                         // 未登録の対象項目に値をセットする
                         if (!opWorkTime.isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime(workTimeGetOutput.getStartTime1());
+                            optAchievementDetail.get().setOpWorkTime(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getStartTime1());
                         }
                         if (!opLeaveTime.isPresent()) {
-                            optAchievementDetail.get().setOpLeaveTime(workTimeGetOutput.getEndTime1());
+                            optAchievementDetail.get().setOpLeaveTime(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getEndTime1());
                         }
                         if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime2(workTimeGetOutput.getStartTime2());
+                            optAchievementDetail.get().setOpWorkTime2(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getStartTime2());
                         }
                         if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
-                            optAchievementDetail.get().setOpDepartureTime2(workTimeGetOutput.getEndTime2());
+                            optAchievementDetail.get().setOpDepartureTime2(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getEndTime2());
                         }
                     }
                 }
