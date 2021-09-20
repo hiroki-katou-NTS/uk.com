@@ -82,9 +82,9 @@ module nts.uk.at.view.kdl005.test.viewmodel {
 
 			nts.uk.ui.windows.setShared('KDL005_DATA', self.empList());
 			if (empIds.length > 1)
-				nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 1160, height: 630 });
+				nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 1140, height: 640 });
 			else
-				nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 850, height: 630 });
+				nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 850, height: 640 });
 		}
 	}
 

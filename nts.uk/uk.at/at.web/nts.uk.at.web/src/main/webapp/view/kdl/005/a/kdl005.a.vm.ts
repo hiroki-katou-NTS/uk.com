@@ -167,6 +167,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 
 		startPage(): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
+			nts.uk.ui.block.grayout();
 			let param = {
 				employeeIds: self.paramData,
 				baseDate: ""
@@ -215,11 +216,18 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 						_.forEach(data.remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
 							self.bindDataToText(z, index);
 						});
-						self.showHideItem(data);
 						self.holidayDataOld({ ...self.holidayData() });
 						dfd.resolve();
 					}
-
+					self.showHideItem(data);
+					$("#ui-area").css('display','');
+					$("#functions-area-bottom").css('display','');
+					$('#cancel-btn').focus();
+					
+					let id = _.filter($("div > div > div > div"), (x: any) => {
+							return _.includes(x.id, "container") && !_.includes(x.id, "single-list");
+					})
+					$("#" + id[0].id).attr('tabindex', -1);
 					if (self.checkSolid != 0) {
 						$("#single-list > tbody > tr:nth-child(" + self.checkSolid + ") > td").css("border-bottom", "1px #CCC solid");
 					}
@@ -229,6 +237,9 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 					self.bindDataToText(z, index);
 				});
 				self.showHideItem(self.dataHoliday());
+				$("#ui-area").css('display','');
+				$("#functions-area-bottom").css('display','');
+				$('#cancel-btn').focus();
 				self.holidayDataOld({ ...self.holidayData() });
 				dfd.resolve();
 			}
@@ -286,6 +297,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				$("#A6_2").show();
 				$("#A6_3").show();
 			}
+			nts.uk.ui.block.clear();
 		}
 
 		findData(data: any) {
