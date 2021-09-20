@@ -14,9 +14,11 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.child
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildcareRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildNursingLeaveStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.IGetChildcareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.NursingCareLeaveMonthlyRemaining;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -90,5 +92,10 @@ public class GetChildcareRemNumEachMonthImpl implements IGetChildcareRemNumEachM
 
         }
         return listOuput;
+    }
+
+    @Override
+    public List<NursingCareLeaveMonthlyRemaining> getObtainMonthlyConfirmedCareForEmployees(String sid, List<YearMonth> yearMonths) {
+        return null;
     }
 }

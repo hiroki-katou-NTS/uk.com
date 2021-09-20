@@ -2,6 +2,8 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childca
 
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.care.CareRemNumEachMonth;
+
 import java.util.List;
 
 public interface IGetChildcareRemNumEachMonth {
@@ -13,4 +15,12 @@ public interface IGetChildcareRemNumEachMonth {
      * @return
      */
     List<ChildNursingLeaveStatus> getMonthlyConfirmedCareForEmployees(String sid, List<YearMonth> yearMonths);
+    /**
+     * RequestList 344
+     * [No.344]社員の月毎の確定済み介護を取得する
+     * @param sid
+     * @param yearMonths
+     * @return
+     */
+    List<NursingCareLeaveMonthlyRemaining> getObtainMonthlyConfirmedCareForEmployees(String sid, List<YearMonth> yearMonths);
 }
