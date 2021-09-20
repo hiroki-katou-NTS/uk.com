@@ -18,6 +18,7 @@ module nts.uk.at.view.kdl009.a {
 			
 			// search
 			items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+			searchText: KnockoutObservable<string> = ko.observable('');
 
 			//kcp
 			employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
@@ -81,7 +82,9 @@ module nts.uk.at.view.kdl009.a {
 					isShowWorkPlaceName: self.isShowWorkPlaceName(),
 					isShowSelectAllButton: self.isShowSelectAllButton(),
 					disableSelection: self.disableSelection(),
-					maxRows: 15
+					maxRows: 15,
+					tabindex: -1
+
 				};
 				if (self.listEmpId.length > 1) {
 					$("#area-right").show();
@@ -128,13 +131,44 @@ module nts.uk.at.view.kdl009.a {
                 let dfd = $.Deferred();
                 block.grayout();
                 $.when(self.getStartHolidayConf(self.listEmpId)).done(function() {
-                   	
+	
+					
                     block.clear();
                     dfd.resolve();
                 });
 
                 return dfd.promise();
             }
+
+			findData(data: any) {
+				let self = this;
+				
+				let text = $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").val()
+				if (text == "") {
+					nts.uk.ui.dialog.info({ messageId: "MsgB_24" });
+				} else {
+					let lstFil = _.filter(self.employeeList(), (z: any) => {
+						return _.includes(z.code, text);
+					});
+	
+					if (lstFil.length > 0) {              
+						let index = _.findIndex(lstFil, (z : any) => _.isEqual(z.code,self.listComponentOption.selectedCode()));
+                      	if (index == -1 || index == lstFil.length - 1){
+                          	self.listComponentOption.selectedCode(lstFil[0].code);
+                      	} else {
+                          	self.listComponentOption.selectedCode(lstFil[index + 1].code);
+                     	}
+						let scroll: any = _.findIndex(self.employeeList(), (z: any) => _.isEqual(z.code, self.listComponentOption.selectedCode())),
+						id = _.filter($("table > tbody > tr > td > div"), (x: any) => {
+							return _.includes(x.id, "_scrollContainer") && !_.includes(x.id, "single-list");
+						})
+					$("#" + id[0].id).scrollTop(scroll * 24);
+					} else {
+						nts.uk.ui.dialog.info({ messageId: "MsgB_25" });
+					}
+				}
+			}
+			
 			cancel() {
 				let self = this;
 				nts.uk.ui.windows.close();
@@ -180,6 +214,11 @@ module nts.uk.at.view.kdl009.a {
 						}
 						self.listDataFull(self.listDataInfo());
 					}
+	                //xóa index kcp005
+	               	let id = _.filter($("#kcp005 > div > div  "), (x) => {
+								return _.includes(x.id, "container") && ! _.includes(x.id, "single-list");
+						});
+					$("#" + id[0].id).attr('tabindex', -1);
 					
 					dfd.resolve();
                 }).fail(function (res: any) {

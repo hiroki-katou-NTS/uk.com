@@ -62,3 +62,22 @@ table#table-bottom > tbody {
 #area-left {
 	float: left;
 }
+
+#input-search{
+	margin-left: 20px;
+}
+
+#search-btn {
+	min-width: 80px;
+	margin-top: -32px;
+	float: right;
+	margin-right: 20px;
+}
+#kcp005 div {
+    nav-index: -1;
+}
+
+#b3 {
+   /*  nav-prev: #b2;*/
+    nav-next: #closeDialog-id; 
+}

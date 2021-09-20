@@ -4753,9 +4753,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             };
             setShared('KDL009_DATA', param);
             if (param.employeeIds.length > 1) {
-                modal("/view/kdl/009/a/multi.xhtml");
+                modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650})
             } else {
-                modal("/view/kdl/009/a/single.xhtml");
+                modal("/view/kdl/009/a/index.xhtml",{width: 770, height: 650});
             }
         }
 

@@ -22,18 +22,21 @@
 			 <div style="display : flex;">
 				 <!-- Search Box -->
 				<div id="area-right" style="float: left;">
-					<div style="margin-bottom: 0px; margin-left: 20px; width: 274px"
-						data-bind="ntsSearchBox: {
-							searchMode: 'filter',
-							targetKey: 'code', 
-							comId: 'multi-list', 
-							items: listComponentOption.employeeInputList(),
-							selected: listComponentOption.selectedCode(),  
-							selectedKey: 'code', 
-							fields: ['code', 'name'], 
-							mode: 'igGrid'}" /> 
+					<div>
+						<div class="input-wrapper">
+							<span class="nts-editor-wrapped ntsControl"> 
+							<input id = "input-search"
+								data-bind="text:searchText"
+								class="ntsSearchBox nts-editor ntsSearchBox_Component"
+								type="text" placeholder="コード・名称で検索・・・" data-name="検索テキストボックス"
+								tabindex="-1" style="width: 187px;"></input>
+							</span> 
+							<i id="search-icon-new" class="img-icon"></i>
+						</div>
+						<button id="search-btn" data-bind=" click: findData" class="caret-bottom " tabindex="-1">検索</button>
+					</div>
 					<!-- KCP005 -->
-					<div id="kcp005"></div>
+					<div tabindex="-1" id="kcp005"></div>
 				</div>
 				<div id="area-left">
 				 	<div style="margin-left: 5vw;">
@@ -48,7 +51,7 @@
 					 			<td style="font-size: 18px;">#{i18n.getText('KDL009_33')}</td>
 					 			<!-- A2_4 A2_5 -->
 					 			<td> 
-					 				<button data-bind="ntsHelpButton: {textId: 'KDL009_32' , position: 'right top' }">？</button>
+					 				<button tabindex="-1" data-bind="ntsHelpButton: {textId: 'KDL009_32' , position: 'right top' }">？</button>
 					 				<span data-bind="text : currentRemainNumberSelect()" style="padding-left: 3vw;font-size: 18px;"></span>
 					 			</td>
 					 			<!-- A2_23 -->
@@ -59,7 +62,7 @@
 					 			<td style="font-size: 18px;">#{i18n.getText('KDL009_34')}</td>
 					 			<!-- A2_7 -->
 					 			<td colspan="3"> 
-					 				<button data-bind="ntsHelpButton: {textId: 'KDL009_35' , position: 'right top' }">？</button>
+					 				<button tabindex="-1"  data-bind="ntsHelpButton: {textId: 'KDL009_35' , position: 'right top' }">？</button>
 					 			</td>
 					 		</tr>
 					 		<tr>
@@ -76,15 +79,15 @@
 					 			<com:ko-if bind="dayCloseDeadlineSelect() == ''">
 						 			<!-- <td colspan="2"></td> -->
 						 			<!-- A2_10 -->
-						 			<td style="padding-left: 3vw;">#{i18n.getText('KDL009_37')}</td>
+						 			<td style="padding-left: 3vw;"></td>
 						 			<!-- A2_21 -->
-						 			<td><span >2021/08/17（木）1.0日</span></td>
+						 			<td><span ></span></td>
 					 			</com:ko-if>
 					 		</tr>
 					 		<tr>
 					 			<!-- A2_22 -->
 					 			<td colspan="4">
-					 				<div data-bind="ntsComboBox: {
+					 				<div tabindex="2" data-bind="ntsComboBox: {
 						                name: '#[KDL045_38]',
 						                options: itemList,
 						                optionsValue: 'code',
@@ -166,7 +169,7 @@
 			</div>
 			</div>
 			<div id="functions-area-bottom">
-					<button id ="closeDialog-id" tabindex="20" data-bind="click: cancel">#{i18n.getText('KDL009_2')}</button>
+					<button tabindex="1"  id ="closeDialog-id" data-bind="click: cancel">#{i18n.getText('KDL009_2')}</button>
 			</div>
 		</ui:define> 
 	</ui:composition>
