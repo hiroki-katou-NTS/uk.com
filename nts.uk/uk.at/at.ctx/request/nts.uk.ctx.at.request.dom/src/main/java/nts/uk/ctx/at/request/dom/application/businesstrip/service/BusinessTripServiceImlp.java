@@ -738,17 +738,24 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         }
                         // 未登録の対象項目に値をセットする
                         if (!opWorkTime.isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getStartTime1());
+                            optAchievementDetail.get().setOpWorkTime(workTimeGetOutput.getStartTime1());
                         }
                         if (!opLeaveTime.isPresent()) {
-                            optAchievementDetail.get().setOpLeaveTime(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getEndTime1());
+                            optAchievementDetail.get().setOpLeaveTime(workTimeGetOutput.getEndTime1());
                         }
                         if (!optAchievementDetail.get().getOpWorkTime2().isPresent()) {
-                            optAchievementDetail.get().setOpWorkTime2(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getStartTime2());
+                            optAchievementDetail.get().setOpWorkTime2(workTimeGetOutput.getStartTime2());
                         }
                         if (!optAchievementDetail.get().getOpDepartureTime2().isPresent()) {
-                            optAchievementDetail.get().setOpDepartureTime2(workTimeCd == null ? Optional.empty() : workTimeGetOutput.getEndTime2());
+                            optAchievementDetail.get().setOpDepartureTime2(workTimeGetOutput.getEndTime2());
                         }
+                    }
+                    
+                    if (workTimeCd == null) {
+                        optAchievementDetail.get().setOpWorkTime(Optional.empty());
+                        optAchievementDetail.get().setOpLeaveTime(Optional.empty());
+                        optAchievementDetail.get().setOpWorkTime2(Optional.empty());
+                        optAchievementDetail.get().setOpDepartureTime2(Optional.empty());
                     }
                 }
             }
