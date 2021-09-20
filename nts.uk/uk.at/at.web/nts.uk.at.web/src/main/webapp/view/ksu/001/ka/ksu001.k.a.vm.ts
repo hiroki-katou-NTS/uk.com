@@ -137,7 +137,7 @@ module nts.uk.at.view.ksu001.k.a {
                 excel: true,
                 closureDate: vm.params.endDate
             };
-            vm.$blockui("show");
+            vm.$blockui("grayout");
             nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {
@@ -158,7 +158,7 @@ module nts.uk.at.view.ksu001.k.a {
                 excel: false,
                 closureDate: vm.params.endDate
             };
-            vm.$blockui("show");
+            vm.$blockui("grayout");
             nts.uk.request.exportFile(Paths.EXPORT, query).fail(error => {
                 vm.$dialog.error(error);
             }).always(() => {
@@ -179,7 +179,7 @@ module nts.uk.at.view.ksu001.k.a {
                 preview: true,
                 closureDate: vm.params.endDate
             };
-            vm.$blockui("show");
+            vm.$blockui("grayout");
             $("#preview-frame")[0].innerHTML = "";
             vm.$ajax(Paths.EXPORT, query).then((res: any) => {
                 return deferred.repeat(conf => conf
