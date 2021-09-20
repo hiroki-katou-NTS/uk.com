@@ -1,21 +1,5 @@
 package nts.uk.ctx.at.function.app.export.holidaysremaining;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -68,6 +52,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaData
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.breakinfo.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMerge;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remainmerge.RemainMergeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildNursingLeaveStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.IGetChildcareRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.NursingCareLeaveMonthlyRemaining;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
@@ -80,6 +67,14 @@ import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -97,14 +92,8 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     private HdRemainManageFinder hdRemainManageFinder;
     @Inject
     private ClosureRepository closureRepository;
-    // @Inject
-    // private GetNextAnnLeaGrantDateAdapter getNextAnnLeaGrantDateAdapter;
     @Inject
     private AnnLeaveRemainingAdapter annLeaveAdapter;
-    // @Inject
-    // private GetReserveLeaveNumbersAdpter reserveLeaveAdpter;
-    // @Inject
-    // private MonthlyDayoffRemainAdapter monthlyDayoffAdapter;
     @Inject
     private ComplileInPeriodOfSpecialLeaveAdapter specialLeaveAdapter;
     @Inject
@@ -148,6 +137,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
     private RemainMergeRepository repoRemainMer;
     @Inject
     private SpecialHolidayRemainDataSevice rq263;
+
+    @Inject
+    private IGetChildcareRemNumEachMonth getChildcareRemNumEachMonth;
+
     @Override
     protected void handle(ExportServiceContext<HolidaysRemainingReportQuery> context) {
         val query = context.getQuery();
@@ -197,7 +190,6 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
             if (listEmployeeInformationImport.isEmpty()) {
                 throw new BusinessException("Msg_885");
             }
-
             val varVacaCtr = varVacaCtrSv.getVariousVacationControl();
             val closureInforOpt = this.getClosureInfor(closureId);
 
@@ -359,7 +351,10 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
         Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight = new HashMap<>();
         //  RQ 203 left
         SubstituteHolidayAggrResult substituteHolidayAggrResult = null;
-
+        // RQ 342
+        List<ChildNursingLeaveStatus> monthlyConfirmedCareForEmployees = Collections.emptyList();
+        // RQ 344
+        List<NursingCareLeaveMonthlyRemaining> obtainMonthlyConfirmedCareForEmployees = Collections.emptyList();
         if (!closureInforOpt.isPresent()) {
             return null;
         }
@@ -670,13 +665,18 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
                         e.getAfterRemainDays(),
                         e.getAfterRemainTimes()
                 )).collect(Collectors.toList());
+        // RQ 342
+         monthlyConfirmedCareForEmployees = getChildcareRemNumEachMonth.getMonthlyConfirmedCareForEmployees(employeeId,lstYrMon);
+        // RQ 344
+        obtainMonthlyConfirmedCareForEmployees = getChildcareRemNumEachMonth.getObtainMonthlyConfirmedCareForEmployees(employeeId,lstYrMon);
 
         return new HolidayRemainingInfor(grantDate, listAnnLeaGrantNumber, annLeaveOfThisMonth, listAnnualLeaveUsage,
                 listAnnLeaveUsageStatusOfThisMonth, reserveHoliday, listReservedYearHoliday, listRsvLeaUsedCurrentMon,
                 listCurrentHoliday, listStatusHoliday, listCurrentHolidayRemain, listStatusOfHoliday, mapSpecVaca,
                 lstMapSPVaCurrMon, mapSpeHd, childNursingLeave, nursingLeave, currentHolidayLeft,
                 currentHolidayRemainLeft, substituteHolidayAggrResult, subVaca, aggrResultOfHolidayOver60h,getRs363,
-                getSpeHdOfConfMonVer2,substituteHolidayAggrResultsRight,closureInforOpt,lstMap273CurrMon, map273New);
+                getSpeHdOfConfMonVer2,substituteHolidayAggrResultsRight,closureInforOpt,lstMap273CurrMon, map273New,
+                monthlyConfirmedCareForEmployees,obtainMonthlyConfirmedCareForEmployees);
     }
     private Optional<ClosureInfo> getClosureInfor(int closureId) {
         val listClosureInfo = ClosureService.getAllClosureInfo(ClosureService.createRequireM2(closureRepository));

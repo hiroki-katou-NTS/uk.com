@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare;
 
 
+import lombok.*;
 import nts.arc.time.YearMonth;
 
 /**
- * 介護休暇月別残数データ
+ * 介護休暇過去状況
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class NursingCareLeaveMonthlyRemaining {
     /** 社員ID */
     private  String employeeId;

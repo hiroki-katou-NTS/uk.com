@@ -20,6 +20,8 @@ import nts.uk.ctx.at.function.dom.adapter.vacation.CurrentHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.vacation.StatusHolidayImported;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.ChildNursingLeaveStatus;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcare.NursingCareLeaveMonthlyRemaining;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureInfo;
 
 @Setter
@@ -76,6 +78,9 @@ public class HolidayRemainingInfor {
     Optional<ClosureInfo> closureInforOpt;
     Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon;
     Map<Integer, SpecialVacationImportedKdr> map273New;
+    List<ChildNursingLeaveStatus> getMonthlyConfirmedCareForEmployees;
+    List<NursingCareLeaveMonthlyRemaining> getObtainMonthlyConfirmedCareForEmployees;
+
     public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
                                  AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
                                  List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth,
@@ -98,7 +103,10 @@ public class HolidayRemainingInfor {
                                  Map<YearMonth,SubstituteHolidayAggrResult> substituteHolidayAggrResultsRight,
                                  Optional<ClosureInfo> closureInforOpt,
                                  Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon,
-                                 Map<Integer, SpecialVacationImportedKdr> map273New
+                                 Map<Integer, SpecialVacationImportedKdr> map273New,
+                                 List<ChildNursingLeaveStatus> getMonthlyConfirmedCareForEmployees,
+                                 List<NursingCareLeaveMonthlyRemaining> getObtainMonthlyConfirmedCareForEmployees
+
     ) {
         super();
         this.grantDate = grantDate;
@@ -129,6 +137,9 @@ public class HolidayRemainingInfor {
         this.closureInforOpt = closureInforOpt;
         this.lstMap273CurrMon = lstMap273CurrMon;
         this.map273New = map273New;
+        this.getMonthlyConfirmedCareForEmployees = getMonthlyConfirmedCareForEmployees;
+        this.getObtainMonthlyConfirmedCareForEmployees = getObtainMonthlyConfirmedCareForEmployees;
+
 
     }
 
