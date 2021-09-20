@@ -172,8 +172,8 @@ public class JpaWorkplaceGroupRespository extends JpaRepository implements Workp
 	}
 
 	@Override
-	public List<WorkplaceGroup> getWorkplaceGroupByCidAndWorkplaceGroupTypes(String cid,
-			List<WorkplaceGroupType> workplaceGroupTypes) {
+	public List<WorkplaceGroup> getWorkplaceGroupByCidAndFilterList(String cid,
+			List<WorkplaceGroupType> filterList) {
 		// TODO dev code
 		return null;
 	}

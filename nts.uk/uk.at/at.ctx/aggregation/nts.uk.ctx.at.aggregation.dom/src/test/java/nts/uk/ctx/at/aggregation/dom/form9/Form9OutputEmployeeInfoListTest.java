@@ -44,9 +44,10 @@ public class Form9OutputEmployeeInfoListTest {
 		//Act
 		val result = outputEmployeeInfos.getEmployeeIdList();
 		
-		//Assert
-		assertThat( result ).containsExactly("sid_1", "sid_2", "sid_3", "sid_4");
-		
+		assertThat( result ).containsExactly( "sid_1", "sid_2", "sid_3", "sid_4" );
+
+		/** 変更できるかどうかをチェック */
+		assertThat( result.getClass().getSimpleName() ).isEqualTo("UnmodifiableRandomAccessList");
 	}
 	
 	private static class Helper{

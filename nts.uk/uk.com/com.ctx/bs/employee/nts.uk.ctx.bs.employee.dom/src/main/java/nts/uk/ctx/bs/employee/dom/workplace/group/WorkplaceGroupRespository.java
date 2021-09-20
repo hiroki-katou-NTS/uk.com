@@ -81,8 +81,8 @@ public interface WorkplaceGroupRespository {
 	/**
 	 * *get ( 会社ID, List<職場グループ種別> )
 	 * @param cid 会社ID
-	 * @param workplaceGroupTypes 絞込リスト
+	 * @param filterList 絞込リスト
 	 * @return
 	 */
-	public List<WorkplaceGroup> getWorkplaceGroupByCidAndWorkplaceGroupTypes(String cid, List<WorkplaceGroupType> workplaceGroupTypes);
+	public List<WorkplaceGroup> getWorkplaceGroupByCidAndFilterList(String cid, List<WorkplaceGroupType> filterList);
 }
