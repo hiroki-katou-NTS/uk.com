@@ -68,10 +68,11 @@ public class ScheduleInformationByDateFileQuery {
         val workTypeWorkTimeList = GetListWtypeWtimeUseDailyAttendRecordService.getdata(lstWorkInfoOfDailyAttendance);
 
         // 2. get(会社ID, 日別勤怠の実績で利用する勤務種類と就業時間帯.勤務種類リスト) : output WorkType
-        List<WorkType> workTypeList = workTypeRepo.findByCidAndWorkTypeCodes(
-                companyId,
-                workTypeWorkTimeList.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList())
-        );
+        List<WorkType> workTypeList = new ArrayList<>();
+        val wTypeCodes = workTypeWorkTimeList.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+        if (!wTypeCodes.isEmpty()) {
+            workTypeList = workTypeRepo.findByCidAndWorkTypeCodes(companyId, wTypeCodes);
+        }
 
         // 3. get(会社ID,List<就業時間帯コード>): output WorkTimeSetting
         List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepo.getListWorkTimeSetByListCode(
@@ -86,13 +87,11 @@ public class ScheduleInformationByDateFileQuery {
             // 就業時間帯コード = 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード
             val workTimeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 
-            val workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst().orElse(null);
-            System.out.println("-------Filter workType" + workTypeCode + "not found (null)----");
-            val workTimeSetting = workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst().orElse(null);
-            System.out.println("-------Filter workTime" + workTimeCode + "not found (null)----");
+            Optional<WorkType> workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst();
+            Optional<WorkTimeSetting> workTimeSetOpt = workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst();
 
             // 4.1. 勤務形態を取得する() : return 就業時間帯の勤務形態
-            val workTimeForm = workTimeSetting.getWorkTimeDivision().getWorkTimeForm();
+            val workTimeForm = workTimeSetOpt.get().getWorkTimeDivision().getWorkTimeForm();
 
             // 4.2. 就業時間帯の勤務形態 == フレックス勤務用: コアタイム時間帯を取得する
             Optional<TimeSpanForCalc> coreTimeOpt = Optional.empty();
@@ -109,7 +108,7 @@ public class ScheduleInformationByDateFileQuery {
                 val fixedWorkSettingOpt = fixedWorkSettingRepo.findByKey(companyId, workTimeCode);
 
                 // 4.3.2. 1日半日出勤・1日休日系の判定（休出判定あり）() : output 出勤日区分
-                AttendanceDayAttr dayAttr = workTypeOpt.chechAttendanceDay();
+                AttendanceDayAttr dayAttr = workTypeOpt.get().chechAttendanceDay();
 
                 // 4.3.3. 固定勤務設定.isPresent: 指定した午前午後区分の残業時間帯を取得する(午前午後区分): param 出勤日区分.午前午後区分に変換() : return List<計算用時間帯>
                 if (fixedWorkSettingOpt.isPresent()) {
@@ -173,10 +172,10 @@ public class ScheduleInformationByDateFileQuery {
             }
 
             // 勤務種類名称= 勤務種類．勤務種類略名
-            String workTypeName = workTypeOpt.getAbbreviationName().v();
+            String workTypeName = workTypeOpt.get().getAbbreviationName().v();
 
             // 就業時間帯名称 = 就業時間帯の設定．表示名．略名
-            String workTimeName = workTimeSetting.getWorkTimeDisplayName().getWorkTimeName().v();
+            String workTimeName = workTimeSetOpt.get().getWorkTimeDisplayName().getWorkTimeName().v();
 
             // 勤務タイプ = 就業時間帯の設定.勤務区分.勤務形態を取得する()
             Integer workType = workTimeForm.value;

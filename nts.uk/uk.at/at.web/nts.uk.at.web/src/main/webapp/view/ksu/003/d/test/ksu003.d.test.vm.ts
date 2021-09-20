@@ -1,98 +1,87 @@
+/// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.ksu003.d.test {
-    import setShare = nts.uk.ui.windows.setShared;
-    export module viewmodel {
-        export class ScreenModel {
-            options: any;
-            treeGrid: any;
-            componentName: KnockoutObservable<string> = ko.observable('workplace-group');
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
 
-            multiple: KnockoutObservable<boolean> = ko.observable(false);
-            showBaseDate: KnockoutObservable<boolean> = ko.observable(false);
-            date: KnockoutObservable<string> = ko.observable(new Date().toISOString());
-            unit: KnockoutObservable<number> = ko.observable(0);
+    @bean()
+    class ViewModel extends ko.ViewModel {
+        dateValue: KnockoutObservable<any>;
+        startDateString: KnockoutObservable<string>;
+        endDateString: KnockoutObservable<string>;
 
-            selectedWkpId: KnockoutObservable<string> = ko.observable(null);
-            selectedWkpGroupId: KnockoutObservable<string> = ko.observable(null);
+        orgUnit: KnockoutObservable<number> = ko.observable(0);
+        orgId: KnockoutObservable<string> = ko.observable("");
+        targetOrganizationName: KnockoutObservable<string> = ko.observable("");
+        selectedWkpId: KnockoutObservable<string> = ko.observable(null);
+        selectedWkpGroupId: KnockoutObservable<string> = ko.observable(null);
 
-            selectedWkpIds: KnockoutObservableArray<string> = ko.observableArray([]);
-            selectedWkpGroupIds: KnockoutObservableArray<string> = ko.observableArray([]);
+        selectedEmployeeIdTxt: KnockoutObservable<string>;
 
-            result: KnockoutObservable<string> = ko.observable('');
+        enable: KnockoutObservable<boolean> = ko.observable(false);
 
-            constructor() {
-                let self = this;
-                self.initKCP004();
-                self.initKCP011();
+        constructor(params: any) {
+            super();
+            const vm = this;
+            vm.startDateString = ko.observable("");
+            vm.endDateString = ko.observable("");
+            vm.dateValue = ko.observable({startDate: new Date().toISOString(), endDate: new Date().toISOString()});
+            vm.startDateString.subscribe(function (value) {
+                vm.dateValue().startDate = value;
+                vm.dateValue.valueHasMutated();
+            });
+            vm.endDateString.subscribe(function (value) {
+                vm.dateValue().endDate = value;
+                vm.dateValue.valueHasMutated();
+            });
 
-                self.multiple.subscribe(value => {
-                    self.initKCP004();
-                    self.initKCP011();
-                    self.componentName.valueHasMutated();
-                });
-                self.unit.subscribe(value => {
-                    if (value == 1 && $("#workplace-group-pannel input.ntsSearchBox").width() == 0)
-                        $("#workplace-group-pannel input.ntsSearchBox").css("width", "auto");
-                });
-            }
+            vm.selectedEmployeeIdTxt = ko.observable("4f1ceb83-c59d-482f-bbd5-85c42dda1c5c, 74c2fe23-8772-4bb7-b3fc-bcc98324521f");
+        }
 
-            initKCP004() {
-                const self = this;
-                self.treeGrid = {
-                    isMultipleUse: true,
-                    isMultiSelect: self.multiple(),
-                    treeType: 1,
-                    selectedId: self.multiple() ? self.selectedWkpIds : self.selectedWkpId,
-                    baseDate: self.date,
-                    selectType: 4,
-                    isShowSelectButton: false,
-                    isDialog: false,
-                    maxRows: 15,
-                    tabindex: 1,
-                    systemType: 2
-                };
+        created(params: any) {
+            const vm = this;
+        }
 
-                $('#tree-grid').ntsTreeComponent(self.treeGrid);
-            }
+        mounted() {
+            const vm = this;
+        }
 
-            initKCP011() {
-                const self = this;
-                self.options = {
-                    currentIds: self.multiple() ? self.selectedWkpGroupIds : self.selectedWkpGroupId,
-                    multiple: self.multiple(),
-                    tabindex: 2,
-                    isAlreadySetting: false,
-                    showEmptyItem: false,
-                    reloadData: ko.observable(''),
-                    height: 373,
-                    selectedMode: 0
-                };
-            }
+        openKDL046(): void {
+            let vm = this;
+            let param = {
+                unit: vm.orgUnit(),
+                date: moment(vm.dateValue().endDate),
+                workplaceId: vm.selectedWkpId(),
+                workplaceGroupId: vm.selectedWkpGroupId(),
+                showBaseDate: false
+            };
+            setShared('dataShareDialog046', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/046/a/index.xhtml').onClosed(function (): any {
+                let dataFrom046 = getShared('dataShareKDL046');
+                if (!_.isNil(dataFrom046)) {
+                    vm.enable(true);
+                    vm.orgUnit(dataFrom046.unit);
+                    vm.orgId(dataFrom046.unit === 0 ? dataFrom046.workplaceId : dataFrom046.workplaceGroupID);
+                    vm.targetOrganizationName(dataFrom046.unit === 0 ? dataFrom046.workplaceName : dataFrom046.workplaceGroupName);
+                }
+            });
+        }
 
-            openDialog(): void {
-                let self = this;
-                let request: any = {
-                    unit: self.unit(),
-                    baseDate: self.date(),
-                    showBaseDate: self.showBaseDate(),
-                    isMultiple: self.multiple(),
-                    workplaceId: self.multiple() ? self.selectedWkpIds() : self.selectedWkpId(),
-                    workplaceGroupId: self.multiple() ? self.selectedWkpGroupIds() : self.selectedWkpGroupId(),
-                };
-                // {
-                //     orgUnit: self.dataFromA().unit,
-                //         orgId: self.dataFromA().unit == 0 ? self.dataFromA().workplaceId : self.dataFromA().workplaceGroupId,
-                //     selectDate: self.dataFromA().daySelect,
-                //     employeeIds : self.dataFromA().listEmp,
-                // });
-
-                console.log(request);
-
-                setShare('dataShareKsu003D', request);
-                nts.uk.ui.windows.sub.modal("/view/ksu/003/d/index.xhtml").onClosed(() => {
-                    // let result = nts.uk.ui.windows.getShared('dataShareKsu003D');
-                    // self.result(ko.toJSON(result, null, 4));
-                });
-            }
+        openKSU003D(): void {
+            let vm = this;
+            let data = {
+                targetOrg: {
+                    unit: vm.orgUnit(),
+                    workplaceId: vm.orgUnit() === 0 ? vm.orgId() : null,
+                    workplaceGroupId: vm.orgUnit() === 0 ? null : vm.orgId(),
+                },
+                employeeIds: _.split(vm.selectedEmployeeIdTxt().trim(), ","),
+                targetPeriod: {
+                    startDate: vm.dateValue().startDate,
+                    endDate: vm.dateValue().endDate
+                }
+            };
+            setShared('dataShareKsu003D', data);
+            nts.uk.ui.windows.sub.modal("/view/ksu/003/d/index.xhtml");
         }
     }
 }

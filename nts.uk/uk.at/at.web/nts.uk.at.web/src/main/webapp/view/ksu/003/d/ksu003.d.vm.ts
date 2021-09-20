@@ -1,8 +1,6 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.ksu003.d {
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
     import characteristics = nts.uk.characteristics;
 
     const API = {
@@ -42,7 +40,11 @@ module nts.uk.at.view.ksu003.d {
                 new RangeModel('9', 9),
                 new RangeModel('10', 10)
             ]);
-            // vm.characteristicsStore = null;
+            vm.dataFromA = {
+                targetOrg: null,
+                employeeIds: [],
+                targetPeriod: null
+            };
             vm.characteristicsStore = {
                 graphStartTime: 0,
                 graphVacationDisplay: 0,
@@ -54,7 +56,7 @@ module nts.uk.at.view.ksu003.d {
                 scheduledToSupport: 0,
                 wkpNameDisplayOfSupporter: false
             };
-            vm.selectedGraphStartTime = ko.observable('1');
+            vm.selectedGraphStartTime = ko.observable('0');
             vm.selectedGraphVacationDisplay = ko.observable(1);
             vm.selectedWorkDisplay = ko.observable(1);
             vm.selected2WorkDisplay = ko.observable(1);
@@ -64,29 +66,19 @@ module nts.uk.at.view.ksu003.d {
             vm.wkpNameDispOfSupporter = ko.observable(false);
         }
 
-        created(params: any) {
+        created(params?: any) {
             const vm = this;
-            characteristics.restore(vm.KEY).done((data: IScheduleByDateCharacteristics) => {
-                if (data) {
-                    vm.selectedGraphStartTime(data.graphStartTime.toString());
-                    vm.selectedGraphVacationDisplay(data.graphVacationDisplay ? 1 : 0);
-                    vm.actualDisplay(data.displayActual);
-                    vm.selectedWorkDisplay(data.workDisplay ? 1 : 0);
-                    vm.selected2WorkDisplay(data.doubleWorkDisplay ? 1 : 0);
-                    vm.selectedTotalTimeDisplay(data.totalTimeDisplay ? 1 : 0);
-                    vm.selectedTotalAmountDisplay(data.totalAmountDisplay ? 1 : 0);
-                    vm.selectedSupportScheduleDisplay(data.scheduledToSupport ? 1 : 0);
-                    vm.wkpNameDispOfSupporter(data.wkpNameDisplayOfSupporter);
-                }
+            vm.$window.shared("dataShareKsu003D").done((data: IDataFromScreenA) => {
+                vm.dataFromA.targetOrg = data.targetOrg;
+                vm.dataFromA.employeeIds = data.employeeIds;
+                vm.dataFromA.targetPeriod = data.targetPeriod;
             });
-            getShared("dataShareKsu003D").done((data: IDataFromScreenA) => {
-                vm.dataFromA = data;
-            });
+            vm.restoreCharacteristics();
             vm.initData();
         }
 
         mounted() {
-            const vm = this;
+            $("#D1_1").focus();
         }
 
         public initData(): JQueryPromise<any> {
@@ -95,7 +87,7 @@ module nts.uk.at.view.ksu003.d {
             vm.$blockui("invisible");
             vm.$ajax(API.init).then(data => {
                 vm.selected2WorkDisplay(data.workManagementMulti.useATR);
-                vm.actualDisplay(data.scheFuncControl.isDisplayActual);
+                vm.actualDisplay(!_.isNull(data.scheFuncControl) ? data.scheFuncControl.displayActual : false);
                 dfd.resolve();
             }).fail(error => {
                 vm.$dialog.error(error);
@@ -105,7 +97,7 @@ module nts.uk.at.view.ksu003.d {
             return dfd.promise();
         }
 
-        public exportFile() {
+        public exportFile(): void {
             let vm = this;
             let query: IScheduleByDateOutputSettingQuery = {
                 orgUnit: vm.dataFromA.targetOrg.unit,
@@ -113,18 +105,18 @@ module nts.uk.at.view.ksu003.d {
                 baseDate: vm.dataFromA.targetPeriod.endDate,
                 sortedEmployeeIds: vm.dataFromA.employeeIds,
                 graphStartTime: parseInt(vm.selectedGraphStartTime()),
-                graphVacationDisplay: vm.selectedGraphVacationDisplay() === 1,
+                graphVacationDisplay: vm.selectedGraphVacationDisplay() === 2,
                 displayActual: vm.actualDisplay(),
-                workDisplay: vm.selectedWorkDisplay() === 1,
-                doubleWorkDisplay: vm.selected2WorkDisplay() === 1,
-                totalTimeDisplay: vm.selectedTotalTimeDisplay() === 1,
-                totalAmountDisplay: vm.selectedTotalAmountDisplay() === 1,
-                scheduledToSupport: vm.selectedSupportScheduleDisplay() === 1,
+                workDisplay: vm.selectedWorkDisplay() === 2,
+                doubleWorkDisplay: vm.selected2WorkDisplay() === 2,
+                totalTimeDisplay: vm.selectedTotalTimeDisplay() === 2,
+                totalAmountDisplay: vm.selectedTotalAmountDisplay() === 2,
+                scheduledToSupport: vm.selectedSupportScheduleDisplay() === 2,
                 wkpNameDisplayOfSupporter: vm.wkpNameDispOfSupporter()
             };
             vm.$blockui("invisible");
             nts.uk.request.exportFile(API.export, query).done((success: any) => {
-                // TODO
+                vm.saveCharacteristics();
             }).fail((error: any) => {
                 vm.$dialog.error(error);
             }).always(() => {
@@ -132,7 +124,12 @@ module nts.uk.at.view.ksu003.d {
             });
         }
 
-        public closeDialog() {
+        public closeDialog(): void {
+            const vm = this;
+            vm.$window.close();
+        }
+
+        public saveCharacteristics(): void {
             const vm = this;
             vm.characteristicsStore.graphStartTime = parseInt(vm.selectedGraphStartTime());
             vm.characteristicsStore.graphVacationDisplay = vm.selectedGraphVacationDisplay();
@@ -144,7 +141,23 @@ module nts.uk.at.view.ksu003.d {
             vm.characteristicsStore.scheduledToSupport = vm.selectedSupportScheduleDisplay();
             vm.characteristicsStore.wkpNameDisplayOfSupporter = vm.wkpNameDispOfSupporter();
             characteristics.save(vm.KEY, vm.characteristicsStore);
-            vm.$window.close();
+        }
+
+        public restoreCharacteristics(): void {
+            let vm = this;
+            characteristics.restore(vm.KEY).done((data: IScheduleByDateCharacteristics) => {
+                if (data) {
+                    vm.selectedGraphStartTime(data.graphStartTime.toString());
+                    vm.selectedGraphVacationDisplay(data.graphVacationDisplay);
+                    vm.actualDisplay(data.displayActual);
+                    vm.selectedWorkDisplay(data.workDisplay);
+                    vm.selected2WorkDisplay(data.doubleWorkDisplay);
+                    vm.selectedTotalTimeDisplay(data.totalTimeDisplay);
+                    vm.selectedTotalAmountDisplay(data.totalAmountDisplay);
+                    vm.selectedSupportScheduleDisplay(data.scheduledToSupport);
+                    vm.wkpNameDispOfSupporter(data.wkpNameDisplayOfSupporter);
+                }
+            });
         }
     }
 
@@ -170,6 +183,7 @@ module nts.uk.at.view.ksu003.d {
         unit: number;
         workplaceId: string;
         workplaceGroupId: string;
+        orgName: string;
     }
 
     interface ITargetPeriod {

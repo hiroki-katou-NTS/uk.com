@@ -75,10 +75,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private void pageSetting(Worksheet worksheet, PersonalScheduleByDateDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
-//        pageSetup.setFirstPageNumber(1);
-//        pageSetup.setPrintArea("A1:BE");
-//        pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-//        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
         // A1_1
         pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyInfo().getCompanyName());
         // A1_2
@@ -112,15 +108,19 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         // B5_1
         if (!CollectionUtil.isEmpty(dateInfo.getListSpecDayNameCompany())) {
             int maxSize = dateInfo.getListSpecDayNameCompany().size();
-            for (int i = MAX_SPEC_DAY - maxSize; i < maxSize; i++) {
-                cells.get(i, 14).setValue(getText("KSU003_186") + dateInfo.getListSpecDayNameCompany().get(i));
+            int rowStart = MAX_SPEC_DAY - maxSize;
+            for (int i = 0; i < maxSize; i++) {
+                cells.get(rowStart, 14).setValue(getText("KSU003_186") + dateInfo.getListSpecDayNameCompany().get(i));
+                rowStart++;
             }
         }
         // B5_2
         if (!CollectionUtil.isEmpty(dateInfo.getListSpecDayNameWorkplace())) {
             int maxSize = dateInfo.getListSpecDayNameWorkplace().size();
-            for (int i = MAX_SPEC_DAY - maxSize; i < 5; i++) {
-                cells.get(i, 21).setValue(getText("KSU003_187") + dateInfo.getListSpecDayNameWorkplace().get(i));
+            int rowStart = MAX_SPEC_DAY - maxSize;
+            for (int i = 0; i < maxSize; i++) {
+                cells.get(rowStart, 21).setValue(getText("KSU003_187") + dateInfo.getListSpecDayNameWorkplace().get(i));
+                rowStart++;
             }
         }
 
@@ -146,12 +146,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
         // Set style by each column
 //        setStyleEmpWorkInfo(cells, 6, isDoubleWorkDisplay);
-
-//        for (int column = 0; column < 7; column++) {
-//            if (isDoubleWorkDisplay && (column == 3 || column == 4)) continue;
-//            cells.merge(6, column, 2, 1, true, true);
-//            setStyleEmployeeWorkInfo(cells.get(6, column), isDoubleWorkDisplay);
-//        }
 
         // C3_1 or C3_3: Graph ruler header
         if (graphVacationDisplay) {
@@ -187,13 +181,11 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         CopyOptions options = new CopyOptions();
         options.setReferToDestinationSheet(true);
 //        // Set PasteOptions
-//        PasteOptions pasteOptions = new PasteOptions();
-//        pasteOptions.setPasteType(PasteType.ALL);
-//        pasteOptions.setOnlyVisibleCells(true);
+        PasteOptions pasteOptions = new PasteOptions();
+        pasteOptions.setPasteType(PasteType.ALL);
+        pasteOptions.setOnlyVisibleCells(true);
 
         int rowCount = 9; // start from row index 9
-        boolean isFirstPage = true;
-        int empCount = 0;
         int pageIndex = 0;
         val employeeInfoList = dataSource.getEmployeeInfoList();
         val employeeWorkScheduleList = dataSource.getEmployeeWorkScheduleList();
@@ -229,12 +221,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
             // Set style by each column
 //            setStyleEmpWorkInfo(cells, rowCount, isDoubleWorkDisplay);
-
-//            for (int column = 0; column < 7; column++) {
-//                if (isDoubleWorkDisplay && (column == 3 || column == 4)) continue;
-//                cells.merge(rowCount, column, 2, 1, true, true);
-//                setStyleEmployeeWorkInfo(cells.get(6, column), true);
-//            }
 
             // C3_2_1
             if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
@@ -385,7 +371,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
-//                rowCount += 8;     // always repeat first 8 line
             }
         }
         PageSetup pageSetup = wsDestination.getPageSetup();
@@ -619,7 +604,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     }
 
     private boolean isNextPage(int rowCount, int pageIndex){
-        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) > MAX_ROW_IN_PAGE;
+        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - 8 > MAX_ROW_IN_PAGE;
     }
 
     /**

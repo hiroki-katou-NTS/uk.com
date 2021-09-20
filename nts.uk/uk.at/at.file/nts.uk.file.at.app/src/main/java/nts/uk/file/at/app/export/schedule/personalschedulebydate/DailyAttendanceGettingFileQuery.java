@@ -1,15 +1,16 @@
 package nts.uk.file.at.app.export.schedule.personalschedulebydate;
 
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;
+import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,30 +22,38 @@ import java.util.stream.Collectors;
 @Stateless
 public class DailyAttendanceGettingFileQuery {
 
+//    @Inject
+//    private IntegrationOfDailyGetter integrationOfDailyGetter;
+
     @Inject
-    private IntegrationOfDailyGetter integrationOfDailyGetter;
+    private WorkScheduleAdapter workScheduleAdapter;
+
+    @Inject
+    private DailyRecordAdapter dailyRecordAdapter;
 
     public Map<ScheRecGettingAtr, List<IntegrationOfDaily>> get(List<String> sortedEmployeeIds, DatePeriod period, boolean isDisplayActual) {
         return DailyAttendanceGettingService.get(
                 new DailyAttendanceGettingService.Require() {
                     @Override
                     public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
-                        List<IntegrationOfDaily> result = new ArrayList<>();
-                        empIds.forEach(sid -> {
-                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-                            result.addAll(tmp);
-                        });
-                        return result;
+                        return workScheduleAdapter.getList(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
+//                        List<IntegrationOfDaily> result = new ArrayList<>();
+//                        empIds.forEach(sid -> {
+//                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
+//                            result.addAll(tmp);
+//                        });
+//                        return result;
                     }
 
                     @Override
                     public List<IntegrationOfDaily> getRecordList(List<EmployeeId> empIds, DatePeriod period) {
-                        List<IntegrationOfDaily> result = new ArrayList<>();
-                        empIds.forEach(sid -> {
-                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-                            result.addAll(tmp);
-                        });
-                        return result;
+                        return dailyRecordAdapter.getDailyRecordByScheduleManagement(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
+//                        List<IntegrationOfDaily> result = new ArrayList<>();
+//                        empIds.forEach(sid -> {
+//                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
+//                            result.addAll(tmp);
+//                        });
+//                        return result;
                     }
                 },
                 sortedEmployeeIds.stream().map(EmployeeId::new).collect(Collectors.toList()),
