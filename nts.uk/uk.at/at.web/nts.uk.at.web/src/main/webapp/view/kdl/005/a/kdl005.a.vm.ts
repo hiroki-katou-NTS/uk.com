@@ -114,6 +114,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 
 			self.listComponentOption.selectedCode.subscribe((value: any) => {
 				if (value == null) return;
+				self.checkSolid = 0;
 				let name: any = _.filter(self.employeeList(), (x: any) => {
 					return _.isEqual(x.code, value);
 				});
@@ -191,7 +192,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			return dfd.promise();
 		}
 
-		bindDataToGrid(value: any): JQueryPromise<any>  {
+		bindDataToGrid(value: any): JQueryPromise<any> {
 			let self = this, dfd = $.Deferred<any>();
 			if (_.isNil(self.dataHoliday())) return;
 			self.holidayData([]);
@@ -205,17 +206,17 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				};
 				service.getHolidaySub(param).done((data: any) => {
 					self.dataHoliday(data);
-					
+
 					if (data.remainNumConfirmDto != null) {
 						self.currentRemainNumber(data.remainNumConfirmDto.currentRemainNumber);
 						self.expiredWithinMonth(data.remainNumConfirmDto.expiredWithinMonth);
 						self.dayCloseDeadline(data.remainNumConfirmDto.dayCloseDeadline);
-						
+
 						_.forEach(data.remainNumConfirmDto.detailRemainingNumbers, (z: any, index: number) => {
 							self.bindDataToText(z, index);
 						});
 						self.showHideItem(data);
-						self.holidayDataOld({...self.holidayData()});
+						self.holidayDataOld({ ...self.holidayData() });
 						dfd.resolve();
 					}
 
@@ -228,10 +229,10 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 					self.bindDataToText(z, index);
 				});
 				self.showHideItem(self.dataHoliday());
-				self.holidayDataOld({...self.holidayData()});
+				self.holidayDataOld({ ...self.holidayData() });
 				dfd.resolve();
 			}
-			
+
 			return dfd.promise();
 		}
 
@@ -244,8 +245,8 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			text_A4_41_42_43 = z.digestionDateStatus + " " + z.digestionDate + " " + z.digestionCount
 
 			self.holidayData.push(new HolidayInfo(textA3_11_12_13, z.digestionStatus, text_A3_31_32, text_A4_41_42_43));
-			
-			if (z.dueDateStatus.length > 0 && (_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
+
+			if ((_.includes(z.occurrenceDateStatus, nts.uk.resource.getText('KDL005_40'))
 				|| _.includes(z.digestionDateStatus, nts.uk.resource.getText('KDL005_40')))) {
 				if (self.checkSolid == 0) {
 					self.checkSolid = index;
@@ -287,9 +288,9 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			}
 		}
 
-		findData(data : any) {
+		findData(data: any) {
 			let self = this;
-			
+
 			let text = $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").val()
 			if (text == "") {
 				nts.uk.ui.dialog.info({ messageId: "MsgB_24" });
@@ -299,13 +300,17 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				})
 
 				if (lstFil.length > 0) {
-					let index = _.findIndex(lstFil, (z : any) => _.isEqual(z.code,self.listComponentOption.selectedCode()));
-					if (index == -1 || index == lstFil.length - 1){
+					let index = _.findIndex(lstFil, (z: any) => _.isEqual(z.code, self.listComponentOption.selectedCode()));
+					if (index == -1 || index == lstFil.length - 1) {
 						self.listComponentOption.selectedCode(lstFil[0].code);
 					} else {
 						self.listComponentOption.selectedCode(lstFil[index + 1].code);
 					}
-					
+					let scroll: any = _.findIndex(self.employeeList(), (z: any) => _.isEqual(z.code, self.listComponentOption.selectedCode())),
+						id = _.filter($("table > tbody > tr > td > div"), (x: any) => {
+							return _.includes(x.id, "_scrollContainer") && !_.includes(x.id, "single-list");
+						})
+					$("#" + id[0].id).scrollTop(scroll * 24);
 				} else {
 					nts.uk.ui.dialog.info({ messageId: "MsgB_25" });
 				}
