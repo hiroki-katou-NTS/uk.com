@@ -81,10 +81,6 @@ public class AffiliationInforOfDailyAttd implements DomainObject  {
 	 */
 	private Optional<Boolean> isNursingManager;
 	
-	/**
-	 * 看護管理者か
-	 */
-	private Optional<Boolean> isNursingManager;
 	
 	/**
 	 * [C-1] 作る
