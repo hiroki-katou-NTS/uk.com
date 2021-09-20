@@ -35,7 +35,7 @@ module nts.uk.com.view.oew001.d {
           }
         })
         .always(() => vm.$blockui("clear"));
-      $("#B1_2").focus();
+      $("#D1_1").focus();
     }
 
     public closeDialog() {

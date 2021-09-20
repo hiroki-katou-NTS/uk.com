@@ -1,0 +1,17 @@
+#contents-area {
+  overflow-y: hidden !important;
+}
+
+.dynamic-zone {
+  height: 250px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.form-label {
+  width: 100px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}

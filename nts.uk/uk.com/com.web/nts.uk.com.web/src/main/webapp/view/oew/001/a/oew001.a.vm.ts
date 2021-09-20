@@ -17,6 +17,7 @@ module nts.uk.com.view.oew001.a {
     equipmentInfoList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedEquipmentInfoCode: KnockoutObservable<string> = ko.observable("");
     yearMonth: KnockoutObservable<string> = ko.observable("");
+    hasExtractData: KnockoutObservable<boolean> = ko.observable(false);
 
     // dto
     equipmentClassification: KnockoutObservable<model.EquipmentClassificationDto> = ko.observable(null);
@@ -28,6 +29,7 @@ module nts.uk.com.view.oew001.a {
     columns: KnockoutObservableArray<any> = ko.observableArray([]);
     staticColumns: any[];
     dataSource: KnockoutObservableArray<DisplayData> = ko.observableArray([]);
+    optionalItems: KnockoutObservableArray<model.OptionalItem> = ko.observableArray([]);
 
     created() {
       const vm = this;
@@ -44,13 +46,16 @@ module nts.uk.com.view.oew001.a {
         vm.selectedEquipmentClsCode(value.code);
         vm.equipmentClsName(value.name);
       });
-      vm.equipmentInformationList.subscribe(value => vm.equipmentInfoList(_.clone(value)));
+      vm.selectedEquipmentClsCode.subscribe(value => {
+        vm.equipmentInfoList(_.filter(vm.equipmentInformationList(), { "equipmentClsCode": value }));
+      });
     }
 
     mounted() {
       const vm = this;
       vm.yearMonth(moment.utc().format("YYYYMM"));
       vm.initScreen();
+      vm.$nextTick(() => $("#A5_1").focus());
     }
 
     // Ａ：設備利用実績の一覧の初期表示
@@ -69,8 +74,9 @@ module nts.uk.com.view.oew001.a {
         if (result) {
           vm.equipmentClassification(result.equipmentClassification);
           vm.equipmentInformationList(result.equipmentInformationList);
+          vm.selectedEquipmentClsCode.valueHasMutated();
         }
-      }).fail(err => vm.$dialog.error(err.msgId));
+      }).fail(err => vm.$dialog.error({ messageId: err.msgId }));
     }
 
     // Ａ2：「設備利用実績の項目設定」を取得する
@@ -87,9 +93,9 @@ module nts.uk.com.view.oew001.a {
             const displaySetting = _.find(vm.formatSetting().itemDisplaySettings, { "itemNo": data.itemNo });
             vm.columns().push(vm.getColumnHeader(index, data.items.itemName, data.inputControl.itemCls, displaySetting.displayWidth));
           });
-          vm.initGrid();
+          vm.$nextTick(() => vm.initGrid());
         }
-      }).fail(err => vm.$dialog.error(err.msgId));
+      }).fail(err => vm.$dialog.error({ messageId: err.msgId }));
     }
 
     private initGrid() {
@@ -108,25 +114,53 @@ module nts.uk.com.view.oew001.a {
         ntsControls: [
           { name: 'EditButton', text: vm.$i18n("OEW001_21"), click: (item: any) => vm.openDialogB(item), controlType: 'Button', enable: true }
         ],
-        features: [],
+        features: [
+          {
+            name: 'Selection',
+            mode: 'row',
+            multipleSelection: false
+          }
+        ],
         ntsFeatures: []
       });
     }
 
-    public openDialogB(item?: any) {
+    public openDialogB(item?: DisplayData) {
       const vm = this;
-      vm.$window.modal("/view/oew/001/b/index.xhtml")
-        .then(result => {
-          
+      const param = new model.Oew001BData({
+        isNewMode: !item,
+        equipmentClsCode: vm.selectedEquipmentClsCode(),
+        equipmentClsName: vm.equipmentClsName(),
+        equipmentInfoCode: vm.selectedEquipmentInfoCode(),
+        equipmentInfoName: _.find(vm.equipmentInfoList(), { "code": vm.selectedEquipmentInfoCode() }).name,
+        sid: __viewContext.user.employeeId,
+        employeeName: ko.observable(null)
+      });
+      if (param.isNewMode) {
+        param.inputDate = moment.utc().format(model.constants.YYYY_MM_DD);
+        param.useDate = ko.observable(moment.utc().format(model.constants.YYYY_MM_DD));
+        param.optionalItems = ko.observableArray(vm.optionalItems());
+      } else {
+        param.inputDate = item.inputDate,
+        param.useDate = ko.observable(item.useDate),
+        param.optionalItems = ko.observableArray(item.optionalItems)
+      }
+      
+      vm.$window.modal("/view/oew/001/b/index.xhtml", ko.toJS(param))
+        .then((result: any) => {
+          if (!!result) {
+            vm.performSearchData();
+            if (result.isSaveSuccess) {
+              vm.saveCharacteristic();
+            }
+          }
+          vm.$nextTick(() => $("#A5_1").focus());
         });
     }
 
     public openDialogC() {
       const vm = this;
-      vm.$window.modal("/view/oew/001/c/index.xhtml")
-        .then(result => {
-          
-        });
+      vm.$window.modal("/view/oew/001/c/index.xhtml");
     }
 
     public openDialogD() {
@@ -135,6 +169,7 @@ module nts.uk.com.view.oew001.a {
         .then(result => {
           vm.selectedEquipmentClsCode(result.code);
           vm.equipmentClsName(result.name);
+          vm.$nextTick(() => $("#A4_3").focus());
         });
     }
 
@@ -148,6 +183,7 @@ module nts.uk.com.view.oew001.a {
         ym: vm.yearMonth()
       };
       vm.$ajax(API.getResultHistory, param).then(result => {
+        vm.hasExtractData(true);
         // Create data source
         vm.dataSource(_.map(result.equipmentDatas, (data: model.EquipmentDataDto) => {
           let displayData = new DisplayData(data, result.employeeInfos, currentSid);
@@ -159,10 +195,16 @@ module nts.uk.com.view.oew001.a {
         if (vm.dataSource().length > 0) {
           // Get first data for column format reference
           const optionalItems = vm.dataSource()[0].optionalItems;
+          // Init default optionalItems
+          _.forEach(optionalItems, data => {
+            data.value(null);
+            vm.optionalItems.push(data);
+          });
           // Create column info
           vm.columns(_.clone(vm.staticColumns));
           _.each(optionalItems, (data, index) => vm.columns().push(vm.getColumnHeader(index, data.itemName, data.itemCls, data.width)));
           // Init grid
+          $("#A6").ntsGrid("destroy");
           vm.initGrid();
         }
       }).always(() => vm.$blockui("clear"));
@@ -185,7 +227,7 @@ module nts.uk.com.view.oew001.a {
       const columnHeader = { 
         headerText: headerText, 
         template: '<div class="limited-label">${' + key + '}</div>', 
-        dataType: model.getDataType(itemCls), key: key, width: `${width}px`
+        dataType: model.getDataType(itemCls), key: `${key}.value()`, width: `${width}px`
       };
       return columnHeader;
     }
@@ -199,7 +241,7 @@ module nts.uk.com.view.oew001.a {
     sid: string;
     scd: string;
     employeeName: string;
-    optionalItems: OptionalItem[];
+    optionalItems: model.OptionalItem[];
 
     constructor(data: model.EquipmentDataDto, employees: model.EmployeeInfoDto[], currentSid: string) {
       const employeeInfo = _.find(employees, { employeeId: data.sid });
@@ -221,30 +263,16 @@ module nts.uk.com.view.oew001.a {
         const itemDisplay = _.find(formatSetting.itemDisplaySettings, { itemNo: itemData.itemNo });
         const itemCls = itemSetting.inputControl.itemCls;
 
-        return new OptionalItem({
+        return new model.OptionalItem({
           itemName: itemSetting.items.itemName,
           itemCls: itemCls,
-          value: itemData.actualValue,
-          unit: itemSetting.items.unit,
+          value: ko.observable(itemData.actualValue),
           // TODO: gán tạm bằng 項目表示.表示幅
           width: itemDisplay.displayWidth,
-          displayOrder: itemDisplay.displayOrder
+          displayOrder: itemDisplay.displayOrder,
         });
         // Sort optionalItems by 表示順番
       }).orderBy("displayOrder").value();
-    }
-  }
-
-  export class OptionalItem {
-    itemName: string;
-    itemCls: number;
-    value: string;
-    unit: string;
-    width: number;
-    displayOrder: number;
-
-    constructor(init?: Partial<OptionalItem>) {
-      $.extend(this, init);
     }
   }
 }
