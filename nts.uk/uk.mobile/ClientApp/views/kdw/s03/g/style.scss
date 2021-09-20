@@ -1,3 +1,36 @@
 .kdws03g {
-
+    table {
+        margin: 5%;
+        width: 90%;
+        table-layout: fixed;
+        text-align: center;
+        th {
+            border: none;           
+            width: 50px;           
+        }        
+        td {            
+            border: none;
+        }
+    }
+    .state-exception {
+        background-color: #EB9152;
+    }
+    
+    .state-alarm {
+        background-color: #F6F636;;
+    }
+    
+    .state-error {
+        background-color: #FD4D4D;
+    }
+    
+    .text-alarm{
+        color: #ff0000;
+    }
+    
+    .text-error{
+        color: #ffffff;
+    }    
 }
+
+
