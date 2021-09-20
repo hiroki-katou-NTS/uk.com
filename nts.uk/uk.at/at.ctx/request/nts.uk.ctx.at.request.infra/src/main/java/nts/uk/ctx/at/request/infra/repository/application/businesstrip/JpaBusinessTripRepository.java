@@ -168,7 +168,10 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
                 new WorkInformation(wkTypeCd, wkTimeCd),
                 date,
                 (wkTimeStart == null && wkTimeEnd == null) ? Optional.empty() : 
-                    Optional.of(Arrays.asList(new WorkingTime(new WorkNo(1), Optional.of(new TimeWithDayAttr(wkTimeStart)), Optional.of(new TimeWithDayAttr(wkTimeEnd)))) )
+                    Optional.of(Arrays.asList(new WorkingTime(
+                            new WorkNo(1), 
+                            Optional.ofNullable(wkTimeStart != null ? new TimeWithDayAttr(wkTimeStart) : null), 
+                            Optional.ofNullable(wkTimeEnd != null ? new TimeWithDayAttr(wkTimeEnd) : null))) )
         );
         businessTrip.setInfos(Arrays.asList(businessTripInfo));
         businessTrip.setDepartureTime(startTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime)));

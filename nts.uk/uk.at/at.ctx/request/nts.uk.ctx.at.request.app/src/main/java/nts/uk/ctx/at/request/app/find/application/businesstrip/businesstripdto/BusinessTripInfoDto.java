@@ -34,12 +34,12 @@ public class BusinessTripInfoDto {
 
     public BusinessTripInfo toDomain() {
         Optional<List<WorkingTime>> workingHours = Optional.empty();
-        if (startWorkTime != null && endWorkTime != null) {
-            workingHours = Optional.of(Arrays.asList(new WorkingTime(
-                    new WorkNo(1), 
-                    startWorkTime == null ? Optional.empty() : Optional.ofNullable(new TimeWithDayAttr(startWorkTime)), 
-                    endWorkTime == null ? Optional.empty() : Optional.ofNullable(new TimeWithDayAttr(endWorkTime)))));
-        }
+        workingHours = Optional.of(Arrays.asList(new WorkingTime(
+                new WorkNo(1), 
+                startWorkTime == null ? Optional.empty() : Optional.ofNullable(new TimeWithDayAttr(startWorkTime)), 
+                        endWorkTime == null ? Optional.empty() : Optional.ofNullable(new TimeWithDayAttr(endWorkTime)))));
+//        if (startWorkTime != null && endWorkTime != null) {
+//        }
         return new BusinessTripInfo(
                 new WorkInformation(this.wkTypeCd, this.wkTimeCd),
                 GeneralDate.fromString(date, "yyyy/MM/dd"),
