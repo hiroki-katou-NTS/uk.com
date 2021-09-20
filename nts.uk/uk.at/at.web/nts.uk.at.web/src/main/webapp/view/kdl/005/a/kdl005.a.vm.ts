@@ -287,7 +287,7 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 			}
 		}
 
-		findData() {
+		findData(data : any) {
 			let self = this;
 			
 			let text = $("input.ntsSearchBox.nts-editor.ntsSearchBox_Component").val()
@@ -299,7 +299,13 @@ module nts.uk.at.view.kdl005.a.viewmodel {
 				})
 
 				if (lstFil.length > 0) {
-					self.listComponentOption.selectedCode(lstFil[0].code);
+					let index = _.findIndex(lstFil, (z : any) => _.isEqual(z.code,self.listComponentOption.selectedCode()));
+					if (index == -1 || index == lstFil.length - 1){
+						self.listComponentOption.selectedCode(lstFil[0].code);
+					} else {
+						self.listComponentOption.selectedCode(lstFil[index + 1].code);
+					}
+					
 				} else {
 					nts.uk.ui.dialog.info({ messageId: "MsgB_25" });
 				}
