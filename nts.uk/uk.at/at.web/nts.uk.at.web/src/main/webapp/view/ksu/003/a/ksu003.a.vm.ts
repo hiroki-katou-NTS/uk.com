@@ -4880,6 +4880,24 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					}
 				}
 		}
+
+        public openKSU003D(): void {
+            let self = this;
+            let data = {
+                targetOrg: {
+                    unit: self.dataFromA().unit,
+                    workplaceId: self.dataFromA().workplaceId,
+                    workplaceGroupId: self.dataFromA().workplaceGroupId,
+                },
+                employeeIds: _.map(self.dataFromA().listEmp, (x: any) => { return x.id }),
+                targetPeriod: {
+                    startDate: self.dataFromA().daySelect,
+                    endDate: self.dataFromA().daySelect
+                }
+            };
+            setShared('dataShareKsu003D', data);
+            nts.uk.ui.windows.sub.modal("/view/ksu/003/d/index.xhtml");
+        }
 		
 		public closePopupA14(): void {
 			let self = this;
