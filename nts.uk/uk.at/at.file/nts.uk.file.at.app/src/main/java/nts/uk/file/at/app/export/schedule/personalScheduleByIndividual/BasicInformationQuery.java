@@ -8,7 +8,9 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.AffWorkplaceHistoryItem;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
@@ -103,16 +105,16 @@ public class BasicInformationQuery {
         }).getCompanyName();
 
         //[No.650]社員が所属している職場を取得する
-        val workplaceId = scWorkplaceAdapter.getAffWkpHistItemByEmpDate(companyId, period.end()).getWorkplaceId();
+        String workplaceId = scWorkplaceAdapter.getAffWkpHistItemByEmpDate(companyId, period.end()).getWorkplaceId();
         List<String> workplaceIds = new ArrayList<>();
         if (!workplaceId.isEmpty()) {
             workplaceIds.add(workplaceId);
         }
         //[No.560]職場IDから職場の情報をすべて取得する
-        val workPlaceInforExports = workplaceAdapter.findWkpByWkpIdList(companyId, period.end(), workplaceIds);
+        List<WorkplaceImport> workPlaceInforExports = workplaceAdapter.findWkpByWkpIdList(companyId, period.end(), workplaceIds);
 
         //社員（List）と期間から職場履歴を取得する
-        var workPlaceHitory = getWorkPlaceHitory(employeeId, period);
+        List<WorkPlaceHistoryDto> workPlaceHitory = getWorkPlaceHitory(employeeId, period);
         final DateHistoryCache<WorkPlaceHistoryDto> historyCache;
         historyCache = new DateHistoryCache<>(workPlaceHitory.stream()
                 .map(h -> DateHistoryCache.Entry.of(h.getDatePeriod(), h))
@@ -120,9 +122,9 @@ public class BasicInformationQuery {
         List<DateInformation> dateInformationList = new ArrayList<>();
         // Loop：年月日 in Input.対象期間
         period.datesBetween().forEach(date -> {
-            var HistoryData = historyCache.get(date);
-            var workPplaceId = HistoryData.get().getHistoryItem().getWorkplaceId();
-            if (HistoryData.isPresent() && !workPplaceId.isEmpty()) {
+            val historyData = historyCache.get(date);
+            String workPplaceId = historyData.get().getHistoryItem().getWorkplaceId();
+            if (historyData.isPresent() && !workPplaceId.isEmpty()) {
                 TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(workPplaceId);
                 // 作成する(Require, 年月日, 対象組織識別情報)
                 DateInformation information = DateInformation.create(new DateInformation.Require() {
@@ -199,7 +201,7 @@ public class BasicInformationQuery {
      * @param period
      */
     private List<WorkPlaceHistoryDto> getWorkPlaceHitory(String employeeId, DatePeriod period) {
-        var affWorkplaceHistoryOpt = workplaceHistoryRepository.findByEmployeesWithPeriod(Arrays.asList(employeeId), period).stream().findFirst();
+        Optional<AffWorkplaceHistory> affWorkplaceHistoryOpt = workplaceHistoryRepository.findByEmployeesWithPeriod(Arrays.asList(employeeId), period).stream().findFirst();
         AffWorkplaceHistory affWorkplaceHistory = null;
         List<WorkPlaceHistoryDto> historyDtoList = new ArrayList<>();
         if (affWorkplaceHistoryOpt.isPresent()) {
@@ -210,7 +212,7 @@ public class BasicInformationQuery {
                         return (itemPriod.start().beforeOrEquals(period.end()) && period.start().beforeOrEquals(itemPriod.end()));
                     }
             ).collect(Collectors.toList());
-            val affWorkplaceHistoryItems = affWorkplaceHistoryItemRepository.findByHistIds(historyItems.stream().map(x -> x.identifier()).collect(Collectors.toList()));
+            List<nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem> affWorkplaceHistoryItems = affWorkplaceHistoryItemRepository.findByHistIds(historyItems.stream().map(x -> x.identifier()).collect(Collectors.toList()));
             historyItems.forEach(item -> {
                 val history = affWorkplaceHistoryItems.stream().filter(x -> x.getHistoryId().equals(item.identifier())).findFirst();
                 if (history.isPresent()) {

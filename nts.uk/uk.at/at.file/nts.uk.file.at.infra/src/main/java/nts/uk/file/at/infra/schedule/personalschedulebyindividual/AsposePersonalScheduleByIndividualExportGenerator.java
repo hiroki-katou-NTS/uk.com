@@ -25,6 +25,7 @@ import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.WorkS
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
+import javax.ejb.Stateless;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+@Stateless
 public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCellsReportGenerator implements PersonalScheduleByIndividualExportGenerator {
     private final String FONT_NAME = "ＭＳ ゴシック";
     private final String EXCEL_EXT = ".xlsx";
@@ -92,13 +94,13 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
     }
 
     private void printHeader(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource) {
-        var b11 = TextResource.localize("KSU002_57");
+        String b11 = TextResource.localize("KSU002_57");
 
     }
 
     private void printContent(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource) {
-        val dateInfolist = dataSource.getDateInformationList();
-        var workInforDtoList = dataSource.getWorkInforDtoList();
+        List<DateInformation> dateInfolist = dataSource.getDateInformationList();
+        List<WorkScheduleWorkInforDto> workInforDtoList = dataSource.getWorkInforDtoList();
         int count = 0;
         boolean isFirst = true;
         List<PersonalScheduleByIndividualFormat> dataList = new ArrayList<>();

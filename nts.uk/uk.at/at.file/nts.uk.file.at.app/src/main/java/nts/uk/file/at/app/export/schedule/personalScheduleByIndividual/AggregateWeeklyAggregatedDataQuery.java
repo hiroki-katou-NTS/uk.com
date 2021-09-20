@@ -17,9 +17,11 @@ import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -56,9 +58,9 @@ public class AggregateWeeklyAggregatedDataQuery {
                     recordList
             );
             //1.2 Map<社員ID, Map<集計対象の勤怠時間, BigDecimal>>
-            var workingHours = WorkingTimeCounterService.get(dailyAtList).get(loginEmployeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN.getValue());
+            BigDecimal workingHours = WorkingTimeCounterService.get(dailyAtList).get(loginEmployeeId).get(AttendanceTimesForAggregation.WORKING_WITHIN.getValue());
             //1.3集計する(Require, List<日別勤怠(Work)>)
-            var holidayService = WorkdayHolidayCounterService.count(new WorkdayHolidayCounterService.Require() {
+            Map<EmployeeId, Map<WorkClassificationAsAggregationTarget, BigDecimal>> holidayService = WorkdayHolidayCounterService.count(new WorkdayHolidayCounterService.Require() {
                 @Override
                 public Optional<WorkType> getWorkType(WorkTypeCode workTypeCd) {
                     return workTypeRepo.findByPK(companyId, workTypeCd.v());

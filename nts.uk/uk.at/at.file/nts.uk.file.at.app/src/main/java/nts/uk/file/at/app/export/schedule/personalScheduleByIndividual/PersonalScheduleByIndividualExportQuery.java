@@ -3,6 +3,8 @@ package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
 import lombok.experimental.var;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.AppointmentDto;
+import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.BasicInformationDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,8 +39,8 @@ public class PersonalScheduleByIndividualExportQuery {
             DatePeriod period,
             int startDate,
             boolean isTotalDisplay) {
-        var appointmentResult = getAnAppointmentQuery.get(employeeId, period, startDate, isTotalDisplay);
-        var basicInfo = basicInformationQuery.get(employeeId, period);
+        AppointmentDto appointmentResult = getAnAppointmentQuery.get(employeeId, period, startDate, isTotalDisplay);
+        BasicInformationDto basicInfo = basicInformationQuery.get(employeeId, period);
         return new PersonalScheduleIndividualDataSource(
                 basicInfo.getCompanyName(),
                 basicInfo.getWorkplaceInfo(),
