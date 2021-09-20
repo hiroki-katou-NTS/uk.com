@@ -23,7 +23,7 @@
             <li class="list-group-item border-0" v-if="params.timeExcessReferButtonDis">
                 <button type="button" class="btn btn-primary w-100 btn-lg btn-secondary" v-click:500="() => openKdws03g(false)">{{'KDWS03_33' | i18n}}</button></li>
             <!--A3-15 -->
-            <li class="list-group-item border-0" v-if="params.monthActualReferButtonDis">
+            <li class="list-group-item border-0" v-if="params.allConfirmButtonDis && params.selfConfirm">
                 <button type="button" class="btn btn-primary w-100 btn-lg btn-secondary" v-click:500="openKdws03i">{{'KDWS03_12' | i18n}}</button></li>
         </ul>
     </div>

@@ -45,7 +45,7 @@ export class Kdws03AComponent extends Vue {
         initClock: null,
         transitionDesScreen: null,
         errorRefStartAtr: false,
-        formatCodes: []
+        // formatCodes: []
     }) })
     public readonly params: Params;
 
@@ -54,7 +54,7 @@ export class Kdws03AComponent extends Vue {
     public rownum: number = 0;
     public rowHeight: number = 0;
     public displayFormat: any = '0';
-    public formatCode: Array<any> = [];
+    public formatCode: string = '';
     public lstDataSourceLoad: Array<any> = [];
     public lstDataHeader: Array<any> = [];
     public optionalHeader: Array<any> = [];
@@ -229,9 +229,12 @@ export class Kdws03AComponent extends Vue {
     //日別実績データの取得
     public startPage() {
         let self = this;
-        self.$mask('show', { message: true });
-        let selectedCode : Array<any> = [];
-        selectedCode.push(self.formatCode);
+        let selectedCode: Array<any> = [];
+
+        self.$mask('show', { message: true });        
+        if (!_.isNil(self.formatCode) && self.formatCode != '') {
+            selectedCode.push(self.formatCode);
+        }        
 
         let param = {
             changePeriodAtr: self.params.changePeriodAtr,
@@ -698,7 +701,7 @@ export class Kdws03AComponent extends Vue {
                     }
 
                     // close dialog I
-                    if(!_.isNil(params)) {
+                    if (!_.isNil(params)) {
                         self.formatCode = params;
                         this.startPage();
                     }

@@ -237,7 +237,7 @@ public class InitScreenMob {
 
 		// フォーマットの特定（スマホ）
 		// 表示項目を制御する（スマホ）
-		DisplayItem disItem = processor.getDisplayItems(null, new ArrayList<>(), companyId, screenDto, listEmployeeId,
+		DisplayItem disItem = processor.getDisplayItems(null, param.formatCodes, companyId, screenDto, listEmployeeId,
 				false, dailyPerformanceDto);
 		if (disItem == null || !disItem.getErrors().isEmpty()) {
 			if (disItem != null)
