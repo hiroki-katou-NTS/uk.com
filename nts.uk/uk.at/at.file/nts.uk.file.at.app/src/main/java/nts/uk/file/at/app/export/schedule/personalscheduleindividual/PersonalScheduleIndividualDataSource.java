@@ -1,12 +1,11 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceIdName;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.WorkScheduleWorkInforDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.WorkScheduleWorkInforDto;
 
 import java.util.List;
 import java.util.Optional;

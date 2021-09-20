@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.adapter.dailyrecord.DailyRecordAdapter;

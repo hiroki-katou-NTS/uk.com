@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

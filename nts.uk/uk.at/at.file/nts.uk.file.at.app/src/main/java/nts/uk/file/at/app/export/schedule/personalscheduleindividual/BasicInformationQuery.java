@@ -1,6 +1,5 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
-import lombok.experimental.var;
 import lombok.val;
 import nts.arc.layer.app.cache.DateHistoryCache;
 import nts.arc.primitive.PrimitiveValueBase;
@@ -10,7 +9,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.ScWorkplaceAdapter;
-import nts.uk.ctx.at.schedule.dom.adapter.executionlog.dto.AffWorkplaceHistoryItem;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.CompanyEventRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
@@ -38,8 +36,8 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.BasicInformationDto;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.WorkPlaceHistoryDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.BasicInformationDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.WorkPlaceHistoryDto;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 

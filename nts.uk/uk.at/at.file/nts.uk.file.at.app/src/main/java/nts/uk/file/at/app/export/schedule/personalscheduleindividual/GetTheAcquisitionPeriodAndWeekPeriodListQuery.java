@@ -1,10 +1,10 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.DatePeriodListDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.DatePeriodListDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;

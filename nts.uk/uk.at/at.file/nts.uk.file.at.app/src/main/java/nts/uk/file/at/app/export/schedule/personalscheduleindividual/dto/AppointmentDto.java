@@ -1,8 +1,8 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.WeeklyAgreegateResult;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.WeeklyAgreegateResult;
 
 import java.util.List;
 

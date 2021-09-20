@@ -1,10 +1,9 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
-import lombok.experimental.var;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.AppointmentDto;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.BasicInformationDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.AppointmentDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.BasicInformationDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

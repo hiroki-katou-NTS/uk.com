@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.WorkScheduleWorkInforDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.WorkScheduleWorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;

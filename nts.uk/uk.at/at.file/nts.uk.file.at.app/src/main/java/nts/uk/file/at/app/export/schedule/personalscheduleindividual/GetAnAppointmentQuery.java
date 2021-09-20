@@ -1,4 +1,4 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
 import lombok.val;
 import nts.arc.primitive.PrimitiveValueBase;
@@ -8,7 +8,7 @@ import nts.uk.ctx.at.aggregation.dom.adapter.workschedule.WorkScheduleAdapter;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.file.at.app.export.schedule.personalScheduleByIndividual.dto.AppointmentDto;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.AppointmentDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

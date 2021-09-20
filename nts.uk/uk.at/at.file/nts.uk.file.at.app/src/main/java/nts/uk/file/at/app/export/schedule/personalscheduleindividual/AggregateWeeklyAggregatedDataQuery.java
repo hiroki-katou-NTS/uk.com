@@ -1,6 +1,5 @@
-package nts.uk.file.at.app.export.schedule.personalScheduleByIndividual;
+package nts.uk.file.at.app.export.schedule.personalscheduleindividual;
 
-import lombok.experimental.var;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceMergingService;
