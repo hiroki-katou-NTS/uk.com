@@ -1954,26 +1954,26 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess {
     @Override
     public void registerVacationLinkManage(List<LeaveComDayOffManagement> leaveComDayOffMana, List<PayoutSubofHDManagement> payoutSubofHDManagements) {
         if (!leaveComDayOffMana.isEmpty()) {
+            // ドメインモデル「休出代休紐付け管理」を削除する
+            this.leaveComDayOffManaRepo.deleteByDigestTarget(
+                    leaveComDayOffMana.get(0).getSid(), 
+                    leaveComDayOffMana.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
+            
             for (LeaveComDayOffManagement leaveMana : leaveComDayOffMana) {
-                // ドメインモデル「休出代休紐付け管理」を削除する
-                this.leaveComDayOffManaRepo.deleteByDigestTarget(
-                        leaveMana.getSid(), 
-                        leaveMana.getAssocialInfo().getDateOfUse(), 
-                        TargetSelectionAtr.REQUEST);
-                
                 // ドメインモデル「休出代休紐付け管理」を登録する
                 this.leaveComDayOffManaRepo.add(leaveMana);
             }
         }
 
         if (!payoutSubofHDManagements.isEmpty()) {
+            // ドメインモデル「振出振休紐付け管理」を削除する
+            this.payoutHdManaRepo.deleteByDigestTarget(
+                    payoutSubofHDManagements.get(0).getSid(), 
+                    payoutSubofHDManagements.get(0).getAssocialInfo().getDateOfUse(), 
+                    TargetSelectionAtr.REQUEST);
+            
             for (PayoutSubofHDManagement payoutHdMana : payoutSubofHDManagements) {
-                // ドメインモデル「振出振休紐付け管理」を削除する
-                this.payoutHdManaRepo.deleteByDigestTarget(
-                        payoutHdMana.getSid(), 
-                        payoutHdMana.getAssocialInfo().getDateOfUse(), 
-                        TargetSelectionAtr.REQUEST);
-                
                 // ドメインモデル「振出振休紐付け管理」を登録する
                 this.payoutHdManaRepo.add(payoutHdMana);
             }

@@ -15,6 +15,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
         application: KnockoutObservable<Application>;
         appDispInfoStartupOutput: any;
         data: any = null;
+		workTypeOrigin: any = null;
+		workTimeOrigin: any = null;
 		hdAppSet: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedType: KnockoutObservable<any> = ko.observable();
 		workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -572,6 +574,10 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 				return x;
 			});
 
+			if ((!(vm.workTypeOrigin == null && vm.workTimeOrigin == null))) {
+				commandCheckUpdate.appAbsenceStartInfoDto.workInfomationForApplication = {workTypeCode: vm.workTypeOrigin, workTimeCode: vm.workTimeOrigin};
+			}
+
 			commandCheckUpdate.application.opAppReason = vm.application().opAppReason();
             commandCheckUpdate.application.opAppStandardReasonCD = vm.application().opAppStandardReasonCD();
             commandCheckUpdate.application.opReversionReason = vm.application().opReversionReason();
@@ -686,6 +692,8 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
                 .done((success) => {
 					vm.data = success.appAbsenceStartInfo;
 					let hdAppSetInput: any[] = vm.data.hdAppSet.dispNames;
+					vm.workTypeOrigin = success.appAbsenceStartInfo.selectedWorkTypeCD;
+					vm.workTimeOrigin = success.appAbsenceStartInfo.selectedWorkTimeCD;
 					// B3_2
 					vm.selectedType(success.applyForLeave.vacationInfo.holidayApplicationType);
 					vm.fetchData(success.appAbsenceStartInfo);
@@ -925,9 +933,9 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             vm.over60HHourRemain(vm.formatRemainNumber(0, remainVacationInfo.over60HHourRemain));
 
             // set subVacaHourRemain
-			vm.subVacaHourRemain(vm.formatSubHdRemain(remainVacationInfo.subVacaRemain, remainVacationInfo.subVacaHourRemain, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
+            vm.subVacaHourRemain(vm.formatRemainNumberSubVaca(remainVacationInfo.subHdRemain, remainVacationInfo.subVacaHourRemain, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
 
-			// set subVacaRemain
+            // set subVacaRemain
             vm.subVacaRemain(vm.formatRemainNumber(remainVacationInfo.subVacaRemain, 0));
 
             // set yearRemain
@@ -949,11 +957,27 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             vm.subHdRemain(vm.formatSubHdRemain(remainVacationInfo.subHdRemain, 0, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
         }
 
+		formatRemainNumberSubVaca(day: any, time: any, manage: any): string {
+            const vm = this;
+            if (time) {
+                let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
+                if (day) {
+                    return vm.$i18n('KAF006_100', [day.toString(), timeString]);
+                }
+                return timeString;
+            }
+
+            return manage ? nts.uk.time.format.byId("Clock_Short_HM", time) : vm.$i18n('KAF006_46', [day.toString()]);
+        }
+
         formatRemainNumber(day: any, time: any): string {
             const vm = this;
             if (time) {
                 let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
-                return vm.$i18n('KAF006_100', [day.toString(), timeString]);
+                if (day) {
+                    return vm.$i18n('KAF006_100', [day.toString(), timeString]);
+                }
+                return timeString;
             }
 
             return vm.$i18n('KAF006_46', [day.toString()]);
@@ -1605,7 +1629,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
             employeeIds.push(__viewContext.user.employeeId);
             nts.uk.ui.windows.setShared('KDL020A_PARAM', {
                 baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate), 
-                employeeIds: employeeIds});
+                employeeIds: vm.application().employeeIDLst()});
             if (employeeIds.length > 1) {
                 nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
             } else {

@@ -102,7 +102,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
-		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get()));
+		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get(), true));
 
 	}
 
@@ -148,7 +148,7 @@ public class ReflectApplicationWorkRecordTest {
 
 		assertThat(actualResult.getLeft().getReflectStatus()).isEqualTo(RCReflectedState.REFLECTED);
 
-		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get()));
+		NtsAssert.atomTask(() -> actualResult.getRight().get(), any -> require.addAllDomain(any.get(), true));
 
 	}
 

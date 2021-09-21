@@ -2481,6 +2481,11 @@ public class RecordDomRequireService {
 			return holidayAddtionRepo.findByCId(cid);
 		}
 
+//		@Override
+//		public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
+//			return holidayAddtionRepo.findByCId(cid);
+//		}
+
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
 			return this.workTimeSetting(AppContexts.user().companyId(), workTimeCode);

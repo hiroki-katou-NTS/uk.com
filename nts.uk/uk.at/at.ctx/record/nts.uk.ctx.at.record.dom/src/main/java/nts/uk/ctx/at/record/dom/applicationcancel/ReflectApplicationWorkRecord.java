@@ -104,7 +104,7 @@ public class ReflectApplicationWorkRecord {
 			require.removeConfirmApproval(Arrays.asList(dailyRecordApp.getDomain().getDomain()));
 			
 			// 勤務実績の更新
-			require.addAllDomain(dailyRecordApp.getDomain());
+			require.addAllDomain(dailyRecordApp.getDomain(), true);
 
 			// 申請反映履歴を作成する
 			CreateApplicationReflectionHist.create(require, application.getAppID(), ScheduleRecordClassifi.RECORD,
@@ -157,7 +157,7 @@ public class ReflectApplicationWorkRecord {
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet, ExecutionType reCalcAtr);
 
 		// DailyRecordAdUpService
-		public void addAllDomain(IntegrationOfDaily domain);
+		public void addAllDomain(IntegrationOfDaily domain, boolean removeError);
 		
 		//DailyRecordAdUpService
 		public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily);

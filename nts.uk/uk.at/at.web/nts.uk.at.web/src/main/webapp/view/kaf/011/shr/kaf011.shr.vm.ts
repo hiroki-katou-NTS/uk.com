@@ -368,7 +368,7 @@ module nts.uk.at.view.kaf011 {
 					daysUnit: self.workTypeSelected.workAtr == 0 ? 1: 0.5,
 					targetSelectionAtr: 1,
 					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
-					managementData: self.payoutSubofHDManagements()
+					managementData: self.payoutSubofHDManagementsOld()
 				});
 				windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
 					let data = windows.getShared('KDL035_RESULT');

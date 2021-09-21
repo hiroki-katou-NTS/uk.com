@@ -1129,7 +1129,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             vm.over60HHourRemain(vm.formatRemainNumber(0, remainVacationInfo.over60HHourRemain));
 
             // set subVacaHourRemain
-            vm.subVacaHourRemain(vm.formatRemainNumber(remainVacationInfo.subHdRemain, remainVacationInfo.subVacaHourRemain));
+            vm.subVacaHourRemain(vm.formatRemainNumberSubVaca(remainVacationInfo.subHdRemain, remainVacationInfo.subVacaHourRemain, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
 
             // set subVacaRemain
             vm.subVacaRemain(vm.formatRemainNumber(remainVacationInfo.subVacaRemain, 0));
@@ -1151,6 +1151,19 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
             // set subHdRemain
             vm.subHdRemain(vm.formatSubHdRemain(remainVacationInfo.subHdRemain, 0, remainVacationInfo.substituteLeaveManagement.timeAllowanceManagement));
+        }
+
+        formatRemainNumberSubVaca(day: any, time: any, manage: any): string {
+            const vm = this;
+            if (time) {
+                let timeString = nts.uk.time.format.byId("Clock_Short_HM", time);
+                if (day) {
+                    return vm.$i18n('KAF006_100', [day.toString(), timeString]);
+                }
+                return timeString;
+            }
+
+            return manage ? nts.uk.time.format.byId("Clock_Short_HM", time) : vm.$i18n('KAF006_46', [day.toString()]);
         }
 
         formatRemainNumber(day: any, time: any): string {
@@ -1569,7 +1582,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
             employeeIds.push(__viewContext.user.employeeId);
             nts.uk.ui.windows.setShared('KDL020A_PARAM', {
                 baseDate: new Date(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.baseDate), 
-                employeeIds: employeeIds});
+                employeeIds: vm.application().employeeIDLst()});
             if (employeeIds.length > 1) {
                 nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
             } else {

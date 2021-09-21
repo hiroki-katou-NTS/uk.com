@@ -389,42 +389,44 @@ public class VacationClass {
 	 */
 	public static BreakDownTimeDay getAddVacationTimeFromEmpInfo(HolidayAddtionSet holidayAdditionSet,
 			WorkingConditionItem workConditionItem, Optional<PredetermineTimeSetForCalc> predTimeForCalc) {
-		BreakDownTimeDay addTime = new BreakDownTimeDay(new AttendanceTime(0), new AttendanceTime(0),
-				new AttendanceTime(0));
 		// Refactor code QA #40197
-        VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = holidayAdditionSet.getReference().getReferIndividualSet().get();
-        switch (vacationSpecifiedTimeRefer) {
-            case WORK_HOUR_DUR_WEEKDAY: {
-                // 休暇加算時間利用区分を確認
-                if (workConditionItem.getVacationAddedTimeAtr().value == 0) {
-                    return null;
-                }
-                // 休暇加算時間設定を取得する
-                if (workConditionItem.getHolidayAddTimeSet().isPresent()) {
-                    // 1日の時間内訳を返す
-                    return new BreakDownTimeDay(
-                            workConditionItem.getHolidayAddTimeSet().get().getOneDay().v(),
-                            workConditionItem.getHolidayAddTimeSet().get().getMorning().v(),
-                            workConditionItem.getHolidayAddTimeSet().get().getAfternoon().v()
-                    );
-                } else {
-                    // 1日の時間内訳を０で返す
-                    return new BreakDownTimeDay(0,0,0);
-                }
-            }
-            case WORK_HOUR_DUR_hd: {
-                // 平日時の就業時間帯コードを取得する
-                Optional<WorkTimeCode> workTimeCode = workConditionItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
-                if (workTimeCode.isPresent()) {
-                    // 所定時間を取得する
-                    return predTimeForCalc.get().getAdditionSet().getPredTime();
-                } else {
-                    // 1日の時間内訳を０で返す
-                    return new BreakDownTimeDay(0,0,0);
-                }
-            }
-        }
-
+        Optional<VacationSpecifiedTimeRefer> vacationSpecifiedTimeRefer = holidayAdditionSet.getReference().getReferIndividualSet();
+        if (vacationSpecifiedTimeRefer.isPresent()) {
+			switch (vacationSpecifiedTimeRefer.get()) {
+				case WORK_HOUR_DUR_WEEKDAY: {
+					// 休暇加算時間利用区分を確認
+					if (workConditionItem.getVacationAddedTimeAtr().value == 0) {
+						return null;
+					}
+					// 休暇加算時間設定を取得する
+					if (workConditionItem.getHolidayAddTimeSet().isPresent()) {
+						// 1日の時間内訳を返す
+						return new BreakDownTimeDay(
+								workConditionItem.getHolidayAddTimeSet().get().getOneDay().v(),
+								workConditionItem.getHolidayAddTimeSet().get().getMorning().v(),
+								workConditionItem.getHolidayAddTimeSet().get().getAfternoon().v()
+						);
+					} else {
+						// 1日の時間内訳を０で返す
+						return new BreakDownTimeDay(0,0,0);
+					}
+				}
+				case WORK_HOUR_DUR_hd: {
+					// 平日時の就業時間帯コードを取得する
+					Optional<WorkTimeCode> workTimeCode = workConditionItem.getWorkCategory().getWorkTime().getWeekdayTime().getWorkTimeCode();
+					if (workTimeCode.isPresent()) {
+						// 所定時間を取得する
+						if (predTimeForCalc.isPresent())
+							return predTimeForCalc.get().getAdditionSet().getPredTime();
+						else
+							return null;
+					} else {
+						// 1日の時間内訳を０で返す
+						return new BreakDownTimeDay(0,0,0);
+					}
+				}
+			}
+		}
 		return null;
 	}
 
