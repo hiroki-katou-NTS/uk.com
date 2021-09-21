@@ -13,24 +13,21 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDestinationOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInformationDomainService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriority;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimePriorityRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -44,6 +41,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -56,17 +55,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectAttendanceClock {
 	
-//	@Inject
-//	private GetCommonSet getCommonSet;
-	
-	@Inject
-	private BasicScheduleService basicScheduleService;
-	
 	@Inject
 	private ReflectWorkInformationDomainService reflectWorkInformationDomainService;
 	
 	@Inject
 	private StampReflectionManagementRepository timePriorityRepository;
+	
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
 	@Inject 
 	private RecordDomRequireService requireService;
@@ -77,22 +73,18 @@ public class ReflectAttendanceClock {
 	 * @param workNo 1~2	
 	 * @param integrationOfDaily 1~2
 	 */
-	public ReflectStampOuput reflect(Stamp stamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
-		String companyId  = AppContexts.user().companyId();
+	public ReflectStampOuput reflect(String companyId, Stamp stamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
 		//反映先を取得する
 		TimePrintDestinationOutput timePrintDestinationOutput = getDestination(attendanceAtr, actualStampAtr, workNo, integrationOfDaily);
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
 		//通常打刻の出退勤の反映条件を判断する
-		reflectStampOuput = reflectAttd(stamp, attendanceAtr, timePrintDestinationOutput,
+		reflectStampOuput = reflectAttd(companyId, stamp, attendanceAtr, timePrintDestinationOutput,
 				actualStampAtr, integrationOfDaily,workNo);
 		if(reflectStampOuput == ReflectStampOuput.REFLECT ) {
 			//休日打刻時に勤務種類を変更する
-			reflectStampOuput = checkHolidayChange(new WorkInfoOfDailyPerformance(integrationOfDaily.getEmployeeId(),
-					integrationOfDaily.getYmd(), integrationOfDaily.getWorkInformation()), companyId);
-			if(reflectStampOuput == ReflectStampOuput.REFLECT ) {
-				//打刻を反映する 
-				reflectStampOuput =  reflectStamping(actualStampAtr, stamp, integrationOfDaily, attendanceAtr, workNo);
-			}
+			checkHolidayChange(integrationOfDaily, companyId,stamp);
+			// 打刻を反映する
+			reflectStampOuput =  reflectStamping(actualStampAtr, stamp, integrationOfDaily, attendanceAtr, workNo);
 		}
 		TimeLeavingWork timeLeavingWork = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().stream()
 				.filter(c -> c.getWorkNo().v().intValue() == workNo).findFirst().get();
@@ -134,7 +126,7 @@ public class ReflectAttendanceClock {
 			if(!timeActualStamp.isPresent()) {
 				return null;
 			}
-			Optional<WorkStamp> workStamp = timeActualStamp.get().getActualStamp();
+			Optional<WorkStamp> workStamp = actualStampAtr == ActualStampAtr.STAMP_REAL ? timeActualStamp.get().getActualStamp() : timeActualStamp.get().getStamp();
 			//fixbug 115441
 //			if(actualStampAtr == ActualStampAtr.STAMP ) {
 //				workStamp = timeActualStamp.get().getStamp();
@@ -185,9 +177,8 @@ public class ReflectAttendanceClock {
 	 * @param actualStampAtr
 	 * @return
 	 */
-	public ReflectStampOuput reflectAttd(Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,ActualStampAtr actualStampAtr,
+	public ReflectStampOuput reflectAttd(String cid, Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,ActualStampAtr actualStampAtr,
 			IntegrationOfDaily integrationOfDaily,int workNo) {
-		String cid = AppContexts.user().companyId();
 		Optional<WorkStamp> workStamp = getWorkStamp(attendanceAtr, actualStampAtr, integrationOfDaily, workNo);
 		
 		//出退勤打刻反映先がNullか確認する 
@@ -206,7 +197,7 @@ public class ReflectAttendanceClock {
 			}
 		}
 		//前優先後優先を見て反映するか確認する
-		return checkReflectByLookPriority(stamp, attendanceAtr, timePrintDestinationOutput, integrationOfDaily);
+		return checkReflectByLookPriority(cid, stamp, attendanceAtr, timePrintDestinationOutput, integrationOfDaily);
 	}
 	
 	/**
@@ -217,9 +208,8 @@ public class ReflectAttendanceClock {
 	 * @param integrationOfDaily
 	 * @return
 	 */
-	public ReflectStampOuput checkReflectByLookPriority(Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,
+	public ReflectStampOuput checkReflectByLookPriority(String companyId, Stamp stamp, AttendanceAtr attendanceAtr,TimePrintDestinationOutput timePrintDestinationOutput,
 			IntegrationOfDaily integrationOfDaily) {
-		String companyId = AppContexts.user().companyId();
 		if (integrationOfDaily.getWorkInformation() != null) {
 			//打刻設定を取得する
 			WorkTimezoneStampSet stampSet = this.getStampSetting(companyId,
@@ -317,24 +307,21 @@ public class ReflectAttendanceClock {
 	 * @param companyId
 	 * @return
 	 */
-	private ReflectStampOuput checkHolidayChange(WorkInfoOfDailyPerformance WorkInfo, String companyId) {
-		if (WorkInfo != null) {
-			WorkInformation recordWorkInformation = WorkInfo.getWorkInformation().getRecordInfo();
-			// Xác định phân loại 1日半日出勤・1日休日
-			// 1日半日出勤・1日休日系の判定
-			WorkStyle checkWorkDay = this.basicScheduleService
-					.checkWorkDay(recordWorkInformation.getWorkTypeCode().v());
-			// 休日系
-			if (checkWorkDay.value == 0) {
+	private void checkHolidayChange(IntegrationOfDaily integrationOfDaily, String companyId,Stamp stamp) {
+		if (integrationOfDaily.getWorkInformation() != null) {
+			//ドメインモデル「日別実績の勤務情報．勤務情報」を取得する
+			WorkInformation recordWorkInformation = integrationOfDaily.getWorkInformation().getRecordInfo();
+			//日別実績の計算区分を取得する
+			CalAttrOfDailyAttd calAttr = integrationOfDaily.getCalAttr();
+			//休日出勤に変更するか
+			boolean check = stamp.getType().changeWorkOnHolidays(new RequireStampTypeImpl(),
+					calAttr.getHolidayTimeSetting(), recordWorkInformation.getWorkTypeCode().v());
+			if(check) {
 				// 勤務情報を変更する
-				if (!this.reflectWorkInformationDomainService.changeWorkInformation(WorkInfo, companyId)) {
-					return ReflectStampOuput.NOT_REFLECT;
-				}
+				this.reflectWorkInformationDomainService.changeWorkInformation(integrationOfDaily,
+						companyId, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd());
 			}
-			return ReflectStampOuput.REFLECT;
 		}
-
-		return ReflectStampOuput.REFLECT;
 	}
 	
 	/**
@@ -539,5 +526,14 @@ public class ReflectAttendanceClock {
 		}
 		
 		
+	}
+	
+	public class RequireStampTypeImpl implements StampType.Require{
+		
+		@Override
+		public Optional<WorkType> findByPK(String workTypeCd) {
+			String companyId = AppContexts.user().companyId();
+			return workTypeRepository.findByPK(companyId, workTypeCd);
+		}
 	}
 }

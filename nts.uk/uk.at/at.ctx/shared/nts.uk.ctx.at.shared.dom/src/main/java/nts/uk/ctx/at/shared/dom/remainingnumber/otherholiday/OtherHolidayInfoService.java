@@ -548,7 +548,7 @@ public class OtherHolidayInfoService {
 			return result;
 		}
 		// 労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
-		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
+		Optional<WorkTimeCode> workTimeCD = workingCondItem.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode();
 
 		if (!workTimeCD.isPresent()) {
 			return getCompanySet(cid);
@@ -619,7 +619,7 @@ public class OtherHolidayInfoService {
 			}
 			
 			// 労働条件項目．区分別勤務．休日出勤時．就業時間帯コードの就業時間帯
-			Optional<WorkTimeCode> workTimeCD = workingCondItemOpt.get().getWorkCategory().getHolidayWork().getWorkTimeCode();
+			Optional<WorkTimeCode> workTimeCD = workingCondItemOpt.get().getWorkCategory().getWorkTime().getHolidayWork().getWorkTimeCode();
 			if (!workTimeCD.isPresent()) {
 				result.put(c, designatedTimeCid);
 				return;

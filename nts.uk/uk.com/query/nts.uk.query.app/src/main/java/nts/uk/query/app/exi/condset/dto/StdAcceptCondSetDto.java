@@ -2,6 +2,8 @@ package nts.uk.query.app.exi.condset.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 
 /**
@@ -12,12 +14,14 @@ import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
  */
 @Data
 @AllArgsConstructor
-public class StdAcceptCondSetDto implements StdAcceptCondSet.MementoSetter {
+@Setter
+@Getter
+public class StdAcceptCondSetDto{
 
 	/**
 	 * システム種類
 	 */
-	private int systemType;
+	private Integer systemType;
 
 	/**
 	 * 外部受入条件コード
@@ -42,51 +46,14 @@ public class StdAcceptCondSetDto implements StdAcceptCondSet.MementoSetter {
 	/**
 	 * 外部受入カテゴリID
 	 */
-	private String categoryId;
+	private Integer categoryId;
 
-	/**
-	 * CSVデータの項目名行
-	 */
-	private Integer csvDataItemLineNumber;
-
-	/**
-	 * CSVデータの取込開始行
-	 */
-	private Integer csvDataStartLine;
-
-	/**
-	 * 文字コード
-	 */
-	private Integer characterCode;
 
 	/**
 	 * 既存データの削除方法
 	 */
 	private Integer deleteExistDataMethod;
 
-	/**
-	 * No args constructor.
-	 */
-	private StdAcceptCondSetDto() {
-	}
-
-	/**
-	 * Sets company id.
-	 *
-	 * @param companyId the company id
-	 */
-	@Override
-	public void setCompanyId(String companyId) {
-	}
-
-	/**
-	 * Sets check completed.
-	 *
-	 * @param checkCompleted the check completed
-	 */
-	@Override
-	public void setCheckCompleted(Integer checkCompleted) {
-	}
 
 	/**
 	 * Creates from domain.
@@ -98,8 +65,13 @@ public class StdAcceptCondSetDto implements StdAcceptCondSet.MementoSetter {
 		if (domain == null) {
 			return null;
 		}
-		StdAcceptCondSetDto dto = new StdAcceptCondSetDto();
-		domain.setMemento(dto);
+		StdAcceptCondSetDto dto = new StdAcceptCondSetDto(domain.getSystemType().isPresent() ? domain.getSystemType().get().value : null,
+				domain.getConditionSetCode().v(),
+				domain.getConditionSetName().v(),
+				domain.getDeleteExistData().value,
+				domain.getAcceptMode().isPresent() ? domain.getAcceptMode().get().value : null,
+				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
+				domain.getDeleteExistDataMethod().isPresent() ? domain.getDeleteExistDataMethod().get().value : null);
 		return dto;
 	}
 

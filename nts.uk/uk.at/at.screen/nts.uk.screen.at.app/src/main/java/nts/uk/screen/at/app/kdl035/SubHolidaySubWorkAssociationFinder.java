@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -53,6 +54,9 @@ public class SubHolidaySubWorkAssociationFinder {
 
     @Inject
     private ShareEmploymentAdapter shareEmploymentAdapter;
+    
+    @Inject
+    private PayoutSubofHDManaRepository payoutSubofHDManaRepository;
 
     /**
      * 振休振出関連付けダイアログ起動
@@ -108,6 +112,13 @@ public class SubHolidaySubWorkAssociationFinder {
 
         // 紐付け中の振出データを取得する
         result.addAll(getDrawingDataDuringLinking(employeeId, closurePeriod, managementData));
+        
+        // ドメインモデル「暫定残数管理データ」を取得する
+        List<PayoutSubofHDManagement> payoutSubofHDManagements = payoutSubofHDManaRepository.getByListOccDate(employeeId, result.stream().map(x -> x.getSubstituteWorkDate()).collect(Collectors.toList()));
+        List<GeneralDate> payoutDates = payoutSubofHDManagements.stream().map(x -> x.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
+        
+        result = result.stream().filter(x -> !payoutDates.contains(x.getSubstituteWorkDate())).collect(Collectors.toList());
+        
 
         result.sort(Comparator.comparing(SubstituteWorkData::getSubstituteWorkDate));
         return result;
@@ -119,7 +130,6 @@ public class SubHolidaySubWorkAssociationFinder {
     private List<SubstituteWorkData> getProvisionalDrawingData(String employeeId, DatePeriod closurePeriod, List<PayoutSubofHDManagement> managementData) {
         List<GeneralDate> outbreakDays = managementData.stream().map(i -> i.getAssocialInfo().getOutbreakDay()).collect(Collectors.toList());
 
-        // ドメインモデル「暫定残数管理データ」を取得する
         // ドメインモデル「暫定振出管理データ」を取得する
         List<SubstituteWorkData> result = interimRecAbasMngRepo.getRecBySidDatePeriod(
                 employeeId,

@@ -12,7 +12,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationRangeOfOneDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.withinworkinghours.WithinWorkTimeSheet;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.StatutoryDivision;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -66,26 +65,22 @@ public class WithinStatutoryMidNightTime {
 			WithinWorkTimeSheet withinWorkTimeSheet = oneDay.getWithinWorkingTimeSheet().get();
 			if (isFlex){
 				calcTime = ((FlexWithinWorkTimeSheet)withinWorkTimeSheet).calcWithinMidnightTime(
-						recordReGet.getHolidayCalcMethodSet(),
+						recordReGet.getIntegrationOfDaily(),
+						recordReGet.getIntegrationOfWorkTime(),
 						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getCalAtr(),
 						workType,
-						flexCalcMethod.map(x-> x).orElse(null),
+						flexCalcMethod.get(),
 						recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc(),
 						vacationClass,
-						withinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
-						StatutoryDivision.Nomal,
-						workTimeCode,
 						recordReGet.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting(),
 						recordReGet.getAddSetting(),
-						recordReGet.getHolidayAddtionSet().map(x-> x).orElse(null),
+						recordReGet.getHolidayAddtionSet().get(),
 						recordReGet.getDailyUnit(),
 						recordReGet.getWorkTimezoneCommonSet(),
 						recordReGet.getIntegrationOfDaily().getCalAttr().getFlexExcessTime().getFlexOtTime().getUpLimitORtSet(),
 						conditionItem,
 						predetermineTimeSetByPersonInfo,
-						recordReGet.getCoreTimeSetting(),
-						NotUseAtr.NOT_USE,
-						Optional.of(recordReGet.getCalculationRangeOfOneDay().getAttendanceLeavingWork()));
+						NotUseAtr.NOT_USE);
 			}
 			else{
 				calcTime = withinWorkTimeSheet.calcMidNightTime();

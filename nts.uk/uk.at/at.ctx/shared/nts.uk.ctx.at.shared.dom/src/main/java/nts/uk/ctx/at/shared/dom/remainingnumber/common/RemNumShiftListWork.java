@@ -137,6 +137,8 @@ public class RemNumShiftListWork {
 		// 合計残数が取得できないとき
 		if ( !leaveRemainingNumberOpt.isPresent() ){
 			// 終了
+			if(leaveUsedNumber.isLargerThanZero())
+				this.unusedNumber = leaveUsedNumber.clone();
 			return;
 		}
 

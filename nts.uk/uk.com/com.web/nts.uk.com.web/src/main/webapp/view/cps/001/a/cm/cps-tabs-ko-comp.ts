@@ -583,6 +583,7 @@ module nts.custom.component {
                                                 ctype: ko.toJS(params.combobox.object.categoryType)
                                             });
                                             params.gridlist.value(undefined);
+											params.gridlist.value.valueHasMutated();
                                         }
                                     }
                                 });
@@ -618,7 +619,7 @@ module nts.custom.component {
                                     params.permisions.delete(false);
                                 }
                             } else {
-                                if (perm && !!(is_self ? (perm.selfAllowAddHis && perm.selfFutureHisAuth == 3) : (perm.otherAllowAddHis && perm.otherFutureHisAuth == 3))) {
+                                if (perm && !!(is_self ? perm.selfAllowAddHis : perm.otherAllowAddHis)) {
                                     params.permisions.add(true);
                                     params.permisions.copy(true);
                                 } else {

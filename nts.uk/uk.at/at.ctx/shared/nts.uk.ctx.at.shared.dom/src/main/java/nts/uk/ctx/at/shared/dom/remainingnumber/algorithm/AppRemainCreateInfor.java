@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.VacationTimeInforNew;
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
 public class AppRemainCreateInfor {
 	/**社員ID	 */
 	private String sid;

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.CareLeaveRemainingInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.info.UpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.pereg.app.command.MyCustomizeException;
 import nts.uk.shr.pereg.app.command.PeregAddCommandResult;
@@ -51,46 +52,43 @@ implements PeregAddListCommandHandler<AddCareLeaveCommand>{
 		List<CareLeaveRemainingInfo> leaveCareInfoInsert = new ArrayList<>();
 		cmd.stream().forEach(c ->{
 			// 子の看護-使用数
-			if (c.getChildCareUsedDays() != null) {
-				ChildCareUsedNumberData usedNumber = new ChildCareUsedNumberData(
-						c.getSId(),
-						new ChildCareNurseUsedNumber(
-								new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
-								,Optional.empty()
-						)
-				);
-				childCareDataInsert.add(usedNumber);
-			}
+			ChildCareUsedNumberData childUsedNumber = new ChildCareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							c.getChildCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(c.getChildCareUsedDays().doubleValue())
+							, c.getChildCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(c.getChildCareUsedTimes().intValue()))
+					)
+			);
+			childCareDataInsert.add(childUsedNumber);
 
 			// 介護-使用数
-			if (c.getCareUsedDays() != null) {
-				CareUsedNumberData usedNumber = new CareUsedNumberData(
-						c.getSId(),
-						new ChildCareNurseUsedNumber(
-								new DayNumberOfUse(c.getCareUsedDays().doubleValue())
-								,Optional.empty()
-						)
-				);
-				leaveCareDataInsert.add(usedNumber);
-			}
+			CareUsedNumberData usedNumber = new CareUsedNumberData(
+					c.getSId(),
+					new ChildCareNurseUsedNumber(
+							c.getCareUsedDays() == null ? new DayNumberOfUse(Double.valueOf(0)) : new DayNumberOfUse(c.getCareUsedDays().doubleValue())
+							, c.getCareUsedTimes() == null ? Optional.of(new TimeOfUse(0)) : Optional.of(new TimeOfUse(c.getCareUsedTimes().intValue()))
+					)
+			);
+			leaveCareDataInsert.add(usedNumber);
 
 			// 子の看護 - 上限情報
 			ChildCareLeaveRemainingInfo childCareInfo = ChildCareLeaveRemainingInfo.createChildCareLeaveInfo(
 					c.getSId(), c.getChildCareUseArt() == null ? 0 : c.getChildCareUseArt().intValue(),
-					c.getChildCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
+					c.getChildCareUpLimSet() == null ? UpperLimitSetting.PER_INFO_EVERY_YEAR.value
 							: c.getChildCareUpLimSet().intValue(),
-					c.getChildCareThisFiscal() == null ? null : c.getChildCareThisFiscal().intValue(),
-					c.getChildCareNextFiscal() == null ? null : c.getChildCareNextFiscal().intValue());
+					c.getChildCareThisFiscal() == null ? 0 : c.getChildCareThisFiscal().intValue(),
+					c.getChildCareNextFiscal() == null ? 0 : c.getChildCareNextFiscal().intValue());
 			childCareLeaveInfoInsert.add(childCareInfo);
 
 			// 介護-上限情報
 			CareLeaveRemainingInfo careInfo = CareLeaveRemainingInfo.createCareLeaveInfo(c.getSId(),
 					c.getCareUseArt() == null ? 0 : c.getCareUseArt().intValue(),
-					c.getCareUpLimSet() == null ? UpperLimitSetting.FAMILY_INFO.value
+					c.getCareUpLimSet() == null ? UpperLimitSetting.PER_INFO_EVERY_YEAR.value
 							: c.getCareUpLimSet().intValue(),
-					c.getCareThisFiscal() == null ? null : c.getCareThisFiscal().intValue(),
-					c.getCareNextFiscal() == null ? null : c.getCareNextFiscal().intValue());
+					c.getCareThisFiscal() == null ? 0 : c.getCareThisFiscal().intValue(),
+					c.getCareNextFiscal() == null ? 0 : c.getCareNextFiscal().intValue());
 			leaveCareInfoInsert.add(careInfo);
+			
 			result.add(new PeregAddCommandResult(c.getSId()));
 		});
 		service.addData(cid, childCareDataInsert, leaveCareDataInsert, childCareLeaveInfoInsert, leaveCareInfoInsert);

@@ -1,0 +1,1261 @@
+
+/* line 27, ../sass/components/_commons.scss */
+.bg-green {
+  background-color: #E0F59E;
+}
+
+/*****************************
+  ntsControl
+*****************************/
+/* line 61, ../sass/components/_commons.scss */
+.control-group {
+  margin-bottom: 10px;
+}
+
+/* line 62, ../sass/components/_commons.scss */
+.ntsControl {
+  display: inline-block;
+}
+
+/*****************************
+  NtsFormLabel
+*****************************/
+/* line 67, ../sass/components/_commons.scss */
+div.form-label {
+  display: inline-block;
+  box-sizing: border-box;
+  height: 37px;
+  border-style: solid;
+  border-color: #97D155;
+  border-width: 0 0 0 5px;
+  padding: 0 10px 0 8px;
+}
+/* line 89, ../sass/components/_commons.scss */
+div.form-label.broken label {
+  line-height: inherit;
+}
+/* line 92, ../sass/components/_commons.scss */
+div.form-label.inline {
+  height: 23px;
+  line-height: 23px;
+}
+/* line 95, ../sass/components/_commons.scss */
+div.form-label.inline label {
+  line-height: 23px;
+}
+/* line 98, ../sass/components/_commons.scss */
+div.form-label.required {
+  border-color: #FAC002;
+}
+/* line 102, ../sass/components/_commons.scss */
+div.form-label.disabled {
+  border-color: #AAA;
+}
+/* line 106, ../sass/components/_commons.scss */
+div.form-label > label {
+  white-space: nowrap;
+  max-height: 100%;
+  font-size: 14px;
+  line-height: 37px;
+}
+/* line 113, ../sass/components/_commons.scss */
+div.form-label > i {
+  white-space: nowrap;
+  display: block;
+  margin-top: 1px;
+  font-size: 12px;
+  font-weight: normal;
+  color: #777777;
+}
+/* line 121, ../sass/components/_commons.scss */
+div.form-label > i:before {
+  content: '(';
+}
+/* line 125, ../sass/components/_commons.scss */
+div.form-label > i:after {
+  content: ')';
+}
+/* line 130, ../sass/components/_commons.scss */
+div.form-label.inline > i {
+  display: inline-block;
+  margin-left: 5px;
+}
+
+/* line 136, ../sass/components/_commons.scss */
+.constraint-label {
+  display: block;
+  margin-top: 1px;
+  font-size: 14px;
+  font-weight: normal;
+  color: #777777;
+}
+
+/*****************************
+  Icon
+*****************************/
+/* line 5, ../sass/components/_icons.scss */
+button .icon {
+  vertical-align: middle;
+}
+
+/* line 9, ../sass/components/_icons.scss */
+.icon {
+  position: relative;
+  display: inline-block;
+}
+/* line 13, ../sass/components/_icons.scss */
+.icon::before, .icon::after {
+  content: '';
+  position: absolute;
+  display: block;
+}
+/* line 19, ../sass/components/_icons.scss */
+.icon.icon-close {
+  width: 16px;
+  height: 16px;
+}
+/* line 22, ../sass/components/_icons.scss */
+.icon.icon-close::before, .icon.icon-close::after {
+  height: 3px;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  margin-top: -1px;
+  background: #404040;
+}
+/* line 30, ../sass/components/_icons.scss */
+.icon.icon-close::before {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+/* line 33, ../sass/components/_icons.scss */
+.icon.icon-close::after {
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+/* line 38, ../sass/components/_icons.scss */
+.icon.icon-dot {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #00B050;
+  box-sizing: border-box;
+}
+/* line 47, ../sass/components/_icons.scss */
+.icon.icon-search {
+  width: 12px;
+  height: 12px;
+  border: solid 2px #333333;
+  border-radius: 100%;
+  transform: rotate(-45deg);
+}
+/* line 53, ../sass/components/_icons.scss */
+.icon.icon-search::after {
+  top: 12px;
+  left: 5px;
+  height: 10px;
+  width: 2px;
+  background-color: #333333;
+}
+/* line 61, ../sass/components/_icons.scss */
+.icon.icon-searchbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  background: #00B050;
+  border-radius: 5px;
+}
+/* line 71, ../sass/components/_icons.scss */
+.icon.icon-searchbox:before {
+  width: 12px;
+  height: 12px;
+  border: solid 2px #FFF;
+  border-radius: 100%;
+  top: 6px;
+  left: 7px;
+}
+/* line 79, ../sass/components/_icons.scss */
+.icon.icon-searchbox::after {
+  top: 18px;
+  left: 22px;
+  height: 8px;
+  width: 2px;
+  border-radius: 0 0 5px 5px;
+  background-color: #FFF;
+  transform: rotate(-45deg);
+}
+/* line 89, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-left {
+  margin: 10px 0 10px 3px;
+  width: 40px;
+  height: 4px;
+  background-color: #00B050;
+}
+/* line 95, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-left:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-40deg);
+  left: -3px;
+  top: -4px;
+}
+/* line 103, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-left:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 2px 0 0 2px;
+  transform: rotate(-140deg);
+  left: -3px;
+  top: 4px;
+}
+/* line 112, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-right {
+  margin: 10px 3px 10px 0;
+  width: 40px;
+  height: 4px;
+  background-color: #00B050;
+}
+/* line 118, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-right:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 2px 0 0 2px;
+  transform: rotate(40deg);
+  right: -3px;
+  top: -4px;
+}
+/* line 126, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-right:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(140deg);
+  right: -3px;
+  top: 4px;
+}
+/* line 135, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-top {
+  margin: 8px 5px 0 5px;
+  width: 4px;
+  height: 30px;
+  background-color: #00B050;
+}
+/* line 141, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-top:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(50deg);
+  left: -2px;
+  top: 2px;
+}
+/* line 149, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-top:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(130deg);
+  left: -10px;
+  top: 2px;
+}
+/* line 158, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-bottom {
+  margin: 5px 5px 3px 5px;
+  width: 4px;
+  height: 30px;
+  background-color: #00B050;
+}
+/* line 164, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-bottom:before {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-50deg);
+  left: -2px;
+  bottom: 2px;
+}
+/* line 172, ../sass/components/_icons.scss */
+.icon.icon-button-arrow-bottom:after {
+  width: 16px;
+  border-top: solid 4px #00B050;
+  border-radius: 0 2px 2px 0;
+  transform: rotate(-130deg);
+  left: -10px;
+  bottom: 2px;
+}
+
+/* line 183, ../sass/components/_icons.scss */
+.img-icon {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+/* line 188, ../sass/components/_icons.scss */
+.img-icon.icon-arrow-up {
+  background-image: url("images/icons/arrow-up.png");
+  width: 24px;
+  height: 24px;
+}
+/* line 192, ../sass/components/_icons.scss */
+.img-icon.icon-arrow-down {
+  background-image: url("images/icons/arrow-down.png");
+  width: 24px;
+  height: 24px;
+}
+/* line 196, ../sass/components/_icons.scss */
+.img-icon.icon-download {
+  background-image: url("images/icons/download.png");
+  width: 17px;
+  height: 16px;
+}
+/* line 200, ../sass/components/_icons.scss */
+.img-icon.icon-filter {
+  background-image: url("images/icons/filter.png");
+  width: 30px;
+  height: 28px;
+}
+/* line 205, ../sass/components/_icons.scss */
+.img-icon.icon-next {
+  background-image: url("images/icons/next-arrow.png");
+  width: 26px;
+  height: 22px;
+}
+/* line 210, ../sass/components/_icons.scss */
+.img-icon.icon-next-all {
+  background: url("images/icons/next-all-arrow.png");
+  width: 44px;
+  height: 22px;
+}
+/* line 215, ../sass/components/_icons.scss */
+.img-icon.icon-prev {
+  background-image: url("images/icons/prev-arrow.png");
+  width: 26px;
+  height: 22px;
+}
+/* line 220, ../sass/components/_icons.scss */
+.img-icon.icon-prev-all {
+  background-image: url("images/icons/prev-all-arrow.png");
+  width: 44px;
+  height: 22px;
+}
+
+/* line 77, ../sass/components/_ignitecommons.scss */
+.ui-iggrid-table {
+  /* for IE */
+  background-color: #F3F3F3 !important;
+}
+
+/* line 2, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header {
+  border-color: #999;
+  background: #FFF;
+  color: #404040;
+  font-size: 1.2rem;
+  outline: none;
+  padding: 0.4rem 2rem 0.4rem 0.4rem;
+  margin-top: 10px;
+}
+/* line 12, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header.ui-state-active .ui-icon {
+  background-image: url("../../../../generic/jqueryui/images/ui-icons_444444_256x240.png");
+}
+/* line 17, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-header:focus {
+  box-shadow: 0 0 1px 1px #0096f2;
+}
+/* line 23, ../sass/components/_accordion.scss */
+.ui-accordion .status {
+  display: inline-block;
+  float: right;
+  background: #E0F59E;
+  padding: 0 0.6rem;
+  margin-top: -0.4rem;
+  border-radius: 3px;
+  line-height: 32px;
+  min-width: 60px;
+  text-align: center;
+}
+/* line 35, ../sass/components/_accordion.scss */
+.ui-accordion .close-button {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  margin-top: -8px;
+  float: right;
+}
+/* line 43, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-content {
+  border-top-width: 1px;
+  border-color: #999;
+}
+/* line 47, ../sass/components/_accordion.scss */
+.ui-accordion .ui-accordion-content.nts-accordion-content {
+  display: block !important;
+}
+
+/* line 3, ../sass/components/_editor.scss */
+.ntsControl {
+  /* Extra Symbol */
+}
+/* line 5, ../sass/components/_editor.scss */
+.ntsControl .nts-input {
+  border: 1px solid #999999;
+  padding: 5px 10px;
+  font-family: "DroidSansMono", "Meiryo";
+  border-radius: 3px;
+  overflow: visible;
+}
+/* line 11, ../sass/components/_editor.scss */
+.ntsControl .nts-input:focus {
+  outline: none;
+  box-shadow: 0 0 1px 1px #0096f2;
+}
+/* line 16, ../sass/components/_editor.scss */
+.ntsControl .nts-input.enterkey {
+  background-image: url("images/icons/enter_mark.png");
+  background-position: right;
+  background-repeat: no-repeat;
+}
+/* line 24, ../sass/components/_editor.scss */
+.ntsControl.symbol {
+  position: relative;
+}
+/* line 27, ../sass/components/_editor.scss */
+.ntsControl.symbol:after {
+  position: absolute;
+  content: attr(data-content);
+  top: 6px;
+  color: #999;
+}
+/* line 35, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-left .nts-input {
+  padding-left: 20px;
+}
+/* line 37, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-left:after {
+  left: 5px;
+  text-align: left;
+}
+/* line 44, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-right .nts-input {
+  padding-right: 20px;
+}
+/* line 46, ../sass/components/_editor.scss */
+.ntsControl.symbol.symbol-right:after {
+  right: 5px;
+  text-align: right;
+}
+
+/* line 5, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* line 22, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+html {
+  /*line-height: 1; mod kitahira */
+}
+
+/* line 24, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 26, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 28, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* line 30, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+q, blockquote {
+  quotes: none;
+}
+/* line 103, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+/* line 32, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+a img {
+  border: none;
+}
+
+/* line 116, ../sass/compass-for-vs2013-master/compass/reset/_utilities.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+  display: block;
+}
+
+/************************
+  Frame
+************************/
+/**
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    contenteditable attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that are clearfixed.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+/* line 10, ../sass/base/_clearfix.scss */
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+
+/* line 16, ../sass/base/_clearfix.scss */
+.cf:after {
+  clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+/* line 24, ../sass/base/_clearfix.scss */
+.cf {
+  *zoom: 1;
+}
+
+/**
+ * https://stackoverflow.com/questions/13481577/how-can-i-disable-the-clear-button-that-ie10-inserts-into-textboxes?#answer-13481578
+ */
+/* line 31, ../sass/base/_clearfix.scss */
+input[type=text]::-ms-clear {
+  display: none;
+}
+
+/* line 15, ../sass/components/_button.scss */
+button {
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #999999;
+  outline: none;
+  text-align: center;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -ms-border-radius: 3px;
+}
+/* line 29, ../sass/components/_button.scss */
+button:hover {
+  background-color: #f2f2f2;
+}
+/* line 33, ../sass/components/_button.scss */
+button[disabled] {
+  background-color: #d9d9d9;
+  cursor: default;
+  color: #888888;
+}
+/* line 39, ../sass/components/_button.scss */
+button.proceed {
+  background-color: #A4EEB0;
+}
+/* line 42, ../sass/components/_button.scss */
+button.proceed:hover {
+  background-color: #79e68b;
+}
+/* line 46, ../sass/components/_button.scss */
+button.proceed[disabled] {
+  background-color: #b0d3b5;
+}
+/* line 50, ../sass/components/_button.scss */
+button.danger {
+  background-color: #FED3C6;
+}
+/* line 53, ../sass/components/_button.scss */
+button.danger:hover {
+  background-color: #fec0ad;
+}
+/* line 57, ../sass/components/_button.scss */
+button.danger[disabled] {
+  background-color: #ead2cb;
+}
+/* line 62, ../sass/components/_button.scss */
+button.with-icon {
+  background-repeat: no-repeat;
+  background-position: 3px;
+  background-size: 16px;
+  padding-left: 21px;
+}
+/* line 69, ../sass/components/_button.scss */
+button.with-icon.small {
+  background-position: 2px 1px;
+  background-size: 14px;
+  padding-left: 17px;
+}
+/* line 75, ../sass/components/_button.scss */
+button.with-icon.large {
+  background-position: 4px;
+  background-size: 20px;
+  padding-left: 28px;
+}
+/* line 81, ../sass/components/_button.scss */
+button.with-icon.x-large {
+  background-position: 7px 5px;
+  background-size: 30px;
+  padding-left: 38px;
+}
+
+/* line 90, ../sass/components/_button.scss */
+button {
+  color: #404040;
+  font-size: 13px;
+  font-family: "Meiryo UI";
+  top: 0;
+  height: 30px;
+  padding: 3px 7px;
+  margin-bottom: 3px;
+  box-shadow: 0 3px rgba(0, 0, 0, 0.4);
+  overflow: visible;
+}
+/* line 118, ../sass/components/_button.scss */
+button:focus {
+  border-color: #0096f2;
+  box-shadow: 0 2px 2px 0 #0096f2;
+}
+/* line 121, ../sass/components/_button.scss */
+button:focus.small {
+  box-shadow: 0 2px 2px 0 #0096f2;
+  /* END: SAME ALL SIZES */
+}
+/* line 126, ../sass/components/_button.scss */
+button:focus.large {
+  box-shadow: 0 4px 2px 0 #0096f2;
+  /* END: SAME ALL SIZES */
+}
+/* line 134, ../sass/components/_button.scss */
+button:focus.x-large {
+  box-shadow: 0 5px 3px 0 #0096f2;
+  /* END: SAME ALL SIZES */
+}
+/* line 143, ../sass/components/_button.scss */
+button:active:enabled {
+  top: 3px;
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 #999;
+}
+/* line 149, ../sass/components/_button.scss */
+button.small {
+  /* START: SAME ALL SIZES */
+  font-size: 12px;
+  padding: 1px 4px;
+  margin-bottom: 3px;
+  height: 25px;
+  box-shadow: 0 3px rgba(0, 0, 0, 0.4);
+  /* END: SAME ALL SIZES */
+}
+/* line 165, ../sass/components/_button.scss */
+button.small:active:enabled {
+  top: 3px;
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4);
+}
+/* line 173, ../sass/components/_button.scss */
+button.large {
+  /* START: SAME ALL SIZES */
+  font-size: 15px;
+  padding: 4px 10px;
+  margin-bottom: 4px;
+  height: 34px;
+  box-shadow: 0 4px rgba(0, 0, 0, 0.4);
+  /* END: SAME ALL SIZES */
+}
+/* line 189, ../sass/components/_button.scss */
+button.large:active:enabled {
+  top: 4px;
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
+}
+/* line 197, ../sass/components/_button.scss */
+button.x-large {
+  /* START: SAME ALL SIZES */
+  font-size: 22px;
+  padding: 6px 20px;
+  margin-bottom: 5px;
+  height: 45px;
+  box-shadow: 0 5px #999;
+  /* END: SAME ALL SIZES */
+}
+/* line 213, ../sass/components/_button.scss */
+button.x-large:active:enabled {
+  top: 5px;
+  border-color: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 rgba(0, 0, 0, 0.4) !important;
+}
+/* line 221, ../sass/components/_button.scss */
+button.auto-height {
+  height: auto;
+}
+
+/* line 226, ../sass/components/_button.scss */
+#functions-area,
+#functions-area-bottom,
+.sidebar-content-header {
+  font-size: 0;
+}
+/* line 230, ../sass/components/_button.scss */
+#functions-area button,
+#functions-area-bottom button,
+.sidebar-content-header button {
+  margin-left: 15px;
+  min-width: 65px;
+}
+/* line 234, ../sass/components/_button.scss */
+#functions-area button.danger,
+#functions-area-bottom button.danger,
+.sidebar-content-header button.danger {
+  margin-left: 45px;
+  margin-right: 30px;
+}
+
+/*****************************
+  Caret
+*****************************/
+/* line 4, ../sass/components/_caret.scss */
+.caret-bottom,
+.caret-top,
+.caret-left,
+.caret-right {
+  position: relative;
+}
+/* line 10, ../sass/components/_caret.scss */
+.caret-bottom:after,
+.caret-top:after,
+.caret-left:after,
+.caret-right:after {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: middle;
+  font-size: 1em;
+}
+/* line 19, ../sass/components/_caret.scss */
+.caret-bottom.outline,
+.caret-top.outline,
+.caret-left.outline,
+.caret-right.outline {
+  display: inline-block;
+  font-size: 1.2rem;
+}
+/* line 22, ../sass/components/_caret.scss */
+.caret-bottom.outline:before,
+.caret-top.outline:before,
+.caret-left.outline:before,
+.caret-right.outline:before {
+  content: '';
+  position: absolute;
+  color: #fff;
+  z-index: 1;
+}
+/* line 28, ../sass/components/_caret.scss */
+.caret-bottom.outline:after,
+.caret-top.outline:after,
+.caret-left.outline:after,
+.caret-right.outline:after {
+  content: '';
+  position: absolute;
+  color: #E0F59E;
+  z-index: 2;
+}
+
+/* line 38, ../sass/components/_caret.scss */
+.caret-bottom:after {
+  border-top: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 43, ../sass/components/_caret.scss */
+.caret-bottom.outline {
+  width: 2em;
+  height: 1em;
+}
+/* line 46, ../sass/components/_caret.scss */
+.caret-bottom.outline:before {
+  border-top: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 51, ../sass/components/_caret.scss */
+.caret-bottom.outline:after {
+  margin-left: 0.3em;
+  margin-top: 0.13em;
+  border-top: 0.7em solid;
+  border-right: 0.7em solid transparent;
+  border-left: 0.7em solid transparent;
+}
+
+/* line 61, ../sass/components/_caret.scss */
+.caret-top:after {
+  border-bottom: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 66, ../sass/components/_caret.scss */
+.caret-top.outline {
+  width: 2em;
+  height: 1em;
+}
+/* line 69, ../sass/components/_caret.scss */
+.caret-top.outline:before {
+  border-bottom: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 74, ../sass/components/_caret.scss */
+.caret-top.outline:after {
+  margin-left: 0.3em;
+  margin-top: 0.17em;
+  border-bottom: 0.7em solid;
+  border-right: 0.7em solid transparent;
+  border-left: 0.7em solid transparent;
+}
+
+/* line 84, ../sass/components/_caret.scss */
+.caret-left:after {
+  border-right: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 89, ../sass/components/_caret.scss */
+.caret-left.outline {
+  width: 1em;
+  height: 2em;
+}
+/* line 92, ../sass/components/_caret.scss */
+.caret-left.outline:before {
+  border-right: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 97, ../sass/components/_caret.scss */
+.caret-left.outline:after {
+  margin-left: 0.15em;
+  margin-top: 0.3em;
+  border-right: 0.7em solid;
+  border-top: 0.7em solid transparent;
+  border-bottom: 0.7em solid transparent;
+}
+
+/* line 107, ../sass/components/_caret.scss */
+.caret-right:after {
+  border-left: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 112, ../sass/components/_caret.scss */
+.caret-right.outline {
+  width: 1em;
+  height: 2em;
+}
+/* line 115, ../sass/components/_caret.scss */
+.caret-right.outline:before {
+  border-left: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 120, ../sass/components/_caret.scss */
+.caret-right.outline:after {
+  margin-left: 0.15em;
+  margin-top: 0.3em;
+  border-left: 0.7em solid;
+  border-top: 0.7em solid transparent;
+  border-bottom: 0.7em solid transparent;
+}
+
+/* line 130, ../sass/components/_caret.scss */
+.caret-inline {
+  display: inline-block;
+}
+/* line 132, ../sass/components/_caret.scss */
+.caret-inline:after {
+  border-width: 10px;
+  color: #97D155;
+}
+
+/* line 143, ../sass/components/_caret.scss */
+button.caret-bottom:after, button.caret-top:after, button.caret-left:after, button.caret-right:after {
+  position: absolute;
+  color: #888888;
+}
+/* line 154, ../sass/components/_caret.scss */
+button:focus.caret-bottom:after, button:focus.caret-top:after, button:focus.caret-left:after, button:focus.caret-right:after {
+  color: #0096f2;
+}
+/* line 160, ../sass/components/_caret.scss */
+button.caret-bottom:after {
+  top: 100%;
+  left: 50%;
+  border-top-width: 0.8em;
+  border-right-width: 1.5em;
+  border-left-width: 1.5em;
+  margin-left: -1.5em;
+}
+/* line 169, ../sass/components/_caret.scss */
+button.caret-top:after {
+  bottom: 100%;
+  left: 50%;
+  border-bottom-width: 0.8em;
+  border-right-width: 1.5em;
+  border-left-width: 1.5em;
+  margin-left: -1.5em;
+}
+/* line 178, ../sass/components/_caret.scss */
+button.caret-left:after {
+  right: 100%;
+  top: 50%;
+  margin-top: -1em;
+}
+/* line 179, ../sass/components/_caret.scss */
+button.caret-right:after {
+  left: 100%;
+  top: 50%;
+  margin-top: -1em;
+}
+
+/* line 184, ../sass/components/_caret.scss */
+.caret-background:after {
+  position: absolute;
+  color: #E0F59E;
+}
+/* line 188, ../sass/components/_caret.scss */
+.caret-background.caret-right:after {
+  top: 60px;
+  left: 100%;
+  border-width: 35px 20px;
+}
+/* line 189, ../sass/components/_caret.scss */
+.caret-background.caret-left:after {
+  top: 60px;
+  right: 100%;
+  border-width: 35px 20px;
+}
+/* line 190, ../sass/components/_caret.scss */
+.caret-background.caret-top:after {
+  left: 50px;
+  bottom: 100%;
+  border-width: 20px 35px;
+}
+/* line 191, ../sass/components/_caret.scss */
+.caret-background.caret-bottom:after {
+  left: 50px;
+  top: 100%;
+  border-width: 20px 35px;
+}
+
+/* line 195, ../sass/components/_caret.scss */
+.caret-overlay:before {
+  content: '';
+  position: absolute;
+  border-width: 10px;
+  color: rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+}
+/* line 202, ../sass/components/_caret.scss */
+.caret-overlay.caret-right:before {
+  border-left: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+  top: 50%;
+  left: 100%;
+  margin-top: -1em;
+}
+/* line 208, ../sass/components/_caret.scss */
+.caret-overlay.caret-left:before {
+  border-right: 1em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+  top: 50%;
+  right: 100%;
+  margin-top: -1em;
+}
+/* line 214, ../sass/components/_caret.scss */
+.caret-overlay.caret-top:before {
+  border-bottom: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -1em;
+}
+/* line 220, ../sass/components/_caret.scss */
+.caret-overlay.caret-bottom:before {
+  border-top: 1em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+  top: 100%;
+  left: 50%;
+  margin-left: -1em;
+}
+/* line 227, ../sass/components/_caret.scss */
+.caret-overlay:after {
+  position: absolute;
+  border-width: 10px;
+  color: #fff;
+}
+/* line 233, ../sass/components/_caret.scss */
+.caret-overlay.caret-right:after {
+  top: 50%;
+  left: 100%;
+  margin-top: -10px;
+}
+/* line 234, ../sass/components/_caret.scss */
+.caret-overlay.caret-left:after {
+  top: 50%;
+  right: 100%;
+  margin-top: -10px;
+}
+/* line 235, ../sass/components/_caret.scss */
+.caret-overlay.caret-top:after {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -10px;
+}
+/* line 236, ../sass/components/_caret.scss */
+.caret-overlay.caret-bottom:after {
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+}
+
+/* line 239, ../sass/components/_caret.scss */
+.caret-helpbutton {
+  position: absolute;
+  font-size: 10px;
+}
+/* line 243, ../sass/components/_caret.scss */
+.caret-helpbutton:before {
+  content: '';
+  position: absolute;
+  border-width: 1.1em;
+  color: rgba(0, 0, 0, 0.15);
+}
+/* line 249, ../sass/components/_caret.scss */
+.caret-helpbutton:after {
+  position: absolute;
+  border-width: 2em;
+  color: #E0F59E;
+}
+/* line 255, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right {
+  right: 0;
+}
+/* line 257, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right:before {
+  top: 0.5em;
+  border-left: 2.1em solid;
+  border-top: 1.1em solid transparent;
+  border-bottom: 1.1em solid transparent;
+  margin-right: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 265, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-right:after {
+  top: 0.5em;
+  border-left: 2em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 272, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left {
+  left: -2em;
+}
+/* line 274, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left:before {
+  top: 0.5em;
+  border-right: 2.1em solid;
+  border-top: 1.1em solid transparent;
+  border-bottom: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 282, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-left:after {
+  top: 0.5em;
+  border-right: 2em solid;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+}
+/* line 289, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top {
+  top: -2em;
+}
+/* line 291, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top:before {
+  left: 0.5em;
+  border-bottom: 2.1em solid;
+  border-right: 1.1em solid transparent;
+  border-left: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-top: -0.1em;
+}
+/* line 299, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-top:after {
+  left: 0.5em;
+  border-bottom: 2em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+/* line 306, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom {
+  bottom: 0;
+}
+/* line 308, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom:before {
+  left: 0.5em;
+  border-top: 2.1em solid;
+  border-right: 1.1em solid transparent;
+  border-left: 1.1em solid transparent;
+  margin-left: -0.1em;
+  margin-bottom: -0.1em;
+}
+/* line 316, ../sass/components/_caret.scss */
+.caret-helpbutton.caret-bottom:after {
+  left: 0.5em;
+  border-top: 2em solid;
+  border-right: 1em solid transparent;
+  border-left: 1em solid transparent;
+}
+
+.caret-left.outline {
+	font-size: 10px;
+	margin: 0px 0px;
+	height: 30em;
+}
+
+.caret-left.outline:after {
+	border-width: 1.4em 0.5em;
+	font-size: 6em;
+}
+
+fieldset {
+	text-align: center;
+	margin: 10px 10px;
+}
+
+legend {
+	text-align: left;
+	margin: 10px 10px;
+}
+
+td {
+	padding:7px 5px;
+}
+
+.ui-tabs-anchor,
+.ui-widget input,
+.ui-widget textarea,
+.ui-widget button {
+    font-family: 'DroidSansMono';
+    font-size: 0.8em;
+}
+
+.ui-widget select,
+.ui-widget option {
+    font-size: 1em;
+    height: 34px;
+}
+
+#tabs {
+	height:520px;
+	width:900px;
+}
+
+#selUkColumns {
+	font-family: monospace;
+    padding: 5px 10px 5px;
+}
+
+#tabs select
+{
+	font-family: monospace;
+    padding: 5px 10px 5px;
+    font-size: 13px;
+}
+
+#tabs .ui-tabs {
+  padding: 0;
+  border-width: 0;
+}
+
+#tabs .ui-widget-header {
+  border: 0px;
+  background-color: #fff;
+}
+
+#tabs .ui-tabs-nav {
+  border-width: 0;
+  padding: 0px;
+}
+
+#tabs .ui-tabs-panel {
+  border-width: 0px;
+  font-size: 0.8em;
+}
+
+#tabs .ui-tabs-nav li.ui-tabs-selected {
+  border-width: 0px;
+  margin-bottom: -5px;
+}
+
+#tabs .selSourceParentColumn {
+	width:350px;
+}
+
+#tabs .selDateTimeMerge
+{
+	width:150px;
+}
+
+#txtTestOutput {
+	width: 95%;
+	height: 95%;
+	resize: none;
+}

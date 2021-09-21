@@ -11,7 +11,7 @@
 			<script>var dialogSize = { width: 615, height: 630 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
-				nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.FormOutputItemName
+				nts.uk.ctx.at.function.dom.employmentfunction.commonform.FormSingleItemSettingName
 			</com:ValidatorScript>
 			<!-- kdl047 a-->
 			<com:stylefile path="kdl047.style.css" />
@@ -37,12 +37,12 @@
 					<!-- Visible A3_1, A3_2 by isVisibleA2 -->
 					<div class="contents-header-under" data-bind="visible: isVisibleA2">
 						<!-- A3_1 -->
-						<div id="A3_1" class="w-85" data-bind="ntsFormLabel: {constraint: 'FormOutputItemName'}">#{i18n.getText('KDL047_3')}</div>
+						<div id="A3_1" class="w-85" data-bind="ntsFormLabel: {constraint: 'FormSingleItemSettingName'}">#{i18n.getText('KDL047_3')}</div>
 						<!-- A3_2 -->
 						<input id="A3_2" tabindex="1" class="ml-5 mt-5" data-bind="ntsTextEditor: {
 							name: '#[KDL047_3]',
 							value: attendanceRecordName,
-							constraint: 'FormOutputItemName',
+							constraint: 'FormSingleItemSettingName',
 							option: {
 								textmode: 'text',
 								width: '155px',

@@ -7,21 +7,41 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcExecLog;
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacExeResultLogPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
+import nts.uk.ctx.exio.dom.exi.execlog.ExtExecutionMode;
+import nts.uk.ctx.exio.dom.exi.execlog.ExtResultStatus;
+import nts.uk.ctx.exio.dom.exi.execlog.ProcessingFlg;
+import nts.uk.ctx.exio.dom.exi.execlog.StandardFlg;
+import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Stateless
 public class JpaExacExeResultLogRepository extends JpaRepository implements ExacExeResultLogRepository
 {
 
     private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiodtExAcExecLog f";
-    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.exacExeResultLogPk.cid =:cid AND  f.exacExeResultLogPk.conditionSetCd =:conditionSetCd AND  f.exacExeResultLogPk.externalProcessId =:externalProcessId ";
-    private static final String SELECT_BY_PROCESS_ID = SELECT_ALL_QUERY_STRING + " WHERE f.exacExeResultLogPk.externalProcessId =:externalProcessId";
+    private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.pk.cid =:cid"
+    		+ " AND  f.pk.conditionSetCd =:conditionSetCd"
+    		+ " AND  f.pk.externalProcessId =:externalProcessId ";
+    private static final String SELECT_BY_PROCESS_ID = SELECT_ALL_QUERY_STRING + " WHERE f.pk.externalProcessId =:externalProcessId";
+    
+    private static final String SELECT_BY_STAND_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.pk.cid =:cid AND f.standardAtr = 0 AND f.systemType in :listSystem "
+    		+ "AND f.processStartDatetime between :startDate and :endDate";
+    
+    
 
     @Override
-    public List<ExacExeResultLog> getAllExacExeResultLog(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiodtExAcExecLog.class)
+    public List<ExacExeResultLog> getAllExacExeResultLog(String cid, List<Integer> listSystem, GeneralDateTime startDate, GeneralDateTime endDate){
+        return this.queryProxy().query(SELECT_BY_STAND_SYSTEM, OiodtExAcExecLog.class)
+        		.setParameter("cid", cid)
+                .setParameter("listSystem", listSystem)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
                 .getList(item -> toDomain(item));
     }
 
@@ -37,16 +57,17 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
     @Override
     public void add(ExacExeResultLog domain){
         this.commandProxy().insert(toEntity(domain));
+        this.getEntityManager().flush();
     }
 
     @Override
     public void update(ExacExeResultLog domain){
         OiodtExAcExecLog newExacExeResultLog = toEntity(domain);
-        OiodtExAcExecLog updateExacExeResultLog = this.queryProxy().find(newExacExeResultLog.exacExeResultLogPk, OiodtExAcExecLog.class).get();
+        OiodtExAcExecLog updateExacExeResultLog = this.queryProxy().find(newExacExeResultLog.pk,
+        		OiodtExAcExecLog.class).get();
         if (null == updateExacExeResultLog) {
             return;
         }
-        updateExacExeResultLog.version = newExacExeResultLog.version;
         updateExacExeResultLog.executorId = newExacExeResultLog.executorId;
         updateExacExeResultLog.userId = newExacExeResultLog.userId;
         updateExacExeResultLog.processStartDatetime = newExacExeResultLog.processStartDatetime;
@@ -68,11 +89,43 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
     }
 
     private static ExacExeResultLog toDomain(OiodtExAcExecLog entity) {
-        return ExacExeResultLog.createFromJavaType(entity.version, entity.exacExeResultLogPk.cid, entity.exacExeResultLogPk.conditionSetCd, entity.exacExeResultLogPk.externalProcessId, entity.executorId, entity.userId, entity.processStartDatetime, entity.standardAtr, entity.executeForm, entity.targetCount, entity.errorCount, entity.fileName, entity.systemType, entity.resultStatus, entity.processEndDatetime, entity.processAtr);
+    	ExacExeResultLog domain = new ExacExeResultLog(entity.pk.cid,
+    			entity.pk.conditionSetCd,
+    			entity.pk.externalProcessId,
+    			entity.executorId,
+    			entity.userId,
+    			entity.processStartDatetime,
+    			EnumAdaptor.valueOf(entity.standardAtr, StandardFlg.class),
+    			EnumAdaptor.valueOf(entity.executeForm, ExtExecutionMode.class),
+    			entity.targetCount,
+    			entity.errorCount,
+    			entity.fileName,
+    			EnumAdaptor.valueOf(entity.systemType, SystemType.class),
+    			Optional.ofNullable(entity.resultStatus == null ? null : EnumAdaptor.valueOf(entity.resultStatus, ExtResultStatus.class)),
+    			Optional.ofNullable(entity.processEndDatetime),
+    			EnumAdaptor.valueOf(entity.processAtr, ProcessingFlg.class));
+    	return domain;
     }
 
     private OiodtExAcExecLog toEntity(ExacExeResultLog domain) {
-        return new OiodtExAcExecLog(domain.getVersion(), new OiomtExacExeResultLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(), domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(), domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(), domain.getProcessAtr());
+    	OiomtExacExeResultLogPk pk = new OiomtExacExeResultLogPk(domain.getCid(),
+    			domain.getConditionSetCd(),
+    			domain.getExternalProcessId());
+    	OiodtExAcExecLog entity = new OiodtExAcExecLog(pk,
+    			AppContexts.user().contractCode(),
+    			domain.getExecutorId(),
+    			domain.getUserId(),
+    			domain.getProcessStartDatetime(),
+    			domain.getStandardAtr().value,
+    			domain.getExecuteForm().value,
+    			domain.getTargetCount(),
+    			domain.getErrorCount(),
+    			domain.getFileName(),
+    			domain.getSystemType().value,
+    			domain.getResultStatus().isPresent() ? domain.getResultStatus().get().value : null,
+    			domain.getProcessEndDatetime().isPresent() ? domain.getProcessEndDatetime().get() : null,
+    			domain.getProcessAtr().value);
+        return entity;
     }
 
 	/* (non-Javadoc)
