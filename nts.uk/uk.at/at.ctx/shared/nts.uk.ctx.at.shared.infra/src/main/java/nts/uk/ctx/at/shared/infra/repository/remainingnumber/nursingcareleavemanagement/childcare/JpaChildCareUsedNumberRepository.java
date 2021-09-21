@@ -74,7 +74,7 @@ public class JpaChildCareUsedNumberRepository extends JpaChildCareNurseUsedNumbe
 			= new KrcdtHdnursingUsePK(
 				domain.getEmployeeId(), NURSING_CATEGORY.value);
 		KrcdtHdnursingUse krcdtHdnursingUse = new KrcdtHdnursingUse();
-		krcdtHdnursingUse.fromDomain(domain);
+		krcdtHdnursingUse.fromDomain(cId, domain);
 		krcdtHdnursingUse.pk = key;
 
 		// 登録
@@ -97,11 +97,12 @@ public class JpaChildCareUsedNumberRepository extends JpaChildCareNurseUsedNumbe
 		KrcdtHdnursingUse entity = this.getEntityManager().find(KrcdtHdnursingUse.class, key);
 		if (entity == null) {
 			KrcdtHdnursingUse krcdtHdnursingUse = new KrcdtHdnursingUse();
-			krcdtHdnursingUse.fromDomain(domain);
+			krcdtHdnursingUse.fromDomain(cid, domain);
 			krcdtHdnursingUse.pk = key;
 			this.getEntityManager().persist(krcdtHdnursingUse);
 		} else {
-			entity.fromDomain(domain);
+			entity.fromDomain(cid, domain);
+			this.commandProxy().update(entity);
 		}
 	}
 

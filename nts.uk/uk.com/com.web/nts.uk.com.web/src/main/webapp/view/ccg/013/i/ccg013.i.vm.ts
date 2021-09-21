@@ -1,7 +1,5 @@
  module nts.uk.com.view.ccg013.i.viewmodel {  
     export class ScreenModel {    
-        textColor: KnockoutObservable<string>;
-        bgColor: KnockoutObservable<string>;
         nameMenuBar: KnockoutObservable<string>;
         menuBarId: any;
         textOption:KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
@@ -9,8 +7,6 @@
         constructor() {
             var self = this;
             
-            self.textColor = ko.observable('');
-            self.bgColor = ko.observable('');
             self.nameMenuBar = ko.observable('');
             self.textOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                 width: "160px"
@@ -20,8 +16,6 @@
             var menuBar = nts.uk.ui.windows.getShared("CCG013I_MENU_BAR1");           
             if(menuBar != undefined){
                 self.nameMenuBar(menuBar.menuBarName);
-                self.textColor(menuBar.textColor);
-                self.bgColor(menuBar.backgroundColor);    
                 self.menuBarId = menuBar.menuBarId;
             }
         }
@@ -50,9 +44,7 @@
             
             //Set data
             var menuBar = {
-                menuBarName: self.nameMenuBar(),
-                textColor: self.textColor(),
-                backgroundColor: self.bgColor()    
+                menuBarName: self.nameMenuBar()
             }
             
             nts.uk.ui.windows.setShared("CCG013I_MENU_BAR", menuBar);            

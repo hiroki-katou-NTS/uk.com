@@ -60,4 +60,9 @@ public class TopPageAlarmImport {
 	 * 部下の社員ID
 	 */
 	private List<String> subEmployeeIds;
+	
+	/**
+	 * 部下のエラーがない社員ID
+	 */
+	private List<String> noErrEmployeeIds;
 }

@@ -33,7 +33,10 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 	 */
 	@EmbeddedId
 	public OiomtChrDataFormatSetPk chrDataFormatSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * コード編集
 	 */
@@ -99,7 +102,6 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SYSTEM_TYPE", referencedColumnName = "SYSTEM_TYPE", insertable = false, updatable = false),
 			@JoinColumn(name = "CONDITION_SET_CD", referencedColumnName = "CONDITION_SET_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "ACCEPT_ITEM_NUM", referencedColumnName = "ACCEPT_ITEM_NUMBER", insertable = false, updatable = false) })
 	public OiomtExAcItem acceptItem;
@@ -109,11 +111,11 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 		return chrDataFormatSetPk;
 	}
 
-	public OiomtExAcFmChac(String cid, int sysType, String conditionCode, int acceptItemNum, int cdEditing,
+	public OiomtExAcFmChac(String cid, String conditionCode, int acceptItemNum, int cdEditing,
 			int fixedValue, int effectiveDigitLength, String cdConvertCd, Integer cdEditMethod, Integer cdEditDigit,
 			String fixedVal, Integer startDigit, Integer endDigit) {
 		super();
-		this.chrDataFormatSetPk = new OiomtChrDataFormatSetPk(cid, sysType, conditionCode, acceptItemNum);
+		this.chrDataFormatSetPk = new OiomtChrDataFormatSetPk(cid, conditionCode, acceptItemNum);
 		this.cdEditing = cdEditing;
 		this.fixedValue = fixedValue;
 		this.effectiveDigitLength = effectiveDigitLength;
@@ -126,7 +128,7 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 	}
 
 	public static OiomtExAcFmChac fromDomain(StdAcceptItem item, ChrDataFormatSet domain) {
-		return new OiomtExAcFmChac(item.getCid(), item.getSystemType().value, item.getConditionSetCd().v(),
+		return new OiomtExAcFmChac(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getCdEditing().value, domain.getFixedValue().value,
 				domain.getEffectiveDigitLength().value,
 				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,

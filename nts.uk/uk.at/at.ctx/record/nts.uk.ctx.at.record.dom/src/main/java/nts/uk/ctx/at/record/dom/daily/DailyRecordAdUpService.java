@@ -12,7 +12,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
@@ -24,7 +23,6 @@ import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -101,10 +99,19 @@ public interface DailyRecordAdUpService {
 
 	public List<IntegrationOfDaily> adTimeAndAnyItemAdUp(List<IntegrationOfDaily> dailys);
 
-	public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily, Optional<IdentityProcessUseSet> iPUSOpt,
-			Optional<ApprovalProcessingUseSetting> approvalSet);
+	/**
+	 * エラーで本人確認と上司承認を解除する
+	 * @param domainDaily
+	 * @param iPUSOpt
+	 * @param approvalSet
+	 */
+	public void removeConfirmApproval(List<IntegrationOfDaily> domainDaily);
 
 	default void addAllDomain(IntegrationOfDaily domain) {
+		addAllDomain(domain, false);
+	}
+	
+	default void addAllDomain(IntegrationOfDaily domain, boolean remove) {
 
 		// ドメインモデル「日別実績の勤務情報」を更新する
 		adUpWorkInfo(
@@ -160,7 +167,7 @@ public interface DailyRecordAdUpService {
 		// ドメインモデル「日別勤怠の応援作業時間帯」を更新する
 		//adUpSupportTime(domain.getEmployeeId(), domain.getYmd(), domain.getOuenTimeSheet());
 
-		adUpEmpError(domain.getEmployeeError(), new ArrayList<>(), false);
+		adUpEmpError(domain.getEmployeeError(), remove ? Arrays.asList(Pair.of(domain.getEmployeeId(), domain.getYmd())) : new ArrayList<>(), remove);
 
 		adTimeAndAnyItemAdUp(Arrays.asList(domain));
 	}

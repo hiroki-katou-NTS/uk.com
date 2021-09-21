@@ -1,5 +1,5 @@
 #left-content {
-	padding: 27px 0px 0px 7px;
+	padding: 1px 0px 0px 7px;
 	float: left;
 	width: 260px;
     height: 410px;
@@ -61,4 +61,8 @@
 }
 .ntsMoveDataArea {
 	width: 95px !important;
+}
+
+.ntsMoveDataArea .move-button {
+	margin: 10px 10px 10px 10px;
 }

@@ -16,10 +16,9 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSetting;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository;
 import nts.uk.ctx.sys.portal.dom.mypage.setting.TopPagePartUseSetting;
+import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtPartItemSetPK;
 import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.SptmtMyPageSet;
 import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.SptmtPartItem;
-import nts.uk.ctx.sys.portal.infra.entity.mypage.setting.CcgmtPartItemSetPK;
-import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 
 /**
  * The Class JpaMyPageSettingRepository.
@@ -30,7 +29,6 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	private static final String GET_ONE_MPS = "SELECT m FROM SptmtMyPageSet m WHERE m.cid = :companyId";
 	private static final String GET_ONE_PIS = "SELECT p FROM SptmtPartItem p WHERE p.ccgmtPartItemSetPK.cid = :companyId";
 	private static final String GET_ONE_PIS_BY_TPP_ID = "SELECT p FROM SptmtPartItem p WHERE p.ccgmtPartItemSetPK.cid = :companyId AND p.ccgmtPartItemSetPK.topPagePartId = :topPagePartId";
-	private static final String GET_ONE_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID = :topPagePartId";
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.portal.dom.mypage.setting.MyPageSettingRepository#findByCompanyId(java.lang.String)
 	 */
@@ -78,11 +76,8 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 	 * @return the top page part use setting
 	 */
 	private TopPagePartUseSetting pusToDomain(SptmtPartItem c) {
-		CcgmtTopPagePart tpp = this.queryProxy().query(GET_ONE_TPP, CcgmtTopPagePart.class)
-				.setParameter("companyId", c.ccgmtPartItemSetPK.cid)
-				.setParameter("topPagePartId", c.ccgmtPartItemSetPK.topPagePartId).getSingle().get();
-		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.ccgmtPartItemSetPK.cid,c.ccgmtPartItemSetPK.topPagePartId,tpp.code,
-				tpp.name, c.useAtr, tpp.topPagePartType);
+		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.ccgmtPartItemSetPK.cid,c.ccgmtPartItemSetPK.topPagePartId,"",
+				"", c.useAtr, null);
 		return pus;
 	}
 
@@ -102,24 +97,9 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 		return mps;
 	}
 	
-	private static final String GET_MULTI_TPP = "SELECT t FROM CcgmtTopPagePart t WHERE t.ccgmtTopPagePartPK.companyID = :companyId AND  t.ccgmtTopPagePartPK.topPagePartID IN :topPagePartId";
-	
 	/**fix performance get List TopPagePartUseSetting from one company*/
 	private List<TopPagePartUseSetting> pusToDomain2(List<SptmtPartItem> c) {
-		if(c.isEmpty()) {
-			return new ArrayList<>();
-		}
-		List<String> listTPPId = c.stream().map(TPPId -> TPPId.ccgmtPartItemSetPK.topPagePartId).collect(Collectors.toList());
-		List<CcgmtTopPagePart> tpp = this.queryProxy().query(GET_MULTI_TPP, CcgmtTopPagePart.class)
-				.setParameter("companyId", c.get(0).ccgmtPartItemSetPK.cid)
-				.setParameter("topPagePartId", listTPPId).getList();
-		return tpp.stream().map(t ->
-				TopPagePartUseSetting.createFromJavaType(t.ccgmtTopPagePartPK.companyID,
-														t.ccgmtTopPagePartPK.topPagePartID,
-														t.code, 
-														t.name, 
-														c.stream().filter(u -> u.ccgmtPartItemSetPK.topPagePartId.equals(t.ccgmtTopPagePartPK.topPagePartID)).findFirst().get().useAtr, 
-														t.topPagePartType)).collect(Collectors.toList());
+		return new ArrayList<TopPagePartUseSetting>();
 	}
 
 	/**
@@ -174,12 +154,10 @@ public class JpaMyPageSettingRepository extends JpaRepository implements MyPageS
 
 	@Override
 	public Optional<TopPagePartUseSetting> findTopPagePartUseSettingById(String companyId, String topPagePartId) {
-		CcgmtTopPagePart tpp = this.queryProxy().query(GET_ONE_TPP, CcgmtTopPagePart.class)
-				.setParameter("companyId", companyId).setParameter("topPagePartId", topPagePartId).getSingle().get();
 		SptmtPartItem c = this.queryProxy().query(GET_ONE_PIS_BY_TPP_ID, SptmtPartItem.class)
 				.setParameter("companyId", companyId).setParameter("topPagePartId", topPagePartId).getSingle().get();
 		TopPagePartUseSetting pus = TopPagePartUseSetting.createFromJavaType(c.ccgmtPartItemSetPK.cid,
-				c.ccgmtPartItemSetPK.topPagePartId, tpp.code, tpp.name, c.useAtr, tpp.topPagePartType);
+				c.ccgmtPartItemSetPK.topPagePartId, "", "", c.useAtr, null);
 		return Optional.of(pus);
 	}
 

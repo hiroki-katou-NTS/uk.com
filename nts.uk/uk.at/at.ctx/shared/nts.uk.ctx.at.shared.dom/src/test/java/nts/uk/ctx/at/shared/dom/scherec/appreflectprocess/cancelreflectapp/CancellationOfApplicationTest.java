@@ -88,8 +88,7 @@ public class CancellationOfApplicationTest {
 		new Expectations() {
 			{
 				AcquireAppReflectHistForCancel.process(require, app, (GeneralDate) any, (ScheduleRecordClassifi) any);
-				result = Optional.of(new AcquireAppReflectHistForCancelOutput(createAppReflectHist(null), //
-						createAppReflectHist(null, Pair.of(28, "002"))));// 取得した[元に戻すための申請反映履歴].反映前（List）
+				result = Optional.of(createAppReflectHist("1", null, Pair.of(28, "002")));// 取得した[元に戻すための申請反映履歴].反映前（List）
 			}
 		};
 		val actualResult = CancellationOfApplication.process(require, app, GeneralDate.ymd(2021, 4, 21),
@@ -125,14 +124,12 @@ public class CancellationOfApplicationTest {
 		new Expectations() {
 			{
 				AcquireAppReflectHistForCancel.process(require, app, (GeneralDate) any, (ScheduleRecordClassifi) any);
-				result = Optional.of(new AcquireAppReflectHistForCancelOutput(
-						createAppReflectHist(GeneralDateTime.min()), // 最新の申請反映履歴
-						createAppReflectHist(null, Pair.of(28, "002"), Pair.of(29, "003"))));// 取得した[元に戻すための申請反映履歴].反映前（List）
+				result = Optional.of(createAppReflectHist("1", null, Pair.of(28, "002"), Pair.of(29, "003")));// 取得した[元に戻すための申請反映履歴].反映前（List）
 
 				require.findAppReflectHistAfterMaxTime(anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
-						anyBoolean, GeneralDateTime.min());
+						anyBoolean, (GeneralDateTime) any);
 				result = Arrays.asList(
-						createAppReflectHist(null, Pair.of(28, "002"), Pair.of(34, "600")));
+						createAppReflectHist("2", null, Pair.of(28, "002"), Pair.of(34, "600")));
 				
 			}
 		};
@@ -167,12 +164,10 @@ public class CancellationOfApplicationTest {
 		new Expectations() {
 			{
 				AcquireAppReflectHistForCancel.process(require, app, (GeneralDate) any, (ScheduleRecordClassifi) any);
-				result = Optional.of(new AcquireAppReflectHistForCancelOutput(
-						createAppReflectHist(GeneralDateTime.min()), // 最新の申請反映履歴
-						createAppReflectHist(null, Pair.of(28, "002"))));// 取得した[元に戻すための申請反映履歴].反映前（List）
+				result = Optional.of(createAppReflectHist("1", null, Pair.of(28, "002")));// 取得した[元に戻すための申請反映履歴].反映前（List）
 				
 				require.findAppReflectHistAfterMaxTime(anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
-						anyBoolean, GeneralDateTime.min());
+						anyBoolean, (GeneralDateTime) any);
 				result = Arrays.asList();
 				
 			}
@@ -209,13 +204,12 @@ public class CancellationOfApplicationTest {
 		new Expectations() {
 			{
 				AcquireAppReflectHistForCancel.process(require, app, (GeneralDate) any, (ScheduleRecordClassifi) any);
-				result = Optional.of(new AcquireAppReflectHistForCancelOutput(
-						createAppReflectHist(GeneralDateTime.min()), // 最新の申請反映履歴
-						createAppReflectHistAll(EditStateSetting.HAND_CORRECTION_MYSELF, //処理中の反映前.編集状態をチェックがある
-								null, Pair.of(28, "002"))));// 取得した[元に戻すための申請反映履歴].反映前（List）
+				result = Optional.of(
+						createAppReflectHistAll("1", EditStateSetting.HAND_CORRECTION_MYSELF, //処理中の反映前.編集状態をチェックがある
+								null, Pair.of(28, "002")));// 取得した[元に戻すための申請反映履歴].反映前（List）
 				
 				require.findAppReflectHistAfterMaxTime(anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
-						anyBoolean, GeneralDateTime.min());
+						anyBoolean, (GeneralDateTime) any);
 				result = Arrays.asList();
 				
 				cv.toDomain();
@@ -258,12 +252,11 @@ public class CancellationOfApplicationTest {
 		new Expectations() {
 			{
 				AcquireAppReflectHistForCancel.process(require, app, (GeneralDate) any, (ScheduleRecordClassifi) any);
-				result = Optional.of(new AcquireAppReflectHistForCancelOutput(
-						createAppReflectHist(GeneralDateTime.min()), // 最新の申請反映履歴
-						createAppReflectHistAll(null, null, Pair.of(28, "002"))));// 処理中の反映前.編集状態をチェックがない
+				result = Optional.of(
+						createAppReflectHistAll("1", null, null, Pair.of(28, "002")));// 処理中の反映前.編集状態をチェックがない
 				
 				require.findAppReflectHistAfterMaxTime(anyString, (GeneralDate) any, (ScheduleRecordClassifi) any,
-						anyBoolean, GeneralDateTime.min());
+						anyBoolean, (GeneralDateTime) any);
 				result = Arrays.asList();
 				
 				cv.toDomain();
@@ -306,16 +299,16 @@ public class CancellationOfApplicationTest {
 		return dom;
 	}
 
-	private ApplicationReflectHistory createAppReflectHist(GeneralDateTime maxDate, Pair<Integer, String>... lstItemValue) {
-		return createAppReflectHistAll(EditStateSetting.HAND_CORRECTION_MYSELF, maxDate, lstItemValue);
+	private ApplicationReflectHistory createAppReflectHist(String appId, GeneralDateTime maxDate, Pair<Integer, String>... lstItemValue) {
+		return createAppReflectHistAll(appId, EditStateSetting.HAND_CORRECTION_MYSELF, maxDate, lstItemValue);
 	}
 	
-	private ApplicationReflectHistory createAppReflectHistAll(EditStateSetting editState, GeneralDateTime maxDate, Pair<Integer, String>... lstItemValue) {
+	private ApplicationReflectHistory createAppReflectHistAll(String appId, EditStateSetting editState, GeneralDateTime maxDate, Pair<Integer, String>... lstItemValue) {
 		List<AttendanceBeforeApplicationReflect> lstAttBeforeAppReflect = Arrays.asList(lstItemValue).stream()
 				.map(x -> new AttendanceBeforeApplicationReflect(x.getKey(), Optional.of(x.getValue()),
 						editState == null ? Optional.empty() : Optional.of(new EditStateOfDailyAttd(x.getKey(), editState))))
 				.collect(Collectors.toList());
-		return new ApplicationReflectHistory("1",  GeneralDate.ymd(2021, 4, 21) , "1",
+		return new ApplicationReflectHistory("1",  GeneralDate.ymd(2021, 4, 21) , appId,
 				maxDate == null ? GeneralDateTime.now() : maxDate, ScheduleRecordClassifi.RECORD, true, lstAttBeforeAppReflect);
 	}
 }

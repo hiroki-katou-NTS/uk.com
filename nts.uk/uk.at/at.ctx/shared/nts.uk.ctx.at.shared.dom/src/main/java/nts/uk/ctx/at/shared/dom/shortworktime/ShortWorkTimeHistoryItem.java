@@ -4,10 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.shortworktime;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.util.range.ComparableRange;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
 /**
  * The Class ShortWorkTimeHistoryItem.
@@ -38,17 +42,26 @@ public class ShortWorkTimeHistoryItem extends AggregateRoot {
 	 * @param memento the memento
 	 */
 	public ShortWorkTimeHistoryItem(SWorkTimeHistItemGetMemento memento) {
-		this.historyId = memento.getHistoryId();
-		this.employeeId = memento.getEmployeeId();
-		this.childCareAtr = memento.getChildCareAtr();
-		this.lstTimeSlot = memento.getLstTimeSlot();
+		this(memento.getHistoryId(), memento.getEmployeeId(), memento.getChildCareAtr(), memento.getLstTimeSlot());
 	}
 	
 	public ShortWorkTimeHistoryItem(String employeeId, String historyId, ChildCareAtr childCareAtr, List<SChildCareFrame> lstTimeSlot) {
+		
+		// 時間帯(List)はそれぞれ重複してはいけない
+		if (ComparableRange.isMutuallyExclusive(getTimeSpans(lstTimeSlot)) == false) {
+			throw new RuntimeException("Msg_859");
+		}
+		
 		this.historyId = historyId;
 		this.employeeId = employeeId;
 		this.childCareAtr = childCareAtr;
 		this.lstTimeSlot = lstTimeSlot;
+	}
+
+	private List<TimeSpanForCalc> getTimeSpans(List<SChildCareFrame> lstTimeSlot) {
+		return lstTimeSlot.stream()
+				.map(e -> e.getSpan())
+				.collect(toList());
 	}
 	
 	/**
