@@ -490,13 +490,13 @@ public class AsposePersonalScheduleByWorkplaceExportGenerator extends AsposeCell
                                 cells.get(startRow, startCol),
                                 estimatedSalary == null ? "" : df.format(estimatedSalary.getCriterion().v()),
                                 i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
-                                estimatedSalary.getBackground().map(i -> i.v().substring(1))
+                                estimatedSalary == null ? Optional.empty() : estimatedSalary.getBackground().map(i -> i.v().substring(1))
                         );
                         this.setPersonalTotalValue(
                                 cells.get(startRow, startCol + 1),
                                 estimatedSalary == null ? "" : df.format(estimatedSalary.getSalary()),
                                 i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal,
-                                estimatedSalary.getBackground().map(PrimitiveValueBase::toString)
+                                estimatedSalary == null ? Optional.empty() : estimatedSalary.getBackground().map(i -> i.v().substring(1))
                         );
                         for (int kk = 1; kk < rows; kk++) {
                             this.setPersonalTotalValue(cells.get(startRow + kk, startCol), null, i1 == personalInfoScheduleTableList.size() - 1 && hasWorkplaceTotal, Optional.empty());
