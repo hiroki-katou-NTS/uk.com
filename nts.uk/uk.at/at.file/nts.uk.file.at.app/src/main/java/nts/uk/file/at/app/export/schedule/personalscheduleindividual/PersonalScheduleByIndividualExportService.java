@@ -31,6 +31,6 @@ public class PersonalScheduleByIndividualExportService extends ExportService<Per
                 query.isTotalDisplay()
 
         );
-        exportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource);
+        exportGenerator.generate(exportServiceContext.getGeneratorContext(), dataSource,query);
     }
 }

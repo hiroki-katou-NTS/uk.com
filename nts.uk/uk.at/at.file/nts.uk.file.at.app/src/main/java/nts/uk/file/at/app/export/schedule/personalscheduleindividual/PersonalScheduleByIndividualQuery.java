@@ -22,6 +22,11 @@ public class PersonalScheduleByIndividualQuery {
     private String employeeCode;
 
     /**
+     * 社員コード
+     */
+    private String employeeName;
+
+    /**
      * 対象年月日
      */
     private GeneralDate date;
