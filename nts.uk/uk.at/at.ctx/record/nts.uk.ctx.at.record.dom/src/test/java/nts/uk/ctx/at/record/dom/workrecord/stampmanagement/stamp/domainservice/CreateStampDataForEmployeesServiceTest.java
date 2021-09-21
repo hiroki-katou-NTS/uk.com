@@ -1,36 +1,36 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
-import java.util.Optional;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import mockit.Expectations;
-import mockit.Injectable;
-import mockit.integration.junit4.JMockit;
-import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService.Require;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
+//import static org.assertj.core.api.Assertions.assertThat;
+//
+//import java.util.Arrays;
+//import java.util.Optional;
+//
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//
+//import mockit.Expectations;
+//import mockit.Injectable;
+//import mockit.integration.junit4.JMockit;
+//import nts.arc.testing.assertion.NtsAssert;
+//import nts.arc.time.GeneralDate;
+//import nts.arc.time.GeneralDateTime;
+//import nts.gul.location.GeoCoordinate;
+//import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
+//import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CreateStampDataForEmployeesService.Require;
+//import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 /**
  * 
- * @author tutk
+ * @author tutkO
  *
  */
-@RunWith(JMockit.class)
+//@RunWith(JMockit.class)
 public class CreateStampDataForEmployeesServiceTest {
 
 //	@Injectable
