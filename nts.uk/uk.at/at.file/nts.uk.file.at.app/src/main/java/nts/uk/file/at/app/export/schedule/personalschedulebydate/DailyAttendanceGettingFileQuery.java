@@ -21,10 +21,6 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class DailyAttendanceGettingFileQuery {
-
-//    @Inject
-//    private IntegrationOfDailyGetter integrationOfDailyGetter;
-
     @Inject
     private WorkScheduleAdapter workScheduleAdapter;
 
@@ -37,23 +33,11 @@ public class DailyAttendanceGettingFileQuery {
                     @Override
                     public List<IntegrationOfDaily> getSchduleList(List<EmployeeId> empIds, DatePeriod period) {
                         return workScheduleAdapter.getList(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
-//                        List<IntegrationOfDaily> result = new ArrayList<>();
-//                        empIds.forEach(sid -> {
-//                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-//                            result.addAll(tmp);
-//                        });
-//                        return result;
                     }
 
                     @Override
                     public List<IntegrationOfDaily> getRecordList(List<EmployeeId> empIds, DatePeriod period) {
                         return dailyRecordAdapter.getDailyRecordByScheduleManagement(empIds.stream().map(PrimitiveValueBase::v).collect(Collectors.toList()), period);
-//                        List<IntegrationOfDaily> result = new ArrayList<>();
-//                        empIds.forEach(sid -> {
-//                            List<IntegrationOfDaily> tmp = integrationOfDailyGetter.getIntegrationOfDaily(sid.v(), period);
-//                            result.addAll(tmp);
-//                        });
-//                        return result;
                     }
                 },
                 sortedEmployeeIds.stream().map(EmployeeId::new).collect(Collectors.toList()),

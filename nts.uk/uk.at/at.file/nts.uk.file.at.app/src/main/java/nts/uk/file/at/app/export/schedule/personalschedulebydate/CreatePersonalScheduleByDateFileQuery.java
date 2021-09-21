@@ -38,6 +38,7 @@ public class CreatePersonalScheduleByDateFileQuery {
     public PersonalScheduleByDateDataSource get(int orgUnit, String orgId, GeneralDate baseDate, List<String> sortedEmployeeIds,
                                                 boolean isDisplayActual, boolean isGraphVacationDisplay, boolean isDoubleWorkDisplay) {
 
+        long startTime = System.nanoTime();
         // 1. 出力する(対象組織識別情報, 対象期間, List(社員ID)): input (対象組織, 年月日, 並び順社員リスト)
         val basicInformation = this.basicInfoQuery.getInfo(
                 orgUnit,
@@ -70,6 +71,7 @@ public class CreatePersonalScheduleByDateFileQuery {
                 ? lstScheduleDaily
                 : this.mergeDataSchedule(lstScheduleDaily, lstScheduleAchievement);
 
+        System.out.println("Thoi gian get data: " + ((System.nanoTime() - startTime) / 1000000000) + " seconds");
         return new PersonalScheduleByDateDataSource(
                 basicInformation.getCompanyInfo(),
                 basicInformation.getDisplayInfoOrganization(),
@@ -86,7 +88,6 @@ public class CreatePersonalScheduleByDateFileQuery {
      * @return List<EmployeeWorkScheduleResultDto>
      */
     private List<EmployeeWorkScheduleResultDto> mergeDataSchedule(List<EmployeeWorkScheduleResultDto> scheduleDailies, List<EmployeeWorkScheduleResultDto> scheduleAchievements) {
-//        List<EmployeeWorkScheduleResultDto> mergedResultList = new ArrayList<>();
         scheduleDailies.forEach(daily -> {
             val scheduleAchievementOpt = scheduleAchievements.stream().filter(achievement -> achievement.getEmployeeId().equals(daily.getEmployeeId())).findFirst();
             if (scheduleAchievementOpt.isPresent()) {
@@ -96,10 +97,8 @@ public class CreatePersonalScheduleByDateFileQuery {
                 daily.setActualStartTime2(scheduleAchievementOpt.get().getActualStartTime2());
                 daily.setActualEndTime2(scheduleAchievementOpt.get().getActualEndTime2());
             }
-//            mergedResultList.add(daily);
         });
 
-//        return mergedResultList;
         return scheduleDailies.stream().sorted(Comparator.comparing(EmployeeWorkScheduleResultDto::getEmployeeId)).collect(Collectors.toList());
     }
 }

@@ -29,7 +29,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private static final String TEMPLATE_FILE = "report/KSU003.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final int MAX_ROW_IN_PAGE = 60;
-    private static final int MAX_EMP_IN_PAGE = 30;
+    private static final int MAX_ROW_HEADER_IN_PAGE = 8;
     private static final int MAX_COL_IN_PAGE = 56;    //count start index 0
     private final String SPACE = "　";
     private final String COLON = "：　";
@@ -62,9 +62,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
             // Save as excel file
             reportContext.saveAsExcel(createNewFile(context, getReportName(companyName + EXCEL_EXT)));
-
-            long estimatedTime = (System.nanoTime() - startTime) / 1000000000;
-            System.out.println("Thoi gian export excel la: " + estimatedTime + " seconds");
+            System.out.println("Thoi gian export excel: " + ((System.nanoTime() - startTime) / 1000000000) + " seconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -92,7 +90,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         val dateInfo = dataSource.getDateInformation();
         val orgInfo = dataSource.getDisplayInfoOrganization();
         val isDoubleWorkDisplay = dataSource.getQuery().isDoubleWorkDisplay();
-        val graphVacationDisplay = dataSource.getQuery().isGraphVacationDisplay();
 
         // B1_1, B1_2
         cells.get(3, 0).setValue(getText("KSU003_139") + dateInfo.getYmd() + '(' + getDayOfWeek(dateInfo.getDayOfWeek()) + ')');
@@ -145,27 +142,25 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         }
 
         // Set style by each column
-//        setStyleEmpWorkInfo(cells, 6, isDoubleWorkDisplay);
+        setStyleEmpWorkInfo(cells, 6, isDoubleWorkDisplay);
 
         // C3_1 or C3_3: Graph ruler header
-        if (graphVacationDisplay) {
-            int graphStartTimeInitValue = dataSource.getQuery().getGraphStartTime();
-            int graphStartTime = dataSource.getQuery().getGraphStartTime();
-            if (isEven(graphStartTime)) {          // GraphStartTime is even
-                for (int column = 7; column <= 56; column += 4) {
-                    if (graphStartTimeInitValue == 0 && graphStartTime == 24) {
-                        graphStartTime = 0;
-                    }
-                    cells.get(6, column).setValue(graphStartTime);
-                    graphStartTime += 2;
+        int graphStartTimeInitValue = dataSource.getQuery().getGraphStartTime();
+        int graphStartTime = dataSource.getQuery().getGraphStartTime();
+        if (isEven(graphStartTime)) {          // GraphStartTime is even
+            for (int column = 7; column <= 56; column += 4) {
+                if (graphStartTimeInitValue == 0 && graphStartTime == 24) {
+                    graphStartTime = 0;
                 }
-            } else {                                // GraphStartTime is odd
-                cells.get(6, 7).setValue(graphStartTime);
-                graphStartTime += 1;                // +1 => value is even
-                for (int column = 9; column <= 53; column += 4) {
-                    cells.get(6, column).setValue(graphStartTime);
-                    graphStartTime += 2;
-                }
+                cells.get(6, column).setValue(graphStartTime);
+                graphStartTime += 2;
+            }
+        } else {                                // GraphStartTime is odd
+            cells.get(6, 7).setValue(graphStartTime);
+            graphStartTime += 1;                // +1 => value is even
+            for (int column = 9; column <= 53; column += 4) {
+                cells.get(6, column).setValue(graphStartTime);
+                graphStartTime += 2;
             }
         }
     }
@@ -180,7 +175,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         // Set CopyOptions.ReferToDestinationSheet to true
         CopyOptions options = new CopyOptions();
         options.setReferToDestinationSheet(true);
-//        // Set PasteOptions
+        // Set PasteOptions
         PasteOptions pasteOptions = new PasteOptions();
         pasteOptions.setPasteType(PasteType.ALL);
         pasteOptions.setOnlyVisibleCells(true);
@@ -191,10 +186,15 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         val employeeWorkScheduleList = dataSource.getEmployeeWorkScheduleList();
         val isDoubleWorkDisplay = dataSource.getQuery().isDoubleWorkDisplay();
         val displayActual = dataSource.getQuery().isDisplayActual();
+        val graphVacationDisplay = dataSource.getQuery().isGraphVacationDisplay();
         int graphStartTime = dataSource.getQuery().getGraphStartTime();
 
-        for (EmployeeWorkScheduleResultDto item : employeeWorkScheduleList) {
-            cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 11 : 9, rowCount, 2);
+        for (int i = 1; i <= employeeWorkScheduleList.size(); i++) {
+            EmployeeWorkScheduleResultDto item = employeeWorkScheduleList.get(i - 1);
+            if (i == employeeWorkScheduleList.size())
+                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
+            else
+                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : 9, rowCount, 2);
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
 
             val empInfoOpt = employeeInfoList.stream().filter(x -> x.getEmployeeId().equals(item.getEmployeeId())).findFirst();
@@ -219,103 +219,102 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 cells.get(rowCount, 6).setValue(minuteToTime(item.getTotalBreakTime()));         // C2_3_16
             }
 
-            // Set style by each column
-//            setStyleEmpWorkInfo(cells, rowCount, isDoubleWorkDisplay);
-
-            // C3_2_1
-            if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
-                val shape1a = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
-                if (shape1a.getColumn() != null) {
-                    drawRectangle(shapes, rowCount, shape1a.getColumn(), shape1a.getWidth(), shape1a.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
-                }
-
-                if (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) {
-                    val shape1b = calculateConvertToShape(graphStartTime, item.getStartTime2(), item.getEndTime2());
-                    if (shape1b.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape1b.getColumn(), shape1b.getWidth(), shape1b.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
+            if (graphVacationDisplay) {
+                // C3_2_1
+                if (item.getWorkType().equals(WorkTimeForm.FIXED.value)) {
+                    val shape1a = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
+                    if (shape1a.getColumn() != null) {
+                        drawRectangle(shapes, rowCount, shape1a.getColumn(), shape1a.getWidth(), shape1a.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
                     }
-                }
-            }
 
-            // C3_2_4
-            if (item.getWorkType().equals(WorkTimeForm.FLOW.value)) {
-                val shape4a = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
-                if (shape4a.getColumn() != null) {
-                    drawRectangle(shapes, rowCount, shape4a.getColumn(), shape4a.getWidth(), shape4a.getLeft(), getBarColor(BarType.FLOWING_WORKING_HOURS), false, null);
-                }
-
-                if (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) {
-                    val shape4b = calculateConvertToShape(graphStartTime, item.getStartTime2(), item.getEndTime2());
-                    if (shape4a.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape4b.getColumn(), shape4b.getWidth(), shape4b.getLeft(), getBarColor(BarType.FLOWING_WORKING_HOURS), false, null);
-                    }
-                }
-            }
-
-            // C3_2_5
-            if (item.getWorkType().equals(WorkTimeForm.FLEX.value)) {
-                val shape5 = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
-                if (shape5.getColumn() != null) {
-                    drawRectangle(shapes, rowCount, shape5.getColumn(), shape5.getWidth(), shape5.getLeft(), getBarColor(BarType.FLEX_WORKING_HOURS), false, null);
-                }
-
-                // C3_2_6
-                if (item.getCoreStartTime() != null && item.getCoreEndTime() != null) {
-                    val shape6 = calculateConvertToShape(graphStartTime, item.getCoreStartTime(), item.getCoreEndTime());
-                    if (shape6.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape6.getColumn(), shape6.getWidth(), shape6.getLeft(), getBarColor(BarType.CORE_TIME), false, null);
-                    }
-                }
-            }
-
-            // C3_2_3
-            if (!item.getOverTimeList().isEmpty()) {
-                for (ChangeableWorkTimeDto overTime : item.getOverTimeList()) {
-                    TimeCheckedDto timeChecked = new TimeCheckedDto(overTime.getStartTime(), overTime.getEndTime());
-                    if (!isDoubleWorkDisplay) {
-                        timeChecked = checkTime(graphStartTime, overTime.getStartTime(), overTime.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()));
-                    }
-                    val shape3 = calculateConvertToShape(graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
-                    if (shape3.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape3.getColumn(), shape3.getWidth(), shape3.getLeft(), getBarColor(BarType.OVERTIME_HOURS), false, null);
-                    }
-                }
-            }
-
-            // C3_2_2
-            if (!item.getBreakTimeList().isEmpty()) {
-                final List<BreakTimeSheet> breakTimeList = item.getBreakTimeList();
-                for (BreakTimeSheet breakTime : breakTimeList) {
-                    TimeCheckedDto timeChecked = new TimeCheckedDto(breakTime.getStartTime().v(), breakTime.getEndTime().v());
-                    if (!isDoubleWorkDisplay) {
-                        timeChecked = checkTime(graphStartTime, breakTime.getStartTime().v(), breakTime.getEndTime().v(),
-                                new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()));
-                    }
-                    val shape2 = calculateConvertToShape(graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
-                    if (shape2.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape2.getColumn(), shape2.getWidth(), shape2.getLeft(), getBarColor(BarType.BREAK_TIME), false, null);
-                    }
-                }
-            }
-
-            // C3_2_7
-            if (!item.getListTimeVacationAndType().isEmpty()) {
-                for (val timeVacation : item.getListTimeVacationAndType()) {
-                    for (val time : timeVacation.getTimeVacation().getTimeZone()) {
-                        val shape7 = calculateConvertToShape(graphStartTime, time.getStart(), time.getEnd());
-                        if (shape7.getColumn() != null) {
-                            drawRectangle(shapes, rowCount, shape7.getColumn(), shape7.getWidth(), shape7.getLeft(), getBarColor(BarType.TIME_VACATION), false, null);
+                    if (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) {
+                        val shape1b = calculateConvertToShape(graphStartTime, item.getStartTime2(), item.getEndTime2());
+                        if (shape1b.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape1b.getColumn(), shape1b.getWidth(), shape1b.getLeft(), getBarColor(BarType.FIXED_WORKING_HOURS), false, null);
                         }
                     }
                 }
-            }
 
-            // C3_2_8
-            if (!item.getChildCareShortTimeList().isEmpty()) {
-                for (val time : item.getChildCareShortTimeList()) {
-                    val shape8 = calculateConvertToShape(graphStartTime, time.getStartTime(), time.getEndTime());
-                    if (shape8.getColumn() != null) {
-                        drawRectangle(shapes, rowCount, shape8.getColumn(), shape8.getWidth(), shape8.getLeft(), getBarColor(BarType.CHILDCARE_SHORT_TIME), false, null);
+                // C3_2_4
+                if (item.getWorkType().equals(WorkTimeForm.FLOW.value)) {
+                    val shape4a = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
+                    if (shape4a.getColumn() != null) {
+                        drawRectangle(shapes, rowCount, shape4a.getColumn(), shape4a.getWidth(), shape4a.getLeft(), getBarColor(BarType.FLOWING_WORKING_HOURS), false, null);
+                    }
+
+                    if (isDoubleWorkDisplay && item.getStartTime2() != null && item.getEndTime2() != null) {
+                        val shape4b = calculateConvertToShape(graphStartTime, item.getStartTime2(), item.getEndTime2());
+                        if (shape4a.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape4b.getColumn(), shape4b.getWidth(), shape4b.getLeft(), getBarColor(BarType.FLOWING_WORKING_HOURS), false, null);
+                        }
+                    }
+                }
+
+                // C3_2_5
+                if (item.getWorkType().equals(WorkTimeForm.FLEX.value)) {
+                    val shape5 = calculateConvertToShape(graphStartTime, item.getStartTime1(), item.getEndTime1());
+                    if (shape5.getColumn() != null) {
+                        drawRectangle(shapes, rowCount, shape5.getColumn(), shape5.getWidth(), shape5.getLeft(), getBarColor(BarType.FLEX_WORKING_HOURS), false, null);
+                    }
+
+                    // C3_2_6
+                    if (item.getCoreStartTime() != null && item.getCoreEndTime() != null) {
+                        val shape6 = calculateConvertToShape(graphStartTime, item.getCoreStartTime(), item.getCoreEndTime());
+                        if (shape6.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape6.getColumn(), shape6.getWidth(), shape6.getLeft(), getBarColor(BarType.CORE_TIME), false, null);
+                        }
+                    }
+                }
+
+                // C3_2_3
+                if (!item.getOverTimeList().isEmpty()) {
+                    for (ChangeableWorkTimeDto overTime : item.getOverTimeList()) {
+                        TimeCheckedDto timeChecked = new TimeCheckedDto(overTime.getStartTime(), overTime.getEndTime());
+                        if (!isDoubleWorkDisplay) {
+                            timeChecked = checkTime(graphStartTime, overTime.getStartTime(), overTime.getEndTime(), new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()));
+                        }
+                        val shape3 = calculateConvertToShape(graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
+                        if (shape3.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape3.getColumn(), shape3.getWidth(), shape3.getLeft(), getBarColor(BarType.OVERTIME_HOURS), false, null);
+                        }
+                    }
+                }
+
+                // C3_2_2
+                if (!item.getBreakTimeList().isEmpty()) {
+                    final List<BreakTimeSheet> breakTimeList = item.getBreakTimeList();
+                    for (BreakTimeSheet breakTime : breakTimeList) {
+                        TimeCheckedDto timeChecked = new TimeCheckedDto(breakTime.getStartTime().v(), breakTime.getEndTime().v());
+                        if (!isDoubleWorkDisplay) {
+                            timeChecked = checkTime(graphStartTime, breakTime.getStartTime().v(), breakTime.getEndTime().v(),
+                                    new TimeRangeLimitDto(item.getStartTime1(), item.getEndTime1()));
+                        }
+                        val shape2 = calculateConvertToShape(graphStartTime, timeChecked.getStartTime(), timeChecked.getEndTime());
+                        if (shape2.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape2.getColumn(), shape2.getWidth(), shape2.getLeft(), getBarColor(BarType.BREAK_TIME), false, null);
+                        }
+                    }
+                }
+
+                // C3_2_7
+                if (!item.getListTimeVacationAndType().isEmpty()) {
+                    for (val timeVacation : item.getListTimeVacationAndType()) {
+                        for (val time : timeVacation.getTimeVacation().getTimeZone()) {
+                            val shape7 = calculateConvertToShape(graphStartTime, time.getStart(), time.getEnd());
+                            if (shape7.getColumn() != null) {
+                                drawRectangle(shapes, rowCount, shape7.getColumn(), shape7.getWidth(), shape7.getLeft(), getBarColor(BarType.TIME_VACATION), false, null);
+                            }
+                        }
+                    }
+                }
+
+                // C3_2_8
+                if (!item.getChildCareShortTimeList().isEmpty()) {
+                    for (val time : item.getChildCareShortTimeList()) {
+                        val shape8 = calculateConvertToShape(graphStartTime, time.getStartTime(), time.getEndTime());
+                        if (shape8.getColumn() != null) {
+                            drawRectangle(shapes, rowCount, shape8.getColumn(), shape8.getWidth(), shape8.getLeft(), getBarColor(BarType.CHILDCARE_SHORT_TIME), false, null);
+                        }
                     }
                 }
             }
@@ -347,7 +346,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
                 }
 
                 // C3_2_16
-                if (!item.getOverTimeList().isEmpty()) {
+                if (!item.getOverTimeList().isEmpty() && item.getActualStartTime1() != null && item.getActualEndTime1() != null) {
                     for (val time : item.getOverTimeList()) {
                         TimeCheckedDto timeChecked = new TimeCheckedDto(time.getStartTime(), time.getEndTime());
                         if (!isDoubleWorkDisplay) {
@@ -362,15 +361,20 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             }
             rowCount += 2;
 
-            // Check paging
+            // Paging
             if (isNextPage(rowCount, pageIndex)) {
-                PasteOptions opts = new PasteOptions();
-                opts.setPasteType(PasteType.FORMATS);
-                cells.copyRows(cellsTemplate, 57, rowCount, 1, options);  // copy close ruler
+                cells.copyRows(cellsTemplate, 57, rowCount, 1, options);  // close ruler
                 removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
                 rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
+            }
+
+            // Ruler close
+            if (i == employeeWorkScheduleList.size()) {
+                cells.copyRows(cellsTemplate, 57, rowCount, 1, options);
+                rowCount += 1;
+                removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
             }
         }
         PageSetup pageSetup = wsDestination.getPageSetup();
@@ -603,8 +607,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         return StringUtils.isNotEmpty(name) ? name : StringUtils.isNotEmpty(code) ? code + getText("KSU003_189") : Strings.EMPTY;
     }
 
-    private boolean isNextPage(int rowCount, int pageIndex){
-        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - 8 > MAX_ROW_IN_PAGE;
+    private boolean isNextPage(int rowCount, int pageIndex) {
+        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - MAX_ROW_HEADER_IN_PAGE > MAX_ROW_IN_PAGE;
     }
 
     /**
@@ -695,33 +699,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         }
     }
 
-    private String getSpecDayNo(int speDayNo) {
-        switch (speDayNo) {
-            case 1:
-                return "①";
-            case 2:
-                return "②";
-            case 3:
-                return "③";
-            case 4:
-                return "④";
-            case 5:
-                return "⑤";
-            case 6:
-                return "⑥";
-            case 7:
-                return "⑦";
-            case 8:
-                return "⑧";
-            case 9:
-                return "⑨";
-            case 10:
-                return "⑩";
-            default:
-                return "";
-        }
-    }
-
     @SuppressWarnings("Duplicates")
     private String getDayOfWeek(DayOfWeek dayOfWeek) {
         switch (dayOfWeek) {
@@ -748,7 +725,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         return (i >= minValueInclusive && i <= maxValueInclusive);
     }
 
-    private void setStyleEmpWorkInfo(Cells cells, int row, boolean isDoubleWorkDisplay){
+    private void setStyleEmpWorkInfo(Cells cells, int row, boolean isDoubleWorkDisplay) {
         for (int column = 0; column < 7; column++) {
             if (isDoubleWorkDisplay && (column == 3 || column == 4)) continue;
             cells.merge(row, column, 2, 1, true, true);
@@ -780,13 +757,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.NONE);
         cell.setStyle(style);
     }
-
-    private void setBackgroundGray(Cell cell) {
-        Style style = cell.getStyle();
-        style.setForegroundColor(Color.getGray());
-        cell.setStyle(style);
-    }
-
 }
 
 class Ksu003Utils {

@@ -183,7 +183,6 @@ module nts.uk.at.view.ksu003.d {
         unit: number;
         workplaceId: string;
         workplaceGroupId: string;
-        orgName: string;
     }
 
     interface ITargetPeriod {

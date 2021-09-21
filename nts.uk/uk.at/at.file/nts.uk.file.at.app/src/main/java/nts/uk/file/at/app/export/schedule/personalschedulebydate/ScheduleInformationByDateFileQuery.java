@@ -58,6 +58,8 @@ public class ScheduleInformationByDateFileQuery {
 
     public List<EmployeeWorkScheduleResultDto> get(List<IntegrationOfDaily> lstIntegrationOfDaily, boolean graphVacationDisplay,
                                                    boolean doubleWorkDisplay) {
+        if (lstIntegrationOfDaily.isEmpty()) return Collections.emptyList();
+
         String companyId = AppContexts.user().companyId();
         List<EmployeeWorkScheduleResultDto> empWorkScheduleResults = new ArrayList<>();
 
@@ -68,11 +70,9 @@ public class ScheduleInformationByDateFileQuery {
         val workTypeWorkTimeList = GetListWtypeWtimeUseDailyAttendRecordService.getdata(lstWorkInfoOfDailyAttendance);
 
         // 2. get(会社ID, 日別勤怠の実績で利用する勤務種類と就業時間帯.勤務種類リスト) : output WorkType
-        List<WorkType> workTypeList = new ArrayList<>();
-        val wTypeCodes = workTypeWorkTimeList.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
-        if (!wTypeCodes.isEmpty()) {
-            workTypeList = workTypeRepo.findByCidAndWorkTypeCodes(companyId, wTypeCodes);
-        }
+        List<WorkType> workTypeList = workTypeRepo.findByCidAndWorkTypeCodes(
+                companyId,
+                workTypeWorkTimeList.getLstWorkTypeCode().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()));
 
         // 3. get(会社ID,List<就業時間帯コード>): output WorkTimeSetting
         List<WorkTimeSetting> workTimeSettingList = workTimeSettingRepo.getListWorkTimeSetByListCode(
@@ -87,8 +87,8 @@ public class ScheduleInformationByDateFileQuery {
             // 就業時間帯コード = 日別勤怠(Work)．勤務情報．勤務情報．就業時間帯コード
             val workTimeCode = dailyInfo.getWorkInformation().getRecordInfo().getWorkTimeCode().v();
 
-            Optional<WorkType> workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst();
-            Optional<WorkTimeSetting> workTimeSetOpt = workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst();
+            val workTypeOpt = workTypeList.stream().filter(x -> x.getWorkTypeCode().equals(workTypeCode)).findFirst();
+            val workTimeSetOpt = workTimeSettingList.stream().filter(wt -> wt.getWorktimeCode().equals(workTimeCode)).findFirst();
 
             // 4.1. 勤務形態を取得する() : return 就業時間帯の勤務形態
             val workTimeForm = workTimeSetOpt.get().getWorkTimeDivision().getWorkTimeForm();
@@ -181,10 +181,10 @@ public class ScheduleInformationByDateFileQuery {
             Integer workType = workTimeForm.value;
 
             // コア開始時刻 = Optional<計算時間帯>．開始時刻 : ※4.2で取得したもの。
-            Integer coreStartTime = coreTimeOpt.isPresent() ? coreTimeOpt.get().start() : null;
+            Integer coreStartTime = coreTimeOpt.map(TimeSpanForCalc::start).orElse(null);
 
             // コア終了時刻 = Optional<計算時間帯>．終了時刻 : ※4.2で取得したもの。
-            Integer coreEndTime = coreTimeOpt.isPresent() ? coreTimeOpt.get().end() : null;
+            Integer coreEndTime = coreTimeOpt.map(TimeSpanForCalc::end).orElse(null);
 
             // 就業時間合計=日別勤怠(Work).勤怠時間.勤務時間.総労働時間.所定内時間.就業時間
             Integer totalWorkingHours = dailyInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
@@ -192,7 +192,8 @@ public class ScheduleInformationByDateFileQuery {
 
             // 休憩時間合計=日別勤怠(Work).勤怠時間.勤務時間.総労働時間.休憩時間.計上用合計時間.合計時間.時間
             Integer totalBreakTime = dailyInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
-                    .getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v();
+                    .getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime() != null ? dailyInfo.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+                    .getTotalWorkingTime().getBreakTimeOfDaily().getToRecordTotalTime().getTotalTime().getTime().v() : null;
 
             // List<残業時間帯>
             val overTimeSheets = this.getOverTimeSheets(workTimeForm, lstOver);
