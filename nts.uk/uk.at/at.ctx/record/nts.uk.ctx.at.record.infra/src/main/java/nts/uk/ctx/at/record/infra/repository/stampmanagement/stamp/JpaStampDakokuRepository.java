@@ -179,14 +179,9 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						: null,  // WORKPLACE_ID
 				(stamp.getRefActualResults() != null && stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().isPresent())
 						? stamp.getRefActualResults().getWorkInforStamp().get().getEmpInfoTerCode().get().toString()
-<<<<<<< HEAD
 						: null,
-				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent()) ? stamp.getImprintReflectionStatus().getReflectedDate().get() : null // REFLECTED_INTO_DATE
-		);	
-=======
-						: null, // TIME_RECORD_CODE
+				(stamp.getImprintReflectionStatus() != null && stamp.getImprintReflectionStatus().getReflectedDate().isPresent()) ? stamp.getImprintReflectionStatus().getReflectedDate().get() : null, // REFLECTED_INTO_DATE,
 				stamp.getStampRecordId()); 
->>>>>>> uk/release_bug901
 		
 		
 		
@@ -224,12 +219,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 						stampNumber, 
 						entity.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-<<<<<<< HEAD
-						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty());
-=======
-						entity.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty(), entity.stampRecordId);
->>>>>>> uk/release_bug901
-
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty(), entity.stampRecordId);
 	}
 	
 	private Stamp toDomainVer2(Object[] object) {

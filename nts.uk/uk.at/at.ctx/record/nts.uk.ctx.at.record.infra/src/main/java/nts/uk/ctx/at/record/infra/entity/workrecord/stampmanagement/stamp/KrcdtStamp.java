@@ -260,12 +260,8 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 						stampNumber, 
 						this.pk.stampDateTime,
 						relieve, stampType, refectActualResult,
-<<<<<<< HEAD
-						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty());
-=======
-						this.reflectedAtr, Optional.ofNullable(geoLocation), Optional.empty(),
+						imprintReflectionState, Optional.ofNullable(geoLocation), Optional.empty(),
 						this.stampRecordId);
->>>>>>> uk/release_bug901
 
 	}
 }

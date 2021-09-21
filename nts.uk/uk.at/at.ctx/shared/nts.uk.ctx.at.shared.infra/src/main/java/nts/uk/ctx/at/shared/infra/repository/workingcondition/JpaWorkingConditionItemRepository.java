@@ -38,8 +38,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.workingcondition.HourlyPaymentAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
@@ -1106,10 +1106,10 @@ public class JpaWorkingConditionItemRepository extends JpaRepository
 		// autoStampSetAtr
 		NotUseAtr autoStampSetAtr = NotUseAtr.valueOf(e.getAutoStampSetAtr());
 		// holidayAddTimeSet
-		BreakdownTimeDay holidayAddTimeSet = null;
+		BreakDownTimeDay holidayAddTimeSet = null;
 		Integer hdAddTimeOneDay = e.getHdAddTimeOneDay();
 		holidayAddTimeSet = hdAddTimeOneDay != null
-				? new BreakdownTimeDay(e.getHdAddTimeOneDay() != null? new AttendanceTime(e.getHdAddTimeOneDay()): null,
+				? new BreakDownTimeDay(e.getHdAddTimeOneDay() != null? new AttendanceTime(e.getHdAddTimeOneDay()): null,
 								e.getHdAddTimeMorning() != null ? new AttendanceTime(e.getHdAddTimeMorning()) : null,
 										e.getHdAddTimeAfternoon() != null ? new AttendanceTime(e.getHdAddTimeAfternoon()): null)
 				: null;

@@ -392,7 +392,7 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 			val perDay = new PersonalDayOfWeek(Optional.empty(), Optional.empty(), Optional.empty()
 					, Optional.empty(), Optional.empty(), Optional.empty()
 					, Optional.empty());
-<<<<<<< HEAD
+
 			val perCate = new PersonalWorkCategory(
 					new SingleDaySchedule(Collections.emptyList(), Optional.empty())
 					, new SingleDaySchedule(Collections.emptyList(), Optional.empty())
@@ -400,16 +400,10 @@ public class GetLegalWorkTimeOfEmployeeServiceTest {
 					);
 			val workTypeByIndividualWorkDay = new WorkTypeByIndividualWorkDay( new WorkTypeCode("001WC"), new WorkTypeCode("002WC"), new WorkTypeCode("003WC"), Optional.empty(), Optional.empty(), Optional.empty());
 			val workByIndividualWorkDay =new nts.uk.ctx.at.shared.dom.workingcondition.WorkByIndividualWorkDay(perCate, workTypeByIndividualWorkDay);
-			val holidayAddTimeSet = new BreakdownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
+			val holidayAddTimeSet = new BreakDownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
 			val workScheduleBusCal = new WorkScheduleBusCal(
 					WorkScheduleMasterReferenceAtr.WORK_PLACE
 					,TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK);
-=======
-			val holidayAddTimeSet = new BreakDownTimeDay(new AttendanceTime(120), new AttendanceTime(30), new AttendanceTime(30));
-			val workScheduleBusCal = new WorkScheduleBusCal(WorkScheduleMasterReferenceAtr.WORK_PLACE
-					, WorkScheduleMasterReferenceAtr.WORK_PLACE
-					, TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK);
->>>>>>> uk/release_bug901
 			val monthlyPatter = new MonthlyPatternWorkScheduleCre(0);
 			val scheduleMethod =  new ScheduleMethod(0, workScheduleBusCal, monthlyPatter);
 			val timeApply = new BonusPaySettingCode("001");

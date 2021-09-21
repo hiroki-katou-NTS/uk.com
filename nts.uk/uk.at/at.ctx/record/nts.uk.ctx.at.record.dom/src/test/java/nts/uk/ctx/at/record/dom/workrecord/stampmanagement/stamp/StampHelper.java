@@ -18,7 +18,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
@@ -48,15 +47,10 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
 								new AttendanceTime(0))),
-<<<<<<< HEAD
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty()
-=======
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY"
->>>>>>> uk/release_bug901
 				);
 	}
 	
@@ -81,15 +75,10 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
-<<<<<<< HEAD
 				new ImprintReflectionState(true, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty());
-=======
-				true,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY");
->>>>>>> uk/release_bug901
 	}
 	
 	public static Stamp getStampByChangeClockArt(String stampNumber,ChangeClockArt changeClockArt,GeneralDateTime dateTime) {
@@ -113,15 +102,10 @@ public class StampHelper {
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
 								new AttendanceTime(2))),
-<<<<<<< HEAD
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty()
-=======
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY"
->>>>>>> uk/release_bug901
 				);
 	}
 	public static List<Stamp> getListStampDefault() {
@@ -136,15 +120,10 @@ public class StampHelper {
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-<<<<<<< HEAD
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty())
-=======
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY")
->>>>>>> uk/release_bug901
 				);
 		data.add(new Stamp(new ContractCode("DUMMY"),new StampNumber("stampNumber"), GeneralDateTime.now(),
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
@@ -155,15 +134,10 @@ public class StampHelper {
 								Optional.of(new SupportCardNumber(9999))),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
-<<<<<<< HEAD
 				new ImprintReflectionState(false, Optional.empty()),
 				Optional.ofNullable(getGeoCoordinateDefault()),
-				Optional.empty())
-=======
-				false,Optional.ofNullable(getGeoCoordinateDefault()),
 				Optional.empty(),
 				"DUMMY")
->>>>>>> uk/release_bug901
 				);
 		return data;
 	}
