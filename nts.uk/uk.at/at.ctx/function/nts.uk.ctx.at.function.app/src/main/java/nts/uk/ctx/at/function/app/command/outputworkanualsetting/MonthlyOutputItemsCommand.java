@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.OutputItemNameOfAnnualWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.FormOutputItemName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItem;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemDetailAttItem;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.OutputItemWorkLedger;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.DailyMonthlyClassification;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.IndependentCalcClassic;
@@ -42,9 +44,9 @@ public class MonthlyOutputItemsCommand {
     //  選択勤怠項目リスト
     private List<OutputItemDetailAttItemCommand> selectedAttendanceItemList;
 
-    public static OutputItem toDomain(MonthlyOutputItemsCommand command){
-        return new OutputItem(
-            command.rank,new FormOutputItemName(command.name),
+    public static OutputItemWorkLedger toDomain(MonthlyOutputItemsCommand command){
+        return new OutputItemWorkLedger(
+            command.rank,new OutputItemNameOfAnnualWorkLedger(command.name),
             command.printTargetFlag,
             EnumAdaptor.valueOf(command.independentCalcClassic, IndependentCalcClassic.class),
             EnumAdaptor.valueOf(command.dailyMonthlyClassification, DailyMonthlyClassification.class),

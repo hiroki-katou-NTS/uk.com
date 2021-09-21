@@ -107,7 +107,7 @@ public class StampRecordDto {
 				this.overTime = getTimeString(overtime.getOverTime().v());
 				this.overLateNightTime = getTimeString(overtime.getOverLateNightTime().v());
 			}
-			this.reflectedCategory = stamp.isReflectedCategory();
+			this.reflectedCategory = stamp.getImprintReflectionStatus().isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
 				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
 				this.latitude = stampLocate.getLatitude();
@@ -162,7 +162,7 @@ public class StampRecordDto {
 				this.overTime = getTimeString(overtime.getOverTime().v());
 				this.overLateNightTime = getTimeString(overtime.getOverLateNightTime().v());
 			}
-			this.reflectedCategory = stamp.isReflectedCategory();
+			this.reflectedCategory = stamp.getImprintReflectionStatus().isReflectedCategory();
 			if (stamp.getLocationInfor().isPresent()) {
 				GeoCoordinate stampLocate = stamp.getLocationInfor().get();
 				this.latitude = stampLocate.getLatitude();
@@ -266,10 +266,10 @@ public class StampRecordDto {
 			return ContentsStampType.END_SUPPORT.value;
 		}
 		// 16 出勤+応援 None None False => 退勤系
-		if (changeClockArt == ChangeClockArt.SUPPORT.value && changeCalArt == ChangeCalArt.NONE.value
-				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
-			return ContentsStampType.WORK_SUPPORT.value;
-		}
+//		if (changeClockArt == ChangeClockArt.SUPPORT.value && changeCalArt == ChangeCalArt.NONE.value
+//				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {
+//			return ContentsStampType.WORK_SUPPORT.value;
+//		}
 		// 17 応援開始 早出 NONE False => 出勤系
 		if (changeClockArt == ChangeClockArt.START_OF_SUPPORT.value && changeCalArt == ChangeCalArt.EARLY_APPEARANCE.value
 				&& setPreClockArt == SetPreClockArt.NONE.value && changeHalfDay == false) {

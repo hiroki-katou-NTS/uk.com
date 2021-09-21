@@ -20,6 +20,9 @@ public class ExOutSetting {
 	private boolean standardType;
 	private List<String> sidList;
 	private ExecutionForm executeForm = ExecutionForm.MANUAL_EXECUTION;
+	// For automatic execution
+	private String cid;
+	private String conditionSetName;
 	
 	public ExOutSetting(String conditionSetCd, String userId, Integer categoryId, GeneralDate startDate, GeneralDate endDate,
 			GeneralDate referenceDate, String processingId, boolean standardType, List<String> sidList) {

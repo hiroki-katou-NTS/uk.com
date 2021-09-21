@@ -604,6 +604,12 @@ __viewContext.ready(function () {
     
     $("#extable").exTable("scrollBack", 0, { h: 1050 });
     console.log(performance.now() - start);
+//    $("#extable").exTable("lockCell", "5", "_5");
+//    $("#extable").exTable("lockCell", "200", "_5");
+    
+    $("#extable").on("extablecelldetermined", () => {
+
+    });
     
     let leftHorzColumns2 = [
         { headerText: "項目名", key: "itemName", width: "200px" },

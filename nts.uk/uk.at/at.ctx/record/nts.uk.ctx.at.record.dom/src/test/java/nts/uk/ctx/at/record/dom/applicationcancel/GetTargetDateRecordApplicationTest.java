@@ -59,7 +59,7 @@ public class GetTargetDateRecordApplicationTest {
 		};
 
 		Pair<Optional<GeneralDate>, Optional<Stamp>> actualResult = GetTargetDateRecordApplication
-				.getTargetDate(require, appShare);
+				.getTargetDate(require, "", appShare);
 
 		Stamp expectedResult = new Stamp(new ContractCode("1"), //契約コード
 				new StampNumber("1"),//打刻カード

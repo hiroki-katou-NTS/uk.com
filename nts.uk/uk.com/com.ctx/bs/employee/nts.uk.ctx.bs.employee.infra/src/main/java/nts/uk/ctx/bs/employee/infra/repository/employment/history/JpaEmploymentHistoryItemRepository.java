@@ -609,11 +609,13 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	public void addAll(List<EmploymentHistoryItem> domains) {
 		String INS_SQL = "INSERT INTO BSYMT_AFF_EMP_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
-				+ " HIST_ID, SID, EMP_CD,"
+				+ " CONTRACT_CD, HIST_ID, SID, EMP_CD,"
 				+ " SALARY_SEGMENT)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
 				+ " UPD_DATE_VAL, UPD_CCD_VAL, UPD_SCD_VAL, UPD_PG_VAL,"
-				+ " HIST_ID_VAL, SID_VAL, EMP_CD_VAL, SALARY_SEGMENT_VAL); ";
+				+ " CONTRACT_CD_VAL, HIST_ID_VAL, SID_VAL, EMP_CD_VAL, SALARY_SEGMENT_VAL); ";
+		
+		String contractCode = AppContexts.user().contractCode();
 		String insCcd = AppContexts.user().companyCode();
 		String insScd = AppContexts.user().employeeCode();
 		String insPg = AppContexts.programId();
@@ -633,6 +635,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 			sql = sql.replace("UPD_SCD_VAL", "'" + updScd + "'");
 			sql = sql.replace("UPD_PG_VAL", "'" + updPg + "'");
 			
+			sql = sql.replace("CONTRACT_CD_VAL", "'" + contractCode + "'");
 			sql = sql.replace("HIST_ID_VAL", "'" + c.getHistoryId() + "'");
 			sql = sql.replace("SID_VAL", "'" + c.getEmployeeId() + "'");
 			sql = sql.replace("EMP_CD_VAL", "'" + c.getEmploymentCode().v() + "'");
