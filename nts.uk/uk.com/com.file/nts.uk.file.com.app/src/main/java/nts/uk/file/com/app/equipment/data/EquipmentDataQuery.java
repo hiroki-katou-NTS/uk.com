@@ -21,4 +21,6 @@ public class EquipmentDataQuery {
 	 * 年月
 	 */
 	private int ym;
+	
+	private int printType;
 }

@@ -14,7 +14,6 @@ module nts.uk.com.view.oew001.a {
   export class ScreenModel extends ko.ViewModel {
     selectedEquipmentClsCode: KnockoutObservable<string> = ko.observable("");
     equipmentClsName: KnockoutObservable<string> = ko.observable("");
-    equipmentInfoList: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedEquipmentInfoCode: KnockoutObservable<string> = ko.observable("");
     yearMonth: KnockoutObservable<string> = ko.observable("");
     hasExtractData: KnockoutObservable<boolean> = ko.observable(false);
@@ -45,9 +44,6 @@ module nts.uk.com.view.oew001.a {
       vm.equipmentClassification.subscribe(value => {
         vm.selectedEquipmentClsCode(value.code);
         vm.equipmentClsName(value.name);
-      });
-      vm.selectedEquipmentClsCode.subscribe(value => {
-        vm.equipmentInfoList(_.filter(vm.equipmentInformationList(), { "equipmentClsCode": value }));
       });
     }
 
@@ -132,7 +128,7 @@ module nts.uk.com.view.oew001.a {
         equipmentClsCode: vm.selectedEquipmentClsCode(),
         equipmentClsName: vm.equipmentClsName(),
         equipmentInfoCode: vm.selectedEquipmentInfoCode(),
-        equipmentInfoName: _.find(vm.equipmentInfoList(), { "code": vm.selectedEquipmentInfoCode() }).name,
+        equipmentInfoName: _.find(vm.equipmentInformationList(), { "code": vm.selectedEquipmentInfoCode() }).name,
         sid: __viewContext.user.employeeId,
         employeeName: ko.observable(null)
       });
@@ -160,16 +156,36 @@ module nts.uk.com.view.oew001.a {
 
     public openDialogC() {
       const vm = this;
-      vm.$window.modal("/view/oew/001/c/index.xhtml");
+      const param = {
+        equipmentClsCode: vm.selectedEquipmentClsCode(),
+        equipmentClsName: vm.equipmentClsName(),
+        equipmentCode: vm.selectedEquipmentInfoCode(),
+        yearMonth: vm.yearMonth()
+      }
+      vm.$window.modal("/view/oew/001/c/index.xhtml", param);
     }
 
     public openDialogD() {
       const vm = this;
-      vm.$window.modal("/view/oew/001/d/index.xhtml", vm.selectedEquipmentClsCode())
+      const paramDialogD = {
+        equipmentClsCode: vm.selectedEquipmentClsCode(),
+        isOpenFromA: true
+      }
+      vm.$window.modal("/view/oew/001/d/index.xhtml", paramDialogD)
         .then(result => {
-          vm.selectedEquipmentClsCode(result.code);
-          vm.equipmentClsName(result.name);
-          vm.$nextTick(() => $("#A4_3").focus());
+          if (!!result) {
+            vm.$blockui("grayout");
+            vm.selectedEquipmentClsCode(result.code);
+            vm.equipmentClsName(result.name);
+
+            const param = {
+              equipmentClsCode: vm.selectedEquipmentClsCode(),
+              baseDate: moment.utc().toISOString(),
+              isInput: true
+            };
+            vm.$ajax(API.getEquipmentInfoList, param).then(result => vm.equipmentInformationList(result)).always(() => vm.$blockui("clear"));
+            vm.$nextTick(() => $("#A4_3").focus());
+          }
         });
     }
 
@@ -262,13 +278,14 @@ module nts.uk.com.view.oew001.a {
         const itemSetting = _.find(itemSettings, { itemNo: itemData.itemNo });
         const itemDisplay = _.find(formatSetting.itemDisplaySettings, { itemNo: itemData.itemNo });
         const itemCls = itemSetting.inputControl.itemCls;
+        const actualValue = itemCls === model.enums.ItemClassification.TIME ? (nts.uk.time as any).format.byId("Time_Short_HM", itemData.actualValue)
+                                                                            : itemData.actualValue;
 
         return new model.OptionalItem({
           itemName: itemSetting.items.itemName,
           itemCls: itemCls,
-          value: ko.observable(itemData.actualValue),
-          // TODO: gán tạm bằng 項目表示.表示幅
-          width: itemDisplay.displayWidth,
+          value: ko.observable(actualValue),
+          width: itemDisplay.displayWidth * model.constants.FIXED_VALUE_A,
           displayOrder: itemDisplay.displayOrder,
         });
         // Sort optionalItems by 表示順番

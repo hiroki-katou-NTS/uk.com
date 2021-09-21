@@ -9,7 +9,7 @@
       <script>
         var dialogSize = {
           width: 400,
-          height: 250
+          height: 300
         };
       </script>
       <com:stylefile path="oew001.c.style.css" />
@@ -29,11 +29,12 @@
           <div id="C2_1" class="setting-label" data-bind="ntsFormLabel: {}">#{i18n.getText('OEW001_42')}</div> 
           <div id="C2_2" data-bind="ntsComboBox: {
             name: '#[OEW001_43]',
-            options: equipmentInfoList,
+            options: equipmentInformationList,
             optionsValue: 'code',
             optionsText: 'name',
             value: selectedEquipmentInfoCode,
             visibleItemsCount: 8,
+            enable: ko.computed(function() { return !isSelectAll(); }),
             columns: [
               { prop: 'code', length: 5 },
               { prop: 'name', length: 30 }
@@ -49,6 +50,7 @@
             valueFormat: 'YYYYMM',
             showJumpButtons: true
           }" tabindex="3"></div>
+        </div>
       </div>
       <div id="functions-area-bottom">
         <button id="C4_1" class="large proceed" data-bind="click: processExportExcel">#{i18n.getText('OEW001_46')}</button>
