@@ -151,7 +151,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 						return condition;
 					});
 				if(appNameInfo) {
-					$('.pg-name > span').text(appNameInfo.opProgramID + opString + " " + appNameInfo.appName);
+					$('.pg-name > span').text(appNameInfo.appName);
 				} else {
 					$('.pg-name > span').text("");
 				}
