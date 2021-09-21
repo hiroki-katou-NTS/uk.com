@@ -33,162 +33,162 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 @RunWith(JMockit.class)
 public class CreateStampDataForEmployeesServiceTest {
 
-	@Injectable
-	private Require require;
-	
-	/**
-	 * require.getLstStampCardBySidAndContractCd(employeeId) is empty
-	 * Throw Msg_433
-	 */
-	@Test
-	public void testCreateStampDataForEmployee_1() {
-		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
-		String employeeId = "employeeId";//dummy
-		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
-		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
-		Relieve relieve = StampHelper.getRelieveDefault();//dummy
-		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
-		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
-		
-		new Expectations() {
-			{
-				require.getLstStampCardBySidAndContractCd(employeeId);
-			}
-		};
-		
-		NtsAssert.businessException("Msg_433", () -> CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor));
-	}
-	
-	/**
-	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
-	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType().isPensent() == true;
-	 * positionInfo.isPresent() == true
-	 */
-	@Test
-	public void testCreateStampDataForEmployee_2() {
-		
-		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
-		String employeeId = "employeeId";//dummy
-		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
-		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
-		Relieve relieve = StampHelper.getRelieveDefault();//dummy
-		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
-		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
-		
-		
-		new Expectations() {
-			{
-				require.getLstStampCardBySidAndContractCd(employeeId);
-				result = Arrays.asList(
-						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
-						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
-								GeneralDate.today().addDays(-10)),
-						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
-								GeneralDate.today().addDays(-3)));
-			}
-		};
-		
-		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor);
-		
-		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
-		
-		NtsAssert.atomTask(
-				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
-				any -> require.insert((StampRecord) any.get()),
-				any -> require.insert((Stamp) any.get())
-		);
-	}
-	
-	/**
-	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
-	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType().isPensent() == true;
-	 * positionInfo.isPresent() == false
-	 */
-	@Test
-	public void testCreateStampDataForEmployee_3() {
-		
-		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
-		String employeeId = "employeeId";//dummy
-		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
-		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
-		Relieve relieve = StampHelper.getRelieveDefault();//dummy
-		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
-		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(null);//dummy
-		
-		new Expectations() {
-			{
-				require.getLstStampCardBySidAndContractCd(employeeId);
-				result = Arrays.asList(
-						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
-						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
-								GeneralDate.today().addDays(-10)),
-						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
-								GeneralDate.today().addDays(-3)));
-			}
-		};
-		
-		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor);
-		
-		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
-		
-		NtsAssert.atomTask(
-				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
-				any -> require.insert((StampRecord) any.get()),
-				any -> require.insert((Stamp) any.get())
-		);
-		
-	}
-	
-	/**
-	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
-	 * 打刻区分を取得する
-	 * ButtonType buttonType.getStampType().isPensent() == false;
-	 */
-	@Test
-	public void testCreateStampDataForEmployee_4() {
-		
-		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
-		String employeeId = "employeeId";//dummy
-		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
-		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
-		Relieve relieve = StampHelper.getRelieveDefault();//dummy
-		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
-		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
-		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
-		
-		new Expectations() {
-			{
-				require.getLstStampCardBySidAndContractCd(employeeId);
-				result = Arrays.asList(
-						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
-						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
-								GeneralDate.today().addDays(-10)),
-						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
-								GeneralDate.today().addDays(-3)));
-			}
-		};
-		
-		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
-				require, "", contractCd, employeeId, stampNumber, stampDateTime,
-				relieve, buttonType, refActualResults, stampLocationInfor);
-		
-		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
-		NtsAssert.atomTask(
-				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
-				any -> require.insert((StampRecord) any.get())
-		);
-	}
+//	@Injectable
+//	private Require require;
+//	
+//	/**
+//	 * require.getLstStampCardBySidAndContractCd(employeeId) is empty
+//	 * Throw Msg_433
+//	 */
+//	@Test
+//	public void testCreateStampDataForEmployee_1() {
+//		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
+//		String employeeId = "employeeId";//dummy
+//		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+//		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
+//		Relieve relieve = StampHelper.getRelieveDefault();//dummy
+//		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
+//		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+//		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
+//		
+//		new Expectations() {
+//			{
+//				require.getLstStampCardBySidAndContractCd(employeeId);
+//			}
+//		};
+//		
+//		NtsAssert.businessException("Msg_433", () -> CreateStampDataForEmployeesService.create(
+//				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+//				relieve, buttonType, refActualResults, stampLocationInfor));
+//	}
+//	
+//	/**
+//	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
+//	 * 打刻区分を取得する
+//	 * ButtonType buttonType.getStampType().isPensent() == true;
+//	 * positionInfo.isPresent() == true
+//	 */
+//	@Test
+//	public void testCreateStampDataForEmployee_2() {
+//		
+//		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
+//		String employeeId = "employeeId";//dummy
+//		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+//		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
+//		Relieve relieve = StampHelper.getRelieveDefault();//dummy
+//		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
+//		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+//		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
+//		
+//		
+//		new Expectations() {
+//			{
+//				require.getLstStampCardBySidAndContractCd(employeeId);
+//				result = Arrays.asList(
+//						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
+//						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
+//								GeneralDate.today().addDays(-10)),
+//						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
+//								GeneralDate.today().addDays(-3)));
+//			}
+//		};
+//		
+//		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
+//				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+//				relieve, buttonType, refActualResults, stampLocationInfor);
+//		
+//		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
+//		
+//		NtsAssert.atomTask(
+//				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
+//				any -> require.insert((StampRecord) any.get()),
+//				any -> require.insert((Stamp) any.get())
+//		);
+//	}
+//	
+//	/**
+//	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
+//	 * 打刻区分を取得する
+//	 * ButtonType buttonType.getStampType().isPensent() == true;
+//	 * positionInfo.isPresent() == false
+//	 */
+//	@Test
+//	public void testCreateStampDataForEmployee_3() {
+//		
+//		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
+//		String employeeId = "employeeId";//dummy
+//		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+//		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
+//		Relieve relieve = StampHelper.getRelieveDefault();//dummy
+//		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
+//		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+//		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(null);//dummy
+//		
+//		new Expectations() {
+//			{
+//				require.getLstStampCardBySidAndContractCd(employeeId);
+//				result = Arrays.asList(
+//						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
+//						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
+//								GeneralDate.today().addDays(-10)),
+//						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
+//								GeneralDate.today().addDays(-3)));
+//			}
+//		};
+//		
+//		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
+//				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+//				relieve, buttonType, refActualResults, stampLocationInfor);
+//		
+//		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
+//		
+//		NtsAssert.atomTask(
+//				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
+//				any -> require.insert((StampRecord) any.get()),
+//				any -> require.insert((Stamp) any.get())
+//		);
+//		
+//	}
+//	
+//	/**
+//	 * require.getLstStampCardBySidAndContractCd(employeeId) not empty
+//	 * 打刻区分を取得する
+//	 * ButtonType buttonType.getStampType().isPensent() == false;
+//	 */
+//	@Test
+//	public void testCreateStampDataForEmployee_4() {
+//		
+//		ContractCode contractCd =  new ContractCode("DUMMY");//dummy
+//		String employeeId = "employeeId";//dummy
+//		Optional<StampNumber> stampNumber =  Optional.ofNullable(new StampNumber(""));
+//		GeneralDateTime stampDateTime = GeneralDateTime.now();//dummy
+//		Relieve relieve = StampHelper.getRelieveDefault();//dummy
+//		ButtonType buttonType = DomainServiceHeplper.getButtonTypeDefault();//dummy
+//		RefectActualResult refActualResults = StampHelper.getRefectActualResultDefault();//dummy
+//		Optional<GeoCoordinate> stampLocationInfor = Optional.ofNullable(StampHelper.getGeoCoordinateDefault());//dummy
+//		
+//		new Expectations() {
+//			{
+//				require.getLstStampCardBySidAndContractCd(employeeId);
+//				result = Arrays.asList(
+//						StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()),
+//						StampHelper.getStampCardByInput("stampCardId2", "stampNumber2",
+//								GeneralDate.today().addDays(-10)),
+//						StampHelper.getStampCardByInput("stampCardId3", "stampNumber3",
+//								GeneralDate.today().addDays(-3)));
+//			}
+//		};
+//		
+//		TimeStampInputResult stampDataReflectResult = CreateStampDataForEmployeesService.create(
+//				require, "", contractCd, employeeId, stampNumber, stampDateTime,
+//				relieve, buttonType, refActualResults, stampLocationInfor);
+//		
+//		assertThat(stampDataReflectResult.getStampDataReflectResult().getReflectDate().isPresent()).isFalse();
+//		NtsAssert.atomTask(
+//				() -> stampDataReflectResult.getStampDataReflectResult().getAtomTask(),
+//				any -> require.insert((StampRecord) any.get())
+//		);
+//	}
 	
 	
 
