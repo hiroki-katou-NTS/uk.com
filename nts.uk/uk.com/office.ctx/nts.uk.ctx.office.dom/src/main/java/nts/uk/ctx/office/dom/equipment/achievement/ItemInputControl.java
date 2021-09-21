@@ -27,7 +27,7 @@ public class ItemInputControl extends ValueObject {
 	private boolean require;
 	
 	// 桁数
-	private Optional<Integer> digitsNo;
+	private Optional<DigitsNumber> digitsNo;
 	
 	// 最大値
 	private Optional<MaximumUsageRecord> maximum;
@@ -46,7 +46,7 @@ public class ItemInputControl extends ValueObject {
 	public ItemInputControl(
 			ItemClassification itemCls,
 			boolean require,
-			Optional<Integer> digitsNo,
+			Optional<DigitsNumber> digitsNo,
 			Optional<MaximumUsageRecord> maximum,
 			Optional<MinimumUsageRecord> minimum) {
 		// inv-1 項目分類　＝　文字　&&　桁数.isPresent()
@@ -92,7 +92,7 @@ public class ItemInputControl extends ValueObject {
 		I18NText error;
 		switch (itemCls) {
 			case TEXT:
-				if (this.digitsNo.get() < inputValue.length()) {
+				if (this.digitsNo.get().v() < inputValue.length()) {
 					error = I18NText.main("Msg_2229")
 							.addRaw(itemName.v())
 							.addRaw(this.digitsNo.get())
