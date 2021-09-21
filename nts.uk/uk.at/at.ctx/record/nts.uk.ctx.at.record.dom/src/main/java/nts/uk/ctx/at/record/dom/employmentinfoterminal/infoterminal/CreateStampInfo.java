@@ -127,7 +127,7 @@ public class CreateStampInfo implements DomainValue {
 	// [pvt-3] 打刻の打刻記録を作成
 	private StampRecord createStampRecord(ContractCode contractCode, StampReceptionData recept, Stamp stamp) {
 		ButtonType bt = new ButtonType(ReservationArt.NONE, Optional.of(stamp.getType()));
-		return new StampRecord(contractCode, new StampNumber(recept.getIdNumber()), recept.getDateTime(),
+		return new StampRecord(stamp.getStampRecordId(), contractCode, new StampNumber(recept.getIdNumber()), recept.getDateTime(),
 				new StampTypeDisplay(bt.getStampTypeDisplay()));
 	}
 }
