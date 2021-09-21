@@ -2,6 +2,7 @@ package nts.uk.ctx.office.dom.equipment.achievement.domain;
 
 import java.util.Optional;
 
+import nts.uk.ctx.office.dom.equipment.achievement.DigitsNumber;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemClassification;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemInputControl;
 import nts.uk.ctx.office.dom.equipment.achievement.MaximumUsageRecord;
@@ -17,7 +18,7 @@ public class ItemInputControlTestHelper {
 		ItemClassification itemCls = ItemClassification.TEXT;
 		boolean require = true;
 		// 桁数.isPresent()
-		Optional<Integer> digitsNo = Optional.empty();
+		Optional<DigitsNumber> digitsNo = Optional.empty();
 		Optional<MaximumUsageRecord> maximum = Optional.empty();
 		Optional<MinimumUsageRecord> minimum = Optional.empty();
 		return new ItemInputControl(itemCls, require, digitsNo, maximum, minimum);
@@ -34,7 +35,7 @@ public class ItemInputControlTestHelper {
 				? ItemClassification.NUMBER
 				: ItemClassification.TIME;
 		boolean require = true;
-		Optional<Integer> digitsNo = Optional.empty();
+		Optional<DigitsNumber> digitsNo = Optional.empty();
 		// 最大値.isPresent()
 		Optional<MaximumUsageRecord> maximum = Optional.empty();
 		Optional<MinimumUsageRecord> minimum = Optional.empty();
@@ -51,7 +52,7 @@ public class ItemInputControlTestHelper {
 				? ItemClassification.NUMBER
 				: ItemClassification.TIME;
 		boolean require = true;
-		Optional<Integer> digitsNo = Optional.empty();
+		Optional<DigitsNumber> digitsNo = Optional.empty();
 		Optional<MaximumUsageRecord> maximum = Optional.of(new MaximumUsageRecord(10));
 		// 最小値.isPresent()
 		Optional<MinimumUsageRecord> minimum = Optional.empty();
@@ -64,7 +65,7 @@ public class ItemInputControlTestHelper {
 	public static ItemInputControl newAddition(ItemClassification classification) {
 		ItemClassification itemCls = classification;
 		boolean require = true;
-		Optional<Integer> digitsNo = Optional.of(10);
+		Optional<DigitsNumber> digitsNo = Optional.of(new DigitsNumber(10));
 		Optional<MaximumUsageRecord> maximum = Optional.of(new MaximumUsageRecord(10));
 		Optional<MinimumUsageRecord> minimum = Optional.of(new MinimumUsageRecord(1));
 		return new ItemInputControl(itemCls, require, digitsNo, maximum, minimum);
@@ -75,7 +76,7 @@ public class ItemInputControlTestHelper {
 	 */
 	public static ItemInputControl caseRequire(boolean require) {
 		ItemClassification itemCls = ItemClassification.TEXT;
-		Optional<Integer> digitsNo = Optional.of(10);
+		Optional<DigitsNumber> digitsNo = Optional.of(new DigitsNumber(10));
 		Optional<MaximumUsageRecord> maximum = Optional.of(new MaximumUsageRecord(10));
 		Optional<MinimumUsageRecord> minimum = Optional.of(new MinimumUsageRecord(1));
 		return new ItemInputControl(itemCls, require, digitsNo, maximum, minimum);
@@ -86,7 +87,7 @@ public class ItemInputControlTestHelper {
 	 */
 	public static ItemInputControl caseText(Integer digitsNumber) {
 		ItemClassification itemCls = ItemClassification.TEXT;
-		Optional<Integer> digitsNo = Optional.of(digitsNumber);
+		Optional<DigitsNumber> digitsNo = Optional.of(new DigitsNumber(digitsNumber));
 		Optional<MaximumUsageRecord> maximum = Optional.of(new MaximumUsageRecord(10));
 		Optional<MinimumUsageRecord> minimum = Optional.of(new MinimumUsageRecord(1));
 		return new ItemInputControl(itemCls, true, digitsNo, maximum, minimum);
@@ -97,7 +98,7 @@ public class ItemInputControlTestHelper {
 	 */
 	public static ItemInputControl caseNumber(Integer max, Integer min) {
 		ItemClassification itemCls = ItemClassification.NUMBER;
-		Optional<Integer> digitsNo = Optional.empty();
+		Optional<DigitsNumber> digitsNo = Optional.empty();
 		Optional<MaximumUsageRecord> maximum = Optional.of(new MaximumUsageRecord(max));
 		Optional<MinimumUsageRecord> minimum = Optional.of(new MinimumUsageRecord(min));
 		return new ItemInputControl(itemCls, true, digitsNo, maximum, minimum);
@@ -108,7 +109,7 @@ public class ItemInputControlTestHelper {
 	 */
 	public static ItemInputControl caseTime(Integer max, Integer min) {
 		ItemClassification itemCls = ItemClassification.TIME;
-		Optional<Integer> digitsNo = Optional.empty();
+		Optional<DigitsNumber> digitsNo = Optional.empty();
 		Optional<MaximumUsageRecord> maximum = Optional.of(new MaximumUsageRecord(max));
 		Optional<MinimumUsageRecord> minimum = Optional.of(new MinimumUsageRecord(min));
 		return new ItemInputControl(itemCls, true, digitsNo, maximum, minimum);
