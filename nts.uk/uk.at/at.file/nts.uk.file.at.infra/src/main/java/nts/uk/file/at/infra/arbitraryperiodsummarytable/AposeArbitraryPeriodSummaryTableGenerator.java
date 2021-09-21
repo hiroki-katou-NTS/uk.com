@@ -77,18 +77,16 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
         pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
 
-        pageSetup.setHeader(0, "&7&\"MSゴシック\"" + companyName);
-        pageSetup.setHeader(1, "&12&\"MSゴシック,Bold\"" + title);
+        pageSetup.setHeader(0, "&7&\"ＭＳ ゴシック\"" + companyName);
+        pageSetup.setHeader(1, "&12&\"ＭＳ ゴシック,Bold\"" + title);
 
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy/MM/dd  H:mm", Locale.JAPAN);
         pageSetup.setHeader(2,
-                "&7&\"MSゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
+                "&7&\"ＭＳ ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\n" +
                         TextResource.localize("page") + " &P");
-        pageSetup.setFitToPagesTall(0);
-        pageSetup.setFitToPagesWide(0);
         pageSetup.setCenterHorizontally(true);
-        pageSetup.setZoom(100);
+
     }
 
     private void printContents(Worksheet worksheetTemplate, Worksheet worksheet, ArbitraryPeriodSummaryDto dataSource) {
@@ -485,6 +483,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
             }
     }
     private void pageBreak (HorizontalPageBreakCollection pageBreaks,int count,Cells cells) throws Exception {
+        setTopBorderStyle(cells,count);
         pageBreaks.add(count);
         cells.copyRows(cells, 0, count, 5);
     }
@@ -494,5 +493,14 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 ||attributes == CommonAttributesOfForms.TIME
                 ||attributes == CommonAttributesOfForms.AMOUNT_OF_MONEY
                 ||attributes == CommonAttributesOfForms.NUMBER_OF_TIMES;
+    }
+    private void setTopBorderStyle(Cells cells,int index) {
+
+        for (int i = 0; i < 21; i++) {
+            val cell = cells.get(index - 1,i);
+            Style style = cell.getStyle();
+            style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.MEDIUM, Color.getBlack());
+            cell.setStyle(style);
+        }
     }
 }

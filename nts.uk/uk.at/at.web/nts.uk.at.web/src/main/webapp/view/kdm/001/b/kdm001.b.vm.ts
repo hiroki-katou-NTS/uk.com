@@ -42,6 +42,9 @@
         startDate: string = '';
         endDate: string = '';
 
+        // 119826
+        isManageTime: boolean;
+
         // Update ver48
         remainingData: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -149,6 +152,8 @@
                 block.clear();
                 nts.uk.ui.errors.clearAll();
             });
+
+            service.findComLeaveSetting().then((result: any) => self.isManageTime = result.compensatoryDigestiveTimeUnit.isManageByTime === 1);
         }
 
         openConfirmScreen() {
@@ -270,10 +275,10 @@
                     substituedexpiredDate = getText('KDM001_163', [data.deadLine]);
                 }
 
-                data.occurrenceHour = data.occurrenceHour === 0 ? '' : data.occurrenceHour;
-                data.digestionTimes = data.digestionTimes === 0 ? '' : data.digestionTimes;
-                data.usedTime = data.usedTime === 0 ? '' : data.usedTime;
-                data.remainingHours = data.remainingHours === 0 ? '' : data.remainingHours;
+                data.occurrenceHour = self.formatHour(data.occurrenceHour);
+                data.digestionTimes = self.formatHour(data.digestionTimes);
+                data.usedTime = self.formatHour(data.usedTime);
+                data.remainingHours = self.formatHour(data.remainingHours);
 
                 listData.push(new SubstitutedData(
                     `${data.occurrenceId}${data.digestionId}`,
@@ -301,6 +306,16 @@
             console.log("Data 1: ",self.subData);
             
             self.dispTotalRemainHours(self.totalRemainingNumber + getText('KDM001_27'));
+        }
+
+        formatHour(input: number) {
+          const self = this;
+          if (input === 0 || !self.isManageTime) {
+            return "";
+          }
+          const hour = input / 60 | 0;
+          const minute = input % 60 | 0;
+          return moment.utc().hours(hour).minutes(minute).format("h:mm");
         }
 
         initSubstituteDataList() {

@@ -170,8 +170,7 @@ public class RegisterDailyWork {
 			List<EmployeeDailyPerError> errors = integrationOfDaily.getEmployeeError().stream()
 					.filter(x -> x != null).collect(Collectors.toList());
 			dailyRecordAdUpService.adUpEmpError(integrationOfDaily.getEmployeeError(),
-					errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()),
-					true);
+					errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()));
 		}
 		
 		integrationOfDaily.getSnapshot().ifPresent(ss -> {

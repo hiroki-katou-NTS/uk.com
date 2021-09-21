@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 
 /**
@@ -64,7 +65,7 @@ public class WorkingConditionItem extends AggregateRoot {
 
 	/** The holiday add time set. */
 	// 休暇加算時間設定
-	private Optional<BreakdownTimeDay> holidayAddTimeSet;
+	private Optional<BreakDownTimeDay> holidayAddTimeSet;
 
 	/** The schedule method. */
 	// 予定作成方法
@@ -196,6 +197,7 @@ public class WorkingConditionItem extends AggregateRoot {
 	 * @param monthlyPattern
 	 * 			  the monthlyPattern
 	 */
+<<<<<<< HEAD
 	public WorkingConditionItem(
 			String historyId, 
 			ManageAtr scheduleManagementAtr, 
@@ -211,6 +213,13 @@ public class WorkingConditionItem extends AggregateRoot {
 			Integer hourlyPaymentAtr,
 			BonusPaySettingCode timeApply, 
 			MonthlyPatternCode monthlyPattern) {
+=======
+	public WorkingConditionItem(String historyId, ManageAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
+			PersonalWorkCategory workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
+			String employeeId, NotUseAtr vacationAddedTimeAtr, LaborContractTime contractTime, WorkingSystem laborSystem,
+			BreakDownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod, Integer hourlyPaymentAtr,
+			BonusPaySettingCode timeApply, MonthlyPatternCode monthlyPattern) {
+>>>>>>> uk/release_bug901
 		super();
 		this.historyId = historyId;
 		this.scheduleManagementAtr = scheduleManagementAtr;

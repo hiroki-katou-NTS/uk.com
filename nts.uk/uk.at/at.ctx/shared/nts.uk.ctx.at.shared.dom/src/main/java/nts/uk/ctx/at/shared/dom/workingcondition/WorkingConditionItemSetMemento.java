@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.workingcondition;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.common.time.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 
 /**
@@ -102,7 +103,7 @@ public interface WorkingConditionItemSetMemento {
 	 *
 	 * @param holidayAddTimeSet the new holiday add time set
 	 */
-	void setHolidayAddTimeSet(Optional<BreakdownTimeDay> holidayAddTimeSet);
+	void setHolidayAddTimeSet(Optional<BreakDownTimeDay> holidayAddTimeSet);
 	
 	/**
 	 * Sets the time apply.

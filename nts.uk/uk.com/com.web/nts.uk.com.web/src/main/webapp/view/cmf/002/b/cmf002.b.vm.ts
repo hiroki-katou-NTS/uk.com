@@ -103,14 +103,14 @@ module nts.uk.com.view.cmf002.b.viewmodel {
          * 起動する
          * アルゴリズム「外部出力条件設定一覧」を実行する
          */
-        initScreen(conditionSetCode :string){
+        initScreen(conditionSetCode :string): JQueryPromise<any>{
             block.invisible();
             let self = this;
             let itemList: Array<IConditionSet> = [];
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
-            service.getCndSet(self.roleAuthority)
+            return service.getCndSet(self.roleAuthority)
                 .then((itemList: Array<IConditionSet>) =>{
                     self.conditionSettingList.removeAll();
                     if (itemList && itemList.length > 0) {
@@ -380,10 +380,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             };
             service.register(data).done(result => {
                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                    self.initScreen(data.conditionSetCd);
-                    if(self.outputItemList() && self.outputItemList().length > 0) {
-                        self.getOutItem(data.conditionSetCd);
-                    }
+                    self.initScreen(data.conditionSetCode).then(() => {
+                      if(self.outputItemList() && self.outputItemList().length > 0) {
+                        self.getOutItem(data.conditionSetCode);
+                      }
+                    });
                 });
             }).fail(function(res: any) {
                 if(res)
