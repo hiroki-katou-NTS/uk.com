@@ -38,7 +38,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.GetListStampEmployeeService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.RetrieveNoStampCardRegisteredService;
@@ -152,9 +151,9 @@ public class OutputScreenListOfStampFinder {
 					val listStempInfoDisp = employeeStampInfo.getListStampInfoDisp();
 					for (val stampInfoDisp : listStempInfoDisp) {
 						val optStamp = stampInfoDisp.getStamp();
-						if (!optStamp.isEmpty()) {
-							if (optStamp.get(0).getRefActualResults().getWorkInforStamp().isPresent()) {
-								val workLocationCD = optStamp.get(0).getRefActualResults().getWorkInforStamp().get().getWorkLocationCD();
+						if (!optStamp.isPresent()) {
+							if (optStamp.get().getRefActualResults().getWorkInforStamp().isPresent()) {
+								val workLocationCD = optStamp.get().getRefActualResults().getWorkInforStamp().get().getWorkLocationCD();
 								if (workLocationCD.isPresent())
 									listWorkLocationCode.add(workLocationCD.get().v());
 							}
@@ -179,7 +178,7 @@ public class OutputScreenListOfStampFinder {
 		// 4 get* List<社員の打刻情報>.就業時間帯コード : List< 就業時間帯>
 		List<RefectActualResult> listRefectActualResult = listEmployeeStampInfo.stream().flatMap(c -> {
 			List<RefectActualResult> stampInfos = c.getListStampInfoDisp().stream().map(t -> t.getStamp())
-					.filter(s -> !s.isEmpty()).map(r -> r.get(0).getRefActualResults()).collect(Collectors.toList());
+					.filter(s -> !s.isPresent()).map(r -> r.get().getRefActualResults()).collect(Collectors.toList());
 			return stampInfos.stream();
 		}).collect(Collectors.toList());
 		List<WorkTimeCode> listWorkTime = listRefectActualResult.stream().map(c -> c.getWorkTimeCode())
@@ -195,7 +194,7 @@ public class OutputScreenListOfStampFinder {
 			// StampInfoDisp
 			for (val stampInfoDisp : item.getListStampInfoDisp()) {
 				EmployeEngravingInfor employeEngravingInfor = new EmployeEngravingInfor();
-				if(stampInfoDisp.getStamp().isEmpty()){
+				if(stampInfoDisp.getStamp().isPresent()){
 					employeEngravingInfor
 					.setWorkplaceCd((empInfo != null) ? empInfo.getWorkplace().getWorkplaceCode() : "");
 			employeEngravingInfor
@@ -213,9 +212,9 @@ public class OutputScreenListOfStampFinder {
 			employeEngravingInfor.setWorkTimeDisplayName("");
 			result.add(employeEngravingInfor);
 				}
-				if (stampInfoDisp.getStamp().isEmpty())
+				if (stampInfoDisp.getStamp().isPresent())
 					continue;
-				val stamp = stampInfoDisp.getStamp().get(0);
+				val stamp = stampInfoDisp.getStamp().get();
 
 				String local = "";
 				String optSupportCard = "";
@@ -347,7 +346,7 @@ public class OutputScreenListOfStampFinder {
 				stampDakokuRepository);
 		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod, contractCode);
 		List<RefectActualResult> listRefectActual = listStampInfoDisp.stream().map(c -> c.getStamp())
-				.filter(t -> !t.isEmpty()).distinct().map(g -> g.get(0).getRefActualResults())
+				.filter(t -> !t.isPresent()).distinct().map(g -> g.get().getRefActualResults())
 				.collect(Collectors.toList());
 		// 勤務場所コードリスト = 打刻情報リスト:map $.打刻場所distinct
 		List<String> listWorkLocationCd = listRefectActual.stream().filter(i -> i.getWorkInforStamp().isPresent()).map(c -> c.getWorkInforStamp().get().getWorkLocationCD())
@@ -386,12 +385,12 @@ public class OutputScreenListOfStampFinder {
 			// String latitude = "";
 			// longitude = "";
 
-			if (!stampInfoDisp.getStamp().isEmpty()) {
+			if (!stampInfoDisp.getStamp().isPresent()) {
 
-				stampMeans = stampInfoDisp.getStamp().get(0).getRelieve().getStampMeans().name;
-				authcMethod = stampInfoDisp.getStamp().get(0).getRelieve().getAuthcMethod().name;
+				stampMeans = stampInfoDisp.getStamp().get().getRelieve().getStampMeans().name;
+				authcMethod = stampInfoDisp.getStamp().get().getRelieve().getAuthcMethod().name;
 
-				val refActualResults = stampInfoDisp.getStamp().get(0).getRefActualResults();
+				val refActualResults = stampInfoDisp.getStamp().get().getRefActualResults();
 				if (refActualResults.getWorkInforStamp().isPresent()) {
 					val workLocationCD = refActualResults.getWorkInforStamp().get().getWorkLocationCD();
 					if (workLocationCD.isPresent()) {
@@ -407,7 +406,7 @@ public class OutputScreenListOfStampFinder {
 					}
 				}
 				
-				val locationInfo = stampInfoDisp.getStamp().get(0).getLocationInfor();
+				val locationInfo = stampInfoDisp.getStamp().get().getLocationInfor();
 				if (locationInfo.isPresent()) {
 					Map<String, Boolean> gLocation = this.getLocation(new StampLocationInfor(locationInfo.get(), false));
 					if (!gLocation.isEmpty()) {

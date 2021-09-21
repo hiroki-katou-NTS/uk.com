@@ -28,6 +28,8 @@ public class EnterStampFromICCardService {
 	 * @param require
 	 * @param 契約コード
 	 *            contractCode
+	 * @param 会社ID
+	 *            companyID
 	 * @param 打刻カード番号
 	 *            stampNumber
 	 * @param 打刻日時

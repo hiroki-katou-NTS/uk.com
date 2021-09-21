@@ -19,8 +19,7 @@ module nts.uk.at.kdp003.a {
 		NOW: '/server/time/now',
 		NOTICE: 'at/record/stamp/notice/getStampInputSetting',
 		GET_WORKPLACE_BASYO: 'at/record/stamp/employment_system/get_location_stamp_input',
-		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input',
-		CREATE_DAILY: 'at/record/stamp/craeteDaily'
+		confirmUseOfStampInput: 'at/record/stamp/employment_system/confirm_use_of_stamp_input'
 	};
 
 	const DIALOG = {
@@ -1092,12 +1091,6 @@ module nts.uk.at.kdp003.a {
 																	vm.playAudio(btn.audioType);
 																	const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
 
-																	const param = {
-																		sid: employeeId,
-																		date: vm.$date.now()
-																	}
-																	vm.$ajax('at', API.CREATE_DAILY, param);
-
 																	if (notUseAttr === USE && [share.ChangeClockArt.WORKING_OUT].indexOf(btn.changeClockArt) > -1) {
 
 																		return storage('KDP010_2C', displayItemId)
@@ -1147,12 +1140,6 @@ module nts.uk.at.kdp003.a {
 													const { stampResultDisplay } = fingerStampSetting;
 													const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 													const { USE } = NotUseAtr;
-
-													const param = {
-														sid: employeeId,
-														date: vm.$date.now()
-													}
-													vm.$ajax('at', API.CREATE_DAILY, param);
 
 													vm.playAudio(btn.audioType);
 													const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };
@@ -1206,12 +1193,6 @@ module nts.uk.at.kdp003.a {
 												const { stampResultDisplay } = fingerStampSetting;
 												const { displayItemId, notUseAttr } = stampResultDisplay || { displayItemId: [], notUseAttr: 0 } as StampResultDisplay;
 												const { USE } = NotUseAtr;
-
-												const param = {
-													sid: employeeId,
-													date: vm.$date.now()
-												}
-												vm.$ajax('at', API.CREATE_DAILY, param);
 
 												vm.playAudio(btn.audioType);
 												const employeeInfo = { mode, employeeId, employeeCode, workPlaceId: vm.workPlaceId };

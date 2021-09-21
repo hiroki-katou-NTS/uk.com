@@ -317,7 +317,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE b"
 				+ "  on a.APP_ID = b.APP_ID and  a.CID = b.CID"
 				+ " WHERE  a.APPLICANTS_SID =  @sid "
-				+ " AND a.APP_START_DATE <= @strData " + " AND a.APP_END_DATE >= @endData " + " AND a.APP_TYPE IN @appType " 
+				+ " AND a.APP_START_DATE >= @strData " + " AND a.APP_END_DATE <= @endData " + " AND a.APP_TYPE IN @appType " 
 				+ " AND b.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY a.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)

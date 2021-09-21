@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDestinationOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInformationDomainService;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -77,7 +78,8 @@ public class ReflectAttendanceClock {
 	 */
 	public ReflectStampOuput reflect(String companyId, Stamp stamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
 		//反映先を取得する
-		TimePrintDestinationOutput timePrintDestinationOutput = getDestination(attendanceAtr, actualStampAtr, workNo, integrationOfDaily);
+			
+		TimePrintDestinationOutput timePrintDestinationOutput = getDestination(attendanceAtr, actualStampAtr, workNo, integrationOfDaily, stamp);
 		ReflectStampOuput reflectStampOuput = ReflectStampOuput.NOT_REFLECT;
 		//通常打刻の出退勤の反映条件を判断する
 		reflectStampOuput = reflectAttd(companyId, stamp, attendanceAtr, timePrintDestinationOutput,
@@ -115,7 +117,7 @@ public class ReflectAttendanceClock {
 	 * @param integrationOfDaily
 	 * @return
 	 */
-	public TimePrintDestinationOutput getDestination(AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily) {
+	public TimePrintDestinationOutput getDestination(AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr,int workNo,IntegrationOfDaily integrationOfDaily, Stamp stamp) {
 		//反映先の情報を取得する
 		if(integrationOfDaily.getAttendanceLeave().isPresent()) {
 			//出退勤打刻反映先にコピーする
@@ -142,9 +144,14 @@ public class ReflectAttendanceClock {
 				return null;
 			}
 			
+			Optional<TimeWithDayAttr> timeDestination = workStamp.get().getTimeDay().getTimeWithDay();
+			if (stamp.getStampDateTime().day() > integrationOfDaily.getYmd().day()) {
+				timeDestination = Optional.of(new TimeWithDayAttr(workStamp.get().getTimeDay().getTimeWithDay().get().v() - 1440));
+			}
+			
 			return new TimePrintDestinationOutput(workStamp.get().getLocationCode().isPresent()? workStamp.get().getLocationCode().get():null,
 					workStamp.get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(),
-					workStamp.get().getTimeDay().getTimeWithDay().get());
+					timeDestination.get());
 		}
 		return null;
 		

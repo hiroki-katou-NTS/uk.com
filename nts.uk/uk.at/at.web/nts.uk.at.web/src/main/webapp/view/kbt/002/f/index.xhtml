@@ -14,13 +14,11 @@
 			<div id="functions-area">
 				<!-- F1_1 -->
 				<a id="F1_1" tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KBT002_1')}</a>
+        <button id="F4_1" tabindex="2" data-bind="click: updateLastestInfo">#{i18n.getText('KBT002_263')}</button>
+        <button id="F4_2" tabindex="3" data-bind="click: exportHistoryLog">#{i18n.getText('KBT002_264')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="contents-container">
-					<div class="action-container">
-						<button id="F4_1" tabindex="2" data-bind="click: updateLastestInfo">#{i18n.getText('KBT002_263')}</button>
-						<button id="F4_2" tabindex="3" data-bind="click: exportHistoryLog">#{i18n.getText('KBT002_264')}</button>
-					</div>
 					<table id="F2_1"></table>
 				</div>
 			</div>
