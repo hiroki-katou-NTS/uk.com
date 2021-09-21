@@ -20,12 +20,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.DayNumberOfUse;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.TimeOfUse;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.childcarenurse.ChildCareNurseRemainingNumber;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.ChildCareNurseUpperLimitPeriod;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.FamilyInfo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
-import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 
 /**
  *  超過確認用使用数
@@ -313,15 +311,6 @@ public class ChildCareCheckOverUsedNumberWork {
 
 		// 子の看護・介護休暇基本情報を取得する（社員ID）
 		Optional<NursingCareLeaveRemainingInfo> employeeInfo(String employeeId, NursingCategory nursingCategory);
-
-		// 会社の年休設定を取得する（会社ID）
-		AnnualPaidLeaveSetting annualLeaveSet(String companyId);
-
-		// 社員の契約時間を取得する（社員ID、基準日）
-		LaborContractTime empContractTime(String employeeId, GeneralDate criteriaDate );
-
-		// 年休の契約時間を取得する（会社ID、社員ID、基準日）
-		LaborContractTime contractTime(String companyId, String employeeId,  GeneralDate criteriaDate);
 
 		// 社員IDが一致する家族情報を取得（社員ID）
 		List<FamilyInfo> familyInfo(String employeeId);
