@@ -1,4 +1,4 @@
-package nts.uk.ctx.office.infra.repository.equipment.information.data;
+package nts.uk.ctx.office.infra.repository.equipment.achievement;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.office.dom.equipment.achievement.DigitsNumber;
 import nts.uk.ctx.office.dom.equipment.achievement.DisplayOfItems;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.achievement.EquipmentUsageRecordItemSetting;
@@ -31,7 +32,7 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 	private EquipmentUsageRecordItemSetting toDomain(OfimtEquipmentDayItem entity) {
 		ItemInputControl inputControl = new ItemInputControl(
 				EnumAdaptor.valueOf(entity.getItemCls(), ItemClassification.class), entity.getRequire() == 1,
-				Optional.ofNullable(entity.getItemLength()).map(Integer::valueOf),
+				Optional.ofNullable(entity.getItemLength()).map(Integer::valueOf).map(DigitsNumber::new),
 				Optional.ofNullable(entity.getMaxValue()).map(MaximumUsageRecord::new),
 				Optional.ofNullable(entity.getMinValue()).map(MinimumUsageRecord::new));
 		DisplayOfItems items = new DisplayOfItems(new UsageItemName(entity.getItemName()),

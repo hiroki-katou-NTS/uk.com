@@ -2,6 +2,7 @@ package nts.uk.screen.com.app.find.equipment.achievement;
 
 import lombok.Builder;
 import lombok.Data;
+import nts.uk.ctx.office.dom.equipment.achievement.DigitsNumber;
 import nts.uk.ctx.office.dom.equipment.achievement.ItemInputControl;
 import nts.uk.ctx.office.dom.equipment.achievement.MaximumUsageRecord;
 import nts.uk.ctx.office.dom.equipment.achievement.MinimumUsageRecord;
@@ -26,7 +27,7 @@ public class ItemInputControlDto {
 	private Integer minimum;
 
 	public static ItemInputControlDto fromDomain(ItemInputControl domain) {
-		return ItemInputControlDto.builder().digitsNo(domain.getDigitsNo().orElse(null))
+		return ItemInputControlDto.builder().digitsNo(domain.getDigitsNo().map(DigitsNumber::v).orElse(null))
 				.itemCls(domain.getItemCls().value).maximum(domain.getMaximum().map(MaximumUsageRecord::v).orElse(null))
 				.minimum(domain.getMinimum().map(MinimumUsageRecord::v).orElse(null)).require(domain.isRequire())
 				.build();
