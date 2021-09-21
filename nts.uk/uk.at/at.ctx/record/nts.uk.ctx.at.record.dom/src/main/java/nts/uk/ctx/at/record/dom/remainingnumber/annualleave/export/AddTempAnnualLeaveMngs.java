@@ -71,7 +71,7 @@ public class AddTempAnnualLeaveMngs {
 						RemainAtr.SINGLE,			//		残数分類　←単一
 						new WorkTypeCode("1"), 	//		勤務種類 = 1
 						new TempAnnualLeaveUsedNumber(
-								Optional.of(new TmpDailyLeaveUsedDayNumber(calcUsedNumber)), null), 	//		年休使用数．日数　←求めた使用数
+								Optional.of(new TmpDailyLeaveUsedDayNumber(calcUsedNumber)), Optional.empty()), 	//		年休使用数．日数　←求めた使用数
 						Optional.empty()));	//		時間休暇種類．時間消化区分 = 1
 				});
 		}
