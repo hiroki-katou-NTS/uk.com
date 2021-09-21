@@ -288,7 +288,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             vm.$mask('hide');  
             let param;
 
-            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1913'  || err.messageId == 'Msg_1685') {
+            if (err.messageId == 'Msg_23' || err.messageId == 'Msg_24' || err.messageId == 'Msg_1912' || err.messageId == 'Msg_1913'  || err.messageId == 'Msg_1685') {
                 err.message = err.parameterIds[0] + err.message;
                 param = err;
 

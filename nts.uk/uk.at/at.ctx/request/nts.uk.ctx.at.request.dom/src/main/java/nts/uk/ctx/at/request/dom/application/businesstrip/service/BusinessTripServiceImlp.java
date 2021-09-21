@@ -358,14 +358,13 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     private ResultCheckInputCode checkInputTimeCode(Integer startWorkTime, Integer endWorkTime) {
         // 出勤時刻、退勤時刻のいずれかが空白の場合
-        /*
-         * http://192.168.50.4:3000/issues/119775
-         * if (startWorkTime == null || endWorkTime == null) { return new
-         * ResultCheckInputCode(false, "Msg_1912"); } else { }
-         */
-        // 出勤時刻＞退勤時刻となっている場合
-        if (startWorkTime != null && endWorkTime != null && startWorkTime > endWorkTime) {
-            return new ResultCheckInputCode(false, "Msg_1913");
+        if (startWorkTime == null || endWorkTime == null) {
+            return new ResultCheckInputCode(false, "Msg_1912");
+        } else {
+            // 出勤時刻＞退勤時刻となっている場合
+            if (startWorkTime > endWorkTime) {
+                return new ResultCheckInputCode(false, "Msg_1913");
+            }
         }
         return new ResultCheckInputCode(true, null);
     }

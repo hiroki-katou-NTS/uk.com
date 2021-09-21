@@ -605,6 +605,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     break;
                 }
 
+                case "Msg_1912":
                 case "Msg_1913":
                 case "Msg_1685":
                 case "Msg_23":
