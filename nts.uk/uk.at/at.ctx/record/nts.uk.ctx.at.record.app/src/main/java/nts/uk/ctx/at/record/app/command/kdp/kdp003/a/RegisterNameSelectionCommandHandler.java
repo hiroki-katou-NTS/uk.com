@@ -288,15 +288,12 @@ public class RegisterNameSelectionCommandHandler
 
 		@Override
 		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
-<<<<<<< HEAD
-				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
-				IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, integrationOfDaily);
-=======
-				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag, IntegrationOfDaily integrationOfDaily) {
+				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag, 
+				IntegrationOfDaily integrationOfDaily) 
+				{
 			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag,
 					integrationOfDaily);
->>>>>>> uk/release_bug901
+
 		}
 
 		@Override
