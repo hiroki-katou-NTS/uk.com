@@ -29,10 +29,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 @RunWith(JMockit.class)
-public class GetEmployeeOfMedicalTimeServiceTest {
+public class GetMedicalTimeOfEmployeeServiceTest {
 	
 	@Injectable
-	private GetEmployeeOfMedicalTimeService.Require require;
+	private GetMedicalTimeOfEmployeeService.Require require;
 	
 	/**
 	 * Target	: get
@@ -77,7 +77,7 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 		};
 		
 		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, acquireTarget);
+		val result = GetMedicalTimeOfEmployeeService.get(require, empIds, period, acquireTarget);
 		
 		//Assert
 		assertThat( result.entrySet() )
@@ -141,19 +141,13 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 		};
 		
 		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, acquireTarget);
+		val result = GetMedicalTimeOfEmployeeService.get(require, empIds, period, acquireTarget);
 		
 		//Assert
 		assertThat( result.entrySet() )
 		.extracting(	c -> c.getKey().getEmployeeId()
 					,	c -> c.getKey().getYmd()
-					,	c -> c.getValue().getScheRecAtr()
-					,	c -> c.getValue().getDayShiftHours().getTime().v()
-					,	c -> c.getValue().getDayShiftHours().isDeductionDateFromDeliveryTime()
-					,	c -> c.getValue().getNightShiftHours().getTime().v()
-					,	c -> c.getValue().getNightShiftHours().isDeductionDateFromDeliveryTime()
-					,	c -> c.getValue().getTotalNightShiftHours().getTime().v()
-					,	c -> c.getValue().getTotalNightShiftHours().isDeductionDateFromDeliveryTime())
+					,	c -> c.getValue().getScheRecAtr())
 		.containsExactlyInAnyOrder(
 						tuple( "sid_1", GeneralDate.ymd( 2021, 9, 1), ScheRecAtr.RECORD )
 					,	tuple( "sid_1", GeneralDate.ymd( 2021, 9, 2), ScheRecAtr.RECORD )
@@ -219,7 +213,7 @@ public class GetEmployeeOfMedicalTimeServiceTest {
 		};
 		
 		//Act
-		val result = GetEmployeeOfMedicalTimeService.get(require, empIds, period, acquireTarget);
+		val result = GetMedicalTimeOfEmployeeService.get(require, empIds, period, acquireTarget);
 		
 		//Assert
 		assertThat( result.entrySet() )

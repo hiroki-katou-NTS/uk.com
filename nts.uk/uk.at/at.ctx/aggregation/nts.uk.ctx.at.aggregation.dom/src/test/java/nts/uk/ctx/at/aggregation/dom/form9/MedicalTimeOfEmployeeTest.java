@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 @RunWith(JMockit.class)
-public class EmployeeOfMedicalTimeTest {
+public class MedicalTimeOfEmployeeTest {
 
 	@Test
 	public void testGetter(
@@ -28,7 +28,7 @@ public class EmployeeOfMedicalTimeTest {
 		,	@Injectable Form9OutputMedicalTime nightShiftHours
 		,	@Injectable Form9OutputMedicalTime totalNightShiftHours) {
 		
-		val empMedicalTime = new EmployeeOfMedicalTime(
+		val empMedicalTime = new MedicalTimeOfEmployee(
 					"employeeId"
 				,	GeneralDate.ymd(2021, 01, 01)
 				,	ScheRecAtr.RECORD
@@ -47,7 +47,7 @@ public class EmployeeOfMedicalTimeTest {
 		val dailyWork = Helper.createDailyWorks( "sid1", GeneralDate.ymd(2021, 01, 01) );
 		
 		//Act
-		val empMedicalTime = EmployeeOfMedicalTime.create( dailyWork, ScheRecAtr.RECORD );
+		val empMedicalTime = MedicalTimeOfEmployee.create( dailyWork, ScheRecAtr.RECORD );
 		
 		//Assert
 		assertThat( empMedicalTime.getEmployeeId() ).isEqualTo( "sid1" );

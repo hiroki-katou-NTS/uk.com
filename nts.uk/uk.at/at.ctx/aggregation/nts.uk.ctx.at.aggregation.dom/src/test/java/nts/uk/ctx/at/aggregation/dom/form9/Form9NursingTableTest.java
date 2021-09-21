@@ -18,7 +18,7 @@ public class Form9NursingTableTest {
 	@Test
 	public void testGetter(
 				@Injectable OutputColumn fullName
-			,	@Injectable OutputColumn startColumn
+			,	@Injectable OutputColumn day1StartColumn
 			,	@Injectable DetailSettingOfForm9 detailSetting
 			,	@Injectable OutputColumn license
 			,	@Injectable OutputColumn hospitalWardName
@@ -28,7 +28,7 @@ public class Form9NursingTableTest {
 			,	@Injectable OutputColumn concurrentPost
 			,	@Injectable OutputColumn nightShiftOnly) {
 		
-		val result = new Form9NursingTable(fullName, startColumn
+		val result = new Form9NursingTable(fullName, day1StartColumn
 				,	detailSetting, Optional.of(license)
 				,	Optional.of(hospitalWardName), Optional.of(fullTime)
 				,	Optional.of(shortTime), Optional.of(partTime)
@@ -49,7 +49,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn license = new OutputColumn("F");
 		OutputColumn hospitalWardName = new OutputColumn("C");//重複
 		OutputColumn fullTime = new OutputColumn("C");//重複
@@ -59,7 +59,7 @@ public class Form9NursingTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
@@ -77,10 +77,10 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("A");
+		OutputColumn day1StartColumn = new OutputColumn("A");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingTable.create(fullName, startColumn
+			Form9NursingTable.create(fullName, day1StartColumn
 					,	detailSetting, Optional.empty()
 					,	Optional.empty(), Optional.empty()
 					,	Optional.empty(), Optional.empty()
@@ -99,7 +99,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn license = new OutputColumn("C");
 		OutputColumn hospitalWardName = new OutputColumn("D");
 		OutputColumn fullTime = new OutputColumn("E");//重複
@@ -110,7 +110,7 @@ public class Form9NursingTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
@@ -129,7 +129,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");//重複
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn license = new OutputColumn("F");
 		OutputColumn hospitalWardName = new OutputColumn("A");//重複
 		OutputColumn fullTime = new OutputColumn("C");
@@ -140,7 +140,7 @@ public class Form9NursingTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
@@ -159,7 +159,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn license = new OutputColumn("C");
 		OutputColumn hospitalWardName = new OutputColumn("H");//重複
 		OutputColumn fullTime = new OutputColumn("C");
@@ -170,7 +170,7 @@ public class Form9NursingTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
@@ -189,7 +189,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("E");//重複
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn license = new OutputColumn("C");
 		OutputColumn hospitalWardName = new OutputColumn("D");
 		OutputColumn fullTime = new OutputColumn("F");
@@ -200,7 +200,7 @@ public class Form9NursingTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
@@ -219,7 +219,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn license = new OutputColumn("L");//重複
 		OutputColumn hospitalWardName = new OutputColumn("D");
 		OutputColumn fullTime = new OutputColumn("E");
@@ -230,7 +230,7 @@ public class Form9NursingTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
@@ -249,7 +249,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("L");//重複
+		OutputColumn day1StartColumn = new OutputColumn("L");//重複
 		OutputColumn license = new OutputColumn("C");
 		OutputColumn hospitalWardName = new OutputColumn("D");
 		OutputColumn fullTime = new OutputColumn("E");
@@ -260,7 +260,7 @@ public class Form9NursingTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
@@ -279,7 +279,7 @@ public class Form9NursingTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn license = new OutputColumn("C");
 		OutputColumn hospitalWardName = new OutputColumn("D");
 		OutputColumn fullTime = new OutputColumn("E");
@@ -289,14 +289,14 @@ public class Form9NursingTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("K");
 		
 		val result = Form9NursingTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(license)
 					,	Optional.of(hospitalWardName), Optional.of(fullTime)
 					,	Optional.of(shortTime), Optional.of(partTime)
 					,	Optional.of(concurrentPost), Optional.of(nightShiftOnly));
 		
 		assertThat( result.getFullName() ).isEqualTo( fullName );
-		assertThat( result.getStartColumn() ).isEqualTo( startColumn );
+		assertThat( result.getDay1StartColumn() ).isEqualTo( day1StartColumn );
 		assertThat( result.getDetailSetting() ).isEqualTo( detailSetting );
 		assertThat( result.getLicense().get() ).isEqualTo( license );
 		assertThat( result.getFullTime().get() ).isEqualTo( fullTime );

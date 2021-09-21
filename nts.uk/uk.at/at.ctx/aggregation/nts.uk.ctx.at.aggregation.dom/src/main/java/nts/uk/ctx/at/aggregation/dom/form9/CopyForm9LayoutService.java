@@ -1,16 +1,14 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
+import java.util.Optional;
+
+import nts.arc.error.BusinessException;
+import nts.arc.task.tran.AtomTask;
 /**
  * 様式９の出力レイアウトを複製する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.様式９.様式９の出力レイアウトを複製する
  * @author lan_lt
  *
  */
-
-import java.util.Optional;
-
-import nts.arc.error.BusinessException;
-import nts.arc.task.tran.AtomTask;
-
 public class CopyForm9LayoutService {
 	
 	/**

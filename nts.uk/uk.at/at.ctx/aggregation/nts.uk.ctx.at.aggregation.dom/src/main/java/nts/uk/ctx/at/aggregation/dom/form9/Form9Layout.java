@@ -41,7 +41,7 @@ public class Form9Layout implements DomainAggregate {
 	private Form9NursingAideTable nursingAideTable;
 	
 	/** テンプレート **/
-	private Optional<String> tempalteFileId;
+	private Optional<String> templateFileId;
 	
 	/**
 	 * 作る
@@ -52,24 +52,24 @@ public class Form9Layout implements DomainAggregate {
 	 * @param cover 表紙
 	 * @param nursingTable 看護職員表
 	 * @param nursingAideTable 看護補助者表 
-	 * @param tempalteFileId テンプレート
+	 * @param templateFileId テンプレート
 	 * @return
 	 */
 	public static Form9Layout create(Form9Code code
 			,	Form9Name name, boolean isSystemFixed, boolean isUse
 			,	Form9Cover cover, Form9NursingTable nursingTable
 			,	Form9NursingAideTable nursingAideTable
-			,	Optional<String> tempalteFileId) {
-		if(isSystemFixed && tempalteFileId.isPresent()) {
+			,	Optional<String> templateFileId) {
+		if(isSystemFixed && templateFileId.isPresent()) {
 			throw new BusinessException("Msg_2279");
 		}
 		
-		if(!isSystemFixed && !tempalteFileId.isPresent()) {
+		if(!isSystemFixed && !templateFileId.isPresent()) {
 			throw new BusinessException("Msg_2280");
 		}
 		
 		return new Form9Layout(code, name, isSystemFixed, isUse
-				,	cover, nursingTable, nursingAideTable, tempalteFileId);
+				,	cover, nursingTable, nursingAideTable, templateFileId);
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class Form9Layout implements DomainAggregate {
 		
 		if(!this.isSystemFixed) {
 			
-			return Form9Layout.create(destinationCode, destinationName, false, true, this.cover, this.nursingTable, this.nursingAideTable, this.tempalteFileId);
+			return Form9Layout.create(destinationCode, destinationName, false, true, this.cover, this.nursingTable, this.nursingAideTable, this.templateFileId);
 		}
 		
 		val fileName = this.getFileName(require);
@@ -102,7 +102,7 @@ public class Form9Layout implements DomainAggregate {
 			return this.code.v() + "_" + this.name.v() + ".xlsx";
 		}
 		
-		Optional<StoredFileInfo> fileInfo = require.getInfo(this.tempalteFileId.get());
+		Optional<StoredFileInfo> fileInfo = require.getInfo(this.templateFileId.get());
 		
 		return fileInfo.get().getOriginalName();
 	}

@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import lombok.Value;
+import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
@@ -10,8 +14,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  * @author lan_lt
  *
  */
-@Getter
-@AllArgsConstructor
+@Value
 public class DetailSettingOfForm9 implements DomainValue {
 	
 	/** 明細開始行 **/
@@ -25,5 +28,23 @@ public class DetailSettingOfForm9 implements DomainValue {
 	
 	/** 曜日行 **/
 	private final OutputRow rowDayOfWeek;
+	
+	public static DetailSettingOfForm9 create(OutputRow bodyStartRow
+			,	OnePageDisplayNumerOfPeople maxNumerOfPeople
+			,	OutputRow rowDate
+			,	OutputRow rowDayOfWeek) {
+		
+		val rows = Arrays.asList( bodyStartRow, rowDate, rowDayOfWeek );
+		
+		val rowsDistinct = rows.stream()
+				.distinct()
+				.collect(Collectors.toList());
+		
+		if(rows.size() != rowsDistinct.size()) {
+			throw new BusinessException("Msg_2289");
+		}
+		
+		return new DetailSettingOfForm9( bodyStartRow, maxNumerOfPeople, rowDate, rowDayOfWeek);
+	}
 	
 }

@@ -9,7 +9,6 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
-import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 
 @RunWith(JMockit.class)
@@ -21,30 +20,30 @@ public class CopyForm9LayoutServiceTest {
 	/**
 	 * target: copy
 	 * pattern:
-	 * 		複製先のコードが登録された(重複)
+	 * 		複製先のコードが登録された )重複 )
 	 * 		出力レイアウ = システム固定
 	 * expceted: Msg_2252
 	 */
 	@Test
-	public void copy_oldCopyDestination_system_layout(
+	public void testCopy_oldCopyDestination_system_layout(
 			@Injectable Form9Cover cover
 		,	@Injectable Form9NursingTable nursingTable
-		,	@Injectable Form9NursingAideTable nursingAideTable) {
+		,	@Injectable Form9NursingAideTable nursingAideTable ) {
 		
-		val destinationCode = new Form9Code( "02" );
+		val destinationCode = new Form9Code( "01" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		
 		val copyResource = Form9Layout.create(
-					new Form9Code("01")
-				,	new Form9Name("name")
+					new Form9Code( "01" )
+				,	new Form9Name( "name" )
 				,	false, true
 				,	cover, nursingTable, nursingAideTable
-				,	Optional.of(tempalteFileId));
+				,	Optional.of( tempalteFileId ));
 		
 		val oldCopyDestination =  Form9Layout.create(
-					new Form9Code("01")
-				,	new Form9Name("name")
+					new Form9Code( "01" )
+				,	new Form9Name( "name" )
 				,	true //システム固定
 				,	true, cover, nursingTable, nursingAideTable, Optional.empty() );
 		
@@ -57,8 +56,7 @@ public class CopyForm9LayoutServiceTest {
 		};
 		
 		NtsAssert.businessException("Msg_2252", () ->{
-			AtomTask persist = CopyForm9LayoutService.copy(require, copyResource, destinationCode, destinationName, false);
-			persist.run();
+			CopyForm9LayoutService.copy( require, copyResource, destinationCode, destinationName, false );
 		});
 		
 	}
@@ -72,22 +70,22 @@ public class CopyForm9LayoutServiceTest {
 	 * expceted: Msg_2239
 	 */
 	@Test
-	public void copy_isOverwrite_false(
+	public void testCopy_isOverwrite_false(
 			@Injectable Form9Cover cover
 		,	@Injectable Form9NursingTable nursingTable
 		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
-		val destinationCode = new Form9Code( "02" );
+		val destinationCode = new Form9Code( "01" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		val isOverwrite = false;//上書きしない
 		
-		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
+		val copyResource = Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" ), false, true
+				,	cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
-		val oldCopyDestination =  Form9Layout.create( new Form9Code("01") , new Form9Name("name")
+		val oldCopyDestination =  Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" )
 				,	false //ユーザー定義
-				,	true, cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
+				,	true, cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
 		new Expectations() {
 			{
@@ -97,8 +95,7 @@ public class CopyForm9LayoutServiceTest {
 		};
 		
 		NtsAssert.businessException("Msg_2239", () ->{
-			AtomTask persist = CopyForm9LayoutService.copy(require, copyResource, destinationCode, destinationName, isOverwrite);
-			persist.run();
+			CopyForm9LayoutService.copy( require, copyResource, destinationCode, destinationName, isOverwrite );
 		});
 		
 	}
@@ -112,39 +109,39 @@ public class CopyForm9LayoutServiceTest {
 	 * expceted: 複製されたレイアウ登録(insert)される
 	 */
 	@Test
-	public void copy_isOverwrite_true(
+	public void testCopy_isOverwrite_true(
 			@Injectable Form9Cover cover
 		,	@Injectable Form9NursingTable nursingTable
 		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
-		val destinationCode = new Form9Code( "02" );
+		val destinationCode = new Form9Code( "01" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		val isOverwrite = true;//上書きする
 		
-		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
+		val copyResource = Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" ), false, true
+				,	cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
-		val oldCopyDestination =  Form9Layout.create( new Form9Code("01") , new Form9Name("name")
+		val oldCopyDestination =  Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" )
 				,	false //ユーザー定義
-				,	true, cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
+				,	true, cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
-		val newLayout = copyResource.copy(require, destinationCode, destinationName);
+		val newLayout = copyResource.copy( require, destinationCode, destinationName );
 		
 		new Expectations() {
 			{
 				require.getForm9Layout( destinationCode );
 				result = Optional.of( oldCopyDestination );
 				
-				copyResource.copy(require, destinationCode, destinationName);
-				times = 1;				
+				copyResource.copy( require, destinationCode, destinationName );
+				times = 1;
 			}
 		};
 
 		NtsAssert.atomTask(
-					() -> CopyForm9LayoutService.copy(require, copyResource, destinationCode, destinationName, isOverwrite)
-				,	any -> require.deleteForm9Layout(destinationCode)
-				,	any -> require.insertForm9Layout(newLayout));
+					() -> CopyForm9LayoutService.copy( require, copyResource, destinationCode, destinationName, isOverwrite )
+				,	any -> require.deleteForm9Layout( destinationCode )
+				,	any -> require.insertForm9Layout( newLayout ));
 	}
 	
 	/**
@@ -154,33 +151,33 @@ public class CopyForm9LayoutServiceTest {
 	 * expceted: 複製されたレイアウ登録(insert)される
 	 */
 	@Test
-	public void copy_destinationCodeIsNew(
+	public void testCopy_destinationCodeIsNew(
 			@Injectable Form9Cover cover
 		,	@Injectable Form9NursingTable nursingTable
 		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
-		val destinationCode = new Form9Code( "02" );
+		val destinationCode = new Form9Code( "01" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		val isOverwrite = true;
 		
-		val copyResource = Form9Layout.create( new Form9Code("01") , new Form9Name("name"), false, true
-				,	cover, nursingTable, nursingAideTable, Optional.of(tempalteFileId) );
+		val copyResource = Form9Layout.create( new Form9Code("01" ) , new Form9Name("name" ), false, true
+				,	cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
-		val newLayout = copyResource.copy(require, destinationCode, destinationName);
+		val newLayout = copyResource.copy( require, destinationCode, destinationName );
 		
 		new Expectations() {
 			{
 				require.getForm9Layout( destinationCode );
 				
-				copyResource.copy(require, destinationCode, destinationName);
-				times = 1;				
+				copyResource.copy( require, destinationCode, destinationName );
+				times = 1;
 			}
 		};
 
-		NtsAssert.atomTask(
-					() -> CopyForm9LayoutService.copy(require, copyResource, destinationCode, destinationName, isOverwrite)
-				,	any -> require.insertForm9Layout(newLayout));
+		NtsAssert.atomTask( 
+					() -> CopyForm9LayoutService.copy( require, copyResource, destinationCode, destinationName, isOverwrite )
+				,	any -> require.insertForm9Layout( newLayout ));
 		
 	}
 }

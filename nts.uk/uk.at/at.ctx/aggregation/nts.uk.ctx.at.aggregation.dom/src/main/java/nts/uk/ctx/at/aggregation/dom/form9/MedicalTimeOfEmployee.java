@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  *
  */
 @Value
-public class EmployeeOfMedicalTime {
+public class MedicalTimeOfEmployee {
 	
 	/** 社員ID **/
 	private final String employeeId;
@@ -39,9 +39,9 @@ public class EmployeeOfMedicalTime {
 	 * @param scheRecAtr 予実区分
 	 * @return
 	 */
-	public static EmployeeOfMedicalTime create(IntegrationOfDaily dailyWork, ScheRecAtr scheRecAtr) {
+	public static MedicalTimeOfEmployee create(IntegrationOfDaily dailyWork, ScheRecAtr scheRecAtr) {
 		
-		return new EmployeeOfMedicalTime(dailyWork.getEmployeeId()
+		return new MedicalTimeOfEmployee(dailyWork.getEmployeeId()
 				,	dailyWork.getYmd(), scheRecAtr
 				,	new Form9OutputMedicalTime(new AttendanceTime(480), true)
 				,	new Form9OutputMedicalTime(new AttendanceTime(480), true)

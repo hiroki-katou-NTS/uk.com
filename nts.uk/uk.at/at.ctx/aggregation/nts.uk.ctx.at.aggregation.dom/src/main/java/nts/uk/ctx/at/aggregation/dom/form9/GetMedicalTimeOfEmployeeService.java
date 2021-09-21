@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
  * @author lan_lt
  *
  */
-public class GetEmployeeOfMedicalTimeService {
+public class GetMedicalTimeOfEmployeeService {
 	
 	/**
 	 * 取得する
@@ -28,7 +28,7 @@ public class GetEmployeeOfMedicalTimeService {
 	 * @param acquireTarget 取得対象
 	 * @return
 	 */
-	public static Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> get(Require require, List<EmployeeId> empIds
+	public static Map<EmployeeIdAndYmd, MedicalTimeOfEmployee> get(Require require, List<EmployeeId> empIds
 			, DatePeriod period
 			, ScheRecGettingAtr acquireTarget){
 		
@@ -39,17 +39,17 @@ public class GetEmployeeOfMedicalTimeService {
 		List<IntegrationOfDaily> recordList = acquireTarget.isNeedRecord()? dailyMap.get(ScheRecGettingAtr.ONLY_RECORD)
 				: Collections.emptyList();
 		
-		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfscheduleMedicalTimes = scheduleList.stream()
+		Map<EmployeeIdAndYmd, MedicalTimeOfEmployee> empOfscheduleMedicalTimes = scheduleList.stream()
 				.collect(Collectors.toMap(
 						schedule ->  new EmployeeIdAndYmd( schedule.getEmployeeId(), schedule.getYmd() )
-					,	schedule ->  EmployeeOfMedicalTime.create(schedule, ScheRecAtr.SCHEDULE)) );
+					,	schedule ->  MedicalTimeOfEmployee.create(schedule, ScheRecAtr.SCHEDULE)) );
 		
-		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfRecordMedicalTimes = recordList.stream()
+		Map<EmployeeIdAndYmd, MedicalTimeOfEmployee> empOfRecordMedicalTimes = recordList.stream()
 				.collect(Collectors.toMap(
 						record ->  new EmployeeIdAndYmd( record.getEmployeeId(), record.getYmd() )
-					,	record ->  EmployeeOfMedicalTime.create( record, ScheRecAtr.RECORD)) );
+					,	record ->  MedicalTimeOfEmployee.create( record, ScheRecAtr.RECORD)) );
 		
-		Map<EmployeeIdAndYmd, EmployeeOfMedicalTime> empOfMedicalTimes = new HashMap<>();
+		Map<EmployeeIdAndYmd, MedicalTimeOfEmployee> empOfMedicalTimes = new HashMap<>();
 		empOfMedicalTimes.putAll(empOfscheduleMedicalTimes);
 		empOfMedicalTimes.putAll(empOfRecordMedicalTimes);
 		

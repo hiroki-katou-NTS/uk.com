@@ -18,7 +18,7 @@ public interface Form9LayoutRepository {
 	 * @param isSystemFixed システム固定か
 	 * @return
 	 */
-	List<Form9Layout> getLayoutByIsSystemFixed(String companyId, boolean isSystemFixed);
+	List<Form9Layout> getLayoutBySystemFixedAttr(String companyId, boolean isSystemFixed);
 
 	/**
 	 * 利用する出力レイアウトをすべて取得する
@@ -54,5 +54,5 @@ public interface Form9LayoutRepository {
 	 * @param code 様式９コード
 	 * @param isUse 利用区分
 	 */
-	void updateUseOfLayoutSystem(String companyId, Form9Code code, boolean isUse);
+	void updateUseAttrOfSystemLayout(String companyId, Form9Code code, boolean isUse);
 }

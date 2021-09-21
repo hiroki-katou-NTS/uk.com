@@ -116,7 +116,7 @@ public class Form9LayoutTest {
 		assertThat( layout.getCover() ).isEqualTo( cover );
 		assertThat( layout.getNursingAideTable() ).isEqualTo( nursingAideTable );
 		assertThat( layout.getNursingTable() ).isEqualTo( nursingTable );
-		assertThat( layout.getTempalteFileId().get()).isEqualTo( templateId );
+		assertThat( layout.getTemplateFileId().get()).isEqualTo( templateId );
 
 	}
 	
@@ -152,7 +152,7 @@ public class Form9LayoutTest {
 		assertThat( layout.getCover() ).isEqualTo( cover );
 		assertThat( layout.getNursingAideTable() ).isEqualTo( nursingAideTable );
 		assertThat( layout.getNursingTable() ).isEqualTo( nursingTable );
-		assertThat( layout.getTempalteFileId()).isEmpty();
+		assertThat( layout.getTemplateFileId()).isEmpty();
 		
 	}
 	
@@ -184,7 +184,7 @@ public class Form9LayoutTest {
 		assertThat( destinationLayout.getCover() ).isEqualTo( cover );
 		assertThat( destinationLayout.getNursingAideTable() ).isEqualTo( nursingAideTable );
 		assertThat( destinationLayout.getNursingTable() ).isEqualTo( nursingTable );
-		assertThat( destinationLayout.getTempalteFileId().get()).isEqualTo( tempalteFileId );
+		assertThat( destinationLayout.getTemplateFileId().get()).isEqualTo( tempalteFileId );
 		
 	}
 	
@@ -228,7 +228,7 @@ public class Form9LayoutTest {
 		assertThat( destinationLayout.getCover() ).isEqualTo( cover );
 		assertThat( destinationLayout.getNursingAideTable() ).isEqualTo( nursingAideTable );
 		assertThat( destinationLayout.getNursingTable() ).isEqualTo( nursingTable );
-		assertThat( destinationLayout.getTempalteFileId().get()).isEqualTo( fileId );
+		assertThat( destinationLayout.getTemplateFileId().get()).isEqualTo( fileId );
 		
 	}
 	

@@ -19,7 +19,7 @@ public class Form9NursingAideTableTest {
 	public void testGetter(
 				@Injectable DetailSettingOfForm9 detailSetting
 			,	@Injectable OutputColumn fullName
-			,	@Injectable OutputColumn startColumn
+			,	@Injectable OutputColumn day1StartColumn
 			,	@Injectable OutputColumn hospitalWardName
 			, 	@Injectable OutputColumn fullTime
 			,	@Injectable OutputColumn shortTime
@@ -29,7 +29,7 @@ public class Form9NursingAideTableTest {
 			,	@Injectable OutputColumn nightShiftOnly) {
 		
 		val nursingAssitantTable = new Form9NursingAideTable(
-					fullName, startColumn
+					fullName, day1StartColumn
 				,	detailSetting, Optional.of(hospitalWardName)
 				,	Optional.of(fullTime), Optional.of(shortTime)
 				,	Optional.of(partTime), Optional.of(officeWork)
@@ -49,7 +49,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");//重複
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn hospitalWardName = new OutputColumn("A");//重複
 		OutputColumn fullTime = new OutputColumn("C");
 		OutputColumn shortTime = new OutputColumn("D");
@@ -60,7 +60,7 @@ public class Form9NursingAideTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingAideTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -79,7 +79,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn hospitalWardName = new OutputColumn("G");//重複
 		OutputColumn fullTime = new OutputColumn("C");
 		OutputColumn shortTime = new OutputColumn("D");
@@ -90,7 +90,7 @@ public class Form9NursingAideTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingAideTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -109,7 +109,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn hospitalWardName = new OutputColumn("C");
 		OutputColumn fullTime = new OutputColumn("D");
 		OutputColumn shortTime = new OutputColumn("H");//重複
@@ -120,7 +120,7 @@ public class Form9NursingAideTableTest {
 		
 		NtsAssert.businessException("Msg_2244", () ->{
 			Form9NursingAideTable.create(
-						fullName, startColumn
+						fullName, day1StartColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -139,7 +139,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn hospitalWardName = new OutputColumn("C");
 		OutputColumn fullTime = new OutputColumn("D");
 		OutputColumn shortTime = new OutputColumn("E");//重複
@@ -149,7 +149,7 @@ public class Form9NursingAideTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("H");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAideTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, day1StartColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -168,7 +168,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn hospitalWardName = new OutputColumn("G");//重複
 		OutputColumn fullTime = new OutputColumn("D");
 		OutputColumn shortTime = new OutputColumn("E");
@@ -178,7 +178,7 @@ public class Form9NursingAideTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("I");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAideTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, day1StartColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -197,7 +197,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("H");//重複
+		OutputColumn day1StartColumn = new OutputColumn("H");//重複
 		OutputColumn hospitalWardName = new OutputColumn("C");
 		OutputColumn fullTime = new OutputColumn("D");
 		OutputColumn shortTime = new OutputColumn("E");
@@ -207,7 +207,7 @@ public class Form9NursingAideTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("I");
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAideTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, day1StartColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -226,7 +226,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");//重複
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn hospitalWardName = new OutputColumn("C");
 		OutputColumn fullTime = new OutputColumn("D");
 		OutputColumn shortTime = new OutputColumn("E");
@@ -236,7 +236,7 @@ public class Form9NursingAideTableTest {
 		OutputColumn nightShiftOnly = new OutputColumn("A");//重複
 		
 		NtsAssert.businessException("Msg_2244", () ->{
-			Form9NursingAideTable.create(fullName, startColumn
+			Form9NursingAideTable.create(fullName, day1StartColumn
 					,	detailSetting, Optional.of(hospitalWardName)
 					,	Optional.of(fullTime), Optional.of(shortTime)
 					,	Optional.of(partTime), Optional.of(officeWork)
@@ -255,7 +255,7 @@ public class Form9NursingAideTableTest {
 			@Injectable DetailSettingOfForm9 detailSetting) {
 		
 		OutputColumn fullName = new OutputColumn("A");
-		OutputColumn startColumn = new OutputColumn("B");
+		OutputColumn day1StartColumn = new OutputColumn("B");
 		OutputColumn hospitalWardName = new OutputColumn("C");
 		OutputColumn fullTime = new OutputColumn("D");
 		OutputColumn shortTime = new OutputColumn("E");
@@ -264,14 +264,14 @@ public class Form9NursingAideTableTest {
 		OutputColumn concurrentPost = new OutputColumn("H");
 		OutputColumn nightShiftOnly = new OutputColumn("I");
 		
-		val result = Form9NursingAideTable.create(fullName, startColumn
+		val result = Form9NursingAideTable.create(fullName, day1StartColumn
 				,	detailSetting, Optional.of(hospitalWardName)
 				,	Optional.of(fullTime), Optional.of(shortTime)
 				,	Optional.of(partTime), Optional.of(officeWork)
 				,	Optional.of(concurrentPost), Optional.of(nightShiftOnly));
 		
 		assertThat( result.getFullName() ).isEqualTo( fullName );
-		assertThat( result.getStartColumn() ).isEqualTo( startColumn );
+		assertThat( result.getDay1StartColumn() ).isEqualTo( day1StartColumn );
 		assertThat( result.getDetailSetting() ).isEqualTo( detailSetting );
 		assertThat( result.getFullTime().get() ).isEqualTo( fullTime );
 		assertThat( result.getShortTime().get() ).isEqualTo( shortTime );

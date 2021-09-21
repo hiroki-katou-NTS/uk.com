@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
@@ -16,15 +15,14 @@ import nts.gul.util.OptionalUtil;
  * @author lan_lt
  *
  */
-@Getter
-@AllArgsConstructor
+@Value
 public class Form9NursingTable implements DomainValue{
 	
 	/** 氏名 **/
 	private final OutputColumn fullName;
 	
 	/** 1日目開始列 **/
-	private final OutputColumn startColumn;
+	private final OutputColumn day1StartColumn;
 	
 	/** 明細設定 **/
 	private final DetailSettingOfForm9 detailSetting;
@@ -33,27 +31,27 @@ public class Form9NursingTable implements DomainValue{
 	private final Optional<OutputColumn> license;
 	
 	/** 病棟名 **/
-	private Optional<OutputColumn> hospitalWardName;
+	private final Optional<OutputColumn> hospitalWardName;
 	
 	/** 常勤 **/
-	private Optional<OutputColumn> fullTime;
+	private final Optional<OutputColumn> fullTime;
 	
 	/** 短時間 **/
-	private Optional<OutputColumn> shortTime;
+	private final Optional<OutputColumn> shortTime;
 	
 	/** 非常勤 **/
-	private Optional<OutputColumn> partTime;
+	private final Optional<OutputColumn> partTime;
 	
 	/** 他部署兼務 **/
-	private Optional<OutputColumn> concurrentPost;
+	private final Optional<OutputColumn> concurrentPost;
 	
 	/** 夜勤専従 **/
-	private Optional<OutputColumn> nightShiftOnly;
+	private final Optional<OutputColumn> nightShiftOnly;
 	
 	/**
 	 * 作る
 	 * @param fullName 氏名
-	 * @param startColumn 1日目開始列
+	 * @param day1StartColumn 1日目開始列
 	 * @param detailSetting 明細設定
 	 * @param license 種別
 	 * @param hospitalWardName 病棟名
@@ -65,7 +63,7 @@ public class Form9NursingTable implements DomainValue{
 	 * @return
 	 */
 	public static Form9NursingTable create(
-				OutputColumn fullName, OutputColumn startColumn
+				OutputColumn fullName, OutputColumn day1StartColumn
 			,	DetailSettingOfForm9 detailSetting, Optional<OutputColumn> license
 			,	Optional<OutputColumn> hospitalWardName, Optional<OutputColumn> fullTime
 			,	Optional<OutputColumn> shortTime, Optional<OutputColumn> partTime
@@ -74,7 +72,7 @@ public class Form9NursingTable implements DomainValue{
 				){
 		
 		val columns = Arrays.asList(
-					Optional.of(fullName), Optional.of(startColumn)
+					Optional.of(fullName), Optional.of(day1StartColumn)
 				,	license, hospitalWardName, fullTime, shortTime, partTime
 				,	concurrentPost, nightShiftOnly)
 				.stream()
@@ -89,7 +87,7 @@ public class Form9NursingTable implements DomainValue{
 			throw new BusinessException("Msg_2244");
 		}
 		
-		return new Form9NursingTable(fullName, startColumn
+		return new Form9NursingTable(fullName, day1StartColumn
 				,	detailSetting, license
 				,	hospitalWardName, fullTime, shortTime, partTime
 				,	concurrentPost, nightShiftOnly);

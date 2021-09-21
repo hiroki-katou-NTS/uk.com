@@ -21,38 +21,48 @@ import nts.gul.util.OptionalUtil;
 @AllArgsConstructor
 public class Form9Cover implements DomainValue{
 	/** 集計年 **/
-	private final Optional<OutputColumn> cellYear;
+	private final Optional<OutputCell> cellYear;
 
 	/** 集計月 **/
-	private final Optional<OutputColumn> cellMonth;
+	private final Optional<OutputCell> cellMonth;
 	
 	/** 夜勤時間帯の開始時刻 **/
-	private final Optional<OutputColumn> cellStartTime;
+	private final Optional<OutputCell> cellStartTime;
 
 	/** 夜勤時間帯の終了時刻 **/
-	private final Optional<OutputColumn> cellEndTime;
+	private final Optional<OutputCell> cellEndTime;
 	
 	/** 出力情報のタイトル **/
-	private final Optional<OutputColumn> cellTitle;
+	private final Optional<OutputCell> cellTitle;
 
 	/** 出力情報の期間 **/
-	private final Optional<OutputColumn> cellPrintPeriod;
+	private final Optional<OutputCell> cellPrintPeriod;
 	
-	public static Form9Cover create(Optional<OutputColumn> cellYear
-			,	Optional<OutputColumn> cellMonth
-			,	Optional<OutputColumn> cellStartTime
-			,	Optional<OutputColumn> cellEndTime
-			,	Optional<OutputColumn> cellTitle
-			,	Optional<OutputColumn> cellPrintPeriod) {
+	/**
+	 * 作る
+	 * @param cellYear 集計年 
+	 * @param cellMonth 集計月
+	 * @param cellStartTime 夜勤時間帯の開始時刻
+	 * @param cellEndTime 夜勤時間帯の終了時刻
+	 * @param cellTitle 出力情報のタイトル
+	 * @param cellPrintPeriod 出力情報の期間
+	 * @return
+	 */
+	public static Form9Cover create( Optional<OutputCell> cellYear
+			,	Optional<OutputCell> cellMonth
+			,	Optional<OutputCell> cellStartTime
+			,	Optional<OutputCell> cellEndTime
+			,	Optional<OutputCell> cellTitle
+			,	Optional<OutputCell> cellPrintPeriod) {
 		
-		val columns = Arrays.asList(cellYear, cellMonth, cellStartTime
+		val cells = Arrays.asList(cellYear, cellMonth, cellStartTime
 					, cellEndTime,cellTitle, cellPrintPeriod)
 				.stream()
 				.flatMap(OptionalUtil::stream).collect(Collectors.toList());
-		val columnsDistinct = columns.stream().distinct().collect(Collectors.toList());
+		val cellsDistinct = cells.stream().distinct().collect(Collectors.toList());
 		
-		if(columns.size() != columnsDistinct.size()) {
-			throw new BusinessException("Msg_2244");
+		if(cells.size() != cellsDistinct.size()) {
+			throw new BusinessException("Msg_2288");
 		}
 		
 		return new Form9Cover(cellYear, cellMonth, cellStartTime, cellEndTime, cellTitle, cellPrintPeriod);
