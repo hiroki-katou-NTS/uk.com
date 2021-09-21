@@ -127,7 +127,6 @@ public class Stamp implements DomainAggregate, Cloneable {
 		this.relieve = relieve;
 		this.type = stampType;
 		this.refActualResults = refActualResults;
-		this.reflectedCategory = false;
 		this.locationInfor = locationInfor;
 		this.stampRecordId = stampRecord.getStampRecordId();
 	}
