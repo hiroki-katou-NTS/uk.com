@@ -4,8 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
@@ -17,8 +16,7 @@ import nts.gul.util.OptionalUtil;
  * @author lan_lt
  *
  */
-@Getter
-@AllArgsConstructor
+@Value
 public class Form9Cover implements DomainValue{
 	/** 集計年 **/
 	private final Optional<OutputCell> cellYear;
@@ -34,6 +32,7 @@ public class Form9Cover implements DomainValue{
 	
 	/** 出力情報のタイトル **/
 	private final Optional<OutputCell> cellTitle;
+	
 
 	/** 出力情報の期間 **/
 	private final Optional<OutputCell> cellPrintPeriod;
