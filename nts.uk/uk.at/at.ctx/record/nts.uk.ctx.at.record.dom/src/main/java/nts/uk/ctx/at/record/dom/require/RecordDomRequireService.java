@@ -369,7 +369,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.retentionyearly.RetentionYearly
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -2771,30 +2770,7 @@ public class RecordDomRequireService {
 			return this.nursingLeaveSettingRepo.findByCompanyIdAndNursingCategory(companyId, nursingCategory.value);
 		}
 		
-		
-		@Override
-		public AnnualPaidLeaveSetting annualLeaveSet(String companyId) {
-			return this.annualPaidLeaveSettingRepo.findByCompanyId(companyId);
-		}
-		
-		
-		@Override
-		public LaborContractTime empContractTime(String employeeId, GeneralDate criteriaDate) {
-			Optional<WorkingConditionItem>domain = this.workingConditionItemRepo.getBySidAndStandardDate(employeeId, criteriaDate);
-			if(!domain.isPresent())
-				return new LaborContractTime(0);
-			return domain.get().getContractTime();
-		}
-		
-		
-		@Override
-		public LaborContractTime contractTime(String companyId, String employeeId,  GeneralDate criteriaDate) {
-			Optional<WorkingConditionItem>domain = this.workingConditionItemRepo.getBySidAndStandardDate(employeeId, criteriaDate);
-			if(!domain.isPresent())
-				return new LaborContractTime(0);
-			return domain.get().getContractTime();
-		}
-		
+
 		@Override
 		public Optional<ChildCareUsedNumberData> childCareUsedNumber(String employeeId) {
 			return this.childCareUsedNumberRepo.find(employeeId);
@@ -2853,6 +2829,11 @@ public class RecordDomRequireService {
 		
 		public void deleteTempSpecialSidPeriod(String sid, int specialCode, DatePeriod period){
 			this.interimSpecialHolidayMngRepo.deleteBySidAndPeriod(sid, specialCode, period);
+		}
+		
+		@Override
+		public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
+			return annualPaidLeaveSettingRepo.findByCompanyId(companyId);
 		}
 	}
 }
