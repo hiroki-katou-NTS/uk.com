@@ -713,13 +713,8 @@ public class RecordDomRequireService {
 				comFlexMonthActCalSetRepo, empFlexMonthActCalSetRepo, wkpFlexMonthActCalSetRepo, empDeforLaborMonthActCalSetRepo, empRegulaMonthActCalSetRepo, comDeforLaborMonthActCalSetRepo,
 				comRegulaMonthActCalSetRepo, shaDeforLaborMonthActCalSetRepo, shaRegulaMonthActCalSetRepo, wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, monthlyWorkTimeSetRepo,
 				verticalTotalMethodOfMonthlyRepo, stampCardRepo, bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter, weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-<<<<<<< HEAD
-				roleOfOpenPeriodRepo, elapseYearRepository, syCompanyRecordAdapter, snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber,
-				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService,executionLogRepo);
-=======
 				elapseYearRepository, syCompanyRecordAdapter, snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber,
-				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService);
->>>>>>> uk/release_bug901
+				payoutSubofHDManaRepo, leaveComDayOffManaRepo , checkChildCareService, workingConditionItemService,executionLogRepo);
 	}
 
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -2447,7 +2442,6 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-<<<<<<< HEAD
 		public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
 			return closureStatusManagementRepo.getAllByEmpId(employeeId);
 		}
@@ -2480,7 +2474,9 @@ public class RecordDomRequireService {
 		public Closure findClosureById(int closureId) {
 			String companyId = AppContexts.user().companyId();
 			return closureRepo.findById(companyId, closureId).get();
-=======
+		}
+
+		@Override
 		public Optional<HolidayAddtionSet> holidayAddtionSet(String cid) {
 			return holidayAddtionRepo.findByCId(cid);
 		}
@@ -2508,7 +2504,6 @@ public class RecordDomRequireService {
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
 			return this.flexWorkSetting(AppContexts.user().companyId(), code.v()).get();
->>>>>>> uk/release_bug901
 		}
 	}
 }
