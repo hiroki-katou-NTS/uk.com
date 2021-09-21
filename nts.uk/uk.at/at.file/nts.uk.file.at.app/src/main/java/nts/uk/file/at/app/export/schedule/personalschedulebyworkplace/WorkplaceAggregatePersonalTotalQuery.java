@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -44,7 +44,7 @@ public class WorkplaceAggregatePersonalTotalQuery {
     @Inject
     private CriterionAmountForEmploymentRepository criterionAmountForEmploymentRepo;
     @Inject
-    private EmploymentHisAdapter employmentHisAdapter;
+    private EmploymentHisScheduleAdapter employmentHisAdapter;
     @Inject
     private WorkTypeRepository workTypeRepo;
 
@@ -106,7 +106,7 @@ public class WorkplaceAggregatePersonalTotalQuery {
                 Map<EmployeeId, EstimatedSalary> monthlyEstimatedSalaryMap = EstimatedSalaryAggregationService.aggregateByMonthly(
                         require,
                         period.end().yearMonth(),
-                        new DateInMonth(closureDate.day(), closureDate.equals(closureDate.lastGeneralDate())),
+                        new DateInMonth(closureDate.day(), closureDate.equals(GeneralDate.ymd(closureDate.year(), closureDate.month(), closureDate.lastDateInMonth()))),
                         integrationOfDailyList
                 );
                 result.put(PersonalCounterCategory.MONTHLY_EXPECTED_SALARY, (Map<String, T>) monthlyEstimatedSalaryMap.entrySet().stream().collect(Collectors.toMap((e) -> e.getKey().v(), (e) -> e.getValue())));

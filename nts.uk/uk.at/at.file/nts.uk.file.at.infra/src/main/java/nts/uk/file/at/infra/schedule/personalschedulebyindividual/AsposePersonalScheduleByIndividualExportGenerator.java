@@ -3,22 +3,28 @@ package nts.uk.file.at.infra.schedule.personalschedulebyindividual;
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
+import com.aspose.cells.CellArea;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
-import com.aspose.cells.PageOrientationType;
+import com.aspose.cells.CopyOptions;
+import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
-import com.aspose.cells.PaperSizeType;
+import com.aspose.cells.PasteOptions;
+import com.aspose.cells.PasteType;
+import com.aspose.cells.ShapeCollection;
 import com.aspose.cells.Style;
 import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
+import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.shift.management.DateInformation;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.LegalWorkTimeOfEmployee;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.PersonalScheduleByIndividualExportGenerator;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.PersonalScheduleByIndividualQuery;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.PersonalScheduleIndividualDataSource;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.WeeklyAgreegateResult;
 import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.WorkScheduleWorkInforDto;
@@ -27,12 +33,9 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 import javax.ejb.Stateless;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -52,64 +55,201 @@ public class AsposePersonalScheduleByIndividualExportGenerator extends AsposeCel
 
     private final int BG_COLOR_SPECIFIC_DAY = Integer.parseInt("ffc0cb", 16);
     private final int TEXT_COLOR_SUNDAY = Integer.parseInt("ff0000", 16);
+    private static final String PRINT_AREA = "A1:AN";
+    private static final int MAX_ROW_IN_PAGE = 37;
 
 
     @Override
-    public void generate(FileGeneratorContext context, PersonalScheduleIndividualDataSource dataSource) {
+    public void generate(FileGeneratorContext context, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) {
 
-        try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
-            Worksheet worksheet = reportContext.getWorkbook().getWorksheets().get(0);
+        try {
+            long startTime = System.nanoTime();
+            AsposeCellsReportContext reportContext = createContext(TEMPLATE_FILE);
+            Workbook workbook = reportContext.getWorkbook();
+            WorksheetCollection worksheets = workbook.getWorksheets();
+            Worksheet wsSource = worksheets.get(1);
+            if (query.isTotalDisplay()) {
+                wsSource = worksheets.get(2);
+            }
 
-            // printHeader(worksheet, reportContext);
-
-            // set data source named "item"
-            reportContext.setDataSource("item", this.buildData(dataSource));
-            // process data binginds in template
+            //  Worksheet wsDestination = worksheets.get(1);
+            pageSetting(wsSource, dataSource);
+            printHeader(wsSource, dataSource, query);
+            printContent(wsSource, wsSource, dataSource, query);
+            worksheets.removeAt(2);
+            worksheets.setActiveSheetIndex(1);
             reportContext.processDesigner();
 
-            //merge if isEmpty(ipAddress) == true
-            // mergeMacAndIp(worksheet, dataSource);
-            //delete empty row if no data
-            // deleteTemplateRow(worksheet, dataSource);
+            // Save as excel file
+            reportContext.saveAsExcel(createNewFile(context, getReportName(dataSource.getCompanyName() + EXCEL_EXT)));
 
-            // save as Excel file
-            GeneralDateTime dateNow = GeneralDateTime.now();
-            String dateTime = dateNow.toString("yyyyMMddHHmmss");
-            String fileName = PGID + PG + "_" + dateTime + ".xlsx";
-            OutputStream outputStream = this.createNewFile(context, fileName);
-            reportContext.saveAsExcel(outputStream);
+            long estimatedTime = (System.nanoTime() - startTime) / 1000000000;
+            System.out.println("Thoi gian export excel la: " + estimatedTime + " seconds");
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+
+    /**
+     * ページヘッダ① : Area A
+     */
     private void pageSetting(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource) {
         PageSetup pageSetup = worksheet.getPageSetup();
-        pageSetup.setPaperSize(PaperSizeType.PAPER_A_4);
-        pageSetup.setOrientation(PageOrientationType.LANDSCAPE);
-        String a11 = dataSource.getCompanyName();
-        val a12 = TextResource.localize("KSU002_56");
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        val a13 = formatter.format(new Date());
-//        pageSetup.setFitToPagesTall(0);
-//        pageSetup.setFitToPagesWide(1);
-//        pageSetup.setTopMarginInch(0.98);
-//        pageSetup.setBottomMarginInch(0.39);
-//        pageSetup.setLeftMarginInch(0.39);
-//        pageSetup.setRightMarginInch(0.39);
-//        pageSetup.setHeaderMarginInch(0.39);
-//        pageSetup.setFooterMarginInch(0.31);
-//        pageSetup.setCenterHorizontally(true);
-        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + "Company_Name");
-        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + "title");
+        // A1_1
+        pageSetup.setHeader(0, "&9&\"MS ゴシック\"" + dataSource.getCompanyName());
+        // A1_2
+        pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + getText("KSU002_56"));
         DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm", Locale.JAPAN);
+        // A1_3, A1_4
         pageSetup.setHeader(2, "&9&\"MS ゴシック\"" + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P");
     }
 
-    private void printHeader(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource) {
+    private void printHeader(Worksheet worksheet, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) {
         String b11 = TextResource.localize("KSU002_57");
+        Cells cells = worksheet.getCells();
+        // B1_1
+        cells.get(0, 0).setValue(getText("KSU002_57"));
+        // B1_2
+        cells.get(0, 3).setValue(dataSource.getWorkplaceInfo().getWorkplaceCode());
+        // B1_3
+        cells.get(0, 7).setValue(dataSource.getWorkplaceInfo().getWorkplaceName());
+        // B2_1
+        cells.get(2, 0).setValue(getText("KSU002_59"));
+        // B2_2
+        cells.get(2, 3).setValue(query.getEmployeeCode());
+        // B2_3
+        cells.get(2, 7).setValue(query.getEmployeeName());
+        // B3_1
+        cells.get(2, 7).setValue(query.getDate().yearMonth());
+        if (query.isTotalDisplay()) {
+            cells.get(5, 36).setValue(getText("KSU002_68"));
+        }
+    }
 
+
+    private void printContent(Worksheet wsDestination, Worksheet wsSource, PersonalScheduleIndividualDataSource dataSource, PersonalScheduleByIndividualQuery query) throws Exception {
+        Cells cells = wsDestination.getCells();
+        Cells cellsTemplate = wsSource.getCells();
+        ShapeCollection shapes = wsDestination.getShapes();
+        HorizontalPageBreakCollection hPageBreaks = wsDestination.getHorizontalPageBreaks();
+        cells.deleteRows(7, 38);
+        List<PersonalScheduleByIndividualFormat> dataBuildList = this.buildData(dataSource);
+        // Set CopyOptions.ReferToDestinationSheet to true
+        CopyOptions options = new CopyOptions();
+        options.setReferToDestinationSheet(true);
+//        // Set PasteOptions
+        PasteOptions pasteOptions = new PasteOptions();
+        pasteOptions.setPasteType(PasteType.ALL);
+        pasteOptions.setOnlyVisibleCells(true);
+
+        int rowCount = 7; // start from row index 9
+        int pageIndex = 0;
+        String divider = getText("KSU002_67");
+        for (PersonalScheduleByIndividualFormat item : dataBuildList) {
+            cells.copyRows(cellsTemplate, 7, rowCount, 5);
+            cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
+            int secondLieOfCalender = rowCount + 2;
+            int thirdLieOfCalender = rowCount + 4;
+
+            //calender item first for each row
+            cells.get(rowCount, 0).setValue(item.getColn1C21());
+            cells.get(rowCount, 2).setValue(item.getColn1C22());
+            cells.get(secondLieOfCalender, 0).setValue(item.getColn1C231());
+            cells.get(secondLieOfCalender, 3).setValue(item.getColn1C232());
+            cells.get(thirdLieOfCalender, 0).setValue(item.getColn1C233());
+            cells.get(thirdLieOfCalender, 2).setValue(divider);
+            cells.get(thirdLieOfCalender, 3).setValue(item.getColn1C234());
+
+            //calender item second for each row
+            cells.get(rowCount, 5).setValue(item.getColn2C21());
+            cells.get(rowCount, 7).setValue(item.getColn2C22());
+            cells.get(secondLieOfCalender, 5).setValue(item.getColn2C231());
+            cells.get(secondLieOfCalender, 8).setValue(item.getColn2C232());
+            cells.get(thirdLieOfCalender, 5).setValue(item.getColn2C233());
+            cells.get(thirdLieOfCalender, 7).setValue(divider);
+            cells.get(thirdLieOfCalender, 8).setValue(item.getColn2C234());
+
+            //calender item third for each row
+            cells.get(rowCount, 11).setValue(item.getColn3C21());
+            cells.get(rowCount, 13).setValue(item.getColn3C22());
+            cells.get(secondLieOfCalender, 11).setValue(item.getColn3C231());
+            cells.get(secondLieOfCalender, 14).setValue(item.getColn3C232());
+            cells.get(thirdLieOfCalender, 11).setValue(item.getColn3C233());
+            cells.get(thirdLieOfCalender, 13).setValue(divider);
+            cells.get(thirdLieOfCalender, 14).setValue(item.getColn3C234());
+
+            //calender item four for each row
+            cells.get(rowCount, 16).setValue(item.getColn4C21());
+            cells.get(rowCount, 18).setValue(item.getColn4C22());
+            cells.get(secondLieOfCalender, 16).setValue(item.getColn4C231());
+            cells.get(secondLieOfCalender, 19).setValue(item.getColn4C232());
+            cells.get(thirdLieOfCalender, 16).setValue(item.getColn4C233());
+            cells.get(thirdLieOfCalender, 18).setValue(divider);
+            cells.get(thirdLieOfCalender, 19).setValue(item.getColn4C234());
+
+            //calender item five for each row
+            cells.get(rowCount, 21).setValue(item.getColn5C21());
+            cells.get(rowCount, 23).setValue(item.getColn5C22());
+            cells.get(secondLieOfCalender, 21).setValue(item.getColn5C231());
+            cells.get(secondLieOfCalender, 24).setValue(item.getColn5C232());
+            cells.get(thirdLieOfCalender, 21).setValue(item.getColn5C233());
+            cells.get(thirdLieOfCalender, 23).setValue(divider);
+            cells.get(thirdLieOfCalender, 24).setValue(item.getColn5C234());
+
+            //calender item six for each row
+            cells.get(rowCount, 26).setValue(item.getColn6C21());
+            cells.get(rowCount, 28).setValue(item.getColn6C22());
+            cells.get(secondLieOfCalender, 26).setValue(item.getColn6C231());
+            cells.get(secondLieOfCalender, 29).setValue(item.getColn6C232());
+            cells.get(thirdLieOfCalender, 26).setValue(item.getColn6C233());
+            cells.get(thirdLieOfCalender, 28).setValue(divider);
+            cells.get(thirdLieOfCalender, 29).setValue(item.getColn6C234());
+
+            //calender item seven for each row
+            cells.get(rowCount, 31).setValue(item.getColn7C21());
+            cells.get(rowCount, 33).setValue(item.getColn7C22());
+            cells.get(secondLieOfCalender, 31).setValue(item.getColn7C231());
+            cells.get(secondLieOfCalender, 34).setValue(item.getColn7C232());
+            cells.get(thirdLieOfCalender, 31).setValue(item.getColn7C233());
+            cells.get(thirdLieOfCalender, 33).setValue(divider);
+            cells.get(thirdLieOfCalender, 34).setValue(item.getColn7C234());
+            if (query.isTotalDisplay()) {
+                //calender item seven for each row
+                cells.get(rowCount, 36).setValue(item.getD21());
+                cells.get(rowCount + 1, 36).setValue(item.getD22());
+                cells.get(rowCount + 1, 39).setValue(item.getD23());
+                cells.get(rowCount + 2, 36).setValue(item.getD24());
+                cells.get(rowCount + 2, 39).setValue(item.getD25());
+                cells.get(rowCount + 3, 36).setValue(item.getD26());
+                cells.get(rowCount + 3, 39).setValue(item.getD27());
+            }
+            rowCount += 5;
+            // Check paging
+            if (isNextPage(rowCount, pageIndex)) {
+                PasteOptions opts = new PasteOptions();
+                opts.setPasteType(PasteType.FORMATS);
+                cells.copyRows(cellsTemplate, 36, rowCount, 1, options);  // copy close ruler
+                removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
+                rowCount += 1;     // close ruler
+                hPageBreaks.add(rowCount);
+                pageIndex += 1;
+            }
+        }
+        PageSetup pageSetup = wsDestination.getPageSetup();
+        pageSetup.setPrintArea(PRINT_AREA + rowCount);
+    }
+
+    private void removeTopBorder(Cell cell) {
+        Style style = cell.getStyle();
+        style.setBorder(BorderType.TOP_BORDER, CellBorderType.NONE, Color.getEmpty());
+        style.getBorders().getByBorderType(BorderType.TOP_BORDER).setLineStyle(CellBorderType.NONE);
+        cell.setStyle(style);
+    }
+
+    private boolean isNextPage(int rowCount, int pageIndex) {
+        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - 8 > MAX_ROW_IN_PAGE;
     }
 
     private List<PersonalScheduleByIndividualFormat> buildData(PersonalScheduleIndividualDataSource dataSource) {

@@ -1172,12 +1172,6 @@ public class ProgramsManager {
             "/view/kdl/023/b/index.xhtml");
 
     /**
-     * The Constant KSM001.
-     */
-    public static final Program KSM001A = new Program(WebAppId.AT, ProgramIdConsts.KSM001A, "KSM001_62",
-            "/view/ksm/001/a/index.xhtml");
-
-    /**
      * The Constant KMK009.
      */
     public static final Program KMK009A = new Program(WebAppId.AT, ProgramIdConsts.KMK009A, null,

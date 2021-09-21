@@ -4182,11 +4182,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let offsetLeftGrid = document.getElementById('extable').offsetLeft;
             let offsetWidthA8 = document.getElementsByClassName('extable-header-leftmost')[0].offsetWidth;
             if (self.showA9) {
+                self.indexBtnToLeft = 0;
                 let offsetWidthA9 = document.getElementsByClassName('ex-header-middle')[0].offsetWidth;
                 $(".toLeft").css("margin-left", offsetLeftGrid + offsetWidthA8 + offsetWidthA9 + 'px');
+                $('.iconToLeft').css('background-image', 'url(' + self.pathToLeft + ')');
             }
 
             if (self.showA11()) {
+                self.indexBtnToRight = 0;
+                $('.iconToRight').css('background-image', 'url(' + self.pathToRight + ')');
                 let offsetWidthA10 = document.getElementsByClassName('ex-header-detail')[0].offsetWidth;
                 if (self.showA9) {
                     $(".toRight").css('margin-left', offsetWidthA10 - self.widthBtnToLeftToRight * 2 + 'px');
@@ -4196,11 +4200,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
 
             if (self.showA12()) {
+                self.indexBtnToDown = 0;
                 let height_ex_header_leftmost = document.getElementsByClassName('ex-header-leftmost')[0].offsetHeight;
                 let height_ex_body_leftmost = document.getElementsByClassName('ex-body-leftmost')[0].offsetHeight;
                 let heightBtn = 30;
                 let top = height_ex_header_leftmost + height_ex_body_leftmost - heightBtn;
                 $(".toDown").css("margin-top" , top + 'px');
+                $('.iconToDown').css('background-image', 'url(' + self.pathToDown + ')');
             }
         }
         
@@ -5282,16 +5288,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         openDialogK() {
             let self = this;
-            let item = uk.localStorage.getItem(self.KEY);
-            let userInfor : IUserInfor = JSON.parse(item.get());
-            setShared('dataShareDialogK', {
-                orgUnit: userInfor.unit,
-                orgId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
-                startDate: moment(self.dtPrev()).toISOString(),
-                endDate: moment(self.dtAft()).toISOString(),
-                employeeIds : self.sids(),
+            characteristics.restore(self.KEY).done((userInfor: IUserInfor) => {
+                setShared('dataShareDialogK', {
+                    orgUnit: userInfor.unit,
+                    orgId: userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId,
+                    startDate: moment(self.dtPrev()).toISOString(),
+                    endDate: moment(self.dtAft()).toISOString(),
+                    employeeIds : self.sids(),
+                });
+                nts.uk.ui.windows.sub.modal("/view/ksu/001/ka/index.xhtml");
             });
-            nts.uk.ui.windows.sub.modal("/view/ksu/001/ka/index.xhtml");
         }
 
         openKDL055() {
