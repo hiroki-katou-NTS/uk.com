@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.holidaysremaining.report;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -8,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.dom.adapter.child.ChildNursingLeaveThisMonthFutureSituation;
+import nts.uk.ctx.at.function.dom.adapter.child.NursingCareLeaveThisMonthFutureSituation;
 import nts.uk.ctx.at.function.dom.adapter.holidayover60h.AggrResultOfHolidayOver60hImport;
 import nts.uk.ctx.at.function.dom.adapter.holidaysremaining.*;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
@@ -78,17 +81,27 @@ public class HolidayRemainingInfor {
     Optional<ClosureInfo> closureInforOpt;
     Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon;
     Map<Integer, SpecialVacationImportedKdr> map273New;
-    List<ChildNursingLeaveStatus> getMonthlyConfirmedCareForEmployees;
-    List<NursingCareLeaveMonthlyRemaining> getObtainMonthlyConfirmedCareForEmployees;
+    List<ChildNursingLeaveStatus> monthlyConfirmedCareForEmployees;
+    List<NursingCareLeaveMonthlyRemaining> obtainMonthlyConfirmedCareForEmployees;
+    ChildNursingLeaveThisMonthFutureSituation childCareRemNumWithinPeriodLeft;
+    List<ChildNursingLeaveThisMonthFutureSituation> childCareRemNumWithinPeriodRight;
 
-    public HolidayRemainingInfor(Optional<GeneralDate> grantDate, List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
-                                 AnnLeaveOfThisMonthImported annLeaveOfThisMonth, List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
+    List<NursingCareLeaveThisMonthFutureSituation> nursingCareLeaveThisMonthFutureSituationRight;
+    NursingCareLeaveThisMonthFutureSituation nursingCareLeaveThisMonthFutureSituationLeft ;
+
+    public HolidayRemainingInfor(Optional<GeneralDate> grantDate,
+                                 List<AnnLeaGrantNumberImported> listAnnLeaGrantNumber,
+                                 AnnLeaveOfThisMonthImported annLeaveOfThisMonth,
+                                 List<AnnualLeaveUsageImported> listAnnualLeaveUsage,
                                  List<AnnLeaveUsageStatusOfThisMonthImported> listAnnLeaveUsageStatusOfThisMonth,
-                                 ReserveHolidayImported reserveHoliday, List<ReservedYearHolidayImported> listReservedYearHoliday,
+                                 ReserveHolidayImported reserveHoliday,
+                                 List<ReservedYearHolidayImported> listReservedYearHoliday,
                                  List<RsvLeaUsedCurrentMonImported> listRsvLeaUsedCurrentMon,
-                                 List<CurrentHolidayImported> listCurrentHoliday, List<StatusHolidayImported> listStatusHoliday,
+                                 List<CurrentHolidayImported> listCurrentHoliday,
+                                 List<StatusHolidayImported> listStatusHoliday,
                                  List<CurrentHolidayRemainImported> listCurrentHolidayRemain,
-                                 List<StatusOfHolidayImported> listStatusOfHoliday, Map<Integer, SpecialVacationImported> mapSpecialVacation,
+                                 List<StatusOfHolidayImported> listStatusOfHoliday,
+                                 Map<Integer, SpecialVacationImported> mapSpecialVacation,
                                  Map<YearMonth, Map<Integer, SpecialVacationImported>> mapSPVaCrurrentMonth,
                                  Map<Integer, List<SpecialHolidayImported>> mapListSpecialHoliday,
                                  ChildNursingLeaveCurrentSituationImported childNursingLeave,
@@ -104,8 +117,12 @@ public class HolidayRemainingInfor {
                                  Optional<ClosureInfo> closureInforOpt,
                                  Map<YearMonth, Map<Integer, SpecialVacationImportedKdr>> lstMap273CurrMon,
                                  Map<Integer, SpecialVacationImportedKdr> map273New,
-                                 List<ChildNursingLeaveStatus> getMonthlyConfirmedCareForEmployees,
-                                 List<NursingCareLeaveMonthlyRemaining> getObtainMonthlyConfirmedCareForEmployees
+                                 List<ChildNursingLeaveStatus> monthlyConfirmedCareForEmployees,
+                                 List<NursingCareLeaveMonthlyRemaining> obtainMonthlyConfirmedCareForEmployees,
+                                 ChildNursingLeaveThisMonthFutureSituation childCareRemNumWithinPeriodLeft,
+                                 List<ChildNursingLeaveThisMonthFutureSituation> childCareRemNumWithinPeriodRight,
+                                 List<NursingCareLeaveThisMonthFutureSituation> nursingCareLeaveThisMonthFutureSituationRight,
+                                 NursingCareLeaveThisMonthFutureSituation nursingCareLeaveThisMonthFutureSituationLeft
 
     ) {
         super();
@@ -137,11 +154,11 @@ public class HolidayRemainingInfor {
         this.closureInforOpt = closureInforOpt;
         this.lstMap273CurrMon = lstMap273CurrMon;
         this.map273New = map273New;
-        this.getMonthlyConfirmedCareForEmployees = getMonthlyConfirmedCareForEmployees;
-        this.getObtainMonthlyConfirmedCareForEmployees = getObtainMonthlyConfirmedCareForEmployees;
-
-
+        this.monthlyConfirmedCareForEmployees = monthlyConfirmedCareForEmployees;
+        this.obtainMonthlyConfirmedCareForEmployees = obtainMonthlyConfirmedCareForEmployees;
+        this.childCareRemNumWithinPeriodRight = childCareRemNumWithinPeriodRight;
+        this.childCareRemNumWithinPeriodLeft = childCareRemNumWithinPeriodLeft;
+        this.nursingCareLeaveThisMonthFutureSituationLeft = nursingCareLeaveThisMonthFutureSituationLeft;
+        this.nursingCareLeaveThisMonthFutureSituationRight = nursingCareLeaveThisMonthFutureSituationRight;
     }
-
-
 }
