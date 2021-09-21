@@ -18,7 +18,6 @@ import nts.uk.ctx.office.dom.equipment.achievement.EquipmentItemNo;
 import nts.uk.ctx.office.dom.equipment.classificationmaster.EquipmentClassificationCode;
 import nts.uk.ctx.office.dom.equipment.data.ItemData.Require;
 import nts.uk.ctx.office.dom.equipment.information.EquipmentCode;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.オフィス支援.設備管理.設備利用実績データ.設備利用実績データ
@@ -76,6 +75,7 @@ public class EquipmentData extends AggregateRoot {
 		// $項目データ作成 ＝ 項目データMap：map 実績データ#新規追加(require、会社ID、$.項目NO、$.項目値)
 		List<ItemCreationResultTemp> itemTempList = itemDataMap.entrySet().stream()
 				.map(entry -> ItemData.createTempData(require, cid, entry.getKey(), entry.getValue()))
+				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 		// $エラー情報 ＝ $項目データ作成 ： filter $.エラー.isPresent()
 		// map key: $.項目NO
@@ -92,7 +92,7 @@ public class EquipmentData extends AggregateRoot {
 		List<ItemData> itemDatas = itemTempList.stream().map(ItemCreationResultTemp::getItemData)
 				.map(data -> data.orElse(null)).filter(Objects::nonNull).collect(Collectors.toList());
 		// $設備利用実績データ　：[mapping]
-		EquipmentData equipmentData = new EquipmentData(GeneralDateTime.now(), useDate, AppContexts.user().employeeId(),
+		EquipmentData equipmentData = new EquipmentData(GeneralDateTime.now(), useDate, sid,
 				equipmentCode, equipmentClassificationCode, itemDatas);
 		// return　設備利用実績作成Temp#作成する(Map.Empty、$設備利用実績データ)
 		return new EquipmentUsageCreationResultTemp(Collections.emptyMap(), Optional.of(equipmentData));
