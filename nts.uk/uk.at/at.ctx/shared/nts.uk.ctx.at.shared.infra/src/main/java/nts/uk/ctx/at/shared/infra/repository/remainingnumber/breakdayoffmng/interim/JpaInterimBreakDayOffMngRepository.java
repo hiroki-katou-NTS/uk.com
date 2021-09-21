@@ -513,4 +513,20 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		entity.unOffsetDays = domain.getUnOffsetDay().v();
 		return entity;
 	}
+	
+	private static final String DELETE_KYUSYUTSU_DATE = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+
+	@Override
+	public void deleteBreakoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		this.getEntityManager().createQuery(DELETE_KYUSYUTSU_DATE).setParameter("sid", sid)
+				.setParameter("lstDate", lstDate).executeUpdate();
+	}
+	
+	private static final String DELETE_DAIKYU_DATE = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+	@Override
+	public void deleteDayoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		this.getEntityManager().createQuery(DELETE_DAIKYU_DATE).setParameter("sid", sid)
+		.setParameter("lstDate", lstDate).executeUpdate();
+		
+	}
 }
