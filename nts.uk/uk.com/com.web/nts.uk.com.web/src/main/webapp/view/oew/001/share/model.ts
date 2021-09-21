@@ -58,6 +58,10 @@ module nts.uk.com.view.oew001.share.model {
 
     // 項目データ
     itemDatas: ItemDataDto[];
+
+    constructor(init?: Partial<EquipmentDataDto>) {
+      $.extend(this, init);
+    }
   }
 
   /**
@@ -103,6 +107,10 @@ module nts.uk.com.view.oew001.share.model {
 
     // 項目値
     actualValue: string;
+
+    constructor(init?: Partial<ItemDataDto>) {
+      $.extend(this, init);
+    }
   }
 
   /**
@@ -154,5 +162,87 @@ module nts.uk.com.view.oew001.share.model {
     
     // 説明
     memo: string;
+  }
+
+  /**
+   * 社員
+   */
+  export class EmployeeInfoDto {
+    
+    // 社員ID
+    employeeId: string; 
+
+    // 社員コード
+    employeeCode: string; 
+
+    // ビジネスネーム
+    businessName: string; 
+  }
+
+  export class OptionalItem {
+    itemNo: string;
+    itemName: string;
+    itemCls: number;
+    value: KnockoutObservable<string> = ko.observable(null);
+    unit: string;
+    width: number;
+    displayOrder: number;
+    required: boolean;
+    memo: string;
+    constraint: CustomConstraint;
+
+    constructor(init?: Partial<OptionalItem>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class CustomConstraint {
+    valueType: "String" | "Number" | "Time";
+    minLength?: number;
+    maxLength?: number;
+  }
+
+  export class Oew001BData {
+    isNewMode: boolean;
+    equipmentClsCode: string;
+    equipmentClsName: string;
+    sid: string;
+    employeeName: KnockoutObservable<string>;
+    equipmentInfoCode: string;
+    equipmentInfoName: string;
+    useDate: KnockoutObservable<string>;
+    inputDate: string;
+    required: boolean;
+    optionalItems: KnockoutObservableArray<model.OptionalItem> = ko.observableArray([]);
+
+    constructor(init?: Partial<Oew001BData>) {
+      $.extend(this, init);
+    }
+  }
+
+  export function getDataType(itemCls: number) {
+    switch (itemCls) {
+      case enums.ItemClassification.TEXT, enums.ItemClassification.TIME:
+        return "string";
+      case enums.ItemClassification.NUMBER:
+        return "number";
+    }
+  }
+}
+
+module nts.uk.com.view.oew001.share.model.constants {
+  export const YYYY_MM_DD = "YYYY/MM/DD";
+}
+
+module nts.uk.com.view.oew001.share.model.enums {
+  export enum ItemClassification {
+    // 文字
+    TEXT = 0,
+
+    // 数字
+    NUMBER = 1,
+
+    // 時間
+    TIME = 2
   }
 }

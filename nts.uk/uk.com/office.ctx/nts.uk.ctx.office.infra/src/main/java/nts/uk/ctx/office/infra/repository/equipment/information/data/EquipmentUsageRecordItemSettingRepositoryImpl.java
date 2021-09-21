@@ -71,7 +71,8 @@ public class EquipmentUsageRecordItemSettingRepositoryImpl extends JpaRepository
 
 	@Override
 	public List<EquipmentUsageRecordItemSetting> findByCid(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID, OfimtEquipmentDayItem.class).getList(this::toDomain);
+		return this.queryProxy().query(SELECT_BY_CID, OfimtEquipmentDayItem.class)
+				.setParameter("cid", cid).getList(this::toDomain);
 	}
 
 	@Override

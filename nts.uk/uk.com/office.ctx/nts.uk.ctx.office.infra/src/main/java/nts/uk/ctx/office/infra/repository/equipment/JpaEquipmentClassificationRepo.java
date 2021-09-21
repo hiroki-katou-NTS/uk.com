@@ -20,7 +20,7 @@ public class JpaEquipmentClassificationRepo extends JpaRepository implements Equ
 	private static final String FIND_ALL = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd";
 	private static final String FIND_BY_CLS_CD = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd AND e.pk.code = :code";
 	private static final String FIND_FROM_CLS_CDS = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd AND e.pk.code IN :codeList";
-	private static final String FIND_TOP_1 = "SELECT TOP 1 e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd ORDER BY e.pk.code ASC";
+	private static final String FIND_BY_CONTRACT_CD = "SELECT e FROM OfidtEquipmentCls e WHERE e.pk.contractCd = :contractCd ORDER BY e.pk.code ASC";
 	
 	private EquipmentClassification toDomain(OfidtEquipmentCls entity) {
 		return new EquipmentClassification(
@@ -86,9 +86,10 @@ public class JpaEquipmentClassificationRepo extends JpaRepository implements Equ
 
 	@Override
 	public Optional<EquipmentClassification> getFirst(String contractCd) {
-		return this.queryProxy().query(FIND_TOP_1, OfidtEquipmentCls.class)
+		return this.queryProxy().query(FIND_BY_CONTRACT_CD, OfidtEquipmentCls.class)
 				.setParameter("contractCd", contractCd)
-				.getSingle(this::toDomain);
+				.getList(this::toDomain)
+				.stream().findFirst();
 	}
 
 	@Override

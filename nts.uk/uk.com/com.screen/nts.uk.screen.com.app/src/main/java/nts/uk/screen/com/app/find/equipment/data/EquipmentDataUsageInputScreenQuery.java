@@ -24,8 +24,6 @@ public class EquipmentDataUsageInputScreenQuery {
 
 	/**
 	 * UKDesign.UniversalK.オフィス.OEW_設備管理.OEW001_設備利用の入力.Ｂ：設備利用の入力.メニュー別OCD.Ｂ：起動時社員取得
-	 * 
-	 * @return
 	 */
 	public List<EmployeeInformationImport> getEmployeeList() {
 		List<String> sids = Arrays.asList(AppContexts.user().employeeId());

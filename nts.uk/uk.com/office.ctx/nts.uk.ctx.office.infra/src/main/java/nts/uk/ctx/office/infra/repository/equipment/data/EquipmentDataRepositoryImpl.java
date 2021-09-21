@@ -31,21 +31,21 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 	private static final String SELECT_ALL = "SELECT t FROM OfidtEquipmentDayAtd t ";
 	private static final String AND_WITHIN_PERIOD = "AND t.useDate >= :startDate AND t.useDate <= :endDate ";
 	private static final String SELECT_BY_EQ_CD_AND_PERIOD = SELECT_ALL
-			+ "WHERE t.cid = :cid AND t.equipmentCode = :equipmentCode "
+			+ "WHERE t.companyId = :cid AND t.equipmentCode = :equipmentCode "
 			+ AND_WITHIN_PERIOD
 			+ "ORDER BY t.useDate, t.pk.inputDate ASC";
 	private static final String SELECT_BY_EQ_CLS_CD_AND_EQ_CD_AND_PERIOD = SELECT_ALL
-			+ "WHERE t.cid = :cid AND t.equipmentClsCode = :equipmentClsCode AND t.equipmentCode = :equipmentCode "
+			+ "WHERE t.companyId = :cid AND t.equipmentClsCode = :equipmentClsCode AND t.equipmentCode = :equipmentCode "
 			+ AND_WITHIN_PERIOD
 			+ "ORDER BY t.useDate, t.pk.inputDate ASC";
 	private static final String SELECT_BY_INFO = SELECT_ALL
-			+ "WHERE t.cid = :cid AND t.equipmentCode = :equipmentCode AND t.pk.sid = :sid "
+			+ "WHERE t.companyId = :cid AND t.equipmentCode = :equipmentCode AND t.pk.sid = :sid "
 			+ "AND t.useDate = :useDate AND t.pk.inputDate = :inputDate";
 	private static final String SELECT_BY_EQ_CLS_CD_AND_PERIOD = SELECT_ALL
-			+ "WHERE t.cid = :cid AND t.equipmentClsCode = :equipmentClsCode "
+			+ "WHERE t.companyId = :cid AND t.equipmentClsCode = :equipmentClsCode "
 			+ AND_WITHIN_PERIOD;
 	private static final String SELECT_BY_PERIOD = SELECT_ALL
-			+ "WHERE t.cid = :cid"
+			+ "WHERE t.companyId = :cid"
 			+ AND_WITHIN_PERIOD;
 	
 	@Override
@@ -80,8 +80,8 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 				.setParameter("cid", cid)
 				.setParameter("equipmentClsCode", equipmentClsCode)
 				.setParameter("equipmentCode", equipmentCode)
-				.setParameter("startDate", period.start().toLocalDate())
-				.setParameter("endDate", period.end().toLocalDate())
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end())
 				.getList(this::toDomain);
 	}
 
