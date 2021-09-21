@@ -69,11 +69,11 @@ public class TimeAnnualLeaveMax {
 	 * コンストラクタ
 	 * [C-2] 年休使用時に作成する
 	 */
-	public TimeAnnualLeaveMax(MaxMinutes maxMinutesIn, LeaveUsedTime usedMinutes) {
+	public TimeAnnualLeaveMax(MaxMinutes maxMinutesIn, LeaveUsedTime usedMinutesIn) {
 		// 上限時間
 		maxMinutes = new MaxMinutes(maxMinutesIn.v());
 		// 使用時間
-		usedMinutes = new LeaveUsedTime(usedMinutes.v());
+		usedMinutes = new LeaveUsedTime(usedMinutesIn.v());
 		// 残時間更新
 		remainingMinutes = calcRemainMinutess(maxMinutes, usedMinutes);
 	}
