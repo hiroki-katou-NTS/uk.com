@@ -135,8 +135,8 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
             Integer workTimeEnd = null;
 
             if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
-                workTimeStart = i.getWorkingHours().get().get(0).getStartTime().map(TimeWithDayAttr::v).orElse(null);
-                workTimeEnd = i.getWorkingHours().get().get(0).getEndTime().map(TimeWithDayAttr::v).orElse(null);
+                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する

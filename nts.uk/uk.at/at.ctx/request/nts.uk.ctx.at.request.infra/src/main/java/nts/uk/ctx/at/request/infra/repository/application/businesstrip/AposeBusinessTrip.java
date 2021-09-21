@@ -8,7 +8,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
-import nts.uk.ctx.at.request.dom.application.businesstrip.service.WorkingTime;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -117,11 +116,12 @@ public class AposeBusinessTrip {
                 }
             }
             if (eachinfo.getWorkingHours().isPresent()) {
-                Optional<WorkingTime> workNo1 = eachinfo.getWorkingHours().get().stream().filter(i -> i.getWorkNo().v().equals(1)).findFirst();
+                Optional<TimeZoneWithWorkNo> workNo1 = eachinfo.getWorkingHours().get().stream().filter(i -> i.getWorkNo().v().equals(1)).findFirst();
                 if (workNo1.isPresent()
-                        && workNo1.get().getStartTime().isPresent()
-                        && workNo1.get().getEndTime().isPresent()) {
-                    currentTimeRow.setValue(workNo1.get().getStartTime().get().getFullText() + I18NText.getText("KAF008_69") + workNo1.get().getEndTime().get().getFullText());
+                        && workNo1.get().getTimeZone() != null
+                        && workNo1.get().getTimeZone().getStartTime() != null
+                        && workNo1.get().getTimeZone().getEndTime() != null) {
+                    currentTimeRow.setValue(workNo1.get().getTimeZone().getStartTime().getFullText() + I18NText.getText("KAF008_69") + workNo1.get().getTimeZone().getEndTime().getFullText());
                 }
             }
             startRow++;

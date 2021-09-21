@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripInfoShare;
 import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.BusinessTripShare;
-import nts.uk.ctx.at.shared.dom.scherec.application.bussinesstrip.WorkingTimeShare;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.scherec.appreflectprocess.appreflectcondition.reflectprocess.condition.ReflectAttendance;
@@ -67,7 +65,7 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		}
 
 		// 出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get().stream().map(WorkingTimeShare::toTimeZoneWithWorkNo).collect(Collectors.toList()),
+		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get(),
 				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)));
 
 		// 直行直帰区分の反映
@@ -104,7 +102,7 @@ public class ReflectBusinessTripApp implements DomainAggregate {
 		}
 
 		// 出退勤の反映
-		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get().stream().map(WorkingTimeShare::toTimeZoneWithWorkNo).collect(Collectors.toList()),
+		lstItemId.addAll(ReflectAttendance.reflect(require, companyId, businessTripInfo.get().getWorkingHours().get(),
 				ScheduleRecordClassifi.RECORD, dailyApp, Optional.of(true), Optional.of(true), Optional.of(TimeChangeMeans.APPLICATION)));
 
 		// 直行直帰区分の反映

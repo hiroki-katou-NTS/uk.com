@@ -23,13 +23,13 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
-import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
-import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -46,11 +46,11 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
@@ -65,7 +65,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class BusinessTripServiceImlp implements BusinessTripService {
@@ -439,8 +438,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             Integer workTimeEnd = null;
 
             if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
-                workTimeStart = i.getWorkingHours().get().get(0).getStartTime().map(TimeWithDayAttr::v).orElse(null);
-                workTimeEnd = i.getWorkingHours().get().get(0).getEndTime().map(TimeWithDayAttr::v).orElse(null);
+                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
@@ -651,8 +650,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                     if (info.isPresent()) {
                         wkTimeCd = info.get().getWorkInformation().getWorkTimeCode() == null ? null : info.get().getWorkInformation().getWorkTimeCode().v();
                         wkTypeCd = info.get().getWorkInformation().getWorkTypeCode().v();
-                        opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getStartTime().map(TimeWithDayAttr::v).orElse(null)) : Optional.empty();
-                        opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getEndTime().map(TimeWithDayAttr::v).orElse(null)) : Optional.empty();
+                        opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime() != null ? info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime().v() : null) : Optional.empty();
+                        opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.ofNullable(info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime() != null ? info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime().v() : null) : Optional.empty();
                     }
                 }
                 break;

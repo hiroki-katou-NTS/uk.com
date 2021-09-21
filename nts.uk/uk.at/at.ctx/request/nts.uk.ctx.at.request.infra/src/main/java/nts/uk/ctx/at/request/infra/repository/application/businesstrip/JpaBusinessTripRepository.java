@@ -27,14 +27,12 @@ import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
-import nts.uk.ctx.at.request.dom.application.businesstrip.service.WorkingTime;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.infra.entity.application.businesstrip.KrqdtAppTrip;
 import nts.uk.ctx.at.request.infra.entity.application.businesstrip.KrqdtAppTripPK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -88,17 +86,10 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
                 .getList().stream().collect(Collectors.toMap(i -> i.getAppDate(), i-> i));
         domain.getInfos().forEach(i -> {
             KrqdtAppTrip currentContent = mapEntity.get(i.getDate());
-            Integer startTime = null;
-            Integer endTime = null;
-            if (i.getWorkingHours().isPresent() && i.getWorkingHours().get().size() > 0) {
-                startTime = i.getWorkingHours().get().get(0).getStartTime().map(x -> x.v()).orElse(null);
-                endTime = i.getWorkingHours().get().get(0).getEndTime().map(x -> x.v()).orElse(null);
-            }
-            i.getWorkingHours().map(x -> x.get(0).getStartTime().orElse(null)).orElse(null);
             currentContent.setWorkTypeCD(i.getWorkInformation().getWorkTypeCode().v());
             currentContent.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v());
-            currentContent.setWorkTimeStart(startTime);
-            currentContent.setWorkTimeEnd(endTime);
+            currentContent.setWorkTimeStart(i.getWorkingHours().map(x -> x.get(0).getTimeZone().getStartTime().v()).orElse(null));
+            currentContent.setWorkTimeEnd(i.getWorkingHours().map(x -> x.get(0).getTimeZone().getEndTime().v()).orElse(null));
             currentContent.setStartTime(domain.getDepartureTime().map(PrimitiveValueBase::v).orElse(null));
             currentContent.setArrivalTime(domain.getReturnTime().map(x -> x.v()).orElse(null));
         });
@@ -167,11 +158,7 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
         BusinessTripInfo businessTripInfo = new BusinessTripInfo(
                 new WorkInformation(wkTypeCd, wkTimeCd),
                 date,
-                (wkTimeStart == null && wkTimeEnd == null) ? Optional.empty() : 
-                    Optional.of(Arrays.asList(new WorkingTime(
-                            new WorkNo(1), 
-                            Optional.ofNullable(wkTimeStart != null ? new TimeWithDayAttr(wkTimeStart) : null), 
-                            Optional.ofNullable(wkTimeEnd != null ? new TimeWithDayAttr(wkTimeEnd) : null))) )
+                (wkTimeStart == null && wkTimeEnd == null) ? Optional.empty() : Optional.of(Arrays.asList(new TimeZoneWithWorkNo(1,wkTimeStart, wkTimeEnd)) )
         );
         businessTrip.setInfos(Arrays.asList(businessTripInfo));
         businessTrip.setDepartureTime(startTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime)));
@@ -187,19 +174,13 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
         }
         domain.getInfos().stream().forEach(i -> {
             KrqdtAppTrip entity = new KrqdtAppTrip();
-            Integer startTime = null;
-            Integer endTime = null;
-            if (i.getWorkingHours().isPresent() && i.getWorkingHours().get().size() > 0) {
-                startTime = i.getWorkingHours().get().get(0).getStartTime().map(x -> x.v()).orElse(null);
-                endTime = i.getWorkingHours().get().get(0).getEndTime().map(x -> x.v()).orElse(null);
-            }
             entity.setKrqdtAppTripPK(new KrqdtAppTripPK(cid, domain.getAppID(), i.getDate()));
             entity.setWorkTypeCD(i.getWorkInformation().getWorkTypeCode().v());
             entity.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v());
             entity.setStartTime(domain.getDepartureTime().isPresent() ? domain.getDepartureTime().get().v() : null);
             entity.setArrivalTime(domain.getReturnTime().isPresent() ? domain.getReturnTime().get().v() : null);
-            entity.setWorkTimeStart(startTime);
-            entity.setWorkTimeEnd(endTime);
+            entity.setWorkTimeStart(i.getWorkingHours().isPresent() ? i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v() : null);
+            entity.setWorkTimeEnd(i.getWorkingHours().isPresent() ? i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v() : null);
             entities.add(entity);
         });
 

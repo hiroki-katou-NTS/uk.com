@@ -22,6 +22,6 @@ public class BusinessTripInfoShare {
     private GeneralDate date;
 
     // 勤務時間帯
-    private Optional<List<WorkingTimeShare>> workingHours;
+    private Optional<List<TimeZoneWithWorkNo>> workingHours;
 
 }

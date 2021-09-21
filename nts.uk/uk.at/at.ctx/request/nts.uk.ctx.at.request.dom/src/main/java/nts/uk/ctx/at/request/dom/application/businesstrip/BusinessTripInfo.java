@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.businesstrip.service.WorkingTime;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 
@@ -23,6 +22,6 @@ public class BusinessTripInfo {
     private GeneralDate date;
 
     // 勤務時間帯
-    private Optional<List<WorkingTime>> workingHours;
+    private Optional<List<TimeZoneWithWorkNo>> workingHours;
 
 }
