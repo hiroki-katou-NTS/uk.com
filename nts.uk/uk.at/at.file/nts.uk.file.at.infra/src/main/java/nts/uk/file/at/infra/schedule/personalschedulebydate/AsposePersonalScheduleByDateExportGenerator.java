@@ -30,13 +30,11 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private static final String EXCEL_EXT = ".xlsx";
     private static final int MAX_ROW_IN_PAGE = 60;
     private static final int MAX_ROW_HEADER_IN_PAGE = 8;
-    private static final int MAX_COL_IN_PAGE = 56;    //count start index 0
     private final String SPACE = "　";
-    private final String COLON = "：　";
     private final String EMPTY = "";
     private static final String PRINT_AREA = "A1:BE";
     private static int MINUTES_IN_AN_HOUR = 60;
-    private static int ROUNDING_INCREMENTS = 5;  // Gia số làm tròn
+    private static int ROUNDING_INCREMENTS = 5;  
     private static final int MAX_SPEC_DAY = 5;
 
     @Override
@@ -62,7 +60,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
             // Save as excel file
             reportContext.saveAsExcel(createNewFile(context, getReportName(companyName + EXCEL_EXT)));
-            System.out.println("Thoi gian export excel: " + ((System.nanoTime() - startTime) / 1000000000) + " seconds");
+            System.out.println("Thoi gian export excel: " + (System.nanoTime() - startTime) / 1000000000 + " seconds");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -180,7 +178,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         pasteOptions.setPasteType(PasteType.ALL);
         pasteOptions.setOnlyVisibleCells(true);
 
-        int rowCount = 9; // start from row index 9
+        int rowCount = 9;
         int pageIndex = 0;
         val employeeInfoList = dataSource.getEmployeeInfoList();
         val employeeWorkScheduleList = dataSource.getEmployeeWorkScheduleList();
@@ -193,8 +191,14 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             EmployeeWorkScheduleResultDto item = employeeWorkScheduleList.get(i - 1);
             if (i == employeeWorkScheduleList.size())
                 cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
-            else
-                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : 9, rowCount, 2);
+            else {
+                if (isEndOfPage(rowCount, pageIndex)) {
+                    cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : 49, rowCount, 2);
+                } else {
+                    cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : 9, rowCount, 2);
+                }
+            }
+
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
 
             val empInfoOpt = employeeInfoList.stream().filter(x -> x.getEmployeeId().equals(item.getEmployeeId())).findFirst();
@@ -364,7 +368,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             // Paging
             if (isNextPage(rowCount, pageIndex)) {
                 cells.copyRows(cellsTemplate, 57, rowCount, 1, options);  // close ruler
-                removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
                 rowCount += 1;     // close ruler
                 hPageBreaks.add(rowCount);
                 pageIndex += 1;
@@ -374,7 +377,6 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             if (i == employeeWorkScheduleList.size()) {
                 cells.copyRows(cellsTemplate, 57, rowCount, 1, options);
                 rowCount += 1;
-                removeTopBorder(cells.get(rowCount, cells.getMaxColumn()));
             }
         }
         PageSetup pageSetup = wsDestination.getPageSetup();
@@ -619,6 +621,10 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      */
     private boolean isEven(int number) {
         return number % 2 == 0;
+    }
+
+    private boolean isEndOfPage(int rowCount, int pageIndex) {
+        return (rowCount - (MAX_ROW_IN_PAGE * pageIndex)) - MAX_ROW_HEADER_IN_PAGE > MAX_ROW_IN_PAGE - 2;
     }
 
     private String minuteToTime(Integer totalMinute) {

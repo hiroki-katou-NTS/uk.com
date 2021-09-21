@@ -71,7 +71,7 @@ public class CreatePersonalScheduleByDateFileQuery {
                 ? lstScheduleDaily
                 : this.mergeDataSchedule(lstScheduleDaily, lstScheduleAchievement);
 
-        System.out.println("Thoi gian get data: " + ((System.nanoTime() - startTime) / 1000000000) + " seconds");
+        System.out.println("Thoi gian get data: " + (System.nanoTime() - startTime) / 1000000000 + " seconds");
         return new PersonalScheduleByDateDataSource(
                 basicInformation.getCompanyInfo(),
                 basicInformation.getDisplayInfoOrganization(),
