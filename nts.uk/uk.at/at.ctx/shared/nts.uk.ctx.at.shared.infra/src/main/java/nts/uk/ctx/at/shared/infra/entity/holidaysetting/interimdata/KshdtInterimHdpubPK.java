@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.holidaymanagement.interim;
+package nts.uk.ctx.at.shared.infra.entity.holidaysetting.interimdata;
 
 import java.io.Serializable;
 
@@ -9,28 +9,21 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
-/**
- * 
- * @author sonnlb
- *
- */
-
-@Embeddable
 @AllArgsConstructor
+@Embeddable
 @NoArgsConstructor
-public class KshdtInterimHolidayMngPK implements Serializable {
+public class KshdtInterimHdpubPK  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-
-	/** 会社ID */
-	@Column(name = "CID")
-	public String companyId;
+    /** 会社ID  */
+    @Column(name = "CID")
+    public String cid;
 	
 	/** 社員ID */
-	@Column(name = "SID")
+	@Column(name ="SID")
 	public String sid;
-	
-	/** 対象日*/
-	@Column(name = "YMD")
+	/** 対象日 */
+	@Column(name ="YMD")
 	public GeneralDate ymd;
+
 }
