@@ -19,7 +19,7 @@ module nts.uk.at.view.ksm013.a {
                     { headerText: nts.uk.resource.getText('KSM013_5'), key: 'code', formatter: _.escape, width: 50 },
                     { headerText: nts.uk.resource.getText('KSM013_6'), key: 'name', formatter: _.escape, width: 130 }
                 ]);
-                self.nurseClModel = new NurseClassificationModel("", "", null, false);
+                self.nurseClModel = new NurseClassificationModel("", "", null, false, false);
                 self.isEditting = ko.observable(false);
                 self.selectedCode = ko.observable('');
                 self.selectedCode.subscribe(function(codeChanged: string) {
@@ -174,14 +174,29 @@ module nts.uk.at.view.ksm013.a {
             nurseClassificationName: KnockoutObservable<string>;
             license: KnockoutObservable<number>;
             officeWorker: KnockoutObservable<boolean>;
-            constructor(nurseClassificationCode: string, nurseClassificationName: string, license: number, officeWorker: boolean) {
+            nursingManager: KnockoutObservable<boolean>;
+            isofficeWorker: boolean;
+            isnursingManager: boolean;
+            constructor(nurseClassificationCode: string, nurseClassificationName: string, license: number, officeWorker: boolean, nursingManager: boolean, isofficeWorker : boolean, isnursingManager : boolean) {
                 let self = this;
                 self.nurseClassificationCode = ko.observable(nurseClassificationCode);
                 self.nurseClassificationName = ko.observable(nurseClassificationName);
                 self.license = ko.observable(license);
                 self.officeWorker = ko.observable(officeWorker);
+                self.nursingManager = ko.observable(nursingManager);
+                self.isofficeWorker = isofficeWorker;
+                self.isnursingManager = isnursingManager;
                 self.license.subscribe(function(codeChanged: any) {
-                    if (codeChanged != 2) self.officeWorker(false);
+                    if (codeChanged != 2) {
+                        self.officeWorker(false);
+                    } else {
+                        self.officeWorker(self.isofficeWorker);
+                    }
+                    if (codeChanged != 0) {
+                        self.nursingManager(false);
+                    } else {
+                        self.nursingManager(self.isnursingManager);    
+                    }
                 });
                 self.nurseClassificationName.subscribe(function(codeChanged: string) {
                      self.nurseClassificationName($.trim(self.nurseClassificationName()));
@@ -192,8 +207,11 @@ module nts.uk.at.view.ksm013.a {
                 let self = this;
                 self.nurseClassificationCode(data.code);
                 self.nurseClassificationName(data.name);
-                self.license(data.license);
                 self.officeWorker(data.officeWorker);
+                self.nursingManager(data.nursingManager);
+                self.isofficeWorker = data.officeWorker;
+                self.isnursingManager = data.nursingManager;
+                self.license(data.license);
                 $('#nurseClassificationCode').focus();
              
             }
@@ -202,8 +220,11 @@ module nts.uk.at.view.ksm013.a {
                 let self = this;
                 self.nurseClassificationCode("");
                 self.nurseClassificationName("");
-                self.license(0);
                 self.officeWorker(false);
+                self.nursingManager(false);
+                self.isofficeWorker = false;
+                self.isnursingManager = false;
+                self.license(0);
                 $('#nurseClassificationCode').focus();
             }
         }
@@ -229,12 +250,18 @@ module nts.uk.at.view.ksm013.a {
              *  事務的業務従事者か
              */
             officeWorker: boolean;
+            
+            /**
+             * 看護管理者か
+             */
+            nursingManager: boolean;
 
-            constructor(nurseClassificationCode: string, nurseClassificationName: string, license: number, officeWorker: boolean) {
+            constructor(nurseClassificationCode: string, nurseClassificationName: string, license: number, officeWorker: boolean, nursingManager : boolean) {
                 this.nurseClassificationCode = nurseClassificationCode;
                 this.nurseClassificationName = nurseClassificationName;
                 this.license = license;
                 this.officeWorker = officeWorker;
+                this.nursingManager = nursingManager;
             }
         }
 
