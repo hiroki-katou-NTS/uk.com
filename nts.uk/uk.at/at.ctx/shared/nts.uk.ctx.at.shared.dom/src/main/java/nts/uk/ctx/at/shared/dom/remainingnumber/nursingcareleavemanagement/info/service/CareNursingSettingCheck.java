@@ -19,7 +19,7 @@ public class CareNursingSettingCheck {
      * @param employeeId 社員ID
      * @return boolean
      */
-    public boolean check(Require require, String employeeId) {
+    public static boolean check(Require require, String employeeId) {
         return require.getCareByEmpId(employeeId).isPresent();
     }
     
