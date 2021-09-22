@@ -170,6 +170,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	
 	@Override
 	public List<LeaveComDayOffManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
 			return this.queryProxy().query(QUERY_BY_LIST_DATE,KrcmtLeaveDayOffMana.class)
 					.setParameter("sid", sid)
 					.setParameter("lstDate", lstDate)
@@ -318,4 +319,17 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		}
 		
 	}
+	
+	private static final String QUERY_OCC_BY_LIST_DATE = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.occDate IN :lstDate");
+
+	@Override
+	public List<LeaveComDayOffManagement> getLeavByListOccDate(String sid, List<GeneralDate> lstDate) {
+		if(lstDate.isEmpty()) return new ArrayList<>();
+		return this.queryProxy().query(QUERY_OCC_BY_LIST_DATE,KrcmtLeaveDayOffMana.class)
+				.setParameter("sid", sid)
+				.setParameter("lstDate", lstDate)
+			.getList().stream().map(item->toDomain(item)).collect(Collectors.toList());
+	}
+	
 }
