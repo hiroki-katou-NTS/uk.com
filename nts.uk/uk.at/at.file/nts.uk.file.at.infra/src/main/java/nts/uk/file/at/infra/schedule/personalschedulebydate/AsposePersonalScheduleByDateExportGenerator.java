@@ -34,7 +34,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private final String EMPTY = "";
     private static final String PRINT_AREA = "A1:BE";
     private static int MINUTES_IN_AN_HOUR = 60;
-    private static int ROUNDING_INCREMENTS = 5;  
+    private static int ROUNDING_INCREMENTS = 5;
     private static final int MAX_SPEC_DAY = 5;
 
     @Override
@@ -146,7 +146,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         int graphStartTimeInitValue = dataSource.getQuery().getGraphStartTime();
         int graphStartTime = dataSource.getQuery().getGraphStartTime();
         if (isEven(graphStartTime)) {          // GraphStartTime is even
-            for (int column = 7; column <= 56; column += 4) {
+            for (int column = 7; column <= 55; column += 4) {
                 if (graphStartTimeInitValue == 0 && graphStartTime == 24) {
                     graphStartTime = 0;
                 }
@@ -191,13 +191,8 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
             EmployeeWorkScheduleResultDto item = employeeWorkScheduleList.get(i - 1);
             if (i == employeeWorkScheduleList.size())
                 cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? 55 : 49, rowCount, 2);
-            else {
-                if (isEndOfPage(rowCount, pageIndex)) {
-                    cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : 49, rowCount, 2);
-                } else {
-                    cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : 9, rowCount, 2);
-                }
-            }
+            else
+                cells.copyRows(cellsTemplate, isDoubleWorkDisplay ? (i == 1 ? 13 : 11) : (isEndOfPage(rowCount, pageIndex) ? 49 : 9), rowCount, 2);
 
             cells.clearContents(CellArea.createCellArea(rowCount, 0, cells.getMaxRow(), cells.getMaxColumn()));
 
@@ -395,10 +390,10 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
         if (start == null && end == null) return new DrawRectangleProperties(null, null, null);
 
         // Check time limit
-//        val timeChecked = checkLimitTimeAndOverlap(graphStartTime, start, end);
+        val timeChecked = checkRangeLimit(graphStartTime, start, end);
 
         // Convert to hour and minute
-        val timeConverted = convertToHourMinute(start, end);
+        val timeConverted = convertToHourMinute(timeChecked.getStartTime(), timeChecked.getEndTime());
 
         // Get map with key is Hour and value is column
         val hourColumnMap = getMapHourColumn(graphStartTime);
@@ -433,7 +428,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
 
     private TimeCheckedDto checkTime(int graphStartTime, Integer start, Integer end, TimeRangeLimitDto timeRange) {
         // Check data time in range of ruler time?
-        val timeChecked = checkLimitTime(graphStartTime, start, end);
+        val timeChecked = checkRangeLimit(graphStartTime, start, end);
 
         // Check overlap
         val overlapChecked = checkOverlapRange(timeRange, timeChecked.getStartTime(), timeChecked.getEndTime());
@@ -463,7 +458,7 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
      * @param end            endTime
      * @return TimeCheckedDto
      */
-    private TimeCheckedDto checkLimitTime(int graphStartTime, Integer start, Integer end) {
+    private TimeCheckedDto checkRangeLimit(int graphStartTime, Integer start, Integer end) {
         val timeLimit = getTimeLimit(graphStartTime, OutputType.TOTAL_MINUTE);
         if (!isInRange(start, timeLimit.getMinLimit(), timeLimit.getMaxLimit()) || !isInRange(end, timeLimit.getMinLimit(), timeLimit.getMaxLimit())) {
             if (start < timeLimit.getMinLimit()) {
@@ -589,14 +584,14 @@ public class AsposePersonalScheduleByDateExportGenerator extends AsposeCellsRepo
     private Map<Integer, Integer> getMapHourColumn(int graphStartTime) {
         Map<Integer, Integer> mapHourAndColumn = new LinkedHashMap<>(); // Map<Hour,Column>
         if (isEven(graphStartTime)) {
-            for (int column = 7; column <= 63; column += 2) {
+            for (int column = 7; column <= 55; column += 2) {
                 mapHourAndColumn.put(graphStartTime, column);
                 graphStartTime += 1;
             }
         } else {
             mapHourAndColumn.put(graphStartTime, 7);
             graphStartTime += 1;                // +1 => value is even
-            for (int column = 9; column <= 53; column += 2) {
+            for (int column = 9; column <= 55; column += 2) {
                 mapHourAndColumn.put(graphStartTime, column);
                 graphStartTime += 1;
             }
