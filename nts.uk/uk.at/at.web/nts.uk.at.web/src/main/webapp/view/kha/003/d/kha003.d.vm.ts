@@ -184,7 +184,7 @@ module nts.uk.at.kha003.d {
                                 return false;
                             }
                             if (idx <= vm.level) {
-                                return !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey];
+                                return !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey] && prevRec["c" + (idx - 1)] === curRec["c" + (idx - 1)];
                             }
                             return false;
                         }
