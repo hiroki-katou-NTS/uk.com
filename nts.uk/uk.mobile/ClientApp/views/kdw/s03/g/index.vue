@@ -96,13 +96,10 @@
                 <!-- G8-2: 超過時間	-->
                 <td class="pl-0 pr-0 text-center" v-bind:class="time36CssAgree">{{ time36.time36 | timedr }}</td>
                 <!-- G9-2: 超過上限時間	-->
-                <td class="pl-0 pr-0 text-center" v-bind:class="time36CssAgree">{{ time36.maxTime36 | timept }}</td>
+                <td class="pl-0 pr-0 text-center" v-bind:class="time36CssAgree">{{ time36.maxTime36 | timedr }}</td>
                 <!-- G10-2: 超過回数-->
-                <td id="agree-excess" class="pl-0 pr-0 text-center" colspan="2" v-bind:class="time36CssFrequency">{{'KDWS03_57' | i18n(time36.maxExcessNumber)}}</td>          
+                <td id="agree-excess" class="pl-0 pr-0 text-center" colspan="2" v-bind:class="time36CssFrequency">{{'KDWS03_57' | i18n(time36.excessFrequency)}}</td>          
               </tr>
-
-               <!-- <td class="pl-0 pr-0 text-center">{{'KDWS03_57' | i18n(time36.excessNumber)}}</td>
-                <td class="pl-0 pr-0 text-center">{{'KDWS03_58' | i18n(time36.maxExcessNumber)}}</td>  -->
             </tbody>
           </table>           
         </div>        

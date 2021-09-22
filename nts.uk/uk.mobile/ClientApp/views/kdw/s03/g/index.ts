@@ -65,7 +65,6 @@ export class KdwS03GComponent extends Vue {
         //時間外超過
         if (self.time36Display) {
             let yearMonth = cache.timePeriodAllInfo.yearMonth;
-            let css: string = 'state-error text-error';
             let param36 = {
                 employeeId: employeeIdSel,//社員ID
                 year: Math.floor(yearMonth / 100),//年度
