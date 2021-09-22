@@ -108,12 +108,16 @@ public class LeaveUsedNumber{
 	 * @param minutes
 	 * @param stowageDays
 	 */
-	public LeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
+	public LeaveUsedNumber(double days, Integer minutes, Double stowageDays,  Double numberOverDays, Integer timeOver) {
 		this.days = new LeaveUsedDayNumber(days);
 		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
 		this.stowageDays = stowageDays != null ? Optional.of(new LeaveUsedDayNumber(stowageDays))
 				: Optional.empty();
-		this.leaveOverLimitNumber=Optional.empty();
+		if(numberOverDays == null && timeOver == null) {
+			this.leaveOverLimitNumber = Optional.empty();
+		}else {
+			this.leaveOverLimitNumber = Optional.of(new LeaveOverNumber(numberOverDays, minutes));
+		}
 	}
 
 
@@ -128,8 +132,8 @@ public class LeaveUsedNumber{
 	}
 
 
-	public static LeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
-		return new LeaveUsedNumber(days, minutes, stowageDays);
+	public static LeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays, Double numberOverDays, Integer timeOver) {
+		return new LeaveUsedNumber(days, minutes, stowageDays, numberOverDays, timeOver);
 	}
 
 

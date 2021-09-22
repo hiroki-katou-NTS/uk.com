@@ -719,12 +719,12 @@ public class ScheduleCreatorExecutionTransaction {
 					for (TimezoneUse y : prepareWorkOutput.getScheduleTimeZone()) {
 						TimeActualStamp actualStart = new TimeActualStamp(null,
 								new WorkStamp(new WorkTimeInformation(
-										new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
+										new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),
 										y.getStart()), Optional.empty()),
 								0);
 						TimeActualStamp actualEnd = new TimeActualStamp(null,
 								new WorkStamp(new WorkTimeInformation(
-										new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()), y.getEnd()),
+										new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()), y.getEnd()),
 										Optional.empty()),
 								0);
 						timeLeavingWorks.add(new TimeLeavingWork(new WorkNo(y.getWorkNo()), actualStart, actualEnd));

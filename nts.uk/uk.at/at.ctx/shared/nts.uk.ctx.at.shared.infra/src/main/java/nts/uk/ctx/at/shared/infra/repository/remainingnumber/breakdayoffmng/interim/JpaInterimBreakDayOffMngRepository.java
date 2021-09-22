@@ -84,6 +84,9 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 	private static final String DELETE_DAYOFFMNG_BY_SID_AND_YMD = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
 	private static final String DELETE_BREAKMNG_BYID = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.breakMngId = :breakMngId";
 	private static final String DELETE_BREAKMNG_BY_SID_AND_YMD = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd = :ymd";
+
+	
+	
 	@Override
 	public Optional<InterimBreakMng> getBreakManaBybreakMngId(String breakManaId) {
 		return this.queryProxy().find(breakManaId, KrcdtInterimHdwkMng.class)
@@ -512,5 +515,21 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 		entity.unOffSetTimes = domain.getUnOffsetTimes().v();
 		entity.unOffsetDays = domain.getUnOffsetDay().v();
 		return entity;
+	}
+	
+	private static final String DELETE_KYUSYUTSU_DATE = "DELETE FROM KrcdtInterimHdwkMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+
+	@Override
+	public void deleteBreakoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		this.getEntityManager().createQuery(DELETE_KYUSYUTSU_DATE).setParameter("sid", sid)
+				.setParameter("lstDate", lstDate).executeUpdate();
+	}
+	
+	private static final String DELETE_DAIKYU_DATE = "DELETE FROM KrcmtInterimDayOffMng c WHERE c.pk.sid = :sid AND c.pk.ymd IN :lstDate";
+	@Override
+	public void deleteDayoffWithDateList(String sid, List<GeneralDate> lstDate) {
+		this.getEntityManager().createQuery(DELETE_DAIKYU_DATE).setParameter("sid", sid)
+		.setParameter("lstDate", lstDate).executeUpdate();
+		
 	}
 }

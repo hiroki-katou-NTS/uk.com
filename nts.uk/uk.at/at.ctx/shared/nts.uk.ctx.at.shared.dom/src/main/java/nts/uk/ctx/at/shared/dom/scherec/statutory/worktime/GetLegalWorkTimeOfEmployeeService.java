@@ -11,8 +11,6 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.Mon
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyFlexStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours.RequireM1;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours.RequireM4;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTimeOfFlex;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
@@ -90,16 +88,16 @@ public class GetLegalWorkTimeOfEmployeeService {
 	 */
 	private static Optional<LegalWorkTimeOfEmployee> getLegalWorkTimeFlex(Require require, String sid, GeneralDate baseDate
 			, YearMonth yearMonth , WorkingSystem workingSystem, String employmentCd){
-		val flexUse = require.getFlexStatutoryTime();
+//		val flexUse = require.getFlexStatutoryTime();
 		
-		if(!flexUse.isPresent()) 
+//		if(!flexUse.isPresent()) 
 			return Optional.empty();
 		
-		val flexMonAndWeek = require.flexMonAndWeekStatutoryTime(yearMonth, employmentCd, sid, baseDate);
-		val workTime = flexUse.get().getReference() == ReferencePredTimeOfFlex.FROM_RECORD?
-				flexMonAndWeek.getStatutorySetting(): flexMonAndWeek.getSpecifiedSetting();
-				
-		return Optional.of(LegalWorkTimeOfEmployee.createOnlyMonthTime(sid, workTime));
+//		val flexMonAndWeek = require.flexMonAndWeekStatutoryTime(yearMonth, employmentCd, sid, baseDate);
+//		val workTime = flexUse.get().getReference() == ReferencePredTimeOfFlex.FROM_RECORD?
+//				flexMonAndWeek.getStatutorySetting(): flexMonAndWeek.getSpecifiedSetting();
+//				
+//		return Optional.of(LegalWorkTimeOfEmployee.createOnlyMonthTime(sid, workTime));
 	}
 	
 	public static interface Require extends RequireM1, RequireM4{
@@ -143,6 +141,6 @@ public class GetLegalWorkTimeOfEmployeeService {
 		 * フレックス勤務所定労働時間取得を取得する
 		 * @return
 		 */
-		Optional<GetFlexPredWorkTime> getFlexStatutoryTime();
+//		Optional<GetFlexPredWorkTime> getFlexStatutoryTime();
 	}
 }

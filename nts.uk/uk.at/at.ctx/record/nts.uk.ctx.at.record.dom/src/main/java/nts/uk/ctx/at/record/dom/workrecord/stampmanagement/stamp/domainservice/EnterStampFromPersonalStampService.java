@@ -25,6 +25,7 @@ public class EnterStampFromPersonalStampService {
 	/**
 	 * @param require 	@Require
 	 * @param contractCode  契約コード
+	 * @param cid 会社ID
 	 * @param employeeId 社員ID	
 	 * @param stmapDateTime 打刻日時
 	 * @param stampButton 打刻ボタン
