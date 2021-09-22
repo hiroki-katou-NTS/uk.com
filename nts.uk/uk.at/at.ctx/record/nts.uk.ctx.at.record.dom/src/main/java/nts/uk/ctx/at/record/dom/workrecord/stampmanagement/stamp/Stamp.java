@@ -129,6 +129,7 @@ public class Stamp implements DomainAggregate, Cloneable {
 		this.refActualResults = refActualResults;
 		this.locationInfor = locationInfor;
 		this.stampRecordId = stampRecord.getStampRecordId();
+		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
 	}
 	
 	/**
@@ -164,8 +165,13 @@ public class Stamp implements DomainAggregate, Cloneable {
 
 	@Override
 	public Stamp clone() {
-		return new Stamp(new ContractCode(contractCode.v()), new StampNumber(cardNumber.v()), stampDateTime,
-				relieve.clone(), type.clone(), refActualResults.clone(), imprintReflectionStatus.clone(),
+		return new Stamp(new ContractCode(contractCode.v()),
+				new StampNumber(cardNumber.v()),
+				stampDateTime,
+				relieve.clone(),
+				type.clone(),
+				refActualResults.clone(),
+				imprintReflectionStatus.clone(),
 				locationInfor.map(x -> new GeoCoordinate(x.getLatitude(), x.getLongitude())),
 				attendanceTime.map(x -> new AttendanceTime(x.v())), stampRecordId);
 	}
