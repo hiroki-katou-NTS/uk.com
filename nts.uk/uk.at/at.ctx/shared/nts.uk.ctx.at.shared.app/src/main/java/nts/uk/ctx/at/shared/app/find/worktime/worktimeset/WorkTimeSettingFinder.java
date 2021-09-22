@@ -499,6 +499,10 @@ public class WorkTimeSettingFinder {
 				throw new BusinessException("Msg_1525");
 				
 			}
+		} else {
+			
+			result = result.stream().filter(i -> workTimeCodes.contains(i.code)  ||  i.code == "").collect(Collectors.toList());
+			
 		}
 		
 		return result; 
