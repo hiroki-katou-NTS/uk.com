@@ -65,7 +65,7 @@ module nts.uk.com.view.oew001.c {
       if (vm.selectedEquipmentInfoCode() !== model.constants.SELECT_ALL_CODE) {
         param.equipmentCode = vm.selectedEquipmentInfoCode();
       }
-      return nts.uk.request.exportFile(API.export, param).fail(err => vm.$dialog.error({ messageId: err.msgId }));
+      return nts.uk.request.exportFile(API.export, param).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     public openDialogD() {

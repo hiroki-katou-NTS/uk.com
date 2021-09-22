@@ -51,7 +51,7 @@ module nts.uk.com.view.oew001.b {
           return vm.$dialog.info("Msg_15");
         })
         .fail(err => {
-          vm.$dialog.error(err.msgId);
+          vm.$dialog.error(err.messageId);
         });
     }
 
@@ -64,7 +64,7 @@ module nts.uk.com.view.oew001.b {
       .then(() => {
         return vm.$dialog.info("Msg_15");
       })
-      .fail(err => vm.$dialog.error(err.msgId));
+      .fail(err => vm.$dialog.error(err.messageId));
     }
 
     /**
@@ -76,7 +76,7 @@ module nts.uk.com.view.oew001.b {
       .then(() => {
         return vm.$dialog.info("Msg_16");
       })
-      .fail(err => vm.$dialog.error(err.msgId));
+      .fail(err => vm.$dialog.error(err.messageId));
     }
 
     public processSave() {

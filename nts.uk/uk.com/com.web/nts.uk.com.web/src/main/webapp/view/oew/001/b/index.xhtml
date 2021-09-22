@@ -51,6 +51,7 @@
           <!-- 文字項目 -->
           <com:ko-if bind="itemCls === nts.uk.com.view.oew001.share.model.enums.ItemClassification.TEXT">
             <input class="B2_2_1" data-bind="ntsTextEditor: {
+              name: itemName,
               value: value,
               required: required,
               option: { width: width }
@@ -59,6 +60,7 @@
           <!-- 数字項目 -->
           <com:ko-if bind="itemCls === nts.uk.com.view.oew001.share.model.enums.ItemClassification.NUMBER">
             <input class="B2_2_1" data-bind="ntsNumberEditor: {
+              name: itemName,
               value: value,
               required: required,
               option: { width: width }
@@ -67,6 +69,7 @@
           <!-- 時間項目 -->
           <com:ko-if bind="itemCls === nts.uk.com.view.oew001.share.model.enums.ItemClassification.TIME">
             <input class="B2_2_1" data-bind="ntsTimeWithDayEditor: {
+              name: itemName,
               value: value,
               required: required,
               option: { timeWithDay: false }

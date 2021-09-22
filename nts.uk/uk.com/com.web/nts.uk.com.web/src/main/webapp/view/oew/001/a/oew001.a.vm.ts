@@ -72,7 +72,7 @@ module nts.uk.com.view.oew001.a {
           vm.equipmentInformationList(result.equipmentInformationList);
           vm.selectedEquipmentClsCode.valueHasMutated();
         }
-      }).fail(err => vm.$dialog.error({ messageId: err.msgId }));
+      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     // Ａ2：「設備利用実績の項目設定」を取得する
@@ -91,7 +91,7 @@ module nts.uk.com.view.oew001.a {
           });
           vm.$nextTick(() => vm.initGrid());
         }
-      }).fail(err => vm.$dialog.error({ messageId: err.msgId }));
+      }).fail(err => vm.$dialog.error({ messageId: err.messageId }));
     }
 
     private initGrid() {
