@@ -19,7 +19,7 @@ public class ChildNursingSettingCheck {
      * @param employeeId 社員ID
      * @return boolean
      */
-    public boolean check(Require require, String employeeId) {
+    public static boolean check(Require require, String employeeId) {
         return require.getChildCareByEmpId(employeeId).isPresent();
     }
 
