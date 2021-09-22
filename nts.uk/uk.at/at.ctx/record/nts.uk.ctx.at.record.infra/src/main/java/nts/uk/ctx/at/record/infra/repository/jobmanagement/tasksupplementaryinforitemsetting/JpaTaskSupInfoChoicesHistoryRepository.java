@@ -22,7 +22,7 @@ public class JpaTaskSupInfoChoicesHistoryRepository extends JpaRepository implem
 
 	@Override
 	public void insert(TaskSupInfoChoicesHistory history, TaskSupInfoChoicesDetail detail) {
-		this.commandProxy().insert(new KrcmtTaskSupInfoChoicesHist(domain));
+		// TODO Auto-generated method stub
 		
 	}
 
