@@ -147,6 +147,12 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			throw new  BusinessException("Msg_198");
 		}
 	}
+	
+	@Override
+	public void deleteAllByEmployeeId(String employeeId) {
+		String jpql = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.sID = :sid";
+		this.getEntityManager().createQuery(jpql).setParameter("sid", employeeId).executeUpdate();
+	}
 
 	@Override
 	public void update(SubstitutionOfHDManagementData domain) {

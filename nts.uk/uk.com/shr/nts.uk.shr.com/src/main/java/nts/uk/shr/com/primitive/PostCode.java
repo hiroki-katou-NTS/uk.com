@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringRegEx;
 /**
  * The Class PostCode.
  */
-@StringRegEx("^\\d{7}$|(^\\d{3}[-]\\d{4}?$)")
+@StringRegEx("^\\d{7}$|(^\\d{3}[-]\\d{4}?$)|(^$)")
 @StringMaxLength(8)
 public class PostCode extends StringPrimitiveValue<PostCode> {
 

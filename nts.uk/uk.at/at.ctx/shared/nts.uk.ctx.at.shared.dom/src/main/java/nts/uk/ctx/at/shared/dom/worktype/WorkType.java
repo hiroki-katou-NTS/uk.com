@@ -555,7 +555,12 @@ public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 		return false;
 	}
-	
+	public boolean isHoliday(){
+		if (this.isOneDay()){
+			if (this.dailyWork.getOneDay() == WorkTypeClassification.Holiday) return true;
+		}
+		return false;
+	}
 	/** 連続勤務か */
 	public boolean isContinuousWork() {
 		if (this.isOneDay() && this.dailyWork.getOneDay() == WorkTypeClassification.ContinuousWork) 

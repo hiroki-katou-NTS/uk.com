@@ -1,6 +1,7 @@
 package nts.uk.ctx.exio.infra.entity.exi.item;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -10,7 +11,12 @@ import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.dataformat.DataFormatSetting;
 import nts.uk.ctx.exio.dom.exi.dataformat.DateDataFormSet;
@@ -22,17 +28,19 @@ import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcScreenCond;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtExAcFmChac;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtExAcFmDate;
-import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtExAcFmTime;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtExAcFmNum;
+import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtExAcFmTime;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtTimeDataFmSet;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 受入項目（定型）
  */
-
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Setter
+@Getter
 @Table(name = "OIOMT_EX_AC_ITEM")
 public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -76,19 +84,19 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
 	public OiomtExAcScreenCond acceptScreenCondSet;
-
+	/**数値型データ形式設定	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
 	public OiomtExAcFmNum numDataFormatSet;
-
+	/**文字型データ形式設定	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
 	public OiomtExAcFmChac charDataFormatSet;
-
+	/**日付型データ形式設定	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
 	public OiomtExAcFmDate dateDataFormatSet;
-
+	/**時刻型データ形式設定	 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
 	public OiomtExAcFmTime insTimeDataFormatSet;
-
+	/**時間型データ形式設定 */
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "acceptItem", orphanRemoval = true)
 	public OiomtTimeDataFmSet timeDataFormatSet;
 
@@ -97,50 +105,40 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 		return stdAcceptItemPk;
 	}
 
-	public OiomtExAcItem(String cid, int sysType, String conditionCode, int acceptItemNum, int categoryItemNo,
-			Integer csvItemNumber, String csvItemName, int itemType, OiomtExAcScreenCond acceptScreenCondSet,
-			OiomtExAcFmNum numDataFormatSet, OiomtExAcFmChac charDataFormatSet,
-			OiomtExAcFmDate dateDataFormatSet, OiomtExAcFmTime insTimeDataFormatSet,
-			OiomtTimeDataFmSet timeDataFormatSet) {
-		super();
-		this.stdAcceptItemPk = new OiomtStdAcceptItemPk(cid, sysType, conditionCode, acceptItemNum);
-		this.categoryItemNo = categoryItemNo;
-		this.csvItemNumber = csvItemNumber;
-		this.csvItemName = csvItemName;
-		this.itemType = itemType;
-		this.acceptScreenCondSet = acceptScreenCondSet;
-		this.numDataFormatSet = numDataFormatSet;
-		this.charDataFormatSet = charDataFormatSet;
-		this.dateDataFormatSet = dateDataFormatSet;
-		this.insTimeDataFormatSet = insTimeDataFormatSet;
-		this.timeDataFormatSet = timeDataFormatSet;
-	}
-
-	public static OiomtExAcItem fromDomain(StdAcceptItem domain) {
-		return new OiomtExAcItem(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v(),
-				domain.getAcceptItemNumber(), domain.getCategoryItemNo(),
+	public static OiomtExAcItem toEntity(StdAcceptItem domain) {
+		OiomtExAcScreenCond screenConSet = domain.getAcceptScreenConditionSetting().isPresent()
+				? OiomtExAcScreenCond.fromDomain(domain, domain.getAcceptScreenConditionSetting().get())
+				: null;
+		OiomtExAcFmNum numDataFormatSet = domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmNum.fromDomain(domain,
+						(NumDataFormatSet) domain.getDataFormatSetting().get())
+				: null;
+		OiomtExAcFmChac chrDataFormatSet = domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmChac.fromDomain(domain,
+						(ChrDataFormatSet) domain.getDataFormatSetting().get())
+				: null;
+		OiomtExAcFmDate dateDataFormatSet = domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmDate.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting().get())
+				: null;
+		OiomtExAcFmTime insTimeFormatSet =  domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmTime.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting().get())
+				: null;
+		OiomtTimeDataFmSet timeDateFormatSet = domain.getItemType() == ItemType.TIME && domain.getDataFormatSetting().isPresent()
+				? OiomtTimeDataFmSet.fromDomain(domain, (TimeDataFormatSet) domain.getDataFormatSetting().get())
+				: null;
+		OiomtStdAcceptItemPk pk = new OiomtStdAcceptItemPk(domain.getCid(), domain.getConditionSetCd().v(), domain.getAcceptItemNumber());
+		OiomtExAcItem entity = new OiomtExAcItem(pk,
+				domain.getCategoryItemNo(),
 				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
-				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null, domain.getItemType().value,
-				domain.getAcceptScreenConditionSetting().isPresent()
-						? OiomtExAcScreenCond.fromDomain(domain, domain.getAcceptScreenConditionSetting().get())
-						: null,
-				domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
-						? OiomtExAcFmNum.fromDomain(domain,
-								(NumDataFormatSet) domain.getDataFormatSetting().get())
-						: null,
-				domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
-						? OiomtExAcFmChac.fromDomain(domain,
-								(ChrDataFormatSet) domain.getDataFormatSetting().get())
-						: null,
-				domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting().isPresent()
-						? OiomtExAcFmDate.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting().get())
-						: null,
-				domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting().isPresent()
-						? OiomtExAcFmTime.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting().get())
-						: null,
-				domain.getItemType() == ItemType.TIME && domain.getDataFormatSetting().isPresent()
-						? OiomtTimeDataFmSet.fromDomain(domain, (TimeDataFormatSet) domain.getDataFormatSetting().get())
-						: null);
+				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null,
+				domain.getItemType().value,
+				screenConSet,
+				numDataFormatSet,
+				chrDataFormatSet,
+				dateDataFormatSet,
+				insTimeFormatSet,
+				timeDateFormatSet);
+		return entity;
 	}
 
 	public static StdAcceptItem toDomain(OiomtExAcItem entity) {
@@ -163,10 +161,17 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 			dataFormatSet = entity.timeDataFormatSet == null ? null : entity.timeDataFormatSet.toDomain();
 			break;
 		}
-		return new StdAcceptItem(entity.stdAcceptItemPk.cid, entity.stdAcceptItemPk.systemType,
-				entity.stdAcceptItemPk.conditionSetCd, entity.stdAcceptItemPk.acceptItemNumber, entity.categoryItemNo,
-				entity.csvItemNumber, entity.csvItemName, entity.itemType,
-				entity.acceptScreenCondSet == null ? null : entity.acceptScreenCondSet.toDomain(), dataFormatSet);
+		
+		return new StdAcceptItem(entity.getStdAcceptItemPk().cid,
+				new AcceptanceConditionCode(entity.getStdAcceptItemPk().conditionSetCd),
+				entity.getStdAcceptItemPk().acceptItemNumber,
+				Optional.ofNullable(entity.getCsvItemNumber()),
+				Optional.ofNullable(entity.getCsvItemName()),
+				EnumAdaptor.valueOf(entity.getItemType(), ItemType.class),
+				entity.getCategoryItemNo(),
+				Optional.ofNullable(entity.getAcceptScreenCondSet() == null ? null : entity.getAcceptScreenCondSet().toDomain()),
+				Optional.ofNullable(dataFormatSet));
+		
 	}
 
 }

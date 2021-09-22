@@ -6,9 +6,21 @@ package nts.uk.ctx.exio.dom.exi.dataformat;
  *
  */
 public enum FixedLengthEditingMethod {
+	/**
+	 * 0:前ゼロ
+	 */
 	ZERO_BEFORE(0, "Enum_FixedLengthEditingMethod_ZERO_BEFORE"),
+	/**
+	 * 1:後ゼロ
+	 */
 	ZERO_AFTER(1, "Enum_FixedLengthEditingMethod_ZERO_AFTER"),
+	/**
+	 * 2:前スペース
+	 */
 	SPACE_BEFORE(2, "Enum_FixedLengthEditingMethod_SPACE_BEFORE"),
+	/**
+	 * 3: 後スペース
+	 */
 	SPACE_AFTER(3, "Enum_FixedLengthEditingMethod_SPACE_AFTER");
 	
 	/** The value. */

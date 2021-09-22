@@ -324,7 +324,7 @@ public class RegisterStampInputCommandHandler
 		@Override
 		public OutputCreateDailyOneDay createDailyResult(String cid, String employeeId, GeneralDate ymd,
 				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag, IntegrationOfDaily integrationOfDaily) {
-			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType, flag,
+			return this.createDailyResults.createDailyResult(cid, employeeId, ymd, executionType,
 					integrationOfDaily);
 		}
 

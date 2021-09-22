@@ -547,8 +547,8 @@ public class FacadeUtils {
 				}
 
 				if (c.getItemCode().v().equals("IS00376")) {
-					String FAMILY_INFO = String.valueOf(UpperLimitSetting.FAMILY_INFO.value);
-					String value = c.getInitValue().isPresent() == true ? c.getInitValue().get().v() : FAMILY_INFO;
+					String PER_INFO_EVERY_YEAR = String.valueOf(UpperLimitSetting.PER_INFO_EVERY_YEAR.value);
+					String value = c.getInitValue().isPresent() == true ? c.getInitValue().get().v() : PER_INFO_EVERY_YEAR;
 					cs00036Item[1][0] = c.getItemCode().v();
 					cs00036Item[1][1] = numberType;
 					cs00036Item[1][2] = value;
@@ -573,8 +573,8 @@ public class FacadeUtils {
 				}
 
 				if (c.getItemCode().v().equals("IS00381")) {
-					String FAMILY_INFO = String.valueOf(UpperLimitSetting.FAMILY_INFO.value);
-					String value = c.getInitValue().isPresent() == true ? c.getInitValue().get().v() : FAMILY_INFO;
+					String PER_INFO_EVERY_YEAR = String.valueOf(UpperLimitSetting.PER_INFO_EVERY_YEAR.value);
+					String value = c.getInitValue().isPresent() == true ? c.getInitValue().get().v() : PER_INFO_EVERY_YEAR;
 					cs00036Item[1][0] = c.getItemCode().v();
 					cs00036Item[1][1] = numberType;
 					cs00036Item[1][2] = value;
@@ -593,9 +593,9 @@ public class FacadeUtils {
 
 		} else {
 			String[][] cs00036Item = { { "IS00375", numberType, String.valueOf(NotUseAtr.NOT_USE.value), "しない" },
-					{ "IS00376", numberType, String.valueOf(UpperLimitSetting.FAMILY_INFO.value), "家族情報を参照" },
+					{ "IS00376", numberType, String.valueOf(UpperLimitSetting.PER_INFO_EVERY_YEAR.value), "家族情報を参照" },
 					{ "IS00380", numberType, String.valueOf(NotUseAtr.NOT_USE.value), "しない" },
-					{ "IS00381", numberType, String.valueOf(UpperLimitSetting.FAMILY_INFO.value), "家族情報を参照" }};
+					{ "IS00381", numberType, String.valueOf(UpperLimitSetting.PER_INFO_EVERY_YEAR.value), "家族情報を参照" }};
 			return FacadeUtils.createListItems(cs00036Item, listItemIfo);
 		}
 	}

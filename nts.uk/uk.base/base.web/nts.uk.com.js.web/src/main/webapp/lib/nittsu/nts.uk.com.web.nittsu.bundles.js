@@ -565,6 +565,7 @@ var nts;
                             break;
                         case 'Decimal':
                         case 'Integer':
+                        case 'HalfInt':
                         case 'Date':
                         case 'Time':
                         case 'Clock':

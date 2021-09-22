@@ -32,12 +32,12 @@ public class WorkingConditionItem extends AggregateRoot {
 	private ManageAtr scheduleManagementAtr;
 
 	/** The work day of week. */
-	// 曜日別勤務
-	private PersonalDayOfWeek workDayOfWeek;
+	/*// 曜日別勤務
+	private PersonalDayOfWeek workDayOfWeek;*/
 
 	/** The work category. */
 	// 区分別勤務
-	private PersonalWorkCategory workCategory;
+	private WorkByIndividualWorkDay workCategory;
 
 	/** The auto stamp set atr. */
 	// 自動打刻セット区分
@@ -94,7 +94,6 @@ public class WorkingConditionItem extends AggregateRoot {
 		this.workCategory = memento.getWorkCategory();
 		this.contractTime = memento.getContractTime();
 		this.autoIntervalSetAtr = memento.getAutoIntervalSetAtr();
-		this.workDayOfWeek = memento.getWorkDayOfWeek();
 		this.employeeId = memento.getEmployeeId();
 		this.autoStampSetAtr = memento.getAutoStampSetAtr();
 		this.scheduleMethod = memento.getScheduleMethod();
@@ -120,7 +119,6 @@ public class WorkingConditionItem extends AggregateRoot {
 		memento.setContractTime(this.contractTime);
 		memento.setAutoIntervalSetAtr(this.autoIntervalSetAtr);
 		//KSHMT_PERSONAL_DAY_OF_WEEK
-		memento.setWorkDayOfWeek(this.workDayOfWeek, this.employeeId);
 		memento.setEmployeeId(this.employeeId);
 		memento.setAutoStampSetAtr(this.autoStampSetAtr);
 		//KSHMT_SCHEDULE_METHOD
@@ -199,15 +197,25 @@ public class WorkingConditionItem extends AggregateRoot {
 	 * @param monthlyPattern
 	 * 			  the monthlyPattern
 	 */
-	public WorkingConditionItem(String historyId, ManageAtr scheduleManagementAtr, PersonalDayOfWeek workDayOfWeek,
-			PersonalWorkCategory workCategory, NotUseAtr autoStampSetAtr, NotUseAtr autoIntervalSetAtr,
-			String employeeId, NotUseAtr vacationAddedTimeAtr, LaborContractTime contractTime, WorkingSystem laborSystem,
-			BreakDownTimeDay holidayAddTimeSet, ScheduleMethod scheduleMethod, Integer hourlyPaymentAtr,
-			BonusPaySettingCode timeApply, MonthlyPatternCode monthlyPattern) {
+	public WorkingConditionItem(
+			String historyId, 
+			ManageAtr scheduleManagementAtr, 
+			WorkByIndividualWorkDay workCategory, 
+			NotUseAtr autoStampSetAtr, 
+			NotUseAtr autoIntervalSetAtr,
+			String employeeId, 
+			NotUseAtr vacationAddedTimeAtr, 
+			LaborContractTime contractTime, 
+			WorkingSystem laborSystem,
+			BreakDownTimeDay holidayAddTimeSet, 
+			ScheduleMethod scheduleMethod, 
+			Integer hourlyPaymentAtr,
+			BonusPaySettingCode timeApply, 
+			MonthlyPatternCode monthlyPattern) {
+
 		super();
 		this.historyId = historyId;
 		this.scheduleManagementAtr = scheduleManagementAtr;
-		this.workDayOfWeek = workDayOfWeek;
 		this.workCategory = workCategory;
 		this.autoStampSetAtr = autoStampSetAtr;
 		this.autoIntervalSetAtr = autoIntervalSetAtr;

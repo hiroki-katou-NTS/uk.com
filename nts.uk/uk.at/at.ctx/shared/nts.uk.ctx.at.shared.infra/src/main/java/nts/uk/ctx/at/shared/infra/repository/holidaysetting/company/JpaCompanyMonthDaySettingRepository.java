@@ -125,5 +125,27 @@ public class JpaCompanyMonthDaySettingRepository extends JpaRepository implement
 
 		return query.getResultList();
 	}
+	
+	/*
+	 * (非 Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.company.CompanyMonthDaySettingRepository#findByYears(nts.uk.ctx.at.shared.dom.common.CompanyId, java.util.List)
+	 */
+	@Override
+	public List<CompanyMonthDaySetting> findByYears(CompanyId companyId, List<Year> years) {
+		
+		List<CompanyMonthDaySetting> domain = new ArrayList<>();
+		
+		for(Year year:years){
+			List<KshmtHdpubDPerMCom> result = this.findBy(companyId, year, null);
+		
+			// Check connection
+			if (result.isEmpty()) {
+				connection();
+			}
+		
+			domain.add(new CompanyMonthDaySetting(new JpaCompanyMonthDaySettingGetMemento(result)));
+		}
+		return domain;
+	}
 
 }
