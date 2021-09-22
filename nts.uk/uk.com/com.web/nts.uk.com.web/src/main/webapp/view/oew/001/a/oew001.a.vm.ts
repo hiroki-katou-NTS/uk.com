@@ -86,8 +86,10 @@ module nts.uk.com.view.oew001.a {
           // Init empty grid
           vm.columns(_.clone(vm.staticColumns));
           _.each(vm.itemSettings(), (data, index) => {
-            const displaySetting = _.find(vm.formatSetting().itemDisplaySettings, { "itemNo": data.itemNo });
-            vm.columns().push(vm.getColumnHeader(index, data.items.itemName, data.inputControl.itemCls, displaySetting.displayWidth));
+            if (vm.formatSetting().itemDisplaySettings) {
+              const displaySetting = _.find(vm.formatSetting().itemDisplaySettings, { "itemNo": data.itemNo });
+              vm.columns().push(vm.getColumnHeader(index, data.items.itemName, data.inputControl.itemCls, displaySetting.displayWidth));
+            }
           });
           vm.$nextTick(() => vm.initGrid());
         }
@@ -228,14 +230,18 @@ module nts.uk.com.view.oew001.a {
     
     private saveCharacteristic() {
       const vm = this;
-      (nts.uk as any).characteristics.save("OEW001_設備利用実績の入力", {
+      (nts.uk as any).characteristics.save("OEW001_設備利用実績の入力"
+      + "_companyId_" + __viewContext.user.companyId
+      + "_userId_" + __viewContext.user.employeeId, {
         equipmentCode: vm.selectedEquipmentInfoCode(),
         equipmentClsCode: vm.selectedEquipmentClsCode()
       });
     }
 
     private restoreCharacteristic(): any {
-      return (nts.uk as any).characteristics.restore("OEW001_設備利用実績の入力");
+      return (nts.uk as any).characteristics.restore("OEW001_設備利用実績の入力"
+      + "_companyId_" + __viewContext.user.companyId
+      + "_userId_" + __viewContext.user.employeeId);
     }
 
     private getColumnHeader(index: number, headerText: string, itemCls: number, width: number): any {
@@ -272,6 +278,10 @@ module nts.uk.com.view.oew001.a {
     // Create grid optional datas from acquired datas
     public createOptionalItems(data: model.EquipmentDataDto, itemSettings: model.EquipmentUsageRecordItemSettingDto[],
       formatSetting: model.EquipmentPerformInputFormatSettingDto): void {
+      if (itemSettings.length === 0 || !formatSetting.itemDisplaySettings) {
+        this.optionalItems = [];
+        return;
+      }
 
       // Map datas to grid
       this.optionalItems = _.chain(data.itemDatas).map(itemData => {

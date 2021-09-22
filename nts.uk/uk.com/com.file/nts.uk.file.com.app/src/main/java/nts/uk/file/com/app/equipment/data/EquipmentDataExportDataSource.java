@@ -49,6 +49,8 @@ public class EquipmentDataExportDataSource {
 	private List<EmployeeInformation> employees;
 	
 	// export params
+	private Optional<String> optEquipmentClsCode;
+	private Optional<String> optEquipmentInfoCode;
 	private EquipmentDataReportType reportType;
 	private YearMonth yearMonth;
 	private List<EquipmentUsageRecordItemSetting> itemSettings;

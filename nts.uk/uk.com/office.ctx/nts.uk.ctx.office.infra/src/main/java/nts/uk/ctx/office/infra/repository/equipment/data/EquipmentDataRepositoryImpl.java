@@ -92,8 +92,8 @@ public class EquipmentDataRepositoryImpl extends JpaRepository implements Equipm
 				.setParameter("cid", cid)
 				.setParameter("equipmentCode", equipmentCode)
 				.setParameter("sid", sid)
-				.setParameter("useDate", useDate.toLocalDate())
-				.setParameter("inputDate", inputDate.localDateTime())
+				.setParameter("useDate", useDate)
+				.setParameter("inputDate", inputDate)
 				.getSingle(this::toDomain);
 	}
 
