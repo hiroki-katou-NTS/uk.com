@@ -85,7 +85,7 @@ public class KrcdtHdnursingUse extends ContractUkJpaEntity implements Serializab
 	public void fromDomain(String cid, ChildCareNurseUsedNumber domain) {
 		this.companyID = cid;
 		this.usedDays = domain.getUsedDay().v();
-		this.usedMinutes = domain.getUsedTimes().map(mapper->mapper.v()).orElse(null);
+		this.usedMinutes = domain.getUsedTimes().map(mapper->mapper.v()).orElse(0);
 	}
 
 }

@@ -638,7 +638,8 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
 	        		switch(error.getTime36AgreementErrorAtr()) {
     	        	case MONTH_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1535", 
+    	        				"Msg_2012", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()), 
         						this.convertTime_Short_HM(error.getThreshold())
     	        				
@@ -646,28 +647,32 @@ public class CommonAlgorithmHolidayWorkImpl implements ICommonAlgorithmHolidayWo
     	        		break;
     	        	case YEAR_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1536", 
+    	        				"Msg_2013", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()),
         						this.convertTime_Short_HM(error.getThreshold())
     	        		);
     	        		break;
     	        	case MAX_MONTH_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1537", 
+    	        				"Msg_2014", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()),
         						this.convertTime_Short_HM(error.getThreshold())
     	        		);
     	        		break;
     	        	case MAX_YEAR_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_2056", 
+    	        				"Msg_2057", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()),
         						this.convertTime_Short_HM(error.getThreshold())
     	        		);
     	        		break;
     	        	case MAX_MONTH_AVERAGE_ERROR:
     	        		bundledBusinessExceptions.addMessage(
-    	        				"Msg_1538", 
+    	        				"Msg_2015", 
+    	        				employeeInfo.map(x -> x.getBussinessName()).orElse(""),
     	        				error.getOpYearMonthPeriod().map(x -> x.start().year() + "/" + x.start().month()).orElse(""),
     							error.getOpYearMonthPeriod().map(x -> x.end().year() + "/" + x.end().month()).orElse(""),
         						this.convertTime_Short_HM(error.getAgreementTime()), 

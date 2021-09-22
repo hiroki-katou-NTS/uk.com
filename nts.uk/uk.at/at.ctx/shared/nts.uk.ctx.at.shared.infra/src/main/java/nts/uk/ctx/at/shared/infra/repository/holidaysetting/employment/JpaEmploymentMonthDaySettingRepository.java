@@ -168,4 +168,22 @@ public class JpaEmploymentMonthDaySettingRepository extends JpaRepository implem
 		return result.stream().map(x -> new EmploymentMonthDaySetting(new JpaEmploymentMonthDaySettingGetMemento(Arrays.asList(x))))
 				.collect(Collectors.toList());
 	}
+	
+	
+	@Override
+	public List<EmploymentMonthDaySetting> findByYears(CompanyId companyId, String empCd, List<Year> years) {
+		List<EmploymentMonthDaySetting> domain = new ArrayList<>();
+		
+		for(Year year:years){
+			List<KshmtHdpubMonthdaysEmp> result = this.findBy(companyId, empCd, year, null);
+			
+			// Check continue
+			if (result.isEmpty()) {
+				continue;
+			}
+			domain.add(new EmploymentMonthDaySetting(new JpaEmploymentMonthDaySettingGetMemento(result)));
+		}
+		return domain;
+	}
+
 }

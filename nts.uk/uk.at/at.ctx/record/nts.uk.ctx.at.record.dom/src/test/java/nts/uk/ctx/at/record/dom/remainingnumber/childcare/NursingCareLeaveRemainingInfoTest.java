@@ -122,9 +122,13 @@ public class NursingCareLeaveRemainingInfoTest {
 		val judgePeriod = childCare.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 上限日数期間
-		val expect2 = limitPeriod(new DatePeriod(ymd(2020, 3, 2), ymd(2020, 3, 31)), 5);//02
+		val expect2 = limitPeriod(new DatePeriod(ymd(2020, 3, 1), ymd(2020, 3, 31)), 5);//02
+		val expect3 = limitPeriod(new DatePeriod(ymd(2020, 4, 1), ymd(2020, 4, 1)), 5);
 		assertThat(judgePeriod.get(0).getPeriod()).isEqualTo(expect2.getPeriod());
 		assertThat(judgePeriod.get(0).getLimitDays()).isEqualTo(expect2.getLimitDays());
+		assertThat(judgePeriod.get(1).getPeriod()).isEqualTo(expect3.getPeriod());
+		assertThat(judgePeriod.get(1).getLimitDays()).isEqualTo(expect3.getLimitDays());
+		assertThat(judgePeriod.size()).isEqualTo(2);
 
 	}
 //	@Test
@@ -213,9 +217,10 @@ public class NursingCareLeaveRemainingInfoTest {
 		val judgePeriod = childCare.childCareNurseUpperLimitPeriod(companyId, employeeId, period, criteriaDate, require);
 
 		// 上限日数期間
-		val expect2 = limitPeriod(new DatePeriod(ymd(2020, 10, 17), ymd(2020, 11, 16)), 5);
+		val expect2 = limitPeriod(new DatePeriod(ymd(2020, 10, 16), ymd(2020, 11, 16)), 5);
 		assertThat(judgePeriod.get(0).getPeriod()).isEqualTo(expect2.getPeriod());
 		assertThat(judgePeriod.get(0).getLimitDays()).isEqualTo(expect2.getLimitDays());
+		assertThat(judgePeriod.size()).isEqualTo(1);
 	}
 
 	// 子の看護・介護休暇基本情報

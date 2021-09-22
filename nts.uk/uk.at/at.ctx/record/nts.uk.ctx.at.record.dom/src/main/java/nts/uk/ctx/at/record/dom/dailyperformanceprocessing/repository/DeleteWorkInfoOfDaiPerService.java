@@ -128,7 +128,7 @@ public class DeleteWorkInfoOfDaiPerService {
 		// AttendanceTimeByWorkOfDailyRepository
 		this.specificDateAttrOfDailyPerforRepo.deleteByEmployeeIdAndDate(employeeId, day);
 //		this.employeeDailyPerErrorRepository.removeParam(employeeId, day);
-		this.dailyRecordAdUpService.adUpEmpError(Collections.emptyList(), Arrays.asList(Pair.of(employeeId, day)), true);
+		this.dailyRecordAdUpService.adUpEmpError(Collections.emptyList(), Arrays.asList(Pair.of(employeeId, day)));
 		// remove approval State from workflow
 //		this.appRootStateConfirmAdapter.deleteApprovalByEmployeeIdAndDate(employeeId, day);
 		this.anyItemValueOfDailyRepo.deleteAnyItemValueOfDaily(employeeId, day);

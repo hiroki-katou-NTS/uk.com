@@ -79,6 +79,12 @@ public class Stamp implements DomainAggregate, Cloneable {
 	// tạo tạm để lưu biến TimeWithDayAttr
 	@Getter
 	private Optional<AttendanceTime> attendanceTime = Optional.empty();
+	
+	/**
+	 * 打刻記録ID
+	 */
+	@Getter
+	private String stampRecordId;
 
 	/**
 	 * [C-1] 初回打刻データを作成する
@@ -91,7 +97,7 @@ public class Stamp implements DomainAggregate, Cloneable {
 	 * @param locationInfor
 	 */
 	public Stamp(ContractCode contractCode, StampNumber cardNumber, GeneralDateTime stampDateTime, Relieve relieve,
-			StampType type, RefectActualResult refActualResults, Optional<GeoCoordinate> locationInfor) {
+			StampType type, RefectActualResult refActualResults, Optional<GeoCoordinate> locationInfor, String stampRecordId) {
 		super();
 		this.contractCode = contractCode; //ver2　属性追加
 		this.cardNumber = cardNumber;
@@ -101,6 +107,28 @@ public class Stamp implements DomainAggregate, Cloneable {
 		this.refActualResults = refActualResults;
 		this.imprintReflectionStatus = new ImprintReflectionState(false, Optional.empty());
 		this.locationInfor = locationInfor;
+		this.stampRecordId = stampRecordId;
+	}
+	
+	/**
+	 * [C-2] 打刻記録から打刻作成する
+	 * @param stampRecord
+	 * @param relieve
+	 * @param stampType
+	 * @param refActualResults
+	 * @param locationInfor
+	 */
+	public Stamp(StampRecord stampRecord, Relieve relieve, StampType stampType, RefectActualResult refActualResults,
+			Optional<GeoCoordinate> locationInfor) {
+		super();
+		this.contractCode = stampRecord.getContractCode(); //ver2　属性追加
+		this.cardNumber = stampRecord.getStampNumber();
+		this.stampDateTime = stampRecord.getStampDateTime();
+		this.relieve = relieve;
+		this.type = stampType;
+		this.refActualResults = refActualResults;
+		this.locationInfor = locationInfor;
+		this.stampRecordId = stampRecord.getStampRecordId();
 	}
 	
 	/**
@@ -139,6 +167,6 @@ public class Stamp implements DomainAggregate, Cloneable {
 		return new Stamp(new ContractCode(contractCode.v()), new StampNumber(cardNumber.v()), stampDateTime,
 				relieve.clone(), type.clone(), refActualResults.clone(), imprintReflectionStatus.clone(),
 				locationInfor.map(x -> new GeoCoordinate(x.getLatitude(), x.getLongitude())),
-				attendanceTime.map(x -> new AttendanceTime(x.v())));
+				attendanceTime.map(x -> new AttendanceTime(x.v())), stampRecordId);
 	}
 }

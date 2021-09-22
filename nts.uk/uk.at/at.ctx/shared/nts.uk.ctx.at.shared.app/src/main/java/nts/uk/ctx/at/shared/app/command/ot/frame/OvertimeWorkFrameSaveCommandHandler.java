@@ -45,11 +45,13 @@ public class OvertimeWorkFrameSaveCommandHandler extends CommandHandler<Overtime
 			OvertimeWorkFrame overtimeWorkFrame = new OvertimeWorkFrame(item);;
 			
 			if(optPlanYearHdFr.isPresent()){
-				if (item.getUseAtr() == 0){
-					// Only update value UseClassification
-					overtimeWorkFrame = optPlanYearHdFr.get();
-					overtimeWorkFrame.setUseClassification(NotUseAtr.NOT_USE);
-				}
+
+				// Only update value UseClassification
+				overtimeWorkFrame = optPlanYearHdFr.get();
+				overtimeWorkFrame.setUseClassification(NotUseAtr.valueOf(item.getUseAtr()));
+				overtimeWorkFrame.setOvertimeWorkFrName(item.getOvertimeWorkFrameName());
+				overtimeWorkFrame.setTransferFrName(item.getTransferFrameName());
+				
 				this.repository.update(overtimeWorkFrame);
 			}
 		}
