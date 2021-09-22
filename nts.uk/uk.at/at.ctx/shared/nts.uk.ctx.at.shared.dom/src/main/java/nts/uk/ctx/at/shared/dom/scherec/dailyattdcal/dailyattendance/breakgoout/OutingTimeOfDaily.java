@@ -165,9 +165,9 @@ public class OutingTimeOfDaily {
 							.map(o -> o.getTimeVacationUseOfDaily())
 							.findFirst());
 			//計上用合計時間
-			recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, DeductionAtr.Appropriate, reason, outingCalcSet); 
+			recordTotalTime = OutingTotalTime.calcOutingTime(oneDay, DeductionAtr.Appropriate, reason, outingCalcSet, commonSetting.map(c -> c.getGoOutSet())); 
 			//控除用合計時間
-			dedTotalTime = OutingTotalTime.calcOutingTime(oneDay, DeductionAtr.Deduction, reason, outingCalcSet);
+			dedTotalTime = OutingTotalTime.calcOutingTime(oneDay, DeductionAtr.Deduction, reason, outingCalcSet, commonSetting.map(c -> c.getGoOutSet())); 
 			//補正後時間帯 
 		}
 		return new OutingTimeOfDaily(

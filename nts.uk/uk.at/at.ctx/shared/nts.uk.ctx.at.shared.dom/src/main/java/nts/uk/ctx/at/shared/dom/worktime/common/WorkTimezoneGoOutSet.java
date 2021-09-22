@@ -4,11 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -18,14 +25,13 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 //就業時間帯の外出設定
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Cloneable{
 
-	/** The total rounding set. */
-	// 合計丸め設定
-	private TotalRoundingSet totalRoundingSet;
-
-	/** The diff timezone setting. */
-	// 時間帯別設定
+	/** 丸め方法 */
+	private GoOutTimeRoundingMethod roundingMethod;
+	
+	/** 時間帯別設定 */
 	private GoOutTimezoneRoundingSet diffTimezoneSetting;
 
 	/**
@@ -35,7 +41,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	 *            the memento
 	 */
 	public WorkTimezoneGoOutSet(WorkTimezoneGoOutSetGetMemento memento) {
-		this.totalRoundingSet = memento.getTotalRoundingSet();
+		this.roundingMethod = memento.getRoundingMethod();
 		this.diffTimezoneSetting = memento.getDiffTimezoneSetting();
 	}
 
@@ -46,7 +52,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	 *            the memento
 	 */
 	public void saveToMemento(WorkTimezoneGoOutSetSetMemento memento) {
-		memento.setTotalRoundingSet(this.totalRoundingSet);
+		memento.setRoundingMethod(this.roundingMethod);
 		memento.setDiffTimezoneSetting(this.diffTimezoneSetting);
 	}
 
@@ -61,7 +67,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	public void correctData(ScreenMode screenMode, WorkTimezoneGoOutSet oldDomain) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
-			this.totalRoundingSet.correctDefaultData();
+			this.roundingMethod = GoOutTimeRoundingMethod.IN_FRAME;
 			this.diffTimezoneSetting.correctDefaultData(screenMode);
 		}
 
@@ -78,7 +84,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Simple mode
 		if (screenMode == ScreenMode.SIMPLE) {
-			this.totalRoundingSet.correctDefaultData();
+			this.roundingMethod = GoOutTimeRoundingMethod.IN_FRAME;
 		}
 
 		// Go deeper
@@ -89,7 +95,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	public WorkTimezoneGoOutSet clone() {
 		WorkTimezoneGoOutSet cloned = new WorkTimezoneGoOutSet();
 		try {
-			cloned.totalRoundingSet = this.totalRoundingSet.clone();
+			cloned.roundingMethod = GoOutTimeRoundingMethod.valueOf(this.roundingMethod.value);
 			cloned.diffTimezoneSetting = this.diffTimezoneSetting.clone();
 		}
 		catch (Exception e){
@@ -104,9 +110,7 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 	 */
 	public static WorkTimezoneGoOutSet generateDefault(){
 		WorkTimezoneGoOutSet domain = new WorkTimezoneGoOutSet();
-		domain.totalRoundingSet = new TotalRoundingSet(
-				GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING,
-				GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING);
+		domain.roundingMethod = GoOutTimeRoundingMethod.IN_FRAME;
 		
 		DeductGoOutRoundingSet deductDefault = new DeductGoOutRoundingSet(
 				new GoOutTimeRoundingSetting(RoundingGoOutTimeSheet.REVERSE_ROUNDING_EACH_TIMEZONE,
@@ -116,5 +120,59 @@ public class WorkTimezoneGoOutSet extends WorkTimeDomainObject implements Clonea
 		GoOutTypeRoundingSet typeDefault = new GoOutTypeRoundingSet(deductDefault, deductDefault);
 		domain.diffTimezoneSetting = new GoOutTimezoneRoundingSet(typeDefault, typeDefault, typeDefault);
 		return domain;
+	}
+
+	/**
+	 * 「実働時間帯の枠ごとに合計せず丸める」の丸め設定を取得する
+	 * @param actualAtr 実働時間帯区分
+	 * @param reason 外出理由
+	 * @param dedAtr 控除区分
+	 * @return 丸め設定
+	 */
+	public Optional<TimeRoundingSetting> getGoOut(ActualWorkTimeSheetAtr actualAtr, GoingOutReason reason, DeductionAtr dedAtr) {
+		if(this.roundingMethod.isRoundingGoOut()) {
+			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason, dedAtr, TimeRoundingSetting.ONE_MIN_DOWN));
+		}
+		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
+	}
+	
+	/**
+	 * 「実働時間帯の枠ごとに合計してから丸める」の丸め設定を取得する
+	 * @param actualAtr 実働時間帯区分
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @param reverse 逆丸め用
+	 * @return 丸め設定
+	 */
+	public Optional<TimeRoundingSetting> getAfterTotalInFrame(ActualWorkTimeSheetAtr actualAtr, ConditionAtr conditionAtr, DeductionAtr dedAtr, TimeRoundingSetting reverse) {
+		Optional<GoingOutReason> reason = conditionAtr.toGoingOutReason();
+		if(!reason.isPresent()) {
+			return Optional.empty();
+		}
+		if(this.roundingMethod.isRoundinAfterTotalInFrame()) {
+			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason.get(), dedAtr, reverse));
+		}
+		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
+	}
+
+	/**
+	 * 「実働時間帯ごとに合計して丸める」の丸め設定を取得する
+	 * @param actualAtr 実働時間帯区分
+	 * @param conditionAtr 控除種別区分
+	 * @param dedAtr 控除区分
+	 * @return 丸め設定
+	 */
+	public Optional<TimeRoundingSetting> getAfterTotal(ActualWorkTimeSheetAtr actualAtr, ConditionAtr conditionAtr, DeductionAtr dedAtr) {
+		Optional<GoingOutReason> reason = conditionAtr.toGoingOutReason();
+		if(!reason.isPresent()) {
+			return Optional.empty();
+		}
+		if(dedAtr.isDeduction()) {
+			return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
+		}
+		if(this.roundingMethod.isRoundingAfterTotal()) {
+			return Optional.of(this.diffTimezoneSetting.getRoundingSet(actualAtr, reason.get(), dedAtr, TimeRoundingSetting.ONE_MIN_DOWN));
+		}
+		return Optional.of(TimeRoundingSetting.ONE_MIN_DOWN);
 	}
 }

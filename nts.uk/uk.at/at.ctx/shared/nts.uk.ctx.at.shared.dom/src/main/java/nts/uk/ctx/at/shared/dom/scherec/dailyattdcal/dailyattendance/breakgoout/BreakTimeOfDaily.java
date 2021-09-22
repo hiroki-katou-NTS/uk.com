@@ -107,7 +107,7 @@ public class BreakTimeOfDaily {
 			DeductionAtr dedAtr) {
 		
 		return CalcDeductionTimeService.calcTotalTime(
-				oneDay, ConditionAtr.BREAK, dedAtr, TimeSheetRoundingAtr.PerTimeSheet, Optional.empty());
+				oneDay, ConditionAtr.BREAK, dedAtr, Optional.empty());
 	}
 	
 	/**

@@ -9,14 +9,15 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
  */
 //外出時間の丸め方法
 public enum GoOutTimeRoundingMethod {
+	
+	/** 実働時間帯の枠ごとに合計せず丸める */
+	IN_FRAME(0, "Enum_GoOutTimeRoundingMethod_InFrame", "外出時間帯ごとに丸める"),
+	
+	/** 実働時間帯の枠ごとに合計してから丸める */
+	AFTER_TOTAL_IN_FRAME(1, "Enum_GoOutTimeRoundingMethod_AfterTotalInFrame", "実働時間帯の枠ごとに合計してから丸める"),
 
-	/** The total and rounding. */
-	// 合計してから丸める
-	TOTAL_AND_ROUNDING(0, "Enum_GoOutTimeRoundingMethod_totalAndRounding", "合計してから丸める"),
-
-	/** The rounding and total. */
-	// 休憩時間帯毎に丸めてから合計
-	ROUNDING_AND_TOTAL(1, "Enum_GoOutTimeRoundingMethod_roundingAndTotal", "休憩時間帯毎に丸めてから合計");
+	/** 実働時間帯ごとに合計して丸める */
+	AFTER_TOTAL(2, "Enum_GoOutTimeRoundingMethod_AfterTotal", "実働時間帯ごとに合計して丸める");
 
 	/** The value. */
 	public final int value;
@@ -67,19 +68,23 @@ public enum GoOutTimeRoundingMethod {
 	}
 	
 	/**
-	 * 合計してから丸めるか判定する
-	 * @return　合計してから丸める
+	 * 実働時間帯の枠ごとに合計せず丸めるか
 	 */
-	public boolean isTotalAndRounding() {
-		return TOTAL_AND_ROUNDING.equals(this);
+	public boolean isRoundingGoOut() {
+		return IN_FRAME.equals(this);
 	}
 	
 	/**
-	 * 休憩時間帯毎に丸めてから合計か判定する
-	 * @return　休憩時間帯毎に丸めてから合計
+	 * 実働時間帯の枠ごとに合計してから丸めるか
 	 */
-	public boolean isRoundingAndTotal() {
-		return ROUNDING_AND_TOTAL.equals(this);
+	public boolean isRoundinAfterTotalInFrame() {
+		return AFTER_TOTAL_IN_FRAME.equals(this);
 	}
 	
+	/**
+	 * 実働時間帯ごとに合計して丸めるか
+	 */
+	public boolean isRoundingAfterTotal() {
+		return AFTER_TOTAL.equals(this);
+	}
 }

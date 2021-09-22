@@ -79,8 +79,8 @@ public class TotalRoundingSet extends WorkTimeDomainObject implements Cloneable{
 	 * Correct default data.
 	 */
 	public void correctDefaultData() {
-		this.setSameFrameRounding = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
-		this.frameStraddRoundingSet = GoOutTimeRoundingMethod.TOTAL_AND_ROUNDING;
+		this.setSameFrameRounding = GoOutTimeRoundingMethod.AFTER_TOTAL;
+		this.frameStraddRoundingSet = GoOutTimeRoundingMethod.AFTER_TOTAL;
 	}
 
 	@Override
