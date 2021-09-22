@@ -13,7 +13,7 @@ public interface Form9LayoutRepository {
 	Optional<Form9Layout> get(String companyId, Form9Code form9Code);
 	
 	/**
-	 * 出力レイアウト種類を指定して出力レイアウトを取得する
+	 * システム固定区分でレイアウトを取得する
 	 * @param companyId 会社ID
 	 * @param isSystemFixed システム固定か
 	 * @return
@@ -49,7 +49,7 @@ public interface Form9LayoutRepository {
 	void deleteLayoutOfUser(String companyId, Form9Code code);
 	
 	/**
-	 * システム固定のレイアウトの利用するを変更する
+	 * システム固定のレイアウトの利用区分を変更する
 	 * @param companyId 会社ID
 	 * @param code 様式９コード
 	 * @param isUse 利用区分

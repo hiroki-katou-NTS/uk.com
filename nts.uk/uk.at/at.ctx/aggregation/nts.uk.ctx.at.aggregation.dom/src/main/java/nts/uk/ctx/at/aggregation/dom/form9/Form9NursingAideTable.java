@@ -28,7 +28,7 @@ public class Form9NursingAideTable implements DomainValue{
 	private final DetailSettingOfForm9 detailSetting;
 	
 	/** 病棟名 **/
-	private Optional<OutputColumn> hospitalWardName;
+	private final Optional<OutputColumn> hospitalWardName;
 	
 	/** 常勤 **/
 	private final Optional<OutputColumn> fullTime;

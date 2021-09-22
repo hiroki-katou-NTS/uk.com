@@ -1,18 +1,18 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.UpperCaseAlphaNumericPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.StringRegEx;
 /**
  * 出力セル
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.様式９.出力セル
  * @author lan_lt
  *
  */
-@StringMaxLength(3)
-@StringCharType(CharType.ALPHA_NUMERIC)
-public class OutputCell extends StringPrimitiveValue<OutputCell> {
+
+@StringMaxLength(10)
+@StringRegEx("[a-zA-Z]{3}[1-9]{1}[0-9]{7}")
+public class OutputCell extends UpperCaseAlphaNumericPrimitiveValue<OutputCell> {
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	

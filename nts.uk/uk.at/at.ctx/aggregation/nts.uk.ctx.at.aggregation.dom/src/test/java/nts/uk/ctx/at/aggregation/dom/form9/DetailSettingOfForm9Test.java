@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -77,6 +79,31 @@ public class DetailSettingOfForm9Test {
 		NtsAssert.businessException("Msg_2289", () ->{
 			DetailSettingOfForm9.create( bodyStartRow, maxNumerOfPeople, rowDate, rowDayOfWeek );
 		}); 
+	}
+	
+	/**
+	 * target: create
+	 * patterns: 重複しない
+	 * expect: success
+	 * 
+	 */
+	@Test
+	public void testCreate_success() {
+		
+		val bodyStartRow = new OutputRow( 10 );
+		val maxNumerOfPeople = new OnePageDisplayNumerOfPeople( 1000 );
+		val rowDate = new OutputRow( 9 );
+		val rowDayOfWeek = new OutputRow( 11 );
+		
+		//Act
+		val detailSetting = DetailSettingOfForm9.create( bodyStartRow, maxNumerOfPeople, rowDate, rowDayOfWeek );
+		
+		//Assert
+		assertThat( detailSetting.getBodyStartRow() ).isEqualTo( bodyStartRow );
+		assertThat( detailSetting.getMaxNumerOfPeople() ).isEqualTo( maxNumerOfPeople );
+		assertThat( detailSetting.getRowDate() ).isEqualTo( rowDate );
+		assertThat( detailSetting.getRowDayOfWeek() ).isEqualTo( rowDayOfWeek );
+		
 	}
 	
 }

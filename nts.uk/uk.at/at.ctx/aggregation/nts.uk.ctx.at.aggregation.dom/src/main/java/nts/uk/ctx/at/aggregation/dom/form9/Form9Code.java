@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author lan_lt
  *
  */
-@StringMaxLength(10)
+@StringMaxLength(1)
 @StringCharType(CharType.ALPHA_NUMERIC)
 public class Form9Code extends StringPrimitiveValue<Form9Code> {
 

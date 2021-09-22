@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.aggregation.dom.form9;
 
-import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.UpperCaseAlphaNumericPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.StringRegEx;
 /**
  * 出力列
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.予実集計.様式９.出力列
@@ -11,8 +10,8 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(3)
-@StringCharType(CharType.ALPHA_NUMERIC)
-public class OutputColumn extends StringPrimitiveValue<OutputColumn>{
+@StringRegEx("[a-zA-Z]")
+public class OutputColumn extends UpperCaseAlphaNumericPrimitiveValue<OutputColumn>{
 
 	/** serialVersionUID **/
 	private static final long serialVersionUID = 1L;

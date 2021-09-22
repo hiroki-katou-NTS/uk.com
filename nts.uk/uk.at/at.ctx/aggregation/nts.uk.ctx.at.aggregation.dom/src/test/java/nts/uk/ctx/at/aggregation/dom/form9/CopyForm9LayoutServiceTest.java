@@ -30,7 +30,7 @@ public class CopyForm9LayoutServiceTest {
 		,	@Injectable Form9NursingTable nursingTable
 		,	@Injectable Form9NursingAideTable nursingAideTable ) {
 		
-		val destinationCode = new Form9Code( "01" );
+		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		
@@ -42,7 +42,7 @@ public class CopyForm9LayoutServiceTest {
 				,	Optional.of( tempalteFileId ));
 		
 		val oldCopyDestination =  Form9Layout.create(
-					new Form9Code( "01" )
+					new Form9Code( "02" )
 				,	new Form9Name( "name" )
 				,	true //システム固定
 				,	true, cover, nursingTable, nursingAideTable, Optional.empty() );
@@ -75,7 +75,7 @@ public class CopyForm9LayoutServiceTest {
 		,	@Injectable Form9NursingTable nursingTable
 		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
-		val destinationCode = new Form9Code( "01" );
+		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		val isOverwrite = false;//上書きしない
@@ -83,7 +83,7 @@ public class CopyForm9LayoutServiceTest {
 		val copyResource = Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" ), false, true
 				,	cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
-		val oldCopyDestination =  Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" )
+		val oldCopyDestination =  Form9Layout.create( new Form9Code( "02" ) , new Form9Name( "name" )
 				,	false //ユーザー定義
 				,	true, cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
@@ -114,7 +114,7 @@ public class CopyForm9LayoutServiceTest {
 		,	@Injectable Form9NursingTable nursingTable
 		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
-		val destinationCode = new Form9Code( "01" );
+		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		val isOverwrite = true;//上書きする
@@ -122,7 +122,7 @@ public class CopyForm9LayoutServiceTest {
 		val copyResource = Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" ), false, true
 				,	cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
-		val oldCopyDestination =  Form9Layout.create( new Form9Code( "01" ) , new Form9Name( "name" )
+		val oldCopyDestination =  Form9Layout.create( new Form9Code( "02" ) , new Form9Name( "name" )
 				,	false //ユーザー定義
 				,	true, cover, nursingTable, nursingAideTable, Optional.of( tempalteFileId ) );
 		
@@ -156,7 +156,7 @@ public class CopyForm9LayoutServiceTest {
 		,	@Injectable Form9NursingTable nursingTable
 		,	@Injectable Form9NursingAideTable nursingAideTable) {
 		
-		val destinationCode = new Form9Code( "01" );
+		val destinationCode = new Form9Code( "02" );
 		val destinationName = new Form9Name( "destinationName" );
 		val tempalteFileId = "tempalteFileId";
 		val isOverwrite = true;
