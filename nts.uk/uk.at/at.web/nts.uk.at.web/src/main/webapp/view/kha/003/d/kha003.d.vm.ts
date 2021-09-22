@@ -100,7 +100,7 @@ module nts.uk.at.kha003.d {
                      }
                      // vm.dateHeaders(dateHeaders);
                  }*/
-                if(!data){
+                if (!data) {
                     vm.$dialog.error({messageId: 'Msg_2171'}).then(() => {
                         vm.displayKha003CScreen();
                     });
@@ -149,7 +149,11 @@ module nts.uk.at.kha003.d {
                 colWidth += parseInt(column.width)
             }
             let widthScreen = $(document).width();
-            let height = (520 * $(window).height()) / 754;
+            let windowHeight = $(window).height();
+            let height = (.77 * windowHeight);
+            if (window.devicePixelRatio <= 1) {
+                height = (.76 * windowHeight);
+            }
             let width = Math.min(widthScreen, colWidth);
             let widthInPX = width + "px";
             if (width === widthScreen) {
@@ -163,6 +167,7 @@ module nts.uk.at.kha003.d {
                 columns: columns,
                 width: widthInPX,
                 height: height + 'px',
+                //height: '95%',
                 autoFitWindow: true,
                 hidePrimaryKey: true,
                 virtualization: true,
@@ -857,7 +862,7 @@ module nts.uk.at.kha003.d {
             var end = endDate.split('-');
             var startYear = parseInt(start[0]);
             var endYear = parseInt(end[0]);
-           // var dates = [];
+            // var dates = [];
 
             for (var i = startYear; i <= endYear; i++) {
                 var endMonth = i != endYear ? 11 : parseInt(end[1]) - 1;
@@ -865,13 +870,13 @@ module nts.uk.at.kha003.d {
                 for (var j = startMon; j <= endMonth; j = j > 12 ? j % 12 || 11 : j + 1) {
                     var month = j + 1;
                     var displayMonth = month < 10 ? '0' + month : month;
-                  //  dates.push([i, displayMonth, '01'].join('-'));
+                    //  dates.push([i, displayMonth, '01'].join('-'));
                     vm.dateHeaders.push(
                         new DateHeader(null, null, [i, displayMonth].join('/'))
                     )
                 }
             }
-           // return dates;
+            // return dates;
         }
 
         mounted() {
