@@ -173,9 +173,15 @@ module nts.uk.at.view.kdw008.a {
                     if (self.formatCodeItems().length > 0) {
 	                    if (self.isDaily()) {
 	                        nts.uk.ui.errors.clearAll();
-	                        self.getDailyDetail(self.currentDailyFormatCode(), value).done(() => {
-	                            block.clear();
-	                        })
+							const code = self.currentDailyFormatCode();
+							if (code != '' && code != null && code != undefined ) {
+		                        self.getDailyDetail(code, value).done(() => {
+		                            block.clear();
+		                        })
+								
+							} else {
+								block.clear();
+							}
 	                    } else {
 	                        self.getMonthCorrectionDetail(value);
 	                        block.clear();
