@@ -4,12 +4,16 @@ import java.util.Optional;
 
 import nts.uk.ctx.sys.auth.dom.adapter.employee.PersonalEmployeeInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
+
+import javax.ejb.Stateless;
+
 /**
  * ユーザIDから個人社員情報を取得する
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.ユーザIDから個人社員情報を取得する
  * @author lan_lt
  *
  */
+@Stateless
 public class GetPersonalEmployeeInfoByUserIdService {
 	/**
 	 * 取得する

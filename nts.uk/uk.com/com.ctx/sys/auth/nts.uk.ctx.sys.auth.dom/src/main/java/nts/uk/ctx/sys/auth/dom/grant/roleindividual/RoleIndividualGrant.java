@@ -49,14 +49,14 @@ public class RoleIndividualGrant extends AggregateRoot {
 		this.roleType = roleType;
 		this.validPeriod = validPeriod;
 	}
-	
+
 	public static RoleIndividualGrant createFromJavaType(String userId, String roleId, String companyId,int roleType, GeneralDate validPeriodStart,GeneralDate validPeriodEnd) {
 		return new RoleIndividualGrant(userId,
 			/**roleID*/
 			roleId,
 			companyId,
 			EnumAdaptor.valueOf(roleType, RoleType.class),
-			new  DatePeriod(validPeriodStart, validPeriodEnd) );
+			new  DatePeriod(validPeriodStart, validPeriodEnd));
 	}
 
 }

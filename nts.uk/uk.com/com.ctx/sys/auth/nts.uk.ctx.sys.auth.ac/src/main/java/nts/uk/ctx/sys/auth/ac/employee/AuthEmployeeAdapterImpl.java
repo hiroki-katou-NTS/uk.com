@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.auth.ac.employee;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.PersonalEmployeeInfoImport;
 import nts.uk.ctx.sys.auth.dom.employee.dto.EmployeeImport;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeInfoImport;
 
 @Stateless
 public class AuthEmployeeAdapterImpl implements EmployeeAdapter{
@@ -58,8 +60,28 @@ public class AuthEmployeeAdapterImpl implements EmployeeAdapter{
 
 	@Override
 	public List<PersonalEmployeeInfoImport> getPersonalEmployeeInfo(List<String> personIds) {
-		// TODO dev code
-		return null;
+		List<PersonalEmployeeInfoImport>  rs = new ArrayList<>();
+		val listEmInf =  employeePub.getPersonEmployeeInfosByPersonId(personIds);
+		for (val emp: listEmInf) {
+				val employeeInfoImports = emp.getEmployeeInfos().stream().map(i->new EmployeeInfoImport(
+							i.getCompanyId(),
+							i.getPersonId(),
+							i.getEmployeeId(),
+							i.getEmployeeCode(),
+							i.getDeletedStatus(),
+							i.getDeleteDateTemporary(),
+							i.getRemoveReason(),
+							i.getExternalCode()
+
+					)).collect(Collectors.toList());
+			rs.add(new PersonalEmployeeInfoImport(
+					emp.getPersonId(),
+					emp.getPersonName(),
+					emp.getBussinessName(),
+					employeeInfoImports
+			));
+		}
+		return  rs;
 	}
 
 }

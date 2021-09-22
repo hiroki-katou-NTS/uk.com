@@ -59,6 +59,14 @@ public interface RoleSetRepository {
     void delete(String roleSetCd, String companyId);
 
     /**
+     * exists
+     * @param roleSetCd
+     * @param companyId
+     * @return
+     */
+    boolean exists(String roleSetCd, String companyId);
+
+    /**
      * find by company id and person role id
      * 
      * @param companyId
