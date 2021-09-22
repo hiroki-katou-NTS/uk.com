@@ -225,9 +225,9 @@ module nts.uk.ui.at.kcp015.shared {
              *        const { employeeIds } = param;
              * 
              *        if(employeeIds.length > 1){
-             *            vm.$window.modal('/view/kdl/009/a/multi.xhtml');
+             *            vm.$window.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});
              *        } else {
-             *            vm.$window.modal('/view/kdl/009/a/single.xhtml');
+             *            vm.$window.modal("/view/kdl/009/a/index.xhtml",{width: 770, height: 650});
              *        }
              *    });
              * Những đoạn code dùng cấu trúc cũ thay tương tự.
@@ -235,9 +235,9 @@ module nts.uk.ui.at.kcp015.shared {
             nts.uk.ui.windows.setShared('KDL009_DATA', param);
             $('#A1_10_1').ntsPopup('hide');
             if (param.employeeIds.length > 1) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/multi.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 770, height: 650});
             }
         }
 

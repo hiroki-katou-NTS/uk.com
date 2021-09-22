@@ -267,9 +267,9 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				baseDate: moment(new Date()).format("YYYYMMDD")
 			});
 			if(self.params && self.params.employeeIds.length > 1){
-				nts.uk.ui.windows.sub.modal( '/view/kdl/009/a/multi.xhtml');	
+				nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 1100, height: 650});	
 			}else{
-				nts.uk.ui.windows.sub.modal( '/view/kdl/009/a/single.xhtml');
+				nts.uk.ui.windows.sub.modal("/view/kdl/009/a/index.xhtml",{width: 770, height: 650});
 			}
 			
 		}
