@@ -159,6 +159,8 @@ module nts.uk.at.view.kdw002.a {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
                                     self.roundingUnitValue(null);
+									self.selectDefaultUnitComobox();
+									
                                 }
                             });
                         } else {
@@ -183,6 +185,7 @@ module nts.uk.at.view.kdw002.a {
                                     self.headerColorValue(null);
                                     self.timeInputCurrentCode(0);
                                     self.roundingUnitValue(null);
+									self.selectDefaultUnitComobox();
                                 }
                             });
                         }
@@ -311,6 +314,13 @@ module nts.uk.at.view.kdw002.a {
                 }*/
 
             }
+
+			selectDefaultUnitComobox(): void {
+				const self = this;
+				self.timeUnit(self.timeUnits()[0].code);
+				self.numberOfTimesUnit(self.numberOfTimesUnits()[0].code);
+				self.moneyUnit(self.moneyUnits()[0].code);
+			}
 
             navigateView(): void {
                 var self = this;
