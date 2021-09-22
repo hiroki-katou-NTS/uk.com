@@ -29,9 +29,9 @@ module kdl005.test {
                 nts.uk.ui.windows.setShared('KDL005_DATA', param);
                 
                 if(param.employeeIds.length > 1) {
-                    nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+                    nts.uk.ui.windows.sub.modal("/view/kdl/005_old/a/multi.xhtml");
                 } else {
-                    nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+                    nts.uk.ui.windows.sub.modal("/view/kdl/005_old/a/single.xhtml");
                 }
             }
         }

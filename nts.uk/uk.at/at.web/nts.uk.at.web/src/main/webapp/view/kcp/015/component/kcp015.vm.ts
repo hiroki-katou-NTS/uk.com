@@ -198,10 +198,10 @@ module nts.uk.ui.at.kcp015.shared {
 
             nts.uk.ui.windows.setShared('KDL005_DATA', param);
             $('#A1_10_1').ntsPopup('hide');
-            if (param.employeeIds.length > 1) {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            if (empIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1140, height: 640 });
             } else {
-                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 850, height: 640 });
             }
         }
 

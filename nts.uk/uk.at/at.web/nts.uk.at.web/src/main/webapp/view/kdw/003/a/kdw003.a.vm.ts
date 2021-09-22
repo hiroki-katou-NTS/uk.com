@@ -4771,16 +4771,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         openKDL005Dialog() {
             var self = this;
-            var param = {
-                employeeIds: [self.selectedEmployee()],
-                baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
-            };
-            setShared('KDL005_DATA', param);
-            if(param.employeeIds.length > 1) {
-                modal("/view/kdl/005/a/multi.xhtml");
+            setShared('KDL005_DATA', [self.selectedEmployee()]);
+			if ([self.selectedEmployee()].length > 1){
+				 nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1140, height: 640 });
             } else {
-                modal("/view/kdl/005/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 850, height: 640 });
             }
+            
         }
 
 		openKDL051Dialog() {

@@ -48,11 +48,12 @@ module nts.uk.at.view.kaf006.shr.viewmodel {
         }
 
         public static openKDL005(param: any) {
-            setShared("KDL005_DATA", param);
-            if(param.employeeIds.length > 1) {
-                modal("/view/kdl/005/a/multi.xhtml");
+            setShared("KDL005_DATA", param.employeeIds);
+
+			if (param.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml", {  width: 1140, height: 640 });
             } else {
-                modal("/view/kdl/005/a/single.xhtml");
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/index.xhtml",{  width: 850, height: 640 });
             }
         }
 
