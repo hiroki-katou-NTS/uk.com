@@ -1093,7 +1093,7 @@ public class ScheduleCreatorExecutionTransaction {
 							DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value,
 							//ScheManaStatus.ON_LEAVE = WorkTypeClassification.LeaveOfAbsence, ScheManaStatus.CLOSED = WorkTypeClassification.Closure
 							optEmploymentInfo.get().getScheManaStatus() == ScheManaStatus.ON_LEAVE ? 12 : 13, 
-							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 1); // CloseAtr
+							optEmploymentInfo.get().getOptTempAbsenceFrameNo().get().v().intValue() - 2); // CloseAtr
 				}
 				
 				if (lstWorkType.isEmpty()) {
