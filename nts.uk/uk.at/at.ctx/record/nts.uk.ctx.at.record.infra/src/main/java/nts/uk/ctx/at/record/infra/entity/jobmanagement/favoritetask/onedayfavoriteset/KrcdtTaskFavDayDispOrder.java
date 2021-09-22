@@ -1,0 +1,40 @@
+package nts.uk.ctx.at.record.infra.entity.jobmanagement.favoritetask.onedayfavoriteset;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
+/**
+ * 1日お気に入り作業の表示順 OneDayFavoriteTaskDisplayOrder
+ * @author tutt
+ *
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "KRCDT_TASK_FAV_DAY_DISPORDER")
+public class KrcdtTaskFavDayDispOrder extends ContractUkJpaEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	public KrcdtTaskFavDayDispOrderPk pk;
+
+	@Column(name = "CID")
+	public String cId;
+	
+	@Column(name = "SID")
+	public String sId;
+	
+	@Override
+	protected Object getKey() {
+		return this.pk;
+	}
+}
