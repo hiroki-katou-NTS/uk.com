@@ -295,8 +295,12 @@ module nts.uk.com.view.cas011.a {
             let vm = this;
             vm.$ajax('com', API.updateRoleSet, ko.toJS(currentRoleSet)).done((roleSetCd) => {
                 dialog.info({messageId: "Msg_15"}).then(()=>{
+                    if(currentRoleSet.defaultRoleSet() == true){
+                        vm.defaultRoleSetCode(currentRoleSet.roleSetCd)
+                    }
                     // refresh - initial screen
                     vm.initialScreen(null, currentRoleSet.roleSetCd());
+
                 });
 
             }).fail(function (error) {
@@ -399,15 +403,14 @@ module nts.uk.com.view.cas011.a {
             if (currentRoleSet.roleSetCd() === '') {
                 return;
             }
-            if(!isNullOrEmpty(vm.dataA51()) && vm.dataA51().length >1 ){
-
+            if(!isNullOrEmpty(vm.dataA51()) && vm.dataA51().length >2 ){
                 currentRoleSet.personInfRoleId(vm.dataA51()[1].id);
             }else {
                 currentRoleSet.personInfRoleId(null);
             }
-            if(!isNullOrEmpty(vm.dataA41() && vm.dataA41().length>1)){
-
+            if(!isNullOrEmpty(vm.dataA41() && vm.dataA41().length>2)){
                 currentRoleSet.employmentRoleId(vm.dataA41()[1].id);
+
             }else {
                 currentRoleSet.employmentRoleId(null);
             }
@@ -424,13 +427,13 @@ module nts.uk.com.view.cas011.a {
 
             let vm = this,
                 currentRoleSet: RoleSet = vm.currentRoleSet();
-            if(!isNullOrEmpty(vm.dataA51()) && vm.dataA51().length >1){
+            if(!isNullOrEmpty(vm.dataA51()) && vm.dataA51().length >2){
 
                 currentRoleSet.personInfRoleId(vm.dataA51()[1].id);
             }else {
                 currentRoleSet.personInfRoleId(null);
             }
-            if(!isNullOrEmpty(vm.dataA41()) && vm.dataA41().length >1){
+            if(!isNullOrEmpty(vm.dataA41()) && vm.dataA41().length >2){
 
                 currentRoleSet.employmentRoleId(vm.dataA41()[1].id);
             }else {
