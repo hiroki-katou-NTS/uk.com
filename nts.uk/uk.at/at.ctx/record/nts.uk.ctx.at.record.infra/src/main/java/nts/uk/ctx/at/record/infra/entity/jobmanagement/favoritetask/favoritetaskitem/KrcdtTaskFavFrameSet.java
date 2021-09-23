@@ -9,6 +9,9 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskItem;
+import nts.uk.ctx.at.record.dom.jobmanagement.favoritetask.favoritetaskitem.FavoriteTaskName;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -55,6 +58,19 @@ public class KrcdtTaskFavFrameSet extends ContractUkJpaEntity implements Seriali
 	@Override
 	protected Object getKey() {
 		return this.favId;
+	}
+	
+	public KrcdtTaskFavFrameSet (FavoriteTaskItem domain) {
+		this.cid = AppContexts.user().companyId();
+		this.favId = domain.getFavoriteId();
+		this.sId = domain.getEmployeeId();
+		this.favName = domain.getTaskName().v();
+		//TODO: mapping task name
+	}
+	
+	public FavoriteTaskItem toDomain() {
+		//TODO: mapping taskCd 1 -> 5 với AR FavoriteTaskItem.
+		return new FavoriteTaskItem(this.sId, this.favId, new FavoriteTaskName(this.favName), null);
 	}
 
 }

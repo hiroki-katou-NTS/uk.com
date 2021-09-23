@@ -6,6 +6,9 @@ import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +17,8 @@ import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ChoiceName;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.ExternalCode;
 import nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting.TaskSupInfoChoicesDetail;
+import nts.uk.ctx.at.record.infra.entity.reservation.bento.KrcdtReservation;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -40,16 +45,22 @@ public class KrcmtTaskSupInfoChoicesDetail extends ContractUkJpaEntity implement
 
 	@Column(name = "CID")
 	public String cid;
-
+	
 	@Override
 	protected Object getKey() {
 		return this.pk;
 	}
 
+	public KrcmtTaskSupInfoChoicesDetail(TaskSupInfoChoicesDetail domain) {
+		this.pk = new KrcmtTaskSupInfoChoicesDetailPk(domain.getHistoryId(), domain.getCode().v(), domain.getItemId());
+		this.externalCd = domain.getExternalCode().isPresent() ? domain.getExternalCode().get().v() : null;
+		this.name = domain.getName().v();
+		this.cid = AppContexts.user().companyId();
+	}
+
 	public TaskSupInfoChoicesDetail toDomain() {
-		return new TaskSupInfoChoicesDetail(this.pk.hisId, this.pk.manHrItemId,
-				new ChoiceCode(this.pk.code), new ChoiceName(this.name),
-				Optional.of(new ExternalCode(this.externalCd)));
+		return new TaskSupInfoChoicesDetail(this.pk.hisId, this.pk.manHrItemId, new ChoiceCode(this.pk.code),
+				new ChoiceName(this.name), Optional.of(new ExternalCode(this.externalCd)));
 	}
 
 }
