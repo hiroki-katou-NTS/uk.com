@@ -247,11 +247,6 @@ public class DisplayRemainingHolidayNumber {
 		return output;
 	}
 	
-<<<<<<< HEAD
-	private NextAnnualLeaveGrantImport getNextGrantDate(String companyId, String employeeId, GeneralDate date) {
-		List<NextAnnualLeaveGrantImport> lstOutput = this.annualHolidayMng.acquireNextHolidayGrantDate(companyId, employeeId, date);
-		return lstOutput.isEmpty() ? null : lstOutput.get(0);
-=======
 	public NursingRemainDto getNursingSetting(String companyId, String employeeId, GeneralDate date, String closureDate) {
 	    GeneralDate closureStart = GeneralDate.fromString(closureDate, "yyyy/MM/dd");
 	    
@@ -316,7 +311,6 @@ public class DisplayRemainingHolidayNumber {
                 .filter(holiday -> holiday.grantDate.after(GeneralDate.today()))
                 .min(Comparator.comparing(h -> h.grantDate));
 		return futureGrant.isPresent() ? futureGrant.get() : null;
->>>>>>> pj/at/release_ver4
 	}
 	
 	public HolidayRemainNumberDto getRemainingHolidayNumber(String employeeId, String closureDate) {
@@ -328,13 +322,6 @@ public class DisplayRemainingHolidayNumber {
 		result.setReserveLeave(this.getReserveLeaveSetting(companyId, employeeId, baseDate));
 		result.setSubstitutionLeave(this.getSubsitutionVacationSetting(companyId, employeeId, baseDate));
 		result.setCom60HVacation(this.getCom60HVacationSetting(companyId, employeeId, baseDate));
-<<<<<<< HEAD
-		if (result.getAnnualLeave().isManageYearOff()) {
-			NextAnnualLeaveGrantImport nextAnnualLeaveGrantImport = this.getNextGrantDate(companyId, employeeId, baseDate);
-			result.setNextGrantDate(nextAnnualLeaveGrantImport==null? null : nextAnnualLeaveGrantImport.grantDate);
-			result.setGrantDays(nextAnnualLeaveGrantImport==null ? null : nextAnnualLeaveGrantImport.grantDays);
-		}
-=======
 		NursingRemainDto nursingRemainDto = this.getNursingSetting(companyId, employeeId, baseDate, closureDate);
 		result.setChildCareVacation(nursingRemainDto.getChildCareVacation());
 		result.setLongTermCareVacation(nursingRemainDto.getLongTermCareVacation());
@@ -349,7 +336,6 @@ public class DisplayRemainingHolidayNumber {
 		    }
 		}
 //			result.setNextGrantDate(this.getNextGrantDate(companyId, employeeId, baseDate));
->>>>>>> pj/at/release_ver4
 		return result;
 	}
 

@@ -143,11 +143,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         lockMessage: KnockoutObservable<any> = ko.observable("");
 
-<<<<<<< HEAD
-        dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null, null));
-=======
         dataHoliday: KnockoutObservable<DataHoliday> = ko.observable(new DataHoliday(null, null, null, null, null, null, null, null));
->>>>>>> pj/at/release_ver4
         comboItems: KnockoutObservableArray<any> = ko.observableArray([new ItemModel('1', '基本給'),
             new ItemModel('2', '役職手当'),
             new ItemModel('3', '基本給2')]);
@@ -925,17 +921,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         loadRemainNumberTable() {
             let self = this;
-<<<<<<< HEAD
-            service.getRemainNum(self.selectedEmployee()).done((data: any) => {
-                self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate, data.grantDays));
-=======
             let param = {
                 employeeId: self.selectedEmployee(),
                 closureDate: self.dateRanger().startDate
             }
             service.getRemainNum(param).done((data: any) => {
                 self.dataHoliday(new DataHoliday(data.annualLeave, data.reserveLeave, data.compensatoryLeave, data.substitutionLeave, data.nextGrantDate, data.grantDays, data.childCareVacation, data.longTermCareVacation));
->>>>>>> pj/at/release_ver4
                 self.referenceVacation(
                     new ReferenceVacation(
                         data.annualLeave == null ? false : data.annualLeave.manageYearOff,
@@ -5502,11 +5493,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dispSysDate: string = getText("KDW003_121", [moment(new Date()).format("YYYY/MM/DD")]);
         dispNextGrantDate: string;
 
-<<<<<<< HEAD
-        constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any, grantDays: any) {
-=======
         constructor(annualLeave: any, reserveLeave: any, compensatoryLeave: any, substitutionLeave: any, nextGrantDate: any, grantDays: any, childCareVacation: any, longTermCareVacation: any) {
->>>>>>> pj/at/release_ver4
+
             this.dispNextGrantDate = nextGrantDate != null ? getText("KDW003_122", [nextGrantDate, grantDays]) : getText("KDW003_123");
             this.dispCompensationDay = compensatoryLeave == null ? false : compensatoryLeave.manageCompenLeave;
             this.dispCompensationTime = compensatoryLeave == null ? false : compensatoryLeave.manageTimeOff;
@@ -5514,7 +5502,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             this.dispAnnualDay = annualLeave == null ? false : annualLeave.manageYearOff;
             this.dispAnnualTime = annualLeave == null ? false : annualLeave.manageTimeOff;
             this.dispReserve = reserveLeave == null ? false : reserveLeave.manageRemainNumber;
-<<<<<<< HEAD
+			this.dispChildCare = childCareVacation == null ? false : childCareVacation.manageNursing;
+			this.dispLongTermCare = longTermCareVacation == null ? false : longTermCareVacation.manageNursing;
+			
 			if (this.dispCompensationDay && (!_.isNull(compensatoryLeave.compenLeaveRemain) || !_.isNull(compensatoryLeave.timeRemain))) {
 				if (_.isNull(compensatoryLeave.compenLeaveRemain)) compensatoryLeave.compenLeaveRemain = 0;
 				if (_.isNull(compensatoryLeave.timeRemain)) compensatoryLeave.timeRemain = 0;
@@ -5532,27 +5522,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				this.compensationDay = "";
 			}
 			if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
-=======
-			this.dispChildCare = childCareVacation == null ? false : childCareVacation.manageNursing;
-			this.dispLongTermCare = longTermCareVacation == null ? false : longTermCareVacation.manageNursing;
-            if (this.dispCompensationDay && compensatoryLeave.compenLeaveRemain != null) {
-                this.compensationDay = getText("KDW003_8", [compensatoryLeave.compenLeaveRemain]);
-                if (compensatoryLeave.compenLeaveRemain < 0)
-                    $("#fixed-table td.remain-compen-day").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-compen-day").css("color", "");
-            } else
-                this.compensationDay = "";
-            if (this.dispCompensationTime && compensatoryLeave.timeRemain != null) {
-                this.compensationTime = nts.uk.time.format.byId("Time_Short_HM", compensatoryLeave.timeRemain);
-                if (compensatoryLeave.timeRemain < 0)
-                    $("#fixed-table td.remain-compen-time").css("color", "#ff0000");
-                else
-                    $("#fixed-table td.remain-compen-time").css("color", "");
-            } else
-                this.compensationTime = "";
-            if (this.dispSubstitute && substitutionLeave.holidayRemain != null) {
->>>>>>> pj/at/release_ver4
                 this.substitute = getText("KDW003_8", [substitutionLeave.holidayRemain]);
                 if (substitutionLeave.holidayRemain < 0)
                     $("#fixed-table td.remain-subst-day").css("color", "#ff0000");
@@ -5560,30 +5529,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     $("#fixed-table td.remain-subst-day").css("color", "#06c");
             } else
                 this.substitute = "";
-<<<<<<< HEAD
-			if (this.dispAnnualDay && (!_.isNull(annualLeave.annualLeaveRemain) || !_.isNull(annualLeave.timeRemain))) {
-				if (_.isNull(annualLeave.annualLeaveRemain)) annualLeave.annualLeaveRemain = 0;
-				if (_.isNull(annualLeave.timeRemain)) annualLeave.timeRemain = 0;
-				if (annualLeave.timeRemain != 0) {
-					this.annualDay = getText("KDW003_132", [annualLeave.annualLeaveRemain, nts.uk.time.format.byId("Time_Short_HM", annualLeave.timeRemain)]);	
-				} else {
-					this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);	
-				}
-				if (annualLeave.annualLeaveRemain < 0 || (annualLeave.annualLeaveRemain == 0  && annualLeave.timeRemain < 0)) {
-					$("#fixed-table td.remain-annual-day").css("color", "#ff0000");
-				} else {
-					$("#fixed-table td.remain-annual-day").css("color", "#06c");
-				}
-			} else {
-				this.annualDay = "";
-			}
-=======
             if (this.dispAnnualDay && annualLeave.annualLeaveRemain != null) {
                 this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);
                 if (annualLeave.annualLeaveRemain < 0)
                     $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
                 else
-                    $("#fixed-table td.remain-annual-day").css("color", "");
+                    $("#fixed-table td.remain-annual-day").css("color", "#06c");
             } else
                 this.annualDay = "";
             if (this.dispAnnualDay) {
@@ -5594,13 +5545,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         if (annualLeave.annualLeaveRemain < 0)
                             $("#fixed-table td.remain-annual-day").css("color", "#ff0000");
                         else
-                            $("#fixed-table td.remain-annual-day").css("color", "");
+                            $("#fixed-table td.remain-annual-day").css("color", "#06c");
                     }
                 } else {
                     this.annualDay = getText("KDW003_8", [annualLeave.annualLeaveRemain]);
                 }
             }
->>>>>>> pj/at/release_ver4
             if (this.dispReserve && reserveLeave.remainNumber != null) {
                 this.reserve = getText("KDW003_8", [reserveLeave.remainNumber]);
                 if (reserveLeave.remainNumber < 0)
