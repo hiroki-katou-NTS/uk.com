@@ -17,7 +17,29 @@
             </div>
         </div>
         <div id="contents-area">
-
+            <div class="control-group valign-center" style="margin-bottom: 20px; margin-top: 20px">
+                <div class="valign-center control-group" >
+                    <div data-bind="ntsFormLabel: { required: true }">Tergate Date:</div>
+                    <div data-bind="ntsDatePicker: { value: targetDate, dateFormat: 'YYYY/MM/DD' }"></div>
+                </div>
+                <div class="valign-center control-group" >
+                    <div data-bind="ntsFormLabel: { required: true }">Start Day:</div>
+                    <input data-bind="ntsNumberEditor: {value: startDay, required: true}"/>
+                </div>
+                <div data-bind="ntsFormLabel: {required: true, text: 'Date period'}"/>
+                <div data-bind="ntsDateRangePicker: {
+                      required: true,
+                      enable: true,
+                      showNextPrevious: true,
+                      value: dateValue,
+                      name:'dateRange',
+                      maxRange: 'oneYear'
+                     }"/>
+                <div data-bind="ntsFormLabel: {required: true, text: 'Employee Code'}"/>
+                <input data-bind="ntsTextEditor: {value: empCode, required: true}"/>
+                <div data-bind="ntsFormLabel: {required: true, text: 'Employee Code'}"/>
+                <input data-bind="ntsTextEditor: {value: empName, required: true}"/>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

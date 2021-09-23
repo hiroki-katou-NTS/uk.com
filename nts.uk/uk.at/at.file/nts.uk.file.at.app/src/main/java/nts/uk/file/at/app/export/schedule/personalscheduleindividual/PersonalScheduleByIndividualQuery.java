@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ObjectPeriod;
+import nts.uk.file.at.app.export.schedule.personalscheduleindividual.dto.ObjectDatePeriod;
 
 @Data
 @AllArgsConstructor
@@ -29,12 +30,12 @@ public class PersonalScheduleByIndividualQuery {
     /**
      * 対象年月日
      */
-    private GeneralDate date;
+    private String date;
 
     /**
      * 対象期間 start date - end date
      */
-    private ObjectPeriod period;
+    private ObjectDatePeriod period;
 
     /**
      * 開始曜日
