@@ -92,6 +92,9 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 	private static final int CSV_TITLE_INDEX = 0;
 	// 2行目 条件
 	private static final int CSV_CONDITIONS_INDEX = 1;
+	// File extension
+	private static final String EXCEL_EXTENSION = ".xlsx";
+	private static final String CSV_EXTENSION = ".csv";
 	// 固定値Ｃ
 	private static final int FIXED_VALUE_C = 8;
 
@@ -100,15 +103,17 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			WorksheetCollection collection = reportContext.getWorkbook().getWorksheets();
 			Worksheet sheet = collection.get(0);
+			String extension = null;
 			dataSource.getFormSetting().ifPresent(data -> sheet.setName(data.getTitle().v()));
 			if (dataSource.getReportType().equals(EquipmentDataReportType.EXCEL)) {
 				this.printHeaderExcel(sheet, reportContext, dataSource);
+				extension = EXCEL_EXTENSION;
 			} else {
 				this.printHeaderCsv(sheet, reportContext, dataSource);
+				extension = CSV_EXTENSION;
 			}
 			this.printData(sheet, reportContext, dataSource);
 
-			String extension = dataSource.getReportType().equals(EquipmentDataReportType.EXCEL) ? ".xlsx" : ".csv";
 			String fileName = dataSource.getFormSetting().map(data -> data.getTitle().v()).orElse("") + extension;
 			OutputStream outputStream = this.createNewFile(generatorContext, fileName);
 			reportContext.processDesigner();
@@ -175,6 +180,12 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 
 		// Print data
 		List<EquipmentData> equipmentDatas = dataSource.getEquipmentDatas();
+		// Sort data (①設備分類コー	②設備コード	③日付	④社員コード	⑤利用回目)
+		equipmentDatas.sort(Comparator.comparing(EquipmentData::getEquipmentClassificationCode)
+				.thenComparing(EquipmentData::getEquipmentCode).thenComparing(EquipmentData::getInputDate)
+				.thenComparing(EquipmentData::getSid, (s1, s2) -> this.compareSids(s1, s2, dataSource))
+				.thenComparing(EquipmentData::getUseDate));
+		
 		AtomicInteger currentRow = new AtomicInteger(DATA_ROW);
 		AtomicBoolean isBlueBackground = new AtomicBoolean(false);
 		equipmentDatas.forEach(equipmentData -> {
@@ -332,5 +343,26 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 				style.setBackgroundColor(Color.getWhite());
 			}
 		}
+	}
+	
+	/**
+	 * Compare 2 employees by SCD from SID
+	 * @param s1	sid1
+	 * @param s2	sid2
+	 * @param dataSource
+	 * @return
+	 */
+	private int compareSids(String s1, String s2, EquipmentDataExportDataSource dataSource) {
+		Optional<EmployeeInformation> e1 = dataSource.getEmployees().stream()
+				.filter(data -> data.getEmployeeId().equals(s1)).findFirst();
+		Optional<EmployeeInformation> e2 = dataSource.getEmployees().stream()
+				.filter(data -> data.getEmployeeId().equals(s2)).findFirst();
+		if (!e1.isPresent()) {
+			return -1;
+		}
+		if (!e2.isPresent()) {
+			return 1;
+		}
+		return e1.get().getEmployeeCode().compareTo(e2.get().getEmployeeCode());
 	}
 }
