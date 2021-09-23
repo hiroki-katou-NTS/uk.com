@@ -1,4 +1,4 @@
-package nts.uk.screen.com.app.find.equipment.achievement;
+package nts.uk.ctx.office.app.command.equipment.achievement.dto;
 
 import lombok.Builder;
 import lombok.Data;
