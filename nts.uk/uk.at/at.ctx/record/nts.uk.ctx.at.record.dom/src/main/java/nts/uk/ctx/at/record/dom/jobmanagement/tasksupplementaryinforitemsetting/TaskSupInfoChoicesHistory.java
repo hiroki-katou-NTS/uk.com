@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.jobmanagement.tasksupplementaryinforitemsetting
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.history.strategic.PersistentHistory;
  * 
  */
 @Getter
+@AllArgsConstructor
 public class TaskSupInfoChoicesHistory extends AggregateRoot
 		implements PersistentHistory<DateHistoryItem, DatePeriod, GeneralDate> {
 
@@ -27,13 +29,6 @@ public class TaskSupInfoChoicesHistory extends AggregateRoot
 
 	@Override
 	public List<DateHistoryItem> items() {
-		return dateHistoryItems;
-	}
-
-	public TaskSupInfoChoicesHistory(int itemId, List<DateHistoryItem> dateHistoryItems) {
-		super();
-		this.itemId = itemId;
-
-		this.dateHistoryItems = dateHistoryItems;
+		return this.dateHistoryItems;
 	}
 }
