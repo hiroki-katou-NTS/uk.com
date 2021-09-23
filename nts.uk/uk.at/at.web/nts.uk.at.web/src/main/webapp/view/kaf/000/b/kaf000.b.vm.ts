@@ -594,7 +594,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 			const vm = this;
 			let appNameInfo = _.find(vm.appNameList, (o: any) => vm.appType() == 0 && o.opApplicationTypeDisplay==overtimeAtr);
 			if(appNameInfo) {
-				$('.pg-name > span').text(appNameInfo.opProgramID + "B " + appNameInfo.appName);
+				$('.pg-name > span').text(appNameInfo.appName);
 			} else {
 				$('.pg-name > span').text("");
 			}
