@@ -65,7 +65,8 @@ public class VariousVacationControlService {
 		if(annualPaidLeave!=null && annualPaidLeave.getManageAnnualSetting().getHalfDayManage().getManageType() == ManageDistinct.YES){
 			halfdayyearlySetting = true;
 		}
-		if(annualPaidLeave!=null &&annualPaidLeave.getTimeSetting().getTimeManageType()==ManageDistinct.YES){
+		if(annualPaidLeave!=null &&annualPaidLeave.getTimeSetting().getTimeManageType()== ManageDistinct.YES
+				&& annualPaidLeave.getTimeSetting().getMaxYearDayLeave().manageType == ManageDistinct.YES){
 			hourlyLeaveSetting = true;
 		}
 
