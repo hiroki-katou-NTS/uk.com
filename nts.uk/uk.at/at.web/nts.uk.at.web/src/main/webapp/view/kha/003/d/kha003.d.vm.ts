@@ -152,7 +152,7 @@ module nts.uk.at.kha003.d {
             let windowHeight = $(window).height();
             let height = (.77 * windowHeight);
             if (window.devicePixelRatio <= 1) {
-                height = (.76 * windowHeight);
+                height = (.75 * windowHeight);
             }
             let width = Math.min(widthScreen, colWidth);
             let widthInPX = width + "px";
@@ -182,6 +182,11 @@ module nts.uk.at.kha003.d {
                             const idx = parseInt(columnKey.substring(1));
                             if (idx === 4) {
                                 return false;
+                            }
+
+                            if (idx ===3) {
+                                let condition=!_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey] && prevRec["c" + (idx-1)] === curRec["c" + (idx-1)] && prevRec["c" + (idx-2)] === curRec["c" + (idx-2)];
+                                return condition;
                             }
                             if (idx <= vm.level) {
                                 return !_.isEmpty(prevRec[columnKey]) && prevRec[columnKey] === curRec[columnKey] && prevRec["c" + (idx - 1)] === curRec["c" + (idx - 1)];
