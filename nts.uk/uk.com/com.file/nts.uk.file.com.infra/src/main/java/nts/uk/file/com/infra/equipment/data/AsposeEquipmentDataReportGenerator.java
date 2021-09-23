@@ -253,7 +253,7 @@ public class AsposeEquipmentDataReportGenerator extends AsposeCellsReportGenerat
 						int alignType = TextAlignmentType.LEFT;
 
 						if (itemData.getItemClassification().equals(ItemClassification.NUMBER)) {
-							value = String.format("%,f", Float.valueOf(value));
+							value = String.format("%,d", Integer.valueOf(value));
 							alignType = TextAlignmentType.RIGHT;
 						} else if (itemData.getItemClassification().equals(ItemClassification.TIME)) {
 							value = LocalTime.MIN.plus(Duration.ofMinutes(Integer.valueOf(value))).toString();
